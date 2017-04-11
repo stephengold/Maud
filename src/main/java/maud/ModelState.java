@@ -34,19 +34,25 @@ import com.jme3.animation.LoopMode;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.Track;
+import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
+import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.ogre.MeshLoader;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
@@ -56,6 +62,7 @@ import jme3utilities.MyString;
 import jme3utilities.SimpleAppState;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.debug.SkeletonDebugControl;
+import jme3utilities.ui.ActionApplication;
 
 /**
  * Model state for the Maud application.
@@ -101,19 +108,31 @@ class ModelState extends SimpleAppState {
      */
     final private List<Quaternion> inverseBindPose = new ArrayList<>(30);
     /**
+     * spatials temporarily added by the editor
+     */
+    final private List<Spatial> spatialsAdded = new ArrayList<>(20);
+    /**
+     * original local transforms of spatials transformed by the editor
+     */
+    final private Map<Spatial, Transform> originalTransforms = new HashMap<>();
+    /**
      * attachments node for the selected bone, or null if none selected
      */
     private Node attachmentsNode = null;
     /**
-     * the skeleton debug control (set by #load())
+     * the model's skeleton debug control
      */
     private SkeletonDebugControl skeletonDebugControl = null;
     /**
-     * the model's spatial (set by #load())
+     * the model's root spatial
      */
     private Spatial spatial = null;
     /**
-     * name of the loaded model (set by #load())
+     * asset path of the loaded model, less any extension
+     */
+    private String loadedModelAssetPath = null;
+    /**
+     * name of the loaded model
      */
     private String loadedModelName = null;
     /**
@@ -213,6 +232,16 @@ class ModelState extends SimpleAppState {
         Animation animation = animControl.getAnim(name);
 
         return animation;
+    }
+
+    /**
+     * Read the asset path of the loaded model, less any extension.
+     *
+     * @return name (not null)
+     */
+    String getAssetPath() {
+        assert loadedModelAssetPath != null;
+        return loadedModelAssetPath;
     }
 
     /**
@@ -491,7 +520,7 @@ class ModelState extends SimpleAppState {
     /**
      * List the names of all bones in the loaded model.
      *
-     * @return a new list
+     * @return a new list of names
      */
     List<String> listBoneNames() {
         List<String> boneNames = MySkeleton.listBones(spatial);
@@ -505,7 +534,7 @@ class ModelState extends SimpleAppState {
      * List all bones in the loaded model whose names begin with the specified
      * prefix.
      *
-     * @return a new list
+     * @return a new list of names
      */
     List<String> listBoneNames(String namePrefix) {
         List<String> boneNames = listBoneNames();
@@ -578,73 +607,22 @@ class ModelState extends SimpleAppState {
     boolean load(String name) {
         assert isInitialized();
         assert name != null;
-        /*
-         * Temporarily hush loader warnings about vertices with >4 weights.
-         */
-        Logger mlLogger = Logger.getLogger(MeshLoader.class.getName());
-        Level save = mlLogger.getLevel();
-        mlLogger.setLevel(Level.SEVERE);
 
-        String assetPath;
-        if (name.equals("Jaime")) {
-            assetPath = "Models/Jaime/Jaime.j3o";
+        String extension;
+        if (name.equals("Jaime") || name.equals("Elephant2")) {
+            extension = "j3o";
         } else {
-            assetPath = String.format("Models/%s/%s.mesh.xml", name, name);
+            extension = "mesh.xml";
         }
-        /*
-         * Load the model from its asset, bypassing the asset manager's cache.
-         */
-        ModelKey key = new ModelKey(assetPath);
-        assetManager.deleteFromCache(key);
-        Spatial loaded = assetManager.loadModel(key);
+        String assetPath = String.format("Models/%s/%s.%s",
+                name, name, extension);
 
-        mlLogger.setLevel(save);
-        /*
-         * Detach the old spatial (if any) from the scene.
-         */
-        if (spatial != null) {
-            rootNode.detachChild(spatial);
-            channel = null;
+        Spatial loaded = loadModelFromAsset(assetPath);
+        if (loaded == null) {
+            return false;
         }
-
         loadedModelName = name;
-        spatial = loaded;
-        userControlFlag = false;
-        MySkeleton.setUserControl(spatial, userControlFlag);
-        spatial.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        rootNode.attachChild(spatial);
-        saveInverseBindPose();
-        /*
-         * Apply an identity transform to every child spatial of the model.
-         * This hack enables accurate bone attachments on models with
-         * locally transformed geometries (such as Jaime).  (The attachments bug
-         * should be fixed in jME 3.2.)
-         */
-        if (spatial instanceof Node) {
-            Node node = (Node) spatial;
-            for (Spatial child : node.getChildren()) {
-                child.setLocalTransform(identityTransform);
-            }
-        }
-        /*
-         * Scale and translate the model so its bind pose is 1 world-unit
-         * tall, with its base resting on the XZ plane.
-         */
-        float maxY = MySpatial.getMaxY(spatial);
-        float minY = MySpatial.getMinY(spatial);
-        assert maxY > minY : maxY; // no 2D models!
-        float worldScale = 1f / (maxY - minY);
-        MySpatial.setWorldScale(spatial, worldScale);
-        Vector3f worldLocation = new Vector3f(0f, -minY * worldScale, 0f);
-        MySpatial.setWorldLocation(spatial, worldLocation);
-        /*
-         * Add a skeleton debug control to the spatial.
-         */
-        skeletonDebugControl = new SkeletonDebugControl(assetManager);
-        spatial.addControl(skeletonDebugControl);
-
-        loadBindPose();
-        selectBone(HudState.noBone);
+        setModel(loaded);
 
         return true;
     }
@@ -882,8 +860,62 @@ class ModelState extends SimpleAppState {
         Bone bone = getBone();
         bone.setUserTransforms(translation, rotation, scale);
     }
+
+    /**
+     * Write the loaded model to an asset.
+     *
+     * @param baseAssetPath asset path without any extension (not null)
+     */
+    boolean writeModelToAsset(String baseAssetPath) {
+        assert baseAssetPath != null;
+
+        String fullAssetPath = baseAssetPath + ".j3o";
+        String filePath = ActionApplication.filePath(fullAssetPath);
+        File file = new File(filePath);
+        BinaryExporter exporter = BinaryExporter.getInstance();
+
+        prepareForWriting();
+
+        boolean success = true;
+        try {
+            exporter.save(spatial, file);
+        } catch (IOException exception) {
+            logger.log(Level.SEVERE,
+                    "Output exception while writing model to file {0}",
+                    MyString.quote(filePath));
+            success = false;
+        }
+        if (success) {
+            logger.log(Level.INFO, "Wrote model to file {0}",
+                    MyString.quote(filePath));
+        }
+
+        prepareForEditing();
+        updateAttachmentsNode();
+
+        return success;
+    }
     // *************************************************************************
     // private methods
+
+    /**
+     * Determine the parent node for all attachments nodes of the specified
+     * SkeletonControl.
+     *
+     * @param control
+     * @return the pre-existing instance
+     */
+    private static Node attachmentsParent(SkeletonControl control) {
+        Spatial s = control.getSpatial();
+
+        Node result;
+        if (s instanceof Node) {
+            result = (Node) s;
+        } else {
+            result = s.getParent();
+        }
+        return result;
+    }
 
     /**
      * Calculate the rotation of a bone (local rotation minus bind rotation).
@@ -963,6 +995,21 @@ class ModelState extends SimpleAppState {
     }
 
     /**
+     * Access the SkeletonControl of the loaded model.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    private SkeletonControl getSkeletonControl() {
+        SkeletonControl result = spatial.getControl(SkeletonControl.class);
+
+        if (result == null) {
+            throw new IllegalArgumentException(
+                    "expected the model's root spatial to have an SkeletonControl");
+        }
+        return result;
+    }
+
+    /**
      * Access the selected BoneTrack.
      *
      * @return the pre-existing instance, or null if no track is selected
@@ -998,6 +1045,199 @@ class ModelState extends SimpleAppState {
     }
 
     /**
+     * Quietly load a model asset from persistent storage without adding it to
+     * the scene. If successful, set {@link #loadedModelAssetPath}.
+     *
+     * @param assetPath (not null)
+     * @return an orphaned spatial, or null if the asset was not found
+     */
+    private Spatial loadModelFromAsset(String assetPath) {
+        /*
+         * Delete the model's key from the asset manager's cache, to force a
+         * load from persistent storage.
+         */
+        ModelKey key = new ModelKey(assetPath);
+        assetManager.deleteFromCache(key);
+        /*
+         * Temporarily hush loader warnings about vertices with >4 weights.
+         */
+        Logger mlLogger = Logger.getLogger(MeshLoader.class.getName());
+        Level oldLevel = mlLogger.getLevel();
+        mlLogger.setLevel(Level.SEVERE);
+        /*
+         * Load the model from its asset.
+         */
+        Spatial loaded;
+        try {
+            loaded = assetManager.loadModel(key);
+        } catch (AssetNotFoundException e) {
+            loaded = null;
+            logger.log(Level.SEVERE, "Didn''t find an asset at {0}",
+                    MyString.quote(assetPath));
+        }
+        /*
+         * Restore logging level.
+         */
+        mlLogger.setLevel(oldLevel);
+
+        if (loaded != null) {
+            logger.log(Level.INFO, "Loaded model from asset {0}",
+                    MyString.quote(assetPath));
+
+            String extension = key.getExtension();
+            int extLength = extension.length();
+            if (extLength == 0) {
+                loadedModelAssetPath = assetPath;
+            } else {
+                int pathLength = assetPath.length() - extLength - 1;
+                loadedModelAssetPath = assetPath.substring(0, pathLength);
+            }
+        }
+
+        return loaded;
+    }
+
+    /**
+     * Alter a newly-loaded model to prepare it for editing.
+     */
+    private void prepareForEditing() {
+        /*
+         * Make sure no bones are under user control.
+         */
+        userControlFlag = false;
+        Skeleton skeleton = getSkeleton();
+        int boneCount = skeleton.getBoneCount();
+        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
+            Bone bone = skeleton.getBone(boneIndex);
+            if (bone.hasUserControl()) {
+                String message = String.format(
+                        "Clearing user control on bone %d.",
+                        boneIndex);
+                logger.log(Level.WARNING, message);
+                bone.setUserControl(false);
+            }
+        }
+
+        rootNode.attachChild(spatial);
+
+        saveInverseBindPose();
+        /*
+         * Apply an identity transform to every child spatial of the model.
+         * This hack enables accurate bone attachments on some models with
+         * locally transformed geometries (such as Jaime).
+         * The attachments bug should be fixed in jMonkeyEngine 3.2.
+         */
+        if (spatial instanceof Node) {
+            Node node = (Node) spatial;
+            for (Spatial child : node.getChildren()) {
+                saveLocalTransform(child);
+                child.setLocalTransform(identityTransform);
+            }
+        }
+        /*
+         * Scale and translate the model so its bind pose is 1.0 world-unit
+         * tall, with its base resting on the XZ plane.
+         */
+        saveLocalTransform(spatial);
+        float maxY = MySpatial.getMaxY(spatial);
+        float minY = MySpatial.getMinY(spatial);
+        assert maxY > minY : maxY; // no 2D models!
+        float worldScale = 1f / (maxY - minY);
+        MySpatial.setWorldScale(spatial, worldScale);
+        Vector3f worldLocation = new Vector3f(0f, -minY * worldScale, 0f);
+        MySpatial.setWorldLocation(spatial, worldLocation);
+        /*
+         * Add an enabled SkeletonDebugControl.
+         */
+        if (skeletonDebugControl == null) {
+            skeletonDebugControl = new SkeletonDebugControl(assetManager);
+        }
+        spatial.addControl(skeletonDebugControl);
+        skeletonDebugControl.setEnabled(true);
+    }
+
+    /**
+     * Undo {@link #prepareForEditing()} alterations to restore the model to a
+     * pristine state so it can be serialized.
+     */
+    private void prepareForWriting() {
+        /*
+         * Remove temporary spatials.
+         */
+        for (Spatial sp : spatialsAdded) {
+            sp.removeFromParent();
+            Bone bone = sp.getUserData("AttachedBone");
+            removeAttachmentsNode(bone);
+        }
+        spatialsAdded.clear();
+        attachmentsNode = null;
+        /*
+         * Disable and remove the SkeletonDebugControl.
+         */
+        skeletonDebugControl.setEnabled(false);
+        spatial.removeControl(skeletonDebugControl);
+        /*
+         * Restore saved local transforms.
+         */
+        restoreLocalTransform(spatial);
+        if (spatial instanceof Node) {
+            Node node = (Node) spatial;
+            for (Spatial child : node.getChildren()) {
+                restoreLocalTransform(child);
+            }
+        }
+        originalTransforms.clear();
+
+        resetSkeleton();
+
+        int index = rootNode.detachChild(spatial);
+        assert index != -1;
+
+        MySkeleton.setUserControl(spatial, false);
+    }
+
+    /**
+     * Remove the attachments node from the specified bone and also from the
+     * scene graph.
+     *
+     * @param bone (not null)
+     * @return true if successful, otherwise false
+     */
+    private static boolean removeAttachmentsNode(Bone bone) {
+        Class<?> boneClass = bone.getClass();
+
+        Field attachNodeField;
+        try {
+            attachNodeField = boneClass.getDeclaredField("attachNode");
+        } catch (NoSuchFieldException e) {
+            return false;
+        }
+
+        attachNodeField.setAccessible(true);
+
+        Object value;
+        try {
+            value = attachNodeField.get(bone);
+        } catch (IllegalAccessException e) {
+            return false;
+        }
+
+        Node node = (Node) value;
+        boolean success = node.removeFromParent();
+        if (!success) {
+            return false;
+        }
+
+        try {
+            attachNodeField.set(bone, null);
+        } catch (IllegalAccessException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Reset the skeleton to its bind pose.
      */
     private void resetSkeleton() {
@@ -1023,6 +1263,30 @@ class ModelState extends SimpleAppState {
     }
 
     /**
+     * Set the local transform of the specified spatial to the value saved by
+     * {@link #saveLocalTransform(com.jme3.scene.Spatial)}.
+     *
+     * @param sp which spatial (not null)
+     */
+    private void restoreLocalTransform(Spatial sp) {
+        Transform transform = originalTransforms.get(sp);
+        transform = transform.clone();
+        sp.setLocalTransform(transform);
+    }
+
+    /**
+     * Copy the local transform of the specified spatial for later use by
+     * {@link #restoreLocalTransform(com.jme3.scene.Spatial)}.
+     *
+     * @param sp which spatial (not null)
+     */
+    private void saveLocalTransform(Spatial sp) {
+        Transform transform = sp.getLocalTransform();
+        transform = transform.clone();
+        originalTransforms.put(sp, transform);
+    }
+
+    /**
      * Save (in memory) a copy of all inverse local rotations for the bind pose.
      */
     private void saveInverseBindPose() {
@@ -1044,17 +1308,44 @@ class ModelState extends SimpleAppState {
     }
 
     /**
+     * Replace the model in the scene.
+     *
+     * @param assetPath (not null)
+     * @return the loaded spatial, or null if not found
+     */
+    private void setModel(Spatial loaded) {
+        /*
+         * Detach the old spatial (if any) from the scene.
+         */
+        if (spatial != null) {
+            rootNode.detachChild(spatial);
+            channel = null;
+        }
+
+        spatial = loaded;
+        skeletonDebugControl = null;
+        prepareForEditing();
+        loadBindPose();
+        selectBone(HudState.noBone);
+    }
+
+    /**
      * Update the attachments node.
      */
     private void updateAttachmentsNode() {
         Node newNode = null;
         if (isBoneSelected()) {
-            SkeletonControl control = spatial.getControl(SkeletonControl.class);
-            if (control == null) {
-                throw new IllegalArgumentException(
-                        "expected the spatial to have an SkeletonControl");
-            }
+            SkeletonControl control = getSkeletonControl();
+            Node parent = attachmentsParent(control);
+            int beforeSize = parent.getChildren().size();
+
             newNode = control.getAttachmentsNode(selectedBoneName);
+
+            int afterSize = parent.getChildren().size();
+            if (afterSize != beforeSize) {
+                assert afterSize == beforeSize + 1;
+                spatialsAdded.add(newNode);
+            }
         }
         if (newNode != attachmentsNode) {
             if (attachmentsNode != null) {

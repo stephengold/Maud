@@ -244,8 +244,7 @@ public class HudState
                     return;
 
                 case "load animation":
-                    Collection<String> animationNames
-                            = Maud.modelState.listAnimationNames();
+                    Collection<String> animationNames = Maud.modelState.listAnimationNames();
                     showPopup(animationMenuPrefix, animationNames);
                     return;
 
@@ -283,6 +282,11 @@ public class HudState
                         showPopup(keyframeMenuPrefix, options);
                     }
                     return;
+
+                case "write model":
+                    String assetPath = Maud.modelState.getAssetPath();
+                    Maud.modelState.writeModelToAsset(assetPath);
+                    return;
             }
             if (actionString.startsWith(animationDialogPrefix)) {
                 int namePos = animationDialogPrefix.length();
@@ -313,8 +317,8 @@ public class HudState
                 String name = actionString.substring(namePos);
 
                 if (!Maud.modelState.hasBone(name)) {
-                    List<String> boneNames
-                            = Maud.modelState.listBoneNames(name);
+                    List<String> boneNames = Maud.modelState.listBoneNames(
+                            name);
                     MyString.reduce(boneNames, 20);
                     Collections.sort(boneNames);
                     showPopup(boneMenuPrefix, boneNames);
@@ -589,8 +593,7 @@ public class HudState
     private void resetBone() {
         if (!boneControlsEnabledFlag) {
             /*
-             * Ignore reset events when the bone controls
-             * are disabled.
+             * Ignore reset events when the bone controls are disabled.
              */
             return;
         }
@@ -767,8 +770,7 @@ public class HudState
         /*
          * SkeletonDebugControl
          */
-        SkeletonDebugControl debugControl
-                = Maud.modelState.getSkeletonDebugControl();
+        SkeletonDebugControl debugControl = Maud.modelState.getSkeletonDebugControl();
         enable = isChecked("skeletonDebug");
         debugControl.setEnabled(enable);
         ColorRGBA wireColor = updateColorBank("wire");
