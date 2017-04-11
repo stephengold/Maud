@@ -356,10 +356,10 @@ class CameraState
          * Rotate the model around the Y-axis.
          */
         if (signals.test(modelCCWSignalName)) {
-            Maud.modelState.rotateY(tpf);
+            Maud.viewState.rotateY(tpf);
         }
         if (signals.test(modelCWSignalName)) {
-            Maud.modelState.rotateY(-tpf);
+            Maud.viewState.rotateY(-tpf);
         }
     }
     // *************************************************************************

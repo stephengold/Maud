@@ -32,7 +32,6 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.RadioButtonStateChangedEvent;
@@ -486,18 +485,15 @@ public class HudState
             angles[iAxis] = baSliders[iAxis].getValue();
         }
 
-        Vector3f translation = new Vector3f(0f, 0f, 0f);
         Quaternion rotation = new Quaternion();
         rotation.fromAngles(angles);
-        Vector3f scale = new Vector3f(1f, 1f, 1f);
-        Maud.modelState.setUserTransforms(translation, rotation, scale);
+        Maud.modelState.setBoneRotation(rotation);
     }
 
     /**
      * Disable the 3 bone-angle sliders, reset button, and user control.
      */
     private void disableBoneControls() {
-        Maud.modelState.setUserControl(false);
         if (!boneControlsEnabledFlag) {
             return;
         }
@@ -519,7 +515,6 @@ public class HudState
      * Enable the 3 bone-angle sliders, reset button, and user control.
      */
     private void enableBoneControls() {
-        Maud.modelState.setUserControl(true);
         if (boneControlsEnabledFlag) {
             return;
         }
@@ -743,7 +738,7 @@ public class HudState
         /*
          * Bone AxesControl
          */
-        AxesControl axesControl = Maud.modelState.getBoneAxesControl();
+        AxesControl axesControl = Maud.viewState.getBoneAxesControl();
         float lineWidth = updateSlider("bacLineWidth", " pixels");
         float length = updateLogSlider("bacLength", 10f, " bone units");
         if (axesControl != null) {
@@ -770,7 +765,7 @@ public class HudState
         /*
          * SkeletonDebugControl
          */
-        SkeletonDebugControl debugControl = Maud.modelState.getSkeletonDebugControl();
+        SkeletonDebugControl debugControl = Maud.viewState.getSkeletonDebugControl();
         enable = isChecked("skeletonDebug");
         debugControl.setEnabled(enable);
         ColorRGBA wireColor = updateColorBank("wire");

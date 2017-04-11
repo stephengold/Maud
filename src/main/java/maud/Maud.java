@@ -92,8 +92,7 @@ public class Maud extends GuiApplication {
     /**
      * path to hotkey bindings configuration asset
      */
-    final private static String hotkeyBindingsAssetPath =
-            "Interface/bindings/Maud.properties";
+    final private static String hotkeyBindingsAssetPath = "Interface/bindings/Maud.properties";
     /**
      * name of the platform geometry
      */
@@ -101,8 +100,7 @@ public class Maud extends GuiApplication {
     /**
      * path to texture asset for the platform
      */
-    final private static String platformTextureAssetPath =
-            "Textures/Terrain/splat/dirt.jpg";
+    final private static String platformTextureAssetPath = "Textures/Terrain/splat/dirt.jpg";
     /**
      * application name for the window's title bar
      */
@@ -113,11 +111,11 @@ public class Maud extends GuiApplication {
     /**
      * Nifty screen for editing hotkey bindings
      */
-    static BindScreen bindScreen = new BindScreen();
+    final static BindScreen bindScreen = new BindScreen();
     /**
      * app state to manage the camera
      */
-    static CameraState cameraState = new CameraState();
+    final static CameraState cameraState = new CameraState();
     /**
      * shadow filter for the scene
      */
@@ -125,15 +123,19 @@ public class Maud extends GuiApplication {
     /**
      * app state to manage the heads-up display (HUD)
      */
-    static HudState hudState = new HudState();
+    final static HudState hudState = new HudState();
     /**
      * app state to manage the loaded model
      */
-    static ModelState modelState = new ModelState();
+    final static ModelState modelState = new ModelState();
     /**
      * printer for scene dumps
      */
     final private static Printer printer = new Printer();
+    /**
+     * app state to manage loaded model's view
+     */
+    final static ViewState viewState = new ViewState();
     // *************************************************************************
     // new methods exposed
 
@@ -150,9 +152,11 @@ public class Maud extends GuiApplication {
         Logger.getLogger(ALAudioRenderer.class.getName())
                 .setLevel(Level.SEVERE);
         /*
-         * Lower the logging threshold for this class.
+         * Lower the logging thresholds for certain classes.
          */
         logger.setLevel(Level.INFO);
+        Logger.getLogger(ModelState.class.getName())
+                .setLevel(Level.INFO);
         /*
          * Instantiate the application.
          */
@@ -191,9 +195,11 @@ public class Maud extends GuiApplication {
         logger.log(Level.INFO, "jme3-utilities-nifty version is {0}",
                 MyString.quote(LibraryVersion.getVersionShort()));
         /*
-         * Attach screen controllers for the HUD, the scene, and BindScreen.
+         * Attach screen controllers for the model, view, HUD, and BindScreen.
          */
-        boolean success = stateManager.attach(modelState);
+        boolean success = stateManager.attach(viewState);
+        assert success;
+        success = stateManager.attach(modelState);
         assert success;
         success = stateManager.attach(hudState);
         assert success;
@@ -217,7 +223,8 @@ public class Maud extends GuiApplication {
          * Capture a screenshot each time the SYSRQ hotkey is pressed.
          */
         ScreenshotAppState screenShotState = new ScreenshotAppState();
-        stateManager.attach(screenShotState);
+        success = stateManager.attach(screenShotState);
+        assert success;
         /*
          * Create lights, shadows, and a daytime sky.
          */

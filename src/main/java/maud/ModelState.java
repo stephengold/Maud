@@ -25,14 +25,11 @@
  */
 package maud;
 
-import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
-import com.jme3.animation.LoopMode;
 import com.jme3.animation.Skeleton;
-import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.Track;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
@@ -47,21 +44,16 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
-import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.SimpleAppState;
-import jme3utilities.debug.AxesControl;
-import jme3utilities.debug.SkeletonDebugControl;
+import jme3utilities.math.MyMath;
 import jme3utilities.ui.ActionApplication;
 
 /**
@@ -78,67 +70,45 @@ class ModelState extends SimpleAppState {
      */
     final private static Logger logger = Logger.getLogger(
             ModelState.class.getName());
-    /**
-     * local copy of {@link com.jme3.math.Transform#IDENTITY}
-     */
-    final private static Transform identityTransform = new Transform();
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
-     */
-    final private static Vector3f identityScale = new Vector3f(1f, 1f, 1f);
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#ZERO}
-     */
-    final private static Vector3f identityTranslate = new Vector3f(0f, 0f, 0f);
     // *************************************************************************
     // fields
 
     /**
-     * animation channel (Can be null only if no model selected.
-     * getAnimationName() == null means bind pose is selected.)
+     * animation speed (0 &rarr; paused, 1 &rarr; normal speed)
      */
-    private AnimChannel channel = null;
+    private float animationSpeed = 0f;
     /**
-     * true if the loaded model has user control enabled, otherwise false
+     * animation time (in seconds, &ge;0)
      */
-    private boolean userControlFlag = false;
+    private float animationTime = 0f;
     /**
-     * inverse local rotation of each bone in original bind pose, indexed by
-     * boneIndex
+     * user transforms for the current (temporary) pose
      */
-    final private List<Quaternion> inverseBindPose = new ArrayList<>(30);
-    /**
-     * spatials temporarily added by the editor
-     */
-    final private List<Spatial> spatialsAdded = new ArrayList<>(20);
-    /**
-     * original local transforms of spatials transformed by the editor
-     */
-    final private Map<Spatial, Transform> originalTransforms = new HashMap<>();
-    /**
-     * attachments node for the selected bone, or null if none selected
-     */
-    private Node attachmentsNode = null;
-    /**
-     * the model's skeleton debug control
-     */
-    private SkeletonDebugControl skeletonDebugControl = null;
+    final private List<Transform> currentPose = new ArrayList<>(30);
     /**
      * the model's root spatial
      */
-    private Spatial spatial = null;
+    private Spatial rootSpatial = null;
     /**
-     * asset path of the loaded model, less any extension
+     * asset path of the loaded model, less extension
      */
     private String loadedModelAssetPath = null;
     /**
+     * filesystem path of the loaded model, less extension
+     */
+    private String loadedModelFilePath = null;
+    /**
      * name of the loaded model
      */
-    private String loadedModelName = null;
+    private String modelName = null;
     /**
-     * name of the selected bone or noBone (not null)
+     * name of the selected animation or bindPoseName
      */
-    private String selectedBoneName = HudState.noBone;
+    private String selectedAnimationName = null;
+    /**
+     * name of the selected bone or noBone
+     */
+    private String selectedBoneName = null;
     // *************************************************************************
     // constructors
 
@@ -152,11 +122,11 @@ class ModelState extends SimpleAppState {
     // new methods exposed
 
     /**
-     * Add a pose animation to the loaded model and select the new animation.
-     * The new animation has zero duration, a single keyframe at t=0, and all
-     * the tracks are BoneTracks, set to the current pose.
+     * Add a pose animation to the model. The new animation has zero duration, a
+     * single keyframe at t=0, and all the tracks are BoneTracks, set to the
+     * current pose.
      *
-     * @param animationName name for the new animation (not null , not empty)
+     * @param animationName name for the new animation (not null, not empty)
      */
     void addPoseAnimation(String animationName) {
         assert animationName != null;
@@ -178,30 +148,29 @@ class ModelState extends SimpleAppState {
     }
 
     /**
-     * Delete the loaded animation.
+     * Calculate rotation angles of the selected bone in the current pose.
+     *
+     * @param storeAngles (&ge;3 elements, modified unless null)
      */
-    void deleteAnimation() {
-        if (isBindPoseSelected()) {
-            logger.log(Level.WARNING, "Cannot delete bind pose.");
-            return;
-        }
-        AnimControl animControl = getAnimControl();
-        String animationName = channel.getAnimationName();
-        Animation animation = animControl.getAnim(animationName);
-        animControl.removeAnim(animation);
-
-        loadBindPose();
+    void boneAngles(float[] storeAngles) {
+        int boneIndex = MySkeleton.findBoneIndex(rootSpatial, selectedBoneName);
+        Transform transform = currentPose.get(boneIndex);
+        Quaternion rotation = transform.getRotation(null);
+        rotation.toAngles(storeAngles);
     }
 
     /**
-     * Calculate the rotation angles of the selected bone.
-     *
-     * @param storeAngles (&ge;3 elements, modified)
+     * Delete the loaded animation. The caller must immediately select a new
+     * animation.
      */
-    void boneAngles(float[] storeAngles) {
-        int boneIndex = MySkeleton.findBoneIndex(spatial, selectedBoneName);
-        Quaternion rotation = boneRotation(boneIndex);
-        rotation.toAngles(storeAngles);
+    void deleteAnimation() {
+        if (isBindPoseSelected()) {
+            logger.log(Level.WARNING, "cannot delete bind pose");
+            return;
+        }
+        AnimControl animControl = getAnimControl();
+        Animation animation = getAnimation();
+        animControl.removeAnim(animation);
     }
 
     /**
@@ -212,11 +181,10 @@ class ModelState extends SimpleAppState {
     Animation getAnimation() {
         if (isBindPoseSelected()) {
             return null;
+        } else {
+            Animation animation = getAnimation(selectedAnimationName);
+            return animation;
         }
-        String animationName = channel.getAnimationName();
-        Animation animation = getAnimation(animationName);
-
-        return animation;
     }
 
     /**
@@ -235,7 +203,35 @@ class ModelState extends SimpleAppState {
     }
 
     /**
-     * Read the asset path of the loaded model, less any extension.
+     * Read the name of the loaded animation.
+     *
+     * @return the name, or bindPoseName if in bind pose (not null)
+     */
+    String getAnimationName() {
+        assert selectedAnimationName != null;
+        return selectedAnimationName;
+    }
+
+    /**
+     * Access the AnimControl of the loaded model.
+     *
+     * @return the pre-existing instance, or null if none
+     */
+    AnimControl getAnimControl() {
+        AnimControl animControl = rootSpatial.getControl(AnimControl.class);
+        if (animControl == null) {
+            String message = String.format(
+                    "expected model %s to have an AnimControl",
+                    MyString.quote(modelName));
+            throw new IllegalArgumentException(message);
+            //TODO add a new control
+        }
+
+        return animControl;
+    }
+
+    /**
+     * Read the asset path of the loaded model, less extension.
      *
      * @return name (not null)
      */
@@ -252,59 +248,10 @@ class ModelState extends SimpleAppState {
     Bone getBone() {
         if (!isBoneSelected()) {
             return null;
-        }
-        Bone bone = MySkeleton.getBone(spatial, selectedBoneName);
-
-        return bone;
-    }
-
-    /**
-     * Access the AxesControl for the selected bone.
-     *
-     * @return the pre-existing instance, or null if no bone selected
-     */
-    AxesControl getBoneAxesControl() {
-        if (attachmentsNode == null) {
-            return null;
-        }
-        AxesControl result = attachmentsNode.getControl(AxesControl.class);
-        assert result != null;
-
-        return result;
-    }
-
-    /**
-     * Read the name of the loaded animation.
-     *
-     * @return the name, or bindPoseName if in bind pose (not null)
-     */
-    String getAnimationName() {
-        String result;
-        if (isBindPoseSelected()) {
-            result = HudState.bindPoseName;
         } else {
-            result = channel.getAnimationName();
+            Bone bone = MySkeleton.getBone(rootSpatial, selectedBoneName);
+            return bone;
         }
-
-        assert result != null;
-        return result;
-    }
-
-    /**
-     * Access the AnimControl of the loaded model.
-     *
-     * @return the pre-existing instance, or null if none
-     */
-    AnimControl getAnimControl() {
-        AnimControl animControl = spatial.getControl(AnimControl.class);
-        if (animControl == null) {
-            String message = String.format(
-                    "expected model %s to have an AnimControl",
-                    MyString.quote(loadedModelName));
-            throw new IllegalArgumentException(message);
-        }
-
-        return animControl;
     }
 
     /**
@@ -324,9 +271,7 @@ class ModelState extends SimpleAppState {
      * @return time (in seconds, &ge;0)
      */
     float getDuration() {
-        Animation animation = getAnimation();
-        float result = animation.getLength();
-
+        float result = getDuration(selectedAnimationName);
         assert result >= 0f : result;
         return result;
     }
@@ -340,11 +285,14 @@ class ModelState extends SimpleAppState {
     float getDuration(String name) {
         assert name != null;
 
-        Animation animation = getAnimation(name);
-        float result = animation.getLength();
-
-        assert result >= 0f : result;
-        return result;
+        if (name.equals(HudState.bindPoseName)) {
+            return 0f;
+        } else {
+            Animation animation = getAnimation(name);
+            float result = animation.getLength();
+            assert result >= 0f : result;
+            return result;
+        }
     }
 
     /**
@@ -353,8 +301,8 @@ class ModelState extends SimpleAppState {
      * @return name (not null)
      */
     String getName() {
-        assert loadedModelName != null;
-        return loadedModelName;
+        assert modelName != null;
+        return modelName;
     }
 
     /**
@@ -363,30 +311,19 @@ class ModelState extends SimpleAppState {
      * @return the pre-existing instance (not null)
      */
     Skeleton getSkeleton() {
-        Skeleton skeleton = MySkeleton.getSkeleton(spatial);
-
+        Skeleton skeleton = MySkeleton.getSkeleton(rootSpatial);
         assert skeleton != null;
         return skeleton;
     }
 
     /**
-     * Access the skeleton debug control.
-     *
-     * @return the pre-existing instance (not null)
-     */
-    SkeletonDebugControl getSkeletonDebugControl() {
-        assert skeletonDebugControl != null;
-        return skeletonDebugControl;
-    }
-
-    /**
-     * Access the spatial which represents the model in the scene.
+     * Access the root spatial of the model.
      *
      * @return the pre-existing instance (not null)
      */
     Spatial getSpatial() {
-        assert spatial != null;
-        return spatial;
+        assert rootSpatial != null;
+        return rootSpatial;
     }
 
     /**
@@ -395,13 +332,8 @@ class ModelState extends SimpleAppState {
      * @return relative speed (&ge;0, 1 &rarr; normal)
      */
     float getSpeed() {
-        if (isBindPoseSelected()) {
-            return 0f;
-        }
-        float result = channel.getSpeed();
-
-        assert result >= 0f : result;
-        return result;
+        assert animationSpeed >= 0f : animationSpeed;
+        return animationSpeed;
     }
 
     /**
@@ -410,15 +342,8 @@ class ModelState extends SimpleAppState {
      * @return seconds since start (&ge;0)
      */
     float getTime() {
-        float result;
-        if (getDuration() == 0f) {
-            result = 0f;
-        } else {
-            result = channel.getTime();
-        }
-
-        assert result >= 0f : result;
-        return result;
+        assert animationTime >= 0f : animationTime;
+        return animationTime;
     }
 
     /**
@@ -431,7 +356,7 @@ class ModelState extends SimpleAppState {
         if (name.equals(HudState.noBone)) {
             return true;
         }
-        Bone bone = MySkeleton.getBone(spatial, name);
+        Bone bone = MySkeleton.getBone(rootSpatial, name);
         if (bone == null) {
             return false;
         } else {
@@ -459,7 +384,7 @@ class ModelState extends SimpleAppState {
      * @return true if an animation is running, false otherwise
      */
     boolean isAnimationRunning() {
-        if (getSpeed() == 0f) {
+        if (animationSpeed == 0f) {
             return false;
         } else {
             return true;
@@ -472,11 +397,7 @@ class ModelState extends SimpleAppState {
      * @return true if it's selected, false if an animation is selected
      */
     boolean isBindPoseSelected() {
-        if (channel == null) {
-            return true;
-        }
-        String animationName = channel.getAnimationName();
-        if (animationName == null) {
+        if (selectedAnimationName.equals(HudState.bindPoseName)) {
             return true;
         } else {
             return false;
@@ -497,21 +418,12 @@ class ModelState extends SimpleAppState {
     }
 
     /**
-     * Test whether user control is enabled.
-     *
-     * @return true if enabled, false if disabled
-     */
-    boolean isUserControl() {
-        return userControlFlag;
-    }
-
-    /**
      * List the names of all known animations and poses for the loaded model.
      *
      * @return a new collection
      */
     Collection<String> listAnimationNames() {
-        Collection<String> names = MyAnimation.listAnimations(spatial);
+        Collection<String> names = MyAnimation.listAnimations(rootSpatial);
         names.add(HudState.bindPoseName);
 
         return names;
@@ -523,7 +435,7 @@ class ModelState extends SimpleAppState {
      * @return a new list of names
      */
     List<String> listBoneNames() {
-        List<String> boneNames = MySkeleton.listBones(spatial);
+        List<String> boneNames = MySkeleton.listBones(rootSpatial);
         boneNames.remove("");
         boneNames.add(HudState.noBone);
 
@@ -553,7 +465,7 @@ class ModelState extends SimpleAppState {
      * @return a new list, or null if no options
      */
     List<String> listKeyframes() {
-        if (channel == null || channel.getAnimationName() == null) {
+        if (isBindPoseSelected()) {
             logger.log(Level.INFO, "No animation is selected.");
             return null;
         }
@@ -586,7 +498,7 @@ class ModelState extends SimpleAppState {
     List<Mesh> listMeshes() {
         List<Mesh> result = new ArrayList<>(8);
 
-        Node node = (Node) spatial;
+        Node node = (Node) rootSpatial;
         for (Spatial child : node.getChildren()) {
             if (child instanceof Geometry) {
                 Geometry geometry = (Geometry) child;
@@ -609,7 +521,7 @@ class ModelState extends SimpleAppState {
         assert name != null;
 
         String extension;
-        if (name.equals("Jaime") || name.equals("Elephant2")) {
+        if (name.equals("Jaime")) {
             extension = "j3o";
         } else {
             extension = "mesh.xml";
@@ -617,14 +529,22 @@ class ModelState extends SimpleAppState {
         String assetPath = String.format("Models/%s/%s.%s",
                 name, name, extension);
 
-        Spatial loaded = loadModelFromAsset(assetPath);
+        Spatial loaded = loadModelFromAsset(assetPath, false);
         if (loaded == null) {
             return false;
-        }
-        loadedModelName = name;
-        setModel(loaded);
+        } else {
+            modelName = name;
+            rootSpatial = loaded;
 
-        return true;
+            Spatial viewClone = loadModelFromAsset(assetPath, true);
+            assert viewClone != null;
+            Maud.viewState.setModel(viewClone);
+
+            loadBindPose();
+            selectBone(HudState.noBone);
+
+            return true;
+        }
     }
 
     /**
@@ -638,68 +558,49 @@ class ModelState extends SimpleAppState {
         assert !name.equals(HudState.bindPoseName);
         assert speed >= 0f : speed;
 
-        channel.setAnim(name, 0f);
-        if (speed > 0f) {
-            channel.setLoopMode(LoopMode.Loop);
-        }
-        channel.setSpeed(speed);
+        selectedAnimationName = name;
+        animationTime = 0f;
+        animationSpeed = speed;
+        poseSkeleton();
     }
 
     /**
      * Load the bind pose.
      */
     void loadBindPose() {
-        if (channel == null) {
-            AnimControl control = getAnimControl();
-            channel = control.createChannel();
+        selectedAnimationName = HudState.bindPoseName;
+        animationTime = 0f;
+        animationSpeed = 0f;
+
+        Skeleton skeleton = getSkeleton();
+        int boneCount = skeleton.getBoneCount();
+        currentPose.clear();
+        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
+            Transform transform = new Transform();
+            currentPose.add(transform);
         }
-        channel.reset(false);
-        resetSkeleton();
+
+        Maud.viewState.poseSkeleton(currentPose);
     }
 
     /**
-     * Load an animation pose under user control.
+     * Pose the skeleton to current animation or pose.
      */
     void poseSkeleton() {
-        /*
-         * Save user-control status and enable it.
-         */
-        boolean savedStatus = userControlFlag;
-        setUserControl(true);
-        /*
-         * Copy bone rotations from pose to skeleton.
-         */
         Animation animation = getAnimation();
         Skeleton skeleton = getSkeleton();
         int boneCount = skeleton.getBoneCount();
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
+            Transform transform = currentPose.get(boneIndex);
             BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
-
-            Vector3f translation, scale;
-            Quaternion rotation;
-            if (track != null) {
-                Vector3f[] translations = track.getTranslations();
-                assert translations.length == 1 : translations.length;
-                translation = translations[0];
-                Quaternion[] rotations = track.getRotations();
-                assert rotations.length == 1 : rotations.length;
-                rotation = rotations[0];
-                Vector3f[] scales = track.getScales();
-                assert scales.length == 1 : scales.length;
-                scale = scales[0];
+            if (track == null) {
+                transform.loadIdentity();
             } else {
-                translation = new Vector3f(0f, 0f, 0f);
-                rotation = new Quaternion();
-                scale = new Vector3f(0f, 0f, 0f);
+                Util.boneTransform(track, animationTime, transform);
             }
-
-            Bone bone = skeleton.getBone(boneIndex);
-            bone.setUserTransforms(translation, rotation, scale);
         }
-        /*
-         * Restore prior user-control status.
-         */
-        setUserControl(savedStatus);
+
+        Maud.viewState.poseSkeleton(currentPose);
     }
 
     /**
@@ -740,7 +641,7 @@ class ModelState extends SimpleAppState {
         animControl.removeAnim(oldAnimation);
         animControl.addAnim(newAnimation);
 
-        channel.setAnim(newName, 0f);
+        selectedAnimationName = newName;
 
         return true;
     }
@@ -774,17 +675,9 @@ class ModelState extends SimpleAppState {
 
         Bone bone = getBone();
         boolean success = MySkeleton.setName(bone, newName);
+        selectedBoneName = newName;
 
         return success;
-    }
-
-    /**
-     * Rotate the model around +Y by the specified angle.
-     *
-     * @param angle in radians
-     */
-    void rotateY(float angle) {
-        spatial.rotate(0f, angle, 0f);
     }
 
     /**
@@ -801,7 +694,15 @@ class ModelState extends SimpleAppState {
         }
 
         selectedBoneName = name;
-        updateAttachmentsNode();
+        /*
+         * Update the view.
+         */
+        if (name.equals(HudState.noBone)) {
+            Maud.viewState.selectNoBone();
+        } else {
+            int boneIndex = MySkeleton.findBoneIndex(rootSpatial, name);
+            Maud.viewState.selectBone(boneIndex);
+        }
     }
 
     /**
@@ -814,7 +715,22 @@ class ModelState extends SimpleAppState {
         assert name != null;
 
         float newTime = Float.valueOf(name);
-        channel.setTime(newTime);
+        // TODO validate
+        animationTime = newTime;
+    }
+
+    /**
+     * Alter the user rotation of the selected bone.
+     */
+    void setBoneRotation(Quaternion rotation) {
+        assert rotation != null;
+        assert isBoneSelected();
+
+        int boneIndex = MySkeleton.findBoneIndex(rootSpatial, selectedBoneName);
+        Transform boneTransform = currentPose.get(boneIndex);
+        boneTransform.setRotation(rotation);
+
+        Maud.viewState.poseSkeleton(currentPose);
     }
 
     /**
@@ -827,38 +743,8 @@ class ModelState extends SimpleAppState {
         assert speed >= 0f : speed;
 
         if (!isBindPoseSelected() && getDuration() > 0f) {
-            channel.setSpeed(speed);
+            animationSpeed = speed;
         }
-    }
-
-    /**
-     * Alter the user-control setting of the loaded model.
-     *
-     * @param newSetting true &rarr; user transforms, false &rarr; animation
-     */
-    void setUserControl(boolean newSetting) {
-        if (newSetting == userControlFlag) {
-            return;
-        }
-        MySkeleton.setUserControl(spatial, newSetting);
-        userControlFlag = newSetting;
-    }
-
-    /**
-     * Alter the user transforms of the selected bone.
-     *
-     * @param translation (not null)
-     * @param rotation (not null)
-     * @param scale (not null)
-     */
-    void setUserTransforms(Vector3f translation, Quaternion rotation,
-            Vector3f scale) {
-        assert translation != null;
-        assert rotation != null;
-        assert scale != null;
-
-        Bone bone = getBone();
-        bone.setUserTransforms(translation, rotation, scale);
     }
 
     /**
@@ -874,67 +760,44 @@ class ModelState extends SimpleAppState {
         File file = new File(filePath);
         BinaryExporter exporter = BinaryExporter.getInstance();
 
-        prepareForWriting();
-
         boolean success = true;
         try {
-            exporter.save(spatial, file);
+            exporter.save(rootSpatial, file);
         } catch (IOException exception) {
-            logger.log(Level.SEVERE,
-                    "Output exception while writing model to file {0}",
-                    MyString.quote(filePath));
             success = false;
         }
         if (success) {
             logger.log(Level.INFO, "Wrote model to file {0}",
                     MyString.quote(filePath));
+        } else {
+            logger.log(Level.SEVERE,
+                    "I/O exception while writing model to file {0}",
+                    MyString.quote(filePath));
         }
-
-        prepareForEditing();
-        updateAttachmentsNode();
 
         return success;
     }
     // *************************************************************************
-    // private methods
+    // SimpleAppState methods
 
     /**
-     * Determine the parent node for all attachments nodes of the specified
-     * SkeletonControl.
+     * Callback to update this state prior to rendering. (Invoked once per
+     * render pass.)
      *
-     * @param control
-     * @return the pre-existing instance
+     * @param elapsedTime time interval between render passes (in seconds,
+     * &ge;0)
      */
-    private static Node attachmentsParent(SkeletonControl control) {
-        Spatial s = control.getSpatial();
-
-        Node result;
-        if (s instanceof Node) {
-            result = (Node) s;
-        } else {
-            result = s.getParent();
+    @Override
+    public void update(float elapsedTime) {
+        float duration = getDuration();
+        if (duration != 0f && animationSpeed != 0f) {
+            float newTime = animationTime + animationSpeed * elapsedTime;
+            animationTime = MyMath.modulo(newTime, duration);
+            poseSkeleton();
         }
-        return result;
     }
-
-    /**
-     * Calculate the rotation of a bone (local rotation minus bind rotation).
-     *
-     * @param boneIndex (&ge;0)
-     * @return a new instance
-     */
-    private Quaternion boneRotation(int boneIndex) {
-        assert boneIndex >= 0 : boneIndex;
-
-        Skeleton skeleton = getSkeleton();
-        Bone bone = skeleton.getBone(boneIndex);
-        Quaternion localRotation = bone.getLocalRotation().clone();
-
-        Quaternion invBind = inverseBindPose.get(boneIndex);
-        Quaternion rotation = invBind.mult(localRotation);
-
-        return rotation;
-    }
+    // *************************************************************************
+    // private methods
 
     /**
      * Capture the model's current pose as an animation. The new animation has a
@@ -960,9 +823,10 @@ class ModelState extends SimpleAppState {
          */
         int numBones = skeleton.getBoneCount();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            Vector3f translation = identityTranslate;
-            Quaternion rotation = boneRotation(boneIndex);
-            Vector3f scale = identityScale;
+            Transform transform = currentPose.get(boneIndex);
+            Vector3f translation = transform.getTranslation();
+            Quaternion rotation = transform.getRotation();
+            Vector3f scale = transform.getScale();
             BoneTrack track = MyAnimation.createTrack(boneIndex, translation,
                     rotation, scale);
             result.addTrack(track);
@@ -980,33 +844,15 @@ class ModelState extends SimpleAppState {
         if (!isBoneSelected()) {
             return null;
         }
-        if (channel == null) {
-            return null;
-        }
         if (isBindPoseSelected()) {
             return null;
         }
 
-        int boneIndex = MySkeleton.findBoneIndex(spatial, selectedBoneName);
+        int boneIndex = MySkeleton.findBoneIndex(rootSpatial, selectedBoneName);
         Animation animation = getAnimation();
         BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
 
         return track;
-    }
-
-    /**
-     * Access the SkeletonControl of the loaded model.
-     *
-     * @return the pre-existing instance (not null)
-     */
-    private SkeletonControl getSkeletonControl() {
-        SkeletonControl result = spatial.getControl(SkeletonControl.class);
-
-        if (result == null) {
-            throw new IllegalArgumentException(
-                    "expected the model's root spatial to have an SkeletonControl");
-        }
-        return result;
     }
 
     /**
@@ -1049,15 +895,19 @@ class ModelState extends SimpleAppState {
      * the scene. If successful, set {@link #loadedModelAssetPath}.
      *
      * @param assetPath (not null)
+     * @param useCache true to look in the asset manager's cache, false to force
+     * a fresh load from persistent storage
      * @return an orphaned spatial, or null if the asset was not found
      */
-    private Spatial loadModelFromAsset(String assetPath) {
-        /*
-         * Delete the model's key from the asset manager's cache, to force a
-         * load from persistent storage.
-         */
+    private Spatial loadModelFromAsset(String assetPath, boolean useCache) {
         ModelKey key = new ModelKey(assetPath);
-        assetManager.deleteFromCache(key);
+        if (!useCache) {
+            /*
+             * Delete the model's key from the asset manager's cache, to force a
+             * fresh load from persistent storage.
+             */
+            assetManager.deleteFromCache(key);
+        }
         /*
          * Temporarily hush loader warnings about vertices with >4 weights.
          */
@@ -1065,22 +915,23 @@ class ModelState extends SimpleAppState {
         Level oldLevel = mlLogger.getLevel();
         mlLogger.setLevel(Level.SEVERE);
         /*
-         * Load the model from its asset.
+         * Load the model.
          */
         Spatial loaded;
         try {
             loaded = assetManager.loadModel(key);
         } catch (AssetNotFoundException e) {
             loaded = null;
-            logger.log(Level.SEVERE, "Didn''t find an asset at {0}",
-                    MyString.quote(assetPath));
         }
         /*
-         * Restore logging level.
+         * Restore logging levels.
          */
         mlLogger.setLevel(oldLevel);
 
-        if (loaded != null) {
+        if (loaded == null) {
+            logger.log(Level.SEVERE, "Failed to find asset {0}",
+                    MyString.quote(assetPath));
+        } else {
             logger.log(Level.INFO, "Loaded model from asset {0}",
                     MyString.quote(assetPath));
 
@@ -1098,264 +949,11 @@ class ModelState extends SimpleAppState {
     }
 
     /**
-     * Alter a newly-loaded model to prepare it for editing.
-     */
-    private void prepareForEditing() {
-        /*
-         * Make sure no bones are under user control.
-         */
-        userControlFlag = false;
-        Skeleton skeleton = getSkeleton();
-        int boneCount = skeleton.getBoneCount();
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Bone bone = skeleton.getBone(boneIndex);
-            if (bone.hasUserControl()) {
-                String message = String.format(
-                        "Clearing user control on bone %d.",
-                        boneIndex);
-                logger.log(Level.WARNING, message);
-                bone.setUserControl(false);
-            }
-        }
-
-        rootNode.attachChild(spatial);
-
-        saveInverseBindPose();
-        /*
-         * Apply an identity transform to every child spatial of the model.
-         * This hack enables accurate bone attachments on some models with
-         * locally transformed geometries (such as Jaime).
-         * The attachments bug should be fixed in jMonkeyEngine 3.2.
-         */
-        if (spatial instanceof Node) {
-            Node node = (Node) spatial;
-            for (Spatial child : node.getChildren()) {
-                saveLocalTransform(child);
-                child.setLocalTransform(identityTransform);
-            }
-        }
-        /*
-         * Scale and translate the model so its bind pose is 1.0 world-unit
-         * tall, with its base resting on the XZ plane.
-         */
-        saveLocalTransform(spatial);
-        float maxY = MySpatial.getMaxY(spatial);
-        float minY = MySpatial.getMinY(spatial);
-        assert maxY > minY : maxY; // no 2D models!
-        float worldScale = 1f / (maxY - minY);
-        MySpatial.setWorldScale(spatial, worldScale);
-        Vector3f worldLocation = new Vector3f(0f, -minY * worldScale, 0f);
-        MySpatial.setWorldLocation(spatial, worldLocation);
-        /*
-         * Add an enabled SkeletonDebugControl.
-         */
-        if (skeletonDebugControl == null) {
-            skeletonDebugControl = new SkeletonDebugControl(assetManager);
-        }
-        spatial.addControl(skeletonDebugControl);
-        skeletonDebugControl.setEnabled(true);
-    }
-
-    /**
-     * Undo {@link #prepareForEditing()} alterations to restore the model to a
-     * pristine state so it can be serialized.
-     */
-    private void prepareForWriting() {
-        /*
-         * Remove temporary spatials.
-         */
-        for (Spatial sp : spatialsAdded) {
-            sp.removeFromParent();
-            Bone bone = sp.getUserData("AttachedBone");
-            removeAttachmentsNode(bone);
-        }
-        spatialsAdded.clear();
-        attachmentsNode = null;
-        /*
-         * Disable and remove the SkeletonDebugControl.
-         */
-        skeletonDebugControl.setEnabled(false);
-        spatial.removeControl(skeletonDebugControl);
-        /*
-         * Restore saved local transforms.
-         */
-        restoreLocalTransform(spatial);
-        if (spatial instanceof Node) {
-            Node node = (Node) spatial;
-            for (Spatial child : node.getChildren()) {
-                restoreLocalTransform(child);
-            }
-        }
-        originalTransforms.clear();
-
-        resetSkeleton();
-
-        int index = rootNode.detachChild(spatial);
-        assert index != -1;
-
-        MySkeleton.setUserControl(spatial, false);
-    }
-
-    /**
-     * Remove the attachments node from the specified bone and also from the
-     * scene graph.
-     *
-     * @param bone (not null)
-     * @return true if successful, otherwise false
-     */
-    private static boolean removeAttachmentsNode(Bone bone) {
-        Class<?> boneClass = bone.getClass();
-
-        Field attachNodeField;
-        try {
-            attachNodeField = boneClass.getDeclaredField("attachNode");
-        } catch (NoSuchFieldException e) {
-            return false;
-        }
-
-        attachNodeField.setAccessible(true);
-
-        Object value;
-        try {
-            value = attachNodeField.get(bone);
-        } catch (IllegalAccessException e) {
-            return false;
-        }
-
-        Node node = (Node) value;
-        boolean success = node.removeFromParent();
-        if (!success) {
-            return false;
-        }
-
-        try {
-            attachNodeField.set(bone, null);
-        } catch (IllegalAccessException e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Reset the skeleton to its bind pose.
-     */
-    private void resetSkeleton() {
-        Skeleton skeleton = getSkeleton();
-
-        if (userControlFlag) {
-            /*
-             * Skeleton.reset() is ineffective with user mode enabled,
-             * so load bind pose under user control.
-             */
-            int boneCount = skeleton.getBoneCount();
-            for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-                Bone bone = skeleton.getBone(boneIndex);
-                Vector3f translation = new Vector3f(0f, 0f, 0f);
-                Quaternion rotation = new Quaternion();
-                Vector3f scale = new Vector3f(1f, 1f, 1f);
-                bone.setUserTransforms(translation, rotation, scale);
-            }
-
-        } else {
-            skeleton.reset();
-        }
-    }
-
-    /**
-     * Set the local transform of the specified spatial to the value saved by
-     * {@link #saveLocalTransform(com.jme3.scene.Spatial)}.
-     *
-     * @param sp which spatial (not null)
-     */
-    private void restoreLocalTransform(Spatial sp) {
-        Transform transform = originalTransforms.get(sp);
-        transform = transform.clone();
-        sp.setLocalTransform(transform);
-    }
-
-    /**
-     * Copy the local transform of the specified spatial for later use by
-     * {@link #restoreLocalTransform(com.jme3.scene.Spatial)}.
-     *
-     * @param sp which spatial (not null)
-     */
-    private void saveLocalTransform(Spatial sp) {
-        Transform transform = sp.getLocalTransform();
-        transform = transform.clone();
-        originalTransforms.put(sp, transform);
-    }
-
-    /**
-     * Save (in memory) a copy of all inverse local rotations for the bind pose.
-     */
-    private void saveInverseBindPose() {
-        resetSkeleton();
-        inverseBindPose.clear();
-
-        Skeleton skeleton = getSkeleton();
-        int boneCount = skeleton.getBoneCount();
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Bone bone = skeleton.getBone(boneIndex);
-            /*
-             * Save the bone's local orientation (relative to its parent,
-             * or if it's a root bone, relative to the model).
-             */
-            Quaternion local = bone.getLocalRotation();
-            Quaternion inverse = local.inverse();
-            inverseBindPose.add(inverse);
-        }
-    }
-
-    /**
      * Replace the model in the scene.
      *
      * @param assetPath (not null)
      * @return the loaded spatial, or null if not found
      */
     private void setModel(Spatial loaded) {
-        /*
-         * Detach the old spatial (if any) from the scene.
-         */
-        if (spatial != null) {
-            rootNode.detachChild(spatial);
-            channel = null;
-        }
-
-        spatial = loaded;
-        skeletonDebugControl = null;
-        prepareForEditing();
-        loadBindPose();
-        selectBone(HudState.noBone);
-    }
-
-    /**
-     * Update the attachments node.
-     */
-    private void updateAttachmentsNode() {
-        Node newNode = null;
-        if (isBoneSelected()) {
-            SkeletonControl control = getSkeletonControl();
-            Node parent = attachmentsParent(control);
-            int beforeSize = parent.getChildren().size();
-
-            newNode = control.getAttachmentsNode(selectedBoneName);
-
-            int afterSize = parent.getChildren().size();
-            if (afterSize != beforeSize) {
-                assert afterSize == beforeSize + 1;
-                spatialsAdded.add(newNode);
-            }
-        }
-        if (newNode != attachmentsNode) {
-            if (attachmentsNode != null) {
-                attachmentsNode.removeControl(AxesControl.class);
-            }
-            if (newNode != null) {
-                AxesControl axesControl = new AxesControl(assetManager, 1f, 1f);
-                newNode.addControl(axesControl);
-            }
-            attachmentsNode = newNode;
-        }
     }
 }
