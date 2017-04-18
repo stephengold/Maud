@@ -53,11 +53,11 @@ import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
 import jme3utilities.SimpleAppState;
-import jme3utilities.math.MyMath;
 import jme3utilities.ui.ActionApplication;
 
 /**
- * Model state for the Maud application.
+ * A simple app state to manage the MVC model of the loaded CG model in the Maud
+ * application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -74,25 +74,21 @@ class ModelState extends SimpleAppState {
     // fields
 
     /**
-     * animation speed (0 &rarr; paused, 1 &rarr; normal speed)
+     * track unsaved changes to the cgModel
      */
-    private float animationSpeed = 0f;
+    private boolean pristine = true;
     /**
-     * animation time (in seconds, &ge;0)
-     */
-    private float animationTime = 0f;
-    /**
-     * user transforms for the current (temporary) pose
-     */
-    final private List<Transform> currentPose = new ArrayList<>(30);
-    /**
-     * the model's root spatial
+     * the root spatial in the MVC model's copy of the CG model
      */
     private Spatial rootSpatial = null;
     /**
      * asset path of the loaded model, less extension
      */
     private String loadedModelAssetPath = null;
+    /**
+     * extension of the loaded model
+     */
+    private String loadedModelExtension = null;
     /**
      * filesystem path of the loaded model, less extension
      */
@@ -101,14 +97,6 @@ class ModelState extends SimpleAppState {
      * name of the loaded model
      */
     private String modelName = null;
-    /**
-     * name of the selected animation or bindPoseName
-     */
-    private String selectedAnimationName = null;
-    /**
-     * name of the selected bone or noBone
-     */
-    private String selectedBoneName = null;
     // *************************************************************************
     // constructors
 
@@ -145,46 +133,43 @@ class ModelState extends SimpleAppState {
 
         Animation pose = captureCurrentPose(animationName);
         control.addAnim(pose);
+        pristine = false;
     }
 
     /**
-     * Calculate rotation angles of the selected bone in the current pose.
+     * Delete the loaded animation. If successful, the caller must immediately
+     * select a new animation.
      *
-     * @param storeAngles (&ge;3 elements, modified unless null)
+     * @return true if successful, otherwise false
      */
-    void boneAngles(float[] storeAngles) {
-        int boneIndex = MySkeleton.findBoneIndex(rootSpatial, selectedBoneName);
-        Transform transform = currentPose.get(boneIndex);
-        Quaternion rotation = transform.getRotation(null);
-        rotation.toAngles(storeAngles);
-    }
-
-    /**
-     * Delete the loaded animation. The caller must immediately select a new
-     * animation.
-     */
-    void deleteAnimation() {
-        if (isBindPoseSelected()) {
+    boolean deleteAnimation() {
+        if (Maud.gui.animation.isBindPoseLoaded()) {
             logger.log(Level.WARNING, "cannot delete bind pose");
-            return;
+            return false;
         }
         AnimControl animControl = getAnimControl();
-        Animation animation = getAnimation();
+        Animation animation = getLoadedAnimation();
         animControl.removeAnim(animation);
+        pristine = false;
+
+        return true;
     }
 
     /**
      * Access the loaded animation.
      *
-     * @return the pre-existing instance, or null if none or in bind pose
+     * @return the pre-existing instance, or null if in bind pose
      */
-    Animation getAnimation() {
-        if (isBindPoseSelected()) {
-            return null;
+    Animation getLoadedAnimation() {
+        Animation result;
+        if (Maud.gui.animation.isBindPoseLoaded()) {
+            result = null;
         } else {
-            Animation animation = getAnimation(selectedAnimationName);
-            return animation;
+            String name = Maud.gui.animation.getName();
+            result = getAnimation(name);
         }
+
+        return result;
     }
 
     /**
@@ -200,16 +185,6 @@ class ModelState extends SimpleAppState {
         Animation animation = animControl.getAnim(name);
 
         return animation;
-    }
-
-    /**
-     * Read the name of the loaded animation.
-     *
-     * @return the name, or bindPoseName if in bind pose (not null)
-     */
-    String getAnimationName() {
-        assert selectedAnimationName != null;
-        return selectedAnimationName;
     }
 
     /**
@@ -233,7 +208,7 @@ class ModelState extends SimpleAppState {
     /**
      * Read the asset path of the loaded model, less extension.
      *
-     * @return name (not null)
+     * @return path, or "" if not known (not null)
      */
     String getAssetPath() {
         assert loadedModelAssetPath != null;
@@ -246,12 +221,22 @@ class ModelState extends SimpleAppState {
      * @return the pre-existing instance, or null if none selected
      */
     Bone getBone() {
-        if (!isBoneSelected()) {
-            return null;
+        Bone bone;
+        if (!Maud.gui.bone.isSelected()) {
+            bone = null;
         } else {
-            Bone bone = MySkeleton.getBone(rootSpatial, selectedBoneName);
-            return bone;
+            int index = Maud.gui.bone.getSelectedIndex();
+            bone = getSkeleton().getBone(index);
         }
+
+        return bone;
+    }
+
+    int getBoneCount() {
+        Skeleton skeleton = getSkeleton();
+        int boneCount = skeleton.getBoneCount();
+
+        return boneCount;
     }
 
     /**
@@ -260,45 +245,42 @@ class ModelState extends SimpleAppState {
      * @return the name, or noBone if none selected (not null)
      */
     String getBoneName() {
-        String result = selectedBoneName;
-        assert result != null;
-        return result;
-    }
-
-    /**
-     * Read the duration of the loaded animation.
-     *
-     * @return time (in seconds, &ge;0)
-     */
-    float getDuration() {
-        float result = getDuration(selectedAnimationName);
-        assert result >= 0f : result;
-        return result;
-    }
-
-    /**
-     * Read the duration of a named animation.
-     *
-     * @param name
-     * @return time (in seconds, &ge;0)
-     */
-    float getDuration(String name) {
-        assert name != null;
-
-        if (name.equals(HudState.bindPoseName)) {
-            return 0f;
+        Bone bone = getBone();
+        String name;
+        if (bone == null) {
+            name = DddGui.noBone;
         } else {
-            Animation animation = getAnimation(name);
-            float result = animation.getLength();
-            assert result >= 0f : result;
-            return result;
+            name = bone.getName();
         }
+
+        assert name != null;
+        return name;
+    }
+
+    /**
+     * Read the extension of the loaded model.
+     *
+     * @return extension (not null)
+     */
+    String getExtension() {
+        assert loadedModelExtension != null;
+        return loadedModelExtension;
+    }
+
+    /**
+     * Read the filesystem path of the loaded model, less extension.
+     *
+     * @return path, or "" if not known (not null)
+     */
+    String getFilePath() {
+        assert loadedModelFilePath != null;
+        return loadedModelFilePath;
     }
 
     /**
      * Read the name of the loaded model.
      *
-     * @return name (not null)
+     * @return name, or "" if not known (not null)
      */
     String getName() {
         assert modelName != null;
@@ -317,43 +299,13 @@ class ModelState extends SimpleAppState {
     }
 
     /**
-     * Access the root spatial of the model.
-     *
-     * @return the pre-existing instance (not null)
-     */
-    Spatial getSpatial() {
-        assert rootSpatial != null;
-        return rootSpatial;
-    }
-
-    /**
-     * Read the animation speed.
-     *
-     * @return relative speed (&ge;0, 1 &rarr; normal)
-     */
-    float getSpeed() {
-        assert animationSpeed >= 0f : animationSpeed;
-        return animationSpeed;
-    }
-
-    /**
-     * Read the animation time.
-     *
-     * @return seconds since start (&ge;0)
-     */
-    float getTime() {
-        assert animationTime >= 0f : animationTime;
-        return animationTime;
-    }
-
-    /**
      * Test whether the skeleton contains the named bone.
      *
      * @param name (not null)
      * @return true if found or noBone, otherwise false
      */
     boolean hasBone(String name) {
-        if (name.equals(HudState.noBone)) {
+        if (name.equals(DddGui.noBone)) {
             return true;
         }
         Bone bone = MySkeleton.getBone(rootSpatial, name);
@@ -370,7 +322,7 @@ class ModelState extends SimpleAppState {
      * @return true if a bone is selected and it has a track, otherwise false
      */
     boolean hasTrack() {
-        BoneTrack track = getTrack();
+        BoneTrack track = findTrack();
         if (track == null) {
             return false;
         } else {
@@ -379,25 +331,20 @@ class ModelState extends SimpleAppState {
     }
 
     /**
-     * Test whether an animation is running.
+     * Test whether the named bone is a leaf bone, with no children.
      *
-     * @return true if an animation is running, false otherwise
+     * @return true for a leaf bone, otherwise false
      */
-    boolean isAnimationRunning() {
-        if (animationSpeed == 0f) {
+    boolean isLeafBone(String boneName) {
+        if (boneName.equals(DddGui.noBone)) {
             return false;
-        } else {
-            return true;
         }
-    }
-
-    /**
-     * Test whether the bind pose is selected.
-     *
-     * @return true if it's selected, false if an animation is selected
-     */
-    boolean isBindPoseSelected() {
-        if (selectedAnimationName.equals(HudState.bindPoseName)) {
+        Bone bone = MySkeleton.getBone(rootSpatial, boneName);
+        if (bone == null) {
+            return false;
+        }
+        ArrayList<Bone> children = bone.getChildren();
+        if (children.isEmpty()) {
             return true;
         } else {
             return false;
@@ -405,46 +352,42 @@ class ModelState extends SimpleAppState {
     }
 
     /**
-     * Test whether a bone is selected.
+     * Test whether there are unsaved changes.
      *
-     * @return true if one is selected, false if none is selected
+     * @return true if no unsaved changes, false if there are some
      */
-    boolean isBoneSelected() {
-        if (selectedBoneName.equals(HudState.noBone)) {
-            return false;
-        } else {
-            return true;
-        }
+    boolean isPristine() {
+        return pristine;
     }
 
     /**
-     * List the names of all known animations and poses for the loaded model.
+     * Enumerate all known animations and poses for the loaded model.
      *
      * @return a new collection
      */
     Collection<String> listAnimationNames() {
         Collection<String> names = MyAnimation.listAnimations(rootSpatial);
-        names.add(HudState.bindPoseName);
+        names.add(DddGui.bindPoseName);
 
         return names;
     }
 
     /**
-     * List the names of all bones in the loaded model.
+     * Enumerate all bones in the loaded model.
      *
      * @return a new list of names
      */
     List<String> listBoneNames() {
         List<String> boneNames = MySkeleton.listBones(rootSpatial);
         boneNames.remove("");
-        boneNames.add(HudState.noBone);
+        boneNames.add(DddGui.noBone);
 
         return boneNames;
     }
 
     /**
-     * List all bones in the loaded model whose names begin with the specified
-     * prefix.
+     * Enumerate all bones in the loaded model having names that start with the
+     * specified prefix.
      *
      * @return a new list of names
      */
@@ -460,38 +403,71 @@ class ModelState extends SimpleAppState {
     }
 
     /**
-     * List all keyframes of the selected bone in the loaded animation.
+     * Enumerate all children of the named bone.
+     *
+     * @return a new list of names
+     */
+    List<String> listChildBoneNames(String parentName) {
+        Skeleton skeleton = getSkeleton();
+        Bone parent = skeleton.getBone(parentName);
+        List<Bone> children = parent.getChildren();
+        List<String> boneNames = new ArrayList<>(children.size());
+        for (Bone bone : children) {
+            String name = bone.getName();
+            boneNames.add(name);
+        }
+        boneNames.remove("");
+
+        return boneNames;
+    }
+
+    /**
+     * Enumerate root bones in the loaded model.
+     *
+     * @return a new list of names
+     */
+    List<String> listRootBoneNames() {
+        Skeleton skeleton = getSkeleton();
+        Bone[] roots = skeleton.getRoots();
+        List<String> boneNames = new ArrayList<>(5);
+        for (Bone b : roots) {
+            String name = b.getName();
+            boneNames.add(name);
+        }
+        boneNames.remove("");
+
+        return boneNames;
+    }
+
+    /**
+     * Enumerate all keyframes of the selected bone in the loaded animation.
      *
      * @return a new list, or null if no options
      */
     List<String> listKeyframes() {
-        if (isBindPoseSelected()) {
+        List<String> result = null;
+        if (Maud.gui.animation.isBindPoseLoaded()) {
             logger.log(Level.INFO, "No animation is selected.");
-            return null;
-        }
-        if (!isBoneSelected()) {
+        } else if (!Maud.gui.bone.isSelected()) {
             logger.log(Level.INFO, "No bone is selected.");
-            return null;
-        }
-        if (!isTrackSelected()) {
+        } else if (!isTrackSelected()) {
             logger.log(Level.INFO, "No track is selected.");
-            return null;
-        }
+        } else {
+            BoneTrack track = findTrack();
+            float[] keyframes = track.getTimes();
 
-        BoneTrack track = getTrack();
-        float[] keyframes = track.getTimes();
-
-        List<String> result = new ArrayList<>(20);
-        for (float keyframe : keyframes) {
-            String menuItem = String.format("%.3f", keyframe);
-            result.add(menuItem);
+            result = new ArrayList<>(20);
+            for (float keyframe : keyframes) {
+                String menuItem = String.format("%.3f", keyframe);
+                result.add(menuItem);
+            }
         }
 
         return result;
     }
 
     /**
-     * List all meshes in the loaded model.
+     * Enumerate all meshes in the loaded model.
      *
      * @return a new list
      */
@@ -511,12 +487,12 @@ class ModelState extends SimpleAppState {
     }
 
     /**
-     * Unload the current model, if any, and load a new one.
+     * Unload the current model, if any, and load the named one.
      *
      * @param name name of model to load (not null)
      * @return true if successful, otherwise false
      */
-    boolean load(String name) {
+    boolean loadModelNamed(String name) {
         assert isInitialized();
         assert name != null;
 
@@ -533,74 +509,19 @@ class ModelState extends SimpleAppState {
         if (loaded == null) {
             return false;
         } else {
-            modelName = name;
+            pristine = true;
             rootSpatial = loaded;
 
             Spatial viewClone = loadModelFromAsset(assetPath, true);
             assert viewClone != null;
             Maud.viewState.setModel(viewClone);
 
-            loadBindPose();
-            selectBone(HudState.noBone);
+            modelName = name;
+            Maud.gui.animation.loadBindPose();
+            selectBone(DddGui.noBone);
 
             return true;
         }
-    }
-
-    /**
-     * Load an animation (not bind pose) and set the playback speed.
-     *
-     * @para name name of animation
-     * @param speed (&ge;0)
-     */
-    void loadAnimation(String name, float speed) {
-        assert name != null;
-        assert !name.equals(HudState.bindPoseName);
-        assert speed >= 0f : speed;
-
-        selectedAnimationName = name;
-        animationTime = 0f;
-        animationSpeed = speed;
-        poseSkeleton();
-    }
-
-    /**
-     * Load the bind pose.
-     */
-    void loadBindPose() {
-        selectedAnimationName = HudState.bindPoseName;
-        animationTime = 0f;
-        animationSpeed = 0f;
-
-        Skeleton skeleton = getSkeleton();
-        int boneCount = skeleton.getBoneCount();
-        currentPose.clear();
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Transform transform = new Transform();
-            currentPose.add(transform);
-        }
-
-        Maud.viewState.poseSkeleton(currentPose);
-    }
-
-    /**
-     * Pose the skeleton to current animation or pose.
-     */
-    void poseSkeleton() {
-        Animation animation = getAnimation();
-        Skeleton skeleton = getSkeleton();
-        int boneCount = skeleton.getBoneCount();
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Transform transform = currentPose.get(boneIndex);
-            BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
-            if (track == null) {
-                transform.loadIdentity();
-            } else {
-                Util.boneTransform(track, animationTime, transform);
-            }
-        }
-
-        Maud.viewState.poseSkeleton(currentPose);
     }
 
     /**
@@ -611,7 +532,7 @@ class ModelState extends SimpleAppState {
      */
     boolean renameAnimation(String newName) {
         assert newName != null;
-        if (newName.equals(HudState.bindPoseName)
+        if (newName.equals(DddGui.bindPoseName)
                 || newName.isEmpty()) {
             logger.log(Level.WARNING, "Rename failed: {0} is a reserved name.",
                     MyString.quote(newName));
@@ -623,14 +544,13 @@ class ModelState extends SimpleAppState {
                     MyString.quote(newName));
             return false;
         }
-        String oldName = getAnimationName();
-        if (oldName.equals(HudState.bindPoseName)) {
+        if (Maud.gui.animation.isBindPoseLoaded()) {
             logger.log(Level.WARNING,
                     "Rename failed: cannot rename bind pose.");
             return false;
         }
 
-        Animation oldAnimation = getAnimation();
+        Animation oldAnimation = getLoadedAnimation();
         float length = oldAnimation.getLength();
         Animation newAnimation = new Animation(newName, length);
         for (Track track : oldAnimation.getTracks()) {
@@ -640,8 +560,9 @@ class ModelState extends SimpleAppState {
         AnimControl animControl = getAnimControl();
         animControl.removeAnim(oldAnimation);
         animControl.addAnim(newAnimation);
+        pristine = false;
 
-        selectedAnimationName = newName;
+        Maud.gui.animation.rename(newName);
 
         return true;
     }
@@ -654,7 +575,12 @@ class ModelState extends SimpleAppState {
      */
     boolean renameBone(String newName) {
         assert newName != null;
-        if (newName.equals(HudState.noBone) || newName.isEmpty()) {
+        if (!Maud.gui.bone.isSelected()) {
+            logger.log(Level.WARNING, "Rename failed: no bone selected.",
+                    MyString.quote(newName));
+            return false;
+
+        } else if (newName.equals(DddGui.noBone) || newName.isEmpty()) {
             logger.log(Level.WARNING, "Rename failed: {0} is a reserved name.",
                     MyString.quote(newName));
             return false;
@@ -665,17 +591,10 @@ class ModelState extends SimpleAppState {
                     MyString.quote(newName));
             return false;
         }
-        String oldName = getBoneName();
-        if (oldName.equals(HudState.noBone)) {
-            logger.log(Level.WARNING, "Rename failed: no bone selected.",
-                    MyString.quote(newName));
-            return false;
-
-        }
 
         Bone bone = getBone();
         boolean success = MySkeleton.setName(bone, newName);
-        selectedBoneName = newName;
+        pristine = false;
 
         return success;
     }
@@ -693,15 +612,11 @@ class ModelState extends SimpleAppState {
             return;
         }
 
-        selectedBoneName = name;
-        /*
-         * Update the view.
-         */
-        if (name.equals(HudState.noBone)) {
-            Maud.viewState.selectNoBone();
+        if (name.equals(DddGui.noBone)) {
+            Maud.gui.bone.deselect();
         } else {
             int boneIndex = MySkeleton.findBoneIndex(rootSpatial, name);
-            Maud.viewState.selectBone(boneIndex);
+            Maud.gui.bone.setSelectedIndex(boneIndex);
         }
     }
 
@@ -716,7 +631,7 @@ class ModelState extends SimpleAppState {
 
         float newTime = Float.valueOf(name);
         // TODO validate
-        animationTime = newTime;
+        Maud.gui.animation.setTime(newTime);
     }
 
     /**
@@ -724,27 +639,32 @@ class ModelState extends SimpleAppState {
      */
     void setBoneRotation(Quaternion rotation) {
         assert rotation != null;
-        assert isBoneSelected();
+        assert Maud.gui.bone.isSelected();
 
-        int boneIndex = MySkeleton.findBoneIndex(rootSpatial, selectedBoneName);
-        Transform boneTransform = currentPose.get(boneIndex);
-        boneTransform.setRotation(rotation);
-
-        Maud.viewState.poseSkeleton(currentPose);
+        int boneIndex = Maud.gui.bone.getSelectedIndex();
+        Maud.gui.animation.setBoneRotation(boneIndex, rotation);
     }
 
     /**
-     * Alter the animation speed. No effect in bind pose or if the loaded
-     * animation has zero duration.
-     *
-     * @param speed relative speed (&ge;0, 1 &rarr; normal)
+     * Alter the user scale of the selected bone.
      */
-    void setSpeed(float speed) {
-        assert speed >= 0f : speed;
+    void setBoneScale(Vector3f scale) {
+        assert scale != null;
+        assert Maud.gui.bone.isSelected();
 
-        if (!isBindPoseSelected() && getDuration() > 0f) {
-            animationSpeed = speed;
-        }
+        int boneIndex = Maud.gui.bone.getSelectedIndex();
+        Maud.gui.animation.setBoneScale(boneIndex, scale);
+    }
+
+    /**
+     * Alter the user translation of the selected bone.
+     */
+    void setBoneTranslation(Vector3f translation) {
+        assert translation != null;
+        assert Maud.gui.bone.isSelected();
+
+        int boneIndex = Maud.gui.bone.getSelectedIndex();
+        Maud.gui.animation.setBoneTranslation(boneIndex, translation);
     }
 
     /**
@@ -767,6 +687,7 @@ class ModelState extends SimpleAppState {
             success = false;
         }
         if (success) {
+            pristine = true;
             logger.log(Level.INFO, "Wrote model to file {0}",
                     MyString.quote(filePath));
         } else {
@@ -776,25 +697,6 @@ class ModelState extends SimpleAppState {
         }
 
         return success;
-    }
-    // *************************************************************************
-    // SimpleAppState methods
-
-    /**
-     * Callback to update this state prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
-     */
-    @Override
-    public void update(float elapsedTime) {
-        float duration = getDuration();
-        if (duration != 0f && animationSpeed != 0f) {
-            float newTime = animationTime + animationSpeed * elapsedTime;
-            animationTime = MyMath.modulo(newTime, duration);
-            poseSkeleton();
-        }
     }
     // *************************************************************************
     // private methods
@@ -823,7 +725,8 @@ class ModelState extends SimpleAppState {
          */
         int numBones = skeleton.getBoneCount();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            Transform transform = currentPose.get(boneIndex);
+            Transform transform = Maud.gui.animation.copyBoneTransform(
+                    boneIndex);
             Vector3f translation = transform.getTranslation();
             Quaternion rotation = transform.getRotation();
             Vector3f scale = transform.getScale();
@@ -841,32 +744,18 @@ class ModelState extends SimpleAppState {
      * @return the pre-existing instance, or null if none
      */
     private BoneTrack findTrack() {
-        if (!isBoneSelected()) {
+        if (!Maud.gui.bone.isSelected()) {
             return null;
         }
-        if (isBindPoseSelected()) {
+        if (Maud.gui.animation.isBindPoseLoaded()) {
             return null;
         }
 
-        int boneIndex = MySkeleton.findBoneIndex(rootSpatial, selectedBoneName);
-        Animation animation = getAnimation();
+        Animation animation = getLoadedAnimation();
+        int boneIndex = Maud.gui.bone.getSelectedIndex();
         BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
 
         return track;
-    }
-
-    /**
-     * Access the selected BoneTrack.
-     *
-     * @return the pre-existing instance, or null if no track is selected
-     */
-    private BoneTrack getTrack() {
-        if (isBoneSelected()) {
-            BoneTrack result = findTrack();
-            return result;
-        }
-        assert !isTrackSelected();
-        return null;
     }
 
     /**
@@ -875,8 +764,8 @@ class ModelState extends SimpleAppState {
      * @return true if one is selected, false if none is selected
      */
     private boolean isTrackSelected() {
-        if (isBoneSelected()) {
-            if (isBindPoseSelected()) {
+        if (Maud.gui.bone.isSelected()) {
+            if (Maud.gui.animation.isBindPoseLoaded()) {
                 return false;
             }
             Track track = findTrack();
@@ -935,25 +824,18 @@ class ModelState extends SimpleAppState {
             logger.log(Level.INFO, "Loaded model from asset {0}",
                     MyString.quote(assetPath));
 
-            String extension = key.getExtension();
-            int extLength = extension.length();
+            loadedModelExtension = key.getExtension();
+            int extLength = loadedModelExtension.length();
             if (extLength == 0) {
                 loadedModelAssetPath = assetPath;
             } else {
                 int pathLength = assetPath.length() - extLength - 1;
                 loadedModelAssetPath = assetPath.substring(0, pathLength);
             }
+            loadedModelFilePath = "";
+            modelName = loaded.getName();
         }
 
         return loaded;
-    }
-
-    /**
-     * Replace the model in the scene.
-     *
-     * @param assetPath (not null)
-     * @return the loaded spatial, or null if not found
-     */
-    private void setModel(Spatial loaded) {
     }
 }

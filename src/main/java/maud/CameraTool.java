@@ -27,53 +27,38 @@ package maud;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
 import com.jme3.input.MouseInput;
-import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Spatial;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
-import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
-import jme3utilities.ui.ActionAppState;
+import jme3utilities.nifty.BasicScreenController;
 
 /**
- * Action app state to manage the camera for the Maud application.
+ * The controller for the "Camera Tool" window in Maud's "3D View" screen.
  * <p>
  * The camera is primarily controlled by turning the scroll wheel and dragging
  * with the middle mouse button (MMB). There are two modes: "orbit" mode in
- * which the camera stays pointed at a 3D cursor, and "fly" mode in which the
- * camera turns freely. The 3D cursor is controlled by the left mouse button
- * (LMB).
+ * which the camera stays pointed at the 3D cursor, and "fly" mode in which the
+ * camera turns freely.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CameraState
-        extends ActionAppState
-        implements ActionListener, AnalogListener {
+class CameraTool
+        extends WindowController
+        implements AnalogListener {
     // *************************************************************************
     // constants and loggers
 
-    /**
-     * angular size of the 3D cursor (in arbitrary units, &gt;0)
-     */
-    final private static float cursorSize = 0.2f;
     /**
      * rate to dolly in/out (orbit mode only, percentage points per wheel notch)
      */
@@ -103,7 +88,7 @@ class CameraState
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            CameraState.class.getName());
+            CameraTool.class.getName());
     /**
      * name of the signal which controls camera movement
      */
@@ -132,18 +117,6 @@ class CameraState
      * analog event string to move up
      */
     final private static String moveUpEvent = "pov up";
-    /**
-     * name of signal which rotates the model counter-clockwise around +Y
-     */
-    final public static String modelCCWSignalName = "modelLeft";
-    /**
-     * name of signal which rotates the model clockwise around +Y
-     */
-    final public static String modelCWSignalName = "modelRight";
-    /**
-     * action string to warp the 3D cursor
-     */
-    final private static String warpCursorAction = "warp cursor";
     // *************************************************************************
     // fields
 
@@ -151,10 +124,6 @@ class CameraState
      * true &rarr; orbit mode, false &rarr; fly mode
      */
     private boolean orbitMode = false;
-    /**
-     * true &rarr; show the HUD when this state is enabled
-     */
-    private boolean showHud = true;
     /**
      * azimuth angle of the camera as seen from the 3D cursor (orbit mode only,
      * in radians east of north)
@@ -184,31 +153,49 @@ class CameraState
      * units, &gt;0)
      */
     private float range = maxRange;
-    /**
-     * indicator for the 3D cursor, set by
-     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
-     */
-    private Spatial cursor = null;
     // *************************************************************************
-    // constructor
+    // constructors
 
     /**
-     * Instantiate a disabled state which will be enabled for orbit mode during
-     * initialization.
+     * Instantiate an uninitialized controller.
+     *
+     * @param screenController
      */
-    CameraState() {
-        super(false);
+    CameraTool(BasicScreenController screenController) {
+        super(screenController, "cameraTool", false);
     }
     // *************************************************************************
     // new methods exposed
 
-    void cursorSetEnabled(boolean enable) {
-        boolean active = (cursor.getParent() != null);
-        if (active && !enable) {
-            rootNode.detachChild(cursor);
-        } else if (!active && enable) {
-            rootNode.attachChild(cursor);
-        }
+    /**
+     * In orbit mode, re-orient the camera to center the 3D cursor in the view
+     * port.
+     * <p>
+     * This method may dolly the camera in or out in order to clamp its distance
+     * from the 3D cursor.
+     */
+    void aim() {
+        assert isOrbitMode();
+        /*
+         * Calculate the camera's offset relative to the 3D cursor.
+         */
+        Vector3f location = cam.getLocation().clone();
+        Vector3f cursorLocation = Maud.gui.cursor.copyWorldLocation();
+        Vector3f offset = location.subtract(cursorLocation);
+        /*
+         * Convert the offset to spherical coordinates.
+         */
+        elevationAngle = MyVector3f.altitude(offset);
+        azimuthAngle = MyVector3f.azimuth(offset);
+        range = offset.length();
+        /*
+         * Limit the range and elevation angle.
+         */
+        range = FastMath.clamp(range, minRange, maxRange);
+        elevationAngle = FastMath.clamp(elevationAngle, minElevationAngle,
+                maxElevationAngle);
+
+        updateOrbit();
     }
 
     /**
@@ -223,28 +210,50 @@ class CameraState
     /**
      * Alter the mode of this state.
      *
-     * @param newValue true &rarr; orbit mode, false &rarr; fly mode
+     * @param newSetting true &rarr; orbit mode, false &rarr; fly mode
      */
-    void setOrbitMode(boolean newValue) {
-        if (!orbitMode && newValue) {
+    void setMode(String newMode) {
+        boolean goOrbit;
+        switch (newMode) {
+            case "fly":
+                goOrbit = false;
+                break;
+            case "orbit":
+                goOrbit = true;
+                break;
+            default:
+                logger.log(Level.SEVERE, "newMode={0}",
+                        MyString.quote(newMode));
+                throw new IllegalArgumentException(
+                        "newMode must be \"fly\" or \"orbit\"");
+        }
+
+        if (!orbitMode && goOrbit) {
             /*
              * When switching from fly mode to orbit mode, re-aim
              * the camera at the 3D cursor.
              */
             orbitMode = true;
             aim();
+        } else if (orbitMode && !goOrbit) {
+            orbitMode = false;
         }
-        orbitMode = newValue;
+        update();
     }
 
     /**
-     * Toggle the visibility of the HUD.
+     *
      */
-    void toggleHud() {
-        showHud = !showHud;
-        if (isEnabled()) {
-            Maud.hudState.setEnabled(showHud);
+    void update() {
+        if (!orbitMode) {
+            /*
+             * Calculate the cursor's distance from the camera.
+             */
+            Vector3f cameraLocation = cam.getLocation();
+            Vector3f cursorLocation = Maud.gui.cursor.copyWorldLocation();
+            range = cameraLocation.distance(cursorLocation);
         }
+        Maud.gui.cursor.update();
     }
 
     /**
@@ -263,124 +272,6 @@ class CameraState
                 direction.normalizeLocal();
             }
             MyCamera.look(cam, direction);
-        }
-    }
-    // *************************************************************************
-    // ActionAppState methods
-
-    /**
-     * Initialize this app state on the 1st update after it gets attached.
-     *
-     * @param sm application's state manager (not null)
-     * @param app application which owns this state (not null)
-     */
-    @Override
-    public void initialize(AppStateManager sm, Application app) {
-        super.initialize(sm, app);
-        /**
-         * Create a white 3D cursor at the origin.
-         */
-        String assetPath = "Models/indicators/3d cursor/3d cursor.blend";
-        cursor = assetManager.loadModel(assetPath);
-        Material white = MyAsset.createUnshadedMaterial(assetManager,
-                new ColorRGBA(1f, 1f, 1f, 1f));
-        cursor.setMaterial(white);
-
-        signals.add(cameraSignalName);
-        signals.add(modelCCWSignalName);
-        signals.add(modelCWSignalName);
-
-        assert !isEnabled();
-        setEnabled(true);
-        setOrbitMode(true);
-    }
-
-    /**
-     * Enable or disable the functionality of this state.
-     * <p>
-     * The flyby camera provided by SimpleApplication should be disabled before
-     * enabling any instance of this state.
-     *
-     * @param newSetting true &rarr; enable, false &rarr; disable
-     */
-    @Override
-    public void setEnabled(boolean newSetting) {
-        if (!isInitialized()) {
-            return;
-        }
-        if (isEnabled() && !newSetting) {
-            Maud.hudState.setEnabled(false);
-            unmapButton();
-            inputManager.deleteMapping(warpCursorAction);
-
-        } else if (!isEnabled() && newSetting) {
-            setFrustum();
-            Maud.hudState.setEnabled(showHud);
-            mapButton();
-            /*
-             * Clicking the left mouse button warps the 3D cursor.
-             */
-            MouseButtonTrigger left = new MouseButtonTrigger(
-                    MouseInput.BUTTON_LEFT);
-            inputManager.addMapping(warpCursorAction, left);
-            inputManager.addListener(this, warpCursorAction);
-        }
-
-        super.setEnabled(newSetting);
-    }
-
-    /**
-     * Callback to update this state prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
-     */
-    @Override
-    public void update(float tpf) {
-        super.update(tpf);
-
-        if (!orbitMode) {
-            /*
-             * Calculate the 3D cursor's distance from the camera.
-             */
-            Vector3f cameraLocation = cam.getLocation();
-            Vector3f cursorLocation = MySpatial.getWorldLocation(cursor);
-            range = cameraLocation.distance(cursorLocation);
-        }
-        /*
-         * Resize the 3D cursor based on its distance from the camera.
-         */
-        float newScale = cursorSize * range;
-        MySpatial.setWorldScale(cursor, newScale);
-        /*
-         * Rotate the model around the Y-axis.
-         */
-        if (signals.test(modelCCWSignalName)) {
-            Maud.viewState.rotateY(tpf);
-        }
-        if (signals.test(modelCWSignalName)) {
-            Maud.viewState.rotateY(-tpf);
-        }
-    }
-    // *************************************************************************
-    // ActionListener methods
-
-    /**
-     * Process a mouse button action.
-     *
-     * @param actionString textual description of the action (not null)
-     * @param ongoing true if the action is ongoing, otherwise false
-     * @param tpf time interval between render passes (in seconds, &ge;0)
-     */
-    @Override
-    public void onAction(String actionString, boolean ongoing, float tpf) {
-        logger.log(Level.INFO, "Got action {0}", MyString.quote(actionString));
-
-        if (ongoing && actionString.equals(warpCursorAction)) {
-            warpCursor();
-            if (isOrbitMode()) {
-                aim();
-            }
         }
     }
     // *************************************************************************
@@ -422,74 +313,28 @@ class CameraState
         }
     }
     // *************************************************************************
-    // private methods
+    // AppState methods
 
     /**
-     * In orbit mode, re-orient the camera to center the 3D cursor in the view
-     * port.
-     * <p>
-     * This method may dolly the camera in or out in order to clamp its distance
-     * from the 3D cursor.
-     */
-    private void aim() {
-        assert isOrbitMode();
-        /*
-         * Calculate the camera's offset relative to the 3D cursor.
-         */
-        Vector3f location = cam.getLocation().clone();
-        Vector3f cursorLocation = MySpatial.getWorldLocation(cursor);
-        Vector3f offset = location.subtract(cursorLocation);
-        /*
-         * Convert the offset to spherical coordinates.
-         */
-        elevationAngle = MyVector3f.altitude(offset);
-        azimuthAngle = MyVector3f.azimuth(offset);
-        range = offset.length();
-        /*
-         * Limit the range and elevation angle.
-         */
-        range = FastMath.clamp(range, minRange, maxRange);
-        elevationAngle = FastMath.clamp(elevationAngle, minElevationAngle,
-                maxElevationAngle);
-
-        updateOrbit();
-    }
-
-    /**
-     * For the specified camera ray, find the 1st point of contact on a triangle
-     * that faces the camera.
+     * Initialize this controller prior to its 1st update.
      *
-     * @param spatial (not null, unaffected)
-     * @param ray (not null, unaffected)
-     * @return a new vector in world coordinates, or null if none found
+     * @param stateManager (not null)
+     * @param application application which owns the window (not null)
      */
-    private Vector3f findContact(Spatial spatial, Ray ray) {
-        CollisionResults results = new CollisionResults();
-        spatial.collideWith(ray, results);
-        /*
-         * Collision results are sorted by increaing distance from the camera,
-         * so the first result is also the nearest one.
-         */
-        Vector3f cameraLocation = cam.getLocation();
-        for (int i = 0; i < results.size(); i++) {
-            /*
-             * Calculate the offset from the camera to the point of contact.
-             */
-            CollisionResult result = results.getCollision(i);
-            Vector3f contactPoint = result.getContactPoint();
-            Vector3f offset = contactPoint.subtract(cameraLocation);
-            /*
-             * If the dot product of the normal with the offset is negative,
-             * then the triangle faces the camera.  Return the point of contact.
-             */
-            Vector3f normal = result.getContactNormal();
-            float dotProduct = offset.dot(normal);
-            if (dotProduct < 0f) {
-                return contactPoint;
-            }
-        }
-        return null;
+    @Override
+    public void initialize(AppStateManager stateManager,
+            Application application) {
+        super.initialize(stateManager, application);
+        assert Maud.gui.cursor.isInitialized();
+
+        signals.add(cameraSignalName);
+        setFrustum();
+        mapButton();
+
+        setMode("orbit");
     }
+    // *************************************************************************
+    // private methods
 
     /**
      * Map the middle mouse button (MMB) and mouse wheel, which together control
@@ -560,7 +405,7 @@ class CameraState
      * cursor), negative to dolly in (forward or toward the 3D cursor)
      */
     private void moveBackward(float amount) {
-        if (Maud.hudState.isMouseInsideElement("hud")) {
+        if (Maud.gui.isMouseInsideElement("hud")) {
             /* not dragging */
             return;
         }
@@ -578,6 +423,7 @@ class CameraState
             location.addLocal(direction);
             cam.setLocation(location);
         }
+        update();
     }
 
     /**
@@ -607,6 +453,7 @@ class CameraState
             Quaternion newRotation = rotate.mult(oldRotation);
             cam.setRotation(newRotation);
         }
+        update();
     }
 
     /**
@@ -636,6 +483,7 @@ class CameraState
             Quaternion newRotation = rotate.mult(oldRotation);
             cam.setRotation(newRotation);
         }
+        update();
     }
 
     /**
@@ -672,7 +520,7 @@ class CameraState
         Vector3f direction = MyVector3f.fromAltAz(elevationAngle,
                 azimuthAngle);
         Vector3f offset = direction.mult(range);
-        Vector3f cursorLocation = cursor.getWorldTranslation();
+        Vector3f cursorLocation = Maud.gui.cursor.copyWorldLocation();
         Vector3f newLocation = cursorLocation.add(offset);
         cam.setLocation(newLocation);
 
@@ -680,36 +528,4 @@ class CameraState
         MyCamera.look(cam, direction);
     }
 
-    /**
-     * Attempt to warp the 3D cursor to the current screen coordinates of the
-     * mouse.
-     */
-    private void warpCursor() {
-        Vector2f mouseXY = inputManager.getCursorPosition();
-        /*
-         * Convert screen coordinates of mouse to a ray in world coordinates.
-         */
-        Vector3f vertex = cam.getWorldCoordinates(mouseXY, 0f);
-        Vector3f far = cam.getWorldCoordinates(mouseXY, 1f);
-        Vector3f direction = far.subtract(vertex);
-        direction.normalizeLocal();
-        Ray ray = new Ray(vertex, direction);
-        /*
-         * Trace the ray to the nearest geometry in the model.
-         */
-        Spatial model = Maud.modelState.getSpatial();
-        Vector3f contactPoint = findContact(model, ray);
-        if (contactPoint != null) {
-            MySpatial.setWorldLocation(cursor, contactPoint);
-            return;
-        }
-        /*
-         * The ray missed the model; trace it to the platform instead.
-         */
-        Spatial platform = MySpatial.findChild(rootNode, Maud.platformName);
-        contactPoint = findContact(platform, ray);
-        if (contactPoint != null) {
-            MySpatial.setWorldLocation(cursor, contactPoint);
-        }
-    }
 }

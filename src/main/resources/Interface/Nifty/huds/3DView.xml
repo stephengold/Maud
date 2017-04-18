@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (c) 2017, Stephen Gold
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ * Stephen Gold's name may not be used to endorse or promote products
+ derived from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL STEPHEN GOLD BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<!--
+Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
+-->
+<nifty xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
+    <screen id="3D View" controller="maud.DddGui">
+        <layer childLayout="vertical">
+            <panel id="menu bar"
+                   childLayout="horizontal"
+                   height="20">
+                <control name="button" id="3DViewButton" label="1] View"
+                         width="60">
+                    <interact onRelease="perform(open menu 3DView)"/>
+                </control>
+                <control name="button" id="CGModelButton" label="2] Model"
+                         width="70">
+                    <interact onRelease="perform(open menu CGModel)"/>
+                </control>
+                <control name="button" id="GeometryButton" label="3] Geometry"
+                         width="80">
+                    <interact onRelease="perform(open menu Geometry)"/>
+                </control>
+                <control name="button" id="AnimationButton" label="4] Animation"
+                         width="80">
+                    <interact onRelease="perform(open menu Animation)"/>
+                </control>
+                <control name="button" id="BoneButton" label="5] Bone"
+                         width="60">
+                    <interact onRelease="perform(open menu Bone)"/>
+                </control>
+                <control name="button" id="KeyframeButton" label="6] Keyframe"
+                         width="80">
+                    <interact onRelease="perform(open menu Keyframe)"/>
+                </control>
+                <control name="button" id="PhysicsButton" label="7] Physics"
+                         width="70">
+                    <interact onRelease="perform(open menu Physics)"/>
+                </control>
+                <control name="button" id="SettingsButton" label="8] Settings"
+                         width="70">
+                    <interact onRelease="perform(open menu Settings)"/>
+                </control>
+                <control name="button" id="HelpButton" label="9] Help"
+                         width="60">
+                    <interact onRelease="perform(open menu Help)"/>
+                </control>
+            </panel>
+            <panel/>
+            <panel id="status bar"
+                   backgroundColor="#ffff"
+                   childLayout="horizontal"
+                   height="20">
+                <control name="label" id="messageLabel"
+                         color="#000f"
+                         text="Welcome to Maud!"
+                         textHAlign="center"
+                         width="*"/>
+            </panel>
+        </layer>
+        <layer id="windowsLayer" childLayout="absolute">
+
+            <control name="window" id="animationTool" title="Animation Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="200px" width="200px" x="75" y="25">
+                <panel childLayout="vertical">
+                    <panel style="statusPanel">
+                        <control name="label" id="animationDescription"
+                                 textHAlign="left"/>
+                    </panel>
+                    <panel style="statusPanel">
+                        <control name="label" id="speedSliderStatus"
+                                 textHAlign="right"/>
+                    </panel>
+                    <control name="horizontalSlider" id="speedSlider"
+                             buttonStepSize="1"
+                             initial="1" max="3" min="0" stepSize="0.001"/>
+                    <panel style="statusPanel">
+                        <control name="label" id="trackTime"
+                                 textHAlign="right"/>
+                    </panel>
+                    <control name="horizontalSlider" id="timeSlider"
+                             buttonStepSize="1"
+                             initial="0" max="1" min="0" stepSize="0.001"/>
+                </panel>
+            </control>
+
+            <control name="window" id="axesTool" title="Axes Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="300px" width="200px" x="70" y="30">
+                <panel childLayout="vertical">
+                    <control name="radioButtonGroup" id="axesGroup"/>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="boneAxesRadioButton"
+                                 group="axesGroup"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="bone axes"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="modelAxesRadioButton"
+                                 group="axesGroup"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="model axes"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="worldAxesRadioButton"
+                                 group="axesGroup"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="world axes"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="hideAxesRadioButton"
+                                 group="axesGroup"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="hide"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="checkbox" id="axesDepthTestCheckBox"
+                                 checked="false" width="20"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="depth test"/>
+                    </panel>
+                    <panel style="statusPanel">
+                        <control name="label" id="axesLineWidthSliderStatus"/>
+                    </panel>
+                    <control name="horizontalSlider" id="axesLineWidthSlider"
+                             buttonStepSize="1"
+                             height="40"
+                             initial="4" max="7" min="1" stepSize="0.001"/>
+                    <panel style="statusPanel">
+                        <control name="label" id="axesLengthSliderStatus"/>
+                    </panel>
+                    <control name="horizontalSlider" id="axesLengthSlider"
+                             buttonStepSize="1"
+                             height="40"
+                             initial="1.2" max="2.5" min="-1.0" stepSize="0.001"/>
+                </panel>
+            </control>
+
+            <control name="window" id="boneTool" title="Bone Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="200px" width="200px" x="65" y="35">
+                <panel childLayout="vertical">
+                    <panel style="statusPanel">
+                        <control name="label" id="boneDescription1"
+                                 textHAlign="left"/>
+                    </panel>
+                    <panel style="statusPanel">
+                        <control name="label" id="boneDescription2"
+                                 textHAlign="left"/>
+                    </panel>
+                    <panel style="statusPanel">
+                        <control name="label" id="boneParentDescription"
+                                 textHAlign="left"/>
+                    </panel>
+                    <panel style="statusPanel">
+                        <control name="label" id="boneChildDescription"
+                                 textHAlign="left"/>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="boneAngleTool" title="Bone-Angle Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="300px" width="220px" x="60" y="40">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal" padding="10">
+                        <control name="verticalSlider" id="xAngSlider"
+                                 buttonStepSize="3.14"
+                                 height="160"
+                                 initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
+                        <control name="verticalSlider" id="yAngSlider"
+                                 buttonStepSize="3.14"
+                                 height="160"
+                                 initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zAngSlider"
+                                 buttonStepSize="3.14"
+                                 height="160"
+                                 initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="160" width="105">
+                            <control name="label" id="xAngSliderStatus"
+                                     width="95"/>
+                            <control name="label" id="yAngSliderStatus"
+                                     width="95"/>
+                            <control name="label" id="zAngSliderStatus"
+                                     width="95"/>
+                            <control name="button" id="resetAngButton">
+                                <interact onRelease="perform(reset bone angles)"/>
+                            </control>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="boneOffsetTool" title="Bone-Offset Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="300px" width="220px" x="55" y="45">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal" padding="10">
+                        <control name="verticalSlider" id="xOffSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="0" max="10" min="-10" stepSize="0.001"/>
+                        <control name="verticalSlider" id="yOffSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="0" max="10" min="-10" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zOffSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="0" max="10" min="-10" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="160" width="105">
+                            <control name="label" id="xOffSliderStatus"
+                                     width="95"/>
+                            <control name="label" id="yOffSliderStatus"
+                                     width="95"/>
+                            <control name="label" id="zOffSliderStatus"
+                                     width="95"/>
+                            <control name="button" id="resetOffButton">
+                                <interact onRelease="perform(reset bone offsets)"/>
+                            </control>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="boneScaleTool" title="Bone-Scale Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="300px" width="220px" x="50" y="50">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal" padding="10">
+                        <control name="verticalSlider" id="xScaSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="yScaSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zScaSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="160" width="105">
+                            <control name="label" id="xScaSliderStatus"
+                                     width="95"/>
+                            <control name="label" id="yScaSliderStatus"
+                                     width="95"/>
+                            <control name="label" id="zScaSliderStatus"
+                                     width="95"/>
+                            <control name="button" id="resetScaButton">
+                                <interact onRelease="perform(reset bone scales)"/>
+                            </control>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="cameraTool" title="Camera Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="160px" width="180px" x="45" y="55">
+                <panel childLayout="vertical">
+                    <panel style="statusPanel">
+                        <control name="label" text="Camera mode:"/>
+                    </panel>
+                    <control name="radioButtonGroup" id="povGroup"/>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="orbitingRadioButton"
+                                 group="povGroup"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="orbit the 3D cursor"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="flyingRadioButton"
+                                 group="povGroup"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="fly freely"/>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="cursorTool" title="Cursor Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="240px" width="190px" x="40" y="60">
+                <panel childLayout="vertical">
+                    <panel style="indentPanel">
+                        <control name="checkbox" id="3DCursorCheckBox"
+                                 checked="true"
+                                 width="20"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="show 3-D cursor"/>
+                    </panel>
+                    <panel style="statusPanel">
+                        <control name="label" text="3-D cursor color:"/>
+                    </panel>
+                    <panel childLayout="horizontal" padding="10">
+                        <control name="verticalSlider" id="cursorRSlider"
+                                 buttonStepSize="1"
+                                 height="130"
+                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="cursorGSlider"
+                                 buttonStepSize="1"
+                                 height="130"
+                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="cursorBSlider"
+                                 buttonStepSize="1"
+                                 height="130"
+                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="130" width="105">
+                            <control name="label" id="cursorRSliderStatus"
+                                     width="95"/>
+                            <control name="label" id="cursorGSliderStatus"
+                                     width="95"/>
+                            <control name="label" id="cursorBSliderStatus"
+                                     width="95"/>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="modelTool" title="Model Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="140px" width="320px" x="35" y="65">
+                <panel childLayout="vertical">
+                    <panel style="statusPanel">
+                        <control name="label" id="modelDescription1"
+                                 textHAlign="left"/>
+                    </panel>
+                    <panel style="statusPanel">
+                        <control name="label" id="modelDescription2"
+                                 textHAlign="left"/>
+                    </panel>
+                    <panel style="statusPanel">
+                        <control name="label" id="modelDescription3"
+                                 textHAlign="left"/>
+                    </panel>
+                    <panel style="statusPanel">
+                        <control name="label" id="modelDescription4"
+                                 textHAlign="left"/>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="renderTool" title="Render Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="160px" width="160px" x="30" y="70">
+                <panel childLayout="vertical">
+                    <panel style="indentPanel">
+                        <control name="checkbox" id="shadowsCheckBox"
+                                 checked="true"
+                                 width="20"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="shadows"/>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="skeletonTool" title="Skeleton Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="370px" width="190px" x="25" y="75">
+                <panel childLayout="vertical">
+                    <panel style="indentPanel">
+                        <control name="checkbox" id="skeletonCheckBox"
+                                 checked="true"
+                                 width="20"/>
+                        <control name="label"
+                                 width="12"/>
+                        <control name="label" text="show"/>
+                    </panel>
+                    <panel style="statusPanel">
+                        <control name="label" id="skeletonLineWidthSliderStatus"/>
+                    </panel>
+                    <control name="horizontalSlider" id="skeletonLineWidthSlider"
+                             buttonStepSize="1"
+                             height="40"
+                             initial="2" max="10" min="1" stepSize="1"/>
+                    <panel style="statusPanel">
+                        <control name="label" id="skeletonPointSizeSliderStatus"/>
+                    </panel>
+                    <control name="horizontalSlider" id="skeletonPointSizeSlider"
+                             buttonStepSize="1"
+                             height="40"
+                             initial="4" max="10" min="1" stepSize="1"/>
+                    <control name="label"
+                             text="Wire color:"/>
+                    <panel childLayout="horizontal" padding="10">
+                        <control name="verticalSlider" id="skeRSlider"
+                                 buttonStepSize="1"
+                                 height="130"
+                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="skeGSlider"
+                                 buttonStepSize="1"
+                                 height="130"
+                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="skeBSlider"
+                                 buttonStepSize="1"
+                                 height="130"
+                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="130" width="105">
+                            <control name="label" id="skeRSliderStatus"
+                                     width="95"/>
+                            <control name="label" id="skeGSliderStatus"
+                                     width="95"/>
+                            <control name="label" id="skeBSliderStatus"
+                                     width="95"/>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="skyTool" title="Sky Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="160px" width="160px" x="20" y="80">
+                <panel childLayout="vertical">
+                    <panel style="indentPanel">
+                        <control name="checkbox" id="skyCheckBox"
+                                 checked="true"
+                                 width="20"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="show sky"/>
+                    </panel>
+                </panel>
+            </control>
+
+        </layer>
+    </screen>
+</nifty>

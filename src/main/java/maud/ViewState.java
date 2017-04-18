@@ -34,15 +34,18 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
+import jme3utilities.MyString;
 import jme3utilities.SimpleAppState;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.debug.SkeletonDebugControl;
 
 /**
- * View state for the Maud application.
+ * A simple app state to manage the MVC view of the loaded CG model in Maud's
+ * "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -59,29 +62,21 @@ class ViewState extends SimpleAppState {
     // fields
 
     /**
-     * the selected bone, or null if none selected
-     */
-    private Bone selectedBone = null;
-    /**
-     * attachments node for the selected bone, or null if none selected
-     */
-    private Node attachmentsNode = null;
-    /**
-     * the skeleton of this view's copy of the model
+     * the skeleton of this view's copy of the CG model
      */
     private Skeleton skeleton = null;
     /**
-     * the skeleton control in this view's copy of the model
+     * the skeleton control in this view's copy of the CG model
      */
     private SkeletonControl skeletonControl = null;
     /**
-     * the skeleton debug control in this view's copy of the model
+     * the skeleton debug control in this view's copy of the CG model
      */
     private SkeletonDebugControl skeletonDebugControl = null;
     /**
-     * the root spatial in this view's copy of the model
+     * the root spatial in this view's copy of the CG model
      */
-    private Spatial modelRoot = null;
+    private Spatial cgModelRoot = null;
     // *************************************************************************
     // constructors
 
@@ -95,22 +90,43 @@ class ViewState extends SimpleAppState {
     // new methods exposed
 
     /**
-     * Access the AxesControl for the selected bone.
+     * Access an AxesControl for the specified bone.
      *
-     * @return the pre-existing instance, or null if no bone selected
+     * @param boneIndex which bone
+     * @return a control, or null if no such bone
      */
-    AxesControl getBoneAxesControl() {
-        if (selectedBone == null) {
-            return null;
-        }
-        AxesControl result = attachmentsNode.getControl(AxesControl.class);
-        assert result != null;
+    AxesControl getBoneAxesControl(int boneIndex) {
+        Bone bone = skeleton.getBone(boneIndex);
+        String boneName = bone.getName();
+
+        Node attachmentsNode = skeletonControl.getAttachmentsNode(boneName);
+        AxesControl result = getAxesControl(attachmentsNode);
 
         return result;
     }
 
     /**
-     * Access the skeleton debug control.
+     * Access an AxesControl for the CG model.
+     *
+     * @return a control (not null)
+     */
+    AxesControl getModelAxesControl() {
+        AxesControl result = getAxesControl(cgModelRoot);
+        return result;
+    }
+
+    /**
+     * Access an AxesControl for the world.
+     *
+     * @return a control (not null)
+     */
+    AxesControl getWorldAxesControl() {
+        AxesControl result = getAxesControl(rootNode);
+        return result;
+    }
+
+    /**
+     * Access the skeleton debug control for the CG model.
      *
      * @return the pre-existing instance (not null)
      */
@@ -120,19 +136,13 @@ class ViewState extends SimpleAppState {
     }
 
     /**
-     * Replace the loaded model with a new one.
+     * Access the root spatial of the CG model.
      *
-     * @param newModelRoot (not null)
+     * @return the pre-existing instance (not null)
      */
-    void setModel(Spatial newModelRoot) {
-        /*
-         * Detach the old spatial (if any) from the scene.
-         */
-        if (modelRoot != null) {
-            rootNode.detachChild(modelRoot);
-        }
-        modelRoot = newModelRoot;
-        prepareForEditing();
+    Spatial getSpatial() {
+        assert cgModelRoot != null;
+        return cgModelRoot;
     }
 
     /**
@@ -158,104 +168,105 @@ class ViewState extends SimpleAppState {
     }
 
     /**
-     * Rotate the model around +Y by the specified angle.
+     * Rotate the CG model around +Y by the specified angle.
      *
      * @param angle in radians
      */
     void rotateY(float angle) {
-        modelRoot.rotate(0f, angle, 0f);
+        cgModelRoot.rotate(0f, angle, 0f);
     }
 
     /**
-     * Alter which bone is selected.
+     * Replace the loaded CG model with a new one.
      *
-     * @param index
+     * @param newModelRoot (not null)
      */
-    void selectBone(int index) {
-        selectedBone = skeleton.getBone(index);
-        updateAttachmentsNode();
-    }
-
-    /**
-     * Cancel any bone selection.
-     */
-    void selectNoBone() {
-        selectedBone = null;
-        updateAttachmentsNode();
+    void setModel(Spatial newModelRoot) {
+        /*
+         * Detach the old spatial (if any) from the scene.
+         */
+        if (cgModelRoot != null) {
+            rootNode.detachChild(cgModelRoot);
+        }
+        cgModelRoot = newModelRoot;
+        prepareForEditing();
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Alter a newly-loaded model to prepare it for viewing.
+     * Access the axes control of the specified node.
+     *
+     * @param spatial (not null)
+     * @return the pre-existing instance (not null)
+     */
+    private AxesControl getAxesControl(Spatial spatial) {
+        AxesControl axesControl = spatial.getControl(AxesControl.class);
+        if (axesControl == null) {
+            axesControl = new AxesControl(assetManager, 1f, 1f);
+            spatial.addControl(axesControl);
+        }
+
+        return axesControl;
+    }
+
+    /**
+     * Alter a newly-loaded CG model to prepare it for viewing.
      */
     private void prepareForEditing() {
         /*
-         * Attach the model to the scene and enable user control.
+         * Attach the CG model to the scene and enable user control.
          */
-        rootNode.attachChild(modelRoot);
-        MySkeleton.setUserControl(modelRoot, true);
+        rootNode.attachChild(cgModelRoot);
+        MySkeleton.setUserControl(cgModelRoot, true);
         /*
          * Update references to controls, skeleton, and bone.
          */
-        skeletonControl = modelRoot.getControl(SkeletonControl.class);
+        skeletonControl = cgModelRoot.getControl(SkeletonControl.class);
         if (skeletonControl == null) {
             throw new IllegalArgumentException(
                     "expected the model's root to have a SkeletonControl");
         }
         skeleton = skeletonControl.getSkeleton();
-        selectNoBone();
         /*
          * Apply an identity transform to every child spatial of the model.
          * This hack enables accurate bone attachments on some models with
          * locally transformed geometries (such as Jaime).
          * The attachments bug should be fixed in jMonkeyEngine 3.2.
          */
-        if (modelRoot instanceof Node) {
-            Node node = (Node) modelRoot;
+        if (cgModelRoot instanceof Node) {
+            Node node = (Node) cgModelRoot;
             for (Spatial child : node.getChildren()) {
-                child.setLocalTransform(new Transform());
+                Transform t = child.getLocalTransform();
+                if (!Util.isIdentity(t)) {
+                    String name = child.getName();
+                    logger.log(Level.WARNING,
+                            "Overriding local transform on {0}",
+                            MyString.quote(name));
+                    child.setLocalTransform(new Transform());
+                }
             }
         }
         /*
-         * Scale and translate the model so its bind pose is 1.0 world-unit
+         * Scale and translate the CG model so its bind pose is 1.0 world-unit
          * tall, with its base resting on the XZ plane.
          */
-        float maxY = MySpatial.getMaxY(modelRoot);
-        float minY = MySpatial.getMinY(modelRoot);
+        float maxY = MySpatial.getMaxY(cgModelRoot);
+        float minY = MySpatial.getMinY(cgModelRoot);
         assert maxY > minY : maxY; // no 2D models!
         float worldScale = 1f / (maxY - minY);
-        MySpatial.setWorldScale(modelRoot, worldScale);
+        MySpatial.setWorldScale(cgModelRoot, worldScale);
         Vector3f worldLocation = new Vector3f(0f, -minY * worldScale, 0f);
-        MySpatial.setWorldLocation(modelRoot, worldLocation);
+        MySpatial.setWorldLocation(cgModelRoot, worldLocation);
         /*
          * Add a new, enabled SkeletonDebugControl.
          */
         skeletonDebugControl = new SkeletonDebugControl(assetManager);
-        modelRoot.addControl(skeletonDebugControl);
+        cgModelRoot.addControl(skeletonDebugControl);
         skeletonDebugControl.setEnabled(true);
-    }
-
-    /**
-     * Update the attachments node.
-     */
-    private void updateAttachmentsNode() {
-        Node newNode;
-        if (selectedBone == null) {
-            newNode = null;
-        } else {
-            String name = selectedBone.getName();
-            newNode = skeletonControl.getAttachmentsNode(name);
-        }
-        if (newNode != attachmentsNode) {
-            if (attachmentsNode != null) {
-                attachmentsNode.removeControl(AxesControl.class);
-            }
-            if (newNode != null) {
-                AxesControl axesControl = new AxesControl(assetManager, 1f, 1f);
-                newNode.addControl(axesControl);
-            }
-            attachmentsNode = newNode;
-        }
+        /*
+         * Temporary hack to test shadows.
+         */
+        //cgModelRoot.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
     }
 }
