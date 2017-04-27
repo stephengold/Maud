@@ -211,7 +211,7 @@ class ViewState extends SimpleAppState {
     }
 
     /**
-     * Alter a newly-loaded CG model to prepare it for viewing.
+     * Alter a newly-loaded CG model to prepare it for viewing and editing.
      */
     private void prepareForEditing() {
         /*
@@ -259,7 +259,7 @@ class ViewState extends SimpleAppState {
         Vector3f worldLocation = new Vector3f(0f, -minY * worldScale, 0f);
         MySpatial.setWorldLocation(cgModelRoot, worldLocation);
         /*
-         * Add a new, enabled SkeletonDebugControl.
+         * Add a new SkeletonDebugControl.
          */
         skeletonDebugControl = new SkeletonDebugControl(assetManager);
         cgModelRoot.addControl(skeletonDebugControl);
