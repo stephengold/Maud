@@ -88,8 +88,9 @@ public class DddGui extends GuiScreenController {
      * action prefixes used by dialogs and popup menus
      */
     final static String copyAnimationPrefix = "copy animation";
-    final static String loadModelNamedPrefix = "load model named ";
     final static String loadAnimationPrefix = "load animation ";
+    final static String loadModelFilePrefix = "load model file ";
+    final static String loadModelNamedPrefix = "load model named ";
     final static String openMenuPrefix = "open menu ";
     final static String renameAnimationPrefix = "rename animation ";
     final static String renameBonePrefix = "rename bone ";
@@ -139,7 +140,7 @@ public class DddGui extends GuiScreenController {
     // new methods exposed
 
     /**
-     * Handle a "load animation" action.
+     * Parse and handle a "load animation" action.
      *
      * @param actionString (not null)
      */
@@ -167,6 +168,32 @@ public class DddGui extends GuiScreenController {
                  */
                 animation.loadAnimation(name, 1f);
             }
+        }
+    }
+
+    /**
+     * Parse and handle a "load model file" action.
+     *
+     * @param actionString (not null)
+     */
+    void loadModelFile(String actionString) {
+        assert actionString.startsWith(loadModelFilePrefix) : actionString;
+
+        int namePos = loadModelFilePrefix.length();
+        String filePath = actionString.substring(namePos);
+        File file = new File(filePath);
+        if (file.isDirectory()) {
+            List<String> fileNames = listFileNames(filePath);
+            String menuPrefix = loadModelFilePrefix + filePath;
+            if (!menuPrefix.endsWith("/")) {
+                menuPrefix += "/";
+            }
+            showPopup(menuPrefix, fileNames);
+
+        } else if (file.canRead()) {
+            Maud.model.loadModelFile(file);
+            Maud.gui.model.update();
+            Maud.gui.skeleton.update();
         }
     }
 
@@ -559,6 +586,33 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
+     * Enumerate the files in a directory/folder.
+     *
+     * @param path file path (not null)
+     * @return a new list, or null if path is not a directory/folder
+     */
+    private List<String> listFileNames(String path) {
+        assert path != null;
+
+        File file = new File(path);
+        File[] files = file.listFiles();
+        if (files == null) {
+            return null;
+        }
+
+        List<String> names = new ArrayList<>(files.length + 1);
+        if (file.getParentFile() != null) {
+            names.add("..");
+        }
+        for (int i = 0; i < files.length; i++) {
+            String name = files[i].getName();
+            names.add(name);
+        }
+
+        return names;
+    }
+
+    /**
      * Enumerate items for the Geometry menu.
      *
      * @return a new list
@@ -901,6 +955,7 @@ public class DddGui extends GuiScreenController {
      */
     private boolean menuCGModel(String remainder) {
         assert remainder != null;
+
         boolean handled = false;
         switch (remainder) {
             case "Load named asset":
@@ -912,14 +967,19 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "Load by asset path":
+                break;
             case "Load from file":
+                List<String> fileNames = listFileNames("/");
+                showPopup(loadModelFilePrefix + "/", fileNames);
+                handled = true;
+                break;
             case "Revert":
             case "Save":
                 break;
 
             case "Save as asset":
                 String baseAssetPath = Maud.model.getAssetPath();
-                assert baseAssetPath.length() > 0;
+                assert baseAssetPath.length() > 0 : baseAssetPath;
                 boolean success = Maud.model.writeModelToAsset(baseAssetPath);
                 assert success;
                 handled = true;

@@ -31,6 +31,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
+import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
 import com.jme3.export.binary.BinaryExporter;
@@ -43,7 +44,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -487,6 +491,39 @@ class ModelState extends SimpleAppState {
     }
 
     /**
+     * Unload the current model, if any, and load the specified file.
+     *
+     * @param modelFile model file from which to load (not null)
+     * @return true if successful, otherwise false
+     */
+    boolean loadModelFile(File modelFile) {
+        assert modelFile != null;
+
+        String canonicalPath;
+        try {
+            canonicalPath = modelFile.getCanonicalPath();
+        } catch (IOException e) {
+            return false;
+        }
+
+        Spatial loaded = loadModelFromFile(canonicalPath);
+        if (loaded == null) {
+            return false;
+        }
+
+        pristine = true;
+        rootSpatial = loaded;
+
+        Spatial viewClone = loadModelFromFile(canonicalPath);
+        assert viewClone != null;
+        Maud.viewState.setModel(viewClone);
+        Maud.gui.animation.loadBindPose();
+        selectBone(DddGui.noBone);
+
+        return true;
+    }
+
+    /**
      * Unload the current model, if any, and load the named one.
      *
      * @param name name of model to load (not null)
@@ -818,7 +855,7 @@ class ModelState extends SimpleAppState {
         mlLogger.setLevel(oldLevel);
 
         if (loaded == null) {
-            logger.log(Level.SEVERE, "Failed to find asset {0}",
+            logger.log(Level.SEVERE, "Failed to load model from asset {0}",
                     MyString.quote(assetPath));
         } else {
             logger.log(Level.INFO, "Loaded model from asset {0}",
@@ -833,6 +870,61 @@ class ModelState extends SimpleAppState {
                 loadedModelAssetPath = assetPath.substring(0, pathLength);
             }
             loadedModelFilePath = "";
+            modelName = loaded.getName();
+        }
+
+        return loaded;
+    }
+
+    /**
+     * Quietly load a model file without adding it to the scene. If successful,
+     * set {@link #loadedModelFilePath}.
+     *
+     * @param filePath (not null)
+     * @return an orphaned spatial, or null if an error occurred
+     */
+    private Spatial loadModelFromFile(String filePath) {
+        ModelKey key = new ModelKey(filePath);
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(filePath);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+        /*
+         * Temporarily hush loader warnings about vertices with >4 weights.
+         */
+        Logger mlLogger = Logger.getLogger(MeshLoader.class.getName());
+        Level oldLevel = mlLogger.getLevel();
+        mlLogger.setLevel(Level.SEVERE);
+
+        Spatial loaded;
+        try {
+            loaded = assetManager.loadAssetFromStream(key, inputStream);
+        } catch (AssetLoadException e) {
+            loaded = null;
+        }
+        /*
+         * Restore logging levels.
+         */
+        mlLogger.setLevel(oldLevel);
+
+        if (loaded == null) {
+            logger.log(Level.SEVERE, "Failed to load model from file {0}",
+                    MyString.quote(filePath));
+        } else {
+            logger.log(Level.INFO, "Loaded model from file {0}",
+                    MyString.quote(filePath));
+
+            loadedModelAssetPath = "";
+            loadedModelExtension = key.getExtension();
+            int extLength = loadedModelExtension.length();
+            if (extLength == 0) {
+                loadedModelFilePath = filePath;
+            } else {
+                int pathLength = filePath.length() - extLength - 1;
+                loadedModelFilePath = filePath.substring(0, pathLength);
+            }
             modelName = loaded.getName();
         }
 

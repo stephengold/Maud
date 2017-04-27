@@ -358,7 +358,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="modelTool" title="Model Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="140px" width="320px" x="35" y="65">
+                     height="140px" width="520px" x="35" y="65">
                 <panel childLayout="vertical">
                     <panel style="statusPanel">
                         <control name="label" id="modelDescription1"

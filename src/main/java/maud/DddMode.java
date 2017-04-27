@@ -82,6 +82,10 @@ class DddMode extends InputMode {
                 Maud.gui.loadAnimation(actionString);
                 handled = true;
 
+            } else if (actionString.startsWith(DddGui.loadModelFilePrefix)) {
+                Maud.gui.loadModelFile(actionString);
+                handled = true;
+
             } else if (actionString.startsWith(DddGui.loadModelNamedPrefix)) {
                 int namePos = DddGui.loadModelNamedPrefix.length();
                 String newName = actionString.substring(namePos);
