@@ -94,6 +94,8 @@ public class DddGui extends GuiScreenController {
     final static String openMenuPrefix = "open menu ";
     final static String renameAnimationPrefix = "rename animation ";
     final static String renameBonePrefix = "rename bone ";
+    final static String saveModelAssetPrefix = "save model asset ";
+    final static String saveModelFilePrefix = "save model file ";
     final static String selectBonePrefix = "select bone ";
     final static String selectBoneChildPrefix = "select boneChild ";
     /**
@@ -339,6 +341,36 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
+     * Parse and handle a "save model asset" action.
+     *
+     * @param actionString (not null)
+     */
+    void saveModelAsset(String actionString) {
+        assert actionString.startsWith(saveModelAssetPrefix) : actionString;
+
+        int pathPos = saveModelAssetPrefix.length();
+        String baseAssetPath = actionString.substring(pathPos);
+        boolean success = Maud.model.writeModelToAsset(baseAssetPath);
+        assert success;
+        Maud.gui.model.update();
+    }
+
+    /**
+     * Parse and handle a "save model file" action.
+     *
+     * @param actionString (not null)
+     */
+    void saveModelFile(String actionString) {
+        assert actionString.startsWith(saveModelFilePrefix) : actionString;
+
+        int pathPos = saveModelFilePrefix.length();
+        String baseFilePath = actionString.substring(pathPos);
+        boolean success = Maud.model.writeModelToFile(baseFilePath);
+        assert success;
+        Maud.gui.model.update();
+    }
+
+    /**
      * Handle a "select bone" action.
      *
      * @param actionString (not null)
@@ -578,7 +610,6 @@ public class DddGui extends GuiScreenController {
         items.add("Load named asset");
         items.add("Load by asset path");
         items.add("Load from file");
-        items.add("Save");
         items.add("Save as asset");
         items.add("Save as file");
 
@@ -974,18 +1005,22 @@ public class DddGui extends GuiScreenController {
                 handled = true;
                 break;
             case "Revert":
-            case "Save":
                 break;
 
             case "Save as asset":
                 String baseAssetPath = Maud.model.getAssetPath();
-                assert baseAssetPath.length() > 0 : baseAssetPath;
-                boolean success = Maud.model.writeModelToAsset(baseAssetPath);
-                assert success;
+                closeAllPopups();
+                showDialog("Enter base asset path for model:",
+                        baseAssetPath, "Save", saveModelAssetPrefix);
                 handled = true;
                 break;
 
             case "Save as file":
+                String baseFilePath = Maud.model.getFilePath();
+                closeAllPopups();
+                showDialog("Enter base file path for model:",
+                        baseFilePath, "Save", saveModelFilePrefix);
+                handled = true;
                 break;
 
             case "Tool":

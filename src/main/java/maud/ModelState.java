@@ -712,8 +712,24 @@ class ModelState extends SimpleAppState {
     boolean writeModelToAsset(String baseAssetPath) {
         assert baseAssetPath != null;
 
-        String fullAssetPath = baseAssetPath + ".j3o";
-        String filePath = ActionApplication.filePath(fullAssetPath);
+        String baseFilePath = ActionApplication.filePath(baseAssetPath);
+        boolean success = writeModelToFile(baseFilePath);
+        if (success) {
+            loadedModelAssetPath = baseAssetPath;
+        }
+
+        return success;
+    }
+
+    /**
+     * Write the loaded model to a file.
+     *
+     * @param baseFilePath file path without any extension (not null)
+     */
+    boolean writeModelToFile(String baseFilePath) {
+        assert baseFilePath != null;
+
+        String filePath = baseFilePath + ".j3o";
         File file = new File(filePath);
         BinaryExporter exporter = BinaryExporter.getInstance();
 
@@ -724,6 +740,9 @@ class ModelState extends SimpleAppState {
             success = false;
         }
         if (success) {
+            loadedModelAssetPath = "";
+            loadedModelExtension = "j3o";
+            loadedModelFilePath = baseFilePath;
             pristine = true;
             logger.log(Level.INFO, "Wrote model to file {0}",
                     MyString.quote(filePath));

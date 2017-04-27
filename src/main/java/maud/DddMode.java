@@ -107,6 +107,14 @@ class DddMode extends InputMode {
                 Maud.gui.bone.update();
                 handled = true;
 
+            } else if (actionString.startsWith(DddGui.saveModelAssetPrefix)) {
+                Maud.gui.saveModelAsset(actionString);
+                handled = true;
+
+            } else if (actionString.startsWith(DddGui.saveModelFilePrefix)) {
+                Maud.gui.saveModelFile(actionString);
+                handled = true;
+
             } else if (actionString.startsWith(DddGui.selectBonePrefix)) {
                 Maud.gui.selectBone(actionString);
                 handled = true;
