@@ -518,21 +518,22 @@ public class DddGui extends GuiScreenController {
         String niftyVersion = nifty.getVersion();
         String text = "Maud, by Stephen Gold\n\nYou are c"
                 + "urrently using Maud, a jMonkeyEngine application for edit"
-                + "ing animated models.\nThe version you are using includes "
+                + "ing animated models.\n\nThe version you are using includes "
                 + "the following libraries:";
-        text += String.format("\n jme3-core version %s",
+        text += String.format("\n   jme3-core version %s",
                 MyString.quote(JmeVersion.FULL_NAME));
-        text += String.format("\n nifty version %s",
+        text += String.format("\n   nifty version %s",
                 MyString.quote(niftyVersion));
-        text += String.format("\n SkyControl version %s",
+        text += String.format("\n   SkyControl version %s",
                 MyString.quote(Misc.getVersionShort()));
-        text += String.format("\n jme3-utilities-debug version %s",
+        text += String.format("\n   jme3-utilities-debug version %s",
                 MyString.quote(DebugVersion.getVersionShort()));
-        text += String.format("\n jme3-utilities-ui version %s",
+        text += String.format("\n   jme3-utilities-ui version %s",
                 MyString.quote(UiVersion.getVersionShort()));
-        text += String.format("\n jme3-utilities-nifty version %s\n\n",
+        text += String.format("\n   jme3-utilities-nifty version %s\n\n",
                 MyString.quote(LibraryVersion.getVersionShort()));
-        System.out.print(text); // TODO window
+        closeAllPopups();
+        showInfoDialog("About Maud", text);
     }
 
     /**
@@ -1068,7 +1069,8 @@ public class DddGui extends GuiScreenController {
                             "Here's your software license for Maud:\n%s\n",
                             contents);
                 }
-                System.out.print(text2); // TODO window
+                closeAllPopups();
+                showInfoDialog("License information", text2);
                 handled = true;
                 break;
 
