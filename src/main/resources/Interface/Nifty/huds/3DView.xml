@@ -209,11 +209,11 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <panel childLayout="vertical"
                                height="160" width="105">
                             <control name="label" id="xAngSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="label" id="yAngSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="label" id="zAngSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="button" id="resetAngButton">
                                 <interact onRelease="perform(reset bone angles)"/>
                             </control>
@@ -243,11 +243,11 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <panel childLayout="vertical"
                                height="160" width="105">
                             <control name="label" id="xOffSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="label" id="yOffSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="label" id="zOffSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="button" id="resetOffButton">
                                 <interact onRelease="perform(reset bone offsets)"/>
                             </control>
@@ -277,11 +277,11 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <panel childLayout="vertical"
                                height="160" width="105">
                             <control name="label" id="xScaSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="label" id="yScaSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="label" id="zScaSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="button" id="resetScaButton">
                                 <interact onRelease="perform(reset bone scales)"/>
                             </control>
@@ -345,11 +345,11 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <panel childLayout="vertical"
                                height="130" width="105">
                             <control name="label" id="cursorRSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="label" id="cursorGSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="label" id="cursorBSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                         </panel>
                     </panel>
                 </panel>
@@ -439,11 +439,11 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <panel childLayout="vertical"
                                height="130" width="105">
                             <control name="label" id="skeRSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="label" id="skeGSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                             <control name="label" id="skeBSliderStatus"
-                                     width="95"/>
+                                     width="*"/>
                         </panel>
                     </panel>
                 </panel>
