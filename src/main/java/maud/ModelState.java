@@ -138,6 +138,7 @@ class ModelState extends SimpleAppState {
         Animation pose = captureCurrentPose(animationName);
         control.addAnim(pose);
         pristine = false;
+        Maud.gui.model.update();
     }
 
     /**
@@ -155,6 +156,7 @@ class ModelState extends SimpleAppState {
         Animation animation = getLoadedAnimation();
         animControl.removeAnim(animation);
         pristine = false;
+        Maud.gui.model.update();
 
         return true;
     }
@@ -658,6 +660,7 @@ class ModelState extends SimpleAppState {
         Bone bone = getBone();
         boolean success = MySkeleton.setName(bone, newName);
         pristine = false;
+        Maud.gui.model.update();
 
         return success;
     }

@@ -358,24 +358,53 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="modelTool" title="Model Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="140px" width="520px" x="35" y="65">
+                     height="150px" width="520px" x="35" y="65">
                 <panel childLayout="vertical">
-                    <panel style="statusPanel">
-                        <control name="label" id="modelDescription1"
-                                 textHAlign="left"/>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Name:  "
+                                 textHAlign="right"
+                                 width="100px"/>
+                        <control name="label" id="modelName"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
                     </panel>
-                    <panel style="statusPanel">
-                        <control name="label" id="modelDescription2"
-                                 textHAlign="left"/>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Asset base path:  "
+                                 textHAlign="right"
+                                 width="100px"/>
+                        <control name="label" id="modelAbp"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
                     </panel>
-                    <panel style="statusPanel">
-                        <control name="label" id="modelDescription3"
-                                 textHAlign="left"/>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="File base path:  "
+                                 textHAlign="right"
+                                 width="100px"/>
+                        <control name="label" id="modelFbp"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
                     </panel>
-                    <panel style="statusPanel">
-                        <control name="label" id="modelDescription4"
-                                 textHAlign="left"/>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Extension:  "
+                                 textHAlign="right"
+                                 width="100px"/>
+                        <control name="label" id="modelExt"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="70px"/>
+                        <control name="label" text="Edit status:  "
+                                 textHAlign="right"
+                                 width="75px"/>
+                        <control name="label" id="modelPristine"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="70px"/>
                     </panel>
+                    <panel/>
                 </panel>
             </control>
 

@@ -64,32 +64,33 @@ class ModelTool extends WindowController {
      */
     void update() {
         /*
-         * name
+         * line 1: name
          */
         String name = Maud.model.getName();
-        String description1 = String.format("Name: %s", MyString.quote(name));
-        Maud.gui.setStatusText("modelDescription1", description1);
+        String nameDesc = MyString.quote(name);
+        Maud.gui.setStatusText("modelName", " " + nameDesc);
         /*
-         * asset path
+         * line 2: asset base path
          */
         String assetPath = Maud.model.getAssetPath();
-        String description2 = String.format("Asset: %s",
-                MyString.quote(assetPath));
-        Maud.gui.setStatusText("modelDescription2", description2);
+        String abpDesc = (assetPath.length() == 0) ? "unknown"
+                : MyString.quote(assetPath);
+        Maud.gui.setStatusText("modelAbp", " " + abpDesc);
         /*
-         * file path
+         * line 3: file base path
          */
         String filePath = Maud.model.getFilePath();
-        String description3 = String.format("File: %s",
-                MyString.quote(filePath));
-        Maud.gui.setStatusText("modelDescription3", description3);
+        String fbpDesc = (filePath.length() == 0) ? "unknown"
+                : MyString.quote(filePath);
+        Maud.gui.setStatusText("modelFbp", " " + fbpDesc);
         /*
-         * extension
+         * line 4: asset/file extension and pristine/edited status
          */
-        String extension = Maud.model.getExtension();
-        String description4 = String.format("Extension: %s",
-                MyString.quote(extension));
-        Maud.gui.setStatusText("modelDescription4", description4);
+        String extDesc = Maud.model.getExtension();
+        Maud.gui.setStatusText("modelExt", extDesc);
+        boolean isPristine = Maud.model.isPristine();
+        String pristineDesc = isPristine ? "pristine" : "edited";
+        Maud.gui.setStatusText("modelPristine", pristineDesc);
     }
     // *************************************************************************
     // AppState methods
