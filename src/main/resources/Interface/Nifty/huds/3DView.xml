@@ -225,28 +225,36 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="boneOffsetTool" title="Bone-Offset Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="300px" width="220px" x="55" y="45">
+                     height="270px" width="220px" x="55" y="45">
                 <panel childLayout="vertical">
+                    <control name="label" text="Master control:"/>
+                    <control name="horizontalSlider" id="offMasterSlider"
+                             buttonStepSize="1"
+                             initial="0" max="2" min="-2" stepSize="0.001"/>
+                    <control name="label" text="Per-axis controls:"/>
                     <panel childLayout="horizontal" padding="10">
                         <control name="verticalSlider" id="xOffSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="0" max="10" min="-10" stepSize="0.001"/>
+                                 initial="0" max="1" min="-1" stepSize="0.001"/>
                         <control name="verticalSlider" id="yOffSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="0" max="10" min="-10" stepSize="0.001"/>
+                                 initial="0" max="1" min="-1" stepSize="0.001"/>
                         <control name="verticalSlider" id="zOffSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="0" max="10" min="-10" stepSize="0.001"/>
+                                 initial="0" max="1" min="-1" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160" width="105">
                             <control name="label" id="xOffSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="label" id="yOffSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="label" id="zOffSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="button" id="resetOffButton">
                                 <interact onRelease="perform(reset bone offsets)"/>

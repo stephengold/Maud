@@ -27,6 +27,7 @@ package maud;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.math.FastMath;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.controls.Slider;
@@ -42,6 +43,18 @@ class BoneOffsetTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * logarithm base for the master slider
+     */
+    final private static float masterBase = 10f;
+    /**
+     * maximum scale for offsets (&gt;0)
+     */
+    final private static float maxScale = 100f;
+    /**
+     * minimum scale for offsets (&gt;0)
+     */
+    final private static float minScale = 0.01f;
     /**
      * number of coordinate axes
      */
@@ -59,16 +72,21 @@ class BoneOffsetTool extends WindowController {
     // fields
 
     /**
-     * references to the bone-offset sliders, set by
+     * references to the per-axis sliders, set by
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
      */
     final private Slider sliders[] = new Slider[numAxes];
     /**
-     * bone offsets
+     * reference to the master slider, set by
+     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
+     */
+    private Slider masterSlider = null;
+    /**
+     * bone offsets (in bone units)
      */
     final private static float[] offsets = new float[numAxes];
     /*
-     * animation time at previous update
+     * animation time at previous update (in seconds)
      */
     private float previousUpdateTime = 0f;
     // *************************************************************************
@@ -99,15 +117,11 @@ class BoneOffsetTool extends WindowController {
     }
 
     /**
-     * If sliders are enabled, set all 3 sliders to match the selected bone.
+     * If sliders are enabled, set them to match the selected bone.
      */
     void set() {
         if (Maud.gui.bone.isSelected() && !Maud.gui.animation.isRunning()) {
-            offsets();
-            for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                float offset = offsets[iAxis];
-                sliders[iAxis].setValue(offset);
-            }
+            displayOffsets();
         }
     }
     // *************************************************************************
@@ -130,6 +144,7 @@ class BoneOffsetTool extends WindowController {
             assert slider != null;
             sliders[iAxis] = slider;
         }
+        masterSlider = Maud.gui.getSlider("offMaster");
     }
 
     /**
@@ -166,13 +181,10 @@ class BoneOffsetTool extends WindowController {
                 /*
                  * Display offsets from animation.
                  */
-                offsets();
                 for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                     sliders[iAxis].disable();
-                    float offset = offsets[iAxis];
-                    sliders[iAxis].setValue(offset);
-                    updateStatus(iAxis);
                 }
+                displayOffsets();
             }
 
         } else {
@@ -194,6 +206,31 @@ class BoneOffsetTool extends WindowController {
     // private methods
 
     /**
+     * Calculate and display the offsets of the selected bone.
+     */
+    private void displayOffsets() {
+        offsets();
+
+        float newScale = readScale();
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            float absOffset = FastMath.abs(offsets[iAxis]);
+            if (absOffset > newScale) {
+                newScale = absOffset;
+            }
+        }
+        newScale = FastMath.clamp(newScale, minScale, maxScale);
+        float masterSetting = FastMath.log(newScale, masterBase);
+        masterSlider.setValue(masterSetting);
+
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            float offset = offsets[iAxis];
+            float setting = offset / newScale;
+            sliders[iAxis].setValue(setting);
+            updateStatus(iAxis);
+        }
+    }
+
+    /**
      * Calculate offsets of the selected bone.
      */
     private void offsets() {
@@ -204,15 +241,29 @@ class BoneOffsetTool extends WindowController {
     }
 
     /**
+     * Read the scale factor from the master slider.
+     */
+    private float readScale() {
+        float reading = masterSlider.getValue();
+        float scale = FastMath.pow(masterBase, reading);
+
+        return scale;
+    }
+
+    /**
      * Update the status label of the slider for the specified axis.
      *
      * @param iAxis index of the axis (&ge;0, &lt;3)
-     * @return slider value
+     * @return slider value (in bone units)
      */
     private float updateStatus(int iAxis) {
         String axisName = axisNames[iAxis];
-        String sliderName = axisName + "Off";
-        float offset = Maud.gui.updateSlider(sliderName, " bu");
+        String sliderPrefix = axisName + "Off";
+        float reading = Maud.gui.readSlider(sliderPrefix);
+        float offset = reading * readScale();
+        String statusText = String.format("%s = %.3f bu", sliderPrefix, offset);
+        String statusName = sliderPrefix + "SliderStatus";
+        Maud.gui.setStatusText(statusName, statusText);
 
         return offset;
     }
