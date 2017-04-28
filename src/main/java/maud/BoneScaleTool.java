@@ -71,9 +71,9 @@ class BoneScaleTool extends WindowController {
      * animation time at previous update
      */
     private float previousUpdateTime = 0f;
-
     // *************************************************************************
     // constructors
+
     /**
      * Instantiate an uninitialized controller.
      *
@@ -87,7 +87,7 @@ class BoneScaleTool extends WindowController {
     // new methods exposed
 
     /**
-     * If sliders are enabled, reset all 3 scale factors.
+     * If sliders are enabled, set all 3 scale factors to 1.
      */
     void reset() {
         if (Maud.gui.bone.isSelected() && !Maud.gui.animation.isRunning()) {
@@ -98,8 +98,21 @@ class BoneScaleTool extends WindowController {
         }
     }
 
+    /**
+     * If sliders are enabled, set all 3 sliders to match the selected bone.
+     */
+    void set() {
+        if (Maud.gui.bone.isSelected() && !Maud.gui.animation.isRunning()) {
+            scales();
+            for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+                float scale = scales[iAxis];
+                sliders[iAxis].setValue(scale);
+            }
+        }
+    }
     // *************************************************************************
     // AppState methods
+
     /**
      * Initialize this controller prior to its 1st update.
      *
@@ -164,7 +177,7 @@ class BoneScaleTool extends WindowController {
 
         } else {
             /*
-             * No bone selected.
+             * No bone selected: clear the display.
              */
             Maud.gui.setButtonLabel("resetScaButton", "");
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
@@ -191,9 +204,9 @@ class BoneScaleTool extends WindowController {
     }
 
     /**
-     * Update a status field from its slider.
+     * Update the status label of the slider for the specified axis.
      *
-     * @param iAxis which axis (&ge;0, &lt;3)
+     * @param iAxis index of the axis (&ge;0, &lt;3)
      * @return slider value
      */
     private float updateStatus(int iAxis) {

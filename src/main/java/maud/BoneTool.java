@@ -158,5 +158,8 @@ class BoneTool extends WindowController {
         Maud.gui.setStatusText("boneChildDescription", childDescription);
 
         Maud.gui.axes.update();
+        Maud.gui.boneAngle.set();
+        Maud.gui.boneOffset.set();
+        Maud.gui.boneScale.set();
     }
 }
