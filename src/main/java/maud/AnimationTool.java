@@ -198,6 +198,9 @@ class AnimationTool extends WindowController {
         setSliders();
         update();
         updateDescription();
+        Maud.gui.boneAngle.set();
+        Maud.gui.boneOffset.set();
+        Maud.gui.boneScale.set();
     }
 
     /**
@@ -219,6 +222,9 @@ class AnimationTool extends WindowController {
         setSliders();
         update();
         updateDescription();
+        Maud.gui.boneAngle.set();
+        Maud.gui.boneOffset.set();
+        Maud.gui.boneScale.set();
     }
 
     /**
