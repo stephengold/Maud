@@ -491,6 +491,32 @@ class ModelState extends SimpleAppState {
     }
 
     /**
+     * Unload the current model, if any, and load the specified asset.
+     *
+     * @param assetPath (not null)
+     * @return true if successful, otherwise false
+     */
+    boolean loadModelAsset(String assetPath) {
+        assert assetPath != null;
+
+        Spatial loaded = loadModelFromAsset(assetPath, false);
+        if (loaded == null) {
+            return false;
+        }
+
+        pristine = true;
+        rootSpatial = loaded;
+
+        Spatial viewClone = loadModelFromAsset(assetPath, true);
+        assert viewClone != null;
+        Maud.viewState.setModel(viewClone);
+        Maud.gui.animation.loadBindPose();
+        selectBone(DddGui.noBone);
+
+        return true;
+    }
+
+    /**
      * Unload the current model, if any, and load the specified file.
      *
      * @param modelFile model file from which to load (not null)

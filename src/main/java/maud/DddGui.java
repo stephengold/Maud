@@ -89,6 +89,7 @@ public class DddGui extends GuiScreenController {
      */
     final static String copyAnimationPrefix = "copy animation";
     final static String loadAnimationPrefix = "load animation ";
+    final static String loadModelAssetPrefix = "load model asset ";
     final static String loadModelFilePrefix = "load model file ";
     final static String loadModelNamedPrefix = "load model named ";
     final static String openMenuPrefix = "open menu ";
@@ -174,6 +175,21 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
+     * Parse and handle a "load model asset" action.
+     *
+     * @param actionString (not null)
+     */
+    void loadModelAsset(String actionString) {
+        assert actionString.startsWith(loadModelAssetPrefix) : actionString;
+
+        int pathPos = loadModelAssetPrefix.length();
+        String assetPath = actionString.substring(pathPos);
+        Maud.model.loadModelAsset(assetPath);
+        model.update();
+        skeleton.update();
+    }
+
+    /**
      * Parse and handle a "load model file" action.
      *
      * @param actionString (not null)
@@ -194,8 +210,8 @@ public class DddGui extends GuiScreenController {
 
         } else if (file.canRead()) {
             Maud.model.loadModelFile(file);
-            Maud.gui.model.update();
-            Maud.gui.skeleton.update();
+            model.update();
+            skeleton.update();
         }
     }
 
@@ -352,7 +368,7 @@ public class DddGui extends GuiScreenController {
         String baseAssetPath = actionString.substring(pathPos);
         boolean success = Maud.model.writeModelToAsset(baseAssetPath);
         assert success;
-        Maud.gui.model.update();
+        model.update();
     }
 
     /**
@@ -367,7 +383,7 @@ public class DddGui extends GuiScreenController {
         String baseFilePath = actionString.substring(pathPos);
         boolean success = Maud.model.writeModelToFile(baseFilePath);
         assert success;
-        Maud.gui.model.update();
+        model.update();
     }
 
     /**
@@ -592,7 +608,7 @@ public class DddGui extends GuiScreenController {
         items.add("Select by name");
         items.add("Select by pointing");
         items.add("Describe skeleton");
-        if (Maud.gui.bone.isSelected()) {
+        if (bone.isSelected()) {
             items.add("Attach prop");
             items.add("Rename");
         }
@@ -609,7 +625,7 @@ public class DddGui extends GuiScreenController {
         List<String> items = new ArrayList<>(6);
         items.add("Tool");
         items.add("Load named asset");
-        items.add("Load by asset path");
+        items.add("Load asset path");
         items.add("Load from file");
         items.add("Save as asset");
         items.add("Save as file");
@@ -998,13 +1014,22 @@ public class DddGui extends GuiScreenController {
                 handled = true;
                 break;
 
-            case "Load by asset path":
+            case "Load asset path":
+                String basePath = Maud.model.getAssetPath();
+                String extension = Maud.model.getExtension();
+                String assetPath = String.format("%s.%s", basePath, extension);
+                closeAllPopups();
+                showTextEntryDialog("Enter base asset path for model:",
+                        assetPath, "Load", loadModelAssetPrefix);
+                handled = true;
                 break;
+
             case "Load from file":
                 List<String> fileNames = listFileNames("/");
                 showPopupMenu(loadModelFilePrefix + "/", fileNames);
                 handled = true;
                 break;
+
             case "Revert":
                 break;
 
