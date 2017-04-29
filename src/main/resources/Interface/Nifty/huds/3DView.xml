@@ -253,10 +253,13 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <panel childLayout="vertical"
                                height="160" width="105">
                             <control name="label" id="xAngSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="label" id="yAngSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="label" id="zAngSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="button" id="resetAngButton">
                                 <interact onRelease="perform(reset bone angles)"/>
@@ -329,10 +332,13 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <panel childLayout="vertical"
                                height="160" width="105">
                             <control name="label" id="xScaSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="label" id="yScaSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="label" id="zScaSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="button" id="resetScaButton">
                                 <interact onRelease="perform(reset bone scales)"/>
