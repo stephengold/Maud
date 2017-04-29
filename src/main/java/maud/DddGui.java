@@ -33,6 +33,8 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
@@ -101,6 +103,7 @@ public class DddGui extends GuiScreenController {
     final static String saveModelFilePrefix = "save model file ";
     final static String selectBonePrefix = "select bone ";
     final static String selectBoneChildPrefix = "select boneChild ";
+    final static String selectSpatialChildPrefix = "select spatialChild ";
     final static String selectToolPrefix = "select tool ";
     /**
      * name of signal that rotates the model counter-clockwise around +Y
@@ -131,6 +134,7 @@ public class DddGui extends GuiScreenController {
     final ModelTool model = new ModelTool(this);
     final RenderTool render = new RenderTool(this);
     final SkeletonTool skeleton = new SkeletonTool(this);
+    final SpatialTool spatial = new SpatialTool(this);
     final SkyTool sky = new SkyTool(this);
     // *************************************************************************
     // constructors
@@ -484,6 +488,62 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
+     * Handle a "select spatialChild" action with no argument.
+     */
+    void selectSpatialChild() {
+        Spatial parent = Maud.gui.spatial.getSelectedSpatial();
+        if (parent instanceof Node) {
+            Node node = (Node) parent;
+            List<Spatial> children = node.getChildren();
+            int numChildren = children.size();
+            List<String> choices = new ArrayList<>(numChildren);
+            for (int i = 0; i < numChildren; i++) {
+                String choice = String.format("#%d", i + 1);
+                Spatial spatial = children.get(i);
+                String name = spatial.getName();
+                if (name != null) {
+                    choice += " " + MyString.quote(name);
+                }
+                choices.add(choice);
+            }
+            if (choices.size() == 1) {
+                Maud.gui.spatial.selectChildSpatial(0);
+            } else if (choices.size() > 1) {
+                showPopupMenu(selectSpatialChildPrefix, choices);
+            }
+        }
+    }
+
+    /**
+     * Handle a "select spatialChild" action with arguments.
+     *
+     * @param actionString (not null)
+     */
+    void selectSpatialChild(String actionString) {
+        assert actionString.startsWith(selectSpatialChildPrefix) : actionString;
+
+        int argumentPos = selectSpatialChildPrefix.length();
+        String argument = actionString.substring(argumentPos);
+        String[] words = argument.split(" ");
+        String firstWord = words[0];
+        assert firstWord.startsWith("#") : firstWord;
+        String numberText = firstWord.substring(1);
+        int number = Integer.parseInt(numberText);
+        Maud.gui.spatial.selectChildSpatial(number - 1);
+    }
+
+    /**
+     * Handle a "select spatialParent" action.
+     */
+    void selectSpatialParent() {
+        Spatial child = Maud.gui.spatial.getSelectedSpatial();
+        Node parent = child.getParent();
+        if (parent != null) {
+            Maud.gui.spatial.selectParentSpatial();
+        }
+    }
+
+    /**
      * Handle a "select tool" action.
      *
      * @param actionString (not null)
@@ -528,6 +588,9 @@ public class DddGui extends GuiScreenController {
                 break;
             case "skeleton":
                 controller = skeleton;
+                break;
+            case "spatial":
+                controller = spatial;
                 break;
             case "sky":
                 controller = sky;
@@ -765,21 +828,6 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
-     * Enumerate items for the Geometry menu.
-     *
-     * @return a new list
-     */
-    private List<String> listGeometryMenuItems() {
-        List<String> items = new ArrayList<>(4);
-        items.add("Select by parent");
-        items.add("Select by name");
-        items.add("Describe");
-        items.add("Material");
-
-        return items;
-    }
-
-    /**
      * Enumerate items for the Help menu.
      *
      * @return a new list
@@ -847,6 +895,21 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
+     * Enumerate items for the Spatial menu.
+     *
+     * @return a new list
+     */
+    private List<String> listSpatialMenuItems() {
+        List<String> items = new ArrayList<>(4);
+        items.add("Tool");
+        items.add("Select by parent");
+        items.add("Select by name");
+        items.add("Material");
+
+        return items;
+    }
+
+    /**
      * Handle a menu action.
      *
      * @param menuName name of the menu (not null)
@@ -871,9 +934,6 @@ public class DddGui extends GuiScreenController {
             case "CGModel":
                 handled = menuCGModel(remainder);
                 break;
-            case "Geometry":
-                //handled = menuGeometry(remainder);
-                break;
             case "Help":
                 handled = menuHelp(remainder);
                 break;
@@ -885,6 +945,9 @@ public class DddGui extends GuiScreenController {
                 break;
             case "Settings":
                 handled = menuSettings(remainder);
+                break;
+            case "Spatial":
+                handled = menuSpatial(remainder);
                 break;
         }
 
@@ -1022,9 +1085,6 @@ public class DddGui extends GuiScreenController {
             case "CGModel":
                 menuItems = listCGModelMenuItems();
                 break;
-            case "Geometry":
-                menuItems = listGeometryMenuItems();
-                break;
             case "Help":
                 menuItems = listHelpMenuItems();
                 break;
@@ -1036,6 +1096,9 @@ public class DddGui extends GuiScreenController {
                 break;
             case "Settings":
                 menuItems = listSettingsMenuItems();
+                break;
+            case "Spatial":
+                menuItems = listSpatialMenuItems();
                 break;
             default:
                 return false;
@@ -1222,6 +1285,24 @@ public class DddGui extends GuiScreenController {
             case "Hotkeys":
                 closeAllPopups();
                 Maud.bindScreen.activate(inputMode);
+                handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle actions from the Spatial menu.
+     *
+     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuSpatial(String remainder) {
+        assert remainder != null;
+        boolean handled = false;
+        switch (remainder) {
+            case "Tool":
+                spatial.select();
                 handled = true;
         }
 

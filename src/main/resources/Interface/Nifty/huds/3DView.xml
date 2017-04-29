@@ -42,9 +42,9 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                          width="70">
                     <interact onRelease="perform(open menu CGModel)"/>
                 </control>
-                <control name="button" id="GeometryButton" label="3] Geometry"
-                         width="80">
-                    <interact onRelease="perform(open menu Geometry)"/>
+                <control name="button" id="SpatialButton" label="3] Spatial"
+                         width="75">
+                    <interact onRelease="perform(open menu Spatial)"/>
                 </control>
                 <control name="button" id="AnimationButton" label="4] Animation"
                          width="80">
@@ -547,6 +547,157 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="20"/>
                         <control name="label" width="12"/>
                         <control name="label" text="show sky"/>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="spatialTool" title="Spatial Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="360px" width="280px" x="15" y="85">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Type:  "/>
+                        <control name="label" id="spatialType"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="65px"/>
+                        <control name="label" text="  Tree position:  "
+                                 textHAlign="right"/>
+                        <control name="label" id="spatialTreePosition"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="*"/>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Name:  "
+                                 textHAlign="right"
+                                 width="55px"/>
+                        <control name="label" id="spatialName"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Rename" id="id4ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(rename spatial)"/>
+                        </control>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Parent:  "
+                                 textHAlign="right"
+                                 width="55px"/>
+                        <control name="label" id="spatialParent"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="spatialSelectParentButton"
+                                 width="60px">
+                            <interact onRelease="perform(select spatialParent)"/>
+                        </control>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Children:  "
+                                 textHAlign="right"
+                                 width="55px"/>
+                        <control name="label" id="spatialChildren"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="spatialSelectChildButton"
+                                 width="60px">
+                            <interact onRelease="perform(select spatialChild)"/>
+                        </control>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal" height="22px">
+                        <panel/>
+                        <control name="button" label="Translation" id="id5ToAvoidNiftyWarning"
+                                 width="80px">
+                            <interact onRelease="perform(select tool spatialTranslate)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" label="Rotation" id="id6ToAvoidNiftyWarning"
+                                 width="75px">
+                            <interact onRelease="perform(select tool spatialRotate)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" label="Scale" id="id7ToAvoidNiftyWarning"
+                                 width="55px">
+                            <interact onRelease="perform(select tool spatialScale)"/>
+                        </control>
+                        <panel/>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Material:  "/>
+                        <control name="label" id="spatialMaterial"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Mesh:  "/>
+                        <control name="label" id="spatialMesh"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Controls:  "/>
+                        <control name="label" id="spatialControls"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Tool" id="id8ToAvoidNiftyWarning"
+                                 width="40px">
+                            <interact onRelease="perform(select tool control)"/>
+                        </control>
+                        <control name="label" text="  User keys:  "/>
+                        <control name="label" id="spatialKeys"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Tool" id="id9ToAvoidNiftyWarning"
+                                 width="40px">
+                            <interact onRelease="perform(select tool keys)"/>
+                        </control>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Shadows:  "
+                                 textHAlign="right"
+                                 width="60px"/>
+                        <control name="label" id="spatialShadows"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Edit" id="id10ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(edit shadows)"/>
+                        </control>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Bucket:  "
+                                 textHAlign="right"
+                                 width="60px"/>
+                        <control name="label" id="spatialBucket"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Edit" id="id11ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(edit bucket)"/>
+                        </control>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Cull hint:  "
+                                 textHAlign="right"
+                                 width="60px"/>
+                        <control name="label" id="spatialHint"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Edit" id="id12ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(edit hint)"/>
+                        </control>
                     </panel>
                 </panel>
             </control>

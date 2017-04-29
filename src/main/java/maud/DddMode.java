@@ -91,6 +91,14 @@ class DddMode extends InputMode {
                 Maud.gui.selectBoneParent();
                 handled = true;
 
+            } else if (actionString.equals("select spatialChild")) {
+                Maud.gui.selectSpatialChild();
+                handled = true;
+
+            } else if (actionString.equals("select spatialParent")) {
+                Maud.gui.spatial.selectParentSpatial();
+                handled = true;
+
             } else if (actionString.startsWith(DddGui.loadAnimationPrefix)) {
                 Maud.gui.loadAnimation(actionString);
                 handled = true;
@@ -138,6 +146,10 @@ class DddMode extends InputMode {
 
             } else if (actionString.startsWith(DddGui.selectBoneChildPrefix)) {
                 Maud.gui.selectBoneChild(actionString);
+                handled = true;
+
+            } else if (actionString.startsWith(DddGui.selectSpatialChildPrefix)) {
+                Maud.gui.selectSpatialChild(actionString);
                 handled = true;
 
             } else if (actionString.startsWith(DddGui.selectToolPrefix)) {

@@ -294,6 +294,16 @@ class ModelState extends SimpleAppState {
     }
 
     /**
+     * Access the root spatial of the loaded model.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    Spatial getRootSpatial() {
+        assert rootSpatial != null;
+        return rootSpatial;
+    }
+
+    /**
      * Access the skeleton of the loaded model.
      *
      * @return the pre-existing instance (not null)
@@ -547,6 +557,7 @@ class ModelState extends SimpleAppState {
         Maud.viewState.setModel(viewClone);
         Maud.gui.animation.loadBindPose();
         selectBone(DddGui.noBone);
+        Maud.gui.spatial.selectRootSpatial();
 
         return true;
     }
@@ -584,6 +595,7 @@ class ModelState extends SimpleAppState {
             modelName = name;
             Maud.gui.animation.loadBindPose();
             selectBone(DddGui.noBone);
+            Maud.gui.spatial.selectRootSpatial();
 
             return true;
         }
@@ -666,7 +678,7 @@ class ModelState extends SimpleAppState {
     }
 
     /**
-     * Alter which bone is selected.
+     * Alter which bone is selected. TODO move to bone tool
      *
      * @param name bone name or noBone (not null)
      */
