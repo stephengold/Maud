@@ -59,7 +59,7 @@ class BoneScaleTool extends WindowController {
     // fields
 
     /**
-     * references to the bone-scale sliders, set by
+     * references to the per-axis sliders, set by
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
      */
     final private Slider sliders[] = new Slider[numAxes];
@@ -68,7 +68,7 @@ class BoneScaleTool extends WindowController {
      */
     final private static float[] scales = new float[numAxes];
     /*
-     * animation time at previous update
+     * animation time at previous update (in seconds)
      */
     private float previousUpdateTime = 0f;
     // *************************************************************************
@@ -207,13 +207,14 @@ class BoneScaleTool extends WindowController {
      * Update the status label of the slider for the specified axis.
      *
      * @param iAxis index of the axis (&ge;0, &lt;3)
-     * @return slider value
+     * @return slider value (ge;0)
      */
     private float updateStatus(int iAxis) {
         String axisName = axisNames[iAxis];
-        String sliderName = axisName + "Sca";
-        float scale = Maud.gui.updateSlider(sliderName, "x");
+        String sliderPrefix = axisName + "Sca";
+        float scale = Maud.gui.updateSlider(sliderPrefix, "x");
 
+        assert scale >= 0f : scale;
         return scale;
     }
 }

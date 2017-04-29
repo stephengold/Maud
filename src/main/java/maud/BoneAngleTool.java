@@ -59,16 +59,16 @@ class BoneAngleTool extends WindowController {
     // fields
 
     /**
-     * references to the bone-angle sliders, set by
+     * references to the per-axis sliders, set by
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
      */
     final private Slider sliders[] = new Slider[numAxes];
     /**
-     * bone angles
+     * bone angles (in radians)
      */
     final private static float[] angles = new float[numAxes];
     /*
-     * animation time at previous update
+     * animation time at previous update (in seconds)
      */
     private float previousUpdateTime = 0f;
     // *************************************************************************
@@ -207,12 +207,12 @@ class BoneAngleTool extends WindowController {
      * Update the status label of the slider for the specified axis.
      *
      * @param iAxis index of the axis (&ge;0, &lt;3)
-     * @return slider value
+     * @return slider value (in radians)
      */
     private float updateStatus(int iAxis) {
         String axisName = axisNames[iAxis];
-        String sliderName = axisName + "Ang";
-        float angle = Maud.gui.updateSlider(sliderName, " rad");
+        String sliderPrefix = axisName + "Ang";
+        float angle = Maud.gui.updateSlider(sliderPrefix, " rad");
 
         return angle;
     }

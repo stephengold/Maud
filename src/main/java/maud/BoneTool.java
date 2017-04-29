@@ -49,7 +49,7 @@ class BoneTool extends WindowController {
     // fields
 
     /**
-     * index of the selected bone, or null
+     * index of the selected bone, or null for none selected
      */
     private Integer selectedIndex = null;
     // *************************************************************************
@@ -76,6 +76,8 @@ class BoneTool extends WindowController {
 
     /**
      * Read the index of the selected bone.
+     *
+     * @return the bone index
      */
     int getSelectedIndex() {
         int result = selectedIndex;
@@ -84,6 +86,8 @@ class BoneTool extends WindowController {
 
     /**
      * Test whether a bone is selected. TODO rename
+     *
+     * @return true if selected, otherwise false
      */
     boolean isSelected() {
         if (selectedIndex == null) {
@@ -147,6 +151,7 @@ class BoneTool extends WindowController {
                 childText = "none";
                 scButton = "";
             }
+            
             rButton = "Rename";
 
         } else {
