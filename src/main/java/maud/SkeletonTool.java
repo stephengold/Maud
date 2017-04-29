@@ -54,7 +54,7 @@ class SkeletonTool extends WindowController {
      *
      * @param screenController
      */
-    public SkeletonTool(BasicScreenController screenController) {
+    SkeletonTool(BasicScreenController screenController) {
         super(screenController, "skeletonTool", false);
     }
     // *************************************************************************

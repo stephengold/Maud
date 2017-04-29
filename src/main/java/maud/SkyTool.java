@@ -61,7 +61,7 @@ class SkyTool extends WindowController {
      *
      * @param screenController
      */
-    public SkyTool(BasicScreenController screenController) {
+    SkyTool(BasicScreenController screenController) {
         super(screenController, "skyTool", false);
     }
     // *************************************************************************

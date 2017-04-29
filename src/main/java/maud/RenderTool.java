@@ -88,7 +88,7 @@ class RenderTool extends WindowController {
      *
      * @param screenController
      */
-    public RenderTool(DddGui screenController) {
+    RenderTool(DddGui screenController) {
         super(screenController, "renderTool", false);
     }
     // *************************************************************************
