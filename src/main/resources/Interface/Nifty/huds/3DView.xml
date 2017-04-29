@@ -167,23 +167,67 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="boneTool" title="Bone Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="200px" width="200px" x="65" y="35">
+                     height="175px" width="270px" x="65" y="35">
                 <panel childLayout="vertical">
-                    <panel style="statusPanel">
-                        <control name="label" id="boneDescription1"
-                                 textHAlign="left"/>
+                    <panel childLayout="horizontal">
+                        <control name="label" id="boneIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="65px"/>
+                        <panel/>
+                        <control name="button" label="Angles" id="id1ToAvoidNiftyWarning"
+                                 width="55px">
+                            <interact onRelease="perform(select tool boneAngle)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" label="Offsets" id="id2ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(select tool boneOffset)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" label="Scales" id="id3ToAvoidNiftyWarning"
+                                 width="55px">
+                            <interact onRelease="perform(select tool boneScale)"/>
+                        </control>
                     </panel>
-                    <panel style="statusPanel">
-                        <control name="label" id="boneDescription2"
-                                 textHAlign="left"/>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Name:  "
+                                 textHAlign="right"
+                                 width="55px"/>
+                        <control name="label" id="boneName"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="boneRenameButton"
+                                 width="60px">
+                            <interact onRelease="perform(rename bone)"/>
+                        </control>
                     </panel>
-                    <panel style="statusPanel">
-                        <control name="label" id="boneParentDescription"
-                                 textHAlign="left"/>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Parent:  "
+                                 textHAlign="right"
+                                 width="55px"/>
+                        <control name="label" id="boneParent"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="boneSelectParentButton"
+                                 width="60px">
+                            <interact onRelease="perform(select boneParent)"/>
+                        </control>
                     </panel>
-                    <panel style="statusPanel">
-                        <control name="label" id="boneChildDescription"
-                                 textHAlign="left"/>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Children:  "
+                                 textHAlign="right"
+                                 width="55px"/>
+                        <control name="label" id="boneChildren"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="boneSelectChildButton"
+                                 width="60px">
+                            <interact onRelease="perform(select boneChild)"/>
+                        </control>
                     </panel>
                 </panel>
             </control>

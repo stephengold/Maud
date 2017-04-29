@@ -26,6 +26,8 @@
 package maud;
 
 import com.jme3.animation.Animation;
+import com.jme3.animation.Bone;
+import com.jme3.animation.Skeleton;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
@@ -84,7 +86,7 @@ public class DddGui extends GuiScreenController {
      * TODO move?
      */
     final static String noBone = "( no bone )";
-    /**
+    /*
      * action prefixes used by dialogs and popup menus
      */
     final static String copyAnimationPrefix = "copy animation";
@@ -99,6 +101,7 @@ public class DddGui extends GuiScreenController {
     final static String saveModelFilePrefix = "save model file ";
     final static String selectBonePrefix = "select bone ";
     final static String selectBoneChildPrefix = "select boneChild ";
+    final static String selectToolPrefix = "select tool ";
     /**
      * name of signal that rotates the model counter-clockwise around +Y
      */
@@ -357,6 +360,18 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
+     * Handle a "rename bone" action with no argument.
+     */
+    void renameBone() {
+        String oldName = Maud.model.getBoneName();
+        if (!oldName.equals(DddGui.noBone)) {
+            closeAllPopups();
+            showTextEntryDialog("Enter new name for bone:", oldName, "Rename",
+                    renameBonePrefix);
+        }
+    }
+
+    /**
      * Parse and handle a "save model asset" action.
      *
      * @param actionString (not null)
@@ -410,7 +425,23 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
-     * Handle a "select bone" action.
+     * Handle a "select boneChild" action with no argument.
+     */
+    void selectBoneChild() {
+        if (Maud.gui.bone.isSelected()) {
+            String parentName = Maud.model.getBoneName();
+            List<String> choices = Maud.model.listChildBoneNames(parentName);
+            if (choices.size() == 1) {
+                String childName = choices.get(0);
+                Maud.model.selectBone(childName);
+            } else if (choices.size() > 1) {
+                showPopupMenu(selectBonePrefix, choices);
+            }
+        }
+    }
+
+    /**
+     * Handle a "select boneChild" action.
      *
      * @param actionString (not null)
      */
@@ -434,6 +465,79 @@ public class DddGui extends GuiScreenController {
                 }
             }
             showPopupMenu(selectBoneChildPrefix, items);
+        }
+    }
+
+    /**
+     * Handle a "select boneParent" action.
+     */
+    void selectBoneParent() {
+        Bone bone = Maud.model.getBone();
+        if (bone != null) {
+            Bone parent = bone.getParent();
+            if (parent != null) {
+                Skeleton skeleton = Maud.model.getSkeleton();
+                int boneIndex = skeleton.getBoneIndex(parent);
+                Maud.gui.bone.setSelectedIndex(boneIndex);
+            }
+        }
+    }
+
+    /**
+     * Handle a "select tool" action.
+     *
+     * @param actionString (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    boolean selectTool(String actionString) {
+        assert actionString.startsWith(selectToolPrefix) : actionString;
+
+        int namePos = selectToolPrefix.length();
+        String name = actionString.substring(namePos);
+        WindowController controller = null;
+        switch (name) {
+            case "animation":
+                controller = animation;
+                break;
+            case "axes":
+                controller = axes;
+                break;
+            case "bone":
+                controller = bone;
+                break;
+            case "boneAngle":
+                controller = boneAngle;
+                break;
+            case "boneOffset":
+                controller = boneOffset;
+                break;
+            case "boneScale":
+                controller = boneScale;
+                break;
+            case "camera":
+                controller = camera;
+                break;
+            case "cursor":
+                controller = cursor;
+                break;
+            case "model":
+                controller = model;
+                break;
+            case "render":
+                controller = render;
+                break;
+            case "skeleton":
+                controller = skeleton;
+                break;
+            case "sky":
+                controller = sky;
+                break;
+        }
+        if (controller == null) {
+            return false;
+        } else {
+            controller.select();
+            return true;
         }
     }
 
@@ -968,10 +1072,7 @@ public class DddGui extends GuiScreenController {
                 handled = true;
                 break;
             case "Rename":
-                String oldName = Maud.model.getBoneName();
-                closeAllPopups();
-                showTextEntryDialog("Enter new name for bone:",
-                        oldName, "Rename", renameBonePrefix);
+                renameBone();
                 handled = true;
                 break;
             case "Scale":

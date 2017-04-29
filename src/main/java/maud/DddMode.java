@@ -46,7 +46,8 @@ class DddMode extends InputMode {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(DddMode.class.getName());
+    final private static Logger logger = Logger.getLogger(
+            DddMode.class.getName());
     /**
      * asset path to the cursor for this mode
      */
@@ -78,7 +79,19 @@ class DddMode extends InputMode {
 
         boolean handled = false;
         if (ongoing) {
-            if (actionString.startsWith(DddGui.loadAnimationPrefix)) {
+            if (actionString.equals("rename bone")) {
+                Maud.gui.renameBone();
+                handled = true;
+
+            } else if (actionString.equals("select boneChild")) {
+                Maud.gui.selectBoneChild();
+                handled = true;
+
+            } else if (actionString.equals("select boneParent")) {
+                Maud.gui.selectBoneParent();
+                handled = true;
+
+            } else if (actionString.startsWith(DddGui.loadAnimationPrefix)) {
                 Maud.gui.loadAnimation(actionString);
                 handled = true;
 
@@ -127,7 +140,11 @@ class DddMode extends InputMode {
                 Maud.gui.selectBoneChild(actionString);
                 handled = true;
 
-            } else if (actionString.startsWith(DddGui.openMenuPrefix)) {
+            } else if (actionString.startsWith(DddGui.selectToolPrefix)) {
+                handled = Maud.gui.selectTool(actionString);
+            }
+
+            if (!handled && actionString.startsWith(DddGui.openMenuPrefix)) {
                 handled = Maud.gui.menu(actionString);
             }
         }

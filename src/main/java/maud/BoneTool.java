@@ -67,7 +67,7 @@ class BoneTool extends WindowController {
     // new methods exposed
 
     /**
-     * Deselect the selected bone and update this window.
+     * Deselect the selected bone and update this window. TODO rename
      */
     void deselect() {
         selectedIndex = null;
@@ -83,7 +83,7 @@ class BoneTool extends WindowController {
     }
 
     /**
-     * Test whether a bone is selected.
+     * Test whether a bone is selected. TODO rename
      */
     boolean isSelected() {
         if (selectedIndex == null) {
@@ -94,7 +94,7 @@ class BoneTool extends WindowController {
     }
 
     /**
-     * Change what bone is selected and update this window.
+     * Change which bone is selected and update this window.
      */
     void setSelectedIndex(int newIndex) {
         selectedIndex = newIndex;
@@ -105,57 +105,74 @@ class BoneTool extends WindowController {
      * Update this window and others after a change.
      */
     void update() {
-        String description1, description2;
-        String parentDescription, childDescription;
+        String indexText, nameText;
+        String parentText, childText;
+        String rButton, spButton, scButton;
+
+        int numBones = Maud.model.getBoneCount();
         if (isSelected()) {
-            int boneCount = Maud.model.getBoneCount();
-            description1 = String.format("Bone #%d of %d:",
-                    selectedIndex + 1, boneCount);
+            indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
 
             Bone bone = Maud.model.getBone();
             String name = bone.getName();
-            description2 = String.format("named %s", MyString.quote(name));
+            nameText = MyString.quote(name);
 
             Bone parent = bone.getParent();
             if (parent == null) {
                 List<String> roots = Maud.model.listRootBoneNames();
                 int numRoots = roots.size();
                 if (numRoots == 1) {
-                    parentDescription = "the root bone";
+                    parentText = "( the root bone )";
                 } else {
-                    parentDescription = String.format("one of %d root bones",
-                            numRoots);
+                    parentText = String.format(
+                            "( one of %d root bones )", numRoots);
                 }
+                spButton = "";
             } else {
                 String parentName = parent.getName();
-                parentDescription = String.format("a child of %s",
-                        MyString.quote(parentName));
+                parentText = MyString.quote(parentName);
+                spButton = "Select";
             }
 
             List<Bone> children = bone.getChildren();
             int numChildren = children.size();
             if (numChildren > 1) {
-                childDescription = String.format("with %d children",
-                        numChildren);
+                childText = String.format("%d children", numChildren);
+                scButton = "Select";
             } else if (numChildren == 1) {
                 String childName = children.get(0).getName();
-                childDescription = String.format("the parent of %s",
-                        MyString.quote(childName));
+                childText = MyString.quote(childName);
+                scButton = "Select";
             } else {
-                childDescription = "with no children";
+                childText = "none";
+                scButton = "";
             }
+            rButton = "Rename";
 
         } else {
-            description1 = "No bone selected.";
-            description2 = "";
-            parentDescription = "";
-            childDescription = "";
+            if (numBones == 0) {
+                indexText = "no bones";
+            } else if (numBones == 1) {
+                indexText = "one bone";
+            } else {
+                indexText = String.format("%d bones", numBones);
+            }
+            nameText = "(none selected)";
+            parentText = "n/a";
+            spButton = "";
+            childText = "n/a";
+            scButton = "";
+            rButton = "";
         }
 
-        Maud.gui.setStatusText("boneDescription1", description1);
-        Maud.gui.setStatusText("boneDescription2", description2);
-        Maud.gui.setStatusText("boneParentDescription", parentDescription);
-        Maud.gui.setStatusText("boneChildDescription", childDescription);
+        Maud.gui.setStatusText("boneIndex", indexText);
+        Maud.gui.setStatusText("boneName", " " + nameText);
+        Maud.gui.setStatusText("boneParent", " " + parentText);
+        Maud.gui.setStatusText("boneChildren", " " + childText);
+
+        Maud.gui.setButtonLabel("boneRenameButton", rButton);
+        Maud.gui.setButtonLabel("boneSelectParentButton", spButton);
+        Maud.gui.setButtonLabel("boneSelectChildButton", scButton);
 
         Maud.gui.axes.update();
         Maud.gui.boneAngle.set();
