@@ -384,9 +384,9 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" width="12"/>
                         <control name="label" text="show 3-D cursor"/>
                     </panel>
-                    <panel style="statusPanel">
-                        <control name="label" text="3-D cursor color:"/>
-                    </panel>
+                    <control name="label" text="3-D cursor color:"
+                             height="40px"
+                             textVAlign="bottom"/>
                     <panel childLayout="horizontal" padding="10">
                         <control name="verticalSlider" id="cursorRSlider"
                                  buttonStepSize="1"
@@ -403,10 +403,13 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <panel childLayout="vertical"
                                height="130" width="105">
                             <control name="label" id="cursorRSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="label" id="cursorGSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="label" id="cursorBSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                         </panel>
                     </panel>
@@ -492,7 +495,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="20"/>
                         <control name="label"
                                  width="12"/>
-                        <control name="label" text="show"/>
+                        <control name="label" text="show wireframe"/>
                     </panel>
                     <panel style="statusPanel">
                         <control name="label" id="skeletonLineWidthSliderStatus"/>
@@ -508,8 +511,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                              buttonStepSize="1"
                              height="40"
                              initial="4" max="10" min="1" stepSize="1"/>
-                    <control name="label"
-                             text="Wire color:"/>
+                    <control name="label" text="Wire color:"/>
                     <panel childLayout="horizontal" padding="10">
                         <control name="verticalSlider" id="skeRSlider"
                                  buttonStepSize="1"
@@ -526,10 +528,13 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <panel childLayout="vertical"
                                height="130" width="105">
                             <control name="label" id="skeRSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="label" id="skeGSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                             <control name="label" id="skeBSliderStatus"
+                                     textHAlign="center"
                                      width="*"/>
                         </panel>
                     </panel>
