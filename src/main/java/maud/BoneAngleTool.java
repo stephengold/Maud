@@ -186,7 +186,7 @@ class BoneAngleTool extends WindowController {
                 sliders[iAxis].setValue(0f);
 
                 String axisName = axisNames[iAxis];
-                String statusName = axisName + "SliderStatus";
+                String statusName = axisName + "AngSliderStatus";
                 Maud.gui.setStatusText(statusName, "");
             }
         }

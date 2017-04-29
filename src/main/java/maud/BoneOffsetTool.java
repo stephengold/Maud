@@ -198,7 +198,7 @@ class BoneOffsetTool extends WindowController {
                 sliders[iAxis].setValue(0f);
 
                 String axisName = axisNames[iAxis];
-                String statusName = axisName + "SliderStatus";
+                String statusName = axisName + "OffSliderStatus";
                 Maud.gui.setStatusText(statusName, "");
             }
         }

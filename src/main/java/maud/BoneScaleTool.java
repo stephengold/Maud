@@ -186,7 +186,7 @@ class BoneScaleTool extends WindowController {
                 sliders[iAxis].setValue(1f);
 
                 String axisName = axisNames[iAxis];
-                String statusName = axisName + "SliderStatus";
+                String statusName = axisName + "ScaSliderStatus";
                 Maud.gui.setStatusText(statusName, "");
             }
         }
