@@ -33,6 +33,7 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
 import com.jme3.asset.AssetLoadException;
+import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
 import com.jme3.export.binary.BinaryExporter;
@@ -57,16 +58,14 @@ import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
-import jme3utilities.SimpleAppState;
 import jme3utilities.ui.ActionApplication;
 
 /**
- * A simple app state to manage the MVC model of the loaded CG model in the Maud
- * application.
+ * The MVC model of the loaded CG model in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ModelState extends SimpleAppState {
+class ModelState {
     // *************************************************************************
     // constants and loggers
 
@@ -79,7 +78,12 @@ class ModelState extends SimpleAppState {
     // fields
 
     /**
-     * track unsaved changes to the cgModel
+     * asset manager used to load CG models (set by
+     * {@link #setAssetManager(com.jme3.asset.AssetManager)}
+     */
+    private AssetManager assetManager = null;
+    /**
+     * track unsaved changes to the CG model
      */
     private boolean pristine = true;
     /**
@@ -102,15 +106,6 @@ class ModelState extends SimpleAppState {
      * name of the loaded model
      */
     private String modelName = null;
-    // *************************************************************************
-    // constructors
-
-    /**
-     * Instantiate an uninitialized, enabled state.
-     */
-    ModelState() {
-        super(true);
-    }
     // *************************************************************************
     // new methods exposed
 
@@ -570,7 +565,6 @@ class ModelState extends SimpleAppState {
      * @return true if successful, otherwise false
      */
     boolean loadModelNamed(String name) {
-        assert isInitialized();
         assert name != null;
 
         String extension;
@@ -679,7 +673,7 @@ class ModelState extends SimpleAppState {
     }
 
     /**
-     * Alter which bone is selected. TODO move to bone tool
+     * Alter which bone is selected.
      *
      * @param name bone name or noBone (not null)
      */
@@ -711,6 +705,16 @@ class ModelState extends SimpleAppState {
         float newTime = Float.valueOf(name);
         // TODO validate
         Maud.gui.animation.setTime(newTime);
+    }
+
+    /**
+     * Alter the asset manager used for loading models.
+     *
+     * @param newManager manager to use (not null)
+     */
+    void setAssetManager(AssetManager newManager) {
+        assert newManager != null;
+        assetManager = newManager;
     }
 
     /**

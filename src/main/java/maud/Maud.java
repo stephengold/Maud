@@ -152,7 +152,9 @@ public class Maud extends GuiApplication {
      */
     @Override
     public void guiInitializeApplication() {
-        stateManager.attachAll(viewState, model);
+        model.setAssetManager(assetManager);
+
+        stateManager.attachAll(viewState);
         /*
          * Attach screen controllers for the "3D View" screen and BindScreen.
          */
@@ -167,7 +169,7 @@ public class Maud extends GuiApplication {
          */
         stateManager.attachAll(gui.animation, gui.axes, gui.bone, gui.boneAngle,
                 gui.boneOffset, gui.boneScale, gui.cursor, gui.camera,
-                gui.model, gui.render, gui.skeleton, gui.shadowMode, gui.sky, 
+                gui.model, gui.render, gui.skeleton, gui.shadowMode, gui.sky,
                 gui.spatial);
         /*
          * Disable flyCam.
