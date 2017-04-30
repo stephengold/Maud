@@ -229,10 +229,10 @@ class ModelState extends SimpleAppState {
      */
     Bone getBone() {
         Bone bone;
-        if (!Maud.gui.bone.isSelected()) {
+        if (!Maud.gui.bone.isBoneSelected()) {
             bone = null;
         } else {
-            int index = Maud.gui.bone.getSelectedIndex();
+            int index = Maud.gui.bone.getBoneIndex();
             bone = getSkeleton().getBone(index);
         }
 
@@ -465,7 +465,7 @@ class ModelState extends SimpleAppState {
         List<String> result = null;
         if (Maud.gui.animation.isBindPoseLoaded()) {
             logger.log(Level.INFO, "No animation is selected.");
-        } else if (!Maud.gui.bone.isSelected()) {
+        } else if (!Maud.gui.bone.isBoneSelected()) {
             logger.log(Level.INFO, "No bone is selected.");
         } else if (!isTrackSelected()) {
             logger.log(Level.INFO, "No track is selected.");
@@ -653,7 +653,7 @@ class ModelState extends SimpleAppState {
      */
     boolean renameBone(String newName) {
         assert newName != null;
-        if (!Maud.gui.bone.isSelected()) {
+        if (!Maud.gui.bone.isBoneSelected()) {
             logger.log(Level.WARNING, "Rename failed: no bone selected.",
                     MyString.quote(newName));
             return false;
@@ -692,10 +692,10 @@ class ModelState extends SimpleAppState {
         }
 
         if (name.equals(DddGui.noBone)) {
-            Maud.gui.bone.deselect();
+            Maud.gui.bone.selectNoBone();
         } else {
             int boneIndex = MySkeleton.findBoneIndex(rootSpatial, name);
-            Maud.gui.bone.setSelectedIndex(boneIndex);
+            Maud.gui.bone.selectBone(boneIndex);
         }
     }
 
@@ -718,9 +718,9 @@ class ModelState extends SimpleAppState {
      */
     void setBoneRotation(Quaternion rotation) {
         assert rotation != null;
-        assert Maud.gui.bone.isSelected();
+        assert Maud.gui.bone.isBoneSelected();
 
-        int boneIndex = Maud.gui.bone.getSelectedIndex();
+        int boneIndex = Maud.gui.bone.getBoneIndex();
         Maud.gui.animation.setBoneRotation(boneIndex, rotation);
     }
 
@@ -729,9 +729,9 @@ class ModelState extends SimpleAppState {
      */
     void setBoneScale(Vector3f scale) {
         assert scale != null;
-        assert Maud.gui.bone.isSelected();
+        assert Maud.gui.bone.isBoneSelected();
 
-        int boneIndex = Maud.gui.bone.getSelectedIndex();
+        int boneIndex = Maud.gui.bone.getBoneIndex();
         Maud.gui.animation.setBoneScale(boneIndex, scale);
     }
 
@@ -740,9 +740,9 @@ class ModelState extends SimpleAppState {
      */
     void setBoneTranslation(Vector3f translation) {
         assert translation != null;
-        assert Maud.gui.bone.isSelected();
+        assert Maud.gui.bone.isBoneSelected();
 
-        int boneIndex = Maud.gui.bone.getSelectedIndex();
+        int boneIndex = Maud.gui.bone.getBoneIndex();
         Maud.gui.animation.setBoneTranslation(boneIndex, translation);
     }
 
@@ -842,7 +842,7 @@ class ModelState extends SimpleAppState {
      * @return the pre-existing instance, or null if none
      */
     private BoneTrack findTrack() {
-        if (!Maud.gui.bone.isSelected()) {
+        if (!Maud.gui.bone.isBoneSelected()) {
             return null;
         }
         if (Maud.gui.animation.isBindPoseLoaded()) {
@@ -850,7 +850,7 @@ class ModelState extends SimpleAppState {
         }
 
         Animation animation = getLoadedAnimation();
-        int boneIndex = Maud.gui.bone.getSelectedIndex();
+        int boneIndex = Maud.gui.bone.getBoneIndex();
         BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
 
         return track;
@@ -862,7 +862,7 @@ class ModelState extends SimpleAppState {
      * @return true if one is selected, false if none is selected
      */
     private boolean isTrackSelected() {
-        if (Maud.gui.bone.isSelected()) {
+        if (Maud.gui.bone.isBoneSelected()) {
             if (Maud.gui.animation.isBindPoseLoaded()) {
                 return false;
             }

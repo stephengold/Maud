@@ -101,8 +101,8 @@ class AxesTool extends WindowController {
         String units;
         switch (mode) {
             case "bone":
-                if (Maud.gui.bone.isSelected()) {
-                    int boneIndex = Maud.gui.bone.getSelectedIndex();
+                if (Maud.gui.bone.isBoneSelected()) {
+                    int boneIndex = Maud.gui.bone.getBoneIndex();
                     newControl = Maud.viewState.getBoneAxesControl(boneIndex);
                     units = " bone units";
                 } else {

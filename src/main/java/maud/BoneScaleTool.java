@@ -91,7 +91,7 @@ class BoneScaleTool extends WindowController {
      * If sliders are enabled, set all 3 scale factors to 1.
      */
     void reset() {
-        if (Maud.gui.bone.isSelected() && !Maud.gui.animation.isRunning()) {
+        if (Maud.gui.bone.isBoneSelected() && !Maud.gui.animation.isRunning()) {
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 sliders[iAxis].enable();
                 sliders[iAxis].setValue(1f);
@@ -103,7 +103,7 @@ class BoneScaleTool extends WindowController {
      * If sliders are enabled, set all 3 sliders to match the selected bone.
      */
     void set() {
-        if (Maud.gui.bone.isSelected() && !Maud.gui.animation.isRunning()) {
+        if (Maud.gui.bone.isBoneSelected() && !Maud.gui.animation.isRunning()) {
             scales();
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 float scale = scales[iAxis];
@@ -146,7 +146,7 @@ class BoneScaleTool extends WindowController {
             return;
         }
 
-        if (Maud.gui.bone.isSelected()) {
+        if (Maud.gui.bone.isBoneSelected()) {
             float newTime = Maud.gui.animation.getTime();
             if (newTime == previousUpdateTime) {
                 Maud.gui.setButtonLabel("resetScaButton", "Reset");
@@ -198,7 +198,7 @@ class BoneScaleTool extends WindowController {
      * Calculate scale factors of the selected bone.
      */
     private void scales() {
-        int boneIndex = Maud.gui.bone.getSelectedIndex();
+        int boneIndex = Maud.gui.bone.getBoneIndex();
         Transform transform = Maud.gui.animation.copyBoneTransform(boneIndex);
         Vector3f scale = transform.getScale(null);
         scale.toArray(scales);

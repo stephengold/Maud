@@ -68,29 +68,21 @@ class BoneTool extends WindowController {
     // new methods exposed
 
     /**
-     * Deselect the selected bone and update this window. TODO rename
-     */
-    void deselect() {
-        selectedIndex = null;
-        update();
-    }
-
-    /**
-     * Read the index of the selected bone.
+     * Read the index of the selected bone. Assumes a bone is selected.
      *
      * @return the bone index
      */
-    int getSelectedIndex() {
+    int getBoneIndex() {
         int result = selectedIndex;
         return result;
     }
 
     /**
-     * Test whether a bone is selected. TODO rename
+     * Test whether a bone is selected.
      *
      * @return true if selected, otherwise false
      */
-    boolean isSelected() {
+    boolean isBoneSelected() {
         if (selectedIndex == null) {
             return false;
         } else {
@@ -101,8 +93,16 @@ class BoneTool extends WindowController {
     /**
      * Change which bone is selected and update this window.
      */
-    void setSelectedIndex(int newIndex) {
+    void selectBone(int newIndex) {
         selectedIndex = newIndex;
+        update();
+    }
+
+    /**
+     * Deselect the selected bone and update this window.
+     */
+    void selectNoBone() {
+        selectedIndex = null;
         update();
     }
 
@@ -115,7 +115,7 @@ class BoneTool extends WindowController {
         String rButton, spButton, scButton;
 
         int numBones = Maud.model.getBoneCount();
-        if (isSelected()) {
+        if (isBoneSelected()) {
             indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
 
             Bone bone = Maud.model.getBone();

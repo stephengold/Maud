@@ -91,7 +91,7 @@ class BoneAngleTool extends WindowController {
      * If sliders are enabled, set all 3 angles to 0.
      */
     void reset() {
-        if (Maud.gui.bone.isSelected() && !Maud.gui.animation.isRunning()) {
+        if (Maud.gui.bone.isBoneSelected() && !Maud.gui.animation.isRunning()) {
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 sliders[iAxis].enable();
                 sliders[iAxis].setValue(0f);
@@ -103,7 +103,7 @@ class BoneAngleTool extends WindowController {
      * If sliders are enabled, set all 3 sliders to match the selected bone.
      */
     void set() {
-        if (Maud.gui.bone.isSelected() && !Maud.gui.animation.isRunning()) {
+        if (Maud.gui.bone.isBoneSelected() && !Maud.gui.animation.isRunning()) {
             angles();
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 float angle = angles[iAxis];
@@ -146,7 +146,7 @@ class BoneAngleTool extends WindowController {
             return;
         }
 
-        if (Maud.gui.bone.isSelected()) {
+        if (Maud.gui.bone.isBoneSelected()) {
             float newTime = Maud.gui.animation.getTime();
             if (newTime == previousUpdateTime) {
                 Maud.gui.setButtonLabel("resetAngButton", "Reset");
@@ -198,7 +198,7 @@ class BoneAngleTool extends WindowController {
      * Calculate rotation angles of the selected bone.
      */
     private void angles() {
-        int boneIndex = Maud.gui.bone.getSelectedIndex();
+        int boneIndex = Maud.gui.bone.getBoneIndex();
         Transform transform = Maud.gui.animation.copyBoneTransform(boneIndex);
         Quaternion rotation = transform.getRotation(null);
         rotation.toAngles(angles);

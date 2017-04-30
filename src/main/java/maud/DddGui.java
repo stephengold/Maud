@@ -433,7 +433,7 @@ public class DddGui extends GuiScreenController {
      * Handle a "select boneChild" action with no argument.
      */
     void selectBoneChild() {
-        if (Maud.gui.bone.isSelected()) {
+        if (Maud.gui.bone.isBoneSelected()) {
             String parentName = Maud.model.getBoneName();
             List<String> choices = Maud.model.listChildBoneNames(parentName);
             if (choices.size() == 1) {
@@ -483,7 +483,7 @@ public class DddGui extends GuiScreenController {
             if (parent != null) {
                 Skeleton skeleton = Maud.model.getSkeleton();
                 int boneIndex = skeleton.getBoneIndex(parent);
-                Maud.gui.bone.setSelectedIndex(boneIndex);
+                Maud.gui.bone.selectBone(boneIndex);
             }
         }
     }
@@ -776,7 +776,7 @@ public class DddGui extends GuiScreenController {
         items.add("Select by name");
         items.add("Select by pointing");
         items.add("Describe skeleton");
-        if (bone.isSelected()) {
+        if (bone.isBoneSelected()) {
             items.add("Attach prop");
             items.add("Rename");
         }
