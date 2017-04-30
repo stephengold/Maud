@@ -66,7 +66,7 @@ class AxesTool extends WindowController {
     /**
      * which set of axes is active (either "none", "world", "model", or "bone")
      */
-    private String mode = "none";
+    private String mode = "bone";
     // *************************************************************************
     // constructors
 
