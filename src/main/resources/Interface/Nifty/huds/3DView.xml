@@ -542,6 +542,45 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                 </panel>
             </control>
 
+            <control name="window" id="shadowModeTool" title="Shadow Mode Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="160px" width="160px" x="20" y="80">
+                <panel childLayout="vertical">
+                    <control name="radioButtonGroup" id="shadowGroup"/>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="shadowOffRadioButton"
+                                 group="shadowGroup"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="off"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="shadowCastRadioButton"
+                                 group="shadowGroup"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="cast only"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="shadowReceiveRadioButton"
+                                 group="shadowGroup"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="receive only"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="shadowCastAndReceiveRadioButton"
+                                 group="shadowGroup"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="cast and receive"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="shadowInheritRadioButton"
+                                 group="shadowGroup"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="inherit from parent"/>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="skyTool" title="Sky Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
@@ -676,7 +715,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="*"/>
                         <control name="button" label="Edit" id="id10ToAvoidNiftyWarning"
                                  width="50px">
-                            <interact onRelease="perform(edit shadows)"/>
+                            <interact onRelease="perform(select tool shadowMode)"/>
                         </control>
                     </panel>
                     <panel/>

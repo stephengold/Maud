@@ -76,12 +76,28 @@ class SpatialTool extends WindowController {
     // new methods exposed
 
     /**
-     * Access the selected spatial.
+     * Access the selected spatial in the MVC model.
      *
-     * @return the pre-existing spatial (not null)
+     * @return the pre-existing instance (not null)
      */
     Spatial getSelectedSpatial() {
         Spatial result = Maud.model.getRootSpatial();
+        for (int position : treePosition) {
+            Node node = (Node) result;
+            result = node.getChild(position);
+        }
+
+        assert result != null;
+        return result;
+    }
+
+    /**
+     * Access the selected spatial in the view.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    Spatial getViewSpatial() {
+        Spatial result = Maud.viewState.getSpatial();
         for (int position : treePosition) {
             Node node = (Node) result;
             result = node.getChild(position);
@@ -102,6 +118,7 @@ class SpatialTool extends WindowController {
             treePosition.add(childIndex);
             assert getSelectedSpatial() == child;
             update();
+            Maud.gui.shadowMode.update();
         }
     }
 
@@ -116,6 +133,7 @@ class SpatialTool extends WindowController {
             treePosition.remove(last);
             assert getSelectedSpatial() == parent;
             update();
+            Maud.gui.shadowMode.update();
         }
     }
 
@@ -125,6 +143,7 @@ class SpatialTool extends WindowController {
     void selectRootSpatial() {
         treePosition.clear();
         update();
+        Maud.gui.shadowMode.update();
     }
 
     /**

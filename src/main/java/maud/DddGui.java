@@ -34,6 +34,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.JmeVersion;
@@ -121,7 +122,7 @@ public class DddGui extends GuiScreenController {
      * input mode for the "3D View" screen
      */
     final DddMode inputMode = new DddMode();
-    /**
+    /*
      * controllers for tool windows
      */
     final AnimationTool animation = new AnimationTool(this);
@@ -134,6 +135,7 @@ public class DddGui extends GuiScreenController {
     final CursorTool cursor = new CursorTool(this);
     final ModelTool model = new ModelTool(this);
     final RenderTool render = new RenderTool(this);
+    final ShadowModeTool shadowMode = new ShadowModeTool(this);
     final SkeletonTool skeleton = new SkeletonTool(this);
     final SpatialTool spatial = new SpatialTool(this);
     final SkyTool sky = new SkyTool(this);
@@ -303,26 +305,44 @@ public class DddGui extends GuiScreenController {
         switch (buttonId) {
             case "boneAxesRadioButton":
                 axes.setMode("bone");
-                return;
+                break;
             case "modelAxesRadioButton":
                 axes.setMode("model");
-                return;
+                break;
             case "worldAxesRadioButton":
                 axes.setMode("world");
-                return;
+                break;
             case "hideAxesRadioButton":
                 axes.setMode("none");
-                return;
+                break;
 
             case "flyingRadioButton":
                 camera.setMode("fly");
-                return;
+                break;
             case "orbitingRadioButton":
                 camera.setMode("orbit");
-                return;
+                break;
+
+            case "shadowOffRadioButton":
+                shadowMode.setMode(RenderQueue.ShadowMode.Off);
+                break;
+            case "shadowCastRadioButton":
+                shadowMode.setMode(RenderQueue.ShadowMode.Cast);
+                break;
+            case "shadowReceiveRadioButton":
+                shadowMode.setMode(RenderQueue.ShadowMode.Receive);
+                break;
+            case "shadowCastAndReceiveRadioButton":
+                shadowMode.setMode(RenderQueue.ShadowMode.CastAndReceive);
+                break;
+            case "shadowInheritRadioButton":
+                shadowMode.setMode(RenderQueue.ShadowMode.Inherit);
+                break;
+
+            default:
+                logger.log(Level.WARNING, "unknown radio button with id={0}",
+                        MyString.quote(buttonId));
         }
-        logger.log(Level.WARNING, "unknown radio button with id={0}",
-                MyString.quote(buttonId));
     }
 
     /**
@@ -586,6 +606,9 @@ public class DddGui extends GuiScreenController {
                 break;
             case "render":
                 controller = render;
+                break;
+            case "shadowMode":
+                controller = shadowMode;
                 break;
             case "skeleton":
                 controller = skeleton;

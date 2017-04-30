@@ -167,7 +167,8 @@ public class Maud extends GuiApplication {
          */
         stateManager.attachAll(gui.animation, gui.axes, gui.bone, gui.boneAngle,
                 gui.boneOffset, gui.boneScale, gui.cursor, gui.camera,
-                gui.model, gui.render, gui.skeleton, gui.sky, gui.spatial);
+                gui.model, gui.render, gui.skeleton, gui.shadowMode, gui.sky, 
+                gui.spatial);
         /*
          * Disable flyCam.
          */
