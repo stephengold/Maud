@@ -26,18 +26,18 @@
  */
 package maud;
 
-import com.jme3.animation.Bone;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 
 /**
  * The controller for the "Bone Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneTool extends WindowController {
+public class BoneTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -46,13 +46,6 @@ class BoneTool extends WindowController {
      */
     final private static Logger logger = Logger.getLogger(
             BoneTool.class.getName());
-    // *************************************************************************
-    // fields
-
-    /**
-     * index of the selected bone, or null for none selected
-     */
-    private Integer selectedIndex = null;
     // *************************************************************************
     // constructors
 
@@ -68,62 +61,22 @@ class BoneTool extends WindowController {
     // new methods exposed
 
     /**
-     * Read the index of the selected bone. Assumes a bone is selected.
-     *
-     * @return the bone index
-     */
-    int getBoneIndex() {
-        int result = selectedIndex;
-        return result;
-    }
-
-    /**
-     * Test whether a bone is selected.
-     *
-     * @return true if selected, otherwise false
-     */
-    boolean isBoneSelected() {
-        if (selectedIndex == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Change which bone is selected and update this window.
-     */
-    void selectBone(int newIndex) {
-        selectedIndex = newIndex;
-        update();
-    }
-
-    /**
-     * Deselect the selected bone and update this window.
-     */
-    void selectNoBone() {
-        selectedIndex = null;
-        update();
-    }
-
-    /**
      * Update this window and others after a change.
      */
-    void update() {
+    public void update() {
         String indexText, nameText;
         String parentText, childText;
         String rButton, spButton, scButton;
 
-        int numBones = Maud.model.getBoneCount();
-        if (isBoneSelected()) {
+        int numBones = Maud.model.countBones();
+        if (Maud.model.bone.isBoneSelected()) {
+            int selectedIndex = Maud.model.bone.getIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
 
-            Bone bone = Maud.model.getBone();
-            String name = bone.getName();
+            String name = Maud.model.bone.getName();
             nameText = MyString.quote(name);
 
-            Bone parent = bone.getParent();
-            if (parent == null) {
+            if (Maud.model.bone.isRootBone()) {
                 List<String> roots = Maud.model.listRootBoneNames();
                 int numRoots = roots.size();
                 if (numRoots == 1) {
@@ -134,18 +87,17 @@ class BoneTool extends WindowController {
                 }
                 spButton = "";
             } else {
-                String parentName = parent.getName();
+                String parentName = Maud.model.bone.getParentName();
                 parentText = MyString.quote(parentName);
                 spButton = "Select";
             }
 
-            List<Bone> children = bone.getChildren();
-            int numChildren = children.size();
+            int numChildren = Maud.model.bone.countChildren();
             if (numChildren > 1) {
                 childText = String.format("%d children", numChildren);
                 scButton = "Select";
             } else if (numChildren == 1) {
-                String childName = children.get(0).getName();
+                String childName = Maud.model.bone.getChildName(0);
                 childText = MyString.quote(childName);
                 scButton = "Select";
             } else {

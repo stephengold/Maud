@@ -33,6 +33,7 @@ import com.jme3.math.Transform;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 
 /**
  * The controller for the "Bone-Angle Tool" window in Maud's "3D View" screen.
@@ -91,7 +92,7 @@ class BoneAngleTool extends WindowController {
      * If sliders are enabled, set all 3 angles to 0.
      */
     void reset() {
-        if (Maud.gui.bone.isBoneSelected() && !Maud.gui.animation.isRunning()) {
+        if (Maud.model.bone.isBoneSelected() && !Maud.model.animation.isRunning()) {
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 sliders[iAxis].enable();
                 sliders[iAxis].setValue(0f);
@@ -103,7 +104,7 @@ class BoneAngleTool extends WindowController {
      * If sliders are enabled, set all 3 sliders to match the selected bone.
      */
     void set() {
-        if (Maud.gui.bone.isBoneSelected() && !Maud.gui.animation.isRunning()) {
+        if (Maud.model.bone.isBoneSelected() && !Maud.model.animation.isRunning()) {
             angles();
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 float angle = angles[iAxis];
@@ -146,8 +147,8 @@ class BoneAngleTool extends WindowController {
             return;
         }
 
-        if (Maud.gui.bone.isBoneSelected()) {
-            float newTime = Maud.gui.animation.getTime();
+        if (Maud.model.bone.isBoneSelected()) {
+            float newTime = Maud.model.animation.getTime();
             if (newTime == previousUpdateTime) {
                 Maud.gui.setButtonLabel("resetAngButton", "Reset");
                 /*
@@ -198,7 +199,7 @@ class BoneAngleTool extends WindowController {
      * Calculate rotation angles of the selected bone.
      */
     private void angles() {
-        int boneIndex = Maud.gui.bone.getBoneIndex();
+        int boneIndex = Maud.model.bone.getIndex();
         Transform transform = Maud.gui.animation.copyBoneTransform(boneIndex);
         Quaternion rotation = transform.getRotation(null);
         rotation.toAngles(angles);

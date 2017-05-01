@@ -34,6 +34,7 @@ import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.EdgeFilteringMode;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
+import jme3utilities.nifty.WindowController;
 import jme3utilities.sky.Updater;
 
 /**

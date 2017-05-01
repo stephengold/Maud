@@ -30,6 +30,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 
@@ -51,7 +52,7 @@ class SkyTool extends WindowController {
     // fields
 
     /**
-     * sky simulation
+     * scene-graph control for sky simulation
      */
     private SkyControl skyControl = null;
     // *************************************************************************

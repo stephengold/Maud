@@ -43,6 +43,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 
 /**
  * The controller for the "Camera Tool" window in Maud's "3D View" screen.
@@ -200,7 +201,7 @@ class CameraTool
     }
 
     /**
-     * Test whether the state is in orbit mode.
+     * Test whether the camera is in orbit mode.
      *
      * @return true if in orbit mode, otherwise false
      */
@@ -209,7 +210,7 @@ class CameraTool
     }
 
     /**
-     * Alter the mode of this state.
+     * Alter the camera mode.
      *
      * @param newSetting true &rarr; orbit mode, false &rarr; fly mode
      */
@@ -243,7 +244,7 @@ class CameraTool
     }
 
     /**
-     *
+     * Update after a change.
      */
     void update() {
         if (!orbitMode) {
@@ -528,5 +529,4 @@ class CameraTool
         direction.negateLocal();
         MyCamera.look(cam, direction);
     }
-
 }

@@ -43,7 +43,7 @@ import jme3utilities.math.MyVector3f;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class Util {
+public class Util {
     // *************************************************************************
     // constants and loggers
 

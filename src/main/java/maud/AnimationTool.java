@@ -26,8 +26,6 @@
  */
 package maud;
 
-import com.jme3.animation.Animation;
-import com.jme3.animation.BoneTrack;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -35,16 +33,17 @@ import de.lessvoid.nifty.controls.Slider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.MyAnimation;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 
 /**
  * The controller for the "Animation Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class AnimationTool extends WindowController {
+public class AnimationTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -57,21 +56,9 @@ class AnimationTool extends WindowController {
     // fields
 
     /**
-     * animation speed (0 &rarr; paused, 1 &rarr; normal speed)
-     */
-    private float speed = 0f;
-    /**
-     * animation time (in seconds, &ge;0)
-     */
-    private float time = 0f;
-    /**
      * user transforms for the current (temporary) pose
      */
     final private List<Transform> currentPose = new ArrayList<>(30);
-    /**
-     * name of the loaded animation, or bindPoseName
-     */
-    private String loadedName = null;
     // *************************************************************************
     // constructors
 
@@ -88,8 +75,11 @@ class AnimationTool extends WindowController {
 
     /**
      * Copy the user transform of the indexed bone in the current pose.
+     *
+     * @param boneIndex
+     * @return a new instance
      */
-    Transform copyBoneTransform(int boneIndex) {
+    public Transform copyBoneTransform(int boneIndex) {
         Transform result = currentPose.get(boneIndex);
         result = result.clone();
 
@@ -99,169 +89,47 @@ class AnimationTool extends WindowController {
     /**
      * Delete the loaded animation and (if successful) load bind pose.
      */
-    void delete() {
+    public void delete() {
         boolean success = Maud.model.deleteAnimation();
         if (success) {
-            loadBindPose();
+            Maud.model.animation.loadBindPose();
         }
     }
 
     /**
-     * Read the duration of the loaded animation.
-     *
-     * @return time (in seconds, &ge;0)
+     * Pose the loaded CG model per the loaded animation.
      */
-    float getDuration() {
-        float result;
-        if (isBindPoseLoaded()) {
-            result = 0f;
-        } else {
-            Animation animation;
-            animation = Maud.model.getAnimation(loadedName);
-            result = animation.getLength();
+    public void poseSkeleton() {
+        int boneCount = Maud.model.countBones();
+        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
+            Transform transform = currentPose.get(boneIndex);
+            Maud.model.animation.boneTransform(boneIndex, transform);
         }
 
-        assert result >= 0f : result;
-        return result;
+        Maud.viewState.poseSkeleton(currentPose);
     }
 
     /**
-     * Read the name of the loaded animation.
-     *
-     * @return the name, or bindPoseName if in bind pose (not null)
+     * Reset the pose to bind pose.
      */
-    String getName() {
-        assert loadedName != null;
-        return loadedName;
-    }
-
-    /**
-     * Read the animation speed.
-     *
-     * @return relative speed (1 &rarr; normal)
-     */
-    float getSpeed() {
-        return speed;
-    }
-
-    /**
-     * Read the animation time.
-     *
-     * @return seconds since start (&ge;0)
-     */
-    float getTime() {
-        assert time >= 0f : time;
-        return time;
-    }
-
-    /**
-     * Test whether bind pose is loaded.
-     *
-     * @return true if it's loaded, false if an animation is loaded
-     */
-    boolean isBindPoseLoaded() {
-        if (loadedName.equals(DddGui.bindPoseName)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Test whether an animation is running.
-     *
-     * @return true if an animation is running, false otherwise
-     */
-    boolean isRunning() {
-        if (speed == 0f) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Load the named animation (not bind pose) at t=0 and set the playback
-     * speed.
-     *
-     * @para name which animation (not null)
-     * @param newSpeed
-     */
-    void loadAnimation(String name, float newSpeed) {
-        assert name != null;
-        assert !name.equals(DddGui.bindPoseName);
-
-        loadedName = name;
-        speed = newSpeed;
-        time = 0f;
-
-        poseSkeleton();
-        setSliders();
-        update();
-        updateDescription();
-        Maud.gui.boneAngle.set();
-        Maud.gui.boneOffset.set();
-        Maud.gui.boneScale.set();
-    }
-
-    /**
-     * Load the bind pose.
-     */
-    void loadBindPose() {
-        loadedName = DddGui.bindPoseName;
-        speed = 0f;
-        time = 0f;
-
-        int boneCount = Maud.model.getBoneCount();
+    public void resetPose() {
+        int boneCount = Maud.model.countBones();
         currentPose.clear();
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             Transform transform = new Transform();
             currentPose.add(transform);
         }
         Maud.viewState.poseSkeleton(currentPose);
-
-        setSliders();
-        update();
-        updateDescription();
-        Maud.gui.boneAngle.set();
-        Maud.gui.boneOffset.set();
-        Maud.gui.boneScale.set();
-    }
-
-    /**
-     * Pose the loaded model per the loaded animation.
-     */
-    void poseSkeleton() {
-        Animation animation = Maud.model.getLoadedAnimation();
-        int boneCount = Maud.model.getBoneCount();
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Transform transform = currentPose.get(boneIndex);
-            BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
-            if (track == null) {
-                transform.loadIdentity();
-            } else {
-                Util.boneTransform(track, time, transform);
-            }
-        }
-
-        Maud.viewState.poseSkeleton(currentPose);
-    }
-
-    /**
-     * Rename the loaded animation.
-     *
-     * @param newName new name (not null)
-     */
-    void rename(String newName) {
-        loadedName = newName;
-        updateDescription();
     }
 
     /**
      * Alter the user rotation of the indexed bone.
+     *
+     * @param boneIndex which bone to rotate
+     * @param rotation (not null, unaffected)
      */
-    void setBoneRotation(int boneIndex, Quaternion rotation) {
-        assert rotation != null;
+    public void setBoneRotation(int boneIndex, Quaternion rotation) {
+        Validate.nonNull(rotation, "rotation");
 
         Transform boneTransform = currentPose.get(boneIndex);
         boneTransform.setRotation(rotation);
@@ -270,9 +138,12 @@ class AnimationTool extends WindowController {
 
     /**
      * Alter the user scale of the indexed bone.
+     *
+     * @param boneIndex which bone to scale
+     * @param scale (not null, unaffected)
      */
-    void setBoneScale(int boneIndex, Vector3f scale) {
-        assert scale != null;
+    public void setBoneScale(int boneIndex, Vector3f scale) {
+        Validate.nonNull(scale, "scale");
 
         Transform boneTransform = currentPose.get(boneIndex);
         boneTransform.setScale(scale);
@@ -281,9 +152,12 @@ class AnimationTool extends WindowController {
 
     /**
      * Alter the user translation of the indexed bone.
+     *
+     * @param boneIndex which bone to translate
+     * @param translation (not null, unaffected)
      */
-    void setBoneTranslation(int boneIndex, Vector3f translation) {
-        assert translation != null;
+    public void setBoneTranslation(int boneIndex, Vector3f translation) {
+        Validate.nonNull(translation, "translation");
 
         Transform boneTransform = currentPose.get(boneIndex);
         boneTransform.setTranslation(translation);
@@ -291,37 +165,21 @@ class AnimationTool extends WindowController {
     }
 
     /**
-     * Alter the animation time. No effect in bind pose or if the loaded
-     * animation has zero duration.
-     *
-     * @param newTime seconds since start (&ge;0, &le;duration)
-     */
-    void setTime(float newTime) {
-        assert newTime >= 0f : newTime;
-        assert newTime <= getDuration() : newTime;
-
-        if (!isBindPoseLoaded() && getDuration() > 0f) {
-            time = newTime;
-            poseSkeleton();
-            update();
-        }
-    }
-
-    /**
      * Update this window after a change to duration, speed, or time.
      */
-    void update() {
+    public void update() {
         /*
          * speed slider and its status
          */
         Slider slider = Maud.gui.getSlider("speed");
-        float duration = getDuration();
+        float duration = Maud.model.animation.getDuration();
         if (duration > 0f) {
             slider.enable();
             float newSpeed = Maud.gui.updateSlider("speed", "x");
-            speed = newSpeed;
+            Maud.model.animation.setSpeed(newSpeed);
         } else {
             slider.disable();
+            float speed = Maud.model.animation.getSpeed();
             slider.setValue(speed);
             Maud.gui.updateSlider("speed", "x");
         }
@@ -332,27 +190,54 @@ class AnimationTool extends WindowController {
         if (duration == 0f) {
             slider.disable();
             slider.setValue(0f);
-        } else if (speed == 0f) {
+        } else if (Maud.model.animation.isRunning()) {
+            slider.disable();
+            float time = Maud.model.animation.getTime();
+            float fraction = time / duration;
+            slider.setValue(fraction);
+        } else {
             slider.enable();
             float fraction = slider.getValue();
             float newTime = fraction * duration;
-            time = newTime;
-            poseSkeleton();
-        } else {
-            slider.disable();
-            float fraction = time / duration;
-            slider.setValue(fraction);
+            Maud.model.animation.setTime(newTime);
         }
         /*
          * track time status
          */
         String status;
-        if (isBindPoseLoaded()) {
+        if (Maud.model.animation.isBindPoseLoaded()) {
             status = "time = n/a";
         } else {
+            float time = Maud.model.animation.getTime();
             status = String.format("time = %.3f / %.3f sec", time, duration);
         }
         Maud.gui.setStatusText("trackTime", status);
+    }
+
+    /**
+     * Update this window after loading an animation.
+     */
+    public void updateAfterLoad() {
+        setSliders();
+        update();
+        updateDescription();
+        Maud.gui.boneAngle.set();
+        Maud.gui.boneOffset.set();
+        Maud.gui.boneScale.set();
+    }
+
+    /**
+     * Update the description after renaming or loading.
+     */
+    public void updateDescription() {
+        String description;
+        if (Maud.model.animation.isBindPoseLoaded()) {
+            description = DddGui.bindPoseName;
+        } else {
+            String name = Maud.model.animation.getName();
+            description = "Loaded " + MyString.quote(name);
+        }
+        Maud.gui.setStatusText("animationDescription", description);
     }
     // *************************************************************************
     // private methods
@@ -362,28 +247,17 @@ class AnimationTool extends WindowController {
      */
     private void setSliders() {
         Slider slider = Maud.gui.getSlider("speed");
+        float speed = Maud.model.animation.getSpeed();
         slider.setValue(speed);
 
         slider = Maud.gui.getSlider("time");
-        float duration = getDuration();
+        float duration = Maud.model.animation.getDuration();
         if (duration == 0f) {
             slider.setValue(0f);
         } else {
+            float time = Maud.model.animation.getTime();
             float fraction = time / duration;
             slider.setValue(fraction);
         }
-    }
-
-    /**
-     * Update the description after changing the name.
-     */
-    private void updateDescription() {
-        String description;
-        if (isBindPoseLoaded()) {
-            description = DddGui.bindPoseName;
-        } else {
-            description = "Loaded " + MyString.quote(loadedName);
-        }
-        Maud.gui.setStatusText("animationDescription", description);
     }
 }

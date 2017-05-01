@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.model;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
@@ -40,6 +40,7 @@ import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -58,22 +59,26 @@ import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
+import maud.DddGui;
+import maud.Maud;
+import maud.Util;
 
 /**
- * The MVC model of the loaded CG model in the Maud application.
+ * The MVC model of the loaded CG model in the Maud application: tracks all
+ * edits made to the CG model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ModelState {
+public class LoadedCGModel {
     // *************************************************************************
     // constants and loggers
 
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            ModelState.class.getName());
+    final private static Logger logger = Logger.getLogger(LoadedCGModel.class.getName());
     // *************************************************************************
     // fields
 
@@ -86,6 +91,18 @@ class ModelState {
      * track unsaved changes to the CG model
      */
     private boolean pristine = true;
+    /**
+     * which animation/pose is loaded
+     */
+    final public LoadedAnimation animation = new LoadedAnimation();
+    /**
+     * which bone is selected
+     */
+    final public SelectedBone bone = new SelectedBone();
+    /**
+     * which bone is selected
+     */
+    final public SelectedSpatial spatial = new SelectedSpatial();
     /**
      * the root spatial in the MVC model's copy of the CG model
      */
@@ -116,9 +133,8 @@ class ModelState {
      *
      * @param animationName name for the new animation (not null, not empty)
      */
-    void addPoseAnimation(String animationName) {
-        assert animationName != null;
-        assert !animationName.isEmpty();
+    public void addPoseAnimation(String animationName) {
+        Validate.nonEmpty(animationName, "animation name");
         /*
          * Check whether the name is in use.
          */
@@ -133,45 +149,72 @@ class ModelState {
 
         Animation pose = captureCurrentPose(animationName);
         control.addAnim(pose);
-        pristine = false;
-        Maud.gui.model.update();
+        setEdited();
     }
 
     /**
-     * Delete the loaded animation. If successful, the caller must immediately
-     * select a new animation.
+     * Add a copy of the loaded animation to the model.
+     *
+     * @param animationName name for the new animation (not null, not empty)
+     */
+    public void copyAnimation(String animationName) {
+        Validate.nonEmpty(animationName, "animation name");
+        /*
+         * Check whether the name is in use.
+         */
+        AnimControl control = getAnimControl();
+        Collection<String> names = control.getAnimationNames();
+        if (names.contains(animationName)) {
+            logger.log(Level.WARNING, "replacing existing animation {0}",
+                    MyString.quote(animationName));
+            Animation oldAnimation = control.getAnim(animationName);
+            control.removeAnim(oldAnimation);
+        }
+
+        Animation loaded = animation.getLoadedAnimation();
+        float duration = animation.getDuration();
+        Animation copy = new Animation(animationName, duration);
+        if (loaded != null) {
+            Track[] loadedTracks = loaded.getTracks();
+            for (Track track : loadedTracks) {
+                Track clone = track.clone();
+                copy.addTrack(clone);
+            }
+        }
+        control.addAnim(copy);
+        setEdited();
+    }
+
+    /**
+     * Count the bones in the loaded model.
+     *
+     * @return count (&ge;0)
+     */
+    public int countBones() {
+        Skeleton skeleton = getSkeleton();
+        int count = skeleton.getBoneCount();
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Delete the loaded animation. If successful, the caller should immediately
+     * load a different animation.
      *
      * @return true if successful, otherwise false
      */
-    boolean deleteAnimation() {
-        if (Maud.gui.animation.isBindPoseLoaded()) {
+    public boolean deleteAnimation() {
+        if (animation.isBindPoseLoaded()) {
             logger.log(Level.WARNING, "cannot delete bind pose");
             return false;
         }
         AnimControl animControl = getAnimControl();
-        Animation animation = getLoadedAnimation();
-        animControl.removeAnim(animation);
-        pristine = false;
-        Maud.gui.model.update();
+        Animation anim = animation.getLoadedAnimation();
+        animControl.removeAnim(anim);
+        setEdited();
 
         return true;
-    }
-
-    /**
-     * Access the loaded animation.
-     *
-     * @return the pre-existing instance, or null if in bind pose
-     */
-    Animation getLoadedAnimation() {
-        Animation result;
-        if (Maud.gui.animation.isBindPoseLoaded()) {
-            result = null;
-        } else {
-            String name = Maud.gui.animation.getName();
-            result = getAnimation(name);
-        }
-
-        return result;
     }
 
     /**
@@ -181,12 +224,12 @@ class ModelState {
      * @return the pre-existing instance, or null if not found
      */
     Animation getAnimation(String name) {
-        assert name != null;
+        Validate.nonNull(name, "animation name");
 
         AnimControl animControl = getAnimControl();
-        Animation animation = animControl.getAnim(name);
+        Animation anim = animControl.getAnim(name);
 
-        return animation;
+        return anim;
     }
 
     /**
@@ -212,51 +255,36 @@ class ModelState {
      *
      * @return path, or "" if not known (not null)
      */
-    String getAssetPath() {
+    public String getAssetPath() {
         assert loadedModelAssetPath != null;
         return loadedModelAssetPath;
     }
 
     /**
-     * Access the selected bone.
+     * Read the duration of the named animation.
      *
-     * @return the pre-existing instance, or null if none selected
+     * @param animationName (not null)
+     * @return duration (in seconds, &ge;0)
      */
-    Bone getBone() {
-        Bone bone;
-        if (!Maud.gui.bone.isBoneSelected()) {
-            bone = null;
+    public float getDuration(String animationName) {
+        Validate.nonNull(animationName, "animation name");
+
+        float result;
+        if (animationName.equals(DddGui.bindPoseName)) {
+            result = 0f;
         } else {
-            int index = Maud.gui.bone.getBoneIndex();
-            bone = getSkeleton().getBone(index);
+            Animation anim = getAnimation(animationName);
+            if (anim == null) {
+                logger.log(Level.WARNING, "no bone named {0}",
+                        MyString.quote(animationName));
+                result = 0f;
+            } else {
+                result = anim.getLength();
+            }
         }
 
-        return bone;
-    }
-
-    int getBoneCount() {
-        Skeleton skeleton = getSkeleton();
-        int boneCount = skeleton.getBoneCount();
-
-        return boneCount;
-    }
-
-    /**
-     * Read the name of the selected bone.
-     *
-     * @return the name, or noBone if none selected (not null)
-     */
-    String getBoneName() {
-        Bone bone = getBone();
-        String name;
-        if (bone == null) {
-            name = DddGui.noBone;
-        } else {
-            name = bone.getName();
-        }
-
-        assert name != null;
-        return name;
+        assert result >= 0f : result;
+        return result;
     }
 
     /**
@@ -264,7 +292,7 @@ class ModelState {
      *
      * @return extension (not null)
      */
-    String getExtension() {
+    public String getExtension() {
         assert loadedModelExtension != null;
         return loadedModelExtension;
     }
@@ -274,7 +302,7 @@ class ModelState {
      *
      * @return path, or "" if not known (not null)
      */
-    String getFilePath() {
+    public String getFilePath() {
         assert loadedModelFilePath != null;
         return loadedModelFilePath;
     }
@@ -284,7 +312,7 @@ class ModelState {
      *
      * @return name, or "" if not known (not null)
      */
-    String getName() {
+    public String getName() {
         assert modelName != null;
         return modelName;
     }
@@ -316,12 +344,12 @@ class ModelState {
      * @param name (not null)
      * @return true if found or noBone, otherwise false
      */
-    boolean hasBone(String name) {
+    public boolean hasBone(String name) {
         if (name.equals(DddGui.noBone)) {
             return true;
         }
-        Bone bone = MySkeleton.getBone(rootSpatial, name);
-        if (bone == null) {
+        Bone b = MySkeleton.getBone(rootSpatial, name);
+        if (b == null) {
             return false;
         } else {
             return true;
@@ -333,7 +361,7 @@ class ModelState {
      *
      * @return true if a bone is selected and it has a track, otherwise false
      */
-    boolean hasTrack() {
+    public boolean hasTrack() {
         BoneTrack track = findTrack();
         if (track == null) {
             return false;
@@ -345,17 +373,18 @@ class ModelState {
     /**
      * Test whether the named bone is a leaf bone, with no children.
      *
+     * @param boneName which bone to test (not null)
      * @return true for a leaf bone, otherwise false
      */
-    boolean isLeafBone(String boneName) {
+    public boolean isLeafBone(String boneName) {
         if (boneName.equals(DddGui.noBone)) {
             return false;
         }
-        Bone bone = MySkeleton.getBone(rootSpatial, boneName);
-        if (bone == null) {
+        Bone b = MySkeleton.getBone(rootSpatial, boneName);
+        if (b == null) {
             return false;
         }
-        ArrayList<Bone> children = bone.getChildren();
+        ArrayList<Bone> children = b.getChildren();
         if (children.isEmpty()) {
             return true;
         } else {
@@ -368,16 +397,16 @@ class ModelState {
      *
      * @return true if no unsaved changes, false if there are some
      */
-    boolean isPristine() {
+    public boolean isPristine() {
         return pristine;
     }
 
     /**
      * Enumerate all known animations and poses for the loaded model.
      *
-     * @return a new collection
+     * @return a new collection of names
      */
-    Collection<String> listAnimationNames() {
+    public Collection<String> listAnimationNames() {
         Collection<String> names = MyAnimation.listAnimations(rootSpatial);
         names.add(DddGui.bindPoseName);
 
@@ -389,7 +418,7 @@ class ModelState {
      *
      * @return a new list of names
      */
-    List<String> listBoneNames() {
+    public List<String> listBoneNames() {
         List<String> boneNames = MySkeleton.listBones(rootSpatial);
         boneNames.remove("");
         boneNames.add(DddGui.noBone);
@@ -401,9 +430,10 @@ class ModelState {
      * Enumerate all bones in the loaded model having names that start with the
      * specified prefix.
      *
+     * @param namePrefix
      * @return a new list of names
      */
-    List<String> listBoneNames(String namePrefix) {
+    public List<String> listBoneNames(String namePrefix) {
         List<String> boneNames = listBoneNames();
         for (String name : MyString.toArray(boneNames)) {
             if (!name.startsWith(namePrefix)) {
@@ -417,15 +447,16 @@ class ModelState {
     /**
      * Enumerate all children of the named bone.
      *
+     * @param parentName
      * @return a new list of names
      */
-    List<String> listChildBoneNames(String parentName) {
+    public List<String> listChildBoneNames(String parentName) {
         Skeleton skeleton = getSkeleton();
         Bone parent = skeleton.getBone(parentName);
         List<Bone> children = parent.getChildren();
         List<String> boneNames = new ArrayList<>(children.size());
-        for (Bone bone : children) {
-            String name = bone.getName();
+        for (Bone b : children) {
+            String name = b.getName();
             boneNames.add(name);
         }
         boneNames.remove("");
@@ -438,7 +469,7 @@ class ModelState {
      *
      * @return a new list of names
      */
-    List<String> listRootBoneNames() {
+    public List<String> listRootBoneNames() {
         Skeleton skeleton = getSkeleton();
         Bone[] roots = skeleton.getRoots();
         List<String> boneNames = new ArrayList<>(5);
@@ -458,9 +489,9 @@ class ModelState {
      */
     List<String> listKeyframes() {
         List<String> result = null;
-        if (Maud.gui.animation.isBindPoseLoaded()) {
+        if (animation.isBindPoseLoaded()) {
             logger.log(Level.INFO, "No animation is selected.");
-        } else if (!Maud.gui.bone.isBoneSelected()) {
+        } else if (!bone.isBoneSelected()) {
             logger.log(Level.INFO, "No bone is selected.");
         } else if (!isTrackSelected()) {
             logger.log(Level.INFO, "No track is selected.");
@@ -504,22 +535,24 @@ class ModelState {
      * @param assetPath (not null)
      * @return true if successful, otherwise false
      */
-    boolean loadModelAsset(String assetPath) {
-        assert assetPath != null;
+    public boolean loadModelAsset(String assetPath) {
+        Validate.nonNull(assetPath, "asset path");
 
         Spatial loaded = loadModelFromAsset(assetPath, false);
         if (loaded == null) {
             return false;
         }
 
-        pristine = true;
         rootSpatial = loaded;
 
         Spatial viewClone = loadModelFromAsset(assetPath, true);
         assert viewClone != null;
         Maud.viewState.setModel(viewClone);
-        Maud.gui.animation.loadBindPose();
-        selectBone(DddGui.noBone);
+
+        animation.loadBindPose();
+        bone.selectNoBone();
+        spatial.selectModelRoot();
+        setPristine();
 
         return true;
     }
@@ -530,9 +563,7 @@ class ModelState {
      * @param modelFile model file from which to load (not null)
      * @return true if successful, otherwise false
      */
-    boolean loadModelFile(File modelFile) {
-        assert modelFile != null;
-
+    public boolean loadModelFile(File modelFile) {
         String canonicalPath;
         try {
             canonicalPath = modelFile.getCanonicalPath();
@@ -545,15 +576,16 @@ class ModelState {
             return false;
         }
 
-        pristine = true;
         rootSpatial = loaded;
 
         Spatial viewClone = loadModelFromFile(canonicalPath);
         assert viewClone != null;
         Maud.viewState.setModel(viewClone);
-        Maud.gui.animation.loadBindPose();
-        selectBone(DddGui.noBone);
-        Maud.gui.spatial.selectRootSpatial();
+
+        animation.loadBindPose();
+        bone.selectNoBone();
+        spatial.selectModelRoot();
+        setPristine();
 
         return true;
     }
@@ -564,9 +596,7 @@ class ModelState {
      * @param name name of model to load (not null)
      * @return true if successful, otherwise false
      */
-    boolean loadModelNamed(String name) {
-        assert name != null;
-
+    public boolean loadModelNamed(String name) {
         String extension;
         if (name.equals("Jaime")) {
             extension = "j3o";
@@ -580,7 +610,6 @@ class ModelState {
         if (loaded == null) {
             return false;
         } else {
-            pristine = true;
             rootSpatial = loaded;
 
             Spatial viewClone = loadModelFromAsset(assetPath, true);
@@ -588,9 +617,11 @@ class ModelState {
             Maud.viewState.setModel(viewClone);
 
             modelName = name;
-            Maud.gui.animation.loadBindPose();
-            selectBone(DddGui.noBone);
-            Maud.gui.spatial.selectRootSpatial();
+
+            animation.loadBindPose();
+            bone.selectNoBone();
+            spatial.selectModelRoot();
+            setPristine();
 
             return true;
         }
@@ -602,8 +633,9 @@ class ModelState {
      * @param newName new name (not null)
      * @return true if successful, otherwise false
      */
-    boolean renameAnimation(String newName) {
-        assert newName != null;
+    public boolean renameAnimation(String newName) {
+        Validate.nonNull(newName, "animation name");
+
         if (newName.equals(DddGui.bindPoseName)
                 || newName.isEmpty()) {
             logger.log(Level.WARNING, "Rename failed: {0} is a reserved name.",
@@ -616,13 +648,13 @@ class ModelState {
                     MyString.quote(newName));
             return false;
         }
-        if (Maud.gui.animation.isBindPoseLoaded()) {
+        if (animation.isBindPoseLoaded()) {
             logger.log(Level.WARNING,
                     "Rename failed: cannot rename bind pose.");
             return false;
         }
 
-        Animation oldAnimation = getLoadedAnimation();
+        Animation oldAnimation = animation.getLoadedAnimation();
         float length = oldAnimation.getLength();
         Animation newAnimation = new Animation(newName, length);
         for (Track track : oldAnimation.getTracks()) {
@@ -632,9 +664,9 @@ class ModelState {
         AnimControl animControl = getAnimControl();
         animControl.removeAnim(oldAnimation);
         animControl.addAnim(newAnimation);
-        pristine = false;
+        setEdited();
 
-        Maud.gui.animation.rename(newName);
+        animation.rename(newName);
 
         return true;
     }
@@ -645,9 +677,10 @@ class ModelState {
      * @param newName new name (not null)
      * @return true if successful, otherwise false
      */
-    boolean renameBone(String newName) {
-        assert newName != null;
-        if (!Maud.gui.bone.isBoneSelected()) {
+    public boolean renameBone(String newName) {
+        Validate.nonNull(newName, "bone name");
+
+        if (!bone.isBoneSelected()) {
             logger.log(Level.WARNING, "Rename failed: no bone selected.",
                     MyString.quote(newName));
             return false;
@@ -664,33 +697,12 @@ class ModelState {
             return false;
         }
 
-        Bone bone = getBone();
-        boolean success = MySkeleton.setName(bone, newName);
-        pristine = false;
+        Bone selectedBone = bone.getBone();
+        boolean success = MySkeleton.setName(selectedBone, newName);
+        setEdited();
         Maud.gui.model.update();
 
         return success;
-    }
-
-    /**
-     * Alter which bone is selected.
-     *
-     * @param name bone name or noBone (not null)
-     */
-    void selectBone(String name) {
-        assert name != null;
-        if (!hasBone(name)) {
-            logger.log(Level.WARNING, "Select failed: no bone named {0}.",
-                    MyString.quote(name));
-            return;
-        }
-
-        if (name.equals(DddGui.noBone)) {
-            Maud.gui.bone.selectNoBone();
-        } else {
-            int boneIndex = MySkeleton.findBoneIndex(rootSpatial, name);
-            Maud.gui.bone.selectBone(boneIndex);
-        }
     }
 
     /**
@@ -698,13 +710,13 @@ class ModelState {
      *
      * @param name name of the new selection (not null)
      */
-    void selectKeyframe(String name) {
+    public void selectKeyframe(String name) {
+        Validate.nonNull(name, "keyframe name");
         assert isTrackSelected();
-        assert name != null;
 
         float newTime = Float.valueOf(name);
         // TODO validate
-        Maud.gui.animation.setTime(newTime);
+        animation.setTime(newTime);
     }
 
     /**
@@ -712,51 +724,77 @@ class ModelState {
      *
      * @param newManager manager to use (not null)
      */
-    void setAssetManager(AssetManager newManager) {
-        assert newManager != null;
+    public void setAssetManager(AssetManager newManager) {
+        Validate.nonNull(newManager, "asset manager");
         assetManager = newManager;
     }
 
     /**
      * Alter the user rotation of the selected bone.
+     *
+     * @param rotation (not null, unaffected)
      */
-    void setBoneRotation(Quaternion rotation) {
-        assert rotation != null;
-        assert Maud.gui.bone.isBoneSelected();
+    public void setBoneRotation(Quaternion rotation) {
+        Validate.nonNull(rotation, "rotation");
+        assert bone.isBoneSelected();
 
-        int boneIndex = Maud.gui.bone.getBoneIndex();
+        int boneIndex = bone.getIndex();
         Maud.gui.animation.setBoneRotation(boneIndex, rotation);
     }
 
     /**
      * Alter the user scale of the selected bone.
+     *
+     * @param scale (not null, unaffected)
      */
-    void setBoneScale(Vector3f scale) {
-        assert scale != null;
-        assert Maud.gui.bone.isBoneSelected();
+    public void setBoneScale(Vector3f scale) {
+        Validate.nonNull(scale, "scale");
+        assert bone.isBoneSelected();
 
-        int boneIndex = Maud.gui.bone.getBoneIndex();
+        int boneIndex = bone.getIndex();
         Maud.gui.animation.setBoneScale(boneIndex, scale);
     }
 
     /**
      * Alter the user translation of the selected bone.
+     *
+     * @param translation (not null, unaffected)
      */
-    void setBoneTranslation(Vector3f translation) {
-        assert translation != null;
-        assert Maud.gui.bone.isBoneSelected();
+    public void setBoneTranslation(Vector3f translation) {
+        Validate.nonNull(translation, "translation");
+        assert bone.isBoneSelected();
 
-        int boneIndex = Maud.gui.bone.getBoneIndex();
+        int boneIndex = bone.getIndex();
         Maud.gui.animation.setBoneTranslation(boneIndex, translation);
+    }
+
+    /**
+     * Alter the shadow mode of the selected spatial.
+     *
+     * @param newMode new value for shadow mode (not null)
+     */
+    public void setMode(RenderQueue.ShadowMode newMode) {
+        Validate.nonNull(newMode, "shadow mode");
+
+        Spatial modelSpatial = spatial.findSpatial(rootSpatial);
+        RenderQueue.ShadowMode oldMode = modelSpatial.getLocalShadowMode();
+        if (oldMode != newMode) {
+            modelSpatial.setShadowMode(newMode);
+            setEdited();
+            Maud.viewState.setMode(newMode);
+            Maud.gui.spatial.update();
+            Maud.gui.shadowMode.update();
+        }
     }
 
     /**
      * Write the loaded model to an asset.
      *
      * @param baseAssetPath asset path without any extension (not null)
+     * @return true if successful, otherwise false
      */
-    boolean writeModelToAsset(String baseAssetPath) {
-        assert baseAssetPath != null;
+    public boolean writeModelToAsset(String baseAssetPath) {
+        Validate.nonNull(baseAssetPath, "asset path");
 
         String baseFilePath = ActionApplication.filePath(baseAssetPath);
         boolean success = writeModelToFile(baseFilePath);
@@ -771,9 +809,10 @@ class ModelState {
      * Write the loaded model to a file.
      *
      * @param baseFilePath file path without any extension (not null)
+     * @return true if successful, otherwise false
      */
-    boolean writeModelToFile(String baseFilePath) {
-        assert baseFilePath != null;
+    public boolean writeModelToFile(String baseFilePath) {
+        Validate.nonNull(baseFilePath, "file path");
 
         String filePath = baseFilePath + ".j3o";
         File file = new File(filePath);
@@ -789,7 +828,7 @@ class ModelState {
             loadedModelAssetPath = "";
             loadedModelExtension = "j3o";
             loadedModelFilePath = baseFilePath;
-            pristine = true;
+            setPristine();
             logger.log(Level.INFO, "Wrote model to file {0}",
                     MyString.quote(filePath));
         } else {
@@ -819,22 +858,21 @@ class ModelState {
          */
         float duration = 0f;
         Animation result = new Animation(animationName, duration);
-
-        Skeleton skeleton = getSkeleton();
-        skeleton.updateWorldVectors();
         /*
-         * Add a BoneTrack for each bone in the skeleton.
+         * Add a BoneTrack for each bone that's not in bind pose.
          */
-        int numBones = skeleton.getBoneCount();
+        int numBones = countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             Transform transform = Maud.gui.animation.copyBoneTransform(
                     boneIndex);
-            Vector3f translation = transform.getTranslation();
-            Quaternion rotation = transform.getRotation();
-            Vector3f scale = transform.getScale();
-            BoneTrack track = MyAnimation.createTrack(boneIndex, translation,
-                    rotation, scale);
-            result.addTrack(track);
+            if (!Util.isIdentity(transform)) {
+                Vector3f translation = transform.getTranslation();
+                Quaternion rotation = transform.getRotation();
+                Vector3f scale = transform.getScale();
+                BoneTrack track = MyAnimation.createTrack(boneIndex,
+                        translation, rotation, scale);
+                result.addTrack(track);
+            }
         }
 
         return result;
@@ -846,16 +884,16 @@ class ModelState {
      * @return the pre-existing instance, or null if none
      */
     private BoneTrack findTrack() {
-        if (!Maud.gui.bone.isBoneSelected()) {
+        if (!bone.isBoneSelected()) {
             return null;
         }
-        if (Maud.gui.animation.isBindPoseLoaded()) {
+        if (animation.isBindPoseLoaded()) {
             return null;
         }
 
-        Animation animation = getLoadedAnimation();
-        int boneIndex = Maud.gui.bone.getBoneIndex();
-        BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
+        Animation anim = animation.getLoadedAnimation();
+        int boneIndex = bone.getIndex();
+        BoneTrack track = MyAnimation.findTrack(anim, boneIndex);
 
         return track;
     }
@@ -866,8 +904,8 @@ class ModelState {
      * @return true if one is selected, false if none is selected
      */
     private boolean isTrackSelected() {
-        if (Maud.gui.bone.isBoneSelected()) {
-            if (Maud.gui.animation.isBindPoseLoaded()) {
+        if (bone.isBoneSelected()) {
+            if (animation.isBindPoseLoaded()) {
                 return false;
             }
             Track track = findTrack();
@@ -950,7 +988,7 @@ class ModelState {
      */
     private Spatial loadModelFromFile(String filePath) {
         ModelKey key = new ModelKey(filePath);
-        InputStream inputStream = null;
+        InputStream inputStream;
         try {
             inputStream = new FileInputStream(filePath);
         } catch (FileNotFoundException e) {
@@ -994,5 +1032,21 @@ class ModelState {
         }
 
         return loaded;
+    }
+
+    /**
+     * Mark the model as edited;
+     */
+    private void setEdited() {
+        pristine = false;
+        Maud.gui.model.update();
+    }
+
+    /**
+     * Mark the model as pristine;
+     */
+    private void setPristine() {
+        pristine = true;
+        Maud.gui.model.update();
     }
 }

@@ -34,6 +34,7 @@ import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 
 /**
  * The controller for the "Bone-Offset Tool" window in Maud's "3D View" screen.
@@ -109,7 +110,8 @@ class BoneOffsetTool extends WindowController {
      * If sliders are enabled, set all 3 offsets to 0.
      */
     void reset() {
-        if (Maud.gui.bone.isBoneSelected() && !Maud.gui.animation.isRunning()) {
+        if (Maud.model.bone.isBoneSelected()
+                && !Maud.model.animation.isRunning()) {
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 sliders[iAxis].enable();
                 sliders[iAxis].setValue(0f);
@@ -121,7 +123,8 @@ class BoneOffsetTool extends WindowController {
      * If sliders are enabled, set them to match the selected bone.
      */
     void set() {
-        if (Maud.gui.bone.isBoneSelected() && !Maud.gui.animation.isRunning()) {
+        if (Maud.model.bone.isBoneSelected()
+                && !Maud.model.animation.isRunning()) {
             displayOffsets();
         }
     }
@@ -161,8 +164,8 @@ class BoneOffsetTool extends WindowController {
             return;
         }
 
-        if (Maud.gui.bone.isBoneSelected()) {
-            float newTime = Maud.gui.animation.getTime();
+        if (Maud.model.bone.isBoneSelected()) {
+            float newTime = Maud.model.animation.getTime();
             if (newTime == previousUpdateTime) {
                 Maud.gui.setButtonLabel("resetOffButton", "Reset");
                 /*
@@ -235,7 +238,7 @@ class BoneOffsetTool extends WindowController {
      * Calculate offsets of the selected bone.
      */
     private void offsets() {
-        int boneIndex = Maud.gui.bone.getBoneIndex();
+        int boneIndex = Maud.model.bone.getIndex();
         Transform transform = Maud.gui.animation.copyBoneTransform(boneIndex);
         Vector3f translation = transform.getTranslation(null);
         translation.toArray(offsets);

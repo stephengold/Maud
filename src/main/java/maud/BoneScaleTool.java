@@ -33,6 +33,7 @@ import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 
 /**
  * The controller for the "Bone-Scale Tool" window in Maud's "3D View" screen.
@@ -91,7 +92,7 @@ class BoneScaleTool extends WindowController {
      * If sliders are enabled, set all 3 scale factors to 1.
      */
     void reset() {
-        if (Maud.gui.bone.isBoneSelected() && !Maud.gui.animation.isRunning()) {
+        if (Maud.model.bone.isBoneSelected() && !Maud.model.animation.isRunning()) {
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 sliders[iAxis].enable();
                 sliders[iAxis].setValue(1f);
@@ -103,7 +104,7 @@ class BoneScaleTool extends WindowController {
      * If sliders are enabled, set all 3 sliders to match the selected bone.
      */
     void set() {
-        if (Maud.gui.bone.isBoneSelected() && !Maud.gui.animation.isRunning()) {
+        if (Maud.model.bone.isBoneSelected() && !Maud.model.animation.isRunning()) {
             scales();
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 float scale = scales[iAxis];
@@ -146,8 +147,8 @@ class BoneScaleTool extends WindowController {
             return;
         }
 
-        if (Maud.gui.bone.isBoneSelected()) {
-            float newTime = Maud.gui.animation.getTime();
+        if (Maud.model.bone.isBoneSelected()) {
+            float newTime = Maud.model.animation.getTime();
             if (newTime == previousUpdateTime) {
                 Maud.gui.setButtonLabel("resetScaButton", "Reset");
                 /*
@@ -198,7 +199,7 @@ class BoneScaleTool extends WindowController {
      * Calculate scale factors of the selected bone.
      */
     private void scales() {
-        int boneIndex = Maud.gui.bone.getBoneIndex();
+        int boneIndex = Maud.model.bone.getIndex();
         Transform transform = Maud.gui.animation.copyBoneTransform(boneIndex);
         Vector3f scale = transform.getScale(null);
         scale.toArray(scales);
@@ -208,7 +209,7 @@ class BoneScaleTool extends WindowController {
      * Update the status label of the slider for the specified axis.
      *
      * @param iAxis index of the axis (&ge;0, &lt;3)
-     * @return slider value (ge;0)
+     * @return slider value (&ge;0)
      */
     private float updateStatus(int iAxis) {
         String axisName = axisNames[iAxis];

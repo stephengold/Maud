@@ -26,17 +26,12 @@
  */
 package maud;
 
-import com.jme3.animation.Animation;
-import com.jme3.animation.Bone;
-import com.jme3.animation.Skeleton;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
@@ -58,6 +53,7 @@ import jme3utilities.debug.DebugVersion;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.LibraryVersion;
+import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
 import jme3utilities.ui.UiVersion;
 
@@ -80,7 +76,7 @@ public class DddGui extends GuiScreenController {
      * dummy animation name used in menus and statuses to indicate bind pose,
      * that is, no animation loaded TODO move?
      */
-    final static String bindPoseName = "( bind pose )";
+    final public static String bindPoseName = "( bind pose )";
     /**
      * level separator in menu action strings
      */
@@ -89,11 +85,11 @@ public class DddGui extends GuiScreenController {
      * dummy bone name used in menus and statuses to indicate no bone selected
      * TODO move?
      */
-    final static String noBone = "( no bone )";
+    final public static String noBone = "( no bone )";
     /*
      * action prefixes used by dialogs and popup menus
      */
-    final static String copyAnimationPrefix = "copy animation";
+    final static String copyAnimationPrefix = "copy animation ";
     final static String loadAnimationPrefix = "load animation ";
     final static String loadModelAssetPrefix = "load model asset ";
     final static String loadModelFilePrefix = "load model file ";
@@ -125,19 +121,19 @@ public class DddGui extends GuiScreenController {
     /*
      * controllers for tool windows
      */
-    final AnimationTool animation = new AnimationTool(this);
+    final public AnimationTool animation = new AnimationTool(this);
     final AxesTool axes = new AxesTool(this);
-    final BoneTool bone = new BoneTool(this);
+    final public BoneTool bone = new BoneTool(this);
     final BoneAngleTool boneAngle = new BoneAngleTool(this);
     final BoneOffsetTool boneOffset = new BoneOffsetTool(this);
     final BoneScaleTool boneScale = new BoneScaleTool(this);
     final CameraTool camera = new CameraTool(this);
     final CursorTool cursor = new CursorTool(this);
-    final ModelTool model = new ModelTool(this);
+    final public ModelTool model = new ModelTool(this);
     final RenderTool render = new RenderTool(this);
-    final ShadowModeTool shadowMode = new ShadowModeTool(this);
+    final public ShadowModeTool shadowMode = new ShadowModeTool(this);
     final SkeletonTool skeleton = new SkeletonTool(this);
-    final SpatialTool spatial = new SpatialTool(this);
+    final public SpatialTool spatial = new SpatialTool(this);
     final SkyTool sky = new SkyTool(this);
     // *************************************************************************
     // constructors
@@ -166,22 +162,37 @@ public class DddGui extends GuiScreenController {
             /*
              * Load bind pose.
              */
-            animation.loadBindPose();
+            Maud.model.animation.loadBindPose();
+
         } else {
-            Animation anim = Maud.model.getAnimation(name);
-            float duration = anim.getLength();
+            float duration = Maud.model.getDuration(name);
+            float speed;
             if (duration == 0f) {
                 /*
                  * The animation consists of a single pose: set speed to zero.
                  */
-                animation.loadAnimation(name, 0f);
+                speed = 0f;
             } else {
                 /*
                  * Start the animation looping at normal speed.
                  */
-                animation.loadAnimation(name, 1f);
+                speed = 1f;
             }
+            Maud.model.animation.loadAnimation(name, speed);
         }
+    }
+
+    /**
+     * Parse and handle a "copy animation" action.
+     *
+     * @param actionString (not null)
+     */
+    void copyAnimation(String actionString) {
+        assert actionString.startsWith(copyAnimationPrefix) : actionString;
+
+        int namePos = copyAnimationPrefix.length();
+        String newName = actionString.substring(namePos);
+        Maud.model.copyAnimation(newName);
     }
 
     /**
@@ -324,19 +335,19 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "shadowOffRadioButton":
-                shadowMode.setMode(RenderQueue.ShadowMode.Off);
+                Maud.model.setMode(RenderQueue.ShadowMode.Off);
                 break;
             case "shadowCastRadioButton":
-                shadowMode.setMode(RenderQueue.ShadowMode.Cast);
+                Maud.model.setMode(RenderQueue.ShadowMode.Cast);
                 break;
             case "shadowReceiveRadioButton":
-                shadowMode.setMode(RenderQueue.ShadowMode.Receive);
+                Maud.model.setMode(RenderQueue.ShadowMode.Receive);
                 break;
             case "shadowCastAndReceiveRadioButton":
-                shadowMode.setMode(RenderQueue.ShadowMode.CastAndReceive);
+                Maud.model.setMode(RenderQueue.ShadowMode.CastAndReceive);
                 break;
             case "shadowInheritRadioButton":
-                shadowMode.setMode(RenderQueue.ShadowMode.Inherit);
+                Maud.model.setMode(RenderQueue.ShadowMode.Inherit);
                 break;
 
             default:
@@ -388,9 +399,9 @@ public class DddGui extends GuiScreenController {
      * Handle a "rename bone" action with no argument.
      */
     void renameBone() {
-        String oldName = Maud.model.getBoneName();
-        if (!oldName.equals(DddGui.noBone)) {
+        if (Maud.model.bone.isBoneSelected()) {
             closeAllPopups();
+            String oldName = Maud.model.bone.getName();
             showTextEntryDialog("Enter new name for bone:", oldName, "Rename",
                     renameBonePrefix);
         }
@@ -437,7 +448,7 @@ public class DddGui extends GuiScreenController {
         int namePos = selectBonePrefix.length();
         String argument = actionString.substring(namePos);
         if (Maud.model.hasBone(argument)) {
-            Maud.model.selectBone(argument);
+            Maud.model.bone.select(argument);
         } else {
             /*
              * Treat the argument as a name prefix.
@@ -453,13 +464,12 @@ public class DddGui extends GuiScreenController {
      * Handle a "select boneChild" action with no argument.
      */
     void selectBoneChild() {
-        if (Maud.gui.bone.isBoneSelected()) {
-            String parentName = Maud.model.getBoneName();
-            List<String> choices = Maud.model.listChildBoneNames(parentName);
-            if (choices.size() == 1) {
-                String childName = choices.get(0);
-                Maud.model.selectBone(childName);
-            } else if (choices.size() > 1) {
+        if (Maud.model.bone.isBoneSelected()) {
+            int numChildren = Maud.model.bone.countChildren();
+            if (numChildren == 1) {
+                Maud.model.bone.selectChild(0);
+            } else if (numChildren > 1) {
+                List<String> choices = Maud.model.bone.listChildNames();
                 showPopupMenu(selectBonePrefix, choices);
             }
         }
@@ -477,7 +487,7 @@ public class DddGui extends GuiScreenController {
         String argument = actionString.substring(namePos);
         if (argument.startsWith("!")) {
             String name = argument.substring(1);
-            Maud.model.selectBone(name);
+            Maud.model.bone.select(name);
         } else {
             List<String> names = Maud.model.listChildBoneNames(argument);
             List<String> items = new ArrayList<>(names.size() + 1);
@@ -494,44 +504,24 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
-     * Handle a "select boneParent" action.
-     */
-    void selectBoneParent() {
-        Bone bone = Maud.model.getBone();
-        if (bone != null) {
-            Bone parent = bone.getParent();
-            if (parent != null) {
-                Skeleton skeleton = Maud.model.getSkeleton();
-                int boneIndex = skeleton.getBoneIndex(parent);
-                Maud.gui.bone.selectBone(boneIndex);
-            }
-        }
-    }
-
-    /**
      * Handle a "select spatialChild" action with no argument.
      */
     void selectSpatialChild() {
-        Spatial parent = Maud.gui.spatial.getSelectedSpatial();
-        if (parent instanceof Node) {
-            Node node = (Node) parent;
-            List<Spatial> children = node.getChildren();
-            int numChildren = children.size();
+        int numChildren = Maud.model.spatial.countChildren();
+        if (numChildren == 1) {
+            Maud.model.spatial.selectChild(0);
+
+        } else if (numChildren > 1) {
             List<String> choices = new ArrayList<>(numChildren);
             for (int i = 0; i < numChildren; i++) {
                 String choice = String.format("#%d", i + 1);
-                Spatial spatial = children.get(i);
-                String name = spatial.getName();
+                String name = Maud.model.spatial.getChildName(i);
                 if (name != null) {
                     choice += " " + MyString.quote(name);
                 }
                 choices.add(choice);
             }
-            if (choices.size() == 1) {
-                Maud.gui.spatial.selectChildSpatial(0);
-            } else if (choices.size() > 1) {
-                showPopupMenu(selectSpatialChildPrefix, choices);
-            }
+            showPopupMenu(selectSpatialChildPrefix, choices);
         }
     }
 
@@ -550,18 +540,14 @@ public class DddGui extends GuiScreenController {
         assert firstWord.startsWith("#") : firstWord;
         String numberText = firstWord.substring(1);
         int number = Integer.parseInt(numberText);
-        Maud.gui.spatial.selectChildSpatial(number - 1);
+        Maud.model.spatial.selectChild(number - 1);
     }
 
     /**
      * Handle a "select spatialParent" action.
      */
     void selectSpatialParent() {
-        Spatial child = Maud.gui.spatial.getSelectedSpatial();
-        Node parent = child.getParent();
-        if (parent != null) {
-            Maud.gui.spatial.selectParentSpatial();
-        }
+        Maud.model.spatial.selectParent();
     }
 
     /**
@@ -695,15 +681,15 @@ public class DddGui extends GuiScreenController {
     public void update(float tpf) {
         super.update(tpf);
         /*
-         * Update animation time even if the tool is disabled.
+         * Update animation even if the animation tool is disabled.
          */
-        float duration = animation.getDuration();
-        float speed = animation.getSpeed();
+        float duration = Maud.model.animation.getDuration();
+        float speed = Maud.model.animation.getSpeed();
         if (duration != 0f && speed != 0f) {
-            float time = animation.getTime();
+            float time = Maud.model.animation.getTime();
             time += speed * tpf;
             time = MyMath.modulo(time, duration);
-            animation.setTime(time);
+            Maud.model.animation.setTime(time);
         }
         /*
          * Rotate the view's CG model around the Y-axis.
@@ -774,7 +760,7 @@ public class DddGui extends GuiScreenController {
         items.add("New from copy");
         items.add("New from BVH");
         items.add("New from pose");
-        if (!animation.isBindPoseLoaded()) {
+        if (!Maud.model.animation.isBindPoseLoaded()) {
             items.add("Duration");
             items.add("Tweening");
             items.add("Rename");
@@ -799,7 +785,7 @@ public class DddGui extends GuiScreenController {
         items.add("Select by name");
         items.add("Select by pointing");
         items.add("Describe skeleton");
-        if (bone.isBoneSelected()) {
+        if (Maud.model.bone.isBoneSelected()) {
             items.add("Attach prop");
             items.add("Rename");
         }
@@ -1051,7 +1037,7 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "New from copy":
-                String fromName = animation.getName();
+                String fromName = Maud.model.animation.getName();
                 String toName = String.format("Copy of %s", fromName);
                 closeAllPopups();
                 showTextEntryDialog("Enter name for new animation:",
@@ -1067,8 +1053,8 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "Rename":
-                String oldName = animation.getName();
                 closeAllPopups();
+                String oldName = Maud.model.animation.getName();
                 showTextEntryDialog("Enter new name for animation:",
                         oldName, "Rename", renameAnimationPrefix);
                 handled = true;

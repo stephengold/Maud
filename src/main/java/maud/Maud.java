@@ -47,6 +47,7 @@ import jme3utilities.debug.Printer;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
+import maud.model.LoadedCGModel;
 
 /**
  * GUI application to edit jMonkeyEngine animated models. The application's main
@@ -94,13 +95,13 @@ public class Maud extends GuiApplication {
      */
     final static BindScreen bindScreen = new BindScreen();
     /**
-     * GUI portion of the "3D View" screen, including tools
+     * GUI portion of the "3D View" screen, with links to tools
      */
-    final static DddGui gui = new DddGui();
+    final public static DddGui gui = new DddGui();
     /**
-     * MVC model of the loaded CG model
+     * MVC model of the loaded CG model, with links to selections
      */
-    final static ModelState model = new ModelState();
+    final public static LoadedCGModel model = new LoadedCGModel();
     /**
      * printer for scene dumps
      */
@@ -108,7 +109,7 @@ public class Maud extends GuiApplication {
     /**
      * MVC view of the loaded CG model
      */
-    final static ViewState viewState = new ViewState();
+    final public static ViewState viewState = new ViewState();
     // *************************************************************************
     // new methods exposed
 
@@ -127,7 +128,7 @@ public class Maud extends GuiApplication {
         /*
          * Lower logging thresholds for classes of interest.
          */
-        Logger.getLogger(ModelState.class.getName()).setLevel(Level.INFO);
+        Logger.getLogger(LoadedCGModel.class.getName()).setLevel(Level.INFO);
         /*
          * Instantiate the application.
          */

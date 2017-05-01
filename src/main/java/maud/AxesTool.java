@@ -29,6 +29,7 @@ package maud;
 import java.util.logging.Logger;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 
 /**
  * The controller for the "Axes Tool" window in Maud's "3D View" screen.
@@ -83,15 +84,18 @@ class AxesTool extends WindowController {
     // new methods exposed
 
     /**
-     * Change the mode and update this window.
+     * Alter the mode and update.
+     *
+     * @param newMode new value for axes mode (not null)
      */
     void setMode(String newMode) {
+        assert mode != null;
         mode = newMode;
         update();
     }
 
     /**
-     * Update this window after a change.
+     * Update the window and also the view of the CG model.
      */
     void update() {
         lineWidth = Maud.gui.updateSlider("axesLineWidth", " pixels");
@@ -101,8 +105,8 @@ class AxesTool extends WindowController {
         String units;
         switch (mode) {
             case "bone":
-                if (Maud.gui.bone.isBoneSelected()) {
-                    int boneIndex = Maud.gui.bone.getBoneIndex();
+                if (Maud.model.bone.isBoneSelected()) {
+                    int boneIndex = Maud.model.bone.getIndex();
                     newControl = Maud.viewState.getBoneAxesControl(boneIndex);
                     units = " bone units";
                 } else {

@@ -27,16 +27,16 @@
 package maud;
 
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 
 /**
  * The controller for the "Shadow Mode Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ShadowModeTool extends WindowController {
+public class ShadowModeTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -60,28 +60,10 @@ class ShadowModeTool extends WindowController {
     // new methods exposed
 
     /**
-     * Alter the shadow mode of the selected spatial and update.
-     *
-     * @param newMode new value for shadow mode (not null)
-     */
-    void setMode(RenderQueue.ShadowMode newMode) {
-        assert newMode != null;
-
-        Spatial modelSpatial = Maud.gui.spatial.getSelectedSpatial();
-        modelSpatial.setShadowMode(newMode);
-        Spatial viewSpatial = Maud.gui.spatial.getViewSpatial();
-        viewSpatial.setShadowMode(newMode);
-
-        update();
-        Maud.gui.spatial.update();
-    }
-
-    /**
      * Update the window after a change of mode or spatial.
      */
-    void update() {
-        Spatial modelSpatial = Maud.gui.spatial.getSelectedSpatial();
-        RenderQueue.ShadowMode mode = modelSpatial.getLocalShadowMode();
+    public void update() {
+        RenderQueue.ShadowMode mode = Maud.model.spatial.getLocalShadowMode();
 
         String niftyId;
         switch (mode) {

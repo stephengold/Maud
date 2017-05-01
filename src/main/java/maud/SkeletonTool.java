@@ -32,6 +32,7 @@ import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 
 /**
  * The controller for the "Skeleton Tool" window in Maud's "3D View" screen.

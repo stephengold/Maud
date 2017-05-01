@@ -32,6 +32,7 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.List;
@@ -41,6 +42,7 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.SimpleAppState;
+import jme3utilities.Validate;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.debug.SkeletonDebugControl;
 
@@ -50,7 +52,7 @@ import jme3utilities.debug.SkeletonDebugControl;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ViewState extends SimpleAppState {
+public class ViewState extends SimpleAppState {
     // *************************************************************************
     // constants and loggers
 
@@ -178,11 +180,23 @@ class ViewState extends SimpleAppState {
     }
 
     /**
+     * Alter the shadow mode of the selected spatial.
+     *
+     * @param newMode new value for shadow mode (not null)
+     */
+    public void setMode(RenderQueue.ShadowMode newMode) {
+        Validate.nonNull(newMode, "new shadow mode");
+
+        Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
+        spatial.setShadowMode(newMode);
+    }
+
+    /**
      * Replace the loaded CG model with a new one.
      *
      * @param newModelRoot (not null)
      */
-    void setModel(Spatial newModelRoot) {
+    public void setModel(Spatial newModelRoot) {
         /*
          * Detach the old spatial (if any) from the scene.
          */

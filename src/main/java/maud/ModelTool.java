@@ -31,13 +31,14 @@ import com.jme3.app.state.AppStateManager;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 
 /**
  * The controller for the "Model Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ModelTool extends WindowController {
+public class ModelTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -63,29 +64,29 @@ class ModelTool extends WindowController {
     /**
      * Update this window after a change.
      */
-    void update() {
+    public void update() {
         /*
-         * line 1: name
+         * name
          */
         String name = Maud.model.getName();
         String nameDesc = MyString.quote(name);
         Maud.gui.setStatusText("modelName", " " + nameDesc);
         /*
-         * line 2: asset base path
+         * asset base path
          */
         String assetPath = Maud.model.getAssetPath();
         String abpDesc = (assetPath.length() == 0) ? "unknown"
                 : MyString.quote(assetPath);
         Maud.gui.setStatusText("modelAbp", " " + abpDesc);
         /*
-         * line 3: file base path
+         * file base path
          */
         String filePath = Maud.model.getFilePath();
         String fbpDesc = (filePath.length() == 0) ? "unknown"
                 : MyString.quote(filePath);
         Maud.gui.setStatusText("modelFbp", " " + fbpDesc);
         /*
-         * line 4: asset/file extension and pristine/edited status
+         * asset/file extension and pristine/edited status
          */
         String extDesc = Maud.model.getExtension();
         Maud.gui.setStatusText("modelExt", extDesc);

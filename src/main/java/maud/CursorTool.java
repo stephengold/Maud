@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.WindowController;
 
 /**
  * The controller for the "Cursor Tool" window in Maud's "3D View" screen.
@@ -52,8 +53,7 @@ import jme3utilities.nifty.BasicScreenController;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CursorTool
-        extends WindowController {
+class CursorTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
