@@ -61,7 +61,6 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
-import maud.DddGui;
 import maud.Maud;
 import maud.Util;
 
@@ -78,7 +77,12 @@ public class LoadedCGModel {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(LoadedCGModel.class.getName());
+    final private static Logger logger = Logger.getLogger(
+            LoadedCGModel.class.getName());
+    /**
+     * dummy bone name used to indicate no bone selected
+     */
+    final public static String noBone = "( no bone )";
     // *************************************************************************
     // fields
 
@@ -88,7 +92,7 @@ public class LoadedCGModel {
      */
     private AssetManager assetManager = null;
     /**
-     * track unsaved changes to the CG model
+     * flag to track unsaved changes to the CG model
      */
     private boolean pristine = true;
     /**
@@ -270,7 +274,7 @@ public class LoadedCGModel {
         Validate.nonNull(animationName, "animation name");
 
         float result;
-        if (animationName.equals(DddGui.bindPoseName)) {
+        if (animationName.equals(LoadedAnimation.bindPoseName)) {
             result = 0f;
         } else {
             Animation anim = getAnimation(animationName);
@@ -345,7 +349,7 @@ public class LoadedCGModel {
      * @return true if found or noBone, otherwise false
      */
     public boolean hasBone(String name) {
-        if (name.equals(DddGui.noBone)) {
+        if (name.equals(noBone)) {
             return true;
         }
         Bone b = MySkeleton.getBone(rootSpatial, name);
@@ -377,7 +381,7 @@ public class LoadedCGModel {
      * @return true for a leaf bone, otherwise false
      */
     public boolean isLeafBone(String boneName) {
-        if (boneName.equals(DddGui.noBone)) {
+        if (boneName.equals(noBone)) {
             return false;
         }
         Bone b = MySkeleton.getBone(rootSpatial, boneName);
@@ -408,7 +412,7 @@ public class LoadedCGModel {
      */
     public Collection<String> listAnimationNames() {
         Collection<String> names = MyAnimation.listAnimations(rootSpatial);
-        names.add(DddGui.bindPoseName);
+        names.add(LoadedAnimation.bindPoseName);
 
         return names;
     }
@@ -421,7 +425,7 @@ public class LoadedCGModel {
     public List<String> listBoneNames() {
         List<String> boneNames = MySkeleton.listBones(rootSpatial);
         boneNames.remove("");
-        boneNames.add(DddGui.noBone);
+        boneNames.add(noBone);
 
         return boneNames;
     }
@@ -641,7 +645,7 @@ public class LoadedCGModel {
     public boolean renameAnimation(String newName) {
         Validate.nonNull(newName, "animation name");
 
-        if (newName.equals(DddGui.bindPoseName)
+        if (newName.equals(LoadedAnimation.bindPoseName)
                 || newName.isEmpty()) {
             logger.log(Level.WARNING, "Rename failed: {0} is a reserved name.",
                     MyString.quote(newName));
@@ -690,7 +694,7 @@ public class LoadedCGModel {
                     MyString.quote(newName));
             return false;
 
-        } else if (newName.equals(DddGui.noBone) || newName.isEmpty()) {
+        } else if (newName.equals(noBone) || newName.isEmpty()) {
             logger.log(Level.WARNING, "Rename failed: {0} is a reserved name.",
                     MyString.quote(newName));
             return false;

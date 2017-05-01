@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import maud.DddGui;
 import maud.Maud;
 
 /**
@@ -141,7 +140,7 @@ public class SelectedBone {
         String name;
         Bone bone = getBone();
         if (bone == null) {
-            name = DddGui.noBone;
+            name = LoadedCGModel.noBone;
         } else {
             name = bone.getName();
         }
@@ -256,7 +255,7 @@ public class SelectedBone {
      * @param name bone name or noBone (not null)
      */
     public void select(String name) {
-        if (name.equals(DddGui.noBone)) {
+        if (name.equals(LoadedCGModel.noBone)) {
             selectNoBone();
 
         } else {

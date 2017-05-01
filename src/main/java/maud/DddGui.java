@@ -73,27 +73,17 @@ public class DddGui extends GuiScreenController {
     final private static Logger logger = Logger.getLogger(
             DddGui.class.getName());
     /**
-     * dummy animation name used in menus and statuses to indicate bind pose,
-     * that is, no animation loaded TODO move?
-     */
-    final public static String bindPoseName = "( bind pose )";
-    /**
      * level separator in menu action strings
      */
-    final static String menuSeparator = " -> ";
-    /**
-     * dummy bone name used in menus and statuses to indicate no bone selected
-     * TODO move?
-     */
-    final public static String noBone = "( no bone )";
+    final private static String menuSeparator = " -> ";
     /**
      * name of signal that rotates the model counter-clockwise around +Y
      */
-    final static String modelCCWSignalName = "modelLeft";
+    final private static String modelCCWSignalName = "modelLeft";
     /**
      * name of signal that rotates the model clockwise around +Y
      */
-    final static String modelCWSignalName = "modelRight";
+    final private static String modelCWSignalName = "modelRight";
     // *************************************************************************
     // fields
 

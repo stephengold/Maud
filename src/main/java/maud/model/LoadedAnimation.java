@@ -32,8 +32,6 @@ import com.jme3.math.Transform;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
-import maud.DddGui;
-import static maud.DddGui.bindPoseName;
 import maud.Maud;
 import maud.Util;
 
@@ -52,6 +50,11 @@ public class LoadedAnimation {
      */
     final private static Logger logger = Logger.getLogger(
             LoadedAnimation.class.getName());
+    /**
+     * dummy animation name used to indicate bind pose, that is, no animation
+     * loaded
+     */
+    final public static String bindPoseName = "( bind pose )";
     // *************************************************************************
     // fields
 
@@ -162,7 +165,7 @@ public class LoadedAnimation {
      * @return true if it's loaded, false if an animation is loaded
      */
     public boolean isBindPoseLoaded() {
-        if (loadedName.equals(DddGui.bindPoseName)) {
+        if (loadedName.equals(bindPoseName)) {
             return true;
         } else {
             return false;
@@ -223,7 +226,7 @@ public class LoadedAnimation {
      */
     public void loadAnimation(String name, float newSpeed) {
         Validate.nonNull(name, "animation name");
-        assert !name.equals(DddGui.bindPoseName);
+        assert !name.equals(bindPoseName);
 
         loadedName = name;
         speed = newSpeed;
@@ -237,7 +240,7 @@ public class LoadedAnimation {
      * Load the bind pose.
      */
     public void loadBindPose() {
-        loadedName = DddGui.bindPoseName;
+        loadedName = bindPoseName;
         speed = 0f;
         time = 0f;
         Maud.gui.animation.resetPose();

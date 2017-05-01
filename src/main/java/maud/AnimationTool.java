@@ -37,6 +37,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.model.LoadedAnimation;
 
 /**
  * The controller for the "Animation Tool" window in Maud's "3D View" screen.
@@ -232,7 +233,7 @@ public class AnimationTool extends WindowController {
     public void updateDescription() {
         String description;
         if (Maud.model.animation.isBindPoseLoaded()) {
-            description = DddGui.bindPoseName;
+            description = LoadedAnimation.bindPoseName;
         } else {
             String name = Maud.model.animation.getName();
             description = "Loaded " + MyString.quote(name);
