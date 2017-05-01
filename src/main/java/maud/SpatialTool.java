@@ -231,7 +231,7 @@ public class SpatialTool extends WindowController {
     private void updateParent() {
         String parentText, spButton;
         if (Maud.model.spatial.isModelRoot()) {
-            parentText = "n/a";
+            parentText = "none (the model root)";
             spButton = "";
         } else {
             String name = Maud.model.spatial.getParentName();

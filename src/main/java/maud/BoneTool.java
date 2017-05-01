@@ -80,10 +80,10 @@ public class BoneTool extends WindowController {
                 List<String> roots = Maud.model.listRootBoneNames();
                 int numRoots = roots.size();
                 if (numRoots == 1) {
-                    parentText = "( the root bone )";
+                    parentText = "none (the root bone)";
                 } else {
                     parentText = String.format(
-                            "( one of %d root bones )", numRoots);
+                            "none (one of %d root bones)", numRoots);
                 }
                 spButton = "";
             } else {
