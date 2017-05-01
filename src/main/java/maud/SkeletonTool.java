@@ -39,7 +39,7 @@ import jme3utilities.nifty.WindowController;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SkeletonTool extends WindowController {
+public class SkeletonTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -65,8 +65,10 @@ class SkeletonTool extends WindowController {
     /**
      * Update after a change.
      */
-    void update() {
-        assert isInitialized();
+    public void update() {
+        if (!isInitialized()) {
+            return;
+        }
 
         SkeletonDebugControl control = Maud.viewState.getSkeletonDebugControl();
         /*

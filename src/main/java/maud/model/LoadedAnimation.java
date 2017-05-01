@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import maud.DddGui;
+import static maud.DddGui.bindPoseName;
 import maud.Maud;
 import maud.Util;
 
@@ -178,6 +179,38 @@ public class LoadedAnimation {
             return false;
         } else {
             return true;
+        }
+    }
+
+    /**
+     * Load the named animation at t=0 with the default speed.
+     *
+     * @param name which animation (not null)
+     */
+    public void load(String name) {
+        Validate.nonNull(name, "animation name");
+
+        if (name.equals(bindPoseName)) {
+            /*
+             * Load bind pose.
+             */
+            loadBindPose();
+
+        } else {
+            float duration = Maud.model.getDuration(name);
+            float speed;
+            if (duration == 0f) {
+                /*
+                 * The animation consists of a single pose: set speed to zero.
+                 */
+                speed = 0f;
+            } else {
+                /*
+                 * Start the animation looping at normal speed.
+                 */
+                speed = 1f;
+            }
+            loadAnimation(name, speed);
         }
     }
 

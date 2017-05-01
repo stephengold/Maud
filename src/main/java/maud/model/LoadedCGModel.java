@@ -532,7 +532,7 @@ public class LoadedCGModel {
     /**
      * Unload the current model, if any, and load the specified asset.
      *
-     * @param assetPath (not null)
+     * @param assetPath path to the model asset to load (not null)
      * @return true if successful, otherwise false
      */
     public boolean loadModelAsset(String assetPath) {
@@ -553,6 +553,8 @@ public class LoadedCGModel {
         bone.selectNoBone();
         spatial.selectModelRoot();
         setPristine();
+        Maud.gui.model.update();
+        Maud.gui.skeleton.update();
 
         return true;
     }
@@ -560,13 +562,13 @@ public class LoadedCGModel {
     /**
      * Unload the current model, if any, and load the specified file.
      *
-     * @param modelFile model file from which to load (not null)
+     * @param filePath path to the model file to load (not null)
      * @return true if successful, otherwise false
      */
-    public boolean loadModelFile(File modelFile) {
+    public boolean loadModelFile(File filePath) {
         String canonicalPath;
         try {
-            canonicalPath = modelFile.getCanonicalPath();
+            canonicalPath = filePath.getCanonicalPath();
         } catch (IOException e) {
             return false;
         }
@@ -586,6 +588,8 @@ public class LoadedCGModel {
         bone.selectNoBone();
         spatial.selectModelRoot();
         setPristine();
+        Maud.gui.model.update();
+        Maud.gui.skeleton.update();
 
         return true;
     }
@@ -609,22 +613,23 @@ public class LoadedCGModel {
         Spatial loaded = loadModelFromAsset(assetPath, false);
         if (loaded == null) {
             return false;
-        } else {
-            rootSpatial = loaded;
-
-            Spatial viewClone = loadModelFromAsset(assetPath, true);
-            assert viewClone != null;
-            Maud.viewState.setModel(viewClone);
-
-            modelName = name;
-
-            animation.loadBindPose();
-            bone.selectNoBone();
-            spatial.selectModelRoot();
-            setPristine();
-
-            return true;
         }
+        rootSpatial = loaded;
+
+        Spatial viewClone = loadModelFromAsset(assetPath, true);
+        assert viewClone != null;
+        Maud.viewState.setModel(viewClone);
+
+        modelName = name;
+
+        animation.loadBindPose();
+        bone.selectNoBone();
+        spatial.selectModelRoot();
+        setPristine();
+        Maud.gui.model.update();
+        Maud.gui.skeleton.update();
+
+        return true;
     }
 
     /**
@@ -701,6 +706,7 @@ public class LoadedCGModel {
         boolean success = MySkeleton.setName(selectedBone, newName);
         setEdited();
         Maud.gui.model.update();
+        Maud.gui.bone.update();
 
         return success;
     }
@@ -800,6 +806,7 @@ public class LoadedCGModel {
         boolean success = writeModelToFile(baseFilePath);
         if (success) {
             loadedModelAssetPath = baseAssetPath;
+            Maud.gui.model.update();
         }
 
         return success;
@@ -836,6 +843,7 @@ public class LoadedCGModel {
                     "I/O exception while writing model to file {0}",
                     MyString.quote(filePath));
         }
+        Maud.gui.model.update();
 
         return success;
     }

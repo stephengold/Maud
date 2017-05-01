@@ -228,4 +228,20 @@ public class Util {
 
         return result;
     }
+
+    /**
+     * Extract the remainder of the specified string after removing the
+     * specified prefix.
+     *
+     * @param string input string (not null)
+     * @param prefix prefix string (not null)
+     * @return the remainder of the input
+     */
+    public static String remainder(String string, String prefix) {
+        assert string.startsWith(prefix) : string;
+        int endPosition = prefix.length();
+        String result = string.substring(endPosition);
+
+        return result;
+    }
 }

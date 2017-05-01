@@ -86,23 +86,6 @@ public class DddGui extends GuiScreenController {
      * TODO move?
      */
     final public static String noBone = "( no bone )";
-    /*
-     * action prefixes used by dialogs and popup menus
-     */
-    final static String copyAnimationPrefix = "copy animation ";
-    final static String loadAnimationPrefix = "load animation ";
-    final static String loadModelAssetPrefix = "load model asset ";
-    final static String loadModelFilePrefix = "load model file ";
-    final static String loadModelNamedPrefix = "load model named ";
-    final static String openMenuPrefix = "open menu ";
-    final static String renameAnimationPrefix = "rename animation ";
-    final static String renameBonePrefix = "rename bone ";
-    final static String saveModelAssetPrefix = "save model asset ";
-    final static String saveModelFilePrefix = "save model file ";
-    final static String selectBonePrefix = "select bone ";
-    final static String selectBoneChildPrefix = "select boneChild ";
-    final static String selectSpatialChildPrefix = "select spatialChild ";
-    final static String selectToolPrefix = "select tool ";
     /**
      * name of signal that rotates the model counter-clockwise around +Y
      */
@@ -132,7 +115,7 @@ public class DddGui extends GuiScreenController {
     final public ModelTool model = new ModelTool(this);
     final RenderTool render = new RenderTool(this);
     final public ShadowModeTool shadowMode = new ShadowModeTool(this);
-    final SkeletonTool skeleton = new SkeletonTool(this);
+    final public SkeletonTool skeleton = new SkeletonTool(this);
     final public SpatialTool spatial = new SpatialTool(this);
     final SkyTool sky = new SkyTool(this);
     // *************************************************************************
@@ -149,81 +132,16 @@ public class DddGui extends GuiScreenController {
     // new methods exposed
 
     /**
-     * Parse and handle a "load animation" action.
+     * Handle a "load model file" action where the argument may be the name of a
+     * folder/directory.
      *
-     * @param actionString (not null)
+     * @param filePath action argument (not null)
      */
-    void loadAnimation(String actionString) {
-        assert actionString.startsWith(loadAnimationPrefix) : actionString;
-
-        int namePos = loadAnimationPrefix.length();
-        String name = actionString.substring(namePos);
-        if (name.equals(bindPoseName)) {
-            /*
-             * Load bind pose.
-             */
-            Maud.model.animation.loadBindPose();
-
-        } else {
-            float duration = Maud.model.getDuration(name);
-            float speed;
-            if (duration == 0f) {
-                /*
-                 * The animation consists of a single pose: set speed to zero.
-                 */
-                speed = 0f;
-            } else {
-                /*
-                 * Start the animation looping at normal speed.
-                 */
-                speed = 1f;
-            }
-            Maud.model.animation.loadAnimation(name, speed);
-        }
-    }
-
-    /**
-     * Parse and handle a "copy animation" action.
-     *
-     * @param actionString (not null)
-     */
-    void copyAnimation(String actionString) {
-        assert actionString.startsWith(copyAnimationPrefix) : actionString;
-
-        int namePos = copyAnimationPrefix.length();
-        String newName = actionString.substring(namePos);
-        Maud.model.copyAnimation(newName);
-    }
-
-    /**
-     * Parse and handle a "load model asset" action.
-     *
-     * @param actionString (not null)
-     */
-    void loadModelAsset(String actionString) {
-        assert actionString.startsWith(loadModelAssetPrefix) : actionString;
-
-        int pathPos = loadModelAssetPrefix.length();
-        String assetPath = actionString.substring(pathPos);
-        Maud.model.loadModelAsset(assetPath);
-        model.update();
-        skeleton.update();
-    }
-
-    /**
-     * Parse and handle a "load model file" action.
-     *
-     * @param actionString (not null)
-     */
-    void loadModelFile(String actionString) {
-        assert actionString.startsWith(loadModelFilePrefix) : actionString;
-
-        int namePos = loadModelFilePrefix.length();
-        String filePath = actionString.substring(namePos);
+    void loadModelFile(String filePath) {
         File file = new File(filePath);
         if (file.isDirectory()) {
             List<String> fileNames = listFileNames(filePath);
-            String menuPrefix = loadModelFilePrefix + filePath;
+            String menuPrefix = DddMode.loadModelFilePrefix + filePath;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }
@@ -231,35 +149,7 @@ public class DddGui extends GuiScreenController {
 
         } else if (file.canRead()) {
             Maud.model.loadModelFile(file);
-            model.update();
-            skeleton.update();
         }
-    }
-
-    /**
-     * Parse and handle an "open menu" action.
-     *
-     * @param actionString action string to handle (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    boolean menu(String actionString) {
-        assert actionString.startsWith(openMenuPrefix) : actionString;
-
-        int pathPos = openMenuPrefix.length();
-        String menuPath = actionString.substring(pathPos);
-
-        int separatorBegin = menuPath.indexOf(menuSeparator);
-        boolean handled;
-        if (separatorBegin == -1) {
-            handled = menuBar(menuPath);
-        } else {
-            int separatorEnd = separatorBegin + menuSeparator.length();
-            String menuName = menuPath.substring(0, separatorBegin);
-            String remainder = menuPath.substring(separatorEnd);
-            handled = menu(menuName, remainder);
-        }
-
-        return handled;
     }
 
     /**
@@ -396,6 +286,27 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
+     * Handle an "open menu" action for this screen.
+     *
+     * @param menuPath menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    boolean openMenu(String menuPath) {
+        int separatorBegin = menuPath.indexOf(menuSeparator);
+        boolean handled;
+        if (separatorBegin == -1) {
+            handled = menuBar(menuPath);
+        } else {
+            int separatorEnd = separatorBegin + menuSeparator.length();
+            String menuName = menuPath.substring(0, separatorBegin);
+            String remainder = menuPath.substring(separatorEnd);
+            handled = menu(menuName, remainder);
+        }
+
+        return handled;
+    }
+
+    /**
      * Handle a "rename bone" action with no argument.
      */
     void renameBone() {
@@ -403,60 +314,27 @@ public class DddGui extends GuiScreenController {
             closeAllPopups();
             String oldName = Maud.model.bone.getName();
             showTextEntryDialog("Enter new name for bone:", oldName, "Rename",
-                    renameBonePrefix);
+                    DddMode.renameBonePrefix);
         }
-    }
-
-    /**
-     * Parse and handle a "save model asset" action.
-     *
-     * @param actionString (not null)
-     */
-    void saveModelAsset(String actionString) {
-        assert actionString.startsWith(saveModelAssetPrefix) : actionString;
-
-        int pathPos = saveModelAssetPrefix.length();
-        String baseAssetPath = actionString.substring(pathPos);
-        boolean success = Maud.model.writeModelToAsset(baseAssetPath);
-        assert success;
-        model.update();
-    }
-
-    /**
-     * Parse and handle a "save model file" action.
-     *
-     * @param actionString (not null)
-     */
-    void saveModelFile(String actionString) {
-        assert actionString.startsWith(saveModelFilePrefix) : actionString;
-
-        int pathPos = saveModelFilePrefix.length();
-        String baseFilePath = actionString.substring(pathPos);
-        boolean success = Maud.model.writeModelToFile(baseFilePath);
-        assert success;
-        model.update();
     }
 
     /**
      * Handle a "select bone" action.
      *
-     * @param actionString (not null)
+     * @param argument action argument (not null)
      */
-    void selectBone(String actionString) {
-        assert actionString.startsWith(selectBonePrefix) : actionString;
-
-        int namePos = selectBonePrefix.length();
-        String argument = actionString.substring(namePos);
+    void selectBone(String argument) {
         if (Maud.model.hasBone(argument)) {
             Maud.model.bone.select(argument);
+
         } else {
             /*
-             * Treat the argument as a name prefix.
+             * Treat the argument as a bone-name prefix.
              */
             List<String> boneNames = Maud.model.listBoneNames(argument);
             MyString.reduce(boneNames, 20);
             Collections.sort(boneNames);
-            showPopupMenu(selectBonePrefix, boneNames);
+            showPopupMenu(DddMode.selectBonePrefix, boneNames);
         }
     }
 
@@ -470,7 +348,7 @@ public class DddGui extends GuiScreenController {
                 Maud.model.bone.selectChild(0);
             } else if (numChildren > 1) {
                 List<String> choices = Maud.model.bone.listChildNames();
-                showPopupMenu(selectBonePrefix, choices);
+                showPopupMenu(DddMode.selectBonePrefix, choices);
             }
         }
     }
@@ -478,13 +356,9 @@ public class DddGui extends GuiScreenController {
     /**
      * Handle a "select boneChild" action.
      *
-     * @param actionString (not null)
+     * @param argument action argument (not null)
      */
-    void selectBoneChild(String actionString) {
-        assert actionString.startsWith(selectBoneChildPrefix) : actionString;
-
-        int namePos = selectBoneChildPrefix.length();
-        String argument = actionString.substring(namePos);
+    void selectBoneChild(String argument) {
         if (argument.startsWith("!")) {
             String name = argument.substring(1);
             Maud.model.bone.select(name);
@@ -499,7 +373,7 @@ public class DddGui extends GuiScreenController {
                     items.add(name);
                 }
             }
-            showPopupMenu(selectBoneChildPrefix, items);
+            showPopupMenu(DddMode.selectBoneChildPrefix, items);
         }
     }
 
@@ -521,20 +395,16 @@ public class DddGui extends GuiScreenController {
                 }
                 choices.add(choice);
             }
-            showPopupMenu(selectSpatialChildPrefix, choices);
+            showPopupMenu(DddMode.selectSpatialChildPrefix, choices);
         }
     }
 
     /**
      * Handle a "select spatialChild" action with arguments.
      *
-     * @param actionString (not null)
+     * @param argument action argument (not null)
      */
-    void selectSpatialChild(String actionString) {
-        assert actionString.startsWith(selectSpatialChildPrefix) : actionString;
-
-        int argumentPos = selectSpatialChildPrefix.length();
-        String argument = actionString.substring(argumentPos);
+    void selectSpatialChild(String argument) {
         String[] words = argument.split(" ");
         String firstWord = words[0];
         assert firstWord.startsWith("#") : firstWord;
@@ -553,16 +423,12 @@ public class DddGui extends GuiScreenController {
     /**
      * Handle a "select tool" action.
      *
-     * @param actionString (not null)
+     * @param toolName which tool to select (not null)
      * @return true if the action is handled, otherwise false
      */
-    boolean selectTool(String actionString) {
-        assert actionString.startsWith(selectToolPrefix) : actionString;
-
-        int namePos = selectToolPrefix.length();
-        String name = actionString.substring(namePos);
+    boolean selectTool(String toolName) {
         WindowController controller = null;
-        switch (name) {
+        switch (toolName) {
             case "animation":
                 controller = animation;
                 break;
@@ -1029,7 +895,7 @@ public class DddGui extends GuiScreenController {
             case "Load":
                 Collection<String> animationNames;
                 animationNames = Maud.model.listAnimationNames();
-                showPopupMenu(loadAnimationPrefix, animationNames);
+                showPopupMenu(DddMode.loadAnimationPrefix, animationNames);
                 handled = true;
                 break;
 
@@ -1041,14 +907,14 @@ public class DddGui extends GuiScreenController {
                 String toName = String.format("Copy of %s", fromName);
                 closeAllPopups();
                 showTextEntryDialog("Enter name for new animation:",
-                        toName, "Copy", copyAnimationPrefix);
+                        toName, "Copy", DddMode.copyAnimationPrefix);
                 handled = true;
                 break;
 
             case "New from pose":
-                String newName = "new-animation";
+                String newName = "new-animation"; // TODO
                 Maud.model.addPoseAnimation(newName);
-                loadAnimation(loadAnimationPrefix + newName);
+                Maud.model.animation.load(newName);
                 handled = true;
                 break;
 
@@ -1056,7 +922,7 @@ public class DddGui extends GuiScreenController {
                 closeAllPopups();
                 String oldName = Maud.model.animation.getName();
                 showTextEntryDialog("Enter new name for animation:",
-                        oldName, "Rename", renameAnimationPrefix);
+                        oldName, "Rename", DddMode.renameAnimationPrefix);
                 handled = true;
                 break;
 
@@ -1073,7 +939,7 @@ public class DddGui extends GuiScreenController {
     /**
      * Handle an action from the menu bar.
      *
-     * @param menuName name of menu to open (not null)
+     * @param menuName name of the menu to open (not null)
      * @return true if handled, otherwise false
      */
     private boolean menuBar(String menuName) {
@@ -1117,7 +983,8 @@ public class DddGui extends GuiScreenController {
             logger.log(Level.WARNING, "no items for the {0} menu",
                     MyString.quote(menuName));
         } else {
-            String actionPrefix = openMenuPrefix + menuName + menuSeparator;
+            String actionPrefix = DddMode.openMenuPrefix + menuName
+                    + menuSeparator;
             showPopupMenu(actionPrefix, menuItems);
         }
         return true;
@@ -1184,7 +1051,7 @@ public class DddGui extends GuiScreenController {
                 String[] modelNames = {
                     "Elephant", "Jaime", "Ninja", "Oto", "Sinbad"
                 };
-                showPopupMenu(loadModelNamedPrefix, modelNames);
+                showPopupMenu(DddMode.loadModelNamedPrefix, modelNames);
                 handled = true;
                 break;
 
@@ -1194,24 +1061,25 @@ public class DddGui extends GuiScreenController {
                 String assetPath = String.format("%s.%s", basePath, extension);
                 closeAllPopups();
                 showTextEntryDialog("Enter base asset path for model:",
-                        assetPath, "Load", loadModelAssetPrefix);
+                        assetPath, "Load", DddMode.loadModelAssetPrefix);
                 handled = true;
                 break;
 
             case "Load from file":
                 List<String> fileNames = listFileNames("/");
-                showPopupMenu(loadModelFilePrefix + "/", fileNames);
+                showPopupMenu(DddMode.loadModelFilePrefix + "/", fileNames);
                 handled = true;
                 break;
 
             case "Revert":
+                // TODO
                 break;
 
             case "Save as asset":
                 String baseAssetPath = Maud.model.getAssetPath();
                 closeAllPopups();
                 showTextEntryDialog("Enter base asset path for model:",
-                        baseAssetPath, "Save", saveModelAssetPrefix);
+                        baseAssetPath, "Save", DddMode.saveModelAssetPrefix);
                 handled = true;
                 break;
 
@@ -1219,7 +1087,7 @@ public class DddGui extends GuiScreenController {
                 String baseFilePath = Maud.model.getFilePath();
                 closeAllPopups();
                 showTextEntryDialog("Enter base file path for model:",
-                        baseFilePath, "Save", saveModelFilePrefix);
+                        baseFilePath, "Save", DddMode.saveModelFilePrefix);
                 handled = true;
                 break;
 
@@ -1326,7 +1194,7 @@ public class DddGui extends GuiScreenController {
         List<String> boneNames = Maud.model.listBoneNames();
         MyString.reduce(boneNames, 20);
         Collections.sort(boneNames);
-        showPopupMenu(selectBonePrefix, boneNames);
+        showPopupMenu(DddMode.selectBonePrefix, boneNames);
     }
 
     /**
@@ -1334,6 +1202,6 @@ public class DddGui extends GuiScreenController {
      */
     private void selectBoneByParent() {
         List<String> boneNames = Maud.model.listRootBoneNames();
-        showPopupMenu(selectBoneChildPrefix, boneNames);
+        showPopupMenu(DddMode.selectBoneChildPrefix, boneNames);
     }
 }

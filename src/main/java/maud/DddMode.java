@@ -53,6 +53,23 @@ class DddMode extends InputMode {
      * asset path to the cursor for this mode
      */
     final private static String assetPath = "Textures/cursors/default.cur";
+    /*
+     * action-string prefixes used by dialogs and popup menus
+     */
+    final static String copyAnimationPrefix = "copy animation ";
+    final static String loadAnimationPrefix = "load animation ";
+    final static String loadModelAssetPrefix = "load model asset ";
+    final static String loadModelFilePrefix = "load model file ";
+    final static String loadModelNamedPrefix = "load model named ";
+    final static String openMenuPrefix = "open menu ";
+    final static String renameAnimationPrefix = "rename animation ";
+    final static String renameBonePrefix = "rename bone ";
+    final static String saveModelAssetPrefix = "save model asset ";
+    final static String saveModelFilePrefix = "save model file ";
+    final static String selectBonePrefix = "select bone ";
+    final static String selectBoneChildPrefix = "select boneChild ";
+    final static String selectSpatialChildPrefix = "select spatialChild ";
+    final static String selectToolPrefix = "select tool ";
     // *************************************************************************
     // constructors
 
@@ -77,92 +94,30 @@ class DddMode extends InputMode {
         logger.log(Level.INFO, "Got action {0} ongoing={1}", new Object[]{
             MyString.quote(actionString), ongoing
         });
-
+        /*
+         * Parse the action string and attempt to handle the action.
+         */
         boolean handled = false;
         if (ongoing) {
-            if (actionString.equals("rename bone")) {
-                Maud.gui.renameBone();
-                handled = true;
-
-            } else if (actionString.equals("select boneChild")) {
-                Maud.gui.selectBoneChild();
-                handled = true;
-
-            } else if (actionString.equals("select boneParent")) {
-                Maud.model.bone.selectParent();
-                handled = true;
-
-            } else if (actionString.equals("select spatialChild")) {
-                Maud.gui.selectSpatialChild();
-                handled = true;
-
-            } else if (actionString.equals("select spatialParent")) {
-                Maud.model.spatial.selectParent();
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.copyAnimationPrefix)) {
-                Maud.gui.copyAnimation(actionString);
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.loadAnimationPrefix)) {
-                Maud.gui.loadAnimation(actionString);
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.loadModelAssetPrefix)) {
-                Maud.gui.loadModelAsset(actionString);
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.loadModelFilePrefix)) {
-                Maud.gui.loadModelFile(actionString);
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.loadModelNamedPrefix)) {
-                int namePos = DddGui.loadModelNamedPrefix.length();
-                String newName = actionString.substring(namePos);
-                Maud.model.loadModelNamed(newName);
-                Maud.gui.model.update();
-                Maud.gui.skeleton.update();
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.renameAnimationPrefix)) {
-                int namePos = DddGui.renameAnimationPrefix.length();
-                String newName = actionString.substring(namePos);
-                Maud.model.renameAnimation(newName);
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.renameBonePrefix)) {
-                int namePos = DddGui.renameBonePrefix.length();
-                String newName = actionString.substring(namePos);
-                Maud.model.renameBone(newName);
-                Maud.gui.bone.update();
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.saveModelAssetPrefix)) {
-                Maud.gui.saveModelAsset(actionString);
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.saveModelFilePrefix)) {
-                Maud.gui.saveModelFile(actionString);
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.selectBonePrefix)) {
-                Maud.gui.selectBone(actionString);
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.selectBoneChildPrefix)) {
-                Maud.gui.selectBoneChild(actionString);
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.selectSpatialChildPrefix)) {
-                Maud.gui.selectSpatialChild(actionString);
-                handled = true;
-
-            } else if (actionString.startsWith(DddGui.selectToolPrefix)) {
-                handled = Maud.gui.selectTool(actionString);
-            }
-
-            if (!handled && actionString.startsWith(DddGui.openMenuPrefix)) {
-                handled = Maud.gui.menu(actionString);
+            String firstWord = actionString.split(" ")[0];
+            switch (firstWord) {
+                case "copy":
+                    handled = copyAction(actionString);
+                    break;
+                case "load":
+                    handled = loadAction(actionString);
+                    break;
+                case "open":
+                    handled = openAction(actionString);
+                    break;
+                case "rename":
+                    handled = renameAction(actionString);
+                    break;
+                case "save":
+                    handled = saveAction(actionString);
+                    break;
+                case "select":
+                    handled = selectAction(actionString);
             }
         }
 
@@ -181,7 +136,7 @@ class DddMode extends InputMode {
      */
     @Override
     protected void defaultBindings() {
-
+        // intentionally empty
     }
 
     /**
@@ -198,5 +153,174 @@ class DddMode extends InputMode {
         setCursor(cursor);
 
         super.initialize(stateManager, application);
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Process a "copy" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean copyAction(String actionString) {
+        boolean handled = false;
+        if (actionString.startsWith(copyAnimationPrefix)) {
+            String destName = Util.remainder(actionString, copyAnimationPrefix);
+            Maud.model.copyAnimation(destName);
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a "load" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean loadAction(String actionString) {
+        boolean handled = false;
+        if (actionString.startsWith(loadAnimationPrefix)) {
+            String name = Util.remainder(actionString, loadAnimationPrefix);
+            Maud.model.animation.load(name);
+            handled = true;
+
+        } else if (actionString.startsWith(loadModelAssetPrefix)) {
+            String path = Util.remainder(actionString, loadModelAssetPrefix);
+            Maud.model.loadModelAsset(path);
+            handled = true;
+
+        } else if (actionString.startsWith(loadModelFilePrefix)) {
+            String path = Util.remainder(actionString, loadModelFilePrefix);
+            Maud.gui.loadModelFile(path);
+            handled = true;
+
+        } else if (actionString.startsWith(loadModelNamedPrefix)) {
+            String name = Util.remainder(actionString, loadModelNamedPrefix);
+            Maud.model.loadModelNamed(name);
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a "open" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean openAction(String actionString) {
+        boolean handled = false;
+        if (actionString.startsWith(openMenuPrefix)) {
+            String menuPath = Util.remainder(actionString, openMenuPrefix);
+            handled = Maud.gui.openMenu(menuPath);
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a "rename" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean renameAction(String actionString) {
+        boolean handled = false;
+        String newName;
+        if (actionString.equals("rename bone")) {
+            Maud.gui.renameBone();
+            handled = true;
+
+        } else if (actionString.startsWith(renameAnimationPrefix)) {
+            newName = Util.remainder(actionString, renameAnimationPrefix);
+            Maud.model.renameAnimation(newName);
+            handled = true;
+
+        } else if (actionString.startsWith(renameBonePrefix)) {
+            newName = Util.remainder(actionString, renameBonePrefix);
+            Maud.model.renameBone(newName);
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a "save" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean saveAction(String actionString) {
+        boolean handled = false;
+        if (actionString.startsWith(saveModelAssetPrefix)) {
+            String path = Util.remainder(actionString, saveModelAssetPrefix);
+            Maud.model.writeModelToAsset(path);
+            handled = true;
+
+        } else if (actionString.startsWith(saveModelFilePrefix)) {
+            String path = Util.remainder(actionString, saveModelFilePrefix);
+            Maud.model.writeModelToFile(path);
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a "select" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean selectAction(String actionString) {
+        boolean handled = false;
+        switch (actionString) {
+            case "select boneChild":
+                Maud.gui.selectBoneChild();
+                handled = true;
+                break;
+            case "select boneParent":
+                Maud.model.bone.selectParent();
+                handled = true;
+                break;
+            case "select spatialChild":
+                Maud.gui.selectSpatialChild();
+                handled = true;
+                break;
+            case "select spatialParent":
+                Maud.model.spatial.selectParent();
+                handled = true;
+        }
+
+        if (!handled) {
+            String arg;
+            if (actionString.startsWith(selectBonePrefix)) {
+                arg = Util.remainder(actionString, selectBonePrefix);
+                Maud.gui.selectBone(arg);
+                handled = true;
+
+            } else if (actionString.startsWith(selectBoneChildPrefix)) {
+                arg = Util.remainder(actionString, selectBoneChildPrefix);
+                Maud.gui.selectBoneChild(arg);
+                handled = true;
+
+            } else if (actionString.startsWith(selectSpatialChildPrefix)) {
+                arg = Util.remainder(actionString, selectSpatialChildPrefix);
+                Maud.gui.selectSpatialChild(arg);
+                handled = true;
+            }
+        }
+
+        if (!handled && actionString.startsWith(selectToolPrefix)) {
+            String toolName = Util.remainder(actionString, selectToolPrefix);
+            handled = Maud.gui.selectTool(toolName);
+        }
+
+        return handled;
     }
 }
