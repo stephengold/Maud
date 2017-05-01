@@ -89,11 +89,19 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="animationTool" title="Animation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="200px" width="200px" x="75" y="25">
+                     height="200px" width="250px" x="75" y="25">
                 <panel childLayout="vertical">
-                    <panel style="statusPanel">
-                        <control name="label" id="animationDescription"
-                                 textHAlign="left"/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Name:  "
+                                 textHAlign="right"
+                                 width="40px"/>
+                        <control name="label" id="animationName"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="animationRenameButton"
+                                 width="60px">
+                            <interact onRelease="perform(rename animation)"/>
+                        </control>
                     </panel>
                     <panel style="statusPanel">
                         <control name="label" id="speedSliderStatus"

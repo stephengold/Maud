@@ -37,7 +37,6 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
-import maud.model.LoadedAnimation;
 
 /**
  * The controller for the "Animation Tool" window in Maud's "3D View" screen.
@@ -240,24 +239,27 @@ public class AnimationTool extends WindowController {
     public void updateAfterLoad() {
         setSliders();
         update();
-        updateDescription();
+        updateName();
         Maud.gui.boneAngle.set();
         Maud.gui.boneOffset.set();
         Maud.gui.boneScale.set();
     }
 
     /**
-     * Update the description after renaming or loading.
+     * Update the name and Rename button after renaming or loading.
      */
-    public void updateDescription() {
-        String description;
+    public void updateName() {
+        String name = Maud.model.animation.getName();
+        String nameText = MyString.quote(name);
+        Maud.gui.setStatusText("animationName", " " + nameText);
+
+        String rButton;
         if (Maud.model.animation.isBindPoseLoaded()) {
-            description = LoadedAnimation.bindPoseName;
+            rButton = "";
         } else {
-            String name = Maud.model.animation.getName();
-            description = "Loaded " + MyString.quote(name);
+            rButton = "Rename";
         }
-        Maud.gui.setStatusText("animationDescription", description);
+        Maud.gui.setButtonLabel("animationRenameButton", rButton);
     }
     // *************************************************************************
     // private methods

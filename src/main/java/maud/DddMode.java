@@ -234,7 +234,11 @@ class DddMode extends InputMode {
     private boolean renameAction(String actionString) {
         boolean handled = false;
         String newName;
-        if (actionString.equals("rename bone")) {
+        if (actionString.equals("rename animation")) {
+            Maud.gui.renameAnimation();
+            handled = true;
+            
+        } else if (actionString.equals("rename bone")) {
             Maud.gui.renameBone();
             handled = true;
 

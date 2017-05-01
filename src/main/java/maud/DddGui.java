@@ -297,7 +297,19 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
-     * Handle a "rename bone" action with no argument.
+     * Show the "rename animation" dialog.
+     */
+    void renameAnimation() {
+        if (!Maud.model.animation.isBindPoseLoaded()) {
+            closeAllPopups();
+            String oldName = Maud.model.animation.getName();
+            showTextEntryDialog("Enter new name for animation:",
+                    oldName, "Rename", DddMode.renameAnimationPrefix);
+        }
+    }
+
+    /**
+     * Show the "rename bone" dialog.
      */
     void renameBone() {
         if (Maud.model.bone.isBoneSelected()) {
@@ -909,10 +921,7 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "Rename":
-                closeAllPopups();
-                String oldName = Maud.model.animation.getName();
-                showTextEntryDialog("Enter new name for animation:",
-                        oldName, "Rename", DddMode.renameAnimationPrefix);
+                renameAnimation();
                 handled = true;
                 break;
 

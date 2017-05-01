@@ -254,7 +254,7 @@ public class LoadedAnimation {
      */
     void rename(String newName) {
         loadedName = newName;
-        Maud.gui.animation.updateDescription();
+        Maud.gui.animation.updateName();
     }
 
     /**
