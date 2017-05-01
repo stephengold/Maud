@@ -166,6 +166,25 @@ public class AnimationTool extends WindowController {
     }
 
     /**
+     * Toggle between paused and running.
+     */
+    void togglePause() {
+        float duration = Maud.model.animation.getDuration();
+        if (duration > 0f) {
+            Slider slider = Maud.gui.getSlider("speed");
+            float speed = slider.getValue();
+            if (speed > 0f) {
+                speed = 0f;
+            } else {
+                speed = 1f;
+            }
+            slider.setValue(speed);
+
+            update();
+        }
+    }
+
+    /**
      * Update this window after a change to duration, speed, or time.
      */
     public void update() {

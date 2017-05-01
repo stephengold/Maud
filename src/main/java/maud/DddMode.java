@@ -118,6 +118,9 @@ class DddMode extends InputMode {
                     break;
                 case "select":
                     handled = selectAction(actionString);
+                    break;
+                case "toggle":
+                    handled = toggleAction(actionString);
             }
         }
 
@@ -319,6 +322,24 @@ class DddMode extends InputMode {
         if (!handled && actionString.startsWith(selectToolPrefix)) {
             String toolName = Util.remainder(actionString, selectToolPrefix);
             handled = Maud.gui.selectTool(toolName);
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a "toggle" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean toggleAction(String actionString) {
+        boolean handled = false;
+        switch (actionString) {
+            case "toggle pause":
+                Maud.gui.animation.togglePause();
+                handled = true;
+                break;
         }
 
         return handled;
