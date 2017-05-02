@@ -80,7 +80,7 @@ public class LoadedCGModel {
     final private static Logger logger = Logger.getLogger(
             LoadedCGModel.class.getName());
     /**
-     * dummy bone name used to indicate no bone selected
+     * dummy bone name used to indicate that no bone is selected
      */
     final public static String noBone = "( no bone )";
     // *************************************************************************
@@ -99,6 +99,10 @@ public class LoadedCGModel {
      * which animation/pose is loaded
      */
     final public LoadedAnimation animation = new LoadedAnimation();
+    /**
+     * bone transforms of the displayed pose
+     */
+    final public Pose pose = new Pose();
     /**
      * which bone is selected
      */
@@ -151,8 +155,8 @@ public class LoadedCGModel {
             control.removeAnim(oldAnimation);
         }
 
-        Animation pose = captureCurrentPose(animationName);
-        control.addAnim(pose);
+        Animation poseAnim = captureCurrentPose(animationName);
+        control.addAnim(poseAnim);
         setEdited();
     }
 
@@ -741,7 +745,7 @@ public class LoadedCGModel {
         assert bone.isBoneSelected();
 
         int boneIndex = bone.getIndex();
-        Maud.gui.animation.setBoneRotation(boneIndex, rotation);
+        pose.setBoneRotation(boneIndex, rotation);
     }
 
     /**
@@ -754,7 +758,7 @@ public class LoadedCGModel {
         assert bone.isBoneSelected();
 
         int boneIndex = bone.getIndex();
-        Maud.gui.animation.setBoneScale(boneIndex, scale);
+        pose.setBoneScale(boneIndex, scale);
     }
 
     /**
@@ -767,7 +771,7 @@ public class LoadedCGModel {
         assert bone.isBoneSelected();
 
         int boneIndex = bone.getIndex();
-        Maud.gui.animation.setBoneTranslation(boneIndex, translation);
+        pose.setBoneTranslation(boneIndex, translation);
     }
 
     /**
@@ -886,8 +890,7 @@ public class LoadedCGModel {
          */
         int numBones = countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            Transform transform = Maud.gui.animation.copyBoneTransform(
-                    boneIndex);
+            Transform transform = pose.copyBoneTransform(boneIndex);
             if (!Util.isIdentity(transform)) {
                 Vector3f translation = transform.getTranslation();
                 Quaternion rotation = transform.getRotation();

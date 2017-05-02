@@ -26,15 +26,9 @@
  */
 package maud;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
-import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.controls.Slider;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 
@@ -53,13 +47,6 @@ public class AnimationTool extends WindowController {
     final private static Logger logger = Logger.getLogger(
             AnimationTool.class.getName());
     // *************************************************************************
-    // fields
-
-    /**
-     * user transforms for the current (temporary) pose
-     */
-    final private List<Transform> currentPose = new ArrayList<>(30);
-    // *************************************************************************
     // constructors
 
     /**
@@ -74,19 +61,6 @@ public class AnimationTool extends WindowController {
     // new methods exposed
 
     /**
-     * Copy the user transform of the indexed bone in the current pose.
-     *
-     * @param boneIndex
-     * @return a new instance
-     */
-    public Transform copyBoneTransform(int boneIndex) {
-        Transform result = currentPose.get(boneIndex);
-        result = result.clone();
-
-        return result;
-    }
-
-    /**
      * Delete the loaded animation and (if successful) load bind pose.
      */
     public void delete() {
@@ -94,74 +68,6 @@ public class AnimationTool extends WindowController {
         if (success) {
             Maud.model.animation.loadBindPose();
         }
-    }
-
-    /**
-     * Pose the loaded CG model per the loaded animation.
-     */
-    public void poseSkeleton() {
-        int boneCount = Maud.model.countBones();
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Transform transform = currentPose.get(boneIndex);
-            Maud.model.animation.boneTransform(boneIndex, transform);
-        }
-
-        Maud.viewState.poseSkeleton(currentPose);
-    }
-
-    /**
-     * Reset the pose to bind pose.
-     */
-    public void resetPose() {
-        int boneCount = Maud.model.countBones();
-        currentPose.clear();
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Transform transform = new Transform();
-            currentPose.add(transform);
-        }
-        Maud.viewState.poseSkeleton(currentPose);
-    }
-
-    /**
-     * Alter the user rotation of the indexed bone.
-     *
-     * @param boneIndex which bone to rotate
-     * @param rotation (not null, unaffected)
-     */
-    public void setBoneRotation(int boneIndex, Quaternion rotation) {
-        Validate.nonNull(rotation, "rotation");
-
-        Transform boneTransform = currentPose.get(boneIndex);
-        boneTransform.setRotation(rotation);
-        Maud.viewState.poseSkeleton(currentPose);
-    }
-
-    /**
-     * Alter the user scale of the indexed bone.
-     *
-     * @param boneIndex which bone to scale
-     * @param scale (not null, unaffected)
-     */
-    public void setBoneScale(int boneIndex, Vector3f scale) {
-        Validate.nonNull(scale, "scale");
-
-        Transform boneTransform = currentPose.get(boneIndex);
-        boneTransform.setScale(scale);
-        Maud.viewState.poseSkeleton(currentPose);
-    }
-
-    /**
-     * Alter the user translation of the indexed bone.
-     *
-     * @param boneIndex which bone to translate
-     * @param translation (not null, unaffected)
-     */
-    public void setBoneTranslation(int boneIndex, Vector3f translation) {
-        Validate.nonNull(translation, "translation");
-
-        Transform boneTransform = currentPose.get(boneIndex);
-        boneTransform.setTranslation(translation);
-        Maud.viewState.poseSkeleton(currentPose);
     }
 
     /**

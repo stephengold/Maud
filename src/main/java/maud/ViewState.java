@@ -154,7 +154,7 @@ public class ViewState extends SimpleAppState {
      * @param userTransforms a user transform for each bone (not null,
      * unaffected)
      */
-    void poseSkeleton(List<Transform> userTransforms) {
+    public void poseSkeleton(List<Transform> userTransforms) {
         int boneCount = skeleton.getBoneCount();
         int numTransforms = userTransforms.size();
         assert numTransforms == boneCount : numTransforms;

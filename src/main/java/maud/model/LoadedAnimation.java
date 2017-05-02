@@ -242,19 +242,19 @@ public class LoadedAnimation {
 
         } else {
             float duration = Maud.model.getDuration(name);
-            float speed;
+            float playSpeed;
             if (duration == 0f) {
                 /*
                  * The animation consists of a single pose: set speed to zero.
                  */
-                speed = 0f;
+                playSpeed = 0f;
             } else {
                 /*
                  * Start the animation looping at normal speed.
                  */
-                speed = 1f;
+                playSpeed = 1f;
             }
-            loadAnimation(name, speed);
+            loadAnimation(name, playSpeed);
         }
     }
 
@@ -273,7 +273,7 @@ public class LoadedAnimation {
         speed = newSpeed;
         time = 0f;
 
-        Maud.gui.animation.poseSkeleton();
+        Maud.model.pose.poseSkeleton();
         Maud.gui.animation.updateAfterLoad();
     }
 
@@ -284,7 +284,8 @@ public class LoadedAnimation {
         loadedName = bindPoseName;
         speed = 0f;
         time = 0f;
-        Maud.gui.animation.resetPose();
+
+        Maud.model.pose.resetPose();
         Maud.gui.animation.updateAfterLoad();
     }
 
@@ -319,7 +320,7 @@ public class LoadedAnimation {
 
         if (duration > 0f) {
             time = newTime;
-            Maud.gui.animation.poseSkeleton();
+            Maud.model.pose.poseSkeleton();
             if (isRunning()) {
                 Maud.gui.animation.update();
             }
