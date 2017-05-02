@@ -36,7 +36,7 @@ import jme3utilities.Validate;
 import maud.Maud;
 
 /**
- * The displayed pose in the Maud application.
+ * A displayed pose in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -47,119 +47,118 @@ public class Pose {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            Pose.class.getName());
+    final private static Logger logger = Logger.getLogger(Pose.class.getName());
     // *************************************************************************
     // fields
 
     /**
      * user transforms which describe the pose, one for each bone
      */
-    final private List<Transform> currentPose = new ArrayList<>(30);
+    final private List<Transform> transforms = new ArrayList<>(30);
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Copy the user transform of the indexed bone in the pose.
+     * Copy the user transform of the indexed bone in this pose.
      *
      * @param boneIndex which bone to copy
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
-    public Transform copyBoneTransform(int boneIndex, Transform storeResult) {
+    public Transform copyTransform(int boneIndex, Transform storeResult) {
         if (storeResult == null) {
             storeResult = new Transform();
         }
 
-        Transform transform = currentPose.get(boneIndex);
+        Transform transform = transforms.get(boneIndex);
         storeResult.set(transform);
 
         return storeResult;
     }
 
     /**
-     * Count the bone transforms in the pose.
+     * Count the bone transforms in this pose.
      *
      * @return count (&ge;0)
      */
     public int countTransforms() {
-        int count = currentPose.size();
+        int count = transforms.size();
         assert count >= 0 : count;
         return count;
     }
 
     /**
-     * Set the pose per the loaded animation.
+     * Reset this pose to bind pose.
      */
-    public void poseSkeleton() {
+    public void resetToBind() {
         int boneCount = Maud.model.countBones();
-        int numTransforms = currentPose.size();
-        assert numTransforms == boneCount : numTransforms;
-
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Transform transform = currentPose.get(boneIndex);
-            Maud.model.animation.boneTransform(boneIndex, transform);
-        }
-
-        Maud.viewState.poseSkeleton();
-    }
-
-    /**
-     * Reset the pose to bind pose.
-     */
-    public void resetPose() {
-        int boneCount = Maud.model.countBones();
-        currentPose.clear();
+        transforms.clear();
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             Transform transform = new Transform();
-            currentPose.add(transform);
+            transforms.add(transform);
         }
 
-        Maud.viewState.poseSkeleton();
+        Maud.viewState.updatePose();
     }
 
     /**
-     * Alter the user rotation of the indexed bone.
+     * Alter the rotation of the indexed bone.
      *
      * @param boneIndex which bone to rotate
      * @param rotation (not null, unaffected)
      */
-    public void setBoneRotation(int boneIndex, Quaternion rotation) {
+    public void setRotation(int boneIndex, Quaternion rotation) {
         Validate.nonNull(rotation, "rotation");
 
-        Transform boneTransform = currentPose.get(boneIndex);
+        Transform boneTransform = transforms.get(boneIndex);
         boneTransform.setRotation(rotation);
 
-        Maud.viewState.poseSkeleton();
+        Maud.viewState.updatePose();
     }
 
     /**
-     * Alter the user scale of the indexed bone.
+     * Alter the scale of the indexed bone.
      *
      * @param boneIndex which bone to scale
      * @param scale (not null, unaffected)
      */
-    public void setBoneScale(int boneIndex, Vector3f scale) {
+    public void setScale(int boneIndex, Vector3f scale) {
         Validate.nonNull(scale, "scale");
 
-        Transform boneTransform = currentPose.get(boneIndex);
+        Transform boneTransform = transforms.get(boneIndex);
         boneTransform.setScale(scale);
 
-        Maud.viewState.poseSkeleton();
+        Maud.viewState.updatePose();
     }
 
     /**
-     * Alter the user translation of the indexed bone.
+     * Alter the transforms based on the loaded animation.
+     */
+    public void setToAnimation() {
+        int boneCount = Maud.model.countBones();
+        int numTransforms = countTransforms();
+        assert numTransforms == boneCount : numTransforms;
+
+        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
+            Transform transform = transforms.get(boneIndex);
+            Maud.model.animation.boneTransform(boneIndex, transform);
+        }
+
+        Maud.viewState.updatePose();
+    }
+
+    /**
+     * Alter the translation of the indexed bone.
      *
      * @param boneIndex which bone to translate
      * @param translation (not null, unaffected)
      */
-    public void setBoneTranslation(int boneIndex, Vector3f translation) {
+    public void setTranslation(int boneIndex, Vector3f translation) {
         Validate.nonNull(translation, "translation");
 
-        Transform boneTransform = currentPose.get(boneIndex);
+        Transform boneTransform = transforms.get(boneIndex);
         boneTransform.setTranslation(translation);
 
-        Maud.viewState.poseSkeleton();
+        Maud.viewState.updatePose();
     }
 }

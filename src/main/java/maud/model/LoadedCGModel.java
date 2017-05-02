@@ -745,7 +745,7 @@ public class LoadedCGModel {
         assert bone.isBoneSelected();
 
         int boneIndex = bone.getIndex();
-        pose.setBoneRotation(boneIndex, rotation);
+        pose.setRotation(boneIndex, rotation);
     }
 
     /**
@@ -758,7 +758,7 @@ public class LoadedCGModel {
         assert bone.isBoneSelected();
 
         int boneIndex = bone.getIndex();
-        pose.setBoneScale(boneIndex, scale);
+        pose.setScale(boneIndex, scale);
     }
 
     /**
@@ -771,7 +771,7 @@ public class LoadedCGModel {
         assert bone.isBoneSelected();
 
         int boneIndex = bone.getIndex();
-        pose.setBoneTranslation(boneIndex, translation);
+        pose.setTranslation(boneIndex, translation);
     }
 
     /**
@@ -891,7 +891,7 @@ public class LoadedCGModel {
         int numBones = countBones();
         Transform transform = new Transform();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            pose.copyBoneTransform(boneIndex, transform);
+            pose.copyTransform(boneIndex, transform);
             if (!Util.isIdentity(transform)) {
                 Vector3f translation = transform.getTranslation();
                 Quaternion rotation = transform.getRotation();

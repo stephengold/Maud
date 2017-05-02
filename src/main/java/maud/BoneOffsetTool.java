@@ -239,7 +239,7 @@ class BoneOffsetTool extends WindowController {
      */
     private void offsets() {
         int boneIndex = Maud.model.bone.getIndex();
-        Transform transform = Maud.model.pose.copyBoneTransform(boneIndex, null);
+        Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
         Vector3f translation = transform.getTranslation(null);
         translation.toArray(offsets);
     }

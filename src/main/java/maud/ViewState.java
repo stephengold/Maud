@@ -46,8 +46,8 @@ import jme3utilities.debug.AxesControl;
 import jme3utilities.debug.SkeletonDebugControl;
 
 /**
- * A simple app state to manage the MVC view of the loaded CG model in Maud's
- * "3D View" screen.
+ * A simple app state which encapsulates the MVC view copy of the loaded CG
+ * model in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -148,30 +148,6 @@ public class ViewState extends SimpleAppState {
     }
 
     /**
-     * Pose the skeleton under user control.
-     */
-    public void poseSkeleton() {
-        int boneCount = Maud.model.countBones();
-        int numTransforms = Maud.model.pose.countTransforms();
-        assert numTransforms == boneCount : numTransforms;
-
-        Transform transform = new Transform();
-        Vector3f translation = new Vector3f();
-        Quaternion rotation = new Quaternion();
-        Vector3f scale = new Vector3f();
-
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Maud.model.pose.copyBoneTransform(boneIndex, transform);
-            transform.getTranslation(translation);
-            transform.getRotation(rotation);
-            transform.getScale(scale);
-
-            Bone bone = skeleton.getBone(boneIndex);
-            bone.setUserTransforms(translation, rotation, scale);
-        }
-    }
-
-    /**
      * Rotate the CG model around +Y by the specified angle.
      *
      * @param angle in radians
@@ -217,7 +193,32 @@ public class ViewState extends SimpleAppState {
             rootNode.detachChild(cgModelRoot);
         }
         cgModelRoot = newModelRoot;
+
         prepareForEditing();
+    }
+
+    /**
+     * Pose the skeleton under user control.
+     */
+    public void updatePose() {
+        int boneCount = Maud.model.countBones();
+        int numTransforms = Maud.model.pose.countTransforms();
+        assert numTransforms == boneCount : numTransforms;
+
+        Transform transform = new Transform();
+        Vector3f translation = new Vector3f();
+        Quaternion rotation = new Quaternion();
+        Vector3f scale = new Vector3f();
+
+        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
+            Maud.model.pose.copyTransform(boneIndex, transform);
+            transform.getTranslation(translation);
+            transform.getRotation(rotation);
+            transform.getScale(scale);
+
+            Bone bone = skeleton.getBone(boneIndex);
+            bone.setUserTransforms(translation, rotation, scale);
+        }
     }
     // *************************************************************************
     // private methods

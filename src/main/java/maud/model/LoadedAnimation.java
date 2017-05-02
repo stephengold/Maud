@@ -93,6 +93,7 @@ public class LoadedAnimation {
         } else {
             Util.boneTransform(track, time, storeResult);
         }
+
         return storeResult;
     }
 
@@ -273,7 +274,7 @@ public class LoadedAnimation {
         speed = newSpeed;
         time = 0f;
 
-        Maud.model.pose.poseSkeleton();
+        Maud.model.pose.setToAnimation();
         Maud.gui.animation.updateAfterLoad();
     }
 
@@ -285,7 +286,7 @@ public class LoadedAnimation {
         speed = 0f;
         time = 0f;
 
-        Maud.model.pose.resetPose();
+        Maud.model.pose.resetToBind();
         Maud.gui.animation.updateAfterLoad();
     }
 
@@ -320,7 +321,7 @@ public class LoadedAnimation {
 
         if (duration > 0f) {
             time = newTime;
-            Maud.model.pose.poseSkeleton();
+            Maud.model.pose.setToAnimation();
             if (isRunning()) {
                 Maud.gui.animation.update();
             }
