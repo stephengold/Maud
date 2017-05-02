@@ -63,26 +63,45 @@ public class Pose {
      * Copy the user transform of the indexed bone in the pose.
      *
      * @param boneIndex which bone to copy
-     * @return a new instance
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
      */
-    public Transform copyBoneTransform(int boneIndex) {
-        Transform result = currentPose.get(boneIndex);
-        result = result.clone();
+    public Transform copyBoneTransform(int boneIndex, Transform storeResult) {
+        if (storeResult == null) {
+            storeResult = new Transform();
+        }
 
-        return result;
+        Transform transform = currentPose.get(boneIndex);
+        storeResult.set(transform);
+
+        return storeResult;
     }
 
     /**
-     * Pose the CG model per the loaded animation.
+     * Count the bone transforms in the pose.
+     *
+     * @return count (&ge;0)
+     */
+    public int countTransforms() {
+        int count = currentPose.size();
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Set the pose per the loaded animation.
      */
     public void poseSkeleton() {
         int boneCount = Maud.model.countBones();
+        int numTransforms = currentPose.size();
+        assert numTransforms == boneCount : numTransforms;
+
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             Transform transform = currentPose.get(boneIndex);
             Maud.model.animation.boneTransform(boneIndex, transform);
         }
 
-        Maud.viewState.poseSkeleton(currentPose);
+        Maud.viewState.poseSkeleton();
     }
 
     /**
@@ -96,7 +115,7 @@ public class Pose {
             currentPose.add(transform);
         }
 
-        Maud.viewState.poseSkeleton(currentPose);
+        Maud.viewState.poseSkeleton();
     }
 
     /**
@@ -111,7 +130,7 @@ public class Pose {
         Transform boneTransform = currentPose.get(boneIndex);
         boneTransform.setRotation(rotation);
 
-        Maud.viewState.poseSkeleton(currentPose);
+        Maud.viewState.poseSkeleton();
     }
 
     /**
@@ -126,7 +145,7 @@ public class Pose {
         Transform boneTransform = currentPose.get(boneIndex);
         boneTransform.setScale(scale);
 
-        Maud.viewState.poseSkeleton(currentPose);
+        Maud.viewState.poseSkeleton();
     }
 
     /**
@@ -141,6 +160,6 @@ public class Pose {
         Transform boneTransform = currentPose.get(boneIndex);
         boneTransform.setTranslation(translation);
 
-        Maud.viewState.poseSkeleton(currentPose);
+        Maud.viewState.poseSkeleton();
     }
 }

@@ -200,7 +200,7 @@ class BoneScaleTool extends WindowController {
      */
     private void scales() {
         int boneIndex = Maud.model.bone.getIndex();
-        Transform transform = Maud.model.pose.copyBoneTransform(boneIndex);
+        Transform transform = Maud.model.pose.copyBoneTransform(boneIndex, null);
         Vector3f scale = transform.getScale(null);
         scale.toArray(scales);
     }

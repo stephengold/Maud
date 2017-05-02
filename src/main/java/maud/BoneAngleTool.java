@@ -200,7 +200,7 @@ class BoneAngleTool extends WindowController {
      */
     private void angles() {
         int boneIndex = Maud.model.bone.getIndex();
-        Transform transform = Maud.model.pose.copyBoneTransform(boneIndex);
+        Transform transform = Maud.model.pose.copyBoneTransform(boneIndex, null);
         Quaternion rotation = transform.getRotation(null);
         rotation.toAngles(angles);
     }

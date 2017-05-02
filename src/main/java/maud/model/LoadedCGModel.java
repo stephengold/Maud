@@ -889,8 +889,9 @@ public class LoadedCGModel {
          * Add a BoneTrack for each bone that's not in bind pose.
          */
         int numBones = countBones();
+        Transform transform = new Transform();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            Transform transform = pose.copyBoneTransform(boneIndex);
+            pose.copyBoneTransform(boneIndex, transform);
             if (!Util.isIdentity(transform)) {
                 Vector3f translation = transform.getTranslation();
                 Quaternion rotation = transform.getRotation();

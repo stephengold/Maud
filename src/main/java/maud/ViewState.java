@@ -35,7 +35,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MySkeleton;
@@ -150,20 +149,22 @@ public class ViewState extends SimpleAppState {
 
     /**
      * Pose the skeleton under user control.
-     *
-     * @param userTransforms a user transform for each bone (not null,
-     * unaffected)
      */
-    public void poseSkeleton(List<Transform> userTransforms) {
-        int boneCount = skeleton.getBoneCount();
-        int numTransforms = userTransforms.size();
+    public void poseSkeleton() {
+        int boneCount = Maud.model.countBones();
+        int numTransforms = Maud.model.pose.countTransforms();
         assert numTransforms == boneCount : numTransforms;
 
+        Transform transform = new Transform();
+        Vector3f translation = new Vector3f();
+        Quaternion rotation = new Quaternion();
+        Vector3f scale = new Vector3f();
+
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Transform transform = userTransforms.get(boneIndex);
-            Vector3f translation = transform.getTranslation(null);
-            Quaternion rotation = transform.getRotation(null);
-            Vector3f scale = transform.getScale(null);
+            Maud.model.pose.copyBoneTransform(boneIndex, transform);
+            transform.getTranslation(translation);
+            transform.getRotation(rotation);
+            transform.getScale(scale);
 
             Bone bone = skeleton.getBone(boneIndex);
             bone.setUserTransforms(translation, rotation, scale);
@@ -291,9 +292,5 @@ public class ViewState extends SimpleAppState {
         skeletonDebugControl = new SkeletonDebugControl(assetManager);
         cgModelRoot.addControl(skeletonDebugControl);
         skeletonDebugControl.setEnabled(true);
-        /*
-         * Temporary hack to test shadows.
-         */
-        //cgModelRoot.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
     }
 }
