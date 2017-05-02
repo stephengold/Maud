@@ -547,11 +547,8 @@ public class LoadedCGModel {
             return false;
         }
 
-        rootSpatial = loaded;
-
-        Spatial viewClone = loadModelFromAsset(assetPath, true);
-        assert viewClone != null;
-        Maud.viewState.setModel(viewClone);
+        rootSpatial = loaded.clone();
+        Maud.viewState.setModel(loaded);
 
         animation.loadBindPose();
         bone.selectNoBone();
@@ -582,11 +579,8 @@ public class LoadedCGModel {
             return false;
         }
 
-        rootSpatial = loaded;
-
-        Spatial viewClone = loadModelFromFile(canonicalPath);
-        assert viewClone != null;
-        Maud.viewState.setModel(viewClone);
+        rootSpatial = loaded.clone();
+        Maud.viewState.setModel(loaded);
 
         animation.loadBindPose();
         bone.selectNoBone();
@@ -618,11 +612,9 @@ public class LoadedCGModel {
         if (loaded == null) {
             return false;
         }
-        rootSpatial = loaded;
 
-        Spatial viewClone = loadModelFromAsset(assetPath, true);
-        assert viewClone != null;
-        Maud.viewState.setModel(viewClone);
+        rootSpatial = loaded.clone();
+        Maud.viewState.setModel(loaded);
 
         modelName = name;
 
