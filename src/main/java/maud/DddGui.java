@@ -32,6 +32,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Spatial;
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
@@ -101,6 +102,7 @@ public class DddGui extends GuiScreenController {
     final BoneOffsetTool boneOffset = new BoneOffsetTool(this);
     final BoneScaleTool boneScale = new BoneScaleTool(this);
     final CameraTool camera = new CameraTool(this);
+    final public CullHintTool cullHint = new CullHintTool(this);
     final CursorTool cursor = new CursorTool(this);
     final public ModelTool model = new ModelTool(this);
     final RenderTool render = new RenderTool(this);
@@ -212,6 +214,19 @@ public class DddGui extends GuiScreenController {
                 break;
             case "orbitingRadioButton":
                 camera.setMode("orbit");
+                break;
+
+            case "cullInheritRadioButton":
+                Maud.model.setHint(Spatial.CullHint.Inherit);
+                break;
+            case "cullDynamicRadioButton":
+                Maud.model.setHint(Spatial.CullHint.Dynamic);
+                break;
+            case "cullAlwaysRadioButton":
+                Maud.model.setHint(Spatial.CullHint.Always);
+                break;
+            case "cullNeverRadioButton":
+                Maud.model.setHint(Spatial.CullHint.Never);
                 break;
 
             case "shadowOffRadioButton":
@@ -451,6 +466,9 @@ public class DddGui extends GuiScreenController {
                 break;
             case "camera":
                 controller = camera;
+                break;
+            case "cullHint":
+                controller = cullHint;
                 break;
             case "cursor":
                 controller = cursor;

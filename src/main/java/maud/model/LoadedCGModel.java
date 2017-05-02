@@ -779,6 +779,25 @@ public class LoadedCGModel {
     }
 
     /**
+     * Alter the cull hint of the selected spatial.
+     *
+     * @param newHint new value for cull hint (not null)
+     */
+    public void setHint(Spatial.CullHint newHint) {
+        Validate.nonNull(newHint, "cull hint");
+
+        Spatial modelSpatial = spatial.findSpatial(rootSpatial);
+        Spatial.CullHint oldHint = modelSpatial.getLocalCullHint();
+        if (oldHint != newHint) {
+            modelSpatial.setCullHint(newHint);
+            setEdited();
+            Maud.viewState.setHint(newHint);
+            Maud.gui.spatial.update();
+            Maud.gui.cullHint.update();
+        }
+    }
+
+    /**
      * Alter the shadow mode of the selected spatial.
      *
      * @param newMode new value for shadow mode (not null)

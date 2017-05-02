@@ -180,12 +180,24 @@ public class ViewState extends SimpleAppState {
     }
 
     /**
+     * Alter the cull hint of the selected spatial.
+     *
+     * @param newHint new value for cull hint (not null)
+     */
+    public void setHint(Spatial.CullHint newHint) {
+        Validate.nonNull(newHint, "cull hint");
+
+        Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
+        spatial.setCullHint(newHint);
+    }
+
+    /**
      * Alter the shadow mode of the selected spatial.
      *
      * @param newMode new value for shadow mode (not null)
      */
     public void setMode(RenderQueue.ShadowMode newMode) {
-        Validate.nonNull(newMode, "new shadow mode");
+        Validate.nonNull(newMode, "shadow mode");
 
         Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
         spatial.setShadowMode(newMode);

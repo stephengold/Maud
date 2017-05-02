@@ -452,6 +452,7 @@ public class SelectedSpatial {
 
             Maud.gui.spatial.update();
             Maud.gui.shadowMode.update();
+            Maud.gui.cullHint.update();
         }
     }
 
@@ -464,6 +465,7 @@ public class SelectedSpatial {
 
         Maud.gui.spatial.update();
         Maud.gui.shadowMode.update();
+        Maud.gui.cullHint.update();
     }
 
     /**
@@ -479,6 +481,7 @@ public class SelectedSpatial {
 
             Maud.gui.spatial.update();
             Maud.gui.shadowMode.update();
+            Maud.gui.cullHint.update();
         }
     }
     // *************************************************************************

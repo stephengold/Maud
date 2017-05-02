@@ -381,6 +381,39 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                 </panel>
             </control>
 
+            <control name="window" id="cullHintTool" title="Cull Hint Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="130px" width="160px" x="20" y="80">
+                <panel childLayout="vertical">
+                    <control name="radioButtonGroup" id="cullGroup"/>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="cullInheritRadioButton"
+                                 group="cullGroup"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="inherit from parent"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="cullDynamicRadioButton"
+                                 group="cullGroup"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="dynamic culling"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="cullAlwaysRadioButton"
+                                 group="cullGroup"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="always cull"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="radioButton" id="cullNeverRadioButton"
+                                 group="cullGroup"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="never cull"/>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="cursorTool" title="Cursor Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
@@ -749,7 +782,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="*"/>
                         <control name="button" label="Edit" id="id12ToAvoidNiftyWarning"
                                  width="50px">
-                            <interact onRelease="perform(edit hint)"/>
+                            <interact onRelease="perform(select tool cullHint)"/>
                         </control>
                     </panel>
                 </panel>
