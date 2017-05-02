@@ -26,6 +26,7 @@
  */
 package maud;
 
+import com.jme3.math.FastMath;
 import java.util.logging.Logger;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.nifty.BasicScreenController;
@@ -36,7 +37,7 @@ import jme3utilities.nifty.WindowController;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class AxesTool extends WindowController {
+public class AxesTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -52,22 +53,6 @@ class AxesTool extends WindowController {
      * which control is active, or null for none
      */
     private AxesControl control = null;
-    /**
-     * flag to enable depth test for axes
-     */
-    private boolean depthTestFlag = false;
-    /**
-     * length of axes (units depend on mode, &ge;0)
-     */
-    private float axisLength = 1f;
-    /**
-     * line width for axes (in pixels, &ge;1)
-     */
-    private float lineWidth = 1f;
-    /**
-     * which set of axes is active (either "none", "world", "model", or "bone")
-     */
-    private String mode = "bone";
     // *************************************************************************
     // constructors
 
@@ -84,52 +69,44 @@ class AxesTool extends WindowController {
     // new methods exposed
 
     /**
-     * Alter the mode and update.
-     *
-     * @param newMode new value for axes mode (not null)
+     * Update all controls.
      */
-    void setMode(String newMode) {
-        assert mode != null;
-        mode = newMode;
-        update();
+    public void update() {
+        float value = Maud.gui.readSlider("axesLength");
+        float axesLength = FastMath.pow(10f, value);
+        boolean depthTestFlag = Maud.gui.isChecked("axesDepthTest");
+        float lineWidth = Maud.gui.readSlider("axesLineWidth");
+
+        Maud.model.axes.set(axesLength, depthTestFlag, lineWidth);
     }
 
     /**
-     * Update the window and also the view of the CG model.
+     * Callback from the MVC model to update the CG model.
      */
-    void update() {
-        lineWidth = Maud.gui.updateSlider("axesLineWidth", " pixels");
-        depthTestFlag = Maud.gui.isChecked("axesDepthTest");
-
+    public void updateCGModel() {
+        String mode = Maud.model.axes.getMode();
         AxesControl newControl;
-        String units;
         switch (mode) {
             case "bone":
                 if (Maud.model.bone.isBoneSelected()) {
                     int boneIndex = Maud.model.bone.getIndex();
                     newControl = Maud.viewState.getBoneAxesControl(boneIndex);
-                    units = " bone units";
                 } else {
                     newControl = null;
-                    units = " units";
                 }
                 break;
             case "model":
                 newControl = Maud.viewState.getModelAxesControl();
-                units = " model units";
                 break;
             case "none":
                 newControl = null;
-                units = " units";
                 break;
             case "world":
                 newControl = Maud.viewState.getWorldAxesControl();
-                units = " world units";
                 break;
             default:
                 throw new IllegalArgumentException();
         }
-        axisLength = Maud.gui.updateLogSlider("axesLength", 10f, units);
 
         if (newControl != control) {
             if (control != null) {
@@ -139,10 +116,47 @@ class AxesTool extends WindowController {
         }
 
         if (control != null) {
+            boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
+            float axisLength = Maud.model.axes.getLength();
+            float lineWidth = Maud.model.axes.getWidth();
+
             control.setAxisLength(axisLength);
             control.setDepthTest(depthTestFlag);
             control.setEnabled(true);
             control.setLineWidth(lineWidth);
         }
+    }
+
+    /**
+     * Callback from the MVC model to update the status labels.
+     */
+    public void updateLabels() {
+        String mode = Maud.model.axes.getMode();
+        String units;
+        switch (mode) {
+            case "bone":
+                if (Maud.model.bone.isBoneSelected()) {
+                    units = " bone units";
+                } else {
+                    units = " units";
+                }
+                break;
+            case "model":
+                units = " model units";
+                break;
+            case "none":
+                units = " units";
+                break;
+            case "world":
+                units = " world units";
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        float axesLength = Maud.model.axes.getLength();
+        Maud.gui.updateSliderStatus("axesLength", axesLength, units);
+
+        float lineWidth = Maud.model.axes.getWidth();
+        Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
     }
 }

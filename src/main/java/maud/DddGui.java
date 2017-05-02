@@ -96,7 +96,7 @@ public class DddGui extends GuiScreenController {
      * controllers for tool windows
      */
     final public AnimationTool animation = new AnimationTool(this);
-    final AxesTool axes = new AxesTool(this);
+    final public AxesTool axes = new AxesTool(this);
     final public BoneTool bone = new BoneTool(this);
     final BoneAngleTool boneAngle = new BoneAngleTool(this);
     final BoneOffsetTool boneOffset = new BoneOffsetTool(this);
@@ -197,16 +197,16 @@ public class DddGui extends GuiScreenController {
 
         switch (buttonId) {
             case "boneAxesRadioButton":
-                axes.setMode("bone");
+                Maud.model.axes.setMode("bone");
                 break;
             case "modelAxesRadioButton":
-                axes.setMode("model");
+                Maud.model.axes.setMode("model");
                 break;
             case "worldAxesRadioButton":
-                axes.setMode("world");
+                Maud.model.axes.setMode("world");
                 break;
             case "hideAxesRadioButton":
-                axes.setMode("none");
+                Maud.model.axes.setMode("none");
                 break;
 
             case "flyingRadioButton":

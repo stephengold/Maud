@@ -92,6 +92,10 @@ public class LoadedCGModel {
      */
     private AssetManager assetManager = null;
     /**
+     * status of the visible coordinate axes
+     */
+    final public AxesStatus axes = new AxesStatus();
+    /**
      * flag to track unsaved changes to the CG model
      */
     private boolean pristine = true;
