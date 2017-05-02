@@ -28,6 +28,7 @@ package maud.model;
 
 import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
+import com.jme3.animation.Track;
 import com.jme3.math.Transform;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
@@ -93,6 +94,46 @@ public class LoadedAnimation {
             Util.boneTransform(track, time, storeResult);
         }
         return storeResult;
+    }
+
+    /**
+     * Count the number of bone tracks in the loaded animation.
+     *
+     * @return count (&ge;0)
+     */
+    public int countBoneTracks() {
+        int count = 0;
+        Animation animation = getLoadedAnimation();
+        if (animation != null) {
+            Track[] tracks = animation.getTracks();
+            for (Track track : tracks) {
+                if (track instanceof BoneTrack) {
+                    count++;
+                }
+            }
+        }
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Count the total number of tracks in the loaded animation.
+     *
+     * @return count (&ge;0)
+     */
+    public int countTracks() {
+        int count;
+        Animation animation = getLoadedAnimation();
+        if (animation == null) {
+            count = 0;
+        } else {
+            Track[] tracks = animation.getTracks();
+            count = tracks.length;
+        }
+
+        assert count >= 0 : count;
+        return count;
     }
 
     /**

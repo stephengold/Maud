@@ -89,7 +89,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="animationTool" title="Animation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="200px" width="250px" x="75" y="25">
+                     height="220px" width="250px" x="75" y="25">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
                         <control name="label" text="Name:  "
@@ -117,6 +117,19 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                     <control name="horizontalSlider" id="timeSlider"
                              buttonStepSize="1"
                              initial="0" max="1" min="0" stepSize="0.001"/>
+                    <panel height="14px"/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Bone tracks:  "/>
+                        <control name="label" id="boneTracks"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="*"/>
+                        <control name="label" text="  Other tracks:  "/>
+                        <control name="label" id="otherTracks"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="*"/>
+                    </panel>
                 </panel>
             </control>
 

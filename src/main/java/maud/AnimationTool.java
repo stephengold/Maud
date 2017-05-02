@@ -246,20 +246,30 @@ public class AnimationTool extends WindowController {
     }
 
     /**
-     * Update the name and Rename button after renaming or loading.
+     * Update the name label and rename button after renaming or loading. Also
+     * update the track counts.
      */
     public void updateName() {
+        String nameText, rButton;
         String name = Maud.model.animation.getName();
-        String nameText = MyString.quote(name);
-        Maud.gui.setStatusText("animationName", " " + nameText);
-
-        String rButton;
         if (Maud.model.animation.isBindPoseLoaded()) {
+            nameText = name;
             rButton = "";
         } else {
+            nameText = MyString.quote(name);
             rButton = "Rename";
         }
+        Maud.gui.setStatusText("animationName", " " + nameText);
         Maud.gui.setButtonLabel("animationRenameButton", rButton);
+
+        int numBoneTracks = Maud.model.animation.countBoneTracks();
+        String boneTracksText = String.format("%d", numBoneTracks);
+        Maud.gui.setStatusText("boneTracks", " " + boneTracksText);
+
+        int numTracks = Maud.model.animation.countTracks();
+        int numOtherTracks = numTracks - numBoneTracks;
+        String otherTracksText = String.format("%d", numOtherTracks);
+        Maud.gui.setStatusText("otherTracks", " " + otherTracksText);
     }
     // *************************************************************************
     // private methods
