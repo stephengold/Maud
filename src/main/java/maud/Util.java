@@ -196,18 +196,6 @@ public class Util {
     }
 
     /**
-     * Test the specified quaternion for exact identity.
-     *
-     * @param quaternion which quaternion to test (not null, unaffected)
-     * @return true if exactly equal to
-     * {@link com.jme3.math.Quaternion#IDENTITY}, otherwise false
-     */
-    public static boolean isIdentity(Quaternion quaternion) {
-        return quaternion.getW() == 1f && quaternion.getX() == 0f
-                && quaternion.getY() == 0f && quaternion.getZ() == 0f;
-    }
-
-    /**
      * Test the specified transform for exact identity.
      *
      * @param transform which transform to test (not null, unaffected)
@@ -220,7 +208,7 @@ public class Util {
         Vector3f translation = transform.getTranslation();
         if (MyVector3f.isZero(translation)) {
             Quaternion rotation = transform.getRotation();
-            if (isIdentity(rotation)) {
+            if (rotation.isIdentity()) {
                 Vector3f scale = transform.getScale();
                 result = (scale.x == 1f && scale.y == 1f && scale.z == 1f);
             }
