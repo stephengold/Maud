@@ -32,7 +32,6 @@ import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.util.logging.Level;
@@ -40,10 +39,9 @@ import java.util.logging.Logger;
 import jme3utilities.MyCamera;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.math.MyMath;
-import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.model.CameraStatus;
 
 /**
  * The controller for the "Camera Tool" window in Maud's "3D View" screen.
@@ -61,31 +59,6 @@ class CameraTool
     // *************************************************************************
     // constants and loggers
 
-    /**
-     * rate to dolly in/out (orbit mode only, percentage points per wheel notch)
-     */
-    final private static float dollyInOutRate = 15f;
-    /**
-     * distance to the far plane of the view frustum (in world units, &gt;0)
-     */
-    final private static float frustumFar = 100f;
-    /**
-     * distance to the near plane of the view frustum (in world units, &gt;0)
-     */
-    final private static float frustumNear = 0.01f;
-    /**
-     * vertical angle of the frustum (in degrees of arc, &gt;0)
-     */
-    final private static float frustumYDegrees = 45f;
-    /**
-     * Disorientation occurs when the camera looks straight up, so we limit its
-     * elevation angle to just under 90 degrees. (orbit mode only, in radians)
-     */
-    final private static float maxElevationAngle = 1.5f;
-    /**
-     * minimum elevation angle (orbit mode only, in radians)
-     */
-    final private static float minElevationAngle = -0.5f;
     /**
      * message logger for this class
      */
@@ -120,42 +93,6 @@ class CameraTool
      */
     final private static String moveUpEvent = "pov up";
     // *************************************************************************
-    // fields
-
-    /**
-     * true &rarr; orbit mode, false &rarr; fly mode
-     */
-    private boolean orbitMode = false;
-    /**
-     * azimuth angle of the camera as seen from the 3D cursor (orbit mode only,
-     * in radians east of north)
-     */
-    private float azimuthAngle = 0f;
-    /**
-     * elevation angle of the camera as seen from the 3D cursor (orbit mode
-     * only, in radians east of north)
-     */
-    private float elevationAngle = 0f;
-    /**
-     * movement rate (fly mode only, world units per wheel notch)
-     */
-    private float flyRate = 0.1f;
-    /**
-     * maximum distance of camera from the 3D cursor (orbit mode only, in world
-     * units, &gt;0)
-     */
-    private float maxRange = 10f;
-    /**
-     * minimum distance of camera from the 3D cursor (orbit mode only, in world
-     * units, &gt;0)
-     */
-    private float minRange = 0.2f;
-    /**
-     * current distance of camera from the 3D cursor (orbit mode only, in world
-     * units, &gt;0)
-     */
-    private float range = maxRange;
-    // *************************************************************************
     // constructors
 
     /**
@@ -170,111 +107,24 @@ class CameraTool
     // new methods exposed
 
     /**
-     * In orbit mode, re-orient the camera to center the 3D cursor in the view
-     * port.
-     * <p>
-     * This method may dolly the camera in or out in order to clamp its distance
-     * from the 3D cursor.
+     * Update the JME camera from the MVC model.
      */
-    void aim() {
-        assert isOrbitMode();
-        /*
-         * Calculate the camera's offset relative to the 3D cursor.
-         */
-        Vector3f location = cam.getLocation().clone();
-        Vector3f cursorLocation = Maud.gui.cursor.copyWorldLocation();
-        Vector3f offset = location.subtract(cursorLocation);
-        /*
-         * Convert the offset to spherical coordinates.
-         */
-        elevationAngle = MyVector3f.altitude(offset);
-        azimuthAngle = MyVector3f.azimuth(offset);
-        range = offset.length();
-        /*
-         * Limit the range and elevation angle.
-         */
-        range = FastMath.clamp(range, minRange, maxRange);
-        elevationAngle = FastMath.clamp(elevationAngle, minElevationAngle,
-                maxElevationAngle);
+    void updateCamera() {
+        CameraStatus model = Maud.model.camera;
 
-        updateOrbit();
-    }
+        float aspectRatio = MyCamera.aspectRatio(cam);
+        float yDegrees = model.getFrustumYDegrees();
+        float near = model.getFrustumNear();
+        float far = model.getFrustumFar();
+        cam.setFrustumPerspective(yDegrees, aspectRatio, near, far);
 
-    /**
-     * Test whether the camera is in orbit mode.
-     *
-     * @return true if in orbit mode, otherwise false
-     */
-    boolean isOrbitMode() {
-        return orbitMode;
-    }
-
-    /**
-     * Alter the camera mode.
-     *
-     * @param newSetting true &rarr; orbit mode, false &rarr; fly mode
-     */
-    void setMode(String newMode) {
-        boolean goOrbit;
-        switch (newMode) {
-            case "fly":
-                goOrbit = false;
-                break;
-            case "orbit":
-                goOrbit = true;
-                break;
-            default:
-                logger.log(Level.SEVERE, "newMode={0}",
-                        MyString.quote(newMode));
-                throw new IllegalArgumentException(
-                        "newMode must be \"fly\" or \"orbit\"");
+        if (model.isOrbitMode()) {
+            model.aim();
         }
-
-        if (!orbitMode && goOrbit) {
-            /*
-             * When switching from fly mode to orbit mode, re-aim
-             * the camera at the 3D cursor.
-             */
-            orbitMode = true;
-            aim();
-        } else if (orbitMode && !goOrbit) {
-            orbitMode = false;
-        }
-        update();
-    }
-
-    /**
-     * Update after a change.
-     */
-    void update() {
-        if (!orbitMode) {
-            /*
-             * Calculate the cursor's distance from the camera.
-             */
-            Vector3f cameraLocation = cam.getLocation();
-            Vector3f cursorLocation = Maud.gui.cursor.copyWorldLocation();
-            range = cameraLocation.distance(cursorLocation);
-        }
-        Maud.gui.cursor.update();
-    }
-
-    /**
-     * Move the camera to a horizontal view.
-     */
-    public void viewHorizontal() {
-        if (orbitMode) {
-            elevationAngle = 0f;
-            updateOrbit();
-        } else {
-            Vector3f direction = cam.getDirection().clone();
-            direction.y = 0f;
-            if (MyVector3f.isZero(direction)) {
-                direction.x = 1f;
-            } else {
-                direction.normalizeLocal();
-            }
-            MyCamera.look(cam, direction);
-        }
+        Vector3f location = model.copyLocation(null);
+        cam.setLocation(location);
+        Quaternion orientation = model.copyOrientation(null);
+        cam.setRotation(orientation);
     }
     // *************************************************************************
     // AnalogListener methods
@@ -296,22 +146,39 @@ class CameraTool
 
         switch (eventString) {
             case moveBackwardEvent:
-                moveBackward(+amount);
-                return;
+                Maud.model.camera.moveBackward(+amount);
+                break;
+
             case moveDownEvent:
-                moveUp(-amount);
-                return;
+                if (signals.test(cameraSignalName)) {
+                    /* dragging */
+                    Maud.model.camera.moveUp(-amount);
+                }
+                break;
+
             case moveForwardEvent:
-                moveBackward(-amount);
-                return;
+                Maud.model.camera.moveBackward(-amount);
+                break;
+
             case moveLeftEvent:
-                moveLeft(+amount);
-                return;
+                if (signals.test(cameraSignalName)) {
+                    /* dragging */
+                    Maud.model.camera.moveLeft(+amount);
+                }
+                break;
+
             case moveRightEvent:
-                moveLeft(-amount);
-                return;
+                if (signals.test(cameraSignalName)) {
+                    /* dragging */
+                    Maud.model.camera.moveLeft(-amount);
+                }
+                break;
+
             case moveUpEvent:
-                moveUp(+amount);
+                if (signals.test(cameraSignalName)) {
+                    /* dragging */
+                    Maud.model.camera.moveUp(+amount);
+                }
         }
     }
     // *************************************************************************
@@ -330,10 +197,12 @@ class CameraTool
         assert Maud.gui.cursor.isInitialized();
 
         signals.add(cameraSignalName);
-        setFrustum();
         mapButton();
 
-        setMode("orbit");
+        Vector3f initialLocation = new Vector3f(-2.4f, 1f, 1.6f);
+        Maud.model.camera.setLocation(initialLocation);
+        Maud.model.camera.setMode("orbit");
+        assert Maud.model.camera.isOrbitMode();
     }
     // *************************************************************************
     // private methods
@@ -399,105 +268,6 @@ class CameraTool
     }
 
     /**
-     * Move the camera forward or backward when the mouse wheel turns. This
-     * results in dollying in or out. Effective only when the mouse cursor is
-     * outside the HUD.
-     *
-     * @param amount positive to dolly out (backward or away from the 3D
-     * cursor), negative to dolly in (forward or toward the 3D cursor)
-     */
-    private void moveBackward(float amount) {
-        if (Maud.gui.isMouseInsideElement("hud")) {
-            /* not dragging */
-            return;
-        }
-
-        if (orbitMode) {
-            float rate = 1f + dollyInOutRate / 100f;
-            float factor = FastMath.pow(rate, amount);
-            range = FastMath.clamp(range * factor, minRange, maxRange);
-            updateOrbit();
-
-        } else {
-            Vector3f direction = cam.getDirection();
-            direction.multLocal(amount * flyRate);
-            Vector3f location = cam.getLocation().clone();
-            location.addLocal(direction);
-            cam.setLocation(location);
-        }
-        update();
-    }
-
-    /**
-     * Move the camera left or right when the middle mouse button is dragged
-     * from side to side. In orbit mode, this involves orbiting the 3D cursor in
-     * a horizontal plane. In fly mode, it involves yawing (panning the camera)
-     * around the vertical (Y) axis.
-     *
-     * @param amount positive to orbit right/yaw left/turn left; negative to
-     * orbit left/yaw right/turn right
-     */
-    private void moveLeft(float amount) {
-        if (!signals.test(cameraSignalName)) {
-            /* not dragging */
-            return;
-        }
-
-        if (orbitMode) {
-            azimuthAngle += 2f * amount;
-            azimuthAngle = MyMath.standardizeAngle(azimuthAngle);
-            updateOrbit();
-
-        } else {
-            Quaternion rotate = new Quaternion();
-            rotate.fromAngleAxis(amount, Vector3f.UNIT_Y);
-            Quaternion oldRotation = cam.getRotation();
-            Quaternion newRotation = rotate.mult(oldRotation);
-            cam.setRotation(newRotation);
-        }
-        update();
-    }
-
-    /**
-     * Move the camera up or down when the middle mouse button is dragged from
-     * side to side. In orbit mode, this involves orbiting the 3D cursor in a
-     * vertical plane. In fly mode, it involves pitching (tilting the camera).
-     *
-     * @param amount positive to orbit up/tilt up/tilt back; negative to orbit
-     * down/tilt down/tilt forward
-     */
-    private void moveUp(float amount) {
-        if (!signals.test(cameraSignalName)) {
-            /* not dragging */
-            return;
-        }
-
-        if (orbitMode) {
-            elevationAngle += amount;
-            elevationAngle = FastMath.clamp(elevationAngle, minElevationAngle,
-                    maxElevationAngle);
-            updateOrbit();
-
-        } else {
-            Quaternion rotate = new Quaternion();
-            rotate.fromAngleAxis(-amount, cam.getLeft());
-            Quaternion oldRotation = cam.getRotation();
-            Quaternion newRotation = rotate.mult(oldRotation);
-            cam.setRotation(newRotation);
-        }
-        update();
-    }
-
-    /**
-     * Initialize the frustum of the render camera.
-     */
-    private void setFrustum() {
-        float aspectRatio = MyCamera.aspectRatio(cam);
-        cam.setFrustumPerspective(frustumYDegrees, aspectRatio,
-                frustumNear, frustumFar);
-    }
-
-    /**
      * Unmap the middle mouse button (MMB) and mouse wheel, which together
      * control the camera position.
      */
@@ -511,22 +281,5 @@ class CameraTool
         inputManager.deleteMapping(moveRightEvent);
         inputManager.deleteMapping(moveLeftEvent);
         inputManager.deleteMapping(moveUpEvent);
-    }
-
-    /**
-     * In orbit mode, move the camera based on azimuth, elevation, and range.
-     */
-    private void updateOrbit() {
-        assert isOrbitMode();
-
-        Vector3f direction = MyVector3f.fromAltAz(elevationAngle,
-                azimuthAngle);
-        Vector3f offset = direction.mult(range);
-        Vector3f cursorLocation = Maud.gui.cursor.copyWorldLocation();
-        Vector3f newLocation = cursorLocation.add(offset);
-        cam.setLocation(newLocation);
-
-        direction.negateLocal();
-        MyCamera.look(cam, direction);
     }
 }

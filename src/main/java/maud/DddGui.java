@@ -29,8 +29,6 @@ package maud;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import com.jme3.system.JmeVersion;
@@ -165,7 +163,6 @@ public class DddGui extends GuiScreenController {
                 axes.update();
                 break;
             case "3DCursorCheckBox":
-                cursor.update();
                 break;
             case "shadowsCheckBox":
                 render.update();
@@ -210,10 +207,10 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "flyingRadioButton":
-                camera.setMode("fly");
+                Maud.model.camera.setMode("fly");
                 break;
             case "orbitingRadioButton":
-                camera.setMode("orbit");
+                Maud.model.camera.setMode("orbit");
                 break;
 
             case "cullInheritRadioButton":
@@ -279,7 +276,6 @@ public class DddGui extends GuiScreenController {
             case "cursorRSlider":
             case "cursorGSlider":
             case "cursorBSlider":
-                cursor.update();
                 break;
             case "skeletonLineWidthSlider":
             case "skeletonPointSizeSlider":
@@ -548,9 +544,6 @@ public class DddGui extends GuiScreenController {
         setListener(inputMode);
         super.initialize(stateManager, application);
 
-        cam.setLocation(new Vector3f(-2.4f, 1f, 1.6f));
-        cam.setRotation(new Quaternion(0.006f, 0.86884f, -0.01049f, 0.49493f));
-
         signals.add(modelCCWSignalName);
         signals.add(modelCWSignalName);
 
@@ -566,6 +559,9 @@ public class DddGui extends GuiScreenController {
     @Override
     public void update(float tpf) {
         super.update(tpf);
+
+        cursor.updateCursor();
+        camera.updateCamera();
         /*
          * Update animation even if the animation tool is disabled.
          */

@@ -58,10 +58,6 @@ class CursorTool extends WindowController {
     // constants and loggers
 
     /**
-     * angular size of the 3D cursor (in arbitrary units, &gt;0)
-     */
-    final private static float cursorSize = 0.2f;
-    /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
@@ -89,51 +85,39 @@ class CursorTool extends WindowController {
     // new methods exposed
 
     /**
-     *
-     * @return
+     * Update the cursor from the MVC model.
      */
-    Vector3f copyWorldLocation() {
-        Vector3f location = geometry.getWorldTranslation();
-        return location.clone();
-    }
-
-    /**
-     * Alter the visibility of the cursor.
-     *
-     * @param newState true &rarr; visible, false &rarr; hidden
-     */
-    void setVisible(boolean newState) {
-        boolean oldState = (geometry.getParent() != null);
-        if (oldState && !newState) {
-            rootNode.detachChild(geometry);
-        } else if (!oldState && newState) {
-            rootNode.attachChild(geometry);
-        }
-    }
-
-    /**
-     * Update the cursor after a change.
-     */
-    void update() {
+    void updateCursor() {
         /*
          * visibility
          */
-        boolean enable = Maud.gui.isChecked("3DCursor");
-        setVisible(enable);
-        /*
-         * color
-         */
-        ColorRGBA color = Maud.gui.updateColorBank("cursor");
-        Material material = geometry.getMaterial();
-        material.setColor("Color", color);
-        /*
-         * Resize the cursor based on its distance from the camera.
-         */
-        Vector3f cursorLocation = geometry.getWorldTranslation();
-        Vector3f cameraLocation = cam.getLocation();
-        float range = cameraLocation.distance(cursorLocation);
-        float newScale = cursorSize * range;
-        MySpatial.setWorldScale(geometry, newScale);
+        boolean wasVisible = (geometry.getParent() != null);
+        boolean visible = Maud.model.cursor.isVisible();
+        if (wasVisible && !visible) {
+            rootNode.detachChild(geometry);
+        } else if (!wasVisible && visible) {
+            rootNode.attachChild(geometry);
+        }
+        if (visible) {
+            /*
+             * color
+             */
+            ColorRGBA newColor = Maud.model.cursor.copyColor(null);
+            Material material = geometry.getMaterial();
+            material.setColor("Color", newColor);
+            /*
+             * location
+             */
+            Vector3f newLocation = Maud.model.cursor.copyLocation(null);
+            MySpatial.setWorldLocation(geometry, newLocation);
+            /*
+             * scale
+             */
+            float newScale = Maud.model.cursor.worldScale();
+            if (newScale != 0f) {
+                MySpatial.setWorldScale(geometry, newScale);
+            }
+        }
     }
 
     /**
@@ -157,7 +141,7 @@ class CursorTool extends WindowController {
         Spatial model = Maud.viewState.getSpatial();
         Vector3f contactPoint = findContact(model, ray);
         if (contactPoint != null) {
-            MySpatial.setWorldLocation(geometry, contactPoint);
+            Maud.model.cursor.setLocation(contactPoint);
             return;
         }
         /*
@@ -166,7 +150,7 @@ class CursorTool extends WindowController {
         Spatial platform = MySpatial.findChild(rootNode, Maud.platformName);
         contactPoint = findContact(platform, ray);
         if (contactPoint != null) {
-            MySpatial.setWorldLocation(geometry, contactPoint);
+            Maud.model.cursor.setLocation(contactPoint);
         }
     }
     // *************************************************************************
@@ -203,10 +187,24 @@ class CursorTool extends WindowController {
          */
         Material material = MyAsset.createUnshadedMaterial(assetManager);
         geometry.setMaterial(material);
-        /*
-         * Update the cursor's visibility, color, and size.
-         */
-        update();
+    }
+
+    /**
+     * Callback to update this window prior to rendering. (Invoked once per
+     * render pass.)
+     *
+     * @param elapsedTime time interval between render passes (in seconds,
+     * &ge;0)
+     */
+    @Override
+    public void update(float elapsedTime) {
+        super.update(elapsedTime);
+
+        boolean visible = Maud.gui.isChecked("3DCursor");
+        Maud.model.cursor.setVisible(visible);
+
+        ColorRGBA color = Maud.gui.updateColorBank("cursor");
+        Maud.model.cursor.setColor(color);
     }
     // *************************************************************************
     // private methods

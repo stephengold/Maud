@@ -227,14 +227,10 @@ public class Maud extends GuiApplication {
                     gui.boneScale.reset();
                     return;
                 case "view horizontal":
-                    gui.camera.viewHorizontal();
+                    model.camera.goHorizontal();
                     return;
                 case "warp cursor":
                     gui.cursor.warpCursor();
-                    if (gui.camera.isOrbitMode()) {
-                        gui.camera.aim();
-                    }
-                    gui.cursor.update();
                     return;
             }
         }

@@ -50,6 +50,14 @@ public class DddModel {
      */
     final public AxesStatus axes = new AxesStatus();
     /**
+     * status of the camera
+     */
+    final public CameraStatus camera = new CameraStatus();
+    /**
+     * status of the 3D cursor
+     */
+    final public CursorStatus cursor = new CursorStatus();
+    /**
      * which animation/pose is loaded
      */
     final public LoadedAnimation animation = new LoadedAnimation();
@@ -66,7 +74,7 @@ public class DddModel {
      */
     final public SelectedBone bone = new SelectedBone();
     /**
-     * which bone is selected
+     * which spatial is selected
      */
     final public SelectedSpatial spatial = new SelectedSpatial();
 }
