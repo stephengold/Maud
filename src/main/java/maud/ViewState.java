@@ -201,7 +201,7 @@ public class ViewState extends SimpleAppState {
      * Pose the skeleton under user control.
      */
     public void updatePose() {
-        int boneCount = Maud.model.countBones();
+        int boneCount = Maud.model.cgm.countBones();
         int numTransforms = Maud.model.pose.countTransforms();
         assert numTransforms == boneCount : numTransforms;
 

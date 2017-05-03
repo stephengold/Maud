@@ -68,7 +68,7 @@ public class BoneTool extends WindowController {
         String parentText, childText;
         String rButton, spButton, scButton;
 
-        int numBones = Maud.model.countBones();
+        int numBones = Maud.model.cgm.countBones();
         if (Maud.model.bone.isBoneSelected()) {
             int selectedIndex = Maud.model.bone.getIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
@@ -77,7 +77,7 @@ public class BoneTool extends WindowController {
             nameText = MyString.quote(name);
 
             if (Maud.model.bone.isRootBone()) {
-                List<String> roots = Maud.model.listRootBoneNames();
+                List<String> roots = Maud.model.cgm.listRootBoneNames();
                 int numRoots = roots.size();
                 if (numRoots == 1) {
                     parentText = "none (the root bone)";

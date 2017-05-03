@@ -160,7 +160,7 @@ class BoneScaleTool extends WindowController {
                 }
                 Vector3f scale = new Vector3f(
                         scales[0], scales[1], scales[2]);
-                Maud.model.setBoneScale(scale);
+                Maud.model.cgm.setBoneScale(scale);
 
             } else {
                 Maud.gui.setButtonLabel("resetScaButton", "");

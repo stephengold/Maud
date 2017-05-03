@@ -88,7 +88,7 @@ public class SelectedBone {
         if (selectedIndex == null) {
             bone = null;
         } else {
-            Skeleton skeleton = Maud.model.getSkeleton();
+            Skeleton skeleton = Maud.model.cgm.getSkeleton();
             bone = skeleton.getBone(selectedIndex);
         }
 
@@ -209,7 +209,7 @@ public class SelectedBone {
     void select(Bone bone) {
         assert bone != null;
 
-        Skeleton skeleton = Maud.model.getSkeleton();
+        Skeleton skeleton = Maud.model.cgm.getSkeleton();
         int index = skeleton.getBoneIndex(bone);
         if (index != -1) {
             select(index);
@@ -259,7 +259,7 @@ public class SelectedBone {
             selectNoBone();
 
         } else {
-            Skeleton skeleton = Maud.model.getSkeleton();
+            Skeleton skeleton = Maud.model.cgm.getSkeleton();
             int index = skeleton.getBoneIndex(name);
             if (index == -1) {
                 logger.log(Level.WARNING, "Select failed: no bone named {0}.",

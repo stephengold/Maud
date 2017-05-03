@@ -160,7 +160,7 @@ class BoneAngleTool extends WindowController {
                 }
                 Quaternion rotation = new Quaternion();
                 rotation.fromAngles(angles);
-                Maud.model.setBoneRotation(rotation);
+                Maud.model.cgm.setBoneRotation(rotation);
 
             } else {
                 Maud.gui.setButtonLabel("resetAngButton", "");

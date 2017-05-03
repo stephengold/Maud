@@ -147,7 +147,7 @@ public class LoadedAnimation {
         if (isBindPoseLoaded()) {
             result = null;
         } else {
-            result = Maud.model.getAnimation(loadedName);
+            result = Maud.model.cgm.getAnimation(loadedName);
         }
 
         return result;
@@ -163,8 +163,7 @@ public class LoadedAnimation {
         if (isBindPoseLoaded()) {
             result = 0f;
         } else {
-            Animation animation;
-            animation = Maud.model.getAnimation(loadedName);
+            Animation animation = getLoadedAnimation();
             result = animation.getLength();
         }
 
@@ -242,7 +241,7 @@ public class LoadedAnimation {
             loadBindPose();
 
         } else {
-            float duration = Maud.model.getDuration(name);
+            float duration = Maud.model.cgm.getDuration(name);
             float playSpeed;
             if (duration == 0f) {
                 /*

@@ -461,7 +461,7 @@ public class SelectedSpatial {
      */
     public void selectModelRoot() {
         treePosition.clear();
-        assert modelSpatial() == Maud.model.getRootSpatial();
+        assert modelSpatial() == Maud.model.cgm.getRootSpatial();
 
         Maud.gui.spatial.update();
         Maud.gui.shadowMode.update();
@@ -484,6 +484,7 @@ public class SelectedSpatial {
             Maud.gui.cullHint.update();
         }
     }
+    // TODO setters for CullHint, QueueBucket, and ShadowMode
     // *************************************************************************
     // Object methods
 
@@ -562,7 +563,7 @@ public class SelectedSpatial {
      * @return the pre-existing instance
      */
     private Spatial modelSpatial() {
-        Spatial modelRoot = Maud.model.getRootSpatial();
+        Spatial modelRoot = Maud.model.cgm.getRootSpatial();
         Spatial result = findSpatial(modelRoot);
 
         assert result != null;

@@ -47,6 +47,7 @@ import jme3utilities.debug.Printer;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
+import maud.model.DddModel;
 import maud.model.LoadedCGModel;
 
 /**
@@ -99,9 +100,9 @@ public class Maud extends GuiApplication {
      */
     final public static DddGui gui = new DddGui();
     /**
-     * MVC model of the loaded CG model, with links to selections
+     * MVC model for the "3D View" screen
      */
-    final public static LoadedCGModel model = new LoadedCGModel();
+    final public static DddModel model = new DddModel();
     /**
      * printer for scene dumps
      */
@@ -153,7 +154,7 @@ public class Maud extends GuiApplication {
      */
     @Override
     public void guiInitializeApplication() {
-        model.setAssetManager(assetManager);
+        model.cgm.setAssetManager(assetManager);
 
         stateManager.attachAll(viewState);
         /*

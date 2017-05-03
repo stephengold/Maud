@@ -177,7 +177,7 @@ class BoneOffsetTool extends WindowController {
                 }
                 Vector3f translation = new Vector3f(
                         offsets[0], offsets[1], offsets[2]);
-                Maud.model.setBoneTranslation(translation);
+                Maud.model.cgm.setBoneTranslation(translation);
 
             } else {
                 Maud.gui.setButtonLabel("resetOffButton", "");

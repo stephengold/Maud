@@ -91,7 +91,7 @@ public class Pose {
      * Reset this pose to bind pose.
      */
     public void resetToBind() {
-        int boneCount = Maud.model.countBones();
+        int boneCount = Maud.model.cgm.countBones();
         transforms.clear();
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             Transform transform = new Transform();
@@ -135,7 +135,7 @@ public class Pose {
      * Alter the transforms based on the loaded animation.
      */
     public void setToAnimation() {
-        int boneCount = Maud.model.countBones();
+        int boneCount = Maud.model.cgm.countBones();
         int numTransforms = countTransforms();
         assert numTransforms == boneCount : numTransforms;
 

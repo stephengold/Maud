@@ -140,7 +140,7 @@ public class DddGui extends GuiScreenController {
             showPopupMenu(menuPrefix, fileNames);
 
         } else if (file.canRead()) {
-            Maud.model.loadModelFile(file);
+            Maud.model.cgm.loadModelFile(file);
         }
     }
 
@@ -217,32 +217,32 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "cullInheritRadioButton":
-                Maud.model.setHint(Spatial.CullHint.Inherit);
+                Maud.model.cgm.setHint(Spatial.CullHint.Inherit);
                 break;
             case "cullDynamicRadioButton":
-                Maud.model.setHint(Spatial.CullHint.Dynamic);
+                Maud.model.cgm.setHint(Spatial.CullHint.Dynamic);
                 break;
             case "cullAlwaysRadioButton":
-                Maud.model.setHint(Spatial.CullHint.Always);
+                Maud.model.cgm.setHint(Spatial.CullHint.Always);
                 break;
             case "cullNeverRadioButton":
-                Maud.model.setHint(Spatial.CullHint.Never);
+                Maud.model.cgm.setHint(Spatial.CullHint.Never);
                 break;
 
             case "shadowOffRadioButton":
-                Maud.model.setMode(RenderQueue.ShadowMode.Off);
+                Maud.model.cgm.setMode(RenderQueue.ShadowMode.Off);
                 break;
             case "shadowCastRadioButton":
-                Maud.model.setMode(RenderQueue.ShadowMode.Cast);
+                Maud.model.cgm.setMode(RenderQueue.ShadowMode.Cast);
                 break;
             case "shadowReceiveRadioButton":
-                Maud.model.setMode(RenderQueue.ShadowMode.Receive);
+                Maud.model.cgm.setMode(RenderQueue.ShadowMode.Receive);
                 break;
             case "shadowCastAndReceiveRadioButton":
-                Maud.model.setMode(RenderQueue.ShadowMode.CastAndReceive);
+                Maud.model.cgm.setMode(RenderQueue.ShadowMode.CastAndReceive);
                 break;
             case "shadowInheritRadioButton":
-                Maud.model.setMode(RenderQueue.ShadowMode.Inherit);
+                Maud.model.cgm.setMode(RenderQueue.ShadowMode.Inherit);
                 break;
 
             default:
@@ -341,14 +341,14 @@ public class DddGui extends GuiScreenController {
      * @param argument action argument (not null)
      */
     void selectBone(String argument) {
-        if (Maud.model.hasBone(argument)) {
+        if (Maud.model.cgm.hasBone(argument)) {
             Maud.model.bone.select(argument);
 
         } else {
             /*
              * Treat the argument as a bone-name prefix.
              */
-            List<String> boneNames = Maud.model.listBoneNames(argument);
+            List<String> boneNames = Maud.model.cgm.listBoneNames(argument);
             MyString.reduce(boneNames, 20);
             Collections.sort(boneNames);
             showPopupMenu(DddMode.selectBonePrefix, boneNames);
@@ -380,11 +380,11 @@ public class DddGui extends GuiScreenController {
             String name = argument.substring(1);
             Maud.model.bone.select(name);
         } else {
-            List<String> names = Maud.model.listChildBoneNames(argument);
+            List<String> names = Maud.model.cgm.listChildBoneNames(argument);
             List<String> items = new ArrayList<>(names.size() + 1);
             items.add("!" + argument);
             for (String name : names) {
-                if (Maud.model.isLeafBone(name)) {
+                if (Maud.model.cgm.isLeafBone(name)) {
                     items.add("!" + name);
                 } else {
                     items.add(name);
@@ -554,7 +554,7 @@ public class DddGui extends GuiScreenController {
         signals.add(modelCCWSignalName);
         signals.add(modelCWSignalName);
 
-        Maud.model.loadModelNamed("Elephant");
+        Maud.model.cgm.loadModelNamed("Elephant");
     }
 
     /**
@@ -914,7 +914,7 @@ public class DddGui extends GuiScreenController {
 
             case "Load":
                 Collection<String> animationNames;
-                animationNames = Maud.model.listAnimationNames();
+                animationNames = Maud.model.cgm.listAnimationNames();
                 showPopupMenu(DddMode.loadAnimationPrefix, animationNames);
                 handled = true;
                 break;
@@ -933,7 +933,7 @@ public class DddGui extends GuiScreenController {
 
             case "New from pose":
                 String newName = "new-animation"; // TODO
-                Maud.model.addPoseAnimation(newName);
+                Maud.model.cgm.addPoseAnimation(newName);
                 Maud.model.animation.load(newName);
                 handled = true;
                 break;
@@ -1073,8 +1073,8 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "Load asset path":
-                String basePath = Maud.model.getAssetPath();
-                String extension = Maud.model.getExtension();
+                String basePath = Maud.model.cgm.getAssetPath();
+                String extension = Maud.model.cgm.getExtension();
                 String assetPath = String.format("%s.%s", basePath, extension);
                 closeAllPopups();
                 showTextEntryDialog("Enter base asset path for model:",
@@ -1093,7 +1093,7 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "Save as asset":
-                String baseAssetPath = Maud.model.getAssetPath();
+                String baseAssetPath = Maud.model.cgm.getAssetPath();
                 closeAllPopups();
                 showTextEntryDialog("Enter base asset path for model:",
                         baseAssetPath, "Save", DddMode.saveModelAssetPrefix);
@@ -1101,7 +1101,7 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "Save as file":
-                String baseFilePath = Maud.model.getFilePath();
+                String baseFilePath = Maud.model.cgm.getFilePath();
                 closeAllPopups();
                 showTextEntryDialog("Enter base file path for model:",
                         baseFilePath, "Save", DddMode.saveModelFilePrefix);
@@ -1208,7 +1208,7 @@ public class DddGui extends GuiScreenController {
      * Select a bone by name, using submenus.
      */
     private void selectBoneByName() {
-        List<String> boneNames = Maud.model.listBoneNames();
+        List<String> boneNames = Maud.model.cgm.listBoneNames();
         MyString.reduce(boneNames, 20);
         Collections.sort(boneNames);
         showPopupMenu(DddMode.selectBonePrefix, boneNames);
@@ -1218,7 +1218,7 @@ public class DddGui extends GuiScreenController {
      * Select a bone by parent, using submenus.
      */
     private void selectBoneByParent() {
-        List<String> boneNames = Maud.model.listRootBoneNames();
+        List<String> boneNames = Maud.model.cgm.listRootBoneNames();
         showPopupMenu(DddMode.selectBoneChildPrefix, boneNames);
     }
 }

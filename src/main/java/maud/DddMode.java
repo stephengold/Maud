@@ -170,7 +170,7 @@ class DddMode extends InputMode {
         boolean handled = false;
         if (actionString.startsWith(copyAnimationPrefix)) {
             String destName = Util.remainder(actionString, copyAnimationPrefix);
-            Maud.model.copyAnimation(destName);
+            Maud.model.cgm.copyAnimation(destName);
             handled = true;
         }
 
@@ -192,7 +192,7 @@ class DddMode extends InputMode {
 
         } else if (actionString.startsWith(loadModelAssetPrefix)) {
             String path = Util.remainder(actionString, loadModelAssetPrefix);
-            Maud.model.loadModelAsset(path);
+            Maud.model.cgm.loadModelAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(loadModelFilePrefix)) {
@@ -202,7 +202,7 @@ class DddMode extends InputMode {
 
         } else if (actionString.startsWith(loadModelNamedPrefix)) {
             String name = Util.remainder(actionString, loadModelNamedPrefix);
-            Maud.model.loadModelNamed(name);
+            Maud.model.cgm.loadModelNamed(name);
             handled = true;
         }
 
@@ -237,19 +237,19 @@ class DddMode extends InputMode {
         if (actionString.equals("rename animation")) {
             Maud.gui.renameAnimation();
             handled = true;
-            
+
         } else if (actionString.equals("rename bone")) {
             Maud.gui.renameBone();
             handled = true;
 
         } else if (actionString.startsWith(renameAnimationPrefix)) {
             newName = Util.remainder(actionString, renameAnimationPrefix);
-            Maud.model.renameAnimation(newName);
+            Maud.model.cgm.renameAnimation(newName);
             handled = true;
 
         } else if (actionString.startsWith(renameBonePrefix)) {
             newName = Util.remainder(actionString, renameBonePrefix);
-            Maud.model.renameBone(newName);
+            Maud.model.cgm.renameBone(newName);
             handled = true;
         }
 
@@ -266,12 +266,12 @@ class DddMode extends InputMode {
         boolean handled = false;
         if (actionString.startsWith(saveModelAssetPrefix)) {
             String path = Util.remainder(actionString, saveModelAssetPrefix);
-            Maud.model.writeModelToAsset(path);
+            Maud.model.cgm.writeModelToAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(saveModelFilePrefix)) {
             String path = Util.remainder(actionString, saveModelFilePrefix);
-            Maud.model.writeModelToFile(path);
+            Maud.model.cgm.writeModelToFile(path);
             handled = true;
         }
 

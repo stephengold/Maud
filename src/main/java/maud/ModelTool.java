@@ -68,29 +68,29 @@ public class ModelTool extends WindowController {
         /*
          * name
          */
-        String name = Maud.model.getName();
+        String name = Maud.model.cgm.getName();
         String nameDesc = MyString.quote(name);
         Maud.gui.setStatusText("modelName", " " + nameDesc);
         /*
          * asset base path
          */
-        String assetPath = Maud.model.getAssetPath();
+        String assetPath = Maud.model.cgm.getAssetPath();
         String abpDesc = (assetPath.length() == 0) ? "unknown"
                 : MyString.quote(assetPath);
         Maud.gui.setStatusText("modelAbp", " " + abpDesc);
         /*
          * file base path
          */
-        String filePath = Maud.model.getFilePath();
+        String filePath = Maud.model.cgm.getFilePath();
         String fbpDesc = (filePath.length() == 0) ? "unknown"
                 : MyString.quote(filePath);
         Maud.gui.setStatusText("modelFbp", " " + fbpDesc);
         /*
          * asset/file extension and pristine/edited status
          */
-        String extDesc = Maud.model.getExtension();
+        String extDesc = Maud.model.cgm.getExtension();
         Maud.gui.setStatusText("modelExt", extDesc);
-        boolean isPristine = Maud.model.isPristine();
+        boolean isPristine = Maud.model.cgm.isPristine();
         String pristineDesc = isPristine ? "pristine" : "edited";
         Maud.gui.setStatusText("modelPristine", pristineDesc);
     }

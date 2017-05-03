@@ -64,7 +64,7 @@ public class AnimationTool extends WindowController {
      * Delete the loaded animation and (if successful) load bind pose.
      */
     public void delete() {
-        boolean success = Maud.model.deleteAnimation();
+        boolean success = Maud.model.cgm.deleteAnimation();
         if (success) {
             Maud.model.animation.loadBindPose();
         }

@@ -87,34 +87,14 @@ public class LoadedCGModel {
     // fields
 
     /**
-     * asset manager used to load CG models (set by
+     * asset manager for loading CG models (set by
      * {@link #setAssetManager(com.jme3.asset.AssetManager)}
      */
     private AssetManager assetManager = null;
     /**
-     * status of the visible coordinate axes
-     */
-    final public AxesStatus axes = new AxesStatus();
-    /**
      * flag to track unsaved changes to the CG model
      */
     private boolean pristine = true;
-    /**
-     * which animation/pose is loaded
-     */
-    final public LoadedAnimation animation = new LoadedAnimation();
-    /**
-     * bone transforms of the displayed pose
-     */
-    final public Pose pose = new Pose();
-    /**
-     * which bone is selected
-     */
-    final public SelectedBone bone = new SelectedBone();
-    /**
-     * which bone is selected
-     */
-    final public SelectedSpatial spatial = new SelectedSpatial();
     /**
      * the root spatial in the MVC model's copy of the CG model
      */
@@ -183,8 +163,8 @@ public class LoadedCGModel {
             control.removeAnim(oldAnimation);
         }
 
-        Animation loaded = animation.getLoadedAnimation();
-        float duration = animation.getDuration();
+        Animation loaded = Maud.model.animation.getLoadedAnimation();
+        float duration = Maud.model.animation.getDuration();
         Animation copy = new Animation(animationName, duration);
         if (loaded != null) {
             Track[] loadedTracks = loaded.getTracks();
@@ -217,12 +197,12 @@ public class LoadedCGModel {
      * @return true if successful, otherwise false
      */
     public boolean deleteAnimation() {
-        if (animation.isBindPoseLoaded()) {
+        if (Maud.model.animation.isBindPoseLoaded()) {
             logger.log(Level.WARNING, "cannot delete bind pose");
             return false;
         }
         AnimControl animControl = getAnimControl();
-        Animation anim = animation.getLoadedAnimation();
+        Animation anim = Maud.model.animation.getLoadedAnimation();
         animControl.removeAnim(anim);
         setEdited();
 
@@ -501,9 +481,9 @@ public class LoadedCGModel {
      */
     List<String> listKeyframes() {
         List<String> result = null;
-        if (animation.isBindPoseLoaded()) {
+        if (Maud.model.animation.isBindPoseLoaded()) {
             logger.log(Level.INFO, "No animation is selected.");
-        } else if (!bone.isBoneSelected()) {
+        } else if (!Maud.model.bone.isBoneSelected()) {
             logger.log(Level.INFO, "No bone is selected.");
         } else if (!isTrackSelected()) {
             logger.log(Level.INFO, "No track is selected.");
@@ -558,9 +538,9 @@ public class LoadedCGModel {
         rootSpatial = loaded.clone();
         Maud.viewState.setModel(loaded);
 
-        animation.loadBindPose();
-        bone.selectNoBone();
-        spatial.selectModelRoot();
+        Maud.model.bone.selectNoBone();
+        Maud.model.spatial.selectModelRoot();
+        Maud.model.animation.loadBindPose();
         setPristine();
         Maud.gui.model.update();
         Maud.gui.skeleton.update();
@@ -590,9 +570,9 @@ public class LoadedCGModel {
         rootSpatial = loaded.clone();
         Maud.viewState.setModel(loaded);
 
-        animation.loadBindPose();
-        bone.selectNoBone();
-        spatial.selectModelRoot();
+        Maud.model.bone.selectNoBone();
+        Maud.model.spatial.selectModelRoot();
+        Maud.model.animation.loadBindPose();
         setPristine();
         Maud.gui.model.update();
         Maud.gui.skeleton.update();
@@ -626,9 +606,9 @@ public class LoadedCGModel {
 
         modelName = name;
 
-        animation.loadBindPose();
-        bone.selectNoBone();
-        spatial.selectModelRoot();
+        Maud.model.bone.selectNoBone();
+        Maud.model.spatial.selectModelRoot();
+        Maud.model.animation.loadBindPose();
         setPristine();
         Maud.gui.model.update();
         Maud.gui.skeleton.update();
@@ -657,13 +637,13 @@ public class LoadedCGModel {
                     MyString.quote(newName));
             return false;
         }
-        if (animation.isBindPoseLoaded()) {
+        if (Maud.model.animation.isBindPoseLoaded()) {
             logger.log(Level.WARNING,
                     "Rename failed: cannot rename bind pose.");
             return false;
         }
 
-        Animation oldAnimation = animation.getLoadedAnimation();
+        Animation oldAnimation = Maud.model.animation.getLoadedAnimation();
         float length = oldAnimation.getLength();
         Animation newAnimation = new Animation(newName, length);
         for (Track track : oldAnimation.getTracks()) {
@@ -675,7 +655,7 @@ public class LoadedCGModel {
         animControl.addAnim(newAnimation);
         setEdited();
 
-        animation.rename(newName);
+        Maud.model.animation.rename(newName);
 
         return true;
     }
@@ -689,7 +669,7 @@ public class LoadedCGModel {
     public boolean renameBone(String newName) {
         Validate.nonNull(newName, "bone name");
 
-        if (!bone.isBoneSelected()) {
+        if (!Maud.model.bone.isBoneSelected()) {
             logger.log(Level.WARNING, "Rename failed: no bone selected.",
                     MyString.quote(newName));
             return false;
@@ -706,7 +686,7 @@ public class LoadedCGModel {
             return false;
         }
 
-        Bone selectedBone = bone.getBone();
+        Bone selectedBone = Maud.model.bone.getBone();
         boolean success = MySkeleton.setName(selectedBone, newName);
         setEdited();
         Maud.gui.model.update();
@@ -726,7 +706,7 @@ public class LoadedCGModel {
 
         float newTime = Float.valueOf(name);
         // TODO validate
-        animation.setTime(newTime);
+        Maud.model.animation.setTime(newTime);
     }
 
     /**
@@ -746,10 +726,10 @@ public class LoadedCGModel {
      */
     public void setBoneRotation(Quaternion rotation) {
         Validate.nonNull(rotation, "rotation");
-        assert bone.isBoneSelected();
+        assert Maud.model.bone.isBoneSelected();
 
-        int boneIndex = bone.getIndex();
-        pose.setRotation(boneIndex, rotation);
+        int boneIndex = Maud.model.bone.getIndex();
+        Maud.model.pose.setRotation(boneIndex, rotation);
     }
 
     /**
@@ -759,10 +739,10 @@ public class LoadedCGModel {
      */
     public void setBoneScale(Vector3f scale) {
         Validate.nonNull(scale, "scale");
-        assert bone.isBoneSelected();
+        assert Maud.model.bone.isBoneSelected();
 
-        int boneIndex = bone.getIndex();
-        pose.setScale(boneIndex, scale);
+        int boneIndex = Maud.model.bone.getIndex();
+        Maud.model.pose.setScale(boneIndex, scale);
     }
 
     /**
@@ -772,10 +752,10 @@ public class LoadedCGModel {
      */
     public void setBoneTranslation(Vector3f translation) {
         Validate.nonNull(translation, "translation");
-        assert bone.isBoneSelected();
+        assert Maud.model.bone.isBoneSelected();
 
-        int boneIndex = bone.getIndex();
-        pose.setTranslation(boneIndex, translation);
+        int boneIndex = Maud.model.bone.getIndex();
+        Maud.model.pose.setTranslation(boneIndex, translation);
     }
 
     /**
@@ -786,7 +766,7 @@ public class LoadedCGModel {
     public void setHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial modelSpatial = spatial.findSpatial(rootSpatial);
+        Spatial modelSpatial = Maud.model.spatial.findSpatial(rootSpatial);
         Spatial.CullHint oldHint = modelSpatial.getLocalCullHint();
         if (oldHint != newHint) {
             modelSpatial.setCullHint(newHint);
@@ -805,7 +785,7 @@ public class LoadedCGModel {
     public void setMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "shadow mode");
 
-        Spatial modelSpatial = spatial.findSpatial(rootSpatial);
+        Spatial modelSpatial = Maud.model.spatial.findSpatial(rootSpatial);
         RenderQueue.ShadowMode oldMode = modelSpatial.getLocalShadowMode();
         if (oldMode != newMode) {
             modelSpatial.setShadowMode(newMode);
@@ -895,7 +875,7 @@ public class LoadedCGModel {
         int numBones = countBones();
         Transform transform = new Transform();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            pose.copyTransform(boneIndex, transform);
+            Maud.model.pose.copyTransform(boneIndex, transform);
             if (!Util.isIdentity(transform)) {
                 Vector3f translation = transform.getTranslation();
                 Quaternion rotation = transform.getRotation();
@@ -915,15 +895,15 @@ public class LoadedCGModel {
      * @return the pre-existing instance, or null if none
      */
     private BoneTrack findTrack() {
-        if (!bone.isBoneSelected()) {
+        if (!Maud.model.bone.isBoneSelected()) {
             return null;
         }
-        if (animation.isBindPoseLoaded()) {
+        if (Maud.model.animation.isBindPoseLoaded()) {
             return null;
         }
 
-        Animation anim = animation.getLoadedAnimation();
-        int boneIndex = bone.getIndex();
+        Animation anim = Maud.model.animation.getLoadedAnimation();
+        int boneIndex = Maud.model.bone.getIndex();
         BoneTrack track = MyAnimation.findTrack(anim, boneIndex);
 
         return track;
@@ -935,8 +915,8 @@ public class LoadedCGModel {
      * @return true if one is selected, false if none is selected
      */
     private boolean isTrackSelected() {
-        if (bone.isBoneSelected()) {
-            if (animation.isBindPoseLoaded()) {
+        if (Maud.model.bone.isBoneSelected()) {
+            if (Maud.model.animation.isBindPoseLoaded()) {
                 return false;
             }
             Track track = findTrack();
