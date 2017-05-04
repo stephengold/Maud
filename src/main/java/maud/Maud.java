@@ -217,21 +217,6 @@ public class Maud extends GuiApplication {
                 case "print scene":
                     printer.printSubtree(rootNode);
                     return;
-                case "reset bone angles":
-                    gui.boneAngle.reset();
-                    return;
-                case "reset bone offsets":
-                    gui.boneOffset.reset();
-                    return;
-                case "reset bone scales":
-                    gui.boneScale.reset();
-                    return;
-                case "view horizontal":
-                    model.camera.goHorizontal();
-                    return;
-                case "warp cursor":
-                    gui.cursor.warpCursor();
-                    return;
             }
         }
         /*

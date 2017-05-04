@@ -113,6 +113,9 @@ class DddMode extends InputMode {
                 case "rename":
                     handled = renameAction(actionString);
                     break;
+                case "reset":
+                    handled = resetAction(actionString);
+                    break;
                 case "save":
                     handled = saveAction(actionString);
                     break;
@@ -121,6 +124,12 @@ class DddMode extends InputMode {
                     break;
                 case "toggle":
                     handled = toggleAction(actionString);
+                    break;
+                case "view":
+                    handled = viewAction(actionString);
+                    break;
+                case "warp":
+                    handled = warpAction(actionString);
             }
         }
 
@@ -257,6 +266,31 @@ class DddMode extends InputMode {
     }
 
     /**
+     * Process a "reset" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean resetAction(String actionString) {
+        boolean handled = false;
+        switch (actionString) {
+            case "reset bone angles":
+                Maud.gui.boneAngle.reset();
+                handled = true;
+                break;
+            case "reset bone offsets":
+                Maud.gui.boneOffset.reset();
+                handled = true;
+                break;
+            case "reset bone scales":
+                Maud.gui.boneScale.reset();
+                handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
      * Process a "save" action.
      *
      * @param actionString textual description of the action (not null)
@@ -342,6 +376,42 @@ class DddMode extends InputMode {
         switch (actionString) {
             case "toggle pause":
                 Maud.gui.animation.togglePause();
+                handled = true;
+                break;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a "view" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean viewAction(String actionString) {
+        boolean handled = false;
+        switch (actionString) {
+            case "view horizontal":
+                Maud.model.camera.goHorizontal();
+                handled = true;
+                break;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a "warp" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean warpAction(String actionString) {
+        boolean handled = false;
+        switch (actionString) {
+            case "warp cursor":
+                Maud.gui.cursor.warpCursor();
                 handled = true;
                 break;
         }
