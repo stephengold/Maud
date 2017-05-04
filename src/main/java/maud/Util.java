@@ -34,7 +34,9 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 
@@ -221,15 +223,24 @@ public class Util {
      * Extract the remainder of the specified string after removing the
      * specified prefix.
      *
-     * @param string input string (not null)
+     * @param input input string (not null)
      * @param prefix prefix string (not null)
-     * @return the remainder of the input
+     * @return the remainder of the input (not null)
      */
-    public static String remainder(String string, String prefix) {
-        assert string.startsWith(prefix) : string;
-        int endPosition = prefix.length();
-        String result = string.substring(endPosition);
+    public static String remainder(String input, String prefix) {
+        Validate.nonNull(input, "input");
+        Validate.nonNull(prefix, "prefix");
+        if (!input.startsWith(prefix)) {
+            logger.log(Level.SEVERE, "input={0}, prefix={1}", new Object[]{
+                MyString.quote(input), MyString.quote(prefix)
+            });
+            throw new IllegalArgumentException("input must start with prefix.");
+        }
 
+        int endPosition = prefix.length();
+        String result = input.substring(endPosition);
+
+        assert result != null;
         return result;
     }
 }
