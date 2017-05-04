@@ -246,7 +246,6 @@ public class SelectedBone {
      */
     public void select(int newIndex) {
         selectedIndex = newIndex;
-        Maud.gui.bone.update();
     }
 
     /**
@@ -293,7 +292,6 @@ public class SelectedBone {
      */
     public void selectNoBone() {
         selectedIndex = null;
-        Maud.gui.bone.update();
     }
 
     /**

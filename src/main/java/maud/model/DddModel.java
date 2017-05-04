@@ -77,4 +77,8 @@ public class DddModel {
      * which spatial is selected
      */
     final public SelectedSpatial spatial = new SelectedSpatial();
+    /**
+     * status of the skeleton visualization
+     */
+    final public SkeletonStatus skeleton = new SkeletonStatus();
 }

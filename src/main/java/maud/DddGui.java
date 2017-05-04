@@ -35,7 +35,6 @@ import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
 import de.lessvoid.nifty.controls.RadioButtonStateChangedEvent;
-import de.lessvoid.nifty.controls.SliderChangedEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -94,19 +93,19 @@ public class DddGui extends GuiScreenController {
      * controllers for tool windows
      */
     final public AnimationTool animation = new AnimationTool(this);
-    final public AxesTool axes = new AxesTool(this);
-    final public BoneTool bone = new BoneTool(this);
+    final AxesTool axes = new AxesTool(this);
+    final BoneTool bone = new BoneTool(this);
     final BoneAngleTool boneAngle = new BoneAngleTool(this);
     final BoneOffsetTool boneOffset = new BoneOffsetTool(this);
     final BoneScaleTool boneScale = new BoneScaleTool(this);
     final CameraTool camera = new CameraTool(this);
-    final public CullHintTool cullHint = new CullHintTool(this);
+    final CullHintTool cullHint = new CullHintTool(this);
     final CursorTool cursor = new CursorTool(this);
-    final public ModelTool model = new ModelTool(this);
+    final ModelTool model = new ModelTool(this);
     final RenderTool render = new RenderTool(this);
-    final public ShadowModeTool shadowMode = new ShadowModeTool(this);
-    final public SkeletonTool skeleton = new SkeletonTool(this);
-    final public SpatialTool spatial = new SpatialTool(this);
+    final ShadowModeTool shadowMode = new ShadowModeTool(this);
+    final SkeletonTool skeleton = new SkeletonTool(this);
+    final SpatialTool spatial = new SpatialTool(this);
     final SkyTool sky = new SkyTool(this);
     // *************************************************************************
     // constructors
@@ -159,16 +158,8 @@ public class DddGui extends GuiScreenController {
         }
 
         switch (boxId) {
-            case "axesDepthTestCheckBox":
-                axes.update();
-                break;
-            case "3DCursorCheckBox":
-                break;
             case "shadowsCheckBox":
                 render.update();
-                break;
-            case "skeletonCheckBox":
-                skeleton.update();
                 break;
             case "skyCheckBox":
                 sky.update();
@@ -245,44 +236,6 @@ public class DddGui extends GuiScreenController {
             default:
                 logger.log(Level.WARNING, "unknown radio button with id={0}",
                         MyString.quote(buttonId));
-        }
-    }
-
-    /**
-     * Callback that Nifty invokes after a slider changes.
-     *
-     * @param sliderId Nifty element id of the slider (not null)
-     * @param event details of the event (not null, ignored)
-     */
-    @NiftyEventSubscriber(pattern = ".*Slider")
-    public void onSliderChanged(final String sliderId,
-            final SliderChangedEvent event) {
-        Validate.nonNull(sliderId, "slider id");
-        Validate.nonNull(event, "event");
-
-        if (!hasStarted()) {
-            return;
-        }
-
-        switch (sliderId) {
-            case "speedSlider":
-            case "timeSlider":
-                animation.update();
-                break;
-            case "axesLineWidthSlider":
-            case "axesLengthSlider":
-                axes.update();
-                break;
-            case "cursorRSlider":
-            case "cursorGSlider":
-            case "cursorBSlider":
-                break;
-            case "skeletonLineWidthSlider":
-            case "skeletonPointSizeSlider":
-            case "skeRSlider":
-            case "skeGSlider":
-            case "skeBSlider":
-                skeleton.update();
         }
     }
 
@@ -560,8 +513,9 @@ public class DddGui extends GuiScreenController {
     public void update(float tpf) {
         super.update(tpf);
 
-        cursor.updateCursor();
         camera.updateCamera();
+        cursor.updateCursor();
+        skeleton.updateSdc();
         /*
          * Update animation even if the animation tool is disabled.
          */
@@ -573,6 +527,8 @@ public class DddGui extends GuiScreenController {
             time = MyMath.modulo(time, duration);
             Maud.model.animation.setTime(time);
         }
+        Maud.viewState.updatePose();
+        axes.updateAxesControl();
         /*
          * Rotate the view's CG model around the Y-axis.
          */

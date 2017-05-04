@@ -449,10 +449,6 @@ public class SelectedSpatial {
         if (child != null) {
             treePosition.add(childIndex);
             assert modelSpatial() == child;
-
-            Maud.gui.spatial.update();
-            Maud.gui.shadowMode.update();
-            Maud.gui.cullHint.update();
         }
     }
 
@@ -462,10 +458,6 @@ public class SelectedSpatial {
     public void selectModelRoot() {
         treePosition.clear();
         assert modelSpatial() == Maud.model.cgm.getRootSpatial();
-
-        Maud.gui.spatial.update();
-        Maud.gui.shadowMode.update();
-        Maud.gui.cullHint.update();
     }
 
     /**
@@ -478,10 +470,6 @@ public class SelectedSpatial {
             int last = treePosition.size() - 1;
             treePosition.remove(last);
             assert modelSpatial() == parent;
-
-            Maud.gui.spatial.update();
-            Maud.gui.shadowMode.update();
-            Maud.gui.cullHint.update();
         }
     }
     // TODO setters for CullHint, QueueBucket, and ShadowMode

@@ -36,7 +36,7 @@ import jme3utilities.nifty.WindowController;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class ShadowModeTool extends WindowController {
+class ShadowModeTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -57,12 +57,19 @@ public class ShadowModeTool extends WindowController {
         super(screenController, "shadowModeTool", false);
     }
     // *************************************************************************
-    // new methods exposed
+    // AppState methods
 
     /**
-     * Update the window after a change of mode or spatial.
+     * Callback to update this window prior to rendering. (Invoked once per
+     * render pass.)
+     *
+     * @param elapsedTime time interval between render passes (in seconds,
+     * &ge;0)
      */
-    public void update() {
+    @Override
+    public void update(float elapsedTime) {
+        super.update(elapsedTime);
+
         RenderQueue.ShadowMode mode = Maud.model.spatial.getLocalShadowMode();
 
         String niftyId;

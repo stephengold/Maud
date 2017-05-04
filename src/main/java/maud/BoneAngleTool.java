@@ -103,7 +103,7 @@ class BoneAngleTool extends WindowController {
     /**
      * If sliders are enabled, set all 3 sliders to match the selected bone.
      */
-    void set() {
+    void setSliders() {
         if (Maud.model.bone.isBoneSelected() && !Maud.model.animation.isRunning()) {
             angles();
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {

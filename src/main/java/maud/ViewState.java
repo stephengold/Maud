@@ -46,8 +46,8 @@ import jme3utilities.debug.AxesControl;
 import jme3utilities.debug.SkeletonDebugControl;
 
 /**
- * A simple app state which encapsulates the MVC view copy of the loaded CG
- * model in Maud's "3D View" screen.
+ * A simple app state which encapsulates the view's copy of the loaded CG model
+ * in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -198,9 +198,9 @@ public class ViewState extends SimpleAppState {
     }
 
     /**
-     * Pose the skeleton under user control.
+     * Update the user transforms of all bones from the MVC model.
      */
-    public void updatePose() {
+    void updatePose() {
         int boneCount = Maud.model.cgm.countBones();
         int numTransforms = Maud.model.pose.countTransforms();
         assert numTransforms == boneCount : numTransforms;

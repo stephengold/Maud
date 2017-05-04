@@ -97,8 +97,6 @@ public class Pose {
             Transform transform = new Transform();
             transforms.add(transform);
         }
-
-        Maud.viewState.updatePose();
     }
 
     /**
@@ -112,8 +110,6 @@ public class Pose {
 
         Transform boneTransform = transforms.get(boneIndex);
         boneTransform.setRotation(rotation);
-
-        Maud.viewState.updatePose();
     }
 
     /**
@@ -127,8 +123,6 @@ public class Pose {
 
         Transform boneTransform = transforms.get(boneIndex);
         boneTransform.setScale(scale);
-
-        Maud.viewState.updatePose();
     }
 
     /**
@@ -143,8 +137,6 @@ public class Pose {
             Transform transform = transforms.get(boneIndex);
             Maud.model.animation.boneTransform(boneIndex, transform);
         }
-
-        Maud.viewState.updatePose();
     }
 
     /**
@@ -158,7 +150,5 @@ public class Pose {
 
         Transform boneTransform = transforms.get(boneIndex);
         boneTransform.setTranslation(translation);
-
-        Maud.viewState.updatePose();
     }
 }

@@ -26,8 +26,6 @@
  */
 package maud;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
@@ -38,7 +36,7 @@ import jme3utilities.nifty.WindowController;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class ModelTool extends WindowController {
+class ModelTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -59,12 +57,18 @@ public class ModelTool extends WindowController {
         super(screenController, "modelTool", false);
     }
     // *************************************************************************
-    // new methods exposed
+    // AppState methods
 
     /**
-     * Update this window after a change.
+     * Callback to update this window prior to rendering. (Invoked once per
+     * render pass.)
+     *
+     * @param elapsedTime time interval between render passes (in seconds,
+     * &ge;0)
      */
-    public void update() {
+    @Override
+    public void update(float elapsedTime) {
+        super.update(elapsedTime);
         /*
          * name
          */
@@ -75,14 +79,14 @@ public class ModelTool extends WindowController {
          * asset base path
          */
         String assetPath = Maud.model.cgm.getAssetPath();
-        String abpDesc = (assetPath.length() == 0) ? "unknown"
+        String abpDesc = assetPath.isEmpty() ? "unknown"
                 : MyString.quote(assetPath);
         Maud.gui.setStatusText("modelAbp", " " + abpDesc);
         /*
          * file base path
          */
         String filePath = Maud.model.cgm.getFilePath();
-        String fbpDesc = (filePath.length() == 0) ? "unknown"
+        String fbpDesc = filePath.isEmpty() ? "unknown"
                 : MyString.quote(filePath);
         Maud.gui.setStatusText("modelFbp", " " + fbpDesc);
         /*
@@ -93,20 +97,5 @@ public class ModelTool extends WindowController {
         boolean isPristine = Maud.model.cgm.isPristine();
         String pristineDesc = isPristine ? "pristine" : "edited";
         Maud.gui.setStatusText("modelPristine", pristineDesc);
-    }
-    // *************************************************************************
-    // AppState methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application which owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-        update();
     }
 }

@@ -122,7 +122,7 @@ class BoneOffsetTool extends WindowController {
     /**
      * If sliders are enabled, set them to match the selected bone.
      */
-    void set() {
+    void setSliders() {
         if (Maud.model.bone.isBoneSelected()
                 && !Maud.model.animation.isRunning()) {
             displayOffsets();

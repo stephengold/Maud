@@ -296,7 +296,6 @@ public class LoadedAnimation {
      */
     void rename(String newName) {
         loadedName = newName;
-        Maud.gui.animation.updateName();
     }
 
     /**
@@ -321,9 +320,6 @@ public class LoadedAnimation {
         if (duration > 0f) {
             time = newTime;
             Maud.model.pose.setToAnimation();
-            if (isRunning()) {
-                Maud.gui.animation.update();
-            }
         }
     }
 }

@@ -26,20 +26,19 @@
  */
 package maud;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.model.SkeletonStatus;
 
 /**
  * The controller for the "Skeleton Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SkeletonTool extends WindowController {
+class SkeletonTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -63,28 +62,23 @@ public class SkeletonTool extends WindowController {
     // new methods exposed
 
     /**
-     * Update after a change.
+     * Update the view's SkeletonDebugControl from the MVC model.
      */
-    public void update() {
-        if (!isInitialized()) {
-            return;
-        }
-
+    void updateSdc() {
         SkeletonDebugControl control = Maud.viewState.getSkeletonDebugControl();
-        /*
-         * visibility
-         */
-        boolean enable = Maud.gui.isChecked("skeleton");
-        control.setEnabled(enable);
-        /*
-         * color
-         */
-        ColorRGBA color = Maud.gui.updateColorBank("ske");
+        SkeletonStatus model = Maud.model.skeleton;
+
+        boolean visible = model.isVisible();
+        control.setEnabled(visible);
+
+        ColorRGBA color = model.copyColor(null);
         control.setColor(color);
-        float lineWidth = Maud.gui.updateSlider("skeletonLineWidth", " pixels");
+
+        float lineWidth = model.getLineWidth();
         control.setLineWidth(lineWidth);
-        float pointSize = Maud.gui.updateSlider("skeletonPointSize", " pixels");
+
         if (control.supportsPointSize()) {
+            float pointSize = model.getPointSize();
             control.setPointSize(pointSize);
         }
     }
@@ -92,16 +86,22 @@ public class SkeletonTool extends WindowController {
     // AppState methods
 
     /**
-     * Initialize this controller prior to its 1st update.
+     * Callback to update this window prior to rendering. (Invoked once per
+     * render pass.)
      *
-     * @param stateManager (not null)
-     * @param application application which owns the window (not null)
+     * @param elapsedTime time interval between render passes (in seconds,
+     * &ge;0)
      */
     @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
+    public void update(float elapsedTime) {
+        super.update(elapsedTime);
 
-        update();
+        boolean visible = Maud.gui.isChecked("skeleton");
+        ColorRGBA color = Maud.gui.updateColorBank("ske");
+        float lineWidth = Maud.gui.updateSlider("skeletonLineWidth", " pixels");
+        float pointSize = Maud.gui.updateSlider("skeletonPointSize", " pixels");
+
+        SkeletonStatus model = Maud.model.skeleton;
+        model.set(visible, color, pointSize, lineWidth);
     }
 }

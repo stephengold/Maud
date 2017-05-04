@@ -26,15 +26,16 @@
  */
 package maud.model;
 
+import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * The status of the visible coordinate axes in the Maud application.
+ * The status of the visible skeleton in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class AxesStatus {
+public class SkeletonStatus {
     // *************************************************************************
     // constants and loggers
 
@@ -42,56 +43,42 @@ public class AxesStatus {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            AxesStatus.class.getName());
+            SkeletonStatus.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * flag to enable depth test for visibility of the axes
+     * visibility of the skeleton (true &rarr; visible, false &rarr; hidden)
      */
-    private boolean depthTestFlag = false;
+    private boolean visibleFlag = true;
     /**
-     * length of the axes (units depend on mode, &ge;0)
+     * color of the skeleton
      */
-    private float length = 16f;
+    final private ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 1f);
     /**
-     * line width for the axes (in pixels, &ge;1)
+     * point size (in pixels, &ge;1)
      */
-    private float width = 4f;
+    private float pointSize = 4f;
     /**
-     * which set of axes is active (either "none", "world", "model", or "bone")
+     * line width for connectors (in pixels, &ge;1)
      */
-    private String mode = "bone";
+    private float lineWidth = 1f;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Read the depth test flag.
+     * Copy the color of the skeleton.
      *
-     * @return true to enable test, otherwise false
+     * @param storeResult (modified if not null)
+     * @return color (either storeResult or a new instance)
      */
-    public boolean getDepthTestFlag() {
-        return depthTestFlag;
-    }
+    public ColorRGBA copyColor(ColorRGBA storeResult) {
+        if (storeResult == null) {
+            storeResult = new ColorRGBA();
+        }
+        storeResult.set(color);
 
-    /**
-     * Read the length of each axis.
-     *
-     * @return length (&ge;0)
-     */
-    public float getLength() {
-        assert length >= 0f : length;
-        return length;
-    }
-
-    /**
-     * Read the current mode string.
-     *
-     * @return mode string (not null)
-     */
-    public String getMode() {
-        assert mode != null;
-        return mode;
+        return storeResult;
     }
 
     /**
@@ -99,35 +86,46 @@ public class AxesStatus {
      *
      * @return width (in pixels, &ge;1)
      */
-    public float getWidth() {
-        assert width >= 1f : width;
-        return width;
+    public float getLineWidth() {
+        assert lineWidth >= 1f : lineWidth;
+        return lineWidth;
     }
 
     /**
-     * Alter the length, width, and depth-test flag.
+     * Read the size of each point.
      *
-     * @param length length of axes (units depend on mode, &ge;0)
-     * @param flag true &rarr; enable depth test, false &rarr; no depth test
-     * @param width line width for axes (in pixels, &ge;1)
+     * @return size (in pixels, &ge;1)
      */
-    public void set(float length, boolean flag, float width) {
-        Validate.nonNegative(length, "length");
-        Validate.inRange(width, "width", 1f, Float.MAX_VALUE);
-
-        this.length = length;
-        this.depthTestFlag = flag;
-        this.width = width;
+    public float getPointSize() {
+        assert pointSize >= 1f : pointSize;
+        return pointSize;
     }
 
     /**
-     * Alter the display mode.
+     * Test whether the skeleton is visible.
      *
-     * @param newMode new value for axes display mode (not null)
+     * @return true if visible, otherwise false
      */
-    public void setMode(String newMode) {
-        Validate.nonNull(newMode, "mode");
-        // TODO validate
-        mode = newMode;
+    public boolean isVisible() {
+        return visibleFlag;
+    }
+
+    /**
+     * Alter the visibility, color, point size, and line width.
+     *
+     * @param visible true &rarr; visible, false &rarr; hidden
+     * @param newColor (not null, unaffected)
+     * @param size point size (in pixels, &ge;1)
+     * @param width line width (in pixels, &ge;1)
+     */
+    public void set(boolean visible, ColorRGBA newColor, float size,
+            float width) {
+        Validate.inRange(size, "point size", 1f, Float.MAX_VALUE);
+        Validate.inRange(width, "line width", 1f, Float.MAX_VALUE);
+
+        color.set(newColor);
+        pointSize = size;
+        lineWidth = width;
+        visibleFlag = visible;
     }
 }

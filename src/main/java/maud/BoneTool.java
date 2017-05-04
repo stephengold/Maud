@@ -37,7 +37,7 @@ import jme3utilities.nifty.WindowController;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class BoneTool extends WindowController {
+class BoneTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -58,12 +58,19 @@ public class BoneTool extends WindowController {
         super(screenController, "boneTool", false);
     }
     // *************************************************************************
-    // new methods exposed
+    // AppState methods
 
     /**
-     * Update this window and others after a change.
+     * Callback to update this window prior to rendering. (Invoked once per
+     * render pass.)
+     *
+     * @param elapsedTime time interval between render passes (in seconds,
+     * &ge;0)
      */
-    public void update() {
+    @Override
+    public void update(float elapsedTime) {
+        super.update(elapsedTime);
+
         String indexText, nameText;
         String parentText, childText;
         String rButton, spButton, scButton;
@@ -131,10 +138,5 @@ public class BoneTool extends WindowController {
         Maud.gui.setButtonLabel("boneRenameButton", rButton);
         Maud.gui.setButtonLabel("boneSelectParentButton", spButton);
         Maud.gui.setButtonLabel("boneSelectChildButton", scButton);
-
-        Maud.gui.axes.update();
-        Maud.gui.boneAngle.set();
-        Maud.gui.boneOffset.set();
-        Maud.gui.boneScale.set();
     }
 }

@@ -542,8 +542,6 @@ public class LoadedCGModel {
         Maud.model.spatial.selectModelRoot();
         Maud.model.animation.loadBindPose();
         setPristine();
-        Maud.gui.model.update();
-        Maud.gui.skeleton.update();
 
         return true;
     }
@@ -574,8 +572,6 @@ public class LoadedCGModel {
         Maud.model.spatial.selectModelRoot();
         Maud.model.animation.loadBindPose();
         setPristine();
-        Maud.gui.model.update();
-        Maud.gui.skeleton.update();
 
         return true;
     }
@@ -610,8 +606,6 @@ public class LoadedCGModel {
         Maud.model.spatial.selectModelRoot();
         Maud.model.animation.loadBindPose();
         setPristine();
-        Maud.gui.model.update();
-        Maud.gui.skeleton.update();
 
         return true;
     }
@@ -689,8 +683,6 @@ public class LoadedCGModel {
         Bone selectedBone = Maud.model.bone.getBone();
         boolean success = MySkeleton.setName(selectedBone, newName);
         setEdited();
-        Maud.gui.model.update();
-        Maud.gui.bone.update();
 
         return success;
     }
@@ -772,8 +764,6 @@ public class LoadedCGModel {
             modelSpatial.setCullHint(newHint);
             setEdited();
             Maud.viewState.setHint(newHint);
-            Maud.gui.spatial.update();
-            Maud.gui.cullHint.update();
         }
     }
 
@@ -791,8 +781,6 @@ public class LoadedCGModel {
             modelSpatial.setShadowMode(newMode);
             setEdited();
             Maud.viewState.setMode(newMode);
-            Maud.gui.spatial.update();
-            Maud.gui.shadowMode.update();
         }
     }
 
@@ -809,7 +797,6 @@ public class LoadedCGModel {
         boolean success = writeModelToFile(baseFilePath);
         if (success) {
             loadedModelAssetPath = baseAssetPath;
-            Maud.gui.model.update();
         }
 
         return success;
@@ -846,7 +833,6 @@ public class LoadedCGModel {
                     "I/O exception while writing model to file {0}",
                     MyString.quote(filePath));
         }
-        Maud.gui.model.update();
 
         return success;
     }
@@ -1050,7 +1036,6 @@ public class LoadedCGModel {
      */
     private void setEdited() {
         pristine = false;
-        Maud.gui.model.update();
     }
 
     /**
@@ -1058,6 +1043,5 @@ public class LoadedCGModel {
      */
     private void setPristine() {
         pristine = true;
-        Maud.gui.model.update();
     }
 }

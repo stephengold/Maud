@@ -31,13 +31,14 @@ import java.util.logging.Logger;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.model.AxesStatus;
 
 /**
  * The controller for the "Axes Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class AxesTool extends WindowController {
+class AxesTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -69,21 +70,9 @@ public class AxesTool extends WindowController {
     // new methods exposed
 
     /**
-     * Update all controls.
+     * Update the view's AxesControl.
      */
-    public void update() {
-        float value = Maud.gui.readSlider("axesLength");
-        float axesLength = FastMath.pow(10f, value);
-        boolean depthTestFlag = Maud.gui.isChecked("axesDepthTest");
-        float lineWidth = Maud.gui.readSlider("axesLineWidth");
-
-        Maud.model.axes.set(axesLength, depthTestFlag, lineWidth);
-    }
-
-    /**
-     * Callback from the MVC model to update the CG model.
-     */
-    public void updateCGModel() {
+    void updateAxesControl() {
         String mode = Maud.model.axes.getMode();
         AxesControl newControl;
         switch (mode) {
@@ -126,12 +115,39 @@ public class AxesTool extends WindowController {
             control.setLineWidth(lineWidth);
         }
     }
+    // *************************************************************************
+    // AppState methods
 
     /**
-     * Callback from the MVC model to update the status labels.
+     * Callback to update this window prior to rendering. (Invoked once per
+     * render pass.)
+     *
+     * @param elapsedTime time interval between render passes (in seconds,
+     * &ge;0)
      */
-    public void updateLabels() {
-        String mode = Maud.model.axes.getMode();
+    @Override
+    public void update(float elapsedTime) {
+        super.update(elapsedTime);
+
+        float value = Maud.gui.readSlider("axesLength");
+        float axesLength = FastMath.pow(10f, value);
+        boolean depthTestFlag = Maud.gui.isChecked("axesDepthTest");
+        float lineWidth = Maud.gui.readSlider("axesLineWidth");
+
+        Maud.model.axes.set(axesLength, depthTestFlag, lineWidth);
+
+        updateLabels();
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Update the status labels based on the MVC model.
+     */
+    private void updateLabels() {
+        AxesStatus model = Maud.model.axes;
+
+        String mode = model.getMode();
         String units;
         switch (mode) {
             case "bone":
@@ -153,10 +169,11 @@ public class AxesTool extends WindowController {
             default:
                 throw new IllegalStateException();
         }
-        float axesLength = Maud.model.axes.getLength();
+
+        float axesLength = model.getLength();
         Maud.gui.updateSliderStatus("axesLength", axesLength, units);
 
-        float lineWidth = Maud.model.axes.getWidth();
+        float lineWidth = model.getWidth();
         Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
     }
 }
