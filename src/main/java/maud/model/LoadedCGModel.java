@@ -56,13 +56,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
 import maud.Maud;
-import maud.Util;
 
 /**
  * The MVC model of the loaded CG model in the Maud application: tracks all
@@ -874,7 +874,7 @@ public class LoadedCGModel implements Cloneable {
         Transform transform = new Transform();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             Maud.model.pose.copyTransform(boneIndex, transform);
-            if (!Util.isIdentity(transform)) {
+            if (!Misc.isIdentity(transform)) {
                 Vector3f translation = transform.getTranslation();
                 Quaternion rotation = transform.getRotation();
                 Vector3f scale = transform.getScale();

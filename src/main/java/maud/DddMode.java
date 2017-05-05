@@ -187,7 +187,8 @@ class DddMode extends InputMode {
     private boolean copyAction(String actionString) {
         boolean handled = false;
         if (actionString.startsWith(copyAnimationPrefix)) {
-            String destName = Util.remainder(actionString, copyAnimationPrefix);
+            String destName = MyString.remainder(actionString,
+                    copyAnimationPrefix);
             Maud.model.cgm.copyAnimation(destName);
             handled = true;
         }
@@ -204,22 +205,24 @@ class DddMode extends InputMode {
     private boolean loadAction(String actionString) {
         boolean handled = false;
         if (actionString.startsWith(loadAnimationPrefix)) {
-            String name = Util.remainder(actionString, loadAnimationPrefix);
+            String name = MyString.remainder(actionString, loadAnimationPrefix);
             Maud.model.animation.load(name);
             handled = true;
 
         } else if (actionString.startsWith(loadModelAssetPrefix)) {
-            String path = Util.remainder(actionString, loadModelAssetPrefix);
+            String path = MyString.remainder(actionString,
+                    loadModelAssetPrefix);
             Maud.model.cgm.loadModelAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(loadModelFilePrefix)) {
-            String path = Util.remainder(actionString, loadModelFilePrefix);
+            String path = MyString.remainder(actionString, loadModelFilePrefix);
             Maud.gui.loadModelFile(path);
             handled = true;
 
         } else if (actionString.startsWith(loadModelNamedPrefix)) {
-            String name = Util.remainder(actionString, loadModelNamedPrefix);
+            String name = MyString.remainder(actionString,
+                    loadModelNamedPrefix);
             Maud.model.cgm.loadModelNamed(name);
             handled = true;
         }
@@ -268,7 +271,7 @@ class DddMode extends InputMode {
     private boolean openAction(String actionString) {
         boolean handled = false;
         if (actionString.startsWith(openMenuPrefix)) {
-            String menuPath = Util.remainder(actionString, openMenuPrefix);
+            String menuPath = MyString.remainder(actionString, openMenuPrefix);
             handled = Maud.gui.openMenu(menuPath);
         }
 
@@ -309,12 +312,12 @@ class DddMode extends InputMode {
             handled = true;
 
         } else if (actionString.startsWith(renameAnimationPrefix)) {
-            newName = Util.remainder(actionString, renameAnimationPrefix);
+            newName = MyString.remainder(actionString, renameAnimationPrefix);
             Maud.model.cgm.renameAnimation(newName);
             handled = true;
 
         } else if (actionString.startsWith(renameBonePrefix)) {
-            newName = Util.remainder(actionString, renameBonePrefix);
+            newName = MyString.remainder(actionString, renameBonePrefix);
             Maud.model.cgm.renameBone(newName);
             handled = true;
         }
@@ -356,12 +359,13 @@ class DddMode extends InputMode {
     private boolean saveAction(String actionString) {
         boolean handled = false;
         if (actionString.startsWith(saveModelAssetPrefix)) {
-            String path = Util.remainder(actionString, saveModelAssetPrefix);
+            String path = MyString.remainder(actionString,
+                    saveModelAssetPrefix);
             Maud.model.cgm.writeModelToAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(saveModelFilePrefix)) {
-            String path = Util.remainder(actionString, saveModelFilePrefix);
+            String path = MyString.remainder(actionString, saveModelFilePrefix);
             Maud.model.cgm.writeModelToFile(path);
             handled = true;
         }
@@ -398,24 +402,26 @@ class DddMode extends InputMode {
         if (!handled) {
             String arg;
             if (actionString.startsWith(selectBonePrefix)) {
-                arg = Util.remainder(actionString, selectBonePrefix);
+                arg = MyString.remainder(actionString, selectBonePrefix);
                 Maud.gui.selectBone(arg);
                 handled = true;
 
             } else if (actionString.startsWith(selectBoneChildPrefix)) {
-                arg = Util.remainder(actionString, selectBoneChildPrefix);
+                arg = MyString.remainder(actionString, selectBoneChildPrefix);
                 Maud.gui.selectBoneChild(arg);
                 handled = true;
 
             } else if (actionString.startsWith(selectSpatialChildPrefix)) {
-                arg = Util.remainder(actionString, selectSpatialChildPrefix);
+                arg = MyString.remainder(actionString,
+                        selectSpatialChildPrefix);
                 Maud.gui.selectSpatialChild(arg);
                 handled = true;
             }
         }
 
         if (!handled && actionString.startsWith(selectToolPrefix)) {
-            String toolName = Util.remainder(actionString, selectToolPrefix);
+            String toolName = MyString.remainder(actionString,
+                    selectToolPrefix);
             handled = Maud.gui.selectTool(toolName);
         }
 

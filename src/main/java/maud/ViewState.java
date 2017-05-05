@@ -38,6 +38,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -313,7 +314,7 @@ public class ViewState {
             Node node = (Node) cgModelRoot;
             for (Spatial child : node.getChildren()) {
                 Transform t = child.getLocalTransform();
-                if (!Util.isIdentity(t)) {
+                if (!Misc.isIdentity(t)) {
                     String name = child.getName();
                     logger.log(Level.WARNING,
                             "Overriding local transform on {0}",

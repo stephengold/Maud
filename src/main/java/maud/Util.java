@@ -30,15 +30,7 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
-import jme3utilities.Validate;
-import jme3utilities.math.MyVector3f;
 
 /**
  * Utility methods for the Maud application. All methods should be static.
@@ -126,29 +118,6 @@ public class Util {
     }
 
     /**
-     * Open the specified web page in a new browser or browser tab.
-     *
-     * @param startUriString URI of the web page (not null)
-     * @return true if successful, otherwise false
-     */
-    public static boolean browseWeb(String startUriString) {
-        Validate.nonNull(startUriString, "start uri");
-
-        boolean success = false;
-        if (Desktop.isDesktopSupported()
-                && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            try {
-                URI startUri = new URI(startUriString);
-                Desktop.getDesktop().browse(startUri);
-                success = true;
-            } catch (IOException | URISyntaxException exception) {
-            }
-        }
-
-        return success;
-    }
-
-    /**
      * Interpolate linearly between keyframes of a bone track.
      *
      * @param time
@@ -195,52 +164,5 @@ public class Util {
             scale.interpolateLocal(scales[startFrame], scales[endFrame],
                     fraction);
         }
-    }
-
-    /**
-     * Test the specified transform for exact identity.
-     *
-     * @param transform which transform to test (not null, unaffected)
-     * @return true if exactly equal to
-     * {@link com.jme3.math.Transform#IDENTITY}, otherwise false
-     */
-    public static boolean isIdentity(Transform transform) {
-        boolean result = false;
-
-        Vector3f translation = transform.getTranslation();
-        if (MyVector3f.isZero(translation)) {
-            Quaternion rotation = transform.getRotation();
-            if (rotation.isIdentity()) {
-                Vector3f scale = transform.getScale();
-                result = (scale.x == 1f && scale.y == 1f && scale.z == 1f);
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Extract the remainder of the specified string after removing the
-     * specified prefix.
-     *
-     * @param input input string (not null)
-     * @param prefix prefix string (not null)
-     * @return the remainder of the input (not null)
-     */
-    public static String remainder(String input, String prefix) {
-        Validate.nonNull(input, "input");
-        Validate.nonNull(prefix, "prefix");
-        if (!input.startsWith(prefix)) {
-            logger.log(Level.SEVERE, "input={0}, prefix={1}", new Object[]{
-                MyString.quote(input), MyString.quote(prefix)
-            });
-            throw new IllegalArgumentException("input must start with prefix.");
-        }
-
-        int endPosition = prefix.length();
-        String result = input.substring(endPosition);
-
-        assert result != null;
-        return result;
     }
 }

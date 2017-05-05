@@ -1084,7 +1084,7 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "JME3 homepage":
-                Util.browseWeb("http://jmonkeyengine.org/");
+                Misc.browseWeb("http://jmonkeyengine.org/");
                 handled = true;
                 break;
 
@@ -1111,7 +1111,7 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "Source":
-                Util.browseWeb("https://github.com/stephengold/Maud");
+                Misc.browseWeb("https://github.com/stephengold/Maud");
                 handled = true;
                 break;
         }
