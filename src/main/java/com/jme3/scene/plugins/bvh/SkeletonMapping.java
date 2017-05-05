@@ -127,6 +127,7 @@ public class SkeletonMapping implements Savable {
         oc.writeStringSavableMap(mappings, "mappings", null);
     }
 
+    @SuppressWarnings("unchecked")
     public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
         mappings = (Map<String, BoneMapping>) ic.readStringSavableMap(
