@@ -1,7 +1,12 @@
 BSD 3-Clause License
 
-Copyright (c) 2017, Stephen Gold
+BVHAnimData software Copyright (c) 2009-2010 jMonkeyEngine
+Maud software Copyright (c) 2017, Stephen Gold
+
 All rights reserved.
+
+Note: the following license does not apply to "3d cursor.blend", which is
+   separately licensed.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
