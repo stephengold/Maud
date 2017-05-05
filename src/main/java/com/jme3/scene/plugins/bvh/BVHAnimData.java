@@ -32,7 +32,6 @@
 package com.jme3.scene.plugins.bvh;
 
 import com.jme3.animation.Animation;
-//import com.jme3.animation.BoneAnimation;
 import com.jme3.animation.Skeleton;
 
 public class BVHAnimData {

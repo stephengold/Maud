@@ -52,7 +52,8 @@ public class SkeletonMapping implements Savable {
      * @param sourceBone the name of the bone from the source skeleton.
      * @param twist the twist rotation to apply to the animation data
      */
-    public BoneMapping map(String targetBone, String sourceBone, Quaternion twist) {
+    public BoneMapping map(String targetBone, String sourceBone,
+            Quaternion twist) {
         BoneMapping mapping = new BoneMapping(targetBone, sourceBone, twist);
         mappings.put(targetBone, mapping);
         return mapping;
@@ -68,8 +69,10 @@ public class SkeletonMapping implements Savable {
      * @param twistAngle the twist rotation angle to apply to the animation data
      * @param twistAxis the twist rotation axis to apply to the animation data
      */
-    public BoneMapping map(String targetBone, String sourceBone, float twistAngle, Vector3f twistAxis) {
-        BoneMapping mapping = new BoneMapping(targetBone, sourceBone, twistAngle, twistAxis);
+    public BoneMapping map(String targetBone, String sourceBone,
+            float twistAngle, Vector3f twistAxis) {
+        BoneMapping mapping = new BoneMapping(targetBone, sourceBone,
+                twistAngle, twistAxis);
         mappings.put(targetBone, mapping);
         return mapping;
     }
@@ -107,13 +110,15 @@ public class SkeletonMapping implements Savable {
      * @param twistAngle the twist rotation angle to apply to the animation data
      * @param twistAxis the twist rotation axis to apply to the animation data
      */
-    public BoneMapping map(String targetBone, float twistAngle, Vector3f twistAxis) {
-        BoneMapping mapping = new BoneMapping(targetBone, twistAngle, twistAxis);
+    public BoneMapping map(String targetBone, float twistAngle,
+            Vector3f twistAxis) {
+        BoneMapping mapping = new BoneMapping(targetBone, twistAngle,
+                twistAxis);
         mappings.put(targetBone, mapping);
         return mapping;
     }
-    
-    public BoneMapping get(String targetBoneName){
+
+    public BoneMapping get(String targetBoneName) {
         return mappings.get(targetBoneName);
     }
 
@@ -124,6 +129,7 @@ public class SkeletonMapping implements Savable {
 
     public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
-        mappings = (Map<String, BoneMapping>) ic.readStringSavableMap("mappings", new HashMap<String, BoneMapping>());
+        mappings = (Map<String, BoneMapping>) ic.readStringSavableMap(
+                "mappings", new HashMap<String, BoneMapping>());
     }
 }

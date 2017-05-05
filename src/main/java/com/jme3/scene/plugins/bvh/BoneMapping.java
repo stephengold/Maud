@@ -74,9 +74,10 @@ public class BoneMapping implements Savable {
      * @param twistAngle the twist rotation angle to apply to the animation data
      * @param twistAxis the twist rotation axis to apply to the animation data
      */
-    public BoneMapping(String targetBone, String sourceBone, float twistAngle, Vector3f twistAxis) {
+    public BoneMapping(String targetBone, String sourceBone, float twistAngle,
+            Vector3f twistAxis) {
         this.targetName = targetBone;
-        //  sourceNames.addAll(Arrays.asList(sourceBones)); 
+        //  sourceNames.addAll(Arrays.asList(sourceBones));
         sourceNames.add(sourceBone);
         this.twist = new Quaternion().fromAngleAxis(twistAngle, twistAxis);
     }
@@ -112,7 +113,8 @@ public class BoneMapping implements Savable {
      * @param twistAngle the twist rotation angle to apply to the animation data
      * @param twistAxis the twist rotation axis to apply to the animation data
      */
-    public BoneMapping(String targetBone, float twistAngle, Vector3f twistAxis) {
+    public BoneMapping(String targetBone, float twistAngle,
+            Vector3f twistAxis) {
         this.targetName = targetBone;
         this.twist = new Quaternion().fromAngleAxis(twistAngle, twistAxis);
     }
@@ -153,7 +155,8 @@ public class BoneMapping implements Savable {
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(targetName, "targetName", "");
-        oc.write(((SafeArrayList<String>) sourceNames).getArray(), "sourceNames", null);
+        oc.write(((SafeArrayList<String>) sourceNames).getArray(),
+                "sourceNames", null);
         oc.write(twist, "twist", null);
     }
 

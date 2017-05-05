@@ -4,9 +4,7 @@
  */
 package com.jme3.scene.plugins.bvh;
 
-import com.jme3.animation.Bone;
 import com.jme3.math.Vector3f;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +14,7 @@ import java.util.List;
 public class BVHBone {
 
     private String name;
-    private Vector3f offset=new Vector3f();
+    private Vector3f offset = new Vector3f();
     private List<BVHChannel> channels;
     private List<BVHBone> children;
 
@@ -59,14 +57,14 @@ public class BVHBone {
         this.offset = offset;
     }
 
-    public int getNbBones(){
-        int num=1;
+    public int getNbBones() {
+        int num = 1;
 //        if(name.equals("Site")){
 //            return 0;
 //        }
-        if(children!=null){
+        if (children != null) {
             for (BVHBone child : children) {
-                num+=child.getNbBones();
+                num += child.getNbBones();
             }
         }
         return num;
@@ -81,11 +79,9 @@ public class BVHBone {
 //
 //        return list;
 //    }
-
     @Override
     public String toString() {
-        return "BVHBone{" + "\nname=" + name + "\noffset=" + offset + "\nchannels=" + channels + "\nchildren=" + children + '}';
+        return "BVHBone{" + "\nname=" + name + "\noffset=" + offset
+                + "\nchannels=" + channels + "\nchildren=" + children + '}';
     }
-
-
 }

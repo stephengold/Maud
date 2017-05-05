@@ -120,21 +120,24 @@ public class BVHLoader implements AssetLoader {
         populateBoneList(bones, tracks, animation.getHierarchy(), null);
 
         Skeleton skeleton = new Skeleton(bones);
-        String animName = fileName.substring(fileName.lastIndexOf("/") + 1).replaceAll(".bvh", "");
+        String animName = fileName.substring(
+                fileName.lastIndexOf("/") + 1).replaceAll(".bvh", "");
         float animLength = animation.getFrameTime() * animation.getNbFrames();
         Animation boneAnimation = new Animation(animName, animLength);
         boneAnimation.setTracks(tracks);
-        data = new BVHAnimData(skeleton, boneAnimation,animation.getFrameTime());
+        data = new BVHAnimData(skeleton, boneAnimation, animation.getFrameTime());
     }
     int index = 0;
 
-    private void populateBoneList(Bone[] bones, BoneTrack[] tracks, BVHBone hierarchy, Bone parent) {
+    private void populateBoneList(Bone[] bones, BoneTrack[] tracks,
+            BVHBone hierarchy, Bone parent) {
 //        if (hierarchy.getName().equals("Site")) {
 //            return;
 //        }
         Bone bone = new Bone(hierarchy.getName());
 
-        bone.setBindTransforms(hierarchy.getOffset(), new Quaternion().IDENTITY, Vector3f.UNIT_XYZ);
+        bone.setBindTransforms(hierarchy.getOffset(),
+                new Quaternion().IDENTITY, Vector3f.UNIT_XYZ);
 
         if (parent != null) {
             parent.addChild(bone);
@@ -170,25 +173,36 @@ public class BVHLoader implements AssetLoader {
             if (bone.getChannels() != null) {
                 for (BVHChannel bVHChannel : bone.getChannels()) {
 
-
-                    if (bVHChannel.getName().equals(BVHChannel.BVH_CHANNEL_X_POSITION)) {
+                    if (bVHChannel.getName().equals(
+                            BVHChannel.BVH_CHANNEL_X_POSITION)) {
                         t.setX(bVHChannel.getValues().get(i));
                     }
-                    if (bVHChannel.getName().equals(BVHChannel.BVH_CHANNEL_Y_POSITION)) {
+                    if (bVHChannel.getName().equals(
+                            BVHChannel.BVH_CHANNEL_Y_POSITION)) {
                         t.setY(bVHChannel.getValues().get(i));
                     }
-                    if (bVHChannel.getName().equals(BVHChannel.BVH_CHANNEL_Z_POSITION)) {
+                    if (bVHChannel.getName().equals(
+                            BVHChannel.BVH_CHANNEL_Z_POSITION)) {
                         t.setZ(bVHChannel.getValues().get(i));
                     }
-                    if (bVHChannel.getName().equals(BVHChannel.BVH_CHANNEL_X_ROTATION)) {
+                    if (bVHChannel.getName().equals(
+                            BVHChannel.BVH_CHANNEL_X_ROTATION)) {
 
-                        rx.fromAngleAxis((bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD, Vector3f.UNIT_X);
+                        rx.fromAngleAxis(
+                                (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
+                                Vector3f.UNIT_X);
                     }
-                    if (bVHChannel.getName().equals(BVHChannel.BVH_CHANNEL_Y_ROTATION)) {
-                        ry.fromAngleAxis((bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD, Vector3f.UNIT_Y);
+                    if (bVHChannel.getName().equals(
+                            BVHChannel.BVH_CHANNEL_Y_ROTATION)) {
+                        ry.fromAngleAxis(
+                                (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
+                                Vector3f.UNIT_Y);
                     }
-                    if (bVHChannel.getName().equals(BVHChannel.BVH_CHANNEL_Z_ROTATION)) {
-                        rz.fromAngleAxis((bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD, Vector3f.UNIT_Z);
+                    if (bVHChannel.getName().equals(
+                            BVHChannel.BVH_CHANNEL_Z_ROTATION)) {
+                        rz.fromAngleAxis(
+                                (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
+                                Vector3f.UNIT_Z);
                     }
                 }
 

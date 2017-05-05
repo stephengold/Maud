@@ -46,9 +46,7 @@ public class BVHChannel {
 
     @Override
     public String toString() {
-        return "\nBVHChannel{" + "name=" + name + " ("+values.size()+")" +"values=" + values + '}';
+        return "\nBVHChannel{" + "name=" + name + " (" + values.size()
+                + ")" + "values=" + values + '}';
     }
-
-
-    
 }
