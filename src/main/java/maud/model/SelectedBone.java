@@ -40,7 +40,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedBone {
+public class SelectedBone implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -305,5 +305,23 @@ public class SelectedBone {
                 select(parent);
             }
         }
+    }
+    // *************************************************************************
+    // Object methods
+
+    /**
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if superclass isn't cloneable
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        SelectedBone clone = (SelectedBone) super.clone();
+        if (selectedIndex != null) {
+            clone.selectedIndex = new Integer(selectedIndex);
+        }
+
+        return clone;
     }
 }

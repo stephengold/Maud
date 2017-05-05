@@ -36,7 +36,7 @@ import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
 
 /**
- * Input mode for Maud's "3D View" screen.
+ * Input mode for Maud's "3D View" screen. TODO rename
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -107,8 +107,17 @@ class DddMode extends InputMode {
                 case "load":
                     handled = loadAction(actionString);
                     break;
+                case "new":
+                    handled = newAction(actionString);
+                    break;
+                case "next":
+                    handled = nextAction(actionString);
+                    break;
                 case "open":
                     handled = openAction(actionString);
+                    break;
+                case "previous":
+                    handled = previousAction(actionString);
                     break;
                 case "rename":
                     handled = renameAction(actionString);
@@ -219,7 +228,39 @@ class DddMode extends InputMode {
     }
 
     /**
-     * Process a "open" action.
+     * Process a "new" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean newAction(String actionString) {
+        boolean handled = false;
+        if (actionString.equals("new checkpoint")) {
+            History.add();
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a "next" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean nextAction(String actionString) {
+        boolean handled = false;
+        if (actionString.equals("next checkpoint")) {
+            History.redo();
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process an "open" action.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -229,6 +270,22 @@ class DddMode extends InputMode {
         if (actionString.startsWith(openMenuPrefix)) {
             String menuPath = Util.remainder(actionString, openMenuPrefix);
             handled = Maud.gui.openMenu(menuPath);
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a "previous" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean previousAction(String actionString) {
+        boolean handled = false;
+        if (actionString.equals("previous checkpoint")) {
+            History.undo();
+            handled = true;
         }
 
         return handled;

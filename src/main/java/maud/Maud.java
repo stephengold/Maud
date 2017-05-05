@@ -102,15 +102,16 @@ public class Maud extends GuiApplication {
     /**
      * MVC model for the "3D View" screen
      */
-    final public static DddModel model = new DddModel();
+    public static DddModel model = new DddModel();
     /**
      * printer for scene dumps
      */
     final private static Printer printer = new Printer();
     /**
-     * MVC view of the loaded CG model
+     * the view's copy of the loaded CG model (set by
+     * {@link maud.Maud#guiInitializeApplication()})
      */
-    final public static ViewState viewState = new ViewState();
+    public static ViewState viewState = null;
     // *************************************************************************
     // new methods exposed
 
@@ -130,6 +131,7 @@ public class Maud extends GuiApplication {
          * Lower logging thresholds for classes of interest.
          */
         Logger.getLogger(LoadedCGModel.class.getName()).setLevel(Level.INFO);
+        History.logger.setLevel(Level.INFO);
         /*
          * Instantiate the application.
          */
@@ -154,9 +156,8 @@ public class Maud extends GuiApplication {
      */
     @Override
     public void guiInitializeApplication() {
-        model.cgm.setAssetManager(assetManager);
-
-        stateManager.attachAll(viewState);
+        model.cgm = new LoadedCGModel(assetManager);
+        viewState = new ViewState(assetManager, rootNode, null);
         /*
          * Attach screen controllers for the "3D View" screen and BindScreen.
          */

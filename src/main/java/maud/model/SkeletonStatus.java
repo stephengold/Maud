@@ -35,7 +35,7 @@ import jme3utilities.Validate;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SkeletonStatus {
+public class SkeletonStatus implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -54,7 +54,7 @@ public class SkeletonStatus {
     /**
      * color of the skeleton
      */
-    final private ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 1f);
+    private ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 1f);
     /**
      * point size (in pixels, &ge;1)
      */
@@ -127,5 +127,21 @@ public class SkeletonStatus {
         pointSize = size;
         lineWidth = width;
         visibleFlag = visible;
+    }
+    // *************************************************************************
+    // Object methods
+
+    /**
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if superclass isn't cloneable
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        SkeletonStatus clone = (SkeletonStatus) super.clone();
+        clone.color = color.clone();
+
+        return clone;
     }
 }

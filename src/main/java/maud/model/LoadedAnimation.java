@@ -42,7 +42,7 @@ import maud.Util;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class LoadedAnimation {
+public class LoadedAnimation implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -321,5 +321,19 @@ public class LoadedAnimation {
             time = newTime;
             Maud.model.pose.setToAnimation();
         }
+    }
+    // *************************************************************************
+    // Object methods
+
+    /**
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if superclass isn't cloneable
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        LoadedAnimation clone = (LoadedAnimation) super.clone();
+        return clone;
     }
 }

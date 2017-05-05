@@ -40,7 +40,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class Pose {
+public class Pose implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -54,7 +54,7 @@ public class Pose {
     /**
      * user transforms which describe the pose, one for each bone
      */
-    final private List<Transform> transforms = new ArrayList<>(30);
+    private List<Transform> transforms = new ArrayList<>(30);
     // *************************************************************************
     // new methods exposed
 
@@ -150,5 +150,27 @@ public class Pose {
 
         Transform boneTransform = transforms.get(boneIndex);
         boneTransform.setTranslation(translation);
+    }
+    // *************************************************************************
+    // Object methods
+
+    /**
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if superclass isn't cloneable
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Pose clone = (Pose) super.clone();
+
+        int numTransforms = transforms.size();
+        clone.transforms = new ArrayList<>(numTransforms);
+        for (Transform t : transforms) {
+            Transform tClone = t.clone();
+            clone.transforms.add(tClone);
+        }
+
+        return clone;
     }
 }

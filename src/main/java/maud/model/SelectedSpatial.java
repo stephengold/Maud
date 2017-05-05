@@ -44,7 +44,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedSpatial {
+public class SelectedSpatial implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -59,7 +59,7 @@ public class SelectedSpatial {
     /**
      * tree position of the selected spatial (not null)
      */
-    final private List<Integer> treePosition = new ArrayList<>(3);
+    private List<Integer> treePosition = new ArrayList<>(3);
     // *************************************************************************
     // new methods exposed
 
@@ -475,6 +475,25 @@ public class SelectedSpatial {
     // TODO setters for CullHint, QueueBucket, and ShadowMode
     // *************************************************************************
     // Object methods
+
+    /**
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if superclass isn't cloneable
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        SelectedSpatial clone = (SelectedSpatial) super.clone();
+
+        int numLevels = treePosition.size();
+        clone.treePosition = new ArrayList<>(numLevels);
+        for (Integer ci : treePosition) {
+            clone.treePosition.add(ci);
+        }
+
+        return clone;
+    }
 
     /**
      * Represent the selected spatial as a text string.

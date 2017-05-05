@@ -70,7 +70,7 @@ import maud.Util;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class LoadedCGModel {
+public class LoadedCGModel implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -115,6 +115,12 @@ public class LoadedCGModel {
      * name of the loaded model
      */
     private String modelName = null;
+    // *************************************************************************
+    // constructors
+
+    public LoadedCGModel(AssetManager assetManager) {
+        this.assetManager = assetManager;
+    }
     // *************************************************************************
     // new methods exposed
 
@@ -536,7 +542,7 @@ public class LoadedCGModel {
         }
 
         rootSpatial = loaded.clone();
-        Maud.viewState.setModel(loaded);
+        Maud.viewState.loadModel(loaded);
 
         Maud.model.bone.selectNoBone();
         Maud.model.spatial.selectModelRoot();
@@ -566,7 +572,7 @@ public class LoadedCGModel {
         }
 
         rootSpatial = loaded.clone();
-        Maud.viewState.setModel(loaded);
+        Maud.viewState.loadModel(loaded);
 
         Maud.model.bone.selectNoBone();
         Maud.model.spatial.selectModelRoot();
@@ -598,7 +604,7 @@ public class LoadedCGModel {
         }
 
         rootSpatial = loaded.clone();
-        Maud.viewState.setModel(loaded);
+        Maud.viewState.loadModel(loaded);
 
         modelName = name;
 
@@ -699,16 +705,6 @@ public class LoadedCGModel {
         float newTime = Float.valueOf(name);
         // TODO validate
         Maud.model.animation.setTime(newTime);
-    }
-
-    /**
-     * Alter the asset manager used for loading models.
-     *
-     * @param newManager manager to use (not null)
-     */
-    public void setAssetManager(AssetManager newManager) {
-        Validate.nonNull(newManager, "asset manager");
-        assetManager = newManager;
     }
 
     /**
@@ -835,6 +831,22 @@ public class LoadedCGModel {
         }
 
         return success;
+    }
+    // *************************************************************************
+    // Object methods
+
+    /**
+     * Create a copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if superclass isn't cloneable
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        LoadedCGModel clone = (LoadedCGModel) super.clone();
+        clone.rootSpatial = rootSpatial.clone();
+
+        return clone;
     }
     // *************************************************************************
     // private methods

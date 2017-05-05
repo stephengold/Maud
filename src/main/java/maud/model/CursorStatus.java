@@ -37,7 +37,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class CursorStatus {
+public class CursorStatus implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -56,7 +56,7 @@ public class CursorStatus {
     /**
      * color of the cursor
      */
-    final private ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 1f);
+    private ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 1f);
     /**
      * angular size of the cursor (in arbitrary units, &gt;0)
      */
@@ -64,7 +64,7 @@ public class CursorStatus {
     /**
      * location of the cursor (in world coordinates)
      */
-    final private Vector3f location = new Vector3f();
+    private Vector3f location = new Vector3f();
     // *************************************************************************
     // new methods exposed
 
@@ -170,5 +170,22 @@ public class CursorStatus {
 
         assert worldScale >= 0f : worldScale;
         return worldScale;
+    }
+    // *************************************************************************
+    // Object methods
+
+    /**
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if superclass isn't cloneable
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        CursorStatus clone = (CursorStatus) super.clone();
+        clone.color = color.clone();
+        clone.location = location.clone();
+
+        return clone;
     }
 }

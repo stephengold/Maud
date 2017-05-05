@@ -41,7 +41,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class CameraStatus {
+public class CameraStatus implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -103,11 +103,11 @@ public class CameraStatus {
     /**
      * direction the camera points (unit vector in world coordinates)
      */
-    final private Vector3f direction = new Vector3f(1f, 0f, 0f);
+    private Vector3f direction = new Vector3f(1f, 0f, 0f);
     /**
      * location of the camera (in world coordinates)
      */
-    final private Vector3f location = new Vector3f();
+    private Vector3f location = new Vector3f();
     // *************************************************************************
     // new methods exposed
 
@@ -450,5 +450,22 @@ public class CameraStatus {
 
         dir.negateLocal();
         direction.set(dir);
+    }
+    // *************************************************************************
+    // Object methods
+
+    /**
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if superclass isn't cloneable
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        CameraStatus clone = (CameraStatus) super.clone();
+        clone.direction = direction.clone();
+        clone.location = location.clone();
+
+        return clone;
     }
 }

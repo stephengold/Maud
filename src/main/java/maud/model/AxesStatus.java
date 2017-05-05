@@ -34,7 +34,7 @@ import jme3utilities.Validate;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class AxesStatus {
+public class AxesStatus implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -129,5 +129,19 @@ public class AxesStatus {
         Validate.nonNull(newMode, "mode");
         // TODO validate
         mode = newMode;
+    }
+    // *************************************************************************
+    // Object methods
+
+    /**
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if superclass isn't cloneable
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        AxesStatus clone = (AxesStatus) super.clone();
+        return clone;
     }
 }

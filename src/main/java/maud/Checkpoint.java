@@ -24,16 +24,18 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model;
+package maud;
 
+import java.util.Date;
 import java.util.logging.Logger;
+import maud.model.DddModel;
 
 /**
- * The MVC model for the "3D View" screen in the Maud application.
+ * A checkpoint in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class DddModel {
+class Checkpoint {
     // *************************************************************************
     // constants and loggers
 
@@ -41,73 +43,51 @@ public class DddModel {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            LoadedCGModel.class.getName());
+            Checkpoint.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * status of the visible coordinate axes
+     * the date and time of creation
      */
-    final public AxesStatus axes;
+    final private Date timestamp;
     /**
-     * status of the camera
+     * a copy of the MVC model at time of creation
      */
-    final public CameraStatus camera;
+    final private DddModel model;
     /**
-     * status of the 3D cursor
+     * a copy of the view's CG model at time of creation
      */
-    final public CursorStatus cursor;
-    /**
-     * which animation/pose is loaded
-     */
-    final public LoadedAnimation animation;
-    /**
-     * the loaded CG model (set by {@link maud.Maud#guiInitializeApplication()})
-     */
-    public LoadedCGModel cgm = null;
-    /**
-     * bone transforms of the displayed pose
-     */
-    final public Pose pose;
-    /**
-     * which bone is selected
-     */
-    final public SelectedBone bone;
-    /**
-     * which spatial is selected
-     */
-    final public SelectedSpatial spatial;
-    /**
-     * status of the skeleton visualization
-     */
-    final public SkeletonStatus skeleton;
+    final private ViewState viewCgm;
     // *************************************************************************
     // constructors
 
-    public DddModel() {
-        axes = new AxesStatus();
-        camera = new CameraStatus();
-        cursor = new CursorStatus();
-        animation = new LoadedAnimation();
-        pose = new Pose();
-        bone = new SelectedBone();
-        spatial = new SelectedSpatial();
-        skeleton = new SkeletonStatus();
+    /**
+     * Create a new checkpoint based on the application's live state.
+     */
+    Checkpoint() {
+        model = new DddModel(Maud.model);
+        viewCgm = Maud.viewState.createCopy();
+        timestamp = new Date();
+    }
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Copy the timestamp of this checkpoint.
+     *
+     * @return a new instance
+     */
+    Date copyTimestamp() {
+        Object result = timestamp.clone();
+        return (Date) result;
     }
 
-    public DddModel(DddModel source) {
-        try {
-            axes = (AxesStatus) source.axes.clone();
-            camera = (CameraStatus) source.camera.clone();
-            cursor = (CursorStatus) source.cursor.clone();
-            animation = (LoadedAnimation) source.animation.clone();
-            cgm = (LoadedCGModel) source.cgm.clone();
-            pose = (Pose) source.pose.clone();
-            bone = (SelectedBone) source.bone.clone();
-            spatial = (SelectedSpatial) source.spatial.clone();
-            skeleton = (SkeletonStatus) source.skeleton.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException();
-        }
+    /**
+     * Copy this checkpoint to the application's live state.
+     */
+    void restore() {
+        Maud.model = new DddModel(model);
+        Maud.viewState.restore(viewCgm);
     }
 }

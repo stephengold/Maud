@@ -29,6 +29,7 @@ package maud;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
+import com.jme3.asset.AssetManager;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -40,18 +41,17 @@ import java.util.logging.Logger;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
-import jme3utilities.SimpleAppState;
 import jme3utilities.Validate;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.debug.SkeletonDebugControl;
 
 /**
- * A simple app state which encapsulates the view's copy of the loaded CG model
- * in Maud's "3D View" screen.
+ * Encapsulate the view's copy of the loaded CG model in Maud's "3D View"
+ * screen. TODO rename
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class ViewState extends SimpleAppState {
+public class ViewState {
     // *************************************************************************
     // constants and loggers
 
@@ -63,6 +63,14 @@ public class ViewState extends SimpleAppState {
     // *************************************************************************
     // fields
 
+    /**
+     * the application's asset manager
+     */
+    final private AssetManager assetManager;
+    /**
+     * the root node of the application's scene graph
+     */
+    final private Node rootNode;
     /**
      * the skeleton of this view's copy of the CG model
      */
@@ -78,18 +86,29 @@ public class ViewState extends SimpleAppState {
     /**
      * the root spatial in this view's copy of the CG model
      */
-    private Spatial cgModelRoot = null;
+    private Spatial cgModelRoot;
     // *************************************************************************
     // constructors
 
-    /**
-     * Instantiate an uninitialized, enabled state.
-     */
-    ViewState() {
-        super(true);
+    ViewState(AssetManager assetManager, Node rootNode, Spatial cgmRoot) {
+        this.assetManager = assetManager;
+        this.rootNode = rootNode;
+        this.cgModelRoot = cgmRoot;
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Create a duplicate copy of this state for checkpointing.
+     *
+     * @param preparedRoot (not null)
+     */
+    ViewState createCopy() {
+        Spatial cgmClone = cgModelRoot.clone();
+        ViewState result = new ViewState(assetManager, rootNode, cgmClone);
+
+        return result;
+    }
 
     /**
      * Access an AxesControl for the specified bone.
@@ -148,6 +167,50 @@ public class ViewState extends SimpleAppState {
     }
 
     /**
+     * Replace the CG model with a newly loaded one.
+     *
+     * @param loadedRoot (not null)
+     */
+    public void loadModel(Spatial loadedRoot) {
+        /*
+         * Detach the old spatial (if any) from the scene.
+         */
+        if (cgModelRoot != null) {
+            rootNode.detachChild(cgModelRoot);
+        }
+        cgModelRoot = loadedRoot;
+
+        prepareForEditing();
+    }
+
+    /**
+     * Copy a saved state to this one.
+     *
+     * @param preparedRoot (not null)
+     */
+    void restore(ViewState savedState) {
+        assert cgModelRoot != null;
+        /*
+         * Detach the old spatial from the scene graph.
+         */
+        rootNode.detachChild(cgModelRoot);
+
+        Spatial sp = savedState.getSpatial();
+        cgModelRoot = sp.clone();
+        rootNode.attachChild(cgModelRoot);
+
+        skeletonControl = cgModelRoot.getControl(SkeletonControl.class);
+        assert skeletonControl != null;
+
+        skeleton = skeletonControl.getSkeleton();
+        assert skeleton != null;
+
+        skeletonDebugControl = cgModelRoot.getControl(
+                SkeletonDebugControl.class);
+        assert skeletonDebugControl != null;
+    }
+
+    /**
      * Rotate the CG model around +Y by the specified angle.
      *
      * @param angle in radians
@@ -178,23 +241,6 @@ public class ViewState extends SimpleAppState {
 
         Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
         spatial.setShadowMode(newMode);
-    }
-
-    /**
-     * Replace the loaded CG model with a new one.
-     *
-     * @param newModelRoot (not null)
-     */
-    public void setModel(Spatial newModelRoot) {
-        /*
-         * Detach the old spatial (if any) from the scene.
-         */
-        if (cgModelRoot != null) {
-            rootNode.detachChild(cgModelRoot);
-        }
-        cgModelRoot = newModelRoot;
-
-        prepareForEditing();
     }
 
     /**
