@@ -40,7 +40,7 @@ public class BVHAnimData {
     private Animation animation;
     private float timePerFrame;
 
-    public BVHAnimData(Skeleton skeleton, Animation anim, float timePerFrames) {
+    public BVHAnimData(Skeleton skeleton, Animation anim, float timePerFrame) {
         this.skeleton = skeleton;
         this.animation = anim;
         this.timePerFrame = timePerFrame;
