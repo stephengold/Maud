@@ -142,32 +142,6 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
-     * Callback that Nifty invokes after a check box changes.
-     *
-     * @param boxId Nifty element id of the check box (not null)
-     * @param event details of the event (not null)
-     */
-    @NiftyEventSubscriber(pattern = ".*CheckBox")
-    public void onCheckBoxChanged(final String boxId,
-            final CheckBoxStateChangedEvent event) {
-        Validate.nonNull(boxId, "check box id");
-        Validate.nonNull(event, "event");
-
-        if (!hasStarted()) {
-            return;
-        }
-
-        switch (boxId) {
-            case "shadowsCheckBox":
-                render.update();
-                break;
-            case "skyCheckBox":
-                sky.update();
-                break;
-        }
-    }
-
-    /**
      * Callback that Nifty invokes after a radio button changes.
      *
      * @param buttonId Nifty element id of the radio button (not null)
@@ -515,7 +489,9 @@ public class DddGui extends GuiScreenController {
 
         camera.updateCamera();
         cursor.updateCursor();
+        render.updateShadowFilter();
         skeleton.updateSdc();
+        sky.updateSkyControl();
         /*
          * Update animation even if the animation tool is disabled.
          */

@@ -66,6 +66,10 @@ public class DddModel {
      */
     public LoadedCGModel cgm = null;
     /**
+     * miscellaneous details
+     */
+    final public MiscStatus misc;
+    /**
      * bone transforms of the displayed pose
      */
     final public Pose pose;
@@ -84,17 +88,27 @@ public class DddModel {
     // *************************************************************************
     // constructors
 
+    /**
+     * Instantiate a model with the default settings.
+     */
     public DddModel() {
         axes = new AxesStatus();
         camera = new CameraStatus();
         cursor = new CursorStatus();
         animation = new LoadedAnimation();
+        /* cgm field will be set later */ 
+        misc = new MiscStatus();
         pose = new Pose();
         bone = new SelectedBone();
         spatial = new SelectedSpatial();
         skeleton = new SkeletonStatus();
     }
 
+    /**
+     * Instantiate a model with settings copied from another model.
+     *
+     * @param source (not null)
+     */
     public DddModel(DddModel source) {
         try {
             axes = (AxesStatus) source.axes.clone();
@@ -102,6 +116,7 @@ public class DddModel {
             cursor = (CursorStatus) source.cursor.clone();
             animation = (LoadedAnimation) source.animation.clone();
             cgm = (LoadedCGModel) source.cgm.clone();
+            misc = (MiscStatus) source.misc.clone();
             pose = (Pose) source.pose.clone();
             bone = (SelectedBone) source.bone.clone();
             spatial = (SelectedSpatial) source.spatial.clone();

@@ -112,12 +112,10 @@ class RenderTool extends WindowController {
     }
 
     /**
-     * Update after a change.
+     * Update the view's DirectionalLightShadowFilter from the MVC model.
      */
-    void update() {
-        assert isInitialized();
-
-        boolean enable = Maud.gui.isChecked("shadows");
+    void updateShadowFilter() {
+        boolean enable = Maud.model.misc.areShadowsRendered();
         dlsf.setEnabled(enable);
     }
     // *************************************************************************
@@ -146,7 +144,20 @@ class RenderTool extends WindowController {
         dlsf.setEdgeFilteringMode(EdgeFilteringMode.PCF8);
         dlsf.setLight(mainLight);
         Misc.getFpp(viewPort, assetManager).addFilter(dlsf);
+    }
 
-        update();
+    /**
+     * Callback to update this window prior to rendering. (Invoked once per
+     * render pass.)
+     *
+     * @param elapsedTime time interval between render passes (in seconds,
+     * &ge;0)
+     */
+    @Override
+    public void update(float elapsedTime) {
+        super.update(elapsedTime);
+
+        boolean enable = Maud.gui.isChecked("shadows");
+        Maud.model.misc.setShadowsRendered(enable);
     }
 }

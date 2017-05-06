@@ -70,12 +70,10 @@ class SkyTool extends WindowController {
     // new methods exposed
 
     /**
-     * Update after a change.
+     * Update the view's SkyControl from the MVC model.
      */
-    void update() {
-        assert isInitialized();
-
-        boolean enable = Maud.gui.isChecked("sky");
+    void updateSkyControl() {
+        boolean enable = Maud.model.misc.isSkyRendered();
         skyControl.setEnabled(enable);
     }
     // *************************************************************************
@@ -101,7 +99,20 @@ class SkyTool extends WindowController {
         skyControl.getSunAndStars().setHour(11f);
         Updater updater = skyControl.getUpdater();
         Maud.gui.render.configureUpdater(updater);
+    }
 
-        update();
+    /**
+     * Callback to update this window prior to rendering. (Invoked once per
+     * render pass.)
+     *
+     * @param elapsedTime time interval between render passes (in seconds,
+     * &ge;0)
+     */
+    @Override
+    public void update(float elapsedTime) {
+        super.update(elapsedTime);
+
+        boolean enable = Maud.gui.isChecked("sky");
+        Maud.model.misc.setSkyRendered(enable);
     }
 }
