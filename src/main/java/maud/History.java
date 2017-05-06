@@ -121,15 +121,15 @@ public class History {
     }
 
     /**
-     * If the next slot has a checkpoint, restore the checkpoint and increment
-     * the index.
+     * If the next-next slot has a checkpoint, restore that checkpoint and
+     * increment the index.
      */
     static void redo() {
-        if (hasVulnerable()) {
+        if (checkpoints.size() > nextIndex + 1) {
+            nextIndex++;
             Checkpoint next = checkpoints.get(nextIndex);
             next.restore();
             logger.log(Level.INFO, "redo to [{0}]", nextIndex);
-            nextIndex++;
         } else {
             logger.log(Level.INFO, "nothing to redo", nextIndex);
         }
