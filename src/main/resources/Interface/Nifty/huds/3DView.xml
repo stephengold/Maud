@@ -163,12 +163,6 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" width="12"/>
                         <control name="label" text="hide"/>
                     </panel>
-                    <panel style="indentPanel">
-                        <control name="checkbox" id="axesDepthTestCheckBox"
-                                 checked="false" width="20"/>
-                        <control name="label" width="12"/>
-                        <control name="label" text="depth test"/>
-                    </panel>
                     <panel style="statusPanel">
                         <control name="label" id="axesLineWidthSliderStatus"/>
                     </panel>
@@ -176,6 +170,18 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                              buttonStepSize="1"
                              height="40"
                              initial="4" max="7" min="1" stepSize="0.001"/>
+                    <panel style="indentPanel">
+                        <control name="checkbox" id="axesDepthTestCheckBox"
+                                 checked="false"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="depth test"/>
+                    </panel>
+                    <panel style="indentPanel">
+                        <control name="checkbox" id="axesAutoCheckBox"
+                                 checked="true"/>
+                        <control name="label" width="12"/>
+                        <control name="label" text="auto length"/>
+                    </panel>
                     <panel style="statusPanel">
                         <control name="label" id="axesLengthSliderStatus"/>
                     </panel>

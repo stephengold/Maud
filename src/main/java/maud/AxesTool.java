@@ -27,8 +27,11 @@
 package maud;
 
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
+import jme3utilities.MySpatial;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
@@ -118,11 +121,22 @@ class AxesTool extends WindowController {
         }
 
         if (control != null) {
+            float length;
+            if (Maud.model.axes.isAutoSizing()) {
+                Spatial spatial = control.getSpatial();
+                Vector3f loc = MySpatial.getWorldLocation(spatial);
+                Vector3f cameraLocation = Maud.model.camera.copyLocation(null);
+                float distance = loc.distance(cameraLocation);
+                float scale = MySpatial.getUniformScale(spatial);
+                length = 0.2f * distance / scale;
+                Maud.model.axes.setLength(length);
+            } else {
+                length = Maud.model.axes.getLength();
+            }
             boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
-            float axisLength = Maud.model.axes.getLength();
             float lineWidth = Maud.model.axes.getLineWidth();
 
-            control.setAxisLength(axisLength);
+            control.setAxisLength(length);
             control.setDepthTest(depthTestFlag);
             control.setEnabled(true);
             control.setLineWidth(lineWidth);
@@ -142,9 +156,13 @@ class AxesTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
+        boolean isAutoSizing = Maud.model.axes.isAutoSizing();
+        Maud.gui.setChecked("axesAuto", isAutoSizing);
+        Slider slider = Maud.gui.getSlider("axesLength");
+        slider.setEnabled(!isAutoSizing);
+
         float axesLength = Maud.model.axes.getLength();
         float value = FastMath.log(axesLength, 10f);
-        Slider slider = Maud.gui.getSlider("axesLength");
         slider.setValue(value);
 
         boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();

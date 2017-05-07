@@ -26,6 +26,7 @@
  */
 package maud.model;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 
@@ -46,6 +47,10 @@ public class AxesStatus implements Cloneable {
     // *************************************************************************
     // fields
 
+    /**
+     * flag to enable automatic sizing
+     */
+    private boolean autoSizingFlag = true;
     /**
      * flag to enable depth test for visibility of the axes
      */
@@ -105,7 +110,26 @@ public class AxesStatus implements Cloneable {
     }
 
     /**
-     * Alter the length, width, and depth-test flag.
+     * Test whether automatic sizing is enabled.
+     *
+     * @return true if enabled, otherwise false
+     */
+    public boolean isAutoSizing() {
+        return autoSizingFlag;
+    }
+
+    /**
+     * Alter the automatic sizing state.
+     *
+     * @param newState true &rarr; enable automatic sizing, false &rarr; disable
+     * it
+     */
+    public void setAutoSizing(boolean newState) {
+        this.autoSizingFlag = newState;
+    }
+
+    /**
+     * Alter the depth-test flag.
      *
      * @param newState true &rarr; enable depth test, false &rarr; no depth test
      */
@@ -136,12 +160,22 @@ public class AxesStatus implements Cloneable {
     /**
      * Alter the display mode.
      *
-     * @param newMode new value for axes display mode (not null)
+     * @param modeName name of new axes display mode (not null)
      */
-    public void setMode(String newMode) {
-        Validate.nonNull(newMode, "mode");
-        // TODO validate
-        mode = newMode;
+    public void setMode(String modeName) {
+        Validate.nonNull(modeName, "mode name");
+
+        switch (modeName) {
+            case "bone":
+            case "model":
+            case "none":
+            case "world":
+                mode = modeName;
+                break;
+            default:
+                logger.log(Level.SEVERE, "mode name={0}", modeName);
+                throw new IllegalArgumentException("invalid mode name");
+        }
     }
     // *************************************************************************
     // Object methods

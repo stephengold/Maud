@@ -161,26 +161,26 @@ public class DddGui extends GuiScreenController {
             return;
         }
 
+        boolean isChecked = event.isChecked();
+
         switch (boxId) {
             case "3DCursorCheckBox":
-                boolean cursorFlag = isChecked("3DCursor");
-                Maud.model.cursor.setVisible(cursorFlag);
+                Maud.model.cursor.setVisible(isChecked);
+                break;
+            case "axesAutoCheckBox":
+                Maud.model.axes.setAutoSizing(isChecked);
                 break;
             case "axesDepthTestCheckBox":
-                boolean adtFlag = isChecked("axesDepthTest");
-                Maud.model.axes.setDepthTestFlag(adtFlag);
+                Maud.model.axes.setDepthTestFlag(isChecked);
                 break;
             case "shadowsCheckBox":
-                boolean shadowsFlag = isChecked("shadows");
-                Maud.model.misc.setShadowsRendered(shadowsFlag);
+                Maud.model.misc.setShadowsRendered(isChecked);
                 break;
             case "skeletonCheckBox":
-                boolean skeletonFlag = isChecked("skeleton");
-                Maud.model.skeleton.setVisible(skeletonFlag);
+                Maud.model.skeleton.setVisible(isChecked);
                 break;
             case "skyCheckBox":
-                boolean skyFlag = isChecked("sky");
-                Maud.model.misc.setSkyRendered(skyFlag);
+                Maud.model.misc.setSkyRendered(isChecked);
                 break;
             default:
                 logger.log(Level.WARNING, "unknown check box with id={0}",
