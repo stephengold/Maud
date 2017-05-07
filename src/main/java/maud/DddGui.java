@@ -200,7 +200,7 @@ public class DddGui extends GuiScreenController {
         Validate.nonNull(buttonId, "button id");
         Validate.nonNull(event, "event");
 
-        if (!hasStarted()) {
+        if (!hasStarted() || !event.isSelected()) {
             return;
         }
 
