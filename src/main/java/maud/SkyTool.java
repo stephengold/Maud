@@ -112,7 +112,7 @@ class SkyTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        boolean enable = Maud.gui.isChecked("sky");
-        Maud.model.misc.setSkyRendered(enable);
+        boolean renderFlag = Maud.model.misc.isSkyRendered();
+        Maud.gui.setChecked("sky", renderFlag);
     }
 }

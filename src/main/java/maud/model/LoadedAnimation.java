@@ -274,7 +274,6 @@ public class LoadedAnimation implements Cloneable {
         time = 0f;
 
         Maud.model.pose.setToAnimation();
-        Maud.gui.animation.updateAfterLoad();
     }
 
     /**
@@ -286,7 +285,6 @@ public class LoadedAnimation implements Cloneable {
         time = 0f;
 
         Maud.model.pose.resetToBind();
-        Maud.gui.animation.updateAfterLoad();
     }
 
     /**

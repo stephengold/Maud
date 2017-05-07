@@ -52,7 +52,7 @@ class BoneScaleTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            BoneScaleTool.class.getName());
+            BoneAngleTool.class.getName());
     /**
      * names of the coordinate axes
      */
@@ -65,14 +65,6 @@ class BoneScaleTool extends WindowController {
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
      */
     final private Slider sliders[] = new Slider[numAxes];
-    /**
-     * bone scale factors
-     */
-    final private static float[] scales = new float[numAxes];
-    /*
-     * animation time at previous update (in seconds)
-     */
-    private float previousUpdateTime = 0f;
     // *************************************************************************
     // constructors
 
@@ -89,27 +81,33 @@ class BoneScaleTool extends WindowController {
     // new methods exposed
 
     /**
-     * If sliders are enabled, set all 3 scale factors to 1.
+     * If active, update the MVC model based on the sliders.
      */
-    void reset() {
-        if (Maud.model.bone.isBoneSelected() && !Maud.model.animation.isRunning()) {
-            for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                sliders[iAxis].enable();
-                sliders[iAxis].setValue(1f);
-            }
+    void onSliderChanged() {
+        if (shouldBeEnabled()) {
+            Vector3f scales = Maud.gui.readVectorBank("Sca");
+            int boneIndex = Maud.model.bone.getIndex();
+            Maud.model.pose.setScale(boneIndex, scales);
         }
     }
 
     /**
-     * If sliders are enabled, set all 3 sliders to match the selected bone.
+     * If active, reset the bone scale to identity.
      */
-    void setSliders() {
-        if (Maud.model.bone.isBoneSelected() && !Maud.model.animation.isRunning()) {
-            scales();
-            for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                float scale = scales[iAxis];
-                sliders[iAxis].setValue(scale);
-            }
+    void reset() {
+        if (shouldBeEnabled()) {
+            int boneIndex = Maud.model.bone.getIndex();
+            Maud.model.pose.resetScale(boneIndex);
+        }
+    }
+
+    /**
+     * If active, set the MVC model based on the animation.
+     */
+    void setToAnimation() {
+        if (shouldBeEnabled()) {
+            int boneIndex = Maud.model.bone.getIndex();
+            Maud.model.pose.setScaleToAnimation(boneIndex);
         }
     }
     // *************************************************************************
@@ -143,80 +141,87 @@ class BoneScaleTool extends WindowController {
     @Override
     public void update(float tpf) {
         super.update(tpf);
-        if (!isInitialized()) {
-            return;
-        }
 
         if (Maud.model.bone.isBoneSelected()) {
-            float newTime = Maud.model.animation.getTime();
-            if (newTime == previousUpdateTime) {
+            setSlidersToPose();
+            if (shouldBeEnabled()) {
                 Maud.gui.setButtonLabel("resetScaButton", "Reset");
-                /*
-                 * Read and apply scales from sliders.
-                 */
-                for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                    sliders[iAxis].enable();
-                    scales[iAxis] = updateStatus(iAxis);
-                }
-                Vector3f scale = new Vector3f(
-                        scales[0], scales[1], scales[2]);
-                Maud.model.cgm.setBoneScale(scale);
-
+                enableSliders();
             } else {
                 Maud.gui.setButtonLabel("resetScaButton", "");
-                previousUpdateTime = newTime;
-                /*
-                 * Display scale factors from animation.
-                 */
-                scales();
-                for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                    sliders[iAxis].disable();
-                    float scale = scales[iAxis];
-                    sliders[iAxis].setValue(scale);
-                    updateStatus(iAxis);
-                }
+                disableSliders();
             }
 
         } else {
-            /*
-             * No bone selected: clear the display.
-             */
+            clear();
             Maud.gui.setButtonLabel("resetScaButton", "");
-            for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                sliders[iAxis].disable();
-                sliders[iAxis].setValue(1f);
-
-                String axisName = axisNames[iAxis];
-                String statusName = axisName + "ScaSliderStatus";
-                Maud.gui.setStatusText(statusName, "");
-            }
+            disableSliders();
         }
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Calculate scale factors of the selected bone.
+     * Reset all 3 sliders and clear their status labels.
      */
-    private void scales() {
-        int boneIndex = Maud.model.bone.getIndex();
-        Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
-        Vector3f scale = transform.getScale(null);
-        scale.toArray(scales);
+    private void clear() {
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            sliders[iAxis].setValue(1f);
+
+            String axisName = axisNames[iAxis];
+            String statusName = axisName + "ScaSliderStatus";
+            Maud.gui.setStatusText(statusName, "");
+        }
     }
 
     /**
-     * Update the status label of the slider for the specified axis.
-     *
-     * @param iAxis index of the axis (&ge;0, &lt;3)
-     * @return slider value (&ge;0)
+     * Disable all 3 sliders.
      */
-    private float updateStatus(int iAxis) {
-        String axisName = axisNames[iAxis];
-        String sliderPrefix = axisName + "Sca";
-        float scale = Maud.gui.updateSlider(sliderPrefix, "x");
+    private void disableSliders() {
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            sliders[iAxis].disable();
+        }
+    }
 
-        assert scale >= 0f : scale;
-        return scale;
+    /**
+     * Enable all 3 sliders.
+     */
+    private void enableSliders() {
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            sliders[iAxis].enable();
+        }
+    }
+
+    /**
+     * Set all 3 sliders (and their status labels) based on the pose.
+     */
+    private void setSlidersToPose() {
+        int boneIndex = Maud.model.bone.getIndex();
+        Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
+        Vector3f vector = transform.getScale();
+        float[] scales = vector.toArray(null);
+
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            float scale = scales[iAxis];
+            sliders[iAxis].setValue(scale);
+
+            String axisName = axisNames[iAxis];
+            String sliderPrefix = axisName + "Sca";
+            Maud.gui.updateSliderStatus(sliderPrefix, scale, "x");
+        }
+    }
+
+    /**
+     * Test whether the GUI controls should be enabled.
+     *
+     * @return true if enabled, otherwise false
+     */
+    private boolean shouldBeEnabled() {
+        if (Maud.model.bone.isBoneSelected()
+                && !Maud.model.animation.isRunning()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

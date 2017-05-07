@@ -27,6 +27,7 @@
 package maud;
 
 import com.jme3.math.ColorRGBA;
+import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.nifty.BasicScreenController;
@@ -62,6 +63,20 @@ class SkeletonTool extends WindowController {
     // new methods exposed
 
     /**
+     * Update the MVC model based on the sliders.
+     */
+    void onSliderChanged() {
+        float lineWidth = Maud.gui.readSlider("skeletonLineWidth");
+        Maud.model.skeleton.setLineWidth(lineWidth);
+
+        float pointSize = Maud.gui.readSlider("skeletonPointSize");
+        Maud.model.skeleton.setPointSize(pointSize);
+
+        ColorRGBA color = Maud.gui.readColorBank("ske");
+        Maud.model.skeleton.setColor(color);
+    }
+
+    /**
      * Update the view's SkeletonDebugControl from the MVC model.
      */
     void updateSdc() {
@@ -95,13 +110,22 @@ class SkeletonTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
-
-        boolean visible = Maud.gui.isChecked("skeleton");
-        ColorRGBA color = Maud.gui.updateColorBank("ske");
-        float lineWidth = Maud.gui.updateSlider("skeletonLineWidth", " pixels");
-        float pointSize = Maud.gui.updateSlider("skeletonPointSize", " pixels");
-
         SkeletonStatus model = Maud.model.skeleton;
-        model.set(visible, color, pointSize, lineWidth);
+
+        boolean visible = model.isVisible();
+        Maud.gui.setChecked("skeleton", visible);
+
+        ColorRGBA color = model.copyColor(null);
+        Maud.gui.setColorBank("ske", color);
+
+        Slider slider = Maud.gui.getSlider("skeletonLineWidth");
+        float lineWidth = model.getLineWidth();
+        slider.setValue(lineWidth);
+        Maud.gui.updateSliderStatus("skeletonLineWidth", lineWidth, " pixels");
+
+        slider = Maud.gui.getSlider("skeletonPointSize");
+        float pointSize = model.getPointSize();
+        slider.setValue(pointSize);
+        Maud.gui.updateSliderStatus("skeletonPointSize", pointSize, " pixels");
     }
 }

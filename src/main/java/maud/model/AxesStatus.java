@@ -57,7 +57,7 @@ public class AxesStatus implements Cloneable {
     /**
      * line width for the axes (in pixels, &ge;1)
      */
-    private float width = 4f;
+    private float lineWidth = 4f;
     /**
      * which set of axes is active (either "none", "world", "model", or "bone")
      */
@@ -85,6 +85,16 @@ public class AxesStatus implements Cloneable {
     }
 
     /**
+     * Read the width of each line.
+     *
+     * @return width (in pixels, &ge;1)
+     */
+    public float getLineWidth() {
+        assert lineWidth >= 1f : lineWidth;
+        return lineWidth;
+    }
+
+    /**
      * Read the current mode string.
      *
      * @return mode string (not null)
@@ -95,29 +105,32 @@ public class AxesStatus implements Cloneable {
     }
 
     /**
-     * Read the width of each line.
+     * Alter the length, width, and depth-test flag.
      *
-     * @return width (in pixels, &ge;1)
+     * @param newState true &rarr; enable depth test, false &rarr; no depth test
      */
-    public float getWidth() {
-        assert width >= 1f : width;
-        return width;
+    public void setDepthTestFlag(boolean newState) {
+        this.depthTestFlag = newState;
     }
 
     /**
-     * Alter the length, width, and depth-test flag.
+     * Alter the length.
      *
      * @param length length of axes (units depend on mode, &ge;0)
-     * @param flag true &rarr; enable depth test, false &rarr; no depth test
+     */
+    public void setLength(float length) {
+        Validate.nonNegative(length, "length");
+        this.length = length;
+    }
+
+    /**
+     * Alter the width.
+     *
      * @param width line width for axes (in pixels, &ge;1)
      */
-    public void set(float length, boolean flag, float width) {
-        Validate.nonNegative(length, "length");
+    public void setLineWidth(float width) {
         Validate.inRange(width, "width", 1f, Float.MAX_VALUE);
-
-        this.length = length;
-        this.depthTestFlag = flag;
-        this.width = width;
+        this.lineWidth = width;
     }
 
     /**

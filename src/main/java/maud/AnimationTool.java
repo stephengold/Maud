@@ -71,6 +71,28 @@ public class AnimationTool extends WindowController {
     }
 
     /**
+     * Update the MVC model based on the sliders.
+     */
+    void onSliderChanged() {
+        float duration = Maud.model.animation.getDuration();
+        float speed;
+        if (duration > 0f) {
+            Slider slider = Maud.gui.getSlider("speed");
+            speed = slider.getValue();
+            Maud.model.animation.setSpeed(speed);
+        } else {
+            speed = 0f;
+        }
+
+        if (speed == 0f) {
+            Slider slider = Maud.gui.getSlider("time");
+            float fraction = slider.getValue();
+            float time = fraction * duration;
+            Maud.model.animation.setTime(time);
+        }
+    }
+
+    /**
      * Toggle between paused and running.
      */
     void togglePause() {
@@ -83,18 +105,7 @@ public class AnimationTool extends WindowController {
                 speed = 1f;
             }
             Maud.model.animation.setSpeed(speed);
-            setSliders();
         }
-    }
-
-    /**
-     * Update this window after loading an animation.
-     */
-    public void updateAfterLoad() {
-        setSliders();
-        Maud.gui.boneAngle.setSliders();
-        Maud.gui.boneOffset.setSliders();
-        Maud.gui.boneScale.setSliders();
     }
     // *************************************************************************
     // AppState methods
@@ -118,27 +129,7 @@ public class AnimationTool extends WindowController {
     // private methods
 
     /**
-     * Set the sliders so that the MVC model's speed and track time will survive
-     * the next update().
-     */
-    private void setSliders() {
-        Slider slider = Maud.gui.getSlider("speed");
-        float speed = Maud.model.animation.getSpeed();
-        slider.setValue(speed);
-
-        slider = Maud.gui.getSlider("time");
-        float duration = Maud.model.animation.getDuration();
-        if (duration == 0f) {
-            slider.setValue(0f);
-        } else {
-            float time = Maud.model.animation.getTime();
-            float fraction = time / duration;
-            slider.setValue(fraction);
-        }
-    }
-
-    /**
-     * Update the name label, rename button, and update the track counts.
+     * Update the name label, rename button label, and track counts.
      */
     private void updateName() {
         String nameText, rButton;
@@ -167,18 +158,15 @@ public class AnimationTool extends WindowController {
      * Update the speed slider and its status label.
      */
     private void updateSpeed() {
-        Slider slider = Maud.gui.getSlider("speed");
         float duration = Maud.model.animation.getDuration();
-        float speed;
+        Slider slider = Maud.gui.getSlider("speed");
         if (duration > 0f) {
             slider.enable();
-            speed = slider.getValue();
-            Maud.model.animation.setSpeed(speed);
         } else {
             slider.disable();
-            speed = Maud.model.animation.getSpeed();
-            slider.setValue(speed);
         }
+        float speed = Maud.model.animation.getSpeed();
+        slider.setValue(speed);
         Maud.gui.updateSliderStatus("speed", speed, "x");
     }
 
@@ -189,23 +177,22 @@ public class AnimationTool extends WindowController {
         /*
          * slider
          */
+        float speed = Maud.model.animation.getSpeed();
         Slider slider = Maud.gui.getSlider("time");
+        if (speed == 0f) {
+            slider.enable();
+        } else {
+            slider.disable();
+        }
         float duration = Maud.model.animation.getDuration();
         float trackTime;
         if (duration == 0f) {
-            slider.disable();
             trackTime = 0f;
             slider.setValue(0f);
-        } else if (Maud.model.animation.isRunning()) {
-            slider.disable();
+        } else {
             trackTime = Maud.model.animation.getTime();
             float fraction = trackTime / duration;
             slider.setValue(fraction);
-        } else {
-            slider.enable();
-            float fraction = slider.getValue();
-            trackTime = fraction * duration;
-            Maud.model.animation.setTime(trackTime);
         }
         /*
          * status label

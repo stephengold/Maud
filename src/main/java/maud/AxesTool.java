@@ -27,6 +27,7 @@
 package maud;
 
 import com.jme3.math.FastMath;
+import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.nifty.BasicScreenController;
@@ -51,7 +52,7 @@ class AxesTool extends WindowController {
     // fields
 
     /**
-     * which control is active, or null for none
+     * which AxesControl is active in the view, or null for none
      */
     private AxesControl control = null;
     // *************************************************************************
@@ -68,6 +69,18 @@ class AxesTool extends WindowController {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Update the MVC model based on the sliders.
+     */
+    void onSliderChanged() {
+        float value = Maud.gui.readSlider("axesLength");
+        float axesLength = FastMath.pow(10f, value);
+        Maud.model.axes.setLength(axesLength);
+
+        float lineWidth = Maud.gui.readSlider("axesLineWidth");
+        Maud.model.axes.setLineWidth(lineWidth);
+    }
 
     /**
      * Update the view's AxesControl.
@@ -107,7 +120,7 @@ class AxesTool extends WindowController {
         if (control != null) {
             boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
             float axisLength = Maud.model.axes.getLength();
-            float lineWidth = Maud.model.axes.getWidth();
+            float lineWidth = Maud.model.axes.getLineWidth();
 
             control.setAxisLength(axisLength);
             control.setDepthTest(depthTestFlag);
@@ -129,12 +142,17 @@ class AxesTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        float value = Maud.gui.readSlider("axesLength");
-        float axesLength = FastMath.pow(10f, value);
-        boolean depthTestFlag = Maud.gui.isChecked("axesDepthTest");
-        float lineWidth = Maud.gui.readSlider("axesLineWidth");
+        float axesLength = Maud.model.axes.getLength();
+        float value = FastMath.log(axesLength, 10f);
+        Slider slider = Maud.gui.getSlider("axesLength");
+        slider.setValue(value);
 
-        Maud.model.axes.set(axesLength, depthTestFlag, lineWidth);
+        boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
+        Maud.gui.setChecked("axesDepthTest", depthTestFlag);
+
+        float lineWidth = Maud.model.axes.getLineWidth();
+        slider = Maud.gui.getSlider("axesLineWidth");
+        slider.setValue(lineWidth);
 
         updateLabels();
     }
@@ -173,7 +191,7 @@ class AxesTool extends WindowController {
         float axesLength = model.getLength();
         Maud.gui.updateSliderStatus("axesLength", axesLength, units);
 
-        float lineWidth = model.getWidth();
+        float lineWidth = model.getLineWidth();
         Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
     }
 }

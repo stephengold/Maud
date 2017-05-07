@@ -111,22 +111,42 @@ public class SkeletonStatus implements Cloneable {
     }
 
     /**
-     * Alter the visibility, color, point size, and line width.
+     * Alter the color.
      *
-     * @param visible true &rarr; visible, false &rarr; hidden
      * @param newColor (not null, unaffected)
-     * @param size point size (in pixels, &ge;1)
+     */
+    public void setColor(ColorRGBA newColor) {
+        Validate.nonNull(newColor, "color");
+        color.set(newColor);
+    }
+
+    /**
+     * Alter the line width.
+     *
      * @param width line width (in pixels, &ge;1)
      */
-    public void set(boolean visible, ColorRGBA newColor, float size,
-            float width) {
-        Validate.inRange(size, "point size", 1f, Float.MAX_VALUE);
+    public void setLineWidth(float width) {
         Validate.inRange(width, "line width", 1f, Float.MAX_VALUE);
-
-        color.set(newColor);
-        pointSize = size;
         lineWidth = width;
-        visibleFlag = visible;
+    }
+
+    /**
+     * Alter the point size.
+     *
+     * @param size point size (in pixels, &ge;1)
+     */
+    public void setPointSize(float size) {
+        Validate.inRange(size, "point size", 1f, Float.MAX_VALUE);
+        pointSize = size;
+    }
+
+    /**
+     * Alter the visibility.
+     *
+     * @param newSetting true &rarr; visible, false &rarr; hidden
+     */
+    public void setVisible(boolean newSetting) {
+        visibleFlag = newSetting;
     }
     // *************************************************************************
     // Object methods

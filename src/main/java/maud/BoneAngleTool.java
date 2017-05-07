@@ -65,14 +65,6 @@ class BoneAngleTool extends WindowController {
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
      */
     final private Slider sliders[] = new Slider[numAxes];
-    /**
-     * bone angles (in radians)
-     */
-    final private static float[] angles = new float[numAxes];
-    /*
-     * animation time at previous update (in seconds)
-     */
-    private float previousUpdateTime = 0f;
     // *************************************************************************
     // constructors
 
@@ -89,27 +81,39 @@ class BoneAngleTool extends WindowController {
     // new methods exposed
 
     /**
-     * If sliders are enabled, set all 3 angles to 0.
+     * If active, update the MVC model based on the sliders.
      */
-    void reset() {
-        if (Maud.model.bone.isBoneSelected() && !Maud.model.animation.isRunning()) {
+    void onSliderChanged() {
+        if (shouldBeEnabled()) {
+            float[] angles = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                sliders[iAxis].enable();
-                sliders[iAxis].setValue(0f);
+                float value = sliders[iAxis].getValue();
+                angles[iAxis] = value;
             }
+            Quaternion rot = new Quaternion();
+            rot.fromAngles(angles);
+            int boneIndex = Maud.model.bone.getIndex();
+            Maud.model.pose.setRotation(boneIndex, rot);
         }
     }
 
     /**
-     * If sliders are enabled, set all 3 sliders to match the selected bone.
+     * If active, reset the bone rotation to identity.
      */
-    void setSliders() {
-        if (Maud.model.bone.isBoneSelected() && !Maud.model.animation.isRunning()) {
-            angles();
-            for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                float angle = angles[iAxis];
-                sliders[iAxis].setValue(angle);
-            }
+    void reset() {
+        if (shouldBeEnabled()) {
+            int boneIndex = Maud.model.bone.getIndex();
+            Maud.model.pose.resetRotation(boneIndex);
+        }
+    }
+
+    /**
+     * If active, set the MVC model based on the animation.
+     */
+    void setToAnimation() {
+        if (shouldBeEnabled()) {
+            int boneIndex = Maud.model.bone.getIndex();
+            Maud.model.pose.setRotationToAnimation(boneIndex);
         }
     }
     // *************************************************************************
@@ -143,79 +147,87 @@ class BoneAngleTool extends WindowController {
     @Override
     public void update(float tpf) {
         super.update(tpf);
-        if (!isInitialized()) {
-            return;
-        }
 
         if (Maud.model.bone.isBoneSelected()) {
-            float newTime = Maud.model.animation.getTime();
-            if (newTime == previousUpdateTime) {
+            setSlidersToPose();
+            if (shouldBeEnabled()) {
                 Maud.gui.setButtonLabel("resetAngButton", "Reset");
-                /*
-                 * Read and apply angles from sliders.
-                 */
-                for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                    sliders[iAxis].enable();
-                    angles[iAxis] = updateStatus(iAxis);
-                }
-                Quaternion rotation = new Quaternion();
-                rotation.fromAngles(angles);
-                Maud.model.cgm.setBoneRotation(rotation);
-
+                enableSliders();
             } else {
                 Maud.gui.setButtonLabel("resetAngButton", "");
-                previousUpdateTime = newTime;
-                /*
-                 * Display angles from animation.
-                 */
-                angles();
-                for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                    sliders[iAxis].disable();
-                    float angle = angles[iAxis];
-                    sliders[iAxis].setValue(angle);
-                    updateStatus(iAxis);
-                }
+                disableSliders();
             }
 
         } else {
-            /*
-             * No bone selected: clear the display.
-             */
+            clear();
             Maud.gui.setButtonLabel("resetAngButton", "");
-            for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                sliders[iAxis].disable();
-                sliders[iAxis].setValue(0f);
-
-                String axisName = axisNames[iAxis];
-                String statusName = axisName + "AngSliderStatus";
-                Maud.gui.setStatusText(statusName, "");
-            }
+            disableSliders();
         }
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Calculate rotation angles of the selected bone.
+     * Zero all 3 sliders and clear their status labels.
      */
-    private void angles() {
-        int boneIndex = Maud.model.bone.getIndex();
-        Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
-        Quaternion rotation = transform.getRotation(null);
-        rotation.toAngles(angles);
+    private void clear() {
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            sliders[iAxis].setValue(0f);
+
+            String axisName = axisNames[iAxis];
+            String statusName = axisName + "AngSliderStatus";
+            Maud.gui.setStatusText(statusName, "");
+        }
     }
 
     /**
-     * Update the status label of the slider for the specified axis.
-     *
-     * @param iAxis index of the axis (&ge;0, &lt;3)
-     * @return slider value (in radians)
+     * Disable all 3 sliders.
      */
-    private float updateStatus(int iAxis) {
-        String axisName = axisNames[iAxis];
-        String sliderPrefix = axisName + "Ang";
-        float angle = Maud.gui.updateSlider(sliderPrefix, " rad");
+    private void disableSliders() {
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            sliders[iAxis].disable();
+        }
+    }
 
-        return angle;
+    /**
+     * Enable all 3 sliders.
+     */
+    private void enableSliders() {
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            sliders[iAxis].enable();
+        }
+    }
+
+    /**
+     * Set all 3 sliders (and their status labels) based on the pose.
+     */
+    private void setSlidersToPose() {
+        int boneIndex = Maud.model.bone.getIndex();
+        Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
+        Quaternion rotation = transform.getRotation();
+        float[] angles = rotation.toAngles(null);
+
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            float angle = angles[iAxis];
+            sliders[iAxis].setValue(angle);
+
+            String axisName = axisNames[iAxis];
+            String sliderPrefix = axisName + "Ang";
+            Maud.gui.updateSliderStatus(sliderPrefix, angle, " rad");
+        }
+    }
+
+    /**
+     * Test whether the GUI controls should be enabled.
+     *
+     * @return true if enabled, otherwise false
+     */
+    private boolean shouldBeEnabled() {
+        if (Maud.model.bone.isBoneSelected()
+                && !Maud.model.animation.isRunning()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

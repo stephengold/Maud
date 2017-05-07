@@ -85,6 +85,14 @@ class CursorTool extends WindowController {
     // new methods exposed
 
     /**
+     * Update the MVC model based on the sliders.
+     */
+    void onSliderChanged() {
+        ColorRGBA color = Maud.gui.readColorBank("cursor");
+        Maud.model.cursor.setColor(color);
+    }
+
+    /**
      * Update the cursor from the MVC model.
      */
     void updateCursor() {
@@ -200,11 +208,11 @@ class CursorTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        boolean visible = Maud.gui.isChecked("3DCursor");
-        Maud.model.cursor.setVisible(visible);
+        boolean visible = Maud.model.cursor.isVisible();
+        Maud.gui.setChecked("3DCursor", visible);
 
-        ColorRGBA color = Maud.gui.updateColorBank("cursor");
-        Maud.model.cursor.setColor(color);
+        ColorRGBA color = Maud.model.cursor.copyColor(null);
+        Maud.gui.setColorBank("cursor", color);
     }
     // *************************************************************************
     // private methods

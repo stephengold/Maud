@@ -157,7 +157,7 @@ class RenderTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        boolean enable = Maud.gui.isChecked("shadows");
-        Maud.model.misc.setShadowsRendered(enable);
+        boolean shadowsFlag = Maud.model.misc.areShadowsRendered();
+        Maud.gui.setChecked("shadows", shadowsFlag);
     }
 }

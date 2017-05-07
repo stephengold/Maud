@@ -83,14 +83,6 @@ class BoneOffsetTool extends WindowController {
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
      */
     private Slider masterSlider = null;
-    /**
-     * bone offsets (in bone units)
-     */
-    final private static float[] offsets = new float[numAxes];
-    /*
-     * animation time at previous update (in seconds)
-     */
-    private float previousUpdateTime = 0f;
     // *************************************************************************
     // constructors
 
@@ -107,25 +99,37 @@ class BoneOffsetTool extends WindowController {
     // new methods exposed
 
     /**
-     * If sliders are enabled, set all 3 offsets to 0.
+     * If active, update the MVC model based on the sliders.
      */
-    void reset() {
-        if (Maud.model.bone.isBoneSelected()
-                && !Maud.model.animation.isRunning()) {
-            for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                sliders[iAxis].enable();
-                sliders[iAxis].setValue(0f);
-            }
+    void onSliderChanged() {
+        if (shouldBeEnabled()) {
+            Vector3f offsets = Maud.gui.readVectorBank("Off");
+
+            float masterScale = readScale();
+            offsets.multLocal(masterScale);
+
+            int boneIndex = Maud.model.bone.getIndex();
+            Maud.model.pose.setTranslation(boneIndex, offsets);
         }
     }
 
     /**
-     * If sliders are enabled, set them to match the selected bone.
+     * If active, reset the bone translation to zero.
      */
-    void setSliders() {
-        if (Maud.model.bone.isBoneSelected()
-                && !Maud.model.animation.isRunning()) {
-            displayOffsets();
+    void reset() {
+        if (shouldBeEnabled()) {
+            int boneIndex = Maud.model.bone.getIndex();
+            Maud.model.pose.resetTranslation(boneIndex);
+        }
+    }
+
+    /**
+     * If active, set the MVC model based on the animation.
+     */
+    void setToAnimation() {
+        if (shouldBeEnabled()) {
+            int boneIndex = Maud.model.bone.getIndex();
+            Maud.model.pose.setTranslationToAnimation(boneIndex);
         }
     }
     // *************************************************************************
@@ -160,115 +164,110 @@ class BoneOffsetTool extends WindowController {
     @Override
     public void update(float tpf) {
         super.update(tpf);
-        if (!isInitialized()) {
-            return;
-        }
 
         if (Maud.model.bone.isBoneSelected()) {
-            float newTime = Maud.model.animation.getTime();
-            if (newTime == previousUpdateTime) {
+            setSlidersToPose();
+            if (shouldBeEnabled()) {
                 Maud.gui.setButtonLabel("resetOffButton", "Reset");
-                /*
-                 * Read and apply offsets from sliders.
-                 */
-                for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                    sliders[iAxis].enable();
-                    offsets[iAxis] = updateStatus(iAxis);
-                }
-                Vector3f translation = new Vector3f(
-                        offsets[0], offsets[1], offsets[2]);
-                Maud.model.cgm.setBoneTranslation(translation);
-
+                enableSliders();
             } else {
                 Maud.gui.setButtonLabel("resetOffButton", "");
-                previousUpdateTime = newTime;
-                /*
-                 * Display offsets from animation.
-                 */
-                for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                    sliders[iAxis].disable();
-                }
-                displayOffsets();
+                disableSliders();
             }
 
         } else {
-            /*
-             * No bone selected: clear the display.
-             */
+            clear();
             Maud.gui.setButtonLabel("resetOffButton", "");
-            for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                sliders[iAxis].disable();
-                sliders[iAxis].setValue(0f);
-
-                String axisName = axisNames[iAxis];
-                String statusName = axisName + "OffSliderStatus";
-                Maud.gui.setStatusText(statusName, "");
-            }
+            disableSliders();
         }
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Calculate and display the offsets of the selected bone.
+     * Reset the 3 axis sliders and clear their status labels.
      */
-    private void displayOffsets() {
-        offsets();
-
-        float newScale = readScale();
+    private void clear() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            float absOffset = FastMath.abs(offsets[iAxis]);
-            if (absOffset > newScale) {
-                newScale = absOffset;
-            }
-        }
-        newScale = FastMath.clamp(newScale, minScale, maxScale);
-        float masterSetting = FastMath.log(newScale, masterBase);
-        masterSlider.setValue(masterSetting);
+            sliders[iAxis].setValue(0f);
 
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            float offset = offsets[iAxis];
-            float setting = offset / newScale;
-            sliders[iAxis].setValue(setting);
-            updateStatus(iAxis);
+            String axisName = axisNames[iAxis];
+            String statusName = axisName + "OffSliderStatus";
+            Maud.gui.setStatusText(statusName, "");
         }
     }
 
     /**
-     * Calculate offsets of the selected bone.
+     * Disable all 4 sliders.
      */
-    private void offsets() {
-        int boneIndex = Maud.model.bone.getIndex();
-        Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
-        Vector3f translation = transform.getTranslation(null);
-        translation.toArray(offsets);
+    private void disableSliders() {
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            sliders[iAxis].disable();
+        }
+        masterSlider.disable();
     }
 
     /**
-     * Read the scale factor from the master slider.
+     * Enable all 4 sliders.
+     */
+    private void enableSliders() {
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            sliders[iAxis].enable();
+        }
+        masterSlider.enable();
+    }
+
+    /**
+     * Read the master slider.
      */
     private float readScale() {
         float reading = masterSlider.getValue();
-        float scale = FastMath.pow(masterBase, reading);
+        float result = FastMath.pow(masterBase, reading);
 
-        return scale;
+        return result;
     }
 
     /**
-     * Update the status label of the slider for the specified axis.
-     *
-     * @param iAxis index of the axis (&ge;0, &lt;3)
-     * @return slider value (in bone units)
+     * Set all 4 sliders (and their status labels) based on the pose.
      */
-    private float updateStatus(int iAxis) {
-        String axisName = axisNames[iAxis];
-        String sliderPrefix = axisName + "Off";
-        float reading = Maud.gui.readSlider(sliderPrefix);
-        float offset = reading * readScale();
-        String statusText = String.format("%s = %.3f bu", sliderPrefix, offset);
-        String statusName = sliderPrefix + "SliderStatus";
-        Maud.gui.setStatusText(statusName, statusText);
+    private void setSlidersToPose() {
+        int boneIndex = Maud.model.bone.getIndex();
+        Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
+        Vector3f vector = transform.getTranslation();
+        float[] offsets = vector.toArray(null);
 
-        return offset;
+        float scale = readScale();
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            float absOffset = FastMath.abs(offsets[iAxis]);
+            if (absOffset > scale) {
+                scale = absOffset;
+            }
+        }
+        scale = FastMath.clamp(scale, minScale, maxScale);
+        float masterValue = FastMath.log(scale, masterBase);
+        masterSlider.setValue(masterValue);
+
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            float value = offsets[iAxis];
+            sliders[iAxis].setValue(value / scale);
+
+            String axisName = axisNames[iAxis];
+            String sliderPrefix = axisName + "Off";
+            Maud.gui.updateSliderStatus(sliderPrefix, value, " bu");
+        }
+    }
+
+    /**
+     * Test whether the GUI controls should be enabled.
+     *
+     * @return true if enabled, otherwise false
+     */
+    private boolean shouldBeEnabled() {
+        if (Maud.model.bone.isBoneSelected()
+                && !Maud.model.animation.isRunning()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

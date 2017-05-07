@@ -29,12 +29,16 @@ package maud;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
 import de.lessvoid.nifty.controls.RadioButtonStateChangedEvent;
+import de.lessvoid.nifty.controls.Slider;
+import de.lessvoid.nifty.controls.SliderChangedEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -142,6 +146,49 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
+     * Callback that Nifty invokes after a check box changes.
+     *
+     * @param boxId Nifty element id of the check box (not null)
+     * @param event details of the event (not null)
+     */
+    @NiftyEventSubscriber(pattern = ".*CheckBox")
+    public void onCheckBoxChanged(final String boxId,
+            final CheckBoxStateChangedEvent event) {
+        Validate.nonNull(boxId, "check box id");
+        Validate.nonNull(event, "event");
+
+        if (!hasStarted()) {
+            return;
+        }
+
+        switch (boxId) {
+            case "3DCursorCheckBox":
+                boolean cursorFlag = isChecked("3DCursor");
+                Maud.model.cursor.setVisible(cursorFlag);
+                break;
+            case "axesDepthTestCheckBox":
+                boolean adtFlag = isChecked("axesDepthTest");
+                Maud.model.axes.setDepthTestFlag(adtFlag);
+                break;
+            case "shadowsCheckBox":
+                boolean shadowsFlag = isChecked("shadows");
+                Maud.model.misc.setShadowsRendered(shadowsFlag);
+                break;
+            case "skeletonCheckBox":
+                boolean skeletonFlag = isChecked("skeleton");
+                Maud.model.skeleton.setVisible(skeletonFlag);
+                break;
+            case "skyCheckBox":
+                boolean skyFlag = isChecked("sky");
+                Maud.model.misc.setSkyRendered(skyFlag);
+                break;
+            default:
+                logger.log(Level.WARNING, "unknown check box with id={0}",
+                        MyString.quote(boxId));
+        }
+    }
+
+    /**
      * Callback that Nifty invokes after a radio button changes.
      *
      * @param buttonId Nifty element id of the radio button (not null)
@@ -214,6 +261,72 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
+     * Callback that Nifty invokes after a slider changes.
+     *
+     * @param sliderId Nifty element id of the slider (not null)
+     * @param event details of the event (not null, ignored)
+     */
+    @NiftyEventSubscriber(pattern = ".*Slider")
+    public void onSliderChanged(final String sliderId,
+            final SliderChangedEvent event) {
+        Validate.nonNull(sliderId, "slider id");
+        Validate.nonNull(event, "event");
+
+        if (!hasStarted()) {
+            return;
+        }
+
+        switch (sliderId) {
+            case "speedSlider":
+            case "timeSlider":
+                animation.onSliderChanged();
+                break;
+
+            case "axesLengthSlider":
+            case "axesLineWidthSlider":
+                axes.onSliderChanged();
+                break;
+
+            case "xAngSlider":
+            case "yAngSlider":
+            case "zAngSlider":
+                boneAngle.onSliderChanged();
+                break;
+
+            case "offMasterSlider":
+            case "xOffSlider":
+            case "yOffSlider":
+            case "zOffSlider":
+                boneOffset.onSliderChanged();
+                break;
+
+            case "xScaSlider":
+            case "yScaSlider":
+            case "zScaSlider":
+                boneScale.onSliderChanged();
+                break;
+
+            case "cursorRSlider":
+            case "cursorGSlider":
+            case "cursorBSlider":
+                cursor.onSliderChanged();
+                break;
+
+            case "skeletonLineWidthSlider":
+            case "skeletonPointSizeSlider":
+            case "skeRSlider":
+            case "skeGSlider":
+            case "skeBSlider":
+                skeleton.onSliderChanged();
+                break;
+
+            default:
+                logger.log(Level.WARNING, "unknown slider with id={0}",
+                        MyString.quote(sliderId));
+        }
+    }
+
+    /**
      * Handle an "open menu" action for this screen.
      *
      * @param menuPath menu path (not null)
@@ -232,6 +345,58 @@ public class DddGui extends GuiScreenController {
         }
 
         return handled;
+    }
+
+    /**
+     * Read a bank of 3 sliders that control a rotation.
+     *
+     * @param prefix unique id prefix of the bank (not null)
+     * @return rotation indicated by the sliders (new instance)
+     */
+    Quaternion readAngleBank(String prefix) {
+        assert prefix != null;
+
+        float x = readSlider("x" + prefix);
+        float y = readSlider("y" + prefix);
+        float z = readSlider("z" + prefix);
+        Quaternion rotation = new Quaternion();
+        rotation.fromAngles(x, y, z);
+
+        return rotation;
+    }
+
+    /**
+     * Read a bank of 3 sliders that control a color.
+     *
+     * @param prefix unique id prefix of the bank (not null)
+     * @return color indicated by the sliders (new instance)
+     */
+    ColorRGBA readColorBank(String prefix) {
+        assert prefix != null;
+
+        float r = readSlider(prefix + "R");
+        float g = readSlider(prefix + "G");
+        float b = readSlider(prefix + "B");
+        ColorRGBA color = new ColorRGBA(r, g, b, 1f);
+
+        return color;
+    }
+
+    /**
+     * Read a bank of 3 sliders that control a vector.
+     *
+     * @param infix unique id infix of the bank (not null)
+     * @return vector indicated by the sliders (new instance)
+     */
+    Vector3f readVectorBank(String infix) {
+        assert infix != null;
+
+        float x = readSlider("x" + infix);
+        float y = readSlider("y" + infix);
+        float z = readSlider("z" + infix);
+        Vector3f vector = new Vector3f(x, y, z);
+
+        return vector;
     }
 
     /**
@@ -421,6 +586,28 @@ public class DddGui extends GuiScreenController {
             controller.select();
             return true;
         }
+    }
+
+    /**
+     * Set a bank of 3 sliders that control a color.
+     *
+     * @param prefix unique id prefix of the bank (not null)
+     * @return color indicated by the sliders (new instance)
+     */
+    void setColorBank(String prefix, ColorRGBA color) {
+        assert prefix != null;
+
+        Slider slider = Maud.gui.getSlider(prefix + "R");
+        slider.setValue(color.r);
+        Maud.gui.updateSliderStatus(prefix + "R", color.r, "");
+
+        slider = Maud.gui.getSlider(prefix + "G");
+        slider.setValue(color.g);
+        Maud.gui.updateSliderStatus(prefix + "G", color.g, "");
+
+        slider = Maud.gui.getSlider(prefix + "B");
+        slider.setValue(color.b);
+        Maud.gui.updateSliderStatus(prefix + "B", color.b, "");
     }
 
     /**
