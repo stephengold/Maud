@@ -88,6 +88,28 @@ public class Pose implements Cloneable {
     }
 
     /**
+     * Reset the rotation of the indexed bone to identity.
+     *
+     * @param boneIndex which bone
+     */
+    public void resetRotation(int boneIndex) {
+        Transform transform = transforms.get(boneIndex);
+        Quaternion rotation = transform.getRotation();
+        rotation.loadIdentity();
+    }
+
+    /**
+     * Reset the scale of the indexed bone to identity.
+     *
+     * @param boneIndex which bone
+     */
+    public void resetScale(int boneIndex) {
+        Transform transform = transforms.get(boneIndex);
+        Vector3f scale = transform.getScale();
+        scale.set(1f, 1f, 1f);
+    }
+
+    /**
      * Reset this pose to bind pose.
      */
     public void resetToBind() {
@@ -97,6 +119,17 @@ public class Pose implements Cloneable {
             Transform transform = new Transform();
             transforms.add(transform);
         }
+    }
+
+    /**
+     * Reset the translation of the indexed bone to zero.
+     *
+     * @param boneIndex which bone
+     */
+    public void resetTranslation(int boneIndex) {
+        Transform transform = transforms.get(boneIndex);
+        Vector3f translation = transform.getTranslation();
+        translation.zero();
     }
 
     /**
@@ -113,6 +146,18 @@ public class Pose implements Cloneable {
     }
 
     /**
+     * Alter the rotation of the indexed bone to match the loaded animation.
+     *
+     * @param boneIndex which bone to scale
+     */
+    public void setRotationToAnimation(int boneIndex) {
+        Transform poseT = transforms.get(boneIndex);
+        Transform animT = Maud.model.animation.boneTransform(boneIndex, null);
+        Quaternion animQ = animT.getRotation();
+        poseT.setRotation(animQ);
+    }
+
+    /**
      * Alter the scale of the indexed bone.
      *
      * @param boneIndex which bone to scale
@@ -126,7 +171,19 @@ public class Pose implements Cloneable {
     }
 
     /**
-     * Alter the transforms based on the loaded animation.
+     * Alter the scale of the indexed bone to match the loaded animation.
+     *
+     * @param boneIndex which bone to scale
+     */
+    public void setScaleToAnimation(int boneIndex) {
+        Transform poseT = transforms.get(boneIndex);
+        Transform animT = Maud.model.animation.boneTransform(boneIndex, null);
+        Vector3f animV = animT.getScale();
+        poseT.setScale(animV);
+    }
+
+    /**
+     * Alter the transforms to match the loaded animation.
      */
     public void setToAnimation() {
         int boneCount = Maud.model.cgm.countBones();
@@ -150,6 +207,18 @@ public class Pose implements Cloneable {
 
         Transform boneTransform = transforms.get(boneIndex);
         boneTransform.setTranslation(translation);
+    }
+
+    /**
+     * Alter the translation of the indexed bone to match the loaded animation.
+     *
+     * @param boneIndex which bone to scale
+     */
+    public void setTranslationToAnimation(int boneIndex) {
+        Transform poseT = transforms.get(boneIndex);
+        Transform animT = Maud.model.animation.boneTransform(boneIndex, null);
+        Vector3f animV = animT.getTranslation();
+        poseT.setTranslation(animV);
     }
     // *************************************************************************
     // Object methods
