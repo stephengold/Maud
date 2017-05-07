@@ -277,7 +277,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="verticalSlider" id="zAngSlider"
                                  buttonStepSize="3.14"
                                  height="160"
-                                 initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
+                                 initial="0" max="1.57" min="-1.57" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160" width="105">
                             <control name="label" id="xAngSliderStatus"
