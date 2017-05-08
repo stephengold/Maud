@@ -102,11 +102,15 @@ public class LoadedAnimation implements Cloneable {
         }
 
         Animation animation = getLoadedAnimation();
-        BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
-        if (track == null) {
+        if (animation == null) {
             storeResult.loadIdentity();
         } else {
-            Util.boneTransform(track, time, storeResult);
+            BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
+            if (track == null) {
+                storeResult.loadIdentity();
+            } else {
+                Util.boneTransform(track, time, storeResult);
+            }
         }
 
         return storeResult;
