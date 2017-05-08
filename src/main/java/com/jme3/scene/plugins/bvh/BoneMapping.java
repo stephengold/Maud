@@ -50,6 +50,13 @@ public class BoneMapping implements Savable {
     }
 
     /**
+     * No-argument constructor for serialization purposes only. Do not invoke
+     * directly!
+     */
+    public BoneMapping() {
+    }
+    
+    /**
      * Builds a BoneMapping witht he given bone from the target skeleton and the
      * given bone from the source skeleton. apply the given twist rotation to
      * the animation data
