@@ -36,19 +36,18 @@ import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
 
 /**
- * Input mode for Maud's "3D View" screen. TODO rename
+ * Input mode for Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class DddMode extends InputMode {
+class DddInputMode extends InputMode {
     // *************************************************************************
     // constants and loggers
 
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            DddMode.class.getName());
+    final private static Logger logger = Logger.getLogger(DddInputMode.class.getName());
     /**
      * asset path to the cursor for this mode
      */
@@ -76,7 +75,7 @@ class DddMode extends InputMode {
     /**
      * Instantiate a disabled, uninitialized mode.
      */
-    DddMode() {
+    DddInputMode() {
         super("3D View");
     }
     // *************************************************************************

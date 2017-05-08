@@ -93,7 +93,7 @@ public class DddGui extends GuiScreenController {
     /**
      * input mode for the "3D View" screen
      */
-    final DddMode inputMode = new DddMode();
+    final DddInputMode inputMode = new DddInputMode();
     /*
      * controllers for tool windows
      */
@@ -135,7 +135,7 @@ public class DddGui extends GuiScreenController {
         File file = new File(filePath);
         if (file.isDirectory()) {
             List<String> fileNames = listFileNames(filePath);
-            String menuPrefix = DddMode.loadModelFilePrefix + filePath;
+            String menuPrefix = DddInputMode.loadModelFilePrefix + filePath;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }
@@ -414,7 +414,7 @@ public class DddGui extends GuiScreenController {
             closeAllPopups();
             String oldName = Maud.model.animation.getName();
             showTextEntryDialog("Enter new name for animation:",
-                    oldName, "Rename", DddMode.renameAnimationPrefix);
+                    oldName, "Rename", DddInputMode.renameAnimationPrefix);
         }
     }
 
@@ -426,7 +426,7 @@ public class DddGui extends GuiScreenController {
             closeAllPopups();
             String oldName = Maud.model.bone.getName();
             showTextEntryDialog("Enter new name for bone:", oldName, "Rename",
-                    DddMode.renameBonePrefix);
+                    DddInputMode.renameBonePrefix);
         }
     }
 
@@ -446,7 +446,7 @@ public class DddGui extends GuiScreenController {
             List<String> boneNames = Maud.model.cgm.listBoneNames(argument);
             MyString.reduce(boneNames, 20);
             Collections.sort(boneNames);
-            showPopupMenu(DddMode.selectBonePrefix, boneNames);
+            showPopupMenu(DddInputMode.selectBonePrefix, boneNames);
         }
     }
 
@@ -460,7 +460,7 @@ public class DddGui extends GuiScreenController {
                 Maud.model.bone.selectChild(0);
             } else if (numChildren > 1) {
                 List<String> choices = Maud.model.bone.listChildNames();
-                showPopupMenu(DddMode.selectBonePrefix, choices);
+                showPopupMenu(DddInputMode.selectBonePrefix, choices);
             }
         }
     }
@@ -485,7 +485,7 @@ public class DddGui extends GuiScreenController {
                     items.add(name);
                 }
             }
-            showPopupMenu(DddMode.selectBoneChildPrefix, items);
+            showPopupMenu(DddInputMode.selectBoneChildPrefix, items);
         }
     }
 
@@ -507,7 +507,7 @@ public class DddGui extends GuiScreenController {
                 }
                 choices.add(choice);
             }
-            showPopupMenu(DddMode.selectSpatialChildPrefix, choices);
+            showPopupMenu(DddInputMode.selectSpatialChildPrefix, choices);
         }
     }
 
@@ -1032,7 +1032,7 @@ public class DddGui extends GuiScreenController {
             case "Load":
                 Collection<String> animationNames;
                 animationNames = Maud.model.cgm.listAnimationNames();
-                showPopupMenu(DddMode.loadAnimationPrefix, animationNames);
+                showPopupMenu(DddInputMode.loadAnimationPrefix, animationNames);
                 handled = true;
                 break;
 
@@ -1044,7 +1044,7 @@ public class DddGui extends GuiScreenController {
                 String toName = String.format("Copy of %s", fromName);
                 closeAllPopups();
                 showTextEntryDialog("Enter name for new animation:",
-                        toName, "Copy", DddMode.copyAnimationPrefix);
+                        toName, "Copy", DddInputMode.copyAnimationPrefix);
                 handled = true;
                 break;
 
@@ -1117,7 +1117,7 @@ public class DddGui extends GuiScreenController {
             logger.log(Level.WARNING, "no items for the {0} menu",
                     MyString.quote(menuName));
         } else {
-            String actionPrefix = DddMode.openMenuPrefix + menuName
+            String actionPrefix = DddInputMode.openMenuPrefix + menuName
                     + menuSeparator;
             showPopupMenu(actionPrefix, menuItems);
         }
@@ -1185,7 +1185,7 @@ public class DddGui extends GuiScreenController {
                 String[] modelNames = {
                     "Elephant", "Jaime", "Ninja", "Oto", "Sinbad"
                 };
-                showPopupMenu(DddMode.loadModelNamedPrefix, modelNames);
+                showPopupMenu(DddInputMode.loadModelNamedPrefix, modelNames);
                 handled = true;
                 break;
 
@@ -1195,13 +1195,13 @@ public class DddGui extends GuiScreenController {
                 String assetPath = String.format("%s.%s", basePath, extension);
                 closeAllPopups();
                 showTextEntryDialog("Enter base asset path for model:",
-                        assetPath, "Load", DddMode.loadModelAssetPrefix);
+                        assetPath, "Load", DddInputMode.loadModelAssetPrefix);
                 handled = true;
                 break;
 
             case "Load from file":
                 List<String> fileNames = listFileNames("/");
-                showPopupMenu(DddMode.loadModelFilePrefix + "/", fileNames);
+                showPopupMenu(DddInputMode.loadModelFilePrefix + "/", fileNames);
                 handled = true;
                 break;
 
@@ -1213,7 +1213,7 @@ public class DddGui extends GuiScreenController {
                 String baseAssetPath = Maud.model.cgm.getAssetPath();
                 closeAllPopups();
                 showTextEntryDialog("Enter base asset path for model:",
-                        baseAssetPath, "Save", DddMode.saveModelAssetPrefix);
+                        baseAssetPath, "Save", DddInputMode.saveModelAssetPrefix);
                 handled = true;
                 break;
 
@@ -1221,7 +1221,7 @@ public class DddGui extends GuiScreenController {
                 String baseFilePath = Maud.model.cgm.getFilePath();
                 closeAllPopups();
                 showTextEntryDialog("Enter base file path for model:",
-                        baseFilePath, "Save", DddMode.saveModelFilePrefix);
+                        baseFilePath, "Save", DddInputMode.saveModelFilePrefix);
                 handled = true;
                 break;
 
@@ -1328,7 +1328,7 @@ public class DddGui extends GuiScreenController {
         List<String> boneNames = Maud.model.cgm.listBoneNames();
         MyString.reduce(boneNames, 20);
         Collections.sort(boneNames);
-        showPopupMenu(DddMode.selectBonePrefix, boneNames);
+        showPopupMenu(DddInputMode.selectBonePrefix, boneNames);
     }
 
     /**
@@ -1336,7 +1336,7 @@ public class DddGui extends GuiScreenController {
      */
     private void selectBoneByParent() {
         List<String> boneNames = Maud.model.cgm.listRootBoneNames();
-        showPopupMenu(DddMode.selectBoneChildPrefix, boneNames);
+        showPopupMenu(DddInputMode.selectBoneChildPrefix, boneNames);
     }
 
     /**
