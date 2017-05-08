@@ -273,9 +273,9 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="boneAngleTool" title="Bone-Angle Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="200px" width="220px" x="60" y="40">
+                     height="200px" width="195px" x="60" y="40">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal" padding="10">
+                    <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xAngSlider"
                                  buttonStepSize="3.14"
                                  height="160"
@@ -289,7 +289,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  height="160"
                                  initial="0" max="1.57" min="-1.57" stepSize="0.001"/>
                         <panel childLayout="vertical"
-                               height="160" width="105">
+                               height="160px" width="110px">
                             <control name="label" id="xAngSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
@@ -299,9 +299,22 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                             <control name="label" id="zAngSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <control name="button" id="resetAngButton">
-                                <interact onRelease="perform(reset bone angles)"/>
-                            </control>
+                            <panel childLayout="horizontal" height="30px" >
+                                <panel/>
+                                <control name="button" id="resetAngAnimButton"
+                                         width="70px">
+                                    <interact onRelease="perform(reset bone ang anim)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
+                                <control name="button" id="resetAngBindButton"
+                                         width="70px">
+                                    <interact onRelease="perform(reset bone ang bind)"/>
+                                </control>
+                                <panel/>
+                            </panel>
                         </panel>
                     </panel>
                 </panel>
@@ -310,14 +323,14 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="boneOffsetTool" title="Bone-Offset Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="270px" width="220px" x="55" y="45">
+                     height="270px" width="180px" x="55" y="45">
                 <panel childLayout="vertical">
                     <control name="label" text="Master control:"/>
                     <control name="horizontalSlider" id="offMasterSlider"
                              buttonStepSize="1"
                              initial="0" max="2" min="-2" stepSize="0.001"/>
                     <control name="label" text="Per-axis controls:"/>
-                    <panel childLayout="horizontal" padding="10">
+                    <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xOffSlider"
                                  buttonStepSize="1"
                                  height="160"
@@ -331,7 +344,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  height="160"
                                  initial="0" max="1" min="-1" stepSize="0.001"/>
                         <panel childLayout="vertical"
-                               height="160" width="105">
+                               height="160px" width="100px">
                             <control name="label" id="xOffSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
@@ -341,9 +354,22 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                             <control name="label" id="zOffSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <control name="button" id="resetOffButton">
-                                <interact onRelease="perform(reset bone offsets)"/>
-                            </control>
+                            <panel childLayout="horizontal" height="30px" >
+                                <panel/>
+                                <control name="button" id="resetOffAnimButton"
+                                         width="70px">
+                                    <interact onRelease="perform(reset bone off anim)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
+                                <control name="button" id="resetOffBindButton"
+                                         width="70px">
+                                    <interact onRelease="perform(reset bone off bind)"/>
+                                </control>
+                                <panel/>
+                            </panel>
                         </panel>
                     </panel>
                 </panel>
@@ -352,9 +378,9 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="boneScaleTool" title="Bone-Scale Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="200px" width="220px" x="50" y="50">
+                     height="200px" width="165px" x="50" y="50">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal" padding="10">
+                    <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xScaSlider"
                                  buttonStepSize="1"
                                  height="160"
@@ -368,7 +394,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  height="160"
                                  initial="1" max="3" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
-                               height="160" width="105">
+                               height="160px" width="80px">
                             <control name="label" id="xScaSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
@@ -378,9 +404,22 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                             <control name="label" id="zScaSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <control name="button" id="resetScaButton">
-                                <interact onRelease="perform(reset bone scales)"/>
-                            </control>
+                            <panel childLayout="horizontal" height="30px" >
+                                <panel/>
+                                <control name="button" id="resetScaAnimButton"
+                                         width="70px">
+                                    <interact onRelease="perform(reset bone sca anim)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
+                                <control name="button" id="resetScaBindButton"
+                                         width="70px">
+                                    <interact onRelease="perform(reset bone sca bind)"/>
+                                </control>
+                                <panel/>
+                            </panel>
                         </panel>
                     </panel>
                 </panel>

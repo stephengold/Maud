@@ -145,16 +145,19 @@ class BoneScaleTool extends WindowController {
         if (Maud.model.bone.isBoneSelected()) {
             setSlidersToPose();
             if (shouldBeEnabled()) {
-                Maud.gui.setButtonLabel("resetScaButton", "Reset");
+                Maud.gui.setButtonLabel("resetScaAnimButton", "Animation");
+                Maud.gui.setButtonLabel("resetScaBindButton", "Bind pose");
                 enableSliders();
             } else {
-                Maud.gui.setButtonLabel("resetScaButton", "");
+                Maud.gui.setButtonLabel("resetScaAnimButton", "");
+                Maud.gui.setButtonLabel("resetScaBindButton", "");
                 disableSliders();
             }
 
         } else {
             clear();
-            Maud.gui.setButtonLabel("resetScaButton", "");
+            Maud.gui.setButtonLabel("resetScaAnimButton", "");
+            Maud.gui.setButtonLabel("resetScaBindButton", "");
             disableSliders();
         }
     }

@@ -151,16 +151,19 @@ class BoneAngleTool extends WindowController {
         if (Maud.model.bone.isBoneSelected()) {
             setSlidersToPose();
             if (shouldBeEnabled()) {
-                Maud.gui.setButtonLabel("resetAngButton", "Reset");
+                Maud.gui.setButtonLabel("resetAngAnimButton", "Animation");
+                Maud.gui.setButtonLabel("resetAngBindButton", "Bind pose");
                 enableSliders();
             } else {
-                Maud.gui.setButtonLabel("resetAngButton", "");
+                Maud.gui.setButtonLabel("resetAngAnimButton", "");
+                Maud.gui.setButtonLabel("resetAngBindButton", "");
                 disableSliders();
             }
 
         } else {
             clear();
-            Maud.gui.setButtonLabel("resetAngButton", "");
+            Maud.gui.setButtonLabel("resetAngAnimButton", "");
+            Maud.gui.setButtonLabel("resetAngBindButton", "");
             disableSliders();
         }
     }

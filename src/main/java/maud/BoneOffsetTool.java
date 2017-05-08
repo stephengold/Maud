@@ -168,16 +168,19 @@ class BoneOffsetTool extends WindowController {
         if (Maud.model.bone.isBoneSelected()) {
             setSlidersToPose();
             if (shouldBeEnabled()) {
-                Maud.gui.setButtonLabel("resetOffButton", "Reset");
+                Maud.gui.setButtonLabel("resetOffAnimButton", "Animation");
+                Maud.gui.setButtonLabel("resetOffBindButton", "Bind pose");
                 enableSliders();
             } else {
-                Maud.gui.setButtonLabel("resetOffButton", "");
+                Maud.gui.setButtonLabel("resetOffAnimButton", "");
+                Maud.gui.setButtonLabel("resetOffBindButton", "");
                 disableSliders();
             }
 
         } else {
             clear();
-            Maud.gui.setButtonLabel("resetOffButton", "");
+            Maud.gui.setButtonLabel("resetOffAnimButton", "");
+            Maud.gui.setButtonLabel("resetOffBindButton", "");
             disableSliders();
         }
     }
