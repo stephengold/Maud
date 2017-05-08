@@ -33,6 +33,7 @@ import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.debug.AxesControl;
+import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.model.AxesStatus;
@@ -127,8 +128,9 @@ class AxesTool extends WindowController {
                 Vector3f loc = MySpatial.getWorldLocation(spatial);
                 Vector3f cameraLocation = Maud.model.camera.copyLocation(null);
                 float distance = loc.distance(cameraLocation);
-                float scale = MySpatial.getUniformScale(spatial);
-                length = 0.2f * distance / scale;
+                Vector3f scale = spatial.getWorldScale();
+                float maxScale = MyMath.max(scale.x, scale.y, scale.z);
+                length = 0.2f * distance / maxScale;
                 Maud.model.axes.setLength(length);
             } else {
                 length = Maud.model.axes.getLength();
