@@ -89,14 +89,6 @@ public class AnimationTool extends WindowController {
             Maud.model.animation.setTime(time);
         }
     }
-
-    /**
-     * Toggle between paused and running.
-     */
-    void togglePause() {
-        boolean paused = Maud.model.animation.isPaused();
-        Maud.model.animation.setPaused(!paused);
-    }
     // *************************************************************************
     // AppState methods
 

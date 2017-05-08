@@ -301,6 +301,14 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                      width="*"/>
                             <panel childLayout="horizontal" height="30px" >
                                 <panel/>
+                                <control name="button" id="degreesButton"
+                                         width="50px">
+                                    <interact onRelease="perform(toggle degrees)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                            <panel childLayout="horizontal" height="30px" >
+                                <panel/>
                                 <control name="button" id="resetAngAnimButton"
                                          width="70px">
                                     <interact onRelease="perform(reset bone ang anim)"/>

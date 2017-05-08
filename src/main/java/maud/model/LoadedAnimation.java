@@ -385,6 +385,13 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Toggle between paused and running.
+     */
+    public void togglePaused() {
+        setPaused(!pausedFlag);
+    }
+
+    /**
      * Test whether the loaded animation will play continuously.
      *
      * @return true if continuous loop, false otherwise

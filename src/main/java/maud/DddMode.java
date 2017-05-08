@@ -449,10 +449,13 @@ class DddMode extends InputMode {
     private boolean toggleAction(String actionString) {
         boolean handled = false;
         switch (actionString) {
-            case "toggle pause":
-                Maud.gui.animation.togglePause();
+            case "toggle degrees":
+                Maud.model.misc.toggleAnglesInDegrees();
                 handled = true;
                 break;
+            case "toggle pause":
+                Maud.model.animation.togglePaused();
+                handled = true;
         }
 
         return handled;

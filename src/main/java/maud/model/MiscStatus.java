@@ -46,6 +46,10 @@ public class MiscStatus implements Cloneable {
     // fields
 
     /**
+     * angle display mode (true &rarr; degrees, false &rarr; radians)
+     */
+    private boolean anglesInDegrees = true;
+    /**
      * shadows (true &rarr; rendered, false &rarr; not rendered)
      */
     private boolean shadowsRendered = true;
@@ -66,12 +70,30 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
+     * Test whether to display angles in degrees.
+     *
+     * @return true for degrees, otherwise false
+     */
+    public boolean getAnglesInDegrees() {
+        return anglesInDegrees;
+    }
+
+    /**
      * Test whether the sky background is rendered.
      *
      * @return true if rendered, otherwise false
      */
     public boolean isSkyRendered() {
         return skyRendered;
+    }
+
+    /**
+     * Alter the angle display mode.
+     *
+     * @param newState true &rarr; degrees, false &rarr; radians
+     */
+    public void setAnglesInDegrees(boolean newState) {
+        anglesInDegrees = newState;
     }
 
     /**
@@ -90,6 +112,13 @@ public class MiscStatus implements Cloneable {
      */
     public void setSkyRendered(boolean newState) {
         skyRendered = newState;
+    }
+
+    /**
+     * Toggle the angle display mode.
+     */
+    public void toggleAnglesInDegrees() {
+        setAnglesInDegrees(!anglesInDegrees);
     }
     // *************************************************************************
     // Object methods

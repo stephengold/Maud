@@ -32,6 +32,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
+import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 
@@ -148,24 +149,32 @@ class BoneAngleTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
+        String aButton = "";
+        String bButton = "";
         if (Maud.model.bone.isBoneSelected()) {
             setSlidersToPose();
             if (shouldBeEnabled()) {
-                Maud.gui.setButtonLabel("resetAngAnimButton", "Animation");
-                Maud.gui.setButtonLabel("resetAngBindButton", "Bind pose");
+                aButton = "Animation";
+                bButton = "Bind pose";
                 enableSliders();
             } else {
-                Maud.gui.setButtonLabel("resetAngAnimButton", "");
-                Maud.gui.setButtonLabel("resetAngBindButton", "");
                 disableSliders();
             }
 
         } else {
             clear();
-            Maud.gui.setButtonLabel("resetAngAnimButton", "");
-            Maud.gui.setButtonLabel("resetAngBindButton", "");
             disableSliders();
         }
+        Maud.gui.setButtonLabel("resetAngAnimButton", aButton);
+        Maud.gui.setButtonLabel("resetAngBindButton", bButton);
+
+        String dButton;
+        if (Maud.model.misc.getAnglesInDegrees()) {
+            dButton = "radians";
+        } else {
+            dButton = "degrees";
+        }
+        Maud.gui.setButtonLabel("degreesButton", dButton);
     }
     // *************************************************************************
     // private methods
@@ -209,6 +218,7 @@ class BoneAngleTool extends WindowController {
         Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
         Quaternion rotation = transform.getRotation();
         float[] angles = rotation.toAngles(null);
+        boolean degrees = Maud.model.misc.getAnglesInDegrees();
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float angle = angles[iAxis];
@@ -216,7 +226,12 @@ class BoneAngleTool extends WindowController {
 
             String axisName = axisNames[iAxis];
             String sliderPrefix = axisName + "Ang";
-            Maud.gui.updateSliderStatus(sliderPrefix, angle, " rad");
+            if (degrees) {
+                angle = MyMath.toDegrees(angle);
+                Maud.gui.updateSliderStatus(sliderPrefix, angle, " deg");
+            } else {
+                Maud.gui.updateSliderStatus(sliderPrefix, angle, " rad");
+            }
         }
     }
 
