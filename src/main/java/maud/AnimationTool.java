@@ -80,11 +80,9 @@ public class AnimationTool extends WindowController {
             Slider slider = Maud.gui.getSlider("speed");
             speed = slider.getValue();
             Maud.model.animation.setSpeed(speed);
-        } else {
-            speed = 0f;
         }
 
-        if (speed == 0f) {
+        if (!Maud.model.animation.isMoving()) {
             Slider slider = Maud.gui.getSlider("time");
             float fraction = slider.getValue();
             float time = fraction * duration;
@@ -96,16 +94,8 @@ public class AnimationTool extends WindowController {
      * Toggle between paused and running.
      */
     void togglePause() {
-        float duration = Maud.model.animation.getDuration();
-        if (duration > 0f) {
-            float speed = Maud.model.animation.getSpeed();
-            if (speed > 0f) {
-                speed = 0f;
-            } else {
-                speed = 1f;
-            }
-            Maud.model.animation.setSpeed(speed);
-        }
+        boolean paused = Maud.model.animation.isPaused();
+        Maud.model.animation.setPaused(!paused);
     }
     // *************************************************************************
     // AppState methods
@@ -122,14 +112,36 @@ public class AnimationTool extends WindowController {
         super.update(elapsedTime);
 
         updateName();
+        updateLooping();
         updateSpeed();
         updateTrackTime();
+        updateTrackCounts();
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Update the name label, rename button label, and track counts.
+     * Update the loop check box and the pause button label.
+     */
+    private void updateLooping() {
+        boolean looping = Maud.model.animation.willContinue();
+        Maud.gui.setChecked("loop", looping);
+
+        String pButton = "";
+        float duration = Maud.model.animation.getDuration();
+        if (duration > 0f) {
+            boolean paused = Maud.model.animation.isPaused();
+            if (paused) {
+                pButton = "Resume";
+            } else {
+                pButton = "Pause";
+            }
+        }
+        Maud.gui.setButtonLabel("togglePauseButton", pButton);
+    }
+
+    /**
+     * Update the name label and rename button label.
      */
     private void updateName() {
         String nameText, rButton;
@@ -143,15 +155,6 @@ public class AnimationTool extends WindowController {
         }
         Maud.gui.setStatusText("animationName", " " + nameText);
         Maud.gui.setButtonLabel("animationRenameButton", rButton);
-
-        int numBoneTracks = Maud.model.animation.countBoneTracks();
-        String boneTracksText = String.format("%d", numBoneTracks);
-        Maud.gui.setStatusText("boneTracks", " " + boneTracksText);
-
-        int numTracks = Maud.model.animation.countTracks();
-        int numOtherTracks = numTracks - numBoneTracks;
-        String otherTracksText = String.format("%d", numOtherTracks);
-        Maud.gui.setStatusText("otherTracks", " " + otherTracksText);
     }
 
     /**
@@ -165,9 +168,24 @@ public class AnimationTool extends WindowController {
         } else {
             slider.disable();
         }
+
         float speed = Maud.model.animation.getSpeed();
         slider.setValue(speed);
         Maud.gui.updateSliderStatus("speed", speed, "x");
+    }
+
+    /**
+     * Update the track counts.
+     */
+    private void updateTrackCounts() {
+        int numBoneTracks = Maud.model.animation.countBoneTracks();
+        String boneTracksText = String.format("%d", numBoneTracks);
+        Maud.gui.setStatusText("boneTracks", " " + boneTracksText);
+
+        int numTracks = Maud.model.animation.countTracks();
+        int numOtherTracks = numTracks - numBoneTracks;
+        String otherTracksText = String.format("%d", numOtherTracks);
+        Maud.gui.setStatusText("otherTracks", " " + otherTracksText);
     }
 
     /**
@@ -177,14 +195,15 @@ public class AnimationTool extends WindowController {
         /*
          * slider
          */
-        float speed = Maud.model.animation.getSpeed();
-        Slider slider = Maud.gui.getSlider("time");
-        if (speed == 0f) {
-            slider.enable();
-        } else {
-            slider.disable();
-        }
+        boolean changing = Maud.model.animation.isMoving();
         float duration = Maud.model.animation.getDuration();
+        Slider slider = Maud.gui.getSlider("time");
+        if (duration == 0f || changing) {
+            slider.disable();
+        } else {
+            slider.enable();
+        }
+
         float trackTime;
         if (duration == 0f) {
             trackTime = 0f;

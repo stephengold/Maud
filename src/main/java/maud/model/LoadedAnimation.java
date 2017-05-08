@@ -60,9 +60,24 @@ public class LoadedAnimation implements Cloneable {
     // fields
 
     /**
-     * animation speed (0 &rarr; paused, 1 &rarr; normal speed)
+     * true &rarr; play continuously ("loop"), false &rarr; play once-through
+     * and then pause
      */
-    private float speed = 0f;
+    private boolean continueFlag = true;
+    /**
+     * true &rarr; explicitly paused, false &rarr; running
+     */
+    private boolean pausedFlag = false;
+    /**
+     * true &rarr; reverse playback direction ("pong") at limits, false &rarr;
+     * wrap time at limits
+     */
+    private boolean reverseFlag = false;
+    /**
+     * playback speed and direction when not paused (1 &rarr; forward at normal
+     * speed)
+     */
+    private float speed = 1f;
     /**
      * current animation time (in seconds, &ge;0)
      */
@@ -214,16 +229,31 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Test whether an animation is running.
+     * Test whether the track time is changing.
      *
-     * @return true if an animation is running, false otherwise
+     * @return true time is changing, false otherwise
      */
-    public boolean isRunning() {
-        if (speed == 0f) {
-            return false;
+    public boolean isMoving() {
+        boolean running;
+
+        if (pausedFlag) {
+            running = false;
+        } else if (speed == 0f) {
+            running = false;
         } else {
-            return true;
+            running = true;
         }
+
+        return running;
+    }
+
+    /**
+     * Test whether the loaded animation is explicitly paused.
+     *
+     * @return true if paused, false otherwise
+     */
+    public boolean isPaused() {
+        return pausedFlag;
     }
 
     /**
@@ -297,9 +327,38 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Alter the animation speed.
+     * Alter whether the loaded animation will play continuously.
      *
-     * @param newSpeed animation speed (0 &rarr; paused, 1 &rarr; normal speed)
+     * @param newSetting true &rarr; play continuously, false &rarr; play
+     * once-through and then pause
+     */
+    public void setContinue(boolean newSetting) {
+        continueFlag = newSetting;
+    }
+
+    /**
+     * Alter whether the loaded animation is explicitly paused.
+     *
+     * @param newSetting true &rarr; paused, false &rarr; running
+     */
+    public void setPaused(boolean newSetting) {
+        pausedFlag = newSetting;
+    }
+
+    /**
+     * Alter whether the loaded animation will reverse direction when it reaches
+     * a limit.
+     *
+     * @param newSetting true &rarr; reverse, false &rarr; wrap
+     */
+    public void setReverse(boolean newSetting) {
+        reverseFlag = newSetting;
+    }
+
+    /**
+     * Alter the playback speed and/or direction.
+     *
+     * @param newSpeed (1 &rarr; forward at normal speed)
      */
     public void setSpeed(float newSpeed) {
         speed = newSpeed;
@@ -319,6 +378,24 @@ public class LoadedAnimation implements Cloneable {
             time = newTime;
             Maud.model.pose.setToAnimation();
         }
+    }
+
+    /**
+     * Test whether the loaded animation will play continuously.
+     *
+     * @return true if continuous loop, false otherwise
+     */
+    public boolean willContinue() {
+        return continueFlag;
+    }
+
+    /**
+     * Test whether the loaded animation will reverse direction at limits.
+     *
+     * @return true if it will reverse, false otherwise
+     */
+    public boolean willReverse() {
+        return reverseFlag;
     }
     // *************************************************************************
     // Object methods

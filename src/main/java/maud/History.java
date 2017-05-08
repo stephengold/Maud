@@ -57,6 +57,14 @@ public class History {
      */
     final private static List<Checkpoint> checkpoints = new ArrayList<>(20);
     // *************************************************************************
+    // constructors
+
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
+    private History() {
+    }
+    // *************************************************************************
     // new methods exposed
 
     /**

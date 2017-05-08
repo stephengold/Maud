@@ -29,6 +29,7 @@ package maud;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
@@ -172,6 +173,12 @@ public class DddGui extends GuiScreenController {
                 break;
             case "axesDepthTestCheckBox":
                 Maud.model.axes.setDepthTestFlag(isChecked);
+                break;
+            case "loopCheckBox":
+                Maud.model.animation.setContinue(isChecked);
+                break;
+            case "pongCheckBox":
+                Maud.model.animation.setReverse(isChecked);
                 break;
             case "shadowsCheckBox":
                 Maud.model.misc.setShadowsRendered(isChecked);
@@ -682,13 +689,8 @@ public class DddGui extends GuiScreenController {
         /*
          * Update animation even if the animation tool is disabled.
          */
-        float duration = Maud.model.animation.getDuration();
-        float speed = Maud.model.animation.getSpeed();
-        if (duration != 0f && speed != 0f) {
-            float time = Maud.model.animation.getTime();
-            time += speed * tpf;
-            time = MyMath.modulo(time, duration);
-            Maud.model.animation.setTime(time);
+        if (Maud.model.animation.isMoving()) {
+            updateTrackTime(tpf);
         }
         Maud.viewState.updatePose();
         axes.updateAxesControl();
@@ -1335,5 +1337,37 @@ public class DddGui extends GuiScreenController {
     private void selectBoneByParent() {
         List<String> boneNames = Maud.model.cgm.listRootBoneNames();
         showPopupMenu(DddMode.selectBoneChildPrefix, boneNames);
+    }
+
+    /**
+     * Update the track time.
+     *
+     * @param tpf time interval between render passes (in seconds, &ge;0)
+     */
+    private void updateTrackTime(float tpf) {
+        assert Maud.model.animation.isMoving();
+
+        float speed = Maud.model.animation.getSpeed();
+        float time = Maud.model.animation.getTime();
+        time += speed * tpf;
+
+        boolean cont = Maud.model.animation.willContinue();
+        boolean reverse = Maud.model.animation.willReverse();
+        float duration = Maud.model.animation.getDuration();
+        if (cont && !reverse) {
+            time = MyMath.modulo(time, duration); // wrap
+        } else {
+            float freeTime = time;
+            time = FastMath.clamp(time, 0f, duration);
+            if (time != freeTime) { // reached a limit
+                if (reverse) {
+                    Maud.model.animation.setSpeed(-speed); // pong
+                } else {
+                    time = duration - time; // wrap
+                }
+                Maud.model.animation.setPaused(!cont);
+            }
+        }
+        Maud.model.animation.setTime(time);
     }
 }

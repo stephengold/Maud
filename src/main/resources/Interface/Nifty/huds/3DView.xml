@@ -89,9 +89,9 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="animationTool" title="Animation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="220px" width="250px" x="75" y="25">
+                     height="220px" width="290px" x="75" y="25">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="35">
                         <control name="label" text="Name:  "
                                  textHAlign="right"
                                  width="40px"/>
@@ -103,20 +103,30 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                             <interact onRelease="perform(rename animation)"/>
                         </control>
                     </panel>
-                    <panel style="statusPanel">
+                    <panel childLayout="horizontal" height="30">
+                        <control name="button" id="togglePauseButton"
+                                 width="55">
+                            <interact onRelease="perform(toggle pause)"/>
+                        </control>
+                        <control name="label" width="12"/>
+                        <control name="checkbox" id="loopCheckBox"/>
+                        <control name="label" text="  loop  "/>
+                        <control name="checkbox" id="pongCheckBox"/>
+                        <control name="label" text="  pong"/>
                         <control name="label" id="speedSliderStatus"
-                                 textHAlign="right"/>
+                                 textHAlign="right"
+                                 width="*"/>
                     </panel>
                     <control name="horizontalSlider" id="speedSlider"
                              buttonStepSize="1"
-                             initial="1" max="3" min="0" stepSize="0.001"/>
+                             max="2" min="-2" stepSize="0.001"/>
                     <panel style="statusPanel">
                         <control name="label" id="trackTime"
                                  textHAlign="right"/>
                     </panel>
                     <control name="horizontalSlider" id="timeSlider"
                              buttonStepSize="1"
-                             initial="0" max="1" min="0" stepSize="0.001"/>
+                             max="1" min="0" stepSize="0.001"/>
                     <panel height="14px"/>
                     <panel childLayout="horizontal">
                         <control name="label" text="Bone tracks:  "/>

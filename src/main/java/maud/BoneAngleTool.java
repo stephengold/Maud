@@ -224,7 +224,7 @@ class BoneAngleTool extends WindowController {
      */
     private boolean shouldBeEnabled() {
         if (Maud.model.bone.isBoneSelected()
-                && !Maud.model.animation.isRunning()) {
+                && !Maud.model.animation.isMoving()) {
             return true;
         } else {
             return false;
