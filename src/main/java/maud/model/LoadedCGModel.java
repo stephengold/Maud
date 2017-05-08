@@ -92,9 +92,9 @@ public class LoadedCGModel implements Cloneable {
      */
     private AssetManager assetManager = null;
     /**
-     * flag to track unsaved changes to the CG model
+     * count of unsaved edits to the CG model (&ge;0)
      */
-    private boolean pristine = true;
+    private int editCount = 0;
     /**
      * the root spatial in the MVC model's copy of the CG model
      */
@@ -200,6 +200,15 @@ public class LoadedCGModel implements Cloneable {
 
         assert count >= 0 : count;
         return count;
+    }
+
+    /**
+     * Count unsaved edits.
+     *
+     * @return count (&ge;0)
+     */
+    public int countUnsavedEdits() {
+        return editCount;
     }
 
     /**
@@ -394,15 +403,6 @@ public class LoadedCGModel implements Cloneable {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Test whether there are unsaved changes.
-     *
-     * @return true if no unsaved changes, false if there are some
-     */
-    public boolean isPristine() {
-        return pristine;
     }
 
     /**
@@ -1050,16 +1050,16 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Mark the model as edited;
+     * Increment the count of unsaved edits.
      */
     private void setEdited() {
-        pristine = false;
+        ++editCount;
     }
 
     /**
-     * Mark the model as pristine;
+     * Mark the model as pristine.
      */
     private void setPristine() {
-        pristine = true;
+        editCount = 0;
     }
 }

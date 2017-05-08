@@ -90,12 +90,22 @@ class ModelTool extends WindowController {
                 : MyString.quote(filePath);
         Maud.gui.setStatusText("modelFbp", " " + fbpDesc);
         /*
-         * asset/file extension and pristine/edited status
+         * asset/file extension
          */
         String extDesc = Maud.model.cgm.getExtension();
         Maud.gui.setStatusText("modelExt", extDesc);
-        boolean isPristine = Maud.model.cgm.isPristine();
-        String pristineDesc = isPristine ? "pristine" : "edited";
+        /*
+         * pristine/edited status
+         */
+        String pristineDesc;
+        int editCount = Maud.model.cgm.countUnsavedEdits();
+        if (editCount == 0) {
+            pristineDesc = "pristine";
+        } else if (editCount == 1) {
+            pristineDesc = "one edit";
+        } else {
+            pristineDesc = String.format("%d edits", editCount);
+        }
         Maud.gui.setStatusText("modelPristine", pristineDesc);
     }
 }
