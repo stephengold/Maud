@@ -79,8 +79,8 @@ class Checkpoint {
      * @return a new instance
      */
     Date copyTimestamp() {
-        Object result = timestamp.clone();
-        return (Date) result;
+        Date result = (Date) timestamp.clone();
+        return result;
     }
 
     /**

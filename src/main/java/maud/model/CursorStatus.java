@@ -124,7 +124,6 @@ public class CursorStatus implements Cloneable {
      */
     public void setColor(ColorRGBA newColor) {
         Validate.nonNull(newColor, "color");
-
         color.set(newColor);
     }
 
@@ -135,7 +134,6 @@ public class CursorStatus implements Cloneable {
      */
     public void setLocation(Vector3f newLocation) {
         Validate.nonNull(newLocation, "location");
-
         location.set(newLocation);
     }
 
@@ -146,7 +144,6 @@ public class CursorStatus implements Cloneable {
      */
     public void setSize(float newSize) {
         Validate.nonNegative(newSize, "size");
-
         size = newSize;
     }
 

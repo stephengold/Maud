@@ -118,7 +118,13 @@ public class LoadedCGModel implements Cloneable {
     // *************************************************************************
     // constructors
 
+    /**
+     * Instantiate with the specified asset manager.
+     *
+     * @param assetManager (not null)
+     */
     public LoadedCGModel(AssetManager assetManager) {
+        Validate.nonNull(assetManager, "asset manager");
         this.assetManager = assetManager;
     }
     // *************************************************************************

@@ -187,7 +187,7 @@ public class ViewState {
     /**
      * Copy a saved state to this one.
      *
-     * @param preparedRoot (not null)
+     * @param savedState (not null)
      */
     void restore(ViewState savedState) {
         assert cgModelRoot != null;
