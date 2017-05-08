@@ -58,7 +58,7 @@ class Checkpoint {
     /**
      * a copy of the view's CG model at time of creation
      */
-    final private ViewState viewCgm;
+    final private ViewCGModel viewCgm;
     // *************************************************************************
     // constructors
 

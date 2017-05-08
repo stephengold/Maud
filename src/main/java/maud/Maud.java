@@ -111,7 +111,7 @@ public class Maud extends GuiApplication {
      * the view's copy of the loaded CG model (set by
      * {@link maud.Maud#guiInitializeApplication()})
      */
-    public static ViewState viewState = null;
+    public static ViewCGModel viewState = null;
     // *************************************************************************
     // new methods exposed
 
@@ -157,7 +157,7 @@ public class Maud extends GuiApplication {
     @Override
     public void guiInitializeApplication() {
         model.cgm = new LoadedCGModel(assetManager);
-        viewState = new ViewState(assetManager, rootNode, null);
+        viewState = new ViewCGModel(assetManager, rootNode, null);
         /*
          * Attach screen controllers for the "3D View" screen and BindScreen.
          */

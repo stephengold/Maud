@@ -48,11 +48,11 @@ import jme3utilities.debug.SkeletonDebugControl;
 
 /**
  * Encapsulate the view's copy of the loaded CG model in Maud's "3D View"
- * screen. TODO rename
+ * screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class ViewState {
+public class ViewCGModel {
     // *************************************************************************
     // constants and loggers
 
@@ -60,7 +60,7 @@ public class ViewState {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            ViewState.class.getName());
+            ViewCGModel.class.getName());
     // *************************************************************************
     // fields
 
@@ -91,7 +91,7 @@ public class ViewState {
     // *************************************************************************
     // constructors
 
-    ViewState(AssetManager assetManager, Node rootNode, Spatial cgmRoot) {
+    ViewCGModel(AssetManager assetManager, Node rootNode, Spatial cgmRoot) {
         this.assetManager = assetManager;
         this.rootNode = rootNode;
         this.cgModelRoot = cgmRoot;
@@ -118,9 +118,9 @@ public class ViewState {
      *
      * @param preparedRoot (not null)
      */
-    ViewState createCopy() {
+    ViewCGModel createCopy() {
         Spatial cgmClone = cgModelRoot.clone();
-        ViewState result = new ViewState(assetManager, rootNode, cgmClone);
+        ViewCGModel result = new ViewCGModel(assetManager, rootNode, cgmClone);
 
         return result;
     }
@@ -203,7 +203,7 @@ public class ViewState {
      *
      * @param savedState (not null)
      */
-    void restore(ViewState savedState) {
+    void restore(ViewCGModel savedState) {
         assert cgModelRoot != null;
         /*
          * Detach the old spatial from the scene graph.
