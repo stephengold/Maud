@@ -100,6 +100,20 @@ public class ViewState {
     // new methods exposed
 
     /**
+     * Calculate the location of an indexed bone.
+     *
+     * @param boneIndex which bone to locate
+     * @return a new vector (in world coordinates)
+     */
+    Vector3f boneLocation(int boneIndex) {
+        Bone bone = skeleton.getBone(boneIndex);
+        Vector3f modelLocation = bone.getModelSpacePosition();
+        Vector3f location = cgModelRoot.localToWorld(modelLocation, null);
+
+        return location;
+    }
+
+    /**
      * Create a duplicate copy of this state for checkpointing.
      *
      * @param preparedRoot (not null)

@@ -26,6 +26,12 @@
  */
 package maud;
 
+import com.jme3.app.Application;
+import com.jme3.app.state.AppStateManager;
+import com.jme3.input.MouseInput;
+import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -58,7 +64,50 @@ class BoneTool extends WindowController {
         super(screenController, "boneTool", false);
     }
     // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Select the bone with screen coordinates nearest to the mouse pointer.
+     */
+    void selectXY() {
+        Vector2f mouseXY = inputManager.getCursorPosition();
+        float bestDSquared = Float.MAX_VALUE;
+        Maud.model.bone.selectNoBone();
+
+        int numBones = Maud.model.cgm.countBones();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            Vector3f boneWorld = Maud.viewState.boneLocation(boneIndex);
+            Vector3f boneScreen = cam.getScreenCoordinates(boneWorld);
+            Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
+            float dSquared = mouseXY.distanceSquared(boneXY);
+            if (dSquared < bestDSquared) {
+                bestDSquared = dSquared;
+                Maud.model.bone.select(boneIndex);
+            }
+        }
+    }
+    // *************************************************************************
     // AppState methods
+
+    /**
+     * Initialize this controller prior to its 1st update.
+     *
+     * @param stateManager (not null)
+     * @param application application which owns the window (not null)
+     */
+    @Override
+    public void initialize(AppStateManager stateManager,
+            Application application) {
+        super.initialize(stateManager, application);
+        /*
+         * Clicking the right mouse button (RMB) selects the bone with screen
+         * coordinates closest to the mouse pointer.
+         */
+        MouseButtonTrigger right = new MouseButtonTrigger(
+                MouseInput.BUTTON_RIGHT);
+        inputManager.addMapping("select boneXY", right);
+        inputManager.addListener(Maud.gui.inputMode, "select boneXY");
+    }
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

@@ -402,6 +402,10 @@ class DddMode extends InputMode {
                 Maud.model.bone.selectParent();
                 handled = true;
                 break;
+            case "select boneXY":
+                Maud.gui.bone.selectXY();
+                handled = true;
+                break;
             case "select spatialChild":
                 Maud.gui.selectSpatialChild();
                 handled = true;
