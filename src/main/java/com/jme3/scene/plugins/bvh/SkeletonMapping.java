@@ -8,8 +8,11 @@ import com.jme3.export.Savable;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,12 +20,20 @@ import java.util.Map;
  */
 public class SkeletonMapping implements Savable {
     // *************************************************************************
+    // constants and loggers
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger = Logger.getLogger(
+            SkeletonMapping.class.getName());
+    // *************************************************************************
     // fields
 
     /**
-     * map from target bone names to bone mappings
+     * map from target-bone names to bone mappings
      */
-    private Map<String, BoneMapping> mappings = new HashMap<String, BoneMapping>();
+    private Map<String, BoneMapping> mappings = new HashMap<>(50);
     // *************************************************************************
     // constructors
 
@@ -43,6 +54,19 @@ public class SkeletonMapping implements Savable {
     }
 
     /**
+     * Enumerate all target bones in this mapping.
+     *
+     * @return a new list of names
+     */
+    public List<String> listTargetBones() {
+        int numMappings = mappings.size();
+        List<String> result = new ArrayList<>(numMappings);
+        result.addAll(mappings.keySet());
+
+        return result;
+    }
+
+    /**
      * Builds a BoneMapping with the given bone from the target skeleton and the
      * given bone from the source skeleton.
      *
@@ -53,6 +77,7 @@ public class SkeletonMapping implements Savable {
     public BoneMapping map(String targetBone, String sourceBone) {
         BoneMapping mapping = new BoneMapping(targetBone, sourceBone);
         mappings.put(targetBone, mapping);
+
         return mapping;
     }
 
@@ -137,6 +162,7 @@ public class SkeletonMapping implements Savable {
         BoneMapping mapping = new BoneMapping(targetBone, twistAngle,
                 twistAxis);
         mappings.put(targetBone, mapping);
+
         return mapping;
     }
 
@@ -158,6 +184,7 @@ public class SkeletonMapping implements Savable {
      * @param ex exporter to use (not null)
      * @throws IOException from exporter
      */
+    @Override
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
         oc.writeStringSavableMap(mappings, "mappings", null);
@@ -169,10 +196,11 @@ public class SkeletonMapping implements Savable {
      * @param im importer to use (not null)
      * @throws IOException from importer
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
         mappings = (Map<String, BoneMapping>) ic.readStringSavableMap(
-                "mappings", new HashMap<String, BoneMapping>());
+                "mappings", new HashMap<String, BoneMapping>(50));
     }
 }
