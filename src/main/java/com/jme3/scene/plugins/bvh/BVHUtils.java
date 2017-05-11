@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jme3.scene.plugins.bvh;
 
 import com.jme3.animation.AnimControl;
@@ -20,13 +16,37 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Utility class for re-targeting animations between CG models.
+ *
+ * TODO constructor, logger, reorder methods
  *
  * @author Nehon
  */
 public class BVHUtils {
+    // *************************************************************************
+    // constants and loggers
 
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
+     */
     private static final Vector3f DEFAULT_SCALE = new Vector3f(Vector3f.UNIT_XYZ);
+    // *************************************************************************
+    // new methods exposed
 
+    /**
+     * Retarget an animation from one model to a different model.
+     *
+     * @param sourceModel CG model that contains the source animation (not null)
+     * @param targetModel CG model where the animation will be added (not null)
+     * @param sourceAnimation which animation to re-target (not null)
+     * @param sourceSkeleton the skeleton of the source model (not null)
+     * @param boneMapping mapping of bones from source model to target (not
+     * null)
+     * @param skipFirstKey true &rarr; skip first keyframe, false &rarr; use all
+     * keyframes
+     * @param targetName name for the resulting animation
+     * @return a new instance
+     */
     public static Animation reTarget(Spatial sourceModel, Spatial targetModel,
             Animation sourceAnimation, Skeleton sourceSkeleton,
             SkeletonMapping boneMapping, boolean skipFirstKey,
@@ -42,6 +62,21 @@ public class BVHUtils {
                 targetName);
     }
 
+    /**
+     * Retarget an animation from one model to a different model.
+     *
+     * @param sourceModel CG model that contains the source animation (not null)
+     * @param targetModel CG model where the animation will be added (not null)
+     * @param sourceAnimation which animation to re-target (not null)
+     * @param sourceSkeleton the skeleton of the source model (not null)
+     * @param timePerFrame (in seconds, &gt;0)
+     * @param boneMapping mapping of bones from source model to target (not
+     * null)
+     * @param skipFirstKey true &rarr; skip first keyframe, false &rarr; use all
+     * keyframes
+     * @param targetName name for the resulting animation
+     * @return a new instance
+     */
     public static Animation reTarget(Spatial sourceModel, Spatial targetModel,
             Animation sourceAnimation, Skeleton sourceSkeleton,
             float timePerFrame, SkeletonMapping boneMapping,
@@ -132,6 +167,8 @@ public class BVHUtils {
 
         return resultAniamtion;
     }
+    // *************************************************************************
+    // private methods
 
     private static BoneTrack findBoneTrack(int index, Animation anim) {
         for (int i = 0; i < anim.getTracks().length; i++) {
@@ -146,6 +183,21 @@ public class BVHUtils {
         return null;
     }
 
+    /**
+     * Apply the model-space transform for the indexed keyframe to each target
+     * bone. The source skeleton must be updated to that keyframe.
+     *
+     * @param targetBone (not null)
+     * @param sourceSkeleton the skeleton of the source model (not null)
+     * @param targetSkeleton
+     * @param boneMapping mapping of bones from source model to target (not
+     * null)
+     * @param frameId which keyframe to re-target (&ge;0)
+     * @param tracks
+     * @param animLength (in seconds, &ge;0)
+     * @param ratio
+     * @param anim
+     */
     //this method recursively computes the transforms for each bone for a given
     //frame, from a given sourceSkeleton (with bones updated to that frame)
     //
@@ -311,6 +363,12 @@ public class BVHUtils {
         }
     }
 
+    /**
+     * Estimate the height of a skeleton in bind pose.
+     *
+     * @param targetSkeleton
+     * @returh height (in model units, &ge;0)
+     */
     public static float getSkeletonHeight(Skeleton targetSkeleton) {
         float maxy = -100000;
         float miny = +100000;
@@ -331,6 +389,11 @@ public class BVHUtils {
         return maxy - miny;
     }
 
+    /**
+     * Print the specified quaternion as rotation angles. TODO remove
+     *
+     * @param q input to invert (not null)
+     */
     private static void outPutRotation(Quaternion q) {
 
         float[] angles = new float[3];
@@ -342,6 +405,12 @@ public class BVHUtils {
 
     }
 
+    /**
+     * Invert the specified quaternion. TODO remove
+     *
+     * @param q input to invert (not null)
+     * @return a new instance
+     */
     private static Quaternion invert(Quaternion q) {
 
         float[] angles = new float[3];
@@ -353,6 +422,12 @@ public class BVHUtils {
         return new Quaternion().fromAngles(angles);
     }
 
+    /**
+     * Find the first bone track in the specified animation.
+     *
+     * @param animation which animation to search (not null)
+     * @return the pre-existing instance, or null if none found
+     */
     public static BoneTrack getFirstBoneTrack(Animation animation) {
         for (Track track : animation.getTracks()) {
             if (track instanceof BoneTrack) {
