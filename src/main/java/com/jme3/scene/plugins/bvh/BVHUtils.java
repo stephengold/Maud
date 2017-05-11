@@ -29,7 +29,8 @@ public class BVHUtils {
 
     public static Animation reTarget(Spatial sourceModel, Spatial targetModel,
             Animation sourceAnimation, Skeleton sourceSkeleton,
-            SkeletonMapping boneMapping, boolean skipFirstKey) {
+            SkeletonMapping boneMapping, boolean skipFirstKey,
+            String targetName) {
         BoneTrack track = getFirstBoneTrack(sourceAnimation);
         if (track == null) {
             throw new IllegalArgumentException(
@@ -37,13 +38,14 @@ public class BVHUtils {
         }
         float timePerFrame = track.getTimes().length / sourceAnimation.getLength();
         return reTarget(sourceModel, targetModel, sourceAnimation,
-                sourceSkeleton, timePerFrame, boneMapping, skipFirstKey);
+                sourceSkeleton, timePerFrame, boneMapping, skipFirstKey,
+                targetName);
     }
 
     public static Animation reTarget(Spatial sourceModel, Spatial targetModel,
             Animation sourceAnimation, Skeleton sourceSkeleton,
             float timePerFrame, SkeletonMapping boneMapping,
-            boolean skipFirstKey) {
+            boolean skipFirstKey, String targetName) {
         Skeleton targetSkeleton = targetModel.getControl(
                 AnimControl.class).getSkeleton();
 
@@ -51,7 +53,7 @@ public class BVHUtils {
 
 //        Animation sourceAnimation = sourceData.getAnimation();
 //        Skeleton sourceSkeleton = sourceData.getSkeleton();
-        Animation resultAniamtion = new Animation(sourceAnimation.getName(),
+        Animation resultAniamtion = new Animation(targetName,
                 sourceAnimation.getLength() - start * timePerFrame);
         targetSkeleton.updateWorldVectors();
         float targetHeight = ((BoundingBox) targetModel.getWorldBound()).getYExtent()
