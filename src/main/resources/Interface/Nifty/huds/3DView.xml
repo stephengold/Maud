@@ -273,20 +273,20 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="boneAngleTool" title="Bone-Angle Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="200px" width="195px" x="60" y="40">
+                     height="220px" width="195px" x="60" y="40">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xAngSlider"
                                  buttonStepSize="3.14"
-                                 height="160"
+                                 height="180"
                                  initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
                         <control name="verticalSlider" id="yAngSlider"
                                  buttonStepSize="3.14"
-                                 height="160"
+                                 height="180"
                                  initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
                         <control name="verticalSlider" id="zAngSlider"
                                  buttonStepSize="3.14"
-                                 height="160"
+                                 height="180"
                                  initial="0" max="1.57" min="-1.57" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160px" width="110px">
@@ -307,6 +307,9 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                 </control>
                                 <panel/>
                             </panel>
+                            <control name="label" text="Reset to:"
+                                     textHAlign="center"
+                                     width="*"/>
                             <panel childLayout="horizontal" height="30px" >
                                 <panel/>
                                 <control name="button" id="resetAngAnimButton"
@@ -362,6 +365,9 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                             <control name="label" id="zOffSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
+                            <control name="label" text="Reset to:"
+                                     textHAlign="center"
+                                     width="*"/>
                             <panel childLayout="horizontal" height="30px" >
                                 <panel/>
                                 <control name="button" id="resetOffAnimButton"
@@ -410,6 +416,9 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                      textHAlign="center"
                                      width="*"/>
                             <control name="label" id="zScaSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" text="Reset to:"
                                      textHAlign="center"
                                      width="*"/>
                             <panel childLayout="horizontal" height="30px" >
