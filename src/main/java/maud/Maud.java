@@ -26,6 +26,7 @@
  */
 package maud;
 
+import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.audio.openal.ALAudioRenderer;
 import com.jme3.material.Material;
@@ -219,6 +220,10 @@ public class Maud extends GuiApplication {
                     return;
                 case "print scene":
                     printer.printSubtree(rootNode);
+                    return;
+                case "quit":
+                    gui.showConfirmDialog("Quit Maud?", "Quit",
+                            SimpleApplication.INPUT_MAPPING_EXIT, null);
                     return;
             }
         }
