@@ -31,7 +31,6 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.MouseAxisTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.util.logging.Level;
@@ -196,7 +195,6 @@ class CameraTool
         super.initialize(stateManager, application);
         assert Maud.gui.cursor.isInitialized();
 
-        signals.add(cameraSignalName);
         mapButton();
 
         Vector3f initialLocation = new Vector3f(-2.4f, 1f, 1.6f);
@@ -212,11 +210,6 @@ class CameraTool
      * the camera position.
      */
     private void mapButton() {
-        String actionString = String.format("signal %s 0", cameraSignalName);
-        MouseButtonTrigger middle = new MouseButtonTrigger(
-                MouseInput.BUTTON_MIDDLE);
-        inputManager.addMapping(actionString, middle);
-        inputManager.addListener(signals, actionString);
         /*
          * Turning the mouse wheel up triggers move backward.
          */
@@ -272,9 +265,6 @@ class CameraTool
      * control the camera position.
      */
     private void unmapButton() {
-        String actionString = String.format("signal %s 0", cameraSignalName);
-        inputManager.deleteMapping(actionString);
-
         inputManager.deleteMapping(moveForwardEvent);
         inputManager.deleteMapping(moveBackwardEvent);
         inputManager.deleteMapping(moveDownEvent);

@@ -26,10 +26,6 @@
  */
 package maud;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import java.util.List;
@@ -88,26 +84,6 @@ class BoneTool extends WindowController {
     }
     // *************************************************************************
     // AppState methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application which owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-        /*
-         * Clicking the right mouse button (RMB) selects the bone with screen
-         * coordinates closest to the mouse pointer.
-         */
-        MouseButtonTrigger right = new MouseButtonTrigger(
-                MouseInput.BUTTON_RIGHT);
-        inputManager.addMapping("select boneXY", right);
-        inputManager.addListener(Maud.gui.inputMode, "select boneXY");
-    }
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

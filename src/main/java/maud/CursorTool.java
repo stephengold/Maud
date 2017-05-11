@@ -30,8 +30,6 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
@@ -174,13 +172,6 @@ class CursorTool extends WindowController {
     public void initialize(AppStateManager stateManager,
             Application application) {
         super.initialize(stateManager, application);
-        /*
-         * Clicking the left mouse button (LMB) warps the cursor.
-         */
-        MouseButtonTrigger left = new MouseButtonTrigger(
-                MouseInput.BUTTON_LEFT);
-        inputManager.addMapping("warp cursor", left);
-        inputManager.addListener(Maud.gui.inputMode, "warp cursor");
         /*
          * Load a geometry for the cursor.
          */
