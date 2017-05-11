@@ -601,9 +601,12 @@ public class DddGui extends GuiScreenController {
     void selectRetargetMapAsset() {
         closeAllPopups();
         String assetPath = Maud.model.retarget.getMappingAssetPath();
-        showTextEntryDialog("Enter asset path for skeleton mapping:",
-                assetPath, "Load", DddInputMode.selectRetargetMapAssetPrefix,
-                null);
+        List<String> modelExts = new ArrayList<>(1);
+        modelExts.add(".j3o");
+        AssetDialog controller = new AssetDialog("Load", modelExts,
+                assetManager);
+        showTextEntryDialog("Enter asset path for skeleton mapping:", assetPath,
+                "", DddInputMode.selectRetargetMapAssetPrefix, controller);
     }
 
     /**
@@ -624,8 +627,14 @@ public class DddGui extends GuiScreenController {
     void selectRetargetSourceCgmAsset() {
         closeAllPopups();
         String assetPath = Maud.model.retarget.getSourceCgmAssetPath();
-        showTextEntryDialog("Enter asset path for source model:", assetPath, 
-                "Load", DddInputMode.selectRetargetSourceCgmAssetPrefix, null);
+        List<String> modelExts = new ArrayList<>(4);
+        modelExts.add(".blend");
+        modelExts.add(".j3o");
+        modelExts.add(".mesh.xml");
+        AssetDialog controller = new AssetDialog("Load", modelExts,
+                assetManager);
+        showTextEntryDialog("Enter asset path for source model:", assetPath, "",
+                DddInputMode.selectRetargetSourceCgmAssetPrefix, controller);
     }
 
     /**
@@ -1287,13 +1296,18 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "Load asset path":
+                closeAllPopups();
                 String basePath = Maud.model.cgm.getAssetPath();
                 String extension = Maud.model.cgm.getExtension();
                 String assetPath = String.format("%s.%s", basePath, extension);
-                closeAllPopups();
-                showTextEntryDialog("Enter base asset path for model:",
-                        assetPath, "Load", DddInputMode.loadModelAssetPrefix,
-                        null);
+                List<String> modelExts = new ArrayList<>(4);
+                modelExts.add(".blend");
+                modelExts.add(".j3o");
+                modelExts.add(".mesh.xml");
+                AssetDialog controller = new AssetDialog("Load", modelExts,
+                        assetManager);
+                showTextEntryDialog("Enter asset path for model:", assetPath,
+                        "", DddInputMode.loadModelAssetPrefix, controller);
                 handled = true;
                 break;
 
