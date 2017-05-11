@@ -322,6 +322,47 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Add a copy of the loaded animation to the CG model.
+     *
+     * @param animationName name for the new animation (not null, not empty, not
+     * bindPoseName, not in use)
+     */
+    public void newCopy(String animationName) {
+        Validate.nonEmpty(animationName, "animation name");
+        assert !animationName.equals(bindPoseName) : animationName;
+        assert !Maud.model.cgm.hasAnimation(animationName) : animationName;
+
+        Animation loaded = Maud.model.animation.getLoadedAnimation();
+        float duration = Maud.model.animation.getDuration();
+        Animation copyAnim = new Animation(animationName, duration);
+        if (loaded != null) {
+            Track[] loadedTracks = loaded.getTracks();
+            for (Track track : loadedTracks) {
+                Track clone = track.clone();
+                copyAnim.addTrack(clone);
+            }
+        }
+        Maud.model.cgm.addAnimation(copyAnim);
+    }
+
+    /**
+     * Add a new pose animation to the CG model. The new animation has zero
+     * duration, a single keyframe at t=0, and all the tracks are BoneTracks,
+     * set to the current pose.
+     *
+     * @param animationName name for the new animation (not null, not empty, not
+     * bindPoseName, not in use)
+     */
+    public void newPose(String animationName) {
+        Validate.nonEmpty(animationName, "animation name");
+        assert !animationName.equals(bindPoseName) : animationName;
+        assert !Maud.model.cgm.hasAnimation(animationName) : animationName;
+
+        Animation poseAnim = Maud.model.pose.capture(animationName);
+        Maud.model.cgm.addAnimation(poseAnim);
+    }
+
+    /**
      * Rename the loaded animation.
      *
      * @param newName (not null)

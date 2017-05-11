@@ -54,6 +54,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.debug.DebugVersion;
 import jme3utilities.math.MyMath;
+import jme3utilities.nifty.DialogController;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.nifty.WindowController;
@@ -108,6 +109,7 @@ public class DddGui extends GuiScreenController {
     final CursorTool cursor = new CursorTool(this);
     final ModelTool model = new ModelTool(this);
     final RenderTool render = new RenderTool(this);
+    final RetargetTool retarget = new RetargetTool(this);
     final ShadowModeTool shadowMode = new ShadowModeTool(this);
     final SkeletonTool skeleton = new SkeletonTool(this);
     final SpatialTool spatial = new SpatialTool(this);
@@ -124,6 +126,28 @@ public class DddGui extends GuiScreenController {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Display the "copy animation" dialog.
+     */
+    void copyAnimation() {
+        closeAllPopups();
+        String fromName = Maud.model.animation.getName();
+        DialogController controller = new AnimationNameDialog("Copy");
+        showTextEntryDialog("Enter name for copied animation:",
+                fromName, "", DddInputMode.copyAnimationPrefix,
+                controller);
+    }
+
+    /**
+     * Handle a "copy pose" action with arguments.
+     *
+     * @param argument action argument (not null)
+     */
+    void copyAnimation(String argument) {
+        Maud.model.animation.newCopy(argument);
+        Maud.model.animation.load(argument);
+    }
 
     /**
      * Handle a "load model file" action where the argument may be the name of a
@@ -144,6 +168,26 @@ public class DddGui extends GuiScreenController {
         } else if (file.canRead()) {
             Maud.model.cgm.loadModelFile(file);
         }
+    }
+
+    /**
+     * Display the "new pose" dialog.
+     */
+    void newPose() {
+        closeAllPopups();
+        DialogController controller = new AnimationNameDialog("Create");
+        showTextEntryDialog("Enter a name for the new animation:", "pose", "",
+                DddInputMode.newPosePrefix, controller);
+    }
+
+    /**
+     * Handle a "new pose" action with arguments.
+     *
+     * @param argument action argument (not null)
+     */
+    void newPose(String argument) {
+        Maud.model.animation.newPose(argument);
+        Maud.model.animation.load(argument);
     }
 
     /**
@@ -407,27 +451,53 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
-     * Show the "rename animation" dialog.
+     * Display the "rename animation" dialog.
      */
     void renameAnimation() {
         if (!Maud.model.animation.isBindPoseLoaded()) {
             closeAllPopups();
             String oldName = Maud.model.animation.getName();
-            showTextEntryDialog("Enter new name for animation:",
-                    oldName, "Rename", DddInputMode.renameAnimationPrefix);
+            DialogController controller = new AnimationNameDialog("Rename");
+            showTextEntryDialog("Enter new name for the animation:", oldName,
+                    "", DddInputMode.renameAnimationPrefix, controller);
         }
     }
 
     /**
-     * Show the "rename bone" dialog.
+     * Display the "rename bone" dialog.
      */
     void renameBone() {
         if (Maud.model.bone.isBoneSelected()) {
             closeAllPopups();
             String oldName = Maud.model.bone.getName();
             showTextEntryDialog("Enter new name for bone:", oldName, "Rename",
-                    DddInputMode.renameBonePrefix);
+                    DddInputMode.renameBonePrefix, null);
         }
+    }
+
+    /**
+     * Handle a "retarget animation" action without arguments.
+     */
+    void retargetAnimation() {
+        closeAllPopups();
+        String oldName = Maud.model.retarget.getTargetAnimationName();
+        if (oldName == null) {
+            oldName = "";
+        }
+        DialogController controller = new AnimationNameDialog("Retarget");
+        showTextEntryDialog("Enter a name for the new animation:", oldName, "",
+                DddInputMode.retargetAnimationPrefix, controller);
+    }
+
+    /**
+     * Handle a "retarget animation" action with arguments.
+     *
+     * @param argument action argument (not null)
+     */
+    void retargetAnimation(String argument) {
+        Maud.model.retarget.setTargetAnimationName(argument);
+        Maud.model.retarget.retargetAndAdd();
+        Maud.model.animation.load(argument);
     }
 
     /**
@@ -526,10 +596,36 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
-     * Handle a "select spatialParent" action.
+     * Handle a "select rma" action with no argument.
      */
-    void selectSpatialParent() {
-        Maud.model.spatial.selectParent();
+    void selectRetargetMapAsset() {
+        closeAllPopups();
+        String assetPath = Maud.model.retarget.getMappingAssetPath();
+        showTextEntryDialog("Enter asset path for skeleton mapping:",
+                assetPath, "Load", DddInputMode.selectRetargetMapAssetPrefix,
+                null);
+    }
+
+    /**
+     * Handle a "select rsa" action with no argument.
+     */
+    void selectRetargetSourceAnimation() {
+        List<String> names = Maud.model.retarget.listAnimationNames();
+        if (!names.isEmpty()) {
+            Collections.sort(names);
+            showPopupMenu(DddInputMode.selectRetargetSourceAnimationPrefix,
+                    names);
+        }
+    }
+
+    /**
+     * Handle a "select rsca" action with no argument.
+     */
+    void selectRetargetSourceCgmAsset() {
+        closeAllPopups();
+        String assetPath = Maud.model.retarget.getSourceCgmAssetPath();
+        showTextEntryDialog("Enter asset path for source model:", assetPath, 
+                "Load", DddInputMode.selectRetargetSourceCgmAssetPrefix, null);
     }
 
     /**
@@ -573,6 +669,9 @@ public class DddGui extends GuiScreenController {
                 break;
             case "render":
                 controller = render;
+                break;
+            case "retarget":
+                controller = retarget;
                 break;
             case "shadowMode":
                 controller = shadowMode;
@@ -761,8 +860,8 @@ public class DddGui extends GuiScreenController {
         items.add("Tool");
         items.add("Load");
         items.add("New from copy");
-        items.add("New from BVH");
         items.add("New from pose");
+        items.add("New from retarget");
         if (!Maud.model.animation.isBindPoseLoaded()) {
             items.add("Duration");
             items.add("Tweening");
@@ -1022,11 +1121,13 @@ public class DddGui extends GuiScreenController {
         boolean handled = false;
         switch (remainder) {
             case "Delete":
+                // TODO confirm first
                 animation.delete();
                 handled = true;
                 break;
 
             case "Duration":
+                // TODO
                 break;
 
             case "Load":
@@ -1036,22 +1137,18 @@ public class DddGui extends GuiScreenController {
                 handled = true;
                 break;
 
-            case "New from BVH":
-                break;
-
             case "New from copy":
-                String fromName = Maud.model.animation.getName();
-                String toName = String.format("Copy of %s", fromName);
-                closeAllPopups();
-                showTextEntryDialog("Enter name for new animation:",
-                        toName, "Copy", DddInputMode.copyAnimationPrefix);
+                copyAnimation();
                 handled = true;
                 break;
 
             case "New from pose":
-                String newName = "new-animation"; // TODO
-                Maud.model.cgm.addPoseAnimation(newName);
-                Maud.model.animation.load(newName);
+                newPose();
+                handled = true;
+                break;
+
+            case "New from retarget":
+                retarget.select();
                 handled = true;
                 break;
 
@@ -1195,13 +1292,15 @@ public class DddGui extends GuiScreenController {
                 String assetPath = String.format("%s.%s", basePath, extension);
                 closeAllPopups();
                 showTextEntryDialog("Enter base asset path for model:",
-                        assetPath, "Load", DddInputMode.loadModelAssetPrefix);
+                        assetPath, "Load", DddInputMode.loadModelAssetPrefix,
+                        null);
                 handled = true;
                 break;
 
             case "Load from file":
                 List<String> fileNames = listFileNames("/");
-                showPopupMenu(DddInputMode.loadModelFilePrefix + "/", fileNames);
+                showPopupMenu(DddInputMode.loadModelFilePrefix + "/",
+                        fileNames);
                 handled = true;
                 break;
 
@@ -1213,7 +1312,8 @@ public class DddGui extends GuiScreenController {
                 String baseAssetPath = Maud.model.cgm.getAssetPath();
                 closeAllPopups();
                 showTextEntryDialog("Enter base asset path for model:",
-                        baseAssetPath, "Save", DddInputMode.saveModelAssetPrefix);
+                        baseAssetPath, "Save",
+                        DddInputMode.saveModelAssetPrefix, null);
                 handled = true;
                 break;
 
@@ -1221,7 +1321,8 @@ public class DddGui extends GuiScreenController {
                 String baseFilePath = Maud.model.cgm.getFilePath();
                 closeAllPopups();
                 showTextEntryDialog("Enter base file path for model:",
-                        baseFilePath, "Save", DddInputMode.saveModelFilePrefix);
+                        baseFilePath, "Save", DddInputMode.saveModelFilePrefix,
+                        null);
                 handled = true;
                 break;
 

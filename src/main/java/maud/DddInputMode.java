@@ -47,7 +47,8 @@ class DddInputMode extends InputMode {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(DddInputMode.class.getName());
+    final private static Logger logger = Logger.getLogger(
+            DddInputMode.class.getName());
     /**
      * asset path to the cursor for this mode
      */
@@ -61,12 +62,17 @@ class DddInputMode extends InputMode {
     final static String loadModelFilePrefix = "load model file ";
     final static String loadModelNamedPrefix = "load model named ";
     final static String openMenuPrefix = "open menu ";
+    final static String newPosePrefix = "new pose ";
     final static String renameAnimationPrefix = "rename animation ";
     final static String renameBonePrefix = "rename bone ";
+    final static String retargetAnimationPrefix = "retarget animation ";
     final static String saveModelAssetPrefix = "save model asset ";
     final static String saveModelFilePrefix = "save model file ";
     final static String selectBonePrefix = "select bone ";
     final static String selectBoneChildPrefix = "select boneChild ";
+    final static String selectRetargetMapAssetPrefix = "select rma ";
+    final static String selectRetargetSourceAnimationPrefix = "select rsa ";
+    final static String selectRetargetSourceCgmAssetPrefix = "select rsca ";
     final static String selectSpatialChildPrefix = "select spatialChild ";
     final static String selectToolPrefix = "select tool ";
     // *************************************************************************
@@ -123,6 +129,9 @@ class DddInputMode extends InputMode {
                     break;
                 case "reset":
                     handled = resetAction(actionString);
+                    break;
+                case "retarget":
+                    handled = retargetAction(actionString);
                     break;
                 case "save":
                     handled = saveAction(actionString);
@@ -188,7 +197,7 @@ class DddInputMode extends InputMode {
         if (actionString.startsWith(copyAnimationPrefix)) {
             String destName = MyString.remainder(actionString,
                     copyAnimationPrefix);
-            Maud.model.cgm.copyAnimation(destName);
+            Maud.gui.copyAnimation(destName);
             handled = true;
         }
 
@@ -239,6 +248,13 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         if (actionString.equals("new checkpoint")) {
             History.add();
+            handled = true;
+        } else if (actionString.equals("new pose")) {
+            Maud.gui.newPose();
+            handled = true;
+        } else if (actionString.startsWith(newPosePrefix)) {
+            String name = MyString.remainder(actionString, newPosePrefix);
+            Maud.gui.newPose(name);
             handled = true;
         }
 
@@ -362,6 +378,29 @@ class DddInputMode extends InputMode {
     }
 
     /**
+     * Process a "retarget" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean retargetAction(String actionString) {
+        boolean handled = false;
+
+        if (actionString.startsWith(retargetAnimationPrefix)) {
+            String name = MyString.remainder(actionString,
+                    retargetAnimationPrefix);
+            Maud.gui.retargetAnimation(name);
+            handled = true;
+
+        } else if (actionString.equals("retarget animation")) {
+            Maud.gui.retargetAnimation();
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
      * Process a "save" action.
      *
      * @param actionString textual description of the action (not null)
@@ -405,6 +444,18 @@ class DddInputMode extends InputMode {
                 Maud.gui.bone.selectXY();
                 handled = true;
                 break;
+            case "select rma":
+                Maud.gui.selectRetargetMapAsset();
+                handled = true;
+                break;
+            case "select rsa":
+                Maud.gui.selectRetargetSourceAnimation();
+                handled = true;
+                break;
+            case "select rsca":
+                Maud.gui.selectRetargetSourceCgmAsset();
+                handled = true;
+                break;
             case "select spatialChild":
                 Maud.gui.selectSpatialChild();
                 handled = true;
@@ -424,6 +475,27 @@ class DddInputMode extends InputMode {
             } else if (actionString.startsWith(selectBoneChildPrefix)) {
                 arg = MyString.remainder(actionString, selectBoneChildPrefix);
                 Maud.gui.selectBoneChild(arg);
+                handled = true;
+
+            } else if (actionString.startsWith(
+                    selectRetargetMapAssetPrefix)) {
+                arg = MyString.remainder(actionString,
+                        selectRetargetMapAssetPrefix);
+                Maud.model.retarget.setMappingAssetPath(arg);
+                handled = true;
+
+            } else if (actionString.startsWith(
+                    selectRetargetSourceAnimationPrefix)) {
+                arg = MyString.remainder(actionString,
+                        selectRetargetSourceAnimationPrefix);
+                Maud.model.retarget.setSourceAnimationName(arg);
+                handled = true;
+
+            } else if (actionString.startsWith(
+                    selectRetargetSourceCgmAssetPrefix)) {
+                arg = MyString.remainder(actionString,
+                        selectRetargetSourceCgmAssetPrefix);
+                Maud.model.retarget.setSourceCgmAssetPath(arg);
                 handled = true;
 
             } else if (actionString.startsWith(selectSpatialChildPrefix)) {

@@ -49,6 +49,7 @@ import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
 import maud.model.DddModel;
 import maud.model.LoadedCGModel;
+import maud.model.RetargetParameters;
 
 /**
  * GUI application to edit jMonkeyEngine animated models. The application's main
@@ -157,6 +158,7 @@ public class Maud extends GuiApplication {
     @Override
     public void guiInitializeApplication() {
         model.cgm = new LoadedCGModel(assetManager);
+        model.retarget = new RetargetParameters(assetManager);
         viewState = new ViewCGModel(assetManager, rootNode, null);
         /*
          * Attach screen controllers for the "3D View" screen and BindScreen.
@@ -172,8 +174,8 @@ public class Maud extends GuiApplication {
          */
         stateManager.attachAll(gui.animation, gui.axes, gui.bone, gui.boneAngle,
                 gui.boneOffset, gui.boneScale, gui.cullHint, gui.cursor,
-                gui.camera, gui.model, gui.render, gui.skeleton, gui.shadowMode,
-                gui.sky, gui.spatial);
+                gui.camera, gui.model, gui.render, gui.retarget, gui.skeleton,
+                gui.shadowMode, gui.sky, gui.spatial);
         /*
          * Disable flyCam.
          */

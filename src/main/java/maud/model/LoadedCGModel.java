@@ -38,7 +38,6 @@ import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
@@ -56,7 +55,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
@@ -87,8 +85,7 @@ public class LoadedCGModel implements Cloneable {
     // fields
 
     /**
-     * asset manager for loading CG models (set by
-     * {@link #setAssetManager(com.jme3.asset.AssetManager)}
+     * asset manager for loading CG models (set by constructor}
      */
     private AssetManager assetManager = null;
     /**
@@ -131,61 +128,16 @@ public class LoadedCGModel implements Cloneable {
     // new methods exposed
 
     /**
-     * Add a pose animation to the model. The new animation has zero duration, a
-     * single keyframe at t=0, and all the tracks are BoneTracks, set to the
-     * current pose.
+     * Add a new animation to the model.
      *
-     * @param animationName name for the new animation (not null, not empty)
+     * @param newAnimation (not null, name not in use)
      */
-    public void addPoseAnimation(String animationName) {
-        Validate.nonEmpty(animationName, "animation name");
-        /*
-         * Check whether the name is in use.
-         */
+    void addAnimation(Animation newAnimation) {
+        Validate.nonNull(newAnimation, "new animation");
+        assert !hasAnimation(newAnimation.getName());
+
         AnimControl control = getAnimControl();
-        Collection<String> names = control.getAnimationNames();
-        if (names.contains(animationName)) {
-            logger.log(Level.WARNING, "replacing existing animation {0}",
-                    MyString.quote(animationName));
-            Animation oldAnimation = control.getAnim(animationName);
-            control.removeAnim(oldAnimation);
-        }
-
-        Animation poseAnim = captureCurrentPose(animationName);
-        control.addAnim(poseAnim);
-        setEdited();
-    }
-
-    /**
-     * Add a copy of the loaded animation to the model.
-     *
-     * @param animationName name for the new animation (not null, not empty)
-     */
-    public void copyAnimation(String animationName) {
-        Validate.nonEmpty(animationName, "animation name");
-        /*
-         * Check whether the name is in use.
-         */
-        AnimControl control = getAnimControl();
-        Collection<String> names = control.getAnimationNames();
-        if (names.contains(animationName)) {
-            logger.log(Level.WARNING, "replacing existing animation {0}",
-                    MyString.quote(animationName));
-            Animation oldAnimation = control.getAnim(animationName);
-            control.removeAnim(oldAnimation);
-        }
-
-        Animation loaded = Maud.model.animation.getLoadedAnimation();
-        float duration = Maud.model.animation.getDuration();
-        Animation copy = new Animation(animationName, duration);
-        if (loaded != null) {
-            Track[] loadedTracks = loaded.getTracks();
-            for (Track track : loadedTracks) {
-                Track clone = track.clone();
-                copy.addTrack(clone);
-            }
-        }
-        control.addAnim(copy);
+        control.addAnim(newAnimation);
         setEdited();
     }
 
@@ -349,6 +301,23 @@ public class LoadedCGModel implements Cloneable {
         Skeleton skeleton = MySkeleton.getSkeleton(rootSpatial);
         assert skeleton != null;
         return skeleton;
+    }
+
+    /**
+     * Test whether the skeleton contains the named animation.
+     *
+     * @param name (not null)
+     * @return true if found or bindPose, otherwise false
+     */
+    public boolean hasAnimation(String name) {
+        Validate.nonNull(name, "name");
+
+        Animation animation = getAnimation(name);
+        if (animation == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -625,45 +594,18 @@ public class LoadedCGModel implements Cloneable {
     /**
      * Rename the loaded animation.
      *
-     * @param newName new name (not null)
-     * @return true if successful, otherwise false
+     * @param newName new name (not null, not empty, not bindPoseName, not in
+     * use)
      */
-    public boolean renameAnimation(String newName) {
-        Validate.nonNull(newName, "animation name");
+    public void renameAnimation(String newName) {
+        Validate.nonEmpty(newName, "new name");
+        assert !newName.equals(LoadedAnimation.bindPoseName) : newName;
+        assert !Maud.model.cgm.hasAnimation(newName) : newName;
+        assert !Maud.model.animation.isBindPoseLoaded();
 
-        if (newName.equals(LoadedAnimation.bindPoseName)
-                || newName.isEmpty()) {
-            logger.log(Level.WARNING, "Rename failed: {0} is a reserved name.",
-                    MyString.quote(newName));
-            return false;
-
-        } else if (getAnimation(newName) != null) {
-            logger.log(Level.WARNING,
-                    "Rename failed: an animation named {0} already exists.",
-                    MyString.quote(newName));
-            return false;
-        }
-        if (Maud.model.animation.isBindPoseLoaded()) {
-            logger.log(Level.WARNING,
-                    "Rename failed: cannot rename bind pose.");
-            return false;
-        }
-
-        Animation oldAnimation = Maud.model.animation.getLoadedAnimation();
-        float length = oldAnimation.getLength();
-        Animation newAnimation = new Animation(newName, length);
-        for (Track track : oldAnimation.getTracks()) {
-            newAnimation.addTrack(track);
-        }
-
-        AnimControl animControl = getAnimControl();
-        animControl.removeAnim(oldAnimation);
-        animControl.addAnim(newAnimation);
-        setEdited();
-
+        Maud.model.animation.newCopy(newName);
+        deleteAnimation();
         Maud.model.animation.rename(newName);
-
-        return true;
     }
 
     /**
@@ -856,42 +798,6 @@ public class LoadedCGModel implements Cloneable {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Capture the model's current pose as an animation. The new animation has a
-     * zero duration, a single keyframe at t=0, and all its tracks are
-     * BoneTracks.
-     *
-     * @parm animationName name for the new animation (not null)
-     * @return a new instance
-     */
-    private Animation captureCurrentPose(String animationName) {
-        assert animationName != null;
-        assert !animationName.isEmpty();
-        /*
-         * Start with an empty animation.
-         */
-        float duration = 0f;
-        Animation result = new Animation(animationName, duration);
-        /*
-         * Add a BoneTrack for each bone that's not in bind pose.
-         */
-        int numBones = countBones();
-        Transform transform = new Transform();
-        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            Maud.model.pose.copyTransform(boneIndex, transform);
-            if (!Misc.isIdentity(transform)) {
-                Vector3f translation = transform.getTranslation();
-                Quaternion rotation = transform.getRotation();
-                Vector3f scale = transform.getScale();
-                BoneTrack track = MyAnimation.createTrack(boneIndex,
-                        translation, rotation, scale);
-                result.addTrack(track);
-            }
-        }
-
-        return result;
-    }
 
     /**
      * Find the track for the selected bone in the loaded animation.

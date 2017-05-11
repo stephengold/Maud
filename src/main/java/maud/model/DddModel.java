@@ -74,6 +74,11 @@ public class DddModel {
      */
     final public Pose pose;
     /**
+     * parameters for re-targeting animations (set by
+     * {@link maud.Maud#guiInitializeApplication()})
+     */
+    public RetargetParameters retarget = null;
+    /**
      * which bone is selected
      */
     final public SelectedBone bone;
@@ -96,9 +101,10 @@ public class DddModel {
         camera = new CameraStatus();
         cursor = new CursorStatus();
         animation = new LoadedAnimation();
-        /* cgm field will be set later */ 
+        /* cgm field will be set later */
         misc = new MiscStatus();
         pose = new Pose();
+        /* retarget field will be set later */
         bone = new SelectedBone();
         spatial = new SelectedSpatial();
         skeleton = new SkeletonStatus();
@@ -119,6 +125,7 @@ public class DddModel {
             misc = (MiscStatus) source.misc.clone();
             pose = (Pose) source.pose.clone();
             bone = (SelectedBone) source.bone.clone();
+            retarget = (RetargetParameters) source.retarget.clone();
             spatial = (SelectedSpatial) source.spatial.clone();
             skeleton = (SkeletonStatus) source.skeleton.clone();
         } catch (CloneNotSupportedException e) {

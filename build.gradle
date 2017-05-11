@@ -39,8 +39,8 @@ dependencies {
     compile 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
     compile 'jme3utilities:SkyControl:0.9.3'
     compile 'jme3utilities:jme3-utilities-debug:0.5.2'
-    compile 'jme3utilities:jme3-utilities-ui:0.5.0'
-    compile 'jme3utilities:jme3-utilities-nifty:0.6.2'
+    compile 'jme3utilities:jme3-utilities-ui:0.5.1'
+    compile 'jme3utilities:jme3-utilities-nifty:0.6.3'
     compile 'jme3utilities:jme3-utilities-x:0.2.0'
 }
 

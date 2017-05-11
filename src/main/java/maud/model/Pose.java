@@ -26,12 +26,16 @@
  */
 package maud.model;
 
+import com.jme3.animation.Animation;
+import com.jme3.animation.BoneTrack;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
+import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import maud.Maud;
 
@@ -57,6 +61,40 @@ public class Pose implements Cloneable {
     private List<Transform> transforms = new ArrayList<>(30);
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Capture the pose as an animation. The new animation has a zero duration,
+     * a single keyframe at t=0, and all its tracks are BoneTracks.
+     *
+     * @parm animationName name for the new animation (not null)
+     * @return a new instance
+     */
+    Animation capture(String animationName) {
+        assert animationName != null;
+        /*
+         * Start with an empty animation.
+         */
+        float duration = 0f;
+        Animation result = new Animation(animationName, duration);
+        /*
+         * Add a BoneTrack for each bone that's not in bind pose.
+         */
+        int numBones = Maud.model.cgm.countBones();
+        Transform transform = new Transform();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            copyTransform(boneIndex, transform);
+            if (!Misc.isIdentity(transform)) {
+                Vector3f translation = transform.getTranslation();
+                Quaternion rotation = transform.getRotation();
+                Vector3f scale = transform.getScale();
+                BoneTrack track = MyAnimation.createTrack(boneIndex,
+                        translation, rotation, scale);
+                result.addTrack(track);
+            }
+        }
+
+        return result;
+    }
 
     /**
      * Copy the user transform of the indexed bone in this pose.
