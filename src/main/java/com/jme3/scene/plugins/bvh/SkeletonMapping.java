@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
+ * TODO reorder methods
  *
  * @author Nehon
  */
@@ -51,6 +52,21 @@ public class SkeletonMapping implements Savable {
      */
     public void addMapping(BoneMapping mapping) {
         mappings.put(mapping.getTargetName(), mapping);
+    }
+
+    /**
+     * Enumerate all source bones in this mapping.
+     *
+     * @return a new list of names
+     */
+    public List<String> listSourceBones() {
+        List<String> result = new ArrayList<>(100);
+        for (BoneMapping boneMapping : mappings.values()) {
+            List<String> names = boneMapping.getSourceNames();
+            result.addAll(names);
+        }
+
+        return result;
     }
 
     /**
