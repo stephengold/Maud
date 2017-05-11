@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * TODO reorder methods
+ * The data required to map bone transforms from one CG model to another: a
+ * collection of bone mappings.
  *
  * @author Nehon
  */
@@ -52,6 +53,16 @@ public class SkeletonMapping implements Savable {
      */
     public void addMapping(BoneMapping mapping) {
         mappings.put(mapping.getTargetName(), mapping);
+    }
+
+    /**
+     * Find the bone mapping for the named target bone.
+     *
+     * @param targetBoneName which target bone
+     * @return the pre-existing instance
+     */
+    public BoneMapping get(String targetBoneName) {
+        return mappings.get(targetBoneName);
     }
 
     /**
@@ -181,30 +192,8 @@ public class SkeletonMapping implements Savable {
 
         return mapping;
     }
-
-    /**
-     * Find the bone mapping for the named target bone.
-     *
-     * @param targetBoneName which target bone
-     * @return the pre-existing instance
-     */
-    public BoneMapping get(String targetBoneName) {
-        return mappings.get(targetBoneName);
-    }
     // *************************************************************************
     // Savable methods
-
-    /**
-     * Serialize this instance.
-     *
-     * @param ex exporter to use (not null)
-     * @throws IOException from exporter
-     */
-    @Override
-    public void write(JmeExporter ex) throws IOException {
-        OutputCapsule oc = ex.getCapsule(this);
-        oc.writeStringSavableMap(mappings, "mappings", null);
-    }
 
     /**
      * De-serialize this mapping.
@@ -218,5 +207,17 @@ public class SkeletonMapping implements Savable {
         InputCapsule ic = im.getCapsule(this);
         mappings = (Map<String, BoneMapping>) ic.readStringSavableMap(
                 "mappings", new HashMap<String, BoneMapping>(50));
+    }
+
+    /**
+     * Serialize this instance.
+     *
+     * @param ex exporter to use (not null)
+     * @throws IOException from exporter
+     */
+    @Override
+    public void write(JmeExporter ex) throws IOException {
+        OutputCapsule oc = ex.getCapsule(this);
+        oc.writeStringSavableMap(mappings, "mappings", null);
     }
 }
