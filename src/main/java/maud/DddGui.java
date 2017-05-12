@@ -560,6 +560,19 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
+     * Handle a "select boneWithTrack" action.
+     */
+    void selectBoneWithTrack() {
+        List<String> bonesWithTrack = Maud.model.animation.listBonesWithTrack();
+        int numBoneTracks = bonesWithTrack.size();
+        if (numBoneTracks == 1) {
+            Maud.model.bone.select(bonesWithTrack.get(0));
+        } else if (numBoneTracks > 1) {
+            showPopupMenu(DddInputMode.selectBonePrefix, bonesWithTrack);
+        }
+    }
+
+    /**
      * Handle a "select spatialChild" action with no argument.
      */
     void selectSpatialChild() {
@@ -603,7 +616,7 @@ public class DddGui extends GuiScreenController {
         String assetPath = Maud.model.retarget.getMappingAssetPath();
         List<String> modelExts = new ArrayList<>(1);
         modelExts.add(".j3o");
-        AssetDialog controller = new AssetDialog("Load", modelExts,
+        AssetDialog controller = new AssetDialog("Select", modelExts,
                 assetManager);
         showTextEntryDialog("Enter asset path for skeleton mapping:", assetPath,
                 "", DddInputMode.selectRetargetMapAssetPrefix, controller);
@@ -631,7 +644,7 @@ public class DddGui extends GuiScreenController {
         modelExts.add(".blend");
         modelExts.add(".j3o");
         modelExts.add(".mesh.xml");
-        AssetDialog controller = new AssetDialog("Load", modelExts,
+        AssetDialog controller = new AssetDialog("Select", modelExts,
                 assetManager);
         showTextEntryDialog("Enter asset path for source model:", assetPath, "",
                 DddInputMode.selectRetargetSourceCgmAssetPrefix, controller);
@@ -894,8 +907,9 @@ public class DddGui extends GuiScreenController {
         items.add("Scale");
         items.add("Select by parent");
         items.add("Select by name");
-        items.add("Select by pointing");
-        items.add("Describe skeleton");
+        if (Maud.model.animation.countBoneTracks() > 0) {
+            items.add("Select with track");
+        }
         if (Maud.model.bone.isBoneSelected()) {
             items.add("Attach prop");
             items.add("Rename");
@@ -972,7 +986,7 @@ public class DddGui extends GuiScreenController {
      */
     private List<String> listKeyframeMenuItems() {
         List<String> items = new ArrayList<>(10);
-        items.add("Describe");
+        items.add("Tool");
         items.add("Select by time");
         items.add("Select first");
         items.add("Select previous");
@@ -1245,7 +1259,6 @@ public class DddGui extends GuiScreenController {
                 handled = true;
                 break;
             case "Attach prop":
-            case "Describe skeleton":
                 break;
             case "Offset":
                 boneOffset.select();
@@ -1267,7 +1280,9 @@ public class DddGui extends GuiScreenController {
                 selectBoneByParent();
                 handled = true;
                 break;
-            case "Select by pointing":
+            case "Select with track":
+                selectBoneWithTrack();
+                handled = true;
                 break;
             case "Tool":
                 bone.select();

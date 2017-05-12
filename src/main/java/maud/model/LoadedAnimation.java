@@ -27,9 +27,13 @@
 package maud.model;
 
 import com.jme3.animation.Animation;
+import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
+import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
 import com.jme3.math.Transform;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
@@ -258,6 +262,31 @@ public class LoadedAnimation implements Cloneable {
      */
     public boolean isPaused() {
         return pausedFlag;
+    }
+
+    /**
+     * List the names of all bones with tracks in the loaded animation.
+     *
+     * @return a new list
+     */
+    public List<String> listBonesWithTrack() {
+        List<String> result = new ArrayList<>();
+        Animation animation = getLoadedAnimation();
+        if (animation != null) {
+            Skeleton skeleton = Maud.model.cgm.getSkeleton();
+            Track[] tracks = animation.getTracks();
+            for (Track track : tracks) {
+                if (track instanceof BoneTrack) {
+                    BoneTrack boneTrack = (BoneTrack) track;
+                    int boneIndex = boneTrack.getTargetBoneIndex();
+                    Bone bone = skeleton.getBone(boneIndex);
+                    String name = bone.getName();
+                    result.add(name);
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
