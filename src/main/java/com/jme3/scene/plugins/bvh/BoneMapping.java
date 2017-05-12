@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jme3.scene.plugins.bvh;
 
 import com.jme3.export.InputCapsule;
@@ -18,6 +14,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
+ * A mapping to convert a bone transform from one skeleton to another. TODO
+ * reorder
  *
  * @author Nehon
  */
@@ -34,21 +32,23 @@ public class BoneMapping implements Savable {
     // fields
 
     /**
-     * Name of the target bone
+     * name of the corresponding bone in the target skeleton
      */
     private String targetName;
     /**
-     * List of source bones names from the source skeleton
+     * list of bone names from the source skeleton
      */
     private List<String> sourceNames = new SafeArrayList<String>(String.class);
     /**
-     * the rotation to apply to the animation data so that it match the bone
+     * rotation to apply to the animation data so that it matches the bone
      * orientation
      */
     private Quaternion twist;
+    // *************************************************************************
+    // constructors
 
     /**
-     * Builds a BoneMapping witht he given bone from the target skeleton and the
+     * Build a BoneMapping with the given bone from the target skeleton and the
      * given bone from the source skeleton.
      *
      * @param targetBone the name of the bone from the target skeleton.
@@ -68,7 +68,7 @@ public class BoneMapping implements Savable {
     }
 
     /**
-     * Builds a BoneMapping witht he given bone from the target skeleton and the
+     * Build a BoneMapping with the given bone from the target skeleton and the
      * given bone from the source skeleton. apply the given twist rotation to
      * the animation data
      *
@@ -83,7 +83,7 @@ public class BoneMapping implements Savable {
     }
 
     /**
-     * Builds a BoneMapping witht he given bone from the target skeleton and the
+     * Build a BoneMapping with the given bone from the target skeleton and the
      * given bone from the source skeleton. apply the given twist rotation to
      * the animation data
      *
@@ -101,7 +101,7 @@ public class BoneMapping implements Savable {
     }
 
     /**
-     * Builds a BoneMapping witht he given bone from the target skeleton
+     * Build a BoneMapping with the given bone from the target skeleton
      *
      * @param targetBone the name of the bone from the target skeleton.
      *
@@ -112,7 +112,7 @@ public class BoneMapping implements Savable {
     }
 
     /**
-     * Builds a BoneMapping witht he given bone from the target skeleton apply
+     * Build a BoneMapping with the given bone from the target skeleton apply
      * the given twist rotation to the animation data
      *
      * @param targetBone the name of the bone from the target skeleton.
@@ -124,7 +124,7 @@ public class BoneMapping implements Savable {
     }
 
     /**
-     * Builds a BoneMapping witht he given bone from the target skeleton apply
+     * Builds a BoneMapping with the given bone from the target skeleton apply
      * the given twist rotation to the animation data
      *
      * @param targetBone the name of the bone from the target skeleton.
@@ -136,6 +136,8 @@ public class BoneMapping implements Savable {
         this.targetName = targetBone;
         this.twist = new Quaternion().fromAngleAxis(twistAngle, twistAxis);
     }
+    // *************************************************************************
+    // new methods exposed
 
     /**
      * Add a list of source bone names to the mapping. Use it in case of
@@ -143,33 +145,66 @@ public class BoneMapping implements Savable {
      * skeleton
      *
      * @param sourceBones the list of bones
-     * @return this BoneMapping to allow chain calls.
+     * @return this BoneMapping (for chaining)
      */
     public BoneMapping addSourceBones(String... sourceBones) {
         sourceNames.addAll(Arrays.asList(sourceBones));
         return this;
     }
 
+    /**
+     * Access the rotation to apply.
+     *
+     * @return the pre-existing instance
+     */
     public Quaternion getTwist() {
         return twist;
     }
 
+    /**
+     * Alter the rotation to apply.
+     *
+     * @param twist (alias created)
+     */
     public void setTwist(Quaternion twist) {
         this.twist = twist;
     }
 
+    /**
+     * Read the name of the bone in the target skeleton.
+     *
+     * @return the name
+     */
     public String getTargetName() {
         return targetName;
     }
 
+    /**
+     * Alter the name of the bone in the target skeleton.
+     *
+     * @param targetName
+     */
     public void setTargetName(String targetName) {
         this.targetName = targetName;
     }
 
+    /**
+     * Access the list of bone names from the source skeleton.
+     *
+     * @return the pre-existing list
+     */
     public List<String> getSourceNames() {
         return sourceNames;
     }
+    // *************************************************************************
+    // Savable methods
 
+    /**
+     * Serialize this mapping.
+     *
+     * @param ex exporter to use (not null)
+     * @throws IOException from exporter
+     */
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(targetName, "targetName", "");
@@ -178,6 +213,12 @@ public class BoneMapping implements Savable {
         oc.write(twist, "twist", null);
     }
 
+    /**
+     * De-serialize this mapping.
+     *
+     * @param im importer to use (not null)
+     * @throws IOException from importer
+     */
     public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
         targetName = ic.readString("targetName", "");
