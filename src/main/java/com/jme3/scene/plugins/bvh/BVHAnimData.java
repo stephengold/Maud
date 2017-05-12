@@ -33,8 +33,19 @@ package com.jme3.scene.plugins.bvh;
 
 import com.jme3.animation.Animation;
 import com.jme3.animation.Skeleton;
+import java.util.logging.Logger;
 
 public class BVHAnimData {
+    // *************************************************************************
+    // constants and loggers
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger = Logger.getLogger(
+            BVHAnimData.class.getName());
+    // *************************************************************************
+    // fields
 
     private Skeleton skeleton;
     private Animation animation;

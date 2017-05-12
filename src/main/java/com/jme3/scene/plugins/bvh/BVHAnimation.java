@@ -4,11 +4,23 @@
  */
 package com.jme3.scene.plugins.bvh;
 
+import java.util.logging.Logger;
+
 /**
  *
  * @author Nehon
  */
 public class BVHAnimation {
+    // *************************************************************************
+    // constants and loggers
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger = Logger.getLogger(
+            BVHAnimation.class.getName());
+    // *************************************************************************
+    // fields
 
     private BVHBone hierarchy;
     private int nbFrames;

@@ -15,12 +15,23 @@ import com.jme3.util.SafeArrayList;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Nehon
  */
 public class BoneMapping implements Savable {
+    // *************************************************************************
+    // constants and loggers
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger = Logger.getLogger(
+            BoneMapping.class.getName());
+    // *************************************************************************
+    // fields
 
     /**
      * Name of the target bone
@@ -55,7 +66,7 @@ public class BoneMapping implements Savable {
      */
     public BoneMapping() {
     }
-    
+
     /**
      * Builds a BoneMapping witht he given bone from the target skeleton and the
      * given bone from the source skeleton. apply the given twist rotation to

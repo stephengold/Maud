@@ -6,12 +6,23 @@ package com.jme3.scene.plugins.bvh;
 
 import com.jme3.math.Vector3f;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Nehon
  */
 public class BVHBone {
+    // *************************************************************************
+    // constants and loggers
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger = Logger.getLogger(
+            BVHBone.class.getName());
+    // *************************************************************************
+    // fields
 
     private String name;
     private Vector3f offset = new Vector3f();

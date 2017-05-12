@@ -14,11 +14,12 @@ import com.jme3.scene.Spatial;
 import com.jme3.util.TempVars;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Utility class for re-targeting animations between CG models.
  *
- * TODO constructor, logger, reorder methods
+ * TODO constructor, reorder methods
  *
  * @author Nehon
  */
@@ -26,6 +27,11 @@ public class BVHUtils {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger = Logger.getLogger(
+            BVHUtils.class.getName());
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
      */

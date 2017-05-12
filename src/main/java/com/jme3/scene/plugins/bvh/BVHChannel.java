@@ -5,12 +5,23 @@
 package com.jme3.scene.plugins.bvh;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Nehon
  */
 public class BVHChannel {
+    // *************************************************************************
+    // constants and loggers
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger = Logger.getLogger(
+            BVHChannel.class.getName());
+    // *************************************************************************
+    // fields
 
     public final static String BVH_CHANNEL_X_POSITION = "Xposition";
     public final static String BVH_CHANNEL_Y_POSITION = "Yposition";

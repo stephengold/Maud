@@ -19,12 +19,23 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Nehon
  */
 public class BVHLoader implements AssetLoader {
+    // *************************************************************************
+    // constants and loggers
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger = Logger.getLogger(
+            BVHLoader.class.getName());
+    // *************************************************************************
+    // fields
 
     private AssetManager owner;
     private Scanner scan;
