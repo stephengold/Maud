@@ -470,8 +470,9 @@ public class DddGui extends GuiScreenController {
         if (Maud.model.bone.isBoneSelected()) {
             closeAllPopups();
             String oldName = Maud.model.bone.getName();
-            showTextEntryDialog("Enter new name for bone:", oldName, "Rename",
-                    DddInputMode.renameBonePrefix, null);
+            DialogController controller = new BoneRenameDialog("Rename");
+            showTextEntryDialog("Enter new name for the bone:", oldName, "",
+                    DddInputMode.renameBonePrefix, controller);
         }
     }
 
