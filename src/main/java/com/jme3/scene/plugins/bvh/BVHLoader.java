@@ -18,7 +18,8 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 /**
- * Loader for BVH assets.
+ * Loader for Biovision BVH assets. The layout is documentated at
+ * http://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html
  *
  * @author Nehon
  */
@@ -45,6 +46,7 @@ public class BVHLoader implements AssetLoader {
     /**
      * Load an asset from an input stream, parsing it into a BVHAnimData object.
      *
+     * @param info object that gives access to an input stream (not null)
      * @return a new BVHAnimData object
      * @throws java.io.IOException if an I/O error occurs while loading
      */
