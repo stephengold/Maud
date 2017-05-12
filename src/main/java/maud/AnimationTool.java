@@ -47,6 +47,14 @@ public class AnimationTool extends WindowController {
     final private static Logger logger = Logger.getLogger(
             AnimationTool.class.getName());
     // *************************************************************************
+    // fields
+
+    /**
+     * flag that causes this controller to temporarily ignore change events from
+     * the time slider
+     */
+    private boolean ignoreTimeSliderChanges = false;
+    // *************************************************************************
     // constructors
 
     /**
@@ -82,7 +90,8 @@ public class AnimationTool extends WindowController {
             Maud.model.animation.setSpeed(speed);
         }
 
-        if (!Maud.model.animation.isMoving()) {
+        boolean moving = Maud.model.animation.isMoving();
+        if (!moving && !ignoreTimeSliderChanges) {
             Slider slider = Maud.gui.getSlider("time");
             float fraction = slider.getValue();
             float time = fraction * duration;
@@ -187,10 +196,10 @@ public class AnimationTool extends WindowController {
         /*
          * slider
          */
-        boolean changing = Maud.model.animation.isMoving();
+        boolean moving = Maud.model.animation.isMoving();
         float duration = Maud.model.animation.getDuration();
         Slider slider = Maud.gui.getSlider("time");
-        if (duration == 0f || changing) {
+        if (duration == 0f || moving) {
             slider.disable();
         } else {
             slider.enable();
@@ -203,7 +212,9 @@ public class AnimationTool extends WindowController {
         } else {
             trackTime = Maud.model.animation.getTime();
             float fraction = trackTime / duration;
+            ignoreTimeSliderChanges = true;
             slider.setValue(fraction);
+            ignoreTimeSliderChanges = false;
         }
         /*
          * status label
