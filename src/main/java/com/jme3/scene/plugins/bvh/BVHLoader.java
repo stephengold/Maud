@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jme3.scene.plugins.bvh;
 
 import com.jme3.animation.Animation;
@@ -22,6 +18,7 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 /**
+ * Loader for BVH assets.
  *
  * @author Nehon
  */
@@ -42,7 +39,15 @@ public class BVHLoader implements AssetLoader {
     private String fileName;
     BVHAnimData data;
     BVHAnimation animation;
+    // *************************************************************************
+    // AssetLoader methods
 
+    /**
+     * Load an asset from an input stream, parsing it into a BVHAnimData object.
+     *
+     * @return a new BVHAnimData object
+     * @throws java.io.IOException if an I/O error occurs while loading
+     */
     public Object load(AssetInfo info) throws IOException {
         this.owner = info.getManager();
         fileName = info.getKey().getName();
@@ -60,7 +65,14 @@ public class BVHLoader implements AssetLoader {
         }
         return data;
     }
+    // *************************************************************************
+    // private methods
 
+    /**
+     *
+     * @param name
+     * @return a new instance
+     */
     private BVHBone readBone(String name) {
         BVHBone bone = new BVHBone(name);
 //        if(!name.equals("Site")){
@@ -95,6 +107,10 @@ public class BVHLoader implements AssetLoader {
         return bone;
     }
 
+    /**
+     *
+     * @throws java.io.IOException if an I/O error occurs while loading
+     */
     private void loadFromScanner() throws IOException {
 
         animation = new BVHAnimation();
@@ -123,6 +139,9 @@ public class BVHLoader implements AssetLoader {
         compileData();
     }
 
+    /**
+     *
+     */
     private void compileData() {
 
         Bone[] bones = new Bone[animation.getHierarchy().getNbBones()];
@@ -138,8 +157,15 @@ public class BVHLoader implements AssetLoader {
         boneAnimation.setTracks(tracks);
         data = new BVHAnimData(skeleton, boneAnimation, animation.getFrameTime());
     }
-    int index = 0;
+    int index = 0; // move up
 
+    /**
+     *
+     * @param bones
+     * @param tracks
+     * @param hierarchy
+     * @param parent
+     */
     private void populateBoneList(Bone[] bones, BoneTrack[] tracks,
             BVHBone hierarchy, Bone parent) {
 //        if (hierarchy.getName().equals("Site")) {
@@ -164,6 +190,11 @@ public class BVHLoader implements AssetLoader {
 
     }
 
+    /**
+     *
+     * @param bone
+     * @return a new instance
+     */
     private BoneTrack getBoneTrack(BVHBone bone) {
         float[] times = new float[animation.getNbFrames()];
         Vector3f[] translations = new Vector3f[animation.getNbFrames()];
@@ -255,6 +286,10 @@ public class BVHLoader implements AssetLoader {
         return new BoneTrack(index, times, translations, rotations);
     }
 
+    /**
+     *
+     * @param bone
+     */
     private void readChanelsValue(BVHBone bone) {
         if (bone.getChannels() != null) {
             for (BVHChannel bvhChannel : bone.getChannels()) {
