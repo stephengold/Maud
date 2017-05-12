@@ -35,6 +35,9 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Skeleton;
 import java.util.logging.Logger;
 
+/**
+ * The content of a BVH asset.
+ */
 public class BVHAnimData {
     // *************************************************************************
     // constants and loggers
@@ -47,36 +50,86 @@ public class BVHAnimData {
     // *************************************************************************
     // fields
 
+    /**
+     * the skeleton
+     */
     private Skeleton skeleton;
+    /**
+     * the animation
+     */
     private Animation animation;
+    /**
+     * the time per frame (in seconds, &gt;0)
+     */
     private float timePerFrame;
+    // *************************************************************************
+    // constructors
 
+    /**
+     * Instantiate an instance.
+     *
+     * @param skeleton the skeleton
+     * @param anim the animation
+     * @param timePerFrame (in seconds, &gt;0)
+     */
     public BVHAnimData(Skeleton skeleton, Animation anim, float timePerFrame) {
         this.skeleton = skeleton;
         this.animation = anim;
         this.timePerFrame = timePerFrame;
     }
+    // *************************************************************************
+    // new methods exposed
 
+    /**
+     * Access the animation.
+     *
+     * @return the pre-existing instance
+     */
     public Animation getAnimation() {
         return animation;
     }
 
+    /**
+     * Alter the animation.
+     *
+     * @param animation (alias created)
+     */
     public void setAnimation(Animation animation) {
         this.animation = animation;
     }
 
+    /**
+     * Access the skeleton.
+     *
+     * @return the pre-existing instance
+     */
     public Skeleton getSkeleton() {
         return skeleton;
     }
 
+    /**
+     * Alter the skeleton.
+     *
+     * @param skeleton (alias created)
+     */
     public void setSkeleton(Skeleton skeleton) {
         this.skeleton = skeleton;
     }
 
+    /**
+     * Read the time per frame.
+     *
+     * @return (in seconds, &gt;0)
+     */
     public float getTimePerFrame() {
         return timePerFrame;
     }
 
+    /**
+     * Alter the time per frame.
+     *
+     * @param timePerFrame (in seconds, &gt;0)
+     */
     public void setTimePerFrame(float timePerFrame) {
         this.timePerFrame = timePerFrame;
     }
