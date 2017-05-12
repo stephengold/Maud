@@ -205,6 +205,7 @@ public class BoneMapping implements Savable {
      * @param ex exporter to use (not null)
      * @throws IOException from exporter
      */
+    @Override
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(targetName, "targetName", "");
@@ -219,6 +220,7 @@ public class BoneMapping implements Savable {
      * @param im importer to use (not null)
      * @throws IOException from importer
      */
+    @Override
     public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
         targetName = ic.readString("targetName", "");

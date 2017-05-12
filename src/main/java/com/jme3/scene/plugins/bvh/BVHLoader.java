@@ -48,6 +48,7 @@ public class BVHLoader implements AssetLoader {
      * @return a new BVHAnimData object
      * @throws java.io.IOException if an I/O error occurs while loading
      */
+    @Override
     public Object load(AssetInfo info) throws IOException {
         this.owner = info.getManager();
         fileName = info.getKey().getName();
