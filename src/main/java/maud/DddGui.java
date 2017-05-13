@@ -788,9 +788,6 @@ public class DddGui extends GuiScreenController {
         setListener(inputMode);
         super.initialize(stateManager, application);
 
-        signals.add(modelCCWSignalName);
-        signals.add(modelCWSignalName);
-
         Maud.model.cgm.loadModelNamed("Elephant");
     }
 
