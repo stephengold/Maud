@@ -69,26 +69,7 @@ class KeyframeTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        String trackDescription;
-        if (Maud.model.animation.isBindPoseLoaded()) {
-            trackDescription = "(load an animation)";
-        } else if (Maud.model.bone.hasTrack()) {
-            String boneName = Maud.model.bone.getName();
-            String animName = Maud.model.animation.getName();
-            trackDescription = String.format("%s in %s", boneName, animName);
-        } else if (Maud.model.bone.isBoneSelected()) {
-            trackDescription = "none";
-        } else {
-            trackDescription = "(select a bone)";
-        }
-        Maud.gui.setStatusText("trackDescription", " " + trackDescription);
-
         String indexText, timeText;
-        String firstButton = "";
-        String previousButton = "";
-        String nextButton = "";
-        String lastButton = "";
-
         int numKeyframes = Maud.model.animation.countKeyframes();
         if (numKeyframes == 0) {
             if (Maud.model.bone.hasTrack()) {
@@ -97,8 +78,8 @@ class KeyframeTool extends WindowController {
                 timeText = String.format("%.3f", time);
             } else {
                 indexText = "no track";
+                timeText = "n/a";
             }
-            timeText = "n/a";
 
         } else {
             int index = Maud.model.animation.findKeyframe();
@@ -115,6 +96,29 @@ class KeyframeTool extends WindowController {
 
             float time = Maud.model.animation.getTime();
             timeText = String.format("%.3f", time);
+        }
+
+        Maud.gui.setStatusText("keyframeIndex", indexText);
+        Maud.gui.setStatusText("keyframeTime", timeText);
+
+        updateNavigationButtons();
+        updateTrackDescription();
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Update the 4 navigation buttons.
+     */
+    private void updateNavigationButtons() {
+        String firstButton = "";
+        String previousButton = "";
+        String nextButton = "";
+        String lastButton = "";
+
+        int numKeyframes = Maud.model.animation.countKeyframes();
+        if (numKeyframes > 0) {
+            float time = Maud.model.animation.getTime();
 
             firstButton = "First";
             if (time > 0f) {
@@ -126,11 +130,28 @@ class KeyframeTool extends WindowController {
             lastButton = "Last";
         }
 
-        Maud.gui.setStatusText("keyframeIndex", indexText);
-        Maud.gui.setStatusText("keyframeTime", timeText);
         Maud.gui.setButtonLabel("firstKeyframeButton", firstButton);
         Maud.gui.setButtonLabel("previousKeyframeButton", previousButton);
         Maud.gui.setButtonLabel("nextKeyframeButton", nextButton);
         Maud.gui.setButtonLabel("lastKeyframeButton", lastButton);
+    }
+
+    /**
+     * Update the track description.
+     */
+    private void updateTrackDescription() {
+        String trackDescription;
+        if (Maud.model.animation.isBindPoseLoaded()) {
+            trackDescription = "(load an animation)";
+        } else if (Maud.model.bone.hasTrack()) {
+            String boneName = Maud.model.bone.getName();
+            String animName = Maud.model.animation.getName();
+            trackDescription = String.format("%s in %s", boneName, animName);
+        } else if (Maud.model.bone.isBoneSelected()) {
+            trackDescription = "none";
+        } else {
+            trackDescription = "(select a bone)";
+        }
+        Maud.gui.setStatusText("trackDescription", " " + trackDescription);
     }
 }
