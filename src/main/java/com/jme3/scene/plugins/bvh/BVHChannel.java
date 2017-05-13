@@ -21,27 +21,27 @@ public class BVHChannel {
      * channel names
      */
     public final static String BVH_CHANNEL_X_POSITION = "Xposition";
+    public final static String BVH_CHANNEL_X_ROTATION = "Xrotation";
     public final static String BVH_CHANNEL_Y_POSITION = "Yposition";
+    public final static String BVH_CHANNEL_Y_ROTATION = "Yrotation";
     public final static String BVH_CHANNEL_Z_POSITION = "Zposition";
     public final static String BVH_CHANNEL_Z_ROTATION = "Zrotation";
-    public final static String BVH_CHANNEL_X_ROTATION = "Xrotation";
-    public final static String BVH_CHANNEL_Y_ROTATION = "Yrotation";
     // *************************************************************************
     // fields
 
+    private List<Float> values;
     /**
      * name of this channel (6 possible values)
      */
     private String name;
-    private List<Float> values;
     // *************************************************************************
     // constructors
 
-    public BVHChannel(String name) {
-        this.name = name;
+    public BVHChannel() {
     }
 
-    public BVHChannel() {
+    public BVHChannel(String name) {
+        this.name = name;
     }
     // *************************************************************************
     // new methods exposed
@@ -56,21 +56,21 @@ public class BVHChannel {
     }
 
     /**
-     * Alter the name of the channel.
-     *
-     * @param name (6 possible values)
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * Access the list of samples.
      *
      * @return the pre-existing list
      */
     public List<Float> getValues() {
         return values;
+    }
+
+    /**
+     * Alter the name of the channel.
+     *
+     * @param name (6 possible values)
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

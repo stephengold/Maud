@@ -36,10 +36,11 @@ public class BVHLoader implements AssetLoader {
     // fields
 
     private AssetManager owner;
-    private Scanner scan;
-    private String fileName;
     BVHAnimData data;
     BVHAnimation animation;
+    int index = 0;
+    private Scanner scan;
+    private String fileName;
     // *************************************************************************
     // AssetLoader methods
 
@@ -73,80 +74,8 @@ public class BVHLoader implements AssetLoader {
 
     /**
      *
-     * @param name
-     * @return a new instance
-     */
-    private BVHBone readBone(String name) {
-        BVHBone bone = new BVHBone(name);
-//        if(!name.equals("Site")){
-//            System.out.println(name);
-//        }
-        String token = scan.next();
-        if (token.equals("{")) {
-            token = scan.next();
-            if (token.equals("OFFSET")) {
-                bone.getOffset().setX(scan.nextFloat());
-                bone.getOffset().setY(scan.nextFloat());
-                bone.getOffset().setZ(scan.nextFloat());
-                token = scan.next();
-            }
-            if (token.equals("CHANNELS")) {
-                bone.setChannels(new ArrayList<BVHChannel>());
-                int nbChan = scan.nextInt();
-                for (int i = 0; i < nbChan; i++) {
-                    bone.getChannels().add(new BVHChannel(scan.next()));
-                }
-                token = scan.next();
-            }
-            while (token.equals("JOINT") || token.equals("End")) {
-                if (bone.getChildren() == null) {
-                    bone.setChildren(new ArrayList<BVHBone>());
-                }
-                bone.getChildren().add(readBone(scan.next()));
-                token = scan.next();
-            }
-        }
-
-        return bone;
-    }
-
-    /**
-     *
-     * @throws java.io.IOException if an I/O error occurs while loading
-     */
-    private void loadFromScanner() throws IOException {
-
-        animation = new BVHAnimation();
-        String token = scan.next();
-        if (token.equals("HIERARCHY")) {
-            token = scan.next();
-            if (token.equals("ROOT")) {
-                token = scan.next();
-                animation.setHierarchy(readBone(token));
-                token = scan.next();
-            }
-        }
-        if (token.equals("MOTION")) {
-            scan.next();
-            animation.setNbFrames(scan.nextInt());
-            scan.next();
-            scan.next();
-            animation.setFrameTime(scan.nextFloat());
-            for (int i = 0; i < animation.getNbFrames(); i++) {
-                readChanelsValue(animation.getHierarchy());
-            }
-
-        }
-
-        //    System.out.println(animation.getHierarchy().toString());
-        compileData();
-    }
-
-    /**
-     *
      */
     private void compileData() {
-
         Bone[] bones = new Bone[animation.getHierarchy().getNbBones()];
         index = 0;
         BoneTrack[] tracks = new BoneTrack[animation.getHierarchy().getNbBones()];
@@ -159,38 +88,6 @@ public class BVHLoader implements AssetLoader {
         Animation boneAnimation = new Animation(animName, animLength);
         boneAnimation.setTracks(tracks);
         data = new BVHAnimData(skeleton, boneAnimation, animation.getFrameTime());
-    }
-    int index = 0; // move up
-
-    /**
-     *
-     * @param bones
-     * @param tracks
-     * @param hierarchy
-     * @param parent
-     */
-    private void populateBoneList(Bone[] bones, BoneTrack[] tracks,
-            BVHBone hierarchy, Bone parent) {
-//        if (hierarchy.getName().equals("Site")) {
-//            return;
-//        }
-        Bone bone = new Bone(hierarchy.getName());
-
-        bone.setBindTransforms(hierarchy.getOffset(),
-                new Quaternion().IDENTITY, Vector3f.UNIT_XYZ);
-
-        if (parent != null) {
-            parent.addChild(bone);
-        }
-        bones[index] = bone;
-        tracks[index] = getBoneTrack(hierarchy);
-        index++;
-        if (hierarchy.getChildren() != null) {
-            for (BVHBone bVHBone : hierarchy.getChildren()) {
-                populateBoneList(bones, tracks, bVHBone, bone);
-            }
-        }
-
     }
 
     /**
@@ -287,6 +184,107 @@ public class BVHLoader implements AssetLoader {
 //        }
 //        System.out.println();
         return new BoneTrack(index, times, translations, rotations);
+    }
+
+    /**
+     *
+     * @throws java.io.IOException if an I/O error occurs while loading
+     */
+    private void loadFromScanner() throws IOException {
+        animation = new BVHAnimation();
+        String token = scan.next();
+        if (token.equals("HIERARCHY")) {
+            token = scan.next();
+            if (token.equals("ROOT")) {
+                token = scan.next();
+                animation.setHierarchy(readBone(token));
+                token = scan.next();
+            }
+        }
+        if (token.equals("MOTION")) {
+            scan.next();
+            animation.setNbFrames(scan.nextInt());
+            scan.next();
+            scan.next();
+            animation.setFrameTime(scan.nextFloat());
+            for (int i = 0; i < animation.getNbFrames(); i++) {
+                readChanelsValue(animation.getHierarchy());
+            }
+
+        }
+
+        //    System.out.println(animation.getHierarchy().toString());
+        compileData();
+    }
+
+    /**
+     *
+     * @param bones
+     * @param tracks
+     * @param hierarchy
+     * @param parent
+     */
+    private void populateBoneList(Bone[] bones, BoneTrack[] tracks,
+            BVHBone hierarchy, Bone parent) {
+//        if (hierarchy.getName().equals("Site")) {
+//            return;
+//        }
+        Bone bone = new Bone(hierarchy.getName());
+
+        bone.setBindTransforms(hierarchy.getOffset(),
+                new Quaternion().IDENTITY, Vector3f.UNIT_XYZ);
+
+        if (parent != null) {
+            parent.addChild(bone);
+        }
+        bones[index] = bone;
+        tracks[index] = getBoneTrack(hierarchy);
+        index++;
+        if (hierarchy.getChildren() != null) {
+            for (BVHBone bVHBone : hierarchy.getChildren()) {
+                populateBoneList(bones, tracks, bVHBone, bone);
+            }
+        }
+
+    }
+
+    /**
+     *
+     * @param name
+     * @return a new instance
+     */
+    private BVHBone readBone(String name) {
+        BVHBone bone = new BVHBone(name);
+//        if(!name.equals("Site")){
+//            System.out.println(name);
+//        }
+        String token = scan.next();
+        if (token.equals("{")) {
+            token = scan.next();
+            if (token.equals("OFFSET")) {
+                bone.getOffset().setX(scan.nextFloat());
+                bone.getOffset().setY(scan.nextFloat());
+                bone.getOffset().setZ(scan.nextFloat());
+                token = scan.next();
+            }
+            if (token.equals("CHANNELS")) {
+                bone.setChannels(new ArrayList<BVHChannel>());
+                int nbChan = scan.nextInt();
+                for (int i = 0; i < nbChan; i++) {
+                    bone.getChannels().add(new BVHChannel(scan.next()));
+                }
+                token = scan.next();
+            }
+            while (token.equals("JOINT") || token.equals("End")) {
+                if (bone.getChildren() == null) {
+                    bone.setChildren(new ArrayList<BVHBone>());
+                }
+                bone.getChildren().add(readBone(scan.next()));
+                token = scan.next();
+            }
+        }
+
+        return bone;
     }
 
     /**

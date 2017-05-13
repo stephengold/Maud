@@ -120,17 +120,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Read the index of the selected bone. Assumes a bone is selected.
-     *
-     * @return the bone index
-     */
-    public int getIndex() {
-        int index = selectedIndex;
-        return index;
-    }
-
-    /**
-     * Read the name of an indexed child of the selected bone. TODO re-sort
+     * Read the name of an indexed child of the selected bone.
      *
      * @param childIndex which child (&ge;0)
      * @return name, or null if none
@@ -153,6 +143,16 @@ public class SelectedBone implements Cloneable {
         }
 
         return name;
+    }
+
+    /**
+     * Read the index of the selected bone. Assumes a bone is selected.
+     *
+     * @return the bone index
+     */
+    public int getIndex() {
+        int index = selectedIndex;
+        return index;
     }
 
     /**

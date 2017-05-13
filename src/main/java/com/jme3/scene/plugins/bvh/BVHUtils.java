@@ -19,11 +19,24 @@ import java.util.logging.Logger;
 /**
  * Utility class for re-targeting animations between CG models.
  *
- * TODO constructor, reorder methods
+ * TODO constructor
  *
  * @author Nehon
  */
 public class BVHUtils {
+
+    private static class InnerTrack {
+
+        Vector3f[] positions;
+        Quaternion[] rotations;
+        Vector3f[] scales;
+
+        public InnerTrack(int length) {
+            positions = new Vector3f[length];
+            rotations = new Quaternion[length];
+            scales = new Vector3f[length];
+        }
+    }
     // *************************************************************************
     // constants and loggers
 
@@ -38,6 +51,47 @@ public class BVHUtils {
     private static final Vector3f DEFAULT_SCALE = new Vector3f(Vector3f.UNIT_XYZ);
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Find the first bone track in the specified animation.
+     *
+     * @param animation which animation to search (not null)
+     * @return the pre-existing instance, or null if none found
+     */
+    public static BoneTrack getFirstBoneTrack(Animation animation) {
+        for (Track track : animation.getTracks()) {
+            if (track instanceof BoneTrack) {
+                return (BoneTrack) track;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Estimate the height of a skeleton in bind pose.
+     *
+     * @param targetSkeleton
+     * @returh height (in model units, &ge;0)
+     */
+    public static float getSkeletonHeight(Skeleton targetSkeleton) {
+        float maxy = -100000;
+        float miny = +100000;
+        targetSkeleton.reset();
+        targetSkeleton.updateWorldVectors();
+
+        for (int i = 0; i < targetSkeleton.getBoneCount(); i++) {
+            Bone bone = targetSkeleton.getBone(i);
+            if (bone.getModelSpacePosition().y > maxy) {
+                maxy = bone.getModelSpacePosition().y;
+            }
+            if (bone.getModelSpacePosition().y < miny) {
+                miny = bone.getModelSpacePosition().y;
+                //System.out.println(bone.getName() + " " + miny);
+            }
+        }
+        //System.out.println(maxy - miny);
+        return maxy - miny;
+    }
 
     /**
      * Retarget an animation from one model to a different model.
@@ -175,19 +229,6 @@ public class BVHUtils {
     }
     // *************************************************************************
     // private methods
-
-    private static BoneTrack findBoneTrack(int index, Animation anim) {
-        for (int i = 0; i < anim.getTracks().length; i++) {
-            Track t = anim.getTracks()[i];
-            if (t instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) t;
-                if (boneTrack.getTargetBoneIndex() == index) {
-                    return boneTrack;
-                }
-            }
-        }
-        return null;
-    }
 
     /**
      * Apply the model-space transform for the indexed keyframe to each target
@@ -346,6 +387,19 @@ public class BVHUtils {
         }
     }
 
+    private static BoneTrack findBoneTrack(int index, Animation anim) {
+        for (int i = 0; i < anim.getTracks().length; i++) {
+            Track t = anim.getTracks()[i];
+            if (t instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) t;
+                if (boneTrack.getTargetBoneIndex() == index) {
+                    return boneTrack;
+                }
+            }
+        }
+        return null;
+    }
+
     private static InnerTrack getInnerTrack(int index,
             Map<Integer, InnerTrack> tracks, int length) {
         InnerTrack t = tracks.get(index);
@@ -356,61 +410,6 @@ public class BVHUtils {
         return t;
     }
 
-    private static class InnerTrack {
-
-        Vector3f[] positions;
-        Quaternion[] rotations;
-        Vector3f[] scales;
-
-        public InnerTrack(int length) {
-            positions = new Vector3f[length];
-            rotations = new Quaternion[length];
-            scales = new Vector3f[length];
-        }
-    }
-
-    /**
-     * Estimate the height of a skeleton in bind pose.
-     *
-     * @param targetSkeleton
-     * @returh height (in model units, &ge;0)
-     */
-    public static float getSkeletonHeight(Skeleton targetSkeleton) {
-        float maxy = -100000;
-        float miny = +100000;
-        targetSkeleton.reset();
-        targetSkeleton.updateWorldVectors();
-
-        for (int i = 0; i < targetSkeleton.getBoneCount(); i++) {
-            Bone bone = targetSkeleton.getBone(i);
-            if (bone.getModelSpacePosition().y > maxy) {
-                maxy = bone.getModelSpacePosition().y;
-            }
-            if (bone.getModelSpacePosition().y < miny) {
-                miny = bone.getModelSpacePosition().y;
-                //System.out.println(bone.getName() + " " + miny);
-            }
-        }
-        //System.out.println(maxy - miny);
-        return maxy - miny;
-    }
-
-    /**
-     * Print the specified quaternion as rotation angles. TODO remove
-     *
-     * @param q input to invert (not null)
-     */
-    private static void outPutRotation(Quaternion q) {
-
-        float[] angles = new float[3];
-        q.toAngles(angles);
-
-        System.out.println("rotation x: " + angles[0] * FastMath.RAD_TO_DEG);
-        System.out.println("rotation Y: " + angles[1] * FastMath.RAD_TO_DEG);
-        System.out.println("rotation Z: " + angles[2] * FastMath.RAD_TO_DEG);
-
-    }
-
     /**
      * Invert the specified quaternion. TODO remove
      *
@@ -418,7 +417,6 @@ public class BVHUtils {
      * @return a new instance
      */
     private static Quaternion invert(Quaternion q) {
-
         float[] angles = new float[3];
         q.toAngles(angles);
 
@@ -429,17 +427,17 @@ public class BVHUtils {
     }
 
     /**
-     * Find the first bone track in the specified animation.
+     * Print the specified quaternion as rotation angles. TODO remove
      *
-     * @param animation which animation to search (not null)
-     * @return the pre-existing instance, or null if none found
+     * @param q input to invert (not null)
      */
-    public static BoneTrack getFirstBoneTrack(Animation animation) {
-        for (Track track : animation.getTracks()) {
-            if (track instanceof BoneTrack) {
-                return (BoneTrack) track;
-            }
-        }
-        return null;
+    private static void outPutRotation(Quaternion q) {
+        float[] angles = new float[3];
+        q.toAngles(angles);
+
+        System.out.println("rotation x: " + angles[0] * FastMath.RAD_TO_DEG);
+        System.out.println("rotation Y: " + angles[1] * FastMath.RAD_TO_DEG);
+        System.out.println("rotation Z: " + angles[2] * FastMath.RAD_TO_DEG);
+
     }
 }
