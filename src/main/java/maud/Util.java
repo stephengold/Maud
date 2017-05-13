@@ -137,6 +137,7 @@ public class Util {
 
         int lastFrame = times.length - 1;
         int startFrame = -1;
+        // TODO binary search
         for (int iFrame = 0; iFrame < lastFrame; iFrame++) {
             if (time >= times[iFrame] && time <= times[iFrame + 1]) {
                 startFrame = iFrame;

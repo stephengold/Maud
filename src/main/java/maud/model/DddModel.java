@@ -62,7 +62,8 @@ public class DddModel {
      */
     final public LoadedAnimation animation;
     /**
-     * the loaded CG model (set by {@link maud.Maud#guiInitializeApplication()})
+     * which CG model is loaded (set by
+     * {@link maud.Maud#guiInitializeApplication()})
      */
     public LoadedCGModel cgm = null;
     /**
