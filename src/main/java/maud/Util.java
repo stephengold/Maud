@@ -30,6 +30,8 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -115,6 +117,23 @@ public class Util {
         }
 
         return storeResult;
+    }
+
+    /**
+     * Count the number of unique vectors in an array.
+     *
+     * @param array (not null)
+     * @return count (&ge;0)
+     */
+    public static int countUnique(Vector3f[] array) {
+        int length = array.length;
+        Set<Vector3f> unique = new HashSet<>(length);
+        for (Vector3f off : array) {
+            unique.add(off);
+        }
+        int count = unique.size();
+
+        return count;
     }
 
     /**

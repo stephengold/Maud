@@ -139,6 +139,9 @@ class DddInputMode extends InputMode {
                 case "select":
                     handled = selectAction(actionString);
                     break;
+                case "set":
+                    handled = setAction(actionString);
+                    break;
                 case "toggle":
                     handled = toggleAction(actionString);
                     break;
@@ -526,6 +529,32 @@ class DddInputMode extends InputMode {
             String toolName = MyString.remainder(actionString,
                     selectToolPrefix);
             handled = Maud.gui.selectTool(toolName);
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a "set" action.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean setAction(String actionString) {
+        boolean handled = false;
+        switch (actionString) {
+            case "set track rotation all":
+                Maud.model.bone.setTrackRotationAll();
+                handled = true;
+                break;
+            case "set track scale all":
+                Maud.model.bone.setTrackScaleAll();
+                handled = true;
+                break;
+            case "set track translation all":
+                Maud.model.bone.setTrackTranslationAll();
+                handled = true;
+                break;
         }
 
         return handled;

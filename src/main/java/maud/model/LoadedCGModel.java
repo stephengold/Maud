@@ -29,6 +29,7 @@ package maud.model;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
+import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
@@ -669,6 +670,26 @@ public class LoadedCGModel implements Cloneable {
             setEdited();
             Maud.viewState.setMode(newMode);
         }
+    }
+
+    /**
+     * Alter all keyframes in the selected bone track.
+     *
+     * @param times array of keyframe times (not null, not empty)
+     * @param translations array of keyframe translations (not null)
+     * @param rotations array of keyframe rotations (not null)
+     * @param scales array of keyframe scales (may be null)
+     */
+    void setKeyframes(float[] times, Vector3f[] translations,
+            Quaternion[] rotations, Vector3f[] scales) {
+        assert times != null;
+        assert times.length > 0 : times.length;
+        assert translations != null;
+        assert rotations != null;
+
+        BoneTrack track = Maud.model.bone.findTrack();
+        track.setKeyframes(times, translations, rotations, scales);
+        setEdited();
     }
 
     /**

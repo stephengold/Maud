@@ -103,6 +103,7 @@ class KeyframeTool extends WindowController {
 
         updateNavigationButtons();
         updateTrackDescription();
+        updateTransforms();
     }
     // *************************************************************************
     // private methods
@@ -148,10 +149,35 @@ class KeyframeTool extends WindowController {
             String animName = Maud.model.animation.getName();
             trackDescription = String.format("%s in %s", boneName, animName);
         } else if (Maud.model.bone.isBoneSelected()) {
-            trackDescription = "none";
+            String boneName = Maud.model.bone.getName();
+            trackDescription = String.format("none for %s", boneName);
         } else {
             trackDescription = "(select a bone)";
         }
         Maud.gui.setStatusText("trackDescription", " " + trackDescription);
+    }
+
+    /**
+     * Update transform information.
+     */
+    private void updateTransforms() {
+        String translationCount = "";
+        String rotationCount = "";
+        String scaleCount = "";
+
+        if (Maud.model.bone.hasTrack()) {
+            int numOffsets = Maud.model.bone.countTranslations();
+            translationCount = String.format("%d", numOffsets);
+
+            int numRotations = Maud.model.bone.countRotations();
+            rotationCount = String.format("%d", numRotations);
+
+            int numScales = Maud.model.bone.countScales();
+            scaleCount = String.format("%d", numScales);
+        }
+
+        Maud.gui.setStatusText("trackTranslationCount", translationCount);
+        Maud.gui.setStatusText("trackRotationCount", rotationCount);
+        Maud.gui.setStatusText("trackScaleCount", scaleCount);
     }
 }

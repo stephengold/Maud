@@ -31,13 +31,19 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
+import com.jme3.math.Vector3f;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.Util;
 
 /**
  * The MVC model of the selected bone in the Maud application.
@@ -80,6 +86,68 @@ public class SelectedBone implements Cloneable {
 
         assert result >= 0 : result;
         return result;
+    }
+
+    /**
+     * Count the number of unique rotations in the selected track.
+     *
+     * @return count (&ge;0)
+     */
+    public int countRotations() {
+        int count;
+        BoneTrack track = findTrack();
+        if (track == null) {
+            count = 0;
+        } else {
+            Quaternion[] rotations = track.getRotations();
+            Set<Quaternion> unique = new HashSet<>(rotations.length);
+            for (Quaternion rot : rotations) {
+                unique.add(rot);
+            }
+            count = unique.size();
+        }
+
+        return count;
+    }
+
+    /**
+     * Count the number of unique scales in the selected track.
+     *
+     * @return count (&ge;0)
+     */
+    public int countScales() {
+        int count;
+        BoneTrack track = findTrack();
+        if (track == null) {
+            count = 0;
+        } else {
+            Vector3f[] scales = track.getScales();
+            if (scales == null) {
+                count = 0;
+            } else {
+                count = Util.countUnique(scales);
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * Count the number of unique translations in the selected track.
+     *
+     * @return count (&ge;0)
+     */
+    public int countTranslations() {
+        int count = 0;
+        BoneTrack track = findTrack();
+        if (track == null) {
+            return 0;
+        } else {
+            Vector3f[] offsets = track.getTranslations();
+            count = Util.countUnique(offsets);
+        }
+
+        return count;
     }
 
     /**
@@ -390,6 +458,74 @@ public class SelectedBone implements Cloneable {
             if (parent != null) {
                 select(parent);
             }
+        }
+    }
+
+    /**
+     * Alter all rotations in the selected track to match the displayed pose.
+     */
+    public void setTrackRotationAll() {
+        BoneTrack track = Maud.model.bone.findTrack();
+        if (track != null) {
+            int boneIndex = Maud.model.bone.getIndex();
+            Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
+                    null);
+            Quaternion poseRotation = poseTransform.getRotation();
+
+            float[] times = track.getTimes();
+            Vector3f[] translations = track.getTranslations();
+            Quaternion[] rotations = track.getRotations();
+            for (Quaternion rotation : rotations) {
+                rotation.set(poseRotation);
+            }
+            Vector3f[] scales = track.getScales();
+            Maud.model.cgm.setKeyframes(times, translations, rotations, scales);
+        }
+    }
+
+    /**
+     * Alter all scales in the selected track to match the displayed pose.
+     */
+    public void setTrackScaleAll() {
+        BoneTrack track = Maud.model.bone.findTrack();
+        if (track != null) {
+            int boneIndex = Maud.model.bone.getIndex();
+            Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
+                    null);
+            Vector3f poseScale = poseTransform.getScale();
+
+            float[] times = track.getTimes();
+            Vector3f[] translations = track.getTranslations();
+            Quaternion[] rotations = track.getRotations();
+            Vector3f[] scales = track.getScales();
+            if (scales != null) {
+                for (Vector3f scale : scales) {
+                    scale.set(poseScale);
+                }
+                Maud.model.cgm.setKeyframes(times, translations, rotations, scales);
+            }
+        }
+    }
+
+    /**
+     * Alter all translations in the selected track to match the displayed pose.
+     */
+    public void setTrackTranslationAll() {
+        BoneTrack track = Maud.model.bone.findTrack();
+        if (track != null) {
+            int boneIndex = Maud.model.bone.getIndex();
+            Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
+                    null);
+            Vector3f poseTranslation = poseTransform.getTranslation();
+
+            float[] times = track.getTimes();
+            Vector3f[] translations = track.getTranslations();
+            for (Vector3f translation : translations) {
+                translation.set(poseTranslation);
+            }
+            Quaternion[] rotations = track.getRotations();
+            Vector3f[] scales = track.getScales();
+            Maud.model.cgm.setKeyframes(times, translations, rotations, scales);
         }
     }
     // *************************************************************************
