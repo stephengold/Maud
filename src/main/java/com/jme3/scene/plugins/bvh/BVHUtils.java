@@ -7,7 +7,6 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
 import com.jme3.bounding.BoundingBox;
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
@@ -49,6 +48,14 @@ public class BVHUtils {
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
      */
     private static final Vector3f DEFAULT_SCALE = new Vector3f(Vector3f.UNIT_XYZ);
+    // *************************************************************************
+    // constructors
+
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
+    private BVHUtils() {
+    }
     // *************************************************************************
     // new methods exposed
 
