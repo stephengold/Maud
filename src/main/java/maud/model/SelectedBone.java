@@ -26,12 +26,16 @@
  */
 package maud.model;
 
+import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
+import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.animation.Track;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyAnimation;
 import jme3utilities.MyString;
 import maud.Maud;
 
@@ -79,6 +83,26 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
+     * Find the track for the selected bone in the loaded animation.
+     *
+     * @return the pre-existing instance, or null if none
+     */
+    BoneTrack findTrack() {
+        if (!Maud.model.bone.isBoneSelected()) {
+            return null;
+        }
+        if (Maud.model.animation.isBindPoseLoaded()) {
+            return null;
+        }
+
+        Animation anim = Maud.model.animation.getLoadedAnimation();
+        int boneIndex = Maud.model.bone.getIndex();
+        BoneTrack track = MyAnimation.findTrack(anim, boneIndex);
+
+        return track;
+    }
+
+    /**
      * Access the selected bone.
      *
      * @return the pre-existing instance, or null if none selected
@@ -106,7 +130,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Read the name of an indexed child of the selected bone.
+     * Read the name of an indexed child of the selected bone. TODO re-sort
      *
      * @param childIndex which child (&ge;0)
      * @return name, or null if none
@@ -171,6 +195,20 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
+     * Test whether the selected bone has a BoneTrack.
+     *
+     * @return true if a bone is selected and it has a track, otherwise false
+     */
+    public boolean hasTrack() {
+        BoneTrack track = findTrack();
+        if (track == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Test whether a bone is selected.
      *
      * @return true if selected, otherwise false
@@ -196,6 +234,54 @@ public class SelectedBone implements Cloneable {
         } else {
             Bone parent = bone.getParent();
             result = (parent == null);
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether a bone track is selected.
+     *
+     * @return true if one is selected, false if none is selected
+     */
+    public boolean isTrackSelected() {
+        if (Maud.model.bone.isBoneSelected()) {
+            if (Maud.model.animation.isBindPoseLoaded()) {
+                return false;
+            }
+            Track track = findTrack();
+            if (track == null) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Enumerate all keyframes of the selected bone in the loaded animation.
+     *
+     * @return a new list, or null if no options
+     */
+    public List<String> listKeyframes() {
+        List<String> result = null;
+        if (Maud.model.animation.isBindPoseLoaded()) {
+            logger.log(Level.INFO, "No animation is selected.");
+        } else if (!Maud.model.bone.isBoneSelected()) {
+            logger.log(Level.INFO, "No bone is selected.");
+        } else if (!isTrackSelected()) {
+            logger.log(Level.INFO, "No track is selected.");
+        } else {
+            BoneTrack track = findTrack();
+            float[] keyframes = track.getTimes();
+
+            result = new ArrayList<>(20);
+            for (float keyframe : keyframes) {
+                String menuItem = String.format("%.3f", keyframe);
+                result.add(menuItem);
+            }
         }
 
         return result;

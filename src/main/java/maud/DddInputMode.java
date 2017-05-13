@@ -444,6 +444,22 @@ class DddInputMode extends InputMode {
                 Maud.gui.bone.selectXY();
                 handled = true;
                 break;
+            case "select keyframeFirst":
+                Maud.model.animation.selectKeyframeFirst();
+                handled = true;
+                break;
+            case "select keyframeLast":
+                Maud.model.animation.selectKeyframeLast();
+                handled = true;
+                break;
+            case "select keyframeNext":
+                Maud.model.animation.selectKeyframeNext();
+                handled = true;
+                break;
+            case "select keyframePrevious":
+                Maud.model.animation.selectKeyframePrevious();
+                handled = true;
+                break;
             case "select rma":
                 Maud.gui.selectRetargetMapAsset();
                 handled = true;

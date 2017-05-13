@@ -29,9 +29,7 @@ package maud.model;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
-import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
-import com.jme3.animation.Track;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
@@ -304,7 +302,7 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Test whether the skeleton contains the named animation.
+     * Test whether the animation controller contains the named animation.
      *
      * @param name (not null)
      * @return true if found or bindPose, otherwise false
@@ -332,20 +330,6 @@ public class LoadedCGModel implements Cloneable {
         }
         Bone b = MySkeleton.getBone(rootSpatial, name);
         if (b == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Test whether the selected bone has a BoneTrack.
-     *
-     * @return true if a bone is selected and it has a track, otherwise false
-     */
-    public boolean hasTrack() {
-        BoneTrack track = findTrack();
-        if (track == null) {
             return false;
         } else {
             return true;
@@ -453,33 +437,6 @@ public class LoadedCGModel implements Cloneable {
         boneNames.remove("");
 
         return boneNames;
-    }
-
-    /**
-     * Enumerate all keyframes of the selected bone in the loaded animation.
-     *
-     * @return a new list, or null if no options
-     */
-    List<String> listKeyframes() {
-        List<String> result = null;
-        if (Maud.model.animation.isBindPoseLoaded()) {
-            logger.log(Level.INFO, "No animation is selected.");
-        } else if (!Maud.model.bone.isBoneSelected()) {
-            logger.log(Level.INFO, "No bone is selected.");
-        } else if (!isTrackSelected()) {
-            logger.log(Level.INFO, "No track is selected.");
-        } else {
-            BoneTrack track = findTrack();
-            float[] keyframes = track.getTimes();
-
-            result = new ArrayList<>(20);
-            for (float keyframe : keyframes) {
-                String menuItem = String.format("%.3f", keyframe);
-                result.add(menuItem);
-            }
-        }
-
-        return result;
     }
 
     /**
@@ -642,20 +599,6 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Select the named keyframe in the selected bone track.
-     *
-     * @param name name of the new selection (not null)
-     */
-    public void selectKeyframe(String name) {
-        Validate.nonNull(name, "keyframe name");
-        assert isTrackSelected();
-
-        float newTime = Float.valueOf(name);
-        // TODO validate
-        Maud.model.animation.setTime(newTime);
-    }
-
-    /**
      * Alter the user rotation of the selected bone.
      *
      * @param rotation (not null, unaffected)
@@ -798,47 +741,6 @@ public class LoadedCGModel implements Cloneable {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Find the track for the selected bone in the loaded animation.
-     *
-     * @return the pre-existing instance, or null if none
-     */
-    private BoneTrack findTrack() {
-        if (!Maud.model.bone.isBoneSelected()) {
-            return null;
-        }
-        if (Maud.model.animation.isBindPoseLoaded()) {
-            return null;
-        }
-
-        Animation anim = Maud.model.animation.getLoadedAnimation();
-        int boneIndex = Maud.model.bone.getIndex();
-        BoneTrack track = MyAnimation.findTrack(anim, boneIndex);
-
-        return track;
-    }
-
-    /**
-     * Test whether a bone track is selected.
-     *
-     * @return true if one is selected, false if none is selected
-     */
-    private boolean isTrackSelected() {
-        if (Maud.model.bone.isBoneSelected()) {
-            if (Maud.model.animation.isBindPoseLoaded()) {
-                return false;
-            }
-            Track track = findTrack();
-            if (track == null) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    }
 
     /**
      * Quietly load a model asset from persistent storage without adding it to

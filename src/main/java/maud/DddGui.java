@@ -107,6 +107,7 @@ public class DddGui extends GuiScreenController {
     final CameraTool camera = new CameraTool(this);
     final CullHintTool cullHint = new CullHintTool(this);
     final CursorTool cursor = new CursorTool(this);
+    final KeyframeTool keyframe = new KeyframeTool(this);
     final ModelTool model = new ModelTool(this);
     final RenderTool render = new RenderTool(this);
     final RetargetTool retarget = new RetargetTool(this);
@@ -1074,7 +1075,7 @@ public class DddGui extends GuiScreenController {
                 handled = menuHelp(remainder);
                 break;
             case "Keyframe":
-                //handled = menuKeyframe(remainder);
+                handled = menuKeyframe(remainder);
                 break;
             case "Physics":
                 //handled = menuPhysics(remainder);
@@ -1410,6 +1411,24 @@ public class DddGui extends GuiScreenController {
                 Misc.browseWeb("https://github.com/stephengold/Maud");
                 handled = true;
                 break;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle actions from the Keyframe menu.
+     *
+     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuKeyframe(String remainder) {
+        assert remainder != null;
+        boolean handled = false;
+        switch (remainder) {
+            case "Tool":
+                keyframe.select();
+                handled = true;
         }
 
         return handled;
