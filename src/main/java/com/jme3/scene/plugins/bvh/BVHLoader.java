@@ -268,7 +268,7 @@ public class BVHLoader implements AssetLoader {
                 token = scan.next();
             }
             if (token.equals("CHANNELS")) {
-                bone.setChannels(new ArrayList<BVHChannel>());
+                bone.setChannels(new ArrayList<>());
                 int nbChan = scan.nextInt();
                 for (int i = 0; i < nbChan; i++) {
                     bone.getChannels().add(new BVHChannel(scan.next()));
@@ -277,7 +277,7 @@ public class BVHLoader implements AssetLoader {
             }
             while (token.equals("JOINT") || token.equals("End")) {
                 if (bone.getChildren() == null) {
-                    bone.setChildren(new ArrayList<BVHBone>());
+                    bone.setChildren(new ArrayList<>());
                 }
                 bone.getChildren().add(readBone(scan.next()));
                 token = scan.next();
@@ -295,7 +295,7 @@ public class BVHLoader implements AssetLoader {
         if (bone.getChannels() != null) {
             for (BVHChannel bvhChannel : bone.getChannels()) {
                 if (bvhChannel.getValues() == null) {
-                    bvhChannel.setValues(new ArrayList<Float>());
+                    bvhChannel.setValues(new ArrayList<>());
                 }
                 bvhChannel.getValues().add(scan.nextFloat());
             }

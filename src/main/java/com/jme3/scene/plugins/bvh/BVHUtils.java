@@ -178,7 +178,7 @@ public class BVHUtils {
                     "Animation must contain a boneTrack to be retargeted");
         }
         int nbFrames = track.getTimes().length;
-        Map<Integer, InnerTrack> tracks = new HashMap<Integer, InnerTrack>();
+        Map<Integer, InnerTrack> tracks = new HashMap<>();
 
         float[] times = new float[nbFrames];
         System.arraycopy(track.getTimes(), 0, times, 0, nbFrames);

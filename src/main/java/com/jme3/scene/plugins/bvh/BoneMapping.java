@@ -34,7 +34,7 @@ public class BoneMapping implements Savable {
     /**
      * list of bone names from the source skeleton
      */
-    private List<String> sourceNames = new SafeArrayList<String>(String.class);
+    private List<String> sourceNames = new SafeArrayList<>(String.class);
     /**
      * name of the corresponding bone in the target skeleton
      */
