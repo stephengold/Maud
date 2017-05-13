@@ -1426,6 +1426,22 @@ public class DddGui extends GuiScreenController {
         assert remainder != null;
         boolean handled = false;
         switch (remainder) {
+            case "Select first":
+                Maud.model.animation.selectKeyframeFirst();
+                handled = true;
+                break;
+            case "Select previous":
+                Maud.model.animation.selectKeyframePrevious();
+                handled = true;
+                break;
+            case "Select next":
+                Maud.model.animation.selectKeyframeNext();
+                handled = true;
+                break;
+            case "Select last":
+                Maud.model.animation.selectKeyframeLast();
+                handled = true;
+                break;
             case "Tool":
                 keyframe.select();
                 handled = true;
