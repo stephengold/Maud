@@ -18,8 +18,6 @@ import java.util.logging.Logger;
 /**
  * Utility class for re-targeting animations between CG models.
  *
- * TODO constructor
- *
  * @author Nehon
  */
 public class BVHUtils {
@@ -78,7 +76,7 @@ public class BVHUtils {
      * Estimate the height of a skeleton in bind pose.
      *
      * @param targetSkeleton
-     * @returh height (in model units, &ge;0)
+     * @return height (in model units, &ge;0)
      */
     public static float getSkeletonHeight(Skeleton targetSkeleton) {
         float maxy = -100000;

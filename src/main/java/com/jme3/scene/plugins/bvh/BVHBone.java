@@ -146,18 +146,14 @@ public class BVHBone {
         }
         return num;
     }
-
-//    public List<BVHBone> getBonesList(){
-//        List<BVHBone> list=new ArrayList<BVHBone>();
-//        list.add(this);
-//        for (BVHBone bVHBone : children) {
-//            list.addAll(bVHBone.getBonesList());
-//        }
-//
-//        return list;
-//    }
     // *************************************************************************
     // Object methods
+
+    /**
+     * Represent this bone as a text string.
+     *
+     * @return descriptive string of text (not null)
+     */
     @Override
     public String toString() {
         return "BVHBone{" + "\nname=" + name + "\noffset=" + offset
