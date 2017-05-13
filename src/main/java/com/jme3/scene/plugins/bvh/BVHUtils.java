@@ -409,35 +409,4 @@ public class BVHUtils {
         }
         return t;
     }
-
-    /**
-     * Invert the specified quaternion. TODO remove
-     *
-     * @param q input to invert (not null)
-     * @return a new instance
-     */
-    private static Quaternion invert(Quaternion q) {
-        float[] angles = new float[3];
-        q.toAngles(angles);
-
-        angles[0] = -angles[0];
-        angles[1] = -angles[1];
-        angles[2] = -angles[2];
-        return new Quaternion().fromAngles(angles);
-    }
-
-    /**
-     * Print the specified quaternion as rotation angles. TODO remove
-     *
-     * @param q input to invert (not null)
-     */
-    private static void outPutRotation(Quaternion q) {
-        float[] angles = new float[3];
-        q.toAngles(angles);
-
-        System.out.println("rotation x: " + angles[0] * FastMath.RAD_TO_DEG);
-        System.out.println("rotation Y: " + angles[1] * FastMath.RAD_TO_DEG);
-        System.out.println("rotation Z: " + angles[2] * FastMath.RAD_TO_DEG);
-
-    }
 }
