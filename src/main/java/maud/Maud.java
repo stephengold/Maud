@@ -222,8 +222,9 @@ public class Maud extends GuiApplication {
                     printer.printSubtree(rootNode);
                     return;
                 case "quit":
-                    gui.showConfirmDialog("Quit Maud?", "Quit",
-                            SimpleApplication.INPUT_MAPPING_EXIT, null);
+                    QuitDialog controller = new QuitDialog();
+                    gui.showConfirmDialog("Quit Maud?", "",
+                            SimpleApplication.INPUT_MAPPING_EXIT, controller);
                     return;
             }
         }
