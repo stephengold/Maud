@@ -138,44 +138,36 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Test whether the selected mapping is valid for the loaded CG model and
-     * the selected source CG model.
+     * Test whether the selected source CG model is animated.
      *
-     * @return true if valid, otherwise false
+     * @return true if animated, otherwise false
      */
-    public boolean isValidMapping() {
-        boolean isValid = true;
-        if (mappingAssetPath == null || !isValidSourceCgm()) {
-            isValid = false;
-        } else {
-            SkeletonMapping map = skeletonMapping();
-            /*
-             * Are all target bones present in the loaded CG model?
-             */
-            List<String> targetBones = map.listTargetBones();
-            for (String name : targetBones) {
-                if (!Maud.model.cgm.hasBone(name)) {
-                    isValid = false;
-                    break;
-                }
-            }
-        }
-        if (isValid) {
-            SkeletonMapping map = skeletonMapping();
-            Spatial sourceCgm = sourceCgm();
-            /*
-             * Are all source bones present in the source CG model?
-             */
-            List<String> sourceBones = map.listSourceBones();
-            for (String name : sourceBones) {
-                if (MySkeleton.findBoneIndex(sourceCgm, name) == -1) {
-                    isValid = false;
-                    break;
-                }
+    public boolean isAnimatedSourceCgm() {
+        boolean result = false;
+        Spatial sourceCgm = sourceCgm();
+        if (sourceCgm != null) {
+            SkeletonControl control = sourceCgm.getControl(
+                    SkeletonControl.class);
+            if (control != null) {
+                result = true;
             }
         }
 
-        return isValid;
+        return result;
+    }
+
+    /**
+     * Test whether the selected source CG model is loadable.
+     *
+     * @return true if loadable, otherwise false
+     */
+    public boolean isLoadableSourceCgm() {
+        Spatial sourceCgm = sourceCgm();
+        if (sourceCgm == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -205,7 +197,7 @@ public class RetargetParameters implements Cloneable {
      * @return a new list of names
      */
     public List<String> listAnimationNames() {
-        List<String> names = new ArrayList<>();
+        List<String> names = new ArrayList<>(20);
         if (sourceCgmAssetPath != null) {
             Spatial sourceCgm = sourceCgm();
             if (sourceCgm != null) {
@@ -215,6 +207,61 @@ public class RetargetParameters implements Cloneable {
         }
 
         return names;
+    }
+
+    /**
+     * Test whether the selected mapping matches the selected source CG model.
+     *
+     * @return true if they match, otherwise false
+     */
+    public boolean matchesSource() {
+        boolean matches;
+        SkeletonMapping map = skeletonMapping();
+        Spatial sourceCgm = sourceCgm();
+        if (map == null || sourceCgm == null) {
+            matches = false;
+        } else {
+            /*
+             * Are all source bones in the mapping present in the CG model?
+             */
+            matches = true;
+            List<String> sourceBones = map.listSourceBones();
+            for (String name : sourceBones) {
+                if (MySkeleton.findBoneIndex(sourceCgm, name) == -1) {
+                    matches = false;
+                    break;
+                }
+            }
+        }
+
+        return matches;
+    }
+
+    /**
+     * Test whether the selected mapping matches the loaded CG model.
+     *
+     * @return true if they match, otherwise false
+     */
+    public boolean matchesTarget() {
+        boolean matches;
+        SkeletonMapping map = skeletonMapping();
+        if (map == null) {
+            matches = false;
+        } else {
+            /*
+             * Are all target bones in the mapping present in the CG model?
+             */
+            matches = true;
+            List<String> targetBones = map.listTargetBones();
+            for (String name : targetBones) {
+                if (!Maud.model.cgm.hasBone(name)) {
+                    matches = false;
+                    break;
+                }
+            }
+        }
+
+        return matches;
     }
 
     /**

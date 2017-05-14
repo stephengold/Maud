@@ -714,7 +714,6 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                      hideOnClose="true"
                      height="160px" width="400px" x="30" y="70">
                 <panel childLayout="vertical">
-                    <panel/>
                     <panel childLayout="horizontal">
                         <control name="label" text="Source asset:  "/>
                         <control name="label" id="sourceAsset"
@@ -725,7 +724,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                             <interact onRelease="perform(select rsca)"/>
                         </control>
                     </panel>
-                    <panel/>
+                    <panel height="8px"/>
                     <panel childLayout="horizontal">
                         <control name="label" text="Map asset:  "/>
                         <control name="label" id="mapAsset"
@@ -736,7 +735,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                             <interact onRelease="perform(select rma)"/>
                         </control>
                     </panel>
-                    <panel/>
+                    <panel height="8px"/>
                     <panel childLayout="horizontal">
                         <control name="label" text="Source animation:  "/>
                         <control name="label" id="sourceAnimation"
@@ -752,7 +751,12 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                             <interact onRelease="perform(retarget animation)"/>
                         </control>
                     </panel>
-                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" id="retargetFeedback"
+                                 color="#800f"
+                                 textHAlign="center"
+                                 width="*"/>
+                    </panel>
                 </panel>
             </control>
 

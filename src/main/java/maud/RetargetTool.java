@@ -71,16 +71,16 @@ class RetargetTool extends WindowController {
         super.update(elapsedTime);
 
         String sButton, sourceAssetDesc;
-        String path = Maud.model.retarget.getSourceCgmAssetPath();
-        if (path == null) {
+        String sourcePath = Maud.model.retarget.getSourceCgmAssetPath();
+        if (sourcePath == null) {
             sButton = "";
             sourceAssetDesc = "(none selected)";
         } else if (Maud.model.retarget.isValidSourceCgm()) {
             sButton = "Select";
-            sourceAssetDesc = MyString.quote(path);
+            sourceAssetDesc = MyString.quote(sourcePath);
         } else {
             sButton = "";
-            sourceAssetDesc = MyString.quote(path);
+            sourceAssetDesc = MyString.quote(sourcePath);
         }
         Maud.gui.setStatusText("sourceAsset", " " + sourceAssetDesc);
         Maud.gui.setButtonLabel("selectSourceAnimationButton", sButton);
@@ -94,18 +94,47 @@ class RetargetTool extends WindowController {
         }
         Maud.gui.setStatusText("mapAsset", " " + mapAssetDesc);
 
-        String sourceAnim = Maud.model.retarget.getSourceAnimationName();
-        String rButton, sourceAnimDesc;
-        if (sourceAnim == null) {
-            rButton = "";
-            sourceAnimDesc = "(none selected)";
-        } else if (Maud.model.retarget.isValidMapping()) {
-            rButton = "Retarget";
-            sourceAnimDesc = MyString.quote(sourceAnim);
+        updateBottom();
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Update the source animation, feedback line, and retarget button.
+     */
+    private void updateBottom() {
+        String feedback = "";
+        String rButton = "";
+        String sourceAnimDesc = "(none selected)";
+
+        String sourcePath = Maud.model.retarget.getSourceCgmAssetPath();
+        if (sourcePath == null) {
+            feedback = "select a source asset";
+        } else if (!Maud.model.retarget.isLoadableSourceCgm()) {
+            feedback = "select a loadable source asset";
+        } else if (!Maud.model.retarget.isAnimatedSourceCgm()) {
+            feedback = "select an animated source asset";
         } else {
-            rButton = "";
-            sourceAnimDesc = MyString.quote(sourceAnim);
+            String sourceAnim = Maud.model.retarget.getSourceAnimationName();
+            if (sourceAnim == null) {
+                feedback = "select a source animation";
+            } else {
+                sourceAnimDesc = MyString.quote(sourceAnim);
+
+                String mapAssetPath = Maud.model.retarget.getMappingAssetPath();
+                if (mapAssetPath == null) {
+                    feedback = "select a map";
+                } else if (!Maud.model.retarget.matchesTarget()) {
+                    feedback = "map doesn't match the loaded model";
+                } else if (!Maud.model.retarget.matchesSource()) {
+                    feedback = "map doesn't match the source asset";
+                } else {
+                    rButton = "Retarget";
+                }
+            }
         }
+
+        Maud.gui.setStatusText("retargetFeedback", feedback);
         Maud.gui.setButtonLabel("retargetButton", rButton);
         Maud.gui.setStatusText("sourceAnimation", " " + sourceAnimDesc);
     }
