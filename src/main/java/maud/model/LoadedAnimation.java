@@ -121,6 +121,18 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Duplicate the loaded animation and then load the new copy.
+     *
+     * @param newName name for the copy (not null)
+     */
+    public void copyAndLoad(String newName) {
+        Validate.nonNull(newName, "new name");
+
+        newCopy(newName);
+        load(newName);
+    }
+
+    /**
      * Count the number of bone tracks in the loaded animation.
      *
      * @return count (&ge;0)
@@ -415,8 +427,8 @@ public class LoadedAnimation implements Cloneable {
         assert !animationName.equals(bindPoseName) : animationName;
         assert !Maud.model.cgm.hasAnimation(animationName) : animationName;
 
-        Animation loaded = Maud.model.animation.getLoadedAnimation();
-        float duration = Maud.model.animation.getDuration();
+        Animation loaded = getLoadedAnimation();
+        float duration = getDuration();
         Animation copyAnim = new Animation(animationName, duration);
         if (loaded != null) {
             Track[] loadedTracks = loaded.getTracks();
@@ -429,20 +441,15 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Add a new pose animation to the CG model. The new animation has zero
-     * duration, a single keyframe at t=0, and all the tracks are BoneTracks,
-     * set to the current pose.
+     * Add a pose animation and then load it.
      *
-     * @param animationName name for the new animation (not null, not empty, not
-     * bindPoseName, not in use)
+     * @param newName name for the new animation (not null)
      */
-    public void newPose(String animationName) {
-        Validate.nonEmpty(animationName, "animation name");
-        assert !animationName.equals(bindPoseName) : animationName;
-        assert !Maud.model.cgm.hasAnimation(animationName) : animationName;
+    public void poseAndLoad(String newName) {
+        Validate.nonNull(newName, "new name");
 
-        Animation poseAnim = Maud.model.pose.capture(animationName);
-        Maud.model.cgm.addAnimation(poseAnim);
+        newPose(newName);
+        load(newName);
     }
 
     /**
@@ -465,7 +472,7 @@ public class LoadedAnimation implements Cloneable {
 
         float newTime = Float.valueOf(name);
         // TODO validate
-        Maud.model.animation.setTime(newTime);
+        setTime(newTime);
     }
 
     /**
@@ -608,5 +615,24 @@ public class LoadedAnimation implements Cloneable {
     public Object clone() throws CloneNotSupportedException {
         LoadedAnimation clone = (LoadedAnimation) super.clone();
         return clone;
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Add a new pose animation to the CG model. The new animation has zero
+     * duration, a single keyframe at t=0, and all the tracks are BoneTracks,
+     * set to the current pose.
+     *
+     * @param animationName name for the new animation (not null, not empty, not
+     * bindPoseName, not in use)
+     */
+    private void newPose(String animationName) {
+        assert animationName != null;
+        assert !animationName.equals(bindPoseName) : animationName;
+        assert !Maud.model.cgm.hasAnimation(animationName) : animationName;
+
+        Animation poseAnim = Maud.model.pose.capture(animationName);
+        Maud.model.cgm.addAnimation(poseAnim);
     }
 }

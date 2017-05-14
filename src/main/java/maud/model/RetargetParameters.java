@@ -262,22 +262,16 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Add a re-targeted animation to the loaded CG model.
+     * Perform a retarget operation and load the resulting animation.
+     *
+     * @param newName name for the new animation (not null)
      */
-    public void retargetAndAdd() {
-        Spatial sourceCgm = sourceCgm();
-        Spatial targetCgm = Maud.model.cgm.getRootSpatial();
-        Animation sourceAnimation = sourceAnimation();
-        Skeleton sourceSkeleton = MySkeleton.getSkeleton(sourceCgm);
-        SkeletonMapping mapping = skeletonMapping();
-        Animation retargeted = BVHUtils.reTarget(sourceCgm, targetCgm,
-                sourceAnimation, sourceSkeleton, mapping, false,
-                targetAnimationName);
+    public void retargetAndLoad(String newName) {
+        Validate.nonNull(newName, "new name");
 
-        float duration = retargeted.getLength();
-        assert duration >= 0f : duration;
-
-        Maud.model.cgm.addAnimation(retargeted);
+        setTargetAnimationName(newName);
+        retargetAndAdd();
+        Maud.model.animation.load(newName);
     }
 
     /**
@@ -379,5 +373,26 @@ public class RetargetParameters implements Cloneable {
     public Object clone() throws CloneNotSupportedException {
         RetargetParameters clone = (RetargetParameters) super.clone();
         return clone;
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Add a re-targeted animation to the loaded CG model.
+     */
+    private void retargetAndAdd() {
+        Spatial sourceCgm = sourceCgm();
+        Spatial targetCgm = Maud.model.cgm.getRootSpatial();
+        Animation sourceAnimation = sourceAnimation();
+        Skeleton sourceSkeleton = MySkeleton.getSkeleton(sourceCgm);
+        SkeletonMapping mapping = skeletonMapping();
+        Animation retargeted = BVHUtils.reTarget(sourceCgm, targetCgm,
+                sourceAnimation, sourceSkeleton, mapping, false,
+                targetAnimationName);
+
+        float duration = retargeted.getLength();
+        assert duration >= 0f : duration;
+
+        Maud.model.cgm.addAnimation(retargeted);
     }
 }

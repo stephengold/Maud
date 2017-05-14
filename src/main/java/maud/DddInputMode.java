@@ -200,7 +200,7 @@ class DddInputMode extends InputMode {
         if (actionString.startsWith(copyAnimationPrefix)) {
             String destName = MyString.remainder(actionString,
                     copyAnimationPrefix);
-            Maud.gui.copyAnimation(destName);
+            Maud.model.animation.copyAndLoad(destName);
             handled = true;
         }
 
@@ -257,7 +257,7 @@ class DddInputMode extends InputMode {
             handled = true;
         } else if (actionString.startsWith(newPosePrefix)) {
             String name = MyString.remainder(actionString, newPosePrefix);
-            Maud.gui.newPose(name);
+            Maud.model.animation.poseAndLoad(name);
             handled = true;
         }
 
@@ -400,7 +400,7 @@ class DddInputMode extends InputMode {
         if (actionString.startsWith(retargetAnimationPrefix)) {
             String name = MyString.remainder(actionString,
                     retargetAnimationPrefix);
-            Maud.gui.retargetAnimation(name);
+            Maud.model.retarget.retargetAndLoad(name);
             handled = true;
 
         } else if (actionString.equals("retarget animation")) {

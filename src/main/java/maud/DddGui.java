@@ -161,16 +161,6 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
-     * Handle a "copy pose" action with arguments.
-     *
-     * @param argument action argument (not null)
-     */
-    void copyAnimation(String argument) {
-        Maud.model.animation.newCopy(argument);
-        Maud.model.animation.load(argument);
-    }
-
-    /**
      * Handle the "load asset path" menu item.
      */
     void loadModelAsset() {
@@ -197,16 +187,6 @@ public class DddGui extends GuiScreenController {
         DialogController controller = new AnimationNameDialog("Create");
         showTextEntryDialog("Enter a name for the new animation:", "pose", "",
                 DddInputMode.newPosePrefix, controller);
-    }
-
-    /**
-     * Handle a "new pose" action with arguments.
-     *
-     * @param argument action argument (not null)
-     */
-    void newPose(String argument) {
-        Maud.model.animation.newPose(argument);
-        Maud.model.animation.load(argument);
     }
 
     /**
@@ -486,17 +466,6 @@ public class DddGui extends GuiScreenController {
         DialogController controller = new AnimationNameDialog("Retarget");
         showTextEntryDialog("Enter a name for the new animation:", oldName, "",
                 DddInputMode.retargetAnimationPrefix, controller);
-    }
-
-    /**
-     * Handle a "retarget animation" action with arguments.
-     *
-     * @param argument action argument (not null)
-     */
-    void retargetAnimation(String argument) {
-        Maud.model.retarget.setTargetAnimationName(argument);
-        Maud.model.retarget.retargetAndAdd();
-        Maud.model.animation.load(argument);
     }
 
     /**
