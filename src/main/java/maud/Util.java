@@ -27,11 +27,17 @@
 package maud;
 
 import com.jme3.animation.BoneTrack;
+import com.jme3.asset.AssetManager;
+import com.jme3.asset.AssetNotFoundException;
+import com.jme3.asset.ModelKey;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -184,5 +190,42 @@ public class Util {
             scale.interpolateLocal(scales[startFrame], scales[endFrame],
                     fraction);
         }
+    }
+
+    /**
+     * Load a CG model asset without logging any warning/error messages.
+     *
+     * @param assetManager (not null)
+     * @param assetPath (not null)
+     * @return a new orphan spatial, or null if unsuccessful
+     */
+    public static Spatial loadCgmQuietly(AssetManager assetManager,
+            String assetPath) {
+        if (assetManager == null || assetPath == null) {
+            return null;
+        }
+
+        ModelKey key = new ModelKey(assetPath);
+        /*
+         * Temporarily hush loader warnings about vertices with >4 weights.
+         */
+        Logger mlLogger = Logger.getLogger(MeshLoader.class.getName());
+        Level oldLevel = mlLogger.getLevel();
+        mlLogger.setLevel(Level.SEVERE);
+        /*
+         * Load the model.
+         */
+        Spatial loaded;
+        try {
+            loaded = assetManager.loadModel(key);
+        } catch (AssetNotFoundException e) {
+            loaded = null;
+        }
+        /*
+         * Restore logging levels.
+         */
+        mlLogger.setLevel(oldLevel);
+
+        return loaded;
     }
 }

@@ -33,21 +33,18 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.AssetNotFoundException;
-import com.jme3.asset.ModelKey;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.BVHUtils;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
-import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
 import maud.Maud;
+import maud.Util;
 
 /**
  * Parameters for re-targeting animations in the Maud application.
@@ -363,31 +360,11 @@ public class RetargetParameters implements Cloneable {
     /**
      * Access the root spatial of the selected source CG model.
      *
-     * @return a new orphaned spatial, or null if CG model not found
+     * @return a new orphan spatial, or null if unsuccessful
      */
     Spatial sourceCgm() {
-        ModelKey key = new ModelKey(sourceCgmAssetPath);
-        /*
-         * Temporarily hush loader warnings about vertices with >4 weights.
-         */
-        Logger mlLogger = Logger.getLogger(MeshLoader.class.getName());
-        Level oldLevel = mlLogger.getLevel();
-        mlLogger.setLevel(Level.SEVERE);
-        /*
-         * Load the model.
-         */
-        Spatial loaded;
-        try {
-            loaded = assetManager.loadModel(key);
-        } catch (AssetNotFoundException e) {
-            loaded = null;
-        }
-        /*
-         * Restore logging levels.
-         */
-        mlLogger.setLevel(oldLevel);
-
-        return loaded;
+        Spatial spatial = Util.loadCgmQuietly(assetManager, sourceCgmAssetPath);
+        return spatial;
     }
     // *************************************************************************
     // Object methods

@@ -33,7 +33,6 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
@@ -60,6 +59,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
 import maud.Maud;
+import maud.Util;
 
 /**
  * The MVC model of the loaded CG model in the Maud application: tracks all
@@ -782,25 +782,9 @@ public class LoadedCGModel implements Cloneable {
             assetManager.deleteFromCache(key);
         }
         /*
-         * Temporarily hush loader warnings about vertices with >4 weights.
-         */
-        Logger mlLogger = Logger.getLogger(MeshLoader.class.getName());
-        Level oldLevel = mlLogger.getLevel();
-        mlLogger.setLevel(Level.SEVERE);
-        /*
          * Load the model.
          */
-        Spatial loaded;
-        try {
-            loaded = assetManager.loadModel(key);
-        } catch (AssetNotFoundException e) {
-            loaded = null;
-        }
-        /*
-         * Restore logging levels.
-         */
-        mlLogger.setLevel(oldLevel);
-
+        Spatial loaded = Util.loadCgmQuietly(assetManager, assetPath);
         if (loaded == null) {
             logger.log(Level.SEVERE, "Failed to load model from asset {0}",
                     MyString.quote(assetPath));
