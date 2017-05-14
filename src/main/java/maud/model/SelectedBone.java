@@ -424,19 +424,38 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Select (by index) a child of the selected bone.
-     *
-     * @param childIndex (&ge;0)
+     * Select the first child of the selected bone.
      */
-    public void selectChild(int childIndex) {
-        assert childIndex >= 0 : childIndex;
-
+    public void selectFirstChild() {
         Bone bone = getBone();
         if (bone != null) {
             List<Bone> children = bone.getChildren();
-            Bone child = children.get(childIndex);
-            if (child != null) {
-                select(child);
+            Bone firstChild = children.get(0);
+            if (firstChild != null) {
+                select(firstChild);
+            }
+        }
+    }
+
+    /**
+     * Select the first root bone of the loaded CG model.
+     */
+    public void selectFirstRoot() {
+        Skeleton skeleton = Maud.model.cgm.getSkeleton();
+        Bone[] roots = skeleton.getRoots();
+        Bone firstRoot = roots[0];
+        select(firstRoot);
+    }
+
+    /**
+     * Select the next bone (by index).
+     */
+    public void selectNext() {
+        if (selectedIndex != null) {
+            ++selectedIndex;
+            int numBones = Maud.model.cgm.countBones();
+            if (selectedIndex >= numBones) {
+                selectedIndex = 0;
             }
         }
     }
@@ -457,6 +476,19 @@ public class SelectedBone implements Cloneable {
             Bone parent = bone.getParent();
             if (parent != null) {
                 select(parent);
+            }
+        }
+    }
+
+    /**
+     * Select the previous bone (by index).
+     */
+    public void selectPrevious() {
+        if (selectedIndex != null) {
+            --selectedIndex;
+            if (selectedIndex < 0) {
+                int numBones = Maud.model.cgm.countBones();
+                selectedIndex = numBones - 1;
             }
         }
     }

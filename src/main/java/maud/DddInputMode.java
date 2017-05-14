@@ -272,7 +272,11 @@ class DddInputMode extends InputMode {
      */
     private boolean nextAction(String actionString) {
         boolean handled = false;
-        if (actionString.equals("next checkpoint")) {
+        if (actionString.equals("next bone")) {
+            Maud.model.bone.selectNext();
+            handled = true;
+
+        } else if (actionString.equals("next checkpoint")) {
             History.redo();
             handled = true;
         }
@@ -304,7 +308,11 @@ class DddInputMode extends InputMode {
      */
     private boolean previousAction(String actionString) {
         boolean handled = false;
-        if (actionString.equals("previous checkpoint")) {
+        if (actionString.equals("previous bone")) {
+            Maud.model.bone.selectPrevious();
+            handled = true;
+
+        } else if (actionString.equals("previous checkpoint")) {
             History.undo();
             handled = true;
         }

@@ -154,6 +154,20 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
+     * Count the root bones in the loaded model.
+     *
+     * @return count (&ge;0)
+     */
+    public int countRootBones() {
+        Skeleton skeleton = getSkeleton();
+        Bone[] roots = skeleton.getRoots();
+        int count = roots.length;
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
      * Count unsaved edits.
      *
      * @return count (&ge;0)

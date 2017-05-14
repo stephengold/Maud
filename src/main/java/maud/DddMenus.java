@@ -87,8 +87,8 @@ class DddMenus {
      * @return true if the action is handled, otherwise false
      */
     boolean openMenu(String menuPath) {
-        int separatorBegin = menuPath.indexOf(menuSeparator);
         boolean handled;
+        int separatorBegin = menuPath.indexOf(menuSeparator);
         if (separatorBegin == -1) {
             handled = menuBar(menuPath);
         } else {
@@ -102,7 +102,7 @@ class DddMenus {
     }
 
     /**
-     * Handle a "select bone" action.
+     * Handle a "select bone" action with an argument.
      *
      * @param argument action argument (not null)
      */
@@ -128,7 +128,7 @@ class DddMenus {
         if (Maud.model.bone.isBoneSelected()) {
             int numChildren = Maud.model.bone.countChildren();
             if (numChildren == 1) {
-                Maud.model.bone.selectChild(0);
+                Maud.model.bone.selectFirstChild();
             } else if (numChildren > 1) {
                 List<String> choices = Maud.model.bone.listChildNames();
                 Maud.gui.showPopupMenu(DddInputMode.selectBonePrefix, choices);
@@ -258,19 +258,48 @@ class DddMenus {
      * @return a new list
      */
     private List<String> listBoneMenuItems() {
-        List<String> items = new ArrayList<>(10);
+        List<String> items = new ArrayList<>(7);
         items.add("Tool");
+        items.add("Select");
         items.add("Angles");
         items.add("Offset");
         items.add("Scale");
-        items.add("Select by parent");
-        items.add("Select by name");
-        if (Maud.model.animation.countBoneTracks() > 0) {
-            items.add("Select with track");
-        }
         if (Maud.model.bone.isBoneSelected()) {
             items.add("Attach prop");
             items.add("Rename");
+        }
+
+        return items;
+    }
+
+    /**
+     * Enumerate items for the Bone -> Select menu.
+     *
+     * @return a new list
+     */
+    private List<String> listBoneSelectMenuItems() {
+        List<String> items = new ArrayList<>(8);
+        items.add("By name");
+        items.add("By parent");
+        items.add("Root");
+
+        int numTracks = Maud.model.animation.countBoneTracks();
+        if (numTracks > 0) {
+            items.add("With track");
+        }
+
+        int numChildren = Maud.model.bone.countChildren();
+        if (numChildren > 0) {
+            items.add("Child");
+        }
+        boolean isRoot = Maud.model.bone.isRootBone();
+        if (!isRoot) {
+            items.add("Parent");
+        }
+
+        if (Maud.model.bone.isBoneSelected()) {
+            items.add("Next");
+            items.add("Previous");
         }
 
         return items;
@@ -423,6 +452,9 @@ class DddMenus {
                 break;
             case "Bone":
                 handled = menuBone(remainder);
+                break;
+            case "Bone -> Select":
+                handled = menuBoneSelect(remainder);
                 break;
             case "CGModel":
                 handled = menuCGModel(remainder);
@@ -600,6 +632,7 @@ class DddMenus {
                     + menuSeparator;
             Maud.gui.showPopupMenu(actionPrefix, menuItems);
         }
+
         return true;
     }
 
@@ -611,42 +644,89 @@ class DddMenus {
      */
     private boolean menuBone(String remainder) {
         assert remainder != null;
+
+        boolean handled = false;
+        String selectPrefix = "Select" + menuSeparator;
+        if (remainder.startsWith(selectPrefix)) {
+            String selectArg = MyString.remainder(remainder, selectPrefix);
+            handled = menuBoneSelect(selectArg);
+
+        } else {
+            switch (remainder) {
+                case "Angles":
+                    Maud.gui.boneAngle.select();
+                    handled = true;
+                    break;
+                case "Attach prop":
+                    break;
+                case "Offset":
+                    Maud.gui.boneOffset.select();
+                    handled = true;
+                    break;
+                case "Rename":
+                    Maud.gui.renameBone();
+                    handled = true;
+                    break;
+                case "Scale":
+                    Maud.gui.boneScale.select();
+                    handled = true;
+                    break;
+                case "Select":
+                    selectBone();
+                    handled = true;
+                    break;
+                case "Tool":
+                    Maud.gui.bone.select();
+                    handled = true;
+            }
+        }
+        return handled;
+    }
+
+    /**
+     * Handle actions from the Bone -> Select menu.
+     *
+     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuBoneSelect(String remainder) {
+        assert remainder != null;
+
         boolean handled = false;
         switch (remainder) {
-            case "Angles":
-                Maud.gui.boneAngle.select();
-                handled = true;
-                break;
-            case "Attach prop":
-                break;
-            case "Offset":
-                Maud.gui.boneOffset.select();
-                handled = true;
-                break;
-            case "Rename":
-                Maud.gui.renameBone();
-                handled = true;
-                break;
-            case "Scale":
-                Maud.gui.boneScale.select();
-                handled = true;
-                break;
-            case "Select by name":
+            case "By name":
                 selectBoneByName();
                 handled = true;
                 break;
-            case "Select by parent":
+            case "By parent":
                 selectBoneByParent();
                 handled = true;
                 break;
-            case "Select with track":
-                selectBoneWithTrack();
+            case "Child":
+                selectBoneChild();
                 handled = true;
                 break;
-            case "Tool":
-                Maud.gui.bone.select();
+            case "Next":
+                Maud.model.bone.selectNext();
+                handled = true;
+                break;
+            case "Parent":
+                Maud.model.bone.selectParent();
+                handled = true;
+                break;
+            case "Previous":
+                Maud.model.bone.selectPrevious();
+                handled = true;
+                break;
+            case "Root":
+                selectRootBone();
+                handled = true;
+                break;
+            case "With track":
+                selectBoneWithTrack();
                 handled = true;
         }
+
         return handled;
     }
 
@@ -835,6 +915,15 @@ class DddMenus {
     }
 
     /**
+     * Handle a "select bone" action without an argument.
+     */
+    private void selectBone() {
+        String prefix = "open menu Bone -> Select -> ";
+        List<String> menuItems = listBoneSelectMenuItems();
+        Maud.gui.showPopupMenu(prefix, menuItems);
+    }
+
+    /**
      * Select a bone by name, using submenus.
      */
     private void selectBoneByName() {
@@ -850,5 +939,18 @@ class DddMenus {
     private void selectBoneByParent() {
         List<String> boneNames = Maud.model.cgm.listRootBoneNames();
         Maud.gui.showPopupMenu(DddInputMode.selectBoneChildPrefix, boneNames);
+    }
+
+    /**
+     * Handle a "select rootBone" action.
+     */
+    private void selectRootBone() {
+        int numRoots = Maud.model.cgm.countRootBones();
+        if (numRoots == 1) {
+            Maud.model.bone.selectFirstRoot();
+        } else if (numRoots > 1) {
+            List<String> choices = Maud.model.cgm.listRootBoneNames();
+            Maud.gui.showPopupMenu(DddInputMode.selectBonePrefix, choices);
+        }
     }
 }

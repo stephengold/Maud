@@ -28,7 +28,6 @@ package maud;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
@@ -96,34 +95,33 @@ class BoneTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        String indexText, nameText;
-        String parentText, childText;
-        String rButton, spButton, scButton;
-
-        int numBones = Maud.model.cgm.countBones();
+        String hasTrackText;
         if (Maud.model.bone.isBoneSelected()) {
-            int selectedIndex = Maud.model.bone.getIndex();
-            indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
-
-            String name = Maud.model.bone.getName();
-            nameText = MyString.quote(name);
-
-            if (Maud.model.bone.isRootBone()) {
-                List<String> roots = Maud.model.cgm.listRootBoneNames();
-                int numRoots = roots.size();
-                if (numRoots == 1) {
-                    parentText = "none (the root bone)";
-                } else {
-                    parentText = String.format(
-                            "none (one of %d root bones)", numRoots);
-                }
-                spButton = "";
+            if (Maud.model.bone.hasTrack()) {
+                hasTrackText = "has track";
             } else {
-                String parentName = Maud.model.bone.getParentName();
-                parentText = MyString.quote(parentName);
-                spButton = "Select";
+                hasTrackText = "no track";
             }
+        } else {
+            hasTrackText = "";
+        }
+        Maud.gui.setStatusText("boneHasTrack", " " + hasTrackText);
 
+        updateChildren();
+        updateIndex();
+        updateName();
+        updateParent();
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Update the children status and button.
+     */
+    private void updateChildren() {
+        String childText, scButton;
+
+        if (Maud.model.bone.isBoneSelected()) {
             int numChildren = Maud.model.bone.countChildren();
             if (numChildren > 1) {
                 childText = String.format("%d children", numChildren);
@@ -137,7 +135,28 @@ class BoneTool extends WindowController {
                 scButton = "";
             }
 
-            rButton = "Rename";
+        } else {
+            childText = "n/a";
+            scButton = "";
+        }
+
+        Maud.gui.setStatusText("boneChildren", " " + childText);
+        Maud.gui.setButtonLabel("boneSelectChildButton", scButton);
+    }
+
+    /**
+     * Update the index status and previous/next buttons.
+     */
+    private void updateIndex() {
+        String indexText;
+        String nButton, pButton;
+
+        int numBones = Maud.model.cgm.countBones();
+        if (Maud.model.bone.isBoneSelected()) {
+            int selectedIndex = Maud.model.bone.getIndex();
+            indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
+            nButton = "+";
+            pButton = "-";
 
         } else {
             if (numBones == 0) {
@@ -147,21 +166,63 @@ class BoneTool extends WindowController {
             } else {
                 indexText = String.format("%d bones", numBones);
             }
-            nameText = "(none selected)";
-            parentText = "n/a";
-            spButton = "";
-            childText = "n/a";
-            scButton = "";
-            rButton = "";
+            nButton = "";
+            pButton = "";
         }
 
         Maud.gui.setStatusText("boneIndex", indexText);
-        Maud.gui.setStatusText("boneName", " " + nameText);
-        Maud.gui.setStatusText("boneParent", " " + parentText);
-        Maud.gui.setStatusText("boneChildren", " " + childText);
+        Maud.gui.setButtonLabel("boneNextButton", nButton);
+        Maud.gui.setButtonLabel("bonePreviousButton", pButton);
+    }
 
+    /**
+     * Update the name status and rename button.
+     */
+    private void updateName() {
+        String nameText, rButton;
+
+        if (Maud.model.bone.isBoneSelected()) {
+            String name = Maud.model.bone.getName();
+            nameText = MyString.quote(name);
+            rButton = "Rename";
+
+        } else {
+            nameText = "(none selected)";
+            rButton = "";
+        }
+
+        Maud.gui.setStatusText("boneName", " " + nameText);
         Maud.gui.setButtonLabel("boneRenameButton", rButton);
+    }
+
+    /**
+     * Update the parent status and button.
+     */
+    private void updateParent() {
+        String parentText, spButton;
+
+        if (Maud.model.bone.isBoneSelected()) {
+            if (Maud.model.bone.isRootBone()) {
+                int numRoots = Maud.model.cgm.countRootBones();
+                if (numRoots == 1) {
+                    parentText = "none (the root)";
+                } else {
+                    parentText = String.format("none (one of %d roots)",
+                            numRoots);
+                }
+                spButton = "";
+            } else {
+                String parentName = Maud.model.bone.getParentName();
+                parentText = MyString.quote(parentName);
+                spButton = "Select";
+            }
+
+        } else {
+            parentText = "n/a";
+            spButton = "";
+        }
+
+        Maud.gui.setStatusText("boneParent", " " + parentText);
         Maud.gui.setButtonLabel("boneSelectParentButton", spButton);
-        Maud.gui.setButtonLabel("boneSelectChildButton", scButton);
     }
 }
