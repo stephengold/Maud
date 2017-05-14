@@ -552,12 +552,12 @@ class DddMenus {
                 break;
 
             case "New from copy":
-                Maud.gui.copyAnimation();
+                Maud.gui.dialogs.copyAnimation();
                 handled = true;
                 break;
 
             case "New from pose":
-                Maud.gui.newPose();
+                Maud.gui.dialogs.newPose();
                 handled = true;
                 break;
 
@@ -567,7 +567,7 @@ class DddMenus {
                 break;
 
             case "Rename":
-                Maud.gui.renameAnimation();
+                Maud.gui.dialogs.renameAnimation();
                 handled = true;
                 break;
 
@@ -656,7 +656,7 @@ class DddMenus {
                 case "Attach prop":
                     break;
                 case "Rename":
-                    Maud.gui.renameBone();
+                    Maud.gui.dialogs.renameBone();
                     handled = true;
                     break;
                 case "Rotate":
@@ -751,7 +751,7 @@ class DddMenus {
                 break;
 
             case "Load asset path":
-                Maud.gui.loadModelAsset();
+                Maud.gui.dialogs.loadModelAsset();
                 handled = true;
                 break;
 
@@ -803,7 +803,7 @@ class DddMenus {
         boolean handled = false;
         switch (remainder) {
             case "About Maud":
-                Maud.gui.aboutMaud();
+                Maud.gui.dialogs.aboutMaud();
                 handled = true;
                 break;
 

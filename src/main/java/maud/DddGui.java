@@ -34,27 +34,19 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
-import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
 import de.lessvoid.nifty.controls.RadioButtonStateChangedEvent;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.debug.DebugVersion;
 import jme3utilities.math.MyMath;
-import jme3utilities.nifty.DialogController;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
-import jme3utilities.ui.UiVersion;
 
 /**
  * The screen controller for the GUI portion of Maud's "3D View" screen. The GUI
@@ -82,6 +74,11 @@ public class DddGui extends GuiScreenController {
     // *************************************************************************
     // fields
 
+    /**
+     * dialog boxes created by this screen (set by
+     * {@link maud.Maud#guiInitializeApplication()})
+     */
+    DddDialogs dialogs;
     /**
      * input mode for this screen
      */
@@ -122,72 +119,6 @@ public class DddGui extends GuiScreenController {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Handle an "About Maud" action.
-     */
-    void aboutMaud() {
-        String niftyVersion = nifty.getVersion();
-        String text = "Maud, by Stephen Gold\n\nYou are c"
-                + "urrently using Maud, a jMonkeyEngine application for edit"
-                + "ing animated models.\n\nThe version you are using includes "
-                + "the following libraries:";
-        text += String.format("\n   jme3-core version %s",
-                MyString.quote(JmeVersion.FULL_NAME));
-        text += String.format("\n   nifty version %s",
-                MyString.quote(niftyVersion));
-        text += String.format("\n   SkyControl version %s",
-                MyString.quote(Misc.getVersionShort()));
-        text += String.format("\n   jme3-utilities-debug version %s",
-                MyString.quote(DebugVersion.getVersionShort()));
-        text += String.format("\n   jme3-utilities-ui version %s",
-                MyString.quote(UiVersion.getVersionShort()));
-        text += String.format("\n   jme3-utilities-nifty version %s\n\n",
-                MyString.quote(LibraryVersion.getVersionShort()));
-        closeAllPopups();
-        showInfoDialog("About Maud", text);
-    }
-
-    /**
-     * Display the "copy animation" dialog.
-     */
-    void copyAnimation() {
-        closeAllPopups();
-        String fromName = Maud.model.animation.getName();
-        DialogController controller = new AnimationNameDialog("Copy");
-        showTextEntryDialog("Enter name for copied animation:",
-                fromName, "", DddInputMode.copyAnimationPrefix,
-                controller);
-    }
-
-    /**
-     * Handle the "load asset path" menu item.
-     */
-    void loadModelAsset() {
-        Maud.gui.closeAllPopups();
-        String basePath = Maud.model.cgm.getAssetPath();
-        String extension = Maud.model.cgm.getExtension();
-        String assetPath = String.format("%s.%s", basePath, extension);
-        List<String> modelExts = new ArrayList<>(4);
-        modelExts.add(".blend");
-        modelExts.add(".j3o");
-        modelExts.add(".mesh.xml");
-        AssetDialog controller = new AssetDialog("Load", modelExts,
-                assetManager);
-        Maud.gui.showTextEntryDialog("Enter asset path for model:",
-                assetPath, "", DddInputMode.loadModelAssetPrefix,
-                controller);
-    }
-
-    /**
-     * Display the "new pose" dialog.
-     */
-    void newPose() {
-        closeAllPopups();
-        DialogController controller = new AnimationNameDialog("Create");
-        showTextEntryDialog("Enter a name for the new animation:", "pose", "",
-                DddInputMode.newPosePrefix, controller);
-    }
 
     /**
      * Callback that Nifty invokes after a check box changes.
@@ -426,76 +357,6 @@ public class DddGui extends GuiScreenController {
         Vector3f vector = new Vector3f(x, y, z);
 
         return vector;
-    }
-
-    /**
-     * Display the "rename animation" dialog.
-     */
-    void renameAnimation() {
-        if (!Maud.model.animation.isBindPoseLoaded()) {
-            closeAllPopups();
-            String oldName = Maud.model.animation.getName();
-            DialogController controller = new AnimationNameDialog("Rename");
-            showTextEntryDialog("Enter new name for the animation:", oldName,
-                    "", DddInputMode.renameAnimationPrefix, controller);
-        }
-    }
-
-    /**
-     * Display the "rename bone" dialog.
-     */
-    void renameBone() {
-        if (Maud.model.bone.isBoneSelected()) {
-            closeAllPopups();
-            String oldName = Maud.model.bone.getName();
-            DialogController controller = new BoneRenameDialog("Rename");
-            showTextEntryDialog("Enter new name for the bone:", oldName, "",
-                    DddInputMode.renameBonePrefix, controller);
-        }
-    }
-
-    /**
-     * Handle a "retarget animation" action without arguments.
-     */
-    void retargetAnimation() {
-        closeAllPopups();
-        String oldName = Maud.model.retarget.getTargetAnimationName();
-        if (oldName == null) {
-            oldName = "";
-        }
-        DialogController controller = new AnimationNameDialog("Retarget");
-        showTextEntryDialog("Enter a name for the new animation:", oldName, "",
-                DddInputMode.retargetAnimationPrefix, controller);
-    }
-
-    /**
-     * Handle a "select rma" action with no argument.
-     */
-    void selectRetargetMapAsset() {
-        closeAllPopups();
-        String assetPath = Maud.model.retarget.getMappingAssetPath();
-        List<String> modelExts = new ArrayList<>(1);
-        modelExts.add(".j3o");
-        AssetDialog controller = new AssetDialog("Select", modelExts,
-                assetManager);
-        showTextEntryDialog("Enter asset path for skeleton mapping:", assetPath,
-                "", DddInputMode.selectRetargetMapAssetPrefix, controller);
-    }
-
-    /**
-     * Handle a "select rsca" action with no argument.
-     */
-    void selectRetargetSourceCgmAsset() {
-        closeAllPopups();
-        String assetPath = Maud.model.retarget.getSourceCgmAssetPath();
-        List<String> modelExts = new ArrayList<>(4);
-        modelExts.add(".blend");
-        modelExts.add(".j3o");
-        modelExts.add(".mesh.xml");
-        AssetDialog controller = new AssetDialog("Select", modelExts,
-                assetManager);
-        showTextEntryDialog("Enter asset path for source model:", assetPath, "",
-                DddInputMode.selectRetargetSourceCgmAssetPrefix, controller);
     }
 
     /**

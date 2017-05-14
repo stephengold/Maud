@@ -253,7 +253,7 @@ class DddInputMode extends InputMode {
             History.add();
             handled = true;
         } else if (actionString.equals("new pose")) {
-            Maud.gui.newPose();
+            Maud.gui.dialogs.newPose();
             handled = true;
         } else if (actionString.startsWith(newPosePrefix)) {
             String name = MyString.remainder(actionString, newPosePrefix);
@@ -330,11 +330,11 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         String newName;
         if (actionString.equals("rename animation")) {
-            Maud.gui.renameAnimation();
+            Maud.gui.dialogs.renameAnimation();
             handled = true;
 
         } else if (actionString.equals("rename bone")) {
-            Maud.gui.renameBone();
+            Maud.gui.dialogs.renameBone();
             handled = true;
 
         } else if (actionString.startsWith(renameAnimationPrefix)) {
@@ -404,7 +404,7 @@ class DddInputMode extends InputMode {
             handled = true;
 
         } else if (actionString.equals("retarget animation")) {
-            Maud.gui.retargetAnimation();
+            Maud.gui.dialogs.retargetAnimation();
             handled = true;
         }
 
@@ -472,7 +472,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "select rma":
-                Maud.gui.selectRetargetMapAsset();
+                Maud.gui.dialogs.selectRetargetMapAsset();
                 handled = true;
                 break;
             case "select rsa":
@@ -480,7 +480,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "select rsca":
-                Maud.gui.selectRetargetSourceCgmAsset();
+                Maud.gui.dialogs.selectRetargetSourceCgmAsset();
                 handled = true;
                 break;
             case "select spatialChild":

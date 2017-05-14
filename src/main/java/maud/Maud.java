@@ -38,6 +38,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
+import de.lessvoid.nifty.Nifty;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
@@ -158,6 +159,8 @@ public class Maud extends GuiApplication {
      */
     @Override
     public void guiInitializeApplication() {
+        Nifty nifty = getNifty();
+        gui.dialogs = new DddDialogs(assetManager, nifty);
         model.cgm = new LoadedCGModel(assetManager);
         model.retarget = new RetargetParameters(assetManager);
         viewState = new ViewCGModel(assetManager, rootNode, null);
