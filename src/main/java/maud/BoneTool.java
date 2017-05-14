@@ -95,17 +95,26 @@ class BoneTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        String hasTrackText;
+        String hasTrackText, rButton, sButton, tButton;
         if (Maud.model.bone.isBoneSelected()) {
             if (Maud.model.bone.hasTrack()) {
                 hasTrackText = "has track";
             } else {
                 hasTrackText = "no track";
             }
+            rButton = "Rotate";
+            sButton = "Scale";
+            tButton = "Translate";
         } else {
             hasTrackText = "";
+            rButton = "";
+            sButton = "";
+            tButton = "";
         }
         Maud.gui.setStatusText("boneHasTrack", " " + hasTrackText);
+        Maud.gui.setButtonLabel("boneRotateButton", rButton);
+        Maud.gui.setButtonLabel("boneScaleButton", sButton);
+        Maud.gui.setButtonLabel("boneTranslateButton", tButton);
 
         updateChildren();
         updateIndex();

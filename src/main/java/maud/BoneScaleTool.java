@@ -52,7 +52,7 @@ class BoneScaleTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            BoneAngleTool.class.getName());
+            BoneRotationTool.class.getName());
     /**
      * names of the coordinate axes
      */

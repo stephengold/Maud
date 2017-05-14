@@ -37,11 +37,12 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 
 /**
- * The controller for the "Bone-Angle Tool" window in Maud's "3D View" screen.
+ * The controller for the "Bone-Rotation Tool" window in Maud's "3D View"
+ * screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneAngleTool extends WindowController {
+class BoneRotationTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -52,8 +53,7 @@ class BoneAngleTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            BoneAngleTool.class.getName());
+    final private static Logger logger = Logger.getLogger(BoneRotationTool.class.getName());
     /**
      * names of the coordinate axes
      */
@@ -75,8 +75,8 @@ class BoneAngleTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    BoneAngleTool(BasicScreenController screenController) {
-        super(screenController, "boneAngleTool", false);
+    BoneRotationTool(BasicScreenController screenController) {
+        super(screenController, "boneRotationTool", false);
     }
     // *************************************************************************
     // new methods exposed

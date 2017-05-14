@@ -205,7 +205,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="boneTool" title="Bone Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="175px" width="270px" x="65" y="35">
+                     height="175px" width="280px" x="65" y="35">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
                         <control name="button" id="bonePreviousButton"
@@ -235,7 +235,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                     <panel childLayout="horizontal">
                         <control name="label" text="Name:  "
                                  textHAlign="right"
-                                 width="55px"/>
+                                 width="68px"/>
                         <control name="label" id="boneName"
                                  backgroundColor="#ffff"
                                  width="*"/>
@@ -246,27 +246,29 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                     </panel>
                     <panel height="6px"/>
                     <panel childLayout="horizontal">
-                        <panel width="55px"/>
-                        <control name="button" label="Angles" id="id1ToAvoidNiftyWarning"
-                                 width="55px">
-                            <interact onRelease="perform(select tool boneAngle)"/>
-                        </control>
-                        <panel/>
-                        <control name="button" label="Offsets" id="id2ToAvoidNiftyWarning"
-                                 width="60px">
-                            <interact onRelease="perform(select tool boneOffset)"/>
-                        </control>
-                        <panel/>
-                        <control name="button" label="Scales" id="id3ToAvoidNiftyWarning"
-                                 width="55px">
+                        <control name="label" text="Transform:  "
+                                 textHAlign="right"
+                                 width="68px"/>
+                        <control name="button" id="boneScaleButton"
+                                 width="50px">
                             <interact onRelease="perform(select tool boneScale)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="boneRotateButton"
+                                 width="55px">
+                            <interact onRelease="perform(select tool boneRotation)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="boneTranslateButton"
+                                 width="70px">
+                            <interact onRelease="perform(select tool boneTranslation)"/>
                         </control>
                     </panel>
                     <panel height="10px"/>
                     <panel childLayout="horizontal">
                         <control name="label" text="Parent:  "
                                  textHAlign="right"
-                                 width="55px"/>
+                                 width="68px"/>
                         <control name="label" id="boneParent"
                                  backgroundColor="#ffff"
                                  width="*"/>
@@ -279,7 +281,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                     <panel childLayout="horizontal">
                         <control name="label" text="Children:  "
                                  textHAlign="right"
-                                 width="55px"/>
+                                 width="68px"/>
                         <control name="label" id="boneChildren"
                                  backgroundColor="#ffff"
                                  width="*"/>
@@ -291,7 +293,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                 </panel>
             </control>
 
-            <control name="window" id="boneAngleTool" title="Bone-Angle Tool"
+            <control name="window" id="boneRotationTool" title="Bone-Rotation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
                      height="220px" width="195px" x="60" y="40">
@@ -352,7 +354,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                 </panel>
             </control>
 
-            <control name="window" id="boneOffsetTool" title="Bone-Offset Tool"
+            <control name="window" id="boneTranslationTool" title="Bone-Translation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
                      height="270px" width="180px" x="55" y="45">
@@ -925,6 +927,24 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                     </panel>
                     <panel/>
                     <panel childLayout="horizontal">
+                        <control name="label" text="Transform:  "/>
+                        <control name="button" label="Scale" id="id15ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(select tool spatialScale)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" label="Rotate" id="id16ToAvoidNiftyWarning"
+                                 width="55px">
+                            <interact onRelease="perform(select tool spatialRotation)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" label="Translate" id="id17ToAvoidNiftyWarning"
+                                 width="70px">
+                            <interact onRelease="perform(select tool spatialTranslation)"/>
+                        </control>
+                    </panel>
+                    <panel height="22px"/>
+                    <panel childLayout="horizontal">
                         <control name="label" text="Parent:  "
                                  textHAlign="right"
                                  width="55px"/>
@@ -948,25 +968,6 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="60px">
                             <interact onRelease="perform(select spatialChild)"/>
                         </control>
-                    </panel>
-                    <panel/>
-                    <panel childLayout="horizontal" height="22px">
-                        <panel/>
-                        <control name="button" label="Translation" id="id15ToAvoidNiftyWarning"
-                                 width="80px">
-                            <interact onRelease="perform(select tool spatialTranslate)"/>
-                        </control>
-                        <panel/>
-                        <control name="button" label="Rotation" id="id16ToAvoidNiftyWarning"
-                                 width="75px">
-                            <interact onRelease="perform(select tool spatialRotate)"/>
-                        </control>
-                        <panel/>
-                        <control name="button" label="Scale" id="id17ToAvoidNiftyWarning"
-                                 width="55px">
-                            <interact onRelease="perform(select tool spatialScale)"/>
-                        </control>
-                        <panel/>
                     </panel>
                     <panel/>
                     <panel childLayout="horizontal">

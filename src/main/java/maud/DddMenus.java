@@ -261,9 +261,9 @@ class DddMenus {
         List<String> items = new ArrayList<>(7);
         items.add("Tool");
         items.add("Select");
-        items.add("Angles");
-        items.add("Offset");
+        items.add("Rotate");
         items.add("Scale");
+        items.add("Translate");
         if (Maud.model.bone.isBoneSelected()) {
             items.add("Attach prop");
             items.add("Rename");
@@ -653,18 +653,14 @@ class DddMenus {
 
         } else {
             switch (remainder) {
-                case "Angles":
-                    Maud.gui.boneAngle.select();
-                    handled = true;
-                    break;
                 case "Attach prop":
-                    break;
-                case "Offset":
-                    Maud.gui.boneOffset.select();
-                    handled = true;
                     break;
                 case "Rename":
                     Maud.gui.renameBone();
+                    handled = true;
+                    break;
+                case "Rotate":
+                    Maud.gui.boneRotation.select();
                     handled = true;
                     break;
                 case "Scale":
@@ -677,6 +673,10 @@ class DddMenus {
                     break;
                 case "Tool":
                     Maud.gui.bone.select();
+                    handled = true;
+                    break;
+                case "Translate":
+                    Maud.gui.boneTranslation.select();
                     handled = true;
             }
         }

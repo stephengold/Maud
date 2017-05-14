@@ -37,11 +37,12 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 
 /**
- * The controller for the "Bone-Offset Tool" window in Maud's "3D View" screen.
+ * The controller for the "Bone-Translation Tool" window in Maud's "3D View"
+ * screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneOffsetTool extends WindowController {
+class BoneTranslationTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -64,8 +65,7 @@ class BoneOffsetTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            BoneOffsetTool.class.getName());
+    final private static Logger logger = Logger.getLogger(BoneTranslationTool.class.getName());
     /**
      * names of the coordinate axes
      */
@@ -92,8 +92,8 @@ class BoneOffsetTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    BoneOffsetTool(BasicScreenController screenController) {
-        super(screenController, "boneOffsetTool", false);
+    BoneTranslationTool(BasicScreenController screenController) {
+        super(screenController, "boneTranslationTool", false);
     }
     // *************************************************************************
     // new methods exposed

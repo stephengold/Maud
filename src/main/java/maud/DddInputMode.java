@@ -361,19 +361,19 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "reset bone ang anim":
-                Maud.gui.boneAngle.setToAnimation();
+                Maud.gui.boneRotation.setToAnimation();
                 handled = true;
                 break;
             case "reset bone ang bind":
-                Maud.gui.boneAngle.reset();
+                Maud.gui.boneRotation.reset();
                 handled = true;
                 break;
             case "reset bone off anim":
-                Maud.gui.boneOffset.setToAnimation();
+                Maud.gui.boneTranslation.setToAnimation();
                 handled = true;
                 break;
             case "reset bone off bind":
-                Maud.gui.boneOffset.reset();
+                Maud.gui.boneTranslation.reset();
                 handled = true;
                 break;
             case "reset bone sca anim":

@@ -96,9 +96,9 @@ public class DddGui extends GuiScreenController {
     final public AnimationTool animation = new AnimationTool(this);
     final AxesTool axes = new AxesTool(this);
     final BoneTool bone = new BoneTool(this);
-    final BoneAngleTool boneAngle = new BoneAngleTool(this);
-    final BoneOffsetTool boneOffset = new BoneOffsetTool(this);
+    final BoneRotationTool boneRotation = new BoneRotationTool(this);
     final BoneScaleTool boneScale = new BoneScaleTool(this);
+    final BoneTranslationTool boneTranslation = new BoneTranslationTool(this);
     final CameraTool camera = new CameraTool(this);
     final CullHintTool cullHint = new CullHintTool(this);
     final CursorTool cursor = new CursorTool(this);
@@ -360,14 +360,14 @@ public class DddGui extends GuiScreenController {
             case "xAngSlider":
             case "yAngSlider":
             case "zAngSlider":
-                boneAngle.onSliderChanged();
+                boneRotation.onSliderChanged();
                 break;
 
             case "offMasterSlider":
             case "xOffSlider":
             case "yOffSlider":
             case "zOffSlider":
-                boneOffset.onSliderChanged();
+                boneTranslation.onSliderChanged();
                 break;
 
             case "xScaSlider":
@@ -561,14 +561,14 @@ public class DddGui extends GuiScreenController {
             case "bone":
                 controller = bone;
                 break;
-            case "boneAngle":
-                controller = boneAngle;
-                break;
-            case "boneOffset":
-                controller = boneOffset;
+            case "boneRotation":
+                controller = boneRotation;
                 break;
             case "boneScale":
                 controller = boneScale;
+                break;
+            case "boneTranslation":
+                controller = boneTranslation;
                 break;
             case "camera":
                 controller = camera;
