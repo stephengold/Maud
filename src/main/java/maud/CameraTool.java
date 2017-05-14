@@ -129,87 +129,10 @@ class CameraTool
     // AnalogListener methods
 
     /**
-     * Process an analog event from the mouse.
-     *
-     * @param eventString textual description of the analog event (not null)
-     * @param amount amount of the event (&ge;0)
-     * @param ignored time interval between render passes (in seconds, &ge;0)
-     */
-    @Override
-    public void onAnalog(String eventString, float amount, float ignored) {
-        Validate.nonNegative(amount, "amount");
-        logger.log(Level.FINE, "Received analog event {0} with amount={1}",
-                new Object[]{
-                    MyString.quote(eventString), amount
-                });
-
-        switch (eventString) {
-            case moveBackwardEvent:
-                Maud.model.camera.moveBackward(+amount);
-                break;
-
-            case moveDownEvent:
-                if (signals.test(cameraSignalName)) {
-                    /* dragging */
-                    Maud.model.camera.moveUp(-amount);
-                }
-                break;
-
-            case moveForwardEvent:
-                Maud.model.camera.moveBackward(-amount);
-                break;
-
-            case moveLeftEvent:
-                if (signals.test(cameraSignalName)) {
-                    /* dragging */
-                    Maud.model.camera.moveLeft(+amount);
-                }
-                break;
-
-            case moveRightEvent:
-                if (signals.test(cameraSignalName)) {
-                    /* dragging */
-                    Maud.model.camera.moveLeft(-amount);
-                }
-                break;
-
-            case moveUpEvent:
-                if (signals.test(cameraSignalName)) {
-                    /* dragging */
-                    Maud.model.camera.moveUp(+amount);
-                }
-        }
-    }
-    // *************************************************************************
-    // AppState methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application which owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-        assert Maud.gui.cursor.isInitialized();
-
-        mapButton();
-
-        Vector3f initialLocation = new Vector3f(-2.4f, 1f, 1.6f);
-        Maud.model.camera.setLocation(initialLocation);
-        Maud.model.camera.setMode("orbit");
-        assert Maud.model.camera.isOrbitMode();
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
      * Map the middle mouse button (MMB) and mouse wheel, which together control
      * the camera position.
      */
-    private void mapButton() {
+    void mapButton() {
         /*
          * Turning the mouse wheel up triggers move backward.
          */
@@ -261,15 +184,90 @@ class CameraTool
     }
 
     /**
-     * Unmap the middle mouse button (MMB) and mouse wheel, which together
-     * control the camera position.
+     * Process an analog event from the mouse.
+     *
+     * @param eventString textual description of the analog event (not null)
+     * @param amount amount of the event (&ge;0)
+     * @param ignored time interval between render passes (in seconds, &ge;0)
      */
-    private void unmapButton() {
+    @Override
+    public void onAnalog(String eventString, float amount, float ignored) {
+        Validate.nonNegative(amount, "amount");
+        logger.log(Level.FINE, "Received analog event {0} with amount={1}",
+                new Object[]{
+                    MyString.quote(eventString), amount
+                });
+
+        switch (eventString) {
+            case moveBackwardEvent:
+                Maud.model.camera.moveBackward(+amount);
+                break;
+
+            case moveDownEvent:
+                if (signals.test(cameraSignalName)) {
+                    /* dragging */
+                    Maud.model.camera.moveUp(-amount);
+                }
+                break;
+
+            case moveForwardEvent:
+                Maud.model.camera.moveBackward(-amount);
+                break;
+
+            case moveLeftEvent:
+                if (signals.test(cameraSignalName)) {
+                    /* dragging */
+                    Maud.model.camera.moveLeft(+amount);
+                }
+                break;
+
+            case moveRightEvent:
+                if (signals.test(cameraSignalName)) {
+                    /* dragging */
+                    Maud.model.camera.moveLeft(-amount);
+                }
+                break;
+
+            case moveUpEvent:
+                if (signals.test(cameraSignalName)) {
+                    /* dragging */
+                    Maud.model.camera.moveUp(+amount);
+                }
+        }
+    }
+
+    /**
+     * Unmap the middle mouse button (MMB) and mouse wheel, which together
+     * control the camera position. TODO when to invoke?
+     */
+    void unmapButton() {
         inputManager.deleteMapping(moveForwardEvent);
         inputManager.deleteMapping(moveBackwardEvent);
         inputManager.deleteMapping(moveDownEvent);
         inputManager.deleteMapping(moveRightEvent);
         inputManager.deleteMapping(moveLeftEvent);
         inputManager.deleteMapping(moveUpEvent);
+    }
+    // *************************************************************************
+    // AppState methods
+
+    /**
+     * Initialize this controller prior to its 1st update.
+     *
+     * @param stateManager (not null)
+     * @param application application which owns the window (not null)
+     */
+    @Override
+    public void initialize(AppStateManager stateManager,
+            Application application) {
+        super.initialize(stateManager, application);
+        assert Maud.gui.cursor.isInitialized();
+
+        mapButton();
+
+        Vector3f initialLocation = new Vector3f(-2.4f, 1f, 1.6f);
+        Maud.model.camera.setLocation(initialLocation);
+        Maud.model.camera.setMode("orbit");
+        assert Maud.model.camera.isOrbitMode();
     }
 }
