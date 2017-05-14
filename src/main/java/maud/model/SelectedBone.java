@@ -42,8 +42,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MyString;
+import jme3utilities.math.MyVector3f;
 import maud.Maud;
-import maud.Util;
 
 /**
  * The MVC model of the selected bone in the Maud application.
@@ -125,7 +125,7 @@ public class SelectedBone implements Cloneable {
             if (scales == null) {
                 count = 0;
             } else {
-                count = Util.countDistinct(scales);
+                count = MyVector3f.countDistinct(scales);
             }
         }
 
@@ -144,7 +144,7 @@ public class SelectedBone implements Cloneable {
             return 0;
         } else {
             Vector3f[] offsets = track.getTranslations();
-            count = Util.countDistinct(offsets);
+            count = MyVector3f.countDistinct(offsets);
         }
 
         return count;

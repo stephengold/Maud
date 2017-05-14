@@ -53,7 +53,7 @@ class RenderTool extends WindowController {
     /**
      * multiplier for main light
      */
-    final private static float mainMultiplier = 4f;
+    final private static float mainMultiplier = 2f;
     /**
      * width and height of rendered shadow maps (pixels per side, &gt;0)
      */

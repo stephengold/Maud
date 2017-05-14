@@ -35,8 +35,6 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.ogre.MeshLoader;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -123,23 +121,6 @@ public class Util {
         }
 
         return storeResult;
-    }
-
-    /**
-     * Count the number of distinct vectors in an array.
-     *
-     * @param array input (not null)
-     * @return count (&ge;0)
-     */
-    public static int countDistinct(Vector3f[] array) {
-        int length = array.length;
-        Set<Vector3f> distinct = new HashSet<>(length);
-        for (Vector3f vector : array) {
-            distinct.add(vector);
-        }
-        int count = distinct.size();
-
-        return count;
     }
 
     /**
