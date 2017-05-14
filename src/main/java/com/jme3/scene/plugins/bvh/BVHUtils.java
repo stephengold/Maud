@@ -23,12 +23,11 @@ import java.util.logging.Logger;
 public class BVHUtils {
 
     private static class InnerTrack {
-
         Vector3f[] positions;
         Quaternion[] rotations;
         Vector3f[] scales;
 
-        public InnerTrack(int length) {
+        InnerTrack(int length) {
             positions = new Vector3f[length];
             rotations = new Quaternion[length];
             scales = new Vector3f[length];
