@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2017 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,8 @@ import java.util.logging.Logger;
 
 /**
  * The content of a BVH asset.
+ *
+ * @author Nehon
  */
 public class BVHAnimData {
     // *************************************************************************
