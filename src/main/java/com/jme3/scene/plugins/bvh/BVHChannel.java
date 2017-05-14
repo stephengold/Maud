@@ -37,9 +37,11 @@ public class BVHChannel {
     // *************************************************************************
     // constructors
 
-    public BVHChannel() {
-    }
-
+    /**
+     * Instantiate a channel with the specified name.
+     *
+     * @param name
+     */
     public BVHChannel(String name) {
         this.name = name;
     }
