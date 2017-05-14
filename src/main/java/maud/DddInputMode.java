@@ -228,7 +228,7 @@ class DddInputMode extends InputMode {
 
         } else if (actionString.startsWith(loadModelFilePrefix)) {
             String path = MyString.remainder(actionString, loadModelFilePrefix);
-            Maud.gui.loadModelFile(path);
+            Maud.gui.menus.loadModelFile(path);
             handled = true;
 
         } else if (actionString.startsWith(loadModelNamedPrefix)) {
@@ -290,7 +290,7 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         if (actionString.startsWith(openMenuPrefix)) {
             String menuPath = MyString.remainder(actionString, openMenuPrefix);
-            handled = Maud.gui.openMenu(menuPath);
+            handled = Maud.gui.menus.openMenu(menuPath);
         }
 
         return handled;
@@ -436,7 +436,7 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "select boneChild":
-                Maud.gui.selectBoneChild();
+                Maud.gui.menus.selectBoneChild();
                 handled = true;
                 break;
             case "select boneParent":
@@ -468,7 +468,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "select rsa":
-                Maud.gui.selectRetargetSourceAnimation();
+                Maud.gui.menus.selectRetargetSourceAnimation();
                 handled = true;
                 break;
             case "select rsca":
@@ -476,7 +476,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "select spatialChild":
-                Maud.gui.selectSpatialChild();
+                Maud.gui.menus.selectSpatialChild();
                 handled = true;
                 break;
             case "select spatialParent":
@@ -488,12 +488,12 @@ class DddInputMode extends InputMode {
             String arg;
             if (actionString.startsWith(selectBonePrefix)) {
                 arg = MyString.remainder(actionString, selectBonePrefix);
-                Maud.gui.selectBone(arg);
+                Maud.gui.menus.selectBone(arg);
                 handled = true;
 
             } else if (actionString.startsWith(selectBoneChildPrefix)) {
                 arg = MyString.remainder(actionString, selectBoneChildPrefix);
-                Maud.gui.selectBoneChild(arg);
+                Maud.gui.menus.selectBoneChild(arg);
                 handled = true;
 
             } else if (actionString.startsWith(
