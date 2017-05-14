@@ -310,7 +310,7 @@ public class ViewCGModel {
         rootNode.attachChild(cgModelRoot);
         MySkeleton.setUserControl(cgModelRoot, true);
         /*
-         * Update references to controls, skeleton, and bone.
+         * Update references to skeleton control and skeleton.
          */
         skeletonControl = cgModelRoot.getControl(SkeletonControl.class);
         if (skeletonControl == null) {
@@ -318,6 +318,11 @@ public class ViewCGModel {
                     "expected the model's root to have a SkeletonControl");
         }
         skeleton = skeletonControl.getSkeleton();
+        /*
+         * Disable hardward skinning so that the raycast in
+         * CursorTool.findContact() will work.
+         */
+        skeletonControl.setHardwareSkinningPreferred(false);
         /*
          * Apply an identity transform to every child spatial of the model.
          * This hack enables accurate bone attachments on some models with
