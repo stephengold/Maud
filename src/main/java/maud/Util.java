@@ -120,18 +120,18 @@ public class Util {
     }
 
     /**
-     * Count the number of unique vectors in an array.
+     * Count the number of distinct vectors in an array.
      *
-     * @param array (not null)
+     * @param array input (not null)
      * @return count (&ge;0)
      */
-    public static int countUnique(Vector3f[] array) {
+    public static int countDistinct(Vector3f[] array) {
         int length = array.length;
-        Set<Vector3f> unique = new HashSet<>(length);
-        for (Vector3f off : array) {
-            unique.add(off);
+        Set<Vector3f> distinct = new HashSet<>(length);
+        for (Vector3f vector : array) {
+            distinct.add(vector);
         }
-        int count = unique.size();
+        int count = distinct.size();
 
         return count;
     }

@@ -89,7 +89,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Count the number of unique rotations in the selected track.
+     * Count the number of distinct rotations in the selected track.
      *
      * @return count (&ge;0)
      */
@@ -100,18 +100,18 @@ public class SelectedBone implements Cloneable {
             count = 0;
         } else {
             Quaternion[] rotations = track.getRotations();
-            Set<Quaternion> unique = new HashSet<>(rotations.length);
+            Set<Quaternion> distinct = new HashSet<>(rotations.length);
             for (Quaternion rot : rotations) {
-                unique.add(rot);
+                distinct.add(rot);
             }
-            count = unique.size();
+            count = distinct.size();
         }
 
         return count;
     }
 
     /**
-     * Count the number of unique scales in the selected track.
+     * Count the number of distinct scales in the selected track.
      *
      * @return count (&ge;0)
      */
@@ -125,7 +125,7 @@ public class SelectedBone implements Cloneable {
             if (scales == null) {
                 count = 0;
             } else {
-                count = Util.countUnique(scales);
+                count = Util.countDistinct(scales);
             }
         }
 
@@ -133,7 +133,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Count the number of unique translations in the selected track.
+     * Count the number of distinct translations in the selected track.
      *
      * @return count (&ge;0)
      */
@@ -144,7 +144,7 @@ public class SelectedBone implements Cloneable {
             return 0;
         } else {
             Vector3f[] offsets = track.getTranslations();
-            count = Util.countUnique(offsets);
+            count = Util.countDistinct(offsets);
         }
 
         return count;
