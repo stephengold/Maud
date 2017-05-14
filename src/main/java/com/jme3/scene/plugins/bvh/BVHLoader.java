@@ -82,8 +82,8 @@ public class BVHLoader implements AssetLoader {
         populateBoneList(bones, tracks, animation.getHierarchy(), null);
 
         Skeleton skeleton = new Skeleton(bones);
-        String animName = fileName.substring(
-                fileName.lastIndexOf("/") + 1).replaceAll(".bvh", "");
+        int slashPos = fileName.lastIndexOf('/');
+        String animName = fileName.substring(slashPos + 1).replaceAll(".bvh", "");
         float animLength = animation.getFrameTime() * animation.getNbFrames();
         Animation boneAnimation = new Animation(animName, animLength);
         boneAnimation.setTracks(tracks);
