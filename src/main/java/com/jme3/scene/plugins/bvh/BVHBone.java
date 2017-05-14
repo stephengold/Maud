@@ -22,6 +22,14 @@ public class BVHBone {
     // fields
 
     /**
+     * child bones
+     */
+    private List<BVHBone> children;
+    /**
+     * data channels
+     */
+    private List<BVHChannel> channels;
+    /**
      * name of the bone
      */
     private String name;
@@ -29,14 +37,6 @@ public class BVHBone {
      * offset of the bone
      */
     private Vector3f offset = new Vector3f();
-    /**
-     * data channels
-     */
-    private List<BVHChannel> channels;
-    /**
-     * child bones
-     */
-    private List<BVHBone> children;
     // *************************************************************************
     // constructors
 
@@ -67,15 +67,6 @@ public class BVHBone {
     }
 
     /**
-     * Alter the list of data channels.
-     *
-     * @param channels (alias created)
-     */
-    public void setChannels(List<BVHChannel> channels) {
-        this.channels = channels;
-    }
-
-    /**
      * Access the list of child bones.
      *
      * @return the pre-existing list
@@ -85,48 +76,12 @@ public class BVHBone {
     }
 
     /**
-     * Alter the list of child bones.
-     *
-     * @param children (alias created)
-     */
-    public void setChildren(List<BVHBone> children) {
-        this.children = children;
-    }
-
-    /**
      * Read the name of the bone.
      *
      * @return name
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Alter the name of the bone.
-     *
-     * @param name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Access the offset of the bone.
-     *
-     * @return the pre-existing vector
-     */
-    public Vector3f getOffset() {
-        return offset;
-    }
-
-    /**
-     * Alter the offset of the bone.
-     *
-     * @param offset (alias created)
-     */
-    public void setOffset(Vector3f offset) {
-        this.offset = offset;
     }
 
     /**
@@ -145,6 +100,51 @@ public class BVHBone {
             }
         }
         return num;
+    }
+
+    /**
+     * Access the offset of the bone.
+     *
+     * @return the pre-existing vector
+     */
+    public Vector3f getOffset() {
+        return offset;
+    }
+
+    /**
+     * Alter the list of data channels.
+     *
+     * @param channels (alias created)
+     */
+    public void setChannels(List<BVHChannel> channels) {
+        this.channels = channels;
+    }
+
+    /**
+     * Alter the list of child bones.
+     *
+     * @param children (alias created)
+     */
+    public void setChildren(List<BVHBone> children) {
+        this.children = children;
+    }
+
+    /**
+     * Alter the name of the bone.
+     *
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Alter the offset of the bone.
+     *
+     * @param offset (alias created)
+     */
+    public void setOffset(Vector3f offset) {
+        this.offset = offset;
     }
     // *************************************************************************
     // Object methods
