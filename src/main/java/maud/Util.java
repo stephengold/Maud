@@ -34,6 +34,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -188,11 +189,17 @@ public class Util {
 
         ModelKey key = new ModelKey(assetPath);
         /*
-         * Temporarily hush loader warnings about vertices with >4 weights.
+         * Temporarily hush loader warnings about vertices with >4 weights
+         * and unsupported pass directives.
          */
-        Logger mlLogger = Logger.getLogger(MeshLoader.class.getName());
-        Level oldLevel = mlLogger.getLevel();
-        mlLogger.setLevel(Level.SEVERE);
+        Logger meshLoaderLogger = Logger.getLogger(MeshLoader.class.getName());
+        Level meshLoaderLevel = meshLoaderLogger.getLevel();
+        meshLoaderLogger.setLevel(Level.SEVERE);
+
+        Logger materialLoaderLogger = Logger.getLogger(
+                MaterialLoader.class.getName());
+        Level materialLoaderLevel = materialLoaderLogger.getLevel();
+        materialLoaderLogger.setLevel(Level.SEVERE);
         /*
          * Load the model.
          */
@@ -205,7 +212,8 @@ public class Util {
         /*
          * Restore logging levels.
          */
-        mlLogger.setLevel(oldLevel);
+        meshLoaderLogger.setLevel(meshLoaderLevel);
+        materialLoaderLogger.setLevel(materialLoaderLevel);
 
         return loaded;
     }
