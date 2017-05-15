@@ -223,4 +223,67 @@ public class Util {
 
         return loaded;
     }
+
+    /**
+     * Remove all repetitious keyframes from a bone track.
+     *
+     * @param boneTrack (not null)
+     * @return true if 1 or more keyframes were removed, otherwise false
+     */
+    public static boolean removeRepeats(BoneTrack boneTrack) {
+        float[] originalTimes = boneTrack.getKeyFrameTimes();
+        /*
+         * Count distinct keyframes.
+         */
+        float prevTime = Float.NEGATIVE_INFINITY;
+        int numDistinct = 0;
+        for (float time : originalTimes) {
+            if (time != prevTime) {
+                ++numDistinct;
+            }
+            prevTime = time;
+        }
+
+        int originalCount = originalTimes.length;
+        if (numDistinct == originalCount) {
+            return false;
+        }
+        Vector3f[] originalTranslations = boneTrack.getTranslations();
+        Quaternion[] originalRotations = boneTrack.getRotations();
+        Vector3f[] originalScales = boneTrack.getScales();
+        /*
+         * Allocate new arrays.
+         */
+        float[] newTimes = new float[numDistinct];
+        Vector3f[] newTranslations = new Vector3f[numDistinct];
+        Quaternion[] newRotations = new Quaternion[numDistinct];
+        Vector3f[] newScales;
+        if (originalScales == null) {
+            newScales = null;
+        } else {
+            newScales = new Vector3f[numDistinct];
+        }
+        /*
+         * Copy all non-repeated keyframes.
+         */
+        prevTime = Float.NEGATIVE_INFINITY;
+        int newIndex = 0;
+        for (int oldIndex = 0; oldIndex < originalCount; oldIndex++) {
+            float time = originalTimes[oldIndex];
+            if (time != prevTime) {
+                newTimes[newIndex] = originalTimes[oldIndex];
+                newTranslations[newIndex] = originalTranslations[oldIndex];
+                newRotations[newIndex] = originalRotations[oldIndex];
+                if (newScales != null) {
+                    newScales[newIndex] = originalScales[oldIndex];
+                }
+                ++newIndex;
+            }
+            prevTime = time;
+        }
+
+        boneTrack.setKeyframes(newTimes, newTranslations, newRotations,
+                newScales);
+        return true;
+    }
 }
