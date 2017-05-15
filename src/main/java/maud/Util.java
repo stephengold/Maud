@@ -34,6 +34,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.util.logging.Level;
@@ -189,9 +190,13 @@ public class Util {
 
         ModelKey key = new ModelKey(assetPath);
         /*
-         * Temporarily hush loader warnings about vertices with >4 weights
-         * and unsupported pass directives.
+         * Temporarily hush warnings about errors during triangulation,
+         * vertices with >4 weights, and unsupported pass directives.
          */
+        Logger faceLogger = Logger.getLogger(Face.class.getName());
+        Level faceLevel = faceLogger.getLevel();
+        faceLogger.setLevel(Level.SEVERE);
+
         Logger meshLoaderLogger = Logger.getLogger(MeshLoader.class.getName());
         Level meshLoaderLevel = meshLoaderLogger.getLevel();
         meshLoaderLogger.setLevel(Level.SEVERE);
@@ -212,6 +217,7 @@ public class Util {
         /*
          * Restore logging levels.
          */
+        faceLogger.setLevel(faceLevel);
         meshLoaderLogger.setLevel(meshLoaderLevel);
         materialLoaderLogger.setLevel(materialLoaderLevel);
 
