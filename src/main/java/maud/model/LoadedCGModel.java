@@ -31,6 +31,8 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.animation.SkeletonControl;
+import com.jme3.animation.Track;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
@@ -51,6 +53,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
@@ -486,17 +490,10 @@ public class LoadedCGModel implements Cloneable {
         Spatial loaded = loadModelFromAsset(assetPath, false);
         if (loaded == null) {
             return false;
+        } else {
+            postLoad(loaded);
+            return true;
         }
-
-        rootSpatial = loaded.clone();
-        Maud.viewState.loadModel(loaded);
-
-        Maud.model.bone.selectNoBone();
-        Maud.model.spatial.selectModelRoot();
-        Maud.model.animation.loadBindPose();
-        setPristine();
-
-        return true;
     }
 
     /**
@@ -516,17 +513,10 @@ public class LoadedCGModel implements Cloneable {
         Spatial loaded = loadModelFromFile(canonicalPath);
         if (loaded == null) {
             return false;
+        } else {
+            postLoad(loaded);
+            return true;
         }
-
-        rootSpatial = loaded.clone();
-        Maud.viewState.loadModel(loaded);
-
-        Maud.model.bone.selectNoBone();
-        Maud.model.spatial.selectModelRoot();
-        Maud.model.animation.loadBindPose();
-        setPristine();
-
-        return true;
     }
 
     /**
@@ -548,19 +538,11 @@ public class LoadedCGModel implements Cloneable {
         Spatial loaded = loadModelFromAsset(assetPath, false);
         if (loaded == null) {
             return false;
+        } else {
+            modelName = name;
+            postLoad(loaded);
+            return true;
         }
-
-        rootSpatial = loaded.clone();
-        Maud.viewState.loadModel(loaded);
-
-        modelName = name;
-
-        Maud.model.bone.selectNoBone();
-        Maud.model.spatial.selectModelRoot();
-        Maud.model.animation.loadBindPose();
-        setPristine();
-
-        return true;
     }
 
     /**
@@ -778,8 +760,8 @@ public class LoadedCGModel implements Cloneable {
     // private methods
 
     /**
-     * Quietly load a model asset from persistent storage without adding it to
-     * the scene. If successful, set {@link #loadedModelAssetPath}.
+     * Quietly load a CG model asset from persistent storage without adding it
+     * to the scene. If successful, set {@link #loadedModelAssetPath}.
      *
      * @param assetPath (not null)
      * @param useCache true to look in the asset manager's cache, false to force
@@ -796,7 +778,7 @@ public class LoadedCGModel implements Cloneable {
             assetManager.deleteFromCache(key);
         }
         /*
-         * Load the model.
+         * Load the model quietly.
          */
         Spatial loaded = Util.loadCgmQuietly(assetManager, assetPath);
         if (loaded == null) {
@@ -877,6 +859,56 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
+     * Invoked after successfully loading a CG model.
+     *
+     * @param modelRoot (not null)
+     */
+    private void postLoad(Spatial modelRoot) {
+        assert modelRoot != null;
+
+        setPristine();
+        repairModel(modelRoot);
+        validateModel(modelRoot);
+        rootSpatial = modelRoot.clone();
+        Maud.viewState.loadModel(modelRoot);
+
+        Maud.model.bone.selectNoBone();
+        Maud.model.spatial.selectModelRoot();
+        Maud.model.animation.loadBindPose();
+    }
+
+    /**
+     * Repair minor issues with a CG model, such as repetitious keyframes.
+     *
+     * @param modelRoot model to correct (not null)
+     */
+    private void repairModel(Spatial modelRoot) {
+        boolean madeRepairs = false;
+
+        int numTracksEdited = 0;
+        AnimControl animControl = modelRoot.getControl(AnimControl.class);
+        Collection<String> names = animControl.getAnimationNames();
+        for (String animationName : names) {
+            Animation animation = animControl.getAnim(animationName);
+            numTracksEdited += Util.removeRepeats(animation);
+        }
+        if (numTracksEdited > 0) {
+            String message = "removed repeat keyframe(s) from ";
+            if (numTracksEdited == 1) {
+                message += "one track";
+            } else {
+                message += String.format("%d tracks", numTracksEdited);
+            }
+            logger.warning(message);
+            madeRepairs = true;
+        }
+
+        if (madeRepairs) {
+            setEdited();
+        }
+    }
+
+    /**
      * Increment the count of unsaved edits.
      */
     private void setEdited() {
@@ -888,5 +920,189 @@ public class LoadedCGModel implements Cloneable {
      */
     private void setPristine() {
         editCount = 0;
+    }
+
+    /**
+     * Test for issues with a CG model.
+     *
+     * @param modelRoot (not null)
+     * @return false if issues found, otherwise true
+     */
+    private boolean validateModel(Spatial modelRoot) {
+        assert modelRoot != null;
+
+        SkeletonControl skeletonControl = modelRoot.getControl(
+                SkeletonControl.class);
+        if (skeletonControl == null) {
+            logger.warning("lacks a skeleton control");
+            return false;
+        }
+        Skeleton skeleton = skeletonControl.getSkeleton();
+        if (skeleton == null) {
+            logger.warning("lacks a skeleton");
+            return false;
+        }
+        int numBones = skeleton.getBoneCount();
+        if (numBones > 255) {
+            logger.warning("too many bones");
+            return false;
+        }
+        if (numBones < 0) {
+            logger.warning("bone count is negative");
+            return false;
+        }
+        Set<String> nameSet = new TreeSet<>();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            Bone bone = skeleton.getBone(boneIndex);
+            if (bone == null) {
+                logger.warning("bone is null");
+                return false;
+            }
+            String name = bone.getName();
+            if (name == null) {
+                logger.warning("bone name is null");
+                return false;
+            }
+            if (name.length() == 0) {
+                logger.warning("bone name is empty");
+                return false;
+            }
+            if (name.equals(noBone)) {
+                logger.warning("bone has reserved name");
+                return false;
+            }
+            if (nameSet.contains(name)) {
+                logger.warning("duplicate bone name");
+            }
+            nameSet.add(name);
+        }
+        AnimControl animControl = modelRoot.getControl(
+                AnimControl.class);
+        if (animControl == null) {
+            logger.warning("model lacks an animation control");
+            return false;
+        }
+        Skeleton skeleton2 = animControl.getSkeleton();
+        if (skeleton2 != skeleton) {
+            logger.warning("model has two skeletons");
+            return false;
+        }
+        Collection<String> animNames = animControl.getAnimationNames();
+        if (animNames.isEmpty()) {
+            logger.warning("model has no animations");
+            return false;
+        }
+        nameSet = new TreeSet<>();
+        for (String name : animNames) {
+            if (name == null) {
+                logger.warning("animation name is null");
+                return false;
+            }
+            if (name.length() == 0) {
+                logger.warning("animation name is empty");
+                return false;
+            }
+            if (name.equals(LoadedAnimation.bindPoseName)) {
+                logger.warning("animation has reserved name");
+                return false;
+            }
+            if (nameSet.contains(name)) {
+                logger.warning("duplicate animation name");
+                return false;
+            }
+            nameSet.add(name);
+            Animation anim = animControl.getAnim(name);
+            if (anim == null) {
+                logger.warning("animation is null");
+                return false;
+            }
+            float duration = anim.getLength();
+            if (duration < 0f) {
+                logger.warning("animation has negative length");
+                return false;
+            }
+            Track[] tracks = anim.getTracks();
+            if (tracks == null) {
+                logger.warning("animation has no track data");
+                return false;
+            }
+            int numTracks = tracks.length;
+            if (numTracks == 0) {
+                logger.warning("animation has no tracks");
+                return false;
+            }
+            for (Track track : tracks) {
+                float[] times = track.getKeyFrameTimes();
+                if (times == null) {
+                    logger.warning("track has no keyframe data");
+                    return false;
+                }
+                int numFrames = times.length;
+                if (numFrames == 0) {
+                    logger.warning("track has no keyframes");
+                    return false;
+                }
+                if (times[0] != 0f) {
+                    logger.warning("first keyframe not at t=0");
+                    return false;
+                }
+                float prev = -1f;
+                for (int frameIndex = 0; frameIndex < numFrames; frameIndex++) {
+                    float time = times[frameIndex];
+                    if (time < prev) {
+                        logger.warning("keyframes out of order");
+                        return false;
+                    } else if (time == prev) {
+                        logger.log(Level.WARNING,
+                                "multiple keyframes for t={0} in {1}",
+                                new Object[]{time, MyString.quote(name)});
+                    } else if (time > duration) {
+                        logger.warning("keyframe past end of animation");
+                        return false;
+                    }
+                    prev = time;
+                }
+                if (track instanceof BoneTrack) {
+                    BoneTrack boneTrack = (BoneTrack) track;
+                    int targetBoneIndex = boneTrack.getTargetBoneIndex();
+                    if (targetBoneIndex >= numBones) {
+                        logger.warning("track for non-existant bone");
+                        return false;
+                    }
+                    Vector3f[] translations = boneTrack.getTranslations();
+                    if (translations == null) {
+                        logger.warning("bone track lacks translation data");
+                        return false;
+                    }
+                    int numTranslations = translations.length;
+                    if (numTranslations != numFrames) {
+                        logger.warning("translation data have wrong length");
+                        return false;
+                    }
+                    Quaternion[] rotations = boneTrack.getRotations();
+                    if (rotations == null) {
+                        logger.warning("bone track lacks rotation data");
+                        return false;
+                    }
+                    int numRotations = rotations.length;
+                    if (numRotations != numFrames) {
+                        logger.warning("rotation data have wrong length");
+                        return false;
+                    }
+                    Vector3f[] scales = boneTrack.getScales();
+                    if (scales == null) { // JME3 allows this
+                        logger.warning("bone track lacks scale data");
+                        return false;
+                    }
+                    int numScales = scales.length;
+                    if (numScales != numFrames) {
+                        logger.warning("scale data have wrong length");
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 }

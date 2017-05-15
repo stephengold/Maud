@@ -384,6 +384,7 @@ public class RetargetParameters implements Cloneable {
         Spatial sourceCgm = sourceCgm();
         Spatial targetCgm = Maud.model.cgm.getRootSpatial();
         Animation sourceAnimation = sourceAnimation();
+        Util.removeRepeats(sourceAnimation);
         Skeleton sourceSkeleton = MySkeleton.getSkeleton(sourceCgm);
         SkeletonMapping mapping = skeletonMapping();
         Animation retargeted = BVHUtils.reTarget(sourceCgm, targetCgm,

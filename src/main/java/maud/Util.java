@@ -27,9 +27,11 @@
 package maud;
 
 import com.jme3.animation.AnimControl;
+import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.animation.Track;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
@@ -306,5 +308,27 @@ public class Util {
         boneTrack.setKeyframes(newTimes, newTranslations, newRotations,
                 newScales);
         return true;
+    }
+
+    /**
+     * Remove repetitious keyframes from an animation.
+     *
+     * @param animation (not null)
+     * @return number of tracks edited
+     */
+    public static int removeRepeats(Animation animation) {
+        int numTracksEdited = 0;
+        Track[] tracks = animation.getTracks();
+        for (Track track : tracks) {
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                boolean removed = removeRepeats(boneTrack);
+                if (removed) {
+                    ++numTracksEdited;
+                }
+            } // TODO other track types
+        }
+
+        return numTracksEdited;
     }
 }
