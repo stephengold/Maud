@@ -170,7 +170,6 @@ public class BVHUtils {
         Vector3f ratio = new Vector3f(targetHeight / sourceHeight,
                 targetWidth / sourceWidth, targetDepth / sourceDepth);
         ratio = Vector3f.UNIT_XYZ;
-        System.out.println(ratio);
 
         Vector3f rootPos = new Vector3f();
         Quaternion rootRot = new Quaternion();
