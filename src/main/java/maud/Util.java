@@ -26,7 +26,10 @@
  */
 package maud;
 
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
+import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
@@ -123,6 +126,24 @@ public class Util {
         }
 
         return storeResult;
+    }
+
+    /**
+     * Read the name of the target bone of the specified bone track in the
+     * specified animation control.
+     *
+     * @param boneTrack which bone track (not null)
+     * @param animControl the animation control containing that track (not null)
+     * @return the name
+     */
+    public static String getTargetName(BoneTrack boneTrack,
+            AnimControl animControl) {
+        int boneIndex = boneTrack.getTargetBoneIndex();
+        Skeleton skeleton = animControl.getSkeleton();
+        Bone bone = skeleton.getBone(boneIndex);
+        String result = bone.getName();
+
+        return result;
     }
 
     /**
