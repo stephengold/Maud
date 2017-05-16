@@ -1,6 +1,6 @@
-Licensing history for assets in Models/indicator
+Licensing history for assets in Textures/icons
 
-Stephen Gold authored "3d cursor.blend" and makes it available under the
+Stephen Gold authored "Maud.png" and makes it available under the
 Creative Commons Attribution-Share Alike 3.0 Unported license -- see
 https://creativecommons.org/licenses/by-sa/3.0/
 for details.  When sharing or reusing this file, please attribute it to

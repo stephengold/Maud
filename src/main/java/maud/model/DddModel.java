@@ -62,8 +62,7 @@ public class DddModel {
      */
     final public LoadedAnimation animation;
     /**
-     * which CG model is loaded (set by
-     * {@link maud.Maud#guiInitializeApplication()})
+     * which CG model is loaded (set by {@link maud.Maud#startup1()})
      */
     public LoadedCGModel cgm = null;
     /**
@@ -76,7 +75,7 @@ public class DddModel {
     final public Pose pose;
     /**
      * parameters for re-targeting animations (set by
-     * {@link maud.Maud#guiInitializeApplication()})
+     * {@link maud.Maud#startup1()})
      */
     public RetargetParameters retarget = null;
     /**

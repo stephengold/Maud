@@ -34,11 +34,13 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
+import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
 import de.lessvoid.nifty.controls.RadioButtonStateChangedEvent;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
+import de.lessvoid.nifty.screen.Screen;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -75,8 +77,7 @@ public class DddGui extends GuiScreenController {
     // fields
 
     /**
-     * dialog boxes created by this screen (set by
-     * {@link maud.Maud#guiInitializeApplication()})
+     * dialog boxes created by this screen (set by {@link maud.Maud#startup1()})
      */
     DddDialogs dialogs;
     /**
@@ -111,11 +112,11 @@ public class DddGui extends GuiScreenController {
     // constructors
 
     /**
-     * Instantiate an uninitialized, disabled display that will be enabled
+     * Instantiate an uninitialized, disabled display that will not be enabled
      * during initialization.
      */
     DddGui() {
-        super("3D View", "Interface/Nifty/huds/3DView.xml", true);
+        super("3D View", "Interface/Nifty/huds/3DView.xml", false);
     }
     // *************************************************************************
     // new methods exposed
@@ -522,6 +523,9 @@ public class DddGui extends GuiScreenController {
     public void update(float tpf) {
         super.update(tpf);
 
+        if (!camera.isInitialized()) {
+            return;
+        }
         camera.updateCamera();
         cursor.updateCursor();
         render.updateShadowFilter();
@@ -544,6 +548,22 @@ public class DddGui extends GuiScreenController {
         if (signals.test(modelCWSignalName)) {
             Maud.viewState.rotateY(-tpf);
         }
+    }
+    // *************************************************************************
+    // ScreenController methods
+
+    /**
+     * A callback which Nifty invokes the 1st time the screen is displayed.
+     *
+     * @param nifty (not null)
+     * @param screen (not null)
+     */
+    @Override
+    public void bind(Nifty nifty, Screen screen) {
+        super.onStartScreen();
+
+        Maud maud = (Maud) guiApplication;
+        maud.startup2();
     }
     // *************************************************************************
     // private methods

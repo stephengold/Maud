@@ -95,6 +95,10 @@ public class Maud extends GuiApplication {
     // fields
 
     /**
+     * true once {@link #startup1()} has completed, until then false
+     */
+    private boolean didStartup1 = false;
+    /**
      * Nifty screen for editing hotkey bindings
      */
     final static BindScreen bindScreen = new BindScreen();
@@ -111,8 +115,7 @@ public class Maud extends GuiApplication {
      */
     final private static Printer printer = new Printer();
     /**
-     * the view's copy of the loaded CG model (set by
-     * {@link maud.Maud#guiInitializeApplication()})
+     * the view's copy of the loaded CG model (set by {@link #startup1()})
      */
     public static ViewCGModel viewState = null;
     // *************************************************************************
@@ -151,45 +154,24 @@ public class Maud extends GuiApplication {
          * ... and onward to Maud.guiInitializeApplication()!
          */
     }
-    // *************************************************************************
-    // GuiApplication methods
 
     /**
-     * Initialize this application.
+     * Initialization performed the 1st time the "3D View" screen is displayed.
      */
-    @Override
-    public void guiInitializeApplication() {
-        Nifty nifty = getNifty();
-        gui.dialogs = new DddDialogs(assetManager, nifty);
-        model.cgm = new LoadedCGModel(assetManager);
-        model.retarget = new RetargetParameters(assetManager);
-        viewState = new ViewCGModel(assetManager, rootNode, null);
-        /*
-         * Attach screen controllers for the "3D View" screen and BindScreen.
-         */
-        stateManager.attachAll(gui, bindScreen);
-        /*
-         * Configure and attach input mode for the "3D View" screen.
-         */
-        gui.inputMode.setConfigPath(hotkeyBindingsAssetPath);
-        stateManager.attachAll(gui.inputMode);
+    void startup2() {
+        logger.info("");
         /*
          * Attach controllers for windows in the "3D View" screen.
          */
-        stateManager.attachAll(gui.animation, gui.axes, gui.bone, gui.boneRotation,
-                gui.boneTranslation, gui.boneScale, gui.cullHint, gui.cursor,
-                gui.camera, gui.keyframe, gui.model, gui.render, gui.retarget,
-                gui.skeleton, gui.shadowMode, gui.sky, gui.spatial);
+        stateManager.attachAll(gui.animation, gui.axes, gui.bone,
+                gui.boneRotation, gui.boneTranslation, gui.boneScale,
+                gui.cullHint, gui.cursor, gui.camera, gui.keyframe, gui.model,
+                gui.render, gui.retarget, gui.skeleton, gui.shadowMode, gui.sky,
+                gui.spatial);
         /*
          * Disable flyCam.
          */
         flyCam.setEnabled(false);
-        /*
-         * Disable display of JME statistics.
-         * These displays can be re-enabled by pressing the F5 hotkey.
-         */
-        setDisplayFps(false);
-        setDisplayStatView(false);
         /*
          * Capture a screenshot each time the SYSRQ hotkey is pressed.
          */
@@ -201,10 +183,12 @@ public class Maud extends GuiApplication {
          */
         createPlatform();
     }
+    // *************************************************************************
+    // ActionListener methods
 
     /**
      * Process an action (from the GUI or keyboard) that wasn't handled by the
-     * default input mode or the HUD.
+     * input mode or the HUD.
      *
      * @param actionString textual description of the action (not null)
      * @param ongoing true if the action is ongoing, otherwise false
@@ -237,6 +221,36 @@ public class Maud extends GuiApplication {
         super.onAction(actionString, ongoing, tpf);
     }
     // *************************************************************************
+    // GuiApplication methods
+
+    /**
+     * Initialize this application.
+     */
+    @Override
+    public void guiInitializeApplication() {
+        logger.info("");
+
+        StartScreen startScreen = new StartScreen();
+        stateManager.attach(startScreen);
+    }
+    // *************************************************************************
+    // SimpleApplication methods
+
+    /**
+     * Callback invoked once per render pass.
+     *
+     * @param tpf time interval between render passes (in seconds, &ge;0)
+     */
+    @Override
+    public void simpleUpdate(float tpf) {
+        super.simpleUpdate(tpf);
+
+        if (!didStartup1) {
+            startup1();
+            didStartup1 = true;
+        }
+    }
+    // *************************************************************************
     // private methods
 
     /**
@@ -256,5 +270,34 @@ public class Maud extends GuiApplication {
         rootNode.attachChild(platform);
         float yOffset = -1.001f * platformThickness;
         MySpatial.setWorldLocation(platform, new Vector3f(0f, yOffset, 0f));
+    }
+
+    /**
+     * Initialization performed during the 1st invocation of
+     * {@link #simpleUpdate(float)}.
+     */
+    private void startup1() {
+        logger.info("");
+
+        Nifty nifty = getNifty();
+        gui.dialogs = new DddDialogs(assetManager, nifty);
+        model.cgm = new LoadedCGModel(assetManager);
+        model.retarget = new RetargetParameters(assetManager);
+        viewState = new ViewCGModel(assetManager, rootNode, null);
+        /*
+         * Attach screen controllers for the "3D View" screen and BindScreen.
+         */
+        stateManager.attachAll(gui, bindScreen);
+        /*
+         * Configure and attach input mode for the "3D View" screen.
+         */
+        gui.inputMode.setConfigPath(hotkeyBindingsAssetPath);
+        stateManager.attach(gui.inputMode);
+        /*
+         * Disable display of JME statistics.
+         * These displays can be re-enabled by pressing the F5 hotkey.
+         */
+        setDisplayFps(false);
+        setDisplayStatView(false);
     }
 }
