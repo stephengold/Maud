@@ -560,7 +560,7 @@ public class DddGui extends GuiScreenController {
      */
     @Override
     public void bind(Nifty nifty, Screen screen) {
-        super.onStartScreen();
+        super.bind(nifty, screen);
 
         Maud maud = (Maud) guiApplication;
         maud.startup2();
