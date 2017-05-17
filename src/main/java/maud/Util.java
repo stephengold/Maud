@@ -131,11 +131,41 @@ public class Util {
     }
 
     /**
+     * Copy the bind transform of the specified bone.
+     *
+     * @param bone which bone to use (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return transform in local coordinates (either storeResult or a new
+     * instance)
+     */
+    public static Transform copyBindTransform(Bone bone,
+            Transform storeResult) {
+        if (storeResult == null) {
+            storeResult = new Transform();
+        }
+
+        Vector3f translation = bone.getBindPosition();
+        storeResult.setTranslation(translation);
+
+        Quaternion rotation = bone.getBindRotation();
+        storeResult.setRotation(rotation);
+
+        Vector3f scale = bone.getBindScale();
+        if (scale == null) {
+            scale = identityScale;
+        }
+        storeResult.setScale(scale);
+
+        return storeResult;
+    }
+
+    /**
      * Read the name of the target bone of the specified bone track in the
      * specified animation control.
      *
-     * @param boneTrack which bone track (not null)
-     * @param animControl the animation control containing that track (not null)
+     * @param boneTrack which bone track (not null, unaffected)
+     * @param animControl the animation control containing that track (not null,
+     * unaffected)
      * @return the name
      */
     public static String getTargetName(BoneTrack boneTrack,
