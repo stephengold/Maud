@@ -27,7 +27,9 @@
 package maud.model;
 
 import com.jme3.animation.Animation;
+import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
+import com.jme3.animation.Skeleton;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -38,6 +40,7 @@ import jme3utilities.Misc;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import maud.Maud;
+import maud.Util;
 
 /**
  * A displayed pose in the Maud application.
@@ -56,9 +59,9 @@ public class Pose implements Cloneable {
     // fields
 
     /**
-     * user transforms which describe the pose, one for each bone
+     * user transforms that describe the pose, one for each bone
      */
-    private List<Transform> transforms = new ArrayList<>(30);
+    private List<Transform> transforms = new ArrayList<>(108);
     // *************************************************************************
     // new methods exposed
 
@@ -99,9 +102,9 @@ public class Pose implements Cloneable {
     /**
      * Copy the user transform of the indexed bone in this pose.
      *
-     * @param boneIndex which bone to copy
+     * @param boneIndex which bone to use
      * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
+     * @return user transform (either storeResult or a new instance)
      */
     public Transform copyTransform(int boneIndex, Transform storeResult) {
         if (storeResult == null) {
@@ -123,6 +126,45 @@ public class Pose implements Cloneable {
         int count = transforms.size();
         assert count >= 0 : count;
         return count;
+    }
+
+    /**
+     * Calculate the model transform of the indexed bone in this pose.
+     *
+     * @param boneIndex which bone to use
+     * @param storeResult (modified if not null)
+     * @return transform in model coordinates (either storeResult or a new
+     * instance)
+     */
+    public Transform modelTransform(int boneIndex, Transform storeResult) {
+        Transform result = copyTransform(boneIndex, storeResult);
+
+        Skeleton skeleton = Maud.model.cgm.getSkeleton();
+        Bone bone = skeleton.getBone(boneIndex);
+        /*
+         * apply the bone's bind transform
+         */
+        Transform tempTransform = Util.copyBindTransform(bone, null);
+        result.combineWithParent(tempTransform);
+
+        Bone ancestor = bone.getParent();
+        while (ancestor != null) {
+            /*
+             * apply the ancestor's user transform
+             */
+            int parentIndex = skeleton.getBoneIndex(ancestor);
+            copyTransform(parentIndex, tempTransform);
+            result.combineWithParent(tempTransform);
+            /*
+             * apply the ancestor's bind transform
+             */
+            Util.copyBindTransform(ancestor, tempTransform);
+            result.combineWithParent(tempTransform);
+
+            ancestor = ancestor.getParent();
+        }
+
+        return result;
     }
 
     /**
