@@ -40,7 +40,7 @@ public class BVHChannel {
     /**
      * Instantiate a channel with the specified name.
      *
-     * @param name
+     * @param name name for the new channel
      */
     public BVHChannel(String name) {
         this.name = name;

@@ -406,7 +406,7 @@ public class LoadedCGModel implements Cloneable {
      * Enumerate all bones in the loaded model having names that start with the
      * specified prefix.
      *
-     * @param namePrefix
+     * @param namePrefix the input prefix
      * @return a new list of names
      */
     public List<String> listBoneNames(String namePrefix) {
@@ -423,8 +423,8 @@ public class LoadedCGModel implements Cloneable {
     /**
      * Enumerate all children of the named bone.
      *
-     * @param parentName
-     * @return a new list of names
+     * @param parentName name of the parent bone
+     * @return a new list of bone names
      */
     public List<String> listChildBoneNames(String parentName) {
         Skeleton skeleton = getSkeleton();

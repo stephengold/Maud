@@ -74,7 +74,7 @@ public class BVHUtils {
     /**
      * Estimate the height of a skeleton in bind pose.
      *
-     * @param targetSkeleton
+     * @param targetSkeleton (not null)
      * @return height (in model units, &ge;0)
      */
     public static float getSkeletonHeight(Skeleton targetSkeleton) {

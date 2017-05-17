@@ -316,9 +316,9 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Find the track time of the last keyframe in the selected bone track.
+     * Find the time of the last keyframe in the selected bone track.
      *
-     * @return
+     * @return animation time (&ge;0)
      */
     public float lastKeyframeTime() {
         BoneTrack track = Maud.model.bone.findTrack();

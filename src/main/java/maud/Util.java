@@ -78,7 +78,7 @@ public class Util {
      * linear interpolation with no blending.
      *
      * @param track (not null)
-     * @param time
+     * @param time animation time input
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
      */

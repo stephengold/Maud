@@ -173,7 +173,7 @@ public class SelectedSpatial implements Cloneable {
     /**
      * Access the selected spatial in a CG model.
      *
-     * @param modelRoot
+     * @param modelRoot root of the CG model (not null)
      * @return the pre-existing instance (not null)
      */
     public Spatial findSpatial(Spatial modelRoot) {

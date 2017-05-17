@@ -49,7 +49,7 @@ public class BVHBone {
     /**
      * Instantiate a bone with the specified name.
      *
-     * @param name
+     * @param name name for the new bone
      */
     public BVHBone(String name) {
         this.name = name;
@@ -132,7 +132,7 @@ public class BVHBone {
     /**
      * Alter the name of the bone.
      *
-     * @param name
+     * @param name new name for the bone
      */
     public void setName(String name) {
         this.name = name;

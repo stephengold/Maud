@@ -124,7 +124,7 @@ class BoneRotationTool extends WindowController {
      * Initialize this controller prior to its 1st update.
      *
      * @param stateManager (not null)
-     * @param application application which owns this screen (not null)
+     * @param application application that owns the window (not null)
      */
     @Override
     public void initialize(AppStateManager stateManager,

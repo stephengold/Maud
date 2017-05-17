@@ -182,7 +182,7 @@ public class BoneMapping implements Savable {
     /**
      * Alter the name of the bone in the target skeleton.
      *
-     * @param targetName
+     * @param targetName name of the target bone
      */
     public void setTargetName(String targetName) {
         this.targetName = targetName;
