@@ -26,12 +26,15 @@
  */
 package maud;
 
+import com.jme3.app.Application;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.math.FastMath;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
-import jme3utilities.MySpatial;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
@@ -56,9 +59,13 @@ class AxesTool extends WindowController {
     // fields
 
     /**
-     * which AxesControl is active in the view, or null for none
+     * scene-graph control to display coordinate axes
      */
-    private AxesControl control = null;
+    private AxesControl axesControl;
+    /**
+     * scene-graph node to translate and rotate the axes
+     */
+    final private Node axesNode = new Node("axes node");
     // *************************************************************************
     // constructors
 
@@ -87,48 +94,22 @@ class AxesTool extends WindowController {
     }
 
     /**
-     * Update the view's AxesControl.
+     * Update the node transform and AxesControl settings.
      */
     void updateAxesControl() {
-        String mode = Maud.model.axes.getMode();
-        AxesControl newControl;
-        switch (mode) {
-            case "bone":
-                if (Maud.model.bone.isBoneSelected()) {
-                    int boneIndex = Maud.model.bone.getIndex();
-                    newControl = Maud.viewState.getBoneAxesControl(boneIndex);
-                } else {
-                    newControl = null;
-                }
-                break;
-            case "model":
-                newControl = Maud.viewState.getModelAxesControl();
-                break;
-            case "none":
-                newControl = null;
-                break;
-            case "world":
-                newControl = Maud.viewState.getWorldAxesControl();
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
+        Transform transform = worldTransform();
+        if (transform == null) {
+            axesControl.setEnabled(false);
+        } else {
+            axesNode.setLocalTransform(transform);
+            axesControl.setEnabled(true);
 
-        if (newControl != control) {
-            if (control != null) {
-                control.setEnabled(false);
-            }
-            control = newControl;
-        }
-
-        if (control != null) {
             float length;
             if (Maud.model.axes.isAutoSizing()) {
-                Spatial spatial = control.getSpatial();
-                Vector3f loc = MySpatial.getWorldLocation(spatial);
+                Vector3f axesOrigin = transform.getTranslation();
                 Vector3f cameraLocation = Maud.model.camera.copyLocation(null);
-                float distance = loc.distance(cameraLocation);
-                Vector3f scale = spatial.getWorldScale();
+                float distance = axesOrigin.distance(cameraLocation);
+                Vector3f scale = transform.getScale();
                 float maxScale = MyMath.max(scale.x, scale.y, scale.z);
                 length = 0.2f * distance / maxScale;
                 Maud.model.axes.setLength(length);
@@ -138,18 +119,36 @@ class AxesTool extends WindowController {
             boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
             float lineWidth = Maud.model.axes.getLineWidth();
 
-            control.setAxisLength(length);
-            control.setDepthTest(depthTestFlag);
-            control.setEnabled(true);
-            control.setLineWidth(lineWidth);
+            axesControl.setAxisLength(length);
+            axesControl.setDepthTest(depthTestFlag);
+            axesControl.setEnabled(true);
+            axesControl.setLineWidth(lineWidth);
         }
     }
     // *************************************************************************
     // AppState methods
 
     /**
+     * Initialize this controller prior to its 1st update.
+     *
+     * @param stateManager (not null)
+     * @param application application that owns the window (not null)
+     */
+    @Override
+    public void initialize(AppStateManager stateManager,
+            Application application) {
+        super.initialize(stateManager, application);
+        /*
+         * Instantiate and add/attach the AxesControl and the node.
+         */
+        axesControl = new AxesControl(assetManager, 1f, 1f);
+        axesNode.addControl(axesControl);
+        rootNode.attachChild(axesNode);
+    }
+
+    /**
      * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
+     * render pass while the window is displayed.)
      *
      * @param elapsedTime time interval between render passes (in seconds,
      * &ge;0)
@@ -178,6 +177,48 @@ class AxesTool extends WindowController {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Calculate the coordinate transform for the axes.
+     *
+     * @return a new instance (in world coordinates) or null to hide the axes
+     */
+    private Transform worldTransform() {
+        Transform transform;
+        String mode = Maud.model.axes.getMode();
+        switch (mode) {
+            case "bone":
+                if (Maud.model.bone.isBoneSelected()) {
+                    int boneIndex = Maud.model.bone.getIndex();
+                    transform = Maud.model.pose.modelTransform(boneIndex, null);
+
+                    Spatial cgm = Maud.viewState.getSpatial();
+                    Transform cgmTransform = cgm.getWorldTransform();
+                    transform.combineWithParent(cgmTransform);
+                } else {
+                    transform = null;
+                }
+                break;
+
+            case "model":
+                Spatial cgm = Maud.viewState.getSpatial();
+                transform = cgm.getWorldTransform();
+                break;
+
+            case "none":
+                transform = null;
+                break;
+
+            case "world":
+                transform = new Transform(); // identity
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        return transform;
+    }
 
     /**
      * Update the status labels based on the MVC model.

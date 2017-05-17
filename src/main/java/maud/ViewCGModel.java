@@ -36,14 +36,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
-import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.debug.AxesControl;
 import jme3utilities.debug.SkeletonDebugControl;
 
 /**
@@ -91,16 +87,26 @@ public class ViewCGModel {
     // *************************************************************************
     // constructors
 
+    /**
+     * Instantiate a new view.
+     *
+     * @param assetManager the asset manager (not null)
+     * @param rootNode root node of the scene graph (not null)
+     * @param cgmRoot root spatial of the CG model (may be null)
+     */
     ViewCGModel(AssetManager assetManager, Node rootNode, Spatial cgmRoot) {
+        assert assetManager != null;
+        assert rootNode != null;
+
         this.assetManager = assetManager;
         this.rootNode = rootNode;
-        this.cgModelRoot = cgmRoot;
+        cgModelRoot = cgmRoot;
     }
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Calculate the location of an indexed bone.
+     * Calculate the location of an indexed bone, for selection.
      *
      * @param boneIndex which bone to locate
      * @return a new vector (in world coordinates)
@@ -114,50 +120,12 @@ public class ViewCGModel {
     }
 
     /**
-     * Create a duplicate copy of this state for checkpointing.
-     *
-     * @param preparedRoot (not null)
+     * Create a duplicate copy of this view, for checkpointing.
      */
     ViewCGModel createCopy() {
         Spatial cgmClone = cgModelRoot.clone();
         ViewCGModel result = new ViewCGModel(assetManager, rootNode, cgmClone);
 
-        return result;
-    }
-
-    /**
-     * Access an AxesControl for the specified bone.
-     *
-     * @param boneIndex which bone
-     * @return a control, or null if no such bone
-     */
-    AxesControl getBoneAxesControl(int boneIndex) {
-        Bone bone = skeleton.getBone(boneIndex);
-        String boneName = bone.getName();
-
-        Node attachmentsNode = skeletonControl.getAttachmentsNode(boneName);
-        AxesControl result = getAxesControl(attachmentsNode);
-
-        return result;
-    }
-
-    /**
-     * Access an AxesControl for the CG model.
-     *
-     * @return a control (not null)
-     */
-    AxesControl getModelAxesControl() {
-        AxesControl result = getAxesControl(cgModelRoot);
-        return result;
-    }
-
-    /**
-     * Access an AxesControl for the world.
-     *
-     * @return a control (not null)
-     */
-    AxesControl getWorldAxesControl() {
-        AxesControl result = getAxesControl(rootNode);
         return result;
     }
 
@@ -285,23 +253,7 @@ public class ViewCGModel {
     // private methods
 
     /**
-     * Access the axes control of the specified node.
-     *
-     * @param spatial (not null)
-     * @return the pre-existing instance (not null)
-     */
-    private AxesControl getAxesControl(Spatial spatial) {
-        AxesControl axesControl = spatial.getControl(AxesControl.class);
-        if (axesControl == null) {
-            axesControl = new AxesControl(assetManager, 1f, 1f);
-            spatial.addControl(axesControl);
-        }
-
-        return axesControl;
-    }
-
-    /**
-     * Alter a newly-loaded CG model to prepare it for viewing and editing.
+     * Alter a newly loaded CG model to prepare it for viewing and editing.
      */
     private void prepareForEditing() {
         /*
@@ -323,25 +275,6 @@ public class ViewCGModel {
          * CursorTool.findContact() will work.
          */
         skeletonControl.setHardwareSkinningPreferred(false);
-        /*
-         * Apply an identity transform to every child spatial of the model.
-         * This hack enables accurate bone attachments on some models with
-         * locally transformed geometries (such as Jaime).
-         * The attachments bug should be fixed in jMonkeyEngine 3.2.
-         */
-        if (cgModelRoot instanceof Node) {
-            Node node = (Node) cgModelRoot;
-            for (Spatial child : node.getChildren()) {
-                Transform t = child.getLocalTransform();
-                if (!Misc.isIdentity(t)) {
-                    String name = child.getName();
-                    logger.log(Level.WARNING,
-                            "Overriding local transform on {0}",
-                            MyString.quote(name));
-                    child.setLocalTransform(new Transform());
-                }
-            }
-        }
         /*
          * Scale and translate the CG model so its bind pose is 1.0 world-unit
          * tall, with its base resting on the XZ plane.
