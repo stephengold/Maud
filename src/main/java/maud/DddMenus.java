@@ -426,6 +426,9 @@ class DddMenus {
         items.add("Tool");
         items.add("Select by parent");
         items.add("Select by name");
+        items.add("Rotate");
+        items.add("Scale");
+        items.add("Translate");
         items.add("Material");
 
         return items;
@@ -909,8 +912,20 @@ class DddMenus {
         assert remainder != null;
         boolean handled = false;
         switch (remainder) {
+            case "Rotate":
+                Maud.gui.spatialRotation.select();
+                handled = true;
+                break;
+            case "Scale":
+                Maud.gui.spatialScale.select();
+                handled = true;
+                break;
             case "Tool":
                 Maud.gui.spatial.select();
+                handled = true;
+                break;
+            case "Translate":
+                Maud.gui.spatialTranslation.select();
                 handled = true;
         }
 

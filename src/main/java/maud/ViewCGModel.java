@@ -43,8 +43,7 @@ import jme3utilities.Validate;
 import jme3utilities.debug.SkeletonDebugControl;
 
 /**
- * Encapsulate the view's copy of the loaded CG model in Maud's "3D View"
- * screen.
+ * Encapsulate a view's copy of the loaded CG model in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -65,9 +64,9 @@ public class ViewCGModel {
      */
     final private AssetManager assetManager;
     /**
-     * the root node of the application's scene graph
+     * the parent node of the CG model, used for rotation
      */
-    final private Node rootNode;
+    final private Node parentNode;
     /**
      * the skeleton of this view's copy of the CG model
      */
@@ -91,15 +90,15 @@ public class ViewCGModel {
      * Instantiate a new view.
      *
      * @param assetManager the asset manager (not null)
-     * @param rootNode root node of the scene graph (not null)
+     * @param parentNode parent node in the scene graph (not null)
      * @param cgmRoot root spatial of the CG model (may be null)
      */
-    ViewCGModel(AssetManager assetManager, Node rootNode, Spatial cgmRoot) {
+    ViewCGModel(AssetManager assetManager, Node parentNode, Spatial cgmRoot) {
         assert assetManager != null;
-        assert rootNode != null;
+        assert parentNode != null;
 
         this.assetManager = assetManager;
-        this.rootNode = rootNode;
+        this.parentNode = parentNode;
         cgModelRoot = cgmRoot;
     }
     // *************************************************************************
@@ -124,7 +123,8 @@ public class ViewCGModel {
      */
     ViewCGModel createCopy() {
         Spatial cgmClone = cgModelRoot.clone();
-        ViewCGModel result = new ViewCGModel(assetManager, rootNode, cgmClone);
+        ViewCGModel result = new ViewCGModel(assetManager, parentNode,
+                cgmClone);
 
         return result;
     }
@@ -159,7 +159,7 @@ public class ViewCGModel {
          * Detach the old spatial (if any) from the scene.
          */
         if (cgModelRoot != null) {
-            rootNode.detachChild(cgModelRoot);
+            parentNode.detachChild(cgModelRoot);
         }
         cgModelRoot = loadedRoot;
 
@@ -176,11 +176,11 @@ public class ViewCGModel {
         /*
          * Detach the old spatial from the scene graph.
          */
-        rootNode.detachChild(cgModelRoot);
+        parentNode.detachChild(cgModelRoot);
 
         Spatial sp = savedState.getSpatial();
         cgModelRoot = sp.clone();
-        rootNode.attachChild(cgModelRoot);
+        parentNode.attachChild(cgModelRoot);
 
         skeletonControl = cgModelRoot.getControl(SkeletonControl.class);
         assert skeletonControl != null;
@@ -199,7 +199,7 @@ public class ViewCGModel {
      * @param angle in radians
      */
     void rotateY(float angle) {
-        cgModelRoot.rotate(0f, angle, 0f);
+        parentNode.rotate(0f, angle, 0f);
     }
 
     /**
@@ -224,6 +224,42 @@ public class ViewCGModel {
 
         Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
         spatial.setShadowMode(newMode);
+    }
+
+    /**
+     * Alter the local rotation of the selected spatial.
+     *
+     * @param rotation (not null, unaffected)
+     */
+    public void setSpatialRotation(Quaternion rotation) {
+        Validate.nonNull(rotation, "rotation");
+
+        Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
+        spatial.setLocalRotation(rotation);
+    }
+
+    /**
+     * Alter the local scale of the selected spatial.
+     *
+     * @param scale (not null, unaffected)
+     */
+    public void setSpatialScale(Vector3f scale) {
+        Validate.nonNull(scale, "scale");
+
+        Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
+        spatial.setLocalScale(scale);
+    }
+
+    /**
+     * Alter the local translation of the selected spatial.
+     *
+     * @param translation (not null, unaffected)
+     */
+    public void setSpatialTranslation(Vector3f translation) {
+        Validate.nonNull(translation, "translation");
+
+        Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
+        spatial.setLocalTranslation(translation);
     }
 
     /**
@@ -260,7 +296,7 @@ public class ViewCGModel {
          * Attach the CG model to the scene graph and enable user control
          * for all bones.
          */
-        rootNode.attachChild(cgModelRoot);
+        parentNode.attachChild(cgModelRoot);
         MySkeleton.setUserControl(cgModelRoot, true);
         /*
          * Update references to skeleton control and skeleton.

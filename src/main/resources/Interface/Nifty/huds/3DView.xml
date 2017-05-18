@@ -1065,6 +1065,133 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                 </panel>
             </control>
 
+            <control name="window" id="spatialRotationTool" title="Spatial-Rotation Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="220px" width="195px" x="60" y="40">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="xSaSlider"
+                                 buttonStepSize="3.14"
+                                 height="180"
+                                 initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
+                        <control name="verticalSlider" id="ySaSlider"
+                                 buttonStepSize="3.14"
+                                 height="180"
+                                 initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zSaSlider"
+                                 buttonStepSize="3.14"
+                                 height="180"
+                                 initial="0" max="1.57" min="-1.57" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="160px" width="110px">
+                            <control name="label" id="xSaSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="ySaSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="zSaSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <panel childLayout="horizontal" height="30px" >
+                                <panel/>
+                                <control name="button" id="degreesButton2"
+                                         width="50px">
+                                    <interact onRelease="perform(toggle degrees)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                            <control name="button" label="Reset" id="id30ToAvoidNiftyWarning"
+                                     width="70px">
+                                <interact onRelease="perform(reset spatial rotation)"/>
+                            </control>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="spatialScaleTool" title="Spatial-Scale Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="200px" width="165px" x="50" y="50">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="xSsSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="ySsSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zSsSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="160px" width="80px">
+                            <control name="label" id="xSsSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="ySsSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="zSsSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="button" label="Reset" id="id32ToAvoidNiftyWarning"
+                                     width="70px">
+                                <interact onRelease="perform(reset spatial scale)"/>
+                            </control>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="spatialTranslationTool" title="Spatial-Translation Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="270px" width="180px" x="55" y="45">
+                <panel childLayout="vertical">
+                    <control name="label" text="Master control:"/>
+                    <control name="horizontalSlider" id="soMasterSlider"
+                             buttonStepSize="1"
+                             initial="0" max="2" min="-2" stepSize="0.001"/>
+                    <control name="label" text="Per-axis controls:"/>
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="xSoSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="0" max="1" min="-1" stepSize="0.001"/>
+                        <control name="verticalSlider" id="ySoSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="0" max="1" min="-1" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zSoSlider"
+                                 buttonStepSize="1"
+                                 height="160"
+                                 initial="0" max="1" min="-1" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="160px" width="100px">
+                            <control name="label" id="xSoSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="ySoSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="zSoSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="button" label="Reset" id="id31ToAvoidNiftyWarning"
+                                     width="70px">
+                                <interact onRelease="perform(reset spatial translation)"/>
+                            </control>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
         </layer>
     </screen>
 </nifty>

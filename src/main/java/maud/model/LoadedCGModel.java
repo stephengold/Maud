@@ -38,6 +38,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
@@ -100,6 +101,11 @@ public class LoadedCGModel implements Cloneable {
      */
     private Spatial rootSpatial = null;
     /**
+     * tree position of the spatial whose transform is being edited, or "" for
+     * none
+     */
+    private String editedSpatialTransform = "";
+    /**
      * asset path of the loaded model, less extension
      */
     private String loadedModelAssetPath = null;
@@ -142,6 +148,24 @@ public class LoadedCGModel implements Cloneable {
         AnimControl control = getAnimControl();
         control.addAnim(newAnimation);
         setEdited();
+    }
+
+    /**
+     * Copy the local transform of the selected spatial.
+     *
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
+     */
+    public Transform copySpatialTransform(Transform storeResult) {
+        if (storeResult == null) {
+            storeResult = new Transform();
+        }
+
+        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
+        Transform transform = spatial.getLocalTransform();
+        storeResult.set(transform);
+
+        return storeResult;
     }
 
     /**
@@ -598,45 +622,6 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Alter the user rotation of the selected bone.
-     *
-     * @param rotation (not null, unaffected)
-     */
-    public void setBoneRotation(Quaternion rotation) {
-        Validate.nonNull(rotation, "rotation");
-        assert Maud.model.bone.isBoneSelected();
-
-        int boneIndex = Maud.model.bone.getIndex();
-        Maud.model.pose.setRotation(boneIndex, rotation);
-    }
-
-    /**
-     * Alter the user scale of the selected bone.
-     *
-     * @param scale (not null, unaffected)
-     */
-    public void setBoneScale(Vector3f scale) {
-        Validate.nonNull(scale, "scale");
-        assert Maud.model.bone.isBoneSelected();
-
-        int boneIndex = Maud.model.bone.getIndex();
-        Maud.model.pose.setScale(boneIndex, scale);
-    }
-
-    /**
-     * Alter the user translation of the selected bone.
-     *
-     * @param translation (not null, unaffected)
-     */
-    public void setBoneTranslation(Vector3f translation) {
-        Validate.nonNull(translation, "translation");
-        assert Maud.model.bone.isBoneSelected();
-
-        int boneIndex = Maud.model.bone.getIndex();
-        Maud.model.pose.setTranslation(boneIndex, translation);
-    }
-
-    /**
      * Alter the cull hint of the selected spatial.
      *
      * @param newHint new value for cull hint (not null)
@@ -688,6 +673,48 @@ public class LoadedCGModel implements Cloneable {
         BoneTrack track = Maud.model.bone.findTrack();
         track.setKeyframes(times, translations, rotations, scales);
         setEdited();
+    }
+
+    /**
+     * Alter the local rotation of the selected spatial.
+     *
+     * @param rotation (not null, unaffected)
+     */
+    public void setSpatialRotation(Quaternion rotation) {
+        Validate.nonNull(rotation, "rotation");
+
+        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
+        spatial.setLocalRotation(rotation);
+        Maud.viewState.setSpatialRotation(rotation);
+        setEditedSpatialTransform();
+    }
+
+    /**
+     * Alter the local scale of the selected spatial.
+     *
+     * @param scale (not null, unaffected)
+     */
+    public void setSpatialScale(Vector3f scale) {
+        Validate.nonNull(scale, "scale");
+
+        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
+        spatial.setLocalScale(scale);
+        Maud.viewState.setSpatialScale(scale);
+        setEditedSpatialTransform();
+    }
+
+    /**
+     * Alter the local translation of the selected spatial.
+     *
+     * @param translation (not null, unaffected)
+     */
+    public void setSpatialTranslation(Vector3f translation) {
+        Validate.nonNull(translation, "translation");
+
+        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
+        spatial.setLocalTranslation(translation);
+        Maud.viewState.setSpatialTranslation(translation);
+        setEditedSpatialTransform();
     }
 
     /**
@@ -917,6 +944,18 @@ public class LoadedCGModel implements Cloneable {
      */
     private void setEdited() {
         ++editCount;
+        editedSpatialTransform = "";
+    }
+
+    /**
+     * If not a continuation of the previous edit, update the edit count.
+     */
+    private void setEditedSpatialTransform() {
+        String newString = Maud.model.spatial.toString();
+        if (!newString.equals(editedSpatialTransform)) {
+            ++editCount;
+            editedSpatialTransform = newString;
+        }
     }
 
     /**
@@ -924,6 +963,7 @@ public class LoadedCGModel implements Cloneable {
      */
     private void setPristine() {
         editCount = 0;
+        editedSpatialTransform = "";
     }
 
     /**

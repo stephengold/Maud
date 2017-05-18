@@ -29,6 +29,8 @@ package maud;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.audio.openal.ALAudioRenderer;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import java.util.logging.Level;
@@ -141,7 +143,8 @@ public class Maud extends GuiApplication {
                 gui.boneRotation, gui.boneTranslation, gui.boneScale,
                 gui.cullHint, gui.cursor, gui.camera, gui.keyframe, gui.model,
                 gui.platform, gui.render, gui.retarget, gui.skeleton,
-                gui.shadowMode, gui.sky, gui.spatial);
+                gui.shadowMode, gui.sky, gui.spatial, gui.spatialRotation,
+                gui.spatialScale, gui.spatialTranslation);
         /*
          * Disable flyCam.
          */
@@ -234,7 +237,11 @@ public class Maud extends GuiApplication {
         gui.dialogs = new DddDialogs(assetManager, nifty);
         model.cgm = new LoadedCGModel(assetManager);
         model.retarget = new RetargetParameters(assetManager);
-        viewState = new ViewCGModel(assetManager, rootNode, null);
+
+        Node parentNode = new Node("parent");
+        rootNode.attachChild(parentNode);
+        Spatial cgmRoot = null;
+        viewState = new ViewCGModel(assetManager, parentNode, cgmRoot);
         /*
          * Attach screen controllers for the "3D View" screen and BindScreen.
          */

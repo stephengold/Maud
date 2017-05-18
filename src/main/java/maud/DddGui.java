@@ -95,9 +95,9 @@ public class DddGui extends GuiScreenController {
      */
     final public AnimationTool animation = new AnimationTool(this);
     final AxesTool axes = new AxesTool(this);
-    final BoneTool bone = new BoneTool(this);
     final BoneRotationTool boneRotation = new BoneRotationTool(this);
     final BoneScaleTool boneScale = new BoneScaleTool(this);
+    final BoneTool bone = new BoneTool(this);
     final BoneTranslationTool boneTranslation = new BoneTranslationTool(this);
     final CameraTool camera = new CameraTool(this);
     final CullHintTool cullHint = new CullHintTool(this);
@@ -109,7 +109,10 @@ public class DddGui extends GuiScreenController {
     final RetargetTool retarget = new RetargetTool(this);
     final ShadowModeTool shadowMode = new ShadowModeTool(this);
     final SkeletonTool skeleton = new SkeletonTool(this);
+    final SpatialRotationTool spatialRotation = new SpatialRotationTool(this);
+    final SpatialScaleTool spatialScale = new SpatialScaleTool(this);
     final SpatialTool spatial = new SpatialTool(this);
+    final SpatialTranslationTool spatialTranslation = new SpatialTranslationTool(this);
     final SkyTool sky = new SkyTool(this);
     // *************************************************************************
     // constructors
@@ -331,6 +334,25 @@ public class DddGui extends GuiScreenController {
                 skeleton.onSliderChanged();
                 break;
 
+            case "xSaSlider":
+            case "ySaSlider":
+            case "zSaSlider":
+                spatialRotation.onSliderChanged();
+                break;
+
+            case "xSsSlider":
+            case "ySsSlider":
+            case "zSsSlider":
+                spatialScale.onSliderChanged();
+                break;
+
+            case "soMasterSlider":
+            case "xSoSlider":
+            case "ySoSlider":
+            case "zSoSlider":
+                spatialTranslation.onSliderChanged();
+                break;
+
             default:
                 logger.log(Level.WARNING, "unknown slider with id={0}",
                         MyString.quote(sliderId));
@@ -456,6 +478,15 @@ public class DddGui extends GuiScreenController {
                 break;
             case "spatial":
                 controller = spatial;
+                break;
+            case "spatialRotation":
+                controller = spatialRotation;
+                break;
+            case "spatialScale":
+                controller = spatialScale;
+                break;
+            case "spatialTranslation":
+                controller = spatialTranslation;
                 break;
             case "sky":
                 controller = sky;

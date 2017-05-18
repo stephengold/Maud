@@ -383,6 +383,20 @@ class DddInputMode extends InputMode {
             case "reset bone sca bind":
                 Maud.gui.boneScale.reset();
                 handled = true;
+                break;
+
+            case "reset spatial rotation":
+                Maud.gui.spatialRotation.reset();
+                handled = true;
+                break;
+            case "reset spatial scale":
+                Maud.gui.spatialScale.reset();
+                handled = true;
+                break;
+            case "reset spatial translation":
+                Maud.gui.spatialTranslation.reset();
+                handled = true;
+                break;
         }
 
         return handled;
