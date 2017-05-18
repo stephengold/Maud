@@ -264,10 +264,5 @@ class CameraTool
         assert Maud.gui.cursor.isInitialized();
 
         mapButton();
-
-        Vector3f initialLocation = new Vector3f(-2.4f, 1f, 1.6f);
-        Maud.model.camera.setLocation(initialLocation);
-        Maud.model.camera.setMode("orbit");
-        assert Maud.model.camera.isOrbitMode();
     }
 }

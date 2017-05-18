@@ -257,7 +257,8 @@ public class ViewCGModel {
      */
     private void prepareForEditing() {
         /*
-         * Attach the CG model to the scene and enable user control.
+         * Attach the CG model to the scene graph and enable user control
+         * for all bones.
          */
         rootNode.attachChild(cgModelRoot);
         MySkeleton.setUserControl(cgModelRoot, true);
@@ -276,16 +277,24 @@ public class ViewCGModel {
          */
         skeletonControl.setHardwareSkinningPreferred(false);
         /*
-         * Scale and translate the CG model so its bind pose is 1.0 world-unit
-         * tall, with its base resting on the XZ plane.
+         * Configure the camera, cursor, and platform based on the range
+         * of Y coordinates in the CG model.
          */
         float maxY = MySpatial.getMaxY(cgModelRoot);
         float minY = MySpatial.getMinY(cgModelRoot);
-        assert maxY > minY : maxY; // no 2D models!
-        float worldScale = 1f / (maxY - minY);
-        MySpatial.setWorldScale(cgModelRoot, worldScale);
-        Vector3f worldLocation = new Vector3f(0f, -minY * worldScale, 0f);
-        MySpatial.setWorldLocation(cgModelRoot, worldLocation);
+        float height = maxY - minY;
+        assert height > 0f : height; // no 2D models!
+        Vector3f baseLocation = new Vector3f(0f, minY, 0f);
+
+        Maud.model.cursor.setLocation(baseLocation);
+        Maud.model.misc.setPlatformLocation(baseLocation);
+        Maud.model.misc.setPlatformDiameter(2f * height);
+
+        Maud.model.camera.setScale(height);
+        Vector3f cameraLocation = new Vector3f(-2.4f, 1f, 1.6f);
+        cameraLocation.multLocal(height);
+        cameraLocation.addLocal(baseLocation);
+        Maud.model.camera.setLocation(cameraLocation);
         /*
          * Add a new SkeletonDebugControl.
          */

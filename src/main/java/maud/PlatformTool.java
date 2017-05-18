@@ -29,6 +29,7 @@ package maud;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -49,13 +50,13 @@ class PlatformTool extends WindowController {
     // constants and loggers
 
     /**
-     * diameter of the platform (in world units, &gt;0)
+     * radius of the platform (in model units, &gt;0)
      */
-    final private static float diameter = 4f;
+    final private static float radius = 0.5f;
     /**
-     * thickness of the platform (in world units, &gt;0)
+     * thickness of the square (in model units, &gt;0)
      */
-    final private static float thickness = 0.1f;
+    final private static float squareThickness = 0.01f;
     /**
      * message logger for this class
      */
@@ -104,7 +105,6 @@ class PlatformTool extends WindowController {
      */
     void updateScene() {
         String mode = Maud.model.misc.getPlatformMode();
-
         switch (mode) {
             case "none":
                 if (spatial == square) {
@@ -122,6 +122,15 @@ class PlatformTool extends WindowController {
 
             default:
                 throw new IllegalStateException();
+        }
+
+        if (spatial != null) {
+            float diameter = Maud.model.misc.getPlatformDiameter();
+            spatial.setLocalScale(diameter);
+
+            Vector3f center = Maud.model.misc.copyPlatformLocation();
+            center.y -= diameter * squareThickness;
+            spatial.setLocalTranslation(center);
         }
     }
     // *************************************************************************
@@ -147,8 +156,7 @@ class PlatformTool extends WindowController {
      * to the scene graph.
      */
     private void createPlatforms() {
-        float radius = diameter / 2f;
-        Mesh platformMesh = new Box(radius, thickness, radius);
+        Mesh platformMesh = new Box(radius, squareThickness, radius);
         square = new Geometry("square platform", platformMesh);
 
         Texture dirt = MyAsset.loadTexture(assetManager, textureAssetPath);
@@ -156,7 +164,5 @@ class PlatformTool extends WindowController {
         square.setMaterial(mat);
 
         square.setShadowMode(RenderQueue.ShadowMode.Receive);
-        float yOffset = -1.001f * thickness;
-        square.setLocalTranslation(0f, yOffset, 0f);
     }
 }

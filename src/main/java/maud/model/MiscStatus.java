@@ -26,6 +26,7 @@
  */
 package maud.model;
 
+import com.jme3.math.Vector3f;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
@@ -60,9 +61,18 @@ public class MiscStatus implements Cloneable {
      */
     private boolean skyRendered = true;
     /**
+     * diameter of the platform (in world units, &gt;0)
+     */
+    private float platformDiameter = 1f;
+    /**
      * platform mode (either "none" or "square")
      */
     private String platformMode = "square";
+    /**
+     * center location of the top of the platform (in world coordinates, not
+     * null)
+     */
+    private Vector3f platformLocation = new Vector3f();
     // *************************************************************************
     // new methods exposed
 
@@ -76,12 +86,32 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
+     * Copy the center location of the top of the platform.
+     *
+     * @return a new vector (in world coordinates)
+     */
+    public Vector3f copyPlatformLocation() {
+        Vector3f result = platformLocation.clone();
+        return result;
+    }
+
+    /**
      * Test whether to display angles in degrees.
      *
      * @return true for degrees, otherwise false
      */
     public boolean getAnglesInDegrees() {
         return anglesInDegrees;
+    }
+
+    /**
+     * Read the diameter of the platform.
+     *
+     * @return diameter (in world units, &gt;0)
+     */
+    public float getPlatformDiameter() {
+        assert platformDiameter > 0f : platformDiameter;
+        return platformDiameter;
     }
 
     /**
@@ -109,6 +139,26 @@ public class MiscStatus implements Cloneable {
      */
     public void setAnglesInDegrees(boolean newState) {
         anglesInDegrees = newState;
+    }
+
+    /**
+     * Alter the diameter of the platform.
+     *
+     * @param diameter (in world units, &gt;0)
+     */
+    public void setPlatformDiameter(float diameter) {
+        Validate.positive(diameter, "diameter");
+        platformDiameter = diameter;
+    }
+
+    /**
+     * Alter the center location of the top of the platform.
+     *
+     * @param newLocation world coordinates (not null, unaffected)
+     */
+    public void setPlatformLocation(Vector3f newLocation) {
+        Validate.nonNull(newLocation, "location");
+        platformLocation.set(newLocation);
     }
 
     /**
@@ -166,6 +216,7 @@ public class MiscStatus implements Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         MiscStatus clone = (MiscStatus) super.clone();
+        clone.platformLocation = platformLocation.clone();
         return clone;
     }
 }

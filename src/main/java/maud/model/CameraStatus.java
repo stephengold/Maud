@@ -50,14 +50,6 @@ public class CameraStatus implements Cloneable {
      */
     final private static float dollyInOutRate = 15f;
     /**
-     * distance to the far plane of the view frustum (in world units, &gt;0)
-     */
-    final private static float frustumFar = 100f;
-    /**
-     * distance to the near plane of the view frustum (in world units, &gt;0)
-     */
-    final private static float frustumNear = 0.01f;
-    /**
      * vertical angle of the frustum (in degrees of arc, &gt;0)
      */
     final private static float frustumYDegrees = 45f;
@@ -85,11 +77,19 @@ public class CameraStatus implements Cloneable {
     /**
      * true &rarr; orbit mode, false &rarr; fly mode
      */
-    private boolean orbitMode = false;
+    private boolean orbitMode = true;
     /**
      * movement rate (fly mode only, world units per scroll wheel notch)
      */
     private float flyRate = 0.1f;
+    /**
+     * distance to the far plane of the view frustum (in world units, &gt;0)
+     */
+    private float frustumFar = 100f;
+    /**
+     * distance to the near plane of the view frustum (in world units, &gt;0)
+     */
+    private float frustumNear = 0.01f;
     /**
      * maximum distance of camera from the 3D cursor (orbit mode only, in world
      * units, &gt;0)
@@ -450,6 +450,21 @@ public class CameraStatus implements Cloneable {
 
         dir.negateLocal();
         direction.set(dir);
+    }
+
+    /**
+     * Adjust camera parameters based on the height of the CG model.
+     *
+     * @param height (in world units, &gt;0)
+     */
+    public void setScale(float height) {
+        Validate.positive(height, "height");
+
+        flyRate = height / 10f;
+        frustumFar = height * 100f;
+        frustumNear = height / 100f;
+        maxRange = height * 10f;
+        minRange = height / 5f;
     }
     // *************************************************************************
     // Object methods
