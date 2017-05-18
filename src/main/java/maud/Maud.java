@@ -29,21 +29,11 @@ package maud;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.audio.openal.ALAudioRenderer;
-import com.jme3.material.Material;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
-import com.jme3.texture.Texture;
 import de.lessvoid.nifty.Nifty;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
-import jme3utilities.MyAsset;
-import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.debug.Printer;
 import jme3utilities.nifty.GuiApplication;
@@ -64,14 +54,6 @@ public class Maud extends GuiApplication {
     // constants and loggers
 
     /**
-     * diameter of the platform (in world units, &gt;0)
-     */
-    final private static float platformDiameter = 4f;
-    /**
-     * thickness of the platform (in world units, &gt;0)
-     */
-    final private static float platformThickness = 0.1f;
-    /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(Maud.class.getName());
@@ -79,14 +61,6 @@ public class Maud extends GuiApplication {
      * path to hotkey bindings configuration asset
      */
     final private static String hotkeyBindingsAssetPath = "Interface/bindings/3DView.properties";
-    /**
-     * name of the platform geometry
-     */
-    final static String platformName = "platform";
-    /**
-     * path to texture asset for the platform
-     */
-    final private static String platformTextureAssetPath = "Textures/Terrain/splat/dirt.jpg";
     /**
      * application name for the window's title bar
      */
@@ -166,8 +140,8 @@ public class Maud extends GuiApplication {
         stateManager.attachAll(gui.animation, gui.axes, gui.bone,
                 gui.boneRotation, gui.boneTranslation, gui.boneScale,
                 gui.cullHint, gui.cursor, gui.camera, gui.keyframe, gui.model,
-                gui.render, gui.retarget, gui.skeleton, gui.shadowMode, gui.sky,
-                gui.spatial);
+                gui.platform, gui.render, gui.retarget, gui.skeleton,
+                gui.shadowMode, gui.sky, gui.spatial);
         /*
          * Disable flyCam.
          */
@@ -178,10 +152,6 @@ public class Maud extends GuiApplication {
         ScreenshotAppState screenShotState = new ScreenshotAppState();
         boolean success = stateManager.attach(screenShotState);
         assert success;
-        /*
-         * Create a square platform.
-         */
-        createPlatform();
     }
     // *************************************************************************
     // ActionListener methods
@@ -252,25 +222,6 @@ public class Maud extends GuiApplication {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Create a square platform for the model to stand on.
-     */
-    private void createPlatform() {
-        float radius = platformDiameter / 2f;
-        Mesh platformMesh = new Box(radius, platformThickness, radius);
-        Spatial platform = new Geometry(platformName, platformMesh);
-
-        Texture dirt = MyAsset.loadTexture(assetManager,
-                platformTextureAssetPath);
-        Material mat = MyAsset.createShadedMaterial(assetManager, dirt);
-        platform.setMaterial(mat);
-
-        platform.setShadowMode(RenderQueue.ShadowMode.Receive);
-        rootNode.attachChild(platform);
-        float yOffset = -1.001f * platformThickness;
-        MySpatial.setWorldLocation(platform, new Vector3f(0f, yOffset, 0f));
-    }
 
     /**
      * Initialization performed during the 1st invocation of

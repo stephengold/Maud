@@ -102,6 +102,7 @@ public class DddGui extends GuiScreenController {
     final CursorTool cursor = new CursorTool(this);
     final KeyframeTool keyframe = new KeyframeTool(this);
     final ModelTool model = new ModelTool(this);
+    final PlatformTool platform = new PlatformTool(this);
     final RenderTool render = new RenderTool(this);
     final RetargetTool retarget = new RetargetTool(this);
     final ShadowModeTool shadowMode = new ShadowModeTool(this);
@@ -234,6 +235,13 @@ public class DddGui extends GuiScreenController {
                 break;
             case "shadowInheritRadioButton":
                 Maud.model.cgm.setMode(RenderQueue.ShadowMode.Inherit);
+                break;
+
+            case "noPlatformRadioButton":
+                Maud.model.misc.setPlatformMode("none");
+                break;
+            case "squarePlatformRadioButton":
+                Maud.model.misc.setPlatformMode("square");
                 break;
 
             default:
@@ -528,6 +536,7 @@ public class DddGui extends GuiScreenController {
         }
         camera.updateCamera();
         cursor.updateCursor();
+        platform.updateScene();
         render.updateShadowFilter();
         skeleton.updateSdc();
         sky.updateSkyControl();

@@ -28,60 +28,54 @@ package maud;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
-import com.jme3.shadow.DirectionalLightShadowFilter;
-import com.jme3.shadow.EdgeFilteringMode;
+import com.jme3.material.Material;
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
+import com.jme3.texture.Texture;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.MyAsset;
 import jme3utilities.nifty.WindowController;
-import jme3utilities.sky.Updater;
 
 /**
- * The controller for the "Render Tool" window in Maud's "3D View" screen.
+ * The controller for the "Platform Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class RenderTool extends WindowController {
+class PlatformTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
     /**
-     * multiplier for ambient light
+     * diameter of the platform (in world units, &gt;0)
      */
-    final private static float ambientMultiplier = 1f;
+    final private static float diameter = 4f;
     /**
-     * multiplier for main light
+     * thickness of the platform (in world units, &gt;0)
      */
-    final private static float mainMultiplier = 2f;
-    /**
-     * width and height of rendered shadow maps (pixels per side, &gt;0)
-     */
-    final private static int shadowMapSize = 4_096;
-    /**
-     * number of shadow map splits (&gt;0)
-     */
-    final private static int shadowMapSplits = 3;
+    final private static float thickness = 0.1f;
     /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            RenderTool.class.getName());
+            PlatformTool.class.getName());
+    /**
+     * path to texture asset for the platform
+     */
+    final private static String textureAssetPath = "Textures/Terrain/splat/dirt.jpg";
     // *************************************************************************
     // fields
 
-    /*
-     * ambient light source for 3D view
-     */
-    final private AmbientLight ambientLight = new AmbientLight();
-    /*
-     * directional light source for 3D view
-     */
-    final private DirectionalLight mainLight = new DirectionalLight();
     /**
-     * shadow filter for 3D view
+     * the platform's spatial in the scene graph, or null if none
      */
-    private DirectionalLightShadowFilter dlsf = null;
+    private Spatial spatial = null;
+    /**
+     * geometry for the square platform
+     */
+    private Spatial square = null;
     // *************************************************************************
     // constructors
 
@@ -90,33 +84,45 @@ class RenderTool extends WindowController {
      *
      * @param screenController
      */
-    RenderTool(DddGui screenController) {
-        super(screenController, "renderTool", false);
+    PlatformTool(DddGui screenController) {
+        super(screenController, "platformTool", false);
     }
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Configure SkyControl's updater.
+     * Access the platform's spatial in the view's scene graph.
      *
-     * @param updater (not null)
+     * @return the pre-existing instance, or null if none
      */
-    void configureUpdater(Updater updater) {
-        assert isInitialized();
-
-        updater.setAmbientLight(ambientLight);
-        updater.setMainLight(mainLight);
-        updater.addShadowFilter(dlsf);
-        updater.setAmbientMultiplier(ambientMultiplier);
-        updater.setMainMultiplier(mainMultiplier);
+    Spatial getSpatial() {
+        return spatial;
     }
 
     /**
-     * Update the view's DirectionalLightShadowFilter from the MVC model.
+     * Update the view's scene graph from the MVC model.
      */
-    void updateShadowFilter() {
-        boolean enable = Maud.model.misc.areShadowsRendered();
-        dlsf.setEnabled(enable);
+    void updateScene() {
+        String mode = Maud.model.misc.getPlatformMode();
+
+        switch (mode) {
+            case "none":
+                if (spatial == square) {
+                    spatial = null;
+                    rootNode.detachChild(square);
+                }
+                break;
+
+            case "square":
+                if (spatial == null) {
+                    spatial = square;
+                    rootNode.attachChild(square);
+                }
+                break;
+
+            default:
+                throw new IllegalStateException();
+        }
     }
     // *************************************************************************
     // AppState methods
@@ -131,36 +137,26 @@ class RenderTool extends WindowController {
     public void initialize(AppStateManager stateManager,
             Application application) {
         super.initialize(stateManager, application);
-
-        ambientLight.setName("ambient light");
-        mainLight.setName("main light");
-        /*
-         * Light the scene.
-         */
-        rootNode.addLight(ambientLight);
-        rootNode.addLight(mainLight);
-        /*
-         * Add a shadow filter.
-         */
-        dlsf = new DirectionalLightShadowFilter(assetManager, shadowMapSize,
-                shadowMapSplits);
-        dlsf.setEdgeFilteringMode(EdgeFilteringMode.PCF8);
-        dlsf.setLight(mainLight);
-        Misc.getFpp(viewPort, assetManager).addFilter(dlsf);
+        createPlatforms();
     }
+    // *************************************************************************
+    // AppState methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Create various platforms for the model to rest upon, but don't add them
+     * to the scene graph.
      */
-    @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
+    private void createPlatforms() {
+        float radius = diameter / 2f;
+        Mesh platformMesh = new Box(radius, thickness, radius);
+        square = new Geometry("square platform", platformMesh);
 
-        boolean shadowsFlag = Maud.model.misc.areShadowsRendered();
-        Maud.gui.setChecked("shadows", shadowsFlag);
+        Texture dirt = MyAsset.loadTexture(assetManager, textureAssetPath);
+        Material mat = MyAsset.createShadedMaterial(assetManager, dirt);
+        square.setMaterial(mat);
+
+        square.setShadowMode(RenderQueue.ShadowMode.Receive);
+        float yOffset = -1.001f * thickness;
+        square.setLocalTranslation(0f, yOffset, 0f);
     }
 }

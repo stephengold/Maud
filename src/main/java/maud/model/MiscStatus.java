@@ -26,7 +26,9 @@
  */
 package maud.model;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 
 /**
  * The status of miscellaneous details in Maud's "3D View" screen.
@@ -57,6 +59,10 @@ public class MiscStatus implements Cloneable {
      * sky background (true &rarr; rendered, false &rarr; not rendered)
      */
     private boolean skyRendered = true;
+    /**
+     * platform mode (either "none" or "square")
+     */
+    private String platformMode = "square";
     // *************************************************************************
     // new methods exposed
 
@@ -79,6 +85,15 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
+     * Read the platform mode.
+     *
+     * @return either "none" or "square"
+     */
+    public String getPlatformMode() {
+        return platformMode;
+    }
+
+    /**
      * Test whether the sky background is rendered.
      *
      * @return true if rendered, otherwise false
@@ -94,6 +109,25 @@ public class MiscStatus implements Cloneable {
      */
     public void setAnglesInDegrees(boolean newState) {
         anglesInDegrees = newState;
+    }
+
+    /**
+     * Alter the platform display mode.
+     *
+     * @param modeName either "none" or "square"
+     */
+    public void setPlatformMode(String modeName) {
+        Validate.nonNull(modeName, "mode name");
+
+        switch (modeName) {
+            case "none":
+            case "square":
+                platformMode = modeName;
+                break;
+            default:
+                logger.log(Level.SEVERE, "mode name={0}", modeName);
+                throw new IllegalArgumentException("invalid mode name");
+        }
     }
 
     /**

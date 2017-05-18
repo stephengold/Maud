@@ -503,7 +503,10 @@ class DddMenus {
                 handled = true;
                 break;
             case "Physics":
+                break;
             case "Platform":
+                Maud.gui.platform.select();
+                handled = true;
                 break;
             case "Render":
                 Maud.gui.render.select();

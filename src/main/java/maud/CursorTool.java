@@ -151,12 +151,15 @@ class CursorTool extends WindowController {
             return;
         }
         /*
-         * The ray missed the model; trace it to the platform instead.
+         * The ray missed the model; attempt to trace it to the
+         * platform instead.
          */
-        Spatial platform = MySpatial.findChild(rootNode, Maud.platformName);
-        contactPoint = findContact(platform, ray);
-        if (contactPoint != null) {
-            Maud.model.cursor.setLocation(contactPoint);
+        Spatial platform = Maud.gui.platform.getSpatial();
+        if (platform != null) {
+            contactPoint = findContact(platform, ray);
+            if (contactPoint != null) {
+                Maud.model.cursor.setLocation(contactPoint);
+            }
         }
     }
     // *************************************************************************
