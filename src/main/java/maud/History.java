@@ -70,8 +70,10 @@ public class History {
     /**
      * Create a checkpoint in the next slot, discarding any checkpoints beyond
      * that slot so that the new one is also the last.
+     *
+     * @return index of the new checkpoint (&ge;0)
      */
-    static void add() {
+    static int add() {
         while (hasVulnerable()) {
             int lastIndex = checkpoints.size() - 1;
             checkpoints.remove(lastIndex);
@@ -81,9 +83,10 @@ public class History {
         Checkpoint newbie = new Checkpoint();
         checkpoints.add(newbie);
         logger.log(Level.INFO, "add [{0}]", nextIndex);
-        nextIndex++;
+        int result = nextIndex++;
 
         assert checkpoints.size() == nextIndex;
+        return result;
     }
 
     /**
@@ -92,6 +95,16 @@ public class History {
     static void clear() {
         checkpoints.clear();
         nextIndex = 0;
+    }
+
+    /**
+     * Access the indexed checkpoint.
+     *
+     * @param index (&ge;0)
+     */
+    static Checkpoint getCheckpoint(int index) {
+        Checkpoint result = checkpoints.get(index);
+        return result;
     }
 
     /**

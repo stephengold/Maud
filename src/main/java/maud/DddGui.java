@@ -41,6 +41,8 @@ import de.lessvoid.nifty.controls.RadioButtonStateChangedEvent;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.screen.Screen;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -121,6 +123,25 @@ public class DddGui extends GuiScreenController {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Add a checkpoint and report details to the status line.
+     *
+     * @param source textual description of what triggered invocation (not null
+     * or empty)
+     */
+    void addCheckpoint(String source) {
+        Validate.nonEmpty(source, "source");
+
+        int checkpointIndex = History.add();
+        Checkpoint checkpoint = History.getCheckpoint(checkpointIndex);
+        Date creationDate = checkpoint.copyTimestamp();
+        String creationTime = DateFormat.getTimeInstance().format(creationDate);
+
+        String message = String.format("added checkpoint[%d] from %s at %s",
+                checkpointIndex, source, creationTime);
+        setStatus(message);
+    }
 
     /**
      * Callback that Nifty invokes after a check box changes.

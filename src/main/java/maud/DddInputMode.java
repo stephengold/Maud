@@ -250,7 +250,7 @@ class DddInputMode extends InputMode {
     private boolean newAction(String actionString) {
         boolean handled = false;
         if (actionString.equals("new checkpoint")) {
-            History.add();
+            Maud.gui.addCheckpoint("user interface");
             handled = true;
         } else if (actionString.equals("new pose")) {
             Maud.gui.dialogs.newPose();
