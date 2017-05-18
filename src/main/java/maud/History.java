@@ -83,7 +83,8 @@ public class History {
         Checkpoint newbie = new Checkpoint();
         checkpoints.add(newbie);
         logger.log(Level.INFO, "add [{0}]", nextIndex);
-        int result = nextIndex++;
+        int result = nextIndex;
+        ++nextIndex;
 
         assert checkpoints.size() == nextIndex;
         return result;
