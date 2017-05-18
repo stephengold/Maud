@@ -1,7 +1,7 @@
 Licensing history for assets in Textures/icons
 
-Stephen Gold authored "Maud.png" and makes it available under the
-Creative Commons Attribution-Share Alike 3.0 Unported license -- see
+Stephen Gold authored "Maud.png" and "tool.png" and makes them available under
+the Creative Commons Attribution-Share Alike 3.0 Unported license -- see
 https://creativecommons.org/licenses/by-sa/3.0/
 for details.  When sharing or reusing this file, please attribute it to
 "Stephen Gold's Maud Project at https://github.com/stephengold/Maud"

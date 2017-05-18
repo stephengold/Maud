@@ -57,6 +57,13 @@ class DddMenus {
      */
     final private static String menuSeparator = " -> ";
     // *************************************************************************
+    // fields
+
+    /**
+     * builder for popup menus
+     */
+    final private static MenuBuilder builder = new MenuBuilder();
+    // *************************************************************************
     // new methods exposed
 
     /**
@@ -212,114 +219,150 @@ class DddMenus {
     // private methods
 
     /**
-     * Enumerate items for the 3D View menu.
-     *
-     * @return a new list
+     * Build the Animation menu.
      */
-    private List<String> list3DViewMenuItems() {
-        List<String> items = new ArrayList<>(9);
-        items.add("Axes");
-        items.add("Camera");
-        items.add("Cursor");
-        items.add("Physics");
-        items.add("Platform");
-        items.add("Render");
-        items.add("Skeleton");
-        items.add("Sky");
-
-        return items;
-    }
-
-    /**
-     * Enumerate items for the Animation menu.
-     *
-     * @return a new list
-     */
-    private List<String> listAnimationMenuItems() {
-        List<String> items = new ArrayList<>(10);
-        items.add("Tool");
-        items.add("Load");
-        items.add("New from copy");
-        items.add("New from pose");
-        items.add("New from retarget");
+    private void buildAnimationMenu() {
+        builder.addTool("Tool");
+        builder.add("Load");
+        builder.add("New from copy");
+        builder.add("New from pose");
+        builder.addTool("New from retarget");
         if (!Maud.model.animation.isBindPoseLoaded()) {
-            items.add("Duration");
-            items.add("Tweening");
-            items.add("Rename");
-            items.add("Delete");
+            builder.add("Duration");
+            builder.add("Tweening");
+            builder.add("Rename");
+            builder.add("Delete");
         }
-
-        return items;
     }
 
     /**
-     * Enumerate items for the Bone menu.
-     *
-     * @return a new list
+     * Build the Bone menu.
      */
-    private List<String> listBoneMenuItems() {
-        List<String> items = new ArrayList<>(7);
-        items.add("Tool");
-        items.add("Select");
-        items.add("Rotate");
-        items.add("Scale");
-        items.add("Translate");
+    private void buildBoneMenu() {
+        builder.addTool("Tool");
+        builder.add("Select");
+        builder.addTool("Rotate");
+        builder.addTool("Scale");
+        builder.addTool("Translate");
         if (Maud.model.bone.isBoneSelected()) {
-            items.add("Attach prop");
-            items.add("Rename");
+            builder.add("Attach prop");
+            builder.add("Rename");
         }
-
-        return items;
     }
 
     /**
-     * Enumerate items for the Bone -> Select menu.
-     *
-     * @return a new list
+     * Build the Bone -> Select menu.
      */
-    private List<String> listBoneSelectMenuItems() {
-        List<String> items = new ArrayList<>(8);
-        items.add("By name");
-        items.add("By parent");
-        items.add("Root");
+    private void buildBoneSelectMenu() {
+        builder.add("By name");
+        builder.add("By parent");
+        builder.add("Root");
 
         int numTracks = Maud.model.animation.countBoneTracks();
         if (numTracks > 0) {
-            items.add("With track");
+            builder.add("With track");
         }
 
         int numChildren = Maud.model.bone.countChildren();
         if (numChildren > 0) {
-            items.add("Child");
+            builder.add("Child");
         }
+
         boolean isRoot = Maud.model.bone.isRootBone();
         if (!isRoot) {
-            items.add("Parent");
+            builder.add("Parent");
         }
 
         if (Maud.model.bone.isBoneSelected()) {
-            items.add("Next");
-            items.add("Previous");
+            builder.add("Next");
+            builder.add("Previous");
         }
-
-        return items;
     }
 
     /**
-     * Enumerate items for the CGModel menu.
-     *
-     * @return a new list
+     * Build the CGModel menu.
      */
-    private List<String> listCGModelMenuItems() {
-        List<String> items = new ArrayList<>(6);
-        items.add("Tool");
-        items.add("Load named asset");
-        items.add("Load asset path");
-        items.add("Load from file");
-        items.add("Save as asset");
-        items.add("Save as file");
+    private void buildCGModelMenu() {
+        builder.addTool("Tool");
+        builder.add("Load named asset");
+        builder.add("Load asset path");
+        builder.add("Load from file");
+        builder.add("Save as asset");
+        builder.add("Save as file");
+    }
 
-        return items;
+    /**
+     * Build the Help menu.
+     */
+    private void buildHelpMenu() {
+        builder.add("About Maud");
+        builder.add("License");
+        builder.add("Wiki");
+        builder.add("Javadoc");
+        builder.add("Source");
+        builder.add("JME3 homepage");
+    }
+
+    /**
+     * Build the Keyframe menu.
+     */
+    private void buildKeyframeMenu() {
+        builder.addTool("Tool");
+        builder.add("Select by time");
+        builder.add("Select first");
+        builder.add("Select previous");
+        builder.add("Select next");
+        builder.add("Select last");
+        builder.add("Move");
+        builder.add("Copy");
+        builder.add("New from pose");
+        builder.add("Delete");
+    }
+
+    /**
+     * Build the Physics menu.
+     */
+    private void buildPhysicsMenu() {
+        builder.add("Describe");
+        builder.add("Add");
+        builder.add("Mass");
+        builder.add("Remove");
+    }
+
+    /**
+     * Build the Settings menu.
+     */
+    private void buildSettingsMenu() {
+        builder.add("Initial model");
+        builder.add("Hotkeys");
+        builder.add("Locale");
+    }
+
+    /**
+     * Build the Spatial menu.
+     */
+    private void buildSpatialMenu() {
+        builder.addTool("Tool");
+        builder.add("Select by parent");
+        builder.add("Select by name");
+        builder.addTool("Rotate");
+        builder.addTool("Scale");
+        builder.addTool("Translate");
+        builder.addTool("Material");
+    }
+
+    /**
+     * Build the View menu.
+     */
+    private void buildViewMenu() {
+        builder.addTool("Axes");
+        builder.addTool("Camera");
+        builder.addTool("Cursor");
+        builder.add("Physics");
+        builder.addTool("Platform");
+        builder.addTool("Render");
+        builder.addTool("Skeleton");
+        builder.addTool("Sky");
     }
 
     /**
@@ -347,91 +390,6 @@ class DddMenus {
         }
 
         return names;
-    }
-
-    /**
-     * Enumerate items for the Help menu.
-     *
-     * @return a new list
-     */
-    private List<String> listHelpMenuItems() {
-        List<String> items = new ArrayList<>(6);
-        items.add("About Maud");
-        items.add("License");
-        items.add("Wiki");
-        items.add("Javadoc");
-        items.add("Source");
-        items.add("JME3 homepage");
-
-        return items;
-    }
-
-    /**
-     * Enumerate items for the Keyframe menu.
-     *
-     * @return a new list
-     */
-    private List<String> listKeyframeMenuItems() {
-        List<String> items = new ArrayList<>(10);
-        items.add("Tool");
-        items.add("Select by time");
-        items.add("Select first");
-        items.add("Select previous");
-        items.add("Select next");
-        items.add("Select last");
-        items.add("Move");
-        items.add("Copy");
-        items.add("New from pose");
-        items.add("Delete");
-
-        return items;
-    }
-
-    /**
-     * Enumerate items for the Physics menu.
-     *
-     * @return a new list
-     */
-    private List<String> listPhysicsMenuItems() {
-        List<String> items = new ArrayList<>(4);
-        items.add("Describe");
-        items.add("Add");
-        items.add("Mass");
-        items.add("Remove");
-
-        return items;
-    }
-
-    /**
-     * Enumerate items for the Settings menu.
-     *
-     * @return a new list
-     */
-    private List<String> listSettingsMenuItems() {
-        List<String> items = new ArrayList<>(3);
-        items.add("Initial model");
-        items.add("Hotkeys");
-        items.add("Locale");
-
-        return items;
-    }
-
-    /**
-     * Enumerate items for the Spatial menu.
-     *
-     * @return a new list
-     */
-    private List<String> listSpatialMenuItems() {
-        List<String> items = new ArrayList<>(4);
-        items.add("Tool");
-        items.add("Select by parent");
-        items.add("Select by name");
-        items.add("Rotate");
-        items.add("Scale");
-        items.add("Translate");
-        items.add("Material");
-
-        return items;
     }
 
     /**
@@ -598,45 +556,47 @@ class DddMenus {
         /**
          * Dynamically generate the menu's item list.
          */
-        List<String> menuItems;
+        builder.reset();
         switch (menuName) {
             case "3DView":
-                menuItems = list3DViewMenuItems();
+                buildViewMenu();
                 break;
             case "Animation":
-                menuItems = listAnimationMenuItems();
+                buildAnimationMenu();
                 break;
             case "Bone":
-                menuItems = listBoneMenuItems();
+                buildBoneMenu();
                 break;
             case "CGModel":
-                menuItems = listCGModelMenuItems();
+                buildCGModelMenu();
                 break;
             case "Help":
-                menuItems = listHelpMenuItems();
+                buildHelpMenu();
                 break;
             case "Keyframe":
-                menuItems = listKeyframeMenuItems();
+                buildKeyframeMenu();
                 break;
             case "Physics":
-                menuItems = listPhysicsMenuItems();
+                buildPhysicsMenu();
                 break;
             case "Settings":
-                menuItems = listSettingsMenuItems();
+                buildSettingsMenu();
                 break;
             case "Spatial":
-                menuItems = listSpatialMenuItems();
+                buildSpatialMenu();
                 break;
             default:
                 return false;
         }
-        if (menuItems.isEmpty()) {
+        if (builder.isEmpty()) {
             logger.log(Level.WARNING, "no items for the {0} menu",
                     MyString.quote(menuName));
         } else {
             String actionPrefix = DddInputMode.openMenuPrefix + menuName
                     + menuSeparator;
-            Maud.gui.showPopupMenu(actionPrefix, menuItems);
+            String[] items = builder.copyItems();
+            String[] icons = builder.copyIcons();
+            Maud.gui.showPopupMenu(actionPrefix, items, icons);
         }
 
         return true;
@@ -937,8 +897,11 @@ class DddMenus {
      */
     private void selectBone() {
         String prefix = "open menu Bone -> Select -> ";
-        List<String> menuItems = listBoneSelectMenuItems();
-        Maud.gui.showPopupMenu(prefix, menuItems);
+        builder.reset();
+        buildBoneSelectMenu();
+        String[] items = builder.copyItems();
+        String[] icons = builder.copyIcons();
+        Maud.gui.showPopupMenu(prefix, items, icons);
     }
 
     /**
