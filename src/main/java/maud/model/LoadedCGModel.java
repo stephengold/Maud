@@ -571,26 +571,28 @@ public class LoadedCGModel implements Cloneable {
     public boolean renameBone(String newName) {
         Validate.nonNull(newName, "bone name");
 
+        boolean success;
         if (!Maud.model.bone.isBoneSelected()) {
             logger.log(Level.WARNING, "Rename failed: no bone selected.",
                     MyString.quote(newName));
-            return false;
+            success = false;
 
         } else if (newName.equals(noBone) || newName.isEmpty()) {
             logger.log(Level.WARNING, "Rename failed: {0} is a reserved name.",
                     MyString.quote(newName));
-            return false;
+            success = false;
 
         } else if (hasBone(newName)) {
             logger.log(Level.WARNING,
                     "Rename failed: a bone named {0} already exists.",
                     MyString.quote(newName));
-            return false;
-        }
+            success = false;
 
-        Bone selectedBone = Maud.model.bone.getBone();
-        boolean success = MySkeleton.setName(selectedBone, newName);
-        setEdited();
+        } else {
+            Bone selectedBone = Maud.model.bone.getBone();
+            success = MySkeleton.setName(selectedBone, newName);
+            setEdited();
+        }
 
         return success;
     }
@@ -871,7 +873,9 @@ public class LoadedCGModel implements Cloneable {
         validateModel(modelRoot);
         rootSpatial = modelRoot.clone();
         Maud.viewState.loadModel(modelRoot);
-
+        /*
+         * Reset the selected bone/spatial and also the loaded animation.
+         */
         Maud.model.bone.selectNoBone();
         Maud.model.spatial.selectModelRoot();
         Maud.model.animation.loadBindPose();
@@ -923,6 +927,93 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
+     * Test for issues with a bone.
+     *
+     * @param bone (may be null)
+     * @param nameSet (not null)
+     * @return false if issues found, otherwise true
+     */
+    private boolean validateBone(Bone bone, Set<String> nameSet) {
+        assert nameSet != null;
+
+        if (bone == null) {
+            logger.warning("bone is null");
+            return false;
+        }
+        String name = bone.getName();
+        if (name == null) {
+            logger.warning("bone name is null");
+            return false;
+        }
+        if (name.length() == 0) {
+            logger.warning("bone name is empty");
+            return false;
+        }
+        if (name.equals(noBone)) {
+            logger.warning("bone has reserved name");
+            return false;
+        }
+        if (nameSet.contains(name)) {
+            logger.warning("duplicate bone name");
+        }
+        nameSet.add(name);
+        return true;
+    }
+
+    /**
+     * Test for issues with a BoneTrack.
+     *
+     * @param boneTrack (not null)
+     * @param numBones (&gt;0, &le;255)
+     * @param numFrames (&gt;0)
+     * @return false if issues found, otherwise true
+     */
+    private boolean validateBoneTrack(BoneTrack boneTrack, int numBones,
+            int numFrames) {
+        assert numBones > 0 : numBones;
+        assert numBones <= 255 : numBones;
+        assert numFrames > 0 : numFrames;
+
+        int targetBoneIndex = boneTrack.getTargetBoneIndex();
+        if (targetBoneIndex >= numBones) {
+            logger.warning("track for non-existant bone");
+            return false;
+        }
+        Vector3f[] translations = boneTrack.getTranslations();
+        if (translations == null) {
+            logger.warning("bone track lacks translation data");
+            return false;
+        }
+        int numTranslations = translations.length;
+        if (numTranslations != numFrames) {
+            logger.warning("translation data have wrong length");
+            return false;
+        }
+        Quaternion[] rotations = boneTrack.getRotations();
+        if (rotations == null) {
+            logger.warning("bone track lacks rotation data");
+            return false;
+        }
+        int numRotations = rotations.length;
+        if (numRotations != numFrames) {
+            logger.warning("rotation data have wrong length");
+            return false;
+        }
+        Vector3f[] scales = boneTrack.getScales();
+        if (scales == null) { // JME3 allows this
+            logger.warning("bone track lacks scale data");
+            return false;
+        }
+        int numScales = scales.length;
+        if (numScales != numFrames) {
+            logger.warning("scale data have wrong length");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Test for issues with a CG model.
      *
      * @param modelRoot (not null)
@@ -954,30 +1045,11 @@ public class LoadedCGModel implements Cloneable {
         Set<String> nameSet = new TreeSet<>();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             Bone bone = skeleton.getBone(boneIndex);
-            if (bone == null) {
-                logger.warning("bone is null");
+            if (!validateBone(bone, nameSet)) {
                 return false;
             }
-            String name = bone.getName();
-            if (name == null) {
-                logger.warning("bone name is null");
-                return false;
-            }
-            if (name.length() == 0) {
-                logger.warning("bone name is empty");
-                return false;
-            }
-            if (name.equals(noBone)) {
-                logger.warning("bone has reserved name");
-                return false;
-            }
-            if (nameSet.contains(name)) {
-                logger.warning("duplicate bone name");
-            }
-            nameSet.add(name);
         }
-        AnimControl animControl = modelRoot.getControl(
-                AnimControl.class);
+        AnimControl animControl = modelRoot.getControl(AnimControl.class);
         if (animControl == null) {
             logger.warning("model lacks an animation control");
             return false;
@@ -992,7 +1064,7 @@ public class LoadedCGModel implements Cloneable {
             logger.warning("model has no animations");
             return false;
         }
-        nameSet = new TreeSet<>();
+        nameSet.clear();
         for (String name : animNames) {
             if (name == null) {
                 logger.warning("animation name is null");
@@ -1038,7 +1110,7 @@ public class LoadedCGModel implements Cloneable {
                     return false;
                 }
                 int numFrames = times.length;
-                if (numFrames == 0) {
+                if (numFrames <= 0) {
                     logger.warning("track has no keyframes");
                     return false;
                 }
@@ -1064,39 +1136,7 @@ public class LoadedCGModel implements Cloneable {
                 }
                 if (track instanceof BoneTrack) {
                     BoneTrack boneTrack = (BoneTrack) track;
-                    int targetBoneIndex = boneTrack.getTargetBoneIndex();
-                    if (targetBoneIndex >= numBones) {
-                        logger.warning("track for non-existant bone");
-                        return false;
-                    }
-                    Vector3f[] translations = boneTrack.getTranslations();
-                    if (translations == null) {
-                        logger.warning("bone track lacks translation data");
-                        return false;
-                    }
-                    int numTranslations = translations.length;
-                    if (numTranslations != numFrames) {
-                        logger.warning("translation data have wrong length");
-                        return false;
-                    }
-                    Quaternion[] rotations = boneTrack.getRotations();
-                    if (rotations == null) {
-                        logger.warning("bone track lacks rotation data");
-                        return false;
-                    }
-                    int numRotations = rotations.length;
-                    if (numRotations != numFrames) {
-                        logger.warning("rotation data have wrong length");
-                        return false;
-                    }
-                    Vector3f[] scales = boneTrack.getScales();
-                    if (scales == null) { // JME3 allows this
-                        logger.warning("bone track lacks scale data");
-                        return false;
-                    }
-                    int numScales = scales.length;
-                    if (numScales != numFrames) {
-                        logger.warning("scale data have wrong length");
+                    if (!validateBoneTrack(boneTrack, numBones, numFrames)) {
                         return false;
                     }
                 }
