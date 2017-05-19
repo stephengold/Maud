@@ -98,7 +98,7 @@ public class LoadedCGModel implements Cloneable {
     };
     // *************************************************************************
     // fields
-    
+
     /**
      * asset manager for loading CG models (set by constructor}
      */
@@ -243,9 +243,14 @@ public class LoadedCGModel implements Cloneable {
      * @return count (&ge;0)
      */
     public int countRootBones() {
+        int count;
         Skeleton skeleton = getSkeleton();
-        Bone[] roots = skeleton.getRoots();
-        int count = roots.length;
+        if (skeleton == null) {
+            count = 0;
+        } else {
+            Bone[] roots = skeleton.getRoots();
+            count = roots.length;
+        }
 
         assert count >= 0 : count;
         return count;
@@ -474,11 +479,16 @@ public class LoadedCGModel implements Cloneable {
     /**
      * Enumerate all bones in the loaded model.
      *
-     * @return a new list of names
+     * @return a new list of names, including noBone
      */
     public List<String> listBoneNames() {
-        List<String> boneNames = MySkeleton.listBones(rootSpatial);
-        boneNames.remove("");
+        List<String> boneNames;
+        if (getSkeleton() == null) {
+            boneNames = new ArrayList<>(1);
+        } else {
+            boneNames = MySkeleton.listBones(rootSpatial);
+            boneNames.remove("");
+        }
         boneNames.add(noBone);
 
         return boneNames;
@@ -528,14 +538,16 @@ public class LoadedCGModel implements Cloneable {
      * @return a new list of names
      */
     public List<String> listRootBoneNames() {
-        Skeleton skeleton = getSkeleton();
-        Bone[] roots = skeleton.getRoots();
         List<String> boneNames = new ArrayList<>(5);
-        for (Bone b : roots) {
-            String name = b.getName();
-            boneNames.add(name);
+        Skeleton skeleton = getSkeleton();
+        if (skeleton != null) {
+            Bone[] roots = skeleton.getRoots();
+            for (Bone rootBone : roots) {
+                String name = rootBone.getName();
+                boneNames.add(name);
+            }
+            boneNames.remove("");
         }
-        boneNames.remove("");
 
         return boneNames;
     }
