@@ -123,9 +123,7 @@ class DddMenus {
              * Treat the argument as a bone-name prefix.
              */
             List<String> boneNames = Maud.model.cgm.listBoneNames(argument);
-            MyString.reduce(boneNames, 20);
-            Collections.sort(boneNames);
-            Maud.gui.showPopupMenu(DddInputMode.selectBonePrefix, boneNames);
+            showBoneSubmenu(boneNames);
         }
     }
 
@@ -138,8 +136,8 @@ class DddMenus {
             if (numChildren == 1) {
                 Maud.model.bone.selectFirstChild();
             } else if (numChildren > 1) {
-                List<String> choices = Maud.model.bone.listChildNames();
-                Maud.gui.showPopupMenu(DddInputMode.selectBonePrefix, choices);
+                List<String> boneNames = Maud.model.bone.listChildNames();
+                showBoneSubmenu(boneNames);
             }
         }
     }
@@ -155,16 +153,20 @@ class DddMenus {
             Maud.model.bone.select(name);
         } else {
             List<String> names = Maud.model.cgm.listChildBoneNames(argument);
-            List<String> items = new ArrayList<>(names.size() + 1);
-            items.add("!" + argument);
+
+            builder.reset();
+            builder.addBone("!" + argument);
             for (String name : names) {
                 if (Maud.model.cgm.isLeafBone(name)) {
-                    items.add("!" + name);
+                    builder.addBone("!" + name);
                 } else {
-                    items.add(name);
+                    builder.add(name);
                 }
             }
-            Maud.gui.showPopupMenu(DddInputMode.selectBoneChildPrefix, items);
+            String[] items = builder.copyItems();
+            String[] icons = builder.copyIcons();
+            Maud.gui.showPopupMenu(DddInputMode.selectBoneChildPrefix, items,
+                    icons);
         }
     }
 
@@ -172,13 +174,12 @@ class DddMenus {
      * Handle a "select boneWithTrack" action.
      */
     void selectBoneWithTrack() {
-        List<String> bonesWithTrack = Maud.model.animation.listBonesWithTrack();
-        int numBoneTracks = bonesWithTrack.size();
+        List<String> boneNames = Maud.model.animation.listBonesWithTrack();
+        int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
-            Maud.model.bone.select(bonesWithTrack.get(0));
+            Maud.model.bone.select(boneNames.get(0));
         } else if (numBoneTracks > 1) {
-            Maud.gui.showPopupMenu(DddInputMode.selectBonePrefix,
-                    bonesWithTrack);
+            showBoneSubmenu(boneNames);
         }
     }
 
@@ -256,8 +257,16 @@ class DddMenus {
      */
     private void buildBoneSelectMenu() {
         builder.add("By name");
-        builder.add("By parent");
-        builder.add("Root");
+
+        int numBones = Maud.model.cgm.countBones();
+        if (numBones > 0) {
+            builder.add("By parent");
+        }
+
+        int numRoots = Maud.model.cgm.countRootBones();
+        if (numRoots > 0) {
+            builder.add("Root");
+        }
 
         int numTracks = Maud.model.animation.countBoneTracks();
         if (numTracks > 0) {
@@ -269,12 +278,12 @@ class DddMenus {
             builder.add("Child");
         }
 
+        boolean isSelected = Maud.model.bone.isBoneSelected();
         boolean isRoot = Maud.model.bone.isRootBone();
-        if (!isRoot) {
+        if (isSelected && !isRoot) {
             builder.add("Parent");
         }
-
-        if (Maud.model.bone.isBoneSelected()) {
+        if (isSelected) {
             builder.add("Next");
             builder.add("Previous");
         }
@@ -909,9 +918,7 @@ class DddMenus {
      */
     private void selectBoneByName() {
         List<String> boneNames = Maud.model.cgm.listBoneNames();
-        MyString.reduce(boneNames, 20);
-        Collections.sort(boneNames);
-        Maud.gui.showPopupMenu(DddInputMode.selectBonePrefix, boneNames);
+        showBoneSubmenu(boneNames);
     }
 
     /**
@@ -930,8 +937,33 @@ class DddMenus {
         if (numRoots == 1) {
             Maud.model.bone.selectFirstRoot();
         } else if (numRoots > 1) {
-            List<String> choices = Maud.model.cgm.listRootBoneNames();
-            Maud.gui.showPopupMenu(DddInputMode.selectBonePrefix, choices);
+            List<String> boneNames = Maud.model.cgm.listRootBoneNames();
+            showBoneSubmenu(boneNames);
         }
+    }
+
+    /**
+     * Display a submenu for selecting bones by name using the "select bone"
+     * action prefix.
+     *
+     * @param boneNames list of names from which to select (not null)
+     */
+    private void showBoneSubmenu(List<String> boneNames) {
+        assert boneNames != null;
+
+        MyString.reduce(boneNames, 20);
+        Collections.sort(boneNames);
+
+        builder.reset();
+        for (String name : boneNames) {
+            if (Maud.model.cgm.hasBone(name)) {
+                builder.addBone(name);
+            } else {
+                builder.add(name);
+            }
+        }
+        String[] items = builder.copyItems();
+        String[] icons = builder.copyIcons();
+        Maud.gui.showPopupMenu(DddInputMode.selectBonePrefix, items, icons);
     }
 }

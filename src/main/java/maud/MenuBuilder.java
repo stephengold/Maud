@@ -45,6 +45,10 @@ class MenuBuilder {
     final private static Logger logger = Logger.getLogger(
             MenuBuilder.class.getName());
     /**
+     * asset path to "bone" icon
+     */
+    final private static String boneIconAssetPath = "Textures/icons/bone.png";
+    /**
      * asset path to "dialog" icon
      */
     final private static String dialogIconAssetPath = "Textures/icons/dialog.png";
@@ -86,6 +90,16 @@ class MenuBuilder {
     void add(String item, String iconAssetPath) {
         items.add(item);
         icons.add(iconAssetPath);
+    }
+
+    /**
+     * Add an item with the bone icon to the menu.
+     *
+     * @param item
+     */
+    void addBone(String item) {
+        items.add(item);
+        icons.add(boneIconAssetPath);
     }
 
     /**
