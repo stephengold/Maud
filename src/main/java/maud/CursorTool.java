@@ -60,11 +60,15 @@ class CursorTool extends WindowController {
      */
     final private static Logger logger = Logger.getLogger(
             CursorTool.class.getName());
+    /**
+     * asset path of the CG model for the 3-D cursor
+     */
+    final private static String assetPath = "Models/indicators/3d cursor/3d cursor.blend";
     // *************************************************************************
     // fields
 
     /**
-     * indicator for the 3D cursor, set by
+     * geometry for the 3D cursor, set by
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
      */
     private Geometry geometry = null;
@@ -74,7 +78,7 @@ class CursorTool extends WindowController {
     /**
      * Instantiate an uninitialized controller.
      *
-     * @param screenController
+     * @param screenController (not null)
      */
     CursorTool(BasicScreenController screenController) {
         super(screenController, "cursorTool", false);
@@ -144,8 +148,8 @@ class CursorTool extends WindowController {
         /*
          * Trace the ray to the view's copy of the CG model.
          */
-        Spatial model = Maud.viewState.getSpatial();
-        Vector3f contactPoint = findContact(model, ray);
+        Spatial cgModel = Maud.viewState.getSpatial();
+        Vector3f contactPoint = findContact(cgModel, ray);
         if (contactPoint != null) {
             Maud.model.cursor.setLocation(contactPoint);
             return;
@@ -178,7 +182,6 @@ class CursorTool extends WindowController {
         /*
          * Load a geometry for the cursor.
          */
-        String assetPath = "Models/indicators/3d cursor/3d cursor.blend";
         Node node = (Node) assetManager.loadModel(assetPath);
         Node node2 = (Node) node.getChild(0);
         Node node3 = (Node) node2.getChild(0);
@@ -195,12 +198,11 @@ class CursorTool extends WindowController {
      * Callback to update this window prior to rendering. (Invoked once per
      * render pass.)
      *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * @param tpf time interval between render passes (in seconds, &ge;0)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
+    public void update(float tpf) {
+        super.update(tpf);
 
         boolean visible = Maud.model.cursor.isVisible();
         Maud.gui.setChecked("3DCursor", visible);
@@ -227,11 +229,11 @@ class CursorTool extends WindowController {
          * so the first result is also the nearest one.
          */
         Vector3f cameraLocation = cam.getLocation();
-        for (int i = 0; i < results.size(); i++) {
+        for (int resultIndex = 0; resultIndex < results.size(); resultIndex++) {
             /*
              * Calculate the offset from the camera to the point of contact.
              */
-            CollisionResult result = results.getCollision(i);
+            CollisionResult result = results.getCollision(resultIndex);
             Vector3f contactPoint = result.getContactPoint();
             Vector3f offset = contactPoint.subtract(cameraLocation);
             /*
@@ -244,6 +246,7 @@ class CursorTool extends WindowController {
                 return contactPoint;
             }
         }
+
         return null;
     }
 }
