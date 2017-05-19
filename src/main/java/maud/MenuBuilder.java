@@ -45,7 +45,11 @@ class MenuBuilder {
     final private static Logger logger = Logger.getLogger(
             MenuBuilder.class.getName());
     /**
-     *
+     * asset path to "dialog" icon
+     */
+    final private static String dialogIconAssetPath = "Textures/icons/dialog.png";
+    /**
+     * asset path to "tool" icon
      */
     final private static String toolIconAssetPath = "Textures/icons/tool.png";
     // *************************************************************************
@@ -82,6 +86,16 @@ class MenuBuilder {
     void add(String item, String iconAssetPath) {
         items.add(item);
         icons.add(iconAssetPath);
+    }
+
+    /**
+     * Add an item with the dialog icon to the menu.
+     *
+     * @param item
+     */
+    void addDialog(String item) {
+        items.add(item);
+        icons.add(dialogIconAssetPath);
     }
 
     /**

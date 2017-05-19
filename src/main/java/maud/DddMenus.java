@@ -224,13 +224,13 @@ class DddMenus {
     private void buildAnimationMenu() {
         builder.addTool("Tool");
         builder.add("Load");
-        builder.add("New from copy");
-        builder.add("New from pose");
+        builder.addDialog("New from copy");
+        builder.addDialog("New from pose");
         builder.addTool("New from retarget");
         if (!Maud.model.animation.isBindPoseLoaded()) {
             builder.add("Duration");
             builder.add("Tweening");
-            builder.add("Rename");
+            builder.addDialog("Rename");
             builder.add("Delete");
         }
     }
@@ -246,7 +246,7 @@ class DddMenus {
         builder.addTool("Translate");
         if (Maud.model.bone.isBoneSelected()) {
             builder.add("Attach prop");
-            builder.add("Rename");
+            builder.addDialog("Rename");
         }
     }
 
@@ -285,18 +285,18 @@ class DddMenus {
     private void buildCGModelMenu() {
         builder.addTool("Tool");
         builder.add("Load named asset");
-        builder.add("Load asset path");
+        builder.addDialog("Load asset path");
         builder.add("Load from file");
-        builder.add("Save as asset");
-        builder.add("Save as file");
+        builder.addDialog("Save as asset");
+        builder.addDialog("Save as file");
     }
 
     /**
      * Build the Help menu.
      */
     private void buildHelpMenu() {
-        builder.add("About Maud");
-        builder.add("License");
+        builder.addDialog("About Maud");
+        builder.addDialog("License");
         builder.add("Wiki");
         builder.add("Javadoc");
         builder.add("Source");
@@ -323,7 +323,7 @@ class DddMenus {
      * Build the Physics menu.
      */
     private void buildPhysicsMenu() {
-        builder.add("Describe");
+        builder.addTool("Describe");
         builder.add("Add");
         builder.add("Mass");
         builder.add("Remove");
@@ -358,7 +358,7 @@ class DddMenus {
         builder.addTool("Axes");
         builder.addTool("Camera");
         builder.addTool("Cursor");
-        builder.add("Physics");
+        builder.addTool("Physics");
         builder.addTool("Platform");
         builder.addTool("Render");
         builder.addTool("Skeleton");
