@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import maud.Maud;
 import maud.Util;
 
@@ -246,6 +247,23 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Find the index of the loaded animation.
+     *
+     * @return index, or -1 if bind pose/not found
+     */
+    public int findIndex() {
+        int index;
+        if (isBindPoseLoaded()) {
+            index = -1;
+        } else {
+            List<String> nameList = Maud.model.cgm.animationNameListSorted();
+            index = nameList.indexOf(loadedName);
+        }
+
+        return index;
+    }
+
+    /**
      * Read the name of the loaded animation.
      *
      * @return the name, or bindPoseName if in bind pose (not null)
@@ -412,6 +430,34 @@ public class LoadedAnimation implements Cloneable {
         time = 0f;
 
         Maud.model.pose.resetToBind();
+    }
+
+    /**
+     * Load the next animation in name-sorted order.
+     */
+    public void loadNext() {
+        assert !isBindPoseLoaded();
+
+        List<String> nameList = Maud.model.cgm.animationNameListSorted();
+        int index = nameList.indexOf(loadedName);
+        int numAnimations = nameList.size();
+        int nextIndex = MyMath.modulo(index + 1, numAnimations);
+        String nextName = nameList.get(nextIndex);
+        load(nextName);
+    }
+
+    /**
+     * Load the next animation in name-sorted order.
+     */
+    public void loadPrevious() {
+        assert !isBindPoseLoaded();
+
+        List<String> nameList = Maud.model.cgm.animationNameListSorted();
+        int index = nameList.indexOf(loadedName);
+        int numAnimations = nameList.size();
+        int prevIndex = MyMath.modulo(index - 1, numAnimations);
+        String prevName = nameList.get(prevIndex);
+        load(prevName);
     }
 
     /**

@@ -272,7 +272,11 @@ class DddInputMode extends InputMode {
      */
     private boolean nextAction(String actionString) {
         boolean handled = false;
-        if (actionString.equals("next bone")) {
+        if (actionString.equals("next animation")) {
+            Maud.model.animation.loadNext();
+            handled = true;
+
+        } else if (actionString.equals("next bone")) {
             Maud.model.bone.selectNext();
             handled = true;
 
@@ -308,7 +312,11 @@ class DddInputMode extends InputMode {
      */
     private boolean previousAction(String actionString) {
         boolean handled = false;
-        if (actionString.equals("previous bone")) {
+        if (actionString.equals("previous animation")) {
+            Maud.model.animation.loadPrevious();
+            handled = true;
+
+        } else if (actionString.equals("previous bone")) {
             Maud.model.bone.selectPrevious();
             handled = true;
 

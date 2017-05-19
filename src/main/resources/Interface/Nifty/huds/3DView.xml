@@ -89,9 +89,33 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="animationTool" title="Animation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="220px" width="290px" x="75" y="25">
+                     height="250px" width="290px" x="75" y="25">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal" height="35">
+                    <panel childLayout="horizontal" height="35px">
+                        <control name="button" id="animationPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous animation)"/>
+                        </control>
+                        <control name="label" id="animationIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="90px"/>
+                        <control name="button" id="animationNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next animation)"/>
+                        </control>
+                        <panel width="*"/>
+                        <control name="label" id="animationHasTrack"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="65px"/>
+                        <panel width="*"/>
+                        <control name="button" label="Load" id="id1ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(open menu Animation -> Load)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="35px">
                         <control name="label" text="Name:  "
                                  textHAlign="right"
                                  width="40px"/>
@@ -103,7 +127,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                             <interact onRelease="perform(rename animation)"/>
                         </control>
                     </panel>
-                    <panel childLayout="horizontal" height="30">
+                    <panel childLayout="horizontal" height="30px">
                         <control name="button" id="togglePauseButton"
                                  width="55">
                             <interact onRelease="perform(toggle pause)"/>
@@ -226,7 +250,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  textHAlign="center"
                                  width="65px"/>
                         <panel width="*"/>
-                        <control name="button" label="Select" id="id0ToAvoidNiftyWarning"
+                        <control name="button" label="Select" id="id2ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(open menu Bone -> Select)"/>
                         </control>

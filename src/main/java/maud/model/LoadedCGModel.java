@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -151,6 +152,22 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
+     * Generate a sorted list of animation names.
+     *
+     * @return a new list
+     */
+    List<String> animationNameListSorted() {
+        AnimControl animControl = Maud.model.cgm.getAnimControl();
+        Collection<String> names = animControl.getAnimationNames();
+        int numNames = names.size();
+        List<String> result = new ArrayList<>(numNames);
+        result.addAll(names);
+        Collections.sort(result);
+
+        return result;
+    }
+
+    /**
      * Copy the local transform of the selected spatial.
      *
      * @param storeResult (modified if not null)
@@ -166,6 +183,20 @@ public class LoadedCGModel implements Cloneable {
         storeResult.set(transform);
 
         return storeResult;
+    }
+
+    /**
+     * Count the animations.
+     *
+     * @return count (&ge;0)
+     */
+    public int countAnimations() {
+        AnimControl animControl = getAnimControl();
+        Collection<String> names = animControl.getAnimationNames();
+        int count = names.size();
+
+        assert count >= 0 : count;
+        return count;
     }
 
     /**

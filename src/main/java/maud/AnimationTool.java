@@ -112,14 +112,59 @@ public class AnimationTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        updateName();
+        String hasTrackText;
+        if (Maud.model.animation.isBindPoseLoaded()) {
+            hasTrackText = "";
+        } else {
+            if (Maud.model.bone.hasTrack()) {
+                hasTrackText = "has track";
+            } else {
+                hasTrackText = "no track";
+            }
+        }
+        Maud.gui.setStatusText("animationHasTrack", " " + hasTrackText);
+
+        updateIndex();
         updateLooping();
+        updateName();
         updateSpeed();
         updateTrackTime();
         updateTrackCounts();
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Update the index status and previous/next buttons.
+     */
+    private void updateIndex() {
+        String indexText;
+        String nButton, pButton;
+
+        int numAnimations = Maud.model.cgm.countAnimations();
+        if (!Maud.model.animation.isBindPoseLoaded()) {
+            int selectedIndex = Maud.model.animation.findIndex();
+            indexText = String.format("#%d of %d", selectedIndex + 1,
+                    numAnimations);
+            nButton = "+";
+            pButton = "-";
+
+        } else {
+            if (numAnimations == 0) {
+                indexText = "no animations";
+            } else if (numAnimations == 1) {
+                indexText = "one animation";
+            } else {
+                indexText = String.format("%d animations", numAnimations);
+            }
+            nButton = "";
+            pButton = "";
+        }
+
+        Maud.gui.setStatusText("animationIndex", indexText);
+        Maud.gui.setButtonLabel("animationNextButton", nButton);
+        Maud.gui.setButtonLabel("animationPreviousButton", pButton);
+    }
 
     /**
      * Update the loop check box and the pause button label.
