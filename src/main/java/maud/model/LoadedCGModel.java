@@ -86,9 +86,19 @@ public class LoadedCGModel implements Cloneable {
      * dummy bone name used to indicate that no bone is selected
      */
     final public static String noBone = "( no bone )";
+    /**
+     * list of CG models in the jme3-testdata asset pack
+     */
+    final public static String[] modelNames = {
+        // animated models:
+        "Elephant", "Jaime", "Ninja", "Oto", "Sinbad",
+        // non-animated models:
+        "Boat", "Buggy", "Ferrari", "HoverTank", "MonkeyHead",
+        "Sign Post", "SpaceCraft", "Sponza", "Teapot", "Tree"
+    };
     // *************************************************************************
     // fields
-
+    
     /**
      * asset manager for loading CG models (set by constructor}
      */
@@ -147,6 +157,11 @@ public class LoadedCGModel implements Cloneable {
         assert !hasAnimation(newAnimation.getName());
 
         AnimControl control = getAnimControl();
+        if (control == null) {
+            Skeleton skeleton = getSkeleton();
+            control = new AnimControl(skeleton);
+            rootSpatial.addControl(control);
+        }
         control.addAnim(newAnimation);
         setEdited();
     }
@@ -157,7 +172,7 @@ public class LoadedCGModel implements Cloneable {
      * @return a new list
      */
     List<String> animationNameListSorted() {
-        AnimControl animControl = Maud.model.cgm.getAnimControl();
+        AnimControl animControl = getAnimControl();
         Collection<String> names = animControl.getAnimationNames();
         int numNames = names.size();
         List<String> result = new ArrayList<>(numNames);
@@ -192,8 +207,13 @@ public class LoadedCGModel implements Cloneable {
      */
     public int countAnimations() {
         AnimControl animControl = getAnimControl();
-        Collection<String> names = animControl.getAnimationNames();
-        int count = names.size();
+        int count;
+        if (animControl == null) {
+            count = 0;
+        } else {
+            Collection<String> names = animControl.getAnimationNames();
+            count = names.size();
+        }
 
         assert count >= 0 : count;
         return count;
@@ -206,7 +226,12 @@ public class LoadedCGModel implements Cloneable {
      */
     public int countBones() {
         Skeleton skeleton = getSkeleton();
-        int count = skeleton.getBoneCount();
+        int count;
+        if (skeleton == null) {
+            count = 0;
+        } else {
+            count = skeleton.getBoneCount();
+        }
 
         assert count >= 0 : count;
         return count;
@@ -263,10 +288,15 @@ public class LoadedCGModel implements Cloneable {
     Animation getAnimation(String name) {
         Validate.nonNull(name, "animation name");
 
+        Animation animation;
         AnimControl animControl = getAnimControl();
-        Animation anim = animControl.getAnim(name);
+        if (animControl == null) {
+            animation = null;
+        } else {
+            animation = animControl.getAnim(name);
+        }
 
-        return anim;
+        return animation;
     }
 
     /**
@@ -276,14 +306,6 @@ public class LoadedCGModel implements Cloneable {
      */
     AnimControl getAnimControl() {
         AnimControl animControl = rootSpatial.getControl(AnimControl.class);
-        if (animControl == null) {
-            String message = String.format(
-                    "expected model %s to have an AnimControl",
-                    MyString.quote(modelName));
-            throw new IllegalArgumentException(message);
-            //TODO add a new control
-        }
-
         return animControl;
     }
 
@@ -310,13 +332,13 @@ public class LoadedCGModel implements Cloneable {
         if (animationName.equals(LoadedAnimation.bindPoseName)) {
             result = 0f;
         } else {
-            Animation anim = getAnimation(animationName);
-            if (anim == null) {
-                logger.log(Level.WARNING, "no bone named {0}",
+            Animation animation = getAnimation(animationName);
+            if (animation == null) {
+                logger.log(Level.WARNING, "no animation named {0}",
                         MyString.quote(animationName));
                 result = 0f;
             } else {
-                result = anim.getLength();
+                result = animation.getLength();
             }
         }
 
@@ -367,12 +389,17 @@ public class LoadedCGModel implements Cloneable {
     /**
      * Access the skeleton of the loaded model.
      *
-     * @return the pre-existing instance (not null)
+     * @return the pre-existing instance, or null if none
      */
     Skeleton getSkeleton() {
-        Skeleton skeleton = MySkeleton.getSkeleton(rootSpatial);
-        assert skeleton != null;
-        return skeleton;
+        SkeletonControl skeletonControl;
+        skeletonControl = rootSpatial.getControl(SkeletonControl.class);
+        if (skeletonControl == null) {
+            return null;
+        } else {
+            Skeleton skeleton = skeletonControl.getSkeleton();
+            return skeleton;
+        }
     }
 
     /**
@@ -575,26 +602,70 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Unload the current model, if any, and load the named one.
+     * Unload the current model, if any, and load the named one from the
+     * jme3-testdata asset pack.
      *
-     * @param name name of model to load (not null)
+     * @param name which model to load (not null)
      * @return true if successful, otherwise false
      */
     public boolean loadModelNamed(String name) {
-        String extension;
-        if (name.equals("Jaime")) {
-            extension = "j3o";
-        } else {
-            extension = "mesh.xml";
-        }
-        String assetPath = String.format("Models/%s/%s.%s",
-                name, name, extension);
+        String fileName;
+        switch (name) {
+            case "Boat":
+                fileName = "boat.j3o";
+                break;
+            case "Buggy":
+                fileName = "Buggy.j3o";
+                break;
+            case "Elephant":
+                fileName = "Elephant.mesh.xml";
+                break;
+            case "Ferrari":
+                fileName = "Car.scene";
+                break;
+            case "HoverTank":
+                fileName = "Tank2.mesh.xml";
+                break;
+            case "Jaime":
+                fileName = "Jaime.j3o";
+                break;
+            case "MonkeyHead":
+                fileName = "MonkeyHead.mesh.xml";
+                break;
+            case "Ninja":
+                fileName = "Ninja.mesh.xml";
+                break;
+            case "Oto":
+                fileName = "Oto.mesh.xml";
+                break;
+            case "Sign Post":
+                fileName = "Sign Post.mesh.xml";
+                break;
+            case "Sinbad":
+                fileName = "Sinbad.mesh.xml";
+                break;
+            case "SpaceCraft":
+                fileName = "Rocket.mesh.xml";
+                break;
+            case "Teapot":
+                fileName = "Teapot.obj";
+                break;
+            case "Tree":
+                fileName = "Tree.mesh.xml";
+                break;
 
+            default:
+                String message = String.format("unknown asset name: %s",
+                        MyString.quote(name));
+                throw new IllegalArgumentException(message);
+        }
+
+        String assetPath = String.format("Models/%s/%s", name, fileName);
         Spatial loaded = loadModelFromAsset(assetPath, false);
         if (loaded == null) {
             return false;
         } else {
-            modelName = name;
+            this.modelName = name;
             postLoad(loaded);
             return true;
         }
@@ -609,7 +680,7 @@ public class LoadedCGModel implements Cloneable {
     public void renameAnimation(String newName) {
         Validate.nonEmpty(newName, "new name");
         assert !newName.equals(LoadedAnimation.bindPoseName) : newName;
-        assert !Maud.model.cgm.hasAnimation(newName) : newName;
+        assert !hasAnimation(newName) : newName;
         assert !Maud.model.animation.isBindPoseLoaded();
 
         Maud.model.animation.newCopy(newName);
@@ -947,8 +1018,12 @@ public class LoadedCGModel implements Cloneable {
     private void repairModel(Spatial modelRoot) {
         boolean madeRepairs = false;
 
-        int numTracksEdited = 0;
         AnimControl animControl = modelRoot.getControl(AnimControl.class);
+        if (animControl == null) {
+            return;
+        }
+
+        int numTracksEdited = 0;
         Collection<String> names = animControl.getAnimationNames();
         for (String animationName : names) {
             Animation animation = animControl.getAnim(animationName);

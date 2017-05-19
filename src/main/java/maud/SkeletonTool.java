@@ -81,6 +81,9 @@ class SkeletonTool extends WindowController {
      */
     void updateSdc() {
         SkeletonDebugControl control = Maud.viewState.getSkeletonDebugControl();
+        if (control == null) {
+            return;
+        }
         SkeletonStatus model = Maud.model.skeleton;
 
         boolean visible = model.isVisible();

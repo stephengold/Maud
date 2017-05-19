@@ -38,9 +38,9 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import jme3utilities.MySkeleton;
-import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.SkeletonDebugControl;
+import jme3utilities.math.MyMath;
 
 /**
  * Encapsulate a view's copy of the loaded CG model in Maud's "3D View" screen.
@@ -132,10 +132,9 @@ public class ViewCGModel {
     /**
      * Access the skeleton debug control for the CG model.
      *
-     * @return the pre-existing instance (not null)
+     * @return the pre-existing instance, or null if none
      */
     SkeletonDebugControl getSkeletonDebugControl() {
-        assert skeletonDebugControl != null;
         return skeletonDebugControl;
     }
 
@@ -293,49 +292,53 @@ public class ViewCGModel {
      */
     private void prepareForEditing() {
         /*
-         * Attach the CG model to the scene graph and enable user control
-         * for all bones.
+         * Attach the CG model to the scene graph.
          */
         parentNode.attachChild(cgModelRoot);
-        MySkeleton.setUserControl(cgModelRoot, true);
         /*
          * Update references to skeleton control and skeleton.
          */
         skeletonControl = cgModelRoot.getControl(SkeletonControl.class);
         if (skeletonControl == null) {
-            throw new IllegalArgumentException(
-                    "expected the model's root to have a SkeletonControl");
+            skeleton = null;
+            skeletonDebugControl = null;
+        } else {
+            skeleton = skeletonControl.getSkeleton();
+            /*
+             * Enable user control for all bones.
+             */
+            MySkeleton.setUserControl(cgModelRoot, true);
+            /*
+             * Disable hardward skinning so that the raycast in
+             * CursorTool.findContact() will work.
+             */
+            skeletonControl.setHardwareSkinningPreferred(false);
+            /*
+             * Add a new SkeletonDebugControl.
+             */
+            skeletonDebugControl = new SkeletonDebugControl(assetManager);
+            cgModelRoot.addControl(skeletonDebugControl);
+            skeletonDebugControl.setEnabled(true);
         }
-        skeleton = skeletonControl.getSkeleton();
-        /*
-         * Disable hardward skinning so that the raycast in
-         * CursorTool.findContact() will work.
-         */
-        skeletonControl.setHardwareSkinningPreferred(false);
         /*
          * Configure the camera, cursor, and platform based on the range
-         * of Y coordinates in the CG model.
+         * of mesh coordinates in the CG model.
          */
-        float maxY = MySpatial.getMaxY(cgModelRoot);
-        float minY = MySpatial.getMinY(cgModelRoot);
-        float height = maxY - minY;
-        assert height > 0f : height; // no 2D models!
+        Vector3f[] minMax = Util.findMinMaxCoords(cgModelRoot, false);
+        Vector3f extents = minMax[1].subtract(minMax[0]);
+        float maxExtent = MyMath.max(extents.x, extents.y, extents.z);
+        assert maxExtent > 0f : maxExtent;
+        float minY = minMax[0].y;
         Vector3f baseLocation = new Vector3f(0f, minY, 0f);
 
         Maud.model.cursor.setLocation(baseLocation);
         Maud.model.misc.setPlatformLocation(baseLocation);
-        Maud.model.misc.setPlatformDiameter(2f * height);
+        Maud.model.misc.setPlatformDiameter(2f * maxExtent);
 
-        Maud.model.camera.setScale(height);
+        Maud.model.camera.setScale(maxExtent);
         Vector3f cameraLocation = new Vector3f(-2.4f, 1f, 1.6f);
-        cameraLocation.multLocal(height);
+        cameraLocation.multLocal(maxExtent);
         cameraLocation.addLocal(baseLocation);
         Maud.model.camera.setLocation(cameraLocation);
-        /*
-         * Add a new SkeletonDebugControl.
-         */
-        skeletonDebugControl = new SkeletonDebugControl(assetManager);
-        cgModelRoot.addControl(skeletonDebugControl);
-        skeletonDebugControl.setEnabled(true);
     }
 }

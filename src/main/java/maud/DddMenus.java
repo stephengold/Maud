@@ -37,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
+import maud.model.LoadedCGModel;
 
 /**
  * Menus in Maud's "3D View" screen.
@@ -710,11 +711,8 @@ class DddMenus {
         boolean handled = false;
         switch (remainder) {
             case "Load named asset":
-                String[] modelNames = {
-                    "Elephant", "Jaime", "Ninja", "Oto", "Sinbad"
-                };
                 Maud.gui.showPopupMenu(DddInputMode.loadModelNamedPrefix,
-                        modelNames);
+                        LoadedCGModel.modelNames);
                 handled = true;
                 break;
 
