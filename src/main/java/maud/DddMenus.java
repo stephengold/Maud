@@ -308,15 +308,17 @@ class DddMenus {
      */
     private void buildKeyframeMenu() {
         builder.addTool("Tool");
-        builder.add("Select by time");
-        builder.add("Select first");
-        builder.add("Select previous");
-        builder.add("Select next");
-        builder.add("Select last");
-        builder.add("Move");
-        builder.add("Copy");
-        builder.add("New from pose");
-        builder.add("Delete");
+        if (Maud.model.bone.hasTrack()) {
+            builder.add("Select by time");
+            builder.add("Select first");
+            builder.add("Select previous");
+            builder.add("Select next");
+            builder.add("Select last");
+            builder.add("Move");
+            builder.add("Copy");
+            builder.add("New from pose");
+            builder.add("Delete");
+        }
     }
 
     /**
