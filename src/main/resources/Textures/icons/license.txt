@@ -1,8 +1,8 @@
 Licensing history for assets in Textures/icons
 
-Stephen Gold authored "dialog.png", "Maud.png", and "tool.png" and makes
-them available under the Creative Commons Attribution-Share Alike 3.0 Unported
-license -- see https://creativecommons.org/licenses/by-sa/3.0/
+Stephen Gold authored "Maud.png", "bone.png", "dialog.png", and "tool.png" and
+makes them available under the Creative Commons Attribution-Share Alike 3.0
+Unported license -- see https://creativecommons.org/licenses/by-sa/3.0/
 for details.  When sharing or reusing these files, please attribute them to
 "Stephen Gold's Maud Project at https://github.com/stephengold/Maud"
 

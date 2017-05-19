@@ -5,8 +5,9 @@ Maud software Copyright (c) 2017 Stephen Gold
 
 All rights reserved.
 
-Note: the following license does not apply to "3d cursor.blend", "Maud.png", nor
-      "tool.png", which are separately licensed.
+Note: the following license does not apply to the certain assets/resources
+      ("3d cursor.blend", "Maud.png", "bone.png", "dialog.png", and "tool.png")
+      which are separately licensed.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
