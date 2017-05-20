@@ -37,6 +37,7 @@ import jme3utilities.MyString;
 import jme3utilities.debug.DebugVersion;
 import jme3utilities.nifty.DialogController;
 import jme3utilities.nifty.LibraryVersion;
+import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
 
 /**
@@ -92,8 +93,10 @@ class DddDialogs {
                 MyString.quote(JmeVersion.FULL_NAME));
         text += String.format("\n   nifty version %s",
                 MyString.quote(niftyVersion));
-        text += String.format("\n   SkyControl version %s",
+        text += String.format("\n   jme3-utilities-heart version %s",
                 MyString.quote(Misc.getVersionShort()));
+        text += String.format("\n   SkyControl version %s",
+                MyString.quote(Constants.getVersionShort()));
         text += String.format("\n   jme3-utilities-debug version %s",
                 MyString.quote(DebugVersion.getVersionShort()));
         text += String.format("\n   jme3-utilities-ui version %s",
