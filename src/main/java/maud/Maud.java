@@ -46,8 +46,8 @@ import maud.model.LoadedCGModel;
 import maud.model.RetargetParameters;
 
 /**
- * GUI application to edit jMonkeyEngine animated models. The application's main
- * entry point is in this class.
+ * GUI application to edit jMonkeyEngine animated 3-D CG models. The
+ * application's main entry point is in this class.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -157,11 +157,27 @@ public class Maud extends GuiApplication {
         assert success;
     }
     // *************************************************************************
+    // ActionApplication methods
+
+    /**
+     * Callback invoked when an ongoing action isn't handled.
+     *
+     * @param actionString textual description of the action (not null)
+     */
+    @Override
+    public void didntHandle(String actionString) {
+        super.didntHandle(actionString);
+
+        String message = String.format("unimplemented feature (action = %s)",
+                MyString.quote(actionString));
+        gui.setStatus(message);
+    }
+    // *************************************************************************
     // ActionListener methods
 
     /**
      * Process an action (from the GUI or keyboard) that wasn't handled by the
-     * input mode or the HUD.
+     * input mode.
      *
      * @param actionString textual description of the action (not null)
      * @param ongoing true if the action is ongoing, otherwise false
@@ -169,6 +185,7 @@ public class Maud extends GuiApplication {
      */
     @Override
     public void onAction(String actionString, boolean ongoing, float tpf) {
+        boolean handled = false;
         if (ongoing) {
             logger.log(Level.INFO, "Got ongoing action {0}",
                     MyString.quote(actionString));
@@ -177,21 +194,28 @@ public class Maud extends GuiApplication {
                 case "edit bindings":
                     InputMode im = InputMode.getActiveMode();
                     bindScreen.activate(im);
-                    return;
+                    handled = true;
+                    break;
+
                 case "print scene":
                     printer.printSubtree(rootNode);
-                    return;
+                    handled = true;
+                    break;
+
                 case "quit":
                     QuitDialog controller = new QuitDialog();
                     gui.showConfirmDialog("Quit Maud?", "",
                             SimpleApplication.INPUT_MAPPING_EXIT, controller);
-                    return;
+                    handled = true;
             }
         }
-        /*
-         * Forward unhandled action to the superclass.
-         */
-        super.onAction(actionString, ongoing, tpf);
+
+        if (!handled) {
+            /*
+             * Forward unhandled action to the superclass.
+             */
+            super.onAction(actionString, ongoing, tpf);
+        }
     }
     // *************************************************************************
     // GuiApplication methods
