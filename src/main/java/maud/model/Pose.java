@@ -38,9 +38,9 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyAnimation;
+import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.Util;
 
 /**
  * A displayed pose in the Maud application.
@@ -144,7 +144,7 @@ public class Pose implements Cloneable {
         /*
          * apply the bone's bind transform
          */
-        Transform tempTransform = Util.copyBindTransform(bone, null);
+        Transform tempTransform = MySkeleton.copyBindTransform(bone, null);
         result.combineWithParent(tempTransform);
 
         Bone ancestor = bone.getParent();
@@ -158,7 +158,7 @@ public class Pose implements Cloneable {
             /*
              * apply the ancestor's bind transform
              */
-            Util.copyBindTransform(ancestor, tempTransform);
+            MySkeleton.copyBindTransform(ancestor, tempTransform);
             result.combineWithParent(tempTransform);
 
             ancestor = ancestor.getParent();

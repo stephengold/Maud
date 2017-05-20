@@ -26,27 +26,17 @@
  */
 package maud;
 
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.Animation;
-import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
-import com.jme3.animation.Skeleton;
-import com.jme3.animation.Track;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
-import java.nio.FloatBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,44 +67,6 @@ public class Util {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Accumulate maximum coordinates.
-     *
-     * @param maxima the highest coordinate so far for each axis (not null,
-     * updated)
-     * @param input vector to compare (not null, unaffected)
-     */
-    public static void accumulateMaxima(Vector3f maxima, Vector3f input) {
-        if (input.x > maxima.x) {
-            maxima.x = input.x;
-        }
-        if (input.y > maxima.y) {
-            maxima.y = input.y;
-        }
-        if (input.z > maxima.z) {
-            maxima.z = input.z;
-        }
-    }
-
-    /**
-     * Accumulate minimum coordinates.
-     *
-     * @param minima the lowest coordinate so far for each axis (not null,
-     * updated)
-     * @param input vector to compare (not null, unaffected)
-     */
-    public static void accumulateMinima(Vector3f minima, Vector3f input) {
-        if (input.x < minima.x) {
-            minima.x = input.x;
-        }
-        if (input.y < minima.y) {
-            minima.y = input.y;
-        }
-        if (input.z < minima.z) {
-            minima.z = input.z;
-        }
-    }
 
     /**
      * Calculate the bone transform for the specified track and time, using
@@ -171,139 +123,6 @@ public class Util {
         }
 
         return storeResult;
-    }
-
-    /**
-     * Copy the bind transform of the specified bone.
-     *
-     * @param bone which bone to use (not null, unaffected)
-     * @param storeResult (modified if not null)
-     * @return transform in local coordinates (either storeResult or a new
-     * instance)
-     */
-    public static Transform copyBindTransform(Bone bone,
-            Transform storeResult) {
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
-
-        Vector3f translation = bone.getBindPosition();
-        storeResult.setTranslation(translation);
-
-        Quaternion rotation = bone.getBindRotation();
-        storeResult.setRotation(rotation);
-
-        Vector3f scale = bone.getBindScale();
-        if (scale == null) {
-            scale = identityScale;
-        }
-        storeResult.setScale(scale);
-
-        return storeResult;
-    }
-
-    /**
-     * Find the minimum and maximum coordinates of a mesh geometry.
-     *
-     * @param geometry mesh geometry to measure (not null)
-     * @param useWorld true &rarr; use world coordinates, false &rarr; use model
-     * coordinates
-     * @return array consisting of array[0]: the lowest coordinate for each axis
-     * and array[1]: the highest coordinate for each axis
-     */
-    public static Vector3f[] findMinMaxCoords(Geometry geometry,
-            boolean useWorld) {
-        Vector3f max = new Vector3f(Float.NEGATIVE_INFINITY,
-                Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
-        Vector3f min = new Vector3f(Float.POSITIVE_INFINITY,
-                Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
-        Vector3f[] result = new Vector3f[]{min, max};
-
-        Mesh mesh = geometry.getMesh();
-        VertexBuffer posBuf = mesh.getBuffer(VertexBuffer.Type.Position);
-        if (posBuf == null) {
-            return result;
-        }
-
-        FloatBuffer posBuffer = (FloatBuffer) posBuf.getData();
-        posBuffer.rewind();
-        int numFloats = posBuffer.remaining();
-        int numVertices = mesh.getVertexCount();
-        assert numFloats == 3 * numVertices : numFloats;
-
-        Vector3f modelLocation = new Vector3f();
-        Vector3f location = new Vector3f();
-
-        for (int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++) {
-            modelLocation.x = posBuffer.get();
-            modelLocation.y = posBuffer.get();
-            modelLocation.z = posBuffer.get();
-            if (useWorld) {
-                geometry.localToWorld(modelLocation, location);
-            } else {
-                location.set(modelLocation);
-            }
-            accumulateMinima(min, location);
-            accumulateMaxima(max, location);
-        }
-
-        return result;
-    }
-
-    /**
-     * Find the minimum and maximum coordinates of a spatial. Note: recursive!
-     *
-     * @param spatial what to measure (not null)
-     * @param useWorld true &rarr; use world coordinates, false &rarr; use model
-     * coordinates
-     * @return array consisting of array[0]: the lowest coordinate for each axis
-     * and array[1]: the highest coordinate for each axis
-     */
-    public static Vector3f[] findMinMaxCoords(Spatial spatial,
-            boolean useWorld) {
-        Vector3f[] result;
-        if (spatial instanceof Geometry) {
-            Geometry geometry = (Geometry) spatial;
-            result = findMinMaxCoords(geometry, useWorld);
-
-        } else if (spatial instanceof Node) {
-            Vector3f maxima = new Vector3f(Float.NEGATIVE_INFINITY,
-                    Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
-            Vector3f minima = new Vector3f(Float.POSITIVE_INFINITY,
-                    Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
-            result = new Vector3f[]{minima, maxima};
-            Node node = (Node) spatial;
-            for (Spatial child : node.getChildren()) {
-                Vector3f[] childMm = findMinMaxCoords(child, useWorld);
-                accumulateMinima(minima, childMm[0]);
-                accumulateMaxima(maxima, childMm[1]);
-            }
-
-        } else {
-            throw new IllegalArgumentException(
-                    "spatial should be a geometry or a node");
-        }
-
-        return result;
-    }
-
-    /**
-     * Read the name of the target bone of the specified bone track in the
-     * specified animation control.
-     *
-     * @param boneTrack which bone track (not null, unaffected)
-     * @param animControl the animation control containing that track (not null,
-     * unaffected)
-     * @return the name
-     */
-    public static String getTargetName(BoneTrack boneTrack,
-            AnimControl animControl) {
-        int boneIndex = boneTrack.getTargetBoneIndex();
-        Skeleton skeleton = animControl.getSkeleton();
-        Bone bone = skeleton.getBone(boneIndex);
-        String result = bone.getName();
-
-        return result;
     }
 
     /**
@@ -403,90 +222,5 @@ public class Util {
         materialLoaderLogger.setLevel(materialLoaderLevel);
 
         return loaded;
-    }
-
-    /**
-     * Remove all repetitious keyframes from a bone track.
-     *
-     * @param boneTrack (not null)
-     * @return true if 1 or more keyframes were removed, otherwise false
-     */
-    public static boolean removeRepeats(BoneTrack boneTrack) {
-        float[] originalTimes = boneTrack.getKeyFrameTimes();
-        /*
-         * Count distinct keyframes.
-         */
-        float prevTime = Float.NEGATIVE_INFINITY;
-        int numDistinct = 0;
-        for (float time : originalTimes) {
-            if (time != prevTime) {
-                ++numDistinct;
-            }
-            prevTime = time;
-        }
-
-        int originalCount = originalTimes.length;
-        if (numDistinct == originalCount) {
-            return false;
-        }
-        Vector3f[] originalTranslations = boneTrack.getTranslations();
-        Quaternion[] originalRotations = boneTrack.getRotations();
-        Vector3f[] originalScales = boneTrack.getScales();
-        /*
-         * Allocate new arrays.
-         */
-        float[] newTimes = new float[numDistinct];
-        Vector3f[] newTranslations = new Vector3f[numDistinct];
-        Quaternion[] newRotations = new Quaternion[numDistinct];
-        Vector3f[] newScales;
-        if (originalScales == null) {
-            newScales = null;
-        } else {
-            newScales = new Vector3f[numDistinct];
-        }
-        /*
-         * Copy all non-repeated keyframes.
-         */
-        prevTime = Float.NEGATIVE_INFINITY;
-        int newIndex = 0;
-        for (int oldIndex = 0; oldIndex < originalCount; oldIndex++) {
-            float time = originalTimes[oldIndex];
-            if (time != prevTime) {
-                newTimes[newIndex] = originalTimes[oldIndex];
-                newTranslations[newIndex] = originalTranslations[oldIndex];
-                newRotations[newIndex] = originalRotations[oldIndex];
-                if (newScales != null) {
-                    newScales[newIndex] = originalScales[oldIndex];
-                }
-                ++newIndex;
-            }
-            prevTime = time;
-        }
-
-        boneTrack.setKeyframes(newTimes, newTranslations, newRotations,
-                newScales);
-        return true;
-    }
-
-    /**
-     * Remove repetitious keyframes from an animation.
-     *
-     * @param animation (not null)
-     * @return number of tracks edited
-     */
-    public static int removeRepeats(Animation animation) {
-        int numTracksEdited = 0;
-        Track[] tracks = animation.getTracks();
-        for (Track track : tracks) {
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                boolean removed = removeRepeats(boneTrack);
-                if (removed) {
-                    ++numTracksEdited;
-                }
-            } // TODO other track types
-        }
-
-        return numTracksEdited;
     }
 }

@@ -38,6 +38,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import jme3utilities.MySkeleton;
+import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.math.MyMath;
@@ -324,7 +325,7 @@ public class ViewCGModel {
          * Configure the camera, cursor, and platform based on the range
          * of mesh coordinates in the CG model.
          */
-        Vector3f[] minMax = Util.findMinMaxCoords(cgModelRoot, false);
+        Vector3f[] minMax = MySpatial.findMinMaxCoords(cgModelRoot, false);
         Vector3f extents = minMax[1].subtract(minMax[0]);
         float maxExtent = MyMath.max(extents.x, extents.y, extents.z);
         assert maxExtent > 0f : maxExtent;

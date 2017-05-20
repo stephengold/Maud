@@ -362,7 +362,8 @@ public class LoadedAnimation implements Cloneable {
             for (Track track : tracks) {
                 if (track instanceof BoneTrack) {
                     BoneTrack boneTrack = (BoneTrack) track;
-                    String name = Util.getTargetName(boneTrack, animControl);
+                    String name = MyAnimation.getTargetName(boneTrack,
+                            animControl);
                     result.add(name);
                 }
             }

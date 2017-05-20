@@ -220,7 +220,7 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Count the bones in the loaded model.
+     * Count the bones in the loaded CG model.
      *
      * @return count (&ge;0)
      */
@@ -238,7 +238,7 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Count the root bones in the loaded model.
+     * Count the root bones in the loaded CG model.
      *
      * @return count (&ge;0)
      */
@@ -1039,7 +1039,7 @@ public class LoadedCGModel implements Cloneable {
         Collection<String> names = animControl.getAnimationNames();
         for (String animationName : names) {
             Animation animation = animControl.getAnim(animationName);
-            numTracksEdited += Util.removeRepeats(animation);
+            numTracksEdited += MyAnimation.removeRepeats(animation);
         }
         if (numTracksEdited > 0) {
             String message = "removed repeat keyframe(s) from ";
