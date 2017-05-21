@@ -179,7 +179,7 @@ class AxesTool extends WindowController {
     // private methods
 
     /**
-     * Calculate the coordinate transform for the axes.
+     * Calculate the coordinate transform for the axes. TODO sort
      *
      * @return a new instance (in world coordinates) or null to hide the axes
      */
@@ -207,6 +207,12 @@ class AxesTool extends WindowController {
 
             case "none":
                 transform = null;
+                break;
+
+            case "spatial":
+                cgm = Maud.viewState.getSpatial();
+                Spatial spatial = Maud.model.spatial.findSpatial(cgm);
+                transform = spatial.getWorldTransform();
                 break;
 
             case "world":
@@ -241,6 +247,9 @@ class AxesTool extends WindowController {
                 break;
             case "none":
                 units = " units";
+                break;
+            case "spatial":
+                units = " local units";
                 break;
             case "world":
                 units = " world units";

@@ -218,6 +218,9 @@ public class DddGui extends GuiScreenController {
             case "modelAxesRadioButton":
                 Maud.model.axes.setMode("model");
                 break;
+            case "spatialAxesRadioButton":
+                Maud.model.axes.setMode("spatial");
+                break;
             case "worldAxesRadioButton":
                 Maud.model.axes.setMode("world");
                 break;

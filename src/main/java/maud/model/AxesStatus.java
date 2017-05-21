@@ -64,7 +64,8 @@ public class AxesStatus implements Cloneable {
      */
     private float lineWidth = 4f;
     /**
-     * which set of axes is active (either "none", "world", "model", or "bone")
+     * which set of axes is active (either "bone", "model", "none", "spatial",
+     * or "world")
      */
     private String mode = "bone";
     // *************************************************************************
@@ -169,6 +170,7 @@ public class AxesStatus implements Cloneable {
             case "bone":
             case "model":
             case "none":
+            case "spatial":
             case "world":
                 mode = modeName;
                 break;
