@@ -233,7 +233,7 @@ class DddMenus {
     // private methods
 
     /**
-     * Build the Animation menu.
+     * Build an Animation menu.
      */
     private void buildAnimationMenu() {
         builder.addTool("Tool");
@@ -243,14 +243,15 @@ class DddMenus {
         builder.addTool("New from retarget");
         if (!Maud.model.animation.isBindPoseLoaded()) {
             builder.addDialog("Duration");
-            builder.add("Tweening");
+            builder.addDialog("Reduce");
             builder.addDialog("Rename");
+            builder.add("Tweening");
             builder.addDialog("Delete");
         }
     }
 
     /**
-     * Build the Bone menu.
+     * Build a Bone menu.
      */
     private void buildBoneMenu() {
         builder.addTool("Tool");
@@ -265,7 +266,7 @@ class DddMenus {
     }
 
     /**
-     * Build the Bone -> Select menu.
+     * Build a Bone -> Select menu.
      */
     private void buildBoneSelectMenu() {
         builder.add("By name");
@@ -306,7 +307,7 @@ class DddMenus {
     }
 
     /**
-     * Build the CGModel -> Load menu.
+     * Build a CGModel -> Load menu.
      */
     private void buildCGModelLoadMenu() {
         builder.add("Testdata");
@@ -315,7 +316,7 @@ class DddMenus {
     }
 
     /**
-     * Build the CGModel menu.
+     * Build a CGModel menu.
      */
     private void buildCGModelMenu() {
         builder.addTool("Tool");
@@ -325,7 +326,7 @@ class DddMenus {
     }
 
     /**
-     * Build the Help menu.
+     * Build a Help menu.
      */
     private void buildHelpMenu() {
         builder.addDialog("About Maud");
@@ -337,11 +338,12 @@ class DddMenus {
     }
 
     /**
-     * Build the Keyframe menu.
+     * Build a Keyframe menu.
      */
     private void buildKeyframeMenu() {
         builder.addTool("Tool");
         if (Maud.model.bone.hasTrack()) {
+            builder.addDialog("Reduce");
             builder.add("Select by time");
             builder.add("Select first");
             builder.add("Select previous");
@@ -355,7 +357,7 @@ class DddMenus {
     }
 
     /**
-     * Build the Physics menu.
+     * Build a Physics menu.
      */
     private void buildPhysicsMenu() {
         builder.addTool("Describe");
@@ -365,7 +367,7 @@ class DddMenus {
     }
 
     /**
-     * Build the Settings menu.
+     * Build a Settings menu.
      */
     private void buildSettingsMenu() {
         builder.add("Initial model");
@@ -374,7 +376,7 @@ class DddMenus {
     }
 
     /**
-     * Build the Spatial menu.
+     * Build a Spatial menu.
      */
     private void buildSpatialMenu() {
         builder.addTool("Tool");
@@ -387,7 +389,7 @@ class DddMenus {
     }
 
     /**
-     * Build the View menu.
+     * Build a View menu.
      */
     private void buildViewMenu() {
         builder.addTool("Axes");
@@ -536,12 +538,10 @@ class DddMenus {
                 Maud.gui.dialogs.deleteAnimation();
                 handled = true;
                 break;
-
             case "Duration":
                 Maud.gui.dialogs.setDuration();
                 handled = true;
                 break;
-
             case "Load":
                 Collection<String> animationNames;
                 animationNames = Maud.model.cgm.listAnimationNames();
@@ -549,32 +549,30 @@ class DddMenus {
                         animationNames);
                 handled = true;
                 break;
-
             case "New from copy":
                 Maud.gui.dialogs.copyAnimation();
                 handled = true;
                 break;
-
             case "New from pose":
                 Maud.gui.dialogs.newPose();
                 handled = true;
                 break;
-
             case "New from retarget":
                 Maud.gui.retarget.select();
                 handled = true;
                 break;
-
+            case "Reduce":
+                Maud.gui.dialogs.reduceAnimation();
+                handled = true;
+                break;
             case "Rename":
                 Maud.gui.dialogs.renameAnimation();
                 handled = true;
                 break;
-
             case "Tool":
                 Maud.gui.animation.select();
                 handled = true;
                 break;
-
             case "Tweening":
         }
         return handled;
@@ -874,6 +872,10 @@ class DddMenus {
         assert remainder != null;
         boolean handled = false;
         switch (remainder) {
+            case "Reduce":
+                Maud.gui.dialogs.reduceTrack();
+                handled = true;
+                break;
             case "Select first":
                 Maud.model.animation.selectKeyframeFirst();
                 handled = true;

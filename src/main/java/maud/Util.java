@@ -250,7 +250,51 @@ public class Util {
     }
 
     /**
-     * Copy a track, altering its duration and adjusting all its keyframes
+     * Copy a bone track, reducing the number of keyframes by the specified
+     * factor.
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param factor reduction factor (&ge;2)
+     * @return a new instance
+     */
+    public static BoneTrack reduce(BoneTrack oldTrack, int factor) {
+        Validate.inRange(factor, "factor", 2, Integer.MAX_VALUE);
+
+        Vector3f[] oldTranslations = oldTrack.getTranslations();
+        Quaternion[] oldRotations = oldTrack.getRotations();
+        Vector3f[] oldScales = oldTrack.getScales();
+        float[] oldTimes = oldTrack.getKeyFrameTimes();
+        int oldCount = oldTimes.length;
+        assert oldCount > 0 : oldCount;
+
+        int newCount = 1 + (oldCount - 1) / factor;
+        Vector3f[] newTranslations = new Vector3f[newCount];
+        Quaternion[] newRotations = new Quaternion[newCount];
+        Vector3f[] newScales;
+        if (oldScales == null) {
+            newScales = null;
+        } else {
+            newScales = new Vector3f[newCount];
+        }
+        float[] newTimes = new float[newCount];
+
+        for (int newIndex = 0; newIndex < newCount; newIndex++) {
+            int oldIndex = newIndex * factor;
+            newTranslations[newIndex] = oldTranslations[oldIndex].clone();
+            newRotations[newIndex] = oldRotations[oldIndex].clone();
+            newScales[newIndex] = oldScales[oldIndex].clone();
+            newTimes[newIndex] = oldTimes[oldIndex];
+        }
+
+        int boneIndex = oldTrack.getTargetBoneIndex();
+        BoneTrack result = new BoneTrack(boneIndex, newTimes, newTranslations,
+                newRotations, newScales);
+
+        return result;
+    }
+
+    /**
+     * Copy a bone track, altering its duration and adjusting all its keyframes
      * proportionately.
      *
      * @param oldTrack (not null, unaffected)

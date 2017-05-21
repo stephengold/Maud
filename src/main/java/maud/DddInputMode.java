@@ -63,6 +63,8 @@ class DddInputMode extends InputMode {
     final static String loadModelNamedPrefix = "load model named ";
     final static String openMenuPrefix = "open menu ";
     final static String newPosePrefix = "new pose ";
+    final static String reduceAnimationPrefix = "reduce animation ";
+    final static String reduceTrackPrefix = "reduce track ";
     final static String renameAnimationPrefix = "rename animation ";
     final static String renameBonePrefix = "rename bone ";
     final static String retargetAnimationPrefix = "retarget animation ";
@@ -127,6 +129,9 @@ class DddInputMode extends InputMode {
                     break;
                 case "previous":
                     handled = previousAction(actionString);
+                    break;
+                case "reduce":
+                    handled = reduceAction(actionString);
                     break;
                 case "rename":
                     handled = renameAction(actionString);
@@ -342,6 +347,38 @@ class DddInputMode extends InputMode {
 
         } else if (actionString.equals("previous checkpoint")) {
             History.undo();
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process an action that starts with "reduce".
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean reduceAction(String actionString) {
+        boolean handled = false;
+        if (actionString.equals("reduce animation")) {
+            Maud.gui.dialogs.reduceAnimation();
+            handled = true;
+
+        } else if (actionString.equals("reduce track")) {
+            Maud.gui.dialogs.reduceTrack();
+            handled = true;
+
+        } else if (actionString.startsWith(reduceAnimationPrefix)) {
+            String f = MyString.remainder(actionString, reduceAnimationPrefix);
+            int factor = Integer.parseInt(f);
+            Maud.model.animation.reduce(factor);
+            handled = true;
+
+        } else if (actionString.startsWith(reduceTrackPrefix)) {
+            String f = MyString.remainder(actionString, reduceTrackPrefix);
+            int factor = Integer.parseInt(f);
+            Maud.model.animation.reduceTrack(factor);
             handled = true;
         }
 

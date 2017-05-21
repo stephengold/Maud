@@ -160,6 +160,34 @@ class DddDialogs {
     }
 
     /**
+     * Display a "reduce animation" dialog.
+     */
+    void reduceAnimation() {
+        if (!Maud.model.animation.isBindPoseLoaded()) {
+            IntegerDialog controller = new IntegerDialog("Reduce", 2,
+                    Integer.MAX_VALUE);
+
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog("Enter reduction factor:", "2", "",
+                    DddInputMode.reduceAnimationPrefix, controller);
+        }
+    }
+
+    /**
+     * Display a "reduce track" dialog.
+     */
+    void reduceTrack() {
+        if (Maud.model.bone.hasTrack()) {
+            IntegerDialog controller = new IntegerDialog("Reduce", 2,
+                    Integer.MAX_VALUE);
+
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog("Enter reduction factor:", "2", "",
+                    DddInputMode.reduceTrackPrefix, controller);
+        }
+    }
+
+    /**
      * Display a "rename animation" dialog.
      */
     void renameAnimation() {

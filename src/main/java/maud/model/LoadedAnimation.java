@@ -525,6 +525,63 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Reduce all bone tracks in the loaded animation by the specified factor.
+     *
+     * @param factor reduction factor (&ge;2)
+     */
+    public void reduce(int factor) {
+        Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
+        assert !isBindPoseLoaded();
+
+        float duration = getDuration();
+        Animation newAnimation = new Animation(loadedName, duration);
+
+        Animation loaded = getLoadedAnimation();
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track clone;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                clone = Util.reduce(boneTrack, factor);
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        Maud.model.cgm.replaceAnimation(loaded, newAnimation);
+    }
+
+    /**
+     * Reduce the selected bone track by the specified factor.
+     *
+     * @param factor reduction factor (&ge;2)
+     */
+    public void reduceTrack(int factor) {
+        Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
+        assert Maud.model.bone.hasTrack();
+
+        float duration = getDuration();
+        Animation newAnimation = new Animation(loadedName, duration);
+
+        Animation loaded = getLoadedAnimation();
+        Track selectedTrack = Maud.model.bone.findTrack();
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track clone;
+            if (track == selectedTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                clone = Util.reduce(boneTrack, factor);
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        Maud.model.cgm.replaceAnimation(loaded, newAnimation);
+    }
+
+    /**
      * Rename the loaded animation.
      *
      * @param newName (not null, not empty, not bindPoseName, not in use)
