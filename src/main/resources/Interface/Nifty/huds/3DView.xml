@@ -110,7 +110,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  textHAlign="center"
                                  width="65px"/>
                         <panel width="*"/>
-                        <control name="button" label="Load" id="id1ToAvoidNiftyWarning"
+                        <control name="button" label="Load"
+                                 id="id1ToAvoidNiftyWarning"
                                  width="50px">
                             <interact onRelease="perform(open menu Animation -> Load)"/>
                         </control>
@@ -256,7 +257,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  textHAlign="center"
                                  width="65px"/>
                         <panel width="*"/>
-                        <control name="button" label="Select" id="id2ToAvoidNiftyWarning"
+                        <control name="button" label="Select"
+                                 id="id2ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(open menu Bone -> Select)"/>
                         </control>
@@ -618,7 +620,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  textHAlign="center"
                                  width="40px"/>
                         <panel width="10px"/>
-                        <control name="button" label="Set all to pose" id="id4ToAvoidNiftyWarning"
+                        <control name="button" label="Set all to pose"
+                                 id="id4ToAvoidNiftyWarning"
                                  width="95px">
                             <interact onRelease="perform(set track translation all)"/>
                         </control>
@@ -633,7 +636,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  textHAlign="center"
                                  width="40px"/>
                         <panel width="10px"/>
-                        <control name="button" label="Set all to pose" id="id5ToAvoidNiftyWarning"
+                        <control name="button" label="Set all to pose"
+                                 id="id5ToAvoidNiftyWarning"
                                  width="95px">
                             <interact onRelease="perform(set track rotation all)"/>
                         </control>
@@ -648,7 +652,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  textHAlign="center"
                                  width="40px"/>
                         <panel width="10px"/>
-                        <control name="button" label="Set all to pose" id="id6ToAvoidNiftyWarning"
+                        <control name="button" label="Set all to pose"
+                                 id="id6ToAvoidNiftyWarning"
                                  width="95px">
                             <interact onRelease="perform(set track scale all)"/>
                         </control>
@@ -700,13 +705,19 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                      height="140px" width="520px" x="35" y="65">
                 <panel childLayout="vertical">
                     <panel/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Name:  "
                                  textHAlign="right"
                                  width="100px"/>
                         <control name="label" id="modelName"
                                  backgroundColor="#ffff"
                                  width="*"/>
+                        <panel width="20px"/>
+                        <control name="button" label="Load"
+                                 id="id9ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(open menu CGModel -> Load)"/>
+                        </control>
                     </panel>
                     <panel/>
                     <panel childLayout="horizontal">
@@ -793,7 +804,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" id="sourceAsset"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Edit" id="id7ToAvoidNiftyWarning"
+                        <control name="button" label="Edit"
+                                 id="id17ToAvoidNiftyWarning"
                                  width="40px">
                             <interact onRelease="perform(select rsca)"/>
                         </control>
@@ -804,7 +816,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" id="mapAsset"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Edit" id="id8ToAvoidNiftyWarning"
+                        <control name="button" label="Edit"
+                                 id="id18ToAvoidNiftyWarning"
                                  width="40px">
                             <interact onRelease="perform(select rma)"/>
                         </control>
@@ -971,7 +984,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" id="spatialName"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Rename" id="id14ToAvoidNiftyWarning"
+                        <control name="button" label="Rename"
+                                 id="id19ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(rename spatial)"/>
                         </control>
@@ -979,17 +993,20 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                     <panel/>
                     <panel childLayout="horizontal">
                         <control name="label" text="Transform:  "/>
-                        <control name="button" label="Scale" id="id15ToAvoidNiftyWarning"
+                        <control name="button" label="Scale"
+                                 id="id25ToAvoidNiftyWarning"
                                  width="50px">
                             <interact onRelease="perform(select tool spatialScale)"/>
                         </control>
                         <panel/>
-                        <control name="button" label="Rotate" id="id16ToAvoidNiftyWarning"
+                        <control name="button" label="Rotate"
+                                 id="id26ToAvoidNiftyWarning"
                                  width="55px">
                             <interact onRelease="perform(select tool spatialRotation)"/>
                         </control>
                         <panel/>
-                        <control name="button" label="Translate" id="id17ToAvoidNiftyWarning"
+                        <control name="button" label="Translate"
+                                 id="id27ToAvoidNiftyWarning"
                                  width="70px">
                             <interact onRelease="perform(select tool spatialTranslation)"/>
                         </control>
@@ -1040,7 +1057,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" id="spatialControls"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Tool" id="id18ToAvoidNiftyWarning"
+                        <control name="button" label="Tool"
+                                 id="id28ToAvoidNiftyWarning"
                                  width="40px">
                             <interact onRelease="perform(select tool control)"/>
                         </control>
@@ -1048,7 +1066,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" id="spatialKeys"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Tool" id="id19ToAvoidNiftyWarning"
+                        <control name="button" label="Tool"
+                                 id="id29ToAvoidNiftyWarning"
                                  width="40px">
                             <interact onRelease="perform(select tool keys)"/>
                         </control>
@@ -1061,7 +1080,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" id="spatialShadows"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Edit" id="id20ToAvoidNiftyWarning"
+                        <control name="button" label="Edit"
+                                 id="id30ToAvoidNiftyWarning"
                                  width="50px">
                             <interact onRelease="perform(select tool shadowMode)"/>
                         </control>
@@ -1074,7 +1094,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" id="spatialBucket"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Edit" id="id21ToAvoidNiftyWarning"
+                        <control name="button" label="Edit"
+                                 id="id31ToAvoidNiftyWarning"
                                  width="50px">
                             <interact onRelease="perform(edit bucket)"/>
                         </control>
@@ -1087,7 +1108,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" id="spatialHint"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Edit" id="id22ToAvoidNiftyWarning"
+                        <control name="button" label="Edit"
+                                 id="id32ToAvoidNiftyWarning"
                                  width="50px">
                             <interact onRelease="perform(select tool cullHint)"/>
                         </control>
@@ -1132,7 +1154,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                 </control>
                                 <panel/>
                             </panel>
-                            <control name="button" label="Reset" id="id30ToAvoidNiftyWarning"
+                            <control name="button" label="Reset"
+                                     id="id40ToAvoidNiftyWarning"
                                      width="70px">
                                 <interact onRelease="perform(reset spatial rotation)"/>
                             </control>
@@ -1170,7 +1193,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                             <control name="label" id="zSsSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <control name="button" label="Reset" id="id32ToAvoidNiftyWarning"
+                            <control name="button" label="Reset"
+                                     id="id42ToAvoidNiftyWarning"
                                      width="70px">
                                 <interact onRelease="perform(reset spatial scale)"/>
                             </control>
@@ -1213,7 +1237,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                             <control name="label" id="zSoSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <control name="button" label="Reset" id="id31ToAvoidNiftyWarning"
+                            <control name="button" label="Reset"
+                                     id="id51ToAvoidNiftyWarning"
                                      width="70px">
                                 <interact onRelease="perform(reset spatial translation)"/>
                             </control>

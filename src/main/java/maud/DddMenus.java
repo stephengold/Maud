@@ -68,6 +68,18 @@ class DddMenus {
     // new methods exposed
 
     /**
+     * Handle a "load cgmodel" action without an argument.
+     */
+    private void loadCGModel() {
+        String prefix = "open menu CGModel -> Load -> ";
+        builder.reset();
+        buildCGModelLoadMenu();
+        String[] items = builder.copyItems();
+        String[] icons = builder.copyIcons();
+        Maud.gui.showPopupMenu(prefix, items, icons);
+    }
+
+    /**
      * Handle a "load model file" action where the argument may be the name of a
      * folder/directory.
      *
@@ -290,13 +302,20 @@ class DddMenus {
     }
 
     /**
+     * Build the CGModel -> Load menu.
+     */
+    private void buildCGModelLoadMenu() {
+        builder.add("Testdata");
+        builder.addDialog("Asset");
+        builder.add("File");
+    }
+
+    /**
      * Build the CGModel menu.
      */
     private void buildCGModelMenu() {
         builder.addTool("Tool");
-        builder.add("Load named asset");
-        builder.addDialog("Load asset path");
-        builder.add("Load from file");
+        builder.add("Load");
         builder.addDialog("Save as asset");
         builder.addDialog("Save as file");
     }
@@ -718,52 +737,75 @@ class DddMenus {
         assert remainder != null;
 
         boolean handled = false;
-        switch (remainder) {
-            case "Load named asset":
-                Maud.gui.showPopupMenu(DddInputMode.loadModelNamedPrefix,
-                        LoadedCGModel.modelNames);
-                handled = true;
-                break;
+        String loadPrefix = "Load" + menuSeparator;
+        if (remainder.startsWith(loadPrefix)) {
+            String selectArg = MyString.remainder(remainder, loadPrefix);
+            handled = menuCGModelLoad(selectArg);
 
-            case "Load asset path":
+        } else {
+            switch (remainder) {
+                case "Load":
+                    loadCGModel();
+                    handled = true;
+                    break;
+
+                case "Save as asset":
+                    String baseAssetPath = Maud.model.cgm.getAssetPath();
+                    Maud.gui.closeAllPopups();
+                    Maud.gui.showTextEntryDialog("Enter base asset path for model:",
+                            baseAssetPath, "Save",
+                            DddInputMode.saveModelAssetPrefix, null);
+                    handled = true;
+                    break;
+
+                case "Save as file":
+                    String baseFilePath = Maud.model.cgm.getFilePath();
+                    Maud.gui.closeAllPopups();
+                    Maud.gui.showTextEntryDialog("Enter base file path for model:",
+                            baseFilePath, "Save", DddInputMode.saveModelFilePrefix,
+                            null);
+                    handled = true;
+                    break;
+
+                case "Tool":
+                    Maud.gui.model.select();
+                    handled = true;
+                    break;
+            }
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle actions from the CGModel -> Load menu.
+     *
+     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuCGModelLoad(String remainder) {
+        assert remainder != null;
+
+        boolean handled = false;
+        switch (remainder) {
+            case "Asset":
                 Maud.gui.dialogs.loadModelAsset();
                 handled = true;
                 break;
 
-            case "Load from file":
+            case "File":
                 List<String> fileNames = listFileNames("/");
                 Maud.gui.showPopupMenu(DddInputMode.loadModelFilePrefix + "/",
                         fileNames);
                 handled = true;
                 break;
 
-            case "Revert":
-                // TODO
-                break;
-
-            case "Save as asset":
-                String baseAssetPath = Maud.model.cgm.getAssetPath();
-                Maud.gui.closeAllPopups();
-                Maud.gui.showTextEntryDialog("Enter base asset path for model:",
-                        baseAssetPath, "Save",
-                        DddInputMode.saveModelAssetPrefix, null);
+            case "Testdata":
+                Maud.gui.showPopupMenu(DddInputMode.loadModelNamedPrefix,
+                        LoadedCGModel.modelNames);
                 handled = true;
-                break;
-
-            case "Save as file":
-                String baseFilePath = Maud.model.cgm.getFilePath();
-                Maud.gui.closeAllPopups();
-                Maud.gui.showTextEntryDialog("Enter base file path for model:",
-                        baseFilePath, "Save", DddInputMode.saveModelFilePrefix,
-                        null);
-                handled = true;
-                break;
-
-            case "Tool":
-                Maud.gui.model.select();
-                handled = true;
-                break;
         }
+
         return handled;
     }
 
