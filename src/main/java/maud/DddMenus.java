@@ -276,7 +276,9 @@ class DddMenus {
         }
 
         int numRoots = Maud.model.cgm.countRootBones();
-        if (numRoots > 0) {
+        if (numRoots == 1) {
+            builder.addBone("Root");
+        } else if (numRoots > 1) {
             builder.add("Root");
         }
 
@@ -286,18 +288,20 @@ class DddMenus {
         }
 
         int numChildren = Maud.model.bone.countChildren();
-        if (numChildren > 0) {
+        if (numChildren == 1) {
+            builder.addBone("Child");
+        } else if (numChildren > 1) {
             builder.add("Child");
         }
 
         boolean isSelected = Maud.model.bone.isBoneSelected();
         boolean isRoot = Maud.model.bone.isRootBone();
         if (isSelected && !isRoot) {
-            builder.add("Parent");
+            builder.addBone("Parent");
         }
         if (isSelected) {
-            builder.add("Next");
-            builder.add("Previous");
+            builder.addBone("Next");
+            builder.addBone("Previous");
         }
     }
 
@@ -752,18 +756,18 @@ class DddMenus {
                 case "Save as asset":
                     String baseAssetPath = Maud.model.cgm.getAssetPath();
                     Maud.gui.closeAllPopups();
-                    Maud.gui.showTextEntryDialog("Enter base asset path for model:",
-                            baseAssetPath, "Save",
-                            DddInputMode.saveModelAssetPrefix, null);
+                    Maud.gui.showTextEntryDialog(
+                            "Enter base asset path for model:", baseAssetPath,
+                            "Save", DddInputMode.saveModelAssetPrefix, null);
                     handled = true;
                     break;
 
                 case "Save as file":
                     String baseFilePath = Maud.model.cgm.getFilePath();
                     Maud.gui.closeAllPopups();
-                    Maud.gui.showTextEntryDialog("Enter base file path for model:",
-                            baseFilePath, "Save", DddInputMode.saveModelFilePrefix,
-                            null);
+                    Maud.gui.showTextEntryDialog(
+                            "Enter base file path for model:", baseFilePath,
+                            "Save", DddInputMode.saveModelFilePrefix, null);
                     handled = true;
                     break;
 
