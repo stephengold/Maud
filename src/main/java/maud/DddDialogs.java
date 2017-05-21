@@ -121,6 +121,15 @@ class DddDialogs {
     }
 
     /**
+     * Display a "delete animation" dialog.
+     */
+    void deleteAnimation() {
+        Maud.gui.closeAllPopups();
+        Maud.gui.showConfirmDialog("Delete the loaded animation?", "Delete",
+                "delete animation", null);
+    }
+
+    /**
      * Display a "load model asset" dialog.
      */
     void loadModelAsset() {

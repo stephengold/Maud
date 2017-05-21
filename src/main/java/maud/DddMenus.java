@@ -245,7 +245,7 @@ class DddMenus {
             builder.addDialog("Duration");
             builder.add("Tweening");
             builder.addDialog("Rename");
-            builder.add("Delete");
+            builder.addDialog("Delete");
         }
     }
 
@@ -533,8 +533,7 @@ class DddMenus {
         boolean handled = false;
         switch (remainder) {
             case "Delete":
-                // TODO confirm first
-                Maud.gui.animation.delete();
+                Maud.gui.dialogs.deleteAnimation();
                 handled = true;
                 break;
 

@@ -153,7 +153,7 @@ public class LoadedCGModel implements Cloneable {
      * @param newAnimation (not null, name not in use)
      */
     void addAnimation(Animation newAnimation) {
-        Validate.nonNull(newAnimation, "new animation");
+        assert newAnimation != null;
         assert !hasAnimation(newAnimation.getName());
 
         AnimControl control = getAnimControl();
@@ -266,22 +266,16 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Delete the loaded animation. If successful, the caller should immediately
-     * load a different animation.
+     * Delete the specified animation.
      *
-     * @return true if successful, otherwise false
+     * @param animation (not null)
      */
-    public boolean deleteAnimation() {
-        if (Maud.model.animation.isBindPoseLoaded()) {
-            logger.log(Level.WARNING, "cannot delete bind pose");
-            return false;
-        }
-        AnimControl animControl = getAnimControl();
-        Animation anim = Maud.model.animation.getLoadedAnimation();
-        animControl.removeAnim(anim);
-        setEdited();
+    void deleteAnimation(Animation animation) {
+        assert animation != null;
 
-        return true;
+        AnimControl animControl = getAnimControl();
+        animControl.removeAnim(animation);
+        setEdited();
     }
 
     /**

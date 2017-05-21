@@ -110,6 +110,9 @@ class DddInputMode extends InputMode {
                 case "copy":
                     handled = copyAction(actionString);
                     break;
+                case "delete":
+                    handled = deleteAction(actionString);
+                    break;
                 case "load":
                     handled = loadAction(actionString);
                     break;
@@ -191,7 +194,7 @@ class DddInputMode extends InputMode {
     // private methods
 
     /**
-     * Process a "copy" action.
+     * Process an action that starts with "copy ".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -209,7 +212,23 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "load" action.
+     * Process an action that starts with "delete ".
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean deleteAction(String actionString) {
+        boolean handled = false;
+        if (actionString.equals("delete animation")) {
+            Maud.model.animation.delete();
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process an action that starts with "load ".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -243,7 +262,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "new" action.
+     * Process an action that starts with "new ".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -266,7 +285,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "next" action.
+     * Process an action that starts with "next".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -290,7 +309,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process an "open" action.
+     * Process an action that starts with "open".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -306,7 +325,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "previous" action.
+     * Process an action that starts with "previous".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -330,7 +349,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "rename" action.
+     * Process an action that starts with "rename".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -361,7 +380,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "reset" action.
+     * Process an action that starts with "reset".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -412,7 +431,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "retarget" action.
+     * Process an action that starts with "retarget".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -435,7 +454,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "save" action.
+     * Process an action that starts with "save".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -458,7 +477,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "select" action.
+     * Process an action that starts with "select".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -566,7 +585,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "set" action.
+     * Process an action that starts with "set".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -601,7 +620,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "toggle" action.
+     * Process an action that starts with "toggle".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -622,7 +641,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "view" action.
+     * Process an action that starts with "view".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -640,7 +659,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process a "warp" action.
+     * Process an action that starts with "warp".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false

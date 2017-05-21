@@ -69,16 +69,6 @@ public class AnimationTool extends WindowController {
     // new methods exposed
 
     /**
-     * Delete the loaded animation and (if successful) load bind pose.
-     */
-    void delete() {
-        boolean success = Maud.model.cgm.deleteAnimation();
-        if (success) {
-            Maud.model.animation.loadBindPose();
-        }
-    }
-
-    /**
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {

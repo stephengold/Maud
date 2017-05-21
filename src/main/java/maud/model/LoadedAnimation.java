@@ -33,6 +33,7 @@ import com.jme3.animation.Track;
 import com.jme3.math.Transform;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
@@ -189,6 +190,19 @@ public class LoadedAnimation implements Cloneable {
 
         assert count >= 0 : count;
         return count;
+    }
+
+    /**
+     * Delete the loaded animation and (if successful) load bind pose.
+     */
+    public void delete() {
+        if (Maud.model.animation.isBindPoseLoaded()) {
+            logger.log(Level.WARNING, "cannot delete bind pose");
+        } else {
+            Animation animation = getLoadedAnimation();
+            Maud.model.cgm.deleteAnimation(animation);
+            loadBindPose();
+        }
     }
 
     /**
