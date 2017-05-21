@@ -75,6 +75,7 @@ class DddInputMode extends InputMode {
     final static String selectRetargetSourceCgmAssetPrefix = "select rsca ";
     final static String selectSpatialChildPrefix = "select spatialChild ";
     final static String selectToolPrefix = "select tool ";
+    final static String setDurationPrefix = "set duration ";
     // *************************************************************************
     // constructors
 
@@ -347,7 +348,7 @@ class DddInputMode extends InputMode {
 
         } else if (actionString.startsWith(renameAnimationPrefix)) {
             newName = MyString.remainder(actionString, renameAnimationPrefix);
-            Maud.model.cgm.renameAnimation(newName);
+            Maud.model.animation.rename(newName);
             handled = true;
 
         } else if (actionString.startsWith(renameBonePrefix)) {
@@ -584,7 +585,16 @@ class DddInputMode extends InputMode {
             case "set track translation all":
                 Maud.model.bone.setTrackTranslationAll();
                 handled = true;
-                break;
+        }
+
+        if (!handled) {
+            String arg;
+            if (actionString.startsWith(setDurationPrefix)) {
+                arg = MyString.remainder(actionString, setDurationPrefix);
+                float value = Float.parseFloat(arg);
+                Maud.model.animation.setDuration(value);
+                handled = true;
+            }
         }
 
         return handled;

@@ -26,10 +26,13 @@
  */
 package maud;
 
+import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
+import com.jme3.animation.Track;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -39,6 +42,7 @@ import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 
 /**
  * Utility methods for the Maud application. All methods should be static.
@@ -123,6 +127,27 @@ public class Util {
         }
 
         return storeResult;
+    }
+
+    /**
+     * Find the keyframe in the specified animation that has the latest time.
+     *
+     * @param animation input (not null)
+     * @return track time (in seconds, &ge;0)
+     */
+    public static float findLatestKeyframe(Animation animation) {
+        float maxTime = 0f;
+        Track[] loadedTracks = animation.getTracks();
+        for (Track track : loadedTracks) {
+            float[] frameTimes = track.getKeyFrameTimes();
+            for (float time : frameTimes) {
+                if (time > maxTime) {
+                    maxTime = time;
+                }
+            }
+        }
+
+        return maxTime;
     }
 
     /**
@@ -222,5 +247,43 @@ public class Util {
         materialLoaderLogger.setLevel(materialLoaderLevel);
 
         return loaded;
+    }
+
+    /**
+     * Copy a track, altering its duration and adjusting all its keyframes
+     * proportionately.
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param newDuration new duration (in seconds, &ge;0)
+     * @return a new instance
+     */
+    public static BoneTrack setDuration(BoneTrack oldTrack, float newDuration) {
+        Validate.nonNegative(newDuration, "duration");
+
+        BoneTrack result = oldTrack.clone();
+        float[] newTimes = result.getKeyFrameTimes();
+
+        float oldDuration = oldTrack.getLength();
+        float[] oldTimes = oldTrack.getKeyFrameTimes();
+        int numFrames = oldTimes.length;
+        assert numFrames == 1 || oldDuration > 0f : numFrames;
+
+        for (int frameIndex = 0; frameIndex < numFrames; frameIndex++) {
+            float oldTime = oldTimes[frameIndex];
+            assert oldTime <= oldDuration : oldTime;
+
+            float newTime;
+            if (oldDuration == 0f) {
+                assert frameIndex == 0 : frameIndex;
+                assert oldTime == 0f : oldTime;
+                newTime = 0f;
+            } else {
+                newTime = newDuration * oldTime / oldDuration;
+                newTime = FastMath.clamp(newTime, 0f, newDuration);
+            }
+            newTimes[frameIndex] = newTime;
+        }
+
+        return result;
     }
 }

@@ -242,7 +242,7 @@ class DddMenus {
         builder.addDialog("New from pose");
         builder.addTool("New from retarget");
         if (!Maud.model.animation.isBindPoseLoaded()) {
-            builder.add("Duration");
+            builder.addDialog("Duration");
             builder.add("Tweening");
             builder.addDialog("Rename");
             builder.add("Delete");
@@ -539,7 +539,8 @@ class DddMenus {
                 break;
 
             case "Duration":
-                // TODO
+                Maud.gui.dialogs.setDuration();
+                handled = true;
                 break;
 
             case "Load":

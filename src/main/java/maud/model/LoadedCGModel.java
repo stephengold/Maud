@@ -684,23 +684,6 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Rename the loaded animation.
-     *
-     * @param newName new name (not null, not empty, not bindPoseName, not in
-     * use)
-     */
-    public void renameAnimation(String newName) {
-        Validate.nonEmpty(newName, "new name");
-        assert !newName.equals(LoadedAnimation.bindPoseName) : newName;
-        assert !hasAnimation(newName) : newName;
-        assert !Maud.model.animation.isBindPoseLoaded();
-
-        Maud.model.animation.newCopy(newName);
-        deleteAnimation();
-        Maud.model.animation.rename(newName);
-    }
-
-    /**
      * Rename the selected bone.
      *
      * @param newName new name (not null)
@@ -733,6 +716,22 @@ public class LoadedCGModel implements Cloneable {
         }
 
         return success;
+    }
+
+    /**
+     * Replace the specified animation with a new one.
+     *
+     * @param oldAnimation (not null)
+     * @param newAnimation (not null)
+     */
+    void replaceAnimation(Animation oldAnimation, Animation newAnimation) {
+        assert oldAnimation != null;
+        assert newAnimation != null;
+
+        AnimControl animControl = getAnimControl();
+        animControl.removeAnim(oldAnimation);
+        animControl.addAnim(newAnimation);
+        setEdited();
     }
 
     /**

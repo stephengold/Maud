@@ -213,6 +213,19 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Find the keyframe with the latest time in the loaded animation.
+     *
+     * @return track time (in seconds, &ge;0)
+     */
+    public float findLatestKeyframe() {
+        Animation loaded = getLoadedAnimation();
+        float latest = Util.findLatestKeyframe(loaded);
+
+        assert latest >= 0f : latest;
+        return latest;
+    }
+
+    /**
      * Access the loaded animation.
      *
      * @return the pre-existing instance, or null if in bind pose
@@ -500,9 +513,25 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Rename the loaded animation.
      *
-     * @param newName (not null)
+     * @param newName (not null, not empty, not bindPoseName, not in use)
      */
-    void rename(String newName) {
+    public void rename(String newName) {
+        Validate.nonEmpty(newName, "new name");
+        assert !newName.equals(bindPoseName) : newName;
+        assert !Maud.model.cgm.hasAnimation(newName) : newName;
+        assert !isBindPoseLoaded();
+
+        float duration = getDuration();
+        Animation newAnimation = new Animation(newName, duration);
+
+        Animation loaded = getLoadedAnimation();
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track clone = track.clone();
+            newAnimation.addTrack(clone);
+        }
+
+        Maud.model.cgm.replaceAnimation(loaded, newAnimation);
         loadedName = newName;
     }
 
@@ -577,6 +606,31 @@ public class LoadedAnimation implements Cloneable {
      */
     public void setContinue(boolean newSetting) {
         continueFlag = newSetting;
+    }
+
+    /**
+     * Expand or compress the loaded animation to give it the specified
+     * duration.
+     *
+     * @param newDuration (in seconds, &ge;0)
+     */
+    public void setDuration(float newDuration) {
+        Validate.nonNegative(newDuration, "new duration");
+
+        Animation newAnimation = new Animation(loadedName, newDuration);
+        Animation loaded = getLoadedAnimation();
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track newTrack;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                newTrack = Util.setDuration(boneTrack, newDuration);
+            } else {
+                newTrack = track.clone(); // TODO
+            }
+            newAnimation.addTrack(newTrack);
+        }
+        Maud.model.cgm.replaceAnimation(loaded, newAnimation);
     }
 
     /**

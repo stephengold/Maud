@@ -81,7 +81,7 @@ class DddDialogs {
     // new methods exposed
 
     /**
-     * Handle an "About Maud" action.
+     * Display an "About Maud" dialog.
      */
     void aboutMaud() {
         String niftyVersion = nifty.getVersion();
@@ -109,7 +109,7 @@ class DddDialogs {
     }
 
     /**
-     * Display the "copy animation" dialog.
+     * Display a "copy animation" dialog.
      */
     void copyAnimation() {
         String fromName = Maud.model.animation.getName();
@@ -121,7 +121,7 @@ class DddDialogs {
     }
 
     /**
-     * Handle the "load asset path" menu item.
+     * Display a "load model asset" dialog.
      */
     void loadModelAsset() {
         String basePath = Maud.model.cgm.getAssetPath();
@@ -140,7 +140,7 @@ class DddDialogs {
     }
 
     /**
-     * Display the "new pose" dialog.
+     * Display a "new pose" dialog.
      */
     void newPose() {
         DialogController controller = new AnimationNameDialog("Create");
@@ -151,7 +151,7 @@ class DddDialogs {
     }
 
     /**
-     * Display the "rename animation" dialog.
+     * Display a "rename animation" dialog.
      */
     void renameAnimation() {
         if (!Maud.model.animation.isBindPoseLoaded()) {
@@ -166,7 +166,7 @@ class DddDialogs {
     }
 
     /**
-     * Display the "rename bone" dialog.
+     * Display a "rename bone" dialog.
      */
     void renameBone() {
         if (Maud.model.bone.isBoneSelected()) {
@@ -180,7 +180,7 @@ class DddDialogs {
     }
 
     /**
-     * Handle a "retarget animation" action without arguments.
+     * Display a "retarget animation" dialog.
      */
     void retargetAnimation() {
         String oldName = Maud.model.retarget.getTargetAnimationName();
@@ -195,7 +195,7 @@ class DddDialogs {
     }
 
     /**
-     * Handle a "select rma" action with no argument.
+     * Display a "select retarget map asset" dialog.
      */
     void selectRetargetMapAsset() {
         String assetPath = Maud.model.retarget.getMappingAssetPath();
@@ -211,7 +211,7 @@ class DddDialogs {
     }
 
     /**
-     * Handle a "select rsca" action with no argument.
+     * Display a "select retarget source cgm asset" dialog.
      */
     void selectRetargetSourceCgmAsset() {
         String assetPath = Maud.model.retarget.getSourceCgmAssetPath();
@@ -226,5 +226,27 @@ class DddDialogs {
         Maud.gui.showTextEntryDialog("Enter asset path for source model:",
                 assetPath, "", DddInputMode.selectRetargetSourceCgmAssetPrefix,
                 controller);
+    }
+
+    /**
+     * Display a "set duration" dialog.
+     */
+    void setDuration() {
+        float oldDuration = Maud.model.animation.getDuration();
+        String defaultText = Float.toString(oldDuration);
+
+        float finalTime = Maud.model.animation.findLatestKeyframe();
+        float min;
+        if (finalTime > 0f) {
+            min = 0.01f;
+        } else {
+            min = 0f;
+        }
+        DialogController controller = new FloatDialog("Set", min,
+                Float.MAX_VALUE);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
+                defaultText, "", DddInputMode.setDurationPrefix, controller);
     }
 }
