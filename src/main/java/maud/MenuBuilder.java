@@ -29,6 +29,7 @@ package maud;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 
 /**
  * A menu builder for Maud.
@@ -73,10 +74,12 @@ class MenuBuilder {
     /**
      * Add an item with no icon to the menu.
      *
-     * @param item
+     * @param item (not null, not empty)
      *
      */
     void add(String item) {
+        Validate.nonEmpty(item, "item");
+
         items.add(item);
         icons.add(null);
     }
@@ -84,10 +87,12 @@ class MenuBuilder {
     /**
      * Add an item with an icon to the menu.
      *
-     * @param item
+     * @param item (not null, not empty)
      * @param iconAssetPath
      */
     void add(String item, String iconAssetPath) {
+        Validate.nonEmpty(item, "item");
+
         items.add(item);
         icons.add(iconAssetPath);
     }
@@ -95,31 +100,31 @@ class MenuBuilder {
     /**
      * Add an item with the bone icon to the menu.
      *
-     * @param item
+     * @param item (not null, not empty)
      */
     void addBone(String item) {
-        items.add(item);
-        icons.add(boneIconAssetPath);
+        Validate.nonEmpty(item, "item");
+        add(item, boneIconAssetPath);
     }
 
     /**
      * Add an item with the dialog icon to the menu.
      *
-     * @param item
+     * @param item (not null, not empty)
      */
     void addDialog(String item) {
-        items.add(item);
-        icons.add(dialogIconAssetPath);
+        Validate.nonEmpty(item, "item");
+        add(item, dialogIconAssetPath);
     }
 
     /**
      * Add an item with the tool icon to the menu.
      *
-     * @param item
+     * @param item (not null, not empty)
      */
     void addTool(String item) {
-        items.add(item);
-        icons.add(toolIconAssetPath);
+        Validate.nonEmpty(item, "item");
+        add(item, toolIconAssetPath);
     }
 
     /**
