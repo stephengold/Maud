@@ -63,9 +63,9 @@ public class SelectedBone implements Cloneable {
     // fields
 
     /**
-     * index of the selected bone, or null for none selected
+     * index of the selected bone, or -1 for none selected
      */
-    private Integer selectedIndex = null;
+    private int selectedIndex = -1;
     // *************************************************************************
     // new methods exposed
 
@@ -177,7 +177,7 @@ public class SelectedBone implements Cloneable {
      */
     Bone getBone() {
         Bone bone;
-        if (selectedIndex == null) {
+        if (selectedIndex == -1) {
             bone = null;
         } else {
             Skeleton skeleton = Maud.model.cgm.getSkeleton();
@@ -214,13 +214,12 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Read the index of the selected bone. Assumes a bone is selected.
+     * Read the index of the selected bone.
      *
-     * @return the bone index
+     * @return the bone index, or -1 if none selected
      */
     public int getIndex() {
-        int index = selectedIndex;
-        return index;
+        return selectedIndex;
     }
 
     /**
@@ -230,10 +229,10 @@ public class SelectedBone implements Cloneable {
      */
     public String getName() {
         String name;
-        Bone bone = getBone();
-        if (bone == null) {
+        if (selectedIndex == -1) {
             name = LoadedCGModel.noBone;
         } else {
+            Bone bone = getBone();
             name = bone.getName();
         }
 
@@ -282,7 +281,7 @@ public class SelectedBone implements Cloneable {
      * @return true if selected, otherwise false
      */
     public boolean isBoneSelected() {
-        if (selectedIndex == null) {
+        if (selectedIndex == -1) {
             return false;
         } else {
             return true;
@@ -396,7 +395,7 @@ public class SelectedBone implements Cloneable {
     /**
      * Select a bone by its index.
      *
-     * @param newIndex which bone to select
+     * @param newIndex which bone to select, or -1 to deselect
      */
     public void select(int newIndex) {
         selectedIndex = newIndex;
@@ -451,7 +450,7 @@ public class SelectedBone implements Cloneable {
      * Select the next bone (by index).
      */
     public void selectNext() {
-        if (selectedIndex != null) {
+        if (selectedIndex != -1) {
             ++selectedIndex;
             int numBones = Maud.model.cgm.countBones();
             if (selectedIndex >= numBones) {
@@ -464,7 +463,7 @@ public class SelectedBone implements Cloneable {
      * Deselect the selected bone, if any.
      */
     public void selectNoBone() {
-        selectedIndex = null;
+        selectedIndex = -1;
     }
 
     /**
@@ -484,7 +483,7 @@ public class SelectedBone implements Cloneable {
      * Select the previous bone (by index).
      */
     public void selectPrevious() {
-        if (selectedIndex != null) {
+        if (selectedIndex != -1) {
             --selectedIndex;
             if (selectedIndex < 0) {
                 int numBones = Maud.model.cgm.countBones();
@@ -572,10 +571,6 @@ public class SelectedBone implements Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         SelectedBone clone = (SelectedBone) super.clone();
-        if (selectedIndex != null) {
-            clone.selectedIndex = new Integer(selectedIndex);
-        }
-
         return clone;
     }
 }
