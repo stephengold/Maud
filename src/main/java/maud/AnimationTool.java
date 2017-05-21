@@ -113,7 +113,9 @@ public class AnimationTool extends WindowController {
         super.update(elapsedTime);
 
         String hasTrackText;
-        if (Maud.model.animation.isBindPoseLoaded()) {
+        if (!Maud.model.bone.isBoneSelected()) {
+            hasTrackText = "no bone";
+        } else if (Maud.model.animation.isBindPoseLoaded()) {
             hasTrackText = "";
         } else {
             if (Maud.model.bone.hasTrack()) {
