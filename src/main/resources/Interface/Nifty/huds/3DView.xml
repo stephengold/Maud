@@ -35,9 +35,9 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <panel id="menu bar"
                    childLayout="horizontal"
                    height="20">
-                <control name="button" id="3DViewButton" label="1] View"
+                <control name="button" id="ViewButton" label="1] View"
                          width="60">
-                    <interact onRelease="perform(open menu 3DView)"/>
+                    <interact onRelease="perform(open menu View)"/>
                 </control>
                 <control name="button" id="CGModelButton" label="2] Model"
                          width="70">

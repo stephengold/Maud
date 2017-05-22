@@ -443,9 +443,6 @@ class DddMenus {
 
         boolean handled = false;
         switch (menuName) {
-            case "3DView":
-                handled = menu3DView(remainder);
-                break;
             case "Animation":
                 handled = menuAnimation(remainder);
                 break;
@@ -473,56 +470,8 @@ class DddMenus {
             case "Spatial":
                 handled = menuSpatial(remainder);
                 break;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle actions from the 3D View menu. TODO rename
-     *
-     * @param remainder not-yet-parsed portion of the action string (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menu3DView(String remainder) {
-        assert remainder != null;
-
-        boolean handled = false;
-        switch (remainder) {
-            case "Axes":
-                Maud.gui.axes.select();
-                handled = true;
-                break;
-            case "Camera":
-                Maud.gui.camera.select();
-                handled = true;
-                break;
-            case "Cursor":
-                Maud.gui.cursor.select();
-                handled = true;
-                break;
-            case "Physics":
-                break;
-            case "Platform":
-                Maud.gui.platform.select();
-                handled = true;
-                break;
-            case "Render":
-                Maud.gui.render.select();
-                handled = true;
-                break;
-            case "Skeleton":
-                Maud.gui.skeleton.select();
-                handled = true;
-                break;
-            case "Skeleton color":
-                Maud.gui.skeletonColor.select();
-                handled = true;
-                break;
-            case "Sky":
-                Maud.gui.sky.select();
-                handled = true;
-                break;
+            case "View":
+                handled = menuView(remainder);
         }
 
         return handled;
@@ -580,6 +529,7 @@ class DddMenus {
                 break;
             case "Tweening":
         }
+
         return handled;
     }
 
@@ -596,9 +546,6 @@ class DddMenus {
          */
         builder.reset();
         switch (menuName) {
-            case "3DView":
-                buildViewMenu();
-                break;
             case "Animation":
                 buildAnimationMenu();
                 break;
@@ -622,6 +569,9 @@ class DddMenus {
                 break;
             case "Spatial":
                 buildSpatialMenu();
+                break;
+            case "View":
+                buildViewMenu();
                 break;
             default:
                 return false;
@@ -777,7 +727,6 @@ class DddMenus {
                 case "Tool":
                     Maud.gui.model.select();
                     handled = true;
-                    break;
             }
         }
 
@@ -861,7 +810,6 @@ class DddMenus {
             case "Source":
                 Misc.browseWeb("https://github.com/stephengold/Maud");
                 handled = true;
-                break;
         }
 
         return handled;
@@ -948,6 +896,55 @@ class DddMenus {
                 break;
             case "Translate":
                 Maud.gui.spatialTranslation.select();
+                handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle actions from the View menu.
+     *
+     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuView(String remainder) {
+        assert remainder != null;
+
+        boolean handled = false;
+        switch (remainder) {
+            case "Axes":
+                Maud.gui.axes.select();
+                handled = true;
+                break;
+            case "Camera":
+                Maud.gui.camera.select();
+                handled = true;
+                break;
+            case "Cursor":
+                Maud.gui.cursor.select();
+                handled = true;
+                break;
+            case "Physics":
+                break;
+            case "Platform":
+                Maud.gui.platform.select();
+                handled = true;
+                break;
+            case "Render":
+                Maud.gui.render.select();
+                handled = true;
+                break;
+            case "Skeleton":
+                Maud.gui.skeleton.select();
+                handled = true;
+                break;
+            case "Skeleton color":
+                Maud.gui.skeletonColor.select();
+                handled = true;
+                break;
+            case "Sky":
+                Maud.gui.sky.select();
                 handled = true;
         }
 
