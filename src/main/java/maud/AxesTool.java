@@ -31,6 +31,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.math.FastMath;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.controls.Slider;
@@ -191,10 +192,9 @@ class AxesTool extends WindowController {
                 if (Maud.model.bone.isBoneSelected()) {
                     int boneIndex = Maud.model.bone.getIndex();
                     transform = Maud.model.pose.modelTransform(boneIndex, null);
-
-                    Spatial cgm = Maud.viewState.getSpatial();
-                    Transform cgmTransform = cgm.getWorldTransform();
-                    transform.combineWithParent(cgmTransform);
+                    Geometry ag = Maud.viewState.findAnimatedGeometry();
+                    Transform agTransform = ag.getWorldTransform();
+                    transform.combineWithParent(agTransform);
                 } else {
                     transform = null;
                 }
