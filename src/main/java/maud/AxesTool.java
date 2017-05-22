@@ -180,7 +180,46 @@ class AxesTool extends WindowController {
     // private methods
 
     /**
-     * Calculate the coordinate transform for the axes. TODO sort
+     * Update the status labels based on the MVC model.
+     */
+    private void updateLabels() {
+        AxesStatus model = Maud.model.axes;
+
+        String mode = model.getMode();
+        String units;
+        switch (mode) {
+            case "bone":
+                if (Maud.model.bone.isBoneSelected()) {
+                    units = " bone units";
+                } else {
+                    units = " units";
+                }
+                break;
+            case "model":
+                units = " model units";
+                break;
+            case "none":
+                units = " units";
+                break;
+            case "spatial":
+                units = " local units";
+                break;
+            case "world":
+                units = " world units";
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+
+        float axesLength = model.getLength();
+        Maud.gui.updateSliderStatus("axesLength", axesLength, units);
+
+        float lineWidth = model.getLineWidth();
+        Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
+    }
+
+    /**
+     * Calculate the coordinate transform for the axes.
      *
      * @return a new instance (in world coordinates) or null to hide the axes
      */
@@ -224,44 +263,5 @@ class AxesTool extends WindowController {
         }
 
         return transform;
-    }
-
-    /**
-     * Update the status labels based on the MVC model.
-     */
-    private void updateLabels() {
-        AxesStatus model = Maud.model.axes;
-
-        String mode = model.getMode();
-        String units;
-        switch (mode) {
-            case "bone":
-                if (Maud.model.bone.isBoneSelected()) {
-                    units = " bone units";
-                } else {
-                    units = " units";
-                }
-                break;
-            case "model":
-                units = " model units";
-                break;
-            case "none":
-                units = " units";
-                break;
-            case "spatial":
-                units = " local units";
-                break;
-            case "world":
-                units = " world units";
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-
-        float axesLength = model.getLength();
-        Maud.gui.updateSliderStatus("axesLength", axesLength, units);
-
-        float lineWidth = model.getLineWidth();
-        Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
     }
 }
