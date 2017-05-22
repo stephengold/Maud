@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * A mapping to convert a bone transform from one skeleton to another. TODO
- * reorder
+ * A mapping to convert a bone transform from one skeleton to another.
  *
  * @author Nehon
  */
@@ -36,14 +35,14 @@ public class BoneMapping implements Savable {
      */
     private List<String> sourceNames = new SafeArrayList<>(String.class);
     /**
-     * name of the corresponding bone in the target skeleton
-     */
-    private String targetName;
-    /**
      * rotation to apply to the animation data so that it matches the bone
      * orientation
      */
     private Quaternion twist;
+    /**
+     * name of the corresponding bone in the target skeleton
+     */
+    private String targetName;
     // *************************************************************************
     // constructors
 
