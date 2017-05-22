@@ -850,7 +850,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="skeletonTool" title="Skeleton Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="370px" width="190px" x="25" y="75">
+                     height="180px" width="190px" x="25" y="75">
                 <panel childLayout="vertical">
                     <panel style="indentPanel">
                         <control name="checkbox" id="skeletonCheckBox"
@@ -858,38 +858,46 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="20"/>
                         <control name="label"
                                  width="12"/>
-                        <control name="label" text="show wireframe"/>
+                        <control name="label" text="visualize skeleton"/>
                     </panel>
                     <panel style="statusPanel">
                         <control name="label" id="skeletonLineWidthSliderStatus"/>
                     </panel>
                     <control name="horizontalSlider" id="skeletonLineWidthSlider"
                              buttonStepSize="1"
-                             height="40"
-                             initial="2" max="10" min="1" stepSize="1"/>
+                             height="30"
+                             initial="2" max="10" min="0" stepSize="1"/>
                     <panel style="statusPanel">
                         <control name="label" id="skeletonPointSizeSliderStatus"/>
                     </panel>
                     <control name="horizontalSlider" id="skeletonPointSizeSlider"
                              buttonStepSize="1"
-                             height="40"
-                             initial="4" max="10" min="1" stepSize="1"/>
-                    <control name="label" text="Wire color:"/>
-                    <panel childLayout="horizontal" padding="10">
+                             height="30"
+                             initial="4" max="10" min="0" stepSize="1"/>
+                </panel>
+            </control>
+
+            <control name="window" id="skeletonColorTool" title="Skeleton Color Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="430px" width="175px" x="75" y="25">
+                <panel childLayout="vertical">
+                    <control name="label" text="Link color:"/>
+                    <panel childLayout="horizontal">
                         <control name="verticalSlider" id="skeRSlider"
                                  buttonStepSize="1"
-                                 height="130"
-                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="skeGSlider"
                                  buttonStepSize="1"
-                                 height="130"
-                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="skeBSlider"
                                  buttonStepSize="1"
-                                 height="130"
-                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
-                               height="130" width="105">
+                               height="110px" width="90px">
                             <control name="label" id="skeRSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
@@ -897,6 +905,60 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                      textHAlign="center"
                                      width="*"/>
                             <control name="label" id="skeBSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                        </panel>
+                    </panel>
+                    <control name="label" text="Bones with tracks:"/>
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="btRSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="btGSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="btBSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="110px" width="90px">
+                            <control name="label" id="btRSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="btGSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="btBSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                        </panel>
+                    </panel>
+                    <control name="label" text="Trackless bones:"/>
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="bntRSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="bntGSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="bntBSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="110px" width="90px">
+                            <control name="label" id="bntRSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="bntGSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="bntBSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
                         </panel>

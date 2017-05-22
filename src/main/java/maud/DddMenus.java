@@ -399,6 +399,7 @@ class DddMenus {
         builder.addTool("Platform");
         builder.addTool("Render");
         builder.addTool("Skeleton");
+        builder.addTool("Skeleton color");
         builder.addTool("Sky");
     }
 
@@ -478,7 +479,7 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the 3D View menu.
+     * Handle actions from the 3D View menu. TODO rename
      *
      * @param remainder not-yet-parsed portion of the action string (not null)
      * @return true if the action is handled, otherwise false
@@ -512,6 +513,10 @@ class DddMenus {
                 break;
             case "Skeleton":
                 Maud.gui.skeleton.select();
+                handled = true;
+                break;
+            case "Skeleton color":
+                Maud.gui.skeletonColor.select();
                 handled = true;
                 break;
             case "Sky":

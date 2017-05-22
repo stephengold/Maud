@@ -320,6 +320,25 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Test whether the loaded animation includes a bone track for the indexed
+     * bone.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @return true if a track exists, otherwise false
+     */
+    public boolean hasTrackForBone(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        boolean result = false;
+        Animation animation = getLoadedAnimation();
+        if (animation != null) {
+            result = MyAnimation.hasTrackForBone(animation, boneIndex);
+        }
+
+        return result;
+    }
+
+    /**
      * Test whether bind pose is loaded.
      *
      * @return true if it's loaded, false if an animation is loaded
@@ -339,7 +358,6 @@ public class LoadedAnimation implements Cloneable {
      */
     public boolean isMoving() {
         boolean running;
-
         if (pausedFlag) {
             running = false;
         } else if (speed == 0f) {

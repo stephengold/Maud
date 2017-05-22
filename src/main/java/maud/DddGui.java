@@ -108,6 +108,7 @@ public class DddGui extends GuiScreenController {
     final RenderTool render = new RenderTool(this);
     final RetargetTool retarget = new RetargetTool(this);
     final ShadowModeTool shadowMode = new ShadowModeTool(this);
+    final SkeletonColorTool skeletonColor = new SkeletonColorTool(this);
     final SkeletonTool skeleton = new SkeletonTool(this);
     final SpatialRotationTool spatialRotation = new SpatialRotationTool(this);
     final SpatialScaleTool spatialScale = new SpatialScaleTool(this);
@@ -331,10 +332,19 @@ public class DddGui extends GuiScreenController {
 
             case "skeletonLineWidthSlider":
             case "skeletonPointSizeSlider":
+                skeleton.onSliderChanged();
+                break;
+
             case "skeRSlider":
             case "skeGSlider":
             case "skeBSlider":
-                skeleton.onSliderChanged();
+            case "btRSlider":
+            case "btGSlider":
+            case "btBSlider":
+            case "bntRSlider":
+            case "bntGSlider":
+            case "bntBSlider":
+                skeletonColor.onSliderChanged();
                 break;
 
             case "xSaSlider":
@@ -507,7 +517,7 @@ public class DddGui extends GuiScreenController {
      * Set a bank of 3 sliders that control a color.
      *
      * @param prefix unique id prefix of the bank (not null)
-     * @return color indicated by the sliders (new instance)
+     * @param color (not null, unaffected)
      */
     void setColorBank(String prefix, ColorRGBA color) {
         assert prefix != null;
@@ -594,6 +604,7 @@ public class DddGui extends GuiScreenController {
         platform.updateScene();
         render.updateShadowFilter();
         skeleton.updateSdc();
+        skeletonColor.updateSdc();
         sky.updateSkyControl();
         /*
          * Update animation even if the animation tool is disabled.

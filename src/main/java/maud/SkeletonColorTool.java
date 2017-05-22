@@ -26,7 +26,7 @@
  */
 package maud;
 
-import de.lessvoid.nifty.controls.Slider;
+import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.nifty.BasicScreenController;
@@ -34,11 +34,12 @@ import jme3utilities.nifty.WindowController;
 import maud.model.SkeletonStatus;
 
 /**
- * The controller for the "Skeleton Tool" window in Maud's "3D View" screen.
+ * The controller for the "Skeleton Color Tool" window in Maud's "3D View"
+ * screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SkeletonTool extends WindowController {
+class SkeletonColorTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -46,7 +47,15 @@ class SkeletonTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            SkeletonTool.class.getName());
+            SkeletonColorTool.class.getName());
+    // *************************************************************************
+    // fields
+
+    /**
+     * flag that causes this controller to temporarily ignore change events from
+     * the sliders
+     */
+    private boolean ignoreSliderChanges = false;
     // *************************************************************************
     // constructors
 
@@ -55,8 +64,8 @@ class SkeletonTool extends WindowController {
      *
      * @param screenController
      */
-    SkeletonTool(BasicScreenController screenController) {
-        super(screenController, "skeletonTool", false);
+    SkeletonColorTool(BasicScreenController screenController) {
+        super(screenController, "skeletonColorTool", false);
     }
     // *************************************************************************
     // new methods exposed
@@ -65,11 +74,18 @@ class SkeletonTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        float lineWidth = Maud.gui.readSlider("skeletonLineWidth");
-        Maud.model.skeleton.setLineWidth(lineWidth);
+        if (ignoreSliderChanges) {
+            return;
+        }
 
-        float pointSize = Maud.gui.readSlider("skeletonPointSize");
-        Maud.model.skeleton.setPointSize(pointSize);
+        ColorRGBA color = Maud.gui.readColorBank("ske");
+        Maud.model.skeleton.setLinkColor(color);
+
+        color = Maud.gui.readColorBank("bt");
+        Maud.model.skeleton.setTrackedColor(color);
+
+        color = Maud.gui.readColorBank("bnt");
+        Maud.model.skeleton.setTracklessColor(color);
     }
 
     /**
@@ -82,15 +98,18 @@ class SkeletonTool extends WindowController {
         }
         SkeletonStatus model = Maud.model.skeleton;
 
-        boolean visible = model.isVisible();
-        control.setEnabled(visible);
+        ColorRGBA color = model.copyLinkColor(null);
+        control.setLineColor(color);
 
-        float lineWidth = model.getLineWidth();
-        control.setLineWidth(lineWidth);
+        color = model.copyTracklessColor(null); // TODO avoid extra garbage
+        control.setPointColor(color);
 
-        if (control.supportsPointSize()) {
-            float pointSize = model.getPointSize();
-            control.setPointSize(pointSize);
+        model.copyTrackedColor(color);
+        int numBones = Maud.model.cgm.countBones();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            if (Maud.model.animation.hasTrackForBone(boneIndex)) {
+                control.setPointColor(boneIndex, color);
+            }
         }
     }
     // *************************************************************************
@@ -106,19 +125,19 @@ class SkeletonTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
+
         SkeletonStatus model = Maud.model.skeleton;
+        ignoreSliderChanges = true;
 
-        boolean visible = model.isVisible();
-        Maud.gui.setChecked("skeleton", visible);
+        ColorRGBA color = model.copyLinkColor(null);
+        Maud.gui.setColorBank("ske", color);
 
-        Slider slider = Maud.gui.getSlider("skeletonLineWidth");
-        float lineWidth = model.getLineWidth();
-        slider.setValue(lineWidth);
-        Maud.gui.updateSliderStatus("skeletonLineWidth", lineWidth, " pixels");
+        color = model.copyTrackedColor(null);
+        Maud.gui.setColorBank("bt", color);
 
-        slider = Maud.gui.getSlider("skeletonPointSize");
-        float pointSize = model.getPointSize();
-        slider.setValue(pointSize);
-        Maud.gui.updateSliderStatus("skeletonPointSize", pointSize, " pixels");
+        model.copyTracklessColor(color);
+        Maud.gui.setColorBank("bnt", color);
+
+        ignoreSliderChanges = false;
     }
 }

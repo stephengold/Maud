@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * The status of the visible skeleton in the Maud application.
+ * The status of the skeleton visualization in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -52,52 +52,90 @@ public class SkeletonStatus implements Cloneable {
      */
     private boolean visibleFlag = true;
     /**
-     * color of the skeleton
+     * color for skeleton links
      */
-    private ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 1f);
+    private ColorRGBA linkColor = new ColorRGBA(1f, 1f, 1f, 1f);
     /**
-     * point size (in pixels, &ge;1)
+     * color for heads of bones with tracks
      */
-    private float pointSize = 4f;
+    private ColorRGBA trackedColor = new ColorRGBA(0f, 1f, 0f, 1f);
     /**
-     * line width for connectors (in pixels, &ge;1)
+     * color for heads of bones without tracks
+     */
+    private ColorRGBA tracklessColor = new ColorRGBA(1f, 0f, 0f, 1f);
+    /**
+     * line width for skeleton links (in pixels, &ge;0)
      */
     private float lineWidth = 1f;
+    /**
+     * point size (in pixels, &ge;0)
+     */
+    private float pointSize = 5f;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Copy the color of the skeleton.
+     * Copy the color for the skeleton links.
      *
      * @param storeResult (modified if not null)
      * @return color (either storeResult or a new instance)
      */
-    public ColorRGBA copyColor(ColorRGBA storeResult) {
+    public ColorRGBA copyLinkColor(ColorRGBA storeResult) {
         if (storeResult == null) {
             storeResult = new ColorRGBA();
         }
-        storeResult.set(color);
+        storeResult.set(linkColor);
 
         return storeResult;
     }
 
     /**
-     * Read the width of each line.
+     * Copy the color for the heads of bones with tracks.
      *
-     * @return width (in pixels, &ge;1)
+     * @param storeResult (modified if not null)
+     * @return color (either storeResult or a new instance)
+     */
+    public ColorRGBA copyTrackedColor(ColorRGBA storeResult) {
+        if (storeResult == null) {
+            storeResult = new ColorRGBA();
+        }
+        storeResult.set(trackedColor);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the color for the heads of bones without tracks.
+     *
+     * @param storeResult (modified if not null)
+     * @return color (either storeResult or a new instance)
+     */
+    public ColorRGBA copyTracklessColor(ColorRGBA storeResult) {
+        if (storeResult == null) {
+            storeResult = new ColorRGBA();
+        }
+        storeResult.set(tracklessColor);
+
+        return storeResult;
+    }
+
+    /**
+     * Read the width of the link lines.
+     *
+     * @return width (in pixels, &ge;0)
      */
     public float getLineWidth() {
-        assert lineWidth >= 1f : lineWidth;
+        assert lineWidth >= 0f : lineWidth;
         return lineWidth;
     }
 
     /**
-     * Read the size of each point.
+     * Read the size of the bone-head points.
      *
-     * @return size (in pixels, &ge;1)
+     * @return size (in pixels, &ge;0)
      */
     public float getPointSize() {
-        assert pointSize >= 1f : pointSize;
+        assert pointSize >= 0f : pointSize;
         return pointSize;
     }
 
@@ -111,33 +149,53 @@ public class SkeletonStatus implements Cloneable {
     }
 
     /**
-     * Alter the color.
+     * Alter the color of the skeleton links.
      *
      * @param newColor (not null, unaffected)
      */
-    public void setColor(ColorRGBA newColor) {
+    public void setLinkColor(ColorRGBA newColor) {
         Validate.nonNull(newColor, "color");
-        color.set(newColor);
+        linkColor.set(newColor);
     }
 
     /**
-     * Alter the line width.
+     * Alter the line width of the skeleton links.
      *
-     * @param width line width (in pixels, &ge;1)
+     * @param width line width (in pixels, &ge;0)
      */
     public void setLineWidth(float width) {
-        Validate.inRange(width, "line width", 1f, Float.MAX_VALUE);
+        Validate.inRange(width, "line width", 0f, Float.MAX_VALUE);
         lineWidth = width;
     }
 
     /**
-     * Alter the point size.
+     * Alter the point size of the bone heads.
      *
-     * @param size point size (in pixels, &ge;1)
+     * @param size point size (in pixels, &ge;0)
      */
     public void setPointSize(float size) {
-        Validate.inRange(size, "point size", 1f, Float.MAX_VALUE);
+        Validate.inRange(size, "point size", 0f, Float.MAX_VALUE);
         pointSize = size;
+    }
+
+    /**
+     * Alter the color of the heads of bones with tracks.
+     *
+     * @param newColor (not null, unaffected)
+     */
+    public void setTrackedColor(ColorRGBA newColor) {
+        Validate.nonNull(newColor, "color");
+        trackedColor.set(newColor);
+    }
+
+    /**
+     * Alter the color of the heads of bones without tracks.
+     *
+     * @param newColor (not null, unaffected)
+     */
+    public void setTracklessColor(ColorRGBA newColor) {
+        Validate.nonNull(newColor, "color");
+        tracklessColor.set(newColor);
     }
 
     /**
@@ -160,7 +218,9 @@ public class SkeletonStatus implements Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         SkeletonStatus clone = (SkeletonStatus) super.clone();
-        clone.color = color.clone();
+        clone.linkColor = linkColor.clone();
+        clone.trackedColor = trackedColor.clone();
+        clone.tracklessColor = tracklessColor.clone();
 
         return clone;
     }
