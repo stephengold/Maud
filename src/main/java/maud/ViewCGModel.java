@@ -35,10 +35,8 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
@@ -140,7 +138,7 @@ public class ViewCGModel {
      * @return a pre-existing instance, or null if none
      */
     Geometry findAnimatedGeometry() {
-        Geometry result = findAnimatedGeometry(cgModelRoot);
+        Geometry result = Util.findAnimatedGeometry(cgModelRoot);
         return result;
     }
 
@@ -301,35 +299,6 @@ public class ViewCGModel {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Find an animated geometry in the specified subtree of the scene graph.
-     *
-     * @param subtree where to search (not null)
-     * @return a pre-existing instance, or null if none
-     */
-    private Geometry findAnimatedGeometry(Spatial subtree) {
-        Geometry result = null;
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            Mesh mesh = geometry.getMesh();
-            if (mesh.isAnimated()) {
-                result = geometry;
-            }
-
-        } else {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                result = findAnimatedGeometry(child);
-                if (result != null) {
-                    break;
-                }
-            }
-        }
-
-        return result;
-    }
 
     /**
      * Alter a newly loaded CG model to prepare it for viewing and editing.
