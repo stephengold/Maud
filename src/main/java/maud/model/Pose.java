@@ -245,6 +245,9 @@ public class Pose implements Cloneable {
      */
     public void setScale(int boneIndex, Vector3f scale) {
         Validate.nonNull(scale, "scale");
+        Validate.positive(scale.x, "x scale");
+        Validate.positive(scale.y, "y scale");
+        Validate.positive(scale.z, "z scale");
 
         Transform boneTransform = transforms.get(boneIndex);
         boneTransform.setScale(scale);

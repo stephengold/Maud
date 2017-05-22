@@ -90,6 +90,13 @@ class SpatialScaleTool extends WindowController {
      */
     void onSliderChanged() {
         Vector3f scales = Maud.gui.readVectorBank("Ss");
+        /*
+         * Avoid scale factors near zero.
+         */
+        scales.x = Math.max(scales.x, 0.001f);
+        scales.y = Math.max(scales.y, 0.001f);
+        scales.z = Math.max(scales.z, 0.001f);
+
         Maud.model.cgm.setSpatialScale(scales);
     }
 

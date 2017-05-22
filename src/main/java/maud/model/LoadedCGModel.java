@@ -803,6 +803,9 @@ public class LoadedCGModel implements Cloneable {
      */
     public void setSpatialScale(Vector3f scale) {
         Validate.nonNull(scale, "scale");
+        Validate.positive(scale.x, "x scale");
+        Validate.positive(scale.y, "y scale");
+        Validate.positive(scale.z, "z scale");
 
         Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
         spatial.setLocalScale(scale);

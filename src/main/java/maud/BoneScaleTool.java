@@ -86,6 +86,13 @@ class BoneScaleTool extends WindowController {
     void onSliderChanged() {
         if (shouldBeEnabled()) {
             Vector3f scales = Maud.gui.readVectorBank("Sca");
+            /*
+             * Avoid scale factors near zero.
+             */
+            scales.x = Math.max(scales.x, 0.001f);
+            scales.y = Math.max(scales.y, 0.001f);
+            scales.z = Math.max(scales.z, 0.001f);
+
             int boneIndex = Maud.model.bone.getIndex();
             Maud.model.pose.setScale(boneIndex, scales);
         }
