@@ -132,9 +132,7 @@ public class SelectedTrack implements Cloneable {
     public int countTranslations() {
         int count = 0;
         BoneTrack track = findTrack();
-        if (track == null) {
-            return 0;
-        } else {
+        if (track != null) {
             Vector3f[] offsets = track.getTranslations();
             count = MyVector3f.countDistinct(offsets);
         }
