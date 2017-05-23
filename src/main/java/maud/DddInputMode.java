@@ -297,17 +297,18 @@ class DddInputMode extends InputMode {
      */
     private boolean nextAction(String actionString) {
         boolean handled = false;
-        if (actionString.equals("next animation")) {
-            Maud.model.animation.loadNext();
-            handled = true;
-
-        } else if (actionString.equals("next bone")) {
-            Maud.model.bone.selectNext();
-            handled = true;
-
-        } else if (actionString.equals("next checkpoint")) {
-            History.redo();
-            handled = true;
+        switch (actionString) {
+            case "next animation":
+                Maud.model.animation.loadNext();
+                handled = true;
+                break;
+            case "next bone":
+                Maud.model.bone.selectNext();
+                handled = true;
+                break;
+            case "next checkpoint":
+                History.redo();
+                handled = true;
         }
 
         return handled;
@@ -337,17 +338,18 @@ class DddInputMode extends InputMode {
      */
     private boolean previousAction(String actionString) {
         boolean handled = false;
-        if (actionString.equals("previous animation")) {
-            Maud.model.animation.loadPrevious();
-            handled = true;
-
-        } else if (actionString.equals("previous bone")) {
-            Maud.model.bone.selectPrevious();
-            handled = true;
-
-        } else if (actionString.equals("previous checkpoint")) {
-            History.undo();
-            handled = true;
+        switch (actionString) {
+            case "previous animation":
+                Maud.model.animation.loadPrevious();
+                handled = true;
+                break;
+            case "previous bone":
+                Maud.model.bone.selectPrevious();
+                handled = true;
+                break;
+            case "previous checkpoint":
+                History.undo();
+                handled = true;
         }
 
         return handled;
