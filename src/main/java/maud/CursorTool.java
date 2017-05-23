@@ -114,7 +114,7 @@ class CursorTool extends WindowController {
              */
             ColorRGBA newColor = Maud.model.cursor.copyColor(null);
             Material material = geometry.getMaterial();
-            material.setColor("Color", newColor);
+            material.setColor("Color", newColor); // note: creates alias
             /*
              * location
              */
