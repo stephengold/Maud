@@ -155,25 +155,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Count the number of keyframes in the selected bone track.
-     *
-     * @return count (&ge;0)
-     */
-    public int countKeyframes() {
-        int count;
-        BoneTrack track = Maud.model.bone.findTrack();
-        if (track == null) {
-            count = 0;
-        } else {
-            float[] times = track.getTimes();
-            count = times.length;
-        }
-
-        assert count >= 0 : count;
-        return count;
-    }
-
-    /**
      * Count the total number of tracks in the loaded animation.
      *
      * @return count (&ge;0)
@@ -203,27 +184,6 @@ public class LoadedAnimation implements Cloneable {
             Maud.model.cgm.deleteAnimation(animation);
             loadBindPose();
         }
-    }
-
-    /**
-     * Find the index of the keyframe (if any) in the selected track at the
-     * current track time.
-     *
-     * @return keyframe index, or -1 if no keyframe
-     */
-    public int findKeyframe() {
-        BoneTrack track = Maud.model.bone.findTrack();
-        float[] times = track.getTimes();
-
-        int frameIndex = -1;
-        for (int iFrame = 0; iFrame < times.length; iFrame++) {
-            if (time == times[iFrame]) {
-                frameIndex = iFrame;
-                break;
-            }
-        }
-
-        return frameIndex;
     }
 
     /**
@@ -376,20 +336,6 @@ public class LoadedAnimation implements Cloneable {
      */
     public boolean isPaused() {
         return pausedFlag;
-    }
-
-    /**
-     * Find the time of the last keyframe in the selected bone track.
-     *
-     * @return animation time (&ge;0)
-     */
-    public float lastKeyframeTime() {
-        BoneTrack track = Maud.model.bone.findTrack();
-        float[] times = track.getTimes();
-        int lastIndex = times.length - 1;
-        float result = times[lastIndex];
-
-        return result;
     }
 
     /**
@@ -571,35 +517,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Reduce the selected bone track by the specified factor.
-     *
-     * @param factor reduction factor (&ge;2)
-     */
-    public void reduceTrack(int factor) {
-        Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
-        assert Maud.model.bone.hasTrack();
-
-        float duration = getDuration();
-        Animation newAnimation = new Animation(loadedName, duration);
-
-        Animation loaded = getLoadedAnimation();
-        Track selectedTrack = Maud.model.bone.findTrack();
-        Track[] loadedTracks = loaded.getTracks();
-        for (Track track : loadedTracks) {
-            Track clone;
-            if (track == selectedTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                clone = Util.reduce(boneTrack, factor);
-            } else {
-                clone = track.clone();
-            }
-            newAnimation.addTrack(clone);
-        }
-
-        Maud.model.cgm.replaceAnimation(loaded, newAnimation);
-    }
-
-    /**
      * Rename the loaded animation.
      *
      * @param newName (not null, not empty, not bindPoseName, not in use)
@@ -631,7 +548,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void selectKeyframe(String name) {
         Validate.nonNull(name, "keyframe name");
-        assert Maud.model.bone.isTrackSelected();
+        assert Maud.model.track.isTrackSelected();
 
         float newTime = Float.valueOf(name);
         // TODO validate
@@ -642,7 +559,7 @@ public class LoadedAnimation implements Cloneable {
      * Select the first keyframe in the selected bone track.
      */
     public void selectKeyframeFirst() {
-        BoneTrack track = Maud.model.bone.findTrack();
+        BoneTrack track = Maud.model.track.findTrack();
         float[] times = track.getTimes();
         float t = times[0];
         setTime(t);
@@ -652,7 +569,7 @@ public class LoadedAnimation implements Cloneable {
      * Select the last keyframe in the selected bone track.
      */
     public void selectKeyframeLast() {
-        BoneTrack track = Maud.model.bone.findTrack();
+        BoneTrack track = Maud.model.track.findTrack();
         float[] times = track.getTimes();
         int lastIndex = times.length - 1;
         float t = times[lastIndex];
@@ -663,7 +580,7 @@ public class LoadedAnimation implements Cloneable {
      * Select the next keyframe in the selected bone track.
      */
     public void selectKeyframeNext() {
-        BoneTrack track = Maud.model.bone.findTrack();
+        BoneTrack track = Maud.model.track.findTrack();
         float[] times = track.getTimes();
         for (int iFrame = 0; iFrame < times.length; iFrame++) {
             if (times[iFrame] > time) {
@@ -677,7 +594,7 @@ public class LoadedAnimation implements Cloneable {
      * Select the next keyframe in the selected bone track.
      */
     public void selectKeyframePrevious() {
-        BoneTrack track = Maud.model.bone.findTrack();
+        BoneTrack track = Maud.model.track.findTrack();
         float[] times = track.getTimes();
         for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
             if (times[iFrame] < time) {

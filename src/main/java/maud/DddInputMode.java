@@ -378,7 +378,7 @@ class DddInputMode extends InputMode {
         } else if (actionString.startsWith(reduceTrackPrefix)) {
             String f = MyString.remainder(actionString, reduceTrackPrefix);
             int factor = Integer.parseInt(f);
-            Maud.model.animation.reduceTrack(factor);
+            Maud.model.track.reduceTrack(factor);
             handled = true;
         }
 
@@ -631,15 +631,15 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "set track rotation all":
-                Maud.model.bone.setTrackRotationAll();
+                Maud.model.track.setTrackRotationAll();
                 handled = true;
                 break;
             case "set track scale all":
-                Maud.model.bone.setTrackScaleAll();
+                Maud.model.track.setTrackScaleAll();
                 handled = true;
                 break;
             case "set track translation all":
-                Maud.model.bone.setTrackTranslationAll();
+                Maud.model.track.setTrackTranslationAll();
                 handled = true;
         }
 

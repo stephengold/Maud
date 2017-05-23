@@ -87,6 +87,10 @@ public class DddModel {
      */
     final public SelectedSpatial spatial;
     /**
+     * which track is selected
+     */
+    final public SelectedTrack track;
+    /**
      * status of the skeleton visualization
      */
     final public SkeletonStatus skeleton;
@@ -107,6 +111,7 @@ public class DddModel {
         /* retarget field will be set later */
         bone = new SelectedBone();
         spatial = new SelectedSpatial();
+        track = new SelectedTrack();
         skeleton = new SkeletonStatus();
     }
 
@@ -127,6 +132,7 @@ public class DddModel {
             bone = (SelectedBone) source.bone.clone();
             retarget = (RetargetParameters) source.retarget.clone();
             spatial = (SelectedSpatial) source.spatial.clone();
+            track = (SelectedTrack) source.track.clone();
             skeleton = (SkeletonStatus) source.skeleton.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException();

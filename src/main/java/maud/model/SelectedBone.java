@@ -26,23 +26,14 @@
  */
 package maud.model;
 
-import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
-import com.jme3.animation.Track;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
-import com.jme3.math.Vector3f;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyAnimation;
 import jme3utilities.MyString;
-import jme3utilities.math.MyVector3f;
 import maud.Maud;
 
 /**
@@ -86,88 +77,6 @@ public class SelectedBone implements Cloneable {
 
         assert result >= 0 : result;
         return result;
-    }
-
-    /**
-     * Count the number of distinct rotations in the selected track.
-     *
-     * @return count (&ge;0)
-     */
-    public int countRotations() {
-        int count;
-        BoneTrack track = findTrack();
-        if (track == null) {
-            count = 0;
-        } else {
-            Quaternion[] rotations = track.getRotations();
-            Set<Quaternion> distinct = new HashSet<>(rotations.length);
-            for (Quaternion rot : rotations) {
-                distinct.add(rot);
-            }
-            count = distinct.size();
-        }
-
-        return count;
-    }
-
-    /**
-     * Count the number of distinct scales in the selected track.
-     *
-     * @return count (&ge;0)
-     */
-    public int countScales() {
-        int count;
-        BoneTrack track = findTrack();
-        if (track == null) {
-            count = 0;
-        } else {
-            Vector3f[] scales = track.getScales();
-            if (scales == null) {
-                count = 0;
-            } else {
-                count = MyVector3f.countDistinct(scales);
-            }
-        }
-
-        return count;
-    }
-
-    /**
-     * Count the number of distinct translations in the selected track.
-     *
-     * @return count (&ge;0)
-     */
-    public int countTranslations() {
-        int count = 0;
-        BoneTrack track = findTrack();
-        if (track == null) {
-            return 0;
-        } else {
-            Vector3f[] offsets = track.getTranslations();
-            count = MyVector3f.countDistinct(offsets);
-        }
-
-        return count;
-    }
-
-    /**
-     * Find the track for the selected bone in the loaded animation.
-     *
-     * @return the pre-existing instance, or null if none
-     */
-    BoneTrack findTrack() {
-        if (!Maud.model.bone.isBoneSelected()) {
-            return null;
-        }
-        if (Maud.model.animation.isBindPoseLoaded()) {
-            return null;
-        }
-
-        Animation anim = Maud.model.animation.getLoadedAnimation();
-        int boneIndex = Maud.model.bone.getIndex();
-        BoneTrack track = MyAnimation.findTrack(anim, boneIndex);
-
-        return track;
     }
 
     /**
@@ -262,12 +171,12 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Test whether the selected bone has a BoneTrack.
+     * Test whether the selected bone has a BoneTrack in the loaded animation.
      *
      * @return true if a bone is selected and it has a track, otherwise false
      */
     public boolean hasTrack() {
-        BoneTrack track = findTrack();
+        BoneTrack track = Maud.model.track.findTrack();
         if (track == null) {
             return false;
         } else {
@@ -301,54 +210,6 @@ public class SelectedBone implements Cloneable {
         } else {
             Bone parent = bone.getParent();
             result = (parent == null);
-        }
-
-        return result;
-    }
-
-    /**
-     * Test whether a bone track is selected.
-     *
-     * @return true if one is selected, false if none is selected
-     */
-    public boolean isTrackSelected() {
-        if (Maud.model.bone.isBoneSelected()) {
-            if (Maud.model.animation.isBindPoseLoaded()) {
-                return false;
-            }
-            Track track = findTrack();
-            if (track == null) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Enumerate all keyframes of the selected bone in the loaded animation.
-     *
-     * @return a new list, or null if no options
-     */
-    public List<String> listKeyframes() {
-        List<String> result = null;
-        if (Maud.model.animation.isBindPoseLoaded()) {
-            logger.log(Level.INFO, "No animation is selected.");
-        } else if (!Maud.model.bone.isBoneSelected()) {
-            logger.log(Level.INFO, "No bone is selected.");
-        } else if (!isTrackSelected()) {
-            logger.log(Level.INFO, "No track is selected.");
-        } else {
-            BoneTrack track = findTrack();
-            float[] keyframes = track.getTimes();
-
-            result = new ArrayList<>(20);
-            for (float keyframe : keyframes) {
-                String menuItem = String.format("%.3f", keyframe);
-                result.add(menuItem);
-            }
         }
 
         return result;
@@ -489,74 +350,6 @@ public class SelectedBone implements Cloneable {
                 int numBones = Maud.model.cgm.countBones();
                 selectedIndex = numBones - 1;
             }
-        }
-    }
-
-    /**
-     * Alter all rotations in the selected track to match the displayed pose.
-     */
-    public void setTrackRotationAll() {
-        BoneTrack track = Maud.model.bone.findTrack();
-        if (track != null) {
-            int boneIndex = Maud.model.bone.getIndex();
-            Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
-                    null);
-            Quaternion poseRotation = poseTransform.getRotation();
-
-            float[] times = track.getTimes();
-            Vector3f[] translations = track.getTranslations();
-            Quaternion[] rotations = track.getRotations();
-            for (Quaternion rotation : rotations) {
-                rotation.set(poseRotation);
-            }
-            Vector3f[] scales = track.getScales();
-            Maud.model.cgm.setKeyframes(times, translations, rotations, scales);
-        }
-    }
-
-    /**
-     * Alter all scales in the selected track to match the displayed pose.
-     */
-    public void setTrackScaleAll() {
-        BoneTrack track = Maud.model.bone.findTrack();
-        if (track != null) {
-            int boneIndex = Maud.model.bone.getIndex();
-            Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
-                    null);
-            Vector3f poseScale = poseTransform.getScale();
-
-            float[] times = track.getTimes();
-            Vector3f[] translations = track.getTranslations();
-            Quaternion[] rotations = track.getRotations();
-            Vector3f[] scales = track.getScales();
-            if (scales != null) {
-                for (Vector3f scale : scales) {
-                    scale.set(poseScale);
-                }
-                Maud.model.cgm.setKeyframes(times, translations, rotations, scales);
-            }
-        }
-    }
-
-    /**
-     * Alter all translations in the selected track to match the displayed pose.
-     */
-    public void setTrackTranslationAll() {
-        BoneTrack track = Maud.model.bone.findTrack();
-        if (track != null) {
-            int boneIndex = Maud.model.bone.getIndex();
-            Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
-                    null);
-            Vector3f poseTranslation = poseTransform.getTranslation();
-
-            float[] times = track.getTimes();
-            Vector3f[] translations = track.getTranslations();
-            for (Vector3f translation : translations) {
-                translation.set(poseTranslation);
-            }
-            Quaternion[] rotations = track.getRotations();
-            Vector3f[] scales = track.getScales();
-            Maud.model.cgm.setKeyframes(times, translations, rotations, scales);
         }
     }
     // *************************************************************************

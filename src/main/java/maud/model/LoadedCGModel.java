@@ -777,7 +777,7 @@ public class LoadedCGModel implements Cloneable {
         assert translations != null;
         assert rotations != null;
 
-        BoneTrack track = Maud.model.bone.findTrack();
+        BoneTrack track = Maud.model.track.findTrack();
         track.setKeyframes(times, translations, rotations, scales);
         setEdited();
     }
