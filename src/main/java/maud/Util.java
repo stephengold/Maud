@@ -40,6 +40,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
@@ -134,6 +135,42 @@ public class Util {
     }
 
     /**
+     * De-duplicate a list of strings by appending distinguishing suffixes as
+     * needed. The number of strings and their order remains unchanged.
+     *
+     * @param list input (not null)
+     * @param separator text to separate original name from suffix (not null)
+     */
+    public static void dedup(List<String> list, String separator) {
+        Validate.nonNull(list, "list");
+
+        for (String string : list) {
+            int numInstances = 0;
+            for (String s : list) {
+                if (s.equals(string)) {
+                    ++numInstances;
+                }
+            }
+            if (numInstances > 1) {
+                /*
+                 * Append a disinguishing suffix to each duplicate.
+                 */
+                int numElements = list.size();
+                int nextSuffix = 1;
+                for (int index = 0; index < numElements; index++) {
+                    String originalName = list.get(index);
+                    if (originalName.equals(string)) {
+                        String withSuffix = String.format("%s%s%d",
+                                originalName, separator, nextSuffix);
+                        ++nextSuffix;
+                        list.set(index, withSuffix);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Find an animated geometry in the specified subtree of the scene graph.
      *
      * @param subtree where to search (not null)
@@ -156,6 +193,28 @@ public class Util {
                 if (result != null) {
                     break;
                 }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Find the index of the specified SG control in the specified spatial.
+     *
+     * @param sgc SG control to find (not null)
+     * @param spatial where the control was added (not null)
+     * @return index (&ge;0) or -1 if not found
+     */
+    public static int findIndex(Control sgc, Spatial spatial) {
+        Validate.nonNull(sgc, "control");
+
+        int result = -1;
+        int numControls = spatial.getNumControls();
+        for (int index = 0; index < numControls; index++) {
+            Control control = spatial.getControl(index);
+            if (control == sgc) {
+                result = index;
             }
         }
 
