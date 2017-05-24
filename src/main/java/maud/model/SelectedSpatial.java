@@ -502,6 +502,19 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Access the selected spatial in the MVC model.
+     *
+     * @return the pre-existing instance
+     */
+    Spatial modelSpatial() {
+        Spatial modelRoot = Maud.model.cgm.getRootSpatial();
+        Spatial result = findSpatial(modelRoot);
+
+        assert result != null;
+        return result;
+    }
+
+    /**
      * Select (by index) a child of the selected spatial.
      *
      * @param childIndex (&ge;0)
@@ -629,19 +642,6 @@ public class SelectedSpatial implements Cloneable {
         }
 
         return child;
-    }
-
-    /**
-     * Access the selected spatial in the MVC model. TODO wrong section
-     *
-     * @return the pre-existing instance
-     */
-    Spatial modelSpatial() {
-        Spatial modelRoot = Maud.model.cgm.getRootSpatial();
-        Spatial result = findSpatial(modelRoot);
-
-        assert result != null;
-        return result;
     }
 
     /**

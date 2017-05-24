@@ -68,18 +68,6 @@ class DddMenus {
     // new methods exposed
 
     /**
-     * Display a "CGModel -> Load" menu. TODO wrong section
-     */
-    private void loadCGModel() {
-        String prefix = "open menu CGModel -> Load -> ";
-        builder.reset();
-        buildCGModelLoadMenu();
-        String[] items = builder.copyItems();
-        String[] icons = builder.copyIcons();
-        Maud.gui.showPopupMenu(prefix, items, icons);
-    }
-
-    /**
      * Handle a "load model file" action where the argument may be the name of a
      * folder/directory.
      *
@@ -449,6 +437,18 @@ class DddMenus {
         }
 
         return names;
+    }
+
+    /**
+     * Display a "CGModel -> Load" menu.
+     */
+    private void loadCGModel() {
+        String prefix = "open menu CGModel -> Load -> ";
+        builder.reset();
+        buildCGModelLoadMenu();
+        String[] items = builder.copyItems();
+        String[] icons = builder.copyIcons();
+        Maud.gui.showPopupMenu(prefix, items, icons);
     }
 
     /**

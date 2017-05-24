@@ -185,28 +185,6 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Generate a sorted list of animation names, not including bindPose. TODO
-     * sort
-     *
-     * @return a new list
-     */
-    List<String> listAnimationsSorted() {
-        List<String> result;
-        AnimControl animControl = getAnimControl();
-        if (animControl == null) {
-            result = new ArrayList<>(0);
-        } else {
-            Collection<String> names = animControl.getAnimationNames();
-            int numNames = names.size();
-            result = new ArrayList<>(numNames);
-            result.addAll(names);
-            Collections.sort(result);
-        }
-
-        return result;
-    }
-
-    /**
      * Copy the local transform of the selected spatial.
      *
      * @param storeResult (modified if not null)
@@ -536,6 +514,27 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
+     * Generate a sorted list of animation names, not including bindPose.
+     *
+     * @return a new list
+     */
+    List<String> listAnimationsSorted() {
+        List<String> result;
+        AnimControl animControl = getAnimControl();
+        if (animControl == null) {
+            result = new ArrayList<>(0);
+        } else {
+            Collection<String> names = animControl.getAnimationNames();
+            int numNames = names.size();
+            result = new ArrayList<>(numNames);
+            result.addAll(names);
+            Collections.sort(result);
+        }
+
+        return result;
+    }
+
+    /**
      * Enumerate all bones in the loaded model.
      *
      * @return a new list of names, including noBone
@@ -592,26 +591,6 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Enumerate root bones in the loaded model. TODO sort
-     *
-     * @return a new list of names
-     */
-    public List<String> listRootBoneNames() {
-        List<String> boneNames = new ArrayList<>(5);
-        Skeleton skeleton = getSkeleton();
-        if (skeleton != null) {
-            Bone[] roots = skeleton.getRoots();
-            for (Bone rootBone : roots) {
-                String name = rootBone.getName();
-                boneNames.add(name);
-            }
-            boneNames.remove("");
-        }
-
-        return boneNames;
-    }
-
-    /**
      * Enumerate all meshes in the loaded model.
      *
      * @return a new list
@@ -629,6 +608,26 @@ public class LoadedCGModel implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Enumerate root bones in the loaded model.
+     *
+     * @return a new list of names
+     */
+    public List<String> listRootBoneNames() {
+        List<String> boneNames = new ArrayList<>(5);
+        Skeleton skeleton = getSkeleton();
+        if (skeleton != null) {
+            Bone[] roots = skeleton.getRoots();
+            for (Bone rootBone : roots) {
+                String name = rootBone.getName();
+                boneNames.add(name);
+            }
+            boneNames.remove("");
+        }
+
+        return boneNames;
     }
 
     /**

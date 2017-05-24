@@ -134,15 +134,6 @@ class SpatialTool extends WindowController {
     }
 
     /**
-     * Update the display of the spatial's SG controls. TODO re-order
-     */
-    private void updateSgcs() {
-        int numControls = Maud.model.spatial.countSgcs();
-        String controlsText = String.format("%d", numControls);
-        Maud.gui.setStatusText("spatialControls", " " + controlsText);
-    }
-
-    /**
      * Update the display of the spatial's cull hints.
      */
     private void updateHint() {
@@ -252,6 +243,15 @@ class SpatialTool extends WindowController {
 
         Maud.gui.setStatusText("spatialParent", " " + parentText);
         Maud.gui.setButtonLabel("spatialSelectParentButton", spButton);
+    }
+
+    /**
+     * Update the display of the spatial's SG controls.
+     */
+    private void updateSgcs() {
+        int numControls = Maud.model.spatial.countSgcs();
+        String controlsText = String.format("%d", numControls);
+        Maud.gui.setStatusText("spatialControls", " " + controlsText);
     }
 
     /**
