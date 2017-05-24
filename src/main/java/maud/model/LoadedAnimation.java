@@ -177,11 +177,10 @@ public class LoadedAnimation implements Cloneable {
      * Delete the loaded animation and (if successful) load bind pose.
      */
     public void delete() {
-        if (Maud.model.animation.isBindPoseLoaded()) {
+        if (isBindPoseLoaded()) {
             logger.log(Level.WARNING, "cannot delete bind pose");
         } else {
-            Animation animation = getLoadedAnimation();
-            Maud.model.cgm.deleteAnimation(animation);
+            Maud.model.cgm.deleteAnimation();
             loadBindPose();
         }
     }
@@ -222,10 +221,10 @@ public class LoadedAnimation implements Cloneable {
      */
     public float getDuration() {
         float result;
-        if (isBindPoseLoaded()) {
+        Animation animation = getLoadedAnimation();
+        if (animation == null) {
             result = 0f;
         } else {
-            Animation animation = getLoadedAnimation();
             result = animation.getLength();
         }
 

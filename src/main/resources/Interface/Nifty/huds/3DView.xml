@@ -521,6 +521,52 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                 </panel>
             </control>
 
+            <control name="window" id="controlTool" title="Control Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="110px" width="350px" x="65" y="35">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="button" id="controlPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous control)"/>
+                        </control>
+                        <control name="label" id="controlIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="65px"/>
+                        <control name="button" id="controlNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next control)"/>
+                        </control>
+                        <panel width="*"/>
+                        <control name="button" label="Add"
+                                 id="id3ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(open menu Spatial -> Add control)"/>
+                        </control>
+                        <panel width="10px"/>
+                        <control name="button" label="Select"
+                                 id="id4ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(open menu Spatial -> Select control)"/>
+                        </control>
+                    </panel>
+                    <panel height="10px"/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Type:  "/>
+                        <control name="label" id="controlType"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <panel width="10px"/>
+                        <control name="button" id="controlDeleteButton"
+                                 width="60px">
+                            <interact onRelease="perform(delete control)"/>
+                        </control>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="cullHintTool" title="Cull Hint Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
@@ -621,7 +667,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="40px"/>
                         <panel width="10px"/>
                         <control name="button" label="Set all to pose"
-                                 id="id4ToAvoidNiftyWarning"
+                                 id="id5ToAvoidNiftyWarning"
                                  width="95px">
                             <interact onRelease="perform(set track translation all)"/>
                         </control>
@@ -637,7 +683,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="40px"/>
                         <panel width="10px"/>
                         <control name="button" label="Set all to pose"
-                                 id="id5ToAvoidNiftyWarning"
+                                 id="id6ToAvoidNiftyWarning"
                                  width="95px">
                             <interact onRelease="perform(set track rotation all)"/>
                         </control>
@@ -653,7 +699,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="40px"/>
                         <panel width="10px"/>
                         <control name="button" label="Set all to pose"
-                                 id="id6ToAvoidNiftyWarning"
+                                 id="id7ToAvoidNiftyWarning"
                                  width="95px">
                             <interact onRelease="perform(set track scale all)"/>
                         </control>

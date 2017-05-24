@@ -45,6 +45,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -68,8 +69,8 @@ import maud.Maud;
 import maud.Util;
 
 /**
- * The MVC model of the loaded CG model in the Maud application: tracks all
- * edits made to the CG model.
+ * The MVC model of the loaded computer-graphics (CG) model in the Maud
+ * application: keeps track of edits made to the CG model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -86,6 +87,10 @@ public class LoadedCGModel implements Cloneable {
      * dummy bone name used to indicate that no bone is selected
      */
     final public static String noBone = "( no bone )";
+    /**
+     * dummy control name used to indicate that no control is selected
+     */
+    final public static String noControl = "( no control )";
     /**
      * list of CG models in the jme3-testdata asset pack
      */
@@ -167,17 +172,36 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Generate a sorted list of animation names.
+     * Add a new SG control to the selected spatial.
+     *
+     * @param newSgc (not null)
+     */
+    void addSgc(Control newSgc) {
+        assert newSgc != null;
+
+        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
+        spatial.addControl(newSgc);
+        setEdited();
+    }
+
+    /**
+     * Generate a sorted list of animation names, not including bindPose. TODO
+     * rename
      *
      * @return a new list
      */
     List<String> animationNameListSorted() {
+        List<String> result;
         AnimControl animControl = getAnimControl();
-        Collection<String> names = animControl.getAnimationNames();
-        int numNames = names.size();
-        List<String> result = new ArrayList<>(numNames);
-        result.addAll(names);
-        Collections.sort(result);
+        if (animControl == null) {
+            result = new ArrayList<>(0);
+        } else {
+            Collection<String> names = animControl.getAnimationNames();
+            int numNames = names.size();
+            result = new ArrayList<>(numNames);
+            result.addAll(names);
+            Collections.sort(result);
+        }
 
         return result;
     }
@@ -266,15 +290,23 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Delete the specified animation.
-     *
-     * @param animation (not null)
+     * Delete the loaded animation.
      */
-    void deleteAnimation(Animation animation) {
-        assert animation != null;
-
+    void deleteAnimation() {
+        Animation animation = Maud.model.animation.getLoadedAnimation();
         AnimControl animControl = getAnimControl();
         animControl.removeAnim(animation);
+        setEdited();
+    }
+
+    /**
+     * Delete the selected control from the selected spatial.
+     */
+    void deleteControl() {
+        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
+        Control sgc = Maud.model.sgc.findSgc(rootSpatial);
+        boolean success = spatial.removeControl(sgc);
+        assert success;
         setEdited();
     }
 
@@ -299,12 +331,19 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Access the AnimControl of the loaded model.
+     * Access the selected AnimControl.
      *
      * @return the pre-existing instance, or null if none
      */
     AnimControl getAnimControl() {
-        AnimControl animControl = rootSpatial.getControl(AnimControl.class);
+        AnimControl animControl;
+        Control selectedSgc = Maud.model.sgc.findSgc();
+        if (selectedSgc instanceof AnimControl) {
+            animControl = (AnimControl) selectedSgc;
+        } else {
+            animControl = rootSpatial.getControl(AnimControl.class);
+        }
+
         return animControl;
     }
 
@@ -391,14 +430,40 @@ public class LoadedCGModel implements Cloneable {
      * @return the pre-existing instance, or null if none
      */
     Skeleton getSkeleton() {
+        AnimControl animControl;
         SkeletonControl skeletonControl;
-        skeletonControl = rootSpatial.getControl(SkeletonControl.class);
-        if (skeletonControl == null) {
-            return null;
-        } else {
-            Skeleton skeleton = skeletonControl.getSkeleton();
-            return skeleton;
+        Skeleton skeleton = null;
+        /*
+         * If the selected SG control is an AnimControl or SkeletonControl,
+         * use its skeleton, if it has one.
+         */
+        Control selectedSgc = Maud.model.sgc.findSgc();
+        if (selectedSgc instanceof AnimControl) {
+            animControl = (AnimControl) selectedSgc;
+            skeleton = animControl.getSkeleton();
         }
+        if (skeleton == null && selectedSgc instanceof SkeletonControl) {
+            skeletonControl = (SkeletonControl) selectedSgc;
+            skeleton = skeletonControl.getSkeleton();
+        }
+        /*
+         * If not, use the skeleton from the first AnimControl or
+         * SkeletonControl in the root spatial.
+         */
+        if (skeleton == null) {
+            animControl = rootSpatial.getControl(AnimControl.class);
+            if (animControl != null) {
+                skeleton = animControl.getSkeleton();
+            }
+        }
+        if (skeleton == null) {
+            skeletonControl = rootSpatial.getControl(SkeletonControl.class);
+            if (skeletonControl != null) {
+                skeleton = skeletonControl.getSkeleton();
+            }
+        }
+
+        return skeleton;
     }
 
     /**
@@ -464,7 +529,7 @@ public class LoadedCGModel implements Cloneable {
      * @return a new collection of names
      */
     public Collection<String> listAnimationNames() {
-        Collection<String> names = MyAnimation.listAnimations(rootSpatial);
+        Collection<String> names = animationNameListSorted();
         names.add(LoadedAnimation.bindPoseName);
 
         return names;
@@ -527,7 +592,7 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Enumerate root bones in the loaded model.
+     * Enumerate root bones in the loaded model. TODO sort
      *
      * @return a new list of names
      */

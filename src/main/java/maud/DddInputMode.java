@@ -72,6 +72,7 @@ class DddInputMode extends InputMode {
     final static String saveModelFilePrefix = "save model file ";
     final static String selectBonePrefix = "select bone ";
     final static String selectBoneChildPrefix = "select boneChild ";
+    final static String selectControlPrefix = "select control ";
     final static String selectRetargetMapAssetPrefix = "select rma ";
     final static String selectRetargetSourceAnimationPrefix = "select rsa ";
     final static String selectRetargetSourceCgmAssetPrefix = "select rsca ";
@@ -227,6 +228,9 @@ class DddInputMode extends InputMode {
         if (actionString.equals("delete animation")) {
             Maud.model.animation.delete();
             handled = true;
+        } else if (actionString.equals("delete control")) {
+            Maud.model.sgc.delete();
+            handled = true;
         }
 
         return handled;
@@ -309,6 +313,10 @@ class DddInputMode extends InputMode {
             case "next checkpoint":
                 History.redo();
                 handled = true;
+                break;
+            case "next control":
+                Maud.model.sgc.selectNext();
+                handled = true;
         }
 
         return handled;
@@ -349,6 +357,10 @@ class DddInputMode extends InputMode {
                 break;
             case "previous checkpoint":
                 History.undo();
+                handled = true;
+                break;
+            case "previous control":
+                Maud.model.sgc.selectPrevious();
                 handled = true;
         }
 
@@ -583,6 +595,11 @@ class DddInputMode extends InputMode {
             } else if (actionString.startsWith(selectBoneChildPrefix)) {
                 arg = MyString.remainder(actionString, selectBoneChildPrefix);
                 Maud.gui.menus.selectBoneChild(arg);
+                handled = true;
+
+            } else if (actionString.startsWith(selectControlPrefix)) {
+                arg = MyString.remainder(actionString, selectControlPrefix);
+                Maud.model.sgc.select(arg);
                 handled = true;
 
             } else if (actionString.startsWith(

@@ -68,7 +68,7 @@ class DddMenus {
     // new methods exposed
 
     /**
-     * Handle a "load cgmodel" action without an argument.
+     * Display a "CGModel -> Load" menu. TODO wrong section
      */
     private void loadCGModel() {
         String prefix = "open menu CGModel -> Load -> ";
@@ -101,7 +101,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action for this screen.
+     * Handle an "open menu" action for the "3D View" screen.
      *
      * @param menuPath menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -233,6 +233,20 @@ class DddMenus {
     // private methods
 
     /**
+     * Display a "Spatial -> Add control" menu.
+     */
+    private void addSgc() {
+        String prefix = "open menu Spatial -> Add control -> ";
+        builder.reset();
+        builder.add("Anim");
+        builder.add("RigidBody");
+        builder.add("Skeleton");
+        String[] items = builder.copyItems();
+        String[] icons = builder.copyIcons();
+        Maud.gui.showPopupMenu(prefix, items, icons);
+    }
+
+    /**
      * Build an Animation menu.
      */
     private void buildAnimationMenu() {
@@ -266,7 +280,7 @@ class DddMenus {
     }
 
     /**
-     * Build a Bone -> Select menu.
+     * Build a "Bone -> Select" menu.
      */
     private void buildBoneSelectMenu() {
         builder.add("By name");
@@ -307,7 +321,7 @@ class DddMenus {
     }
 
     /**
-     * Build a CGModel -> Load menu.
+     * Build a "CGModel -> Load" menu.
      */
     private void buildCGModelLoadMenu() {
         builder.add("Testdata");
@@ -360,7 +374,7 @@ class DddMenus {
      * Build a Physics menu.
      */
     private void buildPhysicsMenu() {
-        builder.addTool("Describe");
+        builder.addTool("Tool");
         builder.add("Add");
         builder.add("Mass");
         builder.add("Remove");
@@ -385,6 +399,13 @@ class DddMenus {
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
+        builder.addTool("Control tool");
+        builder.add("Select control");
+        builder.add("Add control");
+        if (Maud.model.sgc.isSelected()) {
+            builder.add("Delete control");
+        }
+        builder.addTool("User data tool");
         builder.addTool("Material");
     }
 
@@ -469,6 +490,9 @@ class DddMenus {
                 break;
             case "Spatial":
                 handled = menuSpatial(remainder);
+                break;
+            case "Spatial -> Add control":
+                handled = menuSpatialAddControl(remainder);
                 break;
             case "View":
                 handled = menuView(remainder);
@@ -734,7 +758,7 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the CGModel -> Load menu.
+     * Handle actions from the "CGModel -> Load" menu.
      *
      * @param remainder not-yet-parsed portion of the action string (not null)
      * @return true if the action is handled, otherwise false
@@ -773,6 +797,7 @@ class DddMenus {
      */
     private boolean menuHelp(String remainder) {
         assert remainder != null;
+
         boolean handled = false;
         switch (remainder) {
             case "About Maud":
@@ -823,6 +848,7 @@ class DddMenus {
      */
     private boolean menuKeyframe(String remainder) {
         assert remainder != null;
+
         boolean handled = false;
         switch (remainder) {
             case "Reduce":
@@ -861,6 +887,7 @@ class DddMenus {
      */
     private boolean menuSettings(String remainder) {
         assert remainder != null;
+
         boolean handled = false;
         switch (remainder) {
             case "Hotkeys":
@@ -880,22 +907,75 @@ class DddMenus {
      */
     private boolean menuSpatial(String remainder) {
         assert remainder != null;
+
+        boolean handled = false;
+        String acPrefix = "Add control" + menuSeparator;
+        if (remainder.startsWith(acPrefix)) {
+            String arg = MyString.remainder(remainder, acPrefix);
+            handled = menuSpatialAddControl(arg);
+
+        } else {
+            switch (remainder) {
+                case "Add control":
+                    addSgc();
+                    handled = true;
+                    break;
+                case "Control tool":
+                    Maud.gui.sgc.select();
+                    handled = true;
+                    break;
+                case "Delete control":
+                    Maud.gui.dialogs.deleteSgc();
+                    handled = true;
+                    break;
+                case "Rotate":
+                    Maud.gui.spatialRotation.select();
+                    handled = true;
+                    break;
+                case "Scale":
+                    Maud.gui.spatialScale.select();
+                    handled = true;
+                    break;
+                case "Select control":
+                    selectSgc();
+                    handled = true;
+                    break;
+                case "Tool":
+                    Maud.gui.spatial.select();
+                    handled = true;
+                    break;
+                case "Translate":
+                    Maud.gui.spatialTranslation.select();
+                    handled = true;
+            }
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle actions from the "Spatial -> Add control" menu.
+     *
+     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuSpatialAddControl(String remainder) {
+        assert remainder != null;
+
         boolean handled = false;
         switch (remainder) {
-            case "Rotate":
-                Maud.gui.spatialRotation.select();
+            case "Anim":
+                Maud.model.spatial.addAnimControl();
                 handled = true;
                 break;
-            case "Scale":
-                Maud.gui.spatialScale.select();
+
+            case "RigidBody":
+                Maud.model.spatial.addRigidBodyControl();
                 handled = true;
                 break;
-            case "Tool":
-                Maud.gui.spatial.select();
-                handled = true;
-                break;
-            case "Translate":
-                Maud.gui.spatialTranslation.select();
+
+            case "Skeleton":
+                Maud.model.spatial.addSkeletonControl();
                 handled = true;
         }
 
@@ -990,6 +1070,20 @@ class DddMenus {
             List<String> boneNames = Maud.model.cgm.listRootBoneNames();
             showBoneSubmenu(boneNames);
         }
+    }
+
+    /**
+     * Display a "Spatial -> Select control" menu.
+     */
+    private void selectSgc() {
+        builder.reset();
+        for (String name : Maud.model.spatial.listSgcNames()) {
+            builder.add(name);
+        }
+        builder.add(LoadedCGModel.noControl);
+        String[] items = builder.copyItems();
+        String[] icons = builder.copyIcons();
+        Maud.gui.showPopupMenu(DddInputMode.selectControlPrefix, items, icons);
     }
 
     /**

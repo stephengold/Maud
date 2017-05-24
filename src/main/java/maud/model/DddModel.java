@@ -83,6 +83,10 @@ public class DddModel {
      */
     final public SelectedBone bone;
     /**
+     * which SG control is selected
+     */
+    final public SelectedSgc sgc;
+    /**
      * which spatial is selected
      */
     final public SelectedSpatial spatial;
@@ -98,7 +102,7 @@ public class DddModel {
     // constructors
 
     /**
-     * Instantiate a model with the default settings.
+     * Instantiate an MVC model with the default settings.
      */
     public DddModel() {
         axes = new AxesStatus();
@@ -110,13 +114,14 @@ public class DddModel {
         pose = new Pose();
         /* retarget field will be set later */
         bone = new SelectedBone();
+        sgc = new SelectedSgc();
         spatial = new SelectedSpatial();
         track = new SelectedTrack();
         skeleton = new SkeletonStatus();
     }
 
     /**
-     * Instantiate a model with settings copied from another model.
+     * Instantiate an MVC model with settings copied from another model.
      *
      * @param source (not null)
      */
@@ -132,6 +137,7 @@ public class DddModel {
             bone = (SelectedBone) source.bone.clone();
             retarget = (RetargetParameters) source.retarget.clone();
             spatial = (SelectedSpatial) source.spatial.clone();
+            sgc = (SelectedSgc) source.sgc.clone();
             track = (SelectedTrack) source.track.clone();
             skeleton = (SkeletonStatus) source.skeleton.clone();
         } catch (CloneNotSupportedException e) {

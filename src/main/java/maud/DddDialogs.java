@@ -124,9 +124,22 @@ class DddDialogs {
      * Display a "delete animation" dialog.
      */
     void deleteAnimation() {
+        String name = Maud.model.animation.getName();
+        String message = String.format("Delete the %s animation?",
+                MyString.quote(name));
         Maud.gui.closeAllPopups();
-        Maud.gui.showConfirmDialog("Delete the loaded animation?", "Delete",
-                "delete animation", null);
+        Maud.gui.showConfirmDialog(message, "Delete", "delete animation", null);
+    }
+
+    /**
+     * Display a "delete control" dialog.
+     */
+    void deleteSgc() {
+        String name = Maud.model.sgc.getName();
+        String message = String.format("Delete the %s control?",
+                MyString.quote(name));
+        Maud.gui.closeAllPopups();
+        Maud.gui.showConfirmDialog(message, "Delete", "delete control", null);
     }
 
     /**

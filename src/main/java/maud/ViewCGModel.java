@@ -195,10 +195,11 @@ public class ViewCGModel {
         parentNode.attachChild(cgModelRoot);
 
         skeletonControl = cgModelRoot.getControl(SkeletonControl.class);
-        assert skeletonControl != null;
-
-        skeleton = skeletonControl.getSkeleton();
-        assert skeleton != null;
+        if (skeletonControl == null) {
+            skeleton = null;
+        } else {
+            skeleton = skeletonControl.getSkeleton();
+        }
 
         skeletonDebugControl = cgModelRoot.getControl(
                 SkeletonDebugControl.class);
@@ -239,6 +240,30 @@ public class ViewCGModel {
     }
 
     /**
+     * Alter the skeleton of the loaded CG model.
+     *
+     * @param newSkeleton (may be null, unaffected)
+     */
+    public void setSkeleton(Skeleton newSkeleton) {
+        if (skeletonControl != null) {
+            cgModelRoot.removeControl(skeletonControl);
+        }
+
+        if (newSkeleton == null) {
+            skeleton = null;
+            skeletonControl = null;
+        } else {
+            skeleton = new Skeleton(newSkeleton);
+            skeletonControl = new SkeletonControl(skeleton);
+            cgModelRoot.addControl(skeletonControl);
+            MySkeleton.setUserControl(cgModelRoot, true);
+            skeletonControl.setHardwareSkinningPreferred(false);
+        }
+
+        skeletonDebugControl.setSkeleton(skeleton);
+    }
+
+    /**
      * Alter the local rotation of the selected spatial.
      *
      * @param rotation (not null, unaffected)
@@ -275,7 +300,7 @@ public class ViewCGModel {
     }
 
     /**
-     * Update the user transforms of all bones from the MVC model.
+     * Update the user transforms of all bones using the MVC model.
      */
     void updatePose() {
         int boneCount = Maud.model.cgm.countBones();
@@ -314,7 +339,6 @@ public class ViewCGModel {
         skeletonControl = cgModelRoot.getControl(SkeletonControl.class);
         if (skeletonControl == null) {
             skeleton = null;
-            skeletonDebugControl = null;
         } else {
             skeleton = skeletonControl.getSkeleton();
             /*
@@ -326,13 +350,13 @@ public class ViewCGModel {
              * CursorTool.findContact() will work.
              */
             skeletonControl.setHardwareSkinningPreferred(false);
-            /*
-             * Add a new SkeletonDebugControl.
-             */
-            skeletonDebugControl = new SkeletonDebugControl(assetManager);
-            cgModelRoot.addControl(skeletonDebugControl);
-            skeletonDebugControl.setEnabled(true);
         }
+        /*
+         * Add a new SkeletonDebugControl.
+         */
+        skeletonDebugControl = new SkeletonDebugControl(assetManager);
+        cgModelRoot.addControl(skeletonDebugControl);
+        skeletonDebugControl.setEnabled(true);
         /*
          * Configure the camera, cursor, and platform based on the range
          * of mesh coordinates in the CG model.

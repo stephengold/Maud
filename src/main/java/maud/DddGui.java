@@ -107,6 +107,7 @@ public class DddGui extends GuiScreenController {
     final PlatformTool platform = new PlatformTool(this);
     final RenderTool render = new RenderTool(this);
     final RetargetTool retarget = new RetargetTool(this);
+    final SgcTool sgc = new SgcTool(this);
     final ShadowModeTool shadowMode = new ShadowModeTool(this);
     final SkeletonColorTool skeletonColor = new SkeletonColorTool(this);
     final SkeletonTool skeleton = new SkeletonTool(this);
@@ -467,6 +468,9 @@ public class DddGui extends GuiScreenController {
                 break;
             case "camera":
                 controller = camera;
+                break;
+            case "control":
+                controller = sgc;
                 break;
             case "cullHint":
                 controller = cullHint;

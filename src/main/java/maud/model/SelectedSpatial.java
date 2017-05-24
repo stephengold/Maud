@@ -26,18 +26,24 @@
  */
 package maud.model;
 
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.Skeleton;
+import com.jme3.animation.SkeletonControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.Control;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 import maud.Maud;
+import maud.Util;
 
 /**
  * The MVC model of the selected spatial in the Maud application.
@@ -62,6 +68,40 @@ public class SelectedSpatial implements Cloneable {
     private List<Integer> treePosition = new ArrayList<>(3);
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Add an AnimControl to the selected spatial and select the new control.
+     */
+    public void addAnimControl() {
+        Skeleton skeleton = Maud.model.cgm.getSkeleton();
+        AnimControl newSgc = new AnimControl(skeleton);
+
+        Maud.model.cgm.addSgc(newSgc);
+        Maud.model.sgc.select(newSgc);
+    }
+
+    /**
+     * Add a RigidBodyControl to the selected spatial and select the new
+     * control.
+     */
+    public void addRigidBodyControl() {
+        float mass = 1f;
+        RigidBodyControl newSgc = new RigidBodyControl(mass);
+
+        Maud.model.cgm.addSgc(newSgc);
+        Maud.model.sgc.select(newSgc);
+    }
+
+    /**
+     * Add a SkeletonControl to the selected spatial and select the new control.
+     */
+    public void addSkeletonControl() {
+        Skeleton skeleton = Maud.model.cgm.getSkeleton();
+        SkeletonControl newSgc = new SkeletonControl(skeleton);
+
+        Maud.model.cgm.addSgc(newSgc);
+        Maud.model.sgc.select(newSgc);
+    }
 
     /**
      * Enumerate all user data keys of the selected spatial.
@@ -104,7 +144,7 @@ public class SelectedSpatial implements Cloneable {
      *
      * @return count (&ge;0)
      */
-    public int countControls() {
+    public int countSgcs() {
         Spatial spatial = modelSpatial();
         int result = spatial.getNumControls();
 
@@ -438,6 +478,30 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Enumerate all SG controls in the selected spatial and assign them names.
+     *
+     * @return a new list of names ordered by sgc index
+     */
+    public List<String> listSgcNames() {
+        int numControls = countSgcs();
+        List<String> nameList = new ArrayList<>(numControls);
+
+        Spatial spatial = modelSpatial();
+        for (int sgcIndex = 0; sgcIndex < numControls; sgcIndex++) {
+            Control sgc = spatial.getControl(sgcIndex);
+            String name = sgc.getClass().getSimpleName();
+            if (name.endsWith("Control")) {
+                int length = name.length();
+                name = name.substring(0, length - 7);
+            }
+            nameList.add(name);
+        }
+        Util.dedup(nameList, " #");
+
+        return nameList;
+    }
+
+    /**
      * Select (by index) a child of the selected spatial.
      *
      * @param childIndex (&ge;0)
@@ -449,6 +513,7 @@ public class SelectedSpatial implements Cloneable {
         if (child != null) {
             treePosition.add(childIndex);
             assert modelSpatial() == child;
+            postSelect();
         }
     }
 
@@ -458,6 +523,7 @@ public class SelectedSpatial implements Cloneable {
     public void selectModelRoot() {
         treePosition.clear();
         assert modelSpatial() == Maud.model.cgm.getRootSpatial();
+        postSelect();
     }
 
     /**
@@ -470,6 +536,7 @@ public class SelectedSpatial implements Cloneable {
             int last = treePosition.size() - 1;
             treePosition.remove(last);
             assert modelSpatial() == parent;
+            postSelect();
         }
     }
     // TODO setters for CullHint, QueueBucket, and ShadowMode
@@ -565,15 +632,22 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Access the selected spatial in the MVC model.
+     * Access the selected spatial in the MVC model. TODO wrong section
      *
      * @return the pre-existing instance
      */
-    private Spatial modelSpatial() {
+    Spatial modelSpatial() {
         Spatial modelRoot = Maud.model.cgm.getRootSpatial();
         Spatial result = findSpatial(modelRoot);
 
         assert result != null;
         return result;
+    }
+
+    /**
+     * Invoked after selecting a spatial.
+     */
+    private void postSelect() {
+        Maud.model.sgc.selectNone();
     }
 }
