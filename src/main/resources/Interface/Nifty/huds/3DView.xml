@@ -117,9 +117,9 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="35px">
-                        <control name="label" text="Name:  "
+                        <control name="label" text="Loaded:  "
                                  textHAlign="right"
-                                 width="40px"/>
+                                 width="60px"/>
                         <control name="label" id="animationName"
                                  backgroundColor="#ffff"
                                  width="*"/>
@@ -265,7 +265,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                     </panel>
                     <panel height="10px"/>
                     <panel childLayout="horizontal">
-                        <control name="label" text="Name:  "
+                        <control name="label" text="Selected:  "
                                  textHAlign="right"
                                  width="68px"/>
                         <control name="label" id="boneName"
