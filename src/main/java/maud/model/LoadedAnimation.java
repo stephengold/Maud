@@ -242,7 +242,7 @@ public class LoadedAnimation implements Cloneable {
         if (isBindPoseLoaded()) {
             index = -1;
         } else {
-            List<String> nameList = Maud.model.cgm.animationNameListSorted();
+            List<String> nameList = Maud.model.cgm.listAnimationsSorted();
             index = nameList.indexOf(loadedName);
         }
 
@@ -429,7 +429,7 @@ public class LoadedAnimation implements Cloneable {
     public void loadNext() {
         assert !isBindPoseLoaded();
 
-        List<String> nameList = Maud.model.cgm.animationNameListSorted();
+        List<String> nameList = Maud.model.cgm.listAnimationsSorted();
         int index = nameList.indexOf(loadedName);
         int numAnimations = nameList.size();
         int nextIndex = MyMath.modulo(index + 1, numAnimations);
@@ -443,7 +443,7 @@ public class LoadedAnimation implements Cloneable {
     public void loadPrevious() {
         assert !isBindPoseLoaded();
 
-        List<String> nameList = Maud.model.cgm.animationNameListSorted();
+        List<String> nameList = Maud.model.cgm.listAnimationsSorted();
         int index = nameList.indexOf(loadedName);
         int numAnimations = nameList.size();
         int prevIndex = MyMath.modulo(index - 1, numAnimations);

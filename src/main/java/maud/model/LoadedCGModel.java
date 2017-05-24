@@ -186,11 +186,11 @@ public class LoadedCGModel implements Cloneable {
 
     /**
      * Generate a sorted list of animation names, not including bindPose. TODO
-     * rename
+     * sort
      *
      * @return a new list
      */
-    List<String> animationNameListSorted() {
+    List<String> listAnimationsSorted() {
         List<String> result;
         AnimControl animControl = getAnimControl();
         if (animControl == null) {
@@ -529,7 +529,7 @@ public class LoadedCGModel implements Cloneable {
      * @return a new collection of names
      */
     public Collection<String> listAnimationNames() {
-        Collection<String> names = animationNameListSorted();
+        Collection<String> names = listAnimationsSorted();
         names.add(LoadedAnimation.bindPoseName);
 
         return names;
