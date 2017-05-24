@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -66,6 +67,27 @@ public class SkeletonMapping implements Savable {
     }
 
     /**
+     * Generate an inverse for this mapping.
+     *
+     * @return a new mapping
+     */
+    public SkeletonMapping inverse() {
+        SkeletonMapping result = new SkeletonMapping();
+        for (BoneMapping boneMapping : mappings.values()) {
+            Quaternion twist = boneMapping.getTwist();
+            Quaternion inverseTwist = twist.inverse();
+            String targetName = boneMapping.getTargetName();
+
+            List<String> sourceNames = boneMapping.getSourceNames();
+            for (String sourceName : sourceNames) {
+                result.map(sourceName, targetName, inverseTwist);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Enumerate all source bones in this mapping.
      *
      * @return a new list of names
@@ -109,21 +131,35 @@ public class SkeletonMapping implements Savable {
     }
 
     /**
-     * Builds a BoneMapping with the given bone from the target skeleton and the
-     * given bone from the source skeleton. apply the given twist rotation to
-     * the animation data
+     * Add a mapping from the named bone in the target skeleton to the named
+     * bone in the source skeleton applying the specified twist.
      *
-     * @param targetBone the name of the bone from the target skeleton.
-     * @param sourceBone the name of the bone from the source skeleton.
-     * @param twist the twist rotation to apply to the animation data
+     * @param targetName name of the bone from the target skeleton
+     * @param sourceName name of the bone from the source skeleton
+     * @param twist rotation to apply to the animation data
      * @return a new instance
      */
-    public BoneMapping map(String targetBone, String sourceBone,
+    public BoneMapping map(String targetName, String sourceName,
             Quaternion twist) {
-        BoneMapping mapping = new BoneMapping(targetBone, sourceBone, twist);
-        mappings.put(targetBone, mapping);
+        BoneMapping boneMapping = mappings.get(targetName);
+        if (boneMapping == null) {
+            boneMapping = new BoneMapping(targetName, sourceName, twist);
+            mappings.put(targetName, boneMapping);
+        } else {
+            Quaternion oldTwist = boneMapping.getTwist();
+            if (twist.equals(oldTwist)) {
+                List<String> sourceNames = boneMapping.getSourceNames();
+                if (!sourceNames.contains(sourceName)) {
+                    sourceNames.add(sourceName);
+                }
+            } else {
+                logger.log(Level.WARNING,
+                        "Found multiple twist values for target bone {0}.",
+                        targetName);
+            }
+        }
 
-        return mapping;
+        return boneMapping;
     }
 
     /**
