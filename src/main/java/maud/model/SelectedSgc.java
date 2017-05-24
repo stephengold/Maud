@@ -33,9 +33,9 @@ import com.jme3.scene.control.Control;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyControl;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.Util;
 
 /**
  * The MVC model of the selected scene-graph (SG) control in the Maud
@@ -177,7 +177,7 @@ public class SelectedSgc implements Cloneable {
             selectNone();
         } else {
             Spatial spatial = Maud.model.spatial.modelSpatial();
-            int newIndex = Util.findIndex(newSgc, spatial);
+            int newIndex = MyControl.findIndex(newSgc, spatial);
             select(newIndex);
         }
     }

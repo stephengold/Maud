@@ -192,7 +192,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public float findLatestKeyframe() {
         Animation loaded = getLoadedAnimation();
-        float latest = Util.findLatestKeyframe(loaded);
+        float latest = MyAnimation.findLastKeyframe(loaded);
 
         assert latest >= 0f : latest;
         return latest;

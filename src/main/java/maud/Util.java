@@ -26,9 +26,7 @@
  */
 package maud;
 
-import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
-import com.jme3.animation.Track;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
@@ -36,11 +34,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
@@ -168,78 +162,6 @@ public class Util {
                 }
             }
         }
-    }
-
-    /**
-     * Find an animated geometry in the specified subtree of the scene graph.
-     *
-     * @param subtree where to search (not null)
-     * @return a pre-existing instance, or null if none
-     */
-    public static Geometry findAnimatedGeometry(Spatial subtree) {
-        Geometry result = null;
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            Mesh mesh = geometry.getMesh();
-            if (mesh.isAnimated()) {
-                result = geometry;
-            }
-
-        } else {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                result = findAnimatedGeometry(child);
-                if (result != null) {
-                    break;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Find the index of the specified SG control in the specified spatial.
-     *
-     * @param sgc SG control to find (not null)
-     * @param spatial where the control was added (not null)
-     * @return index (&ge;0) or -1 if not found
-     */
-    public static int findIndex(Control sgc, Spatial spatial) {
-        Validate.nonNull(sgc, "control");
-
-        int result = -1;
-        int numControls = spatial.getNumControls();
-        for (int index = 0; index < numControls; index++) {
-            Control control = spatial.getControl(index);
-            if (control == sgc) {
-                result = index;
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Find the keyframe in the specified animation that has the latest time.
-     *
-     * @param animation input (not null)
-     * @return track time (in seconds, &ge;0)
-     */
-    public static float findLatestKeyframe(Animation animation) {
-        float maxTime = 0f;
-        Track[] loadedTracks = animation.getTracks();
-        for (Track track : loadedTracks) {
-            float[] frameTimes = track.getKeyFrameTimes();
-            for (float time : frameTimes) {
-                if (time > maxTime) {
-                    maxTime = time;
-                }
-            }
-        }
-
-        return maxTime;
     }
 
     /**

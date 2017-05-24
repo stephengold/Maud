@@ -138,7 +138,7 @@ public class ViewCGModel {
      * @return a pre-existing instance, or null if none
      */
     Geometry findAnimatedGeometry() {
-        Geometry result = Util.findAnimatedGeometry(cgModelRoot);
+        Geometry result = MySpatial.findAnimatedGeometry(cgModelRoot);
         return result;
     }
 
