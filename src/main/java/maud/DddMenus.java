@@ -76,12 +76,14 @@ class DddMenus {
     void loadModelFile(String filePath) {
         File file = new File(filePath);
         if (file.isDirectory()) {
-            List<String> fileNames = listFileNames(filePath);
+            buildFileMenu(filePath);
             String menuPrefix = DddInputMode.loadModelFilePrefix + filePath;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }
-            Maud.gui.showPopupMenu(menuPrefix, fileNames);
+            String[] items = builder.copyItems();
+            String[] icons = builder.copyIcons();
+            Maud.gui.showPopupMenu(menuPrefix, items, icons);
 
         } else if (file.canRead()) {
             Maud.model.cgm.loadModelFile(file);
@@ -328,6 +330,43 @@ class DddMenus {
     }
 
     /**
+     * Build a menu of the files (and subdirectories/subfolders) in the
+     * specified directory/folder.
+     *
+     * @param path file path to the directory/folder (not null)
+     */
+    private void buildFileMenu(String path) {
+        assert path != null;
+
+        builder.reset();
+
+        File file = new File(path);
+        File[] files = file.listFiles();
+        if (files == null) {
+            return;
+        }
+
+        if (file.getParentFile() != null) {
+            builder.addFolder("..");
+        }
+        for (int i = 0; i < files.length; i++) {
+            String name = files[i].getName();
+            if (files[i].isDirectory()) {
+                builder.addFolder(name);
+            } else if (name.endsWith(".blend")) {
+                builder.addBlend(name);
+            } else if (name.endsWith(".j3o")) {
+                builder.addJme(name);
+            } else if (name.endsWith(".mesh.xml")) {
+                builder.addOgre(name);
+            } else {
+                builder.add(name);
+            }
+
+        }
+    }
+
+    /**
      * Build a Help menu.
      */
     private void buildHelpMenu() {
@@ -413,33 +452,6 @@ class DddMenus {
     }
 
     /**
-     * Enumerate the files in a directory/folder.
-     *
-     * @param path file path (not null)
-     * @return a new list, or null if path is not a directory/folder
-     */
-    private List<String> listFileNames(String path) {
-        assert path != null;
-
-        File file = new File(path);
-        File[] files = file.listFiles();
-        if (files == null) {
-            return null;
-        }
-
-        List<String> names = new ArrayList<>(files.length + 1);
-        if (file.getParentFile() != null) {
-            names.add("..");
-        }
-        for (int i = 0; i < files.length; i++) {
-            String name = files[i].getName();
-            names.add(name);
-        }
-
-        return names;
-    }
-
-    /**
      * Display a "CGModel -> Load" menu.
      */
     private void loadCGModel() {
@@ -449,6 +461,39 @@ class DddMenus {
         String[] items = builder.copyItems();
         String[] icons = builder.copyIcons();
         Maud.gui.showPopupMenu(prefix, items, icons);
+    }
+
+    /**
+     * Display a "CGModel -> Load -> Testdata" menu.
+     */
+    private void loadTestdata() {
+        builder.reset();
+        /*
+         * Add items for the CG models in the jme3-testdata asset pack.
+         *
+         * animated models:
+         */
+        builder.addOgre("Elephant");
+        builder.addJme("Jaime");
+        builder.addOgre("Ninja");
+        builder.addOgre("Oto");
+        builder.addOgre("Sinbad");
+        /*
+         * non-animated models:
+         */
+        builder.addJme("Boat");
+        builder.addJme("Buggy");
+        builder.add("Ferrari");
+        builder.addOgre("HoverTank");
+        builder.addOgre("MonkeyHead");
+        builder.addOgre("Sign Post");
+        builder.addOgre("SpaceCraft");
+        builder.add("Teapot");
+        builder.addOgre("Tree");
+
+        String[] items = builder.copyItems();
+        String[] icons = builder.copyIcons();
+        Maud.gui.showPopupMenu(DddInputMode.loadModelNamedPrefix, items, icons);
     }
 
     /**
@@ -774,15 +819,16 @@ class DddMenus {
                 break;
 
             case "File":
-                List<String> fileNames = listFileNames("/");
+                buildFileMenu("/");
+                String[] items = builder.copyItems();
+                String[] icons = builder.copyIcons();
                 Maud.gui.showPopupMenu(DddInputMode.loadModelFilePrefix + "/",
-                        fileNames);
+                        items, icons);
                 handled = true;
                 break;
 
             case "Testdata":
-                Maud.gui.showPopupMenu(DddInputMode.loadModelNamedPrefix,
-                        LoadedCGModel.modelNames);
+                loadTestdata();
                 handled = true;
         }
 

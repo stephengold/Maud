@@ -91,16 +91,6 @@ public class LoadedCGModel implements Cloneable {
      * dummy control name used to indicate that no control is selected
      */
     final public static String noControl = "( no control )";
-    /**
-     * list of CG models in the jme3-testdata asset pack
-     */
-    final public static String[] modelNames = {
-        // animated models:
-        "Elephant", "Jaime", "Ninja", "Oto", "Sinbad",
-        // non-animated models:
-        "Boat", "Buggy", "Ferrari", "HoverTank", "MonkeyHead",
-        "Sign Post", "SpaceCraft", "Sponza", "Teapot", "Tree"
-    };
     // *************************************************************************
     // fields
 

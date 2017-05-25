@@ -45,18 +45,6 @@ class MenuBuilder {
      */
     final private static Logger logger = Logger.getLogger(
             MenuBuilder.class.getName());
-    /**
-     * asset path to "bone" icon
-     */
-    final private static String boneIconAssetPath = "Textures/icons/bone.png";
-    /**
-     * asset path to "dialog" icon
-     */
-    final private static String dialogIconAssetPath = "Textures/icons/dialog.png";
-    /**
-     * asset path to "tool" icon
-     */
-    final private static String toolIconAssetPath = "Textures/icons/tool.png";
     // *************************************************************************
     // fields
 
@@ -88,7 +76,7 @@ class MenuBuilder {
      * Add an item with an icon to the menu.
      *
      * @param item (not null, not empty)
-     * @param iconAssetPath
+     * @param iconAssetPath (may be null)
      */
     void add(String item, String iconAssetPath) {
         Validate.nonEmpty(item, "item");
@@ -98,13 +86,33 @@ class MenuBuilder {
     }
 
     /**
+     * Add an item with the Blender logo to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addBlend(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/BlenderDesktopLogo.png");
+    }
+
+    /**
      * Add an item with the bone icon to the menu.
      *
      * @param item (not null, not empty)
      */
     void addBone(String item) {
         Validate.nonEmpty(item, "item");
-        add(item, boneIconAssetPath);
+        add(item, "Textures/icons/bone.png");
+    }
+
+    /**
+     * Add an item with the folder icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addFolder(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/folder.png");
     }
 
     /**
@@ -114,7 +122,27 @@ class MenuBuilder {
      */
     void addDialog(String item) {
         Validate.nonEmpty(item, "item");
-        add(item, dialogIconAssetPath);
+        add(item, "Textures/icons/dialog.png");
+    }
+
+    /**
+     * Add an item with the JME icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addJme(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/jme.png");
+    }
+
+    /**
+     * Add an item with the Ogre icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addOgre(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/ogre.png");
     }
 
     /**
@@ -124,7 +152,7 @@ class MenuBuilder {
      */
     void addTool(String item) {
         Validate.nonEmpty(item, "item");
-        add(item, toolIconAssetPath);
+        add(item, "Textures/icons/tool.png");
     }
 
     /**
