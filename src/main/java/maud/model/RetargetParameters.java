@@ -68,6 +68,10 @@ public class RetargetParameters implements Cloneable {
      */
     private AssetManager assetManager = null;
     /**
+     * true &rarr; invert the loaded map, false &rarr; don't invert it
+     */
+    private boolean invertMapFlag = false;
+    /**
      * asset path to the skeleton mapping, or null if none selected
      */
     private String mappingAssetPath = "SkeletonMappings/SinbadToJaime.j3o";
@@ -151,6 +155,15 @@ public class RetargetParameters implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Test whether to invert the loaded map before applying it.
+     *
+     * @return true if inverting the map, otherwise false
+     */
+    public boolean isInvertingMap() {
+        return invertMapFlag;
     }
 
     /**
@@ -275,6 +288,15 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
+     * Alter whether the invert the loaded map before applying it.
+     *
+     * @param newSetting true &rarr; invert it, false &rarr; don't invert it
+     */
+    public void setInvertMap(boolean newSetting) {
+        invertMapFlag = newSetting;
+    }
+
+    /**
      * Alter the skeleton mapping asset.
      *
      * @param path (or null to deselect)
@@ -328,7 +350,14 @@ public class RetargetParameters implements Cloneable {
             loaded = null;
         }
 
-        return loaded;
+        SkeletonMapping result;
+        if (invertMapFlag) {
+            result = loaded.inverse();
+        } else {
+            result = loaded;
+        }
+
+        return result;
     }
 
     /**

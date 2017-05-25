@@ -94,6 +94,9 @@ class RetargetTool extends WindowController {
         }
         Maud.gui.setStatusText("mapAsset", " " + mapAssetDesc);
 
+        boolean invertFlag = Maud.model.retarget.isInvertingMap();
+        Maud.gui.setChecked("invertRma", invertFlag);
+
         updateBottom();
     }
     // *************************************************************************
