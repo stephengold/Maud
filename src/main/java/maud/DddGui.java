@@ -138,7 +138,7 @@ public class DddGui extends GuiScreenController {
     void addCheckpoint(String source) {
         Validate.nonEmpty(source, "source");
 
-        int checkpointIndex = History.add();
+        int checkpointIndex = History.addCheckpoint();
         Checkpoint checkpoint = History.getCheckpoint(checkpointIndex);
         Date creationDate = checkpoint.copyTimestamp();
         String creationTime = DateFormat.getTimeInstance().format(creationDate);

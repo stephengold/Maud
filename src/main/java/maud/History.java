@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 
 /**
  * Edit history for Maud.
@@ -49,13 +50,18 @@ public class History {
     // fields
 
     /**
-     * index of the next slot to use
+     * index of the next checkpoint slot to use
      */
     private static int nextIndex = 0;
     /**
      * list of checkpoint slots
      */
     final private static List<Checkpoint> checkpoints = new ArrayList<>(20);
+    /**
+     * list of events (CG model edits, loads, and saves) since the last
+     * checkpoint
+     */
+    final private static List<String> eventDescriptions = new ArrayList<>(20);
     // *************************************************************************
     // constructors
 
@@ -73,16 +79,18 @@ public class History {
      *
      * @return index of the new checkpoint (&ge;0)
      */
-    static int add() {
+    static int addCheckpoint() {
         while (hasVulnerable()) {
             int lastIndex = checkpoints.size() - 1;
             checkpoints.remove(lastIndex);
-            logger.log(Level.INFO, "discard [{0}]", nextIndex);
+            logger.log(Level.INFO, "discard [{0}]", lastIndex);
         }
 
-        Checkpoint newbie = new Checkpoint();
+        Checkpoint newbie = new Checkpoint(eventDescriptions);
         checkpoints.add(newbie);
-        logger.log(Level.INFO, "add [{0}]", nextIndex);
+        eventDescriptions.clear();
+
+        logger.log(Level.INFO, "add checkpoint [{0}]", nextIndex);
         int result = nextIndex;
         ++nextIndex;
 
@@ -91,11 +99,11 @@ public class History {
     }
 
     /**
-     * Discard all checkpoints.
+     * Record an event (an edit, load, or save of the CG model).
      */
-    static void clear() {
-        checkpoints.clear();
-        nextIndex = 0;
+    public static void addEvent(String description) {
+        logger.log(Level.INFO, "add event {0}", MyString.quote(description));
+        eventDescriptions.add(description);
     }
 
     /**
@@ -118,7 +126,8 @@ public class History {
     }
 
     /**
-     * Test whether any checkpoints would be discarded by {@link #add()}.
+     * Test whether any checkpoints would be discarded by
+     * {@link #addCheckpoint()}.
      *
      * @return true if some checkpoints are vulnerable, otherwise false
      */
@@ -143,15 +152,16 @@ public class History {
     }
 
     /**
-     * If the next-next slot has a checkpoint, restore that checkpoint and
-     * increment the index.
+     * If the next slot has a checkpoint, restore that checkpoint and increment
+     * the index.
      */
     static void redo() {
-        if (checkpoints.size() > nextIndex + 1) {
-            nextIndex++;
+        if (checkpoints.size() > nextIndex) {
             Checkpoint next = checkpoints.get(nextIndex);
             next.restore();
+            eventDescriptions.clear();
             logger.log(Level.INFO, "redo to [{0}]", nextIndex);
+            ++nextIndex;
         } else {
             logger.log(Level.INFO, "nothing to redo", nextIndex);
         }
@@ -162,18 +172,23 @@ public class History {
      * index. If there are no vulnerable checkpoints, add one.
      */
     static void undo() {
-        if (nextIndex > 0) {
-            if (!hasVulnerable()) {
-                Checkpoint newbie = new Checkpoint();
+        boolean noneVulnerable = !hasVulnerable();
+        if (nextIndex > 1 || noneVulnerable && nextIndex > 0) {
+            if (noneVulnerable) {
+                Checkpoint newbie = new Checkpoint(eventDescriptions);
                 checkpoints.add(newbie);
-                logger.log(Level.INFO, "add [{0}]", nextIndex);
+                logger.log(Level.INFO, "add checkpoint [{0}]", nextIndex);
+            } else {
+                --nextIndex;
             }
-            nextIndex--;
-            Checkpoint previous = checkpoints.get(nextIndex);
+            int getIndex = nextIndex - 1;
+            Checkpoint previous = checkpoints.get(getIndex);
             previous.restore();
-            logger.log(Level.INFO, "undo to [{0}]", nextIndex);
+            eventDescriptions.clear();
+            logger.log(Level.INFO, "undo to [{0}]", getIndex);
+
         } else {
-            logger.log(Level.INFO, "nothing to undo", nextIndex);
+            logger.log(Level.INFO, "nothing to undo");
         }
     }
 }

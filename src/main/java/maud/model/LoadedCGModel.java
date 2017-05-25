@@ -65,6 +65,7 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
+import maud.History;
 import maud.Maud;
 import maud.Util;
 
@@ -158,7 +159,7 @@ public class LoadedCGModel implements Cloneable {
             rootSpatial.addControl(control);
         }
         control.addAnim(newAnimation);
-        setEdited();
+        setEdited("add animation");
     }
 
     /**
@@ -171,7 +172,7 @@ public class LoadedCGModel implements Cloneable {
 
         Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
         spatial.addControl(newSgc);
-        setEdited();
+        setEdited("add control");
     }
 
     /**
@@ -264,7 +265,7 @@ public class LoadedCGModel implements Cloneable {
         Animation animation = Maud.model.animation.getLoadedAnimation();
         AnimControl animControl = getAnimControl();
         animControl.removeAnim(animation);
-        setEdited();
+        setEdited("delete animation");
     }
 
     /**
@@ -275,7 +276,7 @@ public class LoadedCGModel implements Cloneable {
         Control sgc = Maud.model.sgc.findSgc(rootSpatial);
         boolean success = spatial.removeControl(sgc);
         assert success;
-        setEdited();
+        setEdited("delete control");
     }
 
     /**
@@ -760,7 +761,7 @@ public class LoadedCGModel implements Cloneable {
         } else {
             Bone selectedBone = Maud.model.bone.getBone();
             success = MySkeleton.setName(selectedBone, newName);
-            setEdited();
+            setEdited("rename bone");
         }
 
         return success;
@@ -779,7 +780,7 @@ public class LoadedCGModel implements Cloneable {
         AnimControl animControl = getAnimControl();
         animControl.removeAnim(oldAnimation);
         animControl.addAnim(newAnimation);
-        setEdited();
+        setEdited("replace animation");
     }
 
     /**
@@ -794,7 +795,7 @@ public class LoadedCGModel implements Cloneable {
         Spatial.CullHint oldHint = modelSpatial.getLocalCullHint();
         if (oldHint != newHint) {
             modelSpatial.setCullHint(newHint);
-            setEdited();
+            setEdited("change cull hint");
             Maud.viewState.setHint(newHint);
         }
     }
@@ -811,7 +812,7 @@ public class LoadedCGModel implements Cloneable {
         RenderQueue.ShadowMode oldMode = modelSpatial.getLocalShadowMode();
         if (oldMode != newMode) {
             modelSpatial.setShadowMode(newMode);
-            setEdited();
+            setEdited("change shadow mode");
             Maud.viewState.setMode(newMode);
         }
     }
@@ -833,7 +834,7 @@ public class LoadedCGModel implements Cloneable {
 
         BoneTrack track = Maud.model.track.findTrack();
         track.setKeyframes(times, translations, rotations, scales);
-        setEdited();
+        setEdited("replace keyframes");
     }
 
     /**
@@ -922,7 +923,8 @@ public class LoadedCGModel implements Cloneable {
             loadedModelAssetPath = "";
             loadedModelExtension = "j3o";
             loadedModelFilePath = baseFilePath;
-            setPristine();
+            String eventDescription = "write " + baseFilePath;
+            setPristine(eventDescription);
             logger.log(Level.INFO, "Wrote model to file {0}",
                     MyString.quote(filePath));
         } else {
@@ -1059,7 +1061,8 @@ public class LoadedCGModel implements Cloneable {
     private void postLoad(Spatial modelRoot) {
         assert modelRoot != null;
 
-        setPristine();
+        String eventDescription = "load " + modelName;
+        setPristine(eventDescription);
         repairModel(modelRoot);
         validateModel(modelRoot);
         rootSpatial = modelRoot.clone();
@@ -1103,16 +1106,19 @@ public class LoadedCGModel implements Cloneable {
         }
 
         if (madeRepairs) {
-            setEdited();
+            setEdited("repair model");
         }
     }
 
     /**
      * Increment the count of unsaved edits.
+     *
+     * @param eventDescription description of causative event (not null)
      */
-    private void setEdited() {
+    private void setEdited(String eventDescription) {
         ++editCount;
         editedSpatialTransform = "";
+        History.addEvent(eventDescription);
     }
 
     /**
@@ -1123,15 +1129,19 @@ public class LoadedCGModel implements Cloneable {
         if (!newString.equals(editedSpatialTransform)) {
             ++editCount;
             editedSpatialTransform = newString;
+            History.addEvent("transform spatial");
         }
     }
 
     /**
      * Mark the model as pristine.
+     *
+     * @param eventDescription description of causative event (not null)
      */
-    private void setPristine() {
+    private void setPristine(String eventDescription) {
         editCount = 0;
         editedSpatialTransform = "";
+        History.addEvent(eventDescription);
     }
 
     /**

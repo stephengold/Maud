@@ -26,7 +26,9 @@
  */
 package maud;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 import maud.model.DddModel;
 
@@ -56,6 +58,10 @@ class Checkpoint {
      */
     final private DddModel model;
     /**
+     * list of events since the previous checkpoint
+     */
+    final private static List<String> eventDescriptions = new ArrayList<>(20);
+    /**
      * a copy of the view's CG model at time of creation
      */
     final private ViewCGModel viewCgm;
@@ -64,11 +70,15 @@ class Checkpoint {
 
     /**
      * Create a new checkpoint based on the application's live state.
+     *
+     * @param descriptions events since the previous checkpoint (not null,
+     * unaffected)
      */
-    Checkpoint() {
-        model = new DddModel(Maud.model);
-        viewCgm = Maud.viewState.createCopy();
+    Checkpoint(List<String> descriptions) {
         timestamp = new Date();
+        model = new DddModel(Maud.model);
+        eventDescriptions.addAll(descriptions);
+        viewCgm = Maud.viewState.createCopy();
     }
     // *************************************************************************
     // new methods exposed
