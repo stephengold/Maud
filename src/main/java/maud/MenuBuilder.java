@@ -106,6 +106,16 @@ class MenuBuilder {
     }
 
     /**
+     * Add an item with the dialog icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addDialog(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/dialog.png");
+    }
+
+    /**
      * Add an item with the folder icon to the menu.
      *
      * @param item (not null, not empty)
@@ -116,13 +126,13 @@ class MenuBuilder {
     }
 
     /**
-     * Add an item with the dialog icon to the menu.
+     * Add an item with the geometry icon to the menu.
      *
      * @param item (not null, not empty)
      */
-    void addDialog(String item) {
+    void addGeometry(String item) {
         Validate.nonEmpty(item, "item");
-        add(item, "Textures/icons/dialog.png");
+        add(item, "Textures/icons/geometry.png");
     }
 
     /**
@@ -136,7 +146,17 @@ class MenuBuilder {
     }
 
     /**
-     * Add an item with the Ogre icon to the menu.
+     * Add an item with the node icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addNode(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/node.png");
+    }
+
+    /**
+     * Add an item with the OGRE icon to the menu.
      *
      * @param item (not null, not empty)
      */
