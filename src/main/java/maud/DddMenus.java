@@ -61,7 +61,7 @@ class DddMenus {
     // fields
 
     /**
-     * builder for popup menus
+     * reusable builder for popup menus
      */
     final private static MenuBuilder builder = new MenuBuilder();
     // *************************************************************************
@@ -81,9 +81,7 @@ class DddMenus {
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }
-            String[] items = builder.copyItems();
-            String[] icons = builder.copyIcons();
-            Maud.gui.showPopupMenu(menuPrefix, items, icons);
+            builder.show(menuPrefix);
 
         } else if (file.canRead()) {
             Maud.model.cgm.loadModelFile(file);
@@ -165,10 +163,7 @@ class DddMenus {
                     builder.add(name);
                 }
             }
-            String[] items = builder.copyItems();
-            String[] icons = builder.copyIcons();
-            Maud.gui.showPopupMenu(DddInputMode.selectBoneChildPrefix, items,
-                    icons);
+            builder.show(DddInputMode.selectBoneChildPrefix);
         }
     }
 
@@ -226,14 +221,11 @@ class DddMenus {
      * Display a "Spatial -> Add control" menu.
      */
     private void addSgc() {
-        String prefix = "open menu Spatial -> Add control -> ";
         builder.reset();
         builder.add("Anim");
         builder.add("RigidBody");
         builder.add("Skeleton");
-        String[] items = builder.copyItems();
-        String[] icons = builder.copyIcons();
-        Maud.gui.showPopupMenu(prefix, items, icons);
+        builder.show("open menu Spatial -> Add control -> ");
     }
 
     /**
@@ -447,14 +439,11 @@ class DddMenus {
      * Display a "CGModel -> Load" menu.
      */
     private void loadCGModel() {
-        String prefix = "open menu CGModel -> Load -> ";
         builder.reset();
         builder.add("Testdata");
         builder.addDialog("Asset");
         builder.add("File");
-        String[] items = builder.copyItems();
-        String[] icons = builder.copyIcons();
-        Maud.gui.showPopupMenu(prefix, items, icons);
+        builder.show("open menu CGModel -> Load -> ");
     }
 
     /**
@@ -484,10 +473,7 @@ class DddMenus {
         builder.addOgre("SpaceCraft");
         builder.add("Teapot");
         builder.addOgre("Tree");
-
-        String[] items = builder.copyItems();
-        String[] icons = builder.copyIcons();
-        Maud.gui.showPopupMenu(DddInputMode.loadModelNamedPrefix, items, icons);
+        builder.show(DddInputMode.loadModelNamedPrefix);
     }
 
     /**
@@ -645,9 +631,7 @@ class DddMenus {
         } else {
             String actionPrefix = DddInputMode.openMenuPrefix + menuName
                     + menuSeparator;
-            String[] items = builder.copyItems();
-            String[] icons = builder.copyIcons();
-            Maud.gui.showPopupMenu(actionPrefix, items, icons);
+            builder.show(actionPrefix);
         }
 
         return true;
@@ -819,10 +803,7 @@ class DddMenus {
 
             case "File":
                 buildFileMenu("/");
-                String[] items = builder.copyItems();
-                String[] icons = builder.copyIcons();
-                Maud.gui.showPopupMenu(DddInputMode.loadModelFilePrefix + "/",
-                        items, icons);
+                builder.show(DddInputMode.loadModelFilePrefix + "/");
                 handled = true;
                 break;
 
@@ -1080,12 +1061,9 @@ class DddMenus {
      * Handle a "select bone" action without an argument.
      */
     private void selectBone() {
-        String prefix = "open menu Bone -> Select -> ";
         builder.reset();
         buildBoneSelectMenu();
-        String[] items = builder.copyItems();
-        String[] icons = builder.copyIcons();
-        Maud.gui.showPopupMenu(prefix, items, icons);
+        builder.show("open menu Bone -> Select -> ");
     }
 
     /**
@@ -1126,9 +1104,7 @@ class DddMenus {
             builder.add(name);
         }
         builder.add(LoadedCGModel.noControl);
-        String[] items = builder.copyItems();
-        String[] icons = builder.copyIcons();
-        Maud.gui.showPopupMenu(DddInputMode.selectControlPrefix, items, icons);
+        builder.show(DddInputMode.selectControlPrefix);
     }
 
     /**
@@ -1151,8 +1127,6 @@ class DddMenus {
                 builder.add(name);
             }
         }
-        String[] items = builder.copyItems();
-        String[] icons = builder.copyIcons();
-        Maud.gui.showPopupMenu(DddInputMode.selectBonePrefix, items, icons);
+        builder.show(DddInputMode.selectBonePrefix);
     }
 }

@@ -202,4 +202,13 @@ class MenuBuilder {
         items.clear();
         icons.clear();
     }
+
+    /**
+     * Display the menu in the "3D View" screen.
+     */
+    void show(String actionPrefix) {
+        String[] itemArray = copyItems();
+        String[] iconArray = copyIcons();
+        Maud.gui.showPopupMenu(actionPrefix, itemArray, iconArray);
+    }
 }
