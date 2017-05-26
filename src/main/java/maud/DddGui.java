@@ -630,11 +630,12 @@ public class DddGui extends GuiScreenController {
          * Rotate the view's CG model around the Y-axis.
          */
         if (signals.test(modelCCWSignalName)) {
-            Maud.viewState.rotateY(tpf);
+            Maud.model.misc.rotateY(tpf);
         }
         if (signals.test(modelCWSignalName)) {
-            Maud.viewState.rotateY(-tpf);
+            Maud.model.misc.rotateY(-tpf);
         }
+        Maud.viewState.updateOrientation();
     }
     // *************************************************************************
     // ScreenController methods

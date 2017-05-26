@@ -46,6 +46,7 @@ import jme3utilities.math.MyMath;
 
 /**
  * Encapsulate a view's copy of the loaded CG model in Maud's "3D View" screen.
+ * TODO rename
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -207,15 +208,6 @@ public class ViewCGModel {
     }
 
     /**
-     * Rotate the CG model around +Y by the specified angle.
-     *
-     * @param angle in radians
-     */
-    void rotateY(float angle) {
-        parentNode.rotate(0f, angle, 0f);
-    }
-
-    /**
      * Alter the cull hint of the selected spatial.
      *
      * @param newHint new value for cull hint (not null)
@@ -297,6 +289,16 @@ public class ViewCGModel {
 
         Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
         spatial.setLocalTranslation(translation);
+    }
+
+    /**
+     * Update the orientation of the CG model.
+     *
+     * @param angle in radians
+     */
+    void updateOrientation() {
+        Quaternion orientation = Maud.model.misc.cgmOrientation();
+        parentNode.setLocalRotation(orientation);
     }
 
     /**
