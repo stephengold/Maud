@@ -733,6 +733,16 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
+     * Callback just before a checkpoint is created.
+     */
+    public void onCheckpoint() {
+        /*
+         * Potentially a new spatial transform edit.
+         */
+        editedSpatialTransform = "";
+    }
+
+    /**
      * Rename the selected bone.
      *
      * @param newName new name (not null)
