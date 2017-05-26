@@ -102,6 +102,7 @@ public class DddGui extends GuiScreenController {
     final CameraTool camera = new CameraTool(this);
     final CullHintTool cullHint = new CullHintTool(this);
     final CursorTool cursor = new CursorTool(this);
+    final HistoryTool history = new HistoryTool(this);
     final KeyframeTool keyframe = new KeyframeTool(this);
     final ModelTool model = new ModelTool(this);
     final PlatformTool platform = new PlatformTool(this);
@@ -143,6 +144,7 @@ public class DddGui extends GuiScreenController {
         Date creationDate = checkpoint.copyTimestamp();
         String creationTime = DateFormat.getTimeInstance().format(creationDate);
 
+        history.setAutoScroll();
         String message = String.format("added checkpoint[%d] from %s at %s",
                 checkpointIndex, source, creationTime);
         setStatus(message);
@@ -480,6 +482,9 @@ public class DddGui extends GuiScreenController {
                 break;
             case "cursor":
                 controller = cursor;
+                break;
+            case "history":
+                controller = history;
                 break;
             case "model":
                 controller = model;

@@ -644,6 +644,39 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                 </panel>
             </control>
 
+            <control name="window" id="historyTool" title="History Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="212px" width="270px" x="65" y="35">
+                <panel childLayout="vertical">
+                    <control name="scrollPanel" id="historyScrollPanel"
+                             style="bats-scroll-panel"
+                             height="150px"
+                             horizontal="false">
+                        <panel id="historyDynamicContent" childLayout="vertical"
+                               width="250px"/>
+                    </control>
+                    <panel height="6px"/>
+                    <panel childLayout="horizontal">
+                        <control name="button" id="historyUndoButton"
+                                 width="50px">
+                            <interact onRelease="perform(previous checkpoint)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" label="New checkpoint"
+                                 id="id5ToAvoidNiftyWarning"
+                                 width="100px">
+                            <interact onRelease="perform(new checkpoint)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="historyRedoButton"
+                                 width="50px">
+                            <interact onRelease="perform(next checkpoint)"/>
+                        </control>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="keyframeTool" title="Keyframe Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
@@ -667,7 +700,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="40px"/>
                         <panel width="10px"/>
                         <control name="button" label="Set all to pose"
-                                 id="id5ToAvoidNiftyWarning"
+                                 id="id6ToAvoidNiftyWarning"
                                  width="95px">
                             <interact onRelease="perform(set track translation all)"/>
                         </control>
@@ -683,7 +716,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="40px"/>
                         <panel width="10px"/>
                         <control name="button" label="Set all to pose"
-                                 id="id6ToAvoidNiftyWarning"
+                                 id="id7ToAvoidNiftyWarning"
                                  width="95px">
                             <interact onRelease="perform(set track rotation all)"/>
                         </control>
@@ -699,7 +732,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="40px"/>
                         <panel width="10px"/>
                         <control name="button" label="Set all to pose"
-                                 id="id7ToAvoidNiftyWarning"
+                                 id="id8ToAvoidNiftyWarning"
                                  width="95px">
                             <interact onRelease="perform(set track scale all)"/>
                         </control>
@@ -783,8 +816,8 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  backgroundColor="#ffff"
                                  width="*"/>
                     </panel>
-                    <panel/>
-                    <panel childLayout="horizontal">
+                    <panel height="6px"/>
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Extension:  "
                                  textHAlign="right"
                                  width="100px"/>
@@ -799,6 +832,12 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="70px"/>
+                        <panel width="20px"/>
+                        <control name="button" label="History"
+                                 id="id12ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(select tool history)"/>
+                        </control>
                     </panel>
                     <panel/>
                 </panel>

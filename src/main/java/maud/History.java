@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 
 /**
  * Edit history for Maud.
@@ -100,10 +101,24 @@ public class History {
 
     /**
      * Record an event (an edit, load, or save of the CG model).
+     *
+     * @param description (not null)
      */
     public static void addEvent(String description) {
+        Validate.nonNull(description, "description");
+
         logger.log(Level.INFO, "add event {0}", MyString.quote(description));
         eventDescriptions.add(description);
+    }
+
+    /**
+     * Count the available checkpoints.
+     *
+     * @return count (&ge;0)
+     */
+    static int countCheckpoints() {
+        int count = checkpoints.size();
+        return count;
     }
 
     /**
@@ -142,13 +157,16 @@ public class History {
     }
 
     /**
-     * Count the available checkpoints.
+     * List all events since the previous checkpoint.
      *
-     * @return count (&ge;0)
+     * @return a new list of descriptions
      */
-    static int length() {
-        int count = checkpoints.size();
-        return count;
+    static List<String> listRecentEvents() {
+        int numEvents = eventDescriptions.size();
+        List<String> result = new ArrayList<>(numEvents);
+        result.addAll(eventDescriptions);
+
+        return result;
     }
 
     /**
@@ -165,6 +183,7 @@ public class History {
         } else {
             logger.log(Level.INFO, "nothing to redo", nextIndex);
         }
+        Maud.gui.history.setAutoScroll();
     }
 
     /**
@@ -190,5 +209,6 @@ public class History {
         } else {
             logger.log(Level.INFO, "nothing to undo");
         }
+        Maud.gui.history.setAutoScroll();
     }
 }

@@ -270,7 +270,7 @@ class DddMenus {
     }
 
     /**
-     * Build a "Bone -> Select" menu.
+     * Build a "Bone -> Select" menu. TODO inline?
      */
     private void buildBoneSelectMenu() {
         builder.add("By name");
@@ -311,7 +311,7 @@ class DddMenus {
     }
 
     /**
-     * Build a "CGModel -> Load" menu.
+     * Build a "CGModel -> Load" menu. TODO inline
      */
     private void buildCGModelLoadMenu() {
         builder.add("Testdata");
@@ -327,6 +327,7 @@ class DddMenus {
         builder.add("Load");
         builder.addDialog("Save as asset");
         builder.addDialog("Save as file");
+        builder.addTool("History");
     }
 
     /**
@@ -770,6 +771,11 @@ class DddMenus {
 
         } else {
             switch (remainder) {
+                case "History":
+                    Maud.gui.history.select();
+                    handled = true;
+                    break;
+
                 case "Load":
                     loadCGModel();
                     handled = true;

@@ -141,10 +141,11 @@ public class Maud extends GuiApplication {
          */
         stateManager.attachAll(gui.animation, gui.axes, gui.bone,
                 gui.boneRotation, gui.boneTranslation, gui.boneScale,
-                gui.cullHint, gui.cursor, gui.camera, gui.keyframe, gui.model,
-                gui.platform, gui.render, gui.retarget, gui.sgc, gui.skeleton,
-                gui.skeletonColor, gui.shadowMode, gui.sky, gui.spatial,
-                gui.spatialRotation, gui.spatialScale, gui.spatialTranslation);
+                gui.cullHint, gui.cursor, gui.camera, gui.history, gui.keyframe,
+                gui.model, gui.platform, gui.render, gui.retarget, gui.sgc,
+                gui.skeleton, gui.skeletonColor, gui.shadowMode, gui.sky,
+                gui.spatial, gui.spatialRotation, gui.spatialScale,
+                gui.spatialTranslation);
         /*
          * Disable flyCam.
          */
