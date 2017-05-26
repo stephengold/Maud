@@ -270,7 +270,7 @@ class DddMenus {
     }
 
     /**
-     * Build a "Bone -> Select" menu. TODO inline?
+     * Build a "Bone -> Select" menu.
      */
     private void buildBoneSelectMenu() {
         builder.add("By name");
@@ -308,15 +308,6 @@ class DddMenus {
             builder.addBone("Next");
             builder.addBone("Previous");
         }
-    }
-
-    /**
-     * Build a "CGModel -> Load" menu. TODO inline
-     */
-    private void buildCGModelLoadMenu() {
-        builder.add("Testdata");
-        builder.addDialog("Asset");
-        builder.add("File");
     }
 
     /**
@@ -458,7 +449,9 @@ class DddMenus {
     private void loadCGModel() {
         String prefix = "open menu CGModel -> Load -> ";
         builder.reset();
-        buildCGModelLoadMenu();
+        builder.add("Testdata");
+        builder.addDialog("Asset");
+        builder.add("File");
         String[] items = builder.copyItems();
         String[] icons = builder.copyIcons();
         Maud.gui.showPopupMenu(prefix, items, icons);
