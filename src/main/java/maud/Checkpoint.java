@@ -60,7 +60,7 @@ class Checkpoint {
     /**
      * list of events since the previous checkpoint
      */
-    final private static List<String> eventDescriptions = new ArrayList<>(20);
+    final private List<String> eventDescriptions = new ArrayList<>(20);
     /**
      * a copy of the view's CG model at time of creation
      */
@@ -90,6 +90,19 @@ class Checkpoint {
      */
     Date copyTimestamp() {
         Date result = (Date) timestamp.clone();
+        return result;
+    }
+
+    /**
+     * List all events since the previous checkpoint.
+     *
+     * @return a new list of descriptions
+     */
+    List<String> listEvents() {
+        int numEvents = eventDescriptions.size();
+        List<String> result = new ArrayList<>(numEvents);
+        result.addAll(eventDescriptions);
+
         return result;
     }
 
