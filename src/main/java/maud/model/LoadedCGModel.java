@@ -286,7 +286,12 @@ public class LoadedCGModel implements Cloneable {
      * @return a new tree-position instance, or null if not found
      */
     List<Integer> findSpatialNamed(String name) {
-        List<Integer> treePosition = findSpatialNamed(name, rootSpatial);
+        List<Integer> treePosition = new ArrayList<>(4);
+        Spatial spatial = findSpatialNamed(name, rootSpatial, treePosition);
+        if (spatial == null) {
+            treePosition = null;
+        }
+
         return treePosition;
     }
 
@@ -482,14 +487,40 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
+     * Test whether the CG model contains the named geometry.
+     *
+     * @param name (not null)
+     * @return true if found, otherwise false
+     */
+    public boolean hasGeometry(String name) {
+        Spatial spatial = findSpatialNamed(name, rootSpatial, null);
+        boolean result = spatial instanceof Geometry;
+
+        return result;
+    }
+
+    /**
+     * Test whether the CG model contains the named node.
+     *
+     * @param name (not null)
+     * @return true if found, otherwise false
+     */
+    public boolean hasNode(String name) {
+        Spatial spatial = findSpatialNamed(name, rootSpatial, null);
+        boolean result = spatial instanceof Node;
+
+        return result;
+    }
+
+    /**
      * Test whether the CG model contains the named spatial.
      *
      * @param name (not null)
      * @return true if found, otherwise false
      */
     public boolean hasSpatial(String name) {
-        List<Integer> treePosition = findSpatialNamed(name, rootSpatial);
-        if (treePosition == null) {
+        Spatial spatial = findSpatialNamed(name, rootSpatial, null);
+        if (spatial == null) {
             return false;
         } else {
             return true;
@@ -516,6 +547,16 @@ public class LoadedCGModel implements Cloneable {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Test whether the model root is a node.
+     *
+     * @return true for a node, false for a geometry
+     */
+    public boolean isRootANode() {
+        boolean result = rootSpatial instanceof Node;
+        return result;
     }
 
     /**
@@ -1012,14 +1053,20 @@ public class LoadedCGModel implements Cloneable {
      *
      * @param name what name to search for (not null, not empty)
      * @param subtree which subtree to search (may be null, unaffected)
-     * @return a new tree-position instance, or null if not found
+     * @param storePosition tree position of the spatial (modified if found and
+     * not null)
+     * @return the pre-existing spatial, or null if not found
      */
-    private List<Integer> findSpatialNamed(String name, Spatial subtree) {
-        List<Integer> treePosition = null;
+    private Spatial findSpatialNamed(String name, Spatial subtree,
+            List<Integer> storePosition) {
+        Spatial result = null;
         if (subtree != null) {
             String spatialName = subtree.getName();
             if (spatialName != null && spatialName.equals(name)) {
-                treePosition = new ArrayList<>(2);
+                result = subtree;
+                if (storePosition != null) {
+                    storePosition.clear();
+                }
 
             } else if (subtree instanceof Node) {
                 Node node = (Node) subtree;
@@ -1027,17 +1074,18 @@ public class LoadedCGModel implements Cloneable {
                 int numChildren = children.size();
                 for (int childI = 0; childI < numChildren; childI++) {
                     Spatial child = children.get(childI);
-                    List<Integer> childPosition = findSpatialNamed(name, child);
-                    if (childPosition != null) {
-                        childPosition.add(0, childI);
-                        treePosition = childPosition;
+                    result = findSpatialNamed(name, child, storePosition);
+                    if (result != null) {
+                        if (storePosition != null) {
+                            storePosition.add(0, childI);
+                        }
                         break;
                     }
                 }
             }
         }
 
-        return treePosition;
+        return result;
     }
 
     /**
