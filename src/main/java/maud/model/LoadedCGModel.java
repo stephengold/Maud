@@ -280,6 +280,17 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
+     * Find a spatial with the specified name.
+     *
+     * @param name what name to search for (not null, not empty)
+     * @return a new tree-position instance, or null if not found
+     */
+    List<Integer> findSpatialNamed(String name) {
+        List<Integer> treePosition = findSpatialNamed(name, rootSpatial);
+        return treePosition;
+    }
+
+    /**
      * Access the named animation.
      *
      * @param name (not null)
@@ -462,8 +473,23 @@ public class LoadedCGModel implements Cloneable {
         if (name.equals(noBone)) {
             return true;
         }
-        Bone b = MySkeleton.getBone(rootSpatial, name);
+        Bone b = MySkeleton.getBone(rootSpatial, name); // TODO
         if (b == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Test whether the CG model contains the named spatial.
+     *
+     * @param name (not null)
+     * @return true if found, otherwise false
+     */
+    public boolean hasSpatial(String name) {
+        List<Integer> treePosition = findSpatialNamed(name, rootSpatial);
+        if (treePosition == null) {
             return false;
         } else {
             return true;
@@ -535,7 +561,7 @@ public class LoadedCGModel implements Cloneable {
         if (getSkeleton() == null) {
             boneNames = new ArrayList<>(1);
         } else {
-            boneNames = MySkeleton.listBones(rootSpatial);
+            boneNames = MySkeleton.listBones(rootSpatial); // TODO getSkeleton()
             boneNames.remove("");
         }
         boneNames.add(noBone);
@@ -597,6 +623,22 @@ public class LoadedCGModel implements Cloneable {
                 result.add(mesh);
             }
         }
+
+        return result;
+    }
+
+    /**
+     * Enumerate named spatials in the loaded model whose names begin with the
+     * specified prefix.
+     *
+     * @param prefix which name prefix (not null, may be empty)
+     * @param includeNodes true &rarr; both nodes and geometries, false &rarr;
+     * geometries only
+     * @return a new list of names
+     */
+    public List<String> listSpatialNames(String prefix, boolean includeNodes) {
+        List<String> result;
+        result = listSpatialNames(rootSpatial, prefix, includeNodes);
 
         return result;
     }
@@ -963,6 +1005,75 @@ public class LoadedCGModel implements Cloneable {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Find a spatial with the specified name in the specified subtree. Note:
+     * recursive!
+     *
+     * @param name what name to search for (not null, not empty)
+     * @param subtree which subtree to search (may be null, unaffected)
+     * @return a new tree-position instance, or null if not found
+     */
+    private List<Integer> findSpatialNamed(String name, Spatial subtree) {
+        List<Integer> treePosition = null;
+        if (subtree != null) {
+            String spatialName = subtree.getName();
+            if (spatialName != null && spatialName.equals(name)) {
+                treePosition = new ArrayList<>(2);
+
+            } else if (subtree instanceof Node) {
+                Node node = (Node) subtree;
+                List<Spatial> children = node.getChildren();
+                int numChildren = children.size();
+                for (int childI = 0; childI < numChildren; childI++) {
+                    Spatial child = children.get(childI);
+                    List<Integer> childPosition = findSpatialNamed(name, child);
+                    if (childPosition != null) {
+                        childPosition.add(0, childI);
+                        treePosition = childPosition;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return treePosition;
+    }
+
+    /**
+     * Enumerate named spatials in the specified subtree whose names begin with
+     * the specified prefix. Note: recursive!
+     *
+     * @param subtree which subtree to traverse (may be null, unaffected)
+     * @param prefix which name prefix (not null, may be empty)
+     * @param includeNodes true &rarr; both nodes and geometries, false &rarr;
+     * geometries only
+     * @return a new list of names
+     */
+    private List<String> listSpatialNames(Spatial subtree, String prefix,
+            boolean includeNodes) {
+        List<String> names = new ArrayList<>(5);
+        if (subtree != null) {
+            String name = subtree.getName();
+            if (name != null && !name.isEmpty() && name.startsWith(prefix)) {
+                if (includeNodes || subtree instanceof Geometry) {
+                    names.add(name);
+                }
+            }
+
+            if (subtree instanceof Node) {
+                Node node = (Node) subtree;
+                List<Spatial> children = node.getChildren();
+                for (Spatial child : children) {
+                    List<String> childNames;
+                    childNames = listSpatialNames(child, prefix, includeNodes);
+                    names.addAll(childNames);
+                }
+            }
+        }
+
+        return names;
+    }
 
     /**
      * Quietly load a CG model asset from persistent storage without adding it
