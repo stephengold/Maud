@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 import maud.Maud;
 import maud.Util;
 
@@ -211,7 +212,7 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Access the selected spatial in a CG model.
+     * Access the selected spatial in a CG model. TODO: rename
      *
      * @param modelRoot root of the CG model (not null)
      * @return the pre-existing instance (not null)
@@ -515,12 +516,27 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Select the named spatial.
+     *
+     * @param name (not null, not empty)
+     */
+    public void select(String name) {
+        Validate.nonEmpty(name, "spatial name");
+
+        List<Integer> position = Maud.model.cgm.findSpatialNamed(name);
+        assert position != null;
+        treePosition = position;
+        assert modelSpatial().getName().equals(name);
+        postSelect();
+    }
+
+    /**
      * Select (by index) a child of the selected spatial.
      *
      * @param childIndex (&ge;0)
      */
     public void selectChild(int childIndex) {
-        assert childIndex >= 0 : childIndex;
+        Validate.nonNegative(childIndex, "child index");
 
         Spatial child = modelChild(childIndex);
         if (child != null) {
