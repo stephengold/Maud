@@ -213,7 +213,7 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Count the bones in the loaded CG model.
+     * Count the bones in the selected skeleton.
      *
      * @return count (&ge;0)
      */
@@ -231,7 +231,7 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Count the root bones in the loaded CG model.
+     * Count the root bones in the selected skeleton.
      *
      * @return count (&ge;0)
      */
@@ -410,7 +410,7 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Access the skeleton of the loaded model.
+     * Access the selected skeleton.
      *
      * @return the pre-existing instance, or null if none
      */
@@ -469,7 +469,7 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Test whether the skeleton contains the named bone.
+     * Test whether the selected skeleton contains the named bone.
      *
      * @param name (not null)
      * @return true if found or noBone, otherwise false
@@ -478,8 +478,9 @@ public class LoadedCGModel implements Cloneable {
         if (name.equals(noBone)) {
             return true;
         }
-        Bone b = MySkeleton.getBone(rootSpatial, name); // TODO
-        if (b == null) {
+        Skeleton skeleton = getSkeleton();
+        Bone bone = skeleton.getBone(name);
+        if (bone == null) {
             return false;
         } else {
             return true;
@@ -534,19 +535,17 @@ public class LoadedCGModel implements Cloneable {
      * @return true for a leaf bone, otherwise false
      */
     public boolean isLeafBone(String boneName) {
-        if (boneName.equals(noBone)) {
-            return false;
+        boolean result = false;
+        if (!boneName.equals(noBone)) {
+            Skeleton skeleton = getSkeleton();
+            Bone bone = skeleton.getBone(boneName);;
+            if (bone != null) {
+                ArrayList<Bone> children = bone.getChildren();
+                result = children.isEmpty();
+            }
         }
-        Bone b = MySkeleton.getBone(rootSpatial, boneName);
-        if (b == null) {
-            return false;
-        }
-        ArrayList<Bone> children = b.getChildren();
-        if (children.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return result;
     }
 
     /**
@@ -593,21 +592,29 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Enumerate all bones in the loaded model.
+     * Enumerate bones in the selected skeleton.
      *
      * @return a new list of names, including noBone
      */
     public List<String> listBoneNames() {
-        List<String> boneNames;
-        if (getSkeleton() == null) {
-            boneNames = new ArrayList<>(1);
-        } else {
-            boneNames = MySkeleton.listBones(rootSpatial); // TODO getSkeleton()
-            boneNames.remove("");
-        }
-        boneNames.add(noBone);
+        List<String> names = new ArrayList<>(80);
+        Skeleton skeleton = getSkeleton();
+        if (skeleton != null) {
+            int boneCount = skeleton.getBoneCount();
 
-        return boneNames;
+            for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
+                Bone bone = skeleton.getBone(boneIndex);
+                String name = bone.getName();
+                if (name != null && !name.isEmpty()) {
+                    names.add(name);
+                }
+            }
+        }
+
+        Collections.sort(names);
+        names.add(noBone);
+
+        return names;
     }
 
     /**
@@ -629,7 +636,7 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Enumerate all children of the named bone.
+     * Enumerate all children of the named bone in the selected sksleton.
      *
      * @param parentName name of the parent bone
      * @return a new list of bone names
@@ -685,7 +692,7 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Enumerate root bones in the loaded model.
+     * Enumerate the root bones in the selected sksleton.
      *
      * @return a new list of names
      */
@@ -1420,7 +1427,7 @@ public class LoadedCGModel implements Cloneable {
             logger.warning("lacks a skeleton");
             return false;
         }
-        int numBones = skeleton.getBoneCount();
+        int numBones = skeleton.getBoneCount();  // TODO each skeleton
         if (numBones > 255) {
             logger.warning("too many bones");
             return false;
@@ -1439,11 +1446,6 @@ public class LoadedCGModel implements Cloneable {
         AnimControl animControl = modelRoot.getControl(AnimControl.class);
         if (animControl == null) {
             logger.warning("model lacks an animation control");
-            return false;
-        }
-        Skeleton skeleton2 = animControl.getSkeleton();
-        if (skeleton2 != skeleton) {
-            logger.warning("model has two skeletons");
             return false;
         }
         Collection<String> animNames = animControl.getAnimationNames();
