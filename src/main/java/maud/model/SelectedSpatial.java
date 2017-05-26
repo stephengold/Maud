@@ -438,6 +438,26 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Test whether the indexed child of the selected spatial is a node.
+     *
+     * @param childIndex which child (&ge;0)
+     * @return true if it's a node, otherwise false
+     */
+    public boolean isChildANode(int childIndex) {
+        Validate.nonNegative(childIndex, "child index");
+
+        boolean result = false;
+        Spatial spatial = modelSpatial();
+        if (spatial instanceof Node) {
+            Node node = (Node) spatial;
+            Spatial child = node.getChild(childIndex);
+            result = child instanceof Node;
+        }
+
+        return result;
+    }
+
+    /**
      * Test whether the selected spatial is a geometry.
      *
      * @return true if it's a geometry, otherwise false

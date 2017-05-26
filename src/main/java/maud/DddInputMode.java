@@ -53,15 +53,27 @@ class DddInputMode extends InputMode {
      * asset path to the cursor for this mode
      */
     final private static String assetPath = "Textures/cursors/default.cur";
-    /*
-     * action-string prefixes used by dialogs and popup menus
+    /**
+     * action prefix: remainder is the name for the new animation
      */
     final static String copyAnimationPrefix = "copy animation ";
+    /**
+     * action prefix: remainder is the name of an animation
+     */
     final static String loadAnimationPrefix = "load animation ";
     final static String loadModelAssetPrefix = "load model asset ";
     final static String loadModelFilePrefix = "load model file ";
+    /**
+     * action prefix: remainder is the name of a CG model in jme3-testdata
+     */
     final static String loadModelNamedPrefix = "load model named ";
+    /**
+     * action prefix: remainder is the path to a menu
+     */
     final static String openMenuPrefix = "open menu ";
+    /**
+     * action prefix: remainder is the name for the new animation
+     */
     final static String newPosePrefix = "new pose ";
     final static String reduceAnimationPrefix = "reduce animation ";
     final static String reduceTrackPrefix = "reduce track ";
@@ -70,13 +82,24 @@ class DddInputMode extends InputMode {
     final static String retargetAnimationPrefix = "retarget animation ";
     final static String saveModelAssetPrefix = "save model asset ";
     final static String saveModelFilePrefix = "save model file ";
+    /**
+     * action prefix: remainder is the name of a bone or a prefix thereof
+     */
     final static String selectBonePrefix = "select bone ";
     final static String selectBoneChildPrefix = "select boneChild ";
     final static String selectControlPrefix = "select control ";
+    /**
+     * action prefix: remainder is the name of a geometry or a prefix thereof
+     */
+    final static String selectGeometryPrefix = "select geometry ";
     final static String selectRetargetMapAssetPrefix = "select rma ";
     final static String selectRetargetSourceAnimationPrefix = "select rsa ";
     final static String selectRetargetSourceCgmAssetPrefix = "select rsca ";
     final static String selectSpatialChildPrefix = "select spatialChild ";
+    /**
+     * action prefix: remainder is the name of a spatial or a prefix thereof
+     */
+    final static String selectSpatialPrefix = "select spatial ";
     final static String selectToolPrefix = "select tool ";
     final static String setDurationPrefix = "set duration ";
     // *************************************************************************
@@ -602,6 +625,11 @@ class DddInputMode extends InputMode {
                 Maud.model.sgc.select(arg);
                 handled = true;
 
+            } else if (actionString.startsWith(selectGeometryPrefix)) {
+                arg = MyString.remainder(actionString, selectGeometryPrefix);
+                Maud.gui.menus.selectSpatial(arg, false);
+                handled = true;
+
             } else if (actionString.startsWith(
                     selectRetargetMapAssetPrefix)) {
                 arg = MyString.remainder(actionString,
@@ -627,6 +655,11 @@ class DddInputMode extends InputMode {
                 arg = MyString.remainder(actionString,
                         selectSpatialChildPrefix);
                 Maud.gui.selectSpatialChild(arg);
+                handled = true;
+
+            } else if (actionString.startsWith(selectSpatialPrefix)) {
+                arg = MyString.remainder(actionString, selectSpatialPrefix);
+                Maud.gui.menus.selectSpatial(arg, true);
                 handled = true;
             }
         }

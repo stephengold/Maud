@@ -28,7 +28,6 @@ package maud;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -189,17 +188,21 @@ class DddMenus {
             Maud.model.spatial.selectChild(0);
 
         } else if (numChildren > 1) {
-            List<String> choices = new ArrayList<>(numChildren);
-            for (int i = 0; i < numChildren; i++) {
-                String choice = String.format("#%d", i + 1);
-                String name = Maud.model.spatial.getChildName(i);
+            builder.reset();
+            for (int childIndex = 0; childIndex < numChildren; childIndex++) {
+                String choice = String.format("#%d", childIndex + 1);
+                String name = Maud.model.spatial.getChildName(childIndex);
                 if (name != null) {
                     choice += " " + MyString.quote(name);
                 }
-                choices.add(choice);
+                boolean isANode = Maud.model.spatial.isChildANode(childIndex);
+                if (isANode) {
+                    builder.addNode(choice);
+                } else {
+                    builder.addGeometry(choice);
+                }
             }
-            Maud.gui.showPopupMenu(DddInputMode.selectSpatialChildPrefix,
-                    choices);
+            builder.show(DddInputMode.selectSpatialChildPrefix);
         }
     }
 
@@ -212,6 +215,25 @@ class DddMenus {
             Collections.sort(names);
             Maud.gui.showPopupMenu(
                     DddInputMode.selectRetargetSourceAnimationPrefix, names);
+        }
+    }
+
+    /**
+     * Handle a "select spatial" action with an argument.
+     *
+     * @param argument action argument (not null)
+     */
+    void selectSpatial(String argument, boolean includeNodes) {
+        if (Maud.model.cgm.hasSpatial(argument)) {
+            Maud.model.spatial.select(argument);
+
+        } else {
+            /*
+             * Treat the argument as a spatial-name prefix.
+             */
+            List<String> names;
+            names = Maud.model.cgm.listSpatialNames(argument, includeNodes);
+            showSpatialSubmenu(names, includeNodes);
         }
     }
     // *************************************************************************
@@ -405,8 +427,7 @@ class DddMenus {
      */
     private void buildSpatialMenu() {
         builder.addTool("Tool");
-        builder.add("Select by parent");
-        builder.add("Select by name");
+        builder.add("Select");
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
@@ -935,10 +956,15 @@ class DddMenus {
         assert remainder != null;
 
         boolean handled = false;
-        String acPrefix = "Add control" + menuSeparator;
-        if (remainder.startsWith(acPrefix)) {
-            String arg = MyString.remainder(remainder, acPrefix);
+        String addControlPrefix = "Add control" + menuSeparator;
+        String selectPrefix = "Select" + menuSeparator;
+        if (remainder.startsWith(addControlPrefix)) {
+            String arg = MyString.remainder(remainder, addControlPrefix);
             handled = menuSpatialAddControl(arg);
+
+        } else if (remainder.startsWith(selectPrefix)) {
+            String arg = MyString.remainder(remainder, selectPrefix);
+            handled = menuSpatialSelect(arg);
 
         } else {
             switch (remainder) {
@@ -960,6 +986,10 @@ class DddMenus {
                     break;
                 case "Scale":
                     Maud.gui.spatialScale.select();
+                    handled = true;
+                    break;
+                case "Select":
+                    selectSpatial();
                     handled = true;
                     break;
                 case "Select control":
@@ -1002,6 +1032,41 @@ class DddMenus {
 
             case "Skeleton":
                 Maud.model.spatial.addSkeletonControl();
+                handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle actions from the "Spatial -> Select" menu.
+     *
+     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuSpatialSelect(String remainder) {
+        assert remainder != null;
+
+        boolean handled = false;
+        switch (remainder) {
+            case "By name":
+                selectSpatial("", true);
+                handled = true;
+                break;
+            case "Child":
+                selectSpatialChild();
+                handled = true;
+                break;
+            case "Geometry":
+                selectSpatial("", false);
+                handled = true;
+                break;
+            case "Parent":
+                Maud.model.spatial.selectParent();
+                handled = true;
+                break;
+            case "Root":
+                Maud.model.spatial.selectModelRoot();
                 handled = true;
         }
 
@@ -1070,8 +1135,8 @@ class DddMenus {
      * Select a bone by name, using submenus.
      */
     private void selectBoneByName() {
-        List<String> boneNames = Maud.model.cgm.listBoneNames();
-        showBoneSubmenu(boneNames);
+        List<String> nameList = Maud.model.cgm.listBoneNames();
+        showBoneSubmenu(nameList);
     }
 
     /**
@@ -1108,19 +1173,62 @@ class DddMenus {
     }
 
     /**
+     * Display a "Spatial -> Select" menu.
+     */
+    private void selectSpatial() {
+        builder.reset();
+
+        List<String> names = Maud.model.cgm.listSpatialNames("", true);
+        if (!names.isEmpty()) {
+            builder.add("By name");
+        }
+
+        boolean isRootANode = Maud.model.cgm.isRootANode();
+        if (isRootANode) {
+            builder.addNode("Root");
+        } else {
+            builder.addGeometry("Root");
+        }
+
+        names = Maud.model.cgm.listSpatialNames("", false);
+        if (!names.isEmpty()) {
+            builder.add("Geometry");
+        }
+
+        int numChildren = Maud.model.spatial.countChildren();
+        if (numChildren == 1) {
+            boolean isChildANode = Maud.model.spatial.isChildANode(0);
+            if (isChildANode) {
+                builder.addNode("Child");
+            } else {
+                builder.addGeometry("Child");
+            }
+        } else if (numChildren > 1) {
+            builder.add("Child");
+        }
+
+        boolean isRoot = Maud.model.spatial.isModelRoot();
+        if (!isRoot) {
+            builder.addNode("Parent");
+        }
+
+        builder.show("open menu Spatial -> Select -> ");
+    }
+
+    /**
      * Display a submenu for selecting bones by name using the "select bone"
      * action prefix.
      *
-     * @param boneNames list of names from which to select (not null)
+     * @param nameList list of names from which to select (not null)
      */
-    private void showBoneSubmenu(List<String> boneNames) {
-        assert boneNames != null;
+    private void showBoneSubmenu(List<String> nameList) {
+        assert nameList != null;
 
-        MyString.reduce(boneNames, 20);
-        Collections.sort(boneNames);
+        MyString.reduce(nameList, 20);
+        Collections.sort(nameList);
 
         builder.reset();
-        for (String name : boneNames) {
+        for (String name : nameList) {
             if (Maud.model.cgm.hasBone(name)) {
                 builder.addBone(name);
             } else {
@@ -1128,5 +1236,37 @@ class DddMenus {
             }
         }
         builder.show(DddInputMode.selectBonePrefix);
+    }
+
+    /**
+     * Display a submenu for selecting spatials by name using the "select
+     * spatial" action prefix.
+     *
+     * @param nameList list of names from which to select (not null)
+     * @param includeNodes true &rarr; both nodes and geometries, false &rarr;
+     * geometries only
+     */
+    private void showSpatialSubmenu(List<String> nameList,
+            boolean includeNodes) {
+        assert nameList != null;
+
+        MyString.reduce(nameList, 20);
+        Collections.sort(nameList);
+
+        builder.reset();
+        for (String name : nameList) {
+            if (Maud.model.cgm.hasGeometry(name)) {
+                builder.addGeometry(name);
+            } else if (includeNodes && Maud.model.cgm.hasNode(name)) {
+                builder.addNode(name);
+            } else {
+                builder.add(name);
+            }
+        }
+        if (includeNodes) {
+            builder.show(DddInputMode.selectSpatialPrefix);
+        } else {
+            builder.show(DddInputMode.selectGeometryPrefix);
+        }
     }
 }
