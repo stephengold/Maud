@@ -55,7 +55,7 @@ class HistoryTool extends WindowController {
     // fields
 
     /**
-     *
+     * true &rarr; scroll to current on next update, false &rarr; manual scroll
      */
     private boolean autoScrollFlag = false;
     /**
@@ -77,7 +77,7 @@ class HistoryTool extends WindowController {
     // new methods exposed
 
     /**
-     *
+     * scroll to "you are here" on next update
      */
     public void setAutoScroll() {
         autoScrollFlag = true;
