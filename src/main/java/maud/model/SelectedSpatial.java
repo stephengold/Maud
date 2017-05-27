@@ -74,7 +74,7 @@ public class SelectedSpatial implements Cloneable {
      * Add an AnimControl to the selected spatial and select the new control.
      */
     public void addAnimControl() {
-        Skeleton skeleton = Maud.model.cgm.getSkeleton();
+        Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
         AnimControl newSgc = new AnimControl(skeleton);
 
         Maud.model.cgm.addSgc(newSgc);
@@ -97,7 +97,7 @@ public class SelectedSpatial implements Cloneable {
      * Add a SkeletonControl to the selected spatial and select the new control.
      */
     public void addSkeletonControl() {
-        Skeleton skeleton = Maud.model.cgm.getSkeleton();
+        Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
         SkeletonControl newSgc = new SkeletonControl(skeleton);
 
         Maud.model.cgm.addSgc(newSgc);

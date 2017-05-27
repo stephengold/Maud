@@ -69,7 +69,7 @@ class BoneTool extends WindowController {
         float bestDSquared = Float.MAX_VALUE;
         Maud.model.bone.selectNoBone();
 
-        int numBones = Maud.model.cgm.countBones();
+        int numBones = Maud.model.cgm.bones.countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             Vector3f boneWorld = Maud.viewState.boneLocation(boneIndex);
             Vector3f boneScreen = cam.getScreenCoordinates(boneWorld);
@@ -160,7 +160,7 @@ class BoneTool extends WindowController {
         String indexText;
         String nButton, pButton;
 
-        int numBones = Maud.model.cgm.countBones();
+        int numBones = Maud.model.cgm.bones.countBones();
         if (Maud.model.bone.isBoneSelected()) {
             int selectedIndex = Maud.model.bone.getIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
@@ -212,7 +212,7 @@ class BoneTool extends WindowController {
 
         if (Maud.model.bone.isBoneSelected()) {
             if (Maud.model.bone.isRootBone()) {
-                int numRoots = Maud.model.cgm.countRootBones();
+                int numRoots = Maud.model.cgm.bones.countRootBones();
                 if (numRoots == 1) {
                     parentText = "none (the root)";
                 } else {

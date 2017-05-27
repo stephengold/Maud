@@ -32,7 +32,7 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.DialogController;
-import maud.model.LoadedCGModel;
+import maud.model.SelectedSkeleton;
 
 /**
  * Controller for a text-entry dialog box used to rename a bone.
@@ -152,7 +152,7 @@ class BoneRenameDialog implements DialogController {
         boolean result;
         if (name.isEmpty()) {
             result = true;
-        } else if (name.equals(LoadedCGModel.noBone)) {
+        } else if (name.equals(SelectedSkeleton.noBone)) {
             result = true;
         } else {
             result = false;
@@ -170,7 +170,7 @@ class BoneRenameDialog implements DialogController {
     private static boolean isUsed(String name) {
         assert name != null;
 
-        if (Maud.model.cgm.hasBone(name)) {
+        if (Maud.model.cgm.bones.hasBone(name)) {
             return true;
         } else {
             return false;

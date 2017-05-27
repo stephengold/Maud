@@ -264,7 +264,7 @@ public class RetargetParameters implements Cloneable {
             matches = true;
             List<String> targetBones = map.listTargetBones();
             for (String name : targetBones) {
-                if (!Maud.model.cgm.hasBone(name)) {
+                if (!Maud.model.cgm.bones.hasBone(name)) {
                     matches = false;
                     break;
                 }

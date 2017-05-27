@@ -85,10 +85,6 @@ public class LoadedCGModel implements Cloneable {
     final private static Logger logger = Logger.getLogger(
             LoadedCGModel.class.getName());
     /**
-     * dummy bone name used to indicate that no bone is selected
-     */
-    final public static String noBone = "( no bone )";
-    /**
      * dummy control name used to indicate that no control is selected
      */
     final public static String noControl = "( no control )";
@@ -103,6 +99,10 @@ public class LoadedCGModel implements Cloneable {
      * count of unsaved edits to the CG model (&ge;0)
      */
     private int editCount = 0;
+    /**
+     * the selected skeleton in the CG model
+     */
+    public SelectedSkeleton bones = new SelectedSkeleton();
     /**
      * the root spatial in the MVC model's copy of the CG model
      */
@@ -139,6 +139,7 @@ public class LoadedCGModel implements Cloneable {
     public LoadedCGModel(AssetManager assetManager) {
         Validate.nonNull(assetManager, "asset manager");
         this.assetManager = assetManager;
+        bones.setCgm(this);
     }
     // *************************************************************************
     // new methods exposed
@@ -154,7 +155,7 @@ public class LoadedCGModel implements Cloneable {
 
         AnimControl control = getAnimControl();
         if (control == null) {
-            Skeleton skeleton = getSkeleton();
+            Skeleton skeleton = bones.getSkeleton();
             control = new AnimControl(skeleton);
             rootSpatial.addControl(control);
         }
@@ -206,43 +207,6 @@ public class LoadedCGModel implements Cloneable {
         } else {
             Collection<String> names = animControl.getAnimationNames();
             count = names.size();
-        }
-
-        assert count >= 0 : count;
-        return count;
-    }
-
-    /**
-     * Count the bones in the selected skeleton.
-     *
-     * @return count (&ge;0)
-     */
-    public int countBones() {
-        Skeleton skeleton = getSkeleton();
-        int count;
-        if (skeleton == null) {
-            count = 0;
-        } else {
-            count = skeleton.getBoneCount();
-        }
-
-        assert count >= 0 : count;
-        return count;
-    }
-
-    /**
-     * Count the root bones in the selected skeleton.
-     *
-     * @return count (&ge;0)
-     */
-    public int countRootBones() {
-        int count;
-        Skeleton skeleton = getSkeleton();
-        if (skeleton == null) {
-            count = 0;
-        } else {
-            Bone[] roots = skeleton.getRoots();
-            count = roots.length;
         }
 
         assert count >= 0 : count;
@@ -410,48 +374,6 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Access the selected skeleton.
-     *
-     * @return the pre-existing instance, or null if none
-     */
-    Skeleton getSkeleton() {
-        AnimControl animControl;
-        SkeletonControl skeletonControl;
-        Skeleton skeleton = null;
-        /*
-         * If the selected SG control is an AnimControl or SkeletonControl,
-         * use its skeleton, if it has one.
-         */
-        Control selectedSgc = Maud.model.sgc.findSgc();
-        if (selectedSgc instanceof AnimControl) {
-            animControl = (AnimControl) selectedSgc;
-            skeleton = animControl.getSkeleton();
-        }
-        if (skeleton == null && selectedSgc instanceof SkeletonControl) {
-            skeletonControl = (SkeletonControl) selectedSgc;
-            skeleton = skeletonControl.getSkeleton();
-        }
-        /*
-         * If not, use the skeleton from the first AnimControl or
-         * SkeletonControl in the root spatial.
-         */
-        if (skeleton == null) {
-            animControl = rootSpatial.getControl(AnimControl.class);
-            if (animControl != null) {
-                skeleton = animControl.getSkeleton();
-            }
-        }
-        if (skeleton == null) {
-            skeletonControl = rootSpatial.getControl(SkeletonControl.class);
-            if (skeletonControl != null) {
-                skeleton = skeletonControl.getSkeleton();
-            }
-        }
-
-        return skeleton;
-    }
-
-    /**
      * Test whether the animation controller contains the named animation.
      *
      * @param name (not null)
@@ -462,25 +384,6 @@ public class LoadedCGModel implements Cloneable {
 
         Animation animation = getAnimation(name);
         if (animation == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Test whether the selected skeleton contains the named bone.
-     *
-     * @param name (not null)
-     * @return true if found or noBone, otherwise false
-     */
-    public boolean hasBone(String name) {
-        if (name.equals(noBone)) {
-            return true;
-        }
-        Skeleton skeleton = getSkeleton();
-        Bone bone = skeleton.getBone(name);
-        if (bone == null) {
             return false;
         } else {
             return true;
@@ -529,26 +432,6 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Test whether the named bone is a leaf bone, with no children.
-     *
-     * @param boneName which bone to test (not null)
-     * @return true for a leaf bone, otherwise false
-     */
-    public boolean isLeafBone(String boneName) {
-        boolean result = false;
-        if (!boneName.equals(noBone)) {
-            Skeleton skeleton = getSkeleton();
-            Bone bone = skeleton.getBone(boneName);;
-            if (bone != null) {
-                ArrayList<Bone> children = bone.getChildren();
-                result = children.isEmpty();
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Test whether the model root is a node.
      *
      * @return true for a node, false for a geometry
@@ -592,70 +475,6 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Enumerate bones in the selected skeleton.
-     *
-     * @return a new list of names, including noBone
-     */
-    public List<String> listBoneNames() {
-        List<String> names = new ArrayList<>(80);
-        Skeleton skeleton = getSkeleton();
-        if (skeleton != null) {
-            int boneCount = skeleton.getBoneCount();
-
-            for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-                Bone bone = skeleton.getBone(boneIndex);
-                String name = bone.getName();
-                if (name != null && !name.isEmpty()) {
-                    names.add(name);
-                }
-            }
-        }
-
-        Collections.sort(names);
-        names.add(noBone);
-
-        return names;
-    }
-
-    /**
-     * Enumerate all bones in the loaded model having names that start with the
-     * specified prefix.
-     *
-     * @param namePrefix the input prefix
-     * @return a new list of names
-     */
-    public List<String> listBoneNames(String namePrefix) {
-        List<String> boneNames = listBoneNames();
-        for (String name : MyString.toArray(boneNames)) {
-            if (!name.startsWith(namePrefix)) {
-                boneNames.remove(name);
-            }
-        }
-
-        return boneNames;
-    }
-
-    /**
-     * Enumerate all children of the named bone in the selected sksleton.
-     *
-     * @param parentName name of the parent bone
-     * @return a new list of bone names
-     */
-    public List<String> listChildBoneNames(String parentName) {
-        Skeleton skeleton = getSkeleton();
-        Bone parent = skeleton.getBone(parentName);
-        List<Bone> children = parent.getChildren();
-        List<String> boneNames = new ArrayList<>(children.size());
-        for (Bone b : children) {
-            String name = b.getName();
-            boneNames.add(name);
-        }
-        boneNames.remove("");
-
-        return boneNames;
-    }
-
-    /**
      * Enumerate all meshes in the loaded model.
      *
      * @return a new list
@@ -689,26 +508,6 @@ public class LoadedCGModel implements Cloneable {
         result = listSpatialNames(rootSpatial, prefix, includeNodes);
 
         return result;
-    }
-
-    /**
-     * Enumerate the root bones in the selected sksleton.
-     *
-     * @return a new list of names
-     */
-    public List<String> listRootBoneNames() {
-        List<String> boneNames = new ArrayList<>(5);
-        Skeleton skeleton = getSkeleton();
-        if (skeleton != null) {
-            Bone[] roots = skeleton.getRoots();
-            for (Bone rootBone : roots) {
-                String name = rootBone.getName();
-                boneNames.add(name);
-            }
-            boneNames.remove("");
-        }
-
-        return boneNames;
     }
 
     /**
@@ -847,12 +646,13 @@ public class LoadedCGModel implements Cloneable {
                     MyString.quote(newName));
             success = false;
 
-        } else if (newName.equals(noBone) || newName.isEmpty()) {
+        } else if (newName.equals(SelectedSkeleton.noBone)
+                || newName.isEmpty()) {
             logger.log(Level.WARNING, "Rename failed: {0} is a reserved name.",
                     MyString.quote(newName));
             success = false;
 
-        } else if (hasBone(newName)) {
+        } else if (bones.hasBone(newName)) {
             logger.log(Level.WARNING,
                     "Rename failed: a bone named {0} already exists.",
                     MyString.quote(newName));
@@ -1048,6 +848,8 @@ public class LoadedCGModel implements Cloneable {
     public Object clone() throws CloneNotSupportedException {
         LoadedCGModel clone = (LoadedCGModel) super.clone();
         clone.rootSpatial = rootSpatial.clone();
+        clone.bones = bones.clone();
+        clone.bones.setCgm(clone);
 
         return clone;
     }
@@ -1321,40 +1123,6 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Test for issues with a bone.
-     *
-     * @param bone (may be null)
-     * @param nameSet (not null)
-     * @return false if issues found, otherwise true
-     */
-    private boolean validateBone(Bone bone, Set<String> nameSet) {
-        assert nameSet != null;
-
-        if (bone == null) {
-            logger.warning("bone is null");
-            return false;
-        }
-        String name = bone.getName();
-        if (name == null) {
-            logger.warning("bone name is null");
-            return false;
-        }
-        if (name.length() == 0) {
-            logger.warning("bone name is empty");
-            return false;
-        }
-        if (name.equals(noBone)) {
-            logger.warning("bone has reserved name");
-            return false;
-        }
-        if (nameSet.contains(name)) {
-            logger.warning("duplicate bone name");
-        }
-        nameSet.add(name);
-        return true;
-    }
-
-    /**
      * Test for issues with a BoneTrack.
      *
      * @param boneTrack (not null)
@@ -1439,7 +1207,7 @@ public class LoadedCGModel implements Cloneable {
         Set<String> nameSet = new TreeSet<>();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             Bone bone = skeleton.getBone(boneIndex);
-            if (!validateBone(bone, nameSet)) {
+            if (!bones.validateBone(bone, nameSet)) {
                 return false;
             }
         }

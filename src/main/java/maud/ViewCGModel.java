@@ -305,7 +305,7 @@ public class ViewCGModel {
      * Update the user transforms of all bones using the MVC model.
      */
     void updatePose() {
-        int boneCount = Maud.model.cgm.countBones();
+        int boneCount = Maud.model.cgm.bones.countBones();
         int numTransforms = Maud.model.pose.countTransforms();
         assert numTransforms == boneCount : numTransforms;
 

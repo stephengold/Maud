@@ -82,7 +82,7 @@ public class Pose implements Cloneable {
         /*
          * Add a BoneTrack for each bone that's not in bind pose.
          */
-        int numBones = Maud.model.cgm.countBones();
+        int numBones = Maud.model.cgm.bones.countBones();
         Transform transform = new Transform();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             copyTransform(boneIndex, transform);
@@ -139,7 +139,7 @@ public class Pose implements Cloneable {
     public Transform modelTransform(int boneIndex, Transform storeResult) {
         Transform result = copyTransform(boneIndex, storeResult);
 
-        Skeleton skeleton = Maud.model.cgm.getSkeleton();
+        Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
         Bone bone = skeleton.getBone(boneIndex);
         /*
          * apply the bone's bind transform
@@ -193,7 +193,7 @@ public class Pose implements Cloneable {
      * Reset this pose to bind pose.
      */
     public void resetToBind() {
-        int boneCount = Maud.model.cgm.countBones();
+        int boneCount = Maud.model.cgm.bones.countBones();
         transforms.clear();
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             Transform transform = new Transform();
@@ -269,7 +269,7 @@ public class Pose implements Cloneable {
      * Alter the transforms to match the loaded animation.
      */
     public void setToAnimation() {
-        int boneCount = Maud.model.cgm.countBones();
+        int boneCount = Maud.model.cgm.bones.countBones();
         int numTransforms = countTransforms();
         assert numTransforms == boneCount : numTransforms;
 

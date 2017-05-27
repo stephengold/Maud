@@ -89,7 +89,7 @@ public class SelectedBone implements Cloneable {
         if (selectedIndex == -1) {
             bone = null;
         } else {
-            Skeleton skeleton = Maud.model.cgm.getSkeleton();
+            Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
             bone = skeleton.getBone(selectedIndex);
         }
 
@@ -139,7 +139,7 @@ public class SelectedBone implements Cloneable {
     public String getName() {
         String name;
         if (selectedIndex == -1) {
-            name = LoadedCGModel.noBone;
+            name = SelectedSkeleton.noBone;
         } else {
             Bone bone = getBone();
             name = bone.getName();
@@ -223,7 +223,7 @@ public class SelectedBone implements Cloneable {
     void select(Bone bone) {
         assert bone != null;
 
-        Skeleton skeleton = Maud.model.cgm.getSkeleton();
+        Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
         int index = skeleton.getBoneIndex(bone);
         if (index != -1) {
             select(index);
@@ -268,11 +268,11 @@ public class SelectedBone implements Cloneable {
      * @param name bone name or noBone (not null)
      */
     public void select(String name) {
-        if (name.equals(LoadedCGModel.noBone)) {
+        if (name.equals(SelectedSkeleton.noBone)) {
             selectNoBone();
 
         } else {
-            Skeleton skeleton = Maud.model.cgm.getSkeleton();
+            Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
             int index = skeleton.getBoneIndex(name);
             if (index == -1) {
                 logger.log(Level.WARNING, "Select failed: no bone named {0}.",
@@ -301,7 +301,7 @@ public class SelectedBone implements Cloneable {
      * Select the first root bone of the loaded CG model.
      */
     public void selectFirstRoot() {
-        Skeleton skeleton = Maud.model.cgm.getSkeleton();
+        Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
         Bone[] roots = skeleton.getRoots();
         Bone firstRoot = roots[0];
         select(firstRoot);
@@ -313,7 +313,7 @@ public class SelectedBone implements Cloneable {
     public void selectNext() {
         if (selectedIndex != -1) {
             ++selectedIndex;
-            int numBones = Maud.model.cgm.countBones();
+            int numBones = Maud.model.cgm.bones.countBones();
             if (selectedIndex >= numBones) {
                 selectedIndex = 0;
             }
@@ -347,7 +347,7 @@ public class SelectedBone implements Cloneable {
         if (selectedIndex != -1) {
             --selectedIndex;
             if (selectedIndex < 0) {
-                int numBones = Maud.model.cgm.countBones();
+                int numBones = Maud.model.cgm.bones.countBones();
                 selectedIndex = numBones - 1;
             }
         }
