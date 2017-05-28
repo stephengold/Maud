@@ -79,10 +79,6 @@ public class DddModel {
      */
     public RetargetParameters retarget = null;
     /**
-     * which bone is selected
-     */
-    final public SelectedBone bone;
-    /**
      * which SG control is selected
      */
     final public SelectedSgc sgc;
@@ -113,7 +109,6 @@ public class DddModel {
         misc = new MiscStatus();
         pose = new Pose();
         /* retarget field will be set later */
-        bone = new SelectedBone();
         sgc = new SelectedSgc();
         spatial = new SelectedSpatial();
         track = new SelectedTrack();
@@ -134,7 +129,6 @@ public class DddModel {
             cgm = (LoadedCGModel) source.cgm.clone();
             misc = (MiscStatus) source.misc.clone();
             pose = (Pose) source.pose.clone();
-            bone = (SelectedBone) source.bone.clone();
             retarget = (RetargetParameters) source.retarget.clone();
             spatial = (SelectedSpatial) source.spatial.clone();
             sgc = (SelectedSgc) source.sgc.clone();

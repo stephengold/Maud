@@ -94,7 +94,7 @@ class BoneRotationTool extends WindowController {
             }
             Quaternion rot = new Quaternion();
             rot.fromAngles(angles);
-            int boneIndex = Maud.model.bone.getIndex();
+            int boneIndex = Maud.model.cgm.bone.getIndex();
             Maud.model.pose.setRotation(boneIndex, rot);
         }
     }
@@ -104,7 +104,7 @@ class BoneRotationTool extends WindowController {
      */
     void reset() {
         if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.bone.getIndex();
+            int boneIndex = Maud.model.cgm.bone.getIndex();
             Maud.model.pose.resetRotation(boneIndex);
         }
     }
@@ -114,7 +114,7 @@ class BoneRotationTool extends WindowController {
      */
     void setToAnimation() {
         if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.bone.getIndex();
+            int boneIndex = Maud.model.cgm.bone.getIndex();
             Maud.model.pose.setRotationToAnimation(boneIndex);
         }
     }
@@ -152,7 +152,7 @@ class BoneRotationTool extends WindowController {
 
         String aButton = "";
         String bButton = "";
-        if (Maud.model.bone.isBoneSelected()) {
+        if (Maud.model.cgm.bone.isBoneSelected()) {
             setSlidersToPose();
             if (shouldBeEnabled()) {
                 aButton = "Animation";
@@ -215,7 +215,7 @@ class BoneRotationTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        int boneIndex = Maud.model.bone.getIndex();
+        int boneIndex = Maud.model.cgm.bone.getIndex();
         Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
         Quaternion rotation = transform.getRotation();
         float[] angles = rotation.toAngles(null);
@@ -242,7 +242,7 @@ class BoneRotationTool extends WindowController {
      * @return true if enabled, otherwise false
      */
     private boolean shouldBeEnabled() {
-        if (Maud.model.bone.isBoneSelected()
+        if (Maud.model.cgm.bone.isBoneSelected()
                 && !Maud.model.animation.isMoving()) {
             return true;
         } else {

@@ -100,6 +100,10 @@ public class LoadedCGModel implements Cloneable {
      */
     private int editCount = 0;
     /**
+     * the selected bone in the selected skeleton
+     */
+    public SelectedBone bone = new SelectedBone();
+    /**
      * the selected skeleton in the CG model
      */
     public SelectedSkeleton bones = new SelectedSkeleton();
@@ -139,6 +143,7 @@ public class LoadedCGModel implements Cloneable {
     public LoadedCGModel(AssetManager assetManager) {
         Validate.nonNull(assetManager, "asset manager");
         this.assetManager = assetManager;
+        bone.setCgm(this);
         bones.setCgm(this);
     }
     // *************************************************************************
@@ -641,7 +646,7 @@ public class LoadedCGModel implements Cloneable {
         Validate.nonNull(newName, "bone name");
 
         boolean success;
-        if (!Maud.model.bone.isBoneSelected()) {
+        if (!bone.isBoneSelected()) {
             logger.log(Level.WARNING, "Rename failed: no bone selected.",
                     MyString.quote(newName));
             success = false;
@@ -659,7 +664,7 @@ public class LoadedCGModel implements Cloneable {
             success = false;
 
         } else {
-            Bone selectedBone = Maud.model.bone.getBone();
+            Bone selectedBone = bone.getBone();
             success = MySkeleton.setName(selectedBone, newName);
             setEdited("rename bone");
         }
@@ -848,7 +853,11 @@ public class LoadedCGModel implements Cloneable {
     public Object clone() throws CloneNotSupportedException {
         LoadedCGModel clone = (LoadedCGModel) super.clone();
         clone.rootSpatial = rootSpatial.clone();
+
+        clone.bone = bone.clone();
         clone.bones = bones.clone();
+
+        clone.bone.setCgm(clone);
         clone.bones.setCgm(clone);
 
         return clone;
@@ -1048,7 +1057,7 @@ public class LoadedCGModel implements Cloneable {
         /*
          * Reset the selected bone/spatial and also the loaded animation.
          */
-        Maud.model.bone.selectNoBone();
+        bone.selectNoBone();
         Maud.model.spatial.selectModelRoot();
         Maud.model.animation.loadBindPose();
     }

@@ -72,7 +72,7 @@ class KeyframeTool extends WindowController {
         String indexText, timeText;
         int numKeyframes = Maud.model.track.countKeyframes();
         if (numKeyframes == 0) {
-            if (Maud.model.bone.hasTrack()) {
+            if (Maud.model.cgm.bone.hasTrack()) {
                 indexText = "no keyframes";
                 float time = Maud.model.animation.getTime();
                 timeText = String.format("%.3f", time);
@@ -144,12 +144,12 @@ class KeyframeTool extends WindowController {
         String trackDescription;
         if (Maud.model.animation.isBindPoseLoaded()) {
             trackDescription = "(load an animation)";
-        } else if (Maud.model.bone.hasTrack()) {
-            String boneName = Maud.model.bone.getName();
+        } else if (Maud.model.cgm.bone.hasTrack()) {
+            String boneName = Maud.model.cgm.bone.getName();
             String animName = Maud.model.animation.getName();
             trackDescription = String.format("%s in %s", boneName, animName);
-        } else if (Maud.model.bone.isBoneSelected()) {
-            String boneName = Maud.model.bone.getName();
+        } else if (Maud.model.cgm.bone.isBoneSelected()) {
+            String boneName = Maud.model.cgm.bone.getName();
             trackDescription = String.format("none for %s", boneName);
         } else {
             trackDescription = "(select a bone)";
@@ -165,7 +165,7 @@ class KeyframeTool extends WindowController {
         String rotationCount = "";
         String scaleCount = "";
 
-        if (Maud.model.bone.hasTrack()) {
+        if (Maud.model.cgm.bone.hasTrack()) {
             int numOffsets = Maud.model.track.countTranslations();
             translationCount = String.format("%d", numOffsets);
 

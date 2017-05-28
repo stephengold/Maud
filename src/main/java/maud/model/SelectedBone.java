@@ -57,6 +57,11 @@ public class SelectedBone implements Cloneable {
      * index of the selected bone, or -1 for none selected
      */
     private int selectedIndex = -1;
+    /**
+     * loaded CG model containing the bone (set by
+     * {@link #setCgm(LoadedCGModel)})
+     */
+    private LoadedCGModel loadedCgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -89,7 +94,7 @@ public class SelectedBone implements Cloneable {
         if (selectedIndex == -1) {
             bone = null;
         } else {
-            Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
+            Skeleton skeleton = loadedCgm.bones.getSkeleton();
             bone = skeleton.getBone(selectedIndex);
         }
 
@@ -185,7 +190,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Test whether a bone is selected.
+     * Test whether a bone is selected. TODO rename
      *
      * @return true if selected, otherwise false
      */
@@ -216,14 +221,14 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Select the specified bone.
+     * Select the specified bone. TODO reorder
      *
      * @param bone which bone to select (not null)
      */
     void select(Bone bone) {
         assert bone != null;
 
-        Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
+        Skeleton skeleton = loadedCgm.bones.getSkeleton();
         int index = skeleton.getBoneIndex(bone);
         if (index != -1) {
             select(index);
@@ -272,7 +277,7 @@ public class SelectedBone implements Cloneable {
             selectNoBone();
 
         } else {
-            Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
+            Skeleton skeleton = loadedCgm.bones.getSkeleton();
             int index = skeleton.getBoneIndex(name);
             if (index == -1) {
                 logger.log(Level.WARNING, "Select failed: no bone named {0}.",
@@ -301,7 +306,7 @@ public class SelectedBone implements Cloneable {
      * Select the first root bone of the loaded CG model.
      */
     public void selectFirstRoot() {
-        Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
+        Skeleton skeleton = loadedCgm.bones.getSkeleton();
         Bone[] roots = skeleton.getRoots();
         Bone firstRoot = roots[0];
         select(firstRoot);
@@ -313,7 +318,7 @@ public class SelectedBone implements Cloneable {
     public void selectNext() {
         if (selectedIndex != -1) {
             ++selectedIndex;
-            int numBones = Maud.model.cgm.bones.countBones();
+            int numBones = loadedCgm.bones.countBones();
             if (selectedIndex >= numBones) {
                 selectedIndex = 0;
             }
@@ -321,7 +326,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Deselect the selected bone, if any.
+     * Deselect the selected bone, if any. TODO rename
      */
     public void selectNoBone() {
         selectedIndex = -1;
@@ -347,10 +352,20 @@ public class SelectedBone implements Cloneable {
         if (selectedIndex != -1) {
             --selectedIndex;
             if (selectedIndex < 0) {
-                int numBones = Maud.model.cgm.bones.countBones();
+                int numBones = loadedCgm.bones.countBones();
                 selectedIndex = numBones - 1;
             }
         }
+    }
+
+    /**
+     * Alter which CG model contains the bone.
+     *
+     * @param newLoaded (not null)
+     */
+    void setCgm(LoadedCGModel newLoaded) {
+        assert newLoaded != null;
+        loadedCgm = newLoaded;
     }
     // *************************************************************************
     // Object methods
@@ -362,7 +377,7 @@ public class SelectedBone implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public SelectedBone clone() throws CloneNotSupportedException {
         SelectedBone clone = (SelectedBone) super.clone();
         return clone;
     }

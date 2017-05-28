@@ -189,7 +189,7 @@ class AxesTool extends WindowController {
         String units;
         switch (mode) {
             case "bone":
-                if (Maud.model.bone.isBoneSelected()) {
+                if (Maud.model.cgm.bone.isBoneSelected()) {
                     units = " bone units";
                 } else {
                     units = " units";
@@ -228,8 +228,8 @@ class AxesTool extends WindowController {
         String mode = Maud.model.axes.getMode();
         switch (mode) {
             case "bone":
-                if (Maud.model.bone.isBoneSelected()) {
-                    int boneIndex = Maud.model.bone.getIndex();
+                if (Maud.model.cgm.bone.isBoneSelected()) {
+                    int boneIndex = Maud.model.cgm.bone.getIndex();
                     transform = Maud.model.pose.modelTransform(boneIndex, null);
                     Geometry ag = Maud.viewState.findAnimatedGeometry();
                     Transform agTransform = ag.getWorldTransform();

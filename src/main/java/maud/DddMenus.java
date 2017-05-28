@@ -115,7 +115,7 @@ class DddMenus {
      */
     void selectBone(String argument) {
         if (Maud.model.cgm.bones.hasBone(argument)) {
-            Maud.model.bone.select(argument);
+            Maud.model.cgm.bone.select(argument);
 
         } else {
             /*
@@ -130,12 +130,12 @@ class DddMenus {
      * Handle a "select boneChild" action with no argument.
      */
     void selectBoneChild() {
-        if (Maud.model.bone.isBoneSelected()) {
-            int numChildren = Maud.model.bone.countChildren();
+        if (Maud.model.cgm.bone.isBoneSelected()) {
+            int numChildren = Maud.model.cgm.bone.countChildren();
             if (numChildren == 1) {
-                Maud.model.bone.selectFirstChild();
+                Maud.model.cgm.bone.selectFirstChild();
             } else if (numChildren > 1) {
-                List<String> boneNames = Maud.model.bone.listChildNames();
+                List<String> boneNames = Maud.model.cgm.bone.listChildNames();
                 showBoneSubmenu(boneNames);
             }
         }
@@ -149,7 +149,7 @@ class DddMenus {
     void selectBoneChild(String argument) {
         if (argument.startsWith("!")) {
             String name = argument.substring(1);
-            Maud.model.bone.select(name);
+            Maud.model.cgm.bone.select(name);
         } else {
             List<String> names = Maud.model.cgm.bones.listChildBoneNames(argument);
 
@@ -173,7 +173,7 @@ class DddMenus {
         List<String> boneNames = Maud.model.animation.listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
-            Maud.model.bone.select(boneNames.get(0));
+            Maud.model.cgm.bone.select(boneNames.get(0));
         } else if (numBoneTracks > 1) {
             showBoneSubmenu(boneNames);
         }
@@ -277,7 +277,7 @@ class DddMenus {
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
-        if (Maud.model.bone.isBoneSelected()) {
+        if (Maud.model.cgm.bone.isBoneSelected()) {
             builder.add("Attach prop");
             builder.addDialog("Rename");
         }
@@ -306,15 +306,15 @@ class DddMenus {
             builder.add("With track");
         }
 
-        int numChildren = Maud.model.bone.countChildren();
+        int numChildren = Maud.model.cgm.bone.countChildren();
         if (numChildren == 1) {
             builder.addBone("Child");
         } else if (numChildren > 1) {
             builder.add("Child");
         }
 
-        boolean isSelected = Maud.model.bone.isBoneSelected();
-        boolean isRoot = Maud.model.bone.isRootBone();
+        boolean isSelected = Maud.model.cgm.bone.isBoneSelected();
+        boolean isRoot = Maud.model.cgm.bone.isRootBone();
         if (isSelected && !isRoot) {
             builder.addBone("Parent");
         }
@@ -389,7 +389,7 @@ class DddMenus {
      */
     private void buildKeyframeMenu() {
         builder.addTool("Tool");
-        if (Maud.model.bone.hasTrack()) {
+        if (Maud.model.cgm.bone.hasTrack()) {
             builder.addDialog("Reduce");
             builder.add("Select by time");
             builder.add("Select first");
@@ -729,15 +729,15 @@ class DddMenus {
                 handled = true;
                 break;
             case "Next":
-                Maud.model.bone.selectNext();
+                Maud.model.cgm.bone.selectNext();
                 handled = true;
                 break;
             case "Parent":
-                Maud.model.bone.selectParent();
+                Maud.model.cgm.bone.selectParent();
                 handled = true;
                 break;
             case "Previous":
-                Maud.model.bone.selectPrevious();
+                Maud.model.cgm.bone.selectPrevious();
                 handled = true;
                 break;
             case "Root":
@@ -1153,7 +1153,7 @@ class DddMenus {
     private void selectRootBone() {
         int numRoots = Maud.model.cgm.bones.countRootBones();
         if (numRoots == 1) {
-            Maud.model.bone.selectFirstRoot();
+            Maud.model.cgm.bone.selectFirstRoot();
         } else if (numRoots > 1) {
             List<String> boneNames = Maud.model.cgm.bones.listRootBoneNames();
             showBoneSubmenu(boneNames);

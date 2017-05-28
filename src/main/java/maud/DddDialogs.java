@@ -190,7 +190,7 @@ class DddDialogs {
      * Display a "reduce track" dialog.
      */
     void reduceTrack() {
-        if (Maud.model.bone.hasTrack()) {
+        if (Maud.model.cgm.bone.hasTrack()) {
             IntegerDialog controller = new IntegerDialog("Reduce", 2,
                     Integer.MAX_VALUE);
 
@@ -219,8 +219,8 @@ class DddDialogs {
      * Display a "rename bone" dialog.
      */
     void renameBone() {
-        if (Maud.model.bone.isBoneSelected()) {
-            String oldName = Maud.model.bone.getName();
+        if (Maud.model.cgm.bone.isBoneSelected()) {
+            String oldName = Maud.model.cgm.bone.getName();
             DialogController controller = new BoneRenameDialog("Rename");
 
             Maud.gui.closeAllPopups();

@@ -109,7 +109,7 @@ class BoneTranslationTool extends WindowController {
             float masterScale = readScale();
             offsets.multLocal(masterScale);
 
-            int boneIndex = Maud.model.bone.getIndex();
+            int boneIndex = Maud.model.cgm.bone.getIndex();
             Maud.model.pose.setTranslation(boneIndex, offsets);
         }
     }
@@ -119,7 +119,7 @@ class BoneTranslationTool extends WindowController {
      */
     void reset() {
         if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.bone.getIndex();
+            int boneIndex = Maud.model.cgm.bone.getIndex();
             Maud.model.pose.resetTranslation(boneIndex);
         }
     }
@@ -129,7 +129,7 @@ class BoneTranslationTool extends WindowController {
      */
     void setToAnimation() {
         if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.bone.getIndex();
+            int boneIndex = Maud.model.cgm.bone.getIndex();
             Maud.model.pose.setTranslationToAnimation(boneIndex);
         }
     }
@@ -166,7 +166,7 @@ class BoneTranslationTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (Maud.model.bone.isBoneSelected()) {
+        if (Maud.model.cgm.bone.isBoneSelected()) {
             setSlidersToPose();
             if (shouldBeEnabled()) {
                 Maud.gui.setButtonLabel("resetOffAnimButton", "Animation");
@@ -235,7 +235,7 @@ class BoneTranslationTool extends WindowController {
      * Set all 4 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        int boneIndex = Maud.model.bone.getIndex();
+        int boneIndex = Maud.model.cgm.bone.getIndex();
         Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
         Vector3f vector = transform.getTranslation();
         float[] offsets = vector.toArray(null);
@@ -267,7 +267,7 @@ class BoneTranslationTool extends WindowController {
      * @return true if enabled, otherwise false
      */
     private boolean shouldBeEnabled() {
-        if (Maud.model.bone.isBoneSelected()
+        if (Maud.model.cgm.bone.isBoneSelected()
                 && !Maud.model.animation.isMoving()) {
             return true;
         } else {

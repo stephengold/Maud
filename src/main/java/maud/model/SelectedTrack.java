@@ -167,7 +167,7 @@ public class SelectedTrack implements Cloneable {
      * @return the pre-existing instance, or null if none
      */
     BoneTrack findTrack() {
-        if (!Maud.model.bone.isBoneSelected()) {
+        if (!Maud.model.cgm.bone.isBoneSelected()) {
             return null;
         }
         if (Maud.model.animation.isBindPoseLoaded()) {
@@ -175,7 +175,7 @@ public class SelectedTrack implements Cloneable {
         }
 
         Animation anim = Maud.model.animation.getLoadedAnimation();
-        int boneIndex = Maud.model.bone.getIndex();
+        int boneIndex = Maud.model.cgm.bone.getIndex();
         BoneTrack track = MyAnimation.findTrack(anim, boneIndex);
 
         return track;
@@ -187,7 +187,7 @@ public class SelectedTrack implements Cloneable {
      * @return true if one is selected, false if none is selected
      */
     public boolean isTrackSelected() {
-        if (Maud.model.bone.isBoneSelected()) {
+        if (Maud.model.cgm.bone.isBoneSelected()) {
             if (Maud.model.animation.isBindPoseLoaded()) {
                 return false;
             }
@@ -225,7 +225,7 @@ public class SelectedTrack implements Cloneable {
         List<String> result = null;
         if (Maud.model.animation.isBindPoseLoaded()) {
             logger.log(Level.INFO, "No animation is selected.");
-        } else if (!Maud.model.bone.isBoneSelected()) {
+        } else if (!Maud.model.cgm.bone.isBoneSelected()) {
             logger.log(Level.INFO, "No bone is selected.");
         } else if (!isTrackSelected()) {
             logger.log(Level.INFO, "No track is selected.");
@@ -250,7 +250,7 @@ public class SelectedTrack implements Cloneable {
      */
     public void reduceTrack(int factor) {
         Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
-        assert Maud.model.bone.hasTrack();
+        assert Maud.model.cgm.bone.hasTrack();
 
         float duration = Maud.model.animation.getDuration();
         String name = Maud.model.animation.getName();
@@ -279,7 +279,7 @@ public class SelectedTrack implements Cloneable {
     public void setTrackRotationAll() {
         BoneTrack track = findTrack();
         if (track != null) {
-            int boneIndex = Maud.model.bone.getIndex();
+            int boneIndex = Maud.model.cgm.bone.getIndex();
             Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
                     null);
             Quaternion poseRotation = poseTransform.getRotation();
@@ -301,7 +301,7 @@ public class SelectedTrack implements Cloneable {
     public void setTrackScaleAll() {
         BoneTrack track = findTrack();
         if (track != null) {
-            int boneIndex = Maud.model.bone.getIndex();
+            int boneIndex = Maud.model.cgm.bone.getIndex();
             Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
                     null);
             Vector3f poseScale = poseTransform.getScale();
@@ -314,7 +314,8 @@ public class SelectedTrack implements Cloneable {
                 for (Vector3f scale : scales) {
                     scale.set(poseScale);
                 }
-                Maud.model.cgm.setKeyframes(times, translations, rotations, scales);
+                Maud.model.cgm.setKeyframes(times, translations, rotations,
+                        scales);
             }
         }
     }
@@ -325,7 +326,7 @@ public class SelectedTrack implements Cloneable {
     public void setTrackTranslationAll() {
         BoneTrack track = findTrack();
         if (track != null) {
-            int boneIndex = Maud.model.bone.getIndex();
+            int boneIndex = Maud.model.cgm.bone.getIndex();
             Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
                     null);
             Vector3f poseTranslation = poseTransform.getTranslation();

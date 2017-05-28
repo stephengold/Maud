@@ -330,7 +330,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "next bone":
-                Maud.model.bone.selectNext();
+                Maud.model.cgm.bone.selectNext();
                 handled = true;
                 break;
             case "next checkpoint":
@@ -375,7 +375,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "previous bone":
-                Maud.model.bone.selectPrevious();
+                Maud.model.cgm.bone.selectPrevious();
                 handled = true;
                 break;
             case "previous checkpoint":
@@ -564,7 +564,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "select boneParent":
-                Maud.model.bone.selectParent();
+                Maud.model.cgm.bone.selectParent();
                 handled = true;
                 break;
             case "select boneXY":
