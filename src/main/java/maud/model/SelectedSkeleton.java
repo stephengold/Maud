@@ -69,7 +69,7 @@ public class SelectedSkeleton implements Cloneable {
      * loaded CG model containing the skeleton (set by
      * {@link #setCgm(LoadedCGModel)})
      */
-    private LoadedCGModel loadedCGModel = null;
+    private LoadedCGModel loadedCgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -136,7 +136,7 @@ public class SelectedSkeleton implements Cloneable {
          * If not, use the skeleton from the first AnimControl or
          * SkeletonControl in the CG model's root spatial.
          */
-        Spatial modelRoot = loadedCGModel.getRootSpatial();
+        Spatial modelRoot = loadedCgm.getRootSpatial();
         if (skeleton == null) {
             animControl = modelRoot.getControl(AnimControl.class);
             if (animControl != null) {
@@ -277,10 +277,13 @@ public class SelectedSkeleton implements Cloneable {
     }
 
     /**
-     * Alter the CG model which contains the skeleton.
+     * Alter which CG model contains the skeleton.
+     *
+     * @param newLoaded (not null)
      */
     void setCgm(LoadedCGModel newLoaded) {
-        loadedCGModel = newLoaded;
+        assert newLoaded != null;
+        loadedCgm = newLoaded;
     }
 
     /**
