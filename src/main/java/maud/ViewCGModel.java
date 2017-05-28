@@ -26,6 +26,7 @@
  */
 package maud;
 
+import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
@@ -38,7 +39,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
-import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.SkeletonDebugControl;
@@ -248,7 +248,7 @@ public class ViewCGModel {
             skeleton = new Skeleton(newSkeleton);
             skeletonControl = new SkeletonControl(skeleton);
             cgModelRoot.addControl(skeletonControl);
-            MySkeleton.setUserControl(cgModelRoot, true);
+            Util.setUserControl(skeleton, true);
             skeletonControl.setHardwareSkinningPreferred(false);
         }
 
@@ -335,20 +335,30 @@ public class ViewCGModel {
          * Attach the CG model to the scene graph.
          */
         parentNode.attachChild(cgModelRoot);
-        /*
-         * Update references to skeleton control and skeleton.
-         */
+
         skeletonControl = cgModelRoot.getControl(SkeletonControl.class);
-        if (skeletonControl == null) {
+        /*
+         * Update reference to skeleton.
+         */
+        AnimControl animControl = cgModelRoot.getControl(AnimControl.class);
+        if (animControl == null) {
             skeleton = null;
         } else {
-            skeleton = skeletonControl.getSkeleton();
+            skeleton = animControl.getSkeleton();
+        }
+        if (skeleton == null) {
+            SkeletonControl c = cgModelRoot.getControl(SkeletonControl.class);
+            if (c != null) {
+                skeleton = c.getSkeleton();
+            }
+        }
+        if (skeleton != null) {
             /*
-             * Enable user control for all bones.
+             * Enable user control for all bones in the skeleton.
              */
-            MySkeleton.setUserControl(cgModelRoot, true);
+            Util.setUserControl(skeleton, true);
             /*
-             * Disable hardward skinning so that the raycast in
+             * Disable hardware skinning so that the raycast in
              * CursorTool.findContact() will work.
              */
             skeletonControl.setHardwareSkinningPreferred(false);
@@ -359,6 +369,7 @@ public class ViewCGModel {
         skeletonDebugControl = new SkeletonDebugControl(assetManager);
         cgModelRoot.addControl(skeletonDebugControl);
         skeletonDebugControl.setEnabled(true);
+        skeletonDebugControl.setSkeleton(skeleton);
         /*
          * Configure the camera, cursor, and platform based on the range
          * of mesh coordinates in the CG model.

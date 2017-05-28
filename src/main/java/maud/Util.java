@@ -26,7 +26,9 @@
  */
 package maud;
 
+import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
+import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
@@ -343,5 +345,19 @@ public class Util {
         }
 
         return result;
+    }
+
+    /**
+     * Alter the user-control flag for an entire skeleton.
+     *
+     * @param skeleton skeleton (not null)
+     * @param newValue true to enable, false to disable
+     */
+    public static void setUserControl(Skeleton skeleton, boolean newValue) {
+        int boneCount = skeleton.getBoneCount();
+        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
+            Bone bone = skeleton.getBone(boneIndex);
+            bone.setUserControl(newValue);
+        }
     }
 }
