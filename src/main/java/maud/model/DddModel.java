@@ -71,10 +71,6 @@ public class DddModel {
      */
     public RetargetParameters retarget = null;
     /**
-     * which track is selected
-     */
-    final public SelectedTrack track;
-    /**
      * status of the skeleton visualization
      */
     final public SkeletonStatus skeleton;
@@ -91,7 +87,6 @@ public class DddModel {
         /* cgm field will be set later */
         misc = new MiscStatus();
         /* retarget field will be set later */
-        track = new SelectedTrack();
         skeleton = new SkeletonStatus();
     }
 
@@ -108,7 +103,6 @@ public class DddModel {
             cgm = (LoadedCGModel) source.cgm.clone();
             misc = (MiscStatus) source.misc.clone();
             retarget = (RetargetParameters) source.retarget.clone();
-            track = (SelectedTrack) source.track.clone();
             skeleton = (SkeletonStatus) source.skeleton.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException();

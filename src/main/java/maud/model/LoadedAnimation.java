@@ -38,7 +38,6 @@ import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import maud.Maud;
 import maud.Util;
 
 /**
@@ -552,7 +551,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void selectKeyframe(String name) {
         Validate.nonNull(name, "keyframe name");
-        assert Maud.model.track.isTrackSelected();
+        assert loadedCgm.track.isTrackSelected();
 
         float newTime = Float.valueOf(name);
         // TODO validate
@@ -563,7 +562,7 @@ public class LoadedAnimation implements Cloneable {
      * Select the first keyframe in the selected bone track.
      */
     public void selectKeyframeFirst() {
-        BoneTrack track = Maud.model.track.findTrack();
+        BoneTrack track = loadedCgm.track.findTrack();
         float[] times = track.getTimes();
         float t = times[0];
         setTime(t);
@@ -573,7 +572,7 @@ public class LoadedAnimation implements Cloneable {
      * Select the last keyframe in the selected bone track.
      */
     public void selectKeyframeLast() {
-        BoneTrack track = Maud.model.track.findTrack();
+        BoneTrack track = loadedCgm.track.findTrack();
         float[] times = track.getTimes();
         int lastIndex = times.length - 1;
         float t = times[lastIndex];
@@ -584,7 +583,7 @@ public class LoadedAnimation implements Cloneable {
      * Select the next keyframe in the selected bone track.
      */
     public void selectKeyframeNext() {
-        BoneTrack track = Maud.model.track.findTrack();
+        BoneTrack track = loadedCgm.track.findTrack();
         float[] times = track.getTimes();
         for (int iFrame = 0; iFrame < times.length; iFrame++) {
             if (times[iFrame] > time) {
@@ -598,7 +597,7 @@ public class LoadedAnimation implements Cloneable {
      * Select the next keyframe in the selected bone track.
      */
     public void selectKeyframePrevious() {
-        BoneTrack track = Maud.model.track.findTrack();
+        BoneTrack track = loadedCgm.track.findTrack();
         float[] times = track.getTimes();
         for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
             if (times[iFrame] < time) {

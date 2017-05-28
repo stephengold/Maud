@@ -124,6 +124,10 @@ public class LoadedCGModel implements Cloneable {
      */
     public SelectedSpatial spatial = new SelectedSpatial();
     /**
+     * which track is selected
+     */
+    public SelectedTrack track = new SelectedTrack();
+    /**
      * the root spatial in the MVC model's copy of the CG model
      */
     private Spatial rootSpatial = null;
@@ -166,6 +170,7 @@ public class LoadedCGModel implements Cloneable {
         pose.setCgm(this);
         sgc.setCgm(this);
         spatial.setCgm(this);
+        track.setCgm(this);
     }
     // *************************************************************************
     // new methods exposed
@@ -758,8 +763,8 @@ public class LoadedCGModel implements Cloneable {
         assert translations != null;
         assert rotations != null;
 
-        BoneTrack track = Maud.model.track.findTrack();
-        track.setKeyframes(times, translations, rotations, scales);
+        BoneTrack boneTrack = track.findTrack();
+        boneTrack.setKeyframes(times, translations, rotations, scales);
         setEdited("replace keyframes");
     }
 
@@ -881,6 +886,7 @@ public class LoadedCGModel implements Cloneable {
         clone.pose = pose.clone();
         clone.sgc = sgc.clone();
         clone.spatial = spatial.clone();
+        clone.track = track.clone();
 
         clone.animation.setCgm(clone);
         clone.bone.setCgm(clone);
@@ -888,6 +894,7 @@ public class LoadedCGModel implements Cloneable {
         clone.pose.setCgm(clone);
         clone.sgc.setCgm(clone);
         clone.spatial.setCgm(clone);
+        clone.track.setCgm(clone);
 
         return clone;
     }

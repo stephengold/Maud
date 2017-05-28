@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import maud.Maud;
 
 /**
  * The MVC model of the selected bone in the Maud application.
@@ -181,7 +180,7 @@ public class SelectedBone implements Cloneable {
      * @return true if a bone is selected and it has a track, otherwise false
      */
     public boolean hasTrack() {
-        BoneTrack track = Maud.model.track.findTrack();
+        BoneTrack track = loadedCgm.track.findTrack();
         if (track == null) {
             return false;
         } else {
