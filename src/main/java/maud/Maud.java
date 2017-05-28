@@ -42,6 +42,7 @@ import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
 import maud.model.DddModel;
+import maud.model.EditableCgm;
 import maud.model.LoadedCGModel;
 import maud.model.RetargetParameters;
 
@@ -260,7 +261,7 @@ public class Maud extends GuiApplication {
 
         Nifty nifty = getNifty();
         gui.dialogs = new DddDialogs(assetManager, nifty);
-        model.cgm = new LoadedCGModel(assetManager);
+        model.cgm = new EditableCgm(assetManager);
         model.retarget = new RetargetParameters(assetManager);
 
         Node parentNode = new Node("parent");

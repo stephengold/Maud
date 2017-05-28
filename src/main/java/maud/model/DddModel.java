@@ -60,7 +60,7 @@ public class DddModel {
     /**
      * which CG model is loaded (set by {@link maud.Maud#startup1()})
      */
-    public LoadedCGModel cgm = null;
+    public EditableCgm cgm = null;
     /**
      * miscellaneous details
      */
@@ -100,7 +100,7 @@ public class DddModel {
             axes = (AxesStatus) source.axes.clone();
             camera = (CameraStatus) source.camera.clone();
             cursor = (CursorStatus) source.cursor.clone();
-            cgm = (LoadedCGModel) source.cgm.clone();
+            cgm = (EditableCgm) source.cgm.clone();
             misc = (MiscStatus) source.misc.clone();
             retarget = (RetargetParameters) source.retarget.clone();
             skeleton = (SkeletonStatus) source.skeleton.clone();

@@ -78,6 +78,11 @@ public class LoadedAnimation implements Cloneable {
      */
     private boolean reverseFlag = false;
     /**
+     * editable CG model containing the animation, if any (set by
+     * {@link #setCgm(LoadedCGModel)})
+     */
+    private EditableCgm editableCgm;
+    /**
      * playback speed and direction when not paused (1 &rarr; forward at normal
      * speed)
      */
@@ -184,7 +189,7 @@ public class LoadedAnimation implements Cloneable {
         if (isBindPoseLoaded()) {
             logger.log(Level.WARNING, "cannot delete bind pose");
         } else {
-            loadedCgm.deleteAnimation();
+            editableCgm.deleteAnimation();
             loadBindPose();
         }
     }
@@ -476,7 +481,7 @@ public class LoadedAnimation implements Cloneable {
                 copyAnim.addTrack(clone);
             }
         }
-        loadedCgm.addAnimation(copyAnim);
+        editableCgm.addAnimation(copyAnim);
     }
 
     /**
@@ -516,7 +521,7 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        loadedCgm.replaceAnimation(loaded, newAnimation);
+        editableCgm.replaceAnimation(loaded, newAnimation);
     }
 
     /**
@@ -540,7 +545,7 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        loadedCgm.replaceAnimation(loaded, newAnimation);
+        editableCgm.replaceAnimation(loaded, newAnimation);
         loadedName = newName;
     }
 
@@ -608,6 +613,22 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Alter which CG model contains the animation.
+     *
+     * @param newLoaded (not null)
+     */
+    void setCgm(LoadedCGModel newLoaded) {
+        assert newLoaded != null;
+
+        loadedCgm = newLoaded;
+        if (newLoaded instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newLoaded;
+        } else {
+            editableCgm = null;
+        }
+    }
+
+    /**
      * Alter whether the loaded animation will play continuously.
      *
      * @param newSetting true &rarr; play continuously, false &rarr; play
@@ -639,17 +660,7 @@ public class LoadedAnimation implements Cloneable {
             }
             newAnimation.addTrack(newTrack);
         }
-        loadedCgm.replaceAnimation(loaded, newAnimation);
-    }
-
-    /**
-     * Alter which CG model contains the animation.
-     *
-     * @param newLoaded (not null)
-     */
-    void setCgm(LoadedCGModel newLoaded) {
-        assert newLoaded != null;
-        loadedCgm = newLoaded;
+        editableCgm.replaceAnimation(loaded, newAnimation);
     }
 
     /**
@@ -751,6 +762,6 @@ public class LoadedAnimation implements Cloneable {
         assert !loadedCgm.hasAnimation(animationName) : animationName;
 
         Animation poseAnim = loadedCgm.pose.capture(animationName);
-        loadedCgm.addAnimation(poseAnim);
+        editableCgm.addAnimation(poseAnim);
     }
 }

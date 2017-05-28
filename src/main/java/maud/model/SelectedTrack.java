@@ -41,7 +41,6 @@ import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
-import maud.Maud;
 import maud.Util;
 
 /**
@@ -62,10 +61,15 @@ public class SelectedTrack implements Cloneable {
     // fields
 
     /**
+     * editable CG model containing the track, if any (set by
+     * {@link #setCgm(LoadedCGModel)})
+     */
+    private EditableCgm editableCgm;
+    /**
      * loaded CG model containing the track (set by
      * {@link #setCgm(LoadedCGModel)})
      */
-    private LoadedCGModel loadedCgm = null;
+    private LoadedCGModel loadedCgm;
     // *************************************************************************
     // new methods exposed
 
@@ -277,7 +281,7 @@ public class SelectedTrack implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        loadedCgm.replaceAnimation(loaded, newAnimation);
+        editableCgm.replaceAnimation(loaded, newAnimation);
     }
 
     /**
@@ -287,7 +291,13 @@ public class SelectedTrack implements Cloneable {
      */
     void setCgm(LoadedCGModel newLoaded) {
         assert newLoaded != null;
+
         loadedCgm = newLoaded;
+        if (newLoaded instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newLoaded;
+        } else {
+            editableCgm = null;
+        }
     }
 
     /**
@@ -308,7 +318,7 @@ public class SelectedTrack implements Cloneable {
                 rotation.set(poseRotation);
             }
             Vector3f[] scales = track.getScales();
-            loadedCgm.setKeyframes(times, translations, rotations, scales);
+            editableCgm.setKeyframes(times, translations, rotations, scales);
         }
     }
 
@@ -319,7 +329,7 @@ public class SelectedTrack implements Cloneable {
         BoneTrack track = findTrack();
         if (track != null) {
             int boneIndex = loadedCgm.bone.getIndex();
-            Transform poseTransform = loadedCgm.pose.copyTransform(boneIndex, 
+            Transform poseTransform = loadedCgm.pose.copyTransform(boneIndex,
                     null);
             Vector3f poseScale = poseTransform.getScale();
 
@@ -331,7 +341,8 @@ public class SelectedTrack implements Cloneable {
                 for (Vector3f scale : scales) {
                     scale.set(poseScale);
                 }
-                loadedCgm.setKeyframes(times, translations, rotations, scales);
+                editableCgm.setKeyframes(times, translations, rotations,
+                        scales);
             }
         }
     }
@@ -354,7 +365,7 @@ public class SelectedTrack implements Cloneable {
             }
             Quaternion[] rotations = track.getRotations();
             Vector3f[] scales = track.getScales();
-            loadedCgm.setKeyframes(times, translations, rotations, scales);
+            editableCgm.setKeyframes(times, translations, rotations, scales);
         }
     }
     // *************************************************************************
