@@ -243,7 +243,7 @@ class BoneRotationTool extends WindowController {
      */
     private boolean shouldBeEnabled() {
         if (Maud.model.cgm.bone.isBoneSelected()
-                && !Maud.model.animation.isMoving()) {
+                && !Maud.model.cgm.animation.isMoving()) {
             return true;
         } else {
             return false;

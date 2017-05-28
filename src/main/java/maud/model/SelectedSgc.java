@@ -80,7 +80,7 @@ public class SelectedSgc implements Cloneable {
 
             AnimControl newAnimControl = Maud.model.cgm.getAnimControl();
             if (oldAnimControl != newAnimControl) {
-                Maud.model.animation.loadBindPose();
+                Maud.model.cgm.animation.loadBindPose();
             }
 
         } else {
@@ -200,7 +200,7 @@ public class SelectedSgc implements Cloneable {
 
         AnimControl newAnimControl = Maud.model.cgm.getAnimControl();
         if (oldAnimControl != newAnimControl) {
-            Maud.model.animation.loadBindPose();
+            Maud.model.cgm.animation.loadBindPose();
         }
     }
 

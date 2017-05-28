@@ -284,7 +284,7 @@ public class RetargetParameters implements Cloneable {
 
         setTargetAnimationName(newName);
         retargetAndAdd();
-        Maud.model.animation.load(newName);
+        Maud.model.cgm.animation.load(newName);
     }
 
     /**

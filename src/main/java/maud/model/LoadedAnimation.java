@@ -88,7 +88,12 @@ public class LoadedAnimation implements Cloneable {
      */
     private float time = 0f;
     /**
-     * name of the loaded animation, or bindPoseName
+     * loaded CG model containing the animation (set by
+     * {@link #setCgm(LoadedCGModel)})
+     */
+    private LoadedCGModel loadedCgm = null;
+    /**
+     * name of the loaded animation, or bindPoseName (TODO use null)
      */
     private String loadedName = null;
     // *************************************************************************
@@ -180,7 +185,7 @@ public class LoadedAnimation implements Cloneable {
         if (isBindPoseLoaded()) {
             logger.log(Level.WARNING, "cannot delete bind pose");
         } else {
-            Maud.model.cgm.deleteAnimation();
+            loadedCgm.deleteAnimation();
             loadBindPose();
         }
     }
@@ -208,7 +213,7 @@ public class LoadedAnimation implements Cloneable {
         if (isBindPoseLoaded()) {
             result = null;
         } else {
-            result = Maud.model.cgm.getAnimation(loadedName);
+            result = loadedCgm.getAnimation(loadedName);
         }
 
         return result;
@@ -242,7 +247,7 @@ public class LoadedAnimation implements Cloneable {
         if (isBindPoseLoaded()) {
             index = -1;
         } else {
-            List<String> nameList = Maud.model.cgm.listAnimationsSorted();
+            List<String> nameList = loadedCgm.listAnimationsSorted();
             index = nameList.indexOf(loadedName);
         }
 
@@ -347,7 +352,7 @@ public class LoadedAnimation implements Cloneable {
         List<String> result = new ArrayList<>(numTracks);
         Animation animation = getLoadedAnimation();
         if (animation != null) {
-            AnimControl animControl = Maud.model.cgm.getAnimControl();
+            AnimControl animControl = loadedCgm.getAnimControl();
             Track[] tracks = animation.getTracks();
             for (Track track : tracks) {
                 if (track instanceof BoneTrack) {
@@ -377,7 +382,7 @@ public class LoadedAnimation implements Cloneable {
             loadBindPose();
 
         } else {
-            float duration = Maud.model.cgm.getDuration(name);
+            float duration = loadedCgm.getDuration(name);
             float playSpeed;
             if (duration == 0f) {
                 /*
@@ -429,7 +434,7 @@ public class LoadedAnimation implements Cloneable {
     public void loadNext() {
         assert !isBindPoseLoaded();
 
-        List<String> nameList = Maud.model.cgm.listAnimationsSorted();
+        List<String> nameList = loadedCgm.listAnimationsSorted();
         int index = nameList.indexOf(loadedName);
         int numAnimations = nameList.size();
         int nextIndex = MyMath.modulo(index + 1, numAnimations);
@@ -443,7 +448,7 @@ public class LoadedAnimation implements Cloneable {
     public void loadPrevious() {
         assert !isBindPoseLoaded();
 
-        List<String> nameList = Maud.model.cgm.listAnimationsSorted();
+        List<String> nameList = loadedCgm.listAnimationsSorted();
         int index = nameList.indexOf(loadedName);
         int numAnimations = nameList.size();
         int prevIndex = MyMath.modulo(index - 1, numAnimations);
@@ -460,7 +465,7 @@ public class LoadedAnimation implements Cloneable {
     public void newCopy(String animationName) {
         Validate.nonEmpty(animationName, "animation name");
         assert !animationName.equals(bindPoseName) : animationName;
-        assert !Maud.model.cgm.hasAnimation(animationName) : animationName;
+        assert !loadedCgm.hasAnimation(animationName) : animationName;
 
         Animation loaded = getLoadedAnimation();
         float duration = getDuration();
@@ -472,7 +477,7 @@ public class LoadedAnimation implements Cloneable {
                 copyAnim.addTrack(clone);
             }
         }
-        Maud.model.cgm.addAnimation(copyAnim);
+        loadedCgm.addAnimation(copyAnim);
     }
 
     /**
@@ -512,7 +517,7 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        Maud.model.cgm.replaceAnimation(loaded, newAnimation);
+        loadedCgm.replaceAnimation(loaded, newAnimation);
     }
 
     /**
@@ -523,7 +528,7 @@ public class LoadedAnimation implements Cloneable {
     public void rename(String newName) {
         Validate.nonEmpty(newName, "new name");
         assert !newName.equals(bindPoseName) : newName;
-        assert !Maud.model.cgm.hasAnimation(newName) : newName;
+        assert !loadedCgm.hasAnimation(newName) : newName;
         assert !isBindPoseLoaded();
 
         float duration = getDuration();
@@ -536,7 +541,7 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        Maud.model.cgm.replaceAnimation(loaded, newAnimation);
+        loadedCgm.replaceAnimation(loaded, newAnimation);
         loadedName = newName;
     }
 
@@ -635,7 +640,17 @@ public class LoadedAnimation implements Cloneable {
             }
             newAnimation.addTrack(newTrack);
         }
-        Maud.model.cgm.replaceAnimation(loaded, newAnimation);
+        loadedCgm.replaceAnimation(loaded, newAnimation);
+    }
+
+    /**
+     * Alter which CG model contains the animation.
+     *
+     * @param newLoaded (not null)
+     */
+    void setCgm(LoadedCGModel newLoaded) {
+        assert newLoaded != null;
+        loadedCgm = newLoaded;
     }
 
     /**
@@ -716,7 +731,7 @@ public class LoadedAnimation implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public LoadedAnimation clone() throws CloneNotSupportedException {
         LoadedAnimation clone = (LoadedAnimation) super.clone();
         return clone;
     }
@@ -734,9 +749,9 @@ public class LoadedAnimation implements Cloneable {
     private void newPose(String animationName) {
         assert animationName != null;
         assert !animationName.equals(bindPoseName) : animationName;
-        assert !Maud.model.cgm.hasAnimation(animationName) : animationName;
+        assert !loadedCgm.hasAnimation(animationName) : animationName;
 
         Animation poseAnim = Maud.model.pose.capture(animationName);
-        Maud.model.cgm.addAnimation(poseAnim);
+        loadedCgm.addAnimation(poseAnim);
     }
 }

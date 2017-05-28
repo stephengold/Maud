@@ -58,10 +58,6 @@ public class DddModel {
      */
     final public CursorStatus cursor;
     /**
-     * which animation/pose is loaded
-     */
-    final public LoadedAnimation animation;
-    /**
      * which CG model is loaded (set by {@link maud.Maud#startup1()})
      */
     public LoadedCGModel cgm = null;
@@ -104,7 +100,6 @@ public class DddModel {
         axes = new AxesStatus();
         camera = new CameraStatus();
         cursor = new CursorStatus();
-        animation = new LoadedAnimation();
         /* cgm field will be set later */
         misc = new MiscStatus();
         pose = new Pose();
@@ -125,7 +120,6 @@ public class DddModel {
             axes = (AxesStatus) source.axes.clone();
             camera = (CameraStatus) source.camera.clone();
             cursor = (CursorStatus) source.cursor.clone();
-            animation = (LoadedAnimation) source.animation.clone();
             cgm = (LoadedCGModel) source.cgm.clone();
             misc = (MiscStatus) source.misc.clone();
             pose = (Pose) source.pose.clone();

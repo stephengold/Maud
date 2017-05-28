@@ -112,7 +112,7 @@ class DddDialogs {
      * Display a "copy animation" dialog.
      */
     void copyAnimation() {
-        String fromName = Maud.model.animation.getName();
+        String fromName = Maud.model.cgm.animation.getName();
         DialogController controller = new AnimationNameDialog("Copy");
 
         Maud.gui.closeAllPopups();
@@ -124,7 +124,7 @@ class DddDialogs {
      * Display a "delete animation" dialog.
      */
     void deleteAnimation() {
-        String name = Maud.model.animation.getName();
+        String name = Maud.model.cgm.animation.getName();
         String message = String.format("Delete the %s animation?",
                 MyString.quote(name));
         Maud.gui.closeAllPopups();
@@ -176,7 +176,7 @@ class DddDialogs {
      * Display a "reduce animation" dialog.
      */
     void reduceAnimation() {
-        if (!Maud.model.animation.isBindPoseLoaded()) {
+        if (!Maud.model.cgm.animation.isBindPoseLoaded()) {
             IntegerDialog controller = new IntegerDialog("Reduce", 2,
                     Integer.MAX_VALUE);
 
@@ -204,8 +204,8 @@ class DddDialogs {
      * Display a "rename animation" dialog.
      */
     void renameAnimation() {
-        if (!Maud.model.animation.isBindPoseLoaded()) {
-            String oldName = Maud.model.animation.getName();
+        if (!Maud.model.cgm.animation.isBindPoseLoaded()) {
+            String oldName = Maud.model.cgm.animation.getName();
             DialogController controller = new AnimationNameDialog("Rename");
 
             Maud.gui.closeAllPopups();
@@ -282,10 +282,10 @@ class DddDialogs {
      * Display a "set duration" dialog.
      */
     void setDuration() {
-        float oldDuration = Maud.model.animation.getDuration();
+        float oldDuration = Maud.model.cgm.animation.getDuration();
         String defaultText = Float.toString(oldDuration);
 
-        float finalTime = Maud.model.animation.findLatestKeyframe();
+        float finalTime = Maud.model.cgm.animation.findLatestKeyframe();
         float min;
         if (finalTime > 0f) {
             min = 0.01f;

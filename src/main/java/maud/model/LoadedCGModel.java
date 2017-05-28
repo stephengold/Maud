@@ -100,6 +100,10 @@ public class LoadedCGModel implements Cloneable {
      */
     private int editCount = 0;
     /**
+     * the loaded animation for the CG model
+     */
+    public LoadedAnimation animation = new LoadedAnimation();
+    /**
      * the selected bone in the selected skeleton
      */
     public SelectedBone bone = new SelectedBone();
@@ -143,6 +147,8 @@ public class LoadedCGModel implements Cloneable {
     public LoadedCGModel(AssetManager assetManager) {
         Validate.nonNull(assetManager, "asset manager");
         this.assetManager = assetManager;
+
+        animation.setCgm(this);
         bone.setCgm(this);
         bones.setCgm(this);
     }
@@ -231,7 +237,7 @@ public class LoadedCGModel implements Cloneable {
      * Delete the loaded animation.
      */
     void deleteAnimation() {
-        Animation animation = Maud.model.animation.getLoadedAnimation();
+        Animation animation = this.animation.getLoadedAnimation();
         AnimControl animControl = getAnimControl();
         animControl.removeAnim(animation);
         setEdited("delete animation");
@@ -854,9 +860,11 @@ public class LoadedCGModel implements Cloneable {
         LoadedCGModel clone = (LoadedCGModel) super.clone();
         clone.rootSpatial = rootSpatial.clone();
 
+        clone.animation = animation.clone();
         clone.bone = bone.clone();
         clone.bones = bones.clone();
 
+        clone.animation.setCgm(clone);
         clone.bone.setCgm(clone);
         clone.bones.setCgm(clone);
 
@@ -1059,7 +1067,7 @@ public class LoadedCGModel implements Cloneable {
          */
         bone.selectNoBone();
         Maud.model.spatial.selectModelRoot();
-        Maud.model.animation.loadBindPose();
+        animation.loadBindPose();
     }
 
     /**

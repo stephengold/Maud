@@ -248,7 +248,8 @@ public class Pose implements Cloneable {
      */
     public void setRotationToAnimation(int boneIndex) {
         Transform poseT = transforms.get(boneIndex);
-        Transform animT = Maud.model.animation.boneTransform(boneIndex, null);
+        Transform animT = Maud.model.cgm.animation.boneTransform(boneIndex,
+                null);
         Quaternion animQ = animT.getRotation();
         poseT.setRotation(animQ);
     }
@@ -276,7 +277,8 @@ public class Pose implements Cloneable {
      */
     public void setScaleToAnimation(int boneIndex) {
         Transform poseT = transforms.get(boneIndex);
-        Transform animT = Maud.model.animation.boneTransform(boneIndex, null);
+        Transform animT = Maud.model.cgm.animation.boneTransform(boneIndex,
+                null);
         Vector3f animV = animT.getScale();
         poseT.setScale(animV);
     }
@@ -291,7 +293,7 @@ public class Pose implements Cloneable {
 
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             Transform transform = transforms.get(boneIndex);
-            Maud.model.animation.boneTransform(boneIndex, transform);
+            Maud.model.cgm.animation.boneTransform(boneIndex, transform);
         }
     }
 
@@ -315,7 +317,8 @@ public class Pose implements Cloneable {
      */
     public void setTranslationToAnimation(int boneIndex) {
         Transform poseT = transforms.get(boneIndex);
-        Transform animT = Maud.model.animation.boneTransform(boneIndex, null);
+        Transform animT = Maud.model.cgm.animation.boneTransform(boneIndex,
+                null);
         Vector3f animV = animT.getTranslation();
         poseT.setTranslation(animV);
     }

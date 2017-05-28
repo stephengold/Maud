@@ -170,7 +170,7 @@ class DddMenus {
      * Handle a "select boneWithTrack" action.
      */
     void selectBoneWithTrack() {
-        List<String> boneNames = Maud.model.animation.listBonesWithTrack();
+        List<String> boneNames = Maud.model.cgm.animation.listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
             Maud.model.cgm.bone.select(boneNames.get(0));
@@ -259,7 +259,7 @@ class DddMenus {
         builder.addDialog("New from copy");
         builder.addDialog("New from pose");
         builder.addTool("New from retarget");
-        if (!Maud.model.animation.isBindPoseLoaded()) {
+        if (!Maud.model.cgm.animation.isBindPoseLoaded()) {
             builder.addDialog("Duration");
             builder.addDialog("Reduce");
             builder.addDialog("Rename");
@@ -301,7 +301,7 @@ class DddMenus {
             builder.add("Root");
         }
 
-        int numTracks = Maud.model.animation.countBoneTracks();
+        int numTracks = Maud.model.cgm.animation.countBoneTracks();
         if (numTracks > 0) {
             builder.add("With track");
         }
@@ -903,19 +903,19 @@ class DddMenus {
                 handled = true;
                 break;
             case "Select first":
-                Maud.model.animation.selectKeyframeFirst();
+                Maud.model.cgm.animation.selectKeyframeFirst();
                 handled = true;
                 break;
             case "Select previous":
-                Maud.model.animation.selectKeyframePrevious();
+                Maud.model.cgm.animation.selectKeyframePrevious();
                 handled = true;
                 break;
             case "Select next":
-                Maud.model.animation.selectKeyframeNext();
+                Maud.model.cgm.animation.selectKeyframeNext();
                 handled = true;
                 break;
             case "Select last":
-                Maud.model.animation.selectKeyframeLast();
+                Maud.model.cgm.animation.selectKeyframeLast();
                 handled = true;
                 break;
             case "Tool":

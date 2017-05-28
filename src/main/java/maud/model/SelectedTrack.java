@@ -152,7 +152,7 @@ public class SelectedTrack implements Cloneable {
 
         int frameIndex = -1;
         for (int iFrame = 0; iFrame < times.length; iFrame++) {
-            if (Maud.model.animation.getTime() == times[iFrame]) {
+            if (Maud.model.cgm.animation.getTime() == times[iFrame]) {
                 frameIndex = iFrame;
                 break;
             }
@@ -170,11 +170,11 @@ public class SelectedTrack implements Cloneable {
         if (!Maud.model.cgm.bone.isBoneSelected()) {
             return null;
         }
-        if (Maud.model.animation.isBindPoseLoaded()) {
+        if (Maud.model.cgm.animation.isBindPoseLoaded()) {
             return null;
         }
 
-        Animation anim = Maud.model.animation.getLoadedAnimation();
+        Animation anim = Maud.model.cgm.animation.getLoadedAnimation();
         int boneIndex = Maud.model.cgm.bone.getIndex();
         BoneTrack track = MyAnimation.findTrack(anim, boneIndex);
 
@@ -188,7 +188,7 @@ public class SelectedTrack implements Cloneable {
      */
     public boolean isTrackSelected() {
         if (Maud.model.cgm.bone.isBoneSelected()) {
-            if (Maud.model.animation.isBindPoseLoaded()) {
+            if (Maud.model.cgm.animation.isBindPoseLoaded()) {
                 return false;
             }
             Track track = findTrack();
@@ -223,7 +223,7 @@ public class SelectedTrack implements Cloneable {
      */
     public List<String> listKeyframes() {
         List<String> result = null;
-        if (Maud.model.animation.isBindPoseLoaded()) {
+        if (Maud.model.cgm.animation.isBindPoseLoaded()) {
             logger.log(Level.INFO, "No animation is selected.");
         } else if (!Maud.model.cgm.bone.isBoneSelected()) {
             logger.log(Level.INFO, "No bone is selected.");
@@ -252,11 +252,11 @@ public class SelectedTrack implements Cloneable {
         Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
         assert Maud.model.cgm.bone.hasTrack();
 
-        float duration = Maud.model.animation.getDuration();
-        String name = Maud.model.animation.getName();
+        float duration = Maud.model.cgm.animation.getDuration();
+        String name = Maud.model.cgm.animation.getName();
         Animation newAnimation = new Animation(name, duration);
 
-        Animation loaded = Maud.model.animation.getLoadedAnimation();
+        Animation loaded = Maud.model.cgm.animation.getLoadedAnimation();
         Track selectedTrack = Maud.model.track.findTrack();
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {

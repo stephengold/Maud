@@ -179,13 +179,13 @@ public class DddGui extends GuiScreenController {
                 Maud.model.axes.setDepthTestFlag(isChecked);
                 break;
             case "loopCheckBox":
-                Maud.model.animation.setContinue(isChecked);
+                Maud.model.cgm.animation.setContinue(isChecked);
                 break;
             case "invertRmaCheckBox":
                 Maud.model.retarget.setInvertMap(isChecked);
                 break;
             case "pongCheckBox":
-                Maud.model.animation.setReverse(isChecked);
+                Maud.model.cgm.animation.setReverse(isChecked);
                 break;
             case "shadowsCheckBox":
                 Maud.model.misc.setShadowsRendered(isChecked);
@@ -621,7 +621,7 @@ public class DddGui extends GuiScreenController {
         /*
          * Update animation even if the animation tool is disabled.
          */
-        if (Maud.model.animation.isMoving()) {
+        if (Maud.model.cgm.animation.isMoving()) {
             updateTrackTime(tpf);
         }
         Maud.viewState.updatePose();
@@ -662,15 +662,15 @@ public class DddGui extends GuiScreenController {
      * @param tpf time interval between render passes (in seconds, &ge;0)
      */
     private void updateTrackTime(float tpf) {
-        assert Maud.model.animation.isMoving();
+        assert Maud.model.cgm.animation.isMoving();
 
-        float speed = Maud.model.animation.getSpeed();
-        float time = Maud.model.animation.getTime();
+        float speed = Maud.model.cgm.animation.getSpeed();
+        float time = Maud.model.cgm.animation.getTime();
         time += speed * tpf;
 
-        boolean cont = Maud.model.animation.willContinue();
-        boolean reverse = Maud.model.animation.willReverse();
-        float duration = Maud.model.animation.getDuration();
+        boolean cont = Maud.model.cgm.animation.willContinue();
+        boolean reverse = Maud.model.cgm.animation.willReverse();
+        float duration = Maud.model.cgm.animation.getDuration();
         if (cont && !reverse) {
             time = MyMath.modulo(time, duration); // wrap
         } else {
@@ -678,13 +678,13 @@ public class DddGui extends GuiScreenController {
             time = FastMath.clamp(time, 0f, duration);
             if (time != freeTime) { // reached a limit
                 if (reverse) {
-                    Maud.model.animation.setSpeed(-speed); // pong
+                    Maud.model.cgm.animation.setSpeed(-speed); // pong
                 } else {
                     time = duration - time; // wrap
                 }
-                Maud.model.animation.setPaused(!cont);
+                Maud.model.cgm.animation.setPaused(!cont);
             }
         }
-        Maud.model.animation.setTime(time);
+        Maud.model.cgm.animation.setTime(time);
     }
 }
