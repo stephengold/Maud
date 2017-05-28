@@ -55,35 +55,13 @@ class DddDialogs {
     final private static Logger logger = Logger.getLogger(
             DddDialogs.class.getName());
     // *************************************************************************
-    // fields
-
-    /**
-     * asset manager for loading assets (set by constructor}
-     */
-    final private AssetManager assetManager;
-    /**
-     * Nifty GUI instance (set by constructor}
-     */
-    final private Nifty nifty;
-    // *************************************************************************
-    // constructors
-
-    /**
-     * Instantiate with the specified asset manager and Nifty GUI instance.
-     *
-     * @param assetManager (not null)
-     */
-    DddDialogs(AssetManager assetManager, Nifty nifty) {
-        this.assetManager = assetManager;
-        this.nifty = nifty;
-    }
-    // *************************************************************************
     // new methods exposed
 
     /**
      * Display an "About Maud" dialog.
      */
     void aboutMaud() {
+        Nifty nifty = Maud.gui.getNifty();
         String niftyVersion = nifty.getVersion();
         String text = "Maud, by Stephen Gold\n\nYou are c"
                 + "urrently using Maud, a jMonkeyEngine application for edit"
@@ -153,6 +131,9 @@ class DddDialogs {
         modelExts.add(".blend");
         modelExts.add(".j3o");
         modelExts.add(".mesh.xml");
+
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
         AssetDialog controller = new AssetDialog("Load", modelExts,
                 assetManager);
 
@@ -251,6 +232,9 @@ class DddDialogs {
         String assetPath = Maud.model.retarget.getMappingAssetPath();
         List<String> modelExts = new ArrayList<>(1);
         modelExts.add(".j3o");
+
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
         AssetDialog controller = new AssetDialog("Select", modelExts,
                 assetManager);
 
@@ -269,6 +253,9 @@ class DddDialogs {
         modelExts.add(".blend");
         modelExts.add(".j3o");
         modelExts.add(".mesh.xml");
+
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
         AssetDialog controller = new AssetDialog("Select", modelExts,
                 assetManager);
 

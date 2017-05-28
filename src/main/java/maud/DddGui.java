@@ -79,9 +79,9 @@ public class DddGui extends GuiScreenController {
     // fields
 
     /**
-     * dialog boxes created by this screen (set by {@link maud.Maud#startup1()})
+     * dialog boxes created by this screen
      */
-    DddDialogs dialogs;
+    final DddDialogs dialogs = new DddDialogs();
     /**
      * input mode for this screen
      */
@@ -650,7 +650,7 @@ public class DddGui extends GuiScreenController {
     public void bind(Nifty nifty, Screen screen) {
         super.bind(nifty, screen);
 
-        Maud maud = (Maud) guiApplication;
+        Maud maud = Maud.getApplication();
         maud.startup2();
     }
     // *************************************************************************

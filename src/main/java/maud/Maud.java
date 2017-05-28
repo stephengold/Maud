@@ -32,7 +32,6 @@ import com.jme3.audio.openal.ALAudioRenderer;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
-import de.lessvoid.nifty.Nifty;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
@@ -269,9 +268,6 @@ public class Maud extends GuiApplication {
      */
     private void startup1() {
         logger.info("");
-
-        Nifty nifty = getNifty();
-        gui.dialogs = new DddDialogs(assetManager, nifty);
 
         Node parentNode = new Node("parent");
         rootNode.attachChild(parentNode);
