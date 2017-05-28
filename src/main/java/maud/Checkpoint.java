@@ -50,6 +50,10 @@ class Checkpoint {
     // fields
 
     /**
+     * a copy of the view's CG model at time of creation
+     */
+    final private CgmView viewCgm;
+    /**
      * the date and time of creation
      */
     final private Date timestamp;
@@ -61,10 +65,6 @@ class Checkpoint {
      * list of events since the previous checkpoint
      */
     final private List<String> eventDescriptions = new ArrayList<>(20);
-    /**
-     * a copy of the view's CG model at time of creation
-     */
-    final private ViewCGModel viewCgm;
     // *************************************************************************
     // constructors
 

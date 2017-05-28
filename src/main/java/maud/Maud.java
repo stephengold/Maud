@@ -77,6 +77,10 @@ public class Maud extends GuiApplication {
      */
     final static BindScreen bindScreen = new BindScreen();
     /**
+     * the view's copy of the loaded CG model (set by {@link #startup1()})
+     */
+    public static CgmView viewState = null;
+    /**
      * GUI portion of the "3D View" screen, with links to tools
      */
     final public static DddGui gui = new DddGui();
@@ -92,10 +96,6 @@ public class Maud extends GuiApplication {
      * printer for scene dumps
      */
     final private static Printer printer = new Printer();
-    /**
-     * the view's copy of the loaded CG model (set by {@link #startup1()})
-     */
-    public static ViewCGModel viewState = null;
     // *************************************************************************
     // new methods exposed
 
@@ -272,7 +272,7 @@ public class Maud extends GuiApplication {
         Node parentNode = new Node("parent");
         rootNode.attachChild(parentNode);
         Spatial cgmRoot = null;
-        viewState = new ViewCGModel(assetManager, parentNode, cgmRoot);
+        viewState = new CgmView(assetManager, parentNode, cgmRoot);
         /*
          * Attach screen controllers for the "3D View" screen and BindScreen.
          */
