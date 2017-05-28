@@ -78,7 +78,7 @@ public class SelectedSpatial implements Cloneable {
         AnimControl newSgc = new AnimControl(skeleton);
 
         Maud.model.cgm.addSgc(newSgc);
-        Maud.model.sgc.select(newSgc);
+        Maud.model.cgm.sgc.select(newSgc);
     }
 
     /**
@@ -90,7 +90,7 @@ public class SelectedSpatial implements Cloneable {
         RigidBodyControl newSgc = new RigidBodyControl(mass);
 
         Maud.model.cgm.addSgc(newSgc);
-        Maud.model.sgc.select(newSgc);
+        Maud.model.cgm.sgc.select(newSgc);
     }
 
     /**
@@ -101,7 +101,7 @@ public class SelectedSpatial implements Cloneable {
         SkeletonControl newSgc = new SkeletonControl(skeleton);
 
         Maud.model.cgm.addSgc(newSgc);
-        Maud.model.sgc.select(newSgc);
+        Maud.model.cgm.sgc.select(newSgc);
     }
 
     /**
@@ -684,6 +684,6 @@ public class SelectedSpatial implements Cloneable {
      * Invoked after selecting a spatial.
      */
     private void postSelect() {
-        Maud.model.sgc.selectNone();
+        Maud.model.cgm.sgc.selectNone();
     }
 }

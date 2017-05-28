@@ -252,7 +252,7 @@ class DddInputMode extends InputMode {
             Maud.model.cgm.animation.delete();
             handled = true;
         } else if (actionString.equals("delete control")) {
-            Maud.model.sgc.delete();
+            Maud.model.cgm.sgc.delete();
             handled = true;
         }
 
@@ -338,7 +338,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "next control":
-                Maud.model.sgc.selectNext();
+                Maud.model.cgm.sgc.selectNext();
                 handled = true;
         }
 
@@ -383,7 +383,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "previous control":
-                Maud.model.sgc.selectPrevious();
+                Maud.model.cgm.sgc.selectPrevious();
                 handled = true;
         }
 
@@ -622,7 +622,7 @@ class DddInputMode extends InputMode {
 
             } else if (actionString.startsWith(selectControlPrefix)) {
                 arg = MyString.remainder(actionString, selectControlPrefix);
-                Maud.model.sgc.select(arg);
+                Maud.model.cgm.sgc.select(arg);
                 handled = true;
 
             } else if (actionString.startsWith(selectGeometryPrefix)) {

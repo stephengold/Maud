@@ -59,6 +59,11 @@ public class SelectedSgc implements Cloneable {
      * index of the selected SG control, or -1 for none selected
      */
     private int selectedIndex = -1;
+    /**
+     * loaded CG model containing the control (set by
+     * {@link #setCgm(LoadedCGModel)})
+     */
+    private LoadedCGModel loadedCgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -255,6 +260,16 @@ public class SelectedSgc implements Cloneable {
             select(newIndex);
         }
     }
+
+    /**
+     * Alter which CG model contains the SG control.
+     *
+     * @param newLoaded (not null)
+     */
+    void setCgm(LoadedCGModel newLoaded) {
+        assert newLoaded != null;
+        loadedCgm = newLoaded;
+    }
     // *************************************************************************
     // Object methods
 
@@ -265,7 +280,7 @@ public class SelectedSgc implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public SelectedSgc clone() throws CloneNotSupportedException {
         SelectedSgc clone = (SelectedSgc) super.clone();
         return clone;
     }

@@ -434,7 +434,7 @@ class DddMenus {
         builder.addTool("Control tool");
         builder.add("Select control");
         builder.add("Add control");
-        if (Maud.model.sgc.isSelected()) {
+        if (Maud.model.cgm.sgc.isSelected()) {
             builder.add("Delete control");
         }
         builder.addTool("User data tool");

@@ -135,7 +135,7 @@ class DddDialogs {
      * Display a "delete control" dialog.
      */
     void deleteSgc() {
-        String name = Maud.model.sgc.getName();
+        String name = Maud.model.cgm.sgc.getName();
         String message = String.format("Delete the %s control?",
                 MyString.quote(name));
         Maud.gui.closeAllPopups();

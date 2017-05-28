@@ -72,9 +72,9 @@ class SgcTool extends WindowController {
         updateIndex();
 
         String deleteLabel, typeText;
-        if (Maud.model.sgc.isSelected()) {
+        if (Maud.model.cgm.sgc.isSelected()) {
             deleteLabel = "Delete";
-            typeText = Maud.model.sgc.getType();
+            typeText = Maud.model.cgm.sgc.getType();
         } else {
             deleteLabel = "";
             typeText = "(none selected)";
@@ -93,8 +93,8 @@ class SgcTool extends WindowController {
         String nButton, pButton;
 
         int numSgcs = Maud.model.spatial.countSgcs();
-        if (Maud.model.sgc.isSelected()) {
-            int selectedIndex = Maud.model.sgc.getIndex();
+        if (Maud.model.cgm.sgc.isSelected()) {
+            int selectedIndex = Maud.model.cgm.sgc.getIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1, numSgcs);
             nButton = "+";
             pButton = "-";

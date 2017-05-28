@@ -112,6 +112,10 @@ public class LoadedCGModel implements Cloneable {
      */
     public SelectedBone bone = new SelectedBone();
     /**
+     * which SG control is selected
+     */
+    public SelectedSgc sgc = new SelectedSgc();
+    /**
      * the selected skeleton in the CG model
      */
     public SelectedSkeleton bones = new SelectedSkeleton();
@@ -156,6 +160,7 @@ public class LoadedCGModel implements Cloneable {
         bone.setCgm(this);
         bones.setCgm(this);
         pose.setCgm(this);
+        sgc.setCgm(this);
     }
     // *************************************************************************
     // new methods exposed
@@ -253,8 +258,8 @@ public class LoadedCGModel implements Cloneable {
      */
     void deleteControl() {
         Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
-        Control sgc = Maud.model.sgc.findSgc(rootSpatial);
-        boolean success = spatial.removeControl(sgc);
+        Control selectedSgc = sgc.findSgc(rootSpatial);
+        boolean success = spatial.removeControl(selectedSgc);
         assert success;
         setEdited("delete control");
     }
@@ -302,7 +307,7 @@ public class LoadedCGModel implements Cloneable {
      */
     AnimControl getAnimControl() {
         AnimControl animControl;
-        Control selectedSgc = Maud.model.sgc.findSgc();
+        Control selectedSgc = sgc.findSgc();
         if (selectedSgc instanceof AnimControl) {
             animControl = (AnimControl) selectedSgc;
         } else {
@@ -869,11 +874,13 @@ public class LoadedCGModel implements Cloneable {
         clone.bone = bone.clone();
         clone.bones = bones.clone();
         clone.pose = pose.clone();
+        clone.sgc = sgc.clone();
 
         clone.animation.setCgm(clone);
         clone.bone.setCgm(clone);
         clone.bones.setCgm(clone);
         clone.pose.setCgm(clone);
+        clone.sgc.setCgm(clone);
 
         return clone;
     }

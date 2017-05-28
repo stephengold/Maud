@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import maud.Maud;
 
 /**
  * The MVC model of a selected skeleton in the Maud application.
@@ -123,7 +122,7 @@ public class SelectedSkeleton implements Cloneable {
          * If the selected SG control is an AnimControl or SkeletonControl,
          * use its skeleton, if it has one.
          */
-        Control selectedSgc = Maud.model.sgc.findSgc();
+        Control selectedSgc = loadedCgm.sgc.findSgc();
         if (selectedSgc instanceof AnimControl) {
             animControl = (AnimControl) selectedSgc;
             skeleton = animControl.getSkeleton();

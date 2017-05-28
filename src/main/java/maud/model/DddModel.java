@@ -71,10 +71,6 @@ public class DddModel {
      */
     public RetargetParameters retarget = null;
     /**
-     * which SG control is selected
-     */
-    final public SelectedSgc sgc;
-    /**
      * which spatial is selected
      */
     final public SelectedSpatial spatial;
@@ -99,7 +95,6 @@ public class DddModel {
         /* cgm field will be set later */
         misc = new MiscStatus();
         /* retarget field will be set later */
-        sgc = new SelectedSgc();
         spatial = new SelectedSpatial();
         track = new SelectedTrack();
         skeleton = new SkeletonStatus();
@@ -119,7 +114,6 @@ public class DddModel {
             misc = (MiscStatus) source.misc.clone();
             retarget = (RetargetParameters) source.retarget.clone();
             spatial = (SelectedSpatial) source.spatial.clone();
-            sgc = (SelectedSgc) source.sgc.clone();
             track = (SelectedTrack) source.track.clone();
             skeleton = (SkeletonStatus) source.skeleton.clone();
         } catch (CloneNotSupportedException e) {
