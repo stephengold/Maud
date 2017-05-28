@@ -441,7 +441,7 @@ public class DddGui extends GuiScreenController {
         assert firstWord.startsWith("#") : firstWord;
         String numberText = firstWord.substring(1);
         int number = Integer.parseInt(numberText);
-        Maud.model.spatial.selectChild(number - 1);
+        Maud.model.cgm.spatial.selectChild(number - 1);
     }
 
     /**

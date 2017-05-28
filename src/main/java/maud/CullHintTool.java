@@ -70,7 +70,7 @@ class CullHintTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        Spatial.CullHint hint = Maud.model.spatial.getLocalCullHint();
+        Spatial.CullHint hint = Maud.model.cgm.spatial.getLocalCullHint();
 
         String niftyId;
         switch (hint) {

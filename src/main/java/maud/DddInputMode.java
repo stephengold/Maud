@@ -604,7 +604,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "select spatialParent":
-                Maud.model.spatial.selectParent();
+                Maud.model.cgm.spatial.selectParent();
                 handled = true;
         }
 

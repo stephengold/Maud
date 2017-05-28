@@ -215,7 +215,7 @@ public class ViewCGModel {
     public void setHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = Maud.model.cgm.spatial.findSpatial(cgModelRoot);
         spatial.setCullHint(newHint);
     }
 
@@ -227,7 +227,7 @@ public class ViewCGModel {
     public void setMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "shadow mode");
 
-        Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = Maud.model.cgm.spatial.findSpatial(cgModelRoot);
         spatial.setShadowMode(newMode);
     }
 
@@ -263,7 +263,7 @@ public class ViewCGModel {
     public void setSpatialRotation(Quaternion rotation) {
         Validate.nonNull(rotation, "rotation");
 
-        Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = Maud.model.cgm.spatial.findSpatial(cgModelRoot);
         spatial.setLocalRotation(rotation);
     }
 
@@ -275,7 +275,7 @@ public class ViewCGModel {
     public void setSpatialScale(Vector3f scale) {
         Validate.nonNull(scale, "scale");
 
-        Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = Maud.model.cgm.spatial.findSpatial(cgModelRoot);
         spatial.setLocalScale(scale);
     }
 
@@ -287,7 +287,7 @@ public class ViewCGModel {
     public void setSpatialTranslation(Vector3f translation) {
         Validate.nonNull(translation, "translation");
 
-        Spatial spatial = Maud.model.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = Maud.model.cgm.spatial.findSpatial(cgModelRoot);
         spatial.setLocalTranslation(translation);
     }
 

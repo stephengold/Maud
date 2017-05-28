@@ -92,7 +92,7 @@ class SgcTool extends WindowController {
         String indexText;
         String nButton, pButton;
 
-        int numSgcs = Maud.model.spatial.countSgcs();
+        int numSgcs = Maud.model.cgm.spatial.countSgcs();
         if (Maud.model.cgm.sgc.isSelected()) {
             int selectedIndex = Maud.model.cgm.sgc.getIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1, numSgcs);

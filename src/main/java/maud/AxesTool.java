@@ -251,7 +251,7 @@ class AxesTool extends WindowController {
 
             case "spatial":
                 cgm = Maud.viewState.getSpatial();
-                Spatial spatial = Maud.model.spatial.findSpatial(cgm);
+                Spatial spatial = Maud.model.cgm.spatial.findSpatial(cgm);
                 transform = spatial.getWorldTransform();
                 break;
 

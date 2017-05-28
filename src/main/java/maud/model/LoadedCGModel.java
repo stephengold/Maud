@@ -108,17 +108,21 @@ public class LoadedCGModel implements Cloneable {
      */
     public Pose pose = new Pose();
     /**
-     * the selected bone in the selected skeleton
+     * which bone in selected in the CG model
      */
     public SelectedBone bone = new SelectedBone();
     /**
-     * which SG control is selected
+     * which SG control is selected in the CG model
      */
     public SelectedSgc sgc = new SelectedSgc();
     /**
-     * the selected skeleton in the CG model
+     * which skeleton is selected in the CG model
      */
     public SelectedSkeleton bones = new SelectedSkeleton();
+    /**
+     * which spatial is selected in the CG model
+     */
+    public SelectedSpatial spatial = new SelectedSpatial();
     /**
      * the root spatial in the MVC model's copy of the CG model
      */
@@ -161,6 +165,7 @@ public class LoadedCGModel implements Cloneable {
         bones.setCgm(this);
         pose.setCgm(this);
         sgc.setCgm(this);
+        spatial.setCgm(this);
     }
     // *************************************************************************
     // new methods exposed
@@ -192,8 +197,8 @@ public class LoadedCGModel implements Cloneable {
     void addSgc(Control newSgc) {
         assert newSgc != null;
 
-        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
-        spatial.addControl(newSgc);
+        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        selectedSpatial.addControl(newSgc);
         setEdited("add control");
     }
 
@@ -208,8 +213,8 @@ public class LoadedCGModel implements Cloneable {
             storeResult = new Transform();
         }
 
-        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
-        Transform transform = spatial.getLocalTransform();
+        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        Transform transform = selectedSpatial.getLocalTransform();
         storeResult.set(transform);
 
         return storeResult;
@@ -257,9 +262,9 @@ public class LoadedCGModel implements Cloneable {
      * Delete the selected control from the selected spatial.
      */
     void deleteControl() {
-        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
+        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
         Control selectedSgc = sgc.findSgc(rootSpatial);
-        boolean success = spatial.removeControl(selectedSgc);
+        boolean success = selectedSpatial.removeControl(selectedSgc);
         assert success;
         setEdited("delete control");
     }
@@ -712,7 +717,7 @@ public class LoadedCGModel implements Cloneable {
     public void setHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial modelSpatial = Maud.model.spatial.findSpatial(rootSpatial);
+        Spatial modelSpatial = spatial.findSpatial(rootSpatial);
         Spatial.CullHint oldHint = modelSpatial.getLocalCullHint();
         if (oldHint != newHint) {
             modelSpatial.setCullHint(newHint);
@@ -729,7 +734,7 @@ public class LoadedCGModel implements Cloneable {
     public void setMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "shadow mode");
 
-        Spatial modelSpatial = Maud.model.spatial.findSpatial(rootSpatial);
+        Spatial modelSpatial = spatial.findSpatial(rootSpatial);
         RenderQueue.ShadowMode oldMode = modelSpatial.getLocalShadowMode();
         if (oldMode != newMode) {
             modelSpatial.setShadowMode(newMode);
@@ -766,8 +771,8 @@ public class LoadedCGModel implements Cloneable {
     public void setSpatialRotation(Quaternion rotation) {
         Validate.nonNull(rotation, "rotation");
 
-        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
-        spatial.setLocalRotation(rotation);
+        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        selectedSpatial.setLocalRotation(rotation);
         Maud.viewState.setSpatialRotation(rotation);
         setEditedSpatialTransform();
     }
@@ -783,8 +788,8 @@ public class LoadedCGModel implements Cloneable {
         Validate.positive(scale.y, "y scale");
         Validate.positive(scale.z, "z scale");
 
-        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
-        spatial.setLocalScale(scale);
+        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        selectedSpatial.setLocalScale(scale);
         Maud.viewState.setSpatialScale(scale);
         setEditedSpatialTransform();
     }
@@ -797,8 +802,8 @@ public class LoadedCGModel implements Cloneable {
     public void setSpatialTranslation(Vector3f translation) {
         Validate.nonNull(translation, "translation");
 
-        Spatial spatial = Maud.model.spatial.findSpatial(rootSpatial);
-        spatial.setLocalTranslation(translation);
+        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        selectedSpatial.setLocalTranslation(translation);
         Maud.viewState.setSpatialTranslation(translation);
         setEditedSpatialTransform();
     }
@@ -875,12 +880,14 @@ public class LoadedCGModel implements Cloneable {
         clone.bones = bones.clone();
         clone.pose = pose.clone();
         clone.sgc = sgc.clone();
+        clone.spatial = spatial.clone();
 
         clone.animation.setCgm(clone);
         clone.bone.setCgm(clone);
         clone.bones.setCgm(clone);
         clone.pose.setCgm(clone);
         clone.sgc.setCgm(clone);
+        clone.spatial.setCgm(clone);
 
         return clone;
     }
@@ -1080,7 +1087,7 @@ public class LoadedCGModel implements Cloneable {
          * Reset the selected bone/spatial and also the loaded animation.
          */
         bone.selectNoBone();
-        Maud.model.spatial.selectModelRoot();
+        spatial.selectModelRoot();
         animation.loadBindPose();
     }
 
@@ -1134,7 +1141,7 @@ public class LoadedCGModel implements Cloneable {
      * If not a continuation of the previous edit, update the edit count.
      */
     private void setEditedSpatialTransform() {
-        String newString = Maud.model.spatial.toString();
+        String newString = spatial.toString();
         if (!newString.equals(editedSpatialTransform)) {
             ++editCount;
             editedSpatialTransform = newString;

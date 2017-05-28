@@ -70,7 +70,8 @@ class ShadowModeTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        RenderQueue.ShadowMode mode = Maud.model.spatial.getLocalShadowMode();
+        RenderQueue.ShadowMode mode;
+        mode = Maud.model.cgm.spatial.getLocalShadowMode();
 
         String niftyId;
         switch (mode) {

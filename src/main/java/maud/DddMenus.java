@@ -183,19 +183,20 @@ class DddMenus {
      * Handle a "select spatialChild" action with no argument.
      */
     void selectSpatialChild() {
-        int numChildren = Maud.model.spatial.countChildren();
+        int numChildren = Maud.model.cgm.spatial.countChildren();
         if (numChildren == 1) {
-            Maud.model.spatial.selectChild(0);
+            Maud.model.cgm.spatial.selectChild(0);
 
         } else if (numChildren > 1) {
             builder.reset();
             for (int childIndex = 0; childIndex < numChildren; childIndex++) {
                 String choice = String.format("#%d", childIndex + 1);
-                String name = Maud.model.spatial.getChildName(childIndex);
+                String name = Maud.model.cgm.spatial.getChildName(childIndex);
                 if (name != null) {
                     choice += " " + MyString.quote(name);
                 }
-                boolean isANode = Maud.model.spatial.isChildANode(childIndex);
+                boolean isANode = Maud.model.cgm.spatial.isChildANode(
+                        childIndex);
                 if (isANode) {
                     builder.addNode(choice);
                 } else {
@@ -225,7 +226,7 @@ class DddMenus {
      */
     void selectSpatial(String argument, boolean includeNodes) {
         if (Maud.model.cgm.hasSpatial(argument)) {
-            Maud.model.spatial.select(argument);
+            Maud.model.cgm.spatial.select(argument);
 
         } else {
             /*
@@ -1021,17 +1022,17 @@ class DddMenus {
         boolean handled = false;
         switch (remainder) {
             case "Anim":
-                Maud.model.spatial.addAnimControl();
+                Maud.model.cgm.spatial.addAnimControl();
                 handled = true;
                 break;
 
             case "RigidBody":
-                Maud.model.spatial.addRigidBodyControl();
+                Maud.model.cgm.spatial.addRigidBodyControl();
                 handled = true;
                 break;
 
             case "Skeleton":
-                Maud.model.spatial.addSkeletonControl();
+                Maud.model.cgm.spatial.addSkeletonControl();
                 handled = true;
         }
 
@@ -1062,11 +1063,11 @@ class DddMenus {
                 handled = true;
                 break;
             case "Parent":
-                Maud.model.spatial.selectParent();
+                Maud.model.cgm.spatial.selectParent();
                 handled = true;
                 break;
             case "Root":
-                Maud.model.spatial.selectModelRoot();
+                Maud.model.cgm.spatial.selectModelRoot();
                 handled = true;
         }
 
@@ -1165,7 +1166,7 @@ class DddMenus {
      */
     private void selectSgc() {
         builder.reset();
-        for (String name : Maud.model.spatial.listSgcNames()) {
+        for (String name : Maud.model.cgm.spatial.listSgcNames()) {
             builder.add(name);
         }
         builder.add(LoadedCGModel.noControl);
@@ -1195,9 +1196,9 @@ class DddMenus {
             builder.add("Geometry");
         }
 
-        int numChildren = Maud.model.spatial.countChildren();
+        int numChildren = Maud.model.cgm.spatial.countChildren();
         if (numChildren == 1) {
-            boolean isChildANode = Maud.model.spatial.isChildANode(0);
+            boolean isChildANode = Maud.model.cgm.spatial.isChildANode(0);
             if (isChildANode) {
                 builder.addNode("Child");
             } else {
@@ -1207,7 +1208,7 @@ class DddMenus {
             builder.add("Child");
         }
 
-        boolean isRoot = Maud.model.spatial.isModelRoot();
+        boolean isRoot = Maud.model.cgm.spatial.isModelRoot();
         if (!isRoot) {
             builder.addNode("Parent");
         }

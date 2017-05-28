@@ -67,6 +67,11 @@ public class SelectedSpatial implements Cloneable {
      * tree position of the selected spatial (not null)
      */
     private List<Integer> treePosition = new ArrayList<>(3);
+    /**
+     * loaded CG model containing the spatial (set by
+     * {@link #setCgm(LoadedCGModel)})
+     */
+    private LoadedCGModel loadedCgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -588,7 +593,16 @@ public class SelectedSpatial implements Cloneable {
             postSelect();
         }
     }
-    // TODO setters for CullHint, QueueBucket, and ShadowMode
+
+    /**
+     * Alter which CG model contains the spatial.
+     *
+     * @param newLoaded (not null)
+     */
+    void setCgm(LoadedCGModel newLoaded) {
+        assert newLoaded != null;
+        loadedCgm = newLoaded;
+    }
     // *************************************************************************
     // Object methods
 
@@ -599,7 +613,7 @@ public class SelectedSpatial implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public SelectedSpatial clone() throws CloneNotSupportedException {
         SelectedSpatial clone = (SelectedSpatial) super.clone();
 
         int numLevels = treePosition.size();

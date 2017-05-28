@@ -114,7 +114,7 @@ public class SelectedSgc implements Cloneable {
     Control findSgc(Spatial cgmRoot) {
         Control sgc = null;
         if (selectedIndex != -1) {
-            Spatial spatial = Maud.model.spatial.findSpatial(cgmRoot);
+            Spatial spatial = loadedCgm.spatial.findSpatial(cgmRoot);
             sgc = spatial.getControl(selectedIndex);
         }
 
@@ -136,7 +136,7 @@ public class SelectedSgc implements Cloneable {
      * @return a descriptive name, or noControl if none selected
      */
     public String getName() {
-        List<String> names = Maud.model.spatial.listSgcNames();
+        List<String> names = loadedCgm.spatial.listSgcNames();
         String name;
         if (isSelected()) {
             name = names.get(selectedIndex);
@@ -181,7 +181,7 @@ public class SelectedSgc implements Cloneable {
         if (newSgc == null) {
             selectNone();
         } else {
-            Spatial spatial = Maud.model.spatial.modelSpatial();
+            Spatial spatial = loadedCgm.spatial.modelSpatial();
             int newIndex = MyControl.findIndex(newSgc, spatial);
             select(newIndex);
         }
@@ -220,7 +220,7 @@ public class SelectedSgc implements Cloneable {
         if (newName.equals(LoadedCGModel.noControl)) {
             selectNone();
         } else {
-            List<String> names = Maud.model.spatial.listSgcNames();
+            List<String> names = loadedCgm.spatial.listSgcNames();
             int newIndex = names.indexOf(newName);
             select(newIndex);
         }
@@ -232,7 +232,7 @@ public class SelectedSgc implements Cloneable {
     public void selectNext() {
         if (isSelected()) {
             int newIndex = selectedIndex + 1;
-            int numSgcs = Maud.model.spatial.countSgcs();
+            int numSgcs = loadedCgm.spatial.countSgcs();
             if (newIndex >= numSgcs) {
                 newIndex = 0;
             }
@@ -254,7 +254,7 @@ public class SelectedSgc implements Cloneable {
         if (isSelected()) {
             int newIndex = selectedIndex - 1;
             if (newIndex < 0) {
-                int numSgcs = Maud.model.spatial.countSgcs();
+                int numSgcs = loadedCgm.spatial.countSgcs();
                 newIndex = numSgcs - 1;
             }
             select(newIndex);
