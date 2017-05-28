@@ -109,8 +109,8 @@ class BoneTranslationTool extends WindowController {
             float masterScale = readScale();
             offsets.multLocal(masterScale);
 
-            int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.cgm.pose.setTranslation(boneIndex, offsets);
+            int boneIndex = Maud.model.target.bone.getIndex();
+            Maud.model.target.pose.setTranslation(boneIndex, offsets);
         }
     }
 
@@ -119,8 +119,8 @@ class BoneTranslationTool extends WindowController {
      */
     void reset() {
         if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.cgm.pose.resetTranslation(boneIndex);
+            int boneIndex = Maud.model.target.bone.getIndex();
+            Maud.model.target.pose.resetTranslation(boneIndex);
         }
     }
 
@@ -129,8 +129,8 @@ class BoneTranslationTool extends WindowController {
      */
     void setToAnimation() {
         if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.cgm.pose.setTranslationToAnimation(boneIndex);
+            int boneIndex = Maud.model.target.bone.getIndex();
+            Maud.model.target.pose.setTranslationToAnimation(boneIndex);
         }
     }
     // *************************************************************************
@@ -166,7 +166,7 @@ class BoneTranslationTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (Maud.model.cgm.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isBoneSelected()) {
             setSlidersToPose();
             if (shouldBeEnabled()) {
                 Maud.gui.setButtonLabel("resetOffAnimButton", "Animation");
@@ -235,8 +235,8 @@ class BoneTranslationTool extends WindowController {
      * Set all 4 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        int boneIndex = Maud.model.cgm.bone.getIndex();
-        Transform transform = Maud.model.cgm.pose.copyTransform(boneIndex,
+        int boneIndex = Maud.model.target.bone.getIndex();
+        Transform transform = Maud.model.target.pose.copyTransform(boneIndex,
                 null);
         Vector3f vector = transform.getTranslation();
         float[] offsets = vector.toArray(null);
@@ -268,8 +268,8 @@ class BoneTranslationTool extends WindowController {
      * @return true if enabled, otherwise false
      */
     private boolean shouldBeEnabled() {
-        if (Maud.model.cgm.bone.isBoneSelected()
-                && !Maud.model.cgm.animation.isMoving()) {
+        if (Maud.model.target.bone.isBoneSelected()
+                && !Maud.model.target.animation.isMoving()) {
             return true;
         } else {
             return false;

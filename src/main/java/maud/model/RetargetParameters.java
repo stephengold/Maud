@@ -248,7 +248,7 @@ public class RetargetParameters implements Cloneable {
             matches = true;
             List<String> targetBones = map.listTargetBones();
             for (String name : targetBones) {
-                if (!Maud.model.cgm.bones.hasBone(name)) {
+                if (!Maud.model.target.bones.hasBone(name)) {
                     matches = false;
                     break;
                 }
@@ -268,7 +268,7 @@ public class RetargetParameters implements Cloneable {
 
         setTargetAnimationName(newName);
         retargetAndAdd();
-        Maud.model.cgm.animation.load(newName);
+        Maud.model.target.animation.load(newName);
     }
 
     /**
@@ -296,7 +296,7 @@ public class RetargetParameters implements Cloneable {
      */
     public void setSourceAnimationName(String name) {
         sourceAnimationName = name;
-        if (name == null || !Maud.model.cgm.hasAnimation(name)) {
+        if (name == null || !Maud.model.target.hasAnimation(name)) {
             setTargetAnimationName(name);
         }
     }
@@ -401,7 +401,7 @@ public class RetargetParameters implements Cloneable {
      */
     private void retargetAndAdd() {
         Spatial sourceCgm = sourceCgm();
-        Spatial targetCgm = Maud.model.cgm.getRootSpatial();
+        Spatial targetCgm = Maud.model.target.getRootSpatial();
         Animation sourceAnimation = sourceAnimation();
         MyAnimation.removeRepeats(sourceAnimation);
         Skeleton sourceSkeleton = MySkeleton.getSkeleton(sourceCgm);
@@ -413,6 +413,6 @@ public class RetargetParameters implements Cloneable {
         float duration = retargeted.getLength();
         assert duration >= 0f : duration;
 
-        Maud.model.cgm.addAnimation(retargeted);
+        Maud.model.target.addAnimation(retargeted);
     }
 }

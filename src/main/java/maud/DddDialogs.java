@@ -90,7 +90,7 @@ class DddDialogs {
      * Display a "copy animation" dialog.
      */
     void copyAnimation() {
-        String fromName = Maud.model.cgm.animation.getName();
+        String fromName = Maud.model.target.animation.getName();
         DialogController controller = new AnimationNameDialog("Copy");
 
         Maud.gui.closeAllPopups();
@@ -102,7 +102,7 @@ class DddDialogs {
      * Display a "delete animation" dialog.
      */
     void deleteAnimation() {
-        String name = Maud.model.cgm.animation.getName();
+        String name = Maud.model.target.animation.getName();
         String message = String.format("Delete the %s animation?",
                 MyString.quote(name));
         Maud.gui.closeAllPopups();
@@ -113,7 +113,7 @@ class DddDialogs {
      * Display a "delete control" dialog.
      */
     void deleteSgc() {
-        String name = Maud.model.cgm.sgc.getName();
+        String name = Maud.model.target.sgc.getName();
         String message = String.format("Delete the %s control?",
                 MyString.quote(name));
         Maud.gui.closeAllPopups();
@@ -124,8 +124,8 @@ class DddDialogs {
      * Display a "load model asset" dialog.
      */
     void loadModelAsset() {
-        String basePath = Maud.model.cgm.getAssetPath();
-        String extension = Maud.model.cgm.getExtension();
+        String basePath = Maud.model.target.getAssetPath();
+        String extension = Maud.model.target.getExtension();
         String assetPath = String.format("%s.%s", basePath, extension);
         List<String> modelExts = new ArrayList<>(4);
         modelExts.add(".blend");
@@ -157,7 +157,7 @@ class DddDialogs {
      * Display a "reduce animation" dialog.
      */
     void reduceAnimation() {
-        if (!Maud.model.cgm.animation.isBindPoseLoaded()) {
+        if (!Maud.model.target.animation.isBindPoseLoaded()) {
             IntegerDialog controller = new IntegerDialog("Reduce", 2,
                     Integer.MAX_VALUE);
 
@@ -171,7 +171,7 @@ class DddDialogs {
      * Display a "reduce track" dialog.
      */
     void reduceTrack() {
-        if (Maud.model.cgm.bone.hasTrack()) {
+        if (Maud.model.target.bone.hasTrack()) {
             IntegerDialog controller = new IntegerDialog("Reduce", 2,
                     Integer.MAX_VALUE);
 
@@ -185,8 +185,8 @@ class DddDialogs {
      * Display a "rename animation" dialog.
      */
     void renameAnimation() {
-        if (!Maud.model.cgm.animation.isBindPoseLoaded()) {
-            String oldName = Maud.model.cgm.animation.getName();
+        if (!Maud.model.target.animation.isBindPoseLoaded()) {
+            String oldName = Maud.model.target.animation.getName();
             DialogController controller = new AnimationNameDialog("Rename");
 
             Maud.gui.closeAllPopups();
@@ -200,8 +200,8 @@ class DddDialogs {
      * Display a "rename bone" dialog.
      */
     void renameBone() {
-        if (Maud.model.cgm.bone.isBoneSelected()) {
-            String oldName = Maud.model.cgm.bone.getName();
+        if (Maud.model.target.bone.isBoneSelected()) {
+            String oldName = Maud.model.target.bone.getName();
             DialogController controller = new BoneRenameDialog("Rename");
 
             Maud.gui.closeAllPopups();
@@ -269,10 +269,10 @@ class DddDialogs {
      * Display a "set duration" dialog.
      */
     void setDuration() {
-        float oldDuration = Maud.model.cgm.animation.getDuration();
+        float oldDuration = Maud.model.target.animation.getDuration();
         String defaultText = Float.toString(oldDuration);
 
-        float finalTime = Maud.model.cgm.animation.findLatestKeyframe();
+        float finalTime = Maud.model.target.animation.findLatestKeyframe();
         float min;
         if (finalTime > 0f) {
             min = 0.01f;

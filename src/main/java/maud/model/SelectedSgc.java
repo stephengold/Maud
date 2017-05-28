@@ -72,20 +72,20 @@ public class SelectedSgc implements Cloneable {
      */
     public void delete() {
         if (isSelected()) {
-            Skeleton oldSkeleton = Maud.model.cgm.bones.getSkeleton();
-            AnimControl oldAnimControl = Maud.model.cgm.getAnimControl();
+            Skeleton oldSkeleton = Maud.model.target.bones.getSkeleton();
+            AnimControl oldAnimControl = Maud.model.target.getAnimControl();
 
-            Maud.model.cgm.deleteControl();
+            Maud.model.target.deleteControl();
             selectedIndex = -1;
 
-            Skeleton newSkeleton = Maud.model.cgm.bones.getSkeleton();
+            Skeleton newSkeleton = Maud.model.target.bones.getSkeleton();
             if (oldSkeleton != newSkeleton) {
                 onSkeletonChanged(newSkeleton);
             }
 
-            AnimControl newAnimControl = Maud.model.cgm.getAnimControl();
+            AnimControl newAnimControl = Maud.model.target.getAnimControl();
             if (oldAnimControl != newAnimControl) {
-                Maud.model.cgm.animation.loadBindPose();
+                Maud.model.target.animation.loadBindPose();
             }
 
         } else {
@@ -99,7 +99,7 @@ public class SelectedSgc implements Cloneable {
      * @return the pre-existing instance, or null if none selected
      */
     Control findSgc() {
-        Spatial cgmRoot = Maud.model.cgm.getRootSpatial();
+        Spatial cgmRoot = Maud.model.target.getRootSpatial();
         Control sgc = findSgc(cgmRoot);
 
         return sgc;
@@ -193,19 +193,19 @@ public class SelectedSgc implements Cloneable {
      * @param newIndex which SG control to select, or -1 to deselect
      */
     public void select(int newIndex) {
-        Skeleton oldSkeleton = Maud.model.cgm.bones.getSkeleton();
-        AnimControl oldAnimControl = Maud.model.cgm.getAnimControl();
+        Skeleton oldSkeleton = Maud.model.target.bones.getSkeleton();
+        AnimControl oldAnimControl = Maud.model.target.getAnimControl();
 
         selectedIndex = newIndex;
 
-        Skeleton newSkeleton = Maud.model.cgm.bones.getSkeleton();
+        Skeleton newSkeleton = Maud.model.target.bones.getSkeleton();
         if (oldSkeleton != newSkeleton) {
             onSkeletonChanged(newSkeleton);
         }
 
-        AnimControl newAnimControl = Maud.model.cgm.getAnimControl();
+        AnimControl newAnimControl = Maud.model.target.getAnimControl();
         if (oldAnimControl != newAnimControl) {
-            Maud.model.cgm.animation.loadBindPose();
+            Maud.model.target.animation.loadBindPose();
         }
     }
 
@@ -294,7 +294,7 @@ public class SelectedSgc implements Cloneable {
      */
     private void onSkeletonChanged(Skeleton newSkeleton) {
         Maud.viewState.setSkeleton(newSkeleton);
-        Maud.model.cgm.bone.selectNoBone();
-        Maud.model.cgm.pose.resetToBind();
+        Maud.model.target.bone.selectNoBone();
+        Maud.model.target.pose.resetToBind();
     }
 }

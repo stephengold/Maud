@@ -105,9 +105,9 @@ class SkeletonColorTool extends WindowController {
         control.setPointColor(color);
 
         model.copyTrackedColor(color);
-        int numBones = Maud.model.cgm.bones.countBones();
+        int numBones = Maud.model.target.bones.countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            if (Maud.model.cgm.animation.hasTrackForBone(boneIndex)) {
+            if (Maud.model.target.animation.hasTrackForBone(boneIndex)) {
                 control.setPointColor(boneIndex, color);
             }
         }

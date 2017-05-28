@@ -76,7 +76,7 @@ class Checkpoint {
      */
     Checkpoint(List<String> descriptions) {
         timestamp = new Date();
-        Maud.model.cgm.onCheckpoint();
+        Maud.model.target.onCheckpoint();
         model = new DddModel(Maud.model);
         eventDescriptions.addAll(descriptions);
         viewCgm = Maud.viewState.createCopy();

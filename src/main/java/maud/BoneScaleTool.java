@@ -93,8 +93,8 @@ class BoneScaleTool extends WindowController {
             scales.y = Math.max(scales.y, 0.001f);
             scales.z = Math.max(scales.z, 0.001f);
 
-            int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.cgm.pose.setScale(boneIndex, scales);
+            int boneIndex = Maud.model.target.bone.getIndex();
+            Maud.model.target.pose.setScale(boneIndex, scales);
         }
     }
 
@@ -103,8 +103,8 @@ class BoneScaleTool extends WindowController {
      */
     void reset() {
         if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.cgm.pose.resetScale(boneIndex);
+            int boneIndex = Maud.model.target.bone.getIndex();
+            Maud.model.target.pose.resetScale(boneIndex);
         }
     }
 
@@ -113,8 +113,8 @@ class BoneScaleTool extends WindowController {
      */
     void setToAnimation() {
         if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.cgm.pose.setScaleToAnimation(boneIndex);
+            int boneIndex = Maud.model.target.bone.getIndex();
+            Maud.model.target.pose.setScaleToAnimation(boneIndex);
         }
     }
     // *************************************************************************
@@ -149,7 +149,7 @@ class BoneScaleTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (Maud.model.cgm.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isBoneSelected()) {
             setSlidersToPose();
             if (shouldBeEnabled()) {
                 Maud.gui.setButtonLabel("resetScaAnimButton", "Animation");
@@ -206,8 +206,8 @@ class BoneScaleTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        int boneIndex = Maud.model.cgm.bone.getIndex();
-        Transform transform = Maud.model.cgm.pose.copyTransform(boneIndex,
+        int boneIndex = Maud.model.target.bone.getIndex();
+        Transform transform = Maud.model.target.pose.copyTransform(boneIndex,
                 null);
         Vector3f vector = transform.getScale();
         float[] scales = vector.toArray(null);
@@ -228,8 +228,8 @@ class BoneScaleTool extends WindowController {
      * @return true if enabled, otherwise false
      */
     private boolean shouldBeEnabled() {
-        if (Maud.model.cgm.bone.isBoneSelected()
-                && !Maud.model.cgm.animation.isMoving()) {
+        if (Maud.model.target.bone.isBoneSelected()
+                && !Maud.model.target.animation.isMoving()) {
             return true;
         } else {
             return false;

@@ -79,11 +79,11 @@ public class SelectedSpatial implements Cloneable {
      * Add an AnimControl to the selected spatial and select the new control.
      */
     public void addAnimControl() {
-        Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
+        Skeleton skeleton = Maud.model.target.bones.getSkeleton();
         AnimControl newSgc = new AnimControl(skeleton);
 
-        Maud.model.cgm.addSgc(newSgc);
-        Maud.model.cgm.sgc.select(newSgc);
+        Maud.model.target.addSgc(newSgc);
+        Maud.model.target.sgc.select(newSgc);
     }
 
     /**
@@ -94,19 +94,19 @@ public class SelectedSpatial implements Cloneable {
         float mass = 1f;
         RigidBodyControl newSgc = new RigidBodyControl(mass);
 
-        Maud.model.cgm.addSgc(newSgc);
-        Maud.model.cgm.sgc.select(newSgc);
+        Maud.model.target.addSgc(newSgc);
+        Maud.model.target.sgc.select(newSgc);
     }
 
     /**
      * Add a SkeletonControl to the selected spatial and select the new control.
      */
     public void addSkeletonControl() {
-        Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
+        Skeleton skeleton = Maud.model.target.bones.getSkeleton();
         SkeletonControl newSgc = new SkeletonControl(skeleton);
 
-        Maud.model.cgm.addSgc(newSgc);
-        Maud.model.cgm.sgc.select(newSgc);
+        Maud.model.target.addSgc(newSgc);
+        Maud.model.target.sgc.select(newSgc);
     }
 
     /**
@@ -533,7 +533,7 @@ public class SelectedSpatial implements Cloneable {
      * @return the pre-existing instance
      */
     Spatial modelSpatial() {
-        Spatial modelRoot = Maud.model.cgm.getRootSpatial();
+        Spatial modelRoot = Maud.model.target.getRootSpatial();
         Spatial result = findSpatial(modelRoot);
 
         assert result != null;
@@ -548,7 +548,7 @@ public class SelectedSpatial implements Cloneable {
     public void select(String name) {
         Validate.nonEmpty(name, "spatial name");
 
-        List<Integer> position = Maud.model.cgm.findSpatialNamed(name);
+        List<Integer> position = Maud.model.target.findSpatialNamed(name);
         assert position != null;
         treePosition = position;
         assert modelSpatial().getName().equals(name);
@@ -576,7 +576,7 @@ public class SelectedSpatial implements Cloneable {
      */
     public void selectModelRoot() {
         treePosition.clear();
-        assert modelSpatial() == Maud.model.cgm.getRootSpatial();
+        assert modelSpatial() == Maud.model.target.getRootSpatial();
         postSelect();
     }
 
@@ -618,7 +618,7 @@ public class SelectedSpatial implements Cloneable {
 
         int numLevels = treePosition.size();
         clone.treePosition = new ArrayList<>(numLevels);
-        for (Integer ci : treePosition) {
+        for (Integer ci : treePosition) { // TODO int?
             clone.treePosition.add(ci);
         }
 
@@ -698,6 +698,6 @@ public class SelectedSpatial implements Cloneable {
      * Invoked after selecting a spatial.
      */
     private void postSelect() {
-        Maud.model.cgm.sgc.selectNone();
+        Maud.model.target.sgc.selectNone();
     }
 }

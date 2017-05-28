@@ -233,7 +233,7 @@ class DddInputMode extends InputMode {
         if (actionString.startsWith(copyAnimationPrefix)) {
             String destName = MyString.remainder(actionString,
                     copyAnimationPrefix);
-            Maud.model.cgm.animation.copyAndLoad(destName);
+            Maud.model.target.animation.copyAndLoad(destName);
             handled = true;
         }
 
@@ -249,10 +249,10 @@ class DddInputMode extends InputMode {
     private boolean deleteAction(String actionString) {
         boolean handled = false;
         if (actionString.equals("delete animation")) {
-            Maud.model.cgm.animation.delete();
+            Maud.model.target.animation.delete();
             handled = true;
         } else if (actionString.equals("delete control")) {
-            Maud.model.cgm.sgc.delete();
+            Maud.model.target.sgc.delete();
             handled = true;
         }
 
@@ -269,13 +269,13 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         if (actionString.startsWith(loadAnimationPrefix)) {
             String name = MyString.remainder(actionString, loadAnimationPrefix);
-            Maud.model.cgm.animation.load(name);
+            Maud.model.target.animation.load(name);
             handled = true;
 
         } else if (actionString.startsWith(loadModelAssetPrefix)) {
             String path = MyString.remainder(actionString,
                     loadModelAssetPrefix);
-            Maud.model.cgm.loadModelAsset(path);
+            Maud.model.target.loadModelAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(loadModelFilePrefix)) {
@@ -286,7 +286,7 @@ class DddInputMode extends InputMode {
         } else if (actionString.startsWith(loadModelNamedPrefix)) {
             String name = MyString.remainder(actionString,
                     loadModelNamedPrefix);
-            Maud.model.cgm.loadModelNamed(name);
+            Maud.model.target.loadModelNamed(name);
             handled = true;
         }
 
@@ -309,7 +309,7 @@ class DddInputMode extends InputMode {
             handled = true;
         } else if (actionString.startsWith(newPosePrefix)) {
             String name = MyString.remainder(actionString, newPosePrefix);
-            Maud.model.cgm.animation.poseAndLoad(name);
+            Maud.model.target.animation.poseAndLoad(name);
             handled = true;
         }
 
@@ -326,11 +326,11 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "next animation":
-                Maud.model.cgm.animation.loadNext();
+                Maud.model.target.animation.loadNext();
                 handled = true;
                 break;
             case "next bone":
-                Maud.model.cgm.bone.selectNext();
+                Maud.model.target.bone.selectNext();
                 handled = true;
                 break;
             case "next checkpoint":
@@ -338,7 +338,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "next control":
-                Maud.model.cgm.sgc.selectNext();
+                Maud.model.target.sgc.selectNext();
                 handled = true;
         }
 
@@ -371,11 +371,11 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "previous animation":
-                Maud.model.cgm.animation.loadPrevious();
+                Maud.model.target.animation.loadPrevious();
                 handled = true;
                 break;
             case "previous bone":
-                Maud.model.cgm.bone.selectPrevious();
+                Maud.model.target.bone.selectPrevious();
                 handled = true;
                 break;
             case "previous checkpoint":
@@ -383,7 +383,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "previous control":
-                Maud.model.cgm.sgc.selectPrevious();
+                Maud.model.target.sgc.selectPrevious();
                 handled = true;
         }
 
@@ -409,13 +409,13 @@ class DddInputMode extends InputMode {
         } else if (actionString.startsWith(reduceAnimationPrefix)) {
             String f = MyString.remainder(actionString, reduceAnimationPrefix);
             int factor = Integer.parseInt(f);
-            Maud.model.cgm.animation.reduce(factor);
+            Maud.model.target.animation.reduce(factor);
             handled = true;
 
         } else if (actionString.startsWith(reduceTrackPrefix)) {
             String f = MyString.remainder(actionString, reduceTrackPrefix);
             int factor = Integer.parseInt(f);
-            Maud.model.cgm.track.reduceTrack(factor);
+            Maud.model.target.track.reduceTrack(factor);
             handled = true;
         }
 
@@ -441,12 +441,12 @@ class DddInputMode extends InputMode {
 
         } else if (actionString.startsWith(renameAnimationPrefix)) {
             newName = MyString.remainder(actionString, renameAnimationPrefix);
-            Maud.model.cgm.animation.rename(newName);
+            Maud.model.target.animation.rename(newName);
             handled = true;
 
         } else if (actionString.startsWith(renameBonePrefix)) {
             newName = MyString.remainder(actionString, renameBonePrefix);
-            Maud.model.cgm.renameBone(newName);
+            Maud.model.target.renameBone(newName);
             handled = true;
         }
 
@@ -538,12 +538,12 @@ class DddInputMode extends InputMode {
         if (actionString.startsWith(saveModelAssetPrefix)) {
             String path = MyString.remainder(actionString,
                     saveModelAssetPrefix);
-            Maud.model.cgm.writeModelToAsset(path);
+            Maud.model.target.writeModelToAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(saveModelFilePrefix)) {
             String path = MyString.remainder(actionString, saveModelFilePrefix);
-            Maud.model.cgm.writeModelToFile(path);
+            Maud.model.target.writeModelToFile(path);
             handled = true;
         }
 
@@ -564,7 +564,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "select boneParent":
-                Maud.model.cgm.bone.selectParent();
+                Maud.model.target.bone.selectParent();
                 handled = true;
                 break;
             case "select boneXY":
@@ -572,19 +572,19 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "select keyframeFirst":
-                Maud.model.cgm.animation.selectKeyframeFirst();
+                Maud.model.target.animation.selectKeyframeFirst();
                 handled = true;
                 break;
             case "select keyframeLast":
-                Maud.model.cgm.animation.selectKeyframeLast();
+                Maud.model.target.animation.selectKeyframeLast();
                 handled = true;
                 break;
             case "select keyframeNext":
-                Maud.model.cgm.animation.selectKeyframeNext();
+                Maud.model.target.animation.selectKeyframeNext();
                 handled = true;
                 break;
             case "select keyframePrevious":
-                Maud.model.cgm.animation.selectKeyframePrevious();
+                Maud.model.target.animation.selectKeyframePrevious();
                 handled = true;
                 break;
             case "select rma":
@@ -604,7 +604,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "select spatialParent":
-                Maud.model.cgm.spatial.selectParent();
+                Maud.model.target.spatial.selectParent();
                 handled = true;
         }
 
@@ -622,7 +622,7 @@ class DddInputMode extends InputMode {
 
             } else if (actionString.startsWith(selectControlPrefix)) {
                 arg = MyString.remainder(actionString, selectControlPrefix);
-                Maud.model.cgm.sgc.select(arg);
+                Maud.model.target.sgc.select(arg);
                 handled = true;
 
             } else if (actionString.startsWith(selectGeometryPrefix)) {
@@ -683,15 +683,15 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "set track rotation all":
-                Maud.model.cgm.track.setTrackRotationAll();
+                Maud.model.target.track.setTrackRotationAll();
                 handled = true;
                 break;
             case "set track scale all":
-                Maud.model.cgm.track.setTrackScaleAll();
+                Maud.model.target.track.setTrackScaleAll();
                 handled = true;
                 break;
             case "set track translation all":
-                Maud.model.cgm.track.setTrackTranslationAll();
+                Maud.model.target.track.setTrackTranslationAll();
                 handled = true;
         }
 
@@ -700,7 +700,7 @@ class DddInputMode extends InputMode {
             if (actionString.startsWith(setDurationPrefix)) {
                 arg = MyString.remainder(actionString, setDurationPrefix);
                 float value = Float.parseFloat(arg);
-                Maud.model.cgm.animation.setDuration(value);
+                Maud.model.target.animation.setDuration(value);
                 handled = true;
             }
         }
@@ -722,7 +722,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "toggle pause":
-                Maud.model.cgm.animation.togglePaused();
+                Maud.model.target.animation.togglePaused();
                 handled = true;
         }
 

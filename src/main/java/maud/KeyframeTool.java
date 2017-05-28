@@ -70,11 +70,11 @@ class KeyframeTool extends WindowController {
         super.update(elapsedTime);
 
         String indexText, timeText;
-        int numKeyframes = Maud.model.cgm.track.countKeyframes();
+        int numKeyframes = Maud.model.target.track.countKeyframes();
         if (numKeyframes == 0) {
-            if (Maud.model.cgm.bone.hasTrack()) {
+            if (Maud.model.target.bone.hasTrack()) {
                 indexText = "no keyframes";
-                float time = Maud.model.cgm.animation.getTime();
+                float time = Maud.model.target.animation.getTime();
                 timeText = String.format("%.3f", time);
             } else {
                 indexText = "no track";
@@ -82,7 +82,7 @@ class KeyframeTool extends WindowController {
             }
 
         } else {
-            int index = Maud.model.cgm.track.findKeyframe();
+            int index = Maud.model.target.track.findKeyframe();
             if (index == -1) {
                 if (numKeyframes == 1) {
                     indexText = "one keyframe";
@@ -94,7 +94,7 @@ class KeyframeTool extends WindowController {
                         numKeyframes);
             }
 
-            float time = Maud.model.cgm.animation.getTime();
+            float time = Maud.model.target.animation.getTime();
             timeText = String.format("%.3f", time);
         }
 
@@ -117,15 +117,15 @@ class KeyframeTool extends WindowController {
         String nextButton = "";
         String lastButton = "";
 
-        int numKeyframes = Maud.model.cgm.track.countKeyframes();
+        int numKeyframes = Maud.model.target.track.countKeyframes();
         if (numKeyframes > 0) {
-            float time = Maud.model.cgm.animation.getTime();
+            float time = Maud.model.target.animation.getTime();
 
             firstButton = "First";
             if (time > 0f) {
                 previousButton = "Previous";
             }
-            if (time < Maud.model.cgm.track.lastKeyframeTime()) {
+            if (time < Maud.model.target.track.lastKeyframeTime()) {
                 nextButton = "Next";
             }
             lastButton = "Last";
@@ -142,14 +142,14 @@ class KeyframeTool extends WindowController {
      */
     private void updateTrackDescription() {
         String trackDescription;
-        if (Maud.model.cgm.animation.isBindPoseLoaded()) {
+        if (Maud.model.target.animation.isBindPoseLoaded()) {
             trackDescription = "(load an animation)";
-        } else if (Maud.model.cgm.bone.hasTrack()) {
-            String boneName = Maud.model.cgm.bone.getName();
-            String animName = Maud.model.cgm.animation.getName();
+        } else if (Maud.model.target.bone.hasTrack()) {
+            String boneName = Maud.model.target.bone.getName();
+            String animName = Maud.model.target.animation.getName();
             trackDescription = String.format("%s in %s", boneName, animName);
-        } else if (Maud.model.cgm.bone.isBoneSelected()) {
-            String boneName = Maud.model.cgm.bone.getName();
+        } else if (Maud.model.target.bone.isBoneSelected()) {
+            String boneName = Maud.model.target.bone.getName();
             trackDescription = String.format("none for %s", boneName);
         } else {
             trackDescription = "(select a bone)";
@@ -165,14 +165,14 @@ class KeyframeTool extends WindowController {
         String rotationCount = "";
         String scaleCount = "";
 
-        if (Maud.model.cgm.bone.hasTrack()) {
-            int numOffsets = Maud.model.cgm.track.countTranslations();
+        if (Maud.model.target.bone.hasTrack()) {
+            int numOffsets = Maud.model.target.track.countTranslations();
             translationCount = String.format("%d", numOffsets);
 
-            int numRotations = Maud.model.cgm.track.countRotations();
+            int numRotations = Maud.model.target.track.countRotations();
             rotationCount = String.format("%d", numRotations);
 
-            int numScales = Maud.model.cgm.track.countScales();
+            int numScales = Maud.model.target.track.countScales();
             scaleCount = String.format("%d", numScales);
         }
 

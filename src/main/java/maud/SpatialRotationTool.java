@@ -106,14 +106,14 @@ class SpatialRotationTool extends WindowController {
         }
         Quaternion rot = new Quaternion();
         rot.fromAngles(angles);
-        Maud.model.cgm.setSpatialRotation(rot);
+        Maud.model.target.setSpatialRotation(rot);
     }
 
     /**
      * If active, reset the rotation to identity.
      */
     void reset() {
-        Maud.model.cgm.setSpatialRotation(identityRotation);
+        Maud.model.target.setSpatialRotation(identityRotation);
     }
     // *************************************************************************
     // AppState methods
@@ -164,7 +164,7 @@ class SpatialRotationTool extends WindowController {
      * selected spatial.
      */
     private void setSlidersToTransform() {
-        Transform transform = Maud.model.cgm.copySpatialTransform(null);
+        Transform transform = Maud.model.target.copySpatialTransform(null);
         Quaternion rotation = transform.getRotation();
         float[] angles = rotation.toAngles(null);
         boolean degrees = Maud.model.misc.getAnglesInDegrees();

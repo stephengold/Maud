@@ -179,13 +179,13 @@ public class DddGui extends GuiScreenController {
                 Maud.model.axes.setDepthTestFlag(isChecked);
                 break;
             case "loopCheckBox":
-                Maud.model.cgm.animation.setContinue(isChecked);
+                Maud.model.target.animation.setContinue(isChecked);
                 break;
             case "invertRmaCheckBox":
                 Maud.model.retarget.setInvertMap(isChecked);
                 break;
             case "pongCheckBox":
-                Maud.model.cgm.animation.setReverse(isChecked);
+                Maud.model.target.animation.setReverse(isChecked);
                 break;
             case "shadowsCheckBox":
                 Maud.model.misc.setShadowsRendered(isChecked);
@@ -243,32 +243,32 @@ public class DddGui extends GuiScreenController {
                 break;
 
             case "cullInheritRadioButton":
-                Maud.model.cgm.setHint(Spatial.CullHint.Inherit);
+                Maud.model.target.setHint(Spatial.CullHint.Inherit);
                 break;
             case "cullDynamicRadioButton":
-                Maud.model.cgm.setHint(Spatial.CullHint.Dynamic);
+                Maud.model.target.setHint(Spatial.CullHint.Dynamic);
                 break;
             case "cullAlwaysRadioButton":
-                Maud.model.cgm.setHint(Spatial.CullHint.Always);
+                Maud.model.target.setHint(Spatial.CullHint.Always);
                 break;
             case "cullNeverRadioButton":
-                Maud.model.cgm.setHint(Spatial.CullHint.Never);
+                Maud.model.target.setHint(Spatial.CullHint.Never);
                 break;
 
             case "shadowOffRadioButton":
-                Maud.model.cgm.setMode(RenderQueue.ShadowMode.Off);
+                Maud.model.target.setMode(RenderQueue.ShadowMode.Off);
                 break;
             case "shadowCastRadioButton":
-                Maud.model.cgm.setMode(RenderQueue.ShadowMode.Cast);
+                Maud.model.target.setMode(RenderQueue.ShadowMode.Cast);
                 break;
             case "shadowReceiveRadioButton":
-                Maud.model.cgm.setMode(RenderQueue.ShadowMode.Receive);
+                Maud.model.target.setMode(RenderQueue.ShadowMode.Receive);
                 break;
             case "shadowCastAndReceiveRadioButton":
-                Maud.model.cgm.setMode(RenderQueue.ShadowMode.CastAndReceive);
+                Maud.model.target.setMode(RenderQueue.ShadowMode.CastAndReceive);
                 break;
             case "shadowInheritRadioButton":
-                Maud.model.cgm.setMode(RenderQueue.ShadowMode.Inherit);
+                Maud.model.target.setMode(RenderQueue.ShadowMode.Inherit);
                 break;
 
             case "noPlatformRadioButton":
@@ -441,7 +441,7 @@ public class DddGui extends GuiScreenController {
         assert firstWord.startsWith("#") : firstWord;
         String numberText = firstWord.substring(1);
         int number = Integer.parseInt(numberText);
-        Maud.model.cgm.spatial.selectChild(number - 1);
+        Maud.model.target.spatial.selectChild(number - 1);
     }
 
     /**
@@ -595,7 +595,7 @@ public class DddGui extends GuiScreenController {
         setListener(inputMode);
         super.initialize(stateManager, application);
 
-        Maud.model.cgm.loadModelNamed("Elephant");
+        Maud.model.target.loadModelNamed("Elephant");
     }
 
     /**
@@ -621,7 +621,7 @@ public class DddGui extends GuiScreenController {
         /*
          * Update animation even if the animation tool is disabled.
          */
-        if (Maud.model.cgm.animation.isMoving()) {
+        if (Maud.model.target.animation.isMoving()) {
             updateTrackTime(tpf);
         }
         Maud.viewState.updatePose();
@@ -662,15 +662,15 @@ public class DddGui extends GuiScreenController {
      * @param tpf time interval between render passes (in seconds, &ge;0)
      */
     private void updateTrackTime(float tpf) {
-        assert Maud.model.cgm.animation.isMoving();
+        assert Maud.model.target.animation.isMoving();
 
-        float speed = Maud.model.cgm.animation.getSpeed();
-        float time = Maud.model.cgm.animation.getTime();
+        float speed = Maud.model.target.animation.getSpeed();
+        float time = Maud.model.target.animation.getTime();
         time += speed * tpf;
 
-        boolean cont = Maud.model.cgm.animation.willContinue();
-        boolean reverse = Maud.model.cgm.animation.willReverse();
-        float duration = Maud.model.cgm.animation.getDuration();
+        boolean cont = Maud.model.target.animation.willContinue();
+        boolean reverse = Maud.model.target.animation.willReverse();
+        float duration = Maud.model.target.animation.getDuration();
         if (cont && !reverse) {
             time = MyMath.modulo(time, duration); // wrap
         } else {
@@ -678,13 +678,13 @@ public class DddGui extends GuiScreenController {
             time = FastMath.clamp(time, 0f, duration);
             if (time != freeTime) { // reached a limit
                 if (reverse) {
-                    Maud.model.cgm.animation.setSpeed(-speed); // pong
+                    Maud.model.target.animation.setSpeed(-speed); // pong
                 } else {
                     time = duration - time; // wrap
                 }
-                Maud.model.cgm.animation.setPaused(!cont);
+                Maud.model.target.animation.setPaused(!cont);
             }
         }
-        Maud.model.cgm.animation.setTime(time);
+        Maud.model.target.animation.setTime(time);
     }
 }

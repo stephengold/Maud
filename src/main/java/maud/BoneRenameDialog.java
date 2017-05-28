@@ -170,7 +170,7 @@ class BoneRenameDialog implements DialogController {
     private static boolean isUsed(String name) {
         assert name != null;
 
-        if (Maud.model.cgm.bones.hasBone(name)) {
+        if (Maud.model.target.bones.hasBone(name)) {
             return true;
         } else {
             return false;

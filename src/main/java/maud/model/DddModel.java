@@ -60,7 +60,11 @@ public class DddModel {
     /**
      * the target CG model
      */
-    final public EditableCgm cgm;
+    final public EditableCgm target;
+    /**
+     * the (read-only) source CG model
+     */
+    final public LoadedCGModel source;
     /**
      * miscellaneous details
      */
@@ -84,7 +88,8 @@ public class DddModel {
         axes = new AxesStatus();
         camera = new CameraStatus();
         cursor = new CursorStatus();
-        cgm = new EditableCgm();
+        target = new EditableCgm();
+        source = new LoadedCGModel();
         misc = new MiscStatus();
         retarget = new RetargetParameters();
         skeleton = new SkeletonStatus();
@@ -93,17 +98,18 @@ public class DddModel {
     /**
      * Instantiate an MVC model with settings copied from another model.
      *
-     * @param source (not null)
+     * @param other (not null)
      */
-    public DddModel(DddModel source) {
+    public DddModel(DddModel other) {
         try {
-            axes = (AxesStatus) source.axes.clone();
-            camera = (CameraStatus) source.camera.clone();
-            cursor = (CursorStatus) source.cursor.clone();
-            cgm = source.cgm.clone();
-            misc = (MiscStatus) source.misc.clone();
-            retarget = (RetargetParameters) source.retarget.clone();
-            skeleton = (SkeletonStatus) source.skeleton.clone();
+            axes = (AxesStatus) other.axes.clone();
+            camera = (CameraStatus) other.camera.clone();
+            cursor = (CursorStatus) other.cursor.clone();
+            target = other.target.clone();
+            source = other.source.clone();
+            misc = (MiscStatus) other.misc.clone();
+            retarget = (RetargetParameters) other.retarget.clone();
+            skeleton = (SkeletonStatus) other.skeleton.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException();
         }

@@ -67,9 +67,9 @@ class BoneTool extends WindowController {
     void selectXY() {
         Vector2f mouseXY = inputManager.getCursorPosition();
         float bestDSquared = Float.MAX_VALUE;
-        Maud.model.cgm.bone.selectNoBone();
+        Maud.model.target.bone.selectNoBone();
 
-        int numBones = Maud.model.cgm.bones.countBones();
+        int numBones = Maud.model.target.bones.countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             Vector3f boneWorld = Maud.viewState.boneLocation(boneIndex);
             Vector3f boneScreen = cam.getScreenCoordinates(boneWorld);
@@ -77,7 +77,7 @@ class BoneTool extends WindowController {
             float dSquared = mouseXY.distanceSquared(boneXY);
             if (dSquared < bestDSquared) {
                 bestDSquared = dSquared;
-                Maud.model.cgm.bone.select(boneIndex);
+                Maud.model.target.bone.select(boneIndex);
             }
         }
     }
@@ -96,8 +96,8 @@ class BoneTool extends WindowController {
         super.update(elapsedTime);
 
         String hasTrackText, rButton, sButton, tButton;
-        if (Maud.model.cgm.bone.isBoneSelected()) {
-            if (Maud.model.cgm.bone.hasTrack()) {
+        if (Maud.model.target.bone.isBoneSelected()) {
+            if (Maud.model.target.bone.hasTrack()) {
                 hasTrackText = "has track";
             } else {
                 hasTrackText = "no track";
@@ -130,13 +130,13 @@ class BoneTool extends WindowController {
     private void updateChildren() {
         String childText, scButton;
 
-        if (Maud.model.cgm.bone.isBoneSelected()) {
-            int numChildren = Maud.model.cgm.bone.countChildren();
+        if (Maud.model.target.bone.isBoneSelected()) {
+            int numChildren = Maud.model.target.bone.countChildren();
             if (numChildren > 1) {
                 childText = String.format("%d children", numChildren);
                 scButton = "Select";
             } else if (numChildren == 1) {
-                String childName = Maud.model.cgm.bone.getChildName(0);
+                String childName = Maud.model.target.bone.getChildName(0);
                 childText = MyString.quote(childName);
                 scButton = "Select";
             } else {
@@ -160,9 +160,9 @@ class BoneTool extends WindowController {
         String indexText;
         String nButton, pButton;
 
-        int numBones = Maud.model.cgm.bones.countBones();
-        if (Maud.model.cgm.bone.isBoneSelected()) {
-            int selectedIndex = Maud.model.cgm.bone.getIndex();
+        int numBones = Maud.model.target.bones.countBones();
+        if (Maud.model.target.bone.isBoneSelected()) {
+            int selectedIndex = Maud.model.target.bone.getIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
             nButton = "+";
             pButton = "-";
@@ -190,8 +190,8 @@ class BoneTool extends WindowController {
     private void updateName() {
         String nameText, rButton;
 
-        if (Maud.model.cgm.bone.isBoneSelected()) {
-            String name = Maud.model.cgm.bone.getName();
+        if (Maud.model.target.bone.isBoneSelected()) {
+            String name = Maud.model.target.bone.getName();
             nameText = MyString.quote(name);
             rButton = "Rename";
 
@@ -210,9 +210,9 @@ class BoneTool extends WindowController {
     private void updateParent() {
         String parentText, spButton;
 
-        if (Maud.model.cgm.bone.isBoneSelected()) {
-            if (Maud.model.cgm.bone.isRootBone()) {
-                int numRoots = Maud.model.cgm.bones.countRootBones();
+        if (Maud.model.target.bone.isBoneSelected()) {
+            if (Maud.model.target.bone.isRootBone()) {
+                int numRoots = Maud.model.target.bones.countRootBones();
                 if (numRoots == 1) {
                     parentText = "none (the root)";
                 } else {
@@ -221,7 +221,7 @@ class BoneTool extends WindowController {
                 }
                 spButton = "";
             } else {
-                String parentName = Maud.model.cgm.bone.getParentName();
+                String parentName = Maud.model.target.bone.getParentName();
                 parentText = MyString.quote(parentName);
                 spButton = "Select";
             }

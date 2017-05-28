@@ -94,8 +94,8 @@ class BoneRotationTool extends WindowController {
             }
             Quaternion rot = new Quaternion();
             rot.fromAngles(angles);
-            int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.cgm.pose.setRotation(boneIndex, rot);
+            int boneIndex = Maud.model.target.bone.getIndex();
+            Maud.model.target.pose.setRotation(boneIndex, rot);
         }
     }
 
@@ -104,8 +104,8 @@ class BoneRotationTool extends WindowController {
      */
     void reset() {
         if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.cgm.pose.resetRotation(boneIndex);
+            int boneIndex = Maud.model.target.bone.getIndex();
+            Maud.model.target.pose.resetRotation(boneIndex);
         }
     }
 
@@ -114,8 +114,8 @@ class BoneRotationTool extends WindowController {
      */
     void setToAnimation() {
         if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.cgm.pose.setRotationToAnimation(boneIndex);
+            int boneIndex = Maud.model.target.bone.getIndex();
+            Maud.model.target.pose.setRotationToAnimation(boneIndex);
         }
     }
     // *************************************************************************
@@ -152,7 +152,7 @@ class BoneRotationTool extends WindowController {
 
         String aButton = "";
         String bButton = "";
-        if (Maud.model.cgm.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isBoneSelected()) {
             setSlidersToPose();
             if (shouldBeEnabled()) {
                 aButton = "Animation";
@@ -215,8 +215,8 @@ class BoneRotationTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        int boneIndex = Maud.model.cgm.bone.getIndex();
-        Transform transform = Maud.model.cgm.pose.copyTransform(boneIndex,
+        int boneIndex = Maud.model.target.bone.getIndex();
+        Transform transform = Maud.model.target.pose.copyTransform(boneIndex,
                 null);
         Quaternion rotation = transform.getRotation();
         float[] angles = rotation.toAngles(null);
@@ -243,8 +243,8 @@ class BoneRotationTool extends WindowController {
      * @return true if enabled, otherwise false
      */
     private boolean shouldBeEnabled() {
-        if (Maud.model.cgm.bone.isBoneSelected()
-                && !Maud.model.cgm.animation.isMoving()) {
+        if (Maud.model.target.bone.isBoneSelected()
+                && !Maud.model.target.animation.isMoving()) {
             return true;
         } else {
             return false;

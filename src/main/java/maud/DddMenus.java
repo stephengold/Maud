@@ -83,7 +83,7 @@ class DddMenus {
             builder.show(menuPrefix);
 
         } else if (file.canRead()) {
-            Maud.model.cgm.loadModelFile(file);
+            Maud.model.target.loadModelFile(file);
         }
     }
 
@@ -114,14 +114,14 @@ class DddMenus {
      * @param argument action argument (not null)
      */
     void selectBone(String argument) {
-        if (Maud.model.cgm.bones.hasBone(argument)) {
-            Maud.model.cgm.bone.select(argument);
+        if (Maud.model.target.bones.hasBone(argument)) {
+            Maud.model.target.bone.select(argument);
 
         } else {
             /*
              * Treat the argument as a bone-name prefix.
              */
-            List<String> boneNames = Maud.model.cgm.bones.listBoneNames(argument);
+            List<String> boneNames = Maud.model.target.bones.listBoneNames(argument);
             showBoneSubmenu(boneNames);
         }
     }
@@ -130,12 +130,12 @@ class DddMenus {
      * Handle a "select boneChild" action with no argument.
      */
     void selectBoneChild() {
-        if (Maud.model.cgm.bone.isBoneSelected()) {
-            int numChildren = Maud.model.cgm.bone.countChildren();
+        if (Maud.model.target.bone.isBoneSelected()) {
+            int numChildren = Maud.model.target.bone.countChildren();
             if (numChildren == 1) {
-                Maud.model.cgm.bone.selectFirstChild();
+                Maud.model.target.bone.selectFirstChild();
             } else if (numChildren > 1) {
-                List<String> boneNames = Maud.model.cgm.bone.listChildNames();
+                List<String> boneNames = Maud.model.target.bone.listChildNames();
                 showBoneSubmenu(boneNames);
             }
         }
@@ -149,14 +149,14 @@ class DddMenus {
     void selectBoneChild(String argument) {
         if (argument.startsWith("!")) {
             String name = argument.substring(1);
-            Maud.model.cgm.bone.select(name);
+            Maud.model.target.bone.select(name);
         } else {
-            List<String> names = Maud.model.cgm.bones.listChildBoneNames(argument);
+            List<String> names = Maud.model.target.bones.listChildBoneNames(argument);
 
             builder.reset();
             builder.addBone("!" + argument);
             for (String name : names) {
-                if (Maud.model.cgm.bones.isLeafBone(name)) {
+                if (Maud.model.target.bones.isLeafBone(name)) {
                     builder.addBone("!" + name);
                 } else {
                     builder.add(name);
@@ -170,10 +170,10 @@ class DddMenus {
      * Handle a "select boneWithTrack" action.
      */
     void selectBoneWithTrack() {
-        List<String> boneNames = Maud.model.cgm.animation.listBonesWithTrack();
+        List<String> boneNames = Maud.model.target.animation.listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
-            Maud.model.cgm.bone.select(boneNames.get(0));
+            Maud.model.target.bone.select(boneNames.get(0));
         } else if (numBoneTracks > 1) {
             showBoneSubmenu(boneNames);
         }
@@ -183,19 +183,19 @@ class DddMenus {
      * Handle a "select spatialChild" action with no argument.
      */
     void selectSpatialChild() {
-        int numChildren = Maud.model.cgm.spatial.countChildren();
+        int numChildren = Maud.model.target.spatial.countChildren();
         if (numChildren == 1) {
-            Maud.model.cgm.spatial.selectChild(0);
+            Maud.model.target.spatial.selectChild(0);
 
         } else if (numChildren > 1) {
             builder.reset();
             for (int childIndex = 0; childIndex < numChildren; childIndex++) {
                 String choice = String.format("#%d", childIndex + 1);
-                String name = Maud.model.cgm.spatial.getChildName(childIndex);
+                String name = Maud.model.target.spatial.getChildName(childIndex);
                 if (name != null) {
                     choice += " " + MyString.quote(name);
                 }
-                boolean isANode = Maud.model.cgm.spatial.isChildANode(
+                boolean isANode = Maud.model.target.spatial.isChildANode(
                         childIndex);
                 if (isANode) {
                     builder.addNode(choice);
@@ -225,15 +225,15 @@ class DddMenus {
      * @param argument action argument (not null)
      */
     void selectSpatial(String argument, boolean includeNodes) {
-        if (Maud.model.cgm.hasSpatial(argument)) {
-            Maud.model.cgm.spatial.select(argument);
+        if (Maud.model.target.hasSpatial(argument)) {
+            Maud.model.target.spatial.select(argument);
 
         } else {
             /*
              * Treat the argument as a spatial-name prefix.
              */
             List<String> names;
-            names = Maud.model.cgm.listSpatialNames(argument, includeNodes);
+            names = Maud.model.target.listSpatialNames(argument, includeNodes);
             showSpatialSubmenu(names, includeNodes);
         }
     }
@@ -260,7 +260,7 @@ class DddMenus {
         builder.addDialog("New from copy");
         builder.addDialog("New from pose");
         builder.addTool("New from retarget");
-        if (!Maud.model.cgm.animation.isBindPoseLoaded()) {
+        if (!Maud.model.target.animation.isBindPoseLoaded()) {
             builder.addDialog("Duration");
             builder.addDialog("Reduce");
             builder.addDialog("Rename");
@@ -278,7 +278,7 @@ class DddMenus {
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
-        if (Maud.model.cgm.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isBoneSelected()) {
             builder.add("Attach prop");
             builder.addDialog("Rename");
         }
@@ -290,32 +290,32 @@ class DddMenus {
     private void buildBoneSelectMenu() {
         builder.add("By name");
 
-        int numBones = Maud.model.cgm.bones.countBones();
+        int numBones = Maud.model.target.bones.countBones();
         if (numBones > 0) {
             builder.add("By parent");
         }
 
-        int numRoots = Maud.model.cgm.bones.countRootBones();
+        int numRoots = Maud.model.target.bones.countRootBones();
         if (numRoots == 1) {
             builder.addBone("Root");
         } else if (numRoots > 1) {
             builder.add("Root");
         }
 
-        int numTracks = Maud.model.cgm.animation.countBoneTracks();
+        int numTracks = Maud.model.target.animation.countBoneTracks();
         if (numTracks > 0) {
             builder.add("With track");
         }
 
-        int numChildren = Maud.model.cgm.bone.countChildren();
+        int numChildren = Maud.model.target.bone.countChildren();
         if (numChildren == 1) {
             builder.addBone("Child");
         } else if (numChildren > 1) {
             builder.add("Child");
         }
 
-        boolean isSelected = Maud.model.cgm.bone.isBoneSelected();
-        boolean isRoot = Maud.model.cgm.bone.isRootBone();
+        boolean isSelected = Maud.model.target.bone.isBoneSelected();
+        boolean isRoot = Maud.model.target.bone.isRootBone();
         if (isSelected && !isRoot) {
             builder.addBone("Parent");
         }
@@ -390,7 +390,7 @@ class DddMenus {
      */
     private void buildKeyframeMenu() {
         builder.addTool("Tool");
-        if (Maud.model.cgm.bone.hasTrack()) {
+        if (Maud.model.target.bone.hasTrack()) {
             builder.addDialog("Reduce");
             builder.add("Select by time");
             builder.add("Select first");
@@ -435,7 +435,7 @@ class DddMenus {
         builder.addTool("Control tool");
         builder.add("Select control");
         builder.add("Add control");
-        if (Maud.model.cgm.sgc.isSelected()) {
+        if (Maud.model.target.sgc.isSelected()) {
             builder.add("Delete control");
         }
         builder.addTool("User data tool");
@@ -569,7 +569,7 @@ class DddMenus {
                 break;
             case "Load":
                 Collection<String> animationNames;
-                animationNames = Maud.model.cgm.listAnimationNames();
+                animationNames = Maud.model.target.listAnimationNames();
                 Maud.gui.showPopupMenu(DddInputMode.loadAnimationPrefix,
                         animationNames);
                 handled = true;
@@ -730,15 +730,15 @@ class DddMenus {
                 handled = true;
                 break;
             case "Next":
-                Maud.model.cgm.bone.selectNext();
+                Maud.model.target.bone.selectNext();
                 handled = true;
                 break;
             case "Parent":
-                Maud.model.cgm.bone.selectParent();
+                Maud.model.target.bone.selectParent();
                 handled = true;
                 break;
             case "Previous":
-                Maud.model.cgm.bone.selectPrevious();
+                Maud.model.target.bone.selectPrevious();
                 handled = true;
                 break;
             case "Root":
@@ -781,7 +781,7 @@ class DddMenus {
                     break;
 
                 case "Save as asset":
-                    String baseAssetPath = Maud.model.cgm.getAssetPath();
+                    String baseAssetPath = Maud.model.target.getAssetPath();
                     Maud.gui.closeAllPopups();
                     Maud.gui.showTextEntryDialog(
                             "Enter base asset path for model:", baseAssetPath,
@@ -790,7 +790,7 @@ class DddMenus {
                     break;
 
                 case "Save as file":
-                    String baseFilePath = Maud.model.cgm.getFilePath();
+                    String baseFilePath = Maud.model.target.getFilePath();
                     Maud.gui.closeAllPopups();
                     Maud.gui.showTextEntryDialog(
                             "Enter base file path for model:", baseFilePath,
@@ -904,19 +904,19 @@ class DddMenus {
                 handled = true;
                 break;
             case "Select first":
-                Maud.model.cgm.animation.selectKeyframeFirst();
+                Maud.model.target.animation.selectKeyframeFirst();
                 handled = true;
                 break;
             case "Select previous":
-                Maud.model.cgm.animation.selectKeyframePrevious();
+                Maud.model.target.animation.selectKeyframePrevious();
                 handled = true;
                 break;
             case "Select next":
-                Maud.model.cgm.animation.selectKeyframeNext();
+                Maud.model.target.animation.selectKeyframeNext();
                 handled = true;
                 break;
             case "Select last":
-                Maud.model.cgm.animation.selectKeyframeLast();
+                Maud.model.target.animation.selectKeyframeLast();
                 handled = true;
                 break;
             case "Tool":
@@ -1022,17 +1022,17 @@ class DddMenus {
         boolean handled = false;
         switch (remainder) {
             case "Anim":
-                Maud.model.cgm.spatial.addAnimControl();
+                Maud.model.target.spatial.addAnimControl();
                 handled = true;
                 break;
 
             case "RigidBody":
-                Maud.model.cgm.spatial.addRigidBodyControl();
+                Maud.model.target.spatial.addRigidBodyControl();
                 handled = true;
                 break;
 
             case "Skeleton":
-                Maud.model.cgm.spatial.addSkeletonControl();
+                Maud.model.target.spatial.addSkeletonControl();
                 handled = true;
         }
 
@@ -1063,11 +1063,11 @@ class DddMenus {
                 handled = true;
                 break;
             case "Parent":
-                Maud.model.cgm.spatial.selectParent();
+                Maud.model.target.spatial.selectParent();
                 handled = true;
                 break;
             case "Root":
-                Maud.model.cgm.spatial.selectModelRoot();
+                Maud.model.target.spatial.selectModelRoot();
                 handled = true;
         }
 
@@ -1136,7 +1136,7 @@ class DddMenus {
      * Select a bone by name, using submenus.
      */
     private void selectBoneByName() {
-        List<String> nameList = Maud.model.cgm.bones.listBoneNames();
+        List<String> nameList = Maud.model.target.bones.listBoneNames();
         showBoneSubmenu(nameList);
     }
 
@@ -1144,7 +1144,7 @@ class DddMenus {
      * Select a bone by parent, using submenus.
      */
     private void selectBoneByParent() {
-        List<String> boneNames = Maud.model.cgm.bones.listRootBoneNames();
+        List<String> boneNames = Maud.model.target.bones.listRootBoneNames();
         Maud.gui.showPopupMenu(DddInputMode.selectBoneChildPrefix, boneNames);
     }
 
@@ -1152,11 +1152,11 @@ class DddMenus {
      * Handle a "select rootBone" action.
      */
     private void selectRootBone() {
-        int numRoots = Maud.model.cgm.bones.countRootBones();
+        int numRoots = Maud.model.target.bones.countRootBones();
         if (numRoots == 1) {
-            Maud.model.cgm.bone.selectFirstRoot();
+            Maud.model.target.bone.selectFirstRoot();
         } else if (numRoots > 1) {
-            List<String> boneNames = Maud.model.cgm.bones.listRootBoneNames();
+            List<String> boneNames = Maud.model.target.bones.listRootBoneNames();
             showBoneSubmenu(boneNames);
         }
     }
@@ -1166,7 +1166,7 @@ class DddMenus {
      */
     private void selectSgc() {
         builder.reset();
-        for (String name : Maud.model.cgm.spatial.listSgcNames()) {
+        for (String name : Maud.model.target.spatial.listSgcNames()) {
             builder.add(name);
         }
         builder.add(LoadedCGModel.noControl);
@@ -1179,26 +1179,26 @@ class DddMenus {
     private void selectSpatial() {
         builder.reset();
 
-        List<String> names = Maud.model.cgm.listSpatialNames("", true);
+        List<String> names = Maud.model.target.listSpatialNames("", true);
         if (!names.isEmpty()) {
             builder.add("By name");
         }
 
-        boolean isRootANode = Maud.model.cgm.isRootANode();
+        boolean isRootANode = Maud.model.target.isRootANode();
         if (isRootANode) {
             builder.addNode("Root");
         } else {
             builder.addGeometry("Root");
         }
 
-        names = Maud.model.cgm.listSpatialNames("", false);
+        names = Maud.model.target.listSpatialNames("", false);
         if (!names.isEmpty()) {
             builder.add("Geometry");
         }
 
-        int numChildren = Maud.model.cgm.spatial.countChildren();
+        int numChildren = Maud.model.target.spatial.countChildren();
         if (numChildren == 1) {
-            boolean isChildANode = Maud.model.cgm.spatial.isChildANode(0);
+            boolean isChildANode = Maud.model.target.spatial.isChildANode(0);
             if (isChildANode) {
                 builder.addNode("Child");
             } else {
@@ -1208,7 +1208,7 @@ class DddMenus {
             builder.add("Child");
         }
 
-        boolean isRoot = Maud.model.cgm.spatial.isModelRoot();
+        boolean isRoot = Maud.model.target.spatial.isModelRoot();
         if (!isRoot) {
             builder.addNode("Parent");
         }
@@ -1230,7 +1230,7 @@ class DddMenus {
 
         builder.reset();
         for (String name : nameList) {
-            if (Maud.model.cgm.bones.hasBone(name)) {
+            if (Maud.model.target.bones.hasBone(name)) {
                 builder.addBone(name);
             } else {
                 builder.add(name);
@@ -1256,9 +1256,9 @@ class DddMenus {
 
         builder.reset();
         for (String name : nameList) {
-            if (Maud.model.cgm.hasGeometry(name)) {
+            if (Maud.model.target.hasGeometry(name)) {
                 builder.addGeometry(name);
-            } else if (includeNodes && Maud.model.cgm.hasNode(name)) {
+            } else if (includeNodes && Maud.model.target.hasNode(name)) {
                 builder.addNode(name);
             } else {
                 builder.add(name);

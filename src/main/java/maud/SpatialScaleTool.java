@@ -106,14 +106,14 @@ class SpatialScaleTool extends WindowController {
         scales.y = Math.max(scales.y, 0.001f);
         scales.z = Math.max(scales.z, 0.001f);
 
-        Maud.model.cgm.setSpatialScale(scales);
+        Maud.model.target.setSpatialScale(scales);
     }
 
     /**
      * If active, reset the scale to unity.
      */
     void reset() {
-        Maud.model.cgm.setSpatialScale(scaleIdentity);
+        Maud.model.target.setSpatialScale(scaleIdentity);
     }
     // *************************************************************************
     // AppState methods
@@ -156,7 +156,7 @@ class SpatialScaleTool extends WindowController {
      * selected spatial.
      */
     private void setSlidersToTransform() {
-        Transform transform = Maud.model.cgm.copySpatialTransform(null);
+        Transform transform = Maud.model.target.copySpatialTransform(null);
         Vector3f vector = transform.getScale();
         float[] scales = vector.toArray(null);
 
