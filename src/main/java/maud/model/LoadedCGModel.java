@@ -104,6 +104,10 @@ public class LoadedCGModel implements Cloneable {
      */
     public LoadedAnimation animation = new LoadedAnimation();
     /**
+     * bone transforms of the displayed pose
+     */
+    public Pose pose = new Pose();
+    /**
      * the selected bone in the selected skeleton
      */
     public SelectedBone bone = new SelectedBone();
@@ -151,6 +155,7 @@ public class LoadedCGModel implements Cloneable {
         animation.setCgm(this);
         bone.setCgm(this);
         bones.setCgm(this);
+        pose.setCgm(this);
     }
     // *************************************************************************
     // new methods exposed
@@ -863,10 +868,12 @@ public class LoadedCGModel implements Cloneable {
         clone.animation = animation.clone();
         clone.bone = bone.clone();
         clone.bones = bones.clone();
+        clone.pose = pose.clone();
 
         clone.animation.setCgm(clone);
         clone.bone.setCgm(clone);
         clone.bones.setCgm(clone);
+        clone.pose.setCgm(clone);
 
         return clone;
     }

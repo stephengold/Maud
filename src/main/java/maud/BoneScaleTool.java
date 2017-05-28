@@ -94,7 +94,7 @@ class BoneScaleTool extends WindowController {
             scales.z = Math.max(scales.z, 0.001f);
 
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.pose.setScale(boneIndex, scales);
+            Maud.model.cgm.pose.setScale(boneIndex, scales);
         }
     }
 
@@ -104,7 +104,7 @@ class BoneScaleTool extends WindowController {
     void reset() {
         if (shouldBeEnabled()) {
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.pose.resetScale(boneIndex);
+            Maud.model.cgm.pose.resetScale(boneIndex);
         }
     }
 
@@ -114,7 +114,7 @@ class BoneScaleTool extends WindowController {
     void setToAnimation() {
         if (shouldBeEnabled()) {
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.pose.setScaleToAnimation(boneIndex);
+            Maud.model.cgm.pose.setScaleToAnimation(boneIndex);
         }
     }
     // *************************************************************************
@@ -207,7 +207,8 @@ class BoneScaleTool extends WindowController {
      */
     private void setSlidersToPose() {
         int boneIndex = Maud.model.cgm.bone.getIndex();
-        Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
+        Transform transform = Maud.model.cgm.pose.copyTransform(boneIndex,
+                null);
         Vector3f vector = transform.getScale();
         float[] scales = vector.toArray(null);
 

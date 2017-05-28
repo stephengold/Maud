@@ -40,7 +40,6 @@ import jme3utilities.Misc;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
-import maud.Maud;
 
 /**
  * A displayed pose in the Maud application.
@@ -62,6 +61,11 @@ public class Pose implements Cloneable {
      * user transforms that describe the pose, one for each bone
      */
     private List<Transform> transforms = new ArrayList<>(108);
+    /**
+     * loaded CG model that is in this pose (set by
+     * {@link #setCgm(LoadedCGModel)})
+     */
+    private LoadedCGModel loadedCgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -82,7 +86,7 @@ public class Pose implements Cloneable {
         /*
          * Add a BoneTrack for each bone that's not in bind pose.
          */
-        int numBones = Maud.model.cgm.bones.countBones();
+        int numBones = loadedCgm.bones.countBones();
         Transform transform = new Transform();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             copyTransform(boneIndex, transform);
@@ -143,7 +147,7 @@ public class Pose implements Cloneable {
         /*
          * Start with the bone's bind transform.
          */
-        Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
+        Skeleton skeleton = loadedCgm.bones.getSkeleton();
         Bone bone = skeleton.getBone(boneIndex);
         Transform local = MySkeleton.copyBindTransform(bone, null);
         /*
@@ -209,7 +213,7 @@ public class Pose implements Cloneable {
      * Reset this pose to bind pose.
      */
     public void resetToBind() {
-        int boneCount = Maud.model.cgm.bones.countBones();
+        int boneCount = loadedCgm.bones.countBones();
         transforms.clear();
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             Transform transform = new Transform();
@@ -226,6 +230,16 @@ public class Pose implements Cloneable {
         Transform transform = transforms.get(boneIndex);
         Vector3f translation = transform.getTranslation();
         translation.zero();
+    }
+
+    /**
+     * Alter which CG model is in this pose.
+     *
+     * @param newLoaded (not null)
+     */
+    void setCgm(LoadedCGModel newLoaded) {
+        assert newLoaded != null;
+        loadedCgm = newLoaded;
     }
 
     /**
@@ -248,8 +262,7 @@ public class Pose implements Cloneable {
      */
     public void setRotationToAnimation(int boneIndex) {
         Transform poseT = transforms.get(boneIndex);
-        Transform animT = Maud.model.cgm.animation.boneTransform(boneIndex,
-                null);
+        Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Quaternion animQ = animT.getRotation();
         poseT.setRotation(animQ);
     }
@@ -277,7 +290,7 @@ public class Pose implements Cloneable {
      */
     public void setScaleToAnimation(int boneIndex) {
         Transform poseT = transforms.get(boneIndex);
-        Transform animT = Maud.model.cgm.animation.boneTransform(boneIndex,
+        Transform animT = loadedCgm.animation.boneTransform(boneIndex,
                 null);
         Vector3f animV = animT.getScale();
         poseT.setScale(animV);
@@ -287,13 +300,13 @@ public class Pose implements Cloneable {
      * Alter the transforms to match the loaded animation.
      */
     public void setToAnimation() {
-        int boneCount = Maud.model.cgm.bones.countBones();
+        int boneCount = loadedCgm.bones.countBones();
         int numTransforms = countTransforms();
         assert numTransforms == boneCount : numTransforms;
 
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             Transform transform = transforms.get(boneIndex);
-            Maud.model.cgm.animation.boneTransform(boneIndex, transform);
+            loadedCgm.animation.boneTransform(boneIndex, transform);
         }
     }
 
@@ -317,8 +330,7 @@ public class Pose implements Cloneable {
      */
     public void setTranslationToAnimation(int boneIndex) {
         Transform poseT = transforms.get(boneIndex);
-        Transform animT = Maud.model.cgm.animation.boneTransform(boneIndex,
-                null);
+        Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Vector3f animV = animT.getTranslation();
         poseT.setTranslation(animV);
     }
@@ -332,7 +344,7 @@ public class Pose implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public Pose clone() throws CloneNotSupportedException {
         Pose clone = (Pose) super.clone();
 
         int numTransforms = transforms.size();

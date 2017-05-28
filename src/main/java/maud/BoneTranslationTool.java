@@ -110,7 +110,7 @@ class BoneTranslationTool extends WindowController {
             offsets.multLocal(masterScale);
 
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.pose.setTranslation(boneIndex, offsets);
+            Maud.model.cgm.pose.setTranslation(boneIndex, offsets);
         }
     }
 
@@ -120,7 +120,7 @@ class BoneTranslationTool extends WindowController {
     void reset() {
         if (shouldBeEnabled()) {
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.pose.resetTranslation(boneIndex);
+            Maud.model.cgm.pose.resetTranslation(boneIndex);
         }
     }
 
@@ -130,7 +130,7 @@ class BoneTranslationTool extends WindowController {
     void setToAnimation() {
         if (shouldBeEnabled()) {
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.pose.setTranslationToAnimation(boneIndex);
+            Maud.model.cgm.pose.setTranslationToAnimation(boneIndex);
         }
     }
     // *************************************************************************
@@ -236,7 +236,8 @@ class BoneTranslationTool extends WindowController {
      */
     private void setSlidersToPose() {
         int boneIndex = Maud.model.cgm.bone.getIndex();
-        Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
+        Transform transform = Maud.model.cgm.pose.copyTransform(boneIndex,
+                null);
         Vector3f vector = transform.getTranslation();
         float[] offsets = vector.toArray(null);
 

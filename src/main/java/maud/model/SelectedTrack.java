@@ -280,8 +280,8 @@ public class SelectedTrack implements Cloneable {
         BoneTrack track = findTrack();
         if (track != null) {
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
-                    null);
+            Transform poseTransform = Maud.model.cgm.pose.copyTransform(
+                    boneIndex, null);
             Quaternion poseRotation = poseTransform.getRotation();
 
             float[] times = track.getTimes();
@@ -302,8 +302,8 @@ public class SelectedTrack implements Cloneable {
         BoneTrack track = findTrack();
         if (track != null) {
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
-                    null);
+            Transform poseTransform = Maud.model.cgm.pose.copyTransform(
+                    boneIndex, null);
             Vector3f poseScale = poseTransform.getScale();
 
             float[] times = track.getTimes();
@@ -327,8 +327,8 @@ public class SelectedTrack implements Cloneable {
         BoneTrack track = findTrack();
         if (track != null) {
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Transform poseTransform = Maud.model.pose.copyTransform(boneIndex,
-                    null);
+            Transform poseTransform = Maud.model.cgm.pose.copyTransform(
+                    boneIndex, null);
             Vector3f poseTranslation = poseTransform.getTranslation();
 
             float[] times = track.getTimes();

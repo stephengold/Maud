@@ -280,6 +280,6 @@ public class SelectedSgc implements Cloneable {
     private void onSkeletonChanged(Skeleton newSkeleton) {
         Maud.viewState.setSkeleton(newSkeleton);
         Maud.model.cgm.bone.selectNoBone();
-        Maud.model.pose.resetToBind();
+        Maud.model.cgm.pose.resetToBind();
     }
 }

@@ -230,7 +230,8 @@ class AxesTool extends WindowController {
             case "bone":
                 if (Maud.model.cgm.bone.isBoneSelected()) {
                     int boneIndex = Maud.model.cgm.bone.getIndex();
-                    transform = Maud.model.pose.modelTransform(boneIndex, null);
+                    transform = Maud.model.cgm.pose.modelTransform(boneIndex,
+                            null);
                     Geometry ag = Maud.viewState.findAnimatedGeometry();
                     Transform agTransform = ag.getWorldTransform();
                     transform.combineWithParent(agTransform);

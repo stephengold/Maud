@@ -414,7 +414,7 @@ public class LoadedAnimation implements Cloneable {
         speed = newSpeed;
         time = 0f;
 
-        Maud.model.pose.setToAnimation();
+        loadedCgm.pose.setToAnimation();
     }
 
     /**
@@ -425,7 +425,7 @@ public class LoadedAnimation implements Cloneable {
         speed = 0f;
         time = 0f;
 
-        Maud.model.pose.resetToBind();
+        loadedCgm.pose.resetToBind();
     }
 
     /**
@@ -693,7 +693,7 @@ public class LoadedAnimation implements Cloneable {
 
         if (duration > 0f) {
             time = newTime;
-            Maud.model.pose.setToAnimation();
+            loadedCgm.pose.setToAnimation();
         }
     }
 
@@ -751,7 +751,7 @@ public class LoadedAnimation implements Cloneable {
         assert !animationName.equals(bindPoseName) : animationName;
         assert !loadedCgm.hasAnimation(animationName) : animationName;
 
-        Animation poseAnim = Maud.model.pose.capture(animationName);
+        Animation poseAnim = loadedCgm.pose.capture(animationName);
         loadedCgm.addAnimation(poseAnim);
     }
 }

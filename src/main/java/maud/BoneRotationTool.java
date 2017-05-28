@@ -95,7 +95,7 @@ class BoneRotationTool extends WindowController {
             Quaternion rot = new Quaternion();
             rot.fromAngles(angles);
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.pose.setRotation(boneIndex, rot);
+            Maud.model.cgm.pose.setRotation(boneIndex, rot);
         }
     }
 
@@ -105,7 +105,7 @@ class BoneRotationTool extends WindowController {
     void reset() {
         if (shouldBeEnabled()) {
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.pose.resetRotation(boneIndex);
+            Maud.model.cgm.pose.resetRotation(boneIndex);
         }
     }
 
@@ -115,7 +115,7 @@ class BoneRotationTool extends WindowController {
     void setToAnimation() {
         if (shouldBeEnabled()) {
             int boneIndex = Maud.model.cgm.bone.getIndex();
-            Maud.model.pose.setRotationToAnimation(boneIndex);
+            Maud.model.cgm.pose.setRotationToAnimation(boneIndex);
         }
     }
     // *************************************************************************
@@ -216,7 +216,8 @@ class BoneRotationTool extends WindowController {
      */
     private void setSlidersToPose() {
         int boneIndex = Maud.model.cgm.bone.getIndex();
-        Transform transform = Maud.model.pose.copyTransform(boneIndex, null);
+        Transform transform = Maud.model.cgm.pose.copyTransform(boneIndex,
+                null);
         Quaternion rotation = transform.getRotation();
         float[] angles = rotation.toAngles(null);
         boolean degrees = Maud.model.misc.getAnglesInDegrees();

@@ -306,7 +306,7 @@ public class ViewCGModel {
      */
     void updatePose() {
         int boneCount = Maud.model.cgm.bones.countBones();
-        int numTransforms = Maud.model.pose.countTransforms();
+        int numTransforms = Maud.model.cgm.pose.countTransforms();
         assert numTransforms == boneCount : numTransforms;
 
         Transform transform = new Transform();
@@ -315,7 +315,7 @@ public class ViewCGModel {
         Vector3f scale = new Vector3f();
 
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Maud.model.pose.copyTransform(boneIndex, transform);
+            Maud.model.cgm.pose.copyTransform(boneIndex, transform);
             transform.getTranslation(translation);
             transform.getRotation(rotation);
             transform.getScale(scale);

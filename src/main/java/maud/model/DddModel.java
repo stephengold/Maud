@@ -66,10 +66,6 @@ public class DddModel {
      */
     final public MiscStatus misc;
     /**
-     * bone transforms of the displayed pose
-     */
-    final public Pose pose;
-    /**
      * parameters for re-targeting animations (set by
      * {@link maud.Maud#startup1()})
      */
@@ -102,7 +98,6 @@ public class DddModel {
         cursor = new CursorStatus();
         /* cgm field will be set later */
         misc = new MiscStatus();
-        pose = new Pose();
         /* retarget field will be set later */
         sgc = new SelectedSgc();
         spatial = new SelectedSpatial();
@@ -122,7 +117,6 @@ public class DddModel {
             cursor = (CursorStatus) source.cursor.clone();
             cgm = (LoadedCGModel) source.cgm.clone();
             misc = (MiscStatus) source.misc.clone();
-            pose = (Pose) source.pose.clone();
             retarget = (RetargetParameters) source.retarget.clone();
             spatial = (SelectedSpatial) source.spatial.clone();
             sgc = (SelectedSgc) source.sgc.clone();
