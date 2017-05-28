@@ -43,7 +43,6 @@ import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
 import maud.model.DddModel;
 import maud.model.LoadedCGModel;
-import maud.model.RetargetParameters;
 
 /**
  * GUI application to edit jMonkeyEngine animated 3-D CG models. The
@@ -273,7 +272,6 @@ public class Maud extends GuiApplication {
 
         Nifty nifty = getNifty();
         gui.dialogs = new DddDialogs(assetManager, nifty);
-        model.retarget = new RetargetParameters(assetManager);
 
         Node parentNode = new Node("parent");
         rootNode.attachChild(parentNode);

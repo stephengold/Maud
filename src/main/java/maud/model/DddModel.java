@@ -60,7 +60,7 @@ public class DddModel {
     /**
      * the target CG model
      */
-    public EditableCgm cgm;
+    final public EditableCgm cgm;
     /**
      * miscellaneous details
      */
@@ -69,7 +69,7 @@ public class DddModel {
      * parameters for re-targeting animations (set by
      * {@link maud.Maud#startup1()})
      */
-    public RetargetParameters retarget = null;
+    final public RetargetParameters retarget;
     /**
      * status of the skeleton visualization
      */
@@ -86,7 +86,7 @@ public class DddModel {
         cursor = new CursorStatus();
         cgm = new EditableCgm();
         misc = new MiscStatus();
-        /* retarget field will be set later */
+        retarget = new RetargetParameters();
         skeleton = new SkeletonStatus();
     }
 

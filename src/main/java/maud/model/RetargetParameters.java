@@ -64,10 +64,6 @@ public class RetargetParameters implements Cloneable {
     // fields
 
     /**
-     * asset manager (set by constructor}
-     */
-    private AssetManager assetManager = null;
-    /**
      * true &rarr; invert the loaded map, false &rarr; don't invert it
      */
     private boolean invertMapFlag = false;
@@ -87,18 +83,6 @@ public class RetargetParameters implements Cloneable {
      * name of the target animation, or null if not set
      */
     private String targetAnimationName = null;
-    // *************************************************************************
-    // constructors
-
-    /**
-     * Instantiate with the specified asset manager.
-     *
-     * @param assetManager (not null)
-     */
-    public RetargetParameters(AssetManager assetManager) {
-        Validate.nonNull(assetManager, "asset manager");
-        this.assetManager = assetManager;
-    }
     // *************************************************************************
     // new methods exposed
 
@@ -342,6 +326,9 @@ public class RetargetParameters implements Cloneable {
      * @return a new instance, or null if the asset was not found
      */
     SkeletonMapping skeletonMapping() {
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
+
         AssetKey<SkeletonMapping> key = new AssetKey<>(mappingAssetPath);
         SkeletonMapping loaded;
         try {
@@ -386,7 +373,10 @@ public class RetargetParameters implements Cloneable {
      * @return a new orphan spatial, or null if unsuccessful
      */
     Spatial sourceCgm() {
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
         Spatial spatial = Util.loadCgmQuietly(assetManager, sourceCgmAssetPath);
+
         return spatial;
     }
     // *************************************************************************
