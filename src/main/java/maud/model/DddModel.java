@@ -58,9 +58,9 @@ public class DddModel {
      */
     final public CursorStatus cursor;
     /**
-     * which CG model is loaded (set by {@link maud.Maud#startup1()})
+     * the target CG model
      */
-    public EditableCgm cgm = null;
+    public EditableCgm cgm;
     /**
      * miscellaneous details
      */
@@ -84,7 +84,7 @@ public class DddModel {
         axes = new AxesStatus();
         camera = new CameraStatus();
         cursor = new CursorStatus();
-        /* cgm field will be set later */
+        cgm = new EditableCgm();
         misc = new MiscStatus();
         /* retarget field will be set later */
         skeleton = new SkeletonStatus();
@@ -100,7 +100,7 @@ public class DddModel {
             axes = (AxesStatus) source.axes.clone();
             camera = (CameraStatus) source.camera.clone();
             cursor = (CursorStatus) source.cursor.clone();
-            cgm = (EditableCgm) source.cgm.clone();
+            cgm = source.cgm.clone();
             misc = (MiscStatus) source.misc.clone();
             retarget = (RetargetParameters) source.retarget.clone();
             skeleton = (SkeletonStatus) source.skeleton.clone();

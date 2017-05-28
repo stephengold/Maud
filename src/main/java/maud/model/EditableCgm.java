@@ -31,7 +31,6 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
-import com.jme3.asset.AssetManager;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -78,17 +77,6 @@ public class EditableCgm extends LoadedCGModel {
      * none
      */
     private String editedSpatialTransform = "";
-    // *************************************************************************
-    // constructors
-
-    /**
-     * Instantiate with the specified asset manager.
-     *
-     * @param assetManager (not null)
-     */
-    public EditableCgm(AssetManager assetManager) {
-        super(assetManager);
-    }
     // *************************************************************************
     // new methods exposed
 

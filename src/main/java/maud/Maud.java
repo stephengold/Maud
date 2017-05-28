@@ -42,7 +42,6 @@ import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
 import maud.model.DddModel;
-import maud.model.EditableCgm;
 import maud.model.LoadedCGModel;
 import maud.model.RetargetParameters;
 
@@ -88,6 +87,10 @@ public class Maud extends GuiApplication {
      */
     public static DddModel model = new DddModel();
     /**
+     * application instance, set by {@link #main(java.lang.String[])}
+     */
+    private static Maud application;
+    /**
      * printer for scene dumps
      */
     final private static Printer printer = new Printer();
@@ -97,6 +100,15 @@ public class Maud extends GuiApplication {
     public static ViewCGModel viewState = null;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Access the application.
+     *
+     * @return the pre-existing instance
+     */
+    public static Maud getApplication() {
+        return application;
+    }
 
     /**
      * Main entry point for Maud.
@@ -118,7 +130,7 @@ public class Maud extends GuiApplication {
         /*
          * Instantiate the application.
          */
-        Maud application = new Maud();
+        application = new Maud();
         /*
          * Customize the window's title bar.
          */
@@ -261,7 +273,6 @@ public class Maud extends GuiApplication {
 
         Nifty nifty = getNifty();
         gui.dialogs = new DddDialogs(assetManager, nifty);
-        model.cgm = new EditableCgm(assetManager);
         model.retarget = new RetargetParameters(assetManager);
 
         Node parentNode = new Node("parent");

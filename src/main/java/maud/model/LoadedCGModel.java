@@ -33,6 +33,7 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.Track;
+import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
@@ -89,10 +90,6 @@ public class LoadedCGModel implements Cloneable {
     // fields
 
     /**
-     * asset manager for loading CG models (set by constructor}
-     */
-    private AssetManager assetManager = null;
-    /**
      * the loaded animation for the CG model
      */
     public LoadedAnimation animation = new LoadedAnimation();
@@ -144,14 +141,9 @@ public class LoadedCGModel implements Cloneable {
     // constructors
 
     /**
-     * Instantiate with the specified asset manager.
-     *
-     * @param assetManager (not null)
+     * Instantiate with no model loaded.
      */
-    public LoadedCGModel(AssetManager assetManager) {
-        Validate.nonNull(assetManager, "asset manager");
-        this.assetManager = assetManager;
-
+    public LoadedCGModel() {
         animation.setCgm(this);
         bone.setCgm(this);
         bones.setCgm(this);
@@ -719,6 +711,9 @@ public class LoadedCGModel implements Cloneable {
      * @return an orphaned spatial, or null if the asset was not found
      */
     private Spatial loadModelFromAsset(String assetPath, boolean useCache) {
+        SimpleApplication application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
+
         ModelKey key = new ModelKey(assetPath);
         if (!useCache) {
             /*
@@ -776,6 +771,8 @@ public class LoadedCGModel implements Cloneable {
         mlLogger.setLevel(Level.SEVERE);
 
         Spatial loaded;
+        SimpleApplication application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
         try {
             loaded = assetManager.loadAssetFromStream(key, inputStream);
         } catch (AssetLoadException e) {
