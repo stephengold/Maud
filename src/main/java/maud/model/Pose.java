@@ -137,34 +137,50 @@ public class Pose implements Cloneable {
      * instance)
      */
     public Transform modelTransform(int boneIndex, Transform storeResult) {
-        Transform result = copyTransform(boneIndex, storeResult);
-
+        if (storeResult == null) {
+            storeResult = new Transform();
+        }
+        /*
+         * Start with the bone's bind transform.
+         */
         Skeleton skeleton = Maud.model.cgm.bones.getSkeleton();
         Bone bone = skeleton.getBone(boneIndex);
+        Transform local = MySkeleton.copyBindTransform(bone, null);
         /*
-         * apply the bone's bind transform
+         * Apply the user transform in a simple (yet peculiar) way
+         * to obtain the bone's local transform.
          */
-        Transform tempTransform = MySkeleton.copyBindTransform(bone, null);
-        result.combineWithParent(tempTransform);
+        Transform user = copyTransform(boneIndex, null);
+        local.getTranslation().addLocal(user.getTranslation());
+        local.getRotation().multLocal(user.getRotation());
+        local.getScale().multLocal(user.getScale());
 
-        Bone ancestor = bone.getParent();
-        while (ancestor != null) {
+        Bone parentBone = bone.getParent();
+        if (parentBone == null) {
             /*
-             * apply the ancestor's user transform
+             * For a root bone, the bone's model transform is simply
+             * its local transform.
              */
-            int parentIndex = skeleton.getBoneIndex(ancestor);
-            copyTransform(parentIndex, tempTransform);
-            result.combineWithParent(tempTransform);
-            /*
-             * apply the ancestor's bind transform
-             */
-            MySkeleton.copyBindTransform(ancestor, tempTransform);
-            result.combineWithParent(tempTransform);
+            storeResult.set(local);
 
-            ancestor = ancestor.getParent();
+        } else {
+            int parentIndex = skeleton.getBoneIndex(parentBone);
+            Transform parent = modelTransform(parentIndex, null);
+            /*
+             * Apply the parent's model transform in a different (and even more
+             * peculiar) way to obtain the bone's model transform.
+             */
+            Vector3f mTranslation = storeResult.getTranslation();
+            Quaternion mRotation = storeResult.getRotation();
+            Vector3f mScale = storeResult.getScale();
+            parent.getRotation().mult(local.getRotation(), mRotation);
+            parent.getScale().mult(local.getScale(), mScale);
+            parent.getRotation().mult(local.getTranslation(), mTranslation);
+            mTranslation.multLocal(parent.getScale());
+            mTranslation.addLocal(parent.getTranslation());
         }
 
-        return result;
+        return storeResult;
     }
 
     /**
