@@ -216,7 +216,7 @@ public class SkeletonStatus implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public SkeletonStatus clone() throws CloneNotSupportedException {
         SkeletonStatus clone = (SkeletonStatus) super.clone();
         clone.linkColor = linkColor.clone();
         clone.trackedColor = trackedColor.clone();

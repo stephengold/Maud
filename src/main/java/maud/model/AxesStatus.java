@@ -142,7 +142,7 @@ public class AxesStatus implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public AxesStatus clone() throws CloneNotSupportedException {
         AxesStatus clone = (AxesStatus) super.clone();
         return clone;
     }

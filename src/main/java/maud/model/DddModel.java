@@ -102,14 +102,14 @@ public class DddModel {
      */
     public DddModel(DddModel other) {
         try {
-            axes = (AxesStatus) other.axes.clone();
-            camera = (CameraStatus) other.camera.clone();
-            cursor = (CursorStatus) other.cursor.clone();
+            axes = other.axes.clone();
+            camera = other.camera.clone();
+            cursor = other.cursor.clone();
             target = other.target.clone();
             source = other.source.clone();
-            misc = (MiscStatus) other.misc.clone();
-            retarget = (RetargetParameters) other.retarget.clone();
-            skeleton = (SkeletonStatus) other.skeleton.clone();
+            misc = other.misc.clone();
+            retarget = other.retarget.clone();
+            skeleton = other.skeleton.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException();
         }

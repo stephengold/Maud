@@ -214,7 +214,7 @@ public class MiscStatus implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public MiscStatus clone() throws CloneNotSupportedException {
         MiscStatus clone = (MiscStatus) super.clone();
         clone.platformLocation = platformLocation.clone();
         return clone;

@@ -389,7 +389,7 @@ public class RetargetParameters implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public RetargetParameters clone() throws CloneNotSupportedException {
         RetargetParameters clone = (RetargetParameters) super.clone();
         return clone;
     }

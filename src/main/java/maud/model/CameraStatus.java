@@ -476,7 +476,7 @@ public class CameraStatus implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public CameraStatus clone() throws CloneNotSupportedException {
         CameraStatus clone = (CameraStatus) super.clone();
         clone.direction = direction.clone();
         clone.location = location.clone();

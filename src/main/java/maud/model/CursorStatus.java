@@ -178,7 +178,7 @@ public class CursorStatus implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public CursorStatus clone() throws CloneNotSupportedException {
         CursorStatus clone = (CursorStatus) super.clone();
         clone.color = color.clone();
         clone.location = location.clone();
