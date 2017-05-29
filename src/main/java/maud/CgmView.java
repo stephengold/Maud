@@ -124,13 +124,13 @@ public class CgmView {
     /**
      * Create a duplicate copy of this view, for checkpointing.
      *
-     * @param m the MVC model for the CG model (not null)
+     * @param loadedCgm the MVC model for the loaded CG model (not null)
      * @return a new instance
      */
-    public CgmView createCopy(LoadedCGModel m) {
-        assert m != null;
+    public CgmView createCopy(LoadedCGModel loadedCgm) {
+        Validate.nonNull(loadedCgm, "CG model");
 
-        CgmView result = new CgmView(m, parentNode);
+        CgmView result = new CgmView(loadedCgm, parentNode);
         result.setCgmRoot(cgModelRoot);
 
         return result;
@@ -211,12 +211,16 @@ public class CgmView {
     }
 
     /**
-     * Alter the CG model to visualize.
+     * Visualize a different CG model, or none.
      *
-     * @param newRoot root spatial (not null, unaffected)
+     * @param newRoot root spatial (may be null, unaffected)
      */
     void setCgmRoot(Spatial newRoot) {
-        cgModelRoot = newRoot.clone();
+        if (newRoot == null) {
+            cgModelRoot = null;
+        } else {
+            cgModelRoot = newRoot.clone();
+        }
     }
 
     /**
