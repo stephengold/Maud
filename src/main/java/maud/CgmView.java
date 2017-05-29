@@ -62,10 +62,6 @@ public class CgmView {
     // fields
 
     /**
-     * the application's asset manager
-     */
-    final private AssetManager assetManager;
-    /**
      * the parent node of the CG model, used for rotation
      */
     final private Node parentNode;
@@ -84,24 +80,18 @@ public class CgmView {
     /**
      * the root spatial in this view's copy of the CG model
      */
-    private Spatial cgModelRoot;
+    private Spatial cgModelRoot = null;
     // *************************************************************************
     // constructors
 
     /**
      * Instantiate a new view.
      *
-     * @param assetManager the asset manager (not null)
      * @param parentNode parent node in the scene graph (not null)
-     * @param cgmRoot root spatial of the CG model (may be null)
      */
-    CgmView(AssetManager assetManager, Node parentNode, Spatial cgmRoot) {
-        assert assetManager != null;
+    CgmView(Node parentNode) {
         assert parentNode != null;
-
-        this.assetManager = assetManager;
         this.parentNode = parentNode;
-        cgModelRoot = cgmRoot;
     }
     // *************************************************************************
     // new methods exposed
@@ -125,9 +115,8 @@ public class CgmView {
      * Create a duplicate copy of this view, for checkpointing.
      */
     CgmView createCopy() {
-        Spatial cgmClone = cgModelRoot.clone();
-        CgmView result = new CgmView(assetManager, parentNode,
-                cgmClone);
+        CgmView result = new CgmView(parentNode);
+        result.setCgmRoot(cgModelRoot);
 
         return result;
     }
@@ -152,11 +141,11 @@ public class CgmView {
     }
 
     /**
-     * Access the root spatial of the CG model.
+     * Access the root spatial of the CG model. TODO reorder
      *
      * @return the pre-existing instance (not null)
      */
-    Spatial getSpatial() {
+    Spatial getCgmRoot() {
         assert cgModelRoot != null;
         return cgModelRoot;
     }
@@ -190,7 +179,7 @@ public class CgmView {
          */
         parentNode.detachChild(cgModelRoot);
 
-        Spatial sp = savedState.getSpatial();
+        Spatial sp = savedState.getCgmRoot();
         cgModelRoot = sp.clone();
         parentNode.attachChild(cgModelRoot);
 
@@ -204,6 +193,15 @@ public class CgmView {
         skeletonDebugControl = cgModelRoot.getControl(
                 SkeletonDebugControl.class);
         assert skeletonDebugControl != null;
+    }
+
+    /**
+     * Alter which CG model to visualize.
+     *
+     * @param newRoot root spatial (not null, unaffected)
+     */
+    void setCgmRoot(Spatial newRoot) {
+        cgModelRoot = newRoot.clone();
     }
 
     /**
@@ -365,6 +363,8 @@ public class CgmView {
         /*
          * Add a new SkeletonDebugControl.
          */
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
         skeletonDebugControl = new SkeletonDebugControl(assetManager);
         cgModelRoot.addControl(skeletonDebugControl);
         skeletonDebugControl.setEnabled(true);

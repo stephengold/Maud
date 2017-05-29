@@ -30,7 +30,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.audio.openal.ALAudioRenderer;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -271,8 +270,7 @@ public class Maud extends GuiApplication {
 
         Node parentNode = new Node("parent");
         rootNode.attachChild(parentNode);
-        Spatial cgmRoot = null;
-        viewState = new CgmView(assetManager, parentNode, cgmRoot);
+        viewState = new CgmView(parentNode);
         /*
          * Attach screen controllers for the "3D View" screen and BindScreen.
          */

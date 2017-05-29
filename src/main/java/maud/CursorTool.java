@@ -148,7 +148,7 @@ class CursorTool extends WindowController {
         /*
          * Trace the ray to the view's copy of the CG model.
          */
-        Spatial cgModel = Maud.viewState.getSpatial();
+        Spatial cgModel = Maud.viewState.getCgmRoot();
         Vector3f contactPoint = findContact(cgModel, ray);
         if (contactPoint != null) {
             Maud.model.cursor.setLocation(contactPoint);
