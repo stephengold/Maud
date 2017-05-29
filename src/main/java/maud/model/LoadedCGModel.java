@@ -602,7 +602,12 @@ public class LoadedCGModel implements Cloneable {
     @Override
     public LoadedCGModel clone() throws CloneNotSupportedException {
         LoadedCGModel clone = (LoadedCGModel) super.clone();
-        clone.rootSpatial = rootSpatial.clone();
+
+        if (rootSpatial == null) {
+            clone.rootSpatial = null;
+        } else {
+            clone.rootSpatial = rootSpatial.clone();
+        }
 
         clone.animation = animation.clone();
         clone.bone = bone.clone();
