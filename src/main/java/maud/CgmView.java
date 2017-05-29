@@ -43,6 +43,7 @@ import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.math.MyMath;
+import maud.model.LoadedCGModel;
 
 /**
  * A visualization of a loaded CG model.
@@ -61,6 +62,10 @@ public class CgmView {
     // *************************************************************************
     // fields
 
+    /**
+     * the MVC model for the CG model
+     */
+    final private LoadedCGModel model;
     /**
      * the parent node of the CG model, used for rotation
      */
@@ -87,11 +92,16 @@ public class CgmView {
     /**
      * Instantiate a new view.
      *
-     * @param parentNode parent node in the scene graph (not null)
+     * @param m the MVC model for the CG model (not null)
+     * @param parent parent node in the scene graph (not null)
      */
-    CgmView(Node parentNode) {
-        assert parentNode != null;
-        this.parentNode = parentNode;
+    CgmView(LoadedCGModel m, Node parent) {
+        assert m != null;
+        assert parent != null;
+
+        parentNode = parent;
+        model = m;
+        model.setView(this);
     }
     // *************************************************************************
     // new methods exposed
@@ -113,9 +123,14 @@ public class CgmView {
 
     /**
      * Create a duplicate copy of this view, for checkpointing.
+     *
+     * @param m the MVC model for the CG model (not null)
+     * @return a new instance
      */
-    CgmView createCopy() {
-        CgmView result = new CgmView(parentNode);
+    public CgmView createCopy(LoadedCGModel m) {
+        assert m != null;
+
+        CgmView result = new CgmView(m, parentNode);
         result.setCgmRoot(cgModelRoot);
 
         return result;
@@ -196,7 +211,7 @@ public class CgmView {
     }
 
     /**
-     * Alter which CG model to visualize.
+     * Alter the CG model to visualize.
      *
      * @param newRoot root spatial (not null, unaffected)
      */
@@ -212,7 +227,7 @@ public class CgmView {
     public void setHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial spatial = Maud.model.target.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = model.spatial.findSpatial(cgModelRoot);
         spatial.setCullHint(newHint);
     }
 
@@ -224,7 +239,7 @@ public class CgmView {
     public void setMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "shadow mode");
 
-        Spatial spatial = Maud.model.target.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = model.spatial.findSpatial(cgModelRoot);
         spatial.setShadowMode(newMode);
     }
 
@@ -260,7 +275,7 @@ public class CgmView {
     public void setSpatialRotation(Quaternion rotation) {
         Validate.nonNull(rotation, "rotation");
 
-        Spatial spatial = Maud.model.target.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = model.spatial.findSpatial(cgModelRoot);
         spatial.setLocalRotation(rotation);
     }
 
@@ -272,7 +287,7 @@ public class CgmView {
     public void setSpatialScale(Vector3f scale) {
         Validate.nonNull(scale, "scale");
 
-        Spatial spatial = Maud.model.target.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = model.spatial.findSpatial(cgModelRoot);
         spatial.setLocalScale(scale);
     }
 
@@ -284,26 +299,16 @@ public class CgmView {
     public void setSpatialTranslation(Vector3f translation) {
         Validate.nonNull(translation, "translation");
 
-        Spatial spatial = Maud.model.target.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = model.spatial.findSpatial(cgModelRoot);
         spatial.setLocalTranslation(translation);
-    }
-
-    /**
-     * Update the orientation of the CG model.
-     *
-     * @param angle in radians
-     */
-    void updateOrientation() {
-        Quaternion orientation = Maud.model.misc.cgmOrientation();
-        parentNode.setLocalRotation(orientation);
     }
 
     /**
      * Update the user transforms of all bones using the MVC model.
      */
     void updatePose() {
-        int boneCount = Maud.model.target.bones.countBones();
-        int numTransforms = Maud.model.target.pose.countTransforms();
+        int boneCount = model.bones.countBones();
+        int numTransforms = model.pose.countTransforms();
         assert numTransforms == boneCount : numTransforms;
 
         Transform transform = new Transform();
@@ -312,7 +317,7 @@ public class CgmView {
         Vector3f scale = new Vector3f();
 
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Maud.model.target.pose.copyTransform(boneIndex, transform);
+            model.pose.copyTransform(boneIndex, transform);
             transform.getTranslation(translation);
             transform.getRotation(rotation);
             transform.getScale(scale);
@@ -320,6 +325,16 @@ public class CgmView {
             Bone bone = skeleton.getBone(boneIndex);
             bone.setUserTransforms(translation, rotation, scale);
         }
+    }
+
+    /**
+     * Update the transform of the CG model.
+     *
+     * @param angle in radians
+     */
+    void updateTransform() {
+        Transform transform = model.transform.worldTransform();
+        parentNode.setLocalTransform(transform);
     }
     // *************************************************************************
     // private methods
@@ -370,7 +385,7 @@ public class CgmView {
         skeletonDebugControl.setEnabled(true);
         skeletonDebugControl.setSkeleton(skeleton);
         /*
-         * Configure the camera, cursor, and platform based on the range
+         * Configure the CG model transform based on the range
          * of mesh coordinates in the CG model.
          */
         Vector3f[] minMax = MySpatial.findMinMaxCoords(cgModelRoot, false);
@@ -378,16 +393,17 @@ public class CgmView {
         float maxExtent = MyMath.max(extents.x, extents.y, extents.z);
         assert maxExtent > 0f : maxExtent;
         float minY = minMax[0].y;
-        Vector3f baseLocation = new Vector3f(0f, minY, 0f);
-
+        model.transform.loadModel(minY, maxExtent);
+        /*
+         * reset the camera, cursor, and platform
+         */
+        Vector3f baseLocation = new Vector3f(0f, 0f, 0f);
         Maud.model.cursor.setLocation(baseLocation);
+        Maud.model.misc.setPlatformDiameter(2f);
         Maud.model.misc.setPlatformLocation(baseLocation);
-        Maud.model.misc.setPlatformDiameter(2f * maxExtent);
 
-        Maud.model.camera.setScale(maxExtent);
         Vector3f cameraLocation = new Vector3f(-2.4f, 1f, 1.6f);
-        cameraLocation.multLocal(maxExtent);
-        cameraLocation.addLocal(baseLocation);
         Maud.model.camera.setLocation(cameraLocation);
+        Maud.model.camera.setScale(1f);
     }
 }

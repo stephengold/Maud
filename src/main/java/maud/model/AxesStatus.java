@@ -48,17 +48,9 @@ public class AxesStatus implements Cloneable {
     // fields
 
     /**
-     * flag to enable automatic sizing
-     */
-    private boolean autoSizingFlag = true;
-    /**
      * flag to enable depth test for visibility of the axes
      */
     private boolean depthTestFlag = false;
-    /**
-     * length of the axes (units depend on mode, &ge;0)
-     */
-    private float length = 16f;
     /**
      * line width for the axes (in pixels, &ge;1)
      */
@@ -78,16 +70,6 @@ public class AxesStatus implements Cloneable {
      */
     public boolean getDepthTestFlag() {
         return depthTestFlag;
-    }
-
-    /**
-     * Read the length of each axis.
-     *
-     * @return length (&ge;0)
-     */
-    public float getLength() {
-        assert length >= 0f : length;
-        return length;
     }
 
     /**
@@ -111,41 +93,12 @@ public class AxesStatus implements Cloneable {
     }
 
     /**
-     * Test whether automatic sizing is enabled.
-     *
-     * @return true if enabled, otherwise false
-     */
-    public boolean isAutoSizing() {
-        return autoSizingFlag;
-    }
-
-    /**
-     * Alter the automatic sizing state.
-     *
-     * @param newState true &rarr; enable automatic sizing, false &rarr; disable
-     * it
-     */
-    public void setAutoSizing(boolean newState) {
-        this.autoSizingFlag = newState;
-    }
-
-    /**
      * Alter the depth-test flag.
      *
      * @param newState true &rarr; enable depth test, false &rarr; no depth test
      */
     public void setDepthTestFlag(boolean newState) {
         this.depthTestFlag = newState;
-    }
-
-    /**
-     * Alter the length.
-     *
-     * @param length length of axes (units depend on mode, &ge;0)
-     */
-    public void setLength(float length) {
-        Validate.nonNegative(length, "length");
-        this.length = length;
     }
 
     /**

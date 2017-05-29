@@ -48,7 +48,6 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
 import maud.History;
-import maud.Maud;
 
 /**
  * MVC model for an editable computer-graphics (CG) model in the Maud
@@ -217,7 +216,7 @@ public class EditableCgm extends LoadedCGModel {
         if (oldHint != newHint) {
             modelSpatial.setCullHint(newHint);
             setEdited("change cull hint");
-            Maud.viewState.setHint(newHint);
+            view.setHint(newHint);
         }
     }
 
@@ -234,7 +233,7 @@ public class EditableCgm extends LoadedCGModel {
         if (oldMode != newMode) {
             modelSpatial.setShadowMode(newMode);
             setEdited("change shadow mode");
-            Maud.viewState.setMode(newMode);
+            view.setMode(newMode);
         }
     }
 
@@ -268,7 +267,7 @@ public class EditableCgm extends LoadedCGModel {
 
         Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
         selectedSpatial.setLocalRotation(rotation);
-        Maud.viewState.setSpatialRotation(rotation);
+        view.setSpatialRotation(rotation);
         setEditedSpatialTransform();
     }
 
@@ -285,7 +284,7 @@ public class EditableCgm extends LoadedCGModel {
 
         Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
         selectedSpatial.setLocalScale(scale);
-        Maud.viewState.setSpatialScale(scale);
+        view.setSpatialScale(scale);
         setEditedSpatialTransform();
     }
 
@@ -299,7 +298,7 @@ public class EditableCgm extends LoadedCGModel {
 
         Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
         selectedSpatial.setLocalTranslation(translation);
-        Maud.viewState.setSpatialTranslation(translation);
+        view.setSpatialTranslation(translation);
         setEditedSpatialTransform();
     }
 

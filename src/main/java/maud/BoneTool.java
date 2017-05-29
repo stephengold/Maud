@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.model.LoadedCGModel;
 
 /**
  * The controller for the "Bone Tool" window in Maud's "3D View" screen.
@@ -65,20 +66,34 @@ class BoneTool extends WindowController {
      * Select the bone with screen coordinates nearest to the mouse pointer.
      */
     void selectXY() {
-        Vector2f mouseXY = inputManager.getCursorPosition();
         float bestDSquared = Float.MAX_VALUE;
-        Maud.model.target.bone.selectNoBone();
+        int bestBoneIndex = -1;
+        LoadedCGModel bestCgm = null;
+
+        if (Maud.model.source.isLoaded()) {
+            int numBones = Maud.model.source.bones.countBones();
+            for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+                float dSquared = distanceSquared(Maud.model.source, boneIndex);
+                if (dSquared < bestDSquared) {
+                    bestDSquared = dSquared;
+                    bestBoneIndex = boneIndex;
+                    bestCgm = Maud.model.source;
+                }
+            }
+        }
 
         int numBones = Maud.model.target.bones.countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            Vector3f boneWorld = Maud.viewState.boneLocation(boneIndex);
-            Vector3f boneScreen = cam.getScreenCoordinates(boneWorld);
-            Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
-            float dSquared = mouseXY.distanceSquared(boneXY);
+            float dSquared = distanceSquared(Maud.model.target, boneIndex);
             if (dSquared < bestDSquared) {
                 bestDSquared = dSquared;
-                Maud.model.target.bone.select(boneIndex);
+                bestBoneIndex = boneIndex;
+                bestCgm = Maud.model.target;
             }
+        }
+
+        if (bestCgm != null) {
+            bestCgm.bone.select(bestBoneIndex);
         }
     }
     // *************************************************************************
@@ -123,6 +138,24 @@ class BoneTool extends WindowController {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Calculate the squared distance between the mouse pointer and the
+     * specified bone.
+     *
+     * @param loadedCgm which CG model (not null)
+     * @param boneIndex (&ge;0)
+     * @return squared distance in screen units (&ge;0)
+     */
+    private float distanceSquared(LoadedCGModel loadedCgm, int boneIndex) {
+        Vector3f boneWorld = loadedCgm.view.boneLocation(boneIndex);
+        Vector3f boneScreen = cam.getScreenCoordinates(boneWorld);
+        Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
+        Vector2f mouseXY = inputManager.getCursorPosition();
+        float dSquared = mouseXY.distanceSquared(boneXY);
+
+        return dSquared;
+    }
 
     /**
      * Update the children status and button.

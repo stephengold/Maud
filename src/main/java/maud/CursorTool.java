@@ -146,23 +146,38 @@ class CursorTool extends WindowController {
         direction.normalizeLocal();
         Ray ray = new Ray(vertex, direction);
         /*
-         * Trace the ray to the view's copy of the CG model.
+         * Trace the ray to each CG model's visualization.
          */
-        Spatial cgModel = Maud.viewState.getCgmRoot();
-        Vector3f contactPoint = findContact(cgModel, ray);
-        if (contactPoint != null) {
-            Maud.model.cursor.setLocation(contactPoint);
-            return;
-        }
-        /*
-         * The ray missed the model; attempt to trace it to the
-         * platform instead.
-         */
-        Spatial platform = Maud.gui.platform.getSpatial();
-        if (platform != null) {
-            contactPoint = findContact(platform, ray);
-            if (contactPoint != null) {
-                Maud.model.cursor.setLocation(contactPoint);
+        Spatial cgModel = Maud.model.source.view.getCgmRoot();
+        Vector3f sourceContactPoint = findContact(cgModel, ray);
+        cgModel = Maud.model.target.view.getCgmRoot();
+        Vector3f targetContactPoint = findContact(cgModel, ray);
+
+        if (sourceContactPoint != null && targetContactPoint != null) {
+            float sourceRange = vertex.distance(sourceContactPoint);
+            float targetRange = vertex.distance(targetContactPoint);
+            if (sourceRange < targetRange) {
+                Maud.model.cursor.setLocation(sourceContactPoint);
+            } else {
+                Maud.model.cursor.setLocation(targetContactPoint);
+            }
+
+        } else if (sourceContactPoint != null) {
+            Maud.model.cursor.setLocation(sourceContactPoint);
+
+        } else if (targetContactPoint != null) {
+            Maud.model.cursor.setLocation(targetContactPoint);
+
+        } else {
+            /*
+             * The ray missed the CG models; try to trace it to the platform.
+             */
+            Spatial platform = Maud.gui.platform.getSpatial();
+            if (platform != null) {
+                Vector3f platformContactPoint = findContact(platform, ray);
+                if (platformContactPoint != null) {
+                    Maud.model.cursor.setLocation(platformContactPoint);
+                }
             }
         }
     }

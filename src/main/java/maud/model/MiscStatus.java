@@ -26,16 +26,13 @@
  */
 package maud.model;
 
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
-import jme3utilities.math.MyMath;
 
 /**
- * The status of miscellaneous details in Maud's "3D View" screen.
+ * The MVC model of miscellaneous details in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -48,10 +45,6 @@ public class MiscStatus implements Cloneable {
      */
     final private static Logger logger = Logger.getLogger(
             MiscStatus.class.getName());
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_Y}
-     */
-    final private static Vector3f yAxis = new Vector3f(0f, 1f, 0f);
     // *************************************************************************
     // fields
 
@@ -59,10 +52,6 @@ public class MiscStatus implements Cloneable {
      * angle display mode (true &rarr; degrees, false &rarr; radians)
      */
     private boolean anglesInDegrees = true;
-    /**
-     * rotation angle of the CG model around the +Y axis (in radians)
-     */
-    private float cgmYAngle = 0f;
     /**
      * shadows (true &rarr; rendered, false &rarr; not rendered)
      */
@@ -94,18 +83,6 @@ public class MiscStatus implements Cloneable {
      */
     public boolean areShadowsRendered() {
         return shadowsRendered;
-    }
-
-    /**
-     * Calculate the world orientation of the loaded CG model.
-     *
-     * @return a new quaternion
-     */
-    public Quaternion cgmOrientation() {
-        Quaternion result = new Quaternion();
-        result.fromAngleNormalAxis(cgmYAngle, yAxis);
-
-        return result;
     }
 
     /**
@@ -153,15 +130,6 @@ public class MiscStatus implements Cloneable {
      */
     public boolean isSkyRendered() {
         return skyRendered;
-    }
-
-    /**
-     * Add to the rotation angle of the CG model.
-     *
-     * @param angle (in radians)
-     */
-    public void rotateY(float angle) {
-        cgmYAngle = MyMath.modulo(cgmYAngle + angle, FastMath.TWO_PI);
     }
 
     /**

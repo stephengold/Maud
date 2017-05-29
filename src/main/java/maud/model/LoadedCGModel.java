@@ -61,6 +61,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import maud.CgmView;
 import maud.Maud;
 import maud.Util;
 
@@ -68,8 +69,7 @@ import maud.Util;
  * MVC model for a loaded computer-graphics (CG) model in the Maud application:
  * encapsulates the CG model's tree of spatials, keeps track of where the CG
  * model was loaded from, and provides access to related MVC model state: the
- * loaded animation and the selected spatial, SG control, skeleton, pose, bone,
- * and so forth.
+ * loaded animation and the selected spatial/control/skeleton/pose/bone/etc.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -89,6 +89,10 @@ public class LoadedCGModel implements Cloneable {
     // *************************************************************************
     // fields
 
+    /**
+     * visualization of the CG model (set by {@link #setView(maud.CgmView)})
+     */
+    public CgmView view = null;
     /**
      * the loaded animation for the CG model
      */
@@ -122,11 +126,11 @@ public class LoadedCGModel implements Cloneable {
      */
     protected Spatial rootSpatial = null;
     /**
-     * asset path of the loaded model, less extension
+     * asset path of the CG model, less extension
      */
     protected String loadedModelAssetPath = null;
     /**
-     * extension of the loaded model
+     * extension of the CG model
      */
     protected String loadedModelExtension = null;
     /**
@@ -137,6 +141,10 @@ public class LoadedCGModel implements Cloneable {
      * name of the loaded model
      */
     protected String modelName = null;
+    /**
+     * world transform of the visualization
+     */
+    public TransformStatus transform = new TransformStatus();
     // *************************************************************************
     // constructors
 
@@ -151,6 +159,7 @@ public class LoadedCGModel implements Cloneable {
         sgc.setCgm(this);
         spatial.setCgm(this);
         track.setCgm(this);
+        transform.setCgm(this);
     }
     // *************************************************************************
     // new methods exposed
@@ -381,6 +390,19 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
+     * Test whether a CG model is loaded.
+     *
+     * @return true if loaded, otherwise false
+     */
+    public boolean isLoaded() {
+        if (rootSpatial == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Test whether the model root is a node.
      *
      * @return true for a node, false for a geometry
@@ -569,6 +591,16 @@ public class LoadedCGModel implements Cloneable {
             return true;
         }
     }
+
+    /**
+     * Alter the MVC view for the CG model.
+     *
+     * @param newView (not null)
+     */
+    public void setView(CgmView newView) {
+        Validate.nonNull(newView, "new view");
+        view = newView;
+    }
     // *************************************************************************
     // protected methods
 
@@ -582,7 +614,7 @@ public class LoadedCGModel implements Cloneable {
 
         validateModel(modelRoot);
         rootSpatial = modelRoot.clone();
-        Maud.viewState.loadModel(modelRoot);
+        view.loadModel(modelRoot);
         /*
          * Reset the selected bone/spatial and also the loaded animation.
          */
@@ -609,6 +641,12 @@ public class LoadedCGModel implements Cloneable {
             clone.rootSpatial = rootSpatial.clone();
         }
 
+        if (view == null) {
+            clone.view = null;
+        } else {
+            clone.view = view.createCopy(clone);
+        }
+
         clone.animation = animation.clone();
         clone.bone = bone.clone();
         clone.bones = bones.clone();
@@ -616,6 +654,7 @@ public class LoadedCGModel implements Cloneable {
         clone.sgc = sgc.clone();
         clone.spatial = spatial.clone();
         clone.track = track.clone();
+        clone.transform = transform.clone();
 
         clone.animation.setCgm(clone);
         clone.bone.setCgm(clone);
@@ -624,6 +663,7 @@ public class LoadedCGModel implements Cloneable {
         clone.sgc.setCgm(clone);
         clone.spatial.setCgm(clone);
         clone.track.setCgm(clone);
+        clone.transform.setCgm(clone);
 
         return clone;
     }

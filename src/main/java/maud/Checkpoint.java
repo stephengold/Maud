@@ -50,10 +50,6 @@ class Checkpoint {
     // fields
 
     /**
-     * a copy of the view's CG model at time of creation
-     */
-    final private CgmView viewCgm;
-    /**
      * the date and time of creation
      */
     final private Date timestamp;
@@ -79,7 +75,6 @@ class Checkpoint {
         Maud.model.target.onCheckpoint();
         model = new DddModel(Maud.model);
         eventDescriptions.addAll(descriptions);
-        viewCgm = Maud.viewState.createCopy();
     }
     // *************************************************************************
     // new methods exposed
@@ -112,6 +107,5 @@ class Checkpoint {
      */
     void restore() {
         Maud.model = new DddModel(model);
-        Maud.viewState.restore(viewCgm);
     }
 }

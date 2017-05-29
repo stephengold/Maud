@@ -326,7 +326,9 @@ public class LoadedAnimation implements Cloneable {
      */
     public boolean isMoving() {
         boolean running;
-        if (pausedFlag) {
+        if (!loadedCgm.isLoaded()) {
+            running = false;
+        } else if (pausedFlag) {
             running = false;
         } else if (speed == 0f) {
             running = false;

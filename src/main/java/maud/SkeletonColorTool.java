@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.model.LoadedCGModel;
 import maud.model.SkeletonStatus;
 
 /**
@@ -89,10 +90,12 @@ class SkeletonColorTool extends WindowController {
     }
 
     /**
-     * Update the view's SkeletonDebugControl from the MVC model.
+     * Update a SkeletonDebugControl from the MVC model.
+     *
+     * @param modelCgm which CG model's view to update (not null)
      */
-    void updateSdc() {
-        SkeletonDebugControl control = Maud.viewState.getSkeletonDebugControl();
+    void updateSdc(LoadedCGModel modelCgm) {
+        SkeletonDebugControl control = modelCgm.view.getSkeletonDebugControl();
         if (control == null) {
             return;
         }
@@ -105,9 +108,9 @@ class SkeletonColorTool extends WindowController {
         control.setPointColor(color);
 
         model.copyTrackedColor(color);
-        int numBones = Maud.model.target.bones.countBones();
+        int numBones = modelCgm.bones.countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            if (Maud.model.target.animation.hasTrackForBone(boneIndex)) {
+            if (modelCgm.animation.hasTrackForBone(boneIndex)) {
                 control.setPointColor(boneIndex, color);
             }
         }

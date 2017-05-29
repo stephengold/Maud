@@ -28,7 +28,6 @@ package maud;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.math.FastMath;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -40,7 +39,7 @@ import jme3utilities.debug.AxesControl;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
-import maud.model.AxesStatus;
+import maud.model.LoadedCGModel;
 
 /**
  * The controller for the "Axes Tool" window in Maud's "3D View" screen.
@@ -60,13 +59,21 @@ class AxesTool extends WindowController {
     // fields
 
     /**
-     * scene-graph control to display coordinate axes
+     * SG control to display coordinate axes for the source CG model
      */
-    private AxesControl axesControl;
+    private AxesControl sourceAxesControl;
     /**
-     * scene-graph node to translate and rotate the axes
+     * SG control to display coordinate axes for the target CG model
      */
-    final private Node axesNode = new Node("axes node");
+    private AxesControl targetAxesControl;
+    /**
+     * SG node to translate and rotate the axes for the source CG model
+     */
+    final private Node sourceAxesNode = new Node("source axes node");
+    /**
+     * SG node to translate and rotate the axes for the target CG model
+     */
+    final private Node targetAxesNode = new Node("target node");
     // *************************************************************************
     // constructors
 
@@ -86,45 +93,16 @@ class AxesTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        float value = Maud.gui.readSlider("axesLength");
-        float axesLength = FastMath.pow(10f, value);
-        Maud.model.axes.setLength(axesLength);
-
         float lineWidth = Maud.gui.readSlider("axesLineWidth");
         Maud.model.axes.setLineWidth(lineWidth);
     }
 
     /**
-     * Update the node transform and AxesControl settings.
+     * Update the transform and AxesControl settings for both CG models.
      */
-    void updateAxesControl() {
-        Transform transform = worldTransform();
-        if (transform == null) {
-            axesControl.setEnabled(false);
-        } else {
-            axesNode.setLocalTransform(transform);
-            axesControl.setEnabled(true);
-
-            float length;
-            if (Maud.model.axes.isAutoSizing()) {
-                Vector3f axesOrigin = transform.getTranslation();
-                Vector3f cameraLocation = Maud.model.camera.copyLocation(null);
-                float distance = axesOrigin.distance(cameraLocation);
-                Vector3f scale = transform.getScale();
-                float maxScale = MyMath.max(scale.x, scale.y, scale.z);
-                length = 0.2f * distance / maxScale;
-                Maud.model.axes.setLength(length);
-            } else {
-                length = Maud.model.axes.getLength();
-            }
-            boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
-            float lineWidth = Maud.model.axes.getLineWidth();
-
-            axesControl.setAxisLength(length);
-            axesControl.setDepthTest(depthTestFlag);
-            axesControl.setEnabled(true);
-            axesControl.setLineWidth(lineWidth);
-        }
+    void updateVisualizations() {
+        updateAxes(Maud.model.source, sourceAxesControl, sourceAxesNode);
+        updateAxes(Maud.model.target, targetAxesControl, targetAxesNode);
     }
     // *************************************************************************
     // AppState methods
@@ -140,11 +118,15 @@ class AxesTool extends WindowController {
             Application application) {
         super.initialize(stateManager, application);
         /*
-         * Instantiate and add/attach the AxesControl and the node.
+         * Instantiate and add/attach the AxesControls/nodes.
          */
-        axesControl = new AxesControl(assetManager, 1f, 1f);
-        axesNode.addControl(axesControl);
-        rootNode.attachChild(axesNode);
+        sourceAxesControl = new AxesControl(assetManager, 1f, 1f);
+        sourceAxesNode.addControl(sourceAxesControl);
+        rootNode.attachChild(sourceAxesNode);
+
+        targetAxesControl = new AxesControl(assetManager, 1f, 1f);
+        targetAxesNode.addControl(targetAxesControl);
+        rootNode.attachChild(targetAxesNode);
     }
 
     /**
@@ -158,20 +140,11 @@ class AxesTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        boolean isAutoSizing = Maud.model.axes.isAutoSizing();
-        Maud.gui.setChecked("axesAuto", isAutoSizing);
-        Slider slider = Maud.gui.getSlider("axesLength");
-        slider.setEnabled(!isAutoSizing);
-
-        float axesLength = Maud.model.axes.getLength();
-        float value = FastMath.log(axesLength, 10f);
-        slider.setValue(value);
-
         boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
         Maud.gui.setChecked("axesDepthTest", depthTestFlag);
 
         float lineWidth = Maud.model.axes.getLineWidth();
-        slider = Maud.gui.getSlider("axesLineWidth");
+        Slider slider = Maud.gui.getSlider("axesLineWidth");
         slider.setValue(lineWidth);
 
         updateLabels();
@@ -180,59 +153,64 @@ class AxesTool extends WindowController {
     // private methods
 
     /**
+     *
+     * @param loadedCgm (not null)
+     * @param axesControl (not null)
+     * @param axesNode (not null)
+     */
+    private void updateAxes(LoadedCGModel loadedCgm,
+            AxesControl axesControl, Node axesNode) {
+        assert loadedCgm != null;
+        assert axesControl != null;
+        assert axesNode != null;
+
+        Transform transform = worldTransform(loadedCgm);
+        if (transform == null) {
+            axesControl.setEnabled(false);
+        } else {
+            axesNode.setLocalTransform(transform);
+            axesControl.setEnabled(true);
+
+            Vector3f axesOrigin = transform.getTranslation();
+            Vector3f cameraLocation = Maud.model.camera.copyLocation(null);
+            float distance = axesOrigin.distance(cameraLocation);
+            Vector3f scale = transform.getScale();
+            float maxScale = MyMath.max(scale.x, scale.y, scale.z);
+            float length = 0.2f * distance / maxScale;
+
+            boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
+            float lineWidth = Maud.model.axes.getLineWidth();
+
+            axesControl.setAxisLength(length);
+            axesControl.setDepthTest(depthTestFlag);
+            axesControl.setEnabled(true);
+            axesControl.setLineWidth(lineWidth);
+        }
+    }
+
+    /**
      * Update the status labels based on the MVC model.
      */
     private void updateLabels() {
-        AxesStatus model = Maud.model.axes;
-
-        String mode = model.getMode();
-        String units;
-        switch (mode) {
-            case "bone":
-                if (Maud.model.target.bone.isBoneSelected()) {
-                    units = " bone units";
-                } else {
-                    units = " units";
-                }
-                break;
-            case "model":
-                units = " model units";
-                break;
-            case "none":
-                units = " units";
-                break;
-            case "spatial":
-                units = " local units";
-                break;
-            case "world":
-                units = " world units";
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-
-        float axesLength = model.getLength();
-        Maud.gui.updateSliderStatus("axesLength", axesLength, units);
-
-        float lineWidth = model.getLineWidth();
+        float lineWidth = Maud.model.axes.getLineWidth();
         Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
     }
 
     /**
      * Calculate the coordinate transform for the axes.
      *
+     * @param loadedCgm (not null)
      * @return a new instance (in world coordinates) or null to hide the axes
      */
-    private Transform worldTransform() {
+    private Transform worldTransform(LoadedCGModel loadedCgm) {
         Transform transform;
         String mode = Maud.model.axes.getMode();
         switch (mode) {
             case "bone":
-                if (Maud.model.target.bone.isBoneSelected()) {
-                    int boneIndex = Maud.model.target.bone.getIndex();
-                    transform = Maud.model.target.pose.modelTransform(boneIndex,
-                            null);
-                    Geometry ag = Maud.viewState.findAnimatedGeometry();
+                if (loadedCgm.bone.isBoneSelected()) {
+                    int boneIndex = loadedCgm.bone.getIndex();
+                    transform = loadedCgm.pose.modelTransform(boneIndex, null);
+                    Geometry ag = loadedCgm.view.findAnimatedGeometry();
                     Transform agTransform = ag.getWorldTransform();
                     transform.combineWithParent(agTransform);
                 } else {
@@ -241,8 +219,12 @@ class AxesTool extends WindowController {
                 break;
 
             case "model":
-                Spatial cgm = Maud.viewState.getCgmRoot();
-                transform = cgm.getWorldTransform();
+                if (loadedCgm.isLoaded()) {
+                    Spatial cgm = loadedCgm.view.getCgmRoot();
+                    transform = cgm.getWorldTransform();
+                } else {
+                    transform = null;
+                }
                 break;
 
             case "none":
@@ -250,13 +232,17 @@ class AxesTool extends WindowController {
                 break;
 
             case "spatial":
-                cgm = Maud.viewState.getCgmRoot();
-                Spatial spatial = Maud.model.target.spatial.findSpatial(cgm);
+                Spatial cgm = loadedCgm.view.getCgmRoot();
+                Spatial spatial = loadedCgm.spatial.findSpatial(cgm);
                 transform = spatial.getWorldTransform();
                 break;
 
             case "world":
-                transform = new Transform(); // identity
+                if (loadedCgm == Maud.model.target) {
+                    transform = new Transform(); // identity
+                } else {
+                    transform = null;
+                }
                 break;
 
             default:

@@ -171,37 +171,37 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="axesTool" title="Axes Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="320px" width="200px" x="70" y="30">
+                     height="240px" width="200px" x="70" y="30">
                 <panel childLayout="vertical">
                     <control name="radioButtonGroup" id="axesGroup"/>
                     <panel style="indentPanel">
                         <control name="radioButton" id="boneAxesRadioButton"
                                  group="axesGroup"/>
-                        <control name="label" width="12"/>
+                        <control name="label" width="12px"/>
                         <control name="label" text="bone axes"/>
                     </panel>
                     <panel style="indentPanel">
                         <control name="radioButton" id="modelAxesRadioButton"
                                  group="axesGroup"/>
-                        <control name="label" width="12"/>
+                        <control name="label" width="12px"/>
                         <control name="label" text="model axes"/>
                     </panel>
                     <panel style="indentPanel">
                         <control name="radioButton" id="spatialAxesRadioButton"
                                  group="axesGroup"/>
-                        <control name="label" width="12"/>
+                        <control name="label" width="12px"/>
                         <control name="label" text="spatial axes"/>
                     </panel>
                     <panel style="indentPanel">
                         <control name="radioButton" id="worldAxesRadioButton"
                                  group="axesGroup"/>
-                        <control name="label" width="12"/>
+                        <control name="label" width="12px"/>
                         <control name="label" text="world axes"/>
                     </panel>
                     <panel style="indentPanel">
                         <control name="radioButton" id="hideAxesRadioButton"
                                  group="axesGroup"/>
-                        <control name="label" width="12"/>
+                        <control name="label" width="12px"/>
                         <control name="label" text="hide"/>
                     </panel>
                     <panel style="statusPanel">
@@ -209,27 +209,14 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                     </panel>
                     <control name="horizontalSlider" id="axesLineWidthSlider"
                              buttonStepSize="1"
-                             height="40"
+                             height="40px"
                              initial="4" max="7" min="1" stepSize="0.001"/>
                     <panel style="indentPanel">
                         <control name="checkbox" id="axesDepthTestCheckBox"
                                  checked="false"/>
-                        <control name="label" width="12"/>
+                        <control name="label" width="12px"/>
                         <control name="label" text="depth test"/>
                     </panel>
-                    <panel style="indentPanel">
-                        <control name="checkbox" id="axesAutoCheckBox"
-                                 checked="true"/>
-                        <control name="label" width="12"/>
-                        <control name="label" text="auto length"/>
-                    </panel>
-                    <panel style="statusPanel">
-                        <control name="label" id="axesLengthSliderStatus"/>
-                    </panel>
-                    <control name="horizontalSlider" id="axesLengthSlider"
-                             buttonStepSize="1"
-                             height="40"
-                             initial="1.2" max="2.5" min="-1.0" stepSize="0.001"/>
                 </panel>
             </control>
 

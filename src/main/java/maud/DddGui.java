@@ -51,6 +51,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
+import maud.model.LoadedCGModel;
 
 /**
  * The screen controller for the GUI portion of Maud's "3D View" screen. The GUI
@@ -68,13 +69,17 @@ public class DddGui extends GuiScreenController {
     final private static Logger logger = Logger.getLogger(
             DddGui.class.getName());
     /**
-     * name of signal that rotates the model counter-clockwise around +Y
+     * name of the signal that rotates the model counter-clockwise around +Y
      */
     final private static String modelCCWSignalName = "modelLeft";
     /**
-     * name of signal that rotates the model clockwise around +Y
+     * name of the signal that rotates the model clockwise around +Y
      */
     final private static String modelCWSignalName = "modelRight";
+    /**
+     * name of the signal that diverts rotation from target to source
+     */
+    final private static String sourceModelSignalName = "sourceModel";
     // *************************************************************************
     // fields
 
@@ -171,9 +176,6 @@ public class DddGui extends GuiScreenController {
         switch (boxId) {
             case "3DCursorCheckBox":
                 Maud.model.cursor.setVisible(isChecked);
-                break;
-            case "axesAutoCheckBox":
-                Maud.model.axes.setAutoSizing(isChecked);
                 break;
             case "axesDepthTestCheckBox":
                 Maud.model.axes.setDepthTestFlag(isChecked);
@@ -306,7 +308,6 @@ public class DddGui extends GuiScreenController {
                 animation.onSliderChanged();
                 break;
 
-            case "axesLengthSlider":
             case "axesLineWidthSlider":
                 axes.onSliderChanged();
                 break;
@@ -611,31 +612,47 @@ public class DddGui extends GuiScreenController {
         if (!camera.isInitialized()) {
             return;
         }
+
+        axes.updateVisualizations();
         camera.updateCamera();
         cursor.updateCursor();
         platform.updateScene();
         render.updateShadowFilter();
-        skeleton.updateSdc();
-        skeletonColor.updateSdc();
+        skeleton.updateSdc(Maud.model.source);
+        skeleton.updateSdc(Maud.model.target);
+        skeletonColor.updateSdc(Maud.model.source);
+        skeletonColor.updateSdc(Maud.model.target);
         sky.updateSkyControl();
         /*
-         * Update animation even if the animation tool is disabled.
+         * Update animations even if the animation tool is disabled.
          */
-        if (Maud.model.target.animation.isMoving()) {
-            updateTrackTime(tpf);
+        if (Maud.model.source.animation.isMoving()) {
+            updateTrackTime(Maud.model.source, tpf);
         }
-        Maud.viewState.updatePose();
-        axes.updateAxesControl();
+        if (Maud.model.source.isLoaded()) {
+            Maud.model.source.view.updatePose();
+        }
+        if (Maud.model.target.animation.isMoving()) {
+            updateTrackTime(Maud.model.target, tpf);
+        }
+        Maud.model.target.view.updatePose();
         /*
-         * Rotate the view's CG model around the Y-axis.
+         * Rotate one of the views' CG models around its Y-axis.
          */
+        LoadedCGModel cgmToRotate;
+        if (signals.test(sourceModelSignalName)) {
+            cgmToRotate = Maud.model.source;
+        } else {
+            cgmToRotate = Maud.model.target;
+        }
         if (signals.test(modelCCWSignalName)) {
-            Maud.model.misc.rotateY(tpf);
+            cgmToRotate.transform.rotateY(tpf);
         }
         if (signals.test(modelCWSignalName)) {
-            Maud.model.misc.rotateY(-tpf);
+            cgmToRotate.transform.rotateY(-tpf);
         }
-        Maud.viewState.updateOrientation();
+        Maud.model.source.view.updateTransform();
+        Maud.model.target.view.updateTransform();
     }
     // *************************************************************************
     // ScreenController methods
@@ -659,18 +676,19 @@ public class DddGui extends GuiScreenController {
     /**
      * Update the track time.
      *
+     * @param loadedCgm (not null)
      * @param tpf time interval between render passes (in seconds, &ge;0)
      */
-    private void updateTrackTime(float tpf) {
-        assert Maud.model.target.animation.isMoving();
+    private void updateTrackTime(LoadedCGModel loadedCgm, float tpf) {
+        assert loadedCgm.animation.isMoving();
 
-        float speed = Maud.model.target.animation.getSpeed();
-        float time = Maud.model.target.animation.getTime();
+        float speed = loadedCgm.animation.getSpeed();
+        float time = loadedCgm.animation.getTime();
         time += speed * tpf;
 
-        boolean cont = Maud.model.target.animation.willContinue();
-        boolean reverse = Maud.model.target.animation.willReverse();
-        float duration = Maud.model.target.animation.getDuration();
+        boolean cont = loadedCgm.animation.willContinue();
+        boolean reverse = loadedCgm.animation.willReverse();
+        float duration = loadedCgm.animation.getDuration();
         if (cont && !reverse) {
             time = MyMath.modulo(time, duration); // wrap
         } else {
@@ -678,13 +696,13 @@ public class DddGui extends GuiScreenController {
             time = FastMath.clamp(time, 0f, duration);
             if (time != freeTime) { // reached a limit
                 if (reverse) {
-                    Maud.model.target.animation.setSpeed(-speed); // pong
+                    loadedCgm.animation.setSpeed(-speed); // pong
                 } else {
                     time = duration - time; // wrap
                 }
-                Maud.model.target.animation.setPaused(!cont);
+                loadedCgm.animation.setPaused(!cont);
             }
         }
-        Maud.model.target.animation.setTime(time);
+        loadedCgm.animation.setTime(time);
     }
 }
