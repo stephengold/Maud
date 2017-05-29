@@ -62,7 +62,7 @@ class AnimationNameDialog implements DialogController {
     /**
      * Instantiate a controller with the specified commit description.
      *
-     * @param description (not null)
+     * @param description (not null, not empty)
      */
     AnimationNameDialog(String description) {
         assert description != null;
