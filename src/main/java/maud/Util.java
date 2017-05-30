@@ -36,7 +36,9 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
@@ -132,7 +134,8 @@ public class Util {
 
     /**
      * De-duplicate a list of strings by appending distinguishing suffixes as
-     * needed. The number of strings and their order remains unchanged.
+     * needed. The number of strings and their order remains unchanged. TODO
+     * remove
      *
      * @param list input (not null)
      * @param separator text to separate original name from suffix (not null)
@@ -345,6 +348,26 @@ public class Util {
         }
 
         return result;
+    }
+
+    /**
+     * Remove all controls from the specified subtree of the scene graph. Note:
+     * recursive!
+     *
+     * @param subtree (not null)
+     */
+    public static void removeAllControls(Spatial subtree) {
+        while (subtree.getNumControls() > 0) {
+            Control control = subtree.getControl(0);
+            subtree.removeControl(control);
+        }
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                removeAllControls(child);
+            }
+        }
     }
 
     /**
