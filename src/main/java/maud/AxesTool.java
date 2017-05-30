@@ -73,7 +73,7 @@ class AxesTool extends WindowController {
     /**
      * SG node to translate and rotate the axes for the target CG model
      */
-    final private Node targetAxesNode = new Node("target node");
+    final private Node targetAxesNode = new Node("target axes node");
     // *************************************************************************
     // constructors
 
