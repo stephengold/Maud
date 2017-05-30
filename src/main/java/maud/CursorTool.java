@@ -148,14 +148,20 @@ class CursorTool extends WindowController {
         /*
          * Trace the ray to each CG model's visualization.
          */
-        Spatial cgModel = Maud.model.source.view.getCgmRoot();
-        Vector3f sourceContactPoint = findContact(cgModel, ray);
-        cgModel = Maud.model.target.view.getCgmRoot();
-        Vector3f targetContactPoint = findContact(cgModel, ray);
+        Vector3f sourceContactPoint;
+        if (Maud.model.source.isLoaded()) {
+            Spatial cgmRoot = Maud.model.source.view.getCgmRoot();
+            sourceContactPoint = findContact(cgmRoot, ray);
+        } else {
+            sourceContactPoint = null;
+        }
+        Spatial cgmRoot = Maud.model.target.view.getCgmRoot();
+        Vector3f targetContactPoint = findContact(cgmRoot, ray);
 
+        Vector3f viewPoint = cam.getLocation();
         if (sourceContactPoint != null && targetContactPoint != null) {
-            float sourceRange = vertex.distance(sourceContactPoint);
-            float targetRange = vertex.distance(targetContactPoint);
+            float sourceRange = viewPoint.distance(sourceContactPoint);
+            float targetRange = viewPoint.distance(targetContactPoint);
             if (sourceRange < targetRange) {
                 Maud.model.cursor.setLocation(sourceContactPoint);
             } else {

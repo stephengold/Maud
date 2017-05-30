@@ -78,9 +78,11 @@ public class SelectedSgc implements Cloneable {
             editableCgm.deleteControl();
             selectedIndex = -1;
 
-            Skeleton newSkeleton = loadedCgm.bones.getSkeleton();
+            Boolean selectedSpatialFlag = false;
+            Skeleton newSkeleton;
+            newSkeleton = loadedCgm.bones.findSkeleton(selectedSpatialFlag);
             if (oldSkeleton != newSkeleton) {
-                onSkeletonChanged(newSkeleton);
+                onSkeletonChanged(newSkeleton, selectedSpatialFlag);
             }
 
             AnimControl newAnimControl = loadedCgm.getAnimControl();
@@ -198,9 +200,10 @@ public class SelectedSgc implements Cloneable {
 
         selectedIndex = newIndex;
 
-        Skeleton newSkeleton = loadedCgm.bones.getSkeleton();
+        Boolean selecteSpatialFlag = false;
+        Skeleton newSkeleton = loadedCgm.bones.findSkeleton(selecteSpatialFlag);
         if (oldSkeleton != newSkeleton) {
-            onSkeletonChanged(newSkeleton);
+            onSkeletonChanged(newSkeleton, selecteSpatialFlag);
         }
 
         AnimControl newAnimControl = loadedCgm.getAnimControl();
@@ -291,9 +294,13 @@ public class SelectedSgc implements Cloneable {
      * Change the selected skeleton.
      *
      * @param newSkeleton (may be null, unaffected)
+     * @param selectedSpatialFlag where to add controls: false &rarr; CG model
+     * root, true &rarr; selected spatial
      */
-    private void onSkeletonChanged(Skeleton newSkeleton) {
-        loadedCgm.view.setSkeleton(newSkeleton);
+    private void onSkeletonChanged(Skeleton newSkeleton,
+            boolean selectedSpatialFlag) {
+        loadedCgm.view.setSkeleton(newSkeleton, selectedSpatialFlag);
+
         loadedCgm.bone.selectNoBone();
         loadedCgm.pose.resetToBind();
     }

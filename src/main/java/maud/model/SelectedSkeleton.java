@@ -110,12 +110,15 @@ public class SelectedSkeleton implements Cloneable {
     }
 
     /**
-     * Access the selected skeleton.
+     * Find the selected skeleton.
      *
+     * @param storeSelectedSpatialFlag if not null, set to true if the skeleton
+     * came from the selected spatial, false if it came from the CG model root
      * @return the pre-existing instance, or null if none
      */
-    Skeleton getSkeleton() {
+    public Skeleton findSkeleton(Boolean storeSelectedSpatialFlag) {
         AnimControl animControl;
+        boolean selectedSpatialFlag;
         SkeletonControl skeletonControl;
         Skeleton skeleton = null;
         /*
@@ -131,25 +134,43 @@ public class SelectedSkeleton implements Cloneable {
             skeletonControl = (SkeletonControl) selectedSgc;
             skeleton = skeletonControl.getSkeleton();
         }
+        if (skeleton != null) {
+            selectedSpatialFlag = true;
+        } else {
+            selectedSpatialFlag = false;
+        }
         /*
          * If not, use the skeleton from the first AnimControl or
          * SkeletonControl in the CG model's root spatial.
          */
-        Spatial modelRoot = loadedCgm.getRootSpatial();
+        Spatial cgmRoot = loadedCgm.getRootSpatial();
         if (skeleton == null) {
-            animControl = modelRoot.getControl(AnimControl.class);
+            animControl = cgmRoot.getControl(AnimControl.class);
             if (animControl != null) {
                 skeleton = animControl.getSkeleton();
             }
         }
         if (skeleton == null) {
-            skeletonControl = modelRoot.getControl(SkeletonControl.class);
+            skeletonControl = cgmRoot.getControl(SkeletonControl.class);
             if (skeletonControl != null) {
                 skeleton = skeletonControl.getSkeleton();
             }
         }
 
+        if (storeSelectedSpatialFlag != null) {
+            storeSelectedSpatialFlag = selectedSpatialFlag;
+        }
         return skeleton;
+    }
+
+    /**
+     * Find the selected skeleton. TODO rename
+     *
+     * @return the pre-existing instance, or null if none
+     */
+    public Skeleton getSkeleton() {
+        Skeleton result = findSkeleton(null);
+        return result;
     }
 
     /**

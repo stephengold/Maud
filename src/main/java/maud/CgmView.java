@@ -38,6 +38,8 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.util.clone.Cloner;
+import com.jme3.util.clone.JmeCloneable;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
@@ -46,11 +48,11 @@ import jme3utilities.math.MyMath;
 import maud.model.LoadedCGModel;
 
 /**
- * A visualization of a loaded CG model.
+ * Visualization of a loaded CG model, component of a DddModel.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class CgmView {
+public class CgmView implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -63,45 +65,48 @@ public class CgmView {
     // fields
 
     /**
-     * the MVC model for the CG model
+     * the animation control with the selected skeleton
      */
-    final private LoadedCGModel model;
+    private AnimControl animControl;
     /**
-     * the parent node of the CG model, used for rotation
+     * the MVC model that owns this view
      */
-    final private Node parentNode;
+    private LoadedCGModel model;
     /**
-     * the skeleton of this view's copy of the CG model
+     * attachment point in the scene graph (used for transforms)
      */
-    private Skeleton skeleton = null;
+    final private Node parent;
     /**
-     * the skeleton control in this view's copy of the CG model
+     * the selected skeleton in this view's copy of its CG model
      */
-    private SkeletonControl skeletonControl = null;
+    private Skeleton skeleton;
     /**
-     * the skeleton debug control in this view's copy of the CG model
+     * the skeleton control with the selected skeleton
      */
-    private SkeletonDebugControl skeletonDebugControl = null;
+    private SkeletonControl skeletonControl;
     /**
-     * the root spatial in this view's copy of the CG model
+     * the skeleton debug control with the selected skeleton
      */
-    private Spatial cgModelRoot = null;
+    private SkeletonDebugControl skeletonDebugControl;
+    /**
+     * the root spatial in this view's copy of its CG model
+     */
+    private Spatial cgmRoot;
     // *************************************************************************
     // constructors
 
     /**
-     * Instantiate a new view.
+     * Instantiate a new visualization.
      *
-     * @param m the MVC model for the CG model (not null)
-     * @param parent parent node in the scene graph (not null)
+     * @param loadedModel MVC model that will own this view (not null)
+     * @param parentNode attachment point in the scene graph (not null)
      */
-    CgmView(LoadedCGModel m, Node parent) {
-        assert m != null;
-        assert parent != null;
+    public CgmView(LoadedCGModel loadedModel, Node parentNode) {
+        Validate.nonNull(loadedModel, "loaded model");
+        Validate.nonNull(parentNode, "parent");
 
-        parentNode = parent;
-        model = m;
-        model.setView(this);
+        model = loadedModel;
+        parent = parentNode;
     }
     // *************************************************************************
     // new methods exposed
@@ -122,28 +127,23 @@ public class CgmView {
     }
 
     /**
-     * Create a duplicate copy of this view, for checkpointing.
-     *
-     * @param loadedCgm the MVC model for the loaded CG model (not null)
-     * @return a new instance
-     */
-    public CgmView createCopy(LoadedCGModel loadedCgm) {
-        Validate.nonNull(loadedCgm, "CG model");
-
-        CgmView result = new CgmView(loadedCgm, parentNode);
-        result.setCgmRoot(cgModelRoot);
-
-        return result;
-    }
-
-    /**
      * Find an animated geometry of the CG model.
      *
      * @return a pre-existing instance, or null if none
      */
     Geometry findAnimatedGeometry() {
-        Geometry result = MySpatial.findAnimatedGeometry(cgModelRoot);
+        Geometry result = MySpatial.findAnimatedGeometry(cgmRoot);
         return result;
+    }
+
+    /**
+     * Access the root spatial of the CG model.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public Spatial getCgmRoot() {
+        assert cgmRoot != null;
+        return cgmRoot;
     }
 
     /**
@@ -156,16 +156,6 @@ public class CgmView {
     }
 
     /**
-     * Access the root spatial of the CG model. TODO reorder
-     *
-     * @return the pre-existing instance (not null)
-     */
-    Spatial getCgmRoot() {
-        assert cgModelRoot != null;
-        return cgModelRoot;
-    }
-
-    /**
      * Replace the CG model with a newly loaded one.
      *
      * @param loadedRoot (not null)
@@ -174,52 +164,40 @@ public class CgmView {
         /*
          * Detach the old spatial (if any) from the scene.
          */
-        if (cgModelRoot != null) {
-            parentNode.detachChild(cgModelRoot);
+        if (cgmRoot != null) {
+            parent.detachChild(cgmRoot);
         }
-        cgModelRoot = loadedRoot;
+        setCgmRoot(loadedRoot);
 
-        prepareForEditing();
+        prepareForViewing();
     }
 
     /**
-     * Copy a saved state to this one.
-     *
-     * @param savedState (not null)
+     * Re-install this visualization in the scene graph.
      */
-    void restore(CgmView savedState) {
-        assert cgModelRoot != null;
+    void reinstall() {
         /*
-         * Detach the old spatial from the scene graph.
+         * Detach any old visualization from the scene graph.
          */
-        parentNode.detachChild(cgModelRoot);
-
-        Spatial sp = savedState.getCgmRoot();
-        cgModelRoot = sp.clone();
-        parentNode.attachChild(cgModelRoot);
-
-        skeletonControl = cgModelRoot.getControl(SkeletonControl.class);
-        if (skeletonControl == null) {
-            skeleton = null;
-        } else {
-            skeleton = skeletonControl.getSkeleton();
+        parent.detachAllChildren();
+        /*
+         * Attach this visualization.
+         */
+        if (cgmRoot != null) {
+            parent.attachChild(cgmRoot);
         }
-
-        skeletonDebugControl = cgModelRoot.getControl(
-                SkeletonDebugControl.class);
-        assert skeletonDebugControl != null;
     }
 
     /**
      * Visualize a different CG model, or none.
      *
-     * @param newRoot root spatial (may be null, unaffected)
+     * @param newCgmRoot CG model's root spatial, or null if none (unaffected)
      */
-    void setCgmRoot(Spatial newRoot) {
-        if (newRoot == null) {
-            cgModelRoot = null;
+    void setCgmRoot(Spatial newCgmRoot) {
+        if (newCgmRoot == null) {
+            cgmRoot = null;
         } else {
-            cgModelRoot = newRoot.clone();
+            cgmRoot = newCgmRoot.clone();
         }
     }
 
@@ -231,7 +209,7 @@ public class CgmView {
     public void setHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial spatial = model.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = model.spatial.findSpatial(cgmRoot);
         spatial.setCullHint(newHint);
     }
 
@@ -243,32 +221,70 @@ public class CgmView {
     public void setMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "shadow mode");
 
-        Spatial spatial = model.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = model.spatial.findSpatial(cgmRoot);
         spatial.setShadowMode(newMode);
     }
 
     /**
-     * Alter the skeleton of the loaded CG model.
+     * Alter which MVC model corresponds with this view. Used after cloning.
+     *
+     * @param loadedModel (not null)
+     */
+    public void setModel(LoadedCGModel loadedModel) {
+        Validate.nonNull(loadedModel, "loaded model");
+        model = loadedModel;
+    }
+
+    /**
+     * Visualize a different skeleton, or none.
      *
      * @param newSkeleton (may be null, unaffected)
+     * @param selectedSpatialFlag where to add controls: false &rarr; CG model
+     * root, true &rarr; selected spatial
      */
-    public void setSkeleton(Skeleton newSkeleton) {
+    public void setSkeleton(Skeleton newSkeleton, boolean selectedSpatialFlag) {
+        Spatial controlled;
+        if (animControl != null) {
+            controlled = animControl.getSpatial();
+            controlled.removeControl(animControl);
+        }
         if (skeletonControl != null) {
-            cgModelRoot.removeControl(skeletonControl);
+            controlled = skeletonControl.getSpatial();
+            controlled.removeControl(skeletonControl);
+        }
+        if (skeletonDebugControl != null) {
+            controlled = skeletonDebugControl.getSpatial();
+            controlled.removeControl(skeletonDebugControl);
+        }
+
+        if (selectedSpatialFlag) {
+            controlled = model.spatial.findSpatial(cgmRoot);
+        } else {
+            controlled = cgmRoot;
         }
 
         if (newSkeleton == null) {
+            animControl = null;
             skeleton = null;
             skeletonControl = null;
+            skeletonDebugControl = null;
         } else {
             skeleton = new Skeleton(newSkeleton);
-            skeletonControl = new SkeletonControl(skeleton);
-            cgModelRoot.addControl(skeletonControl);
             Util.setUserControl(skeleton, true);
-            skeletonControl.setHardwareSkinningPreferred(false);
-        }
 
-        skeletonDebugControl.setSkeleton(skeleton);
+            animControl = new AnimControl(skeleton);
+            controlled.addControl(animControl);
+
+            skeletonControl = new SkeletonControl(skeleton);
+            controlled.addControl(skeletonControl);
+            skeletonControl.setHardwareSkinningPreferred(false);
+
+            Maud application = Maud.getApplication();
+            AssetManager assetManager = application.getAssetManager();
+            skeletonDebugControl = new SkeletonDebugControl(assetManager);
+            controlled.addControl(skeletonDebugControl);
+            skeletonDebugControl.setSkeleton(skeleton);
+        }
     }
 
     /**
@@ -279,7 +295,7 @@ public class CgmView {
     public void setSpatialRotation(Quaternion rotation) {
         Validate.nonNull(rotation, "rotation");
 
-        Spatial spatial = model.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = model.spatial.findSpatial(cgmRoot);
         spatial.setLocalRotation(rotation);
     }
 
@@ -291,7 +307,7 @@ public class CgmView {
     public void setSpatialScale(Vector3f scale) {
         Validate.nonNull(scale, "scale");
 
-        Spatial spatial = model.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = model.spatial.findSpatial(cgmRoot);
         spatial.setLocalScale(scale);
     }
 
@@ -303,7 +319,7 @@ public class CgmView {
     public void setSpatialTranslation(Vector3f translation) {
         Validate.nonNull(translation, "translation");
 
-        Spatial spatial = model.spatial.findSpatial(cgModelRoot);
+        Spatial spatial = model.spatial.findSpatial(cgmRoot);
         spatial.setLocalTranslation(translation);
     }
 
@@ -314,6 +330,7 @@ public class CgmView {
         int boneCount = model.bones.countBones();
         int numTransforms = model.pose.countTransforms();
         assert numTransforms == boneCount : numTransforms;
+        assert skeleton.getBoneCount() == boneCount : boneCount;
 
         Transform transform = new Transform();
         Vector3f translation = new Vector3f();
@@ -338,61 +355,82 @@ public class CgmView {
      */
     void updateTransform() {
         Transform transform = model.transform.worldTransform();
-        parentNode.setLocalTransform(transform);
+        parent.setLocalTransform(transform);
+    }
+    // *************************************************************************
+    // JmeCloner methods
+
+    /**
+     * Convert this shallow-cloned instance into a deep-cloned one, using the
+     * specified cloner and original to resolve copied fields.
+     *
+     * @param cloner the cloner currently cloning this control
+     * @param original the control from which this control was shallow-cloned
+     */
+    @Override
+    public void cloneFields(Cloner cloner, Object original) {
+        animControl = cloner.clone(animControl);
+        cgmRoot = cloner.clone(cgmRoot);
+        skeleton = cloner.clone(skeleton);
+        skeletonControl = cloner.clone(skeletonControl);
+        skeletonDebugControl = cloner.clone(skeletonDebugControl);
+    }
+
+    /**
+     * Create a shallow clone for the JME cloner.
+     *
+     * @return
+     */
+    @Override
+    public CgmView jmeClone() {
+        try {
+            CgmView clone = (CgmView) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Alter a newly loaded CG model to prepare it for viewing and editing.
+     * Alter a newly loaded CG model to prepare it for visualization. Assumes
+     * the CG model's root node will be the selected spatial.
      */
-    private void prepareForEditing() {
+    private void prepareForViewing() {
         /*
          * Attach the CG model to the scene graph.
          */
-        parentNode.attachChild(cgModelRoot);
-
-        skeletonControl = cgModelRoot.getControl(SkeletonControl.class);
+        parent.attachChild(cgmRoot);
         /*
-         * Update reference to skeleton.
+         * Use the skeleton from the first AnimControl or
+         * SkeletonControl in the CG model's root spatial.
          */
-        AnimControl animControl = cgModelRoot.getControl(AnimControl.class);
-        if (animControl == null) {
-            skeleton = null;
+        AnimControl anControl = cgmRoot.getControl(AnimControl.class);
+        if (anControl != null) {
+            skeleton = anControl.getSkeleton();
         } else {
-            skeleton = animControl.getSkeleton();
-        }
-        if (skeleton == null) {
-            SkeletonControl c = cgModelRoot.getControl(SkeletonControl.class);
-            if (c != null) {
-                skeleton = c.getSkeleton();
+            SkeletonControl skelControl;
+            skelControl = cgmRoot.getControl(SkeletonControl.class);
+            if (skelControl != null) {
+                skeleton = skelControl.getSkeleton();
+            } else {
+                skeleton = null;
             }
         }
-        if (skeleton != null) {
-            /*
-             * Enable user control for all bones in the skeleton.
-             */
-            Util.setUserControl(skeleton, true);
-            /*
-             * Disable hardware skinning so that the raycast in
-             * CursorTool.findContact() will work.
-             */
-            skeletonControl.setHardwareSkinningPreferred(false);
-        }
         /*
-         * Add a new SkeletonDebugControl.
+         * Remove all SG controls.
          */
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-        skeletonDebugControl = new SkeletonDebugControl(assetManager);
-        cgModelRoot.addControl(skeletonDebugControl);
-        skeletonDebugControl.setEnabled(true);
-        skeletonDebugControl.setSkeleton(skeleton);
+        Util.removeAllControls(cgmRoot);
+        /*
+         * Create and add controls for the skeleton.
+         */
+        setSkeleton(skeleton, false);
         /*
          * Configure the CG model transform based on the range
          * of mesh coordinates in the CG model.
          */
-        Vector3f[] minMax = MySpatial.findMinMaxCoords(cgModelRoot, false);
+        Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot, false);
         Vector3f extents = minMax[1].subtract(minMax[0]);
         float maxExtent = MyMath.max(extents.x, extents.y, extents.z);
         assert maxExtent > 0f : maxExtent;

@@ -46,6 +46,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.ogre.MeshLoader;
+import com.jme3.util.clone.Cloner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -176,8 +177,8 @@ public class LoadedCGModel implements Cloneable {
         }
 
         Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
-        Transform transform = selectedSpatial.getLocalTransform();
-        storeResult.set(transform);
+        Transform trans = selectedSpatial.getLocalTransform();
+        storeResult.set(trans);
 
         return storeResult;
     }
@@ -209,8 +210,8 @@ public class LoadedCGModel implements Cloneable {
      */
     List<Integer> findSpatialNamed(String name) {
         List<Integer> treePosition = new ArrayList<>(4);
-        Spatial spatial = findSpatialNamed(name, rootSpatial, treePosition);
-        if (spatial == null) {
+        Spatial sp = findSpatialNamed(name, rootSpatial, treePosition);
+        if (sp == null) {
             treePosition = null;
         }
 
@@ -226,15 +227,15 @@ public class LoadedCGModel implements Cloneable {
     Animation getAnimation(String name) {
         Validate.nonNull(name, "animation name");
 
-        Animation animation;
+        Animation result;
         AnimControl animControl = getAnimControl();
         if (animControl == null) {
-            animation = null;
+            result = null;
         } else {
-            animation = animControl.getAnim(name);
+            result = animControl.getAnim(name);
         }
 
-        return animation;
+        return result;
     }
 
     /**
@@ -277,13 +278,13 @@ public class LoadedCGModel implements Cloneable {
         if (animationName.equals(LoadedAnimation.bindPoseName)) {
             result = 0f;
         } else {
-            Animation animation = getAnimation(animationName);
-            if (animation == null) {
+            Animation anim = getAnimation(animationName);
+            if (anim == null) {
                 logger.log(Level.WARNING, "no animation named {0}",
                         MyString.quote(animationName));
                 result = 0f;
             } else {
-                result = animation.getLength();
+                result = anim.getLength();
             }
         }
 
@@ -340,8 +341,8 @@ public class LoadedCGModel implements Cloneable {
     public boolean hasAnimation(String name) {
         Validate.nonNull(name, "name");
 
-        Animation animation = getAnimation(name);
-        if (animation == null) {
+        Animation anim = getAnimation(name);
+        if (anim == null) {
             return false;
         } else {
             return true;
@@ -355,8 +356,8 @@ public class LoadedCGModel implements Cloneable {
      * @return true if found, otherwise false
      */
     public boolean hasGeometry(String name) {
-        Spatial spatial = findSpatialNamed(name, rootSpatial, null);
-        boolean result = spatial instanceof Geometry;
+        Spatial sp = findSpatialNamed(name, rootSpatial, null);
+        boolean result = sp instanceof Geometry;
 
         return result;
     }
@@ -381,8 +382,8 @@ public class LoadedCGModel implements Cloneable {
      * @return true if found, otherwise false
      */
     public boolean hasSpatial(String name) {
-        Spatial spatial = findSpatialNamed(name, rootSpatial, null);
-        if (spatial == null) {
+        Spatial sp = findSpatialNamed(name, rootSpatial, null);
+        if (sp == null) {
             return false;
         } else {
             return true;
@@ -641,12 +642,6 @@ public class LoadedCGModel implements Cloneable {
             clone.rootSpatial = rootSpatial.clone();
         }
 
-        if (view == null) {
-            clone.view = null;
-        } else {
-            clone.view = view.createCopy(clone);
-        }
-
         clone.animation = animation.clone();
         clone.bone = bone.clone();
         clone.bones = bones.clone();
@@ -664,6 +659,13 @@ public class LoadedCGModel implements Cloneable {
         clone.spatial.setCgm(clone);
         clone.track.setCgm(clone);
         clone.transform.setCgm(clone);
+
+        if (view == null) {
+            clone.view = null;
+        } else {
+            clone.view = Cloner.deepClone(view);
+            clone.view.setModel(clone);
+        }
 
         return clone;
     }
@@ -934,8 +936,8 @@ public class LoadedCGModel implements Cloneable {
         }
         Set<String> nameSet = new TreeSet<>();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            Bone bone = skeleton.getBone(boneIndex);
-            if (!bones.validateBone(bone, nameSet)) {
+            Bone b = skeleton.getBone(boneIndex);
+            if (!bones.validateBone(b, nameSet)) {
                 return false;
             }
         }
@@ -988,8 +990,8 @@ public class LoadedCGModel implements Cloneable {
                 logger.warning("animation has no tracks");
                 return false;
             }
-            for (Track track : tracks) {
-                float[] times = track.getKeyFrameTimes();
+            for (Track tr : tracks) {
+                float[] times = tr.getKeyFrameTimes();
                 if (times == null) {
                     logger.warning("track has no keyframe data");
                     return false;
@@ -1019,8 +1021,8 @@ public class LoadedCGModel implements Cloneable {
                     }
                     prev = time;
                 }
-                if (track instanceof BoneTrack) {
-                    BoneTrack boneTrack = (BoneTrack) track;
+                if (tr instanceof BoneTrack) {
+                    BoneTrack boneTrack = (BoneTrack) tr;
                     if (!validateBoneTrack(boneTrack, numBones, numFrames)) {
                         return false;
                     }

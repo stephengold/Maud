@@ -107,5 +107,7 @@ class Checkpoint {
      */
     void restore() {
         Maud.model = new DddModel(model);
+        Maud.model.source.view.reinstall();
+        Maud.model.target.view.reinstall();
     }
 }

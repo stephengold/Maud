@@ -264,13 +264,15 @@ public class Maud extends GuiApplication {
     private void startup1() {
         logger.info("");
 
-        Node parent = new Node("parent of source model");
-        rootNode.attachChild(parent);
-        new CgmView(model.source, parent);
+        Node sourceParent = new Node("parent for source model");
+        rootNode.attachChild(sourceParent);
+        CgmView sourceView = new CgmView(model.source, sourceParent);
+        model.source.setView(sourceView);
 
-        parent = new Node("parent of target model");
-        rootNode.attachChild(parent);
-        new CgmView(model.target, parent);
+        Node targetParent = new Node("parent for target model");
+        rootNode.attachChild(targetParent);
+        CgmView targetView = new CgmView(model.target, targetParent);
+        model.target.setView(targetView);
         /*
          * Attach screen controllers for the "3D View" screen and BindScreen.
          */

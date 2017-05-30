@@ -90,9 +90,16 @@ public class EditableCgm extends LoadedCGModel {
 
         AnimControl control = getAnimControl();
         if (control == null) {
-            Skeleton skeleton = bones.getSkeleton();
+            Boolean selectedSpatialFlag = false;
+            Skeleton skeleton = bones.findSkeleton(selectedSpatialFlag);
+            assert skeleton != null;
             control = new AnimControl(skeleton);
-            rootSpatial.addControl(control);
+            if (selectedSpatialFlag) {
+                Spatial modelSpatial = spatial.modelSpatial();
+                modelSpatial.addControl(control);
+            } else {
+                rootSpatial.addControl(control);
+            }
         }
         control.addAnim(newAnimation);
         setEdited("add animation");
