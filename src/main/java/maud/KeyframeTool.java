@@ -148,7 +148,7 @@ class KeyframeTool extends WindowController {
             String boneName = Maud.model.target.bone.getName();
             String animName = Maud.model.target.animation.getName();
             trackDescription = String.format("%s in %s", boneName, animName);
-        } else if (Maud.model.target.bone.isBoneSelected()) {
+        } else if (Maud.model.target.bone.isSelected()) {
             String boneName = Maud.model.target.bone.getName();
             trackDescription = String.format("none for %s", boneName);
         } else {

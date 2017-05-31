@@ -130,7 +130,7 @@ class DddMenus {
      * Handle a "select boneChild" action with no argument.
      */
     void selectBoneChild() {
-        if (Maud.model.target.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isSelected()) {
             int numChildren = Maud.model.target.bone.countChildren();
             if (numChildren == 1) {
                 Maud.model.target.bone.selectFirstChild();
@@ -278,7 +278,7 @@ class DddMenus {
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
-        if (Maud.model.target.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isSelected()) {
             builder.add("Attach prop");
             builder.addDialog("Rename");
         }
@@ -314,7 +314,7 @@ class DddMenus {
             builder.add("Child");
         }
 
-        boolean isSelected = Maud.model.target.bone.isBoneSelected();
+        boolean isSelected = Maud.model.target.bone.isSelected();
         boolean isRoot = Maud.model.target.bone.isRootBone();
         if (isSelected && !isRoot) {
             builder.addBone("Parent");

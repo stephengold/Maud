@@ -166,7 +166,7 @@ class BoneTranslationTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (Maud.model.target.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isSelected()) {
             setSlidersToPose();
             if (shouldBeEnabled()) {
                 Maud.gui.setButtonLabel("resetOffAnimButton", "Animation");
@@ -268,7 +268,7 @@ class BoneTranslationTool extends WindowController {
      * @return true if enabled, otherwise false
      */
     private boolean shouldBeEnabled() {
-        if (Maud.model.target.bone.isBoneSelected()
+        if (Maud.model.target.bone.isSelected()
                 && !Maud.model.target.animation.isMoving()) {
             return true;
         } else {

@@ -200,7 +200,7 @@ class DddDialogs {
      * Display a "rename bone" dialog.
      */
     void renameBone() {
-        if (Maud.model.target.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isSelected()) {
             String oldName = Maud.model.target.bone.getName();
             DialogController controller = new BoneRenameDialog("Rename");
 

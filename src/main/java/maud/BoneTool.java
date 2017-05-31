@@ -111,7 +111,7 @@ class BoneTool extends WindowController {
         super.update(elapsedTime);
 
         String hasTrackText, rButton, sButton, tButton;
-        if (Maud.model.target.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isSelected()) {
             if (Maud.model.target.bone.hasTrack()) {
                 hasTrackText = "has track";
             } else {
@@ -163,7 +163,7 @@ class BoneTool extends WindowController {
     private void updateChildren() {
         String childText, scButton;
 
-        if (Maud.model.target.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isSelected()) {
             int numChildren = Maud.model.target.bone.countChildren();
             if (numChildren > 1) {
                 childText = String.format("%d children", numChildren);
@@ -194,7 +194,7 @@ class BoneTool extends WindowController {
         String nButton, pButton;
 
         int numBones = Maud.model.target.bones.countBones();
-        if (Maud.model.target.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isSelected()) {
             int selectedIndex = Maud.model.target.bone.getIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
             nButton = "+";
@@ -223,7 +223,7 @@ class BoneTool extends WindowController {
     private void updateName() {
         String nameText, rButton;
 
-        if (Maud.model.target.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isSelected()) {
             String name = Maud.model.target.bone.getName();
             nameText = MyString.quote(name);
             rButton = "Rename";
@@ -243,7 +243,7 @@ class BoneTool extends WindowController {
     private void updateParent() {
         String parentText, spButton;
 
-        if (Maud.model.target.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isSelected()) {
             if (Maud.model.target.bone.isRootBone()) {
                 int numRoots = Maud.model.target.bones.countRootBones();
                 if (numRoots == 1) {

@@ -152,7 +152,7 @@ class BoneRotationTool extends WindowController {
 
         String aButton = "";
         String bButton = "";
-        if (Maud.model.target.bone.isBoneSelected()) {
+        if (Maud.model.target.bone.isSelected()) {
             setSlidersToPose();
             if (shouldBeEnabled()) {
                 aButton = "Animation";
@@ -243,7 +243,7 @@ class BoneRotationTool extends WindowController {
      * @return true if enabled, otherwise false
      */
     private boolean shouldBeEnabled() {
-        if (Maud.model.target.bone.isBoneSelected()
+        if (Maud.model.target.bone.isSelected()
                 && !Maud.model.target.animation.isMoving()) {
             return true;
         } else {

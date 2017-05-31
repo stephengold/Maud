@@ -168,7 +168,7 @@ public class EditableCgm extends LoadedCGModel {
         Validate.nonNull(newName, "bone name");
 
         boolean success;
-        if (!bone.isBoneSelected()) {
+        if (!bone.isSelected()) {
             logger.log(Level.WARNING, "Rename failed: no bone selected.",
                     MyString.quote(newName));
             success = false;

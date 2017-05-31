@@ -189,19 +189,6 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Test whether a bone is selected. TODO rename
-     *
-     * @return true if selected, otherwise false
-     */
-    public boolean isBoneSelected() {
-        if (selectedIndex == -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
      * Test whether the selected bone is a root bone.
      *
      * @return true if it's a root, otherwise false
@@ -220,17 +207,15 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Select the specified bone. TODO reorder
+     * Test whether a bone is selected.
      *
-     * @param bone which bone to select (not null)
+     * @return true if selected, otherwise false
      */
-    void select(Bone bone) {
-        assert bone != null;
-
-        Skeleton skeleton = loadedCgm.bones.getSkeleton();
-        int index = skeleton.getBoneIndex(bone);
-        if (index != -1) {
-            select(index);
+    public boolean isSelected() {
+        if (selectedIndex == -1) {
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -255,6 +240,21 @@ public class SelectedBone implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Select the specified bone.
+     *
+     * @param bone which bone to select (not null)
+     */
+    void select(Bone bone) {
+        assert bone != null;
+
+        Skeleton skeleton = loadedCgm.bones.getSkeleton();
+        int index = skeleton.getBoneIndex(bone);
+        if (index != -1) {
+            select(index);
+        }
     }
 
     /**

@@ -179,7 +179,7 @@ public class SelectedTrack implements Cloneable {
      * @return the pre-existing instance, or null if none
      */
     BoneTrack findTrack() {
-        if (!loadedCgm.bone.isBoneSelected()) {
+        if (!loadedCgm.bone.isSelected()) {
             return null;
         } else if (loadedCgm.animation.isBindPoseLoaded()) {
             return null;
@@ -198,7 +198,7 @@ public class SelectedTrack implements Cloneable {
      * @return true if one is selected, false if none is selected
      */
     public boolean isTrackSelected() {
-        if (loadedCgm.bone.isBoneSelected()) {
+        if (loadedCgm.bone.isSelected()) {
             if (loadedCgm.animation.isBindPoseLoaded()) {
                 return false;
             }
@@ -236,7 +236,7 @@ public class SelectedTrack implements Cloneable {
         List<String> result = null;
         if (loadedCgm.animation.isBindPoseLoaded()) {
             logger.log(Level.INFO, "No animation is selected.");
-        } else if (!loadedCgm.bone.isBoneSelected()) {
+        } else if (!loadedCgm.bone.isSelected()) {
             logger.log(Level.INFO, "No bone is selected.");
         } else if (!isTrackSelected()) {
             logger.log(Level.INFO, "No track is selected.");
