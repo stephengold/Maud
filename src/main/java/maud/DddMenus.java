@@ -27,11 +27,9 @@
 package maud;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
@@ -143,7 +141,8 @@ class DddMenus {
             /*
              * Treat the argument as a bone-name prefix.
              */
-            List<String> boneNames = Maud.model.target.bones.listBoneNames(argument);
+            List<String> boneNames;
+            boneNames = Maud.model.target.bones.listBoneNames(argument);
             showBoneSubmenu(boneNames);
         }
     }
@@ -157,7 +156,8 @@ class DddMenus {
             if (numChildren == 1) {
                 Maud.model.target.bone.selectFirstChild();
             } else if (numChildren > 1) {
-                List<String> boneNames = Maud.model.target.bone.listChildNames();
+                List<String> boneNames;
+                boneNames = Maud.model.target.bone.listChildNames();
                 showBoneSubmenu(boneNames);
             }
         }
@@ -173,7 +173,8 @@ class DddMenus {
             String name = argument.substring(1);
             Maud.model.target.bone.select(name);
         } else {
-            List<String> names = Maud.model.target.bones.listChildBoneNames(argument);
+            List<String> names;
+            names = Maud.model.target.bones.listChildBoneNames(argument);
 
             builder.reset();
             builder.addBone("!" + argument);
@@ -192,7 +193,8 @@ class DddMenus {
      * Handle a "select boneWithTrack" action.
      */
     void selectBoneWithTrack() {
-        List<String> boneNames = Maud.model.target.animation.listBonesWithTrack();
+        List<String> boneNames;
+        boneNames = Maud.model.target.animation.listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
             Maud.model.target.bone.select(boneNames.get(0));
@@ -213,7 +215,8 @@ class DddMenus {
             builder.reset();
             for (int childIndex = 0; childIndex < numChildren; childIndex++) {
                 String choice = String.format("#%d", childIndex + 1);
-                String name = Maud.model.target.spatial.getChildName(childIndex);
+                String name;
+                name = Maud.model.target.spatial.getChildName(childIndex);
                 if (name != null) {
                     choice += " " + MyString.quote(name);
                 }
@@ -818,20 +821,12 @@ class DddMenus {
                     break;
 
                 case "Save as asset":
-                    String baseAssetPath = Maud.model.target.getAssetPath();
-                    Maud.gui.closeAllPopups();
-                    Maud.gui.showTextEntryDialog(
-                            "Enter base asset path for model:", baseAssetPath,
-                            "Save", DddInputMode.saveModelAssetPrefix, null);
+                    Maud.gui.dialogs.saveModelAsset();
                     handled = true;
                     break;
 
                 case "Save as file":
-                    String baseFilePath = Maud.model.target.getFilePath();
-                    Maud.gui.closeAllPopups();
-                    Maud.gui.showTextEntryDialog(
-                            "Enter base file path for model:", baseFilePath,
-                            "Save", DddInputMode.saveModelFilePrefix, null);
+                    Maud.gui.dialogs.saveModelFile();
                     handled = true;
                     break;
 
@@ -930,24 +925,7 @@ class DddMenus {
                 break;
 
             case "License":
-                File licenseFile = new File("LICENSE");
-                Scanner scanner = null;
-                try {
-                    scanner = new Scanner(licenseFile).useDelimiter("\\Z");
-                } catch (FileNotFoundException e) {
-                }
-                String text2;
-                if (scanner == null) {
-                    text2 = "Your software license is missing!";
-                } else {
-                    String contents = scanner.next();
-                    scanner.close();
-                    text2 = String.format(
-                            "Here's your software license for Maud:\n%s\n",
-                            contents);
-                }
-                Maud.gui.closeAllPopups();
-                Maud.gui.showInfoDialog("License information", text2);
+                Maud.gui.dialogs.license();
                 handled = true;
                 break;
 

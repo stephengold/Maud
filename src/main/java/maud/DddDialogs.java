@@ -29,8 +29,11 @@ package maud;
 import com.jme3.asset.AssetManager;
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.Nifty;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
@@ -118,6 +121,32 @@ class DddDialogs {
                 MyString.quote(name));
         Maud.gui.closeAllPopups();
         Maud.gui.showConfirmDialog(message, "Delete", "delete control", null);
+    }
+
+    /**
+     * Display a "License information" infobox.
+     *
+     * @param actionPrefix for the dialog (not null)
+     */
+    void license() {
+        File licenseFile = new File("LICENSE");
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(licenseFile).useDelimiter("\\Z");
+        } catch (FileNotFoundException e) {
+        }
+        String text2;
+        if (scanner == null) {
+            text2 = "Your software license is missing!";
+        } else {
+            String contents = scanner.next();
+            scanner.close();
+            text2 = String.format(
+                    "Here's your software license for Maud:\n%s\n",
+                    contents);
+        }
+        Maud.gui.closeAllPopups();
+        Maud.gui.showInfoDialog("License information", text2);
     }
 
     /**
@@ -212,6 +241,28 @@ class DddDialogs {
             Maud.gui.showTextEntryDialog("Enter new name for the bone:",
                     oldName, "", DddInputMode.renameBonePrefix, controller);
         }
+    }
+
+    /**
+     * Display a "save model asset" dialog.
+     */
+    void saveModelAsset() {
+        String baseAssetPath = Maud.model.target.getAssetPath();
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog(
+                "Enter base asset path for model:", baseAssetPath,
+                "Save", DddInputMode.saveModelAssetPrefix, null);
+    }
+
+    /**
+     * Display a "save model file" dialog.
+     */
+    void saveModelFile() {
+        String baseFilePath = Maud.model.target.getFilePath();
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog(
+                "Enter base file path for model:", baseFilePath,
+                "Save", DddInputMode.saveModelFilePrefix, null);
     }
 
     /**
