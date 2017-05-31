@@ -969,7 +969,7 @@ class DddMenus {
         assert remainder != null;
 
         boolean handled = false;
-        switch (remainder) { // TODO reorder cases
+        switch (remainder) {
             case "Reduce":
                 Maud.gui.dialogs.reduceTrack();
                 handled = true;
@@ -978,16 +978,16 @@ class DddMenus {
                 Maud.model.target.animation.selectKeyframeFirst();
                 handled = true;
                 break;
-            case "Select previous":
-                Maud.model.target.animation.selectKeyframePrevious();
+            case "Select last":
+                Maud.model.target.animation.selectKeyframeLast();
                 handled = true;
                 break;
             case "Select next":
                 Maud.model.target.animation.selectKeyframeNext();
                 handled = true;
                 break;
-            case "Select last":
-                Maud.model.target.animation.selectKeyframeLast();
+            case "Select previous":
+                Maud.model.target.animation.selectKeyframePrevious();
                 handled = true;
                 break;
             case "Tool":
