@@ -79,7 +79,7 @@ public class DddGui extends GuiScreenController {
     /**
      * name of the signal that diverts rotation from target to source
      */
-    final private static String sourceModelSignalName = "sourceModel";
+    final public static String sourceModelSignalName = "sourceModel";
     // *************************************************************************
     // fields
 
@@ -98,7 +98,7 @@ public class DddGui extends GuiScreenController {
     /*
      * controllers for tool windows
      */
-    final public AnimationTool animation = new AnimationTool(this);
+    final AnimationTool animation = new AnimationTool(this);
     final AxesTool axes = new AxesTool(this);
     final BoneRotationTool boneRotation = new BoneRotationTool(this);
     final BoneScaleTool boneScale = new BoneScaleTool(this);
@@ -117,6 +117,7 @@ public class DddGui extends GuiScreenController {
     final ShadowModeTool shadowMode = new ShadowModeTool(this);
     final SkeletonColorTool skeletonColor = new SkeletonColorTool(this);
     final SkeletonTool skeleton = new SkeletonTool(this);
+    final SourceAnimationTool sourceAnimation = new SourceAnimationTool(this);
     final SpatialRotationTool spatialRotation = new SpatialRotationTool(this);
     final SpatialScaleTool spatialScale = new SpatialScaleTool(this);
     final SpatialTool spatial = new SpatialTool(this);
@@ -180,14 +181,20 @@ public class DddGui extends GuiScreenController {
             case "axesDepthTestCheckBox":
                 Maud.model.axes.setDepthTestFlag(isChecked);
                 break;
-            case "loopCheckBox":
-                Maud.model.target.animation.setContinue(isChecked);
-                break;
             case "invertRmaCheckBox":
                 Maud.model.retarget.setInvertMap(isChecked);
                 break;
+            case "loopCheckBox":
+                Maud.model.target.animation.setContinue(isChecked);
+                break;
+            case "loopSourceCheckBox":
+                Maud.model.source.animation.setContinue(isChecked);
+                break;
             case "pongCheckBox":
                 Maud.model.target.animation.setReverse(isChecked);
+                break;
+            case "pongSourceCheckBox":
+                Maud.model.source.animation.setReverse(isChecked);
                 break;
             case "shadowsCheckBox":
                 Maud.model.misc.setShadowsRendered(isChecked);
@@ -354,6 +361,11 @@ public class DddGui extends GuiScreenController {
                 skeletonColor.onSliderChanged();
                 break;
 
+            case "sSpeedSlider":
+            case "sourceTimeSlider":
+                sourceAnimation.onSliderChanged();
+                break;
+
             case "xSaSlider":
             case "ySaSlider":
             case "zSaSlider":
@@ -429,6 +441,25 @@ public class DddGui extends GuiScreenController {
         Vector3f vector = new Vector3f(x, y, z);
 
         return vector;
+    }
+
+    /**
+     * Select a loaded CG model (source or target) based on the "sourceModel"
+     * signal.
+     *
+     * @return a pre-existing instance (not null)
+     */
+    LoadedCGModel selectCgm() {
+        LoadedCGModel cgm;
+        if (signals.test(sourceModelSignalName)
+                && Maud.model.source.isLoaded()) {
+            cgm = Maud.model.source;
+        } else {
+            cgm = Maud.model.target;
+        }
+
+        assert cgm != null;
+        return cgm;
     }
 
     /**
@@ -639,12 +670,7 @@ public class DddGui extends GuiScreenController {
         /*
          * Rotate one of the views' CG models around its Y-axis.
          */
-        LoadedCGModel cgmToRotate;
-        if (signals.test(sourceModelSignalName)) {
-            cgmToRotate = Maud.model.source;
-        } else {
-            cgmToRotate = Maud.model.target;
-        }
+        LoadedCGModel cgmToRotate = selectCgm();
         if (signals.test(modelCCWSignalName)) {
             cgmToRotate.transform.rotateY(tpf);
         }

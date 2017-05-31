@@ -282,8 +282,12 @@ class DddMenus {
     private void buildAnimationMenu() {
         builder.addTool("Tool");
         builder.add("Load");
-        builder.addDialog("New from copy");
         builder.addDialog("New from pose");
+        builder.addDialog("New from copy");
+        builder.addTool("Source tool");
+        if (Maud.model.source.isLoaded()) {
+            builder.add("Load source");
+        }
         builder.addTool("New from retarget");
         if (!Maud.model.target.animation.isBindPoseLoaded()) {
             builder.addDialog("Duration");
@@ -524,6 +528,18 @@ class DddMenus {
     }
 
     /**
+     * Display a "Animation -> Load source" menu.
+     */
+    private void loadSourceAnimation() {
+        if (Maud.model.source.isLoaded()) {
+            Collection<String> animationNames;
+            animationNames = Maud.model.source.listAnimationNames();
+            Maud.gui.showPopupMenu(DddInputMode.loadSourceAnimationPrefix,
+                    animationNames);
+        }
+    }
+
+    /**
      * Display a "CGModel -> Load source" menu.
      */
     private void loadSourceCGModel() {
@@ -604,6 +620,10 @@ class DddMenus {
                         animationNames);
                 handled = true;
                 break;
+            case "Load source":
+                loadSourceAnimation();
+                handled = true;
+                break;
             case "New from copy":
                 Maud.gui.dialogs.copyAnimation();
                 handled = true;
@@ -622,6 +642,10 @@ class DddMenus {
                 break;
             case "Rename":
                 Maud.gui.dialogs.renameAnimation();
+                handled = true;
+                break;
+            case "Source tool":
+                Maud.gui.sourceAnimation.select();
                 handled = true;
                 break;
             case "Tool":

@@ -208,13 +208,13 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Access the loaded animation.
+     * Access the loaded animation. TODO rename
      *
-     * @return the pre-existing instance, or null if in bind pose
+     * @return the pre-existing instance, or null if none or in bind pose
      */
     Animation getLoadedAnimation() {
         Animation result;
-        if (isBindPoseLoaded()) {
+        if (!loadedCgm.isLoaded() || isBindPoseLoaded()) {
             result = null;
         } else {
             result = loadedCgm.getAnimation(loadedName);
@@ -438,28 +438,28 @@ public class LoadedAnimation implements Cloneable {
      * Load the next animation in name-sorted order.
      */
     public void loadNext() {
-        assert !isBindPoseLoaded();
-
-        List<String> nameList = loadedCgm.listAnimationsSorted();
-        int index = nameList.indexOf(loadedName);
-        int numAnimations = nameList.size();
-        int nextIndex = MyMath.modulo(index + 1, numAnimations);
-        String nextName = nameList.get(nextIndex);
-        load(nextName);
+        if (loadedCgm.isLoaded() && !isBindPoseLoaded()) {
+            List<String> nameList = loadedCgm.listAnimationsSorted();
+            int index = nameList.indexOf(loadedName);
+            int numAnimations = nameList.size();
+            int nextIndex = MyMath.modulo(index + 1, numAnimations);
+            String nextName = nameList.get(nextIndex);
+            load(nextName);
+        }
     }
 
     /**
      * Load the next animation in name-sorted order.
      */
     public void loadPrevious() {
-        assert !isBindPoseLoaded();
-
-        List<String> nameList = loadedCgm.listAnimationsSorted();
-        int index = nameList.indexOf(loadedName);
-        int numAnimations = nameList.size();
-        int prevIndex = MyMath.modulo(index - 1, numAnimations);
-        String prevName = nameList.get(prevIndex);
-        load(prevName);
+        if (loadedCgm.isLoaded() && !isBindPoseLoaded()) {
+            List<String> nameList = loadedCgm.listAnimationsSorted();
+            int index = nameList.indexOf(loadedName);
+            int numAnimations = nameList.size();
+            int prevIndex = MyMath.modulo(index - 1, numAnimations);
+            String prevName = nameList.get(prevIndex);
+            load(prevName);
+        }
     }
 
     /**

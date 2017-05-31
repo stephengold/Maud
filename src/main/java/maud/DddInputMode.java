@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
+import maud.model.LoadedCGModel;
 
 /**
  * Input mode for Maud's "3D View" screen.
@@ -70,6 +71,10 @@ class DddInputMode extends InputMode {
      * action prefix: remainder is the name of a CG model in jme3-testdata
      */
     final static String loadModelNamedPrefix = "load model named ";
+    /**
+     * action prefix: remainder is the name of a source animation
+     */
+    final static String loadSourceAnimationPrefix = "load sourceAnimation ";
     /**
      * action prefix: remainder is the asset path to a CG model
      */
@@ -301,6 +306,12 @@ class DddInputMode extends InputMode {
             Maud.model.target.loadModelNamed(name);
             handled = true;
 
+        } else if (actionString.startsWith(loadSourceAnimationPrefix)) {
+            String name;
+            name = MyString.remainder(actionString, loadSourceAnimationPrefix);
+            Maud.model.source.animation.load(name);
+            handled = true;
+
         } else if (actionString.startsWith(loadSourceModelAssetPrefix)) {
             String path;
             path = MyString.remainder(actionString, loadSourceModelAssetPrefix);
@@ -370,6 +381,10 @@ class DddInputMode extends InputMode {
             case "next control":
                 Maud.model.target.sgc.selectNext();
                 handled = true;
+                break;
+            case "next sourceAnimation":
+                Maud.model.source.animation.loadNext();
+                handled = true;
         }
 
         return handled;
@@ -414,6 +429,10 @@ class DddInputMode extends InputMode {
                 break;
             case "previous control":
                 Maud.model.target.sgc.selectPrevious();
+                handled = true;
+                break;
+            case "previous sourceAnimation":
+                Maud.model.source.animation.loadPrevious();
                 handled = true;
         }
 
@@ -752,6 +771,15 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "toggle pause":
+                LoadedCGModel cgmToToggle = Maud.gui.selectCgm();
+                cgmToToggle.animation.togglePaused();
+                handled = true;
+                break;
+            case "toggle pause source":
+                Maud.model.source.animation.togglePaused();
+                handled = true;
+                break;
+            case "toggle pause target":
                 Maud.model.target.animation.togglePaused();
                 handled = true;
         }
