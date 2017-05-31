@@ -42,8 +42,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
-import maud.Util;
 
 /**
  * The MVC model of the selected spatial in the Maud application.
@@ -526,7 +526,7 @@ public class SelectedSpatial implements Cloneable {
             }
             nameList.add(name);
         }
-        Util.dedup(nameList, " #");
+        MyString.dedup(nameList, " #");
 
         return nameList;
     }
