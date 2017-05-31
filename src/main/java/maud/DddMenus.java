@@ -88,6 +88,28 @@ class DddMenus {
     }
 
     /**
+     * Handle a "load sourceModel file" action where the argument may be the
+     * name of a folder/directory.
+     *
+     * @param filePath action argument (not null)
+     */
+    void loadSourceModelFile(String filePath) {
+        File file = new File(filePath);
+        if (file.isDirectory()) {
+            buildFileMenu(filePath);
+            String menuPrefix;
+            menuPrefix = DddInputMode.loadSourceModelFilePrefix + filePath;
+            if (!menuPrefix.endsWith("/")) {
+                menuPrefix += "/";
+            }
+            builder.show(menuPrefix);
+
+        } else if (file.canRead()) {
+            Maud.model.source.loadModelFile(file);
+        }
+    }
+
+    /**
      * Handle an "open menu" action for the "3D View" screen.
      *
      * @param menuPath menu path (not null)
@@ -334,6 +356,7 @@ class DddMenus {
         builder.addDialog("Save as asset");
         builder.addDialog("Save as file");
         builder.addTool("History");
+        builder.add("Load source");
     }
 
     /**
@@ -443,6 +466,35 @@ class DddMenus {
     }
 
     /**
+     * Build a "CGModel -> Load (source) -> Testdata" menu.
+     */
+    private void buildTestDataMenu() {
+        builder.reset();
+        /*
+         * Add items for the CG models in the jme3-testdata asset pack.
+         *
+         * animated models:
+         */
+        builder.addOgre("Elephant");
+        builder.addJme("Jaime");
+        builder.addOgre("Ninja");
+        builder.addOgre("Oto");
+        builder.addOgre("Sinbad");
+        /*
+         * non-animated models:
+         */
+        builder.addJme("Boat");
+        builder.addJme("Buggy");
+        builder.add("Ferrari");
+        builder.addOgre("HoverTank");
+        builder.addOgre("MonkeyHead");
+        builder.addOgre("Sign Post");
+        builder.addOgre("SpaceCraft");
+        builder.add("Teapot");
+        builder.addOgre("Tree");
+    }
+
+    /**
      * Build a View menu.
      */
     private void buildViewMenu() {
@@ -469,40 +521,21 @@ class DddMenus {
     }
 
     /**
-     * Display a "CGModel -> Load -> Testdata" menu.
+     * Display a "CGModel -> Load source" menu.
      */
-    private void loadTestdata() {
+    private void loadSourceCGModel() {
         builder.reset();
-        /*
-         * Add items for the CG models in the jme3-testdata asset pack.
-         *
-         * animated models:
-         */
-        builder.addOgre("Elephant");
-        builder.addJme("Jaime");
-        builder.addOgre("Ninja");
-        builder.addOgre("Oto");
-        builder.addOgre("Sinbad");
-        /*
-         * non-animated models:
-         */
-        builder.addJme("Boat");
-        builder.addJme("Buggy");
-        builder.add("Ferrari");
-        builder.addOgre("HoverTank");
-        builder.addOgre("MonkeyHead");
-        builder.addOgre("Sign Post");
-        builder.addOgre("SpaceCraft");
-        builder.add("Teapot");
-        builder.addOgre("Tree");
-        builder.show(DddInputMode.loadModelNamedPrefix);
+        builder.add("Testdata");
+        builder.addDialog("Asset");
+        builder.add("File");
+        builder.show("open menu CGModel -> Load source -> ");
     }
 
     /**
-     * Handle a menu action.
+     * Handle an "open menu" action.
      *
      * @param menuName name of the menu (not null)
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menu(String menuName, String remainder) {
@@ -516,9 +549,6 @@ class DddMenus {
                 break;
             case "Bone":
                 handled = menuBone(remainder);
-                break;
-            case "Bone -> Select":
-                handled = menuBoneSelect(remainder);
                 break;
             case "CGModel":
                 handled = menuCGModel(remainder);
@@ -538,9 +568,6 @@ class DddMenus {
             case "Spatial":
                 handled = menuSpatial(remainder);
                 break;
-            case "Spatial -> Add control":
-                handled = menuSpatialAddControl(remainder);
-                break;
             case "View":
                 handled = menuView(remainder);
         }
@@ -549,9 +576,9 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the Animation menu.
+     * Handle an "open menu" action from the Animation menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuAnimation(String remainder) {
@@ -605,7 +632,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an action from the menu bar.
+     * Handle an "open menu" action, typically from the menu bar.
      *
      * @param menuName name of the menu to open (not null)
      * @return true if handled, otherwise false
@@ -660,9 +687,9 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the Bone menu.
+     * Handle an "open menu" action from the Bone menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuBone(String remainder) {
@@ -707,9 +734,9 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the Bone -> Select menu.
+     * Handle an "open menu" action from the "Bone -> Select" menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuBoneSelect(String remainder) {
@@ -754,9 +781,9 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the CGModel menu.
+     * Handle "open menu" actions from the CGModel menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuCGModel(String remainder) {
@@ -764,9 +791,14 @@ class DddMenus {
 
         boolean handled = false;
         String loadPrefix = "Load" + menuSeparator;
+        String loadSourcePrefix = "Load source" + menuSeparator;
         if (remainder.startsWith(loadPrefix)) {
             String selectArg = MyString.remainder(remainder, loadPrefix);
             handled = menuCGModelLoad(selectArg);
+
+        } else if (remainder.startsWith(loadSourcePrefix)) {
+            String selectArg = MyString.remainder(remainder, loadSourcePrefix);
+            handled = menuCGModelLoadSource(selectArg);
 
         } else {
             switch (remainder) {
@@ -777,6 +809,11 @@ class DddMenus {
 
                 case "Load":
                     loadCGModel();
+                    handled = true;
+                    break;
+
+                case "Load source":
+                    loadSourceCGModel();
                     handled = true;
                     break;
 
@@ -808,9 +845,9 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the "CGModel -> Load" menu.
+     * Handle an "open menu" action from the "CGModel -> Load" menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuCGModelLoad(String remainder) {
@@ -819,7 +856,8 @@ class DddMenus {
         boolean handled = false;
         switch (remainder) {
             case "Asset":
-                Maud.gui.dialogs.loadModelAsset();
+                Maud.gui.dialogs.loadModelAsset(
+                        DddInputMode.loadModelAssetPrefix);
                 handled = true;
                 break;
 
@@ -830,7 +868,8 @@ class DddMenus {
                 break;
 
             case "Testdata":
-                loadTestdata();
+                buildTestDataMenu();
+                builder.show(DddInputMode.loadModelNamedPrefix);
                 handled = true;
         }
 
@@ -838,9 +877,41 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the Help menu.
+     * Handle an "open menu" action from the "CGModel -> Load source" menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuCGModelLoadSource(String remainder) {
+        assert remainder != null;
+
+        boolean handled = false;
+        switch (remainder) {
+            case "Asset":
+                Maud.gui.dialogs.loadModelAsset(
+                        DddInputMode.loadSourceModelAssetPrefix);
+                handled = true;
+                break;
+
+            case "File":
+                buildFileMenu("/");
+                builder.show(DddInputMode.loadSourceModelFilePrefix + "/");
+                handled = true;
+                break;
+
+            case "Testdata":
+                buildTestDataMenu();
+                builder.show(DddInputMode.loadSourceModelNamedPrefix);
+                handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle an "open menu" action from the Help menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuHelp(String remainder) {
@@ -889,16 +960,16 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the Keyframe menu.
+     * Handle an "open menu" action from the Keyframe menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuKeyframe(String remainder) {
         assert remainder != null;
 
         boolean handled = false;
-        switch (remainder) {
+        switch (remainder) { // TODO reorder cases
             case "Reduce":
                 Maud.gui.dialogs.reduceTrack();
                 handled = true;
@@ -928,9 +999,9 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the Settings menu.
+     * Handle an "open menu" action from the Settings menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSettings(String remainder) {
@@ -948,9 +1019,9 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the Spatial menu.
+     * Handle an "open menu" action from the Spatial menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSpatial(String remainder) {
@@ -1011,9 +1082,9 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the "Spatial -> Add control" menu.
+     * Handle an "open menu" action from the "Spatial -> Add control" menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSpatialAddControl(String remainder) {
@@ -1040,9 +1111,9 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the "Spatial -> Select" menu.
+     * Handle an "open menu" action from the "Spatial -> Select" menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSpatialSelect(String remainder) {
@@ -1075,9 +1146,9 @@ class DddMenus {
     }
 
     /**
-     * Handle actions from the View menu.
+     * Handle an "open menu" actions from the View menu.
      *
-     * @param remainder not-yet-parsed portion of the action string (not null)
+     * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuView(String remainder) {

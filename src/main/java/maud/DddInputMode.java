@@ -54,13 +54,16 @@ class DddInputMode extends InputMode {
      */
     final private static String assetPath = "Textures/cursors/default.cur";
     /**
-     * action prefix: remainder is the name for the new animation
+     * action prefix: remainder is a name for the new animation
      */
     final static String copyAnimationPrefix = "copy animation ";
     /**
      * action prefix: remainder is the name of an animation
      */
     final static String loadAnimationPrefix = "load animation ";
+    /**
+     * action prefix: remainder is the asset path to a CG model
+     */
     final static String loadModelAssetPrefix = "load model asset ";
     final static String loadModelFilePrefix = "load model file ";
     /**
@@ -68,11 +71,20 @@ class DddInputMode extends InputMode {
      */
     final static String loadModelNamedPrefix = "load model named ";
     /**
-     * action prefix: remainder is the path to a menu
+     * action prefix: remainder is the asset path to a CG model
+     */
+    final static String loadSourceModelAssetPrefix = "load sourceModel asset ";
+    final static String loadSourceModelFilePrefix = "load sourceModel file ";
+    /**
+     * action prefix: remainder is the name of a CG model in jme3-testdata
+     */
+    final static String loadSourceModelNamedPrefix = "load sourceModel named ";
+    /**
+     * action prefix: remainder is a menu path TODO "select menu "
      */
     final static String openMenuPrefix = "open menu ";
     /**
-     * action prefix: remainder is the name for the new animation
+     * action prefix: remainder is a name for the new animation
      */
     final static String newPosePrefix = "new pose ";
     final static String reduceAnimationPrefix = "reduce animation ";
@@ -273,8 +285,8 @@ class DddInputMode extends InputMode {
             handled = true;
 
         } else if (actionString.startsWith(loadModelAssetPrefix)) {
-            String path = MyString.remainder(actionString,
-                    loadModelAssetPrefix);
+            String path;
+            path = MyString.remainder(actionString, loadModelAssetPrefix);
             Maud.model.target.loadModelAsset(path);
             handled = true;
 
@@ -284,9 +296,27 @@ class DddInputMode extends InputMode {
             handled = true;
 
         } else if (actionString.startsWith(loadModelNamedPrefix)) {
-            String name = MyString.remainder(actionString,
-                    loadModelNamedPrefix);
+            String name;
+            name = MyString.remainder(actionString, loadModelNamedPrefix);
             Maud.model.target.loadModelNamed(name);
+            handled = true;
+
+        } else if (actionString.startsWith(loadSourceModelAssetPrefix)) {
+            String path;
+            path = MyString.remainder(actionString, loadSourceModelAssetPrefix);
+            Maud.model.source.loadModelAsset(path);
+            handled = true;
+
+        } else if (actionString.startsWith(loadSourceModelFilePrefix)) {
+            String path;
+            path = MyString.remainder(actionString, loadSourceModelFilePrefix);
+            Maud.gui.menus.loadSourceModelFile(path);
+            handled = true;
+
+        } else if (actionString.startsWith(loadSourceModelNamedPrefix)) {
+            String name;
+            name = MyString.remainder(actionString, loadSourceModelNamedPrefix);
+            Maud.model.source.loadModelNamed(name);
             handled = true;
         }
 

@@ -121,9 +121,13 @@ class DddDialogs {
     }
 
     /**
-     * Display a "load model asset" dialog.
+     * Display a "load (source)model asset" dialog.
+     *
+     * @param actionPrefix for the dialog (not null)
      */
-    void loadModelAsset() {
+    void loadModelAsset(String actionPrefix) {
+        assert actionPrefix != null;
+
         String basePath = Maud.model.target.getAssetPath();
         String extension = Maud.model.target.getExtension();
         String assetPath = String.format("%s.%s", basePath, extension);
