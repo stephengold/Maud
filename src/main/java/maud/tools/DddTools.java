@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import com.jme3.app.state.AppStateManager;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
@@ -33,6 +33,8 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.nifty.WindowController;
+import maud.DddGui;
+import maud.Maud;
 
 /**
  * Tool windows in Maud's "3D View" screen.
@@ -51,33 +53,105 @@ public class DddTools {
     // *************************************************************************
     // fields
 
-    /*
-     * controllers for tool windows
+    /**
+     * controller for the "Animation Tool" window
      */
     final AnimationTool animation;
+    /**
+     * controller for the "Axes Tool" window
+     */
     final AxesTool axes;
+    /**
+     * controller for the "Bone Rotation Tool" window
+     */
     final BoneRotationTool boneRotation;
+    /**
+     * controller for the "Bone Scale Tool" window
+     */
     final BoneScaleTool boneScale;
-    final BoneTool bone;
+    /**
+     * controller for the "Bone Tool" window
+     */
+    final public BoneTool bone;
+    /**
+     * controller for the "Bone Translation Tool" window
+     */
     final BoneTranslationTool boneTranslation;
+    /**
+     * controller for the "Camera Tool" window
+     */
     final CameraTool camera;
+    /**
+     * controller for the "Cull Hint Tool" window
+     */
     final CullHintTool cullHint;
-    final CursorTool cursor;
-    final HistoryTool history;
+    /**
+     * controller for the "Cursor Tool" window
+     */
+    final public CursorTool cursor;
+    /**
+     * controller for the "History Tool" window
+     */
+    final public HistoryTool history;
+    /**
+     * controller for the "Keyframe Tool" window
+     */
     final KeyframeTool keyframe;
+    /**
+     * controller for the "Model Tool" window
+     */
     final ModelTool model;
-    final PlatformTool platform;
+    /**
+     * controller for the "Platform Tool" window
+     */
+    final public PlatformTool platform;
+    /**
+     * controller for the "Render Tool" window
+     */
     final RenderTool render;
-    final RetargetTool retarget;
+    /**
+     * controller for the "Retarget Tool" window
+     */
+    final public RetargetTool retarget;
+    /**
+     * controller for the "Control Tool" window
+     */
     final SgcTool sgc;
+    /**
+     * controller for the "Shadow Tool" window
+     */
     final ShadowModeTool shadowMode;
+    /**
+     * controller for the "Skeleton Color Tool" window
+     */
     final SkeletonColorTool skeletonColor;
+    /**
+     * controller for the "Skeleton Tool" window
+     */
     final SkeletonTool skeleton;
+    /**
+     * controller for the "Source Animation Tool" window
+     */
     final SourceAnimationTool sourceAnimation;
+    /**
+     * controller for the "Spatial Rotation Tool" window
+     */
     final SpatialRotationTool spatialRotation;
+    /**
+     * controller for the "Spatial Scale Tool" window
+     */
     final SpatialScaleTool spatialScale;
+    /**
+     * controller for the "Spatial Tool" window
+     */
     final SpatialTool spatial;
+    /**
+     * controller for the "Spatial Translation Tool" window
+     */
     final SpatialTranslationTool spatialTranslation;
+    /**
+     * controller for the "Spatial Sky Tool" window
+     */
     final SkyTool sky;
     // *************************************************************************
     // constructors
@@ -137,7 +211,7 @@ public class DddTools {
      * Access the window controller for a named tool.
      *
      * @param toolName which tool to access (not null, not empty)
-     * @return true if the action is handled, otherwise false
+     * @return the pre-existing instance, or null of none
      */
     public WindowController getTool(String toolName) {
         Validate.nonEmpty(toolName, "tool name");
@@ -197,6 +271,9 @@ public class DddTools {
                 break;
             case "skeleton":
                 controller = skeleton;
+                break;
+            case "skeletonColor":
+                controller = skeletonColor;
                 break;
             case "sourceAnimation":
                 controller = sourceAnimation;
@@ -311,5 +388,22 @@ public class DddTools {
                 logger.log(Level.WARNING, "unknown slider with id={0}",
                         MyString.quote(sliderId));
         }
+    }
+
+    /**
+     * Updates performed even when all tools are disabled. (Invoked once per
+     * render pass.)
+     */
+    public void update() {
+        axes.updateVisualizations();
+        camera.updateCamera();
+        cursor.updateCursor();
+        platform.updateScene();
+        render.updateShadowFilter();
+        skeleton.updateSdc(Maud.model.source);
+        skeleton.updateSdc(Maud.model.target);
+        skeletonColor.updateSdc(Maud.model.source);
+        skeletonColor.updateSdc(Maud.model.target);
+        sky.updateSkyControl();
     }
 }

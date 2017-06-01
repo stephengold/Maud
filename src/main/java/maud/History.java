@@ -116,7 +116,7 @@ public class History {
      *
      * @return count (&ge;0)
      */
-    static int countCheckpoints() {
+    public static int countCheckpoints() {
         int count = checkpoints.size();
         return count;
     }
@@ -125,8 +125,9 @@ public class History {
      * Access the indexed checkpoint.
      *
      * @param index (&ge;0)
+     * @return the pre-existing instance
      */
-    static Checkpoint getCheckpoint(int index) {
+    public static Checkpoint getCheckpoint(int index) {
         Checkpoint result = checkpoints.get(index);
         return result;
     }
@@ -136,7 +137,7 @@ public class History {
      *
      * @return index (&ge;0)
      */
-    static int getNextIndex() {
+    public static int getNextIndex() {
         return nextIndex;
     }
 
@@ -146,7 +147,7 @@ public class History {
      *
      * @return true if some checkpoints are vulnerable, otherwise false
      */
-    static boolean hasVulnerable() {
+    public static boolean hasVulnerable() {
         int numVulnerable = checkpoints.size() - nextIndex;
         assert numVulnerable >= 0 : numVulnerable;
         if (numVulnerable > 0) {
@@ -161,7 +162,7 @@ public class History {
      *
      * @return a new list of descriptions
      */
-    static List<String> listRecentEvents() {
+    public static List<String> listRecentEvents() {
         int numEvents = eventDescriptions.size();
         List<String> result = new ArrayList<>(numEvents);
         result.addAll(eventDescriptions);

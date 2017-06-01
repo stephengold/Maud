@@ -24,37 +24,66 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.EdgeFilteringMode;
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.Misc;
 import jme3utilities.nifty.WindowController;
-import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
+import maud.DddGui;
+import maud.Maud;
 
 /**
- * The controller for the "Sky Tool" window in Maud's "3D View" screen.
+ * The controller for the "Render Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SkyTool extends WindowController {
+class RenderTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
     /**
+     * multiplier for ambient light
+     */
+    final private static float ambientMultiplier = 1f;
+    /**
+     * multiplier for main light
+     */
+    final private static float mainMultiplier = 2f;
+    /**
+     * width and height of rendered shadow maps (pixels per side, &gt;0)
+     */
+    final private static int shadowMapSize = 4_096;
+    /**
+     * number of shadow map splits (&gt;0)
+     */
+    final private static int shadowMapSplits = 3;
+    /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            SkyTool.class.getName());
+            RenderTool.class.getName());
     // *************************************************************************
     // fields
 
-    /**
-     * scene-graph control for sky simulation
+    /*
+     * ambient light source for 3D view
      */
-    private SkyControl skyControl = null;
+    final private AmbientLight ambientLight = new AmbientLight();
+    /*
+     * directional light source for 3D view
+     */
+    final private DirectionalLight mainLight = new DirectionalLight();
+    /**
+     * shadow filter for 3D view
+     */
+    private DirectionalLightShadowFilter dlsf = null;
     // *************************************************************************
     // constructors
 
@@ -63,18 +92,33 @@ class SkyTool extends WindowController {
      *
      * @param screenController
      */
-    SkyTool(BasicScreenController screenController) {
-        super(screenController, "skyTool", false);
+    RenderTool(DddGui screenController) {
+        super(screenController, "renderTool", false);
     }
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Update the view's SkyControl from the MVC model.
+     * Configure SkyControl's updater.
+     *
+     * @param updater (not null)
      */
-    void updateSkyControl() {
-        boolean enable = Maud.model.misc.isSkyRendered();
-        skyControl.setEnabled(enable);
+    void configureUpdater(Updater updater) {
+        assert isInitialized();
+
+        updater.setAmbientLight(ambientLight);
+        updater.setMainLight(mainLight);
+        updater.addShadowFilter(dlsf);
+        updater.setAmbientMultiplier(ambientMultiplier);
+        updater.setMainMultiplier(mainMultiplier);
+    }
+
+    /**
+     * Update the view's DirectionalLightShadowFilter from the MVC model.
+     */
+    void updateShadowFilter() {
+        boolean enable = Maud.model.misc.areShadowsRendered();
+        dlsf.setEnabled(enable);
     }
     // *************************************************************************
     // AppState methods
@@ -89,16 +133,22 @@ class SkyTool extends WindowController {
     public void initialize(AppStateManager stateManager,
             Application application) {
         super.initialize(stateManager, application);
-        assert Maud.gui.tools.render.isInitialized();
+
+        ambientLight.setName("ambient light");
+        mainLight.setName("main light");
         /*
-         * Create a daytime sky.
+         * Light the scene.
          */
-        skyControl = new SkyControl(assetManager, cam, 0.9f, false, true);
-        rootNode.addControl(skyControl);
-        skyControl.setCloudiness(0.5f);
-        skyControl.getSunAndStars().setHour(11f);
-        Updater updater = skyControl.getUpdater();
-        Maud.gui.tools.render.configureUpdater(updater);
+        rootNode.addLight(ambientLight);
+        rootNode.addLight(mainLight);
+        /*
+         * Add a shadow filter.
+         */
+        dlsf = new DirectionalLightShadowFilter(assetManager, shadowMapSize,
+                shadowMapSplits);
+        dlsf.setEdgeFilteringMode(EdgeFilteringMode.PCF8);
+        dlsf.setLight(mainLight);
+        Misc.getFpp(viewPort, assetManager).addFilter(dlsf);
     }
 
     /**
@@ -112,7 +162,7 @@ class SkyTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        boolean renderFlag = Maud.model.misc.isSkyRendered();
-        Maud.gui.setChecked("sky", renderFlag);
+        boolean shadowsFlag = Maud.model.misc.areShadowsRendered();
+        Maud.gui.setChecked("shadows", shadowsFlag);
     }
 }

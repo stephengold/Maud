@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import de.lessvoid.nifty.controls.ScrollPanel;
 import de.lessvoid.nifty.controls.label.builder.LabelBuilder;
@@ -36,13 +36,16 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Checkpoint;
+import maud.History;
+import maud.Maud;
 
 /**
  * The controller for the "History Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class HistoryTool extends WindowController {
+public class HistoryTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 

@@ -24,25 +24,24 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
+import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
-import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
 
 /**
- * The controller for the "Bone-Rotation Tool" window in Maud's "3D View"
- * screen.
+ * The controller for the "Bone-Scale Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneRotationTool extends WindowController {
+class BoneScaleTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -54,7 +53,7 @@ class BoneRotationTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            BoneRotationTool.class.getName());
+            BoneScaleTool.class.getName());
     /**
      * names of the coordinate axes
      */
@@ -76,8 +75,8 @@ class BoneRotationTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    BoneRotationTool(BasicScreenController screenController) {
-        super(screenController, "boneRotationTool", false);
+    BoneScaleTool(BasicScreenController screenController) {
+        super(screenController, "boneScaleTool", false);
     }
     // *************************************************************************
     // new methods exposed
@@ -86,36 +85,17 @@ class BoneRotationTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (shouldBeEnabled()) {
-            float[] angles = new float[numAxes];
-            for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                float value = sliders[iAxis].getValue();
-                angles[iAxis] = value;
-            }
-            Quaternion rot = new Quaternion();
-            rot.fromAngles(angles);
-            int boneIndex = Maud.model.target.bone.getIndex();
-            Maud.model.target.pose.setRotation(boneIndex, rot);
-        }
-    }
+        if (Maud.model.target.bone.shouldEnableControls()) {
+            Vector3f scales = Maud.gui.readVectorBank("Sca");
+            /*
+             * Avoid scale factors near zero.
+             */
+            scales.x = Math.max(scales.x, 0.001f);
+            scales.y = Math.max(scales.y, 0.001f);
+            scales.z = Math.max(scales.z, 0.001f);
 
-    /**
-     * If active, reset the bone rotation to identity.
-     */
-    void reset() {
-        if (shouldBeEnabled()) {
             int boneIndex = Maud.model.target.bone.getIndex();
-            Maud.model.target.pose.resetRotation(boneIndex);
-        }
-    }
-
-    /**
-     * If active, set the MVC model based on the animation.
-     */
-    void setToAnimation() {
-        if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.target.bone.getIndex();
-            Maud.model.target.pose.setRotationToAnimation(boneIndex);
+            Maud.model.target.pose.setScale(boneIndex, scales);
         }
     }
     // *************************************************************************
@@ -134,7 +114,7 @@ class BoneRotationTool extends WindowController {
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String axisName = axisNames[iAxis];
-            Slider slider = Maud.gui.getSlider(axisName + "Ang");
+            Slider slider = Maud.gui.getSlider(axisName + "Sca");
             assert slider != null;
             sliders[iAxis] = slider;
         }
@@ -150,45 +130,37 @@ class BoneRotationTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        String aButton = "";
-        String bButton = "";
         if (Maud.model.target.bone.isSelected()) {
             setSlidersToPose();
-            if (shouldBeEnabled()) {
-                aButton = "Animation";
-                bButton = "Bind pose";
+            if (Maud.model.target.bone.shouldEnableControls()) {
+                Maud.gui.setButtonLabel("resetScaAnimButton", "Animation");
+                Maud.gui.setButtonLabel("resetScaBindButton", "Bind pose");
                 enableSliders();
             } else {
+                Maud.gui.setButtonLabel("resetScaAnimButton", "");
+                Maud.gui.setButtonLabel("resetScaBindButton", "");
                 disableSliders();
             }
 
         } else {
             clear();
+            Maud.gui.setButtonLabel("resetScaAnimButton", "");
+            Maud.gui.setButtonLabel("resetScaBindButton", "");
             disableSliders();
         }
-        Maud.gui.setButtonLabel("resetAngAnimButton", aButton);
-        Maud.gui.setButtonLabel("resetAngBindButton", bButton);
-
-        String dButton;
-        if (Maud.model.misc.getAnglesInDegrees()) {
-            dButton = "radians";
-        } else {
-            dButton = "degrees";
-        }
-        Maud.gui.setButtonLabel("degreesButton", dButton);
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Zero all 3 sliders and clear their status labels.
+     * Reset all 3 sliders and clear their status labels.
      */
     private void clear() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].setValue(0f);
+            sliders[iAxis].setValue(1f);
 
             String axisName = axisNames[iAxis];
-            String statusName = axisName + "AngSliderStatus";
+            String statusName = axisName + "ScaSliderStatus";
             Maud.gui.setStatusText(statusName, "");
         }
     }
@@ -218,36 +190,16 @@ class BoneRotationTool extends WindowController {
         int boneIndex = Maud.model.target.bone.getIndex();
         Transform transform = Maud.model.target.pose.copyTransform(boneIndex,
                 null);
-        Quaternion rotation = transform.getRotation();
-        float[] angles = rotation.toAngles(null);
-        boolean degrees = Maud.model.misc.getAnglesInDegrees();
+        Vector3f vector = transform.getScale();
+        float[] scales = vector.toArray(null);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            float angle = angles[iAxis];
-            sliders[iAxis].setValue(angle);
+            float scale = scales[iAxis];
+            sliders[iAxis].setValue(scale);
 
             String axisName = axisNames[iAxis];
-            String sliderPrefix = axisName + "Ang";
-            if (degrees) {
-                angle = MyMath.toDegrees(angle);
-                Maud.gui.updateSliderStatus(sliderPrefix, angle, " deg");
-            } else {
-                Maud.gui.updateSliderStatus(sliderPrefix, angle, " rad");
-            }
-        }
-    }
-
-    /**
-     * Test whether the GUI controls should be enabled.
-     *
-     * @return true if enabled, otherwise false
-     */
-    private boolean shouldBeEnabled() {
-        if (Maud.model.target.bone.isSelected()
-                && !Maud.model.target.animation.isMoving()) {
-            return true;
-        } else {
-            return false;
+            String sliderPrefix = axisName + "Sca";
+            Maud.gui.updateSliderStatus(sliderPrefix, scale, "x");
         }
     }
 }

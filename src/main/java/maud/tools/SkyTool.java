@@ -24,23 +24,23 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
-import com.jme3.math.ColorRGBA;
+import com.jme3.app.Application;
+import com.jme3.app.state.AppStateManager;
 import java.util.logging.Logger;
-import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
-import maud.model.LoadedCGModel;
-import maud.model.SkeletonStatus;
+import jme3utilities.sky.SkyControl;
+import jme3utilities.sky.Updater;
+import maud.Maud;
 
 /**
- * The controller for the "Skeleton Color Tool" window in Maud's "3D View"
- * screen.
+ * The controller for the "Sky Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SkeletonColorTool extends WindowController {
+class SkyTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -48,15 +48,14 @@ class SkeletonColorTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            SkeletonColorTool.class.getName());
+            SkyTool.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * flag that causes this controller to temporarily ignore change events from
-     * the sliders
+     * scene-graph control for sky simulation
      */
-    private boolean ignoreSliderChanges = false;
+    private SkyControl skyControl = null;
     // *************************************************************************
     // constructors
 
@@ -65,58 +64,43 @@ class SkeletonColorTool extends WindowController {
      *
      * @param screenController
      */
-    SkeletonColorTool(BasicScreenController screenController) {
-        super(screenController, "skeletonColorTool", false);
+    SkyTool(BasicScreenController screenController) {
+        super(screenController, "skyTool", false);
     }
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Update the MVC model based on the sliders.
+     * Update the view's SkyControl from the MVC model.
      */
-    void onSliderChanged() {
-        if (ignoreSliderChanges) {
-            return;
-        }
-
-        ColorRGBA color = Maud.gui.readColorBank("ske");
-        Maud.model.skeleton.setLinkColor(color);
-
-        color = Maud.gui.readColorBank("bt");
-        Maud.model.skeleton.setTrackedColor(color);
-
-        color = Maud.gui.readColorBank("bnt");
-        Maud.model.skeleton.setTracklessColor(color);
-    }
-
-    /**
-     * Update a SkeletonDebugControl from the MVC model.
-     *
-     * @param modelCgm which CG model's view to update (not null)
-     */
-    void updateSdc(LoadedCGModel modelCgm) {
-        SkeletonDebugControl control = modelCgm.view.getSkeletonDebugControl();
-        if (control == null) {
-            return;
-        }
-        SkeletonStatus model = Maud.model.skeleton;
-
-        ColorRGBA color = model.copyLinkColor(null);
-        control.setLineColor(color);
-
-        color = model.copyTracklessColor(null); // TODO avoid extra garbage
-        control.setPointColor(color);
-
-        model.copyTrackedColor(color);
-        int numBones = modelCgm.bones.countBones();
-        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            if (modelCgm.animation.hasTrackForBone(boneIndex)) {
-                control.setPointColor(boneIndex, color);
-            }
-        }
+    void updateSkyControl() {
+        boolean enable = Maud.model.misc.isSkyRendered();
+        skyControl.setEnabled(enable);
     }
     // *************************************************************************
     // AppState methods
+
+    /**
+     * Initialize this controller prior to its 1st update.
+     *
+     * @param stateManager (not null)
+     * @param application application that owns the window (not null)
+     */
+    @Override
+    public void initialize(AppStateManager stateManager,
+            Application application) {
+        super.initialize(stateManager, application);
+        assert Maud.gui.tools.render.isInitialized();
+        /*
+         * Create a daytime sky.
+         */
+        skyControl = new SkyControl(assetManager, cam, 0.9f, false, true);
+        rootNode.addControl(skyControl);
+        skyControl.setCloudiness(0.5f);
+        skyControl.getSunAndStars().setHour(11f);
+        Updater updater = skyControl.getUpdater();
+        Maud.gui.tools.render.configureUpdater(updater);
+    }
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -129,18 +113,7 @@ class SkeletonColorTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        SkeletonStatus model = Maud.model.skeleton;
-        ignoreSliderChanges = true;
-
-        ColorRGBA color = model.copyLinkColor(null);
-        Maud.gui.setColorBank("ske", color);
-
-        color = model.copyTrackedColor(null);
-        Maud.gui.setColorBank("bt", color);
-
-        model.copyTracklessColor(color);
-        Maud.gui.setColorBank("bnt", color);
-
-        ignoreSliderChanges = false;
+        boolean renderFlag = Maud.model.misc.isSkyRendered();
+        Maud.gui.setChecked("sky", renderFlag);
     }
 }

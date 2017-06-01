@@ -37,7 +37,7 @@ import maud.model.DddModel;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class Checkpoint {
+public class Checkpoint {
     // *************************************************************************
     // constants and loggers
 
@@ -84,7 +84,7 @@ class Checkpoint {
      *
      * @return a new instance
      */
-    Date copyTimestamp() {
+    public Date copyTimestamp() {
         Date result = (Date) timestamp.clone();
         return result;
     }
@@ -94,7 +94,7 @@ class Checkpoint {
      *
      * @return a new list of descriptions
      */
-    List<String> listEvents() {
+    public List<String> listEvents() {
         int numEvents = eventDescriptions.size();
         List<String> result = new ArrayList<>(numEvents);
         result.addAll(eventDescriptions);

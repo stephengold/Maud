@@ -117,7 +117,7 @@ public class CgmView implements JmeCloneable {
      * @param boneIndex which bone to locate
      * @return a new vector (in world coordinates)
      */
-    Vector3f boneLocation(int boneIndex) {
+    public Vector3f boneLocation(int boneIndex) {
         Bone bone = skeleton.getBone(boneIndex);
         Vector3f modelLocation = bone.getModelSpacePosition();
         Geometry ag = findAnimatedGeometry();
@@ -131,7 +131,7 @@ public class CgmView implements JmeCloneable {
      *
      * @return a pre-existing instance, or null if none
      */
-    Geometry findAnimatedGeometry() {
+    public Geometry findAnimatedGeometry() {
         Geometry result = MySpatial.findAnimatedGeometry(cgmRoot);
         return result;
     }
@@ -151,7 +151,7 @@ public class CgmView implements JmeCloneable {
      *
      * @return the pre-existing instance, or null if none
      */
-    SkeletonDebugControl getSkeletonDebugControl() {
+    public SkeletonDebugControl getSkeletonDebugControl() {
         return skeletonDebugControl;
     }
 

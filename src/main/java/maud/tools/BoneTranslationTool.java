@@ -24,28 +24,41 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.math.Quaternion;
+import com.jme3.math.FastMath;
 import com.jme3.math.Transform;
+import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
-import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
 
 /**
- * The controller for the "Spatial-Rotation Tool" window in Maud's "3D View"
+ * The controller for the "Bone-Translation Tool" window in Maud's "3D View"
  * screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SpatialRotationTool extends WindowController {
+class BoneTranslationTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * logarithm base for the master slider
+     */
+    final private static float masterBase = 10f;
+    /**
+     * maximum scale for offsets (&gt;0)
+     */
+    final private static float maxScale = 100f;
+    /**
+     * minimum scale for offsets (&gt;0)
+     */
+    final private static float minScale = 0.01f;
     /**
      * number of coordinate axes
      */
@@ -54,28 +67,24 @@ class SpatialRotationTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            SpatialRotationTool.class.getName());
+            BoneTranslationTool.class.getName());
     /**
      * names of the coordinate axes
      */
     final private static String[] axisNames = {"x", "y", "z"};
-    /**
-     * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
-     */
-    final private static Quaternion identityRotation = new Quaternion();
     // *************************************************************************
     // fields
 
-    /**
-     * flag that causes this controller to temporarily ignore change events from
-     * the sliders
-     */
-    private boolean ignoreSliderChanges = false;
     /**
      * references to the per-axis sliders, set by
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
      */
     final private Slider sliders[] = new Slider[numAxes];
+    /**
+     * reference to the master slider, set by
+     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
+     */
+    private Slider masterSlider = null;
     // *************************************************************************
     // constructors
 
@@ -85,8 +94,8 @@ class SpatialRotationTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    SpatialRotationTool(BasicScreenController screenController) {
-        super(screenController, "spatialRotationTool", false);
+    BoneTranslationTool(BasicScreenController screenController) {
+        super(screenController, "boneTranslationTool", false);
     }
     // *************************************************************************
     // new methods exposed
@@ -95,25 +104,15 @@ class SpatialRotationTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (ignoreSliderChanges) {
-            return;
-        }
+        if (Maud.model.target.bone.shouldEnableControls()) {
+            Vector3f offsets = Maud.gui.readVectorBank("Off");
 
-        float[] angles = new float[numAxes];
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            float value = sliders[iAxis].getValue();
-            angles[iAxis] = value;
-        }
-        Quaternion rot = new Quaternion();
-        rot.fromAngles(angles);
-        Maud.model.target.setSpatialRotation(rot);
-    }
+            float masterScale = readScale();
+            offsets.multLocal(masterScale);
 
-    /**
-     * If active, reset the rotation to identity.
-     */
-    void reset() {
-        Maud.model.target.setSpatialRotation(identityRotation);
+            int boneIndex = Maud.model.target.bone.getIndex();
+            Maud.model.target.pose.setTranslation(boneIndex, offsets);
+        }
     }
     // *************************************************************************
     // AppState methods
@@ -131,10 +130,11 @@ class SpatialRotationTool extends WindowController {
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String axisName = axisNames[iAxis];
-            Slider slider = Maud.gui.getSlider(axisName + "Sa");
+            Slider slider = Maud.gui.getSlider(axisName + "Off");
             assert slider != null;
             sliders[iAxis] = slider;
         }
+        masterSlider = Maud.gui.getSlider("offMaster");
     }
 
     /**
@@ -147,42 +147,99 @@ class SpatialRotationTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        setSlidersToTransform();
-        String dButton;
-        if (Maud.model.misc.getAnglesInDegrees()) {
-            dButton = "radians";
+        if (Maud.model.target.bone.isSelected()) {
+            setSlidersToPose();
+            if (Maud.model.target.bone.shouldEnableControls()) {
+                Maud.gui.setButtonLabel("resetOffAnimButton", "Animation");
+                Maud.gui.setButtonLabel("resetOffBindButton", "Bind pose");
+                enableSliders();
+            } else {
+                Maud.gui.setButtonLabel("resetOffAnimButton", "");
+                Maud.gui.setButtonLabel("resetOffBindButton", "");
+                disableSliders();
+            }
+
         } else {
-            dButton = "degrees";
+            clear();
+            Maud.gui.setButtonLabel("resetOffAnimButton", "");
+            Maud.gui.setButtonLabel("resetOffBindButton", "");
+            disableSliders();
         }
-        Maud.gui.setButtonLabel("degreesButton2", dButton);
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Set all 3 sliders (and their status labels) based on the transform of the
-     * selected spatial.
+     * Reset the 3 axis sliders and clear their status labels.
      */
-    private void setSlidersToTransform() {
-        Transform transform = Maud.model.target.copySpatialTransform(null);
-        Quaternion rotation = transform.getRotation();
-        float[] angles = rotation.toAngles(null);
-        boolean degrees = Maud.model.misc.getAnglesInDegrees();
-
-        ignoreSliderChanges = true;
+    private void clear() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            float angle = angles[iAxis];
-            sliders[iAxis].setValue(angle);
+            sliders[iAxis].setValue(0f);
 
             String axisName = axisNames[iAxis];
-            String sliderPrefix = axisName + "Sa";
-            if (degrees) {
-                angle = MyMath.toDegrees(angle);
-                Maud.gui.updateSliderStatus(sliderPrefix, angle, " deg");
-            } else {
-                Maud.gui.updateSliderStatus(sliderPrefix, angle, " rad");
+            String statusName = axisName + "OffSliderStatus";
+            Maud.gui.setStatusText(statusName, "");
+        }
+    }
+
+    /**
+     * Disable all 4 sliders.
+     */
+    private void disableSliders() {
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            sliders[iAxis].disable();
+        }
+        masterSlider.disable();
+    }
+
+    /**
+     * Enable all 4 sliders.
+     */
+    private void enableSliders() {
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            sliders[iAxis].enable();
+        }
+        masterSlider.enable();
+    }
+
+    /**
+     * Read the master slider.
+     */
+    private float readScale() {
+        float reading = masterSlider.getValue();
+        float result = FastMath.pow(masterBase, reading);
+
+        return result;
+    }
+
+    /**
+     * Set all 4 sliders (and their status labels) based on the pose.
+     */
+    private void setSlidersToPose() {
+        int boneIndex = Maud.model.target.bone.getIndex();
+        Transform transform = Maud.model.target.pose.copyTransform(boneIndex,
+                null);
+        Vector3f vector = transform.getTranslation();
+        float[] offsets = vector.toArray(null);
+
+        float scale = readScale();
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            float absOffset = FastMath.abs(offsets[iAxis]);
+            if (absOffset > scale) {
+                scale = absOffset;
             }
         }
-        ignoreSliderChanges = false;
+        scale = FastMath.clamp(scale, minScale, maxScale);
+        float masterValue = FastMath.log(scale, masterBase);
+        masterSlider.setValue(masterValue);
+
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            float value = offsets[iAxis];
+            sliders[iAxis].setValue(value / scale);
+
+            String axisName = axisNames[iAxis];
+            String sliderPrefix = axisName + "Off";
+            Maud.gui.updateSliderStatus(sliderPrefix, value, " bu");
+        }
     }
 }

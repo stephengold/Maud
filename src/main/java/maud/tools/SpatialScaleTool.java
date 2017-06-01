@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -34,6 +34,7 @@ import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
 
 /**
  * The controller for the "Spatial-Scale Tool" window in Maud's "3D View"
@@ -58,10 +59,6 @@ class SpatialScaleTool extends WindowController {
      * names of the coordinate axes
      */
     final private static String[] axisNames = {"x", "y", "z"};
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
-     */
-    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
     // *************************************************************************
     // fields
 
@@ -107,13 +104,6 @@ class SpatialScaleTool extends WindowController {
         scales.z = Math.max(scales.z, 0.001f);
 
         Maud.model.target.setSpatialScale(scales);
-    }
-
-    /**
-     * If active, reset the scale to unity.
-     */
-    void reset() {
-        Maud.model.target.setSpatialScale(scaleIdentity);
     }
     // *************************************************************************
     // AppState methods

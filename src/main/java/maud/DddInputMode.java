@@ -30,6 +30,8 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.cursors.plugins.JmeCursor;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -50,6 +52,10 @@ class DddInputMode extends InputMode {
      */
     final private static Logger logger = Logger.getLogger(
             DddInputMode.class.getName());
+    /**
+     * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
+     */
+    final private static Quaternion identityRotation = new Quaternion();
     /**
      * asset path to the cursor for this mode
      */
@@ -119,6 +125,14 @@ class DddInputMode extends InputMode {
     final static String selectSpatialPrefix = "select spatial ";
     final static String selectToolPrefix = "select tool ";
     final static String setDurationPrefix = "set duration ";
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
+     */
+    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#ZERO}
+     */
+    final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
     // *************************************************************************
     // constructors
 
@@ -512,40 +526,41 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "reset bone ang anim":
-                Maud.gui.tools.boneRotation.setToAnimation();
+                Maud.model.target.bone.setRotationToAnimation();
                 handled = true;
                 break;
             case "reset bone ang bind":
-                Maud.gui.tools.boneRotation.reset();
+                Maud.model.target.bone.resetRotation();
                 handled = true;
                 break;
             case "reset bone off anim":
-                Maud.gui.tools.boneTranslation.setToAnimation();
+                Maud.model.target.bone.setTranslationToAnimation();
                 handled = true;
                 break;
             case "reset bone off bind":
-                Maud.gui.tools.boneTranslation.reset();
+                Maud.model.target.bone.resetTranslation();
                 handled = true;
                 break;
             case "reset bone sca anim":
-                Maud.gui.tools.boneScale.setToAnimation();
+                Maud.model.target.bone.setScaleToAnimation();
                 handled = true;
                 break;
             case "reset bone sca bind":
-                Maud.gui.tools.boneScale.reset();
+                Maud.model.target.bone.resetScale();
                 handled = true;
                 break;
 
             case "reset spatial rotation":
-                Maud.gui.tools.spatialRotation.reset();
+                Maud.model.target.setSpatialRotation(identityRotation);
                 handled = true;
                 break;
             case "reset spatial scale":
-                Maud.gui.tools.spatialScale.reset();
+                Maud.model.target.setSpatialScale(scaleIdentity);
                 handled = true;
                 break;
             case "reset spatial translation":
-                Maud.gui.tools.spatialTranslation.reset();
+                Maud.model.target.setSpatialTranslation(translateIdentity);
+                ;
                 handled = true;
                 break;
         }
@@ -817,7 +832,6 @@ class DddInputMode extends InputMode {
             case "warp cursor":
                 Maud.gui.tools.cursor.warpCursor();
                 handled = true;
-                break;
         }
 
         return handled;

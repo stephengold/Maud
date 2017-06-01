@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
 import maud.model.LoadedCGModel;
 
 /**
@@ -39,7 +40,7 @@ import maud.model.LoadedCGModel;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneTool extends WindowController {
+public class BoneTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -65,7 +66,7 @@ class BoneTool extends WindowController {
     /**
      * Select the bone with screen coordinates nearest to the mouse pointer.
      */
-    void selectXY() {
+    public void selectXY() {
         float bestDSquared = Float.MAX_VALUE;
         int bestBoneIndex = -1;
         LoadedCGModel bestCgm = null;

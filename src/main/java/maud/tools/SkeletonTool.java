@@ -24,19 +24,23 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
-import com.jme3.scene.Spatial;
+import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
+import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
+import maud.model.LoadedCGModel;
+import maud.model.SkeletonStatus;
 
 /**
- * The controller for the "Cull Hint Tool" window in Maud's "3D View" screen.
+ * The controller for the "Skeleton Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CullHintTool extends WindowController {
+class SkeletonTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -44,7 +48,7 @@ class CullHintTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            CullHintTool.class.getName());
+            SkeletonTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -53,8 +57,45 @@ class CullHintTool extends WindowController {
      *
      * @param screenController
      */
-    CullHintTool(BasicScreenController screenController) {
-        super(screenController, "cullHintTool", false);
+    SkeletonTool(BasicScreenController screenController) {
+        super(screenController, "skeletonTool", false);
+    }
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Update the MVC model based on the sliders.
+     */
+    void onSliderChanged() {
+        float lineWidth = Maud.gui.readSlider("skeletonLineWidth");
+        Maud.model.skeleton.setLineWidth(lineWidth);
+
+        float pointSize = Maud.gui.readSlider("skeletonPointSize");
+        Maud.model.skeleton.setPointSize(pointSize);
+    }
+
+    /**
+     * Update a SkeletonDebugControl from the MVC model.
+     *
+     * @param modelCgm which CG model's view to update (not null)
+     */
+    void updateSdc(LoadedCGModel modelCgm) {
+        SkeletonDebugControl control = modelCgm.view.getSkeletonDebugControl();
+        if (control == null) {
+            return;
+        }
+        SkeletonStatus model = Maud.model.skeleton;
+
+        boolean visible = model.isVisible();
+        control.setEnabled(visible);
+
+        float lineWidth = model.getLineWidth();
+        control.setLineWidth(lineWidth);
+
+        if (control.supportsPointSize()) {
+            float pointSize = model.getPointSize();
+            control.setPointSize(pointSize);
+        }
     }
     // *************************************************************************
     // AppState methods
@@ -69,26 +110,19 @@ class CullHintTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
+        SkeletonStatus model = Maud.model.skeleton;
 
-        Spatial.CullHint hint = Maud.model.target.spatial.getLocalCullHint();
+        boolean visible = model.isVisible();
+        Maud.gui.setChecked("skeleton", visible);
 
-        String niftyId;
-        switch (hint) {
-            case Inherit:
-                niftyId = "cullInheritRadioButton";
-                break;
-            case Dynamic:
-                niftyId = "cullDynamicRadioButton";
-                break;
-            case Always:
-                niftyId = "cullAlwaysRadioButton";
-                break;
-            case Never:
-                niftyId = "cullNeverRadioButton";
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-        Maud.gui.setRadioButton(niftyId);
+        Slider slider = Maud.gui.getSlider("skeletonLineWidth");
+        float lineWidth = model.getLineWidth();
+        slider.setValue(lineWidth);
+        Maud.gui.updateSliderStatus("skeletonLineWidth", lineWidth, " pixels");
+
+        slider = Maud.gui.getSlider("skeletonPointSize");
+        float pointSize = model.getPointSize();
+        slider.setValue(pointSize);
+        Maud.gui.updateSliderStatus("skeletonPointSize", pointSize, " pixels");
     }
 }

@@ -24,19 +24,19 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import java.util.logging.Logger;
-import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
 
 /**
- * The controller for the "Model Tool" window in Maud's "3D View" screen.
+ * The controller for the "Control Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ModelTool extends WindowController {
+class SgcTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -44,7 +44,7 @@ class ModelTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            ModelTool.class.getName());
+            SgcTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -53,8 +53,8 @@ class ModelTool extends WindowController {
      *
      * @param screenController
      */
-    ModelTool(BasicScreenController screenController) {
-        super(screenController, "modelTool", false);
+    SgcTool(BasicScreenController screenController) {
+        super(screenController, "controlTool", false);
     }
     // *************************************************************************
     // AppState methods
@@ -69,43 +69,51 @@ class ModelTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
-        /*
-         * name
-         */
-        String name = Maud.model.target.getName();
-        String nameDesc = MyString.quote(name);
-        Maud.gui.setStatusText("modelName", " " + nameDesc);
-        /*
-         * asset base path
-         */
-        String assetPath = Maud.model.target.getAssetPath();
-        String abpDesc = assetPath.isEmpty() ? "unknown"
-                : MyString.quote(assetPath);
-        Maud.gui.setStatusText("modelAbp", " " + abpDesc);
-        /*
-         * file base path
-         */
-        String filePath = Maud.model.target.getFilePath();
-        String fbpDesc = filePath.isEmpty() ? "unknown"
-                : MyString.quote(filePath);
-        Maud.gui.setStatusText("modelFbp", " " + fbpDesc);
-        /*
-         * asset/file extension
-         */
-        String extDesc = Maud.model.target.getExtension();
-        Maud.gui.setStatusText("modelExt", extDesc);
-        /*
-         * pristine/edited status
-         */
-        String pristineDesc;
-        int editCount = Maud.model.target.countUnsavedEdits();
-        if (editCount == 0) {
-            pristineDesc = "pristine";
-        } else if (editCount == 1) {
-            pristineDesc = "one edit";
+
+        updateIndex();
+
+        String deleteLabel, typeText;
+        if (Maud.model.target.sgc.isSelected()) {
+            deleteLabel = "Delete";
+            typeText = Maud.model.target.sgc.getType();
         } else {
-            pristineDesc = String.format("%d edits", editCount);
+            deleteLabel = "";
+            typeText = "(none selected)";
         }
-        Maud.gui.setStatusText("modelPristine", pristineDesc);
+        Maud.gui.setStatusText("controlType", " " + typeText);
+        Maud.gui.setButtonLabel("controlDeleteButton", deleteLabel);
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Update the index status and previous/next buttons.
+     */
+    private void updateIndex() {
+        String indexText;
+        String nButton, pButton;
+
+        int numSgcs = Maud.model.target.spatial.countSgcs();
+        if (Maud.model.target.sgc.isSelected()) {
+            int selectedIndex = Maud.model.target.sgc.getIndex();
+            indexText = String.format("#%d of %d", selectedIndex + 1, numSgcs);
+            nButton = "+";
+            pButton = "-";
+
+        } else {
+            if (numSgcs == 0) {
+                indexText = "no controls";
+            } else if (numSgcs == 1) {
+                indexText = "one control";
+            } else {
+                indexText = String.format("%d controls", numSgcs);
+            }
+            nButton = "";
+            pButton = "";
+        }
+
+        Maud.gui.setStatusText("controlIndex", indexText);
+        Maud.gui.setButtonLabel("controlNextButton", nButton);
+        Maud.gui.setButtonLabel("controlPreviousButton", pButton);
     }
 }

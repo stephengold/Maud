@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import maud.Maud;
 
 /**
  * The MVC model of the selected bone in the Maud application.
@@ -243,6 +244,36 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
+     * If bone controls are enabled, reset the bone rotation to identity.
+     */
+    public void resetRotation() {
+        if (shouldEnableControls()) {
+            int boneIndex = getIndex();
+            Maud.model.target.pose.resetRotation(boneIndex);
+        }
+    }
+
+    /**
+     * If bone controls are enabled, reset the bone scale to identity.
+     */
+    public void resetScale() {
+        if (shouldEnableControls()) {
+            int boneIndex = getIndex();
+            Maud.model.target.pose.resetScale(boneIndex);
+        }
+    }
+
+    /**
+     * If bone controls are enabled, reset the bone translation to identity.
+     */
+    public void resetTranslation() {
+        if (shouldEnableControls()) {
+            int boneIndex = getIndex();
+            Maud.model.target.pose.resetTranslation(boneIndex);
+        }
+    }
+
+    /**
      * Select the specified bone.
      *
      * @param bone which bone to select (not null)
@@ -365,6 +396,51 @@ public class SelectedBone implements Cloneable {
     void setCgm(LoadedCGModel newLoaded) {
         assert newLoaded != null;
         loadedCgm = newLoaded;
+    }
+
+    /**
+     * If bone controls are enabled, set the bone rotation based on the
+     * animation.
+     */
+    public void setRotationToAnimation() {
+        if (shouldEnableControls()) {
+            int boneIndex = getIndex();
+            Maud.model.target.pose.setRotationToAnimation(boneIndex);
+        }
+    }
+
+    /**
+     * If bone controls are enabled, set the bone scale based on the animation.
+     */
+    public void setScaleToAnimation() {
+        if (shouldEnableControls()) {
+            int boneIndex = getIndex();
+            Maud.model.target.pose.setScaleToAnimation(boneIndex);
+        }
+    }
+
+    /**
+     * If bone controls are enabled, set the bone translation based on the
+     * animation.
+     */
+    public void setTranslationToAnimation() {
+        if (shouldEnableControls()) {
+            int boneIndex = getIndex();
+            Maud.model.target.pose.setTranslationToAnimation(boneIndex);
+        }
+    }
+
+    /**
+     * Test whether the GUI controls for the selected bone should be enabled.
+     *
+     * @return true if enabled, otherwise false
+     */
+    public boolean shouldEnableControls() {
+        if (isSelected() && !loadedCgm.animation.isMoving()) {
+            return true;
+        } else {
+            return false;
+        }
     }
     // *************************************************************************
     // Object methods

@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -35,14 +35,15 @@ import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
 
 /**
- * The controller for the "Bone-Translation Tool" window in Maud's "3D View"
+ * The controller for the "Spatial-Translation Tool" window in Maud's "3D View"
  * screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneTranslationTool extends WindowController {
+class SpatialTranslationTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -66,7 +67,7 @@ class BoneTranslationTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            BoneTranslationTool.class.getName());
+            SpatialTranslationTool.class.getName());
     /**
      * names of the coordinate axes
      */
@@ -74,6 +75,11 @@ class BoneTranslationTool extends WindowController {
     // *************************************************************************
     // fields
 
+    /**
+     * flag that causes this controller to temporarily ignore change events from
+     * the sliders
+     */
+    private boolean ignoreSliderChanges = false;
     /**
      * references to the per-axis sliders, set by
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
@@ -93,8 +99,8 @@ class BoneTranslationTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    BoneTranslationTool(BasicScreenController screenController) {
-        super(screenController, "boneTranslationTool", false);
+    SpatialTranslationTool(BasicScreenController screenController) {
+        super(screenController, "spatialTranslationTool", false);
     }
     // *************************************************************************
     // new methods exposed
@@ -103,35 +109,15 @@ class BoneTranslationTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (shouldBeEnabled()) {
-            Vector3f offsets = Maud.gui.readVectorBank("Off");
-
-            float masterScale = readScale();
-            offsets.multLocal(masterScale);
-
-            int boneIndex = Maud.model.target.bone.getIndex();
-            Maud.model.target.pose.setTranslation(boneIndex, offsets);
+        if (ignoreSliderChanges) {
+            return;
         }
-    }
 
-    /**
-     * If active, reset the bone translation to zero.
-     */
-    void reset() {
-        if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.target.bone.getIndex();
-            Maud.model.target.pose.resetTranslation(boneIndex);
-        }
-    }
+        Vector3f offsets = Maud.gui.readVectorBank("So");
 
-    /**
-     * If active, set the MVC model based on the animation.
-     */
-    void setToAnimation() {
-        if (shouldBeEnabled()) {
-            int boneIndex = Maud.model.target.bone.getIndex();
-            Maud.model.target.pose.setTranslationToAnimation(boneIndex);
-        }
+        float masterScale = readScale();
+        offsets.multLocal(masterScale);
+        Maud.model.target.setSpatialTranslation(offsets);
     }
     // *************************************************************************
     // AppState methods
@@ -149,11 +135,11 @@ class BoneTranslationTool extends WindowController {
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String axisName = axisNames[iAxis];
-            Slider slider = Maud.gui.getSlider(axisName + "Off");
+            Slider slider = Maud.gui.getSlider(axisName + "So");
             assert slider != null;
             sliders[iAxis] = slider;
         }
-        masterSlider = Maud.gui.getSlider("offMaster");
+        masterSlider = Maud.gui.getSlider("soMaster");
     }
 
     /**
@@ -165,61 +151,10 @@ class BoneTranslationTool extends WindowController {
     @Override
     public void update(float tpf) {
         super.update(tpf);
-
-        if (Maud.model.target.bone.isSelected()) {
-            setSlidersToPose();
-            if (shouldBeEnabled()) {
-                Maud.gui.setButtonLabel("resetOffAnimButton", "Animation");
-                Maud.gui.setButtonLabel("resetOffBindButton", "Bind pose");
-                enableSliders();
-            } else {
-                Maud.gui.setButtonLabel("resetOffAnimButton", "");
-                Maud.gui.setButtonLabel("resetOffBindButton", "");
-                disableSliders();
-            }
-
-        } else {
-            clear();
-            Maud.gui.setButtonLabel("resetOffAnimButton", "");
-            Maud.gui.setButtonLabel("resetOffBindButton", "");
-            disableSliders();
-        }
+        setSlidersToTransform();
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Reset the 3 axis sliders and clear their status labels.
-     */
-    private void clear() {
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].setValue(0f);
-
-            String axisName = axisNames[iAxis];
-            String statusName = axisName + "OffSliderStatus";
-            Maud.gui.setStatusText(statusName, "");
-        }
-    }
-
-    /**
-     * Disable all 4 sliders.
-     */
-    private void disableSliders() {
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].disable();
-        }
-        masterSlider.disable();
-    }
-
-    /**
-     * Enable all 4 sliders.
-     */
-    private void enableSliders() {
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].enable();
-        }
-        masterSlider.enable();
-    }
 
     /**
      * Read the master slider.
@@ -232,12 +167,11 @@ class BoneTranslationTool extends WindowController {
     }
 
     /**
-     * Set all 4 sliders (and their status labels) based on the pose.
+     * Set all 4 sliders (and their status labels) based on the transform of the
+     * selected spatial.
      */
-    private void setSlidersToPose() {
-        int boneIndex = Maud.model.target.bone.getIndex();
-        Transform transform = Maud.model.target.pose.copyTransform(boneIndex,
-                null);
+    private void setSlidersToTransform() {
+        Transform transform = Maud.model.target.copySpatialTransform(null);
         Vector3f vector = transform.getTranslation();
         float[] offsets = vector.toArray(null);
 
@@ -250,6 +184,7 @@ class BoneTranslationTool extends WindowController {
         }
         scale = FastMath.clamp(scale, minScale, maxScale);
         float masterValue = FastMath.log(scale, masterBase);
+        ignoreSliderChanges = true;
         masterSlider.setValue(masterValue);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
@@ -257,22 +192,9 @@ class BoneTranslationTool extends WindowController {
             sliders[iAxis].setValue(value / scale);
 
             String axisName = axisNames[iAxis];
-            String sliderPrefix = axisName + "Off";
-            Maud.gui.updateSliderStatus(sliderPrefix, value, " bu");
+            String sliderPrefix = axisName + "So";
+            Maud.gui.updateSliderStatus(sliderPrefix, value, " lu");
         }
-    }
-
-    /**
-     * Test whether the GUI controls should be enabled.
-     *
-     * @return true if enabled, otherwise false
-     */
-    private boolean shouldBeEnabled() {
-        if (Maud.model.target.bone.isSelected()
-                && !Maud.model.target.animation.isMoving()) {
-            return true;
-        } else {
-            return false;
-        }
+        ignoreSliderChanges = false;
     }
 }

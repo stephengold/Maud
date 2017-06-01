@@ -24,19 +24,20 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
-import com.jme3.renderer.queue.RenderQueue;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
 
 /**
- * The controller for the "Shadow Mode Tool" window in Maud's "3D View" screen.
+ * The controller for the "Model Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ShadowModeTool extends WindowController {
+public class ModelTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -44,7 +45,7 @@ class ShadowModeTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            ShadowModeTool.class.getName());
+            ModelTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -53,8 +54,8 @@ class ShadowModeTool extends WindowController {
      *
      * @param screenController
      */
-    ShadowModeTool(BasicScreenController screenController) {
-        super(screenController, "shadowModeTool", false);
+    ModelTool(BasicScreenController screenController) {
+        super(screenController, "modelTool", false);
     }
     // *************************************************************************
     // AppState methods
@@ -69,30 +70,43 @@ class ShadowModeTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
-
-        RenderQueue.ShadowMode mode;
-        mode = Maud.model.target.spatial.getLocalShadowMode();
-
-        String niftyId;
-        switch (mode) {
-            case Off:
-                niftyId = "shadowOffRadioButton";
-                break;
-            case Cast:
-                niftyId = "shadowCastRadioButton";
-                break;
-            case Receive:
-                niftyId = "shadowReceiveRadioButton";
-                break;
-            case CastAndReceive:
-                niftyId = "shadowCastAndReceiveRadioButton";
-                break;
-            case Inherit:
-                niftyId = "shadowInheritRadioButton";
-                break;
-            default:
-                throw new IllegalStateException();
+        /*
+         * name
+         */
+        String name = Maud.model.target.getName();
+        String nameDesc = MyString.quote(name);
+        Maud.gui.setStatusText("modelName", " " + nameDesc);
+        /*
+         * asset base path
+         */
+        String assetPath = Maud.model.target.getAssetPath();
+        String abpDesc = assetPath.isEmpty() ? "unknown"
+                : MyString.quote(assetPath);
+        Maud.gui.setStatusText("modelAbp", " " + abpDesc);
+        /*
+         * file base path
+         */
+        String filePath = Maud.model.target.getFilePath();
+        String fbpDesc = filePath.isEmpty() ? "unknown"
+                : MyString.quote(filePath);
+        Maud.gui.setStatusText("modelFbp", " " + fbpDesc);
+        /*
+         * asset/file extension
+         */
+        String extDesc = Maud.model.target.getExtension();
+        Maud.gui.setStatusText("modelExt", extDesc);
+        /*
+         * pristine/edited status
+         */
+        String pristineDesc;
+        int editCount = Maud.model.target.countUnsavedEdits();
+        if (editCount == 0) {
+            pristineDesc = "pristine";
+        } else if (editCount == 1) {
+            pristineDesc = "one edit";
+        } else {
+            pristineDesc = String.format("%d edits", editCount);
         }
-        Maud.gui.setRadioButton(niftyId);
+        Maud.gui.setStatusText("modelPristine", pristineDesc);
     }
 }

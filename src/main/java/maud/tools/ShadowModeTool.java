@@ -24,18 +24,20 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
+import com.jme3.renderer.queue.RenderQueue;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
 
 /**
- * The controller for the "Control Tool" window in Maud's "3D View" screen.
+ * The controller for the "Shadow Mode Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SgcTool extends WindowController {
+class ShadowModeTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -43,7 +45,7 @@ class SgcTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            SgcTool.class.getName());
+            ShadowModeTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -52,8 +54,8 @@ class SgcTool extends WindowController {
      *
      * @param screenController
      */
-    SgcTool(BasicScreenController screenController) {
-        super(screenController, "controlTool", false);
+    ShadowModeTool(BasicScreenController screenController) {
+        super(screenController, "shadowModeTool", false);
     }
     // *************************************************************************
     // AppState methods
@@ -69,50 +71,29 @@ class SgcTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        updateIndex();
+        RenderQueue.ShadowMode mode;
+        mode = Maud.model.target.spatial.getLocalShadowMode();
 
-        String deleteLabel, typeText;
-        if (Maud.model.target.sgc.isSelected()) {
-            deleteLabel = "Delete";
-            typeText = Maud.model.target.sgc.getType();
-        } else {
-            deleteLabel = "";
-            typeText = "(none selected)";
+        String niftyId;
+        switch (mode) {
+            case Off:
+                niftyId = "shadowOffRadioButton";
+                break;
+            case Cast:
+                niftyId = "shadowCastRadioButton";
+                break;
+            case Receive:
+                niftyId = "shadowReceiveRadioButton";
+                break;
+            case CastAndReceive:
+                niftyId = "shadowCastAndReceiveRadioButton";
+                break;
+            case Inherit:
+                niftyId = "shadowInheritRadioButton";
+                break;
+            default:
+                throw new IllegalStateException();
         }
-        Maud.gui.setStatusText("controlType", " " + typeText);
-        Maud.gui.setButtonLabel("controlDeleteButton", deleteLabel);
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Update the index status and previous/next buttons.
-     */
-    private void updateIndex() {
-        String indexText;
-        String nButton, pButton;
-
-        int numSgcs = Maud.model.target.spatial.countSgcs();
-        if (Maud.model.target.sgc.isSelected()) {
-            int selectedIndex = Maud.model.target.sgc.getIndex();
-            indexText = String.format("#%d of %d", selectedIndex + 1, numSgcs);
-            nButton = "+";
-            pButton = "-";
-
-        } else {
-            if (numSgcs == 0) {
-                indexText = "no controls";
-            } else if (numSgcs == 1) {
-                indexText = "one control";
-            } else {
-                indexText = String.format("%d controls", numSgcs);
-            }
-            nButton = "";
-            pButton = "";
-        }
-
-        Maud.gui.setStatusText("controlIndex", indexText);
-        Maud.gui.setButtonLabel("controlNextButton", nButton);
-        Maud.gui.setButtonLabel("controlPreviousButton", pButton);
+        Maud.gui.setRadioButton(niftyId);
     }
 }

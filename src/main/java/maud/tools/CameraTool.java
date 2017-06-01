@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -40,6 +40,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
 import maud.model.CameraStatus;
 
 /**
@@ -52,7 +53,7 @@ import maud.model.CameraStatus;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CameraTool
+public class CameraTool
         extends WindowController
         implements AnalogListener {
     // *************************************************************************
@@ -261,7 +262,7 @@ class CameraTool
     public void initialize(AppStateManager stateManager,
             Application application) {
         super.initialize(stateManager, application);
-        assert Maud.gui.tools.cursor.isInitialized();
+        assert Maud.gui.tools.getTool("cursor").isInitialized();
 
         mapButton();
     }

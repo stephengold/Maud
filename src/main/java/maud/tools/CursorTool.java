@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -43,6 +43,7 @@ import jme3utilities.MyAsset;
 import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
 
 /**
  * The controller for the "Cursor Tool" window in Maud's "3D View" screen.
@@ -51,7 +52,7 @@ import jme3utilities.nifty.WindowController;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CursorTool extends WindowController {
+public class CursorTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -134,7 +135,7 @@ class CursorTool extends WindowController {
      * Attempt to warp the cursor to the screen coordinates of the mouse
      * pointer.
      */
-    void warpCursor() {
+    public void warpCursor() {
         Vector2f mouseXY = inputManager.getCursorPosition();
         /*
          * Convert screen coordinates of the mouse pointer to a ray in

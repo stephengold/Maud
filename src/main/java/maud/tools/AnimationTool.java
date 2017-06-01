@@ -24,21 +24,21 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.tools;
 
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
 
 /**
- * The controller for the "Source Animation Tool" window in Maud's "3D View"
- * screen.
+ * The controller for the "Animation Tool" window in Maud's "3D View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SourceAnimationTool extends WindowController {
+class AnimationTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -46,7 +46,7 @@ public class SourceAnimationTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            SourceAnimationTool.class.getName());
+            AnimationTool.class.getName());
     // *************************************************************************
     // fields
 
@@ -63,8 +63,8 @@ public class SourceAnimationTool extends WindowController {
      *
      * @param screenController
      */
-    SourceAnimationTool(BasicScreenController screenController) {
-        super(screenController, "sourceAnimationTool", false);
+    AnimationTool(BasicScreenController screenController) {
+        super(screenController, "animationTool", false);
     }
     // *************************************************************************
     // new methods exposed
@@ -73,20 +73,20 @@ public class SourceAnimationTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        float duration = Maud.model.source.animation.getDuration();
+        float duration = Maud.model.target.animation.getDuration();
         float speed;
         if (duration > 0f) {
-            Slider slider = Maud.gui.getSlider("sSpeed");
+            Slider slider = Maud.gui.getSlider("speed");
             speed = slider.getValue();
-            Maud.model.source.animation.setSpeed(speed);
+            Maud.model.target.animation.setSpeed(speed);
         }
 
-        boolean moving = Maud.model.source.animation.isMoving();
+        boolean moving = Maud.model.target.animation.isMoving();
         if (!moving && !ignoreTimeSliderChanges) {
-            Slider slider = Maud.gui.getSlider("sourceTime");
+            Slider slider = Maud.gui.getSlider("time");
             float fraction = slider.getValue();
             float time = fraction * duration;
-            Maud.model.source.animation.setTime(time);
+            Maud.model.target.animation.setTime(time);
         }
     }
     // *************************************************************************
@@ -104,20 +104,18 @@ public class SourceAnimationTool extends WindowController {
         super.update(elapsedTime);
 
         String hasTrackText;
-        if (!Maud.model.source.isLoaded()) {
-            hasTrackText = "no model";
-        } else if (!Maud.model.source.bone.isSelected()) {
+        if (!Maud.model.target.bone.isSelected()) {
             hasTrackText = "no bone";
-        } else if (Maud.model.source.animation.isBindPoseLoaded()) {
+        } else if (Maud.model.target.animation.isBindPoseLoaded()) {
             hasTrackText = "";
         } else {
-            if (Maud.model.source.bone.hasTrack()) {
+            if (Maud.model.target.bone.hasTrack()) {
                 hasTrackText = "has track";
             } else {
                 hasTrackText = "no track";
             }
         }
-        Maud.gui.setStatusText("sourceAnimationHasTrack", " " + hasTrackText);
+        Maud.gui.setStatusText("animationHasTrack", " " + hasTrackText);
 
         updateIndex();
         updateLooping();
@@ -130,116 +128,102 @@ public class SourceAnimationTool extends WindowController {
     // private methods
 
     /**
-     * Update the index status and previous/next/load buttons.
+     * Update the index status and previous/next buttons.
      */
     private void updateIndex() {
-        String indexText;
-        String lButton = "";
-        String nButton = "";
-        String pButton = "";
+        String indexText, nButton, pButton;
 
-        if (Maud.model.source.isLoaded()) {
-            lButton = "Load";
-            int numAnimations = Maud.model.source.countAnimations();
-            if (!Maud.model.source.animation.isBindPoseLoaded()) {
-                int selectedIndex = Maud.model.source.animation.findIndex();
-                indexText = String.format("#%d of %d", selectedIndex + 1,
-                        numAnimations);
-                nButton = "+";
-                pButton = "-";
+        int numAnimations = Maud.model.target.countAnimations();
+        if (!Maud.model.target.animation.isBindPoseLoaded()) {
+            int selectedIndex = Maud.model.target.animation.findIndex();
+            indexText = String.format("#%d of %d", selectedIndex + 1,
+                    numAnimations);
+            nButton = "+";
+            pButton = "-";
 
-            } else {
-                if (numAnimations == 0) {
-                    indexText = "no animations";
-                } else if (numAnimations == 1) {
-                    indexText = "one animation";
-                } else {
-                    indexText = String.format("%d animations", numAnimations);
-                }
-            }
         } else {
-            indexText = "no model";
+            if (numAnimations == 0) {
+                indexText = "no animations";
+            } else if (numAnimations == 1) {
+                indexText = "one animation";
+            } else {
+                indexText = String.format("%d animations", numAnimations);
+            }
+            nButton = "";
+            pButton = "";
         }
 
-        Maud.gui.setButtonLabel("sourceAnimationPreviousButton", pButton);
-        Maud.gui.setStatusText("sourceAnimationIndex", indexText);
-        Maud.gui.setButtonLabel("sourceAnimationNextButton", nButton);
-        Maud.gui.setButtonLabel("sourceAnimationLoadButton", lButton);
+        Maud.gui.setStatusText("animationIndex", indexText);
+        Maud.gui.setButtonLabel("animationNextButton", nButton);
+        Maud.gui.setButtonLabel("animationPreviousButton", pButton);
     }
 
     /**
      * Update the loop check box and the pause button label.
      */
     private void updateLooping() {
-        boolean looping = Maud.model.source.animation.willContinue();
+        boolean looping = Maud.model.target.animation.willContinue();
         Maud.gui.setChecked("loop", looping);
 
         String pButton = "";
-        float duration = Maud.model.source.animation.getDuration();
+        float duration = Maud.model.target.animation.getDuration();
         if (duration > 0f) {
-            boolean paused = Maud.model.source.animation.isPaused();
+            boolean paused = Maud.model.target.animation.isPaused();
             if (paused) {
                 pButton = "Resume";
             } else {
                 pButton = "Pause";
             }
         }
-        Maud.gui.setButtonLabel("togglePauseSourceButton", pButton);
+        Maud.gui.setButtonLabel("togglePauseButton", pButton);
     }
 
     /**
-     * Update the name label.
+     * Update the name label and rename button label.
      */
     private void updateName() {
-        String nameText;
-        if (Maud.model.source.isLoaded()) {
-            String name = Maud.model.source.animation.getName();
-            if (Maud.model.source.animation.isBindPoseLoaded()) {
-                nameText = name;
-            } else {
-                nameText = MyString.quote(name);
-            }
+        String nameText, rButton;
+        String name = Maud.model.target.animation.getName();
+        if (Maud.model.target.animation.isBindPoseLoaded()) {
+            nameText = name;
+            rButton = "";
         } else {
-            nameText = "";
+            nameText = MyString.quote(name);
+            rButton = "Rename";
         }
-        Maud.gui.setStatusText("sourceAnimationName", " " + nameText);
+        Maud.gui.setStatusText("animationName", " " + nameText);
+        Maud.gui.setButtonLabel("animationRenameButton", rButton);
     }
 
     /**
      * Update the speed slider and its status label.
      */
     private void updateSpeed() {
-        float duration = Maud.model.source.animation.getDuration();
-        Slider slider = Maud.gui.getSlider("sSpeed");
+        float duration = Maud.model.target.animation.getDuration();
+        Slider slider = Maud.gui.getSlider("speed");
         if (duration > 0f) {
             slider.enable();
         } else {
             slider.disable();
         }
 
-        float speed = Maud.model.source.animation.getSpeed();
+        float speed = Maud.model.target.animation.getSpeed();
         slider.setValue(speed);
-        Maud.gui.updateSliderStatus("sSpeed", speed, "x");
+        Maud.gui.updateSliderStatus("speed", speed, "x");
     }
 
     /**
      * Update the track counts.
      */
     private void updateTrackCounts() {
-        String boneTracksText, otherTracksText;
-        if (Maud.model.source.isLoaded()) {
-            int numBoneTracks = Maud.model.source.animation.countBoneTracks();
-            boneTracksText = String.format("%d", numBoneTracks);
-            int numTracks = Maud.model.source.animation.countTracks();
-            int numOtherTracks = numTracks - numBoneTracks;
-            otherTracksText = String.format("%d", numOtherTracks);
-        } else {
-            boneTracksText = "";
-            otherTracksText = "";
-        }
+        int numBoneTracks = Maud.model.target.animation.countBoneTracks();
+        String boneTracksText = String.format("%d", numBoneTracks);
+        Maud.gui.setStatusText("boneTracks", " " + boneTracksText);
 
-        Maud.gui.setStatusText("sourceBoneTracks", " " + boneTracksText);
-        Maud.gui.setStatusText("sourceOtherTracks", " " + otherTracksText);
+        int numTracks = Maud.model.target.animation.countTracks();
+        int numOtherTracks = numTracks - numBoneTracks;
+        String otherTracksText = String.format("%d", numOtherTracks);
+        Maud.gui.setStatusText("otherTracks", " " + otherTracksText);
     }
 
     /**
@@ -249,9 +233,9 @@ public class SourceAnimationTool extends WindowController {
         /*
          * slider
          */
-        boolean moving = Maud.model.source.animation.isMoving();
-        float duration = Maud.model.source.animation.getDuration();
-        Slider slider = Maud.gui.getSlider("sourceTime");
+        boolean moving = Maud.model.target.animation.isMoving();
+        float duration = Maud.model.target.animation.getDuration();
+        Slider slider = Maud.gui.getSlider("time");
         if (duration == 0f || moving) {
             slider.disable();
         } else {
@@ -263,7 +247,7 @@ public class SourceAnimationTool extends WindowController {
             trackTime = 0f;
             slider.setValue(0f);
         } else {
-            trackTime = Maud.model.source.animation.getTime();
+            trackTime = Maud.model.target.animation.getTime();
             float fraction = trackTime / duration;
             ignoreTimeSliderChanges = true;
             slider.setValue(fraction);
@@ -273,13 +257,12 @@ public class SourceAnimationTool extends WindowController {
          * status label
          */
         String statusText;
-        if (!Maud.model.source.isLoaded()
-                || Maud.model.source.animation.isBindPoseLoaded()) {
+        if (Maud.model.target.animation.isBindPoseLoaded()) {
             statusText = "time = n/a";
         } else {
             statusText = String.format("time = %.3f / %.3f sec",
                     trackTime, duration);
         }
-        Maud.gui.setStatusText("sourceTrackTime", statusText);
+        Maud.gui.setStatusText("trackTime", statusText);
     }
 }

@@ -52,6 +52,7 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
 import maud.model.LoadedCGModel;
+import maud.tools.DddTools;
 
 /**
  * The screen controller for the GUI portion of Maud's "3D View" screen. The GUI
@@ -98,7 +99,7 @@ public class DddGui extends GuiScreenController {
     /**
      * controllers for tool windows
      */
-    final DddTools tools = new DddTools(this);
+    final public DddTools tools = new DddTools(this);
     // *************************************************************************
     // constructors
 
@@ -312,7 +313,7 @@ public class DddGui extends GuiScreenController {
      * @param prefix unique id prefix of the bank (not null)
      * @return color indicated by the sliders (new instance)
      */
-    ColorRGBA readColorBank(String prefix) {
+    public ColorRGBA readColorBank(String prefix) {
         assert prefix != null;
 
         float r = readSlider(prefix + "R");
@@ -329,7 +330,7 @@ public class DddGui extends GuiScreenController {
      * @param infix unique id infix of the bank (not null)
      * @return vector indicated by the sliders (new instance)
      */
-    Vector3f readVectorBank(String infix) {
+    public Vector3f readVectorBank(String infix) {
         assert infix != null;
 
         float x = readSlider("x" + infix);
@@ -395,7 +396,7 @@ public class DddGui extends GuiScreenController {
      * @param prefix unique id prefix of the bank (not null)
      * @param color (not null, unaffected)
      */
-    void setColorBank(String prefix, ColorRGBA color) {
+    public void setColorBank(String prefix, ColorRGBA color) {
         assert prefix != null;
 
         Slider slider = Maud.gui.getSlider(prefix + "R");
@@ -472,20 +473,11 @@ public class DddGui extends GuiScreenController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (!tools.camera.isInitialized()) {
+        if (!tools.getTool("camera").isInitialized()) {
             return;
         }
 
-        tools.axes.updateVisualizations();
-        tools.camera.updateCamera();
-        tools.cursor.updateCursor();
-        tools.platform.updateScene();
-        tools.render.updateShadowFilter();
-        tools.skeleton.updateSdc(Maud.model.source);
-        tools.skeleton.updateSdc(Maud.model.target);
-        tools.skeletonColor.updateSdc(Maud.model.source);
-        tools.skeletonColor.updateSdc(Maud.model.target);
-        tools.sky.updateSkyControl();
+        tools.update();
         /*
          * Update animations even if the animation tool is disabled.
          */
