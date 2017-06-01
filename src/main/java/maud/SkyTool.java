@@ -89,7 +89,7 @@ class SkyTool extends WindowController {
     public void initialize(AppStateManager stateManager,
             Application application) {
         super.initialize(stateManager, application);
-        assert Maud.gui.render.isInitialized();
+        assert Maud.gui.tools.render.isInitialized();
         /*
          * Create a daytime sky.
          */
@@ -98,7 +98,7 @@ class SkyTool extends WindowController {
         skyControl.setCloudiness(0.5f);
         skyControl.getSunAndStars().setHour(11f);
         Updater updater = skyControl.getUpdater();
-        Maud.gui.render.configureUpdater(updater);
+        Maud.gui.tools.render.configureUpdater(updater);
     }
 
     /**

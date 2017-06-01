@@ -512,40 +512,40 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "reset bone ang anim":
-                Maud.gui.boneRotation.setToAnimation();
+                Maud.gui.tools.boneRotation.setToAnimation();
                 handled = true;
                 break;
             case "reset bone ang bind":
-                Maud.gui.boneRotation.reset();
+                Maud.gui.tools.boneRotation.reset();
                 handled = true;
                 break;
             case "reset bone off anim":
-                Maud.gui.boneTranslation.setToAnimation();
+                Maud.gui.tools.boneTranslation.setToAnimation();
                 handled = true;
                 break;
             case "reset bone off bind":
-                Maud.gui.boneTranslation.reset();
+                Maud.gui.tools.boneTranslation.reset();
                 handled = true;
                 break;
             case "reset bone sca anim":
-                Maud.gui.boneScale.setToAnimation();
+                Maud.gui.tools.boneScale.setToAnimation();
                 handled = true;
                 break;
             case "reset bone sca bind":
-                Maud.gui.boneScale.reset();
+                Maud.gui.tools.boneScale.reset();
                 handled = true;
                 break;
 
             case "reset spatial rotation":
-                Maud.gui.spatialRotation.reset();
+                Maud.gui.tools.spatialRotation.reset();
                 handled = true;
                 break;
             case "reset spatial scale":
-                Maud.gui.spatialScale.reset();
+                Maud.gui.tools.spatialScale.reset();
                 handled = true;
                 break;
             case "reset spatial translation":
-                Maud.gui.spatialTranslation.reset();
+                Maud.gui.tools.spatialTranslation.reset();
                 handled = true;
                 break;
         }
@@ -617,7 +617,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "select boneXY":
-                Maud.gui.bone.selectXY();
+                Maud.gui.tools.bone.selectXY();
                 handled = true;
                 break;
             case "select keyframeFirst":
@@ -815,7 +815,7 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "warp cursor":
-                Maud.gui.cursor.warpCursor();
+                Maud.gui.tools.cursor.warpCursor();
                 handled = true;
                 break;
         }

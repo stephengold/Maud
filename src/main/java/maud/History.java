@@ -183,7 +183,7 @@ public class History {
         } else {
             logger.log(Level.INFO, "nothing to redo", nextIndex);
         }
-        Maud.gui.history.setAutoScroll();
+        Maud.gui.tools.history.setAutoScroll();
     }
 
     /**
@@ -209,6 +209,6 @@ public class History {
         } else {
             logger.log(Level.INFO, "nothing to undo");
         }
-        Maud.gui.history.setAutoScroll();
+        Maud.gui.tools.history.setAutoScroll();
     }
 }

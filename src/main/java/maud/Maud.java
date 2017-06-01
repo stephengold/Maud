@@ -145,13 +145,7 @@ public class Maud extends GuiApplication {
         /*
          * Attach controllers for windows in the "3D View" screen.
          */
-        stateManager.attachAll(gui.animation, gui.axes, gui.bone,
-                gui.boneRotation, gui.boneTranslation, gui.boneScale,
-                gui.cullHint, gui.cursor, gui.camera, gui.history, gui.keyframe,
-                gui.model, gui.platform, gui.render, gui.retarget, gui.sgc,
-                gui.skeleton, gui.skeletonColor, gui.shadowMode, gui.sky,
-                gui.sourceAnimation, gui.spatial, gui.spatialRotation,
-                gui.spatialScale, gui.spatialTranslation);
+        gui.tools.attachAll(stateManager);
         /*
          * Disable flyCam.
          */

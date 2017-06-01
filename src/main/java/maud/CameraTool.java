@@ -261,7 +261,7 @@ class CameraTool
     public void initialize(AppStateManager stateManager,
             Application application) {
         super.initialize(stateManager, application);
-        assert Maud.gui.cursor.isInitialized();
+        assert Maud.gui.tools.cursor.isInitialized();
 
         mapButton();
     }

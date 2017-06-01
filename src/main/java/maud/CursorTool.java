@@ -178,7 +178,7 @@ class CursorTool extends WindowController {
             /*
              * The ray missed the CG models; try to trace it to the platform.
              */
-            Spatial platform = Maud.gui.platform.getSpatial();
+            Spatial platform = Maud.gui.tools.platform.getSpatial();
             if (platform != null) {
                 Vector3f platformContactPoint = findContact(platform, ray);
                 if (platformContactPoint != null) {

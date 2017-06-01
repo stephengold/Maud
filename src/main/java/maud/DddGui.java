@@ -95,34 +95,10 @@ public class DddGui extends GuiScreenController {
      * menus for this screen
      */
     final DddMenus menus = new DddMenus();
-    /*
+    /**
      * controllers for tool windows
      */
-    final AnimationTool animation = new AnimationTool(this);
-    final AxesTool axes = new AxesTool(this);
-    final BoneRotationTool boneRotation = new BoneRotationTool(this);
-    final BoneScaleTool boneScale = new BoneScaleTool(this);
-    final BoneTool bone = new BoneTool(this);
-    final BoneTranslationTool boneTranslation = new BoneTranslationTool(this);
-    final CameraTool camera = new CameraTool(this);
-    final CullHintTool cullHint = new CullHintTool(this);
-    final CursorTool cursor = new CursorTool(this);
-    final HistoryTool history = new HistoryTool(this);
-    final KeyframeTool keyframe = new KeyframeTool(this);
-    final ModelTool model = new ModelTool(this);
-    final PlatformTool platform = new PlatformTool(this);
-    final RenderTool render = new RenderTool(this);
-    final RetargetTool retarget = new RetargetTool(this);
-    final SgcTool sgc = new SgcTool(this);
-    final ShadowModeTool shadowMode = new ShadowModeTool(this);
-    final SkeletonColorTool skeletonColor = new SkeletonColorTool(this);
-    final SkeletonTool skeleton = new SkeletonTool(this);
-    final SourceAnimationTool sourceAnimation = new SourceAnimationTool(this);
-    final SpatialRotationTool spatialRotation = new SpatialRotationTool(this);
-    final SpatialScaleTool spatialScale = new SpatialScaleTool(this);
-    final SpatialTool spatial = new SpatialTool(this);
-    final SpatialTranslationTool spatialTranslation = new SpatialTranslationTool(this);
-    final SkyTool sky = new SkyTool(this);
+    final DddTools tools = new DddTools(this);
     // *************************************************************************
     // constructors
 
@@ -150,7 +126,7 @@ public class DddGui extends GuiScreenController {
         Date creationDate = checkpoint.copyTimestamp();
         String creationTime = DateFormat.getTimeInstance().format(creationDate);
 
-        history.setAutoScroll();
+        tools.history.setAutoScroll();
         String message = String.format("added checkpoint[%d] from %s at %s",
                 checkpointIndex, source, creationTime);
         setStatus(message);
@@ -309,86 +285,7 @@ public class DddGui extends GuiScreenController {
             return;
         }
 
-        switch (sliderId) {
-            case "speedSlider":
-            case "timeSlider":
-                animation.onSliderChanged();
-                break;
-
-            case "axesLineWidthSlider":
-                axes.onSliderChanged();
-                break;
-
-            case "xAngSlider":
-            case "yAngSlider":
-            case "zAngSlider":
-                boneRotation.onSliderChanged();
-                break;
-
-            case "offMasterSlider":
-            case "xOffSlider":
-            case "yOffSlider":
-            case "zOffSlider":
-                boneTranslation.onSliderChanged();
-                break;
-
-            case "xScaSlider":
-            case "yScaSlider":
-            case "zScaSlider":
-                boneScale.onSliderChanged();
-                break;
-
-            case "cursorRSlider":
-            case "cursorGSlider":
-            case "cursorBSlider":
-                cursor.onSliderChanged();
-                break;
-
-            case "skeletonLineWidthSlider":
-            case "skeletonPointSizeSlider":
-                skeleton.onSliderChanged();
-                break;
-
-            case "skeRSlider":
-            case "skeGSlider":
-            case "skeBSlider":
-            case "btRSlider":
-            case "btGSlider":
-            case "btBSlider":
-            case "bntRSlider":
-            case "bntGSlider":
-            case "bntBSlider":
-                skeletonColor.onSliderChanged();
-                break;
-
-            case "sSpeedSlider":
-            case "sourceTimeSlider":
-                sourceAnimation.onSliderChanged();
-                break;
-
-            case "xSaSlider":
-            case "ySaSlider":
-            case "zSaSlider":
-                spatialRotation.onSliderChanged();
-                break;
-
-            case "xSsSlider":
-            case "ySsSlider":
-            case "zSsSlider":
-                spatialScale.onSliderChanged();
-                break;
-
-            case "soMasterSlider":
-            case "xSoSlider":
-            case "ySoSlider":
-            case "zSoSlider":
-                spatialTranslation.onSliderChanged();
-                break;
-
-            default:
-                logger.log(Level.WARNING, "unknown slider with id={0}",
-                        MyString.quote(sliderId));
-        }
+        tools.onSliderChanged(sliderId, event);
     }
 
     /**
@@ -483,72 +380,7 @@ public class DddGui extends GuiScreenController {
      * @return true if the action is handled, otherwise false
      */
     boolean selectTool(String toolName) {
-        WindowController controller = null;
-        switch (toolName) {
-            case "animation":
-                controller = animation;
-                break;
-            case "axes":
-                controller = axes;
-                break;
-            case "bone":
-                controller = bone;
-                break;
-            case "boneRotation":
-                controller = boneRotation;
-                break;
-            case "boneScale":
-                controller = boneScale;
-                break;
-            case "boneTranslation":
-                controller = boneTranslation;
-                break;
-            case "camera":
-                controller = camera;
-                break;
-            case "control":
-                controller = sgc;
-                break;
-            case "cullHint":
-                controller = cullHint;
-                break;
-            case "cursor":
-                controller = cursor;
-                break;
-            case "history":
-                controller = history;
-                break;
-            case "model":
-                controller = model;
-                break;
-            case "render":
-                controller = render;
-                break;
-            case "retarget":
-                controller = retarget;
-                break;
-            case "shadowMode":
-                controller = shadowMode;
-                break;
-            case "skeleton":
-                controller = skeleton;
-                break;
-            case "spatial":
-                controller = spatial;
-                break;
-            case "spatialRotation":
-                controller = spatialRotation;
-                break;
-            case "spatialScale":
-                controller = spatialScale;
-                break;
-            case "spatialTranslation":
-                controller = spatialTranslation;
-                break;
-            case "sky":
-                controller = sky;
-                break;
-        }
+        WindowController controller = tools.getTool(toolName);
         if (controller == null) {
             return false;
         } else {
@@ -640,20 +472,20 @@ public class DddGui extends GuiScreenController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (!camera.isInitialized()) {
+        if (!tools.camera.isInitialized()) {
             return;
         }
 
-        axes.updateVisualizations();
-        camera.updateCamera();
-        cursor.updateCursor();
-        platform.updateScene();
-        render.updateShadowFilter();
-        skeleton.updateSdc(Maud.model.source);
-        skeleton.updateSdc(Maud.model.target);
-        skeletonColor.updateSdc(Maud.model.source);
-        skeletonColor.updateSdc(Maud.model.target);
-        sky.updateSkyControl();
+        tools.axes.updateVisualizations();
+        tools.camera.updateCamera();
+        tools.cursor.updateCursor();
+        tools.platform.updateScene();
+        tools.render.updateShadowFilter();
+        tools.skeleton.updateSdc(Maud.model.source);
+        tools.skeleton.updateSdc(Maud.model.target);
+        tools.skeletonColor.updateSdc(Maud.model.source);
+        tools.skeletonColor.updateSdc(Maud.model.target);
+        tools.sky.updateSkyControl();
         /*
          * Update animations even if the animation tool is disabled.
          */
