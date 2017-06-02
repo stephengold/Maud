@@ -786,8 +786,8 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "toggle pause":
-                LoadedCGModel cgmToToggle = Maud.gui.selectCgm();
-                cgmToToggle.animation.togglePaused();
+                Maud.model.source.animation.togglePaused();
+                Maud.model.target.animation.togglePaused();
                 handled = true;
                 break;
             case "toggle pause source":
