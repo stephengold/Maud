@@ -269,7 +269,7 @@ class DddDialogs {
      * Display a "retarget animation" dialog.
      */
     void retargetAnimation() {
-        String oldName = Maud.model.retarget.getTargetAnimationName();
+        String oldName = Maud.model.source.animation.getName();
         if (oldName == null) {
             oldName = "";
         }
@@ -296,27 +296,6 @@ class DddDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter asset path for skeleton mapping:",
                 assetPath, "", DddInputMode.selectRetargetMapAssetPrefix,
-                controller);
-    }
-
-    /**
-     * Display a "select retarget source cgm asset" dialog.
-     */
-    void selectRetargetSourceCgmAsset() {
-        String assetPath = Maud.model.retarget.getSourceCgmAssetPath();
-        List<String> modelExts = new ArrayList<>(4);
-        modelExts.add(".blend");
-        modelExts.add(".j3o");
-        modelExts.add(".mesh.xml");
-
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-        AssetDialog controller = new AssetDialog("Select", modelExts,
-                assetManager);
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter asset path for source model:",
-                assetPath, "", DddInputMode.selectRetargetSourceCgmAssetPrefix,
                 controller);
     }
 

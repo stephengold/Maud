@@ -872,14 +872,14 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                      height="176px" width="400px" x="30" y="70">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
-                        <control name="label" text="Source asset:  "/>
+                        <control name="label" text="Source model:  "/>
                         <control name="label" id="sourceAsset"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Edit"
+                        <control name="button" label="Change"
                                  id="id17ToAvoidNiftyWarning"
-                                 width="40px">
-                            <interact onRelease="perform(select rsca)"/>
+                                 width="60px">
+                            <interact onRelease="perform(open menu CGModel -> Load source)"/>
                         </control>
                     </panel>
                     <panel height="8px"/>
@@ -890,7 +890,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                                  width="*"/>
                         <control name="button" id="selectSourceAnimationButton"
                                  width="60px">
-                            <interact onRelease="perform(select rsa)"/>
+                            <interact onRelease="perform(open menu Animation -> Load source)"/>
                         </control>
                     </panel>
                     <panel height="8px"/>

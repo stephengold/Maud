@@ -233,18 +233,6 @@ class DddMenus {
     }
 
     /**
-     * Handle a "select rsa" action with no argument.
-     */
-    void selectRetargetSourceAnimation() {
-        List<String> names = Maud.model.retarget.listAnimationNames();
-        if (!names.isEmpty()) {
-            Collections.sort(names);
-            Maud.gui.showPopupMenu(
-                    DddInputMode.selectRetargetSourceAnimationPrefix, names);
-        }
-    }
-
-    /**
      * Handle a "select spatial" action with an argument.
      *
      * @param argument action argument (not null)

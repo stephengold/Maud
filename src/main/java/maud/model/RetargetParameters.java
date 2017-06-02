@@ -26,25 +26,20 @@
  */
 package maud.model;
 
-import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Skeleton;
-import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.BVHUtils;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.Util;
 
 /**
  * Parameters for re-targeting animations in the Maud application.
@@ -72,14 +67,6 @@ public class RetargetParameters implements Cloneable {
      */
     private String mappingAssetPath = "SkeletonMappings/SinbadToJaime.j3o";
     /**
-     * name of the source animation, or null if none selected
-     */
-    private String sourceAnimationName = null;
-    /**
-     * asset path to the source CG model, or null if none selected
-     */
-    private String sourceCgmAssetPath = "Models/Sinbad/Sinbad.mesh.xml";
-    /**
      * name of the target animation, or null if not set
      */
     private String targetAnimationName = null;
@@ -96,49 +83,12 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Read the name of the selected source animation.
-     *
-     * @return name (or null if none selected)
-     */
-    public String getSourceAnimationName() {
-        return sourceAnimationName;
-    }
-
-    /**
-     * Read the asset path to the selected source CG model.
-     *
-     * @return path (or null if none selected)
-     */
-    public String getSourceCgmAssetPath() {
-        return sourceCgmAssetPath;
-    }
-
-    /**
      * Read the selected name for the target animation.
      *
      * @return name (or null if not set)
      */
     public String getTargetAnimationName() {
         return targetAnimationName;
-    }
-
-    /**
-     * Test whether the selected source CG model is animated.
-     *
-     * @return true if animated, otherwise false
-     */
-    public boolean isAnimatedSourceCgm() {
-        boolean result = false;
-        Spatial sourceCgm = sourceCgm();
-        if (sourceCgm != null) {
-            SkeletonControl control = sourceCgm.getControl(
-                    SkeletonControl.class);
-            if (control != null) {
-                result = true;
-            }
-        }
-
-        return result;
     }
 
     /**
@@ -151,67 +101,14 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Test whether the selected source CG model is loadable.
-     *
-     * @return true if loadable, otherwise false
-     */
-    public boolean isLoadableSourceCgm() {
-        Spatial sourceCgm = sourceCgm();
-        if (sourceCgm == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Test whether the selected source CG model is valid.
-     *
-     * @return true if valid, otherwise false
-     */
-    public boolean isValidSourceCgm() {
-        boolean result = true;
-        Spatial sourceCgm = sourceCgm();
-        if (sourceCgm == null) {
-            result = false;
-        } else {
-            SkeletonControl control = sourceCgm.getControl(
-                    SkeletonControl.class);
-            if (control == null) {
-                result = false;
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Enumerate all animations in the selected source CG model.
-     *
-     * @return a new list of names
-     */
-    public List<String> listAnimationNames() {
-        List<String> names = new ArrayList<>(20);
-        if (sourceCgmAssetPath != null) {
-            Spatial sourceCgm = sourceCgm();
-            if (sourceCgm != null) {
-                Collection<String> co = MyAnimation.listAnimations(sourceCgm);
-                names.addAll(co);
-            }
-        }
-
-        return names;
-    }
-
-    /**
-     * Test whether the selected mapping matches the selected source CG model.
+     * Test whether the selected mapping matches the source CG model.
      *
      * @return true if they match, otherwise false
      */
     public boolean matchesSource() {
         boolean matches;
         SkeletonMapping map = skeletonMapping();
-        Spatial sourceCgm = sourceCgm();
+        Spatial sourceCgm = Maud.model.source.getRootSpatial();
         if (map == null || sourceCgm == null) {
             matches = false;
         } else {
@@ -232,7 +129,7 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Test whether the selected mapping matches the loaded CG model.
+     * Test whether the selected mapping matches the target CG model.
      *
      * @return true if they match, otherwise false
      */
@@ -261,10 +158,10 @@ public class RetargetParameters implements Cloneable {
     /**
      * Perform a retarget operation and load the resulting animation.
      *
-     * @param newName name for the new animation (not null)
+     * @param newName name for the new animation (not null, not empty)
      */
     public void retargetAndLoad(String newName) {
-        Validate.nonNull(newName, "new name");
+        Validate.nonEmpty(newName, "new name");
 
         setTargetAnimationName(newName);
         retargetAndAdd();
@@ -272,7 +169,7 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Alter whether the invert the loaded map before applying it.
+     * Alter whether to invert the loaded map before applying it.
      *
      * @param newSetting true &rarr; invert it, false &rarr; don't invert it
      */
@@ -287,28 +184,6 @@ public class RetargetParameters implements Cloneable {
      */
     public void setMappingAssetPath(String path) {
         mappingAssetPath = path;
-    }
-
-    /**
-     * Alter the source animation.
-     *
-     * @param name (or null to deselect)
-     */
-    public void setSourceAnimationName(String name) {
-        sourceAnimationName = name;
-        if (name == null || !Maud.model.target.hasAnimation(name)) {
-            setTargetAnimationName(name);
-        }
-    }
-
-    /**
-     * Alter the asset path for the source CG model.
-     *
-     * @param path (or null to deselect)
-     */
-    public void setSourceCgmAssetPath(String path) {
-        sourceCgmAssetPath = path;
-        setSourceAnimationName(null);
     }
 
     /**
@@ -346,39 +221,6 @@ public class RetargetParameters implements Cloneable {
 
         return result;
     }
-
-    /**
-     * Access the selected source animation.
-     *
-     * @return an orphaned spatial, or null if the asset was not found
-     */
-    Animation sourceAnimation() {
-        Animation result = null;
-        if (sourceAnimationName != null) {
-            Spatial cgm = sourceCgm();
-            if (cgm != null) {
-                AnimControl control = cgm.getControl(AnimControl.class);
-                if (control != null) {
-                    result = control.getAnim(sourceAnimationName);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Access the root spatial of the selected source CG model.
-     *
-     * @return a new orphan spatial, or null if unsuccessful
-     */
-    Spatial sourceCgm() {
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-        Spatial spatial = Util.loadCgmQuietly(assetManager, sourceCgmAssetPath);
-
-        return spatial;
-    }
     // *************************************************************************
     // Object methods
 
@@ -400,9 +242,10 @@ public class RetargetParameters implements Cloneable {
      * Add a re-targeted animation to the loaded CG model.
      */
     private void retargetAndAdd() {
-        Spatial sourceCgm = sourceCgm();
+        Spatial sourceCgm = Maud.model.source.getRootSpatial();
         Spatial targetCgm = Maud.model.target.getRootSpatial();
-        Animation sourceAnimation = sourceAnimation();
+        Animation sourceAnimation;
+        sourceAnimation = Maud.model.source.animation.getLoadedAnimation();
         MyAnimation.removeRepeats(sourceAnimation);
         Skeleton sourceSkeleton = MySkeleton.findSkeleton(sourceCgm);
         SkeletonMapping mapping = skeletonMapping();

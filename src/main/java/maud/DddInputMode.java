@@ -36,7 +36,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
-import maud.model.LoadedCGModel;
 
 /**
  * Input mode for Maud's "3D View" screen.
@@ -655,14 +654,6 @@ class DddInputMode extends InputMode {
                 Maud.gui.dialogs.selectRetargetMapAsset();
                 handled = true;
                 break;
-            case "select rsa":
-                Maud.gui.menus.selectRetargetSourceAnimation();
-                handled = true;
-                break;
-            case "select rsca":
-                Maud.gui.dialogs.selectRetargetSourceCgmAsset();
-                handled = true;
-                break;
             case "select spatialChild":
                 Maud.gui.menus.selectSpatialChild();
                 handled = true;
@@ -699,20 +690,6 @@ class DddInputMode extends InputMode {
                 arg = MyString.remainder(actionString,
                         selectRetargetMapAssetPrefix);
                 Maud.model.retarget.setMappingAssetPath(arg);
-                handled = true;
-
-            } else if (actionString.startsWith(
-                    selectRetargetSourceAnimationPrefix)) {
-                arg = MyString.remainder(actionString,
-                        selectRetargetSourceAnimationPrefix);
-                Maud.model.retarget.setSourceAnimationName(arg);
-                handled = true;
-
-            } else if (actionString.startsWith(
-                    selectRetargetSourceCgmAssetPrefix)) {
-                arg = MyString.remainder(actionString,
-                        selectRetargetSourceCgmAssetPrefix);
-                Maud.model.retarget.setSourceCgmAssetPath(arg);
                 handled = true;
 
             } else if (actionString.startsWith(selectSpatialChildPrefix)) {
