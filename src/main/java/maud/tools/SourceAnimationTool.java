@@ -173,7 +173,7 @@ class SourceAnimationTool extends WindowController {
      */
     private void updateLooping() {
         boolean looping = Maud.model.source.animation.willContinue();
-        Maud.gui.setChecked("loop", looping);
+        Maud.gui.setChecked("loopSource", looping);
 
         String pButton = "";
         float duration = Maud.model.source.animation.getDuration();
