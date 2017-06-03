@@ -27,9 +27,12 @@
 package maud.model;
 
 import com.jme3.math.Vector3f;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
+import maud.Maud;
 
 /**
  * The MVC model of miscellaneous details in Maud's "3D View" screen.
@@ -69,6 +72,10 @@ public class MiscStatus implements Cloneable {
      */
     private String platformMode = "square";
     /**
+     * selected user key, or null if none selected
+     */
+    private String selectedUserKey = null;
+    /**
      * center location of the top of the platform (in world coordinates, not
      * null)
      */
@@ -83,6 +90,33 @@ public class MiscStatus implements Cloneable {
      */
     public boolean areShadowsRendered() {
         return shadowsRendered;
+    }
+
+    /**
+     * Delete (and deselect) the selected user key.
+     */
+    public void deleteUserKey() {
+        if (selectedUserKey != null) {
+            Maud.model.target.deleteUserKey();
+            selectedUserKey = null;
+        }
+    }
+
+    /**
+     * Find the index of the selected user key.
+     *
+     * @return index, or -1 if none selected
+     */
+    public int findUserKeyIndex() {
+        int index;
+        if (selectedUserKey == null) {
+            index = -1;
+        } else {
+            List<String> keyList = Maud.model.target.spatial.listUserKeys();
+            index = keyList.indexOf(selectedUserKey);
+        }
+
+        return index;
     }
 
     /**
@@ -124,12 +158,54 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Test whether the sky background is rendered.
+     * Read the selected user key.
+     *
+     * @return a key, or null if none selected
+     */
+    public String getSelectedUserKey() {
+        return selectedUserKey;
+    }
+
+    /**
+     * Test whether the sky background is being rendered.
      *
      * @return true if rendered, otherwise false
      */
     public boolean isSkyRendered() {
         return skyRendered;
+    }
+
+    /**
+     * Select the next user key in alphabetical order.
+     */
+    public void selectNextUserKey() {
+        List<String> keyList = Maud.model.target.spatial.listUserKeys();
+        int numKeys = keyList.size();
+        int index = keyList.indexOf(selectedUserKey);
+        int nextIndex = MyMath.modulo(index + 1, numKeys);
+        String nextName = keyList.get(nextIndex);
+        selectUserKey(nextName);
+    }
+
+    /**
+     * Select the previous user key in alphabetical order.
+     */
+    public void selectPreviousUserKey() {
+        List<String> keyList = Maud.model.target.spatial.listUserKeys();
+        int numKeys = keyList.size();
+        int index = keyList.indexOf(selectedUserKey);
+        int nextIndex = MyMath.modulo(index - 1, numKeys);
+        String previousName = keyList.get(nextIndex);
+        selectUserKey(previousName);
+    }
+
+    /**
+     * Select the specified user key.
+     *
+     * @param key a key, or null to deselect
+     */
+    public void selectUserKey(String key) {
+        selectedUserKey = key;
     }
 
     /**

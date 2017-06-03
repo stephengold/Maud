@@ -250,6 +250,34 @@ class DddMenus {
             showSpatialSubmenu(names, includeNodes);
         }
     }
+
+    /**
+     * Display a menu for selecting a user data type using the "new userKey "
+     * action prefix.
+     */
+    void selectUserDataType() {
+        builder.reset();
+        builder.add("integer");
+        builder.add("float");
+        builder.add("boolean");
+        builder.add("string");
+        builder.add("long");
+        // TODO savable, list, map, array
+        builder.show(DddInputMode.newUserKeyPrefix);
+    }
+
+    /**
+     * Display a menu for selecting a user key using the "select userKey "
+     * action prefix.
+     */
+    void selectUserKey() {
+        builder.reset();
+        List<String> keyList = Maud.model.target.spatial.listUserKeys();
+        for (String key : keyList) {
+            builder.add(key);
+        }
+        builder.show(DddInputMode.selectUserKeyPrefix);
+    }
     // *************************************************************************
     // private methods
 
@@ -1065,6 +1093,10 @@ class DddMenus {
                     break;
                 case "Translate":
                     Maud.gui.tools.getTool("spatialTranslation").select();
+                    handled = true;
+                    break;
+                case "User data tool":
+                    Maud.gui.tools.getTool("userData").select();
                     handled = true;
             }
         }

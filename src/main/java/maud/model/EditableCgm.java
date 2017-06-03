@@ -36,6 +36,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.UserData;
 import com.jme3.scene.control.Control;
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +49,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
 import maud.History;
+import maud.Maud;
 
 /**
  * MVC model for an editable computer-graphics (CG) model in the Maud
@@ -119,6 +121,44 @@ public class EditableCgm extends LoadedCGModel {
     }
 
     /**
+     * Add a user key to the selected spatial.
+     *
+     * @param type name of the data type ("boolean", "float", "integer", "long",
+     * or "string")
+     * @param key user key to create (not null)
+     */
+    public void addUserKey(String type, String key) {
+        Validate.nonNull(key, "key");
+
+        Object object = null;
+        switch (type) {
+            case "boolean":
+                object = false;
+                break;
+            case "float":
+                object = 0f;
+                break;
+            case "integer":
+                object = 0;
+                break;
+            case "long":
+                object = new Long(0);
+                break;
+            case "string":
+                object = "";
+                break;
+            default:
+                assert false;
+        }
+        byte objectType = UserData.getObjectType(object);
+        UserData data = new UserData(objectType, object);
+        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        selectedSpatial.setUserData(key, data);
+        setEdited("add user key");
+        Maud.model.misc.selectUserKey(key);
+    }
+
+    /**
      * Count unsaved edits.
      *
      * @return count (&ge;0)
@@ -146,6 +186,16 @@ public class EditableCgm extends LoadedCGModel {
         boolean success = selectedSpatial.removeControl(selectedSgc);
         assert success;
         setEdited("delete control");
+    }
+
+    /**
+     * Delete the selected user key from the selected spatial.
+     */
+    void deleteUserKey() {
+        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        String key = Maud.model.misc.getSelectedUserKey();
+        selectedSpatial.setUserData(key, null);
+        setEdited("delete user key");
     }
 
     /**
@@ -192,6 +242,23 @@ public class EditableCgm extends LoadedCGModel {
         }
 
         return success;
+    }
+
+    /**
+     * Rename the selected user key.
+     *
+     * @param newKey name for the new key (not null)
+     */
+    public void renameUserKey(String newKey) {
+        Validate.nonNull(newKey, "new key");
+
+        Spatial sp = spatial.modelSpatial();
+        String oldKey = Maud.model.misc.getSelectedUserKey();
+        Object data = sp.getUserData(oldKey);
+        sp.setUserData(oldKey, null);
+        sp.setUserData(newKey, data);
+        setEdited("rename user key");
+        Maud.model.misc.selectUserKey(newKey);
     }
 
     /**

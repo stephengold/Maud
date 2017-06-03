@@ -149,11 +149,10 @@ class SpatialTool extends WindowController {
     }
 
     /**
-     * Update the display of the spatial's user data keys.
+     * Update the display of the spatial's user-data keys.
      */
     private void updateKeys() {
-        String[] keys = Maud.model.target.spatial.copyUserDataKeys();
-        int numKeys = keys.length;
+        int numKeys = Maud.model.target.spatial.countUserKeys();
         String keysText = String.format("%d", numKeys);
         Maud.gui.setStatusText("spatialKeys", " " + keysText);
     }

@@ -154,9 +154,13 @@ public class DddTools {
      */
     final SpatialTranslationTool spatialTranslation;
     /**
-     * controller for the "Spatial Sky Tool" window
+     * controller for the "Sky Tool" window
      */
     final SkyTool sky;
+    /**
+     * controller for the "User Data Tool" window
+     */
+    final UserDataTool userData;
     // *************************************************************************
     // constructors
 
@@ -194,6 +198,7 @@ public class DddTools {
         spatial = new SpatialTool(screen);
         spatialTranslation = new SpatialTranslationTool(screen);
         sky = new SkyTool(screen);
+        userData = new UserDataTool(screen);
     }
     // *************************************************************************
     // new methods exposed
@@ -209,7 +214,7 @@ public class DddTools {
                 boneTranslation, bounds, camera, cullHint, history, keyframe,
                 model, platform, render, retarget, sgc, shadowMode, skeleton,
                 skeletonColor, sky, sourceAnimation, spatial, spatialRotation,
-                spatialScale, spatialTranslation);
+                spatialScale, spatialTranslation, userData);
     }
 
     /**
@@ -300,6 +305,9 @@ public class DddTools {
                 break;
             case "sky":
                 controller = sky;
+                break;
+            case "userData":
+                controller = userData;
         }
 
         return controller;

@@ -156,7 +156,8 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Perform a retarget operation and load the resulting animation.
+     * Retarget the source animation to the target CG model and load the
+     * resulting animation.
      *
      * @param newName name for the new animation (not null, not empty)
      */
@@ -239,7 +240,7 @@ public class RetargetParameters implements Cloneable {
     // private methods
 
     /**
-     * Add a re-targeted animation to the loaded CG model.
+     * Add a re-targeted animation to the target CG model.
      */
     private void retargetAndAdd() {
         Spatial sourceCgm = Maud.model.source.getRootSpatial();

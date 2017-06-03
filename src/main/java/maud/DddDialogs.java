@@ -180,10 +180,19 @@ class DddDialogs {
      */
     void newPose() {
         DialogController controller = new AnimationNameDialog("Create");
-
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
                 "pose", "", DddInputMode.newPosePrefix, controller);
+    }
+
+    /**
+     * Display a "new userKey" dialog.
+     */
+    void newUserKey(String actionString) {
+        DialogController controller = new UserKeyDialog("Create");
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter a key for the new user data:",
+                "key", "", actionString, controller);
     }
 
     /**
@@ -240,6 +249,19 @@ class DddDialogs {
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new name for the bone:",
                     oldName, "", DddInputMode.renameBonePrefix, controller);
+        }
+    }
+
+    /**
+     * Display a "rename userKey" dialog.
+     */
+    void renameUserKey() {
+        String oldName = Maud.model.misc.getSelectedUserKey();
+        if (oldName != null) {
+            DialogController controller = new UserKeyDialog("Rename");
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog("Enter a new key for the user data:",
+                    oldName, "", DddInputMode.renameUserKeyPrefix, controller);
         }
     }
 
@@ -319,5 +341,12 @@ class DddDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
                 defaultText, "", DddInputMode.setDurationPrefix, controller);
+    }
+
+    /**
+     * Display a "set userData" dialog.
+     */
+    void setUserData() {
+        // TODO
     }
 }

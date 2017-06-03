@@ -40,6 +40,7 @@ import com.jme3.scene.control.Control;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -114,21 +115,6 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Enumerate all user data keys of the selected spatial.
-     *
-     * @return a new array
-     */
-    public String[] copyUserDataKeys() {
-        Spatial spatial = modelSpatial();
-        Collection<String> keys = spatial.getUserDataKeys();
-        int numKeys = keys.size();
-        String[] result = new String[numKeys];
-        keys.toArray(result);
-
-        return result;
-    }
-
-    /**
      * Count how many children are attached to the selected spatial.
      *
      * @return count (&ge;0) or 0 if the spatial is not a node
@@ -150,7 +136,7 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Count how many controls are added to the selected spatial.
+     * Count how many controls are added to the selected spatial. TODO sort
      *
      * @return count (&ge;0)
      */
@@ -177,6 +163,19 @@ public class SelectedSpatial implements Cloneable {
         }
 
         assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Count the user keys of the selected spatial.
+     *
+     * @return count (&ge;0)
+     */
+    public int countUserKeys() {
+        Spatial spatial = modelSpatial();
+        Collection<String> keys = spatial.getUserDataKeys();
+        int result = keys.size();
+
         return result;
     }
 
@@ -405,6 +404,21 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Access the user data of the specified key.
+     *
+     * @param key (not null)
+     * @return the pre-existing instance or null
+     */
+    public Object getUserData(String key) {
+        Validate.nonNull(key, "key");
+
+        Spatial spatial = modelSpatial();
+        Object result = spatial.getUserData(key);
+
+        return result;
+    }
+
+    /**
      * Test whether the selected spatial has an animated mesh.
      *
      * @return true if it has an animated mesh, otherwise false
@@ -443,6 +457,24 @@ public class SelectedSpatial implements Cloneable {
             return false;
         } else {
             return true;
+        }
+    }
+
+    /**
+     * Test whether the specifed user key exists in the selected spatial.
+     *
+     * @param key the key to search for (not null)
+     * @return true if it exists, otherwise false
+     */
+    public boolean hasUserKey(String key) {
+        Validate.nonNull(key, "key");
+
+        Spatial spatial = modelSpatial();
+        Collection<String> keys = spatial.getUserDataKeys();
+        if (keys.contains(key)) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -529,6 +561,22 @@ public class SelectedSpatial implements Cloneable {
         MyString.dedup(nameList, " #");
 
         return nameList;
+    }
+
+    /**
+     * Enumerate the user keys of the selected spatial.
+     *
+     * @return a new list, sorted lexicographically
+     */
+    public List<String> listUserKeys() {
+        Spatial spatial = modelSpatial();
+        Collection<String> keys = spatial.getUserDataKeys();
+        int numKeys = keys.size();
+        List<String> result = new ArrayList<>(numKeys);
+        result.addAll(keys);
+        Collections.sort(result);
+
+        return result;
     }
 
     /**

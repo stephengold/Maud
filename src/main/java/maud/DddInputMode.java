@@ -97,10 +97,27 @@ class DddInputMode extends InputMode {
      * action prefix: remainder is a name for the new animation
      */
     final static String newPosePrefix = "new pose ";
+    /**
+     * action prefix: remainder consists of the new type, key, and value
+     */
+    final static String newUserKeyPrefix = "new userKey ";
     final static String reduceAnimationPrefix = "reduce animation ";
     final static String reduceTrackPrefix = "reduce track ";
+    /**
+     * action prefix: remainder is the new name for the animation
+     */
     final static String renameAnimationPrefix = "rename animation ";
+    /**
+     * action prefix: remainder is the new name for the bone
+     */
     final static String renameBonePrefix = "rename bone ";
+    /**
+     * action prefix: remainder is the new name for the key
+     */
+    final static String renameUserKeyPrefix = "rename userKey ";
+    /**
+     * action prefix: remainder is the name for the new animation
+     */
     final static String retargetAnimationPrefix = "retarget animation ";
     final static String saveModelAssetPrefix = "save model asset ";
     final static String saveModelFilePrefix = "save model file ";
@@ -120,7 +137,14 @@ class DddInputMode extends InputMode {
      * action prefix: remainder is the name of a spatial or a prefix thereof
      */
     final static String selectSpatialPrefix = "select spatial ";
+    /**
+     * action prefix: remainder is the name of a tool window
+     */
     final static String selectToolPrefix = "select tool ";
+    /**
+     * action prefix: remainder is a pre-existing user key
+     */
+    final static String selectUserKeyPrefix = "select userKey ";
     final static String setDurationPrefix = "set duration ";
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
@@ -276,12 +300,18 @@ class DddInputMode extends InputMode {
      */
     private boolean deleteAction(String actionString) {
         boolean handled = false;
-        if (actionString.equals("delete animation")) {
-            Maud.model.target.animation.delete();
-            handled = true;
-        } else if (actionString.equals("delete control")) {
-            Maud.model.target.sgc.delete();
-            handled = true;
+        switch (actionString) {
+            case "delete animation":
+                Maud.model.target.animation.delete();
+                handled = true;
+                break;
+            case "delete control":
+                Maud.model.target.sgc.delete();
+                handled = true;
+                break;
+            case "delete userKey":
+                Maud.model.misc.deleteUserKey();
+                handled = true;
         }
 
         return handled;
@@ -359,9 +389,23 @@ class DddInputMode extends InputMode {
         } else if (actionString.equals("new pose")) {
             Maud.gui.dialogs.newPose();
             handled = true;
+        } else if (actionString.equals("new userKey")) {
+            Maud.gui.menus.selectUserDataType();
+            handled = true;
         } else if (actionString.startsWith(newPosePrefix)) {
             String name = MyString.remainder(actionString, newPosePrefix);
             Maud.model.target.animation.poseAndLoad(name);
+            handled = true;
+
+        } else if (actionString.startsWith(newUserKeyPrefix)) {
+            String args = MyString.remainder(actionString, newUserKeyPrefix);
+            if (args.contains(" ")) {
+                String type = args.split(" ")[0];
+                String key = MyString.remainder(args, type + " ");
+                Maud.model.target.addUserKey(type, key);
+            } else {
+                Maud.gui.dialogs.newUserKey(actionString + " ");
+            }
             handled = true;
         }
 
@@ -395,6 +439,10 @@ class DddInputMode extends InputMode {
                 break;
             case "next sourceAnimation":
                 Maud.model.source.animation.loadNext();
+                handled = true;
+                break;
+            case "next userData":
+                Maud.model.misc.selectNextUserKey();
                 handled = true;
         }
 
@@ -445,6 +493,10 @@ class DddInputMode extends InputMode {
             case "previous sourceAnimation":
                 Maud.model.source.animation.loadPrevious();
                 handled = true;
+                break;
+            case "previous userData":
+                Maud.model.misc.selectPreviousUserKey();
+                handled = true;
         }
 
         return handled;
@@ -490,24 +542,38 @@ class DddInputMode extends InputMode {
      */
     private boolean renameAction(String actionString) {
         boolean handled = false;
-        String newName;
-        if (actionString.equals("rename animation")) {
-            Maud.gui.dialogs.renameAnimation();
-            handled = true;
+        switch (actionString) {
+            case "rename animation":
+                Maud.gui.dialogs.renameAnimation();
+                handled = true;
+                break;
+            case "rename bone":
+                Maud.gui.dialogs.renameBone();
+                handled = true;
+                break;
+            case "rename userKey":
+                Maud.gui.dialogs.renameUserKey();
+                handled = true;
+        }
 
-        } else if (actionString.equals("rename bone")) {
-            Maud.gui.dialogs.renameBone();
-            handled = true;
+        if (!handled) {
+            String newName;
+            if (actionString.startsWith(renameAnimationPrefix)) {
+                newName = MyString.remainder(actionString,
+                        renameAnimationPrefix);
+                Maud.model.target.animation.rename(newName);
+                handled = true;
 
-        } else if (actionString.startsWith(renameAnimationPrefix)) {
-            newName = MyString.remainder(actionString, renameAnimationPrefix);
-            Maud.model.target.animation.rename(newName);
-            handled = true;
+            } else if (actionString.startsWith(renameBonePrefix)) {
+                newName = MyString.remainder(actionString, renameBonePrefix);
+                Maud.model.target.renameBone(newName);
+                handled = true;
 
-        } else if (actionString.startsWith(renameBonePrefix)) {
-            newName = MyString.remainder(actionString, renameBonePrefix);
-            Maud.model.target.renameBone(newName);
-            handled = true;
+            } else if (actionString.startsWith(renameUserKeyPrefix)) {
+                newName = MyString.remainder(actionString, renameUserKeyPrefix);
+                Maud.model.target.renameUserKey(newName);
+                handled = true;
+            }
         }
 
         return handled;
@@ -612,7 +678,7 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "select".
+     * Process an action that starts with "select". TODO split method
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -659,6 +725,10 @@ class DddInputMode extends InputMode {
             case "select spatialParent":
                 Maud.model.target.spatial.selectParent();
                 handled = true;
+                break;
+            case "select userKey":
+                Maud.gui.menus.selectUserKey();
+                handled = true;
         }
 
         if (!handled) {
@@ -700,6 +770,11 @@ class DddInputMode extends InputMode {
                 arg = MyString.remainder(actionString, selectSpatialPrefix);
                 Maud.gui.menus.selectSpatial(arg, true);
                 handled = true;
+
+            } else if (actionString.startsWith(selectUserKeyPrefix)) {
+                arg = MyString.remainder(actionString, selectUserKeyPrefix);
+                Maud.model.misc.selectUserKey(arg);
+                handled = true;
             }
         }
 
@@ -731,6 +806,10 @@ class DddInputMode extends InputMode {
                 break;
             case "set track translation all":
                 Maud.model.target.track.setTrackTranslationAll();
+                handled = true;
+                break;
+            case "set userdata":
+                Maud.gui.dialogs.setUserData();
                 handled = true;
         }
 
