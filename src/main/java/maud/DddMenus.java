@@ -494,6 +494,7 @@ class DddMenus {
      */
     private void buildViewMenu() {
         builder.addTool("Axes");
+        builder.addTool("Bounds");
         builder.addTool("Camera");
         builder.addTool("Cursor");
         builder.addTool("Physics");
@@ -1148,6 +1149,10 @@ class DddMenus {
         switch (remainder) {
             case "Axes":
                 Maud.gui.tools.getTool("axes").select();
+                handled = true;
+                break;
+            case "Bounds":
+                Maud.gui.tools.getTool("bounds").select();
                 handled = true;
                 break;
             case "Camera":

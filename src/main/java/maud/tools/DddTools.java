@@ -78,6 +78,10 @@ public class DddTools {
      */
     final BoneTranslationTool boneTranslation;
     /**
+     * controller for the "Bounds Tool" window
+     */
+    final BoundsTool bounds;
+    /**
      * controller for the "Camera Tool" window
      */
     final CameraTool camera;
@@ -170,6 +174,7 @@ public class DddTools {
         boneScale = new BoneScaleTool(screen);
         bone = new BoneTool(screen);
         boneTranslation = new BoneTranslationTool(screen);
+        bounds = new BoundsTool(screen);
         camera = new CameraTool(screen);
         cullHint = new CullHintTool(screen);
         cursor = new CursorTool(screen);
@@ -201,8 +206,8 @@ public class DddTools {
     public void attachAll(AppStateManager stateManager) {
         stateManager.attach(cursor); // cursor before camera
         stateManager.attachAll(animation, axes, bone, boneRotation, boneScale,
-                boneTranslation, camera, cullHint, history, keyframe, model,
-                platform, render, retarget, sgc, shadowMode, skeleton,
+                boneTranslation, bounds, camera, cullHint, history, keyframe,
+                model, platform, render, retarget, sgc, shadowMode, skeleton,
                 skeletonColor, sky, sourceAnimation, spatial, spatialRotation,
                 spatialScale, spatialTranslation);
     }
@@ -235,6 +240,9 @@ public class DddTools {
                 break;
             case "boneTranslation":
                 controller = boneTranslation;
+                break;
+            case "bounds":
+                controller = bounds;
                 break;
             case "camera":
                 controller = camera;
@@ -337,6 +345,13 @@ public class DddTools {
                 boneTranslation.onSliderChanged();
                 break;
 
+            case "boundsRSlider":
+            case "boundsGSlider":
+            case "boundsBSlider":
+            case "boundsLineWidthSlider":
+                bounds.onSliderChanged();
+                break;
+
             case "cursorRSlider":
             case "cursorGSlider":
             case "cursorBSlider":
@@ -396,6 +411,7 @@ public class DddTools {
      */
     public void update() {
         axes.updateVisualizations();
+        bounds.updateVisualizations();
         camera.updateCamera();
         cursor.updateCursor();
         platform.updateScene();

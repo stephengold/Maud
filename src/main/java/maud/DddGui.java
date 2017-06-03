@@ -85,6 +85,11 @@ public class DddGui extends GuiScreenController {
     // fields
 
     /**
+     * flag that causes this controller to temporarily ignore change events from
+     * GUI controls during an update
+     */
+    private boolean ignoreGuiChanges = false;
+    /**
      * dialog boxes created by this screen
      */
     final DddDialogs dialogs = new DddDialogs();
@@ -134,7 +139,7 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
-     * Callback that Nifty invokes after a check box changes.
+     * Callback handler that Nifty invokes after a check box changes.
      *
      * @param boxId Nifty element id of the check box (not null)
      * @param event details of the event (not null)
@@ -145,7 +150,7 @@ public class DddGui extends GuiScreenController {
         Validate.nonNull(boxId, "check box id");
         Validate.nonNull(event, "event");
 
-        if (!hasStarted()) {
+        if (ignoreGuiChanges || !hasStarted()) {
             return;
         }
 
@@ -157,6 +162,9 @@ public class DddGui extends GuiScreenController {
                 break;
             case "axesDepthTestCheckBox":
                 Maud.model.axes.setDepthTestFlag(isChecked);
+                break;
+            case "boundsDepthTestCheckBox":
+                Maud.model.bounds.setDepthTestFlag(isChecked);
                 break;
             case "invertRmaCheckBox":
                 Maud.model.retarget.setInvertMap(isChecked);
@@ -189,7 +197,7 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
-     * Callback that Nifty invokes after a radio button changes.
+     * Callback handler that Nifty invokes after a radio button changes.
      *
      * @param buttonId Nifty element id of the radio button (not null)
      * @param event details of the event (not null)
@@ -200,7 +208,7 @@ public class DddGui extends GuiScreenController {
         Validate.nonNull(buttonId, "button id");
         Validate.nonNull(event, "event");
 
-        if (!hasStarted() || !event.isSelected()) {
+        if (ignoreGuiChanges || !hasStarted() || !event.isSelected()) {
             return;
         }
 
@@ -271,7 +279,7 @@ public class DddGui extends GuiScreenController {
     }
 
     /**
-     * Callback that Nifty invokes after a slider changes.
+     * Callback handler that Nifty invokes after a slider changes.
      *
      * @param sliderId Nifty element id of the slider (not null)
      * @param event details of the event (not null, ignored)
@@ -282,7 +290,7 @@ public class DddGui extends GuiScreenController {
         Validate.nonNull(sliderId, "slider id");
         Validate.nonNull(event, "event");
 
-        if (!hasStarted()) {
+        if (ignoreGuiChanges || !hasStarted()) {
             return;
         }
 
@@ -410,6 +418,16 @@ public class DddGui extends GuiScreenController {
         slider = Maud.gui.getSlider(prefix + "B");
         slider.setValue(color.b);
         Maud.gui.updateSliderStatus(prefix + "B", color.b, "");
+    }
+
+    /**
+     * Alter the "ignore GUI changes" flag.
+     *
+     * @param newSetting true &rarr; ignore events, false &rarr; invoke callback
+     * handlers for events
+     */
+    public void setIgnoreGuiChanges(boolean newSetting) {
+        ignoreGuiChanges = newSetting;
     }
 
     /**

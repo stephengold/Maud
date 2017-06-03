@@ -50,6 +50,10 @@ public class DddModel {
      */
     final public AxesStatus axes;
     /**
+     * status of the bounds visualization(s)
+     */
+    final public BoundsStatus bounds;
+    /**
      * status of the camera
      */
     final public CameraStatus camera;
@@ -75,7 +79,7 @@ public class DddModel {
      */
     final public RetargetParameters retarget;
     /**
-     * status of the skeleton visualization
+     * status of the skeleton visualization(s)
      */
     final public SkeletonStatus skeleton;
     // *************************************************************************
@@ -86,6 +90,7 @@ public class DddModel {
      */
     public DddModel() {
         axes = new AxesStatus();
+        bounds = new BoundsStatus();
         camera = new CameraStatus();
         cursor = new CursorStatus();
         target = new EditableCgm();
@@ -103,6 +108,7 @@ public class DddModel {
     public DddModel(DddModel other) {
         try {
             axes = other.axes.clone();
+            bounds = other.bounds.clone();
             camera = other.camera.clone();
             cursor = other.cursor.clone();
             target = other.target.clone();
