@@ -115,8 +115,6 @@ class DddInputMode extends InputMode {
      */
     final static String selectGeometryPrefix = "select geometry ";
     final static String selectRetargetMapAssetPrefix = "select rma ";
-    final static String selectRetargetSourceAnimationPrefix = "select rsa ";
-    final static String selectRetargetSourceCgmAssetPrefix = "select rsca ";
     final static String selectSpatialChildPrefix = "select spatialChild ";
     /**
      * action prefix: remainder is the name of a spatial or a prefix thereof
