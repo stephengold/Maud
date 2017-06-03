@@ -51,14 +51,6 @@ class SkeletonColorTool extends WindowController {
     final private static Logger logger = Logger.getLogger(
             SkeletonColorTool.class.getName());
     // *************************************************************************
-    // fields
-
-    /**
-     * flag that causes this controller to temporarily ignore change events from
-     * the sliders
-     */
-    private boolean ignoreSliderChanges = false;
-    // *************************************************************************
     // constructors
 
     /**
@@ -76,10 +68,6 @@ class SkeletonColorTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (ignoreSliderChanges) {
-            return;
-        }
-
         ColorRGBA color = Maud.gui.readColorBank("ske");
         Maud.model.skeleton.setLinkColor(color);
 
@@ -129,9 +117,8 @@ class SkeletonColorTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
-
         SkeletonStatus model = Maud.model.skeleton;
-        ignoreSliderChanges = true;
+        Maud.gui.setIgnoreGuiChanges(true);
 
         ColorRGBA color = model.copyLinkColor(null);
         Maud.gui.setColorBank("ske", color);
@@ -142,6 +129,6 @@ class SkeletonColorTool extends WindowController {
         model.copyTracklessColor(color);
         Maud.gui.setColorBank("bnt", color);
 
-        ignoreSliderChanges = false;
+        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

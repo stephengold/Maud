@@ -64,11 +64,6 @@ class SpatialRotationTool extends WindowController {
     // fields
 
     /**
-     * flag that causes this controller to temporarily ignore change events from
-     * the sliders
-     */
-    private boolean ignoreSliderChanges = false;
-    /**
      * references to the per-axis sliders, set by
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
      */
@@ -92,10 +87,6 @@ class SpatialRotationTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (ignoreSliderChanges) {
-            return;
-        }
-
         float[] angles = new float[numAxes];
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float value = sliders[iAxis].getValue();
@@ -136,6 +127,7 @@ class SpatialRotationTool extends WindowController {
     @Override
     public void update(float tpf) {
         super.update(tpf);
+        Maud.gui.setIgnoreGuiChanges(true);
 
         setSlidersToTransform();
         String dButton;
@@ -145,6 +137,8 @@ class SpatialRotationTool extends WindowController {
             dButton = "degrees";
         }
         Maud.gui.setButtonLabel("degreesButton2", dButton);
+        
+        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods
@@ -159,7 +153,6 @@ class SpatialRotationTool extends WindowController {
         float[] angles = rotation.toAngles(null);
         boolean degrees = Maud.model.misc.getAnglesInDegrees();
 
-        ignoreSliderChanges = true;
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float angle = angles[iAxis];
             sliders[iAxis].setValue(angle);
@@ -173,6 +166,5 @@ class SpatialRotationTool extends WindowController {
                 Maud.gui.updateSliderStatus(sliderPrefix, angle, " rad");
             }
         }
-        ignoreSliderChanges = false;
     }
 }

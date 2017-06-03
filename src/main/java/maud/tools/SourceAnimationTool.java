@@ -49,14 +49,6 @@ class SourceAnimationTool extends WindowController {
     final private static Logger logger = Logger.getLogger(
             SourceAnimationTool.class.getName());
     // *************************************************************************
-    // fields
-
-    /**
-     * flag that causes this controller to temporarily ignore change events from
-     * the time slider
-     */
-    private boolean ignoreTimeSliderChanges = false;
-    // *************************************************************************
     // constructors
 
     /**
@@ -83,7 +75,7 @@ class SourceAnimationTool extends WindowController {
         }
 
         boolean moving = Maud.model.source.animation.isMoving();
-        if (!moving && !ignoreTimeSliderChanges) {
+        if (!moving) {
             Slider slider = Maud.gui.getSlider("sourceTime");
             float fraction = slider.getValue();
             float time = fraction * duration;
@@ -103,6 +95,7 @@ class SourceAnimationTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
+        Maud.gui.setIgnoreGuiChanges(true);
 
         String hasTrackText;
         if (!Maud.model.source.isLoaded()) {
@@ -126,6 +119,8 @@ class SourceAnimationTool extends WindowController {
         updateSpeed();
         updateTrackTime();
         updateTrackCounts();
+        
+        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods
@@ -266,9 +261,7 @@ class SourceAnimationTool extends WindowController {
         } else {
             trackTime = Maud.model.source.animation.getTime();
             float fraction = trackTime / duration;
-            ignoreTimeSliderChanges = true;
             slider.setValue(fraction);
-            ignoreTimeSliderChanges = false;
         }
         /*
          * status label

@@ -63,11 +63,6 @@ class SpatialScaleTool extends WindowController {
     // fields
 
     /**
-     * flag that causes this controller to temporarily ignore change events from
-     * the sliders
-     */
-    private boolean ignoreSliderChanges = false;
-    /**
      * references to the per-axis sliders, set by
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
      */
@@ -91,10 +86,6 @@ class SpatialScaleTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (ignoreSliderChanges) {
-            return;
-        }
-
         Vector3f scales = Maud.gui.readVectorBank("Ss");
         /*
          * Avoid scale factors near zero.
@@ -136,7 +127,10 @@ class SpatialScaleTool extends WindowController {
     @Override
     public void update(float tpf) {
         super.update(tpf);
+        Maud.gui.setIgnoreGuiChanges(true);
         setSlidersToTransform();
+        Maud.gui.setIgnoreGuiChanges(false);
+
     }
     // *************************************************************************
     // private methods
@@ -150,7 +144,6 @@ class SpatialScaleTool extends WindowController {
         Vector3f vector = transform.getScale();
         float[] scales = vector.toArray(null);
 
-        ignoreSliderChanges = true;
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float scale = scales[iAxis];
             sliders[iAxis].setValue(scale);
@@ -159,6 +152,5 @@ class SpatialScaleTool extends WindowController {
             String sliderPrefix = axisName + "Ss";
             Maud.gui.updateSliderStatus(sliderPrefix, scale, "x");
         }
-        ignoreSliderChanges = false;
     }
 }

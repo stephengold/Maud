@@ -76,11 +76,6 @@ class SpatialTranslationTool extends WindowController {
     // fields
 
     /**
-     * flag that causes this controller to temporarily ignore change events from
-     * the sliders
-     */
-    private boolean ignoreSliderChanges = false;
-    /**
      * references to the per-axis sliders, set by
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
      */
@@ -109,10 +104,6 @@ class SpatialTranslationTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (ignoreSliderChanges) {
-            return;
-        }
-
         Vector3f offsets = Maud.gui.readVectorBank("So");
 
         float masterScale = readScale();
@@ -151,7 +142,9 @@ class SpatialTranslationTool extends WindowController {
     @Override
     public void update(float tpf) {
         super.update(tpf);
+        Maud.gui.setIgnoreGuiChanges(true);
         setSlidersToTransform();
+        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods
@@ -184,7 +177,6 @@ class SpatialTranslationTool extends WindowController {
         }
         scale = FastMath.clamp(scale, minScale, maxScale);
         float masterValue = FastMath.log(scale, masterBase);
-        ignoreSliderChanges = true;
         masterSlider.setValue(masterValue);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
@@ -195,6 +187,5 @@ class SpatialTranslationTool extends WindowController {
             String sliderPrefix = axisName + "So";
             Maud.gui.updateSliderStatus(sliderPrefix, value, " lu");
         }
-        ignoreSliderChanges = false;
     }
 }
