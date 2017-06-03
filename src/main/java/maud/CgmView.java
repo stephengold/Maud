@@ -379,7 +379,7 @@ public class CgmView implements JmeCloneable {
     /**
      * Create a shallow clone for the JME cloner.
      *
-     * @return
+     * @return a new instance
      */
     @Override
     public CgmView jmeClone() {

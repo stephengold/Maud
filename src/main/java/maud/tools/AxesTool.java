@@ -154,6 +154,7 @@ class AxesTool extends WindowController {
     // private methods
 
     /**
+     * Update the transform and AxesControl settings for a CG model.
      *
      * @param loadedCgm (not null)
      * @param axesControl (not null)
