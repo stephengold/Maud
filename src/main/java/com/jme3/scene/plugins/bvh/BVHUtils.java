@@ -104,7 +104,7 @@ public class BVHUtils {
      * @param targetModel CG model where the animation will be added (not null)
      * @param sourceAnimation which animation to re-target (not null)
      * @param sourceSkeleton the skeleton of the source model (not null)
-     * @param boneMapping mapping of bones from source model to target (not
+     * @param skeletonMapping mapping of bones from source model to target (not
      * null)
      * @param skipFirstKey true &rarr; skip first keyframe, false &rarr; use all
      * keyframes
@@ -113,16 +113,17 @@ public class BVHUtils {
      */
     public static Animation reTarget(Spatial sourceModel, Spatial targetModel,
             Animation sourceAnimation, Skeleton sourceSkeleton,
-            SkeletonMapping boneMapping, boolean skipFirstKey,
+            SkeletonMapping skeletonMapping, boolean skipFirstKey,
             String targetName) {
         BoneTrack track = getFirstBoneTrack(sourceAnimation);
         if (track == null) {
             throw new IllegalArgumentException(
                     "Animation must contain a boneTrack to be retargeted");
         }
+
         float timePerFrame = track.getTimes().length / sourceAnimation.getLength();
         return reTarget(sourceModel, targetModel, sourceAnimation,
-                sourceSkeleton, timePerFrame, boneMapping, skipFirstKey,
+                sourceSkeleton, timePerFrame, skeletonMapping, skipFirstKey,
                 targetName);
     }
 
@@ -134,7 +135,7 @@ public class BVHUtils {
      * @param sourceAnimation which animation to re-target (not null)
      * @param sourceSkeleton the skeleton of the source model (not null)
      * @param timePerFrame (in seconds, &gt;0)
-     * @param boneMapping mapping of bones from source model to target (not
+     * @param skeletonMapping mapping of bones from source model to target (not
      * null)
      * @param skipFirstKey true &rarr; skip first keyframe, false &rarr; use all
      * keyframes
@@ -143,7 +144,7 @@ public class BVHUtils {
      */
     public static Animation reTarget(Spatial sourceModel, Spatial targetModel,
             Animation sourceAnimation, Skeleton sourceSkeleton,
-            float timePerFrame, SkeletonMapping boneMapping,
+            float timePerFrame, SkeletonMapping skeletonMapping,
             boolean skipFirstKey, String targetName) {
         Skeleton targetSkeleton = targetModel.getControl(
                 AnimControl.class).getSkeleton();
@@ -171,8 +172,6 @@ public class BVHUtils {
                 targetWidth / sourceWidth, targetDepth / sourceDepth);
         ratio = Vector3f.UNIT_XYZ;
 
-        Vector3f rootPos = new Vector3f();
-        Quaternion rootRot = new Quaternion();
         targetSkeleton.reset();
 
         BoneTrack track = getFirstBoneTrack(sourceAnimation);
@@ -210,7 +209,7 @@ public class BVHUtils {
 
             for (Bone bone : targetSkeleton.getRoots()) {
                 computeTransforms(bone, sourceSkeleton, targetSkeleton,
-                        boneMapping, frameId, tracks, nbFrames, ratio,
+                        skeletonMapping, frameId, tracks, nbFrames, ratio,
                         sourceAnimation);
             }
         }
@@ -240,7 +239,7 @@ public class BVHUtils {
      * @param targetBone (not null)
      * @param sourceSkeleton the skeleton of the source model (not null)
      * @param targetSkeleton
-     * @param boneMapping mapping of bones from source model to target (not
+     * @param skeletonMapping mapping of bones from source model to target (not
      * null)
      * @param frameId which keyframe to re-target (&ge;0)
      * @param tracks
@@ -259,15 +258,15 @@ public class BVHUtils {
     //once the frame transforms has been applied
     private static void computeTransforms(Bone targetBone,
             Skeleton sourceSkeleton, Skeleton targetSkeleton,
-            SkeletonMapping boneMapping, int frameId,
+            SkeletonMapping skeletonMapping, int frameId,
             Map<Integer, InnerTrack> tracks, int animLength, Vector3f ratio,
             Animation anim) {
 
-        BoneMapping mapping = boneMapping.get(targetBone.getName());
+        BoneMapping boneMapping = skeletonMapping.get(targetBone.getName());
         Bone sourceBone = null;
-        if (mapping != null) {
+        if (boneMapping != null) {
             sourceBone = sourceSkeleton.getBone(
-                    mapping.getSourceNames().get(0));
+                    boneMapping.getSourceNames().get(0));
         }
 
         Quaternion rootRot = new Quaternion();
@@ -281,8 +280,6 @@ public class BVHUtils {
                         targetSkeleton.getBoneIndex(targetBone), tracks,
                         animLength);
 
-                //scaling the modelPosition
-                Vector3f scaledPos = sourceBone.getModelSpacePosition().mult(ratio);
                 //subtract target's bind position to the source's scaled model position
                 t.positions[frameId] = new Vector3f();//scaledPos.subtractLocal(targetBone.getBindPosition());
                 // t.positions[frameId] = new Vector3f();
@@ -359,7 +356,7 @@ public class BVHUtils {
                         sourceBone.getModelSpaceRotation()).normalizeLocal();
                 Quaternion targetInverseBindRotation = vars.quat2.set(
                         targetBone.getBindRotation()).inverseLocal().normalizeLocal();
-                Quaternion twist = boneMapping.get(
+                Quaternion twist = skeletonMapping.get(
                         targetBone.getName()).getTwist();
                 //finally computing the animation rotation for the current frame. Note that the first "mult" instanciate a new Quaternion.
                 t.rotations[frameId] = targetInverseBindRotation.mult(
@@ -386,7 +383,7 @@ public class BVHUtils {
         //recurse through children bones
         for (Bone childBone : targetBone.getChildren()) {
             computeTransforms(childBone, sourceSkeleton, targetSkeleton,
-                    boneMapping, frameId, tracks, animLength, ratio, anim);
+                    skeletonMapping, frameId, tracks, animLength, ratio, anim);
         }
     }
 
