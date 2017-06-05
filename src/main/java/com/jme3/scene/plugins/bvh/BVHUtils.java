@@ -265,8 +265,7 @@ public class BVHUtils {
         BoneMapping boneMapping = skeletonMapping.get(targetBone.getName());
         Bone sourceBone = null;
         if (boneMapping != null) {
-            sourceBone = sourceSkeleton.getBone(
-                    boneMapping.getSourceNames().get(0));
+            sourceBone = sourceSkeleton.getBone(boneMapping.getSourceName());
         }
 
         Quaternion rootRot = new Quaternion();

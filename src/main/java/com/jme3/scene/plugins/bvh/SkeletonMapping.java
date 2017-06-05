@@ -49,8 +49,9 @@ public class SkeletonMapping implements Savable {
     // new methods exposed
 
     /**
+     * Add a bone mapping to this skeleton mapping.
      *
-     * @param mapping (not null)
+     * @param mapping bone mapping (not null)
      */
     public void addMapping(BoneMapping mapping) {
         mappings.put(mapping.getTargetName(), mapping);
@@ -77,11 +78,8 @@ public class SkeletonMapping implements Savable {
             Quaternion twist = boneMapping.getTwist();
             Quaternion inverseTwist = twist.inverse();
             String targetName = boneMapping.getTargetName();
-
-            List<String> sourceNames = boneMapping.getSourceNames();
-            for (String sourceName : sourceNames) {
-                result.map(sourceName, targetName, inverseTwist);
-            }
+            String sourceName = boneMapping.getSourceName();
+            result.map(sourceName, targetName, inverseTwist);
         }
 
         return result;
@@ -93,10 +91,11 @@ public class SkeletonMapping implements Savable {
      * @return a new list of names
      */
     public List<String> listSourceBones() {
-        List<String> result = new ArrayList<>(100);
+        int numMappings = mappings.size();
+        List<String> result = new ArrayList<>(numMappings);
         for (BoneMapping boneMapping : mappings.values()) {
-            List<String> names = boneMapping.getSourceNames();
-            result.addAll(names);
+            String name = boneMapping.getSourceName();
+            result.add(name);
         }
 
         return result;
@@ -132,11 +131,11 @@ public class SkeletonMapping implements Savable {
 
     /**
      * Add a mapping from the named bone in the target skeleton to the named
-     * bone in the source skeleton applying the specified twist.
+     * bone in the source skeleton, applying the specified twist.
      *
-     * @param targetName name of the bone from the target skeleton
-     * @param sourceName name of the bone from the source skeleton
-     * @param twist rotation to apply to the animation data
+     * @param targetName name of bone in the target skeleton
+     * @param sourceName name of bone in the source skeleton
+     * @param twist twist rotation to apply to the animation data
      * @return a new instance
      */
     public BoneMapping map(String targetName, String sourceName,
@@ -146,84 +145,27 @@ public class SkeletonMapping implements Savable {
             boneMapping = new BoneMapping(targetName, sourceName, twist);
             mappings.put(targetName, boneMapping);
         } else {
-            Quaternion oldTwist = boneMapping.getTwist();
-            if (twist.equals(oldTwist)) {
-                List<String> sourceNames = boneMapping.getSourceNames();
-                if (!sourceNames.contains(sourceName)) {
-                    sourceNames.add(sourceName);
-                }
-            } else {
-                logger.log(Level.WARNING,
-                        "Found multiple twist values for target bone {0}.",
-                        targetName);
-            }
+            logger.log(Level.WARNING, "Multiple mappings for target bone {0}.",
+                    targetName);
         }
 
         return boneMapping;
     }
 
     /**
-     * Builds a BoneMapping with the given bone from the target skeleton and the
-     * given bone from the source skeleton. apply the given twist rotation to
-     * the animation data
+     * Add a mapping from the named bone in the target skeleton to the named
+     * bone in the source skeleton, applying the specified twist.
      *
-     * @param targetBone the name of the bone from the target skeleton.
-     * @param sourceBone the name of the bone from the source skeleton.
-     * @param twistAngle the twist rotation angle to apply to the animation data
-     * @param twistAxis the twist rotation axis to apply to the animation data
+     * @param targetBone name of bone in the target skeleton
+     * @param sourceBone name of bone in the source skeleton
+     * @param twistAngle twist rotation angle
+     * @param twistAxis twist rotation axis
      * @return a new instance
      */
     public BoneMapping map(String targetBone, String sourceBone,
             float twistAngle, Vector3f twistAxis) {
         BoneMapping mapping = new BoneMapping(targetBone, sourceBone,
                 twistAngle, twistAxis);
-        mappings.put(targetBone, mapping);
-
-        return mapping;
-    }
-
-    /**
-     * Builds a BoneMapping with the given bone from the target skeleton
-     *
-     * @param targetBone the name of the bone from the target skeleton.
-     * @return a new instance
-     *
-     */
-    public BoneMapping map(String targetBone) {
-        BoneMapping mapping = new BoneMapping(targetBone);
-        mappings.put(targetBone, mapping);
-
-        return mapping;
-    }
-
-    /**
-     * Builds a BoneMapping with the given bone from the target skeleton apply
-     * the given twist rotation to the animation data
-     *
-     * @param targetBone the name of the bone from the target skeleton.
-     * @param twist the twist rotation to apply to the animation data
-     * @return a new instance
-     */
-    public BoneMapping map(String targetBone, Quaternion twist) {
-        BoneMapping mapping = new BoneMapping(targetBone, twist);
-        mappings.put(targetBone, mapping);
-
-        return mapping;
-    }
-
-    /**
-     * Builds a BoneMapping with the given bone from the target skeleton apply
-     * the given twist rotation to the animation data
-     *
-     * @param targetBone the name of the bone from the target skeleton.
-     * @param twistAngle the twist rotation angle to apply to the animation data
-     * @param twistAxis the twist rotation axis to apply to the animation data
-     * @return a new instance
-     */
-    public BoneMapping map(String targetBone, float twistAngle,
-            Vector3f twistAxis) {
-        BoneMapping mapping = new BoneMapping(targetBone, twistAngle,
-                twistAxis);
         mappings.put(targetBone, mapping);
 
         return mapping;
