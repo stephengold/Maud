@@ -253,6 +253,24 @@ class DddDialogs {
     }
 
     /**
+     * Display a "rename spatial" dialog.
+     */
+    void renameSpatial() {
+        String oldName = Maud.model.target.spatial.getName();
+        DialogController controller = new SpatialNameDialog("Rename");
+        String prompt;
+        if (Maud.model.target.spatial.isNode()) {
+            prompt = "Enter new name for the node:";
+        } else {
+            prompt = "Enter new name for the geometry:";
+        }
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog(prompt, oldName, "",
+                DddInputMode.renameSpatialPrefix, controller);
+    }
+
+    /**
      * Display a "rename userKey" dialog.
      */
     void renameUserKey() {

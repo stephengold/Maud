@@ -245,6 +245,37 @@ public class EditableCgm extends LoadedCGModel {
     }
 
     /**
+     * Rename the selected spatial.
+     *
+     * @param newName new name (not null)
+     * @return true if successful, otherwise false
+     */
+    public boolean renameSpatial(String newName) {
+        Validate.nonNull(newName, "spatial name");
+
+        boolean success;
+        if (newName.isEmpty()) {
+            logger.log(Level.WARNING, "Rename failed: {0} is a reserved name.",
+                    MyString.quote(newName));
+            success = false;
+
+        } else if (hasSpatial(newName)) {
+            logger.log(Level.WARNING,
+                    "Rename failed: a spatial named {0} already exists.",
+                    MyString.quote(newName));
+            success = false;
+
+        } else {
+            Spatial selectedSpatial = spatial.modelSpatial();
+            selectedSpatial.setName(newName);
+            success = true;
+            setEdited("rename spatial");
+        }
+
+        return success;
+    }
+
+    /**
      * Rename the selected user key.
      *
      * @param newKey name for the new key (not null)

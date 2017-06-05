@@ -104,13 +104,17 @@ class DddInputMode extends InputMode {
     final static String reduceAnimationPrefix = "reduce animation ";
     final static String reduceTrackPrefix = "reduce track ";
     /**
-     * action prefix: remainder is the new name for the animation
+     * action prefix: remainder is the new name for the loaded animation
      */
     final static String renameAnimationPrefix = "rename animation ";
     /**
-     * action prefix: remainder is the new name for the bone
+     * action prefix: remainder is the new name for the selected bone
      */
     final static String renameBonePrefix = "rename bone ";
+    /**
+     * action prefix: remainder is the new name for the selected spatial
+     */
+    final static String renameSpatialPrefix = "rename spatial ";
     /**
      * action prefix: remainder is the new name for the key
      */
@@ -551,6 +555,10 @@ class DddInputMode extends InputMode {
                 Maud.gui.dialogs.renameBone();
                 handled = true;
                 break;
+            case "rename spatial":
+                Maud.gui.dialogs.renameSpatial();
+                handled = true;
+                break;
             case "rename userKey":
                 Maud.gui.dialogs.renameUserKey();
                 handled = true;
@@ -567,6 +575,11 @@ class DddInputMode extends InputMode {
             } else if (actionString.startsWith(renameBonePrefix)) {
                 newName = MyString.remainder(actionString, renameBonePrefix);
                 Maud.model.target.renameBone(newName);
+                handled = true;
+
+            } else if (actionString.startsWith(renameSpatialPrefix)) {
+                newName = MyString.remainder(actionString, renameSpatialPrefix);
+                Maud.model.target.renameSpatial(newName);
                 handled = true;
 
             } else if (actionString.startsWith(renameUserKeyPrefix)) {
