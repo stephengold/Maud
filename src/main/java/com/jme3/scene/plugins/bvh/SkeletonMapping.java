@@ -171,8 +171,29 @@ public class SkeletonMapping implements Savable {
         return mapping;
     }
     // *************************************************************************
-    // Savable methods
+    // Object methods
 
+    /**
+     * Create a deep copy of this mapping.
+     *
+     * @return a new mapping, equivalent to this one
+     */
+    @Override
+    public SkeletonMapping clone() {
+        SkeletonMapping result = new SkeletonMapping();
+        for (BoneMapping boneMapping : mappings.values()) {
+            Quaternion twist = boneMapping.getTwist();
+            twist = twist.clone();
+            String targetName = boneMapping.getTargetName();
+            String sourceName = boneMapping.getSourceName();
+            result.map(targetName, sourceName, twist);
+        }
+
+        return result;
+    }
+
+    // *************************************************************************
+    // Savable methods
     /**
      * De-serialize this mapping.
      *
