@@ -277,6 +277,8 @@ public class LoadedCGModel implements Cloneable {
         float result;
         if (animationName.equals(LoadedAnimation.bindPoseName)) {
             result = 0f;
+        } else if (animationName.equals(LoadedAnimation.mappedPoseName)) {
+            result = 0f;
         } else {
             Animation anim = getAnimation(animationName);
             if (anim == null) {
@@ -369,8 +371,8 @@ public class LoadedCGModel implements Cloneable {
      * @return true if found, otherwise false
      */
     public boolean hasNode(String name) {
-        Spatial spatial = findSpatialNamed(name, rootSpatial, null);
-        boolean result = spatial instanceof Node;
+        Spatial sp = findSpatialNamed(name, rootSpatial, null);
+        boolean result = sp instanceof Node;
 
         return result;
     }
@@ -416,17 +418,22 @@ public class LoadedCGModel implements Cloneable {
     /**
      * Enumerate all known animations and poses for the loaded model.
      *
-     * @return a new collection of names
+     * @return a new collection of names, including bind pose and (if
+     * applicable) mapped pose
      */
     public Collection<String> listAnimationNames() {
         Collection<String> names = listAnimationsSorted();
         names.add(LoadedAnimation.bindPoseName);
+        if (this == Maud.model.target && Maud.model.source.isLoaded()) {
+            names.add(LoadedAnimation.mappedPoseName);
+        }
 
         return names;
     }
 
     /**
-     * Generate a sorted list of animation names, not including bindPose.
+     * Generate a sorted list of animation names, not including bind/mapped
+     * poses.
      *
      * @return a new list
      */
@@ -961,7 +968,7 @@ public class LoadedCGModel implements Cloneable {
                 logger.warning("animation name is empty");
                 return false;
             }
-            if (name.equals(LoadedAnimation.bindPoseName)) {
+            if (LoadedAnimation.isReserved(name)) {
                 logger.warning("animation has reserved name");
                 return false;
             }

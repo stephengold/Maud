@@ -143,7 +143,7 @@ class KeyframeTool extends WindowController {
      */
     private void updateTrackDescription() {
         String trackDescription;
-        if (Maud.model.target.animation.isBindPoseLoaded()) {
+        if (!Maud.model.target.animation.isReal()) {
             trackDescription = "(load an animation)";
         } else if (Maud.model.target.bone.hasTrack()) {
             String boneName = Maud.model.target.bone.getName();

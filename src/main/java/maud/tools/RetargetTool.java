@@ -80,7 +80,7 @@ public class RetargetTool extends WindowController {
             String sourcePath = Maud.model.source.getAssetPath();
             sourceAssetDesc = MyString.quote(sourcePath);
             if (Maud.model.source.countAnimations() > 0) {
-                sButton = "Change";
+                sButton = "Load";
             } else {
                 sButton = "";
             }
@@ -116,17 +116,17 @@ public class RetargetTool extends WindowController {
         if (!Maud.model.source.isLoaded()) {
             feedback = "load a source model";
         } else if (Maud.model.source.countAnimations() < 1) {
-            feedback = "select an animated source model";
+            feedback = "load an animated source model";
         } else {
             String sourceAnim = Maud.model.source.animation.getName();
             if (sourceAnim == null) {
-                feedback = "select a source animation";
+                feedback = "load a source animation";
             } else {
                 sourceAnimDesc = MyString.quote(sourceAnim);
 
                 String mapAssetPath = Maud.model.retarget.getMappingAssetPath();
                 if (mapAssetPath == null) {
-                    feedback = "select a map";
+                    feedback = "load a map";
                 } else if (!Maud.model.retarget.matchesTarget()) {
                     feedback = "map doesn't match the target model";
                 } else if (!Maud.model.retarget.matchesSource()) {

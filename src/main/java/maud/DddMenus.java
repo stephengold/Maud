@@ -305,7 +305,7 @@ class DddMenus {
             builder.add("Load source");
         }
         builder.addTool("New from retarget");
-        if (!Maud.model.target.animation.isBindPoseLoaded()) {
+        if (Maud.model.target.animation.isReal()) {
             builder.addDialog("Duration");
             builder.addDialog("Reduce");
             builder.addDialog("Rename");

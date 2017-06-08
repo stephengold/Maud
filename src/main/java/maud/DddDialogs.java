@@ -150,6 +150,28 @@ class DddDialogs {
     }
 
     /**
+     * Display a "load mapping asset" dialog.
+     */
+    void loadMappingAsset() {
+        String assetPath = Maud.model.retarget.getMappingAssetPath();
+        if (assetPath == null) {
+            assetPath = "SkeletonMappings/SinbadToJaime.j3o";
+        }
+        List<String> modelExts = new ArrayList<>(1);
+        modelExts.add(".j3o");
+
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
+        AssetDialog controller = new AssetDialog("Load", modelExts,
+                assetManager);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter asset path for skeleton mapping:",
+                assetPath, "", DddInputMode.loadMappingAssetPrefix,
+                controller);
+    }
+
+    /**
      * Display a "load (source)model asset" dialog.
      *
      * @param actionPrefix for the dialog (not null)
@@ -199,7 +221,7 @@ class DddDialogs {
      * Display a "reduce animation" dialog.
      */
     void reduceAnimation() {
-        if (!Maud.model.target.animation.isBindPoseLoaded()) {
+        if (Maud.model.target.animation.isReal()) {
             IntegerDialog controller = new IntegerDialog("Reduce", 2,
                     Integer.MAX_VALUE);
 
@@ -227,7 +249,7 @@ class DddDialogs {
      * Display a "rename animation" dialog.
      */
     void renameAnimation() {
-        if (!Maud.model.target.animation.isBindPoseLoaded()) {
+        if (Maud.model.target.animation.isReal()) {
             String oldName = Maud.model.target.animation.getName();
             DialogController controller = new AnimationNameDialog("Rename");
 
@@ -318,25 +340,6 @@ class DddDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
                 oldName, "", DddInputMode.retargetAnimationPrefix, controller);
-    }
-
-    /**
-     * Display a "select retarget map asset" dialog.
-     */
-    void selectRetargetMapAsset() {
-        String assetPath = Maud.model.retarget.getMappingAssetPath();
-        List<String> modelExts = new ArrayList<>(1);
-        modelExts.add(".j3o");
-
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-        AssetDialog controller = new AssetDialog("Select", modelExts,
-                assetManager);
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter asset path for skeleton mapping:",
-                assetPath, "", DddInputMode.selectRetargetMapAssetPrefix,
-                controller);
     }
 
     /**

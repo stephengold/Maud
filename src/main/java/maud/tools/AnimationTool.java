@@ -99,7 +99,7 @@ class AnimationTool extends WindowController {
         String hasTrackText;
         if (!Maud.model.target.bone.isSelected()) {
             hasTrackText = "no bone";
-        } else if (Maud.model.target.animation.isBindPoseLoaded()) {
+        } else if (!Maud.model.target.animation.isReal()) {
             hasTrackText = "";
         } else {
             if (Maud.model.target.bone.hasTrack()) {
@@ -129,7 +129,7 @@ class AnimationTool extends WindowController {
         String indexText, nButton, pButton;
 
         int numAnimations = Maud.model.target.countAnimations();
-        if (!Maud.model.target.animation.isBindPoseLoaded()) {
+        if (Maud.model.target.animation.isReal()) {
             int selectedIndex = Maud.model.target.animation.findIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1,
                     numAnimations);
@@ -179,12 +179,12 @@ class AnimationTool extends WindowController {
     private void updateName() {
         String nameText, rButton;
         String name = Maud.model.target.animation.getName();
-        if (Maud.model.target.animation.isBindPoseLoaded()) {
-            nameText = name;
-            rButton = "";
-        } else {
+        if (Maud.model.target.animation.isReal()) {
             nameText = MyString.quote(name);
             rButton = "Rename";
+        } else {
+            nameText = name;
+            rButton = "";
         }
         Maud.gui.setStatusText("animationName", " " + nameText);
         Maud.gui.setButtonLabel("animationRenameButton", rButton);
@@ -250,11 +250,11 @@ class AnimationTool extends WindowController {
          * status label
          */
         String statusText;
-        if (Maud.model.target.animation.isBindPoseLoaded()) {
-            statusText = "time = n/a";
-        } else {
+        if (Maud.model.target.animation.isReal()) {
             statusText = String.format("time = %.3f / %.3f sec",
                     trackTime, duration);
+        } else {
+            statusText = "time = n/a";
         }
         Maud.gui.setStatusText("trackTime", statusText);
     }

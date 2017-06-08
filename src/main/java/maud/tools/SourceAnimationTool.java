@@ -102,7 +102,7 @@ class SourceAnimationTool extends WindowController {
             hasTrackText = "no model";
         } else if (!Maud.model.source.bone.isSelected()) {
             hasTrackText = "no bone";
-        } else if (Maud.model.source.animation.isBindPoseLoaded()) {
+        } else if (!Maud.model.source.animation.isReal()) {
             hasTrackText = "";
         } else {
             if (Maud.model.source.bone.hasTrack()) {
@@ -119,7 +119,7 @@ class SourceAnimationTool extends WindowController {
         updateSpeed();
         updateTrackTime();
         updateTrackCounts();
-        
+
         Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
@@ -137,7 +137,7 @@ class SourceAnimationTool extends WindowController {
         if (Maud.model.source.isLoaded()) {
             lButton = "Load";
             int numAnimations = Maud.model.source.countAnimations();
-            if (!Maud.model.source.animation.isBindPoseLoaded()) {
+            if (Maud.model.source.animation.isReal()) {
                 int selectedIndex = Maud.model.source.animation.findIndex();
                 indexText = String.format("#%d of %d", selectedIndex + 1,
                         numAnimations);
@@ -190,10 +190,10 @@ class SourceAnimationTool extends WindowController {
         String nameText;
         if (Maud.model.source.isLoaded()) {
             String name = Maud.model.source.animation.getName();
-            if (Maud.model.source.animation.isBindPoseLoaded()) {
-                nameText = name;
-            } else {
+            if (Maud.model.source.animation.isReal()) {
                 nameText = MyString.quote(name);
+            } else {
+                nameText = name;
             }
         } else {
             nameText = "";
@@ -268,7 +268,7 @@ class SourceAnimationTool extends WindowController {
          */
         String statusText;
         if (!Maud.model.source.isLoaded()
-                || Maud.model.source.animation.isBindPoseLoaded()) {
+                || !Maud.model.source.animation.isReal()) {
             statusText = "time = n/a";
         } else {
             statusText = String.format("time = %.3f / %.3f sec",

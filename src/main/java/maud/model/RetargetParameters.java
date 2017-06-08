@@ -26,18 +26,21 @@
  */
 package maud.model;
 
+import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
+import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.BVHUtils;
+import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.MyAnimation;
-import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
 import maud.Maud;
 
@@ -59,13 +62,17 @@ public class RetargetParameters implements Cloneable {
     // fields
 
     /**
-     * true &rarr; invert the loaded map, false &rarr; don't invert it
+     * true &rarr; invert the loaded mapping, false &rarr; don't invert it
      */
     private boolean invertMapFlag = false;
     /**
-     * asset path to the skeleton mapping, or null if none selected
+     * the skeleton mapping
      */
-    private String mappingAssetPath = "SkeletonMappings/SinbadToJaime.j3o";
+    private SkeletonMapping mapping = new SkeletonMapping();
+    /**
+     * asset path to the skeleton mapping, or null if none loaded
+     */
+    private String mappingAssetPath = null;
     /**
      * name of the target animation, or null if not set
      */
@@ -74,7 +81,38 @@ public class RetargetParameters implements Cloneable {
     // new methods exposed
 
     /**
-     * Read the asset path to the selected skeleton mapping.
+     * Calculate the mapped transform of the indexed bone in the target CG
+     * model.
+     *
+     * @param targetIndex which bone to calculate
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
+     */
+    public Transform boneTransform(int targetIndex, Transform storeResult) {
+        if (storeResult == null) {
+            storeResult = new Transform();
+        }
+
+        Skeleton targetSkeleton = Maud.model.target.bones.getSkeleton();
+        Bone targetBone = targetSkeleton.getBone(targetIndex);
+        String targetName = targetBone.getName();
+        BoneMapping boneMapping = mapping.get(targetName);
+        if (boneMapping == null) {
+            storeResult.loadIdentity();
+        } else {
+            Skeleton sourceSkeleton = Maud.model.source.bones.getSkeleton();
+            String sourceName = boneMapping.getSourceName();
+            int sourceIndex = sourceSkeleton.getBoneIndex(sourceName);
+            Maud.model.source.pose.copyTransform(sourceIndex, storeResult);
+            Quaternion twist = boneMapping.getTwist();
+            storeResult.getRotation().multLocal(twist);
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Read the asset path to the loaded skeleton mapping.
      *
      * @return path (or null if none selected)
      */
@@ -92,16 +130,41 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Test whether to invert the loaded map before applying it.
+     * Test whether to invert the mapping before applying it.
      *
-     * @return true if inverting the map, otherwise false
+     * @return true if inverting the mapping, otherwise false
      */
     public boolean isInvertingMap() {
         return invertMapFlag;
     }
 
     /**
-     * Test whether the selected mapping matches the source CG model.
+     * Unload the current mapping and load the specified asset.
+     *
+     * @param assetPath path to the mapping asset to load (not null)
+     * @return true if successful, otherwise false
+     */
+    public boolean loadMappingAsset(String assetPath) {
+        Validate.nonNull(assetPath, "asset path");
+
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
+
+        AssetKey<SkeletonMapping> key = new AssetKey<>(assetPath);
+        boolean result;
+        try {
+            mapping = assetManager.loadAsset(key);
+            mappingAssetPath = assetPath;
+            result = true;
+        } catch (AssetLoadException e) {
+            result = false;
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether the loaded mapping matches the source CG model.
      *
      * @return true if they match, otherwise false
      */
@@ -109,16 +172,17 @@ public class RetargetParameters implements Cloneable {
         boolean matches;
         SkeletonMapping map = skeletonMapping();
         Spatial sourceCgm = Maud.model.source.getRootSpatial();
-        if (map == null || sourceCgm == null) {
+        if (sourceCgm == null) {
             matches = false;
         } else {
             /*
-             * Are all source bones in the mapping present in the CG model?
+             * Are all source bones in the mapping present
+             * in the source CG model?
              */
             matches = true;
             List<String> sourceBones = map.listSourceBones();
             for (String name : sourceBones) {
-                if (MySkeleton.findBoneIndex(sourceCgm, name) == -1) {
+                if (!Maud.model.source.bones.hasBone(name)) {
                     matches = false;
                     break;
                 }
@@ -129,26 +193,21 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Test whether the selected mapping matches the target CG model.
+     * Test whether the mapping matches the target CG model.
      *
      * @return true if they match, otherwise false
      */
     public boolean matchesTarget() {
-        boolean matches;
         SkeletonMapping map = skeletonMapping();
-        if (map == null) {
-            matches = false;
-        } else {
-            /*
-             * Are all target bones in the mapping present in the CG model?
-             */
-            matches = true;
-            List<String> targetBones = map.listTargetBones();
-            for (String name : targetBones) {
-                if (!Maud.model.target.bones.hasBone(name)) {
-                    matches = false;
-                    break;
-                }
+        /*
+         * Are all target bones in the mapping present in the target CG model?
+         */
+        boolean matches = true;
+        List<String> targetBones = map.listTargetBones();
+        for (String name : targetBones) {
+            if (!Maud.model.target.bones.hasBone(name)) {
+                matches = false;
+                break;
             }
         }
 
@@ -170,21 +229,12 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Alter whether to invert the loaded map before applying it.
+     * Alter whether to invert the loaded mapping before applying it.
      *
      * @param newSetting true &rarr; invert it, false &rarr; don't invert it
      */
     public void setInvertMap(boolean newSetting) {
         invertMapFlag = newSetting;
-    }
-
-    /**
-     * Alter the skeleton mapping asset.
-     *
-     * @param path (or null to deselect)
-     */
-    public void setMappingAssetPath(String path) {
-        mappingAssetPath = path;
     }
 
     /**
@@ -197,27 +247,16 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Access the selected skeleton mapping.
+     * Calculate the effective skeleton mapping.
      *
-     * @return a new instance, or null if the asset was not found
+     * @return a new mapping
      */
     SkeletonMapping skeletonMapping() {
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-
-        AssetKey<SkeletonMapping> key = new AssetKey<>(mappingAssetPath);
-        SkeletonMapping loaded;
-        try {
-            loaded = assetManager.loadAsset(key);
-        } catch (AssetLoadException e) {
-            loaded = null;
-        }
-
         SkeletonMapping result;
         if (invertMapFlag) {
-            result = loaded.inverse();
+            result = mapping.inverse();
         } else {
-            result = loaded;
+            result = mapping.clone();
         }
 
         return result;
@@ -234,6 +273,8 @@ public class RetargetParameters implements Cloneable {
     @Override
     public RetargetParameters clone() throws CloneNotSupportedException {
         RetargetParameters clone = (RetargetParameters) super.clone();
+        clone.mapping = mapping.clone();
+
         return clone;
     }
     // *************************************************************************
@@ -243,15 +284,16 @@ public class RetargetParameters implements Cloneable {
      * Add a re-targeted animation to the target CG model.
      */
     private void retargetAndAdd() {
-        Spatial sourceCgm = Maud.model.source.getRootSpatial();
-        Spatial targetCgm = Maud.model.target.getRootSpatial();
+        AnimControl sourceControl = Maud.model.source.getAnimControl();
+        Spatial sourceSpatial = sourceControl.getSpatial();
+        AnimControl targetControl = Maud.model.target.getAnimControl();
+        Spatial targetSpatial = targetControl.getSpatial();
         Animation sourceAnimation;
         sourceAnimation = Maud.model.source.animation.getLoadedAnimation();
-        MyAnimation.removeRepeats(sourceAnimation);
-        Skeleton sourceSkeleton = MySkeleton.findSkeleton(sourceCgm);
-        SkeletonMapping mapping = skeletonMapping();
-        Animation retargeted = BVHUtils.reTarget(sourceCgm, targetCgm,
-                sourceAnimation, sourceSkeleton, mapping, false,
+        Skeleton sourceSkeleton = Maud.model.source.bones.getSkeleton();
+        SkeletonMapping map = skeletonMapping();
+        Animation retargeted = BVHUtils.reTarget(sourceSpatial, targetSpatial,
+                sourceAnimation, sourceSkeleton, map, false,
                 targetAnimationName);
 
         float duration = retargeted.getLength();

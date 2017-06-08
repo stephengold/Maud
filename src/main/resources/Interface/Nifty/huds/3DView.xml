@@ -925,7 +925,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" id="sourceAsset"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Change"
+                        <control name="button" label="Load"
                                  id="id17ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(open menu CGModel -> Load source)"/>
@@ -948,10 +948,10 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
                         <control name="label" id="mapAsset"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Edit"
+                        <control name="button" label="Load"
                                  id="id18ToAvoidNiftyWarning"
                                  width="40px">
-                            <interact onRelease="perform(select rma)"/>
+                            <interact onRelease="perform(load mapping asset)"/>
                         </control>
                     </panel>
                     <panel height="8px"/>

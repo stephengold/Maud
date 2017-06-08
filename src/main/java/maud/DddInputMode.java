@@ -68,6 +68,10 @@ class DddInputMode extends InputMode {
      */
     final static String loadAnimationPrefix = "load animation ";
     /**
+     * action prefix: remainder is the asset path to a skeleton mapping
+     */
+    final static String loadMappingAssetPrefix = "load mapping asset ";
+    /**
      * action prefix: remainder is the asset path to a CG model
      */
     final static String loadModelAssetPrefix = "load model asset ";
@@ -135,7 +139,6 @@ class DddInputMode extends InputMode {
      * action prefix: remainder is the name of a geometry or a prefix thereof
      */
     final static String selectGeometryPrefix = "select geometry ";
-    final static String selectRetargetMapAssetPrefix = "select rma ";
     final static String selectSpatialChildPrefix = "select spatialChild ";
     /**
      * action prefix: remainder is the name of a spatial or a prefix thereof
@@ -329,9 +332,19 @@ class DddInputMode extends InputMode {
      */
     private boolean loadAction(String actionString) {
         boolean handled = false;
-        if (actionString.startsWith(loadAnimationPrefix)) {
+        if (actionString.equals("load mapping asset")) {
+            Maud.gui.dialogs.loadMappingAsset();
+            handled = true;
+
+        } else if (actionString.startsWith(loadAnimationPrefix)) {
             String name = MyString.remainder(actionString, loadAnimationPrefix);
             Maud.model.target.animation.load(name);
+            handled = true;
+
+        } else if (actionString.startsWith(loadMappingAssetPrefix)) {
+            String path;
+            path = MyString.remainder(actionString, loadMappingAssetPrefix);
+            Maud.model.retarget.loadMappingAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(loadModelAssetPrefix)) {
@@ -727,10 +740,6 @@ class DddInputMode extends InputMode {
                 Maud.model.target.animation.selectKeyframePrevious();
                 handled = true;
                 break;
-            case "select rma":
-                Maud.gui.dialogs.selectRetargetMapAsset();
-                handled = true;
-                break;
             case "select spatialChild":
                 Maud.gui.menus.selectSpatialChild();
                 handled = true;
@@ -764,13 +773,6 @@ class DddInputMode extends InputMode {
             } else if (actionString.startsWith(selectGeometryPrefix)) {
                 arg = MyString.remainder(actionString, selectGeometryPrefix);
                 Maud.gui.menus.selectSpatial(arg, false);
-                handled = true;
-
-            } else if (actionString.startsWith(
-                    selectRetargetMapAssetPrefix)) {
-                arg = MyString.remainder(actionString,
-                        selectRetargetMapAssetPrefix);
-                Maud.model.retarget.setMappingAssetPath(arg);
                 handled = true;
 
             } else if (actionString.startsWith(selectSpatialChildPrefix)) {

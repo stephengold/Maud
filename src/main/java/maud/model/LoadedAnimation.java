@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import maud.Maud;
 import maud.Util;
 
 /**
@@ -56,10 +57,13 @@ public class LoadedAnimation implements Cloneable {
     final private static Logger logger = Logger.getLogger(
             LoadedAnimation.class.getName());
     /**
-     * dummy animation name used to indicate bind pose, that is, no animation
-     * loaded
+     * dummy animation name used to indicate bind pose (no animation loaded)
      */
     final public static String bindPoseName = "( bind pose )";
+    /**
+     * dummy animation name used to indicate a mapped pose (no animation loaded)
+     */
+    final public static String mappedPoseName = "( mapped pose )";
     // *************************************************************************
     // fields
 
@@ -69,7 +73,7 @@ public class LoadedAnimation implements Cloneable {
      */
     private boolean continueFlag = true;
     /**
-     * true &rarr; explicitly paused, false &rarr; running
+     * true &rarr; explicitly paused, false &rarr; running perhaps at speed=0
      */
     private boolean pausedFlag = false;
     /**
@@ -97,7 +101,7 @@ public class LoadedAnimation implements Cloneable {
      */
     private LoadedCGModel loadedCgm = null;
     /**
-     * name of the loaded animation, or bindPoseName (TODO use null)
+     * name of the loaded animation, bindPoseName, or mappedPoseName
      */
     private String loadedName = null;
     // *************************************************************************
@@ -117,7 +121,11 @@ public class LoadedAnimation implements Cloneable {
 
         Animation animation = getLoadedAnimation();
         if (animation == null) {
-            storeResult.loadIdentity();
+            if (isMappedPose()) {
+                Maud.model.retarget.boneTransform(boneIndex, storeResult);
+            } else {
+                storeResult.loadIdentity();
+            }
         } else {
             BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
             if (track == null) {
@@ -186,11 +194,14 @@ public class LoadedAnimation implements Cloneable {
      * Delete the loaded animation and (if successful) load bind pose.
      */
     public void delete() {
-        if (isBindPoseLoaded()) {
-            logger.log(Level.WARNING, "cannot delete bind pose");
-        } else {
+        if (isReal()) {
             editableCgm.deleteAnimation();
             loadBindPose();
+        } else if (isBindPose()) {
+            logger.log(Level.WARNING, "cannot delete bind pose");
+        } else {
+            assert isMappedPose();
+            logger.log(Level.WARNING, "cannot delete mapped pose");
         }
     }
 
@@ -210,11 +221,11 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Access the loaded animation. TODO rename
      *
-     * @return the pre-existing instance, or null if none or in bind pose
+     * @return the pre-existing instance, or null if none or in bind/mapped pose
      */
     Animation getLoadedAnimation() {
         Animation result;
-        if (!loadedCgm.isLoaded() || isBindPoseLoaded()) {
+        if (!loadedCgm.isLoaded() || !isReal()) {
             result = null;
         } else {
             result = loadedCgm.getAnimation(loadedName);
@@ -244,15 +255,15 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Find the index of the loaded animation.
      *
-     * @return index, or -1 if bind pose/not found
+     * @return index, or -1 if bind pose/mapped pose/not found
      */
     public int findIndex() {
         int index;
-        if (isBindPoseLoaded()) {
-            index = -1;
-        } else {
+        if (isReal()) {
             List<String> nameList = loadedCgm.listAnimationsSorted();
             index = nameList.indexOf(loadedName);
+        } else {
+            index = -1;
         }
 
         return index;
@@ -309,10 +320,25 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Test whether bind pose is loaded.
      *
-     * @return true if it's loaded, false if an animation is loaded
+     * @return true if it's loaded, false if a real animation or mapped pose is
+     * loaded
      */
-    public boolean isBindPoseLoaded() {
+    public boolean isBindPose() {
         if (loadedName.equals(bindPoseName)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Test whether mapped pose is loaded.
+     *
+     * @return true if it's loaded, false if a real animation or bind pose is
+     * loaded
+     */
+    public boolean isMappedPose() {
+        if (loadedName.equals(mappedPoseName)) {
             return true;
         } else {
             return false;
@@ -346,6 +372,42 @@ public class LoadedAnimation implements Cloneable {
      */
     public boolean isPaused() {
         return pausedFlag;
+    }
+
+    /**
+     * Test whether a real animation is loaded.
+     *
+     * @return true if one is loaded, false if bind/mapped pose is loaded
+     */
+    public boolean isReal() {
+        if (loadedName.equals(bindPoseName)) {
+            return false;
+        } else if (loadedName.equals(mappedPoseName)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Test whether the specified animation name is reserved.
+     *
+     * @param name which name to test (not null)
+     * @return true if reserved, otherwise false
+     */
+    public static boolean isReserved(String name) {
+        boolean result;
+        if (name.isEmpty()) {
+            result = true;
+        } else if (name.equals(bindPoseName)) {
+            result = true;
+        } else if (name.equals(mappedPoseName)) {
+            result = true;
+        } else {
+            result = false;
+        }
+
+        return result;
     }
 
     /**
@@ -387,6 +449,12 @@ public class LoadedAnimation implements Cloneable {
              */
             loadBindPose();
 
+        } else if (name.equals(mappedPoseName)) {
+            /*
+             * Load mapped pose.
+             */
+            loadMappedPose();
+
         } else {
             float duration = loadedCgm.getDuration(name);
             float playSpeed;
@@ -406,15 +474,15 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Load the named animation (not bind pose) at t=0 with the specified
-     * playback speed.
+     * Load the named real animation (not bind/mapped pose) at t=0 with the
+     * specified playback speed.
      *
      * @param name which animation (not null)
      * @param newSpeed playback speed
      */
     public void loadAnimation(String name, float newSpeed) {
         Validate.nonNull(name, "animation name");
-        assert !name.equals(bindPoseName);
+        assert !isReserved(name);
 
         loadedName = name;
         speed = newSpeed;
@@ -435,10 +503,21 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Load the mapped pose.
+     */
+    public void loadMappedPose() {
+        loadedName = mappedPoseName;
+        speed = 0f;
+        time = 0f;
+
+        loadedCgm.pose.setToAnimation();
+    }
+
+    /**
      * Load the next animation in name-sorted order.
      */
     public void loadNext() {
-        if (loadedCgm.isLoaded() && !isBindPoseLoaded()) {
+        if (loadedCgm.isLoaded() && isReal()) {
             List<String> nameList = loadedCgm.listAnimationsSorted();
             int index = nameList.indexOf(loadedName);
             int numAnimations = nameList.size();
@@ -452,7 +531,7 @@ public class LoadedAnimation implements Cloneable {
      * Load the next animation in name-sorted order.
      */
     public void loadPrevious() {
-        if (loadedCgm.isLoaded() && !isBindPoseLoaded()) {
+        if (loadedCgm.isLoaded() && isReal()) {
             List<String> nameList = loadedCgm.listAnimationsSorted();
             int index = nameList.indexOf(loadedName);
             int numAnimations = nameList.size();
@@ -465,12 +544,12 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Add a copy of the loaded animation to the CG model.
      *
-     * @param animationName name for the new animation (not null, not empty, not
-     * bindPoseName, not in use)
+     * @param animationName name for the new animation (not null, not reserved,
+     * not in use)
      */
     public void newCopy(String animationName) {
         Validate.nonEmpty(animationName, "animation name");
-        assert !animationName.equals(bindPoseName) : animationName;
+        assert !isReserved(animationName) : animationName;
         assert !loadedCgm.hasAnimation(animationName) : animationName;
 
         Animation loaded = getLoadedAnimation();
@@ -505,7 +584,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void reduce(int factor) {
         Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
-        assert !isBindPoseLoaded();
+        assert isReal();
 
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
@@ -529,13 +608,13 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Rename the loaded animation.
      *
-     * @param newName (not null, not empty, not bindPoseName, not in use)
+     * @param newName (not null, not reserved, not in use)
      */
     public void rename(String newName) {
         Validate.nonEmpty(newName, "new name");
-        assert !newName.equals(bindPoseName) : newName;
+        assert !isReserved(newName) : newName;
         assert !loadedCgm.hasAnimation(newName) : newName;
-        assert !isBindPoseLoaded();
+        assert isReal();
 
         float duration = getDuration();
         Animation newAnimation = new Animation(newName, duration);
@@ -631,7 +710,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Alter whether the loaded animation will play continuously.
+     * Alter whether the loaded animation plays continuously.
      *
      * @param newSetting true &rarr; play continuously, false &rarr; play
      * once-through and then pause
@@ -755,12 +834,12 @@ public class LoadedAnimation implements Cloneable {
      * duration, a single keyframe at t=0, and all the tracks are BoneTracks,
      * set to the current pose.
      *
-     * @param animationName name for the new animation (not null, not empty, not
-     * bindPoseName, not in use)
+     * @param animationName name for the new animation (not null, not reserved,
+     * not in use)
      */
     private void newPose(String animationName) {
         assert animationName != null;
-        assert !animationName.equals(bindPoseName) : animationName;
+        assert !isReserved(animationName) : animationName;
         assert !loadedCgm.hasAnimation(animationName) : animationName;
 
         Animation poseAnim = loadedCgm.pose.capture(animationName);

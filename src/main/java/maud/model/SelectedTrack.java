@@ -181,7 +181,7 @@ public class SelectedTrack implements Cloneable {
     BoneTrack findTrack() {
         if (!loadedCgm.bone.isSelected()) {
             return null;
-        } else if (loadedCgm.animation.isBindPoseLoaded()) {
+        } else if (!loadedCgm.animation.isReal()) {
             return null;
         }
 
@@ -199,7 +199,7 @@ public class SelectedTrack implements Cloneable {
      */
     public boolean isTrackSelected() {
         if (loadedCgm.bone.isSelected()) {
-            if (loadedCgm.animation.isBindPoseLoaded()) {
+            if (!loadedCgm.animation.isReal()) {
                 return false;
             }
             Track track = findTrack();
@@ -234,7 +234,7 @@ public class SelectedTrack implements Cloneable {
      */
     public List<String> listKeyframes() {
         List<String> result = null;
-        if (loadedCgm.animation.isBindPoseLoaded()) {
+        if (!loadedCgm.animation.isReal()) {
             logger.log(Level.INFO, "No animation is selected.");
         } else if (!loadedCgm.bone.isSelected()) {
             logger.log(Level.INFO, "No bone is selected.");

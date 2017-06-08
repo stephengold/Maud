@@ -82,7 +82,7 @@ class AnimationNameDialog implements DialogController {
     @Override
     public boolean allowCommit(Element dialogElement) {
         String proposedName = getName(dialogElement);
-        if (isReserved(proposedName) || isUsed(proposedName)) {
+        if (LoadedAnimation.isReserved(proposedName) || isUsed(proposedName)) {
             return false;
         } else {
             return true;
@@ -101,7 +101,7 @@ class AnimationNameDialog implements DialogController {
     public void update(Element dialogElement, float elapsedTime) {
         String commitLabel, feedbackMessage;
         String proposedName = getName(dialogElement);
-        if (isReserved(proposedName)) {
+        if (LoadedAnimation.isReserved(proposedName)) {
             commitLabel = "";
             feedbackMessage = String.format("%s is a reserved name",
                     MyString.quote(proposedName));
@@ -140,25 +140,6 @@ class AnimationNameDialog implements DialogController {
 
         assert text != null;
         return text;
-    }
-
-    /**
-     * Test whether the specified name is reserved.
-     *
-     * @param name which name to test (not null)
-     * @return true if reserved, otherwise false
-     */
-    private static boolean isReserved(String name) {
-        boolean result;
-        if (name.isEmpty()) {
-            result = true;
-        } else if (name.equals(LoadedAnimation.bindPoseName)) {
-            result = true;
-        } else {
-            result = false;
-        }
-
-        return result;
     }
 
     /**
