@@ -626,7 +626,7 @@ public class LoadedCGModel implements Cloneable {
         /*
          * Reset the selected bone/spatial and also the loaded animation.
          */
-        bone.selectNoBone();
+        bone.deselect();
         spatial.selectModelRoot();
         animation.loadBindPose();
     }

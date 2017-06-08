@@ -85,6 +85,13 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
+     * Deselect the selected bone, if any.
+     */
+    public void deselect() {
+        selectedIndex = -1;
+    }
+
+    /**
      * Access the selected bone.
      *
      * @return the pre-existing instance, or null if none selected
@@ -304,7 +311,7 @@ public class SelectedBone implements Cloneable {
      */
     public void select(String name) {
         if (name.equals(SelectedSkeleton.noBone)) {
-            selectNoBone();
+            deselect();
 
         } else {
             Skeleton skeleton = loadedCgm.bones.findSkeleton();
@@ -353,13 +360,6 @@ public class SelectedBone implements Cloneable {
                 selectedIndex = 0;
             }
         }
-    }
-
-    /**
-     * Deselect the selected bone, if any. TODO rename
-     */
-    public void selectNoBone() {
-        selectedIndex = -1;
     }
 
     /**

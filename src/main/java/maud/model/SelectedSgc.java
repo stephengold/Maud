@@ -301,7 +301,7 @@ public class SelectedSgc implements Cloneable {
             boolean selectedSpatialFlag) {
         loadedCgm.view.setSkeleton(newSkeleton, selectedSpatialFlag);
 
-        loadedCgm.bone.selectNoBone();
+        loadedCgm.bone.deselect();
         loadedCgm.pose.resetToBind();
     }
 }
