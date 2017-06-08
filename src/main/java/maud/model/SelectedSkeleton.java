@@ -78,7 +78,7 @@ public class SelectedSkeleton implements Cloneable {
      * @return count (&ge;0)
      */
     public int countBones() {
-        Skeleton skeleton = getSkeleton();
+        Skeleton skeleton = findSkeleton();
         int count;
         if (skeleton == null) {
             count = 0;
@@ -97,7 +97,7 @@ public class SelectedSkeleton implements Cloneable {
      */
     public int countRootBones() {
         int count;
-        Skeleton skeleton = getSkeleton();
+        Skeleton skeleton = findSkeleton();
         if (skeleton == null) {
             count = 0;
         } else {
@@ -164,11 +164,11 @@ public class SelectedSkeleton implements Cloneable {
     }
 
     /**
-     * Find the selected skeleton. TODO rename
+     * Find the selected skeleton.
      *
      * @return the pre-existing instance, or null if none
      */
-    public Skeleton getSkeleton() {
+    public Skeleton findSkeleton() {
         Skeleton result = findSkeleton(null);
         return result;
     }
@@ -183,7 +183,7 @@ public class SelectedSkeleton implements Cloneable {
         if (name.equals(noBone)) {
             return true;
         }
-        Skeleton skeleton = getSkeleton();
+        Skeleton skeleton = findSkeleton();
         Bone bone = skeleton.getBone(name);
         if (bone == null) {
             return false;
@@ -201,7 +201,7 @@ public class SelectedSkeleton implements Cloneable {
     public boolean isLeafBone(String boneName) {
         boolean result = false;
         if (!boneName.equals(noBone)) {
-            Skeleton skeleton = getSkeleton();
+            Skeleton skeleton = findSkeleton();
             Bone bone = skeleton.getBone(boneName);
             if (bone != null) {
                 ArrayList<Bone> children = bone.getChildren();
@@ -219,7 +219,7 @@ public class SelectedSkeleton implements Cloneable {
      */
     public List<String> listBoneNames() {
         List<String> names = new ArrayList<>(80);
-        Skeleton skeleton = getSkeleton();
+        Skeleton skeleton = findSkeleton();
         if (skeleton != null) {
             int boneCount = skeleton.getBoneCount();
 
@@ -263,7 +263,7 @@ public class SelectedSkeleton implements Cloneable {
      * @return a new list of bone names
      */
     public List<String> listChildBoneNames(String parentName) {
-        Skeleton skeleton = getSkeleton();
+        Skeleton skeleton = findSkeleton();
         Bone parent = skeleton.getBone(parentName);
         List<Bone> children = parent.getChildren();
         List<String> boneNames = new ArrayList<>(children.size());
@@ -283,7 +283,7 @@ public class SelectedSkeleton implements Cloneable {
      */
     public List<String> listRootBoneNames() {
         List<String> boneNames = new ArrayList<>(5);
-        Skeleton skeleton = getSkeleton();
+        Skeleton skeleton = findSkeleton();
         if (skeleton != null) {
             Bone[] roots = skeleton.getRoots();
             for (Bone rootBone : roots) {

@@ -93,14 +93,14 @@ public class RetargetParameters implements Cloneable {
             storeResult = new Transform();
         }
 
-        Skeleton targetSkeleton = Maud.model.target.bones.getSkeleton();
+        Skeleton targetSkeleton = Maud.model.target.bones.findSkeleton();
         Bone targetBone = targetSkeleton.getBone(targetIndex);
         String targetName = targetBone.getName();
         BoneMapping boneMapping = mapping.get(targetName);
         if (boneMapping == null) {
             storeResult.loadIdentity();
         } else {
-            Skeleton sourceSkeleton = Maud.model.source.bones.getSkeleton();
+            Skeleton sourceSkeleton = Maud.model.source.bones.findSkeleton();
             String sourceName = boneMapping.getSourceName();
             int sourceIndex = sourceSkeleton.getBoneIndex(sourceName);
             Maud.model.source.pose.copyTransform(sourceIndex, storeResult);
@@ -290,7 +290,7 @@ public class RetargetParameters implements Cloneable {
         Spatial targetSpatial = targetControl.getSpatial();
         Animation sourceAnimation;
         sourceAnimation = Maud.model.source.animation.getLoadedAnimation();
-        Skeleton sourceSkeleton = Maud.model.source.bones.getSkeleton();
+        Skeleton sourceSkeleton = Maud.model.source.bones.findSkeleton();
         SkeletonMapping map = skeletonMapping();
         Animation retargeted = BVHUtils.reTarget(sourceSpatial, targetSpatial,
                 sourceAnimation, sourceSkeleton, map, false,

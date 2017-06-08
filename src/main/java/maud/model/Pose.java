@@ -147,7 +147,7 @@ public class Pose implements Cloneable {
         /*
          * Start with the bone's bind transform.
          */
-        Skeleton skeleton = loadedCgm.bones.getSkeleton();
+        Skeleton skeleton = loadedCgm.bones.findSkeleton();
         Bone bone = skeleton.getBone(boneIndex);
         Transform local = MySkeleton.copyBindTransform(bone, null);
         /*

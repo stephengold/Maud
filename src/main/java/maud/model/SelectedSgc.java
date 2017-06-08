@@ -71,7 +71,7 @@ public class SelectedSgc implements Cloneable {
      */
     public void delete() {
         if (isSelected()) {
-            Skeleton oldSkeleton = loadedCgm.bones.getSkeleton();
+            Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
             AnimControl oldAnimControl = loadedCgm.getAnimControl();
 
             EditableCgm editableCgm = (EditableCgm) loadedCgm;
@@ -195,7 +195,7 @@ public class SelectedSgc implements Cloneable {
      * @param newIndex which SG control to select, or -1 to deselect
      */
     public void select(int newIndex) {
-        Skeleton oldSkeleton = loadedCgm.bones.getSkeleton();
+        Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
         AnimControl oldAnimControl = loadedCgm.getAnimControl();
 
         selectedIndex = newIndex;
