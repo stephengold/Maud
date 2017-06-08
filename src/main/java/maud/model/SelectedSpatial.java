@@ -136,19 +136,6 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Count how many controls are added to the selected spatial. TODO sort
-     *
-     * @return count (&ge;0)
-     */
-    public int countSgcs() {
-        Spatial spatial = modelSpatial();
-        int result = spatial.getNumControls();
-
-        assert result >= 0 : result;
-        return result;
-    }
-
-    /**
      * Count how many levels of detail are in the selected spatial's mesh.
      *
      * @return count (&ge;0)
@@ -161,6 +148,19 @@ public class SelectedSpatial implements Cloneable {
         } else {
             result = mesh.getNumLodLevels();
         }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Count how many controls are added to the selected spatial.
+     *
+     * @return count (&ge;0)
+     */
+    public int countSgcs() {
+        Spatial spatial = modelSpatial();
+        int result = spatial.getNumControls();
 
         assert result >= 0 : result;
         return result;
@@ -676,8 +676,8 @@ public class SelectedSpatial implements Cloneable {
 
         int numLevels = treePosition.size();
         clone.treePosition = new ArrayList<>(numLevels);
-        for (Integer ci : treePosition) { // TODO int?
-            clone.treePosition.add(ci);
+        for (int childIndex : treePosition) {
+            clone.treePosition.add(childIndex);
         }
 
         return clone;
