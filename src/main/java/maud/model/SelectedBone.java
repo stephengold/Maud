@@ -399,7 +399,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * If bone controls are enabled, set the bone rotation based on the
+     * If bone controls are enabled, set the bone rotation based on the loaded
      * animation.
      */
     public void setRotationToAnimation() {
@@ -410,7 +410,8 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * If bone controls are enabled, set the bone scale based on the animation.
+     * If bone controls are enabled, set the bone scale based on the loaded
+     * animation.
      */
     public void setScaleToAnimation() {
         if (shouldEnableControls()) {
@@ -421,7 +422,7 @@ public class SelectedBone implements Cloneable {
 
     /**
      * If bone controls are enabled, set the bone translation based on the
-     * animation.
+     * loaded animation.
      */
     public void setTranslationToAnimation() {
         if (shouldEnableControls()) {
@@ -433,13 +434,17 @@ public class SelectedBone implements Cloneable {
     /**
      * Test whether the GUI controls for the selected bone should be enabled.
      *
-     * @return true if enabled, otherwise false
+     * @return true if controls should be enabled, otherwise false
      */
     public boolean shouldEnableControls() {
-        if (isSelected() && !loadedCgm.animation.isMoving()) {
-            return true;
-        } else {
+        if (!isSelected()) {
             return false;
+        } else if (loadedCgm.animation.isMoving()) {
+            return false;
+        } else if (loadedCgm.animation.isMappedPose()) {
+            return false;
+        } else {
+            return true;
         }
     }
     // *************************************************************************
