@@ -290,8 +290,7 @@ public class Pose implements Cloneable {
      */
     public void setScaleToAnimation(int boneIndex) {
         Transform poseT = transforms.get(boneIndex);
-        Transform animT = loadedCgm.animation.boneTransform(boneIndex,
-                null);
+        Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Vector3f animV = animT.getScale();
         poseT.setScale(animV);
     }
