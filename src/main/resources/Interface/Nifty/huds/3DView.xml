@@ -27,7 +27,8 @@
 -->
 
 <!--
-Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
+Nifty XML to lay out the GUI portion of Maud's "3D View" screen: 
+the menu bar, status bar, and tool windows.
 -->
 <nifty xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
     <screen id="3D View" controller="maud.DddGui">
@@ -918,8 +919,20 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen.
             <control name="window" id="retargetTool" title="Retarget Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="176px" width="400px" x="30" y="70">
+                     height="200px" width="400px" x="30" y="70">
                 <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Target model:  "/>
+                        <control name="label" id="targetAsset"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Load"
+                                 id="id16ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(open menu CGModel -> Load)"/>
+                        </control>
+                    </panel>
+                    <panel height="8px"/>
                     <panel childLayout="horizontal">
                         <control name="label" text="Source model:  "/>
                         <control name="label" id="sourceAsset"
