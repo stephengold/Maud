@@ -704,96 +704,96 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "select". TODO split method
+     * Process an action that starts with "select".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean selectAction(String actionString) {
-        boolean handled = false;
+        boolean handled = true;
         switch (actionString) {
             case "select boneChild":
                 Maud.gui.menus.selectBoneChild();
-                handled = true;
                 break;
             case "select boneParent":
                 Maud.model.target.bone.selectParent();
-                handled = true;
                 break;
             case "select boneXY":
                 Maud.gui.tools.bone.selectXY();
-                handled = true;
                 break;
             case "select keyframeFirst":
                 Maud.model.target.animation.selectKeyframeFirst();
-                handled = true;
                 break;
             case "select keyframeLast":
                 Maud.model.target.animation.selectKeyframeLast();
-                handled = true;
                 break;
             case "select keyframeNext":
                 Maud.model.target.animation.selectKeyframeNext();
-                handled = true;
                 break;
             case "select keyframePrevious":
                 Maud.model.target.animation.selectKeyframePrevious();
-                handled = true;
                 break;
             case "select spatialChild":
                 Maud.gui.menus.selectSpatialChild();
-                handled = true;
                 break;
             case "select spatialParent":
                 Maud.model.target.spatial.selectParent();
-                handled = true;
                 break;
             case "select userKey":
                 Maud.gui.menus.selectUserKey();
-                handled = true;
+                break;
+            default:
+                handled = selectAction2(actionString);
         }
 
-        if (!handled) {
-            String arg;
-            if (actionString.startsWith(selectBonePrefix)) {
-                arg = MyString.remainder(actionString, selectBonePrefix);
-                Maud.gui.menus.selectBone(arg);
-                handled = true;
+        return handled;
+    }
 
-            } else if (actionString.startsWith(selectBoneChildPrefix)) {
-                arg = MyString.remainder(actionString, selectBoneChildPrefix);
-                Maud.gui.menus.selectBoneChild(arg);
-                handled = true;
+    /**
+     * Process an action that starts with "select" -- 2nd part: test prefixes.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean selectAction2(String actionString) {
+        boolean handled = false;
+        String arg;
+        if (actionString.startsWith(selectBonePrefix)) {
+            arg = MyString.remainder(actionString, selectBonePrefix);
+            Maud.gui.menus.selectBone(arg);
+            handled = true;
 
-            } else if (actionString.startsWith(selectControlPrefix)) {
-                arg = MyString.remainder(actionString, selectControlPrefix);
-                Maud.model.target.sgc.select(arg);
-                handled = true;
+        } else if (actionString.startsWith(selectBoneChildPrefix)) {
+            arg = MyString.remainder(actionString, selectBoneChildPrefix);
+            Maud.gui.menus.selectBoneChild(arg);
+            handled = true;
 
-            } else if (actionString.startsWith(selectGeometryPrefix)) {
-                arg = MyString.remainder(actionString, selectGeometryPrefix);
-                Maud.gui.menus.selectSpatial(arg, false);
-                handled = true;
+        } else if (actionString.startsWith(selectControlPrefix)) {
+            arg = MyString.remainder(actionString, selectControlPrefix);
+            Maud.model.target.sgc.select(arg);
+            handled = true;
 
-            } else if (actionString.startsWith(selectSpatialChildPrefix)) {
-                arg = MyString.remainder(actionString,
-                        selectSpatialChildPrefix);
-                Maud.gui.selectSpatialChild(arg);
-                handled = true;
+        } else if (actionString.startsWith(selectGeometryPrefix)) {
+            arg = MyString.remainder(actionString, selectGeometryPrefix);
+            Maud.gui.menus.selectSpatial(arg, false);
+            handled = true;
 
-            } else if (actionString.startsWith(selectSpatialPrefix)) {
-                arg = MyString.remainder(actionString, selectSpatialPrefix);
-                Maud.gui.menus.selectSpatial(arg, true);
-                handled = true;
+        } else if (actionString.startsWith(selectSpatialChildPrefix)) {
+            arg = MyString.remainder(actionString, selectSpatialChildPrefix);
+            Maud.gui.selectSpatialChild(arg);
+            handled = true;
 
-            } else if (actionString.startsWith(selectUserKeyPrefix)) {
-                arg = MyString.remainder(actionString, selectUserKeyPrefix);
-                Maud.model.misc.selectUserKey(arg);
-                handled = true;
-            }
-        }
+        } else if (actionString.startsWith(selectSpatialPrefix)) {
+            arg = MyString.remainder(actionString, selectSpatialPrefix);
+            Maud.gui.menus.selectSpatial(arg, true);
+            handled = true;
 
-        if (!handled && actionString.startsWith(selectToolPrefix)) {
+        } else if (actionString.startsWith(selectUserKeyPrefix)) {
+            arg = MyString.remainder(actionString, selectUserKeyPrefix);
+            Maud.model.misc.selectUserKey(arg);
+            handled = true;
+
+        } else if (!handled && actionString.startsWith(selectToolPrefix)) {
             String toolName = MyString.remainder(actionString,
                     selectToolPrefix);
             handled = Maud.gui.selectTool(toolName);
