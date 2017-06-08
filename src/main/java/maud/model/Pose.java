@@ -133,6 +133,36 @@ public class Pose implements Cloneable {
     }
 
     /**
+     * Calculate the local transform of the indexed bone in this pose.
+     *
+     * @param boneIndex which bone to use
+     * @param storeResult (modified if not null)
+     * @return transform in local coordinates (either storeResult or a new
+     * instance)
+     */
+    public Transform localTransform(int boneIndex, Transform storeResult) {
+        if (storeResult == null) {
+            storeResult = new Transform();
+        }
+        /*
+         * Start with the bone's bind transform.
+         */
+        Skeleton skeleton = loadedCgm.bones.findSkeleton();
+        Bone bone = skeleton.getBone(boneIndex);
+        MySkeleton.copyBindTransform(bone, storeResult);
+        /*
+         * Apply the user transform in a simple (yet peculiar) way
+         * to obtain the bone's local transform.
+         */
+        Transform user = copyTransform(boneIndex, null);
+        storeResult.getTranslation().addLocal(user.getTranslation());
+        storeResult.getRotation().multLocal(user.getRotation());
+        storeResult.getScale().multLocal(user.getScale());
+
+        return storeResult;
+    }
+
+    /**
      * Calculate the model transform of the indexed bone in this pose.
      *
      * @param boneIndex which bone to use
@@ -145,34 +175,21 @@ public class Pose implements Cloneable {
             storeResult = new Transform();
         }
         /*
-         * Start with the bone's bind transform.
+         * Start with the bone's local transform.
          */
+        localTransform(boneIndex, storeResult);
+
         Skeleton skeleton = loadedCgm.bones.findSkeleton();
         Bone bone = skeleton.getBone(boneIndex);
-        Transform local = MySkeleton.copyBindTransform(bone, null);
-        /*
-         * Apply the user transform in a simple (yet peculiar) way
-         * to obtain the bone's local transform.
-         */
-        Transform user = copyTransform(boneIndex, null);
-        local.getTranslation().addLocal(user.getTranslation());
-        local.getRotation().multLocal(user.getRotation());
-        local.getScale().multLocal(user.getScale());
-
         Bone parentBone = bone.getParent();
-        if (parentBone == null) {
-            /*
-             * For a root bone, the bone's model transform is simply
-             * its local transform.
-             */
-            storeResult.set(local);
+        if (parentBone != null) {
+            Transform local = storeResult.clone();
 
-        } else {
             int parentIndex = skeleton.getBoneIndex(parentBone);
             Transform parent = modelTransform(parentIndex, null);
             /*
-             * Apply the parent's model transform in a different (and even more
-             * peculiar) way to obtain the bone's model transform.
+             * Apply the parent's model transform in a very peculiar way
+             * to obtain the bone's model transform.
              */
             Vector3f mTranslation = storeResult.getTranslation();
             Quaternion mRotation = storeResult.getRotation();
