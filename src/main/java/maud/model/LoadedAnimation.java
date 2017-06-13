@@ -119,7 +119,7 @@ public class LoadedAnimation implements Cloneable {
             storeResult = new Transform();
         }
 
-        Animation animation = getLoadedAnimation();
+        Animation animation = getAnimation();
         if (animation == null) {
             if (isMappedPose()) {
                 Maud.model.retarget.boneTransform(boneIndex, storeResult);
@@ -157,7 +157,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public int countBoneTracks() {
         int count = 0;
-        Animation animation = getLoadedAnimation();
+        Animation animation = getAnimation();
         if (animation != null) {
             Track[] tracks = animation.getTracks();
             for (Track track : tracks) {
@@ -178,7 +178,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public int countTracks() {
         int count;
-        Animation animation = getLoadedAnimation();
+        Animation animation = getAnimation();
         if (animation == null) {
             count = 0;
         } else {
@@ -211,7 +211,7 @@ public class LoadedAnimation implements Cloneable {
      * @return track time (in seconds, &ge;0)
      */
     public float findLatestKeyframe() {
-        Animation loaded = getLoadedAnimation();
+        Animation loaded = getAnimation();
         float latest = MyAnimation.findLastKeyframe(loaded);
 
         assert latest >= 0f : latest;
@@ -219,11 +219,11 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Access the loaded animation. TODO rename
+     * Access the loaded animation.
      *
      * @return the pre-existing instance, or null if none or in bind/mapped pose
      */
-    Animation getLoadedAnimation() {
+    Animation getAnimation() {
         Animation result;
         if (!loadedCgm.isLoaded() || !isReal()) {
             result = null;
@@ -241,7 +241,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public float getDuration() {
         float result;
-        Animation animation = getLoadedAnimation();
+        Animation animation = getAnimation();
         if (animation == null) {
             result = 0f;
         } else {
@@ -309,7 +309,7 @@ public class LoadedAnimation implements Cloneable {
         Validate.nonNegative(boneIndex, "bone index");
 
         boolean result = false;
-        Animation animation = getLoadedAnimation();
+        Animation animation = getAnimation();
         if (animation != null) {
             result = MyAnimation.hasTrackForBone(animation, boneIndex);
         }
@@ -418,7 +418,7 @@ public class LoadedAnimation implements Cloneable {
     public List<String> listBonesWithTrack() {
         int numTracks = countTracks();
         List<String> result = new ArrayList<>(numTracks);
-        Animation animation = getLoadedAnimation();
+        Animation animation = getAnimation();
         if (animation != null) {
             AnimControl animControl = loadedCgm.getAnimControl();
             Track[] tracks = animation.getTracks();
@@ -552,7 +552,7 @@ public class LoadedAnimation implements Cloneable {
         assert !isReserved(animationName) : animationName;
         assert !loadedCgm.hasAnimation(animationName) : animationName;
 
-        Animation loaded = getLoadedAnimation();
+        Animation loaded = getAnimation();
         float duration = getDuration();
         Animation copyAnim = new Animation(animationName, duration);
         if (loaded != null) {
@@ -589,7 +589,7 @@ public class LoadedAnimation implements Cloneable {
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
 
-        Animation loaded = getLoadedAnimation();
+        Animation loaded = getAnimation();
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track clone;
@@ -619,7 +619,7 @@ public class LoadedAnimation implements Cloneable {
         float duration = getDuration();
         Animation newAnimation = new Animation(newName, duration);
 
-        Animation loaded = getLoadedAnimation();
+        Animation loaded = getAnimation();
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track clone = track.clone();
@@ -729,7 +729,7 @@ public class LoadedAnimation implements Cloneable {
         Validate.nonNegative(newDuration, "new duration");
 
         Animation newAnimation = new Animation(loadedName, newDuration);
-        Animation loaded = getLoadedAnimation();
+        Animation loaded = getAnimation();
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track newTrack;

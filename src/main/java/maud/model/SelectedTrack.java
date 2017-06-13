@@ -185,7 +185,7 @@ public class SelectedTrack implements Cloneable {
             return null;
         }
 
-        Animation anim = loadedCgm.animation.getLoadedAnimation();
+        Animation anim = loadedCgm.animation.getAnimation();
         int boneIndex = loadedCgm.bone.getIndex();
         BoneTrack track = MyAnimation.findTrack(anim, boneIndex);
 
@@ -267,7 +267,7 @@ public class SelectedTrack implements Cloneable {
         String name = loadedCgm.animation.getName();
         Animation newAnimation = new Animation(name, duration);
 
-        Animation loaded = loadedCgm.animation.getLoadedAnimation();
+        Animation loaded = loadedCgm.animation.getAnimation();
         Track selectedTrack = findTrack();
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {

@@ -289,7 +289,7 @@ public class RetargetParameters implements Cloneable {
         AnimControl targetControl = Maud.model.target.getAnimControl();
         Spatial targetSpatial = targetControl.getSpatial();
         Animation sourceAnimation;
-        sourceAnimation = Maud.model.source.animation.getLoadedAnimation();
+        sourceAnimation = Maud.model.source.animation.getAnimation();
         Skeleton sourceSkeleton = Maud.model.source.bones.findSkeleton();
         SkeletonMapping map = skeletonMapping();
         Animation retargeted = BVHUtils.reTarget(sourceSpatial, targetSpatial,

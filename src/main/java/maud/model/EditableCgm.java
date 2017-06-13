@@ -171,7 +171,7 @@ public class EditableCgm extends LoadedCGModel {
      * Delete the loaded animation.
      */
     void deleteAnimation() {
-        Animation loadedAnimation = animation.getLoadedAnimation();
+        Animation loadedAnimation = animation.getAnimation();
         AnimControl animControl = getAnimControl();
         animControl.removeAnim(loadedAnimation);
         setEdited("delete animation");
