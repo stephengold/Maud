@@ -176,7 +176,7 @@ public class LoadedCGModel implements Cloneable {
             storeResult = new Transform();
         }
 
-        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         Transform trans = selectedSpatial.getLocalTransform();
         storeResult.set(trans);
 

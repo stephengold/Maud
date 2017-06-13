@@ -209,7 +209,7 @@ public class CgmView implements JmeCloneable {
     public void setHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial spatial = model.spatial.findSpatial(cgmRoot);
+        Spatial spatial = model.spatial.underRoot(cgmRoot);
         spatial.setCullHint(newHint);
     }
 
@@ -221,7 +221,7 @@ public class CgmView implements JmeCloneable {
     public void setMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "shadow mode");
 
-        Spatial spatial = model.spatial.findSpatial(cgmRoot);
+        Spatial spatial = model.spatial.underRoot(cgmRoot);
         spatial.setShadowMode(newMode);
     }
 
@@ -258,7 +258,7 @@ public class CgmView implements JmeCloneable {
         }
 
         if (selectedSpatialFlag) {
-            controlled = model.spatial.findSpatial(cgmRoot);
+            controlled = model.spatial.underRoot(cgmRoot);
         } else {
             controlled = cgmRoot;
         }
@@ -295,7 +295,7 @@ public class CgmView implements JmeCloneable {
     public void setSpatialRotation(Quaternion rotation) {
         Validate.nonNull(rotation, "rotation");
 
-        Spatial spatial = model.spatial.findSpatial(cgmRoot);
+        Spatial spatial = model.spatial.underRoot(cgmRoot);
         spatial.setLocalRotation(rotation);
     }
 
@@ -307,7 +307,7 @@ public class CgmView implements JmeCloneable {
     public void setSpatialScale(Vector3f scale) {
         Validate.nonNull(scale, "scale");
 
-        Spatial spatial = model.spatial.findSpatial(cgmRoot);
+        Spatial spatial = model.spatial.underRoot(cgmRoot);
         spatial.setLocalScale(scale);
     }
 
@@ -319,7 +319,7 @@ public class CgmView implements JmeCloneable {
     public void setSpatialTranslation(Vector3f translation) {
         Validate.nonNull(translation, "translation");
 
-        Spatial spatial = model.spatial.findSpatial(cgmRoot);
+        Spatial spatial = model.spatial.underRoot(cgmRoot);
         spatial.setLocalTranslation(translation);
     }
 

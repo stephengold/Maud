@@ -220,23 +220,6 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Access the selected spatial in a CG model. TODO: rename
-     *
-     * @param modelRoot root of the CG model (not null)
-     * @return the pre-existing instance (not null)
-     */
-    public Spatial findSpatial(Spatial modelRoot) {
-        Spatial result = modelRoot;
-        for (int childPosition : treePosition) {
-            Node node = (Node) result;
-            result = node.getChild(childPosition);
-        }
-
-        assert result != null;
-        return result;
-    }
-
-    /**
      * Read the name of an indexed child of the selected spatial.
      *
      * @param childIndex which child (&ge;0)
@@ -586,7 +569,7 @@ public class SelectedSpatial implements Cloneable {
      */
     Spatial modelSpatial() {
         Spatial modelRoot = loadedCgm.getRootSpatial();
-        Spatial result = findSpatial(modelRoot);
+        Spatial result = underRoot(modelRoot);
 
         assert result != null;
         return result;
@@ -660,6 +643,23 @@ public class SelectedSpatial implements Cloneable {
         } else {
             editableCgm = null;
         }
+    }
+
+    /**
+     * Access the selected spatial in the specified CG model.
+     *
+     * @param cgmRoot root of the CG model (not null)
+     * @return the pre-existing instance (not null)
+     */
+    public Spatial underRoot(Spatial cgmRoot) {
+        Spatial result = cgmRoot;
+        for (int childPosition : treePosition) {
+            Node node = (Node) result;
+            result = node.getChild(childPosition);
+        }
+
+        assert result != null;
+        return result;
     }
     // *************************************************************************
     // Object methods

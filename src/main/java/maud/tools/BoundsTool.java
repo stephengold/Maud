@@ -171,7 +171,7 @@ class BoundsTool extends WindowController {
             visualizer.setLineWidth(lineWidth);
 
             Spatial cgmRoot = loadedCgm.view.getCgmRoot();
-            Spatial selectedSpatial = loadedCgm.spatial.findSpatial(cgmRoot);
+            Spatial selectedSpatial = loadedCgm.spatial.underRoot(cgmRoot);
             visualizer.setSubject(selectedSpatial);
         } else {
             visualizer.setEnabled(false);

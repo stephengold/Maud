@@ -115,7 +115,7 @@ public class EditableCgm extends LoadedCGModel {
     void addSgc(Control newSgc) {
         assert newSgc != null;
 
-        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         selectedSpatial.addControl(newSgc);
         setEdited("add control");
     }
@@ -152,7 +152,7 @@ public class EditableCgm extends LoadedCGModel {
         }
         byte objectType = UserData.getObjectType(object);
         UserData data = new UserData(objectType, object);
-        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         selectedSpatial.setUserData(key, data);
         setEdited("add user key");
         Maud.model.misc.selectUserKey(key);
@@ -181,7 +181,7 @@ public class EditableCgm extends LoadedCGModel {
      * Delete the selected control from the selected spatial.
      */
     void deleteControl() {
-        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         Control selectedSgc = sgc.findSgc(rootSpatial);
         boolean success = selectedSpatial.removeControl(selectedSgc);
         assert success;
@@ -192,7 +192,7 @@ public class EditableCgm extends LoadedCGModel {
      * Delete the selected user key from the selected spatial.
      */
     void deleteUserKey() {
-        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         String key = Maud.model.misc.getSelectedUserKey();
         selectedSpatial.setUserData(key, null);
         setEdited("delete user key");
@@ -316,7 +316,7 @@ public class EditableCgm extends LoadedCGModel {
     public void setHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial modelSpatial = spatial.findSpatial(rootSpatial);
+        Spatial modelSpatial = spatial.underRoot(rootSpatial);
         Spatial.CullHint oldHint = modelSpatial.getLocalCullHint();
         if (oldHint != newHint) {
             modelSpatial.setCullHint(newHint);
@@ -333,7 +333,7 @@ public class EditableCgm extends LoadedCGModel {
     public void setMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "shadow mode");
 
-        Spatial modelSpatial = spatial.findSpatial(rootSpatial);
+        Spatial modelSpatial = spatial.underRoot(rootSpatial);
         RenderQueue.ShadowMode oldMode = modelSpatial.getLocalShadowMode();
         if (oldMode != newMode) {
             modelSpatial.setShadowMode(newMode);
@@ -370,7 +370,7 @@ public class EditableCgm extends LoadedCGModel {
     public void setSpatialRotation(Quaternion rotation) {
         Validate.nonNull(rotation, "rotation");
 
-        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         selectedSpatial.setLocalRotation(rotation);
         view.setSpatialRotation(rotation);
         setEditedSpatialTransform();
@@ -387,7 +387,7 @@ public class EditableCgm extends LoadedCGModel {
         Validate.positive(scale.y, "y scale");
         Validate.positive(scale.z, "z scale");
 
-        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         selectedSpatial.setLocalScale(scale);
         view.setSpatialScale(scale);
         setEditedSpatialTransform();
@@ -401,7 +401,7 @@ public class EditableCgm extends LoadedCGModel {
     public void setSpatialTranslation(Vector3f translation) {
         Validate.nonNull(translation, "translation");
 
-        Spatial selectedSpatial = spatial.findSpatial(rootSpatial);
+        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         selectedSpatial.setLocalTranslation(translation);
         view.setSpatialTranslation(translation);
         setEditedSpatialTransform();

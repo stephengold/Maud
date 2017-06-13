@@ -116,7 +116,7 @@ public class SelectedSgc implements Cloneable {
     Control findSgc(Spatial cgmRoot) {
         Control sgc = null;
         if (selectedIndex != -1) {
-            Spatial spatial = loadedCgm.spatial.findSpatial(cgmRoot);
+            Spatial spatial = loadedCgm.spatial.underRoot(cgmRoot);
             sgc = spatial.getControl(selectedIndex);
         }
 
