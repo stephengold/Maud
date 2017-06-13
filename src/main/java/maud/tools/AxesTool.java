@@ -234,8 +234,7 @@ class AxesTool extends WindowController {
                 break;
 
             case "spatial":
-                Spatial cgm = loadedCgm.view.getCgmRoot();
-                Spatial spatial = loadedCgm.spatial.underRoot(cgm);
+                Spatial spatial = loadedCgm.view.selectedSpatial();
                 transform = spatial.getWorldTransform();
                 break;
 

@@ -189,6 +189,16 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
+     * Access the selected spatial in this view's copy of its CG model.
+     *
+     * @return the pre-existing spatial (not null)
+     */
+    public Spatial selectedSpatial() {
+        Spatial result = model.spatial.underRoot(cgmRoot);
+        return result;
+    }
+
+    /**
      * Visualize a different CG model, or none.
      *
      * @param newCgmRoot CG model's root spatial, or null if none (unaffected)
@@ -209,7 +219,7 @@ public class CgmView implements JmeCloneable {
     public void setHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial spatial = model.spatial.underRoot(cgmRoot);
+        Spatial spatial = selectedSpatial();
         spatial.setCullHint(newHint);
     }
 
@@ -221,7 +231,7 @@ public class CgmView implements JmeCloneable {
     public void setMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "shadow mode");
 
-        Spatial spatial = model.spatial.underRoot(cgmRoot);
+        Spatial spatial = selectedSpatial();
         spatial.setShadowMode(newMode);
     }
 
@@ -258,7 +268,7 @@ public class CgmView implements JmeCloneable {
         }
 
         if (selectedSpatialFlag) {
-            controlled = model.spatial.underRoot(cgmRoot);
+            controlled = selectedSpatial();
         } else {
             controlled = cgmRoot;
         }
@@ -295,7 +305,7 @@ public class CgmView implements JmeCloneable {
     public void setSpatialRotation(Quaternion rotation) {
         Validate.nonNull(rotation, "rotation");
 
-        Spatial spatial = model.spatial.underRoot(cgmRoot);
+        Spatial spatial = selectedSpatial();
         spatial.setLocalRotation(rotation);
     }
 
@@ -307,7 +317,7 @@ public class CgmView implements JmeCloneable {
     public void setSpatialScale(Vector3f scale) {
         Validate.nonNull(scale, "scale");
 
-        Spatial spatial = model.spatial.underRoot(cgmRoot);
+        Spatial spatial = selectedSpatial();
         spatial.setLocalScale(scale);
     }
 
@@ -319,7 +329,7 @@ public class CgmView implements JmeCloneable {
     public void setSpatialTranslation(Vector3f translation) {
         Validate.nonNull(translation, "translation");
 
-        Spatial spatial = model.spatial.underRoot(cgmRoot);
+        Spatial spatial = selectedSpatial();
         spatial.setLocalTranslation(translation);
     }
 

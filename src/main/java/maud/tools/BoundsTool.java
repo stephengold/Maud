@@ -170,8 +170,7 @@ class BoundsTool extends WindowController {
             float lineWidth = Maud.model.bounds.getLineWidth();
             visualizer.setLineWidth(lineWidth);
 
-            Spatial cgmRoot = loadedCgm.view.getCgmRoot();
-            Spatial selectedSpatial = loadedCgm.spatial.underRoot(cgmRoot);
+            Spatial selectedSpatial = loadedCgm.view.selectedSpatial();
             visualizer.setSubject(selectedSpatial);
         } else {
             visualizer.setEnabled(false);
