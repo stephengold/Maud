@@ -121,11 +121,12 @@ public class RetargetTool extends WindowController {
         } else if (Maud.model.source.countAnimations() < 1) {
             feedback = "load an animated source model";
         } else {
-            String sourceAnim = Maud.model.source.animation.getName();
-            if (sourceAnim == null) {
+            boolean real = Maud.model.source.animation.isReal();
+            if (!real) {
                 feedback = "load a source animation";
             } else {
-                sourceAnimDesc = MyString.quote(sourceAnim);
+                String name = Maud.model.source.animation.getName();
+                sourceAnimDesc = MyString.quote(name);
 
                 String mapAssetPath = Maud.model.retarget.getMappingAssetPath();
                 if (mapAssetPath == null) {
