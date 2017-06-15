@@ -42,6 +42,7 @@ import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.History;
 import maud.Maud;
 
 /**
@@ -66,6 +67,10 @@ public class RetargetParameters implements Cloneable {
      */
     private boolean invertMapFlag = false;
     /**
+     * count of unsaved edits to the skeleton mapping (&ge;0)
+     */
+    private int editCount = 0;
+    /**
      * the skeleton mapping
      */
     private SkeletonMapping mapping = new SkeletonMapping();
@@ -82,7 +87,7 @@ public class RetargetParameters implements Cloneable {
 
     /**
      * Calculate the mapped transform of the indexed bone in the target CG
-     * model.
+     * model. TODO split up
      *
      * @param targetIndex which bone to calculate
      * @param storeResult (modified if not null)
@@ -190,6 +195,9 @@ public class RetargetParameters implements Cloneable {
         } catch (AssetLoadException e) {
             result = false;
         }
+
+        String eventDescription = "load mapping " + assetPath;
+        setPristine(eventDescription);
 
         return result;
     }
@@ -331,5 +339,25 @@ public class RetargetParameters implements Cloneable {
         assert duration >= 0f : duration;
 
         Maud.model.target.addAnimation(retargeted);
+    }
+
+    /**
+     * Increment the count of unsaved edits.
+     *
+     * @param eventDescription description of causative event (not null)
+     */
+    private void setEdited(String eventDescription) {
+        ++editCount;
+        History.addEvent(eventDescription);
+    }
+
+    /**
+     * Mark the mapping as pristine.
+     *
+     * @param eventDescription description of causative event (not null)
+     */
+    private void setPristine(String eventDescription) {
+        editCount = 0;
+        History.addEvent(eventDescription);
     }
 }
