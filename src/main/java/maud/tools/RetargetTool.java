@@ -71,7 +71,8 @@ public class RetargetTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        String targetAssetDesc = Maud.model.target.getAssetPath();
+        String targetAssetPath = Maud.model.target.getAssetPath();
+        String targetAssetDesc = MyString.quote(targetAssetPath);
         Maud.gui.setStatusText("targetAsset", " " + targetAssetDesc);
 
         String sButton, sourceAssetDesc;
