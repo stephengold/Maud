@@ -100,12 +100,43 @@ public class RetargetParameters implements Cloneable {
         if (boneMapping == null) {
             storeResult.loadIdentity();
         } else {
+            /*
+             * Calculate the model rotation of the source bone.
+             */
             Skeleton sourceSkeleton = Maud.model.source.bones.findSkeleton();
             String sourceName = boneMapping.getSourceName();
             int sourceIndex = sourceSkeleton.getBoneIndex(sourceName);
-            Maud.model.source.pose.copyTransform(sourceIndex, storeResult);
+            Transform smt = new Transform();
+            Maud.model.source.pose.modelTransform(sourceIndex, smt);
+            Quaternion smr = smt.getRotation();
+            /*
+             * Calculate the local rotation of the target bone.
+             */
+            Quaternion tlr;
+            Bone targetParent = targetBone.getParent();
+            if (targetParent == null) {
+                tlr = smr;
+            } else {
+                /*
+                 * Factor in the orientation of the target's parent.
+                 */
+                int tpIndex = targetSkeleton.getBoneIndex(targetParent);
+                Transform tpt = new Transform();
+                Maud.model.target.pose.modelTransform(tpIndex, tpt);
+                Quaternion tpimr = tpt.getRotation().inverse();
+                tlr = tpimr.mult(smr);
+            }
+            /*
+             * Calculate the animation/user rotation of the target bone.
+             */
+            Quaternion tibr = targetBone.getBindRotation().inverse();
+            Quaternion tur = tibr.mult(tlr);
             Quaternion twist = boneMapping.getTwist();
-            storeResult.getRotation().multLocal(twist);
+            tur.multLocal(twist);
+
+            storeResult.getRotation().set(tur);
+            storeResult.getTranslation().set(0f, 0f, 0f);
+            storeResult.getScale().set(1f, 1f, 1f);
         }
 
         return storeResult;
