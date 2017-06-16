@@ -58,6 +58,16 @@ public class SkeletonMapping implements Savable {
     }
 
     /**
+     * Count the number of bone mappings in this skeleton mapping.
+     *
+     * @return count (&ge;0)
+     */
+    public int countMappings() {
+        int result = mappings.size();
+        return result;
+    }
+
+    /**
      * Find the bone mapping for the named target bone.
      *
      * @param targetBoneName which target bone
