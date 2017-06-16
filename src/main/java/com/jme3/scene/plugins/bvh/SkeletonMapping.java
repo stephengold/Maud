@@ -54,7 +54,8 @@ public class SkeletonMapping implements Savable {
      * @param mapping bone mapping (not null)
      */
     public void addMapping(BoneMapping mapping) {
-        mappings.put(mapping.getTargetName(), mapping);
+        String targetBoneName = mapping.getTargetName();
+        mappings.put(targetBoneName, mapping);
     }
 
     /**
@@ -68,13 +69,25 @@ public class SkeletonMapping implements Savable {
     }
 
     /**
+     * Remove a bone mapping from this skeleton mapping.
+     *
+     * @param mapping bone mapping (not null)
+     */
+    public void removeMapping(BoneMapping mapping) {
+        String targetBoneName = mapping.getTargetName();
+        BoneMapping oldMapping = mappings.remove(targetBoneName);
+        assert oldMapping == mapping;
+    }
+
+    /**
      * Find the bone mapping for the named target bone.
      *
      * @param targetBoneName which target bone
      * @return the pre-existing instance
      */
     public BoneMapping get(String targetBoneName) {
-        return mappings.get(targetBoneName);
+        BoneMapping result = mappings.get(targetBoneName);
+        return result;
     }
 
     /**
