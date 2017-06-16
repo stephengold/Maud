@@ -68,6 +68,25 @@ public class SkeletonMapping implements Savable {
     }
 
     /**
+     * Find the bone mapping for the named source bone.
+     *
+     * @param sourceBoneName which source bone
+     * @return the pre-existing instance
+     */
+    public BoneMapping getForSource(String sourceBoneName) {
+        BoneMapping result = null;
+        for (BoneMapping boneMapping : mappings.values()) {
+            String sourceName = boneMapping.getSourceName();
+            if (sourceName.equals(sourceBoneName)) {
+                result = boneMapping;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Generate an inverse for this mapping.
      *
      * @return a new mapping
