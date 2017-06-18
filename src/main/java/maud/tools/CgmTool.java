@@ -37,7 +37,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class ModelTool extends WindowController {
+public class CgmTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -45,7 +45,7 @@ public class ModelTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            ModelTool.class.getName());
+            CgmTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -54,8 +54,8 @@ public class ModelTool extends WindowController {
      *
      * @param screenController
      */
-    ModelTool(BasicScreenController screenController) {
-        super(screenController, "modelTool", false);
+    CgmTool(BasicScreenController screenController) {
+        super(screenController, "cgmTool", false);
     }
     // *************************************************************************
     // AppState methods
@@ -75,26 +75,26 @@ public class ModelTool extends WindowController {
          */
         String name = Maud.model.target.getName();
         String nameDesc = MyString.quote(name);
-        Maud.gui.setStatusText("modelName", " " + nameDesc);
+        Maud.gui.setStatusText("cgmName", " " + nameDesc);
         /*
          * asset base path
          */
         String assetPath = Maud.model.target.getAssetPath();
         String abpDesc = assetPath.isEmpty() ? "unknown"
                 : MyString.quote(assetPath);
-        Maud.gui.setStatusText("modelAbp", " " + abpDesc);
+        Maud.gui.setStatusText("cgmAbp", " " + abpDesc);
         /*
          * file base path
          */
         String filePath = Maud.model.target.getFilePath();
         String fbpDesc = filePath.isEmpty() ? "unknown"
                 : MyString.quote(filePath);
-        Maud.gui.setStatusText("modelFbp", " " + fbpDesc);
+        Maud.gui.setStatusText("cgmFbp", " " + fbpDesc);
         /*
          * asset/file extension
          */
         String extDesc = Maud.model.target.getExtension();
-        Maud.gui.setStatusText("modelExt", extDesc);
+        Maud.gui.setStatusText("cgmExt", extDesc);
         /*
          * pristine/edited status
          */
@@ -107,6 +107,6 @@ public class ModelTool extends WindowController {
         } else {
             pristineDesc = String.format("%d edits", editCount);
         }
-        Maud.gui.setStatusText("modelPristine", pristineDesc);
+        Maud.gui.setStatusText("cgmPristine", pristineDesc);
     }
 }

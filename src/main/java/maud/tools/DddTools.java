@@ -86,6 +86,10 @@ public class DddTools {
      */
     final CameraTool camera;
     /**
+     * controller for the "Model Tool" window
+     */
+    final CgmTool cgm;
+    /**
      * controller for the "Cull Hint Tool" window
      */
     final CullHintTool cullHint;
@@ -105,10 +109,6 @@ public class DddTools {
      * controller for the "Mapping Tool" window
      */
     final MappingTool mapping;
-    /**
-     * controller for the "Model Tool" window
-     */
-    final ModelTool model;
     /**
      * controller for the "Platform Tool" window
      */
@@ -184,12 +184,12 @@ public class DddTools {
         boneTranslation = new BoneTranslationTool(screen);
         bounds = new BoundsTool(screen);
         camera = new CameraTool(screen);
+        cgm = new CgmTool(screen);
         cullHint = new CullHintTool(screen);
         cursor = new CursorTool(screen);
         history = new HistoryTool(screen);
         keyframe = new KeyframeTool(screen);
         mapping = new MappingTool(screen);
-        model = new ModelTool(screen);
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
         retarget = new RetargetTool(screen);
@@ -217,7 +217,7 @@ public class DddTools {
         stateManager.attach(cursor); // cursor before camera
         stateManager.attachAll(animation, axes, bone, boneRotation, boneScale,
                 boneTranslation, bounds, camera, cullHint, history, keyframe,
-                mapping, model, platform, render, retarget, sgc, shadowMode,
+                mapping, cgm, platform, render, retarget, sgc, shadowMode,
                 skeleton, skeletonColor, sky, sourceAnimation, spatial,
                 spatialRotation, spatialScale, spatialTranslation, userData);
     }
@@ -257,6 +257,9 @@ public class DddTools {
             case "camera":
                 controller = camera;
                 break;
+            case "cgm":
+                controller = cgm;
+                break;
             case "control":
                 controller = sgc;
                 break;
@@ -274,9 +277,6 @@ public class DddTools {
                 break;
             case "mapping":
                 controller = mapping;
-                break;
-            case "model":
-                controller = model;
                 break;
             case "platform":
                 controller = platform;

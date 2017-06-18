@@ -965,7 +965,7 @@ class DddMenus {
                     break;
 
                 case "Tool":
-                    Maud.gui.tools.getTool("model").select();
+                    Maud.gui.tools.getTool("cgm").select();
                     handled = true;
             }
         }
