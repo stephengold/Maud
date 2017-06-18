@@ -139,6 +139,10 @@ class DddInputMode extends InputMode {
      * action prefix: remainder is the name of a geometry or a prefix thereof
      */
     final static String selectGeometryPrefix = "select geometry ";
+    /**
+     * action prefix: remainder is the name of a source bone or a prefix thereof
+     */
+    final static String selectSourceBonePrefix = "select sourceBone ";
     final static String selectSpatialChildPrefix = "select spatialChild ";
     /**
      * action prefix: remainder is the name of a spatial or a prefix thereof
@@ -316,6 +320,10 @@ class DddInputMode extends InputMode {
                 Maud.model.target.sgc.delete();
                 handled = true;
                 break;
+            case "delete mapping":
+                Maud.model.retarget.deleteMapping();
+                handled = true;
+                break;
             case "delete userKey":
                 Maud.model.misc.deleteUserKey();
                 handled = true;
@@ -334,6 +342,10 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         if (actionString.equals("load mapping asset")) {
             Maud.gui.dialogs.loadMappingAsset();
+            handled = true;
+
+        } else if (actionString.equals("load mappedPose")) {
+            Maud.model.target.animation.loadMappedPose();
             handled = true;
 
         } else if (actionString.startsWith(loadAnimationPrefix)) {
@@ -403,12 +415,16 @@ class DddInputMode extends InputMode {
         if (actionString.equals("new checkpoint")) {
             Maud.gui.addCheckpoint("user interface");
             handled = true;
+        } else if (actionString.equals("new mapping")) {
+            Maud.model.retarget.mapBones();
+            handled = true;
         } else if (actionString.equals("new pose")) {
             Maud.gui.dialogs.newPose();
             handled = true;
         } else if (actionString.equals("new userKey")) {
             Maud.gui.menus.selectUserDataType();
             handled = true;
+
         } else if (actionString.startsWith(newPosePrefix)) {
             String name = MyString.remainder(actionString, newPosePrefix);
             Maud.model.target.animation.poseAndLoad(name);
@@ -452,6 +468,10 @@ class DddInputMode extends InputMode {
                 break;
             case "next control":
                 Maud.model.target.sgc.selectNext();
+                handled = true;
+                break;
+            case "next mapping":
+                Maud.model.retarget.selectNext();
                 handled = true;
                 break;
             case "next sourceAnimation":
@@ -505,6 +525,10 @@ class DddInputMode extends InputMode {
                 break;
             case "previous control":
                 Maud.model.target.sgc.selectPrevious();
+                handled = true;
+                break;
+            case "previous mapping":
+                Maud.model.retarget.selectPrevious();
                 handled = true;
                 break;
             case "previous sourceAnimation":
@@ -649,9 +673,12 @@ class DddInputMode extends InputMode {
                 break;
             case "reset spatial translation":
                 Maud.model.target.setSpatialTranslation(translateIdentity);
-                ;
                 handled = true;
                 break;
+
+            case "reset twist":
+                Maud.model.retarget.setTwist(identityRotation);
+                handled = true;
         }
 
         return handled;
@@ -733,6 +760,12 @@ class DddInputMode extends InputMode {
             case "select keyframePrevious":
                 Maud.model.target.animation.selectKeyframePrevious();
                 break;
+            case "select mapSourceBone":
+                Maud.model.retarget.selectFromSource();
+                break;
+            case "select mapTargetBone":
+                Maud.model.retarget.selectFromTarget();
+                break;
             case "select spatialChild":
                 Maud.gui.menus.selectSpatialChild();
                 break;
@@ -776,6 +809,11 @@ class DddInputMode extends InputMode {
         } else if (actionString.startsWith(selectGeometryPrefix)) {
             arg = MyString.remainder(actionString, selectGeometryPrefix);
             Maud.gui.menus.selectSpatial(arg, false);
+            handled = true;
+
+        } else if (actionString.startsWith(selectSourceBonePrefix)) {
+            arg = MyString.remainder(actionString, selectSourceBonePrefix);
+            Maud.gui.menus.selectSourceBone(arg);
             handled = true;
 
         } else if (actionString.startsWith(selectSpatialChildPrefix)) {

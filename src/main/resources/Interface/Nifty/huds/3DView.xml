@@ -27,7 +27,7 @@
 -->
 
 <!--
-Nifty XML to lay out the GUI portion of Maud's "3D View" screen: 
+Nifty XML to lay out the GUI portion of Maud's "3D View" screen:
 the menu bar, status bar, and tool windows.
 -->
 <nifty xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
@@ -342,7 +342,7 @@ the menu bar, status bar, and tool windows.
                             <control name="label" id="zAngSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <panel childLayout="horizontal" height="30px" >
+                            <panel childLayout="horizontal" height="30px">
                                 <panel/>
                                 <control name="button" id="degreesButton"
                                          width="50px">
@@ -353,7 +353,7 @@ the menu bar, status bar, and tool windows.
                             <control name="label" text="Reset to:"
                                      textHAlign="center"
                                      width="*"/>
-                            <panel childLayout="horizontal" height="30px" >
+                            <panel childLayout="horizontal" height="30px">
                                 <panel/>
                                 <control name="button" id="resetAngAnimButton"
                                          width="70px">
@@ -411,7 +411,7 @@ the menu bar, status bar, and tool windows.
                             <control name="label" text="Reset to:"
                                      textHAlign="center"
                                      width="*"/>
-                            <panel childLayout="horizontal" height="30px" >
+                            <panel childLayout="horizontal" height="30px">
                                 <panel/>
                                 <control name="button" id="resetOffAnimButton"
                                          width="70px">
@@ -464,7 +464,7 @@ the menu bar, status bar, and tool windows.
                             <control name="label" text="Reset to:"
                                      textHAlign="center"
                                      width="*"/>
-                            <panel childLayout="horizontal" height="30px" >
+                            <panel childLayout="horizontal" height="30px">
                                 <panel/>
                                 <control name="button" id="resetScaAnimButton"
                                          width="70px">
@@ -815,6 +815,128 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="mappingTool" title="Mapping Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="260px" width="320px" x="35" y="65">
+                <panel childLayout="vertical">
+                    <panel/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="mappingPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous mapping)"/>
+                        </control>
+                        <control name="label" id="mappingIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="90px"/>
+                        <control name="button" id="mappingNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next mapping)"/>
+                        </control>
+                        <panel width="20px"/>
+                        <control name="button"
+                                 id="loadMappedPose"
+                                 width="70px">
+                            <interact onRelease="perform(load mappedPose)"/>
+                        </control>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Source bone:  "
+                                 textHAlign="right"
+                                 width="80px"/>
+                        <control name="label" id="sourceBone"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button"
+                                 id="selectSourceBone"
+                                 width="50px">
+                            <interact onRelease="perform(open menu Bone -> Select source)"/>
+                        </control>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Target bone:  "
+                                 textHAlign="right"
+                                 width="80px"/>
+                        <control name="label" id="targetBone"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Select"
+                                 id="id10ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(open menu Bone -> Select)"/>
+                        </control>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="xTwistSlider"
+                                 buttonStepSize="1.57"
+                                 height="150px"
+                                 max="3.14" min="-3.14" stepSize="0.001"/>
+                        <control name="verticalSlider" id="yTwistSlider"
+                                 buttonStepSize="1.57"
+                                 height="150px"
+                                 max="3.14" min="-3.14" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zTwistSlider"
+                                 buttonStepSize="1.57"
+                                 height="150px"
+                                 max="1.57" min="-1.57" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="150px" width="130px">
+                            <control name="label" id="xTwistSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="yTwistSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="zTwistSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
+                                <control name="button" id="degreesButton3"
+                                         width="50px">
+                                    <interact onRelease="perform(toggle degrees)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
+                                <control name="button" id="resetTwistButton"
+                                         width="70px">
+                                    <interact onRelease="perform(reset twist)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                        </panel>
+                        <panel childLayout="vertical"
+                               height="150px" width="*">
+                            <panel/>
+                            <control name="button" id="addMappingButton"
+                                     width="55px">
+                                <interact onRelease="perform(new mapping)"/>
+                            </control>
+                            <panel/>
+                            <control name="button" id="deleteMappingButton"
+                                     width="55px">
+                                <interact onRelease="perform(delete mapping)"/>
+                            </control>
+                            <panel/>
+                            <control name="label" text="Edit status:  "
+                                     textHAlign="right"
+                                     width="75px"/>
+                            <control name="label" id="mappingPristine"
+                                     backgroundColor="#ffff"
+                                     textHAlign="center"
+                                     width="70px"/>
+                            <panel/>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="modelTool" title="Model Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
@@ -830,7 +952,7 @@ the menu bar, status bar, and tool windows.
                                  width="*"/>
                         <panel width="20px"/>
                         <control name="button" label="Load"
-                                 id="id9ToAvoidNiftyWarning"
+                                 id="id11ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(open menu CGModel -> Load)"/>
                         </control>
@@ -965,6 +1087,11 @@ the menu bar, status bar, and tool windows.
                                  id="id18ToAvoidNiftyWarning"
                                  width="40px">
                             <interact onRelease="perform(load mapping asset)"/>
+                        </control>
+                        <control name="button" label="Tool"
+                                 id="id19ToAvoidNiftyWarning"
+                                 width="40px">
+                            <interact onRelease="perform(select tool mapping)"/>
                         </control>
                     </panel>
                     <panel height="8px"/>
@@ -1264,7 +1391,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Rename"
-                                 id="id19ToAvoidNiftyWarning"
+                                 id="id23ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(rename spatial)"/>
                         </control>
@@ -1425,7 +1552,7 @@ the menu bar, status bar, and tool windows.
                             <control name="label" id="zSaSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <panel childLayout="horizontal" height="30px" >
+                            <panel childLayout="horizontal" height="30px">
                                 <panel/>
                                 <control name="button" id="degreesButton2"
                                          width="50px">

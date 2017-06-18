@@ -204,6 +204,24 @@ class DddMenus {
     }
 
     /**
+     * Handle a "select sourceBone" action with an argument.
+     *
+     * @param argument action argument (not null)
+     */
+    void selectSourceBone(String argument) {
+        if (Maud.model.source.bones.hasBone(argument)) {
+            Maud.model.source.bone.select(argument);
+        } else {
+            /*
+             * Treat the argument as a bone-name prefix.
+             */
+            List<String> boneNames;
+            boneNames = Maud.model.source.bones.listBoneNames(argument);
+            showBoneSubmenu(boneNames);
+        }
+    }
+
+    /**
      * Handle a "select spatialChild" action with no argument.
      */
     void selectSpatialChild() {
@@ -327,6 +345,9 @@ class DddMenus {
             builder.add("Attach prop");
             builder.addDialog("Rename");
         }
+        if (Maud.model.source.isLoaded()) {
+            builder.add("Select source");
+        }
     }
 
     /**
@@ -350,6 +371,12 @@ class DddMenus {
         int numTracks = Maud.model.target.animation.countBoneTracks();
         if (numTracks > 0) {
             builder.add("With track");
+        }
+
+        String sourceBoneName = Maud.model.source.bone.getName();
+        String boneName = Maud.model.retarget.targetBoneName(sourceBoneName);
+        if (boneName != null && Maud.model.target.bones.hasBone(boneName)) {
+            builder.addBone("Mapped");
         }
 
         int numChildren = Maud.model.target.bone.countChildren();
@@ -378,8 +405,10 @@ class DddMenus {
         builder.add("Load");
         builder.addDialog("Save as asset");
         builder.addDialog("Save as file");
-        builder.addTool("History");
         builder.add("Load source");
+        builder.addTool("Mapping tool");
+        builder.addDialog("Load mapping");
+        builder.addTool("History");
     }
 
     /**
@@ -467,6 +496,24 @@ class DddMenus {
         builder.add("Initial model");
         builder.add("Hotkeys");
         builder.add("Locale");
+    }
+
+    /**
+     * Build a "Bone -> Select source" menu.
+     */
+    private void buildSourceBoneSelectMenu() {
+        int numRoots = Maud.model.source.bones.countRootBones();
+        if (numRoots == 1) {
+            builder.addBone("Root");
+        } else if (numRoots > 1) {
+            builder.add("Root");
+        }
+
+        String targetBoneName = Maud.model.target.bone.getName();
+        String boneName = Maud.model.retarget.sourceBoneName(targetBoneName);
+        if (boneName != null && Maud.model.source.bones.hasBone(boneName)) {
+            builder.addBone("Mapped");
+        }
     }
 
     /**
@@ -741,9 +788,14 @@ class DddMenus {
 
         boolean handled = false;
         String selectPrefix = "Select" + menuSeparator;
+        String selectSourcePrefix = "Select source" + menuSeparator;
         if (remainder.startsWith(selectPrefix)) {
             String selectArg = MyString.remainder(remainder, selectPrefix);
             handled = menuBoneSelect(selectArg);
+
+        } else if (remainder.startsWith(selectSourcePrefix)) {
+            String selectArg = MyString.remainder(remainder, selectSourcePrefix);
+            handled = menuBoneSelectSource(selectArg);
 
         } else {
             switch (remainder) {
@@ -763,6 +815,10 @@ class DddMenus {
                     break;
                 case "Select":
                     selectBone();
+                    handled = true;
+                    break;
+                case "Select source":
+                    selectSourceBone();
                     handled = true;
                     break;
                 case "Tool":
@@ -800,6 +856,10 @@ class DddMenus {
                 selectBoneChild();
                 handled = true;
                 break;
+            case "Mapped":
+                Maud.model.retarget.selectFromSource();
+                handled = true;
+                break;
             case "Next":
                 Maud.model.target.bone.selectNext();
                 handled = true;
@@ -818,6 +878,29 @@ class DddMenus {
                 break;
             case "With track":
                 selectBoneWithTrack();
+                handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle an "open menu" action from the "Bone -> Select source" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuBoneSelectSource(String remainder) {
+        assert remainder != null;
+
+        boolean handled = false;
+        switch (remainder) {
+            case "Mapped":
+                Maud.model.retarget.selectFromTarget();
+                handled = true;
+                break;
+            case "Root":
+                selectSourceRootBone();
                 handled = true;
         }
 
@@ -856,8 +939,18 @@ class DddMenus {
                     handled = true;
                     break;
 
+                case "Load mapping":
+                    Maud.gui.dialogs.loadMappingAsset();
+                    handled = true;
+                    break;
+
                 case "Load source":
                     loadSourceCGModel();
+                    handled = true;
+                    break;
+
+                case "Mapping tool":
+                    Maud.gui.tools.getTool("mapping").select();
                     handled = true;
                     break;
 
@@ -1272,6 +1365,30 @@ class DddMenus {
     }
 
     /**
+     * Display a "Bone -> Select source" menu.
+     */
+    private void selectSourceBone() {
+        if (Maud.model.source.isLoaded()) {
+            builder.reset();
+            buildSourceBoneSelectMenu();
+            builder.show("open menu Bone -> Select source -> ");
+        }
+    }
+
+    /**
+     * Handle a "select sourceRootBone" action.
+     */
+    private void selectSourceRootBone() {
+        int numRoots = Maud.model.source.bones.countRootBones();
+        if (numRoots == 1) {
+            Maud.model.source.bone.selectFirstRoot();
+        } else if (numRoots > 1) {
+            List<String> names = Maud.model.source.bones.listRootBoneNames();
+            showSourceBoneSubmenu(names);
+        }
+    }
+
+    /**
      * Display a "Spatial -> Select" menu.
      */
     private void selectSpatial() {
@@ -1315,8 +1432,8 @@ class DddMenus {
     }
 
     /**
-     * Display a submenu for selecting bones by name using the "select bone"
-     * action prefix.
+     * Display a submenu for selecting a target bone by name using the "select
+     * bone" action prefix.
      *
      * @param nameList list of names from which to select (not null)
      */
@@ -1335,6 +1452,29 @@ class DddMenus {
             }
         }
         builder.show(DddInputMode.selectBonePrefix);
+    }
+
+    /**
+     * Display a submenu for selecting a source bone by name using the "select
+     * sourceBone" action prefix.
+     *
+     * @param nameList list of names from which to select (not null)
+     */
+    private void showSourceBoneSubmenu(List<String> nameList) {
+        assert nameList != null;
+
+        MyString.reduce(nameList, 20);
+        Collections.sort(nameList);
+
+        builder.reset();
+        for (String name : nameList) {
+            if (Maud.model.source.bones.hasBone(name)) {
+                builder.addBone(name);
+            } else {
+                builder.add(name);
+            }
+        }
+        builder.show(DddInputMode.selectSourceBonePrefix);
     }
 
     /**

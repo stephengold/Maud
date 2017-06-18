@@ -39,9 +39,11 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.BVHUtils;
 import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import maud.History;
 import maud.Maud;
 
@@ -74,6 +76,10 @@ public class RetargetParameters implements Cloneable {
      * the skeleton mapping
      */
     private SkeletonMapping mapping = new SkeletonMapping();
+    /**
+     * name of the target bone whose twist is being edited, or null for none
+     */
+    private String editedTwist = null;
     /**
      * asset path to the skeleton mapping, or null if none loaded
      */
@@ -111,40 +117,111 @@ public class RetargetParameters implements Cloneable {
             Skeleton sourceSkeleton = Maud.model.source.bones.findSkeleton();
             String sourceName = boneMapping.getSourceName();
             int sourceIndex = sourceSkeleton.getBoneIndex(sourceName);
-            Transform smt = new Transform();
-            Maud.model.source.pose.modelTransform(sourceIndex, smt);
-            Quaternion smr = smt.getRotation();
-            /*
-             * Calculate the local rotation of the target bone.
-             */
-            Quaternion tlr;
-            Bone targetParent = targetBone.getParent();
-            if (targetParent == null) {
-                tlr = smr;
+            if (sourceIndex == -1) {
+                storeResult.loadIdentity();
             } else {
+                Transform smt = new Transform();
+                Maud.model.source.pose.modelTransform(sourceIndex, smt);
+                Quaternion smr = smt.getRotation();
                 /*
-                 * Factor in the orientation of the target's parent.
+                 * Calculate the local rotation of the target bone.
                  */
-                int tpIndex = targetSkeleton.getBoneIndex(targetParent);
-                Transform tpt = new Transform();
-                Maud.model.target.pose.modelTransform(tpIndex, tpt);
-                Quaternion tpimr = tpt.getRotation().inverse();
-                tlr = tpimr.mult(smr);
-            }
-            /*
-             * Calculate the animation/user rotation of the target bone.
-             */
-            Quaternion tibr = targetBone.getBindRotation().inverse();
-            Quaternion tur = tibr.mult(tlr);
-            Quaternion twist = boneMapping.getTwist();
-            tur.multLocal(twist);
+                Quaternion tlr;
+                Bone targetParent = targetBone.getParent();
+                if (targetParent == null) {
+                    tlr = smr;
+                } else {
+                    /*
+                     * Factor in the orientation of the target's parent.
+                     */
+                    int tpIndex = targetSkeleton.getBoneIndex(targetParent);
+                    Transform tpt = new Transform();
+                    Maud.model.target.pose.modelTransform(tpIndex, tpt);
+                    Quaternion tpimr = tpt.getRotation().inverse();
+                    tlr = tpimr.mult(smr);
+                }
+                /*
+                 * Calculate the animation/user rotation of the target bone.
+                 */
+                Quaternion tibr = targetBone.getBindRotation().inverse();
+                Quaternion tur = tibr.mult(tlr);
+                Quaternion twist = boneMapping.getTwist();
+                tur.multLocal(twist);
 
-            storeResult.getRotation().set(tur);
-            storeResult.getTranslation().set(0f, 0f, 0f);
-            storeResult.getScale().set(1f, 1f, 1f);
+                storeResult.getRotation().set(tur);
+                storeResult.getTranslation().set(0f, 0f, 0f);
+                storeResult.getScale().set(1f, 1f, 1f);
+            }
         }
 
         return storeResult;
+    }
+
+    /**
+     * Copy the twist of the selected bone mapping.
+     *
+     * @param storeResult (modified if not null)
+     * @return twist rotation (either storeResult or a new instance)
+     */
+    public Quaternion copyTwist(Quaternion storeResult) {
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        BoneMapping boneMapping = selectedMapping();
+        Quaternion twist = boneMapping.getTwist();
+        storeResult.set(twist);
+
+        return storeResult;
+    }
+
+    /**
+     * Count bone mappings.
+     *
+     * @return count (&ge;0)
+     */
+    public int countMappings() {
+        int result = mapping.countMappings();
+        return result;
+    }
+
+    /**
+     * Count unsaved edits.
+     *
+     * @return count (&ge;0)
+     */
+    public int countUnsavedEdits() {
+        return editCount;
+    }
+
+    /**
+     * Delete the selected bone mapping.
+     */
+    public void deleteMapping() {
+        BoneMapping boneMapping = selectedMapping();
+        if (boneMapping != null) {
+            mapping.removeMapping(boneMapping);
+            setEdited("delete bone mapping");
+        }
+    }
+
+    /**
+     * Find the index of the selected mapping.
+     *
+     * @return index, or -1 if none selected
+     */
+    public int findIndex() {
+        int index;
+        BoneMapping selected = selectedMapping();
+        if (selected == null) {
+            index = -1;
+        } else {
+            List<String> nameList = listSorted();
+            String targetBoneName = Maud.model.target.bone.getName();
+            index = nameList.indexOf(targetBoneName);
+        }
+
+        return index;
     }
 
     /**
@@ -163,6 +240,20 @@ public class RetargetParameters implements Cloneable {
      */
     public String getTargetAnimationName() {
         return targetAnimationName;
+    }
+
+    /**
+     * Test whether a bone mapping is selected.
+     *
+     * @return true if selected, otherwise false
+     */
+    public boolean isBoneMappingSelected() {
+        BoneMapping mapping = selectedMapping();
+        if (mapping == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -200,6 +291,30 @@ public class RetargetParameters implements Cloneable {
         setPristine(eventDescription);
 
         return result;
+    }
+
+    /**
+     * Add a bone mapping for the selected bones.
+     */
+    public void mapBones() {
+        if (!isBoneMappingSelected() && Maud.model.source.bone.isSelected()
+                && Maud.model.target.bone.isSelected()) {
+            String sourceBoneName = Maud.model.source.bone.getName();
+            BoneMapping boneMapping = mapping.getForSource(sourceBoneName);
+            if (boneMapping != null) {
+                mapping.removeMapping(boneMapping);
+            }
+
+            String targetBoneName = Maud.model.target.bone.getName();
+            boneMapping = mapping.get(targetBoneName);
+            if (boneMapping != null) {
+                mapping.removeMapping(boneMapping);
+            }
+
+            mapping.map(targetBoneName, sourceBoneName);
+            String event = String.format("map bone %s", targetBoneName);
+            setEdited(event);
+        }
     }
 
     /**
@@ -268,6 +383,53 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
+     * Select the bone mapping of the selected source bone.
+     */
+    public void selectFromSource() {
+        String sourceBoneName = Maud.model.source.bone.getName();
+        String targetBoneName = targetBoneName(sourceBoneName);
+        Maud.model.target.bone.select(targetBoneName);
+    }
+
+    /**
+     * Select the bone mapping of the selected target bone.
+     */
+    public void selectFromTarget() {
+        String targetBoneName = Maud.model.target.bone.getName();
+        selectFromTarget(targetBoneName);
+    }
+
+    /**
+     * Select the next bone mapping in name-sorted order.
+     */
+    public void selectNext() {
+        if (isBoneMappingSelected()) {
+            List<String> nameList = listSorted();
+            String targetBoneName = Maud.model.target.bone.getName();
+            int index = nameList.indexOf(targetBoneName);
+            int numMappings = nameList.size();
+            int nextIndex = MyMath.modulo(index + 1, numMappings);
+            targetBoneName = nameList.get(nextIndex);
+            selectFromTarget(targetBoneName);
+        }
+    }
+
+    /**
+     * Select the previous bone mapping in name-sorted order.
+     */
+    public void selectPrevious() {
+        if (isBoneMappingSelected()) {
+            List<String> nameList = listSorted();
+            String targetBoneName = Maud.model.target.bone.getName();
+            int index = nameList.indexOf(targetBoneName);
+            int numMappings = nameList.size();
+            int previousIndex = MyMath.modulo(index - 1, numMappings);
+            targetBoneName = nameList.get(previousIndex);
+            selectFromTarget(targetBoneName);
+        }
+    }
+
+    /**
      * Alter whether to invert the loaded mapping before applying it.
      *
      * @param newSetting true &rarr; invert it, false &rarr; don't invert it
@@ -286,6 +448,18 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
+     * Alter the twist of the selected bone mapping.
+     *
+     * @param newTwist (not null, unaffected)
+     */
+    public void setTwist(Quaternion newTwist) {
+        BoneMapping boneMapping = selectedMapping();
+        Quaternion twist = boneMapping.getTwist();
+        twist.set(newTwist);
+        setEditedTwist();
+    }
+
+    /**
      * Calculate the effective skeleton mapping.
      *
      * @return a new mapping
@@ -298,6 +472,51 @@ public class RetargetParameters implements Cloneable {
             result = mapping.clone();
         }
 
+        return result;
+    }
+
+    /**
+     * Read the name of the source bone mapped to the named target bone.
+     *
+     * @param targetBoneName which target bone (not null)
+     * @return bone name, or null if none
+     */
+    public String sourceBoneName(String targetBoneName) {
+        String result = null;
+        if (invertMapFlag) {
+            BoneMapping boneMapping = mapping.getForSource(targetBoneName);
+            if (boneMapping != null) {
+                result = boneMapping.getTargetName();
+            }
+        } else {
+            BoneMapping boneMapping = mapping.get(targetBoneName);
+            if (boneMapping != null) {
+                result = boneMapping.getSourceName();
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Read the name of the target bone mapped from the named source bone.
+     *
+     * @param sourceBoneName which source bone (not null)
+     * @return bone name, or null if none
+     */
+    public String targetBoneName(String sourceBoneName) {
+        String result = null;
+        if (invertMapFlag) {
+            BoneMapping boneMapping = mapping.get(sourceBoneName);
+            if (boneMapping != null) {
+                result = boneMapping.getSourceName();
+            }
+        } else {
+            BoneMapping boneMapping = mapping.getForSource(sourceBoneName);
+            if (boneMapping != null) {
+                result = boneMapping.getTargetName();
+            }
+        }
         return result;
     }
     // *************************************************************************
@@ -318,6 +537,18 @@ public class RetargetParameters implements Cloneable {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Generate a sorted list of target-bone names.
+     *
+     * @return a new list
+     */
+    private List<String> listSorted() {
+        List<String> result = mapping.listTargetBones();
+        Collections.sort(result);
+
+        return result;
+    }
 
     /**
      * Add a re-targeted animation to the target CG model.
@@ -342,13 +573,64 @@ public class RetargetParameters implements Cloneable {
     }
 
     /**
-     * Increment the count of unsaved edits.
+     * Access the selected bone mapping.
+     *
+     * @return the pre-existing instance, or null if none selected
+     */
+    private BoneMapping selectedMapping() {
+        BoneMapping result = null;
+        if (Maud.model.source.isLoaded()) {
+            String sourceBoneName = Maud.model.source.bone.getName();
+            String targetBoneName = Maud.model.target.bone.getName();
+            if (invertMapFlag) {
+                String swap = sourceBoneName;
+                sourceBoneName = targetBoneName;
+                targetBoneName = swap;
+            }
+            BoneMapping boneMapping = mapping.get(targetBoneName);
+            if (boneMapping != null) {
+                String name = boneMapping.getSourceName();
+                if (name.equals(sourceBoneName)) {
+                    result = boneMapping;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Select the bone mapping of the named target bone.
+     */
+    private void selectFromTarget(String targetBoneName) {
+        String sourceBoneName = sourceBoneName(targetBoneName);
+        Maud.model.source.bone.select(sourceBoneName);
+        Maud.model.target.bone.select(targetBoneName);
+    }
+
+    /**
+     * Increment the count of unsaved edits and update the edit history.
      *
      * @param eventDescription description of causative event (not null)
      */
     private void setEdited(String eventDescription) {
         ++editCount;
+        editedTwist = null;
         History.addEvent(eventDescription);
+    }
+
+    /**
+     * If not a continuation of the previous edit, update the edit count and the
+     * edit history.
+     */
+    private void setEditedTwist() {
+        String newName = Maud.model.target.bone.getName();
+        if (!newName.equals(editedTwist)) {
+            ++editCount;
+            editedTwist = newName;
+            String event = String.format("set twist for %s", newName);
+            History.addEvent(event);
+        }
     }
 
     /**
@@ -358,6 +640,7 @@ public class RetargetParameters implements Cloneable {
      */
     private void setPristine(String eventDescription) {
         editCount = 0;
+        editedTwist = null;
         History.addEvent(eventDescription);
     }
 }

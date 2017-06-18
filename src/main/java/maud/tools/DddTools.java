@@ -102,6 +102,10 @@ public class DddTools {
      */
     final KeyframeTool keyframe;
     /**
+     * controller for the "Mapping Tool" window
+     */
+    final MappingTool mapping;
+    /**
      * controller for the "Model Tool" window
      */
     final ModelTool model;
@@ -184,6 +188,7 @@ public class DddTools {
         cursor = new CursorTool(screen);
         history = new HistoryTool(screen);
         keyframe = new KeyframeTool(screen);
+        mapping = new MappingTool(screen);
         model = new ModelTool(screen);
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
@@ -212,9 +217,9 @@ public class DddTools {
         stateManager.attach(cursor); // cursor before camera
         stateManager.attachAll(animation, axes, bone, boneRotation, boneScale,
                 boneTranslation, bounds, camera, cullHint, history, keyframe,
-                model, platform, render, retarget, sgc, shadowMode, skeleton,
-                skeletonColor, sky, sourceAnimation, spatial, spatialRotation,
-                spatialScale, spatialTranslation, userData);
+                mapping, model, platform, render, retarget, sgc, shadowMode,
+                skeleton, skeletonColor, sky, sourceAnimation, spatial,
+                spatialRotation, spatialScale, spatialTranslation, userData);
     }
 
     /**
@@ -266,6 +271,9 @@ public class DddTools {
                 break;
             case "keyframe":
                 controller = keyframe;
+                break;
+            case "mapping":
+                controller = mapping;
                 break;
             case "model":
                 controller = model;
@@ -364,6 +372,12 @@ public class DddTools {
             case "cursorGSlider":
             case "cursorBSlider":
                 cursor.onSliderChanged();
+                break;
+
+            case "xTwistSlider":
+            case "yTwistSlider":
+            case "zTwistSlider":
+                mapping.onSliderChanged();
                 break;
 
             case "skeletonLineWidthSlider":
