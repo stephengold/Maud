@@ -122,7 +122,7 @@ public class LoadedAnimation implements Cloneable {
         Animation animation = getAnimation();
         if (animation == null) {
             if (isMappedPose()) {
-                Maud.model.retarget.boneTransform(boneIndex, storeResult);
+                Maud.model.mapping.boneTransform(boneIndex, storeResult);
             } else {
                 storeResult.loadIdentity();
             }
@@ -506,11 +506,12 @@ public class LoadedAnimation implements Cloneable {
      * Load the mapped pose.
      */
     public void loadMappedPose() {
-        loadedName = mappedPoseName;
-        speed = 0f;
-        time = 0f;
-
-        loadedCgm.pose.setToAnimation();
+        if (Maud.model.source.isLoaded()) {
+            loadedName = mappedPoseName;
+            speed = 0f;
+            time = 0f;
+            loadedCgm.pose.setToAnimation();
+        }
     }
 
     /**

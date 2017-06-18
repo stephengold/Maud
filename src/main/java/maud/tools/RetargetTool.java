@@ -92,7 +92,7 @@ public class RetargetTool extends WindowController {
         Maud.gui.setStatusText("sourceAsset", " " + sourceAssetDesc);
         Maud.gui.setButtonLabel("selectSourceAnimationButton", sButton);
 
-        String mapAssetPath = Maud.model.retarget.getMappingAssetPath();
+        String mapAssetPath = Maud.model.mapping.getMappingAssetPath();
         String mapAssetDesc;
         if (mapAssetPath == null) {
             mapAssetDesc = "(none selected)";
@@ -101,7 +101,7 @@ public class RetargetTool extends WindowController {
         }
         Maud.gui.setStatusText("mapAsset", " " + mapAssetDesc);
 
-        boolean invertFlag = Maud.model.retarget.isInvertingMap();
+        boolean invertFlag = Maud.model.mapping.isInvertingMap();
         Maud.gui.setChecked("invertRma", invertFlag);
 
         updateBottom();
@@ -129,12 +129,12 @@ public class RetargetTool extends WindowController {
                 String name = Maud.model.source.animation.getName();
                 sourceAnimDesc = MyString.quote(name);
 
-                String mapAssetPath = Maud.model.retarget.getMappingAssetPath();
+                String mapAssetPath = Maud.model.mapping.getMappingAssetPath();
                 if (mapAssetPath == null) {
                     feedback = "load a map";
-                } else if (!Maud.model.retarget.matchesTarget()) {
+                } else if (!Maud.model.mapping.matchesTarget()) {
                     feedback = "map doesn't match the target model";
-                } else if (!Maud.model.retarget.matchesSource()) {
+                } else if (!Maud.model.mapping.matchesSource()) {
                     feedback = "map doesn't match the source asset";
                 } else {
                     rButton = "Retarget";

@@ -153,7 +153,7 @@ class DddDialogs {
      * Display a "load mapping asset" dialog.
      */
     void loadMappingAsset() {
-        String assetPath = Maud.model.retarget.getMappingAssetPath();
+        String assetPath = Maud.model.mapping.getMappingAssetPath();
         if (assetPath == null) {
             assetPath = "SkeletonMappings/SinbadToJaime.j3o";
         }

@@ -374,7 +374,7 @@ class DddMenus {
         }
 
         String sourceBoneName = Maud.model.source.bone.getName();
-        String boneName = Maud.model.retarget.targetBoneName(sourceBoneName);
+        String boneName = Maud.model.mapping.targetBoneName(sourceBoneName);
         if (boneName != null && Maud.model.target.bones.hasBone(boneName)) {
             builder.addBone("Mapped");
         }
@@ -510,7 +510,7 @@ class DddMenus {
         }
 
         String targetBoneName = Maud.model.target.bone.getName();
-        String boneName = Maud.model.retarget.sourceBoneName(targetBoneName);
+        String boneName = Maud.model.mapping.sourceBoneName(targetBoneName);
         if (boneName != null && Maud.model.source.bones.hasBone(boneName)) {
             builder.addBone("Mapped");
         }
@@ -857,7 +857,7 @@ class DddMenus {
                 handled = true;
                 break;
             case "Mapped":
-                Maud.model.retarget.selectFromSource();
+                Maud.model.mapping.selectFromSource();
                 handled = true;
                 break;
             case "Next":
@@ -896,7 +896,7 @@ class DddMenus {
         boolean handled = false;
         switch (remainder) {
             case "Mapped":
-                Maud.model.retarget.selectFromTarget();
+                Maud.model.mapping.selectFromTarget();
                 handled = true;
                 break;
             case "Root":

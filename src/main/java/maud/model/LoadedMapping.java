@@ -48,11 +48,11 @@ import maud.History;
 import maud.Maud;
 
 /**
- * Parameters for re-targeting animations in the Maud application.
+ * The loaded skeleton mapping in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class RetargetParameters implements Cloneable {
+public class LoadedMapping implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -60,7 +60,7 @@ public class RetargetParameters implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            RetargetParameters.class.getName());
+            LoadedMapping.class.getName());
     // *************************************************************************
     // fields
 
@@ -529,8 +529,8 @@ public class RetargetParameters implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public RetargetParameters clone() throws CloneNotSupportedException {
-        RetargetParameters clone = (RetargetParameters) super.clone();
+    public LoadedMapping clone() throws CloneNotSupportedException {
+        LoadedMapping clone = (LoadedMapping) super.clone();
         clone.mapping = mapping.clone();
 
         return clone;

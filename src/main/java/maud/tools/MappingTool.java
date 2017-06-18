@@ -86,7 +86,7 @@ public class MappingTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (Maud.model.retarget.isBoneMappingSelected()) {
+        if (Maud.model.mapping.isBoneMappingSelected()) {
             float[] angles = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 float value = sliders[iAxis].getValue();
@@ -94,7 +94,7 @@ public class MappingTool extends WindowController {
             }
             Quaternion twist = new Quaternion();
             twist.fromAngles(angles);
-            Maud.model.retarget.setTwist(twist);
+            Maud.model.mapping.setTwist(twist);
         }
     }
     // *************************************************************************
@@ -159,7 +159,7 @@ public class MappingTool extends WindowController {
          * pristine/edited status
          */
         String pristineDesc;
-        int editCount = Maud.model.retarget.countUnsavedEdits();
+        int editCount = Maud.model.mapping.countUnsavedEdits();
         if (editCount == 0) {
             pristineDesc = "pristine";
         } else if (editCount == 1) {
@@ -207,7 +207,7 @@ public class MappingTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the mapping twist.
      */
     private void setSlidersToTwist() {
-        Quaternion twist = Maud.model.retarget.copyTwist(null);
+        Quaternion twist = Maud.model.mapping.copyTwist(null);
         float[] angles = twist.toAngles(null);
         boolean degrees = Maud.model.misc.getAnglesInDegrees();
 
@@ -233,9 +233,9 @@ public class MappingTool extends WindowController {
         String indexText;
         String nButton, pButton;
 
-        int numBoneMappings = Maud.model.retarget.countMappings();
-        if (Maud.model.retarget.isBoneMappingSelected()) {
-            int index = Maud.model.retarget.findIndex();
+        int numBoneMappings = Maud.model.mapping.countMappings();
+        if (Maud.model.mapping.isBoneMappingSelected()) {
+            int index = Maud.model.mapping.findIndex();
             indexText = String.format("#%d of %d", index + 1, numBoneMappings);
             nButton = "+";
             pButton = "-";
@@ -264,7 +264,7 @@ public class MappingTool extends WindowController {
         String mButton = "";
         String rButton = "";
         String uButton = "";
-        if (Maud.model.retarget.isBoneMappingSelected()) {
+        if (Maud.model.mapping.isBoneMappingSelected()) {
             setSlidersToTwist();
             uButton = "Unmap";
             rButton = "Reset";
@@ -293,7 +293,7 @@ public class MappingTool extends WindowController {
         if (Maud.model.source.bone.isSelected()) {
             String sourceName = Maud.model.source.bone.getName();
             sourceBoneDesc = MyString.quote(sourceName);
-            String target = Maud.model.retarget.targetBoneName(sourceName);
+            String target = Maud.model.mapping.targetBoneName(sourceName);
             if (target != null) {
                 sourceBoneDesc += String.format("  -> %s", target);
             }
@@ -321,7 +321,7 @@ public class MappingTool extends WindowController {
         if (Maud.model.target.bone.isSelected()) {
             String targetName = Maud.model.target.bone.getName();
             targetBoneDesc = MyString.quote(targetName);
-            String source = Maud.model.retarget.sourceBoneName(targetName);
+            String source = Maud.model.mapping.sourceBoneName(targetName);
             if (source != null) {
                 targetBoneDesc += String.format("  <- %s", source);
             }

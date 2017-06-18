@@ -321,7 +321,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "delete mapping":
-                Maud.model.retarget.deleteMapping();
+                Maud.model.mapping.deleteMapping();
                 handled = true;
                 break;
             case "delete userKey":
@@ -356,7 +356,7 @@ class DddInputMode extends InputMode {
         } else if (actionString.startsWith(loadMappingAssetPrefix)) {
             String path;
             path = MyString.remainder(actionString, loadMappingAssetPrefix);
-            Maud.model.retarget.loadMappingAsset(path);
+            Maud.model.mapping.loadMappingAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(loadModelAssetPrefix)) {
@@ -416,7 +416,7 @@ class DddInputMode extends InputMode {
             Maud.gui.addCheckpoint("user interface");
             handled = true;
         } else if (actionString.equals("new mapping")) {
-            Maud.model.retarget.mapBones();
+            Maud.model.mapping.mapBones();
             handled = true;
         } else if (actionString.equals("new pose")) {
             Maud.gui.dialogs.newPose();
@@ -471,7 +471,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "next mapping":
-                Maud.model.retarget.selectNext();
+                Maud.model.mapping.selectNext();
                 handled = true;
                 break;
             case "next sourceAnimation":
@@ -528,7 +528,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "previous mapping":
-                Maud.model.retarget.selectPrevious();
+                Maud.model.mapping.selectPrevious();
                 handled = true;
                 break;
             case "previous sourceAnimation":
@@ -677,7 +677,7 @@ class DddInputMode extends InputMode {
                 break;
 
             case "reset twist":
-                Maud.model.retarget.setTwist(identityRotation);
+                Maud.model.mapping.setTwist(identityRotation);
                 handled = true;
         }
 
@@ -696,7 +696,7 @@ class DddInputMode extends InputMode {
         if (actionString.startsWith(retargetAnimationPrefix)) {
             String name = MyString.remainder(actionString,
                     retargetAnimationPrefix);
-            Maud.model.retarget.retargetAndLoad(name);
+            Maud.model.mapping.retargetAndLoad(name);
             handled = true;
 
         } else if (actionString.equals("retarget animation")) {
@@ -761,10 +761,10 @@ class DddInputMode extends InputMode {
                 Maud.model.target.animation.selectKeyframePrevious();
                 break;
             case "select mapSourceBone":
-                Maud.model.retarget.selectFromSource();
+                Maud.model.mapping.selectFromSource();
                 break;
             case "select mapTargetBone":
-                Maud.model.retarget.selectFromTarget();
+                Maud.model.mapping.selectFromTarget();
                 break;
             case "select spatialChild":
                 Maud.gui.menus.selectSpatialChild();

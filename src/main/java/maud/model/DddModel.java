@@ -70,14 +70,13 @@ public class DddModel {
      */
     final public LoadedCGModel source;
     /**
+     * the loaded skeleton mapping (set by {@link maud.Maud#startup1()})
+     */
+    final public LoadedMapping mapping;
+    /**
      * miscellaneous details
      */
     final public MiscStatus misc;
-    /**
-     * parameters for re-targeting animations (set by
-     * {@link maud.Maud#startup1()})
-     */
-    final public RetargetParameters retarget;
     /**
      * status of the skeleton visualization(s)
      */
@@ -95,13 +94,14 @@ public class DddModel {
         cursor = new CursorStatus();
         target = new EditableCgm();
         source = new LoadedCGModel();
+        mapping = new LoadedMapping();
         misc = new MiscStatus();
-        retarget = new RetargetParameters();
         skeleton = new SkeletonStatus();
     }
 
     /**
-     * Instantiate an MVC model with settings copied from another model.
+     * Instantiate an MVC model with settings copied from another model
+     * instance.
      *
      * @param other (not null)
      */
@@ -113,8 +113,8 @@ public class DddModel {
             cursor = other.cursor.clone();
             target = other.target.clone();
             source = other.source.clone();
+            mapping = other.mapping.clone();
             misc = other.misc.clone();
-            retarget = other.retarget.clone();
             skeleton = other.skeleton.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException();

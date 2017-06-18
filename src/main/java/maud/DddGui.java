@@ -167,7 +167,7 @@ public class DddGui extends GuiScreenController {
                 Maud.model.bounds.setDepthTestFlag(isChecked);
                 break;
             case "invertRmaCheckBox":
-                Maud.model.retarget.setInvertMap(isChecked);
+                Maud.model.mapping.setInvertMap(isChecked);
                 break;
             case "loopCheckBox":
                 Maud.model.target.animation.setContinue(isChecked);
