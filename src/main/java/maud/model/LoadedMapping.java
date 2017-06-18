@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import maud.History;
 import maud.Maud;
 
 /**
@@ -69,17 +68,9 @@ public class LoadedMapping implements Cloneable {
      */
     private boolean invertMapFlag = false;
     /**
-     * count of unsaved edits to the skeleton mapping (&ge;0)
-     */
-    private int editCount = 0;
-    /**
      * the skeleton mapping
      */
-    private SkeletonMapping mapping = new SkeletonMapping();
-    /**
-     * name of the target bone whose twist is being edited, or null for none
-     */
-    private String editedTwist = null;
+    protected SkeletonMapping mapping = new SkeletonMapping();
     /**
      * asset path to the skeleton mapping, or null if none loaded
      */
@@ -182,26 +173,6 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Count unsaved edits.
-     *
-     * @return count (&ge;0)
-     */
-    public int countUnsavedEdits() {
-        return editCount;
-    }
-
-    /**
-     * Delete the selected bone mapping.
-     */
-    public void deleteMapping() {
-        BoneMapping boneMapping = selectedMapping();
-        if (boneMapping != null) {
-            mapping.removeMapping(boneMapping);
-            setEdited("delete bone mapping");
-        }
-    }
-
-    /**
      * Find the index of the selected mapping.
      *
      * @return index, or -1 if none selected
@@ -274,34 +245,7 @@ public class LoadedMapping implements Cloneable {
             result = false;
         }
 
-        String eventDescription = "load mapping " + assetPath;
-        setPristine(eventDescription);
-
         return result;
-    }
-
-    /**
-     * Add a bone mapping for the selected bones.
-     */
-    public void mapBones() {
-        if (!isBoneMappingSelected() && Maud.model.source.bone.isSelected()
-                && Maud.model.target.bone.isSelected()) {
-            String sourceBoneName = Maud.model.source.bone.getName();
-            BoneMapping boneMapping = mapping.getForSource(sourceBoneName);
-            if (boneMapping != null) {
-                mapping.removeMapping(boneMapping);
-            }
-
-            String targetBoneName = Maud.model.target.bone.getName();
-            boneMapping = mapping.get(targetBoneName);
-            if (boneMapping != null) {
-                mapping.removeMapping(boneMapping);
-            }
-
-            mapping.map(targetBoneName, sourceBoneName);
-            String event = String.format("map bone %s", targetBoneName);
-            setEdited(event);
-        }
     }
 
     /**
@@ -425,19 +369,7 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Alter the twist of the selected bone mapping.
-     *
-     * @param newTwist (not null, unaffected)
-     */
-    public void setTwist(Quaternion newTwist) {
-        BoneMapping boneMapping = selectedMapping();
-        Quaternion twist = boneMapping.getTwist();
-        twist.set(newTwist);
-        setEditedTwist();
-    }
-
-    /**
-     * Calculate the effective skeleton mapping.
+     * Calculate the effective skeleton mapping. TODO rename
      *
      * @return a new mapping
      */
@@ -497,6 +429,35 @@ public class LoadedMapping implements Cloneable {
         return result;
     }
     // *************************************************************************
+    // protected methods
+
+    /**
+     * Access the selected bone mapping.
+     *
+     * @return the pre-existing instance, or null if none selected
+     */
+    protected BoneMapping selectedMapping() {
+        BoneMapping result = null;
+        if (Maud.model.source.isLoaded()) {
+            String sourceBoneName = Maud.model.source.bone.getName();
+            String targetBoneName = Maud.model.target.bone.getName();
+            if (invertMapFlag) {
+                String swap = sourceBoneName;
+                sourceBoneName = targetBoneName;
+                targetBoneName = swap;
+            }
+            BoneMapping boneMapping = mapping.get(targetBoneName);
+            if (boneMapping != null) {
+                String name = boneMapping.getSourceName();
+                if (name.equals(sourceBoneName)) {
+                    result = boneMapping;
+                }
+            }
+        }
+
+        return result;
+    }
+    // *************************************************************************
     // Object methods
 
     /**
@@ -551,74 +512,11 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Access the selected bone mapping.
-     *
-     * @return the pre-existing instance, or null if none selected
-     */
-    private BoneMapping selectedMapping() {
-        BoneMapping result = null;
-        if (Maud.model.source.isLoaded()) {
-            String sourceBoneName = Maud.model.source.bone.getName();
-            String targetBoneName = Maud.model.target.bone.getName();
-            if (invertMapFlag) {
-                String swap = sourceBoneName;
-                sourceBoneName = targetBoneName;
-                targetBoneName = swap;
-            }
-            BoneMapping boneMapping = mapping.get(targetBoneName);
-            if (boneMapping != null) {
-                String name = boneMapping.getSourceName();
-                if (name.equals(sourceBoneName)) {
-                    result = boneMapping;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Select the bone mapping of the named target bone.
      */
     private void selectFromTarget(String targetBoneName) {
         String sourceBoneName = sourceBoneName(targetBoneName);
         Maud.model.source.bone.select(sourceBoneName);
         Maud.model.target.bone.select(targetBoneName);
-    }
-
-    /**
-     * Increment the count of unsaved edits and update the edit history.
-     *
-     * @param eventDescription description of causative event (not null)
-     */
-    private void setEdited(String eventDescription) {
-        ++editCount;
-        editedTwist = null;
-        History.addEvent(eventDescription);
-    }
-
-    /**
-     * If not a continuation of the previous edit, update the edit count and the
-     * edit history.
-     */
-    private void setEditedTwist() {
-        String newName = Maud.model.target.bone.getName();
-        if (!newName.equals(editedTwist)) {
-            ++editCount;
-            editedTwist = newName;
-            String event = String.format("set twist for %s", newName);
-            History.addEvent(event);
-        }
-    }
-
-    /**
-     * Mark the mapping as pristine.
-     *
-     * @param eventDescription description of causative event (not null)
-     */
-    private void setPristine(String eventDescription) {
-        editCount = 0;
-        editedTwist = null;
-        History.addEvent(eventDescription);
     }
 }

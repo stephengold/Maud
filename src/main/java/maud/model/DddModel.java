@@ -66,13 +66,13 @@ public class DddModel {
      */
     final public EditableCgm target;
     /**
+     * the loaded skeleton mapping
+     */
+    final public EditableMapping mapping;
+    /**
      * the (read-only) source CG model
      */
     final public LoadedCGModel source;
-    /**
-     * the loaded skeleton mapping (set by {@link maud.Maud#startup1()})
-     */
-    final public LoadedMapping mapping;
     /**
      * miscellaneous details
      */
@@ -93,8 +93,8 @@ public class DddModel {
         camera = new CameraStatus();
         cursor = new CursorStatus();
         target = new EditableCgm();
+        mapping = new EditableMapping();
         source = new LoadedCGModel();
-        mapping = new LoadedMapping();
         misc = new MiscStatus();
         skeleton = new SkeletonStatus();
     }
@@ -112,8 +112,8 @@ public class DddModel {
             camera = other.camera.clone();
             cursor = other.cursor.clone();
             target = other.target.clone();
-            source = other.source.clone();
             mapping = other.mapping.clone();
+            source = other.source.clone();
             misc = other.misc.clone();
             skeleton = other.skeleton.clone();
         } catch (CloneNotSupportedException e) {
