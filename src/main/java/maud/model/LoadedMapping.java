@@ -84,10 +84,6 @@ public class LoadedMapping implements Cloneable {
      * asset path to the skeleton mapping, or null if none loaded
      */
     private String mappingAssetPath = null;
-    /**
-     * name of the target animation, or null if not set
-     */
-    private String targetAnimationName = null;
     // *************************************************************************
     // new methods exposed
 
@@ -234,15 +230,6 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Read the selected name for the target animation.
-     *
-     * @return name (or null if not set)
-     */
-    public String getTargetAnimationName() {
-        return targetAnimationName;
-    }
-
-    /**
      * Test whether a bone mapping is selected.
      *
      * @return true if selected, otherwise false
@@ -377,8 +364,7 @@ public class LoadedMapping implements Cloneable {
     public void retargetAndLoad(String newName) {
         Validate.nonEmpty(newName, "new name");
 
-        setTargetAnimationName(newName);
-        retargetAndAdd();
+        retargetAndAdd(newName);
         Maud.model.target.animation.load(newName);
     }
 
@@ -436,15 +422,6 @@ public class LoadedMapping implements Cloneable {
      */
     public void setInvertMap(boolean newSetting) {
         invertMapFlag = newSetting;
-    }
-
-    /**
-     * Alter the name for the target animation.
-     *
-     * @param name (or null if not set)
-     */
-    public void setTargetAnimationName(String name) {
-        targetAnimationName = name;
     }
 
     /**
@@ -553,7 +530,7 @@ public class LoadedMapping implements Cloneable {
     /**
      * Add a re-targeted animation to the target CG model.
      */
-    private void retargetAndAdd() {
+    private void retargetAndAdd(String newAnimationName) {
         AnimControl sourceControl = Maud.model.source.getAnimControl();
         Spatial sourceSpatial = sourceControl.getSpatial();
         AnimControl targetControl = Maud.model.target.getAnimControl();
@@ -562,9 +539,10 @@ public class LoadedMapping implements Cloneable {
         sourceAnimation = Maud.model.source.animation.getAnimation();
         Skeleton sourceSkeleton = Maud.model.source.bones.findSkeleton();
         SkeletonMapping map = skeletonMapping();
+        // TODO specialized reTarget method
         Animation retargeted = BVHUtils.reTarget(sourceSpatial, targetSpatial,
                 sourceAnimation, sourceSkeleton, map, false,
-                targetAnimationName);
+                newAnimationName);
 
         float duration = retargeted.getLength();
         assert duration >= 0f : duration;
