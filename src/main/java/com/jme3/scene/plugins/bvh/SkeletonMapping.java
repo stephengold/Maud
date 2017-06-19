@@ -16,8 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The data required to map bone transforms from one CG model to another: a
- * collection of bone mappings.
+ * Data used to map poses from one skeleton to another: a collection of bone
+ * mappings.
  *
  * @author Nehon
  */
@@ -73,17 +73,6 @@ public class SkeletonMapping implements Savable {
     public int countMappings() {
         int result = mappings.size();
         return result;
-    }
-
-    /**
-     * Remove a bone mapping from this skeleton mapping.
-     *
-     * @param mapping bone mapping (not null)
-     */
-    public void removeMapping(BoneMapping mapping) {
-        String targetBoneName = mapping.getTargetName();
-        BoneMapping oldMapping = mappings.remove(targetBoneName);
-        assert oldMapping == mapping;
     }
 
     /**
@@ -218,6 +207,47 @@ public class SkeletonMapping implements Savable {
         mappings.put(targetBone, mapping);
 
         return mapping;
+    }
+
+    /**
+     * Remove a bone mapping from this skeleton mapping.
+     *
+     * @param mapping bone mapping (not null)
+     */
+    public void removeMapping(BoneMapping mapping) {
+        String targetBoneName = mapping.getTargetName();
+        BoneMapping oldMapping = mappings.remove(targetBoneName);
+        assert oldMapping == mapping;
+    }
+
+    /**
+     * Update this mapping after a source bone is renamed.
+     *
+     * @param oldName old name of bone
+     * @param newName new name for bone
+     */
+    public void renameSourceBone(String oldName, String newName) {
+        for (BoneMapping boneMapping : mappings.values()) {
+            String sourceName = boneMapping.getSourceName();
+            if (sourceName.equals(oldName)) {
+                boneMapping.setSourceName(newName);
+            }
+        }
+    }
+
+    /**
+     * Update this mapping after a target bone is renamed.
+     *
+     * @param oldName old name of bone
+     * @param newName new name for bone
+     */
+    public void renameTargetBone(String oldName, String newName) {
+        BoneMapping boneMapping = get(oldName);
+        if (boneMapping != null) {
+            removeMapping(boneMapping);
+            boneMapping.setTargetName(newName);
+            addMapping(boneMapping);
+        }
     }
     // *************************************************************************
     // Object methods

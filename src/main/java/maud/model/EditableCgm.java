@@ -75,7 +75,7 @@ public class EditableCgm extends LoadedCGModel {
     private int editCount = 0;
     /**
      * tree position of the spatial whose transform is being edited, or "" for
-     * none
+     * none TODO use null for none
      */
     private String editedSpatialTransform = "";
     // *************************************************************************
@@ -217,6 +217,7 @@ public class EditableCgm extends LoadedCGModel {
     public boolean renameBone(String newName) {
         Validate.nonNull(newName, "bone name");
 
+        String oldName = bone.getName();
         boolean success;
         if (!bone.isSelected()) {
             logger.log(Level.WARNING, "Rename failed: no bone selected.",
@@ -238,6 +239,10 @@ public class EditableCgm extends LoadedCGModel {
         } else {
             Bone selectedBone = bone.getBone();
             success = MySkeleton.setName(selectedBone, newName);
+        }
+
+        if (success) {
+            Maud.model.mapping.renameBone(oldName, newName);
             setEdited("rename bone");
         }
 
@@ -448,7 +453,7 @@ public class EditableCgm extends LoadedCGModel {
             loadedModelAssetPath = "";
             loadedModelExtension = "j3o";
             loadedModelFilePath = baseFilePath;
-            String eventDescription = "write " + baseFilePath;
+            String eventDescription = "write model " + baseFilePath;
             setPristine(eventDescription);
             logger.log(Level.INFO, "Wrote model to file {0}",
                     MyString.quote(filePath));
@@ -472,7 +477,7 @@ public class EditableCgm extends LoadedCGModel {
     protected void postLoad(Spatial modelRoot) {
         assert modelRoot != null;
 
-        String eventDescription = "load " + modelName;
+        String eventDescription = "load model " + modelName;
         setPristine(eventDescription);
 
         repairModel(modelRoot);
@@ -493,6 +498,8 @@ public class EditableCgm extends LoadedCGModel {
         EditableCgm clone = (EditableCgm) super.clone();
         return clone;
     }
+    // *************************************************************************
+    // private methods
 
     /**
      * Repair minor issues with a CG model, such as repetitious keyframes.
@@ -510,8 +517,8 @@ public class EditableCgm extends LoadedCGModel {
         int numTracksEdited = 0;
         Collection<String> names = animControl.getAnimationNames();
         for (String animationName : names) {
-            Animation animation = animControl.getAnim(animationName);
-            numTracksEdited += MyAnimation.removeRepeats(animation);
+            Animation anim = animControl.getAnim(animationName);
+            numTracksEdited += MyAnimation.removeRepeats(anim);
         }
         if (numTracksEdited > 0) {
             String message = "removed repeat keyframe(s) from ";
@@ -528,8 +535,6 @@ public class EditableCgm extends LoadedCGModel {
             setEdited("repair model");
         }
     }
-    // *************************************************************************
-    // private methods
 
     /**
      * Increment the count of unsaved edits.

@@ -116,6 +116,17 @@ public class EditableMapping extends LoadedMapping {
     }
 
     /**
+     * Callback after a bone in the target CG model is renamed.
+     */
+    void renameBone(String oldName, String newName) {
+        if (isInvertingMap()) {
+            mapping.renameSourceBone(oldName, newName);
+        } else {
+            mapping.renameTargetBone(oldName, newName);            
+        }
+    }
+    
+    /**
      * Alter the twist of the selected bone mapping.
      *
      * @param newTwist (not null, unaffected)
