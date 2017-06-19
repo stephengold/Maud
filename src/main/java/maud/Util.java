@@ -374,20 +374,6 @@ public class Util {
     }
 
     /**
-     * Alter the user-control flag for an entire skeleton.
-     *
-     * @param skeleton skeleton (not null)
-     * @param newValue true to enable, false to disable
-     */
-    public static void setUserControl(Skeleton skeleton, boolean newValue) {
-        int boneCount = skeleton.getBoneCount();
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Bone bone = skeleton.getBone(boneIndex);
-            bone.setUserControl(newValue);
-        }
-    }
-
-    /**
      * Calculate the user rotation for the specified bone to produce the
      * specified orientation in model space.
      *

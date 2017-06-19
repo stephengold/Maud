@@ -41,6 +41,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.logging.Logger;
+import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.SkeletonDebugControl;
@@ -280,7 +281,7 @@ public class CgmView implements JmeCloneable {
             skeletonDebugControl = null;
         } else {
             skeleton = new Skeleton(newSkeleton);
-            Util.setUserControl(skeleton, true);
+            MySkeleton.setUserControl(skeleton, true);
 
             animControl = new AnimControl(skeleton);
             controlled.addControl(animControl);
