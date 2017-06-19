@@ -232,7 +232,7 @@ public class LoadedMapping implements Cloneable {
      */
     public boolean matchesSource() {
         boolean matches;
-        SkeletonMapping map = skeletonMapping();
+        SkeletonMapping map = effectiveMapping();
         Spatial sourceCgm = Maud.model.source.getRootSpatial();
         if (sourceCgm == null) {
             matches = false;
@@ -260,7 +260,7 @@ public class LoadedMapping implements Cloneable {
      * @return true if they match, otherwise false
      */
     public boolean matchesTarget() {
-        SkeletonMapping map = skeletonMapping();
+        SkeletonMapping map = effectiveMapping();
         /*
          * Are all target bones in the mapping present in the target CG model?
          */
@@ -343,22 +343,6 @@ public class LoadedMapping implements Cloneable {
      */
     public void setInvertMap(boolean newSetting) {
         invertMapFlag = newSetting;
-    }
-
-    /**
-     * Calculate the effective skeleton mapping. TODO rename
-     *
-     * @return a new mapping
-     */
-    SkeletonMapping skeletonMapping() {
-        SkeletonMapping result;
-        if (invertMapFlag) {
-            result = mapping.inverse();
-        } else {
-            result = mapping.clone();
-        }
-
-        return result;
     }
 
     /**
@@ -454,6 +438,22 @@ public class LoadedMapping implements Cloneable {
     // private methods
 
     /**
+     * Calculate the effective skeleton mapping.
+     *
+     * @return a new mapping
+     */
+    private SkeletonMapping effectiveMapping() {
+        SkeletonMapping result;
+        if (invertMapFlag) {
+            result = mapping.inverse();
+        } else {
+            result = mapping.clone();
+        }
+
+        return result;
+    }
+
+    /**
      * Generate a sorted list of target-bone names.
      *
      * @return a new list
@@ -476,7 +476,7 @@ public class LoadedMapping implements Cloneable {
         Animation sourceAnimation;
         sourceAnimation = Maud.model.source.animation.getAnimation();
         Skeleton sourceSkeleton = Maud.model.source.bones.findSkeleton();
-        SkeletonMapping map = skeletonMapping();
+        SkeletonMapping map = effectiveMapping();
         // TODO specialized reTarget method
         Animation retargeted = BVHUtils.reTarget(sourceSpatial, targetSpatial,
                 sourceAnimation, sourceSkeleton, map, false,
