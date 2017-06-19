@@ -106,6 +106,16 @@ public class EditableMapping extends LoadedMapping {
     }
 
     /**
+     * Callback just before a checkpoint is created.
+     */
+    public void onCheckpoint() {
+        /*
+         * Potentially a new twist edit.
+         */
+        editedTwist = null;
+    }
+
+    /**
      * Alter the twist of the selected bone mapping.
      *
      * @param newTwist (not null, unaffected)
