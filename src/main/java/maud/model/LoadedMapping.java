@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
+import maud.Util;
 
 /**
  * The loaded skeleton mapping in the Maud application.
@@ -109,8 +110,9 @@ public class LoadedMapping implements Cloneable {
                 Quaternion modelRotation = smt.getRotation();
 
                 Quaternion userRotation;
-                userRotation = userRotation(targetBone, Maud.model.target.pose,
-                        modelRotation, targetSkeleton, null);
+                userRotation = Util.userRotation(targetBone,
+                        Maud.model.target.pose, modelRotation, targetSkeleton,
+                        null);
                 Quaternion twist = boneMapping.getTwist();
                 userRotation.mult(twist, storeResult.getRotation());
             }
@@ -464,45 +466,6 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Calculate the local rotation for the specified bone to produce the
-     * specified orientation in CG-model space.
-     *
-     * @param bone which bone (not null, unaffected)
-     * @param pose transforms of other bones in the skeleton (not null,
-     * unaffected)
-     * @param modelOrientation desired orientation (not null, unaffected)
-     * @param skeleton skeleton containing the bone (not null, unaffected)
-     * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
-     */
-    private Quaternion localRotation(Bone bone, Pose pose,
-            Quaternion modelOrientation, Skeleton skeleton,
-            Quaternion storeResult) {
-        assert modelOrientation != null;
-        assert skeleton != null;
-        assert bone != null;
-        assert pose != null;
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
-        Bone parent = bone.getParent();
-        if (parent == null) {
-            storeResult.set(modelOrientation);
-        } else {
-            /*
-             * Factor in the orientation of the parent bone.
-             */
-            int parentIndex = skeleton.getBoneIndex(parent);
-            Transform parentTransform = pose.modelTransform(parentIndex, null);
-            Quaternion parentImr = parentTransform.getRotation().inverse();
-            parentImr.mult(modelOrientation, storeResult);
-        }
-
-        return storeResult;
-    }
-
-    /**
      * Add a re-targeted animation to the target CG model.
      */
     private void retargetAndAdd(String newAnimationName) {
@@ -532,36 +495,5 @@ public class LoadedMapping implements Cloneable {
         String sourceBoneName = sourceBoneName(targetBoneName);
         Maud.model.source.bone.select(sourceBoneName);
         Maud.model.target.bone.select(targetBoneName);
-    }
-
-    /**
-     * Calculate the user rotation for the specified bone to produce the
-     * specified orientation in model space.
-     *
-     * @param bone which bone (not null, unaffected)
-     * @param pose transforms of other bones in the skeleton (not null,
-     * unaffected)
-     * @param modelOrientation desired orientation (not null, unaffected)
-     * @param skeleton skeleton containing the bone (not null, unaffected)
-     * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
-     */
-    private Quaternion userRotation(Bone bone, Pose pose,
-            Quaternion modelOrientation, Skeleton skeleton,
-            Quaternion storeResult) {
-        assert modelOrientation != null;
-        assert skeleton != null;
-        assert bone != null;
-        assert pose != null;
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
-        Quaternion local;
-        local = localRotation(bone, pose, modelOrientation, skeleton, null);
-        Quaternion inverseBind = bone.getBindRotation().inverse();
-        inverseBind.mult(local, storeResult);
-
-        return storeResult;
     }
 }
