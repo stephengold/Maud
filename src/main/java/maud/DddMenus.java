@@ -408,6 +408,9 @@ class DddMenus {
         builder.add("Load source");
         builder.addTool("Mapping tool");
         builder.addDialog("Load mapping");
+        if (Maud.model.mapping.countMappings() > 0) {
+            builder.add("Unload mapping");
+        }
         builder.addTool("History");
     }
 
@@ -966,6 +969,11 @@ class DddMenus {
 
                 case "Tool":
                     Maud.gui.tools.getTool("cgm").select();
+                    handled = true;
+                    break;
+
+                case "Unload mapping":
+                    Maud.model.mapping.unload();
                     handled = true;
             }
         }

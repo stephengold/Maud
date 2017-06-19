@@ -59,6 +59,13 @@ public class SkeletonMapping implements Savable {
     }
 
     /**
+     * Empty this skeleton mapping.
+     */
+    public void clear() {
+        mappings.clear();
+    }
+
+    /**
      * Count the number of bone mappings in this skeleton mapping.
      *
      * @return count (&ge;0)
@@ -233,9 +240,9 @@ public class SkeletonMapping implements Savable {
 
         return result;
     }
-
     // *************************************************************************
     // Savable methods
+
     /**
      * De-serialize this mapping.
      *
@@ -247,7 +254,7 @@ public class SkeletonMapping implements Savable {
     public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
         mappings = (Map<String, BoneMapping>) ic.readStringSavableMap(
-                "mappings", new HashMap<String, BoneMapping>(50));
+                "mappings", new HashMap<>(50));
     }
 
     /**

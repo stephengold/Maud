@@ -100,7 +100,7 @@ public class EditableMapping extends LoadedMapping {
             }
 
             mapping.map(targetBoneName, sourceBoneName);
-            String event = String.format("map bone %s", targetBoneName);
+            String event = "map bone " + targetBoneName;
             setEdited(event);
         }
     }
@@ -115,6 +115,14 @@ public class EditableMapping extends LoadedMapping {
         Quaternion twist = boneMapping.getTwist();
         twist.set(newTwist);
         setEditedTwist();
+    }
+
+    /**
+     * Unload the skeleton mapping.
+     */
+    public void unload() {
+        mapping.clear();
+        setEdited("unload mapping");
     }
     // *************************************************************************
     // LoadedMapping methods
