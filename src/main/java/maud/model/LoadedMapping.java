@@ -231,19 +231,21 @@ public class LoadedMapping implements Cloneable {
      * @return true if they match, otherwise false
      */
     public boolean matchesSource() {
-        boolean matches;
-        SkeletonMapping map = effectiveMapping();
+        boolean matches = false;
         Spatial sourceCgm = Maud.model.source.getRootSpatial();
-        if (sourceCgm == null) {
-            matches = false;
-        } else {
+        if (sourceCgm != null) {
             /*
-             * Are all source bones in the mapping present
+             * Are all source bones in the effective mapping present
              * in the source CG model?
              */
             matches = true;
-            List<String> sourceBones = map.listSourceBones();
-            for (String name : sourceBones) {
+            List<String> names;
+            if (isInvertingMap()) {
+                names = mapping.listTargetBones();
+            } else {
+                names = mapping.listSourceBones();
+            }
+            for (String name : names) {
                 if (!Maud.model.source.bones.hasBone(name)) {
                     matches = false;
                     break;
@@ -260,13 +262,18 @@ public class LoadedMapping implements Cloneable {
      * @return true if they match, otherwise false
      */
     public boolean matchesTarget() {
-        SkeletonMapping map = effectiveMapping();
         /*
-         * Are all target bones in the mapping present in the target CG model?
+         * Are all target bones in the effective mapping
+         * present in the target CG model?
          */
         boolean matches = true;
-        List<String> targetBones = map.listTargetBones();
-        for (String name : targetBones) {
+        List<String> names;
+        if (isInvertingMap()) {
+            names = mapping.listSourceBones();
+        } else {
+            names = mapping.listTargetBones();
+        }
+        for (String name : names) {
             if (!Maud.model.target.bones.hasBone(name)) {
                 matches = false;
                 break;
