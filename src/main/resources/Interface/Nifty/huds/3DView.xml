@@ -1180,7 +1180,7 @@ the menu bar, status bar, and tool windows.
                                      width="*"/>
                         </panel>
                     </panel>
-                    <control name="label" text="Bones with tracks:"/>
+                    <control name="label" text="Mapped/tracked bones:"/>
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="btRSlider"
                                  buttonStepSize="1"
@@ -1207,7 +1207,7 @@ the menu bar, status bar, and tool windows.
                                      width="*"/>
                         </panel>
                     </panel>
-                    <control name="label" text="Trackless bones:"/>
+                    <control name="label" text="Other bones:"/>
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="bntRSlider"
                                  buttonStepSize="1"
