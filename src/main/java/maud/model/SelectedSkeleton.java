@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 
 /**
  * The MVC model of a selected skeleton in the Maud application.
@@ -170,6 +171,36 @@ public class SelectedSkeleton implements Cloneable {
      */
     public Skeleton findSkeleton() {
         Skeleton result = findSkeleton(null);
+        return result;
+    }
+
+    /**
+     * Access the indexed bone in the selected skeleton.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @return the pre-existing instance
+     */
+    public Bone getBone(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        Skeleton skeleton = findSkeleton();
+        Bone result = skeleton.getBone(boneIndex);
+
+        return result;
+    }
+
+    /**
+     * Read the name of the indexed bone in the selected skeleton.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @return the bone's name
+     */
+    public String getBoneName(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        Bone bone = getBone(boneIndex);
+        String result = bone.getName();
+
         return result;
     }
 

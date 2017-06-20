@@ -101,8 +101,7 @@ public class SelectedBone implements Cloneable {
         if (selectedIndex == -1) {
             bone = null;
         } else {
-            Skeleton skeleton = loadedCgm.bones.findSkeleton();
-            bone = skeleton.getBone(selectedIndex);
+            bone = loadedCgm.bones.getBone(selectedIndex);
         }
 
         return bone;

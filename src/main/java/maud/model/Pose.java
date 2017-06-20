@@ -135,20 +135,20 @@ public class Pose implements Cloneable {
     /**
      * Calculate the local transform of the indexed bone in this pose.
      *
-     * @param boneIndex which bone to use
+     * @param boneIndex which bone to use (&ge;0)
      * @param storeResult (modified if not null)
      * @return transform in local coordinates (either storeResult or a new
      * instance)
      */
     public Transform localTransform(int boneIndex, Transform storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
         if (storeResult == null) {
             storeResult = new Transform();
         }
         /*
          * Start with the bone's bind transform.
          */
-        Skeleton skeleton = loadedCgm.bones.findSkeleton();
-        Bone bone = skeleton.getBone(boneIndex);
+        Bone bone = loadedCgm.bones.getBone(boneIndex);
         MySkeleton.copyBindTransform(bone, storeResult);
         /*
          * Apply the user transform in a simple (yet peculiar) way
@@ -165,12 +165,13 @@ public class Pose implements Cloneable {
     /**
      * Calculate the model transform of the indexed bone in this pose.
      *
-     * @param boneIndex which bone to use
+     * @param boneIndex which bone to use (&ge;0)
      * @param storeResult (modified if not null)
      * @return transform in model coordinates (either storeResult or a new
      * instance)
      */
     public Transform modelTransform(int boneIndex, Transform storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
         if (storeResult == null) {
             storeResult = new Transform();
         }
@@ -320,6 +321,7 @@ public class Pose implements Cloneable {
         int numTransforms = countTransforms();
         assert numTransforms == boneCount : numTransforms;
 
+        // TODO for each root bone ...
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             Transform transform = transforms.get(boneIndex);
             loadedCgm.animation.boneTransform(boneIndex, transform);
