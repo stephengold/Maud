@@ -700,7 +700,7 @@ class DddMenus {
                 handled = true;
                 break;
             case "New from retarget":
-                Maud.gui.tools.getTool("retarget").select();
+                Maud.gui.tools.select("retarget");
                 handled = true;
                 break;
             case "Reduce":
@@ -712,11 +712,11 @@ class DddMenus {
                 handled = true;
                 break;
             case "Source tool":
-                Maud.gui.tools.getTool("sourceAnimation").select();
+                Maud.gui.tools.select("sourceAnimation");
                 handled = true;
                 break;
             case "Tool":
-                Maud.gui.tools.getTool("animation").select();
+                Maud.gui.tools.select("animation");
                 handled = true;
                 break;
             case "Tweening":
@@ -809,11 +809,11 @@ class DddMenus {
                     handled = true;
                     break;
                 case "Rotate":
-                    Maud.gui.tools.getTool("boneRotation").select();
+                    Maud.gui.tools.select("boneRotation");
                     handled = true;
                     break;
                 case "Scale":
-                    Maud.gui.tools.getTool("boneScale").select();
+                    Maud.gui.tools.select("boneScale");
                     handled = true;
                     break;
                 case "Select":
@@ -825,11 +825,11 @@ class DddMenus {
                     handled = true;
                     break;
                 case "Tool":
-                    Maud.gui.tools.getTool("bone").select();
+                    Maud.gui.tools.select("bone");
                     handled = true;
                     break;
                 case "Translate":
-                    Maud.gui.tools.getTool("boneTranslation").select();
+                    Maud.gui.tools.select("boneTranslation");
                     handled = true;
             }
         }
@@ -933,7 +933,7 @@ class DddMenus {
         } else {
             switch (remainder) {
                 case "History":
-                    Maud.gui.tools.getTool("history").select();
+                    Maud.gui.tools.select("history");
                     handled = true;
                     break;
 
@@ -953,7 +953,7 @@ class DddMenus {
                     break;
 
                 case "Mapping tool":
-                    Maud.gui.tools.getTool("mapping").select();
+                    Maud.gui.tools.select("mapping");
                     handled = true;
                     break;
 
@@ -968,7 +968,7 @@ class DddMenus {
                     break;
 
                 case "Tool":
-                    Maud.gui.tools.getTool("cgm").select();
+                    Maud.gui.tools.select("cgm");
                     handled = true;
                     break;
 
@@ -1111,7 +1111,7 @@ class DddMenus {
                 handled = true;
                 break;
             case "Tool":
-                Maud.gui.tools.getTool("keyframe").select();
+                Maud.gui.tools.select("keyframe");
                 handled = true;
         }
 
@@ -1165,7 +1165,7 @@ class DddMenus {
                     handled = true;
                     break;
                 case "Control tool":
-                    Maud.gui.tools.getTool("control").select();
+                    Maud.gui.tools.select("control");
                     handled = true;
                     break;
                 case "Delete control":
@@ -1173,11 +1173,11 @@ class DddMenus {
                     handled = true;
                     break;
                 case "Rotate":
-                    Maud.gui.tools.getTool("spatialRotation").select();
+                    Maud.gui.tools.select("spatialRotation");
                     handled = true;
                     break;
                 case "Scale":
-                    Maud.gui.tools.getTool("spatialScale").select();
+                    Maud.gui.tools.select("spatialScale");
                     handled = true;
                     break;
                 case "Select":
@@ -1189,15 +1189,15 @@ class DddMenus {
                     handled = true;
                     break;
                 case "Tool":
-                    Maud.gui.tools.getTool("spatial").select();
+                    Maud.gui.tools.select("spatial");
                     handled = true;
                     break;
                 case "Translate":
-                    Maud.gui.tools.getTool("spatialTranslation").select();
+                    Maud.gui.tools.select("spatialTranslation");
                     handled = true;
                     break;
                 case "User data tool":
-                    Maud.gui.tools.getTool("userData").select();
+                    Maud.gui.tools.select("userData");
                     handled = true;
             }
         }
@@ -1281,41 +1281,41 @@ class DddMenus {
         boolean handled = false;
         switch (remainder) {
             case "Axes":
-                Maud.gui.tools.getTool("axes").select();
+                Maud.gui.tools.select("axes");
                 handled = true;
                 break;
             case "Bounds":
-                Maud.gui.tools.getTool("bounds").select();
+                Maud.gui.tools.select("bounds");
                 handled = true;
                 break;
             case "Camera":
-                Maud.gui.tools.getTool("camera").select();
+                Maud.gui.tools.select("camera");
                 handled = true;
                 break;
             case "Cursor":
-                Maud.gui.tools.getTool("cursor").select();
+                Maud.gui.tools.select("cursor");
                 handled = true;
                 break;
             case "Physics":
                 break;
             case "Platform":
-                Maud.gui.tools.getTool("platform").select();
+                Maud.gui.tools.select("platform");
                 handled = true;
                 break;
             case "Render":
-                Maud.gui.tools.getTool("render").select();
+                Maud.gui.tools.select("render");
                 handled = true;
                 break;
             case "Skeleton":
-                Maud.gui.tools.getTool("skeleton").select();
+                Maud.gui.tools.select("skeleton");
                 handled = true;
                 break;
             case "Skeleton color":
-                Maud.gui.tools.getTool("skeletonColor").select();
+                Maud.gui.tools.select("skeletonColor");
                 handled = true;
                 break;
             case "Sky":
-                Maud.gui.tools.getTool("sky").select();
+                Maud.gui.tools.select("sky");
                 handled = true;
         }
 

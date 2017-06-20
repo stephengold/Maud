@@ -428,6 +428,18 @@ public class DddTools {
     }
 
     /**
+     * Select the named tool.
+     *
+     * @param toolName which tool to select (not null, not empty)
+     */
+    public void select(String toolName) {
+        Validate.nonEmpty(toolName, "tool name");
+
+        WindowController controller = getTool(toolName);
+        controller.select();
+    }
+
+    /**
      * Updates performed even when all tools are disabled. (Invoked once per
      * render pass.)
      */
