@@ -573,7 +573,7 @@ the menu bar, status bar, and tool windows.
                                  width="*"/>
                         <panel width="20px"/>
                         <control name="button" label="Load"
-                                 id="id11ToAvoidNiftyWarning"
+                                 id="id3ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(open menu CGModel -> Load)"/>
                         </control>
@@ -614,58 +614,12 @@ the menu bar, status bar, and tool windows.
                                  width="70px"/>
                         <panel width="20px"/>
                         <control name="button" label="History"
-                                 id="id12ToAvoidNiftyWarning"
+                                 id="id4ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(select tool history)"/>
                         </control>
                     </panel>
                     <panel/>
-                </panel>
-            </control>
-
-            <control name="window" id="controlTool" title="Control Tool"
-                     backgroundColor="#ffcf"
-                     hideOnClose="true"
-                     height="110px" width="350px" x="65" y="35">
-                <panel childLayout="vertical">
-                    <panel childLayout="horizontal">
-                        <control name="button" id="controlPreviousButton"
-                                 width="20px">
-                            <interact onRelease="perform(previous control)"/>
-                        </control>
-                        <control name="label" id="controlIndex"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="65px"/>
-                        <control name="button" id="controlNextButton"
-                                 width="20px">
-                            <interact onRelease="perform(next control)"/>
-                        </control>
-                        <panel width="*"/>
-                        <control name="button" label="Add"
-                                 id="id3ToAvoidNiftyWarning"
-                                 width="60px">
-                            <interact onRelease="perform(open menu Spatial -> Add control)"/>
-                        </control>
-                        <panel width="10px"/>
-                        <control name="button" label="Select"
-                                 id="id4ToAvoidNiftyWarning"
-                                 width="60px">
-                            <interact onRelease="perform(open menu Spatial -> Select control)"/>
-                        </control>
-                    </panel>
-                    <panel height="10px"/>
-                    <panel childLayout="horizontal">
-                        <control name="label" text="Type:  "/>
-                        <control name="label" id="controlType"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <panel width="10px"/>
-                        <control name="button" id="controlDeleteButton"
-                                 width="60px">
-                            <interact onRelease="perform(delete control)"/>
-                        </control>
-                    </panel>
                 </panel>
             </control>
 
@@ -1114,6 +1068,52 @@ the menu bar, status bar, and tool windows.
                                  color="#800f"
                                  textHAlign="center"
                                  width="*"/>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="sgcTool" title="Control Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="110px" width="350px" x="65" y="35">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="button" id="controlPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous control)"/>
+                        </control>
+                        <control name="label" id="controlIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="65px"/>
+                        <control name="button" id="controlNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next control)"/>
+                        </control>
+                        <panel width="*"/>
+                        <control name="button" label="Add"
+                                 id="id20ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(open menu Spatial -> Add control)"/>
+                        </control>
+                        <panel width="10px"/>
+                        <control name="button" label="Select"
+                                 id="id21ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(open menu Spatial -> Select control)"/>
+                        </control>
+                    </panel>
+                    <panel height="10px"/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Type:  "/>
+                        <control name="label" id="controlType"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <panel width="10px"/>
+                        <control name="button" id="controlDeleteButton"
+                                 width="60px">
+                            <interact onRelease="perform(delete control)"/>
+                        </control>
                     </panel>
                 </panel>
             </control>

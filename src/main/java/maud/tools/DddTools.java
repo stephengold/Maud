@@ -260,9 +260,6 @@ public class DddTools {
             case "cgm":
                 controller = cgm;
                 break;
-            case "control":
-                controller = sgc;
-                break;
             case "cullHint":
                 controller = cullHint;
                 break;
@@ -286,6 +283,9 @@ public class DddTools {
                 break;
             case "retarget":
                 controller = retarget;
+                break;
+            case "sgc":
+                controller = sgc;
                 break;
             case "shadowMode":
                 controller = shadowMode;

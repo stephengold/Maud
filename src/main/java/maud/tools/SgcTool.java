@@ -54,7 +54,7 @@ class SgcTool extends WindowController {
      * @param screenController
      */
     SgcTool(BasicScreenController screenController) {
-        super(screenController, "controlTool", false);
+        super(screenController, "sgcTool", false);
     }
     // *************************************************************************
     // AppState methods

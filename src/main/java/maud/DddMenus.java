@@ -1165,7 +1165,7 @@ class DddMenus {
                     handled = true;
                     break;
                 case "Control tool":
-                    Maud.gui.tools.select("control");
+                    Maud.gui.tools.select("sgc");
                     handled = true;
                     break;
                 case "Delete control":
