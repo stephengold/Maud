@@ -96,7 +96,7 @@ public class LoadedMapping implements Cloneable {
         Skeleton targetSkeleton = Maud.model.target.bones.findSkeleton();
         Bone targetBone = targetSkeleton.getBone(targetIndex);
         String targetName = targetBone.getName();
-        BoneMapping boneMapping = mapping.get(targetName); // TODO inversion
+        BoneMapping boneMapping = effectiveMapping(targetName);
         if (boneMapping != null) {
             Skeleton sourceSkeleton = Maud.model.source.bones.findSkeleton();
             String sourceName = boneMapping.getSourceName();
@@ -109,8 +109,7 @@ public class LoadedMapping implements Cloneable {
                 Maud.model.source.pose.modelTransform(sourceIndex, smt);
                 Quaternion modelRotation = smt.getRotation();
 
-                Quaternion userRotation;
-                userRotation = Util.userRotation(targetBone,
+                Quaternion userRotation = Util.userRotation(targetBone,
                         Maud.model.target.pose, modelRotation, targetSkeleton,
                         null);
                 Quaternion twist = boneMapping.getTwist();
@@ -461,6 +460,30 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
+     * Calculate an effective bone mapping for the named bone in the target CG
+     * model.
+     *
+     * @param targetBoneName name of bone to find
+     * @return a bone mapping (may be pre-existing) or null if none found
+     */
+    private BoneMapping effectiveMapping(String targetBoneName) {
+        BoneMapping result = null;
+        if (invertMapFlag) {
+            BoneMapping inverse = mapping.getForSource(targetBoneName);
+            if (inverse != null) {
+                String sourceBoneName = inverse.getTargetName();
+                Quaternion inverseTwist = inverse.getTwist();
+                Quaternion twist = inverseTwist.inverse();
+                result = new BoneMapping(targetBoneName, sourceBoneName, twist);
+            }
+        } else {
+            result = mapping.get(targetBoneName);
+        }
+
+        return result;
+    }
+
+    /**
      * Generate a sorted list of target-bone names.
      *
      * @return a new list
@@ -497,6 +520,8 @@ public class LoadedMapping implements Cloneable {
 
     /**
      * Select the bone mapping of the named target bone.
+     *
+     * @param targetBoneName name of bone to find
      */
     private void selectFromTarget(String targetBoneName) {
         String sourceBoneName = sourceBoneName(targetBoneName);
