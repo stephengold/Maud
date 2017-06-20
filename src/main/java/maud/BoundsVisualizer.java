@@ -47,7 +47,8 @@ import jme3utilities.SubtreeControl;
 import jme3utilities.Validate;
 
 /**
- * Subtree control to visualize the bounds of a spatial.
+ * Subtree control to visualize the bounds of a spatial. TODO move to debug
+ * library
  * <p>
  * The controlled spatial must be a node, but the subject (visualized spatial)
  * may be a geometry.
@@ -206,25 +207,37 @@ public class BoundsVisualizer extends SubtreeControl {
         subject = newSubject;
 
         if (subtree != null) {
-            subtree.detachAllChildren();
-
             String namePrefix = "";
-            if (spatial != null) {
-                namePrefix = spatial.getName() + " ";
+            if (subject != null) {
+                namePrefix = subject.getName() + " ";
             }
+            String nodeName = namePrefix + "bounds";
+            subtree.setName(nodeName);
+
             String boxName = namePrefix + "box";
-            WireBox boxMesh = new WireBox();
-            Geometry box = new Geometry(boxName, boxMesh);
-            box.setMaterial(lineMaterial);
-            subtree.attachChild(box);
+            if (subtree.getChildren().isEmpty()) {
+                /*
+                 * Create mesh.
+                 */
+                WireBox boxMesh = new WireBox();
+                Geometry box = new Geometry(boxName, boxMesh);
+                box.setMaterial(lineMaterial);
+                subtree.attachChild(box);
+            } else {
+                /*
+                 * Rename mesh.
+                 */
+                Geometry box = (Geometry) subtree.getChild(0);
+                box.setName(boxName);
+            }
         }
     }
     // *************************************************************************
     // AbstractControl methods
 
     /**
-     * Callback invoked when the spatial's geometric state is about to be
-     * updated, once per frame while attached and enabled.
+     * Callback invoked when the controlled spatial's geometric state is about
+     * to be updated, once per frame while attached and enabled.
      *
      * @param updateInterval time interval between updates (in seconds, &ge;0)
      */
@@ -271,7 +284,11 @@ public class BoundsVisualizer extends SubtreeControl {
              * Before enabling this control for the first time,
              * create the subtree.
              */
-            String nodeName = spatial.getName() + " bounds";
+            String namePrefix = "";
+            if (subject != null) {
+                namePrefix = subject.getName() + " ";
+            }
+            String nodeName = namePrefix + "bounds";
             subtree = new Node(nodeName);
             subtree.setQueueBucket(RenderQueue.Bucket.Transparent);
             subtree.setShadowMode(RenderQueue.ShadowMode.Off);
