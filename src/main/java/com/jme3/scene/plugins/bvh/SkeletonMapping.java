@@ -79,7 +79,7 @@ public class SkeletonMapping implements Savable {
      * Find the bone mapping for the named target bone.
      *
      * @param targetBoneName which target bone
-     * @return the pre-existing instance
+     * @return the pre-existing instance, or null if none found
      */
     public BoneMapping get(String targetBoneName) {
         BoneMapping result = mappings.get(targetBoneName);
@@ -90,7 +90,7 @@ public class SkeletonMapping implements Savable {
      * Find the bone mapping for the named source bone.
      *
      * @param sourceBoneName which source bone
-     * @return the pre-existing instance
+     * @return the pre-existing instance, or null if none found
      */
     public BoneMapping getForSource(String sourceBoneName) {
         BoneMapping result = null;
