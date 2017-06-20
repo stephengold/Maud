@@ -134,6 +134,9 @@ public class MappingTool extends WindowController {
         updateSelected();
         updateSource();
         updateTarget();
+
+        boolean invertFlag = Maud.model.mapping.isInvertingMap();
+        Maud.gui.setChecked("invertRma2", invertFlag);
         /*
          * the "map pose" button
          */

@@ -883,7 +883,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="mappingTool" title="Mapping Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="260px" width="320px" x="35" y="65">
+                     height="260px" width="360px" x="35" y="65">
                 <panel childLayout="vertical">
                     <panel/>
                     <panel childLayout="horizontal" height="28px">
@@ -899,6 +899,10 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next mapping)"/>
                         </control>
+                        <panel width="20px"/>
+                        <control name="checkbox" id="invertRma2CheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  invert the map"/>
                         <panel width="20px"/>
                         <control name="button"
                                  id="loadMappedPose"
