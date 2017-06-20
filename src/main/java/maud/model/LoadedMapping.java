@@ -83,18 +83,19 @@ public class LoadedMapping implements Cloneable {
      * Calculate the mapped transform of the indexed bone in the target CG
      * model.
      *
-     * @param targetIndex which bone to calculate
+     * @param boneIndex which target bone to calculate (&ge;0)
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
-    public Transform boneTransform(int targetIndex, Transform storeResult) {
+    public Transform boneTransform(int boneIndex, Transform storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
         if (storeResult == null) {
             storeResult = new Transform();
         }
         storeResult.loadIdentity();
 
         Skeleton targetSkeleton = Maud.model.target.bones.findSkeleton();
-        Bone targetBone = targetSkeleton.getBone(targetIndex);
+        Bone targetBone = targetSkeleton.getBone(boneIndex);
         String targetName = targetBone.getName();
         BoneMapping boneMapping = effectiveMapping(targetName);
         if (boneMapping != null) {
@@ -174,6 +175,26 @@ public class LoadedMapping implements Cloneable {
      */
     public String getMappingAssetPath() {
         return mappingAssetPath;
+    }
+
+    /**
+     * Test whether the named bone in the target CG model is mapped.
+     *
+     * @param targetBoneName name of bone to find
+     * @return true if mapped, otherwise false
+     */
+    public boolean isBoneMapped(String targetBoneName) {
+        BoneMapping boneMapping;
+        if (isInvertingMap()) {
+            boneMapping = mapping.getForSource(targetBoneName);
+        } else {
+            boneMapping = mapping.get(targetBoneName);
+        }
+        if (boneMapping == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

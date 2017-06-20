@@ -113,7 +113,14 @@ public class BoneTool extends WindowController {
 
         String hasTrackText, rButton, sButton, tButton;
         if (Maud.model.target.bone.isSelected()) {
-            if (Maud.model.target.bone.hasTrack()) {
+            if (Maud.model.target.animation.isMappedPose()) {
+                String name = Maud.model.target.bone.getName();
+                if (Maud.model.mapping.isBoneMapped(name)) {
+                    hasTrackText = "mapped";
+                } else {
+                    hasTrackText = "unmapped";
+                }
+            } else if (Maud.model.target.bone.hasTrack()) {
                 hasTrackText = "has track";
             } else {
                 hasTrackText = "no track";
@@ -146,9 +153,11 @@ public class BoneTool extends WindowController {
      *
      * @param loadedCgm which CG model (not null)
      * @param boneIndex (&ge;0)
-     * @return squared distance in screen units (&ge;0)
+     * @return squared distance in pixels (&ge;0)
      */
     private float distanceSquared(LoadedCGModel loadedCgm, int boneIndex) {
+        assert boneIndex >= 0 : boneIndex;
+
         Vector3f boneWorld = loadedCgm.view.boneLocation(boneIndex);
         Vector3f boneScreen = cam.getScreenCoordinates(boneWorld);
         Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
