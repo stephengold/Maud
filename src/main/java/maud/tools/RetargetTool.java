@@ -77,7 +77,7 @@ public class RetargetTool extends WindowController {
 
         String sButton, sourceAssetDesc;
         if (!Maud.model.source.isLoaded()) {
-            sourceAssetDesc = "(no model)";
+            sourceAssetDesc = "(none loaded)";
             sButton = "";
 
         } else {
