@@ -95,10 +95,6 @@ class DddInputMode extends InputMode {
      */
     final static String loadSourceModelNamedPrefix = "load sourceModel named ";
     /**
-     * action prefix: remainder is a menu path TODO "select menu "
-     */
-    final static String openMenuPrefix = "open menu ";
-    /**
      * action prefix: remainder is a name for the new animation
      */
     final static String newPosePrefix = "new pose ";
@@ -140,6 +136,10 @@ class DddInputMode extends InputMode {
      * action prefix: remainder is the name of a geometry or a prefix thereof
      */
     final static String selectGeometryPrefix = "select geometry ";
+    /**
+     * action prefix: remainder is the menu path of a menu item
+     */
+    final static String selectMenuItemPrefix = "select menuItem ";
     /**
      * action prefix: remainder is the name of a source bone or a prefix thereof
      */
@@ -211,9 +211,6 @@ class DddInputMode extends InputMode {
                     break;
                 case "next":
                     handled = nextAction(actionString);
-                    break;
-                case "open":
-                    handled = openAction(actionString);
                     break;
                 case "previous":
                     handled = previousAction(actionString);
@@ -482,22 +479,6 @@ class DddInputMode extends InputMode {
             case "next userData":
                 Maud.model.misc.selectNextUserKey();
                 handled = true;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with "open".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean openAction(String actionString) {
-        boolean handled = false;
-        if (actionString.startsWith(openMenuPrefix)) {
-            String menuPath = MyString.remainder(actionString, openMenuPrefix);
-            handled = Maud.gui.menus.openMenu(menuPath);
         }
 
         return handled;
@@ -790,51 +771,52 @@ class DddInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean selectAction2(String actionString) {
-        boolean handled = false;
+        boolean handled = true;
         String arg;
         if (actionString.startsWith(selectBonePrefix)) {
             arg = MyString.remainder(actionString, selectBonePrefix);
             Maud.gui.menus.selectBone(arg);
-            handled = true;
 
         } else if (actionString.startsWith(selectBoneChildPrefix)) {
             arg = MyString.remainder(actionString, selectBoneChildPrefix);
             Maud.gui.menus.selectBoneChild(arg);
-            handled = true;
 
         } else if (actionString.startsWith(selectControlPrefix)) {
             arg = MyString.remainder(actionString, selectControlPrefix);
             Maud.model.target.sgc.select(arg);
-            handled = true;
 
         } else if (actionString.startsWith(selectGeometryPrefix)) {
             arg = MyString.remainder(actionString, selectGeometryPrefix);
             Maud.gui.menus.selectSpatial(arg, false);
-            handled = true;
 
         } else if (actionString.startsWith(selectSourceBonePrefix)) {
             arg = MyString.remainder(actionString, selectSourceBonePrefix);
             Maud.gui.menus.selectSourceBone(arg);
-            handled = true;
 
         } else if (actionString.startsWith(selectSpatialChildPrefix)) {
             arg = MyString.remainder(actionString, selectSpatialChildPrefix);
             Maud.gui.selectSpatialChild(arg);
-            handled = true;
 
         } else if (actionString.startsWith(selectSpatialPrefix)) {
             arg = MyString.remainder(actionString, selectSpatialPrefix);
             Maud.gui.menus.selectSpatial(arg, true);
-            handled = true;
 
         } else if (actionString.startsWith(selectUserKeyPrefix)) {
             arg = MyString.remainder(actionString, selectUserKeyPrefix);
             Maud.model.misc.selectUserKey(arg);
-            handled = true;
 
-        } else if (!handled && actionString.startsWith(selectToolPrefix)) {
-            String toolName = MyString.remainder(actionString,
-                    selectToolPrefix);
+        } else {
+            handled = false;
+        }
+
+        if (!handled && actionString.startsWith(selectMenuItemPrefix)) {
+            String menuPath;
+            menuPath = MyString.remainder(actionString, selectMenuItemPrefix);
+            handled = Maud.gui.menus.selectMenuItem(menuPath);
+        }
+        if (!handled && actionString.startsWith(selectToolPrefix)) {
+            String toolName;
+            toolName = MyString.remainder(actionString, selectToolPrefix);
             handled = Maud.gui.selectTool(toolName);
         }
 

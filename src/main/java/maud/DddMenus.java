@@ -108,27 +108,6 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action for the "3D View" screen.
-     *
-     * @param menuPath menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    boolean openMenu(String menuPath) {
-        boolean handled;
-        int separatorBegin = menuPath.indexOf(menuSeparator);
-        if (separatorBegin == -1) {
-            handled = menuBar(menuPath);
-        } else {
-            int separatorEnd = separatorBegin + menuSeparator.length();
-            String menuName = menuPath.substring(0, separatorBegin);
-            String remainder = menuPath.substring(separatorEnd);
-            handled = menu(menuName, remainder);
-        }
-
-        return handled;
-    }
-
-    /**
      * Handle a "select bone" action with an argument.
      *
      * @param argument action argument (not null)
@@ -201,6 +180,27 @@ class DddMenus {
         } else if (numBoneTracks > 1) {
             showBoneSubmenu(boneNames);
         }
+    }
+
+    /**
+     * Handle a "select menuItem" action for the "3D View" screen.
+     *
+     * @param menuPath path to menu item (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    boolean selectMenuItem(String menuPath) {
+        boolean handled;
+        int separatorBegin = menuPath.indexOf(menuSeparator);
+        if (separatorBegin == -1) {
+            handled = menuBar(menuPath);
+        } else {
+            int separatorEnd = separatorBegin + menuSeparator.length();
+            String menuName = menuPath.substring(0, separatorBegin);
+            String remainder = menuPath.substring(separatorEnd);
+            handled = menu(menuName, remainder);
+        }
+
+        return handled;
     }
 
     /**
@@ -307,7 +307,7 @@ class DddMenus {
         builder.add("Anim");
         builder.add("RigidBody");
         builder.add("Skeleton");
-        builder.show("open menu Spatial -> Add control -> ");
+        builder.show("select menuItem Spatial -> Add control -> ");
     }
 
     /**
@@ -594,7 +594,7 @@ class DddMenus {
         builder.add("Testdata");
         builder.addDialog("Asset");
         builder.add("File");
-        builder.show("open menu CGModel -> Load -> ");
+        builder.show("select menuItem CGModel -> Load -> ");
     }
 
     /**
@@ -617,11 +617,11 @@ class DddMenus {
         builder.add("Testdata");
         builder.addDialog("Asset");
         builder.add("File");
-        builder.show("open menu CGModel -> Load source -> ");
+        builder.show("select menuItem CGModel -> Load source -> ");
     }
 
     /**
-     * Handle an "open menu" action.
+     * Handle a "select menuItem" action for a submenu.
      *
      * @param menuName name of the menu (not null)
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -665,7 +665,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the Animation menu.
+     * Handle a "select menuItem" action from the Animation menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -729,7 +729,8 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action, typically from the menu bar.
+     * Handle a "select menuItem" action for a top-level menu, typically from
+     * the menu bar.
      *
      * @param menuName name of the menu to open (not null)
      * @return true if handled, otherwise false
@@ -775,7 +776,7 @@ class DddMenus {
             logger.log(Level.WARNING, "no items for the {0} menu",
                     MyString.quote(menuName));
         } else {
-            String actionPrefix = DddInputMode.openMenuPrefix + menuName
+            String actionPrefix = DddInputMode.selectMenuItemPrefix + menuName
                     + menuSeparator;
             builder.show(actionPrefix);
         }
@@ -784,7 +785,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the Bone menu.
+     * Handle a "select menuItem" action from the Bone menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -840,7 +841,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the "Bone -> Select" menu.
+     * Handle a "select menuItem" action from the "Bone -> Select" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -891,7 +892,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the "Bone -> Select source" menu.
+     * Handle a "select menuItem" action from the "Bone -> Select source" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -914,7 +915,7 @@ class DddMenus {
     }
 
     /**
-     * Handle "open menu" actions from the CGModel menu.
+     * Handle a "select menuItem" action from the CGModel menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -990,7 +991,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the "CGModel -> Load" menu.
+     * Handle a "select menuItem" action from the "CGModel -> Load" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1022,7 +1023,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the "CGModel -> Load source" menu.
+     * Handle a "select menuItem" action from the "CGModel -> Load source" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1054,7 +1055,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the Help menu.
+     * Handle a "select menuItem" action from the Help menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1088,7 +1089,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the Keyframe menu.
+     * Handle a "select menuItem" action the Keyframe menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1127,7 +1128,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the Settings menu.
+     * Handle a "select menuItem" action from the Settings menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1147,7 +1148,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the Spatial menu.
+     * Handle a "select menuItem" action from the Spatial menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1214,7 +1215,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the "Spatial -> Add control" menu.
+     * Handle a "select menuItem" action from the "Spatial -> Add control" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1243,7 +1244,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" action from the "Spatial -> Select" menu.
+     * Handle a "select menuItem" action from the "Spatial -> Select" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1278,7 +1279,7 @@ class DddMenus {
     }
 
     /**
-     * Handle an "open menu" actions from the View menu.
+     * Handle a "select menuItem" action from the View menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1336,7 +1337,7 @@ class DddMenus {
     private void selectBone() {
         builder.reset();
         buildBoneSelectMenu();
-        builder.show("open menu Bone -> Select -> ");
+        builder.show("select menuItem Bone -> Select -> ");
     }
 
     /**
@@ -1387,7 +1388,7 @@ class DddMenus {
         if (Maud.model.source.isLoaded()) {
             builder.reset();
             buildSourceBoneSelectMenu();
-            builder.show("open menu Bone -> Select source -> ");
+            builder.show("select menuItem Bone -> Select source -> ");
         }
     }
 
@@ -1444,7 +1445,7 @@ class DddMenus {
             builder.addNode("Parent");
         }
 
-        builder.show("open menu Spatial -> Select -> ");
+        builder.show("select menuItem Spatial -> Select -> ");
     }
 
     /**

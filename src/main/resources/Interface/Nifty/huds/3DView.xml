@@ -38,39 +38,39 @@ the menu bar, status bar, and tool windows.
                    height="20">
                 <control name="button" id="ViewButton" label="1] View"
                          width="60">
-                    <interact onRelease="perform(open menu View)"/>
+                    <interact onRelease="perform(select menuItem View)"/>
                 </control>
                 <control name="button" id="CGModelButton" label="2] Model"
                          width="70">
-                    <interact onRelease="perform(open menu CGModel)"/>
+                    <interact onRelease="perform(select menuItem CGModel)"/>
                 </control>
                 <control name="button" id="SpatialButton" label="3] Spatial"
                          width="75">
-                    <interact onRelease="perform(open menu Spatial)"/>
+                    <interact onRelease="perform(select menuItem Spatial)"/>
                 </control>
                 <control name="button" id="AnimationButton" label="4] Animation"
                          width="80">
-                    <interact onRelease="perform(open menu Animation)"/>
+                    <interact onRelease="perform(select menuItem Animation)"/>
                 </control>
                 <control name="button" id="BoneButton" label="5] Bone"
                          width="60">
-                    <interact onRelease="perform(open menu Bone)"/>
+                    <interact onRelease="perform(select menuItem Bone)"/>
                 </control>
                 <control name="button" id="KeyframeButton" label="6] Keyframe"
                          width="80">
-                    <interact onRelease="perform(open menu Keyframe)"/>
+                    <interact onRelease="perform(select menuItem Keyframe)"/>
                 </control>
                 <control name="button" id="PhysicsButton" label="7] Physics"
                          width="70">
-                    <interact onRelease="perform(open menu Physics)"/>
+                    <interact onRelease="perform(select menuItem Physics)"/>
                 </control>
                 <control name="button" id="SettingsButton" label="8] Settings"
                          width="70">
-                    <interact onRelease="perform(open menu Settings)"/>
+                    <interact onRelease="perform(select menuItem Settings)"/>
                 </control>
                 <control name="button" id="HelpButton" label="9] Help"
                          width="60">
-                    <interact onRelease="perform(open menu Help)"/>
+                    <interact onRelease="perform(select menuItem Help)"/>
                 </control>
             </panel>
             <panel/>
@@ -114,7 +114,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Load"
                                  id="id1ToAvoidNiftyWarning"
                                  width="50px">
-                            <interact onRelease="perform(open menu Animation -> Load)"/>
+                            <interact onRelease="perform(select menuItem Animation -> Load)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="35px">
@@ -248,7 +248,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Select"
                                  id="id2ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(open menu Bone -> Select)"/>
+                            <interact onRelease="perform(select menuItem Bone -> Select)"/>
                         </control>
                     </panel>
                     <panel height="10px"/>
@@ -575,7 +575,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Load"
                                  id="id3ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(open menu CGModel -> Load)"/>
+                            <interact onRelease="perform(select menuItem CGModel -> Load)"/>
                         </control>
                     </panel>
                     <panel/>
@@ -875,7 +875,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button"
                                  id="selectSourceBone"
                                  width="50px">
-                            <interact onRelease="perform(open menu Bone -> Select source)"/>
+                            <interact onRelease="perform(select menuItem Bone -> Select source)"/>
                         </control>
                     </panel>
                     <panel/>
@@ -889,7 +889,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Select"
                                  id="id10ToAvoidNiftyWarning"
                                  width="50px">
-                            <interact onRelease="perform(open menu Bone -> Select)"/>
+                            <interact onRelease="perform(select menuItem Bone -> Select)"/>
                         </control>
                     </panel>
                     <panel/>
@@ -1009,7 +1009,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Load"
                                  id="id16ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(open menu CGModel -> Load)"/>
+                            <interact onRelease="perform(select menuItem CGModel -> Load)"/>
                         </control>
                     </panel>
                     <panel height="8px"/>
@@ -1021,7 +1021,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Load"
                                  id="id17ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(open menu CGModel -> Load source)"/>
+                            <interact onRelease="perform(select menuItem CGModel -> Load source)"/>
                         </control>
                     </panel>
                     <panel height="8px"/>
@@ -1032,7 +1032,7 @@ the menu bar, status bar, and tool windows.
                                  width="*"/>
                         <control name="button" id="selectSourceAnimationButton"
                                  width="60px">
-                            <interact onRelease="perform(open menu Animation -> Load source)"/>
+                            <interact onRelease="perform(select menuItem Animation -> Load source)"/>
                         </control>
                     </panel>
                     <panel height="8px"/>
@@ -1094,13 +1094,13 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Add"
                                  id="id20ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(open menu Spatial -> Add control)"/>
+                            <interact onRelease="perform(select menuItem Spatial -> Add control)"/>
                         </control>
                         <panel width="10px"/>
                         <control name="button" label="Select"
                                  id="id21ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(open menu Spatial -> Select control)"/>
+                            <interact onRelease="perform(select menuItem Spatial -> Select control)"/>
                         </control>
                     </panel>
                     <panel height="10px"/>
@@ -1302,7 +1302,7 @@ the menu bar, status bar, and tool windows.
                         <panel width="*"/>
                         <control name="button" id="sourceAnimationLoadButton"
                                  width="50px">
-                            <interact onRelease="perform(open menu Animation -> Load source)"/>
+                            <interact onRelease="perform(select menuItem Animation -> Load source)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="35px">
