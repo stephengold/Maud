@@ -81,7 +81,7 @@ class DddInputMode extends InputMode {
      */
     final static String loadCgmNamedPrefix = "load cgm named ";
     /**
-     * action prefix: remainder is the asset path to a skeleton mapping
+     * action prefix: remainder is an asset path to a skeleton mapping
      */
     final static String loadMappingAssetPrefix = "load mapping asset ";
     /**
@@ -716,12 +716,12 @@ class DddInputMode extends InputMode {
         if (actionString.startsWith(saveCgmAssetPrefix)) {
             String path;
             path = MyString.remainder(actionString, saveCgmAssetPrefix);
-            Maud.model.target.writeModelToAsset(path);
+            Maud.model.target.writeToAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(saveCgmFilePrefix)) {
             String path = MyString.remainder(actionString, saveCgmFilePrefix);
-            Maud.model.target.writeModelToFile(path);
+            Maud.model.target.writeToFile(path);
             handled = true;
 
         } else if (actionString.startsWith(saveMappingAssetPrefix)) {

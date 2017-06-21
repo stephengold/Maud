@@ -412,16 +412,16 @@ public class EditableCgm extends LoadedCGModel {
     }
 
     /**
-     * Write the loaded model to an asset.
+     * Write the CG model to the specified asset.
      *
      * @param baseAssetPath asset path without any extension (not null)
      * @return true if successful, otherwise false
      */
-    public boolean writeModelToAsset(String baseAssetPath) {
+    public boolean writeToAsset(String baseAssetPath) {
         Validate.nonNull(baseAssetPath, "asset path");
 
         String baseFilePath = ActionApplication.filePath(baseAssetPath);
-        boolean success = writeModelToFile(baseFilePath);
+        boolean success = writeToFile(baseFilePath);
         if (success) {
             loadedModelAssetPath = baseAssetPath;
         }
@@ -430,12 +430,12 @@ public class EditableCgm extends LoadedCGModel {
     }
 
     /**
-     * Write the loaded model to a file.
+     * Write the CG model to the specified file.
      *
      * @param baseFilePath file path without any extension (not null)
      * @return true if successful, otherwise false
      */
-    public boolean writeModelToFile(String baseFilePath) {
+    public boolean writeToFile(String baseFilePath) {
         Validate.nonNull(baseFilePath, "file path");
 
         String filePath = baseFilePath + ".j3o";
@@ -479,7 +479,7 @@ public class EditableCgm extends LoadedCGModel {
         String eventDescription = "load model " + modelName;
         setPristine(eventDescription);
 
-        repairModel(modelRoot);
+        repair(modelRoot);
 
         super.postLoad(modelRoot);
     }
@@ -505,7 +505,7 @@ public class EditableCgm extends LoadedCGModel {
      *
      * @param modelRoot model to correct (not null)
      */
-    private void repairModel(Spatial modelRoot) {
+    private void repair(Spatial modelRoot) {
         boolean madeRepairs = false;
 
         AnimControl animControl = modelRoot.getControl(AnimControl.class);
