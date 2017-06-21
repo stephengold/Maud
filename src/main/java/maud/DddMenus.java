@@ -406,6 +406,9 @@ class DddMenus {
         builder.addDialog("Save as asset");
         builder.addDialog("Save as file");
         builder.add("Load source");
+        if (Maud.model.source.isLoaded()) {
+            builder.add("Unload source");
+        }
         builder.addTool("Mapping tool");
         builder.addDialog("Load mapping");
         if (Maud.model.mapping.countMappings() > 0) {
@@ -974,6 +977,11 @@ class DddMenus {
 
                 case "Unload mapping":
                     Maud.model.mapping.unload();
+                    handled = true;
+                    break;
+
+                case "Unload source":
+                    Maud.model.source.unload();
                     handled = true;
             }
         }

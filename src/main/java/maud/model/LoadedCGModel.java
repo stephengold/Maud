@@ -609,6 +609,22 @@ public class LoadedCGModel implements Cloneable {
         Validate.nonNull(newView, "new view");
         view = newView;
     }
+
+    /**
+     * Unload the CG model.
+     */
+    public void unload() {
+        loadedModelAssetPath = null;
+        loadedModelExtension = null;
+        loadedModelFilePath = null;
+        modelName = null;
+        rootSpatial = null;
+        view.unloadModel();
+        /*
+         * Reset the selected bone.
+         */
+        bone.deselect();
+    }
     // *************************************************************************
     // protected methods
 

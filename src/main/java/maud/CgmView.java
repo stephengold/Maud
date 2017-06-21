@@ -335,6 +335,23 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
+     * Unload the CG model.
+     */
+    public void unloadModel() {
+        /*
+         * Detach the old spatial (if any) from the scene.
+         */
+        if (cgmRoot != null) {
+            parent.detachChild(cgmRoot);
+        }
+        setCgmRoot(null);
+        animControl = null;
+        skeleton = null;
+        skeletonControl = null;
+        skeletonDebugControl = null;
+    }
+
+    /**
      * Update the user transforms of all bones using the MVC model.
      */
     void updatePose() {
