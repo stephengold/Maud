@@ -963,17 +963,17 @@ class DddMenus {
                     break;
 
                 case "Save as asset":
-                    Maud.gui.dialogs.saveModelAsset();
+                    Maud.gui.dialogs.saveCgmToAsset();
                     handled = true;
                     break;
 
                 case "Save as file":
-                    Maud.gui.dialogs.saveModelFile();
+                    Maud.gui.dialogs.saveCgmToFile();
                     handled = true;
                     break;
 
                 case "Save mapping":
-                    Maud.gui.dialogs.saveMappingAsset();
+                    Maud.gui.dialogs.saveMappingToAsset();
                     handled = true;
                     break;
 
@@ -1008,7 +1008,7 @@ class DddMenus {
         boolean handled = false;
         switch (remainder) {
             case "Asset":
-                Maud.gui.dialogs.loadModelAsset(
+                Maud.gui.dialogs.loadCgmFromAsset(
                         DddInputMode.loadModelAssetPrefix);
                 handled = true;
                 break;
@@ -1040,7 +1040,7 @@ class DddMenus {
         boolean handled = false;
         switch (remainder) {
             case "Asset":
-                Maud.gui.dialogs.loadModelAsset(
+                Maud.gui.dialogs.loadCgmFromAsset(
                         DddInputMode.loadSourceModelAssetPrefix);
                 handled = true;
                 break;

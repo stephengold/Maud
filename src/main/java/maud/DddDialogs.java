@@ -171,11 +171,11 @@ class DddDialogs {
     }
 
     /**
-     * Display a "load (source)model asset" dialog. TODO rename
+     * Display a "load (source)model asset" dialog. TODO sort
      *
      * @param actionPrefix for the dialog (not null)
      */
-    void loadModelAsset(String actionPrefix) {
+    void loadCgmFromAsset(String actionPrefix) {
         assert actionPrefix != null;
 
         String basePath = Maud.model.target.getAssetPath();
@@ -305,9 +305,9 @@ class DddDialogs {
     }
 
     /**
-     * Display a "save model asset" dialog. TODO rename
+     * Display a "save model asset" dialog.
      */
-    void saveModelAsset() {
+    void saveCgmToAsset() {
         String baseAssetPath = Maud.model.target.getAssetPath();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base asset path for model:",
@@ -315,9 +315,9 @@ class DddDialogs {
     }
 
     /**
-     * Display a "save model file" dialog. TODO rename
+     * Display a "save model file" dialog.
      */
-    void saveModelFile() {
+    void saveCgmToFile() {
         String baseFilePath = Maud.model.target.getFilePath();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for model:",
@@ -327,7 +327,7 @@ class DddDialogs {
     /**
      * Display a "save mapping asset" dialog.
      */
-    void saveMappingAsset() {
+    void saveMappingToAsset() {
         String assetPath = Maud.model.mapping.getMappingAssetPath();
         if (assetPath == null) {
             assetPath = "SkeletonMappings/AToB.j3o";
