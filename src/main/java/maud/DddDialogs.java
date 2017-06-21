@@ -150,28 +150,7 @@ class DddDialogs {
     }
 
     /**
-     * Display a "load mapping asset" dialog.
-     */
-    void loadMappingAsset() {
-        String assetPath = Maud.model.mapping.getMappingAssetPath();
-        if (assetPath == null) {
-            assetPath = "SkeletonMappings/SinbadToJaime.j3o";
-        }
-        List<String> modelExts = new ArrayList<>(1);
-        modelExts.add(".j3o");
-
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-        AssetDialog controller;
-        controller = new AssetDialog("Load", modelExts, assetManager);
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter asset path for skeleton mapping:",
-                assetPath, "", DddInputMode.loadMappingAssetPrefix, controller);
-    }
-
-    /**
-     * Display a "load (source)model asset" dialog. TODO sort
+     * Display a "load (source)model asset" dialog.
      *
      * @param actionPrefix for the dialog (not null)
      */
@@ -194,6 +173,27 @@ class DddDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter asset path for model:", assetPath,
                 "", actionPrefix, controller);
+    }
+
+    /**
+     * Display a "load mapping asset" dialog.
+     */
+    void loadMappingAsset() {
+        String assetPath = Maud.model.mapping.getMappingAssetPath();
+        if (assetPath == null) {
+            assetPath = "SkeletonMappings/SinbadToJaime.j3o";
+        }
+        List<String> modelExts = new ArrayList<>(1);
+        modelExts.add(".j3o");
+
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
+        AssetDialog controller;
+        controller = new AssetDialog("Load", modelExts, assetManager);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter asset path for skeleton mapping:",
+                assetPath, "", DddInputMode.loadMappingAssetPrefix, controller);
     }
 
     /**
