@@ -193,7 +193,7 @@ class DddDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter asset path for model:", assetPath,
-                "", DddInputMode.loadModelAssetPrefix, controller);
+                "", actionPrefix, controller);
     }
 
     /**
