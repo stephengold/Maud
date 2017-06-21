@@ -74,7 +74,7 @@ class DddMenus {
         File file = new File(filePath);
         if (file.isDirectory()) {
             buildFileMenu(filePath);
-            String menuPrefix = DddInputMode.loadModelFilePrefix + filePath;
+            String menuPrefix = DddInputMode.loadCgmFilePrefix + filePath;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }
@@ -96,7 +96,7 @@ class DddMenus {
         if (file.isDirectory()) {
             buildFileMenu(filePath);
             String menuPrefix;
-            menuPrefix = DddInputMode.loadSourceModelFilePrefix + filePath;
+            menuPrefix = DddInputMode.loadSourceCgmFilePrefix + filePath;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }
@@ -1009,19 +1009,19 @@ class DddMenus {
         switch (remainder) {
             case "Asset":
                 Maud.gui.dialogs.loadCgmFromAsset(
-                        DddInputMode.loadModelAssetPrefix);
+                        DddInputMode.loadCgmAssetPrefix);
                 handled = true;
                 break;
 
             case "File":
                 buildFileMenu("/");
-                builder.show(DddInputMode.loadModelFilePrefix + "/");
+                builder.show(DddInputMode.loadCgmFilePrefix + "/");
                 handled = true;
                 break;
 
             case "Testdata":
                 buildTestDataMenu();
-                builder.show(DddInputMode.loadModelNamedPrefix);
+                builder.show(DddInputMode.loadCgmNamedPrefix);
                 handled = true;
         }
 
@@ -1041,19 +1041,19 @@ class DddMenus {
         switch (remainder) {
             case "Asset":
                 Maud.gui.dialogs.loadCgmFromAsset(
-                        DddInputMode.loadSourceModelAssetPrefix);
+                        DddInputMode.loadSourceCgmAssetPrefix);
                 handled = true;
                 break;
 
             case "File":
                 buildFileMenu("/");
-                builder.show(DddInputMode.loadSourceModelFilePrefix + "/");
+                builder.show(DddInputMode.loadSourceCgmFilePrefix + "/");
                 handled = true;
                 break;
 
             case "Testdata":
                 buildTestDataMenu();
-                builder.show(DddInputMode.loadSourceModelNamedPrefix);
+                builder.show(DddInputMode.loadSourceCgmNamedPrefix);
                 handled = true;
         }
 

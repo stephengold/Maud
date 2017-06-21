@@ -69,31 +69,37 @@ class DddInputMode extends InputMode {
      */
     final static String loadAnimationPrefix = "load animation ";
     /**
-     * action prefix: remainder is the asset path to a skeleton mapping
+     * action prefix: remainder is an asset path to a CG model
      */
-    final static String loadMappingAssetPrefix = "load mapping asset ";
+    final static String loadCgmAssetPrefix = "load cgm asset ";
     /**
-     * action prefix: remainder is the asset path to a CG model
+     * action prefix: remainder is a file path to a CG model
      */
-    final static String loadModelAssetPrefix = "load model asset ";
-    final static String loadModelFilePrefix = "load model file ";
+    final static String loadCgmFilePrefix = "load cgm file ";
     /**
      * action prefix: remainder is the name of a CG model in jme3-testdata
      */
-    final static String loadModelNamedPrefix = "load model named ";
+    final static String loadCgmNamedPrefix = "load cgm named ";
+    /**
+     * action prefix: remainder is the asset path to a skeleton mapping
+     */
+    final static String loadMappingAssetPrefix = "load mapping asset ";
     /**
      * action prefix: remainder is the name of a source animation
      */
     final static String loadSourceAnimationPrefix = "load sourceAnimation ";
     /**
-     * action prefix: remainder is the asset path to a CG model TODO rename
+     * action prefix: remainder is an asset path to a CG model
      */
-    final static String loadSourceModelAssetPrefix = "load sourceModel asset ";
-    final static String loadSourceModelFilePrefix = "load sourceModel file ";
+    final static String loadSourceCgmAssetPrefix = "load sourceCgm asset ";
+    /**
+     * action prefix: remainder is a file path to a CG model
+     */
+    final static String loadSourceCgmFilePrefix = "load sourceCgm file ";
     /**
      * action prefix: remainder is the name of a CG model in jme3-testdata
      */
-    final static String loadSourceModelNamedPrefix = "load sourceModel named ";
+    final static String loadSourceCgmNamedPrefix = "load sourceCgm named ";
     /**
      * action prefix: remainder is a name for the new animation
      */
@@ -127,11 +133,11 @@ class DddInputMode extends InputMode {
     /**
      * action prefix: remainder is a base asset path
      */
-    final static String saveModelAssetPrefix = "save model asset ";
+    final static String saveCgmAssetPrefix = "save cgm asset ";
     /**
      * action prefix: remainder is a base file path
      */
-    final static String saveModelFilePrefix = "save model file ";
+    final static String saveCgmFilePrefix = "save cgm file ";
     /**
      * action prefix: remainder is an asset path
      */
@@ -361,27 +367,27 @@ class DddInputMode extends InputMode {
             Maud.model.target.animation.load(name);
             handled = true;
 
+        } else if (actionString.startsWith(loadCgmAssetPrefix)) {
+            String path;
+            path = MyString.remainder(actionString, loadCgmAssetPrefix);
+            Maud.model.target.loadModelAsset(path);
+            handled = true;
+
+        } else if (actionString.startsWith(loadCgmFilePrefix)) {
+            String path = MyString.remainder(actionString, loadCgmFilePrefix);
+            Maud.gui.menus.loadModelFile(path);
+            handled = true;
+
+        } else if (actionString.startsWith(loadCgmNamedPrefix)) {
+            String name;
+            name = MyString.remainder(actionString, loadCgmNamedPrefix);
+            Maud.model.target.loadModelNamed(name);
+            handled = true;
+
         } else if (actionString.startsWith(loadMappingAssetPrefix)) {
             String path;
             path = MyString.remainder(actionString, loadMappingAssetPrefix);
             Maud.model.mapping.loadMappingAsset(path);
-            handled = true;
-
-        } else if (actionString.startsWith(loadModelAssetPrefix)) {
-            String path;
-            path = MyString.remainder(actionString, loadModelAssetPrefix);
-            Maud.model.target.loadModelAsset(path);
-            handled = true;
-
-        } else if (actionString.startsWith(loadModelFilePrefix)) {
-            String path = MyString.remainder(actionString, loadModelFilePrefix);
-            Maud.gui.menus.loadModelFile(path);
-            handled = true;
-
-        } else if (actionString.startsWith(loadModelNamedPrefix)) {
-            String name;
-            name = MyString.remainder(actionString, loadModelNamedPrefix);
-            Maud.model.target.loadModelNamed(name);
             handled = true;
 
         } else if (actionString.startsWith(loadSourceAnimationPrefix)) {
@@ -390,21 +396,21 @@ class DddInputMode extends InputMode {
             Maud.model.source.animation.load(name);
             handled = true;
 
-        } else if (actionString.startsWith(loadSourceModelAssetPrefix)) {
+        } else if (actionString.startsWith(loadSourceCgmAssetPrefix)) {
             String path;
-            path = MyString.remainder(actionString, loadSourceModelAssetPrefix);
+            path = MyString.remainder(actionString, loadSourceCgmAssetPrefix);
             Maud.model.source.loadModelAsset(path);
             handled = true;
 
-        } else if (actionString.startsWith(loadSourceModelFilePrefix)) {
+        } else if (actionString.startsWith(loadSourceCgmFilePrefix)) {
             String path;
-            path = MyString.remainder(actionString, loadSourceModelFilePrefix);
+            path = MyString.remainder(actionString, loadSourceCgmFilePrefix);
             Maud.gui.menus.loadSourceModelFile(path);
             handled = true;
 
-        } else if (actionString.startsWith(loadSourceModelNamedPrefix)) {
+        } else if (actionString.startsWith(loadSourceCgmNamedPrefix)) {
             String name;
-            name = MyString.remainder(actionString, loadSourceModelNamedPrefix);
+            name = MyString.remainder(actionString, loadSourceCgmNamedPrefix);
             Maud.model.source.loadModelNamed(name);
             handled = true;
         }
@@ -707,14 +713,14 @@ class DddInputMode extends InputMode {
      */
     private boolean saveAction(String actionString) {
         boolean handled = false;
-        if (actionString.startsWith(saveModelAssetPrefix)) {
+        if (actionString.startsWith(saveCgmAssetPrefix)) {
             String path;
-            path = MyString.remainder(actionString, saveModelAssetPrefix);
+            path = MyString.remainder(actionString, saveCgmAssetPrefix);
             Maud.model.target.writeModelToAsset(path);
             handled = true;
 
-        } else if (actionString.startsWith(saveModelFilePrefix)) {
-            String path = MyString.remainder(actionString, saveModelFilePrefix);
+        } else if (actionString.startsWith(saveCgmFilePrefix)) {
+            String path = MyString.remainder(actionString, saveCgmFilePrefix);
             Maud.model.target.writeModelToFile(path);
             handled = true;
 

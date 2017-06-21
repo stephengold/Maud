@@ -311,7 +311,7 @@ class DddDialogs {
         String baseAssetPath = Maud.model.target.getAssetPath();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base asset path for model:",
-                baseAssetPath, "Save", DddInputMode.saveModelAssetPrefix, null);
+                baseAssetPath, "Save", DddInputMode.saveCgmAssetPrefix, null);
     }
 
     /**
@@ -321,7 +321,7 @@ class DddDialogs {
         String baseFilePath = Maud.model.target.getFilePath();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for model:",
-                baseFilePath, "Save", DddInputMode.saveModelFilePrefix, null);
+                baseFilePath, "Save", DddInputMode.saveCgmFilePrefix, null);
     }
 
     /**
