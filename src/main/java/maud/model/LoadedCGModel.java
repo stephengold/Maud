@@ -129,19 +129,19 @@ public class LoadedCGModel implements Cloneable {
     /**
      * asset path of the CG model, less extension
      */
-    protected String loadedModelAssetPath = null;
+    protected String baseAssetPath = null;
+    /**
+     * filesystem path of the CG model, less extension
+     */
+    protected String baseFilePath = null;
     /**
      * extension of the CG model
      */
-    protected String loadedModelExtension = null;
+    protected String extension = null;
     /**
-     * filesystem path of the loaded model, less extension
+     * name of the CG model
      */
-    protected String loadedModelFilePath = null;
-    /**
-     * name of the loaded model
-     */
-    protected String modelName = null;
+    protected String name = null;
     /**
      * world transform of the visualization
      */
@@ -261,8 +261,8 @@ public class LoadedCGModel implements Cloneable {
      * @return path, or "" if not known (not null)
      */
     public String getAssetPath() {
-        assert loadedModelAssetPath != null;
-        return loadedModelAssetPath;
+        assert baseAssetPath != null;
+        return baseAssetPath;
     }
 
     /**
@@ -300,8 +300,8 @@ public class LoadedCGModel implements Cloneable {
      * @return extension (not null)
      */
     public String getExtension() {
-        assert loadedModelExtension != null;
-        return loadedModelExtension;
+        assert extension != null;
+        return extension;
     }
 
     /**
@@ -310,8 +310,8 @@ public class LoadedCGModel implements Cloneable {
      * @return path, or "" if not known (not null)
      */
     public String getFilePath() {
-        assert loadedModelFilePath != null;
-        return loadedModelFilePath;
+        assert baseFilePath != null;
+        return baseFilePath;
     }
 
     /**
@@ -320,8 +320,8 @@ public class LoadedCGModel implements Cloneable {
      * @return name, or "" if not known (not null)
      */
     public String getName() {
-        assert modelName != null;
-        return modelName;
+        assert name != null;
+        return name;
     }
 
     /**
@@ -531,15 +531,15 @@ public class LoadedCGModel implements Cloneable {
     }
 
     /**
-     * Unload the current model, if any, and load the named one from the
+     * Unload the current CG model, if any, and load the named one from the
      * jme3-testdata asset pack.
      *
-     * @param name which model to load (not null)
+     * @param cgmName which model to load (not null)
      * @return true if successful, otherwise false
      */
-    public boolean loadModelNamed(String name) {
+    public boolean loadModelNamed(String cgmName) {
         String fileName;
-        switch (name) {
+        switch (cgmName) {
             case "Boat":
                 fileName = "boat.j3o";
                 break;
@@ -585,16 +585,16 @@ public class LoadedCGModel implements Cloneable {
 
             default:
                 String message = String.format("unknown asset name: %s",
-                        MyString.quote(name));
+                        MyString.quote(cgmName));
                 throw new IllegalArgumentException(message);
         }
 
-        String assetPath = String.format("Models/%s/%s", name, fileName);
+        String assetPath = String.format("Models/%s/%s", cgmName, fileName);
         Spatial loaded = loadModelFromAsset(assetPath, false);
         if (loaded == null) {
             return false;
         } else {
-            this.modelName = name;
+            name = cgmName;
             postLoad(loaded);
             return true;
         }
@@ -614,10 +614,10 @@ public class LoadedCGModel implements Cloneable {
      * Unload the CG model.
      */
     public void unload() {
-        loadedModelAssetPath = null;
-        loadedModelExtension = null;
-        loadedModelFilePath = null;
-        modelName = null;
+        baseAssetPath = null;
+        baseFilePath = null;
+        extension = null;
+        name = null;
         rootSpatial = null;
         view.unloadModel();
         /*
@@ -773,7 +773,7 @@ public class LoadedCGModel implements Cloneable {
 
     /**
      * Quietly load a CG model asset from persistent storage without adding it
-     * to the scene. If successful, set {@link #loadedModelAssetPath}.
+     * to the scene. If successful, set {@link #baseAssetPath}.
      *
      * @param assetPath (not null)
      * @param useCache true to look in the asset manager's cache, false to force
@@ -803,16 +803,16 @@ public class LoadedCGModel implements Cloneable {
             logger.log(Level.INFO, "Loaded model from asset {0}",
                     MyString.quote(assetPath));
 
-            loadedModelExtension = key.getExtension();
-            int extLength = loadedModelExtension.length();
+            extension = key.getExtension();
+            int extLength = extension.length();
             if (extLength == 0) {
-                loadedModelAssetPath = assetPath;
+                baseAssetPath = assetPath;
             } else {
                 int pathLength = assetPath.length() - extLength - 1;
-                loadedModelAssetPath = assetPath.substring(0, pathLength);
+                baseAssetPath = assetPath.substring(0, pathLength);
             }
-            loadedModelFilePath = "";
-            modelName = loaded.getName();
+            baseFilePath = "";
+            name = loaded.getName();
         }
 
         return loaded;
@@ -820,7 +820,7 @@ public class LoadedCGModel implements Cloneable {
 
     /**
      * Quietly load a model file without adding it to the scene. If successful,
-     * set {@link #loadedModelFilePath}.
+     * set {@link #baseFilePath}.
      *
      * @param filePath (not null)
      * @return an orphaned spatial, or null if an error occurred
@@ -860,16 +860,16 @@ public class LoadedCGModel implements Cloneable {
             logger.log(Level.INFO, "Loaded model from file {0}",
                     MyString.quote(filePath));
 
-            loadedModelAssetPath = "";
-            loadedModelExtension = key.getExtension();
-            int extLength = loadedModelExtension.length();
+            baseAssetPath = "";
+            extension = key.getExtension();
+            int extLength = extension.length();
             if (extLength == 0) {
-                loadedModelFilePath = filePath;
+                baseFilePath = filePath;
             } else {
                 int pathLength = filePath.length() - extLength - 1;
-                loadedModelFilePath = filePath.substring(0, pathLength);
+                baseFilePath = filePath.substring(0, pathLength);
             }
-            modelName = loaded.getName();
+            name = loaded.getName();
         }
 
         return loaded;

@@ -423,7 +423,7 @@ public class EditableCgm extends LoadedCGModel {
         String baseFilePath = ActionApplication.filePath(baseAssetPath);
         boolean success = writeToFile(baseFilePath);
         if (success) {
-            loadedModelAssetPath = baseAssetPath;
+            this.baseAssetPath = baseAssetPath;
         }
 
         return success;
@@ -449,9 +449,9 @@ public class EditableCgm extends LoadedCGModel {
             success = false;
         }
         if (success) {
-            loadedModelAssetPath = "";
-            loadedModelExtension = "j3o";
-            loadedModelFilePath = baseFilePath;
+            baseAssetPath = "";
+            this.baseFilePath = baseFilePath;
+            extension = "j3o";
             String eventDescription = "write model " + baseFilePath;
             setPristine(eventDescription);
             logger.log(Level.INFO, "Wrote model to file {0}",
@@ -476,7 +476,7 @@ public class EditableCgm extends LoadedCGModel {
     protected void postLoad(Spatial modelRoot) {
         assert modelRoot != null;
 
-        String eventDescription = "load model " + modelName;
+        String eventDescription = "load model " + name;
         setPristine(eventDescription);
 
         repair(modelRoot);
