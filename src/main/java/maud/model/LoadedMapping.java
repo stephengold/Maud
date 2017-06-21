@@ -73,9 +73,9 @@ public class LoadedMapping implements Cloneable {
      */
     protected SkeletonMapping mapping = new SkeletonMapping();
     /**
-     * asset path to the skeleton mapping, or null if none loaded TODO rename
+     * asset path to the skeleton mapping, or null if none loaded
      */
-    protected String mappingAssetPath = null;
+    protected String assetPath = null;
     // *************************************************************************
     // new methods exposed
 
@@ -169,12 +169,12 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Read the asset path to the loaded skeleton mapping. TODO rename
+     * Read the asset path to the loaded skeleton mapping.
      *
      * @return path (or null if none selected)
      */
-    public String getMappingAssetPath() {
-        return mappingAssetPath;
+    public String getAssetPath() {
+        return assetPath;
     }
 
     /**
@@ -236,7 +236,7 @@ public class LoadedMapping implements Cloneable {
         boolean result;
         try {
             mapping = assetManager.loadAsset(key);
-            mappingAssetPath = assetPath;
+            this.assetPath = assetPath;
             result = true;
         } catch (AssetLoadException e) {
             result = false;

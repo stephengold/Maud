@@ -179,7 +179,7 @@ class DddDialogs {
      * Display a "load mapping asset" dialog.
      */
     void loadMappingAsset() {
-        String assetPath = Maud.model.mapping.getMappingAssetPath();
+        String assetPath = Maud.model.mapping.getAssetPath();
         if (assetPath == null) {
             assetPath = "SkeletonMappings/SinbadToJaime.j3o";
         }
@@ -328,7 +328,7 @@ class DddDialogs {
      * Display a "save mapping asset" dialog.
      */
     void saveMappingToAsset() {
-        String assetPath = Maud.model.mapping.getMappingAssetPath();
+        String assetPath = Maud.model.mapping.getAssetPath();
         if (assetPath == null) {
             assetPath = "SkeletonMappings/AToB.j3o";
         }

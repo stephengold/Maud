@@ -148,7 +148,7 @@ public class EditableMapping extends LoadedMapping {
      */
     public void unload() {
         mapping.clear();
-        mappingAssetPath = null;
+        assetPath = null;
         setEdited("unload mapping");
     }
 
@@ -164,7 +164,7 @@ public class EditableMapping extends LoadedMapping {
         String filePath = ActionApplication.filePath(assetPath);
         boolean success = writeToFile(filePath);
         if (success) {
-            mappingAssetPath = assetPath;
+            this.assetPath = assetPath;
         }
 
         return success;

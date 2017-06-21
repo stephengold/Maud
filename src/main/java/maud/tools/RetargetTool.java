@@ -92,7 +92,7 @@ public class RetargetTool extends WindowController {
         Maud.gui.setStatusText("sourceAsset", " " + sourceAssetDesc);
         Maud.gui.setButtonLabel("selectSourceAnimationButton", sButton);
 
-        String mapAssetPath = Maud.model.mapping.getMappingAssetPath();
+        String mapAssetPath = Maud.model.mapping.getAssetPath();
         String mapAssetDesc;
         if (mapAssetPath == null) {
             mapAssetDesc = "(none selected)";
@@ -129,7 +129,7 @@ public class RetargetTool extends WindowController {
                 String name = Maud.model.source.animation.getName();
                 sourceAnimDesc = MyString.quote(name);
 
-                String mapAssetPath = Maud.model.mapping.getMappingAssetPath();
+                String mapAssetPath = Maud.model.mapping.getAssetPath();
                 if (mapAssetPath == null) {
                     feedback = "load a map";
                 } else if (!Maud.model.mapping.matchesTarget()) {
