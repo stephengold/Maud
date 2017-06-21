@@ -86,7 +86,7 @@ class DddInputMode extends InputMode {
      */
     final static String loadSourceAnimationPrefix = "load sourceAnimation ";
     /**
-     * action prefix: remainder is the asset path to a CG model
+     * action prefix: remainder is the asset path to a CG model TODO rename
      */
     final static String loadSourceModelAssetPrefix = "load sourceModel asset ";
     final static String loadSourceModelFilePrefix = "load sourceModel file ";
@@ -124,8 +124,18 @@ class DddInputMode extends InputMode {
      * action prefix: remainder is the name for the new animation
      */
     final static String retargetAnimationPrefix = "retarget animation ";
+    /**
+     * action prefix: remainder is a base asset path
+     */
     final static String saveModelAssetPrefix = "save model asset ";
+    /**
+     * action prefix: remainder is a base file path
+     */
     final static String saveModelFilePrefix = "save model file ";
+    /**
+     * action prefix: remainder is an asset path
+     */
+    final static String saveMappingAssetPrefix = "save mapping asset ";
     /**
      * action prefix: remainder is the name of a bone or a prefix thereof
      */
@@ -698,14 +708,20 @@ class DddInputMode extends InputMode {
     private boolean saveAction(String actionString) {
         boolean handled = false;
         if (actionString.startsWith(saveModelAssetPrefix)) {
-            String path = MyString.remainder(actionString,
-                    saveModelAssetPrefix);
+            String path;
+            path = MyString.remainder(actionString, saveModelAssetPrefix);
             Maud.model.target.writeModelToAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(saveModelFilePrefix)) {
             String path = MyString.remainder(actionString, saveModelFilePrefix);
             Maud.model.target.writeModelToFile(path);
+            handled = true;
+
+        } else if (actionString.startsWith(saveMappingAssetPrefix)) {
+            String path;
+            path = MyString.remainder(actionString, saveMappingAssetPrefix);
+            Maud.model.mapping.writeToAsset(path);
             handled = true;
         }
 

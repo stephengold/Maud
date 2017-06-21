@@ -26,10 +26,16 @@
  */
 package maud.model;
 
+import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
 import com.jme3.scene.plugins.bvh.BoneMapping;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.ui.ActionApplication;
 import maud.Maud;
 
 /**
@@ -142,7 +148,26 @@ public class EditableMapping extends LoadedMapping {
      */
     public void unload() {
         mapping.clear();
+        mappingAssetPath = null;
         setEdited("unload mapping");
+    }
+
+    /**
+     * Write this mapping to an asset.
+     *
+     * @param assetPath asset path (not null)
+     * @return true if successful, otherwise false
+     */
+    public boolean writeToAsset(String assetPath) {
+        Validate.nonNull(assetPath, "asset path");
+
+        String filePath = ActionApplication.filePath(assetPath);
+        boolean success = writeToFile(filePath);
+        if (success) {
+            mappingAssetPath = assetPath;
+        }
+
+        return success;
     }
     // *************************************************************************
     // LoadedMapping methods
@@ -216,5 +241,37 @@ public class EditableMapping extends LoadedMapping {
         editCount = 0;
         editedTwist = null;
         History.addEvent(eventDescription);
+    }
+
+    /**
+     * Write this mapping to a file.
+     *
+     * @param filePath file path (not null)
+     * @return true if successful, otherwise false
+     */
+    public boolean writeToFile(String filePath) {
+        Validate.nonNull(filePath, "file path");
+
+        File file = new File(filePath);
+        BinaryExporter exporter = BinaryExporter.getInstance();
+
+        boolean success = true;
+        try {
+            exporter.save(mapping, file);
+        } catch (IOException exception) {
+            success = false;
+        }
+        if (success) {
+            String eventDescription = "write mapping " + filePath;
+            setPristine(eventDescription);
+            logger.log(Level.INFO, "Wrote mapping to file {0}",
+                    MyString.quote(filePath));
+        } else {
+            logger.log(Level.SEVERE,
+                    "I/O exception while writing mapping to file {0}",
+                    MyString.quote(filePath));
+        }
+
+        return success;
     }
 }

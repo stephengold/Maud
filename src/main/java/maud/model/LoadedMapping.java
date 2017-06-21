@@ -73,9 +73,9 @@ public class LoadedMapping implements Cloneable {
      */
     protected SkeletonMapping mapping = new SkeletonMapping();
     /**
-     * asset path to the skeleton mapping, or null if none loaded
+     * asset path to the skeleton mapping, or null if none loaded TODO rename
      */
-    private String mappingAssetPath = null;
+    protected String mappingAssetPath = null;
     // *************************************************************************
     // new methods exposed
 
@@ -169,7 +169,7 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Read the asset path to the loaded skeleton mapping.
+     * Read the asset path to the loaded skeleton mapping. TODO rename
      *
      * @return path (or null if none selected)
      */

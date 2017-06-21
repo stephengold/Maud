@@ -414,6 +414,7 @@ class DddMenus {
         if (Maud.model.mapping.countMappings() > 0) {
             builder.add("Unload mapping");
         }
+        builder.addDialog("Save mapping");
         builder.addTool("History");
     }
 
@@ -968,6 +969,11 @@ class DddMenus {
 
                 case "Save as file":
                     Maud.gui.dialogs.saveModelFile();
+                    handled = true;
+                    break;
+
+                case "Save mapping":
+                    Maud.gui.dialogs.saveMappingAsset();
                     handled = true;
                     break;
 

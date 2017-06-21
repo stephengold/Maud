@@ -117,14 +117,14 @@ class DddDialogs {
      */
     void deleteSgc() {
         String name = Maud.model.target.sgc.getName();
-        String message = String.format("Delete the %s control?",
-                MyString.quote(name));
+        String message;
+        message = String.format("Delete the %s control?", MyString.quote(name));
         Maud.gui.closeAllPopups();
         Maud.gui.showConfirmDialog(message, "Delete", "delete control", null);
     }
 
     /**
-     * Display a "License information" infobox.
+     * Display a License infobox.
      *
      * @param actionPrefix for the dialog (not null)
      */
@@ -162,17 +162,16 @@ class DddDialogs {
 
         Maud application = Maud.getApplication();
         AssetManager assetManager = application.getAssetManager();
-        AssetDialog controller = new AssetDialog("Load", modelExts,
-                assetManager);
+        AssetDialog controller;
+        controller = new AssetDialog("Load", modelExts, assetManager);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter asset path for skeleton mapping:",
-                assetPath, "", DddInputMode.loadMappingAssetPrefix,
-                controller);
+                assetPath, "", DddInputMode.loadMappingAssetPrefix, controller);
     }
 
     /**
-     * Display a "load (source)model asset" dialog.
+     * Display a "load (source)model asset" dialog. TODO rename
      *
      * @param actionPrefix for the dialog (not null)
      */
@@ -189,8 +188,8 @@ class DddDialogs {
 
         Maud application = Maud.getApplication();
         AssetManager assetManager = application.getAssetManager();
-        AssetDialog controller = new AssetDialog("Load", modelExts,
-                assetManager);
+        AssetDialog controller;
+        controller = new AssetDialog("Load", modelExts, assetManager);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter asset path for model:", assetPath,
@@ -222,8 +221,8 @@ class DddDialogs {
      */
     void reduceAnimation() {
         if (Maud.model.target.animation.isReal()) {
-            IntegerDialog controller = new IntegerDialog("Reduce", 2,
-                    Integer.MAX_VALUE);
+            IntegerDialog controller;
+            controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter reduction factor:", "2", "",
@@ -236,8 +235,8 @@ class DddDialogs {
      */
     void reduceTrack() {
         if (Maud.model.target.bone.hasTrack()) {
-            IntegerDialog controller = new IntegerDialog("Reduce", 2,
-                    Integer.MAX_VALUE);
+            IntegerDialog controller;
+            controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter reduction factor:", "2", "",
@@ -306,25 +305,36 @@ class DddDialogs {
     }
 
     /**
-     * Display a "save model asset" dialog.
+     * Display a "save model asset" dialog. TODO rename
      */
     void saveModelAsset() {
         String baseAssetPath = Maud.model.target.getAssetPath();
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog(
-                "Enter base asset path for model:", baseAssetPath,
-                "Save", DddInputMode.saveModelAssetPrefix, null);
+        Maud.gui.showTextEntryDialog("Enter base asset path for model:",
+                baseAssetPath, "Save", DddInputMode.saveModelAssetPrefix, null);
     }
 
     /**
-     * Display a "save model file" dialog.
+     * Display a "save model file" dialog. TODO rename
      */
     void saveModelFile() {
         String baseFilePath = Maud.model.target.getFilePath();
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog(
-                "Enter base file path for model:", baseFilePath,
-                "Save", DddInputMode.saveModelFilePrefix, null);
+        Maud.gui.showTextEntryDialog("Enter base file path for model:",
+                baseFilePath, "Save", DddInputMode.saveModelFilePrefix, null);
+    }
+
+    /**
+     * Display a "save mapping asset" dialog.
+     */
+    void saveMappingAsset() {
+        String assetPath = Maud.model.mapping.getMappingAssetPath();
+        if (assetPath == null) {
+            assetPath = "SkeletonMappings/AToB.j3o";
+        }
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter asset path for mapping:", assetPath,
+                "Save", DddInputMode.saveMappingAssetPrefix, null);
     }
 
     /**
@@ -356,8 +366,8 @@ class DddDialogs {
         } else {
             min = 0f;
         }
-        DialogController controller = new FloatDialog("Set", min,
-                Float.MAX_VALUE);
+        DialogController controller;
+        controller = new FloatDialog("Set", min, Float.MAX_VALUE);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
