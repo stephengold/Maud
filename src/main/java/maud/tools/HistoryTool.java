@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
-import maud.Checkpoint;
-import maud.History;
 import maud.Maud;
+import maud.model.Checkpoint;
+import maud.model.History;
 
 /**
  * The controller for the "History Tool" window in Maud's "3D View" screen.

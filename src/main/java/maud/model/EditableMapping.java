@@ -30,7 +30,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.scene.plugins.bvh.BoneMapping;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
-import maud.History;
 import maud.Maud;
 
 /**
@@ -122,10 +121,10 @@ public class EditableMapping extends LoadedMapping {
         if (isInvertingMap()) {
             mapping.renameSourceBone(oldName, newName);
         } else {
-            mapping.renameTargetBone(oldName, newName);            
+            mapping.renameTargetBone(oldName, newName);
         }
     }
-    
+
     /**
      * Alter the twist of the selected bone mapping.
      *

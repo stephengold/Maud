@@ -36,6 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
+import maud.model.History;
 
 /**
  * Input mode for Maud's "3D View" screen.

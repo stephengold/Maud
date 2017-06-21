@@ -48,7 +48,6 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
-import maud.History;
 import maud.Maud;
 
 /**

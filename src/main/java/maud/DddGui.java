@@ -51,6 +51,8 @@ import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
+import maud.model.Checkpoint;
+import maud.model.History;
 import maud.model.LoadedCGModel;
 import maud.tools.DddTools;
 

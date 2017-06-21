@@ -176,7 +176,7 @@ public class CgmView implements JmeCloneable {
     /**
      * Re-install this visualization in the scene graph.
      */
-    void reinstall() {
+    public void reinstall() {
         /*
          * Detach any old visualization from the scene graph.
          */

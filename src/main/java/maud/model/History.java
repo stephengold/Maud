@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import maud.Maud;
 
 /**
  * Edit history for Maud.
@@ -80,7 +81,7 @@ public class History {
      *
      * @return index of the new checkpoint (&ge;0)
      */
-    static int addCheckpoint() {
+    public static int addCheckpoint() {
         while (hasVulnerable()) {
             int lastIndex = checkpoints.size() - 1;
             checkpoints.remove(lastIndex);
@@ -100,7 +101,7 @@ public class History {
     }
 
     /**
-     * Record an event (an edit, load, or save of the CG model).
+     * Record an event: an edit/load/save of the mapping or target CG model.
      *
      * @param description (not null)
      */
@@ -174,7 +175,7 @@ public class History {
      * If the next slot has a checkpoint, restore that checkpoint and increment
      * the index.
      */
-    static void redo() {
+    public static void redo() {
         if (checkpoints.size() > nextIndex) {
             Checkpoint next = checkpoints.get(nextIndex);
             next.restore();
@@ -191,7 +192,7 @@ public class History {
      * If a previous slot exists, restore its checkpoint and decrement the
      * index. If there are no vulnerable checkpoints, add one.
      */
-    static void undo() {
+    public static void undo() {
         boolean noneVulnerable = !hasVulnerable();
         if (nextIndex > 1 || noneVulnerable && nextIndex > 0) {
             if (noneVulnerable) {
