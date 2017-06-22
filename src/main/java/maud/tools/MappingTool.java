@@ -130,22 +130,26 @@ public class MappingTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
+        updateAsset();
+        updateFeedback();
         updateIndex();
         updateSelected();
         updateSource();
         updateTarget();
-
+        /*
+         * the "use inverse" checkbox
+         */
         boolean invertFlag = Maud.model.mapping.isInvertingMap();
         Maud.gui.setChecked("invertRma2", invertFlag);
         /*
-         * the "map pose" button
+         * the "retargeted pose" button
          */
         String mButton;
         if (Maud.model.target.animation.isRetargetedPose()
                 || !Maud.model.source.isLoaded()) {
             mButton = "";
         } else {
-            mButton = "Retargeted pose";
+            mButton = "Show retargeted pose";
         }
         Maud.gui.setButtonLabel("loadRetargetedPose", mButton);
         /*
@@ -158,19 +162,6 @@ public class MappingTool extends WindowController {
             dButton = "degrees";
         }
         Maud.gui.setButtonLabel("degreesButton3", dButton);
-        /*
-         * pristine/edited status
-         */
-        String pristineDesc;
-        int editCount = Maud.model.mapping.countUnsavedEdits();
-        if (editCount == 0) {
-            pristineDesc = "pristine";
-        } else if (editCount == 1) {
-            pristineDesc = "one edit";
-        } else {
-            pristineDesc = String.format("%d edits", editCount);
-        }
-        Maud.gui.setStatusText("mappingPristine", pristineDesc);
     }
     // *************************************************************************
     // private methods
@@ -230,6 +221,62 @@ public class MappingTool extends WindowController {
     }
 
     /**
+     * Update the asset status.
+     */
+    private void updateAsset() {
+        /*
+         * asset-path status
+         */
+        String assetPath = Maud.model.mapping.getAssetPath();
+        String assetDesc;
+        if (assetPath == null) {
+            assetDesc = "( none loaded )";
+        } else {
+            assetDesc = MyString.quote(assetPath);
+        }
+        Maud.gui.setStatusText("mappingAssetPath", " " + assetDesc);
+        /*
+         * pristine/edited status
+         */
+        String pristineDesc;
+        int editCount = Maud.model.mapping.countUnsavedEdits();
+        if (editCount == 0) {
+            pristineDesc = "pristine";
+        } else if (editCount == 1) {
+            pristineDesc = "one edit";
+        } else {
+            pristineDesc = String.format("%d edits", editCount);
+        }
+        Maud.gui.setStatusText("mappingPristine", pristineDesc);
+    }
+
+    /**
+     * Update the feedback line.
+     */
+    private void updateFeedback() {
+        String feedback;
+        boolean sourceIsLoaded = Maud.model.source.isLoaded();
+        if (Maud.model.mapping.matchesTarget()) {
+            if (sourceIsLoaded) {
+                if (Maud.model.mapping.matchesSource()) {
+                    feedback = "";
+                } else {
+                    feedback = "doesn't match the source skeleton";
+                }
+            } else {
+                feedback = "load the source model";
+            }
+        } else {
+            if (!sourceIsLoaded || Maud.model.mapping.matchesSource()) {
+                feedback = "doesn't match the target skeleton";
+            } else {
+                feedback = "doesn't match either skeleton";
+            }
+        }
+        Maud.gui.setStatusText("mappingFeedback", feedback);
+    }
+
+    /**
      * Update the index status and previous/next buttons.
      */
     private void updateIndex() {
@@ -269,8 +316,8 @@ public class MappingTool extends WindowController {
         String uButton = "";
         if (Maud.model.mapping.isBoneMappingSelected()) {
             setSlidersToTwist();
-            uButton = "Unmap";
             rButton = "Reset";
+            uButton = "Unmap";
             enableSliders();
         } else {
             clear();
@@ -281,8 +328,8 @@ public class MappingTool extends WindowController {
             }
         }
         Maud.gui.setButtonLabel("addMappingButton", mButton);
-        Maud.gui.setButtonLabel("deleteMappingButton", uButton);
         Maud.gui.setButtonLabel("resetTwistButton", rButton);
+        Maud.gui.setButtonLabel("deleteMappingButton", uButton);
     }
 
     /**
@@ -300,8 +347,10 @@ public class MappingTool extends WindowController {
             if (target != null) {
                 sourceBoneDesc += String.format("  -> %s", target);
             }
-        } else {
+        } else if (Maud.model.source.isLoaded()) {
             sourceBoneDesc = SelectedSkeleton.noBone;
+        } else {
+            sourceBoneDesc = "( no model )";
         }
         Maud.gui.setStatusText("sourceBone", " " + sourceBoneDesc);
         /*

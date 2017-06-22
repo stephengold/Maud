@@ -837,10 +837,51 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="mappingTool" title="Mapping Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="260px" width="360px" x="35" y="65">
+                     height="330px" width="360px" x="35" y="65">
                 <panel childLayout="vertical">
                     <panel/>
-                    <panel childLayout="horizontal" height="28px">
+                    <panel childLayout="horizontal" height="25px">
+                        <control name="label" text="Asset path:  "/>
+                        <control name="label" id="mappingAssetPath"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Load"
+                                 id="id10ToAvoidNiftyWarning"
+                                 width="40px">
+                            <interact onRelease="perform(load mapping asset)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="25px">
+                        <control name="label" text="Edit status:  "
+                                 textHAlign="left"/>
+                        <control name="label" id="mappingPristine"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="70px"/>
+                        <control name="button" label="History"
+                                 id="id11ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(select tool history)"/>
+                        </control>
+                        <panel/>
+                        <control name="checkbox" id="invertRma2CheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  use inverse"/>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal" height="25px">
+                        <control name="label" id="mappingFeedback"
+                                 color="#800f"
+                                 textHAlign="center"
+                                 width="*"/>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal" height="25px">
+                        <control name="button" id="loadRetargetedPose"
+                                 width="130px">
+                            <interact onRelease="perform(load retargetedPose)"/>
+                        </control>
+                        <panel/>
                         <control name="button" id="mappingPreviousButton"
                                  width="20px">
                             <interact onRelease="perform(previous mapping)"/>
@@ -853,17 +894,9 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next mapping)"/>
                         </control>
-                        <panel/>
-                        <control name="checkbox" id="invertRma2CheckBox"
-                                 width="20px"/>
-                        <control name="label" text="  use inverse    "/>
-                        <control name="button" id="loadRetargetedPose"
-                                 width="98px">
-                            <interact onRelease="perform(load retargetedPose)"/>
-                        </control>
                     </panel>
                     <panel/>
-                    <panel childLayout="horizontal" height="28px">
+                    <panel childLayout="horizontal" height="25px">
                         <control name="label" text="Source bone:  "
                                  textHAlign="right"
                                  width="80px"/>
@@ -877,7 +910,7 @@ the menu bar, status bar, and tool windows.
                         </control>
                     </panel>
                     <panel/>
-                    <panel childLayout="horizontal" height="28px">
+                    <panel childLayout="horizontal" height="25px">
                         <control name="label" text="Target bone:  "
                                  textHAlign="right"
                                  width="80px"/>
@@ -885,7 +918,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Select"
-                                 id="id10ToAvoidNiftyWarning"
+                                 id="id12ToAvoidNiftyWarning"
                                  width="50px">
                             <interact onRelease="perform(select menuItem Bone -> Select)"/>
                         </control>
@@ -944,14 +977,6 @@ the menu bar, status bar, and tool windows.
                                      width="55px">
                                 <interact onRelease="perform(delete mapping)"/>
                             </control>
-                            <panel/>
-                            <control name="label" text="Edit status:  "
-                                     textHAlign="right"
-                                     width="75px"/>
-                            <control name="label" id="mappingPristine"
-                                     backgroundColor="#ffff"
-                                     textHAlign="center"
-                                     width="70px"/>
                             <panel/>
                         </panel>
                     </panel>
