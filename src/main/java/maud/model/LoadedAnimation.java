@@ -29,6 +29,7 @@ package maud.model;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
+import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
 import com.jme3.math.Transform;
 import java.util.ArrayList;
@@ -501,7 +502,8 @@ public class LoadedAnimation implements Cloneable {
         speed = 0f;
         time = 0f;
 
-        loadedCgm.pose.resetToBind();
+        Skeleton skeleton = loadedCgm.bones.findSkeleton();
+        loadedCgm.pose.resetToBind(skeleton);
     }
 
     /**

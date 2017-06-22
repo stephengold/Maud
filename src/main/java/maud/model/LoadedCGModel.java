@@ -101,7 +101,7 @@ public class LoadedCGModel implements Cloneable {
     /**
      * bone transforms of the displayed pose
      */
-    public Pose pose = new Pose();
+    public DisplayedPose pose = new DisplayedPose();
     /**
      * which bone in selected in the CG model
      */
@@ -659,21 +659,27 @@ public class LoadedCGModel implements Cloneable {
     public LoadedCGModel clone() throws CloneNotSupportedException {
         LoadedCGModel clone = (LoadedCGModel) super.clone();
 
-        if (rootSpatial == null) {
-            clone.rootSpatial = null;
-        } else {
-            clone.rootSpatial = rootSpatial.clone();
-        }
+        Cloner cloner = new Cloner();
 
         clone.animation = animation.clone();
         clone.bone = bone.clone();
         clone.bones = bones.clone();
-        clone.pose = pose.clone();
+        clone.pose = cloner.clone(pose);
+        clone.rootSpatial = cloner.clone(rootSpatial);
         clone.sgc = sgc.clone();
         clone.spatial = spatial.clone();
         clone.track = track.clone();
         clone.transform = transform.clone();
 
+        if (view == null) {
+            clone.view = null;
+        } else {
+            clone.view = cloner.clone(view);
+            clone.view.setModel(clone);
+        }
+        /*
+         * Initialize back pointers to the clone.
+         */
         clone.animation.setCgm(clone);
         clone.bone.setCgm(clone);
         clone.bones.setCgm(clone);
@@ -682,13 +688,6 @@ public class LoadedCGModel implements Cloneable {
         clone.spatial.setCgm(clone);
         clone.track.setCgm(clone);
         clone.transform.setCgm(clone);
-
-        if (view == null) {
-            clone.view = null;
-        } else {
-            clone.view = Cloner.deepClone(view);
-            clone.view.setModel(clone);
-        }
 
         return clone;
     }

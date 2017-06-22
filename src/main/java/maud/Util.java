@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
-import maud.model.Pose;
+import maud.model.DisplayedPose;
 
 /**
  * Utility methods for the Maud application. All methods should be static.
@@ -244,7 +244,7 @@ public class Util {
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
-    public static Quaternion localRotation(Bone bone, Pose pose,
+    public static Quaternion localRotation(Bone bone, DisplayedPose pose,
             Quaternion modelOrientation, Skeleton skeleton,
             Quaternion storeResult) {
         assert modelOrientation != null;
@@ -374,7 +374,7 @@ public class Util {
     }
 
     /**
-     * Calculate the user rotation for the specified bone to produce the
+     * Calculate the user rotation for the specified bone to give it the
      * specified orientation in model space.
      *
      * @param bone which bone (not null, unaffected)
@@ -385,7 +385,7 @@ public class Util {
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
-    public static Quaternion userRotation(Bone bone, Pose pose,
+    public static Quaternion userRotation(Bone bone, DisplayedPose pose,
             Quaternion modelOrientation, Skeleton skeleton,
             Quaternion storeResult) {
         assert modelOrientation != null;

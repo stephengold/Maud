@@ -33,6 +33,8 @@ import com.jme3.animation.Skeleton;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.util.clone.Cloner;
+import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -42,18 +44,19 @@ import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
 
 /**
- * A displayed pose in the Maud application.
+ * The displayed pose of a particular CG model in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class Pose implements Cloneable {
+public class DisplayedPose implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(Pose.class.getName());
+    final private static Logger logger = Logger.getLogger(
+            DisplayedPose.class.getName());
     // *************************************************************************
     // fields
 
@@ -66,6 +69,10 @@ public class Pose implements Cloneable {
      * {@link #setCgm(LoadedCGModel)})
      */
     private LoadedCGModel loadedCgm = null;
+    /**
+     * the skeleton for which the pose was generated, or null for none
+     */
+    private Skeleton skeleton = null;
     // *************************************************************************
     // new methods exposed
 
@@ -86,7 +93,7 @@ public class Pose implements Cloneable {
         /*
          * Add a BoneTrack for each bone that's not in bind pose.
          */
-        int numBones = loadedCgm.bones.countBones();
+        int numBones = skeleton.getBoneCount();
         Transform transform = new Transform();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             copyTransform(boneIndex, transform);
@@ -106,7 +113,7 @@ public class Pose implements Cloneable {
     /**
      * Copy the user transform of the indexed bone in this pose.
      *
-     * @param boneIndex which bone to use
+     * @param boneIndex which bone to use (&ge;0)
      * @param storeResult (modified if not null)
      * @return user transform (either storeResult or a new instance)
      */
@@ -140,7 +147,7 @@ public class Pose implements Cloneable {
      * @return transform in local coordinates (either storeResult or a new
      * instance)
      */
-    public Transform localTransform(int boneIndex, Transform storeResult) {
+    Transform localTransform(int boneIndex, Transform storeResult) {
         Validate.nonNegative(boneIndex, "bone index");
         if (storeResult == null) {
             storeResult = new Transform();
@@ -148,7 +155,7 @@ public class Pose implements Cloneable {
         /*
          * Start with the bone's bind transform.
          */
-        Bone bone = loadedCgm.bones.getBone(boneIndex);
+        Bone bone = skeleton.getBone(boneIndex);
         MySkeleton.copyBindTransform(bone, storeResult);
         /*
          * Apply the user transform in a simple (yet peculiar) way
@@ -180,7 +187,6 @@ public class Pose implements Cloneable {
          */
         localTransform(boneIndex, storeResult);
 
-        Skeleton skeleton = loadedCgm.bones.findSkeleton();
         Bone bone = skeleton.getBone(boneIndex);
         Bone parentBone = bone.getParent();
         if (parentBone != null) {
@@ -208,9 +214,9 @@ public class Pose implements Cloneable {
     /**
      * Reset the rotation of the indexed bone to identity.
      *
-     * @param boneIndex which bone
+     * @param boneIndex which bone (&ge;0)
      */
-    public void resetRotation(int boneIndex) {
+    void resetRotation(int boneIndex) {
         Transform transform = transforms.get(boneIndex);
         Quaternion rotation = transform.getRotation();
         rotation.loadIdentity();
@@ -219,19 +225,28 @@ public class Pose implements Cloneable {
     /**
      * Reset the scale of the indexed bone to identity.
      *
-     * @param boneIndex which bone
+     * @param boneIndex which bone (&ge;0)
      */
-    public void resetScale(int boneIndex) {
+    void resetScale(int boneIndex) {
         Transform transform = transforms.get(boneIndex);
         Vector3f scale = transform.getScale();
         scale.set(1f, 1f, 1f);
     }
 
     /**
-     * Reset this pose to bind pose.
+     * Reset the pose to bind pose.
+     *
+     * @param skeleton (not null)
      */
-    public void resetToBind() {
-        int boneCount = loadedCgm.bones.countBones();
+    void resetToBind(Skeleton skeleton) {
+        this.skeleton = skeleton;
+
+        int boneCount;
+        if (skeleton == null) {
+            boneCount = 0;
+        } else {
+            boneCount = skeleton.getBoneCount();
+        }
         transforms.clear();
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             Transform transform = new Transform();
@@ -242,16 +257,17 @@ public class Pose implements Cloneable {
     /**
      * Reset the translation of the indexed bone to zero.
      *
-     * @param boneIndex which bone
+     * @param boneIndex which bone (&ge;0)
      */
-    public void resetTranslation(int boneIndex) {
+    void resetTranslation(int boneIndex) {
         Transform transform = transforms.get(boneIndex);
         Vector3f translation = transform.getTranslation();
         translation.zero();
     }
 
     /**
-     * Alter which CG model is in this pose.
+     * Alter which CG model is in this pose. (Invoked only during initialization
+     * and cloning.)
      *
      * @param newLoaded (not null)
      */
@@ -263,7 +279,7 @@ public class Pose implements Cloneable {
     /**
      * Alter the rotation of the indexed bone.
      *
-     * @param boneIndex which bone to rotate
+     * @param boneIndex which bone to rotate (&ge;0)
      * @param rotation (not null, unaffected)
      */
     public void setRotation(int boneIndex, Quaternion rotation) {
@@ -276,9 +292,9 @@ public class Pose implements Cloneable {
     /**
      * Alter the rotation of the indexed bone to match the loaded animation.
      *
-     * @param boneIndex which bone to scale
+     * @param boneIndex which bone to rotate (&ge;0)
      */
-    public void setRotationToAnimation(int boneIndex) {
+    void setRotationToAnimation(int boneIndex) {
         Transform poseT = transforms.get(boneIndex);
         Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Quaternion animQ = animT.getRotation();
@@ -288,7 +304,7 @@ public class Pose implements Cloneable {
     /**
      * Alter the scale of the indexed bone.
      *
-     * @param boneIndex which bone to scale
+     * @param boneIndex which bone to scale (&ge;0)
      * @param scale (not null, unaffected)
      */
     public void setScale(int boneIndex, Vector3f scale) {
@@ -304,9 +320,9 @@ public class Pose implements Cloneable {
     /**
      * Alter the scale of the indexed bone to match the loaded animation.
      *
-     * @param boneIndex which bone to scale
+     * @param boneIndex which bone to scale (&ge;0)
      */
-    public void setScaleToAnimation(int boneIndex) {
+    void setScaleToAnimation(int boneIndex) {
         Transform poseT = transforms.get(boneIndex);
         Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Vector3f animV = animT.getScale();
@@ -317,7 +333,7 @@ public class Pose implements Cloneable {
      * Alter the transforms to match the loaded animation.
      */
     public void setToAnimation() {
-        int boneCount = loadedCgm.bones.countBones();
+        int boneCount = skeleton.getBoneCount();
         int numTransforms = countTransforms();
         assert numTransforms == boneCount : numTransforms;
 
@@ -331,7 +347,7 @@ public class Pose implements Cloneable {
     /**
      * Alter the translation of the indexed bone.
      *
-     * @param boneIndex which bone to translate
+     * @param boneIndex which bone to translate (&ge;0)
      * @param translation (not null, unaffected)
      */
     public void setTranslation(int boneIndex, Vector3f translation) {
@@ -344,13 +360,50 @@ public class Pose implements Cloneable {
     /**
      * Alter the translation of the indexed bone to match the loaded animation.
      *
-     * @param boneIndex which bone to scale
+     * @param boneIndex which bone to translate (&ge;0)
      */
-    public void setTranslationToAnimation(int boneIndex) {
+    void setTranslationToAnimation(int boneIndex) {
         Transform poseT = transforms.get(boneIndex);
         Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Vector3f animV = animT.getTranslation();
         poseT.setTranslation(animV);
+    }
+    // *************************************************************************
+    // JmeCloner methods
+
+    /**
+     * Convert this shallow-cloned instance into a deep-cloned one, using the
+     * specified cloner and original to resolve copied fields.
+     *
+     * @param cloner the cloner currently cloning this control
+     * @param original the control from which this control was shallow-cloned
+     */
+    @Override
+    public void cloneFields(Cloner cloner, Object original) {
+        skeleton = cloner.clone(skeleton);
+
+        int numTransforms = transforms.size();
+        List<Transform> originalTransforms = transforms;
+        transforms = new ArrayList<>(numTransforms);
+        for (Transform t : originalTransforms) {
+            Transform tClone = t.clone();
+            transforms.add(tClone);
+        }
+    }
+
+    /**
+     * Create a shallow clone for the JME cloner.
+     *
+     * @return a new instance
+     */
+    @Override
+    public DisplayedPose jmeClone() {
+        try {
+            DisplayedPose clone = (DisplayedPose) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
     }
     // *************************************************************************
     // Object methods
@@ -362,15 +415,8 @@ public class Pose implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public Pose clone() throws CloneNotSupportedException {
-        Pose clone = (Pose) super.clone();
-
-        int numTransforms = transforms.size();
-        clone.transforms = new ArrayList<>(numTransforms);
-        for (Transform t : transforms) {
-            Transform tClone = t.clone();
-            clone.transforms.add(tClone);
-        }
+    public DisplayedPose clone() throws CloneNotSupportedException {
+        DisplayedPose clone = (DisplayedPose) super.clone();
 
         return clone;
     }
