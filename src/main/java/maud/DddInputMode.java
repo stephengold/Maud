@@ -335,7 +335,7 @@ class DddInputMode extends InputMode {
                 handled = true;
                 break;
             case "delete mapping":
-                Maud.model.mapping.deleteMapping();
+                Maud.model.mapping.deleteBone();
                 handled = true;
                 break;
             case "delete userKey":

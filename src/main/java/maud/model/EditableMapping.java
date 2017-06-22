@@ -76,9 +76,9 @@ public class EditableMapping extends LoadedMapping {
     }
 
     /**
-     * Delete the selected bone mapping. TODO rename
+     * Delete the selected bone mapping.
      */
-    public void deleteMapping() {
+    public void deleteBone() {
         BoneMapping boneMapping = selectedMapping();
         if (boneMapping != null) {
             mapping.removeMapping(boneMapping);
