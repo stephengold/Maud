@@ -40,9 +40,9 @@ the menu bar, status bar, and tool windows.
                          width="60">
                     <interact onRelease="perform(select menuItem View)"/>
                 </control>
-                <control name="button" id="CGModelButton" label="2] Model"
+                <control name="button" id="CGMButton" label="2] Model"
                          width="70">
-                    <interact onRelease="perform(select menuItem CGModel)"/>
+                    <interact onRelease="perform(select menuItem CGM)"/>
                 </control>
                 <control name="button" id="SpatialButton" label="3] Spatial"
                          width="75">
@@ -575,7 +575,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Load"
                                  id="id3ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(select menuItem CGModel -> Load)"/>
+                            <interact onRelease="perform(select menuItem CGM -> Target -> Load)"/>
                         </control>
                     </panel>
                     <panel/>
@@ -1007,7 +1007,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Load"
                                  id="id16ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(select menuItem CGModel -> Load)"/>
+                            <interact onRelease="perform(select menuItem CGM -> Target -> Load)"/>
                         </control>
                     </panel>
                     <panel height="8px"/>
@@ -1019,7 +1019,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Load"
                                  id="id17ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(select menuItem CGModel -> Load source)"/>
+                            <interact onRelease="perform(select menuItem CGM -> Source -> Load)"/>
                         </control>
                     </panel>
                     <panel height="8px"/>

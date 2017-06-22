@@ -398,23 +398,12 @@ class DddMenus {
     }
 
     /**
-     * Build a CGModel menu.
+     * Build a CGM menu.
      */
-    private void buildCGModelMenu() {
-        builder.addTool("Tool");
-        builder.add("Load");
-        builder.addDialog("Save as asset");
-        builder.addDialog("Save as file");
-        builder.add("Load source");
-        if (Maud.model.source.isLoaded()) {
-            builder.add("Unload source");
-        }
-        builder.addTool("Mapping tool");
-        builder.addDialog("Load mapping");
-        if (Maud.model.mapping.countMappings() > 0) {
-            builder.add("Unload mapping");
-        }
-        builder.addDialog("Save mapping");
+    private void buildCgmMenu() {
+        builder.add("Target");
+        builder.add("Source");
+        builder.add("Mapping");
         builder.addTool("History");
     }
 
@@ -451,7 +440,6 @@ class DddMenus {
             } else {
                 builder.add(name);
             }
-
         }
     }
 
@@ -543,7 +531,7 @@ class DddMenus {
     }
 
     /**
-     * Build a "CGModel -> Load (source) -> Testdata" menu.
+     * Build a "CGM -> Source/Target -> Load -> Testdata" menu.
      */
     private void buildTestDataMenu() {
         builder.reset();
@@ -588,17 +576,6 @@ class DddMenus {
     }
 
     /**
-     * Display a "CGModel -> Load" menu.
-     */
-    private void loadCGModel() {
-        builder.reset();
-        builder.add("Testdata");
-        builder.addDialog("Asset");
-        builder.add("File");
-        builder.show("select menuItem CGModel -> Load -> ");
-    }
-
-    /**
      * Display a "Animation -> Load source" menu.
      */
     private void loadSourceAnimation() {
@@ -611,14 +588,39 @@ class DddMenus {
     }
 
     /**
-     * Display a "CGModel -> Load source" menu.
+     * Display a "CGM -> Source -> Load" menu.
      */
-    private void loadSourceCGModel() {
+    private void loadSourceCgm() {
         builder.reset();
         builder.add("Testdata");
         builder.addDialog("Asset");
         builder.add("File");
-        builder.show("select menuItem CGModel -> Load source -> ");
+        builder.show("select menuItem CGM -> Source -> Load -> ");
+    }
+
+    /**
+     * Display a "CGM -> Target -> Load" menu.
+     */
+    private void loadTargetCgm() {
+        builder.reset();
+        builder.add("Testdata");
+        builder.addDialog("Asset");
+        builder.add("File");
+        builder.show("select menuItem CGM -> Target -> Load -> ");
+    }
+
+    /**
+     * Display a "CGM -> Mapping" menu.
+     */
+    private void mapping() {
+        builder.reset();
+        builder.addTool("Tool");
+        builder.addDialog("Load");
+        if (Maud.model.mapping.countMappings() > 0) {
+            builder.add("Unload");
+        }
+        builder.addDialog("Save");
+        builder.show("select menuItem CGM -> Mapping -> ");
     }
 
     /**
@@ -640,8 +642,8 @@ class DddMenus {
             case "Bone":
                 handled = menuBone(remainder);
                 break;
-            case "CGModel":
-                handled = menuCGModel(remainder);
+            case "CGM":
+                handled = menuCgm(remainder);
                 break;
             case "Help":
                 handled = menuHelp(remainder);
@@ -749,8 +751,8 @@ class DddMenus {
             case "Bone":
                 buildBoneMenu();
                 break;
-            case "CGModel":
-                buildCGModelMenu();
+            case "CGM":
+                buildCgmMenu();
                 break;
             case "Help":
                 buildHelpMenu();
@@ -916,24 +918,29 @@ class DddMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the CGModel menu.
+     * Handle a "select menuItem" action from the CGM menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuCGModel(String remainder) {
+    private boolean menuCgm(String remainder) {
         assert remainder != null;
 
         boolean handled = false;
-        String loadPrefix = "Load" + menuSeparator;
-        String loadSourcePrefix = "Load source" + menuSeparator;
-        if (remainder.startsWith(loadPrefix)) {
-            String selectArg = MyString.remainder(remainder, loadPrefix);
-            handled = menuCGModelLoad(selectArg);
+        String mappingPrefix = "Mapping" + menuSeparator;
+        String sourcePrefix = "Source" + menuSeparator;
+        String targetPrefix = "Target" + menuSeparator;
+        if (remainder.startsWith(mappingPrefix)) {
+            String selectArg = MyString.remainder(remainder, mappingPrefix);
+            handled = menuMapping(selectArg);
 
-        } else if (remainder.startsWith(loadSourcePrefix)) {
-            String selectArg = MyString.remainder(remainder, loadSourcePrefix);
-            handled = menuCGModelLoadSource(selectArg);
+        } else if (remainder.startsWith(sourcePrefix)) {
+            String selectArg = MyString.remainder(remainder, sourcePrefix);
+            handled = menuSourceCgm(selectArg);
+
+        } else if (remainder.startsWith(targetPrefix)) {
+            String selectArg = MyString.remainder(remainder, targetPrefix);
+            handled = menuTargetCgm(selectArg);
 
         } else {
             switch (remainder) {
@@ -942,119 +949,20 @@ class DddMenus {
                     handled = true;
                     break;
 
-                case "Load":
-                    loadCGModel();
+                case "Mapping":
+                    mapping();
                     handled = true;
                     break;
 
-                case "Load mapping":
-                    Maud.gui.dialogs.loadMappingAsset();
+                case "Source":
+                    sourceCgm();
                     handled = true;
                     break;
 
-                case "Load source":
-                    loadSourceCGModel();
-                    handled = true;
-                    break;
-
-                case "Mapping tool":
-                    Maud.gui.tools.select("mapping");
-                    handled = true;
-                    break;
-
-                case "Save as asset":
-                    Maud.gui.dialogs.saveCgmToAsset();
-                    handled = true;
-                    break;
-
-                case "Save as file":
-                    Maud.gui.dialogs.saveCgmToFile();
-                    handled = true;
-                    break;
-
-                case "Save mapping":
-                    Maud.gui.dialogs.saveMappingToAsset();
-                    handled = true;
-                    break;
-
-                case "Tool":
-                    Maud.gui.tools.select("cgm");
-                    handled = true;
-                    break;
-
-                case "Unload mapping":
-                    Maud.model.mapping.unload();
-                    handled = true;
-                    break;
-
-                case "Unload source":
-                    Maud.model.source.unload();
+                case "Target":
+                    targetCgm();
                     handled = true;
             }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "CGModel -> Load" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuCGModelLoad(String remainder) {
-        assert remainder != null;
-
-        boolean handled = false;
-        switch (remainder) {
-            case "Asset":
-                Maud.gui.dialogs.loadCgmFromAsset(
-                        DddInputMode.loadCgmAssetPrefix);
-                handled = true;
-                break;
-
-            case "File":
-                buildFileMenu("/");
-                builder.show(DddInputMode.loadCgmFilePrefix + "/");
-                handled = true;
-                break;
-
-            case "Testdata":
-                buildTestDataMenu();
-                builder.show(DddInputMode.loadCgmNamedPrefix);
-                handled = true;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "CGModel -> Load source" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuCGModelLoadSource(String remainder) {
-        assert remainder != null;
-
-        boolean handled = false;
-        switch (remainder) {
-            case "Asset":
-                Maud.gui.dialogs.loadCgmFromAsset(
-                        DddInputMode.loadSourceCgmAssetPrefix);
-                handled = true;
-                break;
-
-            case "File":
-                buildFileMenu("/");
-                builder.show(DddInputMode.loadSourceCgmFilePrefix + "/");
-                handled = true;
-                break;
-
-            case "Testdata":
-                buildTestDataMenu();
-                builder.show(DddInputMode.loadSourceCgmNamedPrefix);
-                handled = true;
         }
 
         return handled;
@@ -1088,6 +996,70 @@ class DddMenus {
 
             case "Source":
                 Misc.browseWeb("https://github.com/stephengold/Maud");
+                handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "CGM -> Source -> Load" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuLoadSourceCgm(String remainder) {
+        assert remainder != null;
+
+        boolean handled = false;
+        switch (remainder) {
+            case "Asset":
+                Maud.gui.dialogs.loadCgmFromAsset(
+                        DddInputMode.loadSourceCgmAssetPrefix);
+                handled = true;
+                break;
+
+            case "File":
+                buildFileMenu("/");
+                builder.show(DddInputMode.loadSourceCgmFilePrefix + "/");
+                handled = true;
+                break;
+
+            case "Testdata":
+                buildTestDataMenu();
+                builder.show(DddInputMode.loadSourceCgmNamedPrefix);
+                handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "CGM -> Target -> Load" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuLoadTargetCgm(String remainder) {
+        assert remainder != null;
+
+        boolean handled = false;
+        switch (remainder) {
+            case "Asset":
+                Maud.gui.dialogs.loadCgmFromAsset(
+                        DddInputMode.loadCgmAssetPrefix);
+                handled = true;
+                break;
+
+            case "File":
+                buildFileMenu("/");
+                builder.show(DddInputMode.loadCgmFilePrefix + "/");
+                handled = true;
+                break;
+
+            case "Testdata":
+                buildTestDataMenu();
+                builder.show(DddInputMode.loadCgmNamedPrefix);
                 handled = true;
         }
 
@@ -1134,6 +1106,40 @@ class DddMenus {
     }
 
     /**
+     * Handle a "select menuItem" action from the "CGM -> Mapping" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuMapping(String remainder) {
+        assert remainder != null;
+
+        boolean handled = false;
+        switch (remainder) {
+            case "Load":
+                Maud.gui.dialogs.loadMappingAsset();
+                handled = true;
+                break;
+
+            case "Save":
+                Maud.gui.dialogs.saveMappingToAsset();
+                handled = true;
+                break;
+
+            case "Tool":
+                Maud.gui.tools.select("mapping");
+                handled = true;
+                break;
+
+            case "Unload":
+                Maud.model.mapping.unload();
+                handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
      * Handle a "select menuItem" action from the Settings menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -1148,6 +1154,37 @@ class DddMenus {
                 Maud.gui.closeAllPopups();
                 Maud.bindScreen.activate(Maud.gui.inputMode);
                 handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "CGM -> Source" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuSourceCgm(String remainder) {
+        assert remainder != null;
+
+        boolean handled = false;
+        String loadPrefix = "Load" + menuSeparator;
+        if (remainder.startsWith(loadPrefix)) {
+            String selectArg = MyString.remainder(remainder, loadPrefix);
+            handled = menuLoadSourceCgm(selectArg);
+
+        } else {
+            switch (remainder) {
+                case "Load":
+                    loadSourceCgm();
+                    handled = true;
+                    break;
+
+                case "Unload":
+                    Maud.model.source.unload();
+                    handled = true;
+            }
         }
 
         return handled;
@@ -1279,6 +1316,47 @@ class DddMenus {
             case "Root":
                 Maud.model.target.spatial.selectModelRoot();
                 handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "CGM -> Target" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuTargetCgm(String remainder) {
+        assert remainder != null;
+
+        boolean handled = false;
+        String loadPrefix = "Load" + menuSeparator;
+        if (remainder.startsWith(loadPrefix)) {
+            String selectArg = MyString.remainder(remainder, loadPrefix);
+            handled = menuLoadTargetCgm(selectArg);
+
+        } else {
+            switch (remainder) {
+                case "Load":
+                    loadTargetCgm();
+                    handled = true;
+                    break;
+
+                case "Save as asset":
+                    Maud.gui.dialogs.saveCgmToAsset();
+                    handled = true;
+                    break;
+
+                case "Save as file":
+                    Maud.gui.dialogs.saveCgmToFile();
+                    handled = true;
+                    break;
+
+                case "Tool":
+                    Maud.gui.tools.select("cgm");
+                    handled = true;
+            }
         }
 
         return handled;
@@ -1530,5 +1608,33 @@ class DddMenus {
         } else {
             builder.show(DddInputMode.selectGeometryPrefix);
         }
+    }
+
+    /**
+     * Display a "CGM -> Source" menu.
+     */
+    private void sourceCgm() {
+        builder.reset();
+
+        builder.add("Load");
+        if (Maud.model.source.isLoaded()) {
+            builder.add("Unload");
+        }
+
+        builder.show("select menuItem CGM -> Source -> ");
+    }
+
+    /**
+     * Display a "CGM -> Target" menu.
+     */
+    private void targetCgm() {
+        builder.reset();
+
+        builder.addTool("Tool");
+        builder.add("Load");
+        builder.addDialog("Save as asset");
+        builder.addDialog("Save as file");
+
+        builder.show("select menuItem CGM -> Target -> ");
     }
 }
