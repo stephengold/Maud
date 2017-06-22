@@ -141,13 +141,13 @@ public class MappingTool extends WindowController {
          * the "map pose" button
          */
         String mButton;
-        if (Maud.model.target.animation.isMappedPose()
+        if (Maud.model.target.animation.isRetargetedPose()
                 || !Maud.model.source.isLoaded()) {
             mButton = "";
         } else {
-            mButton = "Map pose";
+            mButton = "Retargeted pose";
         }
-        Maud.gui.setButtonLabel("loadMappedPose", mButton);
+        Maud.gui.setButtonLabel("loadRetargetedPose", mButton);
         /*
          * the degrees/radians button
          */

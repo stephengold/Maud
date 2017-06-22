@@ -510,7 +510,7 @@ public class DddGui extends GuiScreenController {
         }
         if (Maud.model.target.animation.isMoving()) {
             updateTrackTime(Maud.model.target, tpf);
-        } else if (Maud.model.target.animation.isMappedPose()) {
+        } else if (Maud.model.target.animation.isRetargetedPose()) {
             Maud.model.target.pose.setToAnimation();
         }
         Maud.model.target.view.updatePose();

@@ -440,7 +440,7 @@ public class SelectedBone implements Cloneable {
             return false;
         } else if (loadedCgm.animation.isMoving()) {
             return false;
-        } else if (loadedCgm.animation.isMappedPose()) {
+        } else if (loadedCgm.animation.isRetargetedPose()) {
             return false;
         } else {
             return true;

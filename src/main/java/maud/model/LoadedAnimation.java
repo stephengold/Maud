@@ -61,9 +61,10 @@ public class LoadedAnimation implements Cloneable {
      */
     final public static String bindPoseName = "( bind pose )";
     /**
-     * dummy animation name used to indicate a mapped pose (no animation loaded)
+     * dummy animation name used to indicate a retargeted pose (no animation
+     * loaded)
      */
-    final public static String mappedPoseName = "( mapped pose )";
+    final public static String retargetedPoseName = "( retargeted pose )";
     // *************************************************************************
     // fields
 
@@ -101,7 +102,7 @@ public class LoadedAnimation implements Cloneable {
      */
     private LoadedCGModel loadedCgm = null;
     /**
-     * name of the loaded animation, bindPoseName, or mappedPoseName
+     * name of the loaded animation, bindPoseName, or retargetedPoseName
      */
     private String loadedName = null;
     // *************************************************************************
@@ -121,7 +122,7 @@ public class LoadedAnimation implements Cloneable {
 
         Animation animation = getAnimation();
         if (animation == null) {
-            if (isMappedPose()) {
+            if (isRetargetedPose()) {
                 Maud.model.mapping.boneTransform(boneIndex, storeResult);
             } else {
                 storeResult.loadIdentity();
@@ -200,8 +201,8 @@ public class LoadedAnimation implements Cloneable {
         } else if (isBindPose()) {
             logger.log(Level.WARNING, "cannot delete bind pose");
         } else {
-            assert isMappedPose();
-            logger.log(Level.WARNING, "cannot delete mapped pose");
+            assert isRetargetedPose();
+            logger.log(Level.WARNING, "cannot delete retargeted pose");
         }
     }
 
@@ -221,7 +222,8 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Access the loaded animation.
      *
-     * @return the pre-existing instance, or null if none or in bind/mapped pose
+     * @return the pre-existing instance, or null if none or in bind/retargeted
+     * pose
      */
     Animation getAnimation() {
         Animation result;
@@ -255,7 +257,7 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Find the index of the loaded animation.
      *
-     * @return index, or -1 if bind pose/mapped pose/not found
+     * @return index, or -1 if bind pose/retargeted pose/not found
      */
     public int findIndex() {
         int index;
@@ -320,8 +322,8 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Test whether bind pose is loaded.
      *
-     * @return true if it's loaded, false if a real animation or mapped pose is
-     * loaded
+     * @return true if it's loaded, false if a real animation or retargeted pose
+     * is loaded
      */
     public boolean isBindPose() {
         if (loadedName.equals(bindPoseName)) {
@@ -332,13 +334,13 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Test whether mapped pose is loaded.
+     * Test whether retargeted pose is loaded.
      *
      * @return true if it's loaded, false if a real animation or bind pose is
      * loaded
      */
-    public boolean isMappedPose() {
-        if (loadedName.equals(mappedPoseName)) {
+    public boolean isRetargetedPose() {
+        if (loadedName.equals(retargetedPoseName)) {
             return true;
         } else {
             return false;
@@ -377,12 +379,12 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Test whether a real animation is loaded.
      *
-     * @return true if one is loaded, false if bind/mapped pose is loaded
+     * @return true if one is loaded, false if bind/retargeted pose is loaded
      */
     public boolean isReal() {
         if (loadedName.equals(bindPoseName)) {
             return false;
-        } else if (loadedName.equals(mappedPoseName)) {
+        } else if (loadedName.equals(retargetedPoseName)) {
             return false;
         } else {
             return true;
@@ -401,7 +403,7 @@ public class LoadedAnimation implements Cloneable {
             result = true;
         } else if (name.equals(bindPoseName)) {
             result = true;
-        } else if (name.equals(mappedPoseName)) {
+        } else if (name.equals(retargetedPoseName)) {
             result = true;
         } else {
             result = false;
@@ -449,11 +451,11 @@ public class LoadedAnimation implements Cloneable {
              */
             loadBindPose();
 
-        } else if (name.equals(mappedPoseName)) {
+        } else if (name.equals(retargetedPoseName)) {
             /*
-             * Load mapped pose.
+             * Load retargeted pose.
              */
-            loadMappedPose();
+            loadRetargetedPose();
 
         } else {
             float duration = loadedCgm.getDuration(name);
@@ -474,7 +476,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Load the named real animation (not bind/mapped pose) at t=0 with the
+     * Load the named real animation (not bind/retargeted pose) at t=0 with the
      * specified playback speed.
      *
      * @param name which animation (not null)
@@ -503,11 +505,11 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Load the mapped pose.
+     * Load retargeted pose.
      */
-    public void loadMappedPose() {
+    public void loadRetargetedPose() {
         if (Maud.model.source.isLoaded()) {
-            loadedName = mappedPoseName;
+            loadedName = retargetedPoseName;
             speed = 0f;
             time = 0f;
             loadedCgm.pose.setToAnimation();

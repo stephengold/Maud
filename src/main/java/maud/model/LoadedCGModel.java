@@ -277,7 +277,7 @@ public class LoadedCGModel implements Cloneable {
         float result;
         if (animationName.equals(LoadedAnimation.bindPoseName)) {
             result = 0f;
-        } else if (animationName.equals(LoadedAnimation.mappedPoseName)) {
+        } else if (animationName.equals(LoadedAnimation.retargetedPoseName)) {
             result = 0f;
         } else {
             Animation anim = getAnimation(animationName);
@@ -419,13 +419,13 @@ public class LoadedCGModel implements Cloneable {
      * Enumerate all known animations and poses for the loaded model.
      *
      * @return a new collection of names, including bind pose and (if
-     * applicable) mapped pose
+     * applicable) retargeted pose
      */
     public Collection<String> listAnimationNames() {
         Collection<String> names = listAnimationsSorted();
         names.add(LoadedAnimation.bindPoseName);
         if (this == Maud.model.target && Maud.model.source.isLoaded()) {
-            names.add(LoadedAnimation.mappedPoseName);
+            names.add(LoadedAnimation.retargetedPoseName);
         }
 
         return names;

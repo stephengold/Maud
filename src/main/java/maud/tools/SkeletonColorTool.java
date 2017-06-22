@@ -99,7 +99,7 @@ class SkeletonColorTool extends WindowController {
         model.copyTrackedColor(color);
         int numBones = modelCgm.bones.countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            if (modelCgm.animation.isMappedPose()) {
+            if (modelCgm.animation.isRetargetedPose()) {
                 String name = modelCgm.bones.getBoneName(boneIndex);
                 if (Maud.model.mapping.isBoneMapped(name)) {
                     control.setPointColor(boneIndex, color);

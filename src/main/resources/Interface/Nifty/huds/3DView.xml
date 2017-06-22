@@ -853,15 +853,13 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next mapping)"/>
                         </control>
-                        <panel width="20px"/>
+                        <panel/>
                         <control name="checkbox" id="invertRma2CheckBox"
                                  width="20px"/>
-                        <control name="label" text="  invert the map"/>
-                        <panel width="20px"/>
-                        <control name="button"
-                                 id="loadMappedPose"
-                                 width="70px">
-                            <interact onRelease="perform(load mappedPose)"/>
+                        <control name="label" text="  use inverse    "/>
+                        <control name="button" id="loadRetargetedPose"
+                                 width="98px">
+                            <interact onRelease="perform(load retargetedPose)"/>
                         </control>
                     </panel>
                     <panel/>

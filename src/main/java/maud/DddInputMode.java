@@ -358,8 +358,8 @@ class DddInputMode extends InputMode {
             Maud.gui.dialogs.loadMappingAsset();
             handled = true;
 
-        } else if (actionString.equals("load mappedPose")) {
-            Maud.model.target.animation.loadMappedPose();
+        } else if (actionString.equals("load retargetedPose")) {
+            Maud.model.target.animation.loadRetargetedPose();
             handled = true;
 
         } else if (actionString.startsWith(loadAnimationPrefix)) {

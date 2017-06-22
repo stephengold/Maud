@@ -113,7 +113,7 @@ public class BoneTool extends WindowController {
 
         String hasTrackText, rButton, sButton, tButton;
         if (Maud.model.target.bone.isSelected()) {
-            if (Maud.model.target.animation.isMappedPose()) {
+            if (Maud.model.target.animation.isRetargetedPose()) {
                 String name = Maud.model.target.bone.getName();
                 if (Maud.model.mapping.isBoneMapped(name)) {
                     hasTrackText = "mapped";
