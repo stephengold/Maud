@@ -427,9 +427,9 @@ class DddMenus {
         if (file.getParentFile() != null) {
             builder.addFolder("..");
         }
-        for (int i = 0; i < files.length; i++) {
-            String name = files[i].getName();
-            if (files[i].isDirectory()) {
+        for (File f : files) {
+            String name = f.getName();
+            if (f.isDirectory()) {
                 builder.addFolder(name);
             } else if (name.endsWith(".blend")) {
                 builder.addBlend(name);
