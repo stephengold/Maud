@@ -58,7 +58,7 @@ public class BoundsStatus implements Cloneable {
     /**
      * line width for the visualization (in pixels, &ge;0)
      */
-    private float lineWidth = 2f;
+    private float lineWidth = 0f;
     // *************************************************************************
     // new methods exposed
 
