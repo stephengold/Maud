@@ -207,20 +207,28 @@ public class SelectedSkeleton implements Cloneable {
     /**
      * Test whether the selected skeleton contains the named bone.
      *
-     * @param name (not null)
+     * @param name which bone (not null)
      * @return true if found or noBone, otherwise false
      */
     public boolean hasBone(String name) {
+        boolean result;
         if (name.equals(noBone)) {
-            return true;
-        }
-        Skeleton skeleton = findSkeleton();
-        Bone bone = skeleton.getBone(name);
-        if (bone == null) {
-            return false;
+            result = true;
         } else {
-            return true;
+            Skeleton skeleton = findSkeleton();
+            if (skeleton == null) {
+                result = false;
+            } else {
+                Bone bone = skeleton.getBone(name);
+                if (bone == null) {
+                    result = false;
+                } else {
+                    result = true;
+                }
+            }
         }
+
+        return result;
     }
 
     /**
