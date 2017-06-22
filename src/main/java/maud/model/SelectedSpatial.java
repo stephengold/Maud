@@ -652,6 +652,8 @@ public class SelectedSpatial implements Cloneable {
      * @return the pre-existing instance (not null)
      */
     public Spatial underRoot(Spatial cgmRoot) {
+        Validate.nonNull(cgmRoot, "root spatial");
+
         Spatial result = cgmRoot;
         for (int childPosition : treePosition) {
             Node node = (Node) result;
