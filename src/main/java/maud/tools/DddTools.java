@@ -162,6 +162,10 @@ public class DddTools {
      */
     final SkyTool sky;
     /**
+     * controller for the "Twist Tool" window
+     */
+    final TwistTool twist;
+    /**
      * controller for the "User Data Tool" window
      */
     final UserDataTool userData;
@@ -203,6 +207,7 @@ public class DddTools {
         spatial = new SpatialTool(screen);
         spatialTranslation = new SpatialTranslationTool(screen);
         sky = new SkyTool(screen);
+        twist = new TwistTool(screen);
         userData = new UserDataTool(screen);
     }
     // *************************************************************************
@@ -219,7 +224,8 @@ public class DddTools {
                 boneTranslation, bounds, camera, cullHint, history, keyframe,
                 mapping, cgm, platform, render, retarget, sgc, shadowMode,
                 skeleton, skeletonColor, sky, sourceAnimation, spatial,
-                spatialRotation, spatialScale, spatialTranslation, userData);
+                spatialRotation, spatialScale, spatialTranslation, twist,
+                userData);
     }
 
     /**
@@ -314,6 +320,9 @@ public class DddTools {
             case "sky":
                 controller = sky;
                 break;
+            case "twist":
+                controller = twist;
+                break;
             case "userData":
                 controller = userData;
         }
@@ -377,7 +386,7 @@ public class DddTools {
             case "xTwistSlider":
             case "yTwistSlider":
             case "zTwistSlider":
-                mapping.onSliderChanged();
+                twist.onSliderChanged();
                 break;
 
             case "skeletonLineWidthSlider":

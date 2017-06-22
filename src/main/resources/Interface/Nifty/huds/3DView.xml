@@ -837,9 +837,8 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="mappingTool" title="Mapping Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="330px" width="360px" x="35" y="65">
+                     height="225px" width="360px" x="35" y="65">
                 <panel childLayout="vertical">
-                    <panel/>
                     <panel childLayout="horizontal" height="25px">
                         <control name="label" text="Asset path:  "/>
                         <control name="label" id="mappingAssetPath"
@@ -851,6 +850,7 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(load mapping asset)"/>
                         </control>
                     </panel>
+                    <panel/>
                     <panel childLayout="horizontal" height="25px">
                         <control name="label" text="Edit status:  "
                                  textHAlign="left"/>
@@ -924,61 +924,24 @@ the menu bar, status bar, and tool windows.
                         </control>
                     </panel>
                     <panel/>
-                    <panel childLayout="horizontal">
-                        <control name="verticalSlider" id="xTwistSlider"
-                                 buttonStepSize="1.57"
-                                 height="150px"
-                                 max="3.14" min="-3.14" stepSize="0.001"/>
-                        <control name="verticalSlider" id="yTwistSlider"
-                                 buttonStepSize="1.57"
-                                 height="150px"
-                                 max="3.14" min="-3.14" stepSize="0.001"/>
-                        <control name="verticalSlider" id="zTwistSlider"
-                                 buttonStepSize="1.57"
-                                 height="150px"
-                                 max="1.57" min="-1.57" stepSize="0.001"/>
-                        <panel childLayout="vertical"
-                               height="150px" width="130px">
-                            <control name="label" id="xTwistSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="yTwistSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="zTwistSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <panel childLayout="horizontal" height="30px">
-                                <panel/>
-                                <control name="button" id="degreesButton3"
-                                         width="50px">
-                                    <interact onRelease="perform(toggle degrees)"/>
-                                </control>
-                                <panel/>
-                            </panel>
-                            <panel childLayout="horizontal" height="30px">
-                                <panel/>
-                                <control name="button" id="resetTwistButton"
-                                         width="70px">
-                                    <interact onRelease="perform(reset twist)"/>
-                                </control>
-                                <panel/>
-                            </panel>
-                        </panel>
-                        <panel childLayout="vertical"
-                               height="150px" width="*">
-                            <panel/>
-                            <control name="button" id="addMappingButton"
-                                     width="55px">
-                                <interact onRelease="perform(new mapping)"/>
-                            </control>
-                            <panel/>
-                            <control name="button" id="deleteMappingButton"
-                                     width="55px">
-                                <interact onRelease="perform(delete mapping)"/>
-                            </control>
-                            <panel/>
-                        </panel>
+                    <panel childLayout="horizontal" height="25px">
+                        <panel/>
+                        <control name="button" id="addMappingButton"
+                                 width="55px">
+                            <interact onRelease="perform(new mapping)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" label="Twist"
+                                 id="id13ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(select tool twist)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="deleteMappingButton"
+                                 width="55px">
+                            <interact onRelease="perform(delete mapping)"/>
+                        </control>
+                        <panel/>
                     </panel>
                 </panel>
             </control>
@@ -1152,7 +1115,7 @@ the menu bar, status bar, and tool windows.
                                  width="20"/>
                         <control name="label"
                                  width="12"/>
-                        <control name="label" text="visualize skeleton"/>
+                        <control name="label" text="visualize skeletons"/>
                     </panel>
                     <panel style="statusPanel">
                         <control name="label" id="skeletonLineWidthSliderStatus"/>
@@ -1680,7 +1643,59 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
-            <control name="window" id="userDataTool" title="UserData Tool"
+            <control name="window" id="twistTool" title="Twist Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="230px" width="190px" x="35" y="65">
+                <panel childLayout="vertical">
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="xTwistSlider"
+                                 buttonStepSize="1.57"
+                                 height="190px"
+                                 max="3.14" min="-3.14" stepSize="0.001"/>
+                        <control name="verticalSlider" id="yTwistSlider"
+                                 buttonStepSize="1.57"
+                                 height="190px"
+                                 max="3.14" min="-3.14" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zTwistSlider"
+                                 buttonStepSize="1.57"
+                                 height="190px"
+                                 max="1.57" min="-1.57" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="190px" width="120px">
+                            <control name="label" id="xTwistSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="yTwistSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="zTwistSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
+                                <control name="button" id="degreesButton3"
+                                         width="50px">
+                                    <interact onRelease="perform(toggle degrees)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
+                                <control name="button" id="resetTwistButton"
+                                         width="70px">
+                                    <interact onRelease="perform(reset twist)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                        </panel>
+                    </panel>
+                    <panel/>
+                </panel>
+            </control>
+
+            <control name="window" id="userDataTool" title="User Data Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
                      height="125px" width="280px" x="65" y="35">

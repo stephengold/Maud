@@ -26,13 +26,8 @@
  */
 package maud.tools;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
-import com.jme3.math.Quaternion;
-import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
@@ -48,26 +43,10 @@ public class MappingTool extends WindowController {
     // constants and loggers
 
     /**
-     * number of coordinate axes
-     */
-    final private static int numAxes = 3;
-    /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
             MappingTool.class.getName());
-    /**
-     * names of the coordinate axes
-     */
-    final private static String[] axisNames = {"x", "y", "z"};
-    // *************************************************************************
-    // fields
-
-    /**
-     * references to the per-axis sliders, set by
-     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
-     */
-    final private Slider sliders[] = new Slider[numAxes];
     // *************************************************************************
     // constructors
 
@@ -80,44 +59,7 @@ public class MappingTool extends WindowController {
         super(screenController, "mappingTool", false);
     }
     // *************************************************************************
-    // new methods exposed
-
-    /**
-     * If active, update the MVC model based on the sliders.
-     */
-    void onSliderChanged() {
-        if (Maud.model.mapping.isBoneMappingSelected()) {
-            float[] angles = new float[numAxes];
-            for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                float value = sliders[iAxis].getValue();
-                angles[iAxis] = value;
-            }
-            Quaternion twist = new Quaternion();
-            twist.fromAngles(angles);
-            Maud.model.mapping.setTwist(twist);
-        }
-    }
-    // *************************************************************************
     // AppState methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application that owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String axisName = axisNames[iAxis];
-            Slider slider = Maud.gui.getSlider(axisName + "Twist");
-            assert slider != null;
-            sliders[iAxis] = slider;
-        }
-    }
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -152,73 +94,9 @@ public class MappingTool extends WindowController {
             mButton = "Show retargeted pose";
         }
         Maud.gui.setButtonLabel("loadRetargetedPose", mButton);
-        /*
-         * the degrees/radians button
-         */
-        String dButton;
-        if (Maud.model.misc.getAnglesInDegrees()) {
-            dButton = "radians";
-        } else {
-            dButton = "degrees";
-        }
-        Maud.gui.setButtonLabel("degreesButton3", dButton);
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Zero all 3 sliders and clear their status labels.
-     */
-    private void clear() {
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].setValue(0f);
-
-            String axisName = axisNames[iAxis];
-            String statusName = axisName + "TwistSliderStatus";
-            Maud.gui.setStatusText(statusName, "");
-        }
-    }
-
-    /**
-     * Disable all 3 sliders.
-     */
-    private void disableSliders() {
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].disable();
-        }
-    }
-
-    /**
-     * Enable all 3 sliders.
-     */
-    private void enableSliders() {
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].enable();
-        }
-    }
-
-    /**
-     * Set all 3 sliders (and their status labels) based on the mapping twist.
-     */
-    private void setSlidersToTwist() {
-        Quaternion twist = Maud.model.mapping.copyTwist(null);
-        float[] angles = twist.toAngles(null);
-        boolean degrees = Maud.model.misc.getAnglesInDegrees();
-
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            float angle = angles[iAxis];
-            sliders[iAxis].setValue(angle);
-
-            String axisName = axisNames[iAxis];
-            String sliderPrefix = axisName + "Twist";
-            if (degrees) {
-                angle = MyMath.toDegrees(angle);
-                Maud.gui.updateSliderStatus(sliderPrefix, angle, " deg");
-            } else {
-                Maud.gui.updateSliderStatus(sliderPrefix, angle, " rad");
-            }
-        }
-    }
 
     /**
      * Update the asset status.
@@ -308,27 +186,20 @@ public class MappingTool extends WindowController {
     }
 
     /**
-     * Update the twist sliders and map/reset/unmap buttons.
+     * Update map/unmap buttons.
      */
     private void updateSelected() {
         String mButton = "";
-        String rButton = "";
         String uButton = "";
         if (Maud.model.mapping.isBoneMappingSelected()) {
-            setSlidersToTwist();
-            rButton = "Reset";
             uButton = "Unmap";
-            enableSliders();
         } else {
-            clear();
-            disableSliders();
             if (Maud.model.source.bone.isSelected()
                     && Maud.model.target.bone.isSelected()) {
                 mButton = "Map";
             }
         }
         Maud.gui.setButtonLabel("addMappingButton", mButton);
-        Maud.gui.setButtonLabel("resetTwistButton", rButton);
         Maud.gui.setButtonLabel("deleteMappingButton", uButton);
     }
 
