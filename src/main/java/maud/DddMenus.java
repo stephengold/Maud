@@ -617,6 +617,7 @@ class DddMenus {
         builder.addTool("Tool");
         builder.addDialog("Load");
         if (Maud.model.mapping.countMappings() > 0) {
+            builder.add("Invert");
             builder.add("Unload");
         }
         builder.addDialog("Save");
@@ -1116,6 +1117,11 @@ class DddMenus {
 
         boolean handled = false;
         switch (remainder) {
+            case "Invert":
+                Maud.model.mapping.invert();
+                handled = true;
+                break;
+
             case "Load":
                 Maud.gui.dialogs.loadMappingAsset();
                 handled = true;

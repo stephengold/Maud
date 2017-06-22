@@ -76,13 +76,24 @@ public class EditableMapping extends LoadedMapping {
     }
 
     /**
-     * Delete the selected bone mapping.
+     * Delete the selected bone mapping. TODO rename
      */
     public void deleteMapping() {
         BoneMapping boneMapping = selectedMapping();
         if (boneMapping != null) {
             mapping.removeMapping(boneMapping);
             setEdited("delete bone mapping");
+        }
+    }
+
+    /**
+     * Invert the skeleton mapping.
+     */
+    public void invert() {
+        if (mapping.countMappings() > 0) {
+            mapping = mapping.inverse();
+            assetPath = null;
+            setEdited("invert skeleton mapping");
         }
     }
 
