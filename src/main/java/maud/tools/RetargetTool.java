@@ -71,38 +71,30 @@ public class RetargetTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        String targetAssetPath = Maud.model.target.getAssetPath();
-        String targetAssetDesc = MyString.quote(targetAssetPath);
-        Maud.gui.setStatusText("targetAsset", " " + targetAssetDesc);
+        String targetName = Maud.model.target.getName();
+        String targetDesc = MyString.quote(targetName);
+        Maud.gui.setStatusText("targetName", " " + targetDesc);
 
-        String sButton, sourceAssetDesc;
+        String sButton, sourceDesc;
         if (!Maud.model.source.isLoaded()) {
-            sourceAssetDesc = "(none loaded)";
+            sourceDesc = "( none loaded )";
             sButton = "";
 
         } else {
-            String sourcePath = Maud.model.source.getAssetPath();
-            sourceAssetDesc = MyString.quote(sourcePath);
+            String sourceName = Maud.model.source.getName();
+            sourceDesc = MyString.quote(sourceName);
             if (Maud.model.source.countAnimations() > 0) {
                 sButton = "Load";
             } else {
                 sButton = "";
             }
         }
-        Maud.gui.setStatusText("sourceAsset", " " + sourceAssetDesc);
+        Maud.gui.setStatusText("sourceName", " " + sourceDesc);
         Maud.gui.setButtonLabel("selectSourceAnimationButton", sButton);
 
-        String mapAssetPath = Maud.model.mapping.getAssetPath();
-        String mapAssetDesc;
-        if (mapAssetPath == null) {
-            mapAssetDesc = "(none selected)";
-        } else {
-            mapAssetDesc = MyString.quote(mapAssetPath);
-        }
-        Maud.gui.setStatusText("mapAsset", " " + mapAssetDesc);
-
-        boolean invertFlag = Maud.model.mapping.isInvertingMap();
-        Maud.gui.setChecked("invertRma", invertFlag);
+        int numBoneMappings = Maud.model.mapping.countMappings();
+        String mappingDesc = Integer.toString(numBoneMappings);
+        Maud.gui.setStatusText("mappingCount", mappingDesc);
 
         updateBottom();
     }
@@ -115,10 +107,10 @@ public class RetargetTool extends WindowController {
     private void updateBottom() {
         String feedback = "";
         String rButton = "";
-        String sourceAnimDesc = "(none selected)";
+        String sourceAnimDesc = "( none loaded )";
 
         if (!Maud.model.source.isLoaded()) {
-            feedback = "load a source model";
+            feedback = "load the source model";
         } else if (Maud.model.source.countAnimations() < 1) {
             feedback = "load an animated source model";
         } else {
@@ -129,15 +121,18 @@ public class RetargetTool extends WindowController {
                 String name = Maud.model.source.animation.getName();
                 sourceAnimDesc = MyString.quote(name);
 
-                String mapAssetPath = Maud.model.mapping.getAssetPath();
-                if (mapAssetPath == null) {
-                    feedback = "load a map";
-                } else if (!Maud.model.mapping.matchesTarget()) {
-                    feedback = "map doesn't match the target model";
-                } else if (!Maud.model.mapping.matchesSource()) {
-                    feedback = "map doesn't match the source asset";
+                boolean matchesSource = Maud.model.mapping.matchesSource();
+                int numBoneMappings = Maud.model.mapping.countMappings();
+                if (numBoneMappings == 0) {
+                    feedback = "the mapping is empty";
+                } else if (Maud.model.mapping.matchesTarget()) {
+                    if (matchesSource) {
+                        rButton = "Retarget";
+                    } else {
+                        feedback = "mapping doesn't match source skeleton";
+                    }
                 } else {
-                    rButton = "Retarget";
+                    feedback = "mapping doesn't match target skeleton";
                 }
             }
         }
