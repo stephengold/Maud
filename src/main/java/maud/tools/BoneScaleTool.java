@@ -95,7 +95,7 @@ class BoneScaleTool extends WindowController {
             scales.z = Math.max(scales.z, 0.001f);
 
             int boneIndex = Maud.model.target.bone.getIndex();
-            Maud.model.target.pose.setScale(boneIndex, scales);
+            Maud.model.target.pose.getPose().setScale(boneIndex, scales);
         }
     }
     // *************************************************************************

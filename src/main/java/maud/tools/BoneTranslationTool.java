@@ -111,7 +111,7 @@ class BoneTranslationTool extends WindowController {
             offsets.multLocal(masterScale);
 
             int boneIndex = Maud.model.target.bone.getIndex();
-            Maud.model.target.pose.setTranslation(boneIndex, offsets);
+            Maud.model.target.pose.getPose().setTranslation(boneIndex, offsets);
         }
     }
     // *************************************************************************

@@ -847,7 +847,7 @@ public class LoadedAnimation implements Cloneable {
         assert !isReserved(animationName) : animationName;
         assert !loadedCgm.hasAnimation(animationName) : animationName;
 
-        Animation poseAnim = loadedCgm.pose.capture(animationName);
+        Animation poseAnim = loadedCgm.pose.getPose().capture(animationName);
         editableCgm.addAnimation(poseAnim);
     }
 }

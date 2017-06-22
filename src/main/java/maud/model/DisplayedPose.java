@@ -26,22 +26,15 @@
  */
 package maud.model;
 
-import com.jme3.animation.Animation;
-import com.jme3.animation.Bone;
-import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
-import jme3utilities.MyAnimation;
-import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
+import maud.Pose;
 
 /**
  * The displayed pose of a particular CG model in the Maud application.
@@ -61,116 +54,42 @@ public class DisplayedPose implements JmeCloneable {
     // fields
 
     /**
-     * user transforms that describe the pose, one for each bone
+     * the pose, including user transforms and skeleton
      */
-    private List<Transform> transforms = new ArrayList<>(108);
+    private Pose pose = new Pose(null);
     /**
-     * loaded CG model that is in this pose (set by
+     * loaded CG model that is in the pose (set by
      * {@link #setCgm(LoadedCGModel)})
      */
     private LoadedCGModel loadedCgm = null;
-    /**
-     * the skeleton for which the pose was generated, or null for none
-     */
-    private Skeleton skeleton = null;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Capture the pose as an animation. The new animation has a zero duration,
-     * a single keyframe at t=0, and all its tracks are BoneTracks.
-     *
-     * @parm animationName name for the new animation (not null)
-     * @return a new instance
-     */
-    Animation capture(String animationName) {
-        assert animationName != null;
-        /*
-         * Start with an empty animation.
-         */
-        float duration = 0f;
-        Animation result = new Animation(animationName, duration);
-        /*
-         * Add a BoneTrack for each bone that's not in bind pose.
-         */
-        int numBones = skeleton.getBoneCount();
-        Transform transform = new Transform();
-        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            copyTransform(boneIndex, transform);
-            if (!Misc.isIdentity(transform)) {
-                Vector3f translation = transform.getTranslation();
-                Quaternion rotation = transform.getRotation();
-                Vector3f scale = transform.getScale();
-                BoneTrack track = MyAnimation.createTrack(boneIndex,
-                        translation, rotation, scale);
-                result.addTrack(track);
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Copy the user transform of the indexed bone in this pose.
+     * Copy the user transform of the indexed bone.
      *
      * @param boneIndex which bone to use (&ge;0)
      * @param storeResult (modified if not null)
      * @return user transform (either storeResult or a new instance)
      */
     public Transform copyTransform(int boneIndex, Transform storeResult) {
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
-
-        Transform transform = transforms.get(boneIndex);
-        storeResult.set(transform);
-
-        return storeResult;
-    }
-
-    /**
-     * Count the bone transforms in this pose.
-     *
-     * @return count (&ge;0)
-     */
-    public int countTransforms() {
-        int count = transforms.size();
-        assert count >= 0 : count;
-        return count;
-    }
-
-    /**
-     * Calculate the local transform of the indexed bone in this pose.
-     *
-     * @param boneIndex which bone to use (&ge;0)
-     * @param storeResult (modified if not null)
-     * @return transform in local coordinates (either storeResult or a new
-     * instance)
-     */
-    Transform localTransform(int boneIndex, Transform storeResult) {
         Validate.nonNegative(boneIndex, "bone index");
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
-        /*
-         * Start with the bone's bind transform.
-         */
-        Bone bone = skeleton.getBone(boneIndex);
-        MySkeleton.copyBindTransform(bone, storeResult);
-        /*
-         * Apply the user transform in a simple (yet peculiar) way
-         * to obtain the bone's local transform.
-         */
-        Transform user = copyTransform(boneIndex, null);
-        storeResult.getTranslation().addLocal(user.getTranslation());
-        storeResult.getRotation().multLocal(user.getRotation());
-        storeResult.getScale().multLocal(user.getScale());
-
-        return storeResult;
+        Transform result = pose.copyTransform(boneIndex, storeResult);
+        return result;
     }
 
     /**
-     * Calculate the model transform of the indexed bone in this pose.
+     * Access the pose.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public Pose getPose() {
+        assert pose != null;
+        return pose;
+    }
+
+    /**
+     * Calculate the model transform of the indexed bone.
      *
      * @param boneIndex which bone to use (&ge;0)
      * @param storeResult (modified if not null)
@@ -179,94 +98,21 @@ public class DisplayedPose implements JmeCloneable {
      */
     public Transform modelTransform(int boneIndex, Transform storeResult) {
         Validate.nonNegative(boneIndex, "bone index");
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
-        /*
-         * Start with the bone's local transform.
-         */
-        localTransform(boneIndex, storeResult);
-
-        Bone bone = skeleton.getBone(boneIndex);
-        Bone parentBone = bone.getParent();
-        if (parentBone != null) {
-            Transform local = storeResult.clone();
-
-            int parentIndex = skeleton.getBoneIndex(parentBone);
-            Transform parent = modelTransform(parentIndex, null);
-            /*
-             * Apply the parent's model transform in a very peculiar way
-             * to obtain the bone's model transform.
-             */
-            Vector3f mTranslation = storeResult.getTranslation();
-            Quaternion mRotation = storeResult.getRotation();
-            Vector3f mScale = storeResult.getScale();
-            parent.getRotation().mult(local.getRotation(), mRotation);
-            parent.getScale().mult(local.getScale(), mScale);
-            parent.getRotation().mult(local.getTranslation(), mTranslation);
-            mTranslation.multLocal(parent.getScale());
-            mTranslation.addLocal(parent.getTranslation());
-        }
-
-        return storeResult;
-    }
-
-    /**
-     * Reset the rotation of the indexed bone to identity.
-     *
-     * @param boneIndex which bone (&ge;0)
-     */
-    void resetRotation(int boneIndex) {
-        Transform transform = transforms.get(boneIndex);
-        Quaternion rotation = transform.getRotation();
-        rotation.loadIdentity();
-    }
-
-    /**
-     * Reset the scale of the indexed bone to identity.
-     *
-     * @param boneIndex which bone (&ge;0)
-     */
-    void resetScale(int boneIndex) {
-        Transform transform = transforms.get(boneIndex);
-        Vector3f scale = transform.getScale();
-        scale.set(1f, 1f, 1f);
+        Transform result = pose.modelTransform(boneIndex, storeResult);
+        return result;
     }
 
     /**
      * Reset the pose to bind pose.
      *
-     * @param skeleton (not null)
+     * @param skeleton (may be null, alias created)
      */
     void resetToBind(Skeleton skeleton) {
-        this.skeleton = skeleton;
-
-        int boneCount;
-        if (skeleton == null) {
-            boneCount = 0;
-        } else {
-            boneCount = skeleton.getBoneCount();
-        }
-        transforms.clear();
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Transform transform = new Transform();
-            transforms.add(transform);
-        }
+        pose = new Pose(skeleton);
     }
 
     /**
-     * Reset the translation of the indexed bone to zero.
-     *
-     * @param boneIndex which bone (&ge;0)
-     */
-    void resetTranslation(int boneIndex) {
-        Transform transform = transforms.get(boneIndex);
-        Vector3f translation = transform.getTranslation();
-        translation.zero();
-    }
-
-    /**
-     * Alter which CG model is in this pose. (Invoked only during initialization
+     * Alter which CG model is in the pose. (Invoked only during initialization
      * and cloning.)
      *
      * @param newLoaded (not null)
@@ -277,44 +123,16 @@ public class DisplayedPose implements JmeCloneable {
     }
 
     /**
-     * Alter the rotation of the indexed bone.
-     *
-     * @param boneIndex which bone to rotate (&ge;0)
-     * @param rotation (not null, unaffected)
-     */
-    public void setRotation(int boneIndex, Quaternion rotation) {
-        Validate.nonNull(rotation, "rotation");
-
-        Transform boneTransform = transforms.get(boneIndex);
-        boneTransform.setRotation(rotation);
-    }
-
-    /**
      * Alter the rotation of the indexed bone to match the loaded animation.
      *
      * @param boneIndex which bone to rotate (&ge;0)
      */
     void setRotationToAnimation(int boneIndex) {
-        Transform poseT = transforms.get(boneIndex);
+        assert boneIndex >= 0 : boneIndex;
+
         Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Quaternion animQ = animT.getRotation();
-        poseT.setRotation(animQ);
-    }
-
-    /**
-     * Alter the scale of the indexed bone.
-     *
-     * @param boneIndex which bone to scale (&ge;0)
-     * @param scale (not null, unaffected)
-     */
-    public void setScale(int boneIndex, Vector3f scale) {
-        Validate.nonNull(scale, "scale");
-        Validate.positive(scale.x, "x scale");
-        Validate.positive(scale.y, "y scale");
-        Validate.positive(scale.z, "z scale");
-
-        Transform boneTransform = transforms.get(boneIndex);
-        boneTransform.setScale(scale);
+        pose.setRotation(boneIndex, animQ);
     }
 
     /**
@@ -323,38 +141,25 @@ public class DisplayedPose implements JmeCloneable {
      * @param boneIndex which bone to scale (&ge;0)
      */
     void setScaleToAnimation(int boneIndex) {
-        Transform poseT = transforms.get(boneIndex);
+        Validate.nonNegative(boneIndex, "bone index");
+
         Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Vector3f animV = animT.getScale();
-        poseT.setScale(animV);
+        pose.setScale(boneIndex, animV);
     }
 
     /**
-     * Alter the transforms to match the loaded animation.
+     * Alter the pose to match the loaded animation.
      */
     public void setToAnimation() {
-        int boneCount = skeleton.getBoneCount();
-        int numTransforms = countTransforms();
-        assert numTransforms == boneCount : numTransforms;
+        int boneCount = pose.countBones();
 
         // TODO for each root bone ...
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Transform transform = transforms.get(boneIndex);
-            loadedCgm.animation.boneTransform(boneIndex, transform);
+            Transform transform;
+            transform = loadedCgm.animation.boneTransform(boneIndex, null);
+            pose.set(boneIndex, transform);
         }
-    }
-
-    /**
-     * Alter the translation of the indexed bone.
-     *
-     * @param boneIndex which bone to translate (&ge;0)
-     * @param translation (not null, unaffected)
-     */
-    public void setTranslation(int boneIndex, Vector3f translation) {
-        Validate.nonNull(translation, "translation");
-
-        Transform boneTransform = transforms.get(boneIndex);
-        boneTransform.setTranslation(translation);
     }
 
     /**
@@ -363,10 +168,11 @@ public class DisplayedPose implements JmeCloneable {
      * @param boneIndex which bone to translate (&ge;0)
      */
     void setTranslationToAnimation(int boneIndex) {
-        Transform poseT = transforms.get(boneIndex);
+        Validate.nonNegative(boneIndex, "bone index");
+
         Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Vector3f animV = animT.getTranslation();
-        poseT.setTranslation(animV);
+        pose.setTranslation(boneIndex, animV);
     }
     // *************************************************************************
     // JmeCloner methods
@@ -380,15 +186,7 @@ public class DisplayedPose implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        skeleton = cloner.clone(skeleton);
-
-        int numTransforms = transforms.size();
-        List<Transform> originalTransforms = transforms;
-        transforms = new ArrayList<>(numTransforms);
-        for (Transform t : originalTransforms) {
-            Transform tClone = t.clone();
-            transforms.add(tClone);
-        }
+        pose = cloner.clone(pose);
     }
 
     /**
@@ -404,20 +202,5 @@ public class DisplayedPose implements JmeCloneable {
         } catch (CloneNotSupportedException exception) {
             throw new RuntimeException(exception);
         }
-    }
-    // *************************************************************************
-    // Object methods
-
-    /**
-     * Create a deep copy of this object.
-     *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
-     */
-    @Override
-    public DisplayedPose clone() throws CloneNotSupportedException {
-        DisplayedPose clone = (DisplayedPose) super.clone();
-
-        return clone;
     }
 }

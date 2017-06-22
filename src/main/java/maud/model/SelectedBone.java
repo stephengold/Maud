@@ -255,7 +255,7 @@ public class SelectedBone implements Cloneable {
     public void resetRotation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            Maud.model.target.pose.resetRotation(boneIndex);
+            Maud.model.target.pose.getPose().resetRotation(boneIndex);
         }
     }
 
@@ -265,7 +265,7 @@ public class SelectedBone implements Cloneable {
     public void resetScale() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            Maud.model.target.pose.resetScale(boneIndex);
+            Maud.model.target.pose.getPose().resetScale(boneIndex);
         }
     }
 
@@ -275,7 +275,7 @@ public class SelectedBone implements Cloneable {
     public void resetTranslation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            Maud.model.target.pose.resetTranslation(boneIndex);
+            Maud.model.target.pose.getPose().resetTranslation(boneIndex);
         }
     }
 

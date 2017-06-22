@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
+import maud.Pose;
 import maud.Util;
 
 /**
@@ -110,9 +111,9 @@ public class LoadedMapping implements Cloneable {
                 Maud.model.source.pose.modelTransform(sourceIndex, smt);
                 Quaternion modelRotation = smt.getRotation();
 
-                Quaternion userRotation = Util.userRotation(targetBone,
-                        Maud.model.target.pose, modelRotation, targetSkeleton,
-                        null);
+                Pose pose = Maud.model.target.pose.getPose();
+                Quaternion userRotation = Util.userRotation(targetBone, pose,
+                        modelRotation, targetSkeleton, null);
                 Quaternion twist = boneMapping.getTwist();
                 userRotation.mult(twist, storeResult.getRotation());
             }

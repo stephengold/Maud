@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
-import maud.model.DisplayedPose;
 
 /**
  * Utility methods for the Maud application. All methods should be static.
@@ -244,12 +243,12 @@ public class Util {
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
-    public static Quaternion localRotation(Bone bone, DisplayedPose pose,
+    public static Quaternion localRotation(Bone bone, Pose pose,
             Quaternion modelOrientation, Skeleton skeleton,
             Quaternion storeResult) {
-        assert modelOrientation != null;
+        Validate.nonNull(modelOrientation, "model orienation");
         assert skeleton != null;
-        assert bone != null;
+        Validate.nonNull(bone, "bone");
         assert pose != null;
         if (storeResult == null) {
             storeResult = new Quaternion();
@@ -385,12 +384,12 @@ public class Util {
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
-    public static Quaternion userRotation(Bone bone, DisplayedPose pose,
+    public static Quaternion userRotation(Bone bone, Pose pose,
             Quaternion modelOrientation, Skeleton skeleton,
             Quaternion storeResult) {
-        assert modelOrientation != null;
+        Validate.nonNull(modelOrientation, "model orienation");
         assert skeleton != null;
-        assert bone != null;
+        Validate.nonNull(bone, "bone");
         assert pose != null;
         if (storeResult == null) {
             storeResult = new Quaternion();

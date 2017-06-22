@@ -356,7 +356,7 @@ public class CgmView implements JmeCloneable {
      */
     void updatePose() {
         int boneCount = model.bones.countBones();
-        int numTransforms = model.pose.countTransforms();
+        int numTransforms = model.pose.getPose().countBones();
         assert numTransforms == boneCount : numTransforms;
         assert skeleton == null || skeleton.getBoneCount() == boneCount : boneCount;
 
