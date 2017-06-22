@@ -231,8 +231,8 @@ public class BVHLoader implements AssetLoader {
 //        }
         Bone bone = new Bone(hierarchy.getName());
 
-        bone.setBindTransforms(hierarchy.getOffset(),
-                new Quaternion().IDENTITY, Vector3f.UNIT_XYZ);
+        bone.setBindTransforms(hierarchy.getOffset(), new Quaternion(),
+                Vector3f.UNIT_XYZ);
 
         if (parent != null) {
             parent.addChild(bone);
