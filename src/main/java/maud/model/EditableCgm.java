@@ -362,7 +362,11 @@ public class EditableCgm extends LoadedCGModel {
         assert rotations != null;
 
         BoneTrack boneTrack = track.findTrack();
-        boneTrack.setKeyframes(times, translations, rotations, scales);
+        if (scales == null) {
+            boneTrack.setKeyframes(times, translations, rotations);
+        } else {
+            boneTrack.setKeyframes(times, translations, rotations, scales);
+        }
         setEdited("replace keyframes");
     }
 
