@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -373,9 +374,12 @@ public class SelectedSkeleton implements Cloneable {
             return false;
         }
         if (nameSet.contains(name)) {
-            logger.warning("duplicate bone name");
+            logger.log(Level.WARNING, "duplicate bone name: {0}",
+                    MyString.quote(name));
+        } else {
+            nameSet.add(name);
         }
-        nameSet.add(name);
+
         return true;
     }
     // *************************************************************************
