@@ -6,7 +6,6 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;
-import com.jme3.asset.AssetManager;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -18,7 +17,7 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 /**
- * Loader for Biovision BVH assets. The layout is documented at
+ * Loader for Biovision BVH assets. The BVH file format is documented at
  * http://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html
  *
  * @author Nehon
@@ -35,10 +34,9 @@ public class BVHLoader implements AssetLoader {
     // *************************************************************************
     // fields
 
-    private AssetManager owner;
-    BVHAnimData data;
-    BVHAnimation animation;
-    int index = 0;
+    private BVHAnimData data;
+    private BVHAnimation animation;
+    private int index = 0;
     /**
      * count of end effectors parsed during the current load, used to generate
      * unique bone names (&ge;0)
@@ -58,7 +56,6 @@ public class BVHLoader implements AssetLoader {
      */
     @Override
     public Object load(AssetInfo info) throws IOException {
-        this.owner = info.getManager();
         fileName = info.getKey().getName();
         numEndEffectors = 0;
 
@@ -66,7 +63,7 @@ public class BVHLoader implements AssetLoader {
         try {
             scan = new Scanner(in);
             scan.useLocale(Locale.US);
-            this.fileName = info.getKey().getName();
+            fileName = info.getKey().getName();
             loadFromScanner();
         } finally {
             if (in != null) {
@@ -159,43 +156,17 @@ public class BVHLoader implements AssetLoader {
             }
             translations[i] = t;
             rotations[i] = r;
-//            if (i == 1) {
-//                float[] angles = new float[3];
-//                r.toAngles(angles);
-//                System.out.println("Computed rotation : ");
-//                System.out.println("rz : " + angles[2] * FastMath.RAD_TO_DEG);
-//                System.out.println("rx : " + angles[0] * FastMath.RAD_TO_DEG);
-//                System.out.println("ry : " + angles[1] * FastMath.RAD_TO_DEG);
-//
-//            }
 
             time += animation.getFrameTime();
         }
-//        System.out.println("bone : " + bone.getName());
-//        System.out.println("times : ");
-//        for (int i = 0; i < times.length; i++) {
-//            System.out.print(times[i]+", ");
-//
-//        }
-//        System.out.println();
-//        System.out.println("translations : ");
-//         for (int i = 0; i < translations.length; i++) {
-//            System.out.print(translations[i]+", ");
-//
-//        }
-//        System.out.println();
-//        System.out.println("rotations : ");
-//         for (int i = 0; i < rotations.length; i++) {
-//            System.out.print(rotations[i]+", ");
-//
-//        }
-//        System.out.println();
+
         return new BoneTrack(index, times, translations, rotations);
     }
 
     /**
+     * Parse a complete BVH file to construct a new animation.
      *
-     * @throws java.io.IOException if an I/O error occurs while loading
+     * @throws java.io.IOException if an I/O error occurs while reading
      */
     private void loadFromScanner() throws IOException {
         animation = new BVHAnimation();
@@ -215,12 +186,11 @@ public class BVHLoader implements AssetLoader {
             scan.next();
             animation.setFrameTime(scan.nextFloat());
             for (int i = 0; i < animation.getNbFrames(); i++) {
-                readChanelsValue(animation.getHierarchy());
+                readChannelsValue(animation.getHierarchy());
             }
 
         }
 
-        //    System.out.println(animation.getHierarchy().toString());
         compileData();
     }
 
@@ -233,11 +203,7 @@ public class BVHLoader implements AssetLoader {
      */
     private void populateBoneList(Bone[] bones, BoneTrack[] tracks,
             BVHBone hierarchy, Bone parent) {
-//        if (hierarchy.getName().equals("Site")) {
-//            return;
-//        }
         Bone bone = new Bone(hierarchy.getName());
-
         bone.setBindTransforms(hierarchy.getOffset(), new Quaternion(),
                 Vector3f.UNIT_XYZ);
 
@@ -252,19 +218,20 @@ public class BVHLoader implements AssetLoader {
                 populateBoneList(bones, tracks, bVHBone, bone);
             }
         }
-
     }
 
     /**
+     * Parse the hierarchy of the named bone/segment, including its descendents.
+     * Note: recursive!
      *
-     * @param name
+     * @param name name for the bone (not null, not empty)
      * @return a new instance
      */
     private BVHBone readBone(String name) {
+        assert name != null;
+        assert !name.isEmpty();
+
         BVHBone bone = new BVHBone(name);
-//        if(!name.equals("Site")){
-//            System.out.println(name);
-//        }
         String token = scan.next();
         if (token.equals("{")) {
             token = scan.next();
@@ -275,8 +242,8 @@ public class BVHLoader implements AssetLoader {
                 token = scan.next();
             }
             if (token.equals("CHANNELS")) {
-                bone.setChannels(new ArrayList<BVHChannel>());
                 int nbChan = scan.nextInt();
+                bone.setChannels(new ArrayList<BVHChannel>(nbChan));
                 for (int i = 0; i < nbChan; i++) {
                     bone.getChannels().add(new BVHChannel(scan.next()));
                 }
@@ -284,7 +251,7 @@ public class BVHLoader implements AssetLoader {
             }
             while (token.equals("JOINT") || token.equals("End")) {
                 if (bone.getChildren() == null) {
-                    bone.setChildren(new ArrayList<BVHBone>());
+                    bone.setChildren(new ArrayList<BVHBone>(5));
                 }
                 String boneName = scan.next();
                 if ("Site".equals(boneName)) { // end effector
@@ -301,19 +268,24 @@ public class BVHLoader implements AssetLoader {
     }
 
     /**
+     * Parse one sample of motion data for the specified bone/segment and all
+     * its descendents. Add the data to the appropriate channels. Note:
+     * recursive!
      *
-     * @param bone
+     * @param bone starting point (not null)
      */
-    private void readChanelsValue(BVHBone bone) {
+    private void readChannelsValue(BVHBone bone) {
         if (bone.getChannels() != null) {
             for (BVHChannel bvhChannel : bone.getChannels()) {
+                float value = scan.nextFloat();
                 if (bvhChannel.getValues() == null) {
-                    bvhChannel.setValues(new ArrayList<Float>());
+                    bvhChannel.setValues(new ArrayList<Float>(100));
                 }
-                bvhChannel.getValues().add(scan.nextFloat());
+                bvhChannel.getValues().add(value);
             }
-            for (BVHBone b : bone.getChildren()) {
-                readChanelsValue(b);
+
+            for (BVHBone child : bone.getChildren()) {
+                readChannelsValue(child);
             }
         }
     }
