@@ -30,7 +30,6 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.controls.Slider;
@@ -212,9 +211,9 @@ class AxesTool extends WindowController {
                 if (loadedCgm.bone.isSelected()) {
                     int boneIndex = loadedCgm.bone.getIndex();
                     transform = loadedCgm.pose.modelTransform(boneIndex, null);
-                    Geometry ag = loadedCgm.view.findAnimatedGeometry();
-                    Transform agTransform = ag.getWorldTransform();
-                    transform.combineWithParent(agTransform);
+                    Transform worldTransform;
+                    worldTransform = loadedCgm.view.copyWorldTransform();
+                    transform.combineWithParent(worldTransform);
                 } else {
                     transform = null;
                 }

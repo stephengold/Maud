@@ -35,7 +35,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.util.clone.Cloner;
@@ -121,20 +120,26 @@ public class CgmView implements JmeCloneable {
     public Vector3f boneLocation(int boneIndex) {
         Bone bone = skeleton.getBone(boneIndex);
         Vector3f modelLocation = bone.getModelSpacePosition();
-        Geometry ag = findAnimatedGeometry();
-        Vector3f location = ag.localToWorld(modelLocation, null);
+        Transform worldTransform = copyWorldTransform();
+        Vector3f location = worldTransform.transformVector(modelLocation, null);
 
         return location;
     }
 
     /**
-     * Find an animated geometry of the CG model.
+     * Copy the world transform of the CG model, based on an animated geometry
+     * if possible.
      *
-     * @return a pre-existing instance, or null if none
+     * @return a new instance
      */
-    public Geometry findAnimatedGeometry() {
-        Geometry result = MySpatial.findAnimatedGeometry(cgmRoot);
-        return result;
+    public Transform copyWorldTransform() {
+        Spatial basedOn = MySpatial.findAnimatedGeometry(cgmRoot);
+        if (basedOn == null) {
+            basedOn = cgmRoot;
+        }
+        Transform transform = basedOn.getWorldTransform();
+
+        return transform.clone();
     }
 
     /**
@@ -280,7 +285,7 @@ public class CgmView implements JmeCloneable {
             skeletonControl = null;
             skeletonDebugControl = null;
         } else {
-            skeleton = new Skeleton(newSkeleton);
+            skeleton = Cloner.deepClone(newSkeleton);
             MySkeleton.setUserControl(skeleton, true);
 
             animControl = new AnimControl(skeleton);
@@ -295,6 +300,11 @@ public class CgmView implements JmeCloneable {
             skeletonDebugControl = new SkeletonDebugControl(assetManager);
             controlled.addControl(skeletonDebugControl);
             skeletonDebugControl.setSkeleton(skeleton);
+            /*
+             * Update the control to initialize vertex positions.
+             */
+            skeletonDebugControl.setEnabled(true);
+            skeletonDebugControl.update(0f);
         }
     }
 
@@ -455,7 +465,7 @@ public class CgmView implements JmeCloneable {
          */
         setSkeleton(skeleton, false);
         /*
-         * Configure the CG model transform based on the range
+         * Configure the world transform based on the range
          * of mesh coordinates in the CG model.
          */
         Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot, false);
