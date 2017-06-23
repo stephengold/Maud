@@ -284,7 +284,7 @@ public class BVHLoader implements AssetLoader {
             }
             while (token.equals("JOINT") || token.equals("End")) {
                 if (bone.getChildren() == null) {
-                    bone.setChildren(new ArrayList<>());
+                    bone.setChildren(new ArrayList<BVHBone>());
                 }
                 String boneName = scan.next();
                 if ("Site".equals(boneName)) { // end effector

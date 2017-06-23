@@ -168,12 +168,12 @@ public class HistoryTool extends WindowController {
      * @param text (not null)
      * @return the element of the newly-created label
      */
-    private Element addLabel(String text, String bgColor) {
+    private Element addLabel(final String text, final String bgColor) {
         BasicScreenController screenController = getScreenController();
         Screen screen = screenController.getScreen();
         Element content = screen.findElementById("historyDynamicContent");
 
-        String labelId = String.format("historyLine%d", numLabelsWritten);
+        final String labelId = String.format("historyLine%d", numLabelsWritten);
         ++numLabelsWritten;
         LabelBuilder builder = new LabelBuilder() {
             {

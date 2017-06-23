@@ -284,7 +284,7 @@ public class SkeletonMapping implements Savable {
     public void read(JmeImporter im) throws IOException {
         InputCapsule ic = im.getCapsule(this);
         mappings = (Map<String, BoneMapping>) ic.readStringSavableMap(
-                "mappings", new HashMap<>(50));
+                "mappings", new HashMap<String, BoneMapping>(50));
     }
 
     /**
