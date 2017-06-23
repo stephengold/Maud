@@ -26,10 +26,12 @@
  */
 package maud;
 
+import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
@@ -41,11 +43,13 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.blender.meshes.Face;
+import com.jme3.scene.plugins.bvh.BVHAnimData;
 import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
@@ -187,10 +191,45 @@ public class Util {
     }
 
     /**
+     * Load a BVH asset as a CG model without logging any warning/error
+     * messages.
+     *
+     * @param assetManager asset manager
+     * @param assetPath path to BVH asset
+     * @return a new orphan spatial, or null if unsuccessful
+     */
+    public static Spatial loadBvhAsCgm(AssetManager assetManager,
+            String assetPath) {
+        if (assetManager == null || assetPath == null) {
+            return null;
+        }
+
+        BVHAnimData loadedData;
+        try {
+            loadedData = (BVHAnimData) assetManager.loadAsset(assetPath);
+        } catch (AssetNotFoundException | NoSuchElementException e) {
+            return null;
+        }
+
+        Skeleton skeleton = loadedData.getSkeleton();
+        SkeletonControl skeletonControl = new SkeletonControl(skeleton);
+
+        AnimControl animControl = new AnimControl(skeleton);
+        Animation anim = loadedData.getAnimation();
+        animControl.addAnim(anim);
+
+        Spatial result = new Node(assetPath);
+        result.addControl(animControl);
+        result.addControl(skeletonControl);
+
+        return result;
+    }
+
+    /**
      * Load a CG model asset without logging any warning/error messages.
      *
-     * @param assetManager (not null)
-     * @param assetPath (not null)
+     * @param assetManager asset manager
+     * @param assetPath path to CG model asset
      * @return a new orphan spatial, or null if unsuccessful
      */
     public static Spatial loadCgmQuietly(AssetManager assetManager,

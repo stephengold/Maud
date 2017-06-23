@@ -30,6 +30,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.audio.openal.ALAudioRenderer;
 import com.jme3.scene.Node;
+import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.system.AppSettings;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -259,13 +260,19 @@ public class Maud extends GuiApplication {
      */
     private void startup1() {
         logger.info("");
-
-        Node sourceParent = new Node("parent for source model");
+        /*
+         * register a loader for BVH files
+         */
+        assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
+        /*
+         * Add attachment points to the scene graph.
+         */        
+        Node sourceParent = new Node("parent for source CGM");
         rootNode.attachChild(sourceParent);
         CgmView sourceView = new CgmView(model.source, sourceParent);
         model.source.setView(sourceView);
 
-        Node targetParent = new Node("parent for target model");
+        Node targetParent = new Node("parent for target CGM");
         rootNode.attachChild(targetParent);
         CgmView targetView = new CgmView(model.target, targetParent);
         model.target.setView(targetView);
@@ -279,8 +286,8 @@ public class Maud extends GuiApplication {
         gui.inputMode.setConfigPath(hotkeyBindingsAssetPath);
         stateManager.attach(gui.inputMode);
         /*
-         * Disable display of JME statistics.
-         * These displays can be re-enabled by pressing the F5 hotkey.
+         * Disable the JME statistic displays.
+         * These can be re-enabled by pressing the F5 hotkey.
          */
         setDisplayFps(false);
         setDisplayStatView(false);
