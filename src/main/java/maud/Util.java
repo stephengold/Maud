@@ -26,7 +26,10 @@
  */
 package maud;
 
+import com.jme3.animation.Animation;
+import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
+import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
@@ -38,11 +41,14 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.blender.meshes.Face;
+import com.jme3.scene.plugins.bvh.BoneMapping;
+import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 
 /**
@@ -329,5 +335,104 @@ public class Util {
                 removeAllControls(child);
             }
         }
+    }
+
+    /**
+     * Re-target the specified animation from the specified source skeleton to
+     * the specified target skeleton using the specified mapping.
+     *
+     * @param sourceAnimation which animation to re-target (not null,
+     * unaffected)
+     * @param sourceSkeleton (not null, unaffected)
+     * @param targetSkeleton (not null, unaffected)
+     * @param mapping which skeleton mapping to use (not null, unaffected)
+     * @param animationName name for the resulting animation (not null)
+     * @return a new animation
+     */
+    public static Animation retargetAnimation(Animation sourceAnimation,
+            Skeleton sourceSkeleton, Skeleton targetSkeleton,
+            SkeletonMapping mapping, String animationName) {
+        Validate.nonNull(sourceAnimation, "source animation");
+        Validate.nonNull(sourceSkeleton, "source skeleton");
+        Validate.nonNull(targetSkeleton, "target skeleton");
+        Validate.nonNull(mapping, "mapping");
+        Validate.nonNull(animationName, "animation name");
+        /*
+         * Start with an empty animation.
+         */
+        float duration = sourceAnimation.getLength();
+        Animation result = new Animation(animationName, duration);
+        /*
+         * Add a bone track for each target bone that's mapped.
+         */
+        int numTargetBones = targetSkeleton.getBoneCount();
+        for (int iTarget = 0; iTarget < numTargetBones; iTarget++) {
+            Bone targetBone = targetSkeleton.getBone(iTarget);
+            String targetName = targetBone.getName();
+            BoneMapping boneMapping = mapping.get(targetName);
+            if (boneMapping != null) {
+                Quaternion twist = boneMapping.getTwist();
+                String sourceName = boneMapping.getSourceName();
+                int iSource = sourceSkeleton.getBoneIndex(sourceName);
+                BoneTrack track = retargetTrack(sourceAnimation, sourceSkeleton,
+                        targetSkeleton, mapping, twist, iSource, iTarget);
+                result.addTrack(track);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Re-target the specified bone track from the specified source skeleton to
+     * the specified target skeleton using the specified mapping.
+     *
+     * @param sourceAnimation which animation to re-target (not null,
+     * unaffected)
+     * @param sourceSkeleton (not null, unaffected)
+     * @param targetSkeleton (not null, unaffected)
+     * @param mapping which skeleton mapping to use (not null, unaffected)
+     * @param twist twist rotation for target bone (not null, unaffected)
+     * @param sourceBoneIndex index of the source bone (&ge;0)
+     * @param targetBoneIndex index of the target bone (&ge;0)
+     * @return a new bone track
+     */
+    public static BoneTrack retargetTrack(Animation sourceAnimation,
+            Skeleton sourceSkeleton, Skeleton targetSkeleton,
+            SkeletonMapping mapping, Quaternion twist, int sourceBoneIndex,
+            int targetBoneIndex) {
+        Validate.nonNull(sourceSkeleton, "source skeleton");
+        Validate.nonNull(targetSkeleton, "target skeleton");
+        Validate.nonNull(mapping, "mapping");
+        Validate.nonNull(twist, "twist");
+        Validate.nonNegative(sourceBoneIndex, "source bone index");
+        Validate.nonNegative(targetBoneIndex, "target bone index");
+
+        BoneTrack sourceTrack;
+        sourceTrack = MyAnimation.findTrack(sourceAnimation, sourceBoneIndex);
+        float[] times = sourceTrack.getTimes();
+        int numKeyframes = times.length;
+        Vector3f[] translations = new Vector3f[numKeyframes];
+        Quaternion[] rotations = new Quaternion[numKeyframes];
+        Vector3f[] scales = new Vector3f[numKeyframes];
+
+        Pose sourcePose = new Pose(sourceSkeleton);
+        Pose targetPose = new Pose(targetSkeleton);
+        for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
+            float trackTime = times[frameIndex];
+            sourcePose.setToAnimation(sourceAnimation, trackTime);
+            targetPose.setToRetarget(sourcePose, mapping);
+            Transform userTransform;
+            userTransform = targetPose.copyTransform(targetBoneIndex, null);
+
+            translations[frameIndex] = userTransform.getTranslation();
+            rotations[frameIndex] = userTransform.getRotation();
+            scales[frameIndex] = userTransform.getScale();
+        }
+
+        BoneTrack result = new BoneTrack(targetBoneIndex, times, translations,
+                rotations, scales);
+
+        return result;
     }
 }

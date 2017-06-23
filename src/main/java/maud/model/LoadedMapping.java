@@ -26,7 +26,6 @@
  */
 package maud.model;
 
-import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
@@ -36,7 +35,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.plugins.bvh.BVHUtils;
 import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import java.util.Collections;
@@ -46,6 +44,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
 import maud.Pose;
+import maud.Util;
 
 /**
  * The loaded skeleton mapping in the Maud application.
@@ -203,8 +202,8 @@ public class LoadedMapping implements Cloneable {
      * @return true if selected, otherwise false
      */
     public boolean isBoneMappingSelected() {
-        BoneMapping mapping = selectedMapping();
-        if (mapping == null) {
+        BoneMapping boneMapping = selectedMapping();
+        if (boneMapping == null) {
             return false;
         } else {
             return true;
@@ -518,20 +517,18 @@ public class LoadedMapping implements Cloneable {
 
     /**
      * Add a re-targeted animation to the target CG model.
+     *
+     * @param newAnimationName name for the resulting animation (not null)
      */
     private void retargetAndAdd(String newAnimationName) {
-        AnimControl sourceControl = Maud.model.source.getAnimControl();
-        Spatial sourceSpatial = sourceControl.getSpatial();
-        AnimControl targetControl = Maud.model.target.getAnimControl();
-        Spatial targetSpatial = targetControl.getSpatial();
-        Animation sourceAnimation;
-        sourceAnimation = Maud.model.source.animation.getAnimation();
+        assert newAnimationName != null;
+
+        Animation sourceAnimation = Maud.model.source.animation.getAnimation();
         Skeleton sourceSkeleton = Maud.model.source.bones.findSkeleton();
-        SkeletonMapping map = effectiveMapping();
-        // TODO specialized reTarget method
-        Animation retargeted = BVHUtils.reTarget(sourceSpatial, targetSpatial,
-                sourceAnimation, sourceSkeleton, map, false,
-                newAnimationName);
+        Skeleton targetSkeleton = Maud.model.target.bones.findSkeleton();
+        SkeletonMapping effMapping = effectiveMapping();
+        Animation retargeted = Util.retargetAnimation(sourceAnimation,
+                sourceSkeleton, targetSkeleton, effMapping, newAnimationName);
 
         float duration = retargeted.getLength();
         assert duration >= 0f : duration;
@@ -542,9 +539,11 @@ public class LoadedMapping implements Cloneable {
     /**
      * Select the bone mapping of the named target bone.
      *
-     * @param targetBoneName name of bone to find
+     * @param targetBoneName name of bone to find (not null)
      */
     private void selectFromTarget(String targetBoneName) {
+        assert targetBoneName != null;
+
         String sourceBoneName = sourceBoneName(targetBoneName);
         Maud.model.source.bone.select(sourceBoneName);
         Maud.model.target.bone.select(targetBoneName);

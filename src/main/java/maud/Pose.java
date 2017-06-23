@@ -33,6 +33,8 @@ import com.jme3.animation.Skeleton;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.plugins.bvh.BoneMapping;
+import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
@@ -103,7 +105,7 @@ public class Pose implements JmeCloneable {
      * @return a new instance
      */
     public Animation capture(String animationName) {
-        assert animationName != null;
+        Validate.nonNull(animationName, "animation name");
         /*
          * Start with an empty animation.
          */
@@ -157,6 +159,17 @@ public class Pose implements JmeCloneable {
         int count = transforms.size();
         assert count >= 0 : count;
         return count;
+    }
+
+    /**
+     * Find the index of the named bone in the skeleton of this pose.
+     *
+     * @param boneName which bone (not null)
+     * @return bone index (&ge;0) or -1 if not found
+     */
+    public int findBone(String boneName) {
+        int result = skeleton.getBoneIndex(boneName);
+        return result;
     }
 
     /**
@@ -351,6 +364,43 @@ public class Pose implements JmeCloneable {
     }
 
     /**
+     * Configure this pose for the specified animation at the specified time.
+     *
+     * @param animation which animation (not null, unaffected)
+     * @param time animation time (in seconds)
+     */
+    public void setToAnimation(Animation animation, float time) {
+        Validate.nonNull(animation, "animation");
+
+        int numBones = transforms.size();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            Transform transform = transforms.get(boneIndex);
+            BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
+            if (track == null) {
+                transform.loadIdentity();
+            } else {
+                Util.boneTransform(track, time, transform);
+            }
+        }
+    }
+
+    /**
+     * Configure this pose by re-targeting the specified source pose.
+     *
+     * @param sourcePose which source pose to re-target (not null, unaffected)
+     * @param mapping skeleton mapping to use (not null, unaffected)
+     */
+    public void setToRetarget(Pose sourcePose, SkeletonMapping mapping) {
+        Validate.nonNull(sourcePose, "source pose");
+        Validate.nonNull(mapping, "mapping");
+
+        Bone[] rootBones = skeleton.getRoots();
+        for (Bone rootBone : rootBones) {
+            retargetBones(rootBone, sourcePose, mapping);
+        }
+    }
+
+    /**
      * Calculate the user rotation for the indexed bone to give it the specified
      * orientation in CG model space.
      *
@@ -426,8 +476,8 @@ public class Pose implements JmeCloneable {
      */
     private Quaternion localForModel(Bone bone, Quaternion modelOrientation,
             Quaternion storeResult) {
-        Validate.nonNull(bone, "bone");
-        Validate.nonNull(modelOrientation, "model orienation");
+        assert bone != null;
+        assert modelOrientation != null;
         if (storeResult == null) {
             storeResult = new Quaternion();
         }
@@ -446,5 +496,47 @@ public class Pose implements JmeCloneable {
         }
 
         return storeResult;
+    }
+
+    /**
+     * Configure the specified bone and its descendents by re-targeting the
+     * specified source pose. Note: recursive!
+     *
+     * @param bone the bone to start with (not null, unaffected)
+     * @param sourcePose which source pose to re-target (not null, unaffected)
+     * @param mapping skeleton mapping to use (not null, unaffected)
+     */
+    private void retargetBones(Bone bone, Pose sourcePose,
+            SkeletonMapping mapping) {
+        assert bone != null;
+        assert sourcePose != null;
+        assert mapping != null;
+
+        int targetIndex = skeleton.getBoneIndex(bone);
+        Transform userTransform = transforms.get(targetIndex);
+        userTransform.loadIdentity();
+
+        String targetName = bone.getName();
+        BoneMapping boneMapping = mapping.get(targetName);
+        if (boneMapping != null) {
+            /*
+             * Calculate the model rotation of the source bone.
+             */
+            String sourceName = boneMapping.getSourceName();
+            int sourceIndex = sourcePose.findBone(sourceName);
+            Transform smt = new Transform();
+            sourcePose.modelTransform(sourceIndex, smt);
+            Quaternion modelRotation = smt.getRotation();
+
+            Quaternion userRotation;
+            userRotation = userForModel(targetIndex, modelRotation, null);
+            Quaternion twist = boneMapping.getTwist();
+            userRotation.mult(twist, userTransform.getRotation());
+        }
+
+        List<Bone> children = bone.getChildren();
+        for (Bone childBone : children) {
+            retargetBones(childBone, sourcePose, mapping);
+        }
     }
 }
