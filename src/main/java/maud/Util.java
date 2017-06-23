@@ -26,9 +26,7 @@
  */
 package maud;
 
-import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
-import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
@@ -232,45 +230,6 @@ public class Util {
     }
 
     /**
-     * Calculate the local rotation for the specified bone to produce the
-     * specified orientation in CG-model space.
-     *
-     * @param bone which bone (not null, unaffected)
-     * @param pose transforms of other bones in the skeleton (not null,
-     * unaffected)
-     * @param modelOrientation desired orientation (not null, unaffected)
-     * @param skeleton skeleton containing the bone (not null, unaffected)
-     * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
-     */
-    public static Quaternion localRotation(Bone bone, Pose pose,
-            Quaternion modelOrientation, Skeleton skeleton,
-            Quaternion storeResult) {
-        Validate.nonNull(modelOrientation, "model orienation");
-        assert skeleton != null;
-        Validate.nonNull(bone, "bone");
-        assert pose != null;
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
-        Bone parent = bone.getParent();
-        if (parent == null) {
-            storeResult.set(modelOrientation);
-        } else {
-            /*
-             * Factor in the orientation of the parent bone.
-             */
-            int parentIndex = skeleton.getBoneIndex(parent);
-            Transform parentTransform = pose.modelTransform(parentIndex, null);
-            Quaternion parentImr = parentTransform.getRotation().inverse();
-            parentImr.mult(modelOrientation, storeResult);
-        }
-
-        return storeResult;
-    }
-
-    /**
      * Copy a bone track, reducing the number of keyframes by the specified
      * factor.
      *
@@ -370,36 +329,5 @@ public class Util {
                 removeAllControls(child);
             }
         }
-    }
-
-    /**
-     * Calculate the user rotation for the specified bone to give it the
-     * specified orientation in model space.
-     *
-     * @param bone which bone (not null, unaffected)
-     * @param pose transforms of other bones in the skeleton (not null,
-     * unaffected)
-     * @param modelOrientation desired orientation (not null, unaffected)
-     * @param skeleton skeleton containing the bone (not null, unaffected)
-     * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
-     */
-    public static Quaternion userRotation(Bone bone, Pose pose,
-            Quaternion modelOrientation, Skeleton skeleton,
-            Quaternion storeResult) {
-        Validate.nonNull(modelOrientation, "model orienation");
-        assert skeleton != null;
-        Validate.nonNull(bone, "bone");
-        assert pose != null;
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
-        Quaternion local;
-        local = localRotation(bone, pose, modelOrientation, skeleton, null);
-        Quaternion inverseBind = bone.getBindRotation().inverse();
-        inverseBind.mult(local, storeResult);
-
-        return storeResult;
     }
 }

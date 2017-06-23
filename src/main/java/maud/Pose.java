@@ -349,6 +349,31 @@ public class Pose implements JmeCloneable {
         Transform boneTransform = transforms.get(boneIndex);
         boneTransform.setTranslation(translation);
     }
+
+    /**
+     * Calculate the user rotation for the indexed bone to give it the specified
+     * orientation in CG model space.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @param modelOrientation desired orientation (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
+     */
+    public Quaternion userForModel(int boneIndex, Quaternion modelOrientation,
+            Quaternion storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
+        Validate.nonNull(modelOrientation, "model orienation");
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        Bone bone = skeleton.getBone(boneIndex);
+        Quaternion local = localForModel(bone, modelOrientation, null);
+        Quaternion inverseBind = bone.getBindRotation().inverse();
+        inverseBind.mult(local, storeResult);
+
+        return storeResult;
+    }
     // *************************************************************************
     // JmeCloner methods
 
@@ -386,5 +411,40 @@ public class Pose implements JmeCloneable {
         } catch (CloneNotSupportedException exception) {
             throw new RuntimeException(exception);
         }
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Calculate the local rotation for the specified bone to give it the
+     * specified orientation in CG-model space.
+     *
+     * @param bone which bone (not null, unaffected)
+     * @param modelOrientation desired orientation (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return rotation (either storeResult or a new instance)
+     */
+    private Quaternion localForModel(Bone bone, Quaternion modelOrientation,
+            Quaternion storeResult) {
+        Validate.nonNull(bone, "bone");
+        Validate.nonNull(modelOrientation, "model orienation");
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        Bone parent = bone.getParent();
+        if (parent == null) {
+            storeResult.set(modelOrientation);
+        } else {
+            /*
+             * Factor in the orientation of the parent bone.
+             */
+            int parentIndex = skeleton.getBoneIndex(parent);
+            Transform parentTransform = modelTransform(parentIndex, null);
+            Quaternion parentImr = parentTransform.getRotation().inverse();
+            parentImr.mult(modelOrientation, storeResult);
+        }
+
+        return storeResult;
     }
 }

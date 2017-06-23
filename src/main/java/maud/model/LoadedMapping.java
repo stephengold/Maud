@@ -46,7 +46,6 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
 import maud.Pose;
-import maud.Util;
 
 /**
  * The loaded skeleton mapping in the Maud application.
@@ -112,8 +111,8 @@ public class LoadedMapping implements Cloneable {
                 Quaternion modelRotation = smt.getRotation();
 
                 Pose pose = Maud.model.target.pose.getPose();
-                Quaternion userRotation = Util.userRotation(targetBone, pose,
-                        modelRotation, targetSkeleton, null);
+                Quaternion userRotation = pose.userForModel(boneIndex,
+                        modelRotation, null);
                 Quaternion twist = boneMapping.getTwist();
                 userRotation.mult(twist, storeResult.getRotation());
             }
