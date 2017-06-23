@@ -18,7 +18,7 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 /**
- * Loader for Biovision BVH assets. The layout is documentated at
+ * Loader for Biovision BVH assets. The layout is documented at
  * http://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html
  *
  * @author Nehon
@@ -39,6 +39,11 @@ public class BVHLoader implements AssetLoader {
     BVHAnimData data;
     BVHAnimation animation;
     int index = 0;
+    /**
+     * count of end effectors parsed during the current load, used to generate
+     * unique bone names (&ge;0)
+     */
+    private int numEndEffectors;
     private Scanner scan;
     private String fileName;
     // *************************************************************************
@@ -55,6 +60,7 @@ public class BVHLoader implements AssetLoader {
     public Object load(AssetInfo info) throws IOException {
         this.owner = info.getManager();
         fileName = info.getKey().getName();
+        numEndEffectors = 0;
 
         InputStream in = info.openStream();
         try {
@@ -67,6 +73,7 @@ public class BVHLoader implements AssetLoader {
                 in.close();
             }
         }
+
         return data;
     }
     // *************************************************************************
@@ -277,9 +284,15 @@ public class BVHLoader implements AssetLoader {
             }
             while (token.equals("JOINT") || token.equals("End")) {
                 if (bone.getChildren() == null) {
-                    bone.setChildren(new ArrayList<BVHBone>());
+                    bone.setChildren(new ArrayList<>());
                 }
-                bone.getChildren().add(readBone(scan.next()));
+                String boneName = scan.next();
+                if ("Site".equals(boneName)) { // end effector
+                    boneName += String.format(".%03d", numEndEffectors);
+                    ++numEndEffectors;
+                }
+                BVHBone childBone = readBone(boneName);
+                bone.getChildren().add(childBone);
                 token = scan.next();
             }
         }
