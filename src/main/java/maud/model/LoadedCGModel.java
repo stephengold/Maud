@@ -772,7 +772,7 @@ public class LoadedCGModel implements Cloneable {
 
     /**
      * Quietly load a CG model asset from persistent storage without adding it
-     * to the scene. If successful, set {@link #baseAssetPath}.
+     * to the scene. If successful, set {@link #baseAssetPath}. TODO rename
      *
      * @param assetPath (not null)
      * @param useCache true to look in the asset manager's cache, false to force
@@ -792,9 +792,15 @@ public class LoadedCGModel implements Cloneable {
             assetManager.deleteFromCache(key);
         }
         /*
-         * Load the model quietly.
+         * Load the CG model quietly.
          */
-        Spatial loaded = Util.loadCgmQuietly(assetManager, assetPath);
+        Spatial loaded;
+        String ext = key.getExtension();
+        if ("bvh".equals(ext)) {
+            loaded = Util.loadBvhAsCgm(assetManager, assetPath);
+        } else {
+            loaded = Util.loadCgmQuietly(assetManager, assetPath);
+        }
         if (loaded == null) {
             logger.log(Level.SEVERE, "Failed to load model from asset {0}",
                     MyString.quote(assetPath));

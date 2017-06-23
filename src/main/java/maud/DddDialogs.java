@@ -162,6 +162,7 @@ class DddDialogs {
         String assetPath = String.format("%s.%s", basePath, extension);
         List<String> modelExts = new ArrayList<>(4);
         modelExts.add(".blend");
+        modelExts.add(".bvh");
         modelExts.add(".j3o");
         modelExts.add(".mesh.xml");
 
