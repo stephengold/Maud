@@ -473,7 +473,7 @@ public class CgmView implements JmeCloneable {
         float maxExtent = MyMath.max(extents.x, extents.y, extents.z);
         assert maxExtent > 0f : maxExtent;
         float minY = minMax[0].y;
-        model.transform.loadModel(minY, maxExtent);
+        model.transform.loadCgm(minY, maxExtent);
         /*
          * reset the camera, cursor, and platform
          */

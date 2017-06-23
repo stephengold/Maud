@@ -81,12 +81,12 @@ public class TransformStatus implements Cloneable {
     // new methods exposed
 
     /**
-     * Customize the world transform for a newly loaded model.
+     * Automatically configure the world transform for a newly loaded CG model.
      *
      * @param minY (in model units)
      * @param maxExtent (in model units, &gt;0)
      */
-    public void loadModel(float minY, float maxExtent) {
+    public void loadCgm(float minY, float maxExtent) {
         Validate.positive(maxExtent, "max extent");
 
         scale = 1f / maxExtent;
