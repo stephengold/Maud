@@ -114,10 +114,12 @@ public class CgmView implements JmeCloneable {
     /**
      * Calculate the location of an indexed bone, for selection.
      *
-     * @param boneIndex which bone to locate
+     * @param boneIndex which bone to locate (&ge;0)
      * @return a new vector (in world coordinates)
      */
     public Vector3f boneLocation(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+
         Bone bone = skeleton.getBone(boneIndex);
         Vector3f modelLocation = bone.getModelSpacePosition();
         Transform worldTransform = copyWorldTransform();
@@ -167,6 +169,7 @@ public class CgmView implements JmeCloneable {
      * @param loadedRoot (not null)
      */
     public void loadModel(Spatial loadedRoot) {
+        Validate.nonNull(loadedRoot, "loaded root");
         /*
          * Detach the old spatial (if any) from the scene.
          */
@@ -402,7 +405,7 @@ public class CgmView implements JmeCloneable {
      * Convert this shallow-cloned instance into a deep-cloned one, using the
      * specified cloner and original to resolve copied fields.
      *
-     * @param cloner the cloner currently cloning this control
+     * @param cloner the cloner currently cloning this control (not null)
      * @param original the control from which this control was shallow-cloned
      */
     @Override
