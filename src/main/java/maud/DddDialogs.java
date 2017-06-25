@@ -39,6 +39,8 @@ import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.debug.DebugVersion;
 import jme3utilities.nifty.DialogController;
+import jme3utilities.nifty.FloatDialog;
+import jme3utilities.nifty.IntegerDialog;
 import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
@@ -98,7 +100,7 @@ class DddDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter name for copied animation:",
-                fromName, "", DddInputMode.copyAnimationPrefix, controller);
+                fromName, DddInputMode.copyAnimationPrefix, controller);
     }
 
     /**
@@ -173,7 +175,7 @@ class DddDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter asset path for model:", assetPath,
-                "", actionPrefix, controller);
+                actionPrefix, controller);
     }
 
     /**
@@ -194,7 +196,7 @@ class DddDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter asset path for skeleton mapping:",
-                assetPath, "", DddInputMode.loadMappingAssetPrefix, controller);
+                assetPath, DddInputMode.loadMappingAssetPrefix, controller);
     }
 
     /**
@@ -204,7 +206,7 @@ class DddDialogs {
         DialogController controller = new AnimationNameDialog("Create");
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                "pose", "", DddInputMode.newPosePrefix, controller);
+                "pose", DddInputMode.newPosePrefix, controller);
     }
 
     /**
@@ -214,7 +216,7 @@ class DddDialogs {
         DialogController controller = new UserKeyDialog("Create");
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a key for the new user data:",
-                "key", "", actionString, controller);
+                "key", actionString, controller);
     }
 
     /**
@@ -226,7 +228,7 @@ class DddDialogs {
             controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
 
             Maud.gui.closeAllPopups();
-            Maud.gui.showTextEntryDialog("Enter reduction factor:", "2", "",
+            Maud.gui.showTextEntryDialog("Enter reduction factor:", "2",
                     DddInputMode.reduceAnimationPrefix, controller);
         }
     }
@@ -240,7 +242,7 @@ class DddDialogs {
             controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
 
             Maud.gui.closeAllPopups();
-            Maud.gui.showTextEntryDialog("Enter reduction factor:", "2", "",
+            Maud.gui.showTextEntryDialog("Enter reduction factor:", "2",
                     DddInputMode.reduceTrackPrefix, controller);
         }
     }
@@ -255,7 +257,7 @@ class DddDialogs {
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new name for the animation:",
-                    oldName, "", DddInputMode.renameAnimationPrefix,
+                    oldName, DddInputMode.renameAnimationPrefix,
                     controller);
         }
     }
@@ -270,7 +272,7 @@ class DddDialogs {
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new name for the bone:",
-                    oldName, "", DddInputMode.renameBonePrefix, controller);
+                    oldName, DddInputMode.renameBonePrefix, controller);
         }
     }
 
@@ -288,7 +290,7 @@ class DddDialogs {
         }
 
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog(prompt, oldName, "",
+        Maud.gui.showTextEntryDialog(prompt, oldName,
                 DddInputMode.renameSpatialPrefix, controller);
     }
 
@@ -301,7 +303,7 @@ class DddDialogs {
             DialogController controller = new UserKeyDialog("Rename");
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter a new key for the user data:",
-                    oldName, "", DddInputMode.renameUserKeyPrefix, controller);
+                    oldName, DddInputMode.renameUserKeyPrefix, controller);
         }
     }
 
@@ -350,7 +352,7 @@ class DddDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                oldName, "", DddInputMode.retargetAnimationPrefix, controller);
+                oldName, DddInputMode.retargetAnimationPrefix, controller);
     }
 
     /**
@@ -372,7 +374,7 @@ class DddDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
-                defaultText, "", DddInputMode.setDurationPrefix, controller);
+                defaultText, DddInputMode.setDurationPrefix, controller);
     }
 
     /**
