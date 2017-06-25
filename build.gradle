@@ -39,9 +39,9 @@ dependencies {
     compile 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
     compile 'jme3utilities:jme3-utilities-heart:0.9.8'
     compile 'jme3utilities:SkyControl:0.9.5'
-    compile 'jme3utilities:jme3-utilities-debug:0.5.6'
+    compile 'jme3utilities:jme3-utilities-debug:0.6.0'
     compile 'jme3utilities:jme3-utilities-ui:0.5.3'
-    compile 'jme3utilities:jme3-utilities-nifty:0.6.4'
+    compile 'jme3utilities:jme3-utilities-nifty:0.6.5'
 }
 
 clean { dependsOn 'cleanDLLs', 'cleanWrittenAssets' }
