@@ -35,10 +35,14 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
+import com.jme3.input.InputManager;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
 import com.jme3.math.Transform;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
@@ -143,7 +147,7 @@ public class Util {
     /**
      * Interpolate linearly between keyframes of a bone track.
      *
-     * @param time
+     * @param time (in seconds)
      * @param times (not null, unaffected)
      * @param translations (not null, unaffected)
      * @param rotations (not null, unaffected)
@@ -272,6 +276,29 @@ public class Util {
         materialLoaderLogger.setLevel(materialLoaderLevel);
 
         return loaded;
+    }
+
+    /**
+     * Convert the mouse-pointer location into a ray.
+     *
+     * @param camera (not null)
+     * @param inputManager (not null)
+     *
+     * @return a new ray in world coordinates
+     */
+    public static Ray mouseRay(Camera camera, InputManager inputManager) {
+        Vector2f screenXY = inputManager.getCursorPosition();
+        /*
+         * Convert screen coordinates to world coordinates.
+         */
+        Vector3f vertex = camera.getWorldCoordinates(screenXY, 0f);
+        Vector3f far = camera.getWorldCoordinates(screenXY, 1f);
+
+        Vector3f direction = far.subtract(vertex);
+        direction.normalizeLocal();
+        Ray ray = new Ray(vertex, direction);
+
+        return ray;
     }
 
     /**

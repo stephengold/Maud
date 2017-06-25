@@ -33,7 +33,6 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -44,6 +43,7 @@ import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.Util;
 
 /**
  * The controller for the "Cursor Tool" window in Maud's "3D View" screen.
@@ -136,16 +136,7 @@ public class CursorTool extends WindowController {
      * pointer.
      */
     public void warpCursor() {
-        Vector2f mouseXY = inputManager.getCursorPosition();
-        /*
-         * Convert screen coordinates of the mouse pointer to a ray in
-         * world coordinates.
-         */
-        Vector3f vertex = cam.getWorldCoordinates(mouseXY, 0f);
-        Vector3f far = cam.getWorldCoordinates(mouseXY, 1f);
-        Vector3f direction = far.subtract(vertex);
-        direction.normalizeLocal();
-        Ray ray = new Ray(vertex, direction);
+        Ray ray = Util.mouseRay(cam, inputManager);
         /*
          * Trace the ray to each CG model's visualization.
          */
