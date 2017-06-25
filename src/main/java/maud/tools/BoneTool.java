@@ -50,8 +50,27 @@ public class BoneTool extends WindowController {
     final private static Logger logger = Logger.getLogger(
             BoneTool.class.getName());
     // *************************************************************************
-    // constructors
+    // fields
 
+    /**
+     * smallest squared distance from the mouse pointer
+     */
+    private float bestDSquared;
+    /**
+     * index of the axis whose tip is closest to the mouse pointer, or -1
+     */
+    private int bestAxisIndex;
+    /**
+     * index of the bone closest to the mouse pointer, or -1
+     */
+    private int bestBoneIndex;
+    /**
+     * CG model containing the feature closest to the mouse pointer, or null
+     */
+    private LoadedCGModel bestCgm;
+
+    // *************************************************************************
+    // constructors
     /**
      * Instantiate an uninitialized controller.
      *
@@ -64,37 +83,27 @@ public class BoneTool extends WindowController {
     // new methods exposed
 
     /**
-     * Select the bone with screen coordinates nearest to the mouse pointer.
+     * Select the bone or axis tip whose screen coordinates are nearest to the
+     * mouse pointer.
      */
     public void selectXY() {
-        float bestDSquared = Float.MAX_VALUE;
-        int bestBoneIndex = -1;
-        LoadedCGModel bestCgm = null;
+        bestAxisIndex = -1;
+        bestBoneIndex = -1;
+        bestCgm = null;
+        bestDSquared = Float.MAX_VALUE;
 
         if (Maud.model.source.isLoaded()) {
-            int numBones = Maud.model.source.bones.countBones();
-            for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-                float dSquared = distanceSquared(Maud.model.source, boneIndex);
-                if (dSquared < bestDSquared) {
-                    bestDSquared = dSquared;
-                    bestBoneIndex = boneIndex;
-                    bestCgm = Maud.model.source;
-                }
-            }
+            selectBestInCgm(Maud.model.source);
         }
-
-        int numBones = Maud.model.target.bones.countBones();
-        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            float dSquared = distanceSquared(Maud.model.target, boneIndex);
-            if (dSquared < bestDSquared) {
-                bestDSquared = dSquared;
-                bestBoneIndex = boneIndex;
-                bestCgm = Maud.model.target;
-            }
-        }
+        selectBestInCgm(Maud.model.target);
 
         if (bestCgm != null) {
-            bestCgm.bone.select(bestBoneIndex);
+            if (bestAxisIndex >= 0) {
+                Maud.model.misc.selectAxis(bestAxisIndex, bestCgm);
+            }
+            if (bestBoneIndex >= 0) {
+                bestCgm.bone.select(bestBoneIndex);
+            }
         }
     }
     // *************************************************************************
@@ -148,21 +157,76 @@ public class BoneTool extends WindowController {
     // private methods
 
     /**
-     * Calculate the squared distance between the mouse pointer and the
-     * specified bone.
+     * Calculate the squared distance between the mouse pointer and the indexed
+     * bone.
      *
-     * @param loadedCgm which CG model (not null)
-     * @param boneIndex (&ge;0)
+     * @param cgm which CG model contains the bone (not null, unaffected)
+     * @param boneIndex which bone in the CGM's selected skeleton (&ge;0)
      * @return squared distance in pixels (&ge;0)
      */
-    private float distanceSquared(LoadedCGModel loadedCgm, int boneIndex) {
+    private float boneDSquared(LoadedCGModel cgm, int boneIndex) {
         assert boneIndex >= 0 : boneIndex;
 
-        Vector3f boneWorld = loadedCgm.view.boneLocation(boneIndex);
+        Vector3f boneWorld = cgm.view.boneLocation(boneIndex);
         Vector3f boneScreen = cam.getScreenCoordinates(boneWorld);
         Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
         Vector2f mouseXY = inputManager.getCursorPosition();
         float dSquared = mouseXY.distanceSquared(boneXY);
+
+        return dSquared;
+    }
+
+    /**
+     * Find the bone or axis tip in the specified CG model whose screen
+     * coordinates are nearest to the mouse pointer. Assumes bestDSquared has
+     * been initialized.
+     *
+     * @param cgm which CG model (not null)
+     */
+    private void selectBestInCgm(LoadedCGModel cgm) {
+        int numBones = cgm.bones.countBones();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            float dSquared = boneDSquared(cgm, boneIndex);
+            if (dSquared < bestDSquared) {
+                bestDSquared = dSquared;
+                bestAxisIndex = -1;
+                bestBoneIndex = boneIndex;
+                bestCgm = cgm;
+            }
+        }
+
+        for (int axisIndex = 0; axisIndex < 3; axisIndex++) {
+            float dSquared = tipDSquared(cgm, axisIndex);
+            if (dSquared < bestDSquared) {
+                bestDSquared = dSquared;
+                bestAxisIndex = axisIndex;
+                bestBoneIndex = -1;
+                bestCgm = cgm;
+            }
+        }
+    }
+
+    /**
+     * Calculate the squared distance between the mouse pointer and the indexed
+     * axis tip.
+     *
+     * @param cgm which CG model (not null, unaffected)
+     * @param axisIndex which axis in the CGM's axes control (&ge;0, &lt;3)
+     * @return squared distance in pixels (&ge;0)
+     */
+    private float tipDSquared(LoadedCGModel cgm, int axisIndex) {
+        assert cgm != null;
+        assert axisIndex >= 0 : axisIndex;
+        assert axisIndex < 3 : axisIndex;
+
+        float dSquared = Float.MAX_VALUE;
+        Vector3f tipWorld = Maud.gui.tools.axes.tipLocation(cgm, axisIndex);
+        if (tipWorld != null) {
+            Vector3f tipScreen = cam.getScreenCoordinates(tipWorld);
+            Vector2f tipXY = new Vector2f(tipScreen.x, tipScreen.y);
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            dSquared = mouseXY.distanceSquared(tipXY);
+        }
 
         return dSquared;
     }

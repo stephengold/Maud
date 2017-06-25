@@ -34,6 +34,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
@@ -98,6 +99,35 @@ class AxesTool extends WindowController {
     }
 
     /**
+     * Calculate the tip location of the indexed axis for the specified CG
+     * model.
+     *
+     * @param loadedCgm which CG model (not null, unaffected)
+     * @param axisIndex which axis in the CGM's AxesControl (&ge;0, &lt;3)
+     * @return a new vector (in world coordinates) or null if axis not displayed
+     */
+    Vector3f tipLocation(LoadedCGModel loadedCgm, int axisIndex) {
+        Validate.nonNull(loadedCgm, "loaded model");
+        Validate.inRange(axisIndex, "axis index", 0, 2);
+
+        Vector3f result = null;
+        Transform transform = worldTransform(loadedCgm);
+        if (transform != null) {
+            AxesControl axesControl;
+            if (loadedCgm == Maud.model.source) {
+                axesControl = sourceAxesControl;
+            } else if (loadedCgm == Maud.model.target) {
+                axesControl = targetAxesControl;
+            } else {
+                throw new IllegalStateException();
+            }
+            result = axesControl.tipLocation(axisIndex);
+        }
+
+        return result;
+    }
+
+    /**
      * Update the transform and AxesControl settings for both CG models.
      */
     void updateVisualizations() {
@@ -153,14 +183,14 @@ class AxesTool extends WindowController {
     // private methods
 
     /**
-     * Update the transform and AxesControl settings for a CG model.
+     * Update the transform and AxesControl settings for the specified CG model.
      *
-     * @param loadedCgm (not null)
+     * @param loadedCgm which CG model (not null)
      * @param axesControl (not null)
      * @param axesNode (not null)
      */
-    private void updateAxes(LoadedCGModel loadedCgm,
-            AxesControl axesControl, Node axesNode) {
+    private void updateAxes(LoadedCGModel loadedCgm, AxesControl axesControl,
+            Node axesNode) {
         assert loadedCgm != null;
         assert axesControl != null;
         assert axesNode != null;
@@ -204,7 +234,7 @@ class AxesTool extends WindowController {
      * @return a new instance (in world coordinates) or null to hide the axes
      */
     private Transform worldTransform(LoadedCGModel loadedCgm) {
-        Transform transform;
+        Transform transform = null;
         String mode = Maud.model.axes.getMode();
         switch (mode) {
             case "bone":
@@ -214,8 +244,6 @@ class AxesTool extends WindowController {
                     Transform worldTransform;
                     worldTransform = loadedCgm.view.copyWorldTransform();
                     transform.combineWithParent(worldTransform);
-                } else {
-                    transform = null;
                 }
                 break;
 
@@ -223,34 +251,27 @@ class AxesTool extends WindowController {
                 if (loadedCgm.isLoaded()) {
                     Spatial cgm = loadedCgm.view.getCgmRoot();
                     transform = cgm.getWorldTransform();
-                } else {
-                    transform = null;
                 }
                 break;
 
             case "none":
-                transform = null;
                 break;
 
             case "spatial":
                 if (loadedCgm.isLoaded()) {
                     Spatial spatial = loadedCgm.view.selectedSpatial();
                     transform = spatial.getWorldTransform();
-                } else {
-                    transform = null;
                 }
                 break;
 
             case "world":
                 if (loadedCgm == Maud.model.target) {
                     transform = new Transform(); // identity
-                } else {
-                    transform = null;
                 }
                 break;
 
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalStateException();
         }
 
         return transform;

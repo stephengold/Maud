@@ -56,6 +56,10 @@ public class MiscStatus implements Cloneable {
      */
     private boolean anglesInDegrees = true;
     /**
+     * CG model for dragging (true &rarr; source, false &rarr; target)
+     */
+    private boolean selectedSourceCgm = false;
+    /**
      * shadows (true &rarr; rendered, false &rarr; not rendered)
      */
     private boolean shadowsRendered = true;
@@ -67,6 +71,10 @@ public class MiscStatus implements Cloneable {
      * diameter of the platform (in world units, &gt;0)
      */
     private float platformDiameter = 1f;
+    /**
+     * index of the axis selected for dragging (&ge;0, &lt;3) or -1 if none
+     */
+    private int selectedAxis = -1;
     /**
      * platform mode (either "none" or "square")
      */
@@ -173,6 +181,21 @@ public class MiscStatus implements Cloneable {
      */
     public boolean isSkyRendered() {
         return skyRendered;
+    }
+
+    /**
+     * Select the indexed axis for dragging in the specified CG model.
+     *
+     * @param axisIndex which axis (&ge;0, &lt;3)
+     * @param cgm which CG model (not null)
+     */
+    public void selectAxis(int axisIndex, LoadedCGModel cgm) {
+        selectedAxis = axisIndex;
+        if (cgm == Maud.model.source) {
+            selectedSourceCgm = true;
+        } else {
+            selectedSourceCgm = false;
+        }
     }
 
     /**
