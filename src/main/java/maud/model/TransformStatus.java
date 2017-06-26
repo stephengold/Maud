@@ -35,7 +35,8 @@ import jme3utilities.math.MyMath;
 import maud.Maud;
 
 /**
- * The world transform of a CG model visualization in Maud's "3D View" screen.
+ * The transform applied to a particular CG model visualization in Maud's "3D
+ * View" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -44,8 +45,8 @@ public class TransformStatus implements Cloneable {
     // constants and loggers
 
     /**
-     * separation between the source and target models, when both are loaded (in
-     * world units)
+     * separation between the source and target CG models, when both are loaded
+     * (in world units)
      */
     final private static float zSeparation = 1f;
     /**
@@ -69,11 +70,11 @@ public class TransformStatus implements Cloneable {
      */
     private float yAngle = 0f;
     /**
-     * Y-offset of the model's base (in world units)
+     * Y-offset of the CG model's base (in world units)
      */
     private float yOffset = 0f;
     /**
-     * loaded CG model that is in this pose (set by
+     * the CG model this transform applies to (set by
      * {@link #setCgm(LoadedCGModel)})
      */
     private LoadedCGModel loadedCgm = null;
@@ -81,10 +82,10 @@ public class TransformStatus implements Cloneable {
     // new methods exposed
 
     /**
-     * Automatically configure the world transform for a newly loaded CG model.
+     * Automatically configure the transform for a newly loaded CG model.
      *
-     * @param minY (in model units)
-     * @param maxExtent (in model units, &gt;0)
+     * @param minY (in CG-model units)
+     * @param maxExtent (in CG-model units, &gt;0)
      */
     public void loadCgm(float minY, float maxExtent) {
         Validate.positive(maxExtent, "max extent");
@@ -94,7 +95,7 @@ public class TransformStatus implements Cloneable {
     }
 
     /**
-     * Add to the rotation angle of the CG model.
+     * Add to the Y-axis rotation angle of the CG model.
      *
      * @param angle (in radians)
      */
@@ -103,7 +104,8 @@ public class TransformStatus implements Cloneable {
     }
 
     /**
-     * Alter which CG model is in this pose.
+     * Alter which CG model this transform applies to. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newLoaded (not null)
      */
@@ -113,7 +115,8 @@ public class TransformStatus implements Cloneable {
     }
 
     /**
-     * Calculate the world transform of the CG model.
+     * Calculate the world transform of the CG model. Note that this may differ
+     * from the world transform of its root node.
      *
      * @return a new instance
      */

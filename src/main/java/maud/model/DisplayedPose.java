@@ -54,12 +54,11 @@ public class DisplayedPose implements JmeCloneable {
     // fields
 
     /**
-     * the pose, including user transforms and skeleton
+     * the pose, including a skeleton and a user transform for each bone
      */
     private Pose pose = new Pose(null);
     /**
-     * loaded CG model that is in the pose (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * which CG model holds the pose (set by {@link #setCgm(LoadedCGModel)})
      */
     private LoadedCGModel loadedCgm = null;
     // *************************************************************************
@@ -89,11 +88,11 @@ public class DisplayedPose implements JmeCloneable {
     }
 
     /**
-     * Calculate the model transform of the indexed bone.
+     * Calculate the CG-model transform of the indexed bone.
      *
      * @param boneIndex which bone to use (&ge;0)
      * @param storeResult (modified if not null)
-     * @return transform in model coordinates (either storeResult or a new
+     * @return transform in CG-model coordinates (either storeResult or a new
      * instance)
      */
     public Transform modelTransform(int boneIndex, Transform storeResult) {
@@ -112,7 +111,7 @@ public class DisplayedPose implements JmeCloneable {
     }
 
     /**
-     * Alter which CG model is in the pose. (Invoked only during initialization
+     * Alter which CG model holds the pose. (Invoked only during initialization
      * and cloning.)
      *
      * @param newLoaded (not null)
@@ -141,7 +140,7 @@ public class DisplayedPose implements JmeCloneable {
      * @param boneIndex which bone to scale (&ge;0)
      */
     void setScaleToAnimation(int boneIndex) {
-        Validate.nonNegative(boneIndex, "bone index");
+        assert boneIndex >= 0 : boneIndex;
 
         Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Vector3f animV = animT.getScale();
@@ -168,7 +167,7 @@ public class DisplayedPose implements JmeCloneable {
      * @param boneIndex which bone to translate (&ge;0)
      */
     void setTranslationToAnimation(int boneIndex) {
-        Validate.nonNegative(boneIndex, "bone index");
+        assert boneIndex >= 0 : boneIndex;
 
         Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Vector3f animV = animT.getTranslation();
