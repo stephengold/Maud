@@ -88,6 +88,32 @@ public class Util {
     // new methods exposed
 
     /**
+     * Generate an axis-aligned vector with the specified length.
+     *
+     * @param axisIndex 0&rarr;X, 1&rarrlY, 2&rarr;Z
+     * @param length how long (ge;0)
+     * @return a new vector
+     */
+    public static Vector3f axisVector(int axisIndex, float length) {
+        Validate.inRange(axisIndex, "axis index", 0, 2);
+        Validate.nonNegative(length, "length");
+
+        Vector3f result = new Vector3f();
+        switch (axisIndex) {
+            case 0:
+                result.x = length;
+                break;
+            case 1:
+                result.y = length;
+                break;
+            case 2:
+                result.z = length;
+        }
+
+        return result;
+    }
+
+    /**
      * Calculate the bone transform for the specified track and time, using
      * linear interpolation with no blending.
      *
@@ -195,6 +221,63 @@ public class Util {
     }
 
     /**
+     * Find the specified intersection between the line containing the specified
+     * ray and an origin-centered sphere. If there's no intersection, find the
+     * point on the sphere closest to the line.
+     *
+     * @param ray which ray to test (not null)
+     * @param radius size of the sphere (&ge;0)
+     * @param farSide which intersection to use: true&rarr;far side of sphere,
+     * false&rarr;near side
+     * @return a new coordinate vector
+     */
+    public static Vector3f lineMeetsSphere(Ray ray, float radius,
+            boolean farSide) {
+        Validate.nonNull(ray, "ray");
+        Validate.nonNegative(radius, "radius");
+
+        Vector3f direction = ray.getDirection();
+        Vector3f vertex = ray.getOrigin();
+        float dDotV = direction.dot(vertex);
+        float normV2 = vertex.lengthSquared();
+        float discriminant = dDotV * dDotV - normV2 + radius * radius;
+
+        Vector3f result;
+        if (discriminant >= 0f) {
+            /*
+             * Calculate the pseudodistance from the ray's vertex
+             * to the intersection.
+             */
+            float t = -dDotV;
+            if (farSide) {
+                t += FastMath.sqrt(discriminant);
+            } else {
+                t -= FastMath.sqrt(discriminant);
+            }
+            /*
+             * Calculate the position of that point on the line.
+             */
+            result = direction.mult(t);
+            result.addLocal(vertex);
+
+        } else {
+            /*
+             * Calculate the line's closest approach to the origin.
+             */
+            Vector3f projection = direction.mult(dDotV);
+            result = vertex.subtract(projection);
+            /*
+             * Scale to the surface of the sphere.
+             */
+            float factor = radius / result.length();
+            assert factor <= 1f : factor;
+            result.multLocal(factor);
+        }
+
+        return result;
+    }
+
+    /**
      * Load a BVH asset as a CG model without logging any warning/error
      * messages.
      *
@@ -276,6 +359,40 @@ public class Util {
         materialLoaderLogger.setLevel(materialLoaderLevel);
 
         return loaded;
+    }
+
+    /**
+     * Transform a ray from world coordinates to the local coordinates of the
+     * specified spatial.
+     *
+     * @param worldRay input ray to transform (not null, unaffected)
+     * @param spatial which spatial (not null)
+     * @return a new instance
+     */
+    public static Ray localizeRay(Ray worldRay, Spatial spatial) {
+        Vector3f worldVertex = worldRay.getOrigin();
+        Vector3f worldDirection = worldRay.getDirection();
+        /*
+         * Choose a sample point on the ray.
+         */
+        float t = worldVertex.length();
+        if (t == 0f) {
+            t = 1f;
+        }
+        assert t > 0f : t;
+        Vector3f worldSample = worldDirection.mult(t);
+        worldSample.addLocal(worldVertex);
+        /*
+         * Transform the vertex and the sample point.
+         */
+        Vector3f localVertex = spatial.worldToLocal(worldVertex, null);
+        Vector3f localSample = spatial.worldToLocal(worldSample, null);
+
+        Vector3f localDirection = localSample.subtract(localVertex);
+        localDirection.normalizeLocal();
+        Ray result = new Ray(localVertex, localDirection);
+
+        return result;
     }
 
     /**
