@@ -53,7 +53,7 @@ public class BoneTool extends WindowController {
     // fields
 
     /**
-     * smallest squared distance from the mouse pointer
+     * smallest squared distance from the mouse pointer (&ge;0)
      */
     private float bestDSquared;
     /**
@@ -68,9 +68,9 @@ public class BoneTool extends WindowController {
      * CG model containing the feature closest to the mouse pointer, or null
      */
     private LoadedCGModel bestCgm;
-
     // *************************************************************************
     // constructors
+
     /**
      * Instantiate an uninitialized controller.
      *
@@ -99,7 +99,10 @@ public class BoneTool extends WindowController {
 
         if (bestCgm != null) {
             if (bestAxisIndex >= 0) {
-                Maud.model.misc.selectAxis(bestAxisIndex, bestCgm);
+                boolean farSide = Maud.gui.tools.axes.isAxisReceding(bestCgm,
+                        bestAxisIndex);
+                Maud.model.misc.setDraggingAxis(bestAxisIndex, bestCgm,
+                        farSide);
             }
             if (bestBoneIndex >= 0) {
                 bestCgm.bone.select(bestBoneIndex);

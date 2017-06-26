@@ -28,6 +28,9 @@ package maud.tools;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -40,6 +43,8 @@ import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.Util;
+import maud.model.EditableCgm;
 import maud.model.LoadedCGModel;
 
 /**
@@ -91,6 +96,36 @@ class AxesTool extends WindowController {
     // new methods exposed
 
     /**
+     * Test whether the indexed axis points toward or away from the camera.
+     *
+     * @param cgm which CG model (not null, unaffected)
+     * @param axisIndex which axis (&ge;0, &lt;2)
+     * @return true if pointing away, otherwise false
+     */
+    public boolean isAxisReceding(LoadedCGModel cgm, int axisIndex) {
+        Validate.nonNull(cgm, "model");
+        Validate.inRange(axisIndex, "axis index", 0, 2);
+
+        AxesControl axesControl = findControl(cgm);
+        assert axesControl.isEnabled();
+        Spatial axesSpatial = axesControl.getSpatial();
+        /*
+         * Calculate distances to the tip and tail of the axis arrow.
+         */
+        Vector3f tailLocation = axesSpatial.getWorldTranslation();
+        Vector3f tipLocation = axesControl.tipLocation(axisIndex);
+        Vector3f cameraLocation = Maud.model.camera.copyLocation(null);
+        float tailDS = cameraLocation.distanceSquared(tailLocation);
+        float tipDS = cameraLocation.distanceSquared(tipLocation);
+
+        if (tipDS > tailDS) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
@@ -113,14 +148,7 @@ class AxesTool extends WindowController {
         Vector3f result = null;
         Transform transform = worldTransform(loadedCgm);
         if (transform != null) {
-            AxesControl axesControl;
-            if (loadedCgm == Maud.model.source) {
-                axesControl = sourceAxesControl;
-            } else if (loadedCgm == Maud.model.target) {
-                axesControl = targetAxesControl;
-            } else {
-                throw new IllegalStateException();
-            }
+            AxesControl axesControl = findControl(loadedCgm);
             result = axesControl.tipLocation(axisIndex);
         }
 
@@ -128,9 +156,16 @@ class AxesTool extends WindowController {
     }
 
     /**
-     * Update the transform and AxesControl settings for both CG models.
+     * Updates performed even when the tool is disabled. (Invoked once per
+     * render pass.)
      */
     void updateVisualizations() {
+        if (Maud.model.misc.isDraggingAxis()) {
+            dragAxis();
+        }
+        /*
+         * Update the transform and AxesControl settings for each CG model.
+         */
         updateAxes(Maud.model.source, sourceAxesControl, sourceAxesNode);
         updateAxes(Maud.model.target, targetAxesControl, targetAxesNode);
     }
@@ -181,6 +216,143 @@ class AxesTool extends WindowController {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * While dragging an axis, update the orientation of the visualized object
+     * in the MVC model.
+     */
+    private void dragAxis() {
+        LoadedCGModel cgm = Maud.model.misc.getDragCgm();
+        assert cgm.isLoaded();
+        int axisIndex = Maud.model.misc.getDragAxis();
+        boolean farSide = Maud.model.misc.isDraggingFarSide();
+
+        AxesControl axesControl = findControl(cgm);
+        assert axesControl.isEnabled();
+        Spatial axesSpatial = axesControl.getSpatial();
+        /*
+         * Calculate the old axis direction in local coordinates.
+         */
+        Vector3f oldDirection = Util.axisVector(axisIndex, 1f);
+        assert oldDirection.isUnitVector() : oldDirection;
+        /*
+         * Calculate the new axis direction in local coordinates.
+         */
+        Ray worldRay = Util.mouseRay(cam, inputManager);
+        Ray localRay = Util.localizeRay(worldRay, axesSpatial);
+        float radius = axesControl.getAxisLength();
+        Vector3f newDirection = Util.lineMeetsSphere(localRay, radius, farSide);
+        newDirection.divideLocal(radius);
+        assert newDirection.isUnitVector() : newDirection;
+
+        Vector3f cross = oldDirection.cross(newDirection);
+        float crossNorm = cross.length();
+        if (crossNorm > 0f) {
+            rotateObject(cross, cgm);
+        }
+    }
+
+    /**
+     * Access the axes control for the specified CG model.
+     *
+     * @param cgm which CG model (not null, unaffected)
+     * @return the pre-existing instance
+     */
+    private AxesControl findControl(LoadedCGModel cgm) {
+        assert cgm != null;
+
+        AxesControl result;
+        if (cgm == Maud.model.source) {
+            result = sourceAxesControl;
+        } else if (cgm == Maud.model.target) {
+            result = targetAxesControl;
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        return result;
+    }
+
+    /**
+     * Rotate the visualized object using to the specified cross product.
+     *
+     * @param cross cross product of two unit vectors (not null, length&gt;0)
+     * @param cgm which CG model (not null, unaffected)
+     * @return the pre-existing instance
+     */
+    private void rotateObject(Vector3f cross, LoadedCGModel cgm) {
+        float crossNorm = cross.length();
+        Vector3f rotationAxis = cross.divide(crossNorm);
+        assert rotationAxis.isUnitVector() : rotationAxis;
+        float rotationAngle = FastMath.asin(crossNorm);
+        Quaternion localRotation = new Quaternion();
+        localRotation.fromAngleNormalAxis(rotationAngle, rotationAxis);
+        /*
+         * Determine which MVC-model object the control is visualizing,
+         * and apply the rotation to that object.
+         */
+        String mode = Maud.model.axes.getMode();
+        switch (mode) {
+            case "bone":
+                Transform oldTransform;
+                Quaternion oldOrientation;
+                Quaternion newOrientation;
+                int boneIndex = cgm.bone.getIndex();
+                assert boneIndex != -1;
+                if (cgm.bone.shouldEnableControls()) {
+                    /*
+                     * Apply the full rotation to the selected bone
+                     * in the displayed pose.
+                     */
+                    oldTransform = cgm.pose.copyTransform(boneIndex, null);
+                    oldOrientation = oldTransform.getRotation();
+                    newOrientation = oldOrientation.mult(localRotation);
+                    newOrientation.normalizeLocal();
+                    cgm.pose.getPose().setRotation(boneIndex, newOrientation);
+
+                } else if (cgm == Maud.model.target
+                        && Maud.model.mapping.isBoneMappingSelected()) {
+                    /*
+                     * Apply the full rotation to the twist of the
+                     * selected bone mapping.
+                     */
+                    oldOrientation = Maud.model.mapping.copyTwist(null);
+                    newOrientation = oldOrientation.mult(localRotation);
+                    newOrientation.normalizeLocal();
+                    Maud.model.mapping.setTwist(newOrientation);
+                }
+                break;
+
+            case "model":
+                /*
+                 * Apply the Y-axis rotation to the transform status.
+                 */
+                float yRotation = FastMath.asin(cross.y * crossNorm);
+                cgm.transform.rotateY(yRotation);
+                break;
+
+            case "spatial":
+                if (cgm instanceof EditableCgm) {
+                    EditableCgm ecgm = (EditableCgm) cgm;
+                    /*
+                     * Apply the full rotation to the selected spatial.
+                     */
+                    oldTransform = ecgm.copySpatialTransform(null);
+                    oldOrientation = oldTransform.getRotation();
+                    newOrientation = oldOrientation.mult(localRotation);
+                    newOrientation.normalizeLocal();
+                    ecgm.setSpatialRotation(newOrientation);
+                }
+                break;
+
+            case "world":
+                // ignore attempts to drag the world axes
+                break;
+
+            default:
+                throw new IllegalStateException();
+        }
+    }
 
     /**
      * Update the transform and AxesControl settings for the specified CG model.
@@ -249,8 +421,7 @@ class AxesTool extends WindowController {
 
             case "model":
                 if (loadedCgm.isLoaded()) {
-                    Spatial cgm = loadedCgm.view.getCgmRoot();
-                    transform = cgm.getWorldTransform();
+                    transform = loadedCgm.transform.worldTransform();
                 }
                 break;
 

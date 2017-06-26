@@ -261,6 +261,10 @@ class DddInputMode extends InputMode {
                 case "warp":
                     handled = warpAction(actionString);
             }
+
+        } else if ("select boneXY".equals(actionString)) {
+            Maud.model.misc.clearDragAxis();
+            handled = true;
         }
 
         if (!handled) {
