@@ -232,11 +232,17 @@ public class DddGui extends GuiScreenController {
                 Maud.model.axes.setMode("none");
                 break;
 
-            case "flyingRadioButton":
+            case "flyRadioButton":
                 Maud.model.camera.setMode("fly");
                 break;
-            case "orbitingRadioButton":
+            case "orbitRadioButton":
                 Maud.model.camera.setMode("orbit");
+                break;
+            case "perspectiveRadioButton":
+                Maud.model.camera.setMode("perspective");
+                break;
+            case "parallelRadioButton":
+                Maud.model.camera.setMode("parallel");
                 break;
 
             case "cullInheritRadioButton":

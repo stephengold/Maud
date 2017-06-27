@@ -913,6 +913,11 @@ class DddInputMode extends InputMode {
             case "toggle pause target":
                 Maud.model.target.animation.togglePaused();
                 handled = true;
+                break;
+            case "toggle projection":
+                Maud.model.camera.toggleProjection();
+                handled = true;
+                break;
         }
 
         return handled;

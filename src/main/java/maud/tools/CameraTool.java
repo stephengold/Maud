@@ -112,12 +112,6 @@ public class CameraTool
     void updateCamera() {
         CameraStatus model = Maud.model.camera;
 
-        float aspectRatio = MyCamera.aspectRatio(cam);
-        float yDegrees = model.getFrustumYDegrees();
-        float near = model.getFrustumNear();
-        float far = model.getFrustumFar();
-        cam.setFrustumPerspective(yDegrees, aspectRatio, near, far);
-
         if (model.isOrbitMode()) {
             model.aim();
         }
@@ -125,6 +119,25 @@ public class CameraTool
         cam.setLocation(location);
         Quaternion orientation = model.copyOrientation(null);
         cam.setRotation(orientation);
+
+        float aspectRatio = MyCamera.aspectRatio(cam);
+        float far = model.getFrustumFar();
+        float near = model.getFrustumNear();
+        boolean parallel = model.isParallelProjection();
+        if (parallel) {
+            float h = 0.4f * model.range();
+            float w = aspectRatio * h;
+            cam.setFrustumBottom(-h);
+            cam.setFrustumFar(far);
+            cam.setFrustumLeft(-w);
+            cam.setFrustumNear(near);
+            cam.setFrustumRight(w);
+            cam.setFrustumTop(h);
+            cam.setParallelProjection(true);
+        } else {
+            float yDegrees = model.getFrustumYDegrees();
+            cam.setFrustumPerspective(yDegrees, aspectRatio, near, far);
+        }
     }
     // *************************************************************************
     // AnalogListener methods
@@ -263,7 +276,35 @@ public class CameraTool
             Application application) {
         super.initialize(stateManager, application);
         assert Maud.gui.tools.getTool("cursor").isInitialized();
-
         mapButton();
+    }
+
+    /**
+     * Callback to update this window prior to rendering. (Invoked once per
+     * render pass.)
+     *
+     * @param elapsedTime time interval between render passes (in seconds,
+     * &ge;0)
+     */
+    @Override
+    public void update(float elapsedTime) {
+        super.update(elapsedTime);
+        Maud.gui.setIgnoreGuiChanges(true);
+
+        boolean parallel = Maud.model.camera.isParallelProjection();
+        if (parallel) {
+            Maud.gui.setRadioButton("parallelRadioButton");
+        } else {
+            Maud.gui.setRadioButton("perspectiveRadioButton");
+        }
+
+        boolean orbit = Maud.model.camera.isOrbitMode();
+        if (orbit) {
+            Maud.gui.setRadioButton("orbitRadioButton");
+        } else {
+            Maud.gui.setRadioButton("flyRadioButton");
+        }
+
+        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

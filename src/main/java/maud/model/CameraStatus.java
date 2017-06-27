@@ -75,9 +75,14 @@ public class CameraStatus implements Cloneable {
     // fields
 
     /**
-     * true &rarr; orbit mode, false &rarr; fly mode
+     * movement mode: true &rarr; orbit, false &rarr; fly
      */
     private boolean orbitMode = true;
+    /**
+     * projection mode: true &rarr; parallel/orthographic, false &rarr;
+     * perspective
+     */
+    private boolean parallelMode = false;
     /**
      * movement rate (fly mode only, world units per scroll wheel notch)
      */
@@ -247,6 +252,15 @@ public class CameraStatus implements Cloneable {
     }
 
     /**
+     * Test whether the camera is in parallel-projection mode.
+     *
+     * @return true if in parallel-projection mode, otherwise false
+     */
+    public boolean isParallelProjection() {
+        return parallelMode;
+    }
+
+    /**
      * Move the camera forward/backward when the scroll wheel is turned.
      *
      * @param amount scroll wheel notches
@@ -397,24 +411,28 @@ public class CameraStatus implements Cloneable {
     }
 
     /**
-     * Alter the camera mode.
+     * Alter one of the camera's modes.
      *
-     * @param newMode "orbit" &rarr; orbit mode, "fly" &rarr; fly mode
-     *
+     * @param modeName "fly", "orbit", "parallel", or "perspective"
      */
-    public void setMode(String newMode) {
-        switch (newMode) {
+    public void setMode(String modeName) {
+        switch (modeName) {
             case "fly":
                 orbitMode = false;
                 break;
             case "orbit":
                 orbitMode = true;
                 break;
+            case "parallel":
+                parallelMode = true;
+                break;
+            case "perspective":
+                parallelMode = false;
+                break;
             default:
                 logger.log(Level.SEVERE, "newMode={0}",
-                        MyString.quote(newMode));
-                throw new IllegalArgumentException(
-                        "newMode must be \"fly\" or \"orbit\"");
+                        MyString.quote(modeName));
+                throw new IllegalArgumentException();
         }
 
         if (orbitMode) {
@@ -423,8 +441,8 @@ public class CameraStatus implements Cloneable {
     }
 
     /**
-     * Alter the location and direction in orbit mode, based on elevation angle,
-     * azimuth, and range.
+     * Alter the location and direction in orbit mode, based on the elevation
+     * angle, azimuth, and range.
      *
      * @param elevationAngle elevation angle of camera, measured upward from the
      * 3D cursor's X-Z plane (in radians)
@@ -439,12 +457,12 @@ public class CameraStatus implements Cloneable {
         /*
          * Limit the range and elevation angle.
          */
-        float clampedRang = FastMath.clamp(range, minRange, maxRange);
+        float clampedRange = FastMath.clamp(range, minRange, maxRange);
         float clampedElevation = FastMath.clamp(elevationAngle,
                 minElevationAngle, maxElevationAngle);
 
         Vector3f dir = MyVector3f.fromAltAz(clampedElevation, azimuthAngle);
-        Vector3f offset = dir.mult(clampedRang);
+        Vector3f offset = dir.mult(clampedRange);
         Maud.model.cursor.copyLocation(location);
         location.addLocal(offset);
 
@@ -453,18 +471,25 @@ public class CameraStatus implements Cloneable {
     }
 
     /**
-     * Adjust camera parameters based on the height of the CG model.
+     * Reset camera parameters after loading a CG model.
      *
-     * @param height (in world units, &gt;0)
+     * @param scale (&gt;0, typically=1)
      */
-    public void setScale(float height) {
-        Validate.positive(height, "height");
+    public void setScale(float scale) {
+        Validate.positive(scale, "scale");
 
-        flyRate = height / 10f;
-        frustumFar = height * 100f;
-        frustumNear = height / 100f;
-        maxRange = height * 10f;
-        minRange = height / 5f;
+        flyRate = scale / 10f;
+        frustumFar = scale * 100f;
+        frustumNear = scale / 100f;
+        maxRange = scale * 10f;
+        minRange = scale / 5f;
+    }
+
+    /**
+     * Toggle the projection mode.
+     */
+    public void toggleProjection() {
+        parallelMode = !parallelMode;
     }
     // *************************************************************************
     // Object methods
