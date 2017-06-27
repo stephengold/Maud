@@ -554,11 +554,10 @@ public class Util {
             String targetName = targetBone.getName();
             BoneMapping boneMapping = mapping.get(targetName);
             if (boneMapping != null) {
-                Quaternion twist = boneMapping.getTwist();
                 String sourceName = boneMapping.getSourceName();
                 int iSource = sourceSkeleton.getBoneIndex(sourceName);
                 BoneTrack track = retargetTrack(sourceAnimation, sourceSkeleton,
-                        targetSkeleton, mapping, twist, iSource, iTarget);
+                        targetSkeleton, mapping, iSource, iTarget);
                 result.addTrack(track);
             }
         }
@@ -575,19 +574,16 @@ public class Util {
      * @param sourceSkeleton (not null, unaffected)
      * @param targetSkeleton (not null, unaffected)
      * @param mapping which skeleton mapping to use (not null, unaffected)
-     * @param twist twist rotation for target bone (not null, unaffected)
      * @param sourceBoneIndex index of the source bone (&ge;0)
      * @param targetBoneIndex index of the target bone (&ge;0)
      * @return a new bone track
      */
     public static BoneTrack retargetTrack(Animation sourceAnimation,
             Skeleton sourceSkeleton, Skeleton targetSkeleton,
-            SkeletonMapping mapping, Quaternion twist, int sourceBoneIndex,
-            int targetBoneIndex) {
+            SkeletonMapping mapping, int sourceBoneIndex, int targetBoneIndex) {
         Validate.nonNull(sourceSkeleton, "source skeleton");
         Validate.nonNull(targetSkeleton, "target skeleton");
         Validate.nonNull(mapping, "mapping");
-        Validate.nonNull(twist, "twist");
         Validate.nonNegative(sourceBoneIndex, "source bone index");
         Validate.nonNegative(targetBoneIndex, "target bone index");
 
