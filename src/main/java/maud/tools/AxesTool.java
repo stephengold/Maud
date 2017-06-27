@@ -102,9 +102,10 @@ class AxesTool extends WindowController {
      * @param axisIndex which axis (&ge;0, &lt;2)
      * @return true if pointing away, otherwise false
      */
-    public boolean isAxisReceding(LoadedCGModel cgm, int axisIndex) {
-        Validate.nonNull(cgm, "model");
-        Validate.inRange(axisIndex, "axis index", 0, 2);
+    boolean isAxisReceding(LoadedCGModel cgm, int axisIndex) {
+        assert cgm != null;
+        assert axisIndex >= 0 : axisIndex;
+        assert axisIndex < 3 : axisIndex;
 
         AxesControl axesControl = findControl(cgm);
         assert axesControl.isEnabled();
