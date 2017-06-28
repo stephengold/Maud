@@ -38,7 +38,6 @@ import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -164,24 +163,6 @@ public class LoadedCGModel implements Cloneable {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Copy the local transform of the selected spatial.
-     *
-     * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
-     */
-    public Transform copySpatialTransform(Transform storeResult) {
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
-
-        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
-        Transform trans = selectedSpatial.getLocalTransform();
-        storeResult.set(trans);
-
-        return storeResult;
-    }
 
     /**
      * Count the animations.
