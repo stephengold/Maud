@@ -30,6 +30,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
@@ -266,6 +267,20 @@ public class SelectedBone implements Cloneable {
         Pose pose = loadedCgm.pose.getPose();
         int boneIndex = getIndex();
         storeResult = pose.modelOrientation(boneIndex, storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Calculate the model transform of the selected bone.
+     *
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
+     */
+    public Transform modelTransform(Transform storeResult) {
+        Pose pose = loadedCgm.pose.getPose();
+        int boneIndex = getIndex();
+        storeResult = pose.modelTransform(boneIndex, storeResult);
 
         return storeResult;
     }

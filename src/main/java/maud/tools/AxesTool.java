@@ -434,9 +434,8 @@ class AxesTool extends WindowController {
         switch (mode) {
             case "bone":
                 if (loadedCgm.bone.isSelected()) {
-                    Pose pose = loadedCgm.pose.getPose();
-                    int boneIndex = loadedCgm.bone.getIndex();
-                    transform = loadedCgm.pose.modelTransform(boneIndex, null);
+                    transform = loadedCgm.bone.modelTransform(null);
+                    // TODO use animated spatial
                     Transform worldTransform;
                     worldTransform = loadedCgm.view.copyWorldTransform();
                     transform.combineWithParent(worldTransform);
