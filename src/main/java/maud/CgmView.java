@@ -371,19 +371,17 @@ public class CgmView implements JmeCloneable {
         int boneCount = model.bones.countBones();
         int numTransforms = model.pose.getPose().countBones();
         assert numTransforms == boneCount : numTransforms;
-        assert skeleton == null || skeleton.getBoneCount() == boneCount : boneCount;
+        assert skeleton == null
+                || skeleton.getBoneCount() == boneCount : boneCount;
 
+        Pose pose = model.pose.getPose();
         Transform transform = new Transform();
-        Vector3f translation = new Vector3f();
-        Quaternion rotation = new Quaternion();
-        Vector3f scale = new Vector3f();
+        Vector3f translation = transform.getTranslation();
+        Quaternion rotation = transform.getRotation();
+        Vector3f scale = transform.getScale();
 
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            model.pose.copyTransform(boneIndex, transform);
-            transform.getTranslation(translation);
-            transform.getRotation(rotation);
-            transform.getScale(scale);
-
+            pose.copyTransform(boneIndex, transform);
             Bone bone = skeleton.getBone(boneIndex);
             bone.setUserTransforms(translation, rotation, scale);
         }

@@ -33,7 +33,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.logging.Logger;
-import jme3utilities.Validate;
 import maud.Pose;
 
 /**
@@ -54,7 +53,8 @@ public class DisplayedPose implements JmeCloneable {
     // fields
 
     /**
-     * the pose, including a skeleton and a user transform for each bone
+     * the pose, including a skeleton and a user/animation transform for each
+     * bone
      */
     private Pose pose = new Pose(null);
     /**
@@ -63,19 +63,6 @@ public class DisplayedPose implements JmeCloneable {
     private LoadedCGModel loadedCgm = null;
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Copy the user transform of the indexed bone.
-     *
-     * @param boneIndex which bone to use (&ge;0)
-     * @param storeResult (modified if not null)
-     * @return user transform (either storeResult or a new instance)
-     */
-    public Transform copyTransform(int boneIndex, Transform storeResult) {
-        Validate.nonNegative(boneIndex, "bone index");
-        Transform result = pose.copyTransform(boneIndex, storeResult);
-        return result;
-    }
 
     /**
      * Access the pose.
@@ -88,21 +75,7 @@ public class DisplayedPose implements JmeCloneable {
     }
 
     /**
-     * Calculate the CG-model transform of the indexed bone.
-     *
-     * @param boneIndex which bone to use (&ge;0)
-     * @param storeResult (modified if not null)
-     * @return transform in CG-model coordinates (either storeResult or a new
-     * instance)
-     */
-    public Transform modelTransform(int boneIndex, Transform storeResult) {
-        Validate.nonNegative(boneIndex, "bone index");
-        Transform result = pose.modelTransform(boneIndex, storeResult);
-        return result;
-    }
-
-    /**
-     * Reset the pose to bind pose.
+     * Reset the displayed pose to bind pose.
      *
      * @param skeleton (may be null, alias created)
      */
@@ -111,8 +84,8 @@ public class DisplayedPose implements JmeCloneable {
     }
 
     /**
-     * Alter which CG model holds the pose. (Invoked only during initialization
-     * and cloning.)
+     * Alter which CG model displays the pose. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newLoaded (not null)
      */
