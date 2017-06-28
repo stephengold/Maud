@@ -363,7 +363,7 @@ public class Pose implements JmeCloneable {
     }
 
     /**
-     * Alter the transform of the indexed bone.
+     * Alter the user/animation transform of the indexed bone.
      *
      * @param boneIndex which bone to translate (&ge;0)
      * @param transform (not null, unaffected)
@@ -377,7 +377,7 @@ public class Pose implements JmeCloneable {
     }
 
     /**
-     * Alter the rotation of the indexed bone.
+     * Alter the user/animation rotation of the indexed bone.
      *
      * @param boneIndex which bone to rotate (&ge;0)
      * @param rotation (not null, unaffected)
@@ -391,7 +391,7 @@ public class Pose implements JmeCloneable {
     }
 
     /**
-     * Alter the scale of the indexed bone.
+     * Alter the user/animation scale of the indexed bone.
      *
      * @param boneIndex which bone to scale (&ge;0)
      * @param scale (not null, unaffected)
@@ -408,7 +408,7 @@ public class Pose implements JmeCloneable {
     }
 
     /**
-     * Alter the translation of the indexed bone.
+     * Alter the user/animation translation of the indexed bone.
      *
      * @param boneIndex which bone to translate (&ge;0)
      * @param translation (not null, unaffected)

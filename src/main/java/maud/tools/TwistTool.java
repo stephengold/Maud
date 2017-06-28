@@ -178,8 +178,8 @@ public class TwistTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the mapping twist.
      */
     private void setSlidersToTwist() {
-        Quaternion twist = Maud.model.mapping.copyTwist(null);
-        float[] angles = twist.toAngles(null);
+        Quaternion effTwist = Maud.model.mapping.copyTwist(null);
+        float[] angles = effTwist.toAngles(null);
         boolean degrees = Maud.model.misc.getAnglesInDegrees();
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {

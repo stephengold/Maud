@@ -103,15 +103,14 @@ public class LoadedMapping implements Cloneable {
             int sourceIndex = sourceSkeleton.getBoneIndex(sourceName);
             if (sourceIndex != -1) {
                 /*
-                 * Calculate the model rotation of the source bone.
+                 * Calculate the model orientation of the source bone.
                  */
-                Transform smt = new Transform();
-                Maud.model.source.pose.modelTransform(sourceIndex, smt);
-                Quaternion modelRotation = smt.getRotation();
+                Pose sourcePose = Maud.model.source.pose.getPose();
+                Quaternion mo = sourcePose.modelOrientation(sourceIndex, null);
 
-                Pose pose = Maud.model.target.pose.getPose();
-                Quaternion userRotation = pose.userForModel(boneIndex,
-                        modelRotation, null);
+                Pose targetPose = Maud.model.target.pose.getPose();
+                Quaternion userRotation = targetPose.userForModel(boneIndex,
+                        mo, null);
                 Quaternion twist = boneMapping.getTwist();
                 userRotation.mult(twist, storeResult.getRotation());
             }
@@ -121,7 +120,7 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Copy the twist of the selected bone mapping.
+     * Copy the effective twist of the selected bone mapping.
      *
      * @param storeResult (modified if not null)
      * @return twist rotation (either storeResult or a new instance)
@@ -134,6 +133,9 @@ public class LoadedMapping implements Cloneable {
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();
         storeResult.set(twist);
+        if (isInvertingMap()) {
+            storeResult.inverseLocal();
+        }
 
         return storeResult;
     }
@@ -464,7 +466,7 @@ public class LoadedMapping implements Cloneable {
     // private methods
 
     /**
-     * Calculate the effective skeleton mapping.
+     * Calculate an effective skeleton mapping.
      *
      * @return a new mapping
      */

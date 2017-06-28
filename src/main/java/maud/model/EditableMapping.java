@@ -143,14 +143,19 @@ public class EditableMapping extends LoadedMapping {
     }
 
     /**
-     * Alter the twist of the selected bone mapping.
+     * Alter the effective twist of the selected bone mapping.
      *
      * @param newTwist (not null, unaffected)
      */
     public void setTwist(Quaternion newTwist) {
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();
-        twist.set(newTwist);
+        if (isInvertingMap()) {
+            Quaternion tmp = newTwist.inverse();
+            twist.set(tmp);
+        } else {
+            twist.set(newTwist);
+        }
         setEditedTwist();
     }
 
