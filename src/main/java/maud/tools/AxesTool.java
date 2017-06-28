@@ -43,6 +43,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.Pose;
 import maud.Util;
 import maud.model.EditableCgm;
 import maud.model.LoadedCGModel;
@@ -275,19 +276,67 @@ class AxesTool extends WindowController {
     }
 
     /**
-     * Rotate the visualized object using to the specified cross product.
+     * Rotate the visualized bone using the specified quaternion.
+     *
+     * @param rotation quaternion (not null, norm=1)
+     * @param cgm which CG model (not null, unaffected)
+     */
+    private void rotateBone(Quaternion rotation, LoadedCGModel cgm) {
+        int boneIndex = cgm.bone.getIndex();
+        assert boneIndex != -1;
+        Pose pose = cgm.pose.getPose();
+        Quaternion oldUserRotation = pose.userRotation(boneIndex, null);
+
+        Quaternion newUserRotation = null;
+        if (cgm.bone.shouldEnableControls()) {
+            /*
+             * Apply the rotation to the selected bone in the displayed pose.
+             */
+            newUserRotation = oldUserRotation.mult(rotation);
+            newUserRotation.normalizeLocal();
+            pose.setRotation(boneIndex, newUserRotation);
+
+        } else if (cgm == Maud.model.target
+                && cgm.animation.isRetargetedPose()
+                && Maud.model.mapping.isBoneMappingSelected()) {
+            /*
+             * Apply the rotation to the target bone in the displayed pose.
+             */
+            newUserRotation = oldUserRotation.mult(rotation);
+            pose.setRotation(boneIndex, newUserRotation);
+        }
+
+        if (newUserRotation != null && !cgm.bone.shouldEnableControls()) {
+            assert Maud.model.target.animation.isRetargetedPose();
+            assert Maud.model.mapping.isBoneMappingSelected();
+            /*
+             * Infer a new effective twist for the selected bone mapping.
+             */
+            Quaternion sourceMo = Maud.model.source.bone.modelOrientation(null);
+            Quaternion targetMo = Maud.model.target.bone.modelOrientation(null);
+            Quaternion invSourceMo = sourceMo.inverse();
+            Quaternion newEffectiveTwist = invSourceMo.mult(targetMo);
+            Maud.model.mapping.setTwist(newEffectiveTwist);
+        }
+    }
+
+    /**
+     * Rotate the visualized object using the specified cross product.
      *
      * @param cross cross product of two unit vectors (not null, length&gt;0)
      * @param cgm which CG model (not null, unaffected)
      * @return the pre-existing instance
      */
     private void rotateObject(Vector3f cross, LoadedCGModel cgm) {
+        /*
+         * Convert the cross product to a rotation quaternion.
+         */
         float crossNorm = cross.length();
         Vector3f rotationAxis = cross.divide(crossNorm);
         assert rotationAxis.isUnitVector() : rotationAxis;
         float rotationAngle = FastMath.asin(crossNorm);
-        Quaternion localRotation = new Quaternion();
-        localRotation.fromAngleNormalAxis(rotationAngle, rotationAxis);
+        Quaternion rotation = new Quaternion();
+        rotation.fromAngleNormalAxis(rotationAngle, rotationAxis);
         /*
          * Determine which MVC-model object the control is visualizing,
          * and apply the rotation to that object.
@@ -295,33 +344,7 @@ class AxesTool extends WindowController {
         String mode = Maud.model.axes.getMode();
         switch (mode) {
             case "bone":
-                Transform oldTransform;
-                Quaternion oldOrientation;
-                Quaternion newOrientation;
-                int boneIndex = cgm.bone.getIndex();
-                assert boneIndex != -1;
-                if (cgm.bone.shouldEnableControls()) {
-                    /*
-                     * Apply the full rotation to the selected bone
-                     * in the displayed pose.
-                     */
-                    oldTransform = cgm.pose.copyTransform(boneIndex, null);
-                    oldOrientation = oldTransform.getRotation();
-                    newOrientation = oldOrientation.mult(localRotation);
-                    newOrientation.normalizeLocal();
-                    cgm.pose.getPose().setRotation(boneIndex, newOrientation);
-
-                } else if (cgm == Maud.model.target
-                        && Maud.model.mapping.isBoneMappingSelected()) {
-                    /*
-                     * Apply the full rotation to the twist of the
-                     * selected bone mapping.
-                     */
-                    oldOrientation = Maud.model.mapping.copyTwist(null);
-                    newOrientation = oldOrientation.mult(localRotation);
-                    newOrientation.normalizeLocal();
-                    Maud.model.mapping.setTwist(newOrientation);
-                }
+                rotateBone(rotation, cgm);
                 break;
 
             case "model":
@@ -338,11 +361,10 @@ class AxesTool extends WindowController {
                     /*
                      * Apply the full rotation to the selected spatial.
                      */
-                    oldTransform = ecgm.copySpatialTransform(null);
-                    oldOrientation = oldTransform.getRotation();
-                    newOrientation = oldOrientation.mult(localRotation);
-                    newOrientation.normalizeLocal();
-                    ecgm.setSpatialRotation(newOrientation);
+                    Quaternion oldQ = ecgm.spatial.localRotation(null);
+                    Quaternion newQ = oldQ.mult(rotation);
+                    newQ.normalizeLocal();
+                    ecgm.setSpatialRotation(newQ);
                 }
                 break;
 
@@ -412,6 +434,7 @@ class AxesTool extends WindowController {
         switch (mode) {
             case "bone":
                 if (loadedCgm.bone.isSelected()) {
+                    Pose pose = loadedCgm.pose.getPose();
                     int boneIndex = loadedCgm.bone.getIndex();
                     transform = loadedCgm.pose.modelTransform(boneIndex, null);
                     Transform worldTransform;
