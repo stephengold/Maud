@@ -31,6 +31,8 @@ import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -560,6 +562,60 @@ public class SelectedSpatial implements Cloneable {
         Collections.sort(result);
 
         return result;
+    }
+
+    /**
+     * Copy the local rotation of the selected spatial.
+     *
+     * @param storeResult (modified if not null)
+     * @return local rotation (either storeResult or a new instance)
+     */
+    public Quaternion localRotation(Quaternion storeResult) {
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        Spatial spatial = modelSpatial();
+        Quaternion rotation = spatial.getLocalRotation();
+        storeResult.set(rotation);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the local scale of the selected spatial.
+     *
+     * @param storeResult (modified if not null)
+     * @return local scale (either storeResult or a new instance)
+     */
+    public Vector3f localScale(Vector3f storeResult) {
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        Spatial spatial = modelSpatial();
+        Vector3f scale = spatial.getLocalScale();
+        storeResult.set(scale);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the local translation of the selected spatial.
+     *
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
+     */
+    public Vector3f localTranslation(Vector3f storeResult) {
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        Spatial spatial = modelSpatial();
+        Vector3f translation = spatial.getLocalTranslation();
+        storeResult.set(translation);
+
+        return storeResult;
     }
 
     /**

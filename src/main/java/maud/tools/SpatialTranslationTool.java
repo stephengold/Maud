@@ -29,7 +29,6 @@ package maud.tools;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.FastMath;
-import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
@@ -160,12 +159,11 @@ class SpatialTranslationTool extends WindowController {
     }
 
     /**
-     * Set all 4 sliders (and their status labels) based on the transform of the
-     * selected spatial.
+     * Set all 4 sliders (and their status labels) based on the local
+     * translation of the selected spatial.
      */
     private void setSlidersToTransform() {
-        Transform transform = Maud.model.target.copySpatialTransform(null);
-        Vector3f vector = transform.getTranslation();
+        Vector3f vector = Maud.model.target.spatial.localTranslation(null);
         float[] offsets = vector.toArray(null);
 
         float scale = readScale();

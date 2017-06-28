@@ -29,7 +29,6 @@ package maud.tools;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
@@ -137,19 +136,18 @@ class SpatialRotationTool extends WindowController {
             dButton = "degrees";
         }
         Maud.gui.setButtonLabel("degreesButton2", dButton);
-        
+
         Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Set all 3 sliders (and their status labels) based on the transform of the
-     * selected spatial.
+     * Set all 3 sliders (and their status labels) based on the local rotation
+     * of the selected spatial.
      */
     private void setSlidersToTransform() {
-        Transform transform = Maud.model.target.copySpatialTransform(null);
-        Quaternion rotation = transform.getRotation();
+        Quaternion rotation = Maud.model.target.spatial.localRotation(null);
         float[] angles = rotation.toAngles(null);
         boolean degrees = Maud.model.misc.getAnglesInDegrees();
 
