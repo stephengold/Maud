@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import maud.Maud;
 
 /**
  * The MVC model of the selected bone in the Maud application.
@@ -53,6 +52,11 @@ public class SelectedBone implements Cloneable {
     // *************************************************************************
     // fields
 
+    /**
+     * editable CG model containing the bone, if any (set by
+     * {@link #setCgm(LoadedCGModel)})
+     */
+    private EditableCgm editableCgm;
     /**
      * index of the selected bone, or -1 for none selected
      */
@@ -255,7 +259,7 @@ public class SelectedBone implements Cloneable {
     public void resetRotation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            Maud.model.target.pose.getPose().resetRotation(boneIndex);
+            editableCgm.pose.getPose().resetRotation(boneIndex);
         }
     }
 
@@ -265,7 +269,7 @@ public class SelectedBone implements Cloneable {
     public void resetScale() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            Maud.model.target.pose.getPose().resetScale(boneIndex);
+            editableCgm.pose.getPose().resetScale(boneIndex);
         }
     }
 
@@ -275,7 +279,7 @@ public class SelectedBone implements Cloneable {
     public void resetTranslation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            Maud.model.target.pose.getPose().resetTranslation(boneIndex);
+            editableCgm.pose.getPose().resetTranslation(boneIndex);
         }
     }
 
@@ -394,7 +398,13 @@ public class SelectedBone implements Cloneable {
      */
     void setCgm(LoadedCGModel newLoaded) {
         assert newLoaded != null;
+
         loadedCgm = newLoaded;
+        if (newLoaded instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newLoaded;
+        } else {
+            editableCgm = null;
+        }
     }
 
     /**
@@ -404,7 +414,7 @@ public class SelectedBone implements Cloneable {
     public void setRotationToAnimation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            Maud.model.target.pose.setRotationToAnimation(boneIndex);
+            editableCgm.pose.setRotationToAnimation(boneIndex);
         }
     }
 
@@ -415,7 +425,7 @@ public class SelectedBone implements Cloneable {
     public void setScaleToAnimation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            Maud.model.target.pose.setScaleToAnimation(boneIndex);
+            editableCgm.pose.setScaleToAnimation(boneIndex);
         }
     }
 
@@ -426,7 +436,7 @@ public class SelectedBone implements Cloneable {
     public void setTranslationToAnimation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            Maud.model.target.pose.setTranslationToAnimation(boneIndex);
+            editableCgm.pose.setTranslationToAnimation(boneIndex);
         }
     }
 
