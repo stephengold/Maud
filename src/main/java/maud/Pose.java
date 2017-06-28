@@ -62,11 +62,16 @@ public class Pose implements JmeCloneable {
     // fields
 
     /**
-     * user transforms that describe this pose, one for each bone
+     * user/animation transforms that describe this pose, one for each bone
      */
     private List<Transform> transforms;
     /**
      * the skeleton for which this pose was generated, or null for none
+     * <p>
+     * This skeleton provides the name, index, parent, children, and bind
+     * transform of each bone. All other bone information is disregarded. In
+     * particular, the bones' {local/model}{Pos/Rot/Scale} and userControl
+     * fields are ignored.
      */
     private Skeleton skeleton;
     // *************************************************************************
@@ -132,11 +137,11 @@ public class Pose implements JmeCloneable {
     }
 
     /**
-     * Copy the user transform of the indexed bone.
+     * Copy the user/animation transform of the indexed bone. TODO rename?
      *
      * @param boneIndex which bone to use (&ge;0)
      * @param storeResult (modified if not null)
-     * @return user transform (either storeResult or a new instance)
+     * @return transform (either storeResult or a new instance)
      */
     public Transform copyTransform(int boneIndex, Transform storeResult) {
         Validate.nonNegative(boneIndex, "bone index");
@@ -173,7 +178,33 @@ public class Pose implements JmeCloneable {
     }
 
     /**
-     * Calculate the local transform of the indexed bone.
+     * Calculate the local rotation of the indexed bone.
+     *
+     * @param boneIndex which bone to use (&ge;0)
+     * @param storeResult (modified if not null)
+     * @return local rotation (either storeResult or a new instance)
+     */
+    public Quaternion localRotation(int boneIndex, Quaternion storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
+        /*
+         * Start with the bone's bind transform.
+         */
+        Bone bone = skeleton.getBone(boneIndex);
+        Quaternion bindRotation = bone.getBindRotation();
+        /*
+         * Apply its user/animation rotation.
+         */
+        Transform transform = transforms.get(boneIndex);
+        Quaternion userRotation = transform.getRotation();
+        storeResult = bindRotation.mult(userRotation, storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Calculate the local transform of the indexed bone. When applied as a left
+     * factor, the local transform converts from the bone's coordinate system to
+     * the parent bone's coordinate system.
      *
      * @param boneIndex which bone to use (&ge;0)
      * @param storeResult (modified if not null)
@@ -182,16 +213,13 @@ public class Pose implements JmeCloneable {
      */
     public Transform localTransform(int boneIndex, Transform storeResult) {
         Validate.nonNegative(boneIndex, "bone index");
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
         /*
          * Start with the bone's bind transform.
          */
         Bone bone = skeleton.getBone(boneIndex);
-        MySkeleton.copyBindTransform(bone, storeResult);
+        storeResult = MySkeleton.copyBindTransform(bone, storeResult);
         /*
-         * Apply the user transform in a simple (yet peculiar) way
+         * Apply the user/animation transform in a simple (yet peculiar) way
          * to obtain the bone's local transform.
          */
         Transform user = copyTransform(boneIndex, null);
@@ -203,22 +231,52 @@ public class Pose implements JmeCloneable {
     }
 
     /**
-     * Calculate the model transform of the indexed bone.
+     * Calculate the orientation of the indexed bone in the coordinate system of
+     * an animated spatial.
      *
      * @param boneIndex which bone to use (&ge;0)
      * @param storeResult (modified if not null)
-     * @return transform in model coordinates (either storeResult or a new
-     * instance)
+     * @return orientation in model space (either storeResult or a new instance)
+     */
+    public Quaternion modelOrientation(int boneIndex, Quaternion storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        Bone bone = skeleton.getBone(boneIndex);
+        Bone parentBone = bone.getParent();
+        if (parentBone == null) {
+            /*
+             * For a root bone, use the local rotation.
+             */
+            storeResult = localRotation(boneIndex, storeResult);
+        } else {
+            int parentIndex = skeleton.getBoneIndex(parentBone);
+            /*
+             * For a non-root bone, use the parent's model orientation
+             * times the local rotation.
+             */
+            storeResult = modelOrientation(parentIndex, storeResult);
+            Quaternion localRotation = localRotation(boneIndex, null);
+            storeResult.multLocal(localRotation);
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Calculate the model transform of the indexed bone. When applied as a left
+     * factor, the model transform converts from the bone's coordinate system to
+     * the coordinate system of an animated spatial.
+     *
+     * @param boneIndex which bone to use (&ge;0)
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
      */
     public Transform modelTransform(int boneIndex, Transform storeResult) {
         Validate.nonNegative(boneIndex, "bone index");
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
         /*
          * Start with the bone's local transform.
          */
-        localTransform(boneIndex, storeResult);
+        storeResult = localTransform(boneIndex, storeResult);
 
         Bone bone = skeleton.getBone(boneIndex);
         Bone parentBone = bone.getParent();
@@ -401,8 +459,8 @@ public class Pose implements JmeCloneable {
     }
 
     /**
-     * Calculate the user rotation for the indexed bone to give it the specified
-     * orientation in CG model space.
+     * Calculate the user/animation rotation for the indexed bone to give it the
+     * specified orientation in the coordinate system of an animated spatial.
      *
      * @param boneIndex which bone (&ge;0)
      * @param modelOrientation desired orientation (not null, unaffected)
@@ -413,14 +471,60 @@ public class Pose implements JmeCloneable {
             Quaternion storeResult) {
         Validate.nonNegative(boneIndex, "bone index");
         Validate.nonNull(modelOrientation, "model orienation");
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
 
         Bone bone = skeleton.getBone(boneIndex);
+        Quaternion bind = bone.getBindRotation();
+        Quaternion inverseBind = bind.inverse();
         Quaternion local = localForModel(bone, modelOrientation, null);
-        Quaternion inverseBind = bone.getBindRotation().inverse();
-        inverseBind.mult(local, storeResult);
+        storeResult = inverseBind.mult(local, storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the user/animation rotation of the indexed bone.
+     *
+     * @param boneIndex which bone to use (&ge;0)
+     * @param storeResult (modified if not null)
+     * @return user rotation (either storeResult or a new instance)
+     */
+    public Quaternion userRotation(int boneIndex, Quaternion storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        Transform transform = transforms.get(boneIndex);
+        storeResult = transform.getRotation(storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the user/animation scale of the indexed bone.
+     *
+     * @param boneIndex which bone to use (&ge;0)
+     * @param storeResult (modified if not null)
+     * @return user scale (either storeResult or a new instance)
+     */
+    public Vector3f userScale(int boneIndex, Vector3f storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        Transform transform = transforms.get(boneIndex);
+        storeResult = transform.getScale(storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the user/animation translation of the indexed bone.
+     *
+     * @param boneIndex which bone to use (&ge;0)
+     * @param storeResult (modified if not null)
+     * @return user translation (either storeResult or a new instance)
+     */
+    public Vector3f userTranslation(int boneIndex, Vector3f storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        Transform transform = transforms.get(boneIndex);
+        storeResult = transform.getTranslation(storeResult);
 
         return storeResult;
     }
@@ -467,7 +571,7 @@ public class Pose implements JmeCloneable {
 
     /**
      * Calculate the local rotation for the specified bone to give it the
-     * specified orientation in CG-model space.
+     * specified orientation in the coordinate system of an animated spatial.
      *
      * @param bone which bone (not null, unaffected)
      * @param modelOrientation desired orientation (not null, unaffected)
@@ -486,13 +590,13 @@ public class Pose implements JmeCloneable {
         if (parent == null) {
             storeResult.set(modelOrientation);
         } else {
+            int parentIndex = skeleton.getBoneIndex(parent);
             /*
              * Factor in the orientation of the parent bone.
              */
-            int parentIndex = skeleton.getBoneIndex(parent);
-            Transform parentTransform = modelTransform(parentIndex, null);
-            Quaternion parentImr = parentTransform.getRotation().inverse();
-            parentImr.mult(modelOrientation, storeResult);
+            Quaternion parentMo = modelOrientation(parentIndex, null);
+            Quaternion parentImo = parentMo.inverse();
+            parentImo.mult(modelOrientation, storeResult);
         }
 
         return storeResult;
@@ -520,16 +624,13 @@ public class Pose implements JmeCloneable {
         BoneMapping boneMapping = mapping.get(targetName);
         if (boneMapping != null) {
             /*
-             * Calculate the model rotation of the source bone.
+             * Calculate the orientation of the source bone in model space.
              */
             String sourceName = boneMapping.getSourceName();
             int sourceIndex = sourcePose.findBone(sourceName);
-            Transform smt = new Transform();
-            sourcePose.modelTransform(sourceIndex, smt);
-            Quaternion modelRotation = smt.getRotation();
+            Quaternion mo = sourcePose.modelOrientation(sourceIndex, null);
 
-            Quaternion userRotation;
-            userRotation = userForModel(targetIndex, modelRotation, null);
+            Quaternion userRotation = userForModel(targetIndex, mo, null);
             Quaternion twist = boneMapping.getTwist();
             userRotation.mult(twist, userTransform.getRotation());
         }
