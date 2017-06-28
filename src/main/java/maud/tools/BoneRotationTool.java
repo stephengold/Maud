@@ -29,7 +29,6 @@ package maud.tools;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
@@ -196,10 +195,7 @@ class BoneRotationTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        int boneIndex = Maud.model.target.bone.getIndex();
-        Transform transform = Maud.model.target.pose.copyTransform(boneIndex,
-                null);
-        Quaternion rotation = transform.getRotation();
+        Quaternion rotation = Maud.model.target.bone.userRotation(null);
         float[] angles = rotation.toAngles(null);
         boolean degrees = Maud.model.misc.getAnglesInDegrees();
 

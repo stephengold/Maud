@@ -29,11 +29,14 @@ package maud.model;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import maud.Pose;
 
 /**
  * The MVC model of the selected bone in the Maud application.
@@ -254,6 +257,20 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
+     * Calculate the model orientation of the selected bone.
+     *
+     * @param storeResult (modified if not null)
+     * @return orientation in model space (either storeResult or a new instance)
+     */
+    public Quaternion modelOrientation(Quaternion storeResult) {
+        Pose pose = loadedCgm.pose.getPose();
+        int boneIndex = getIndex();
+        storeResult = pose.modelOrientation(boneIndex, storeResult);
+
+        return storeResult;
+    }
+
+    /**
      * If bone controls are enabled, reset the bone rotation to identity.
      */
     public void resetRotation() {
@@ -455,6 +472,48 @@ public class SelectedBone implements Cloneable {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Calculate the animation/user rotation of the selected bone.
+     *
+     * @param storeResult (modified if not null)
+     * @return user rotation (either storeResult or a new instance)
+     */
+    public Quaternion userRotation(Quaternion storeResult) {
+        Pose pose = loadedCgm.pose.getPose();
+        int boneIndex = getIndex();
+        storeResult = pose.userRotation(boneIndex, storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Calculate the animation/user scale of the selected bone.
+     *
+     * @param storeResult (modified if not null)
+     * @return user scale (either storeResult or a new instance)
+     */
+    public Vector3f userScale(Vector3f storeResult) {
+        Pose pose = loadedCgm.pose.getPose();
+        int boneIndex = getIndex();
+        storeResult = pose.userScale(boneIndex, storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Calculate the animation/user translation of the selected bone.
+     *
+     * @param storeResult (modified if not null)
+     * @return user translation (either storeResult or a new instance)
+     */
+    public Vector3f userTranslation(Vector3f storeResult) {
+        Pose pose = loadedCgm.pose.getPose();
+        int boneIndex = getIndex();
+        storeResult = pose.userTranslation(boneIndex, storeResult);
+
+        return storeResult;
     }
     // *************************************************************************
     // Object methods

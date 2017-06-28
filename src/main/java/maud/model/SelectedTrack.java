@@ -30,7 +30,6 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Track;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -306,18 +305,16 @@ public class SelectedTrack implements Cloneable {
     public void setTrackRotationAll() {
         BoneTrack track = findTrack();
         if (track != null) {
-            int boneIndex = loadedCgm.bone.getIndex();
-            Transform poseTransform = loadedCgm.pose.copyTransform(
-                    boneIndex, null);
-            Quaternion poseRotation = poseTransform.getRotation();
+            Quaternion poseRotation = loadedCgm.bone.userRotation(null);
 
             float[] times = track.getTimes();
             Vector3f[] translations = track.getTranslations();
             Quaternion[] rotations = track.getRotations();
+            Vector3f[] scales = track.getScales();
+
             for (Quaternion rotation : rotations) {
                 rotation.set(poseRotation);
             }
-            Vector3f[] scales = track.getScales();
             editableCgm.setKeyframes(times, translations, rotations, scales);
         }
     }
@@ -328,22 +325,21 @@ public class SelectedTrack implements Cloneable {
     public void setTrackScaleAll() {
         BoneTrack track = findTrack();
         if (track != null) {
-            int boneIndex = loadedCgm.bone.getIndex();
-            Transform poseTransform = loadedCgm.pose.copyTransform(boneIndex,
-                    null);
-            Vector3f poseScale = poseTransform.getScale();
+            Vector3f poseScale = loadedCgm.bone.userScale(null);
 
             float[] times = track.getTimes();
             Vector3f[] translations = track.getTranslations();
             Quaternion[] rotations = track.getRotations();
             Vector3f[] scales = track.getScales();
-            if (scales != null) {
-                for (Vector3f scale : scales) {
-                    scale.set(poseScale);
-                }
-                editableCgm.setKeyframes(times, translations, rotations,
-                        scales);
+
+            if (scales == null) {
+                int numKeyframes = times.length;
+                scales = new Vector3f[numKeyframes];
             }
+            for (Vector3f scale : scales) {
+                scale.set(poseScale);
+            }
+            editableCgm.setKeyframes(times, translations, rotations, scales);
         }
     }
 
@@ -353,18 +349,16 @@ public class SelectedTrack implements Cloneable {
     public void setTrackTranslationAll() {
         BoneTrack track = findTrack();
         if (track != null) {
-            int boneIndex = loadedCgm.bone.getIndex();
-            Transform poseTransform = loadedCgm.pose.copyTransform(boneIndex,
-                    null);
-            Vector3f poseTranslation = poseTransform.getTranslation();
+            Vector3f poseTranslation = loadedCgm.bone.userTranslation(null);
 
             float[] times = track.getTimes();
             Vector3f[] translations = track.getTranslations();
+            Quaternion[] rotations = track.getRotations();
+            Vector3f[] scales = track.getScales();
+
             for (Vector3f translation : translations) {
                 translation.set(poseTranslation);
             }
-            Quaternion[] rotations = track.getRotations();
-            Vector3f[] scales = track.getScales();
             editableCgm.setKeyframes(times, translations, rotations, scales);
         }
     }

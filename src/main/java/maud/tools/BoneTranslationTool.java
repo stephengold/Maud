@@ -29,7 +29,6 @@ package maud.tools;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.FastMath;
-import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
@@ -216,10 +215,7 @@ class BoneTranslationTool extends WindowController {
      * Set all 4 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        int boneIndex = Maud.model.target.bone.getIndex();
-        Transform transform = Maud.model.target.pose.copyTransform(boneIndex,
-                null);
-        Vector3f vector = transform.getTranslation();
+        Vector3f vector = Maud.model.target.bone.userTranslation(null);
         float[] offsets = vector.toArray(null);
 
         float scale = readScale();
