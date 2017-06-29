@@ -237,7 +237,7 @@ class AxesTool extends WindowController {
         /*
          * Calculate the old axis direction in local coordinates.
          */
-        Vector3f oldDirection = Util.axisVector(axisIndex, 1f);
+        Vector3f oldDirection = Util.axisVector(axisIndex, 1f, null);
         assert oldDirection.isUnitVector() : oldDirection;
         /*
          * Calculate the new axis direction in local coordinates.

@@ -37,6 +37,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
 import maud.Maud;
+import maud.Util;
 
 /**
  * The loaded skeleton mapping in the Maud application.
@@ -65,6 +66,18 @@ public class EditableMapping extends LoadedMapping {
     private String editedTwist = null;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Cardinalize the effective twist of the selected bone mapping.
+     *
+     * @param newTwist (not null, unaffected)
+     */
+    public void cardinalizeTwist() {
+        BoneMapping boneMapping = selectedMapping();
+        Quaternion twist = boneMapping.getTwist();
+        Util.cardinalizeLocal(twist);
+        setEditedTwist();
+    }
 
     /**
      * Count unsaved edits.

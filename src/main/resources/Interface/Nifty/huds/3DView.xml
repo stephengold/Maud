@@ -1688,6 +1688,14 @@ the menu bar, status bar, and tool windows.
                             </panel>
                             <panel childLayout="horizontal" height="30px">
                                 <panel/>
+                                <control name="button" id="snapTwistButton"
+                                         width="70px">
+                                    <interact onRelease="perform(set twist cardinal)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
                                 <control name="button" id="resetTwistButton"
                                          width="70px">
                                     <interact onRelease="perform(reset twist)"/>

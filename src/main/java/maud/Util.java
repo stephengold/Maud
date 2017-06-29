@@ -92,32 +92,37 @@ public class Util {
      *
      * @param axisIndex 0&rarr;X, 1&rarrlY, 2&rarr;Z
      * @param length how long (ge;0)
-     * @return a new vector
+     * @param storeResult (modified if not null)
+     * @return vector (either storeResult or a new instance)
      */
-    public static Vector3f axisVector(int axisIndex, float length) {
+    public static Vector3f axisVector(int axisIndex, float length,
+            Vector3f storeResult) {
         Validate.inRange(axisIndex, "axis index", 0, 2);
         Validate.nonNegative(length, "length");
-
-        Vector3f result = new Vector3f();
-        switch (axisIndex) {
-            case 0:
-                result.x = length;
-                break;
-            case 1:
-                result.y = length;
-                break;
-            case 2:
-                result.z = length;
+        if (storeResult == null) {
+            storeResult = new Vector3f();
         }
 
-        return result;
+        storeResult.zero();
+        switch (axisIndex) {
+            case 0:
+                storeResult.x = length;
+                break;
+            case 1:
+                storeResult.y = length;
+                break;
+            case 2:
+                storeResult.z = length;
+        }
+
+        return storeResult;
     }
 
     /**
      * Calculate the bone transform for the specified track and time, using
      * linear interpolation with no blending.
      *
-     * @param track (not null)
+     * @param track (not null, unaffected)
      * @param time animation time input
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
@@ -168,6 +173,49 @@ public class Util {
         }
 
         return storeResult;
+    }
+
+    /**
+     * Find the cardinal quaternion closest to the specified quaternion.
+     *
+     * @param input (not null, modified)
+     */
+    public static void cardinalizeLocal(Quaternion input) {
+        Validate.nonNull(input, "input");
+
+        Quaternion bestCardinal = new Quaternion();
+        float maxDot = bestCardinal.dot(input);
+
+        Quaternion cardinal = new Quaternion();
+        Vector3f axis1 = new Vector3f();
+        Vector3f axis2 = new Vector3f();
+        Vector3f axis3 = new Vector3f();
+
+        for (int index1 = 0; index1 < 3; index1++) {
+            for (int sign1 = -1; sign1 <= 1; sign1 += 2) {
+                axisVector(index1, 1f, axis1);
+                axis1.multLocal(sign1);
+
+                for (int index2 = 0; index2 < 3; index2++) {
+                    if (index1 != index2) {
+                        for (int sign2 = -1; sign2 <= 1; sign2 += 2) {
+                            axisVector(index2, 1f, axis2);
+                            axis2.multLocal(sign2);
+                            axis1.cross(axis2, axis3);
+                            cardinal.fromAxes(axis1, axis2, axis3);
+
+                            float dot = cardinal.dot(input);
+                            if (dot > maxDot) {
+                                maxDot = dot;
+                                bestCardinal.set(cardinal);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        input.set(bestCardinal);
     }
 
     /**
@@ -594,16 +642,16 @@ public class Util {
         Vector3f[] translations = new Vector3f[numKeyframes];
         Quaternion[] rotations = new Quaternion[numKeyframes];
         Vector3f[] scales = new Vector3f[numKeyframes];
-
         Pose sourcePose = new Pose(sourceSkeleton);
         Pose targetPose = new Pose(targetSkeleton);
+
         for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
             float trackTime = times[frameIndex];
             sourcePose.setToAnimation(sourceAnimation, trackTime);
             targetPose.setToRetarget(sourcePose, mapping);
+
             Transform userTransform;
             userTransform = targetPose.copyTransform(targetBoneIndex, null);
-
             translations[frameIndex] = userTransform.getTranslation();
             rotations[frameIndex] = userTransform.getRotation();
             scales[frameIndex] = userTransform.getScale();
@@ -613,5 +661,41 @@ public class Util {
                 rotations, scales);
 
         return result;
+    }
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Console application to test the Util class.
+     *
+     * @param ignored command-line arguments
+     */
+    public static void main(String[] ignored) {
+        Quaternion cardinal = new Quaternion();
+        Quaternion c2 = new Quaternion();
+        Vector3f axis1 = new Vector3f();
+        Vector3f axis2 = new Vector3f();
+        Vector3f axis3 = new Vector3f();
+        for (int index1 = 0; index1 < 3; index1++) {
+            for (int sign1 = -1; sign1 < 2; sign1 += 2) {
+                axisVector(index1, 1f, axis1);
+                axis1.multLocal(sign1);
+
+                for (int index2 = 0; index2 < 3; index2++) {
+                    if (index1 != index2) {
+                        for (int sign2 = -1; sign2 < 2; sign2 += 2) {
+                            axisVector(index2, 1f, axis2);
+                            axis2.multLocal(sign2);
+                            axis1.cross(axis2, axis3);
+                            cardinal.fromAxes(axis1, axis2, axis3);
+
+                            c2.set(cardinal);
+                            cardinalizeLocal(c2);
+                            assert cardinal.equals(c2);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

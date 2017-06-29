@@ -870,6 +870,10 @@ class DddInputMode extends InputMode {
                 Maud.model.target.track.setTrackTranslationAll();
                 handled = true;
                 break;
+            case "set twist cardinal":
+                Maud.model.mapping.cardinalizeTwist();
+                handled = true;
+                break;
             case "set userdata":
                 Maud.gui.dialogs.setUserData();
                 handled = true;

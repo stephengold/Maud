@@ -188,12 +188,14 @@ public class TwistTool extends WindowController {
 
             String axisName = axisNames[iAxis];
             String sliderPrefix = axisName + "Twist";
+            String units;
             if (degrees) {
                 angle = MyMath.toDegrees(angle);
-                Maud.gui.updateSliderStatus(sliderPrefix, angle, " deg");
+                units = " deg";
             } else {
-                Maud.gui.updateSliderStatus(sliderPrefix, angle, " rad");
+                units = " rad";
             }
+            Maud.gui.updateSliderStatus(sliderPrefix, angle, units);
         }
     }
 
@@ -201,16 +203,19 @@ public class TwistTool extends WindowController {
      * Update the twist sliders and reset button.
      */
     private void updateSelected() {
-        String rButton;
+        String rButton, sButton;
         if (Maud.model.mapping.isBoneMappingSelected()) {
             setSlidersToTwist();
             rButton = "Reset";
+            sButton = "Snap";
             enableSliders();
         } else {
             clear();
             rButton = "";
+            sButton = "";
             disableSliders();
         }
         Maud.gui.setButtonLabel("resetTwistButton", rButton);
+        Maud.gui.setButtonLabel("snapTwistButton", sButton);
     }
 }
