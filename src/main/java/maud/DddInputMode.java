@@ -262,7 +262,7 @@ class DddInputMode extends InputMode {
                     handled = warpAction(actionString);
             }
 
-        } else if ("select boneXY".equals(actionString)) {
+        } else if ("select screenXY".equals(actionString)) {
             Maud.model.axes.clearDragAxis();
             handled = true;
         }
@@ -753,9 +753,6 @@ class DddInputMode extends InputMode {
             case "select boneParent":
                 Maud.model.target.bone.selectParent();
                 break;
-            case "select boneXY":
-                Maud.gui.tools.bone.selectXY();
-                break;
             case "select keyframeFirst":
                 Maud.model.target.animation.selectKeyframeFirst();
                 break;
@@ -773,6 +770,9 @@ class DddInputMode extends InputMode {
                 break;
             case "select mapTargetBone":
                 Maud.model.mapping.selectFromTarget();
+                break;
+            case "select screenXY":
+                Maud.gui.tools.bone.selectXY();
                 break;
             case "select spatialChild":
                 Maud.gui.menus.selectSpatialChild();
