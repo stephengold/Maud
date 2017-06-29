@@ -129,6 +129,7 @@ class BoneRotationTool extends WindowController {
     @Override
     public void update(float tpf) {
         super.update(tpf);
+        Maud.gui.setIgnoreGuiChanges(true);
 
         String aButton = "";
         String bButton = "";
@@ -156,6 +157,7 @@ class BoneRotationTool extends WindowController {
             dButton = "degrees";
         }
         Maud.gui.setButtonLabel("degreesButton", dButton);
+        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods

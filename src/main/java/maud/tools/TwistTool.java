@@ -127,6 +127,7 @@ public class TwistTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
+        Maud.gui.setIgnoreGuiChanges(true);
 
         updateSelected();
         /*
@@ -139,6 +140,8 @@ public class TwistTool extends WindowController {
             dButton = "degrees";
         }
         Maud.gui.setButtonLabel("degreesButton3", dButton);
+
+        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods
