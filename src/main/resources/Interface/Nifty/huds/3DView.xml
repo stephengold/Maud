@@ -382,7 +382,7 @@ the menu bar, status bar, and tool windows.
                     <control name="label" text="Master control:"/>
                     <control name="horizontalSlider" id="offMasterSlider"
                              buttonStepSize="1"
-                             initial="0" max="2" min="-2" stepSize="0.001"/>
+                             initial="0" max="3" min="-2" stepSize="0.001"/>
                     <control name="label" text="Per-axis controls:"/>
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xOffSlider"
@@ -1613,7 +1613,7 @@ the menu bar, status bar, and tool windows.
                     <control name="label" text="Master control:"/>
                     <control name="horizontalSlider" id="soMasterSlider"
                              buttonStepSize="1"
-                             initial="0" max="2" min="-2" stepSize="0.001"/>
+                             initial="0" max="3" min="-2" stepSize="0.001"/>
                     <control name="label" text="Per-axis controls:"/>
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xSoSlider"

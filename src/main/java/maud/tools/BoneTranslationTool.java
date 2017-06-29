@@ -53,7 +53,7 @@ class BoneTranslationTool extends WindowController {
     /**
      * maximum scale for offsets (&gt;0)
      */
-    final private static float maxScale = 100f;
+    final private static float maxScale = 1000f;
     /**
      * minimum scale for offsets (&gt;0)
      */
