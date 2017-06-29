@@ -45,6 +45,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.Pose;
 import maud.Util;
+import maud.model.AxesStatus;
 import maud.model.EditableCgm;
 import maud.model.LoadedCGModel;
 
@@ -162,7 +163,7 @@ class AxesTool extends WindowController {
      * render pass.)
      */
     void updateVisualizations() {
-        if (Maud.model.misc.isDraggingAxis()) {
+        if (Maud.model.axes.isDraggingAxis()) {
             dragAxis();
         }
         /*
@@ -224,10 +225,11 @@ class AxesTool extends WindowController {
      * in the MVC model.
      */
     private void dragAxis() {
-        LoadedCGModel cgm = Maud.model.misc.getDragCgm();
+        AxesStatus model = Maud.model.axes;
+        LoadedCGModel cgm = model.getDragCgm();
         assert cgm.isLoaded();
-        int axisIndex = Maud.model.misc.getDragAxis();
-        boolean farSide = Maud.model.misc.isDraggingFarSide();
+        int axisIndex = model.getDragAxis();
+        boolean farSide = model.isDraggingFarSide();
 
         AxesControl axesControl = findControl(cgm);
         assert axesControl.isEnabled();

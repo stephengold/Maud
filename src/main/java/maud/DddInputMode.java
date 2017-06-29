@@ -263,7 +263,7 @@ class DddInputMode extends InputMode {
             }
 
         } else if ("select boneXY".equals(actionString)) {
-            Maud.model.misc.clearDragAxis();
+            Maud.model.axes.clearDragAxis();
             handled = true;
         }
 
@@ -899,6 +899,10 @@ class DddInputMode extends InputMode {
         switch (actionString) {
             case "toggle degrees":
                 Maud.model.misc.toggleAnglesInDegrees();
+                handled = true;
+                break;
+            case "toggle dragSide":
+                Maud.model.axes.toggleDragSide();
                 handled = true;
                 break;
             case "toggle pause":

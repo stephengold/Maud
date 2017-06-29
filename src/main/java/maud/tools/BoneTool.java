@@ -101,7 +101,7 @@ public class BoneTool extends WindowController {
             if (bestAxisIndex >= 0) {
                 boolean farSide = Maud.gui.tools.axes.isAxisReceding(bestCgm,
                         bestAxisIndex);
-                Maud.model.misc.setDraggingAxis(bestAxisIndex, bestCgm,
+                Maud.model.axes.setDraggingAxis(bestAxisIndex, bestCgm,
                         farSide);
             }
             if (bestBoneIndex >= 0) {

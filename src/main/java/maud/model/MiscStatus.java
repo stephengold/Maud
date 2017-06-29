@@ -56,15 +56,6 @@ public class MiscStatus implements Cloneable {
      */
     private boolean anglesInDegrees = true;
     /**
-     * CG model for axis dragging (true &rarr; source, false &rarr; target)
-     */
-    private boolean dragSourceCgm;
-    /**
-     * which direction the drag axis is pointing (true &rarr; away from camera,
-     * false &rarr; toward camera)
-     */
-    private boolean dragFarSideFlag;
-    /**
      * shadows (true &rarr; rendered, false &rarr; not rendered)
      */
     private boolean shadowsRendered = true;
@@ -76,10 +67,6 @@ public class MiscStatus implements Cloneable {
      * diameter of the platform (in world units, &gt;0)
      */
     private float platformDiameter = 1f;
-    /**
-     * index of the axis being dragged (&ge;0, &lt;3) or -1 for no axis
-     */
-    private int dragAxisIndex = -1;
     /**
      * platform mode (either "none" or "square")
      */
@@ -103,14 +90,6 @@ public class MiscStatus implements Cloneable {
      */
     public boolean areShadowsRendered() {
         return shadowsRendered;
-    }
-
-    /**
-     * Deselect axis dragging.
-     */
-    public void clearDragAxis() {
-        dragAxisIndex = -1;
-        assert !isDraggingAxis();
     }
 
     /**
@@ -160,32 +139,6 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Read the index of the axis being dragged.
-     *
-     * @return axis index (&ge;0, &lt;3)
-     */
-    public int getDragAxis() {
-        assert isDraggingAxis();
-        assert dragAxisIndex >= 0 : dragAxisIndex;
-        assert dragAxisIndex < 3 : dragAxisIndex;
-        return dragAxisIndex;
-    }
-
-    /**
-     * Access the CG model whose axes are being dragged.
-     *
-     * @return the pre-existing instance
-     */
-    public LoadedCGModel getDragCgm() {
-        assert isDraggingAxis();
-        if (dragSourceCgm) {
-            return Maud.model.source;
-        } else {
-            return Maud.model.target;
-        }
-    }
-
-    /**
      * Read the diameter of the platform.
      *
      * @return diameter (in world units, &gt;0)
@@ -211,29 +164,6 @@ public class MiscStatus implements Cloneable {
      */
     public String getSelectedUserKey() {
         return selectedUserKey;
-    }
-
-    /**
-     * Test whether an axis is selected for dragging.
-     *
-     * @return true if selected, otherwise false
-     */
-    public boolean isDraggingAxis() {
-        if (dragAxisIndex == -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Test whether the axis being dragged points away from the camera.
-     *
-     * @return true if pointing away from camera, otherwise false
-     */
-    public boolean isDraggingFarSide() {
-        assert isDraggingAxis();
-        return dragFarSideFlag;
     }
 
     /**
@@ -285,28 +215,6 @@ public class MiscStatus implements Cloneable {
      */
     public void setAnglesInDegrees(boolean newState) {
         anglesInDegrees = newState;
-    }
-
-    /**
-     * Start dragging the specified axis.
-     *
-     * @param axisIndex which axis to drag (&ge;0, &lt;3)
-     * @param cgm which CG model (not null)
-     * @param farSideFlag
-     */
-    public void setDraggingAxis(int axisIndex, LoadedCGModel cgm,
-            boolean farSideFlag) {
-        Validate.inRange(axisIndex, "axis index", 0, 2);
-        Validate.nonNull(cgm, "model");
-
-        dragAxisIndex = axisIndex;
-        dragFarSideFlag = farSideFlag;
-        if (cgm == Maud.model.source) {
-            dragSourceCgm = true;
-        } else {
-            dragSourceCgm = false;
-        }
-        assert isDraggingAxis();
     }
 
     /**
