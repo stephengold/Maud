@@ -32,14 +32,6 @@ public class BVHAnimation {
      */
     private int nbFrames;
     // *************************************************************************
-    // constructors
-
-    /**
-     * TODO redundant
-     */
-    public BVHAnimation() {
-    }
-    // *************************************************************************
     // new methods exposed
 
     /**
