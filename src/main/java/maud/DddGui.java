@@ -30,7 +30,6 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
@@ -304,24 +303,6 @@ public class DddGui extends GuiScreenController {
         }
 
         tools.onSliderChanged(sliderId, event);
-    }
-
-    /**
-     * Read a bank of 3 sliders that control a rotation.
-     *
-     * @param prefix unique id prefix of the bank (not null)
-     * @return rotation indicated by the sliders (new instance)
-     */
-    Quaternion readAngleBank(String prefix) {
-        assert prefix != null;
-
-        float x = readSlider("x" + prefix);
-        float y = readSlider("y" + prefix);
-        float z = readSlider("z" + prefix);
-        Quaternion rotation = new Quaternion();
-        rotation.fromAngles(x, y, z);
-
-        return rotation;
     }
 
     /**
