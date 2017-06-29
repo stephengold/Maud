@@ -202,6 +202,7 @@ public class Maud extends GuiApplication {
 
                 case "print scene":
                     printer.setPrintCull(true);
+                    printer.setPrintTransform(true);
                     printer.printSubtree(rootNode);
                     handled = true;
                     break;
