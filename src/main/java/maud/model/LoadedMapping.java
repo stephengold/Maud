@@ -47,7 +47,8 @@ import maud.Pose;
 import maud.Util;
 
 /**
- * The loaded skeleton mapping in the Maud application.
+ * The loaded skeleton mapping in the Maud application. TODO split off selected
+ * mapping?
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -181,10 +182,12 @@ public class LoadedMapping implements Cloneable {
     /**
      * Test whether the named bone in the target CG model is mapped.
      *
-     * @param targetBoneName name of bone to find
+     * @param targetBoneName name of bone to find (not null)
      * @return true if mapped, otherwise false
      */
     public boolean isBoneMapped(String targetBoneName) {
+        Validate.nonNull(targetBoneName, "bone name");
+
         BoneMapping boneMapping;
         if (isInvertingMap()) {
             boneMapping = mapping.getForSource(targetBoneName);
@@ -219,6 +222,44 @@ public class LoadedMapping implements Cloneable {
      */
     public boolean isInvertingMap() {
         return invertMapFlag;
+    }
+
+    /**
+     * Test whether the indexed bone in the source CG model is mapped.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @return true if the mapped, otherwise false
+     */
+    public boolean isSourceBoneMapped(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        String boneName = Maud.model.source.bones.getBoneName(boneIndex);
+        BoneMapping boneMapping;
+        if (isInvertingMap()) {
+            boneMapping = mapping.get(boneName);
+        } else {
+            boneMapping = mapping.getForSource(boneName);
+        }
+        if (boneMapping == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Test whether the indexed bone in the target CG model is mapped.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @return true if the mapped, otherwise false
+     */
+    public boolean isTargetBoneMapped(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        String boneName = Maud.model.target.bones.getBoneName(boneIndex);
+        boolean result = isBoneMapped(boneName);
+
+        return result;
     }
 
     /**
@@ -380,6 +421,8 @@ public class LoadedMapping implements Cloneable {
      * @return bone name, or null if none
      */
     public String sourceBoneName(String targetBoneName) {
+        Validate.nonNull(targetBoneName, "bone name");
+
         String result = null;
         if (invertMapFlag) {
             BoneMapping boneMapping = mapping.getForSource(targetBoneName);
@@ -403,6 +446,8 @@ public class LoadedMapping implements Cloneable {
      * @return bone name, or null if none
      */
     public String targetBoneName(String sourceBoneName) {
+        Validate.nonNull(sourceBoneName, "bone name");
+
         String result = null;
         if (invertMapFlag) {
             BoneMapping boneMapping = mapping.get(sourceBoneName);
@@ -485,10 +530,12 @@ public class LoadedMapping implements Cloneable {
      * Calculate an effective bone mapping for the named bone in the target CG
      * model.
      *
-     * @param targetBoneName name of bone to find
+     * @param targetBoneName name of bone to find (not null)
      * @return a bone mapping (may be pre-existing) or null if none found
      */
     private BoneMapping effectiveMapping(String targetBoneName) {
+        Validate.nonNull(targetBoneName, "bone name");
+
         BoneMapping result = null;
         if (invertMapFlag) {
             BoneMapping inverse = mapping.getForSource(targetBoneName);

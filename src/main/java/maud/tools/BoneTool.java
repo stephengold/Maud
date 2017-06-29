@@ -34,6 +34,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.LoadedCGModel;
+import maud.model.LoadedMapping;
 
 /**
  * The controller for the "Bone Tool" window in Maud's "3D View" screen.
@@ -106,6 +107,20 @@ public class BoneTool extends WindowController {
             }
             if (bestBoneIndex >= 0) {
                 bestCgm.bone.select(bestBoneIndex);
+
+                if (Maud.model.target.animation.isRetargetedPose()) {
+                    /*
+                     * Also select the mapped bone (if any).
+                     */
+                    LoadedMapping mapping = Maud.model.mapping;
+                    if (bestCgm == Maud.model.source
+                            && mapping.isSourceBoneMapped(bestBoneIndex)) {
+                        Maud.model.mapping.selectFromSource();
+                    } else if (bestCgm == Maud.model.target
+                            && mapping.isTargetBoneMapped(bestBoneIndex)) {
+                        Maud.model.mapping.selectFromTarget();
+                    }
+                }
             }
         }
     }
