@@ -446,7 +446,7 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Test whether the specifed user key exists in the selected spatial.
+     * Test whether the specified user key exists in the selected spatial.
      *
      * @param key the key to search for (not null)
      * @return true if it exists, otherwise false

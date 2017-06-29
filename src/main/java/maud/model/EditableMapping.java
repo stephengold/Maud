@@ -69,8 +69,6 @@ public class EditableMapping extends LoadedMapping {
 
     /**
      * Cardinalize the effective twist of the selected bone mapping.
-     *
-     * @param newTwist (not null, unaffected)
      */
     public void cardinalizeTwist() {
         BoneMapping boneMapping = selectedMapping();
