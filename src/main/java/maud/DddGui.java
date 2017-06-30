@@ -52,7 +52,7 @@ import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
 import maud.model.Checkpoint;
 import maud.model.History;
-import maud.model.LoadedCGModel;
+import maud.model.LoadedCgm;
 import maud.tools.DddTools;
 
 /**
@@ -351,8 +351,8 @@ public class DddGui extends GuiScreenController {
      *
      * @return a pre-existing instance (not null)
      */
-    LoadedCGModel selectCgm() {
-        LoadedCGModel cgm;
+    LoadedCgm selectCgm() {
+        LoadedCgm cgm;
         if (signals.test(sourceModelSignalName)
                 && Maud.model.source.isLoaded()) {
             cgm = Maud.model.source;
@@ -510,7 +510,7 @@ public class DddGui extends GuiScreenController {
         /*
          * Rotate one of the views' CG models around its Y-axis.
          */
-        LoadedCGModel cgmToRotate = selectCgm();
+        LoadedCgm cgmToRotate = selectCgm();
         if (signals.test(modelCCWSignalName)) {
             cgmToRotate.transform.rotateY(tpf);
         }
@@ -545,7 +545,7 @@ public class DddGui extends GuiScreenController {
      * @param loadedCgm (not null)
      * @param tpf time interval between render passes (in seconds, &ge;0)
      */
-    private void updateTrackTime(LoadedCGModel loadedCgm, float tpf) {
+    private void updateTrackTime(LoadedCgm loadedCgm, float tpf) {
         assert loadedCgm.animation.isMoving();
 
         float speed = loadedCgm.animation.getSpeed();

@@ -32,7 +32,7 @@ import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCGModel;
+import maud.model.LoadedCgm;
 import maud.model.SkeletonStatus;
 
 /**
@@ -79,7 +79,7 @@ class SkeletonTool extends WindowController {
      *
      * @param modelCgm which CG model's view to update (not null)
      */
-    void updateSdc(LoadedCGModel modelCgm) {
+    void updateSdc(LoadedCgm modelCgm) {
         SkeletonDebugControl control = modelCgm.view.getSkeletonDebugControl();
         if (control == null) {
             return;

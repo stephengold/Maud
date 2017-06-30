@@ -67,21 +67,20 @@ import maud.Util;
 
 /**
  * MVC model for a loaded computer-graphics (CG) model in the Maud application:
- * encapsulates the CG model's tree of spatials, keeps track of where the CG
- * model was loaded from, and provides access to related MVC model state: the
- * loaded animation and the selected spatial/control/skeleton/pose/bone/etc.
+ * encapsulates the CG model's tree of spatials, keeps track of where it was
+ * loaded from, and provides access to related MVC model state: the loaded
+ * animation and the selected spatial/control/skeleton/pose/bone/etc.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class LoadedCGModel implements Cloneable {
+public class LoadedCgm implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            LoadedCGModel.class.getName());
+    final private static Logger logger = Logger.getLogger(LoadedCgm.class.getName());
     /**
      * dummy control name used to indicate that no control is selected
      */
@@ -151,7 +150,7 @@ public class LoadedCGModel implements Cloneable {
     /**
      * Instantiate with no model loaded.
      */
-    public LoadedCGModel() {
+    public LoadedCgm() {
         animation.setCgm(this);
         bone.setCgm(this);
         bones.setCgm(this);
@@ -637,8 +636,8 @@ public class LoadedCGModel implements Cloneable {
      * @throws CloneNotSupportedException if a field isn't cloneable
      */
     @Override
-    public LoadedCGModel clone() throws CloneNotSupportedException {
-        LoadedCGModel clone = (LoadedCGModel) super.clone();
+    public LoadedCgm clone() throws CloneNotSupportedException {
+        LoadedCgm clone = (LoadedCgm) super.clone();
 
         Cloner cloner = new Cloner();
 

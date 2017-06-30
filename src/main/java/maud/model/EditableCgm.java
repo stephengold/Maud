@@ -56,7 +56,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class EditableCgm extends LoadedCGModel {
+public class EditableCgm extends LoadedCgm {
     // *************************************************************************
     // constants and loggers
 

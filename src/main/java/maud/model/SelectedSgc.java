@@ -62,7 +62,7 @@ public class SelectedSgc implements Cloneable {
      * loaded CG model containing the control (set by
      * {@link #setCgm(LoadedCGModel)})
      */
-    private LoadedCGModel loadedCgm = null;
+    private LoadedCgm loadedCgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -143,7 +143,7 @@ public class SelectedSgc implements Cloneable {
         if (isSelected()) {
             name = names.get(selectedIndex);
         } else {
-            name = LoadedCGModel.noControl;
+            name = LoadedCgm.noControl;
         }
 
         return name;
@@ -220,7 +220,7 @@ public class SelectedSgc implements Cloneable {
      */
     public void select(String newName) {
         Validate.nonNull(newName, "name");
-        if (newName.equals(LoadedCGModel.noControl)) {
+        if (newName.equals(LoadedCgm.noControl)) {
             selectNone();
         } else {
             List<String> names = loadedCgm.spatial.listSgcNames();
@@ -269,7 +269,7 @@ public class SelectedSgc implements Cloneable {
      *
      * @param newLoaded (not null)
      */
-    void setCgm(LoadedCGModel newLoaded) {
+    void setCgm(LoadedCgm newLoaded) {
         assert newLoaded != null;
         loadedCgm = newLoaded;
     }

@@ -37,7 +37,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.BoundsStatus;
-import maud.model.LoadedCGModel;
+import maud.model.LoadedCgm;
 
 /**
  * The controller for the "Bounds Tool" window in Maud's "3D View" screen.
@@ -155,7 +155,7 @@ class BoundsTool extends WindowController {
      * @param loadedCgm (not null)
      * @param visualizer (not null)
      */
-    private void updateBounds(LoadedCGModel loadedCgm,
+    private void updateBounds(LoadedCgm loadedCgm,
             BoundsVisualizer visualizer) {
         assert visualizer != null;
 

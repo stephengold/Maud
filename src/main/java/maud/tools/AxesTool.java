@@ -47,7 +47,7 @@ import maud.Pose;
 import maud.Util;
 import maud.model.AxesStatus;
 import maud.model.EditableCgm;
-import maud.model.LoadedCGModel;
+import maud.model.LoadedCgm;
 
 /**
  * The controller for the "Axes Tool" window in Maud's "3D View" screen.
@@ -104,7 +104,7 @@ class AxesTool extends WindowController {
      * @param axisIndex which axis (&ge;0, &lt;2)
      * @return true if pointing away, otherwise false
      */
-    boolean isAxisReceding(LoadedCGModel cgm, int axisIndex) {
+    boolean isAxisReceding(LoadedCgm cgm, int axisIndex) {
         assert cgm != null;
         assert axisIndex >= 0 : axisIndex;
         assert axisIndex < 3 : axisIndex;
@@ -144,7 +144,7 @@ class AxesTool extends WindowController {
      * @param axisIndex which axis in the CGM's AxesControl (&ge;0, &lt;3)
      * @return a new vector (in world coordinates) or null if axis not displayed
      */
-    Vector3f tipLocation(LoadedCGModel loadedCgm, int axisIndex) {
+    Vector3f tipLocation(LoadedCgm loadedCgm, int axisIndex) {
         Validate.nonNull(loadedCgm, "loaded model");
         Validate.inRange(axisIndex, "axis index", 0, 2);
 
@@ -226,7 +226,7 @@ class AxesTool extends WindowController {
      */
     private void dragAxis() {
         AxesStatus model = Maud.model.axes;
-        LoadedCGModel cgm = model.getDragCgm();
+        LoadedCgm cgm = model.getDragCgm();
         assert cgm.isLoaded();
         int axisIndex = model.getDragAxis();
         boolean farSide = model.isDraggingFarSide();
@@ -262,7 +262,7 @@ class AxesTool extends WindowController {
      * @param cgm which CG model (not null, unaffected)
      * @return the pre-existing instance
      */
-    private AxesControl findControl(LoadedCGModel cgm) {
+    private AxesControl findControl(LoadedCgm cgm) {
         assert cgm != null;
 
         AxesControl result;
@@ -283,7 +283,7 @@ class AxesTool extends WindowController {
      * @param rotation quaternion (not null, norm=1)
      * @param cgm which CG model (not null, unaffected)
      */
-    private void rotateBone(Quaternion rotation, LoadedCGModel cgm) {
+    private void rotateBone(Quaternion rotation, LoadedCgm cgm) {
         int boneIndex = cgm.bone.getIndex();
         assert boneIndex != -1;
         Pose pose = cgm.pose.getPose();
@@ -329,7 +329,7 @@ class AxesTool extends WindowController {
      * @param cgm which CG model (not null, unaffected)
      * @return the pre-existing instance
      */
-    private void rotateObject(Vector3f cross, LoadedCGModel cgm) {
+    private void rotateObject(Vector3f cross, LoadedCgm cgm) {
         /*
          * Convert the cross product to a rotation quaternion.
          */
@@ -386,7 +386,7 @@ class AxesTool extends WindowController {
      * @param axesControl (not null)
      * @param axesNode (not null)
      */
-    private void updateAxes(LoadedCGModel loadedCgm, AxesControl axesControl,
+    private void updateAxes(LoadedCgm loadedCgm, AxesControl axesControl,
             Node axesNode) {
         assert loadedCgm != null;
         assert axesControl != null;
@@ -431,7 +431,7 @@ class AxesTool extends WindowController {
      * @param loadedCgm (not null)
      * @return a new instance (in world coordinates) or null to hide the axes
      */
-    private Transform worldTransform(LoadedCGModel loadedCgm) {
+    private Transform worldTransform(LoadedCgm loadedCgm) {
         Transform transform = null;
         String mode = Maud.model.axes.getMode();
         switch (mode) {

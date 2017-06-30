@@ -68,7 +68,7 @@ public class SelectedTrack implements Cloneable {
      * loaded CG model containing the track (set by
      * {@link #setCgm(LoadedCGModel)})
      */
-    private LoadedCGModel loadedCgm;
+    private LoadedCgm loadedCgm;
     // *************************************************************************
     // new methods exposed
 
@@ -288,7 +288,7 @@ public class SelectedTrack implements Cloneable {
      *
      * @param newLoaded (not null)
      */
-    void setCgm(LoadedCGModel newLoaded) {
+    void setCgm(LoadedCgm newLoaded) {
         assert newLoaded != null;
 
         loadedCgm = newLoaded;

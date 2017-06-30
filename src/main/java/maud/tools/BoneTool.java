@@ -33,7 +33,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCGModel;
+import maud.model.LoadedCgm;
 import maud.model.LoadedMapping;
 
 /**
@@ -68,7 +68,7 @@ public class BoneTool extends WindowController {
     /**
      * CG model containing the feature closest to the mouse pointer, or null
      */
-    private LoadedCGModel bestCgm;
+    private LoadedCgm bestCgm;
     // *************************************************************************
     // constructors
 
@@ -182,7 +182,7 @@ public class BoneTool extends WindowController {
      * @param boneIndex which bone in the CGM's selected skeleton (&ge;0)
      * @return squared distance in pixels (&ge;0)
      */
-    private float boneDSquared(LoadedCGModel cgm, int boneIndex) {
+    private float boneDSquared(LoadedCgm cgm, int boneIndex) {
         assert boneIndex >= 0 : boneIndex;
 
         Vector3f boneWorld = cgm.view.boneLocation(boneIndex);
@@ -201,7 +201,7 @@ public class BoneTool extends WindowController {
      *
      * @param cgm which CG model (not null)
      */
-    private void selectBestInCgm(LoadedCGModel cgm) {
+    private void selectBestInCgm(LoadedCgm cgm) {
         int numBones = cgm.bones.countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             float dSquared = boneDSquared(cgm, boneIndex);
@@ -232,7 +232,7 @@ public class BoneTool extends WindowController {
      * @param axisIndex which axis in the CGM's axes control (&ge;0, &lt;3)
      * @return squared distance in pixels (&ge;0)
      */
-    private float tipDSquared(LoadedCGModel cgm, int axisIndex) {
+    private float tipDSquared(LoadedCgm cgm, int axisIndex) {
         assert cgm != null;
         assert axisIndex >= 0 : axisIndex;
         assert axisIndex < 3 : axisIndex;

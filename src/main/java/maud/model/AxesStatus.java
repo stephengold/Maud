@@ -111,7 +111,7 @@ public class AxesStatus implements Cloneable {
      *
      * @return the pre-existing instance
      */
-    public LoadedCGModel getDragCgm() {
+    public LoadedCgm getDragCgm() {
         assert isDraggingAxis();
         if (dragSourceCgm) {
             return Maud.model.source;
@@ -179,7 +179,7 @@ public class AxesStatus implements Cloneable {
      * @param cgm which CG model (not null)
      * @param farSideFlag
      */
-    public void setDraggingAxis(int axisIndex, LoadedCGModel cgm,
+    public void setDraggingAxis(int axisIndex, LoadedCgm cgm,
             boolean farSideFlag) {
         Validate.inRange(axisIndex, "axis index", 0, 2);
         Validate.nonNull(cgm, "model");

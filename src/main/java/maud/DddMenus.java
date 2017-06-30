@@ -34,7 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
-import maud.model.LoadedCGModel;
+import maud.model.LoadedCgm;
 
 /**
  * Menus in Maud's "3D View" screen.
@@ -1453,7 +1453,7 @@ class DddMenus {
         for (String name : Maud.model.target.spatial.listSgcNames()) {
             builder.add(name);
         }
-        builder.add(LoadedCGModel.noControl);
+        builder.add(LoadedCgm.noControl);
         builder.show(DddInputMode.selectControlPrefix);
     }
 

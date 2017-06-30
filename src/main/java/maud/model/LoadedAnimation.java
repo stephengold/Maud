@@ -105,7 +105,7 @@ public class LoadedAnimation implements Cloneable {
      * loaded CG model containing the animation (set by
      * {@link #setCgm(LoadedCGModel)})
      */
-    private LoadedCGModel loadedCgm = null;
+    private LoadedCgm loadedCgm = null;
     /**
      * name of the loaded animation, bindPoseName, or retargetedPoseName
      */
@@ -716,7 +716,7 @@ public class LoadedAnimation implements Cloneable {
      *
      * @param newLoaded (not null)
      */
-    void setCgm(LoadedCGModel newLoaded) {
+    void setCgm(LoadedCgm newLoaded) {
         assert newLoaded != null;
 
         loadedCgm = newLoaded;

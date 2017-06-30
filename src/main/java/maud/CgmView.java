@@ -47,7 +47,7 @@ import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.math.MyMath;
-import maud.model.LoadedCGModel;
+import maud.model.LoadedCgm;
 
 /**
  * Visualization of a loaded CG model, component of a DddModel.
@@ -77,7 +77,7 @@ public class CgmView implements JmeCloneable {
     /**
      * the MVC model that owns this view
      */
-    private LoadedCGModel model;
+    private LoadedCgm model;
     /**
      * attachment point in the scene graph (used for transforms)
      */
@@ -107,7 +107,7 @@ public class CgmView implements JmeCloneable {
      * @param loadedModel MVC model that will own this view (not null)
      * @param parentNode attachment point in the scene graph (not null)
      */
-    public CgmView(LoadedCGModel loadedModel, Node parentNode) {
+    public CgmView(LoadedCgm loadedModel, Node parentNode) {
         Validate.nonNull(loadedModel, "loaded model");
         Validate.nonNull(parentNode, "parent");
 
@@ -255,7 +255,7 @@ public class CgmView implements JmeCloneable {
      *
      * @param loadedModel (not null)
      */
-    public void setModel(LoadedCGModel loadedModel) {
+    public void setModel(LoadedCgm loadedModel) {
         Validate.nonNull(loadedModel, "loaded model");
         model = loadedModel;
     }

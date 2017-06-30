@@ -42,7 +42,7 @@ import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
 import maud.model.DddModel;
 import maud.model.History;
-import maud.model.LoadedCGModel;
+import maud.model.LoadedCgm;
 
 /**
  * GUI application to edit jMonkeyEngine animated 3-D CG models. The
@@ -120,7 +120,7 @@ public class Maud extends GuiApplication {
         /*
          * Lower logging thresholds for classes of interest.
          */
-        Logger.getLogger(LoadedCGModel.class.getName()).setLevel(Level.INFO);
+        Logger.getLogger(LoadedCgm.class.getName()).setLevel(Level.INFO);
         History.logger.setLevel(Level.INFO);
         /*
          * Instantiate the application.

@@ -77,7 +77,7 @@ public class TransformStatus implements Cloneable {
      * the CG model this transform applies to (set by
      * {@link #setCgm(LoadedCGModel)})
      */
-    private LoadedCGModel loadedCgm = null;
+    private LoadedCgm loadedCgm = null;
     /**
      * the location (in model space) of the CG model's dominant root bone
      */
@@ -119,7 +119,7 @@ public class TransformStatus implements Cloneable {
      *
      * @param newLoaded (not null)
      */
-    void setCgm(LoadedCGModel newLoaded) {
+    void setCgm(LoadedCgm newLoaded) {
         assert newLoaded != null;
         loadedCgm = newLoaded;
     }

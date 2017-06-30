@@ -44,7 +44,7 @@ import jme3utilities.nifty.IntegerDialog;
 import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
-import maud.model.LoadedCGModel;
+import maud.model.LoadedCgm;
 
 /**
  * Dialog boxes created by Maud's "3D View" screen.
@@ -158,7 +158,7 @@ class DddDialogs {
      * @param actionPrefix for the dialog (not null)
      * @param cgm which CG model to read the defaults from (not null)
      */
-    void loadCgmFromAsset(String actionPrefix, LoadedCGModel cgm) {
+    void loadCgmFromAsset(String actionPrefix, LoadedCgm cgm) {
         assert actionPrefix != null;
 
         String basePath = cgm.getAssetPath();

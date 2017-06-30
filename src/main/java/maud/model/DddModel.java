@@ -41,7 +41,7 @@ public class DddModel {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            LoadedCGModel.class.getName());
+            LoadedCgm.class.getName());
     // *************************************************************************
     // fields
 
@@ -72,7 +72,7 @@ public class DddModel {
     /**
      * the (read-only) source CG model
      */
-    final public LoadedCGModel source;
+    final public LoadedCgm source;
     /**
      * miscellaneous details
      */
@@ -94,7 +94,7 @@ public class DddModel {
         cursor = new CursorStatus();
         target = new EditableCgm();
         mapping = new EditableMapping();
-        source = new LoadedCGModel();
+        source = new LoadedCgm();
         misc = new MiscStatus();
         skeleton = new SkeletonStatus();
     }
