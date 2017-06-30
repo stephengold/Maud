@@ -630,7 +630,7 @@ public class LoadedCgm implements Cloneable {
     // Object methods
 
     /**
-     * Create a copy of this object.
+     * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
      * @throws CloneNotSupportedException if a field isn't cloneable
@@ -907,14 +907,12 @@ public class LoadedCgm implements Cloneable {
             }
         }
         Vector3f[] scales = boneTrack.getScales();
-        if (scales == null) { // JME3 allows this
-            logger.warning("bone track lacks scale data");
-            return false;
-        }
-        int numScales = scales.length;
-        if (numScales != numFrames) {
-            logger.warning("scale data have wrong length");
-            return false;
+        if (scales != null) {
+            int numScales = scales.length;
+            if (numScales != numFrames) {
+                logger.warning("scale data have wrong length");
+                return false;
+            }
         }
 
         return true;
