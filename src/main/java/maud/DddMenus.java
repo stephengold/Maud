@@ -621,6 +621,7 @@ class DddMenus {
             builder.add("Unload");
         }
         builder.addDialog("Save");
+        builder.addTool("Twist tool");
         builder.show("select menuItem CGM -> Mapping -> ");
     }
 
@@ -1134,6 +1135,11 @@ class DddMenus {
 
             case "Tool":
                 Maud.gui.tools.select("mapping");
+                handled = true;
+                break;
+
+            case "Twist tool":
+                Maud.gui.tools.select("twist");
                 handled = true;
                 break;
 
