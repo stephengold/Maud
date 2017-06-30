@@ -88,17 +88,18 @@ public class TransformStatus implements Cloneable {
     /**
      * Automatically configure the transform for a newly loaded CG model.
      *
-     * @param bindLoc the location of the CG model's dominant root bone (in
+     * @param center the location of the CG model's center in bind pose (in
      * model space, not null, unaffected)
      * @param minY Y-offset of the CG model's base (in CG-model units)
      * @param maxExtent the greatest extent of the CG model over its 3 principal
      * axes in bind pose (in model units, &gt;0)
      */
-    public void loadCgm(Vector3f bindLoc, float minY, float maxExtent) {
-        Validate.nonNull(bindLoc, "bind location");
+    public void loadCgm(Vector3f center, float minY, float maxExtent) {
+        Validate.nonNull(center, "center");
+        Validate.finite(minY, "min Y");
         Validate.positive(maxExtent, "max extent");
 
-        bindLocation.set(bindLoc);
+        bindLocation.set(center);
         scale = 1f / maxExtent;
         yOffset = -minY * scale;
     }

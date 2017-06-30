@@ -31,6 +31,8 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -61,6 +63,10 @@ public class CgmView implements JmeCloneable {
      */
     final private static Logger logger = Logger.getLogger(
             CgmView.class.getName());
+    /**
+     * local copy of {@link com.jme3.math.Transform#IDENTITY}
+     */
+    final private static Transform transformIdentity = new Transform();
     // *************************************************************************
     // fields
 
@@ -456,17 +462,19 @@ public class CgmView implements JmeCloneable {
         setSkeleton(skeleton, false);
         /*
          * Configure the world transform based on the bindPosition of
-         * the dominant root bone and the range of mesh coordinates in
+         * the dominant root bone and the range of model-space coordinates in
          * the CG model.
          */
-        Bone dominantRootBone = Util.dominantRootBone(cgmRoot, skeleton);
-        Vector3f bindPosition = dominantRootBone.getBindPosition();
-        Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot, false);
-        Vector3f extents = minMax[1].subtract(minMax[0]);
-        float maxExtent = MyMath.max(extents.x, extents.y, extents.z);
-        assert maxExtent > 0f : maxExtent;
-        float minY = minMax[0].y;
-        model.transform.loadCgm(bindPosition, minY, maxExtent);
+        parent.setLocalTransform(transformIdentity);
+        BoundingVolume volume = cgmRoot.getWorldBound();
+        Vector3f center = volume.getCenter();
+        BoundingBox box = (BoundingBox) volume; // TODO if BoundingSphere
+        Vector3f halfExtent = box.getExtent(null);
+        float maxExtent;
+        maxExtent = 2f * MyMath.max(halfExtent.x, halfExtent.y, halfExtent.z);
+        Vector3f min = box.getMin(null);
+        float minY = min.y;
+        model.transform.loadCgm(center, minY, maxExtent);
         /*
          * reset the camera, cursor, and platform
          */
