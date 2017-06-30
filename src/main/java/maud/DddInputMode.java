@@ -55,7 +55,7 @@ class DddInputMode extends InputMode {
     /**
      * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
      */
-    final private static Quaternion identityRotation = new Quaternion();
+    final private static Quaternion rotationIdentity = new Quaternion();
     /**
      * asset path to the cursor for this mode
      */
@@ -666,7 +666,7 @@ class DddInputMode extends InputMode {
                 break;
 
             case "reset spatial rotation":
-                Maud.model.target.setSpatialRotation(identityRotation);
+                Maud.model.target.setSpatialRotation(rotationIdentity);
                 handled = true;
                 break;
             case "reset spatial scale":
@@ -679,7 +679,7 @@ class DddInputMode extends InputMode {
                 break;
 
             case "reset twist":
-                Maud.model.mapping.setTwist(identityRotation);
+                Maud.model.mapping.setTwist(rotationIdentity);
                 handled = true;
         }
 

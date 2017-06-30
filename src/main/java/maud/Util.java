@@ -87,7 +87,7 @@ public class Util {
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
      */
-    final private static Vector3f identityScale = new Vector3f(1f, 1f, 1f);
+    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
     // *************************************************************************
     // constructors
 
@@ -159,7 +159,7 @@ public class Util {
             storeResult.setTranslation(translations[0]);
             storeResult.setRotation(rotations[0]);
             if (scales == null) {
-                storeResult.setScale(identityScale);
+                storeResult.setScale(scaleIdentity);
             } else {
                 storeResult.setScale(scales[0]);
             }
@@ -171,7 +171,7 @@ public class Util {
             storeResult.setTranslation(translations[lastFrame]);
             storeResult.setRotation(rotations[lastFrame]);
             if (scales == null) {
-                storeResult.setScale(identityScale);
+                storeResult.setScale(scaleIdentity);
             } else {
                 storeResult.setScale(scales[lastFrame]);
             }
@@ -330,7 +330,7 @@ public class Util {
         rotation.nlerp(rotations[endFrame], fraction);
 
         if (scales == null) {
-            storeResult.setScale(identityScale);
+            storeResult.setScale(scaleIdentity);
         } else {
             Vector3f scale = storeResult.getScale();
             scale.interpolateLocal(scales[startFrame], scales[endFrame],
