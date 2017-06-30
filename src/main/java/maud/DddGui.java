@@ -177,6 +177,12 @@ public class DddGui extends GuiScreenController {
             case "loopSourceCheckBox":
                 Maud.model.source.animation.setContinue(isChecked);
                 break;
+            case "pinCheckBox":
+                Maud.model.target.animation.setPinned(isChecked);
+                break;
+            case "pinSourceCheckBox":
+                Maud.model.source.animation.setPinned(isChecked);
+                break;
             case "pongCheckBox":
                 Maud.model.target.animation.setReverse(isChecked);
                 break;

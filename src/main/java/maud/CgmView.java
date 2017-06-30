@@ -445,36 +445,28 @@ public class CgmView implements JmeCloneable {
          * Use the skeleton from the first AnimControl or
          * SkeletonControl in the CG model's root spatial.
          */
-        AnimControl anControl = cgmRoot.getControl(AnimControl.class);
-        if (anControl != null) {
-            skeleton = anControl.getSkeleton();
-        } else {
-            SkeletonControl skelControl;
-            skelControl = cgmRoot.getControl(SkeletonControl.class);
-            if (skelControl != null) {
-                skeleton = skelControl.getSkeleton();
-            } else {
-                skeleton = null;
-            }
-        }
+        skeleton = MySkeleton.findSkeleton(cgmRoot);
         /*
-         * Remove all SG controls.
+         * Remove all scene-graph controls.
          */
         Util.removeAllControls(cgmRoot);
         /*
-         * Create and add controls for the skeleton.
+         * Create and add scene-graph controls for the skeleton.
          */
         setSkeleton(skeleton, false);
         /*
-         * Configure the world transform based on the range
-         * of mesh coordinates in the CG model.
+         * Configure the world transform based on the bindPosition of
+         * the dominant root bone and the range of mesh coordinates in
+         * the CG model.
          */
+        Bone dominantRootBone = Util.dominantRootBone(cgmRoot, skeleton);
+        Vector3f bindPosition = dominantRootBone.getBindPosition();
         Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot, false);
         Vector3f extents = minMax[1].subtract(minMax[0]);
         float maxExtent = MyMath.max(extents.x, extents.y, extents.z);
         assert maxExtent > 0f : maxExtent;
         float minY = minMax[0].y;
-        model.transform.loadCgm(minY, maxExtent);
+        model.transform.loadCgm(bindPosition, minY, maxExtent);
         /*
          * reset the camera, cursor, and platform
          */

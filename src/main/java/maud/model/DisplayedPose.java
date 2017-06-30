@@ -124,13 +124,17 @@ public class DisplayedPose implements JmeCloneable {
      * Alter the pose to match the loaded animation.
      */
     public void setToAnimation() {
-        int boneCount = pose.countBones();
-
-        // TODO for each root bone ...
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Transform transform;
-            transform = loadedCgm.animation.boneTransform(boneIndex, null);
+        Transform transform = new Transform();
+        for (int boneIndex : pose.preOrderIndices()) {
+            loadedCgm.animation.boneTransform(boneIndex, transform);
             pose.set(boneIndex, transform);
+        }
+
+        if (loadedCgm.animation.isPinned()) {
+            int[] rootBones = pose.rootBoneIndices();
+            for (int boneIndex : rootBones) {
+                pose.resetTranslation(boneIndex);
+            }
         }
     }
 

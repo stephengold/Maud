@@ -92,7 +92,7 @@ the menu bar, status bar, and tool windows.
                      hideOnClose="true"
                      height="250px" width="290px" x="75" y="25">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal" height="35px">
+                    <panel childLayout="horizontal" height="30px">
                         <control name="button" id="animationPreviousButton"
                                  width="20px">
                             <interact onRelease="perform(previous animation)"/>
@@ -117,10 +117,9 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(select menuItem Animation -> Load)"/>
                         </control>
                     </panel>
-                    <panel childLayout="horizontal" height="35px">
+                    <panel childLayout="horizontal" height="30px">
                         <control name="label" text="Loaded:  "
-                                 textHAlign="right"
-                                 width="60px"/>
+                                 textHAlign="left"/>
                         <control name="label" id="animationName"
                                  backgroundColor="#ffff"
                                  width="*"/>
@@ -130,30 +129,36 @@ the menu bar, status bar, and tool windows.
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="30px">
+                        <control name="checkbox" id="pinCheckBox"/>
+                        <control name="label" text="  pin    "/>
                         <control name="button" id="togglePauseButton"
-                                 width="55">
+                                 width="55px">
                             <interact onRelease="perform(toggle pause target)"/>
                         </control>
-                        <control name="label" width="12"/>
-                        <control name="checkbox" id="loopCheckBox"/>
-                        <control name="label" text="  loop  "/>
-                        <control name="checkbox" id="pongCheckBox"/>
-                        <control name="label" text="  pong"/>
+                        <control name="label" width="12px"/>
                         <control name="label" id="speedSliderStatus"
                                  textHAlign="right"
                                  width="*"/>
                     </panel>
-                    <control name="horizontalSlider" id="speedSlider"
-                             buttonStepSize="1"
-                             max="2" min="-2" stepSize="0.001"/>
-                    <panel style="statusPanel">
-                        <control name="label" id="trackTime"
-                                 textHAlign="right"/>
+                    <panel childLayout="horizontal" height="30px">
+                        <control name="horizontalSlider" id="speedSlider"
+                                 buttonStepSize="1"
+                                 max="2" min="-2" stepSize="0.001"/>
                     </panel>
-                    <control name="horizontalSlider" id="timeSlider"
-                             buttonStepSize="1"
-                             max="1" min="0" stepSize="0.001"/>
-                    <panel height="14px"/>
+                    <panel childLayout="horizontal" height="30px">
+                        <control name="checkbox" id="loopCheckBox"/>
+                        <control name="label" text="  loop    "/>
+                        <control name="checkbox" id="pongCheckBox"/>
+                        <control name="label" text="  pong"/>
+                        <control name="label" id="trackTime"
+                                 textHAlign="right"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="30px">
+                        <control name="horizontalSlider" id="timeSlider"
+                                 buttonStepSize="1"
+                                 max="1" min="0" stepSize="0.001"/>
+                    </panel>
                     <panel childLayout="horizontal">
                         <control name="label" text="Bone tracks:  "/>
                         <control name="label" id="boneTracks"
@@ -1273,7 +1278,7 @@ the menu bar, status bar, and tool windows.
                      hideOnClose="true"
                      height="250px" width="290px" x="75" y="25">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal" height="35px">
+                    <panel childLayout="horizontal" height="30px">
                         <control name="button" id="sourceAnimationPreviousButton"
                                  width="20px">
                             <interact onRelease="perform(previous sourceAnimation)"/>
@@ -1297,39 +1302,44 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(select menuItem Animation -> Load source)"/>
                         </control>
                     </panel>
-                    <panel childLayout="horizontal" height="35px">
+                    <panel childLayout="horizontal" height="30px">
                         <control name="label" text="Loaded:  "
-                                 textHAlign="right"
-                                 width="60px"/>
+                                 textHAlign="left"/>
                         <control name="label" id="sourceAnimationName"
                                  backgroundColor="#ffff"
                                  width="*"/>
                     </panel>
                     <panel childLayout="horizontal" height="30px">
+                        <control name="checkbox" id="pinSourceCheckBox"/>
+                        <control name="label" text="  pin    "/>
                         <control name="button" id="togglePauseSourceButton"
-                                 width="55">
+                                 width="55px">
                             <interact onRelease="perform(toggle pause source)"/>
                         </control>
-                        <control name="label" width="12"/>
-                        <control name="checkbox" id="loopSourceCheckBox"/>
-                        <control name="label" text="  loop  "/>
-                        <control name="checkbox" id="pongSourceCheckBox"/>
-                        <control name="label" text="  pong"/>
+                        <control name="label" width="12px"/>
                         <control name="label" id="sSpeedSliderStatus"
                                  textHAlign="right"
                                  width="*"/>
                     </panel>
-                    <control name="horizontalSlider" id="sSpeedSlider"
-                             buttonStepSize="1"
-                             max="2" min="-2" stepSize="0.001"/>
-                    <panel style="statusPanel">
-                        <control name="label" id="sourceTrackTime"
-                                 textHAlign="right"/>
+                    <panel childLayout="horizontal" height="30px">
+                        <control name="horizontalSlider" id="sSpeedSlider"
+                                 buttonStepSize="1"
+                                 max="2" min="-2" stepSize="0.001"/>
                     </panel>
-                    <control name="horizontalSlider" id="sourceTimeSlider"
-                             buttonStepSize="1"
-                             max="1" min="0" stepSize="0.001"/>
-                    <panel height="14px"/>
+                    <panel childLayout="horizontal" height="30px">
+                        <control name="checkbox" id="loopSourceCheckBox"/>
+                        <control name="label" text="  loop    "/>
+                        <control name="checkbox" id="pongSourceCheckBox"/>
+                        <control name="label" text="  pong"/>
+                        <control name="label" id="sourceTrackTime"
+                                 textHAlign="right"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="30px">
+                        <control name="horizontalSlider" id="sourceTimeSlider"
+                                 buttonStepSize="1"
+                                 max="1" min="0" stepSize="0.001"/>
+                    </panel>
                     <panel childLayout="horizontal">
                         <control name="label" text="Bone tracks:  "/>
                         <control name="label" id="sourceBoneTracks"

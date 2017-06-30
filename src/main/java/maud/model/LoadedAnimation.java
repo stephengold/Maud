@@ -79,6 +79,10 @@ public class LoadedAnimation implements Cloneable {
      */
     private boolean pausedFlag = false;
     /**
+     * true &rarr; root bones pinned to bindPos, false &rarr; free to translate
+     */
+    private boolean pinnedFlag = true;
+    /**
      * true &rarr; reverse playback direction ("pong") at limits, false &rarr;
      * wrap time at limits
      */
@@ -375,6 +379,15 @@ public class LoadedAnimation implements Cloneable {
      */
     public boolean isPaused() {
         return pausedFlag;
+    }
+
+    /**
+     * Test whether the root bones are pinned to bindPos.
+     *
+     * @return true if pinned, false otherwise
+     */
+    public boolean isPinned() {
+        return pinnedFlag;
     }
 
     /**
@@ -756,6 +769,15 @@ public class LoadedAnimation implements Cloneable {
      */
     public void setPaused(boolean newSetting) {
         pausedFlag = newSetting;
+    }
+
+    /**
+     * Alter whether the root bones are pinned to bindPos.
+     *
+     * @param newSetting true &rarr; pinned, false &rarr; free to translate
+     */
+    public void setPinned(boolean newSetting) {
+        pinnedFlag = newSetting;
     }
 
     /**

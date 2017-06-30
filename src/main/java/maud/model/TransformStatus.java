@@ -78,18 +78,27 @@ public class TransformStatus implements Cloneable {
      * {@link #setCgm(LoadedCGModel)})
      */
     private LoadedCGModel loadedCgm = null;
+    /**
+     * the location (in model space) of the CG model's dominant root bone
+     */
+    private Vector3f bindLocation = new Vector3f();
     // *************************************************************************
     // new methods exposed
 
     /**
      * Automatically configure the transform for a newly loaded CG model.
      *
-     * @param minY (in CG-model units)
-     * @param maxExtent (in CG-model units, &gt;0)
+     * @param bindLoc the location of the CG model's dominant root bone (in
+     * model space, not null, unaffected)
+     * @param minY Y-offset of the CG model's base (in CG-model units)
+     * @param maxExtent the greatest extent of the CG model over its 3 principal
+     * axes in bind pose (in model units, &gt;0)
      */
-    public void loadCgm(float minY, float maxExtent) {
+    public void loadCgm(Vector3f bindLoc, float minY, float maxExtent) {
+        Validate.nonNull(bindLoc, "bind location");
         Validate.positive(maxExtent, "max extent");
 
+        bindLocation.set(bindLoc);
         scale = 1f / maxExtent;
         yOffset = -minY * scale;
     }
@@ -115,12 +124,26 @@ public class TransformStatus implements Cloneable {
     }
 
     /**
-     * Calculate the world transform of the CG model. Note that this may differ
-     * from the world transform of its root node.
+     * Calculate the transform to be applied to the CG model. Note that this may
+     * differ from the transform of the CG model's root node.
      *
-     * @return a new instance
+     * @return a new instance (in world coordinates)
      */
     public Transform worldTransform() {
+        Transform result = new Transform();
+        result.getRotation().fromAngleNormalAxis(yAngle, yAxis);
+        result.getScale().set(scale, scale, scale);
+        /*
+         * Offset the CGM so that (in bind pose) the root bone is
+         * directly above the origin (center of platform).
+         */
+        Vector3f modelTranslation;
+        modelTranslation = new Vector3f(-bindLocation.x, 0f, -bindLocation.z);
+        Vector3f worldTranslation;
+        worldTranslation = result.transformVector(modelTranslation, null);
+        /*
+         * Displace along the Z-axis if 2 CGMs are loaded.
+         */
         float zOffset;
         if (loadedCgm == Maud.model.target) {
             if (Maud.model.source.isLoaded()) {
@@ -131,11 +154,8 @@ public class TransformStatus implements Cloneable {
         } else {
             zOffset = -0.5f * zSeparation;
         }
-
-        Transform result = new Transform();
-        result.getRotation().fromAngleNormalAxis(yAngle, yAxis);
-        result.getScale().set(scale, scale, scale);
-        result.getTranslation().set(0f, yOffset, zOffset);
+        worldTranslation.addLocal(0f, yOffset, zOffset);
+        result.setTranslation(worldTranslation);
 
         return result;
     }
@@ -151,6 +171,7 @@ public class TransformStatus implements Cloneable {
     @Override
     public TransformStatus clone() throws CloneNotSupportedException {
         TransformStatus clone = (TransformStatus) super.clone();
+        clone.bindLocation = bindLocation.clone();
         return clone;
     }
 }
