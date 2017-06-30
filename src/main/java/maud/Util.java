@@ -61,6 +61,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 
 /**
  * Utility methods for the Maud application. All methods should be static.
@@ -71,6 +72,14 @@ public class Util {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * Pi/2
+     */
+    public static final double HALF_PI = Math.PI / 2.0;
+    /**
+     * Pi/4
+     */
+    public static final double QUARTER_PI = Math.PI / 4.0;
     /**
      * message logger for this class
      */
@@ -750,6 +759,22 @@ public class Util {
                 rotations, scales);
 
         return result;
+    }
+
+    /**
+     * Round the rotation angle of the indexed axis to the nearest Pi/2 radians.
+     *
+     * @param input (not null, modified)
+     * @param axisIndex which axis (&ge;0, &lt;3)
+     */
+    public static void snapLocal(Quaternion input, int axisIndex) {
+        float[] angles = new float[3];
+        input.toAngles(angles);
+        double angle = angles[axisIndex];
+        angle -= MyMath.modulo(angle - QUARTER_PI, HALF_PI);
+        angle += QUARTER_PI;
+        angles[axisIndex] = (float) angle;
+        input.fromAngles(angles);
     }
     // *************************************************************************
     // new methods exposed

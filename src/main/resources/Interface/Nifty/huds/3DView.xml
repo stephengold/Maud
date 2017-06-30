@@ -1662,22 +1662,40 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="twistTool" title="Twist Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="230px" width="200px" x="35" y="65">
+                     height="250px" width="210px" x="35" y="65">
                 <panel childLayout="vertical">
                     <panel/>
                     <panel childLayout="horizontal">
-                        <control name="verticalSlider" id="xTwistSlider"
-                                 buttonStepSize="1.57"
-                                 height="190px"
-                                 max="3.14" min="-3.14" stepSize="0.001"/>
-                        <control name="verticalSlider" id="yTwistSlider"
-                                 buttonStepSize="1.57"
-                                 height="190px"
-                                 max="3.14" min="-3.14" stepSize="0.001"/>
-                        <control name="verticalSlider" id="zTwistSlider"
-                                 buttonStepSize="1.57"
-                                 height="190px"
-                                 max="1.57" min="-1.57" stepSize="0.001"/>
+                        <panel childLayout="vertical">
+                            <control name="verticalSlider" id="xTwistSlider"
+                                     buttonStepSize="1.571"
+                                     height="190px"
+                                     max="3.142" min="-3.142" stepSize="0.001"/>
+                            <control name="button" id="snapXTwistButton"
+                                     width="30px">
+                                <interact onRelease="perform(set twist snapX)"/>
+                            </control>
+                        </panel>
+                        <panel childLayout="vertical">
+                            <control name="verticalSlider" id="yTwistSlider"
+                                     buttonStepSize="1.571"
+                                     height="190px"
+                                     max="3.142" min="-3.142" stepSize="0.001"/>
+                            <control name="button" id="snapYTwistButton"
+                                     width="30px">
+                                <interact onRelease="perform(set twist snapY)"/>
+                            </control>
+                        </panel>
+                        <panel childLayout="vertical">
+                            <control name="verticalSlider" id="zTwistSlider"
+                                     buttonStepSize="1.571"
+                                     height="190px"
+                                     max="1.571" min="-1.571" stepSize="0.001"/>
+                            <control name="button" id="snapZTwistButton"
+                                     width="30px">
+                                <interact onRelease="perform(set twist snapZ)"/>
+                            </control>
+                        </panel>
                         <panel childLayout="vertical">
                             <control name="label" id="xTwistSliderStatus"
                                      textHAlign="center"

@@ -171,6 +171,20 @@ public class EditableMapping extends LoadedMapping {
     }
 
     /**
+     * Snap the one axis angle of the effective twist.
+     *
+     * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;3
+     */
+    public void snapTwist(int axisIndex) {
+        Validate.inRange(axisIndex, "axis index", 0, 2);
+
+        BoneMapping boneMapping = selectedMapping();
+        Quaternion twist = boneMapping.getTwist();
+        Util.snapLocal(twist, axisIndex);
+        setEditedTwist();
+    }
+
+    /**
      * Unload the skeleton mapping.
      */
     public void unload() {

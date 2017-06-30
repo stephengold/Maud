@@ -220,5 +220,8 @@ public class TwistTool extends WindowController {
         }
         Maud.gui.setButtonLabel("resetTwistButton", rButton);
         Maud.gui.setButtonLabel("snapTwistButton", sButton);
+        Maud.gui.setButtonLabel("snapXTwistButton", sButton);
+        Maud.gui.setButtonLabel("snapYTwistButton", sButton);
+        Maud.gui.setButtonLabel("snapZTwistButton", sButton);
     }
 }

@@ -856,27 +856,34 @@ class DddInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean setAction(String actionString) {
-        boolean handled = false;
+        boolean handled = true;
         switch (actionString) {
             case "set track rotation all":
                 Maud.model.target.track.setTrackRotationAll();
-                handled = true;
                 break;
             case "set track scale all":
                 Maud.model.target.track.setTrackScaleAll();
-                handled = true;
                 break;
             case "set track translation all":
                 Maud.model.target.track.setTrackTranslationAll();
-                handled = true;
                 break;
             case "set twist cardinal":
                 Maud.model.mapping.cardinalizeTwist();
-                handled = true;
+                break;
+            case "set twist snapX":
+                Maud.model.mapping.snapTwist(0);
+                break;
+            case "set twist snapY":
+                Maud.model.mapping.snapTwist(1);
+                break;
+            case "set twist snapZ":
+                Maud.model.mapping.snapTwist(2);
                 break;
             case "set userdata":
                 Maud.gui.dialogs.setUserData();
-                handled = true;
+                break;
+            default:
+                handled = false;
         }
 
         if (!handled) {
