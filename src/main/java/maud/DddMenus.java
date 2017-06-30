@@ -238,8 +238,8 @@ class DddMenus {
                 if (name != null) {
                     choice += " " + MyString.quote(name);
                 }
-                boolean isANode = Maud.model.target.spatial.isChildANode(
-                        childIndex);
+                boolean isANode;
+                isANode = Maud.model.target.spatial.isChildANode(childIndex);
                 if (isANode) {
                     builder.addNode(choice);
                 } else {
@@ -678,56 +678,46 @@ class DddMenus {
     private boolean menuAnimation(String remainder) {
         assert remainder != null;
 
-        boolean handled = false;
+        boolean handled = true;
         switch (remainder) {
             case "Delete":
                 Maud.gui.dialogs.deleteAnimation();
-                handled = true;
                 break;
             case "Duration":
                 Maud.gui.dialogs.setDuration();
-                handled = true;
                 break;
             case "Load":
                 Collection<String> animationNames;
                 animationNames = Maud.model.target.listAnimationNames();
                 Maud.gui.showPopupMenu(DddInputMode.loadAnimationPrefix,
                         animationNames);
-                handled = true;
                 break;
             case "Load source":
                 loadSourceAnimation();
-                handled = true;
                 break;
             case "New from copy":
                 Maud.gui.dialogs.copyAnimation();
-                handled = true;
                 break;
             case "New from pose":
                 Maud.gui.dialogs.newPose();
-                handled = true;
                 break;
             case "New from retarget":
                 Maud.gui.tools.select("retarget");
-                handled = true;
                 break;
             case "Reduce":
                 Maud.gui.dialogs.reduceAnimation();
-                handled = true;
                 break;
             case "Rename":
                 Maud.gui.dialogs.renameAnimation();
-                handled = true;
                 break;
             case "Source tool":
                 Maud.gui.tools.select("sourceAnimation");
-                handled = true;
                 break;
             case "Tool":
                 Maud.gui.tools.select("animation");
-                handled = true;
                 break;
-            case "Tweening":
+            default:
+                handled = false;
         }
 
         return handled;
@@ -798,7 +788,7 @@ class DddMenus {
     private boolean menuBone(String remainder) {
         assert remainder != null;
 
-        boolean handled = false;
+        boolean handled = true;
         String selectPrefix = "Select" + menuSeparator;
         String selectSourcePrefix = "Select source" + menuSeparator;
         if (remainder.startsWith(selectPrefix)) {
@@ -811,37 +801,32 @@ class DddMenus {
 
         } else {
             switch (remainder) {
-                case "Attach prop":
-                    break;
                 case "Rename":
                     Maud.gui.dialogs.renameBone();
-                    handled = true;
                     break;
                 case "Rotate":
                     Maud.gui.tools.select("boneRotation");
-                    handled = true;
                     break;
                 case "Scale":
                     Maud.gui.tools.select("boneScale");
-                    handled = true;
                     break;
                 case "Select":
                     selectBone();
-                    handled = true;
                     break;
                 case "Select source":
                     selectSourceBone();
-                    handled = true;
                     break;
                 case "Tool":
                     Maud.gui.tools.select("bone");
-                    handled = true;
                     break;
                 case "Translate":
                     Maud.gui.tools.select("boneTranslation");
-                    handled = true;
+                    break;
+                default:
+                    handled = false;
             }
         }
+
         return handled;
     }
 
@@ -1017,7 +1002,8 @@ class DddMenus {
         switch (remainder) {
             case "Asset":
                 Maud.gui.dialogs.loadCgmFromAsset(
-                        DddInputMode.loadSourceCgmAssetPrefix);
+                        DddInputMode.loadSourceCgmAssetPrefix,
+                        Maud.model.source);
                 handled = true;
                 break;
 
@@ -1049,7 +1035,8 @@ class DddMenus {
         switch (remainder) {
             case "Asset":
                 Maud.gui.dialogs.loadCgmFromAsset(
-                        DddInputMode.loadCgmAssetPrefix);
+                        DddInputMode.loadCgmAssetPrefix,
+                        Maud.model.target);
                 handled = true;
                 break;
 
@@ -1211,7 +1198,7 @@ class DddMenus {
     private boolean menuSpatial(String remainder) {
         assert remainder != null;
 
-        boolean handled = false;
+        boolean handled = true;
         String addControlPrefix = "Add control" + menuSeparator;
         String selectPrefix = "Select" + menuSeparator;
         if (remainder.startsWith(addControlPrefix)) {
@@ -1226,43 +1213,36 @@ class DddMenus {
             switch (remainder) {
                 case "Add control":
                     addSgc();
-                    handled = true;
                     break;
                 case "Control tool":
                     Maud.gui.tools.select("sgc");
-                    handled = true;
                     break;
                 case "Delete control":
                     Maud.gui.dialogs.deleteSgc();
-                    handled = true;
                     break;
                 case "Rotate":
                     Maud.gui.tools.select("spatialRotation");
-                    handled = true;
                     break;
                 case "Scale":
                     Maud.gui.tools.select("spatialScale");
-                    handled = true;
                     break;
                 case "Select":
                     selectSpatial();
-                    handled = true;
                     break;
                 case "Select control":
                     selectSgc();
-                    handled = true;
                     break;
                 case "Tool":
                     Maud.gui.tools.select("spatial");
-                    handled = true;
                     break;
                 case "Translate":
                     Maud.gui.tools.select("spatialTranslation");
-                    handled = true;
                     break;
                 case "User data tool":
                     Maud.gui.tools.select("userData");
-                    handled = true;
+                    break;
+                default:
+                    handled = false;
             }
         }
 

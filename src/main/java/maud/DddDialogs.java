@@ -44,6 +44,7 @@ import jme3utilities.nifty.IntegerDialog;
 import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
+import maud.model.LoadedCGModel;
 
 /**
  * Dialog boxes created by Maud's "3D View" screen.
@@ -155,12 +156,13 @@ class DddDialogs {
      * Display a "load (source)model asset" dialog.
      *
      * @param actionPrefix for the dialog (not null)
+     * @param cgm which CG model to read the defaults from (not null)
      */
-    void loadCgmFromAsset(String actionPrefix) {
+    void loadCgmFromAsset(String actionPrefix, LoadedCGModel cgm) {
         assert actionPrefix != null;
 
-        String basePath = Maud.model.target.getAssetPath();
-        String extension = Maud.model.target.getExtension();
+        String basePath = cgm.getAssetPath();
+        String extension = cgm.getExtension();
         String assetPath = String.format("%s.%s", basePath, extension);
         List<String> modelExts = new ArrayList<>(4);
         modelExts.add(".blend");
