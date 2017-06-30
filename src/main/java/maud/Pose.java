@@ -80,7 +80,7 @@ public class Pose implements JmeCloneable {
     /**
      * Instantiate bind pose for the specified skeleton.
      *
-     * @param skeleton (may be null)
+     * @param skeleton (may be null, otherwise an alias is created)
      */
     public Pose(Skeleton skeleton) {
         this.skeleton = skeleton;
@@ -138,7 +138,7 @@ public class Pose implements JmeCloneable {
         int numBones = countBones();
         Transform transform = new Transform();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            copyTransform(boneIndex, transform);
+            userTransform(boneIndex, transform);
             if (!Misc.isIdentity(transform)) {
                 Vector3f translation = transform.getTranslation();
                 Quaternion rotation = transform.getRotation();
@@ -150,25 +150,6 @@ public class Pose implements JmeCloneable {
         }
 
         return result;
-    }
-
-    /**
-     * Copy the user/animation transform of the indexed bone. TODO rename?
-     *
-     * @param boneIndex which bone to use (&ge;0)
-     * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
-     */
-    public Transform copyTransform(int boneIndex, Transform storeResult) {
-        Validate.nonNegative(boneIndex, "bone index");
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
-
-        Transform transform = transforms.get(boneIndex);
-        storeResult.set(transform);
-
-        return storeResult;
     }
 
     /**
@@ -235,7 +216,7 @@ public class Pose implements JmeCloneable {
          * Apply the user/animation transform in a simple (yet peculiar) way
          * to obtain the bone's local transform.
          */
-        Transform user = copyTransform(boneIndex, null);
+        Transform user = userTransform(boneIndex, null);
         storeResult.getTranslation().addLocal(user.getTranslation());
         storeResult.getRotation().multLocal(user.getRotation());
         storeResult.getScale().multLocal(user.getScale());
@@ -367,7 +348,7 @@ public class Pose implements JmeCloneable {
     /**
      * Alter the skeleton and reset all bones to bind pose.
      *
-     * @param skeleton (may be null)
+     * @param skeleton (may be null, otherwise an alias is created)
      */
     public void resetToBind(Skeleton skeleton) {
         this.skeleton = skeleton;
@@ -564,6 +545,25 @@ public class Pose implements JmeCloneable {
 
         Transform transform = transforms.get(boneIndex);
         storeResult = transform.getScale(storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the user/animation transform of the indexed bone.
+     *
+     * @param boneIndex which bone to use (&ge;0)
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
+     */
+    public Transform userTransform(int boneIndex, Transform storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
+        if (storeResult == null) {
+            storeResult = new Transform();
+        }
+
+        Transform transform = transforms.get(boneIndex);
+        storeResult.set(transform);
 
         return storeResult;
     }

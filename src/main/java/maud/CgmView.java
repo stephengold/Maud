@@ -387,7 +387,7 @@ public class CgmView implements JmeCloneable {
         Vector3f scale = transform.getScale();
 
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            pose.copyTransform(boneIndex, transform);
+            pose.userTransform(boneIndex, transform);
             Bone bone = skeleton.getBone(boneIndex);
             bone.setUserTransforms(translation, rotation, scale);
         }

@@ -721,7 +721,7 @@ public class Util {
             targetPose.setToRetarget(sourcePose, mapping);
 
             Transform userTransform;
-            userTransform = targetPose.copyTransform(targetBoneIndex, null);
+            userTransform = targetPose.userTransform(targetBoneIndex, null);
             translations[frameIndex] = userTransform.getTranslation();
             rotations[frameIndex] = userTransform.getRotation();
             scales[frameIndex] = userTransform.getScale();
