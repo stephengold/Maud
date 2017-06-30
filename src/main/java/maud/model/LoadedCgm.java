@@ -866,18 +866,25 @@ public class LoadedCgm implements Cloneable {
      * @param boneTrack (not null)
      * @param numBones (&gt;0, &le;255)
      * @param numFrames (&gt;0)
+     * @param targetBoneIndexSet (not null, modified)
      * @return false if issues found, otherwise true
      */
     private boolean validateBoneTrack(BoneTrack boneTrack, int numBones,
-            int numFrames) {
+            int numFrames, Set<Integer> targetBoneIndexSet) {
         assert numBones > 0 : numBones;
         assert numBones <= 255 : numBones;
         assert numFrames > 0 : numFrames;
 
         int targetBoneIndex = boneTrack.getTargetBoneIndex();
-        if (targetBoneIndex >= numBones) {
+        if (targetBoneIndex < 0 || targetBoneIndex >= numBones) {
             logger.warning("track for non-existant bone");
             return false;
+        }
+        if (targetBoneIndexSet.contains(targetBoneIndex)) {
+            logger.warning("multiple tracks for same bone");
+            return false;
+        } else {
+            targetBoneIndexSet.add(targetBoneIndex);
         }
         Vector3f[] translations = boneTrack.getTranslations();
         if (translations == null) {
@@ -1003,6 +1010,7 @@ public class LoadedCgm implements Cloneable {
                 logger.warning("animation has no tracks");
                 return false;
             }
+            Set<Integer> targetBoneIndexSet = new TreeSet<>();
             for (Track tr : tracks) {
                 float[] times = tr.getKeyFrameTimes();
                 if (times == null) {
@@ -1036,7 +1044,8 @@ public class LoadedCgm implements Cloneable {
                 }
                 if (tr instanceof BoneTrack) {
                     BoneTrack boneTrack = (BoneTrack) tr;
-                    if (!validateBoneTrack(boneTrack, numBones, numFrames)) {
+                    if (!validateBoneTrack(boneTrack, numBones, numFrames,
+                            targetBoneIndexSet)) {
                         return false;
                     }
                 }
