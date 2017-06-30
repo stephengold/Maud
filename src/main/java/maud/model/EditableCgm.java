@@ -69,7 +69,7 @@ public class EditableCgm extends LoadedCgm {
     // fields
 
     /**
-     * count of unsaved edits to the CG model (&ge;0)
+     * count of unsaved edits (&ge;0)
      */
     private int editCount = 0;
     /**
@@ -81,7 +81,7 @@ public class EditableCgm extends LoadedCgm {
     // new methods exposed
 
     /**
-     * Add a new animation to the model.
+     * Add a new animation to the CG model.
      *
      * @param newAnimation (not null, name not in use)
      */
@@ -474,24 +474,24 @@ public class EditableCgm extends LoadedCgm {
     /**
      * Invoked after successfully loading a CG model.
      *
-     * @param modelRoot (not null)
+     * @param cgmRoot (not null)
      */
     @Override
-    protected void postLoad(Spatial modelRoot) {
-        assert modelRoot != null;
+    protected void postLoad(Spatial cgmRoot) {
+        assert cgmRoot != null;
 
         String eventDescription = "load model " + name;
         setPristine(eventDescription);
 
-        repair(modelRoot);
+        repair(cgmRoot);
 
-        super.postLoad(modelRoot);
+        super.postLoad(cgmRoot);
     }
     // *************************************************************************
     // Object methods
 
     /**
-     * Create a copy of this object.
+     * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
      * @throws CloneNotSupportedException if superclass isn't cloneable
@@ -507,12 +507,12 @@ public class EditableCgm extends LoadedCgm {
     /**
      * Repair minor issues with a CG model, such as repetitious keyframes.
      *
-     * @param modelRoot model to correct (not null)
+     * @param cgmRoot model to correct (not null)
      */
-    private void repair(Spatial modelRoot) {
+    private void repair(Spatial cgmRoot) {
         boolean madeRepairs = false;
 
-        AnimControl animControl = modelRoot.getControl(AnimControl.class);
+        AnimControl animControl = cgmRoot.getControl(AnimControl.class);
         if (animControl == null) {
             return;
         }
@@ -563,7 +563,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Mark the model as pristine.
+     * Mark the CG model as pristine.
      *
      * @param eventDescription description of causative event (not null)
      */

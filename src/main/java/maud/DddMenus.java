@@ -81,7 +81,7 @@ class DddMenus {
             builder.show(menuPrefix);
 
         } else if (file.canRead()) {
-            Maud.model.target.loadModelFile(file);
+            Maud.model.target.loadCgmFile(file);
         }
     }
 
@@ -103,7 +103,7 @@ class DddMenus {
             builder.show(menuPrefix);
 
         } else if (file.canRead()) {
-            Maud.model.source.loadModelFile(file);
+            Maud.model.source.loadCgmFile(file);
         }
     }
 

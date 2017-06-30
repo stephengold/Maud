@@ -80,7 +80,8 @@ public class LoadedCgm implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(LoadedCgm.class.getName());
+    final private static Logger logger = Logger.getLogger(
+            LoadedCgm.class.getName());
     /**
      * dummy control name used to indicate that no control is selected
      */
@@ -89,7 +90,8 @@ public class LoadedCgm implements Cloneable {
     // fields
 
     /**
-     * visualization of the CG model (set by {@link #setView(maud.CgmView)})
+     * visualization of the CG model (set by {@link #setView(maud.CgmView)} or
+     * {@link #clone()})
      */
     public CgmView view = null;
     /**
@@ -148,7 +150,7 @@ public class LoadedCgm implements Cloneable {
     // constructors
 
     /**
-     * Instantiate with no model loaded.
+     * Instantiate with no CG model loaded.
      */
     public LoadedCgm() {
         animation.setCgm(this);
@@ -236,7 +238,7 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Read the asset path of the loaded model, less extension.
+     * Read the asset path of the loaded CG model, less extension.
      *
      * @return path, or "" if not known (not null)
      */
@@ -275,7 +277,7 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Read the extension of the loaded model.
+     * Read the extension of the loaded CG model.
      *
      * @return extension (not null)
      */
@@ -285,7 +287,7 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Read the filesystem path of the loaded model, less extension.
+     * Read the filesystem path of the loaded CG model, less extension.
      *
      * @return path, or "" if not known (not null)
      */
@@ -295,7 +297,7 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Read the name of the loaded model.
+     * Read the name of the loaded CG model.
      *
      * @return name, or "" if not known (not null)
      */
@@ -305,7 +307,7 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Access the root spatial of the loaded model.
+     * Access the root spatial.
      *
      * @return the pre-existing instance (not null)
      */
@@ -373,7 +375,7 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Test whether a CG model is loaded.
+     * Test whether a CG model is loaded here.
      *
      * @return true if loaded, otherwise false
      */
@@ -396,7 +398,7 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Enumerate all known animations and poses for the loaded model.
+     * Enumerate all known animations and poses for the loaded CG model.
      *
      * @return a new collection of names, including bind pose and (if
      * applicable) retargeted pose
@@ -434,7 +436,7 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Enumerate all meshes in the loaded model.
+     * Enumerate all meshes in the loaded CG model.
      *
      * @return a new list
      */
@@ -454,8 +456,8 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Enumerate named spatials in the loaded model whose names begin with the
-     * specified prefix.
+     * Enumerate named spatials in the loaded CG model whose names begin with
+     * the specified prefix.
      *
      * @param prefix which name prefix (not null, may be empty)
      * @param includeNodes true &rarr; both nodes and geometries, false &rarr;
@@ -470,15 +472,15 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Unload the current model, if any, and load the specified asset.
+     * Unload the current CG model, if any, and load from the specified asset.
      *
-     * @param assetPath path to the model asset to load (not null)
+     * @param assetPath path to the asset to load (not null)
      * @return true if successful, otherwise false
      */
-    public boolean loadModelAsset(String assetPath) {
+    public boolean loadCgmAsset(String assetPath) {
         Validate.nonNull(assetPath, "asset path");
 
-        Spatial loaded = loadModelFromAsset(assetPath, false);
+        Spatial loaded = loadCgmFromAsset(assetPath, false);
         if (loaded == null) {
             return false;
         } else {
@@ -488,12 +490,12 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Unload the current model, if any, and load the specified file.
+     * Unload the current CG model, if any, and load from the specified file.
      *
-     * @param filePath path to the model file to load (not null)
+     * @param filePath path to the file to load (not null)
      * @return true if successful, otherwise false
      */
-    public boolean loadModelFile(File filePath) {
+    public boolean loadCgmFile(File filePath) {
         String canonicalPath;
         try {
             canonicalPath = filePath.getCanonicalPath();
@@ -501,7 +503,7 @@ public class LoadedCgm implements Cloneable {
             return false;
         }
 
-        Spatial loaded = loadModelFromFile(canonicalPath);
+        Spatial loaded = loadCgmFromFile(canonicalPath);
         if (loaded == null) {
             return false;
         } else {
@@ -514,10 +516,10 @@ public class LoadedCgm implements Cloneable {
      * Unload the current CG model, if any, and load the named one from the
      * jme3-testdata asset pack.
      *
-     * @param cgmName which model to load (not null)
+     * @param cgmName which CG model to load (not null, not empty)
      * @return true if successful, otherwise false
      */
-    public boolean loadModelNamed(String cgmName) {
+    public boolean loadCgmNamed(String cgmName) {
         String fileName;
         switch (cgmName) {
             case "Boat":
@@ -570,7 +572,7 @@ public class LoadedCgm implements Cloneable {
         }
 
         String assetPath = String.format("Models/%s/%s", cgmName, fileName);
-        Spatial loaded = loadModelFromAsset(assetPath, false);
+        Spatial loaded = loadCgmFromAsset(assetPath, false);
         if (loaded == null) {
             return false;
         } else {
@@ -581,7 +583,7 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Alter the MVC view for the CG model.
+     * Initialize the reference to the corresponding visualization.
      *
      * @param newView (not null)
      */
@@ -611,14 +613,14 @@ public class LoadedCgm implements Cloneable {
     /**
      * Invoked after successfully loading a CG model.
      *
-     * @param modelRoot (not null)
+     * @param cgmRoot (not null)
      */
-    protected void postLoad(Spatial modelRoot) {
-        assert modelRoot != null;
+    protected void postLoad(Spatial cgmRoot) {
+        assert cgmRoot != null;
 
-        validateModel(modelRoot);
-        rootSpatial = modelRoot.clone();
-        view.loadModel(modelRoot);
+        validateCgm(cgmRoot);
+        rootSpatial = cgmRoot.clone();
+        view.loadModel(cgmRoot);
         /*
          * Reset the selected bone/spatial and also the loaded animation.
          */
@@ -752,21 +754,21 @@ public class LoadedCgm implements Cloneable {
 
     /**
      * Quietly load a CG model asset from persistent storage without adding it
-     * to the scene. If successful, set {@link #baseAssetPath}. TODO rename
+     * to the scene. If successful, set {@link #baseAssetPath}.
      *
      * @param assetPath (not null)
      * @param useCache true to look in the asset manager's cache, false to force
      * a fresh load from persistent storage
      * @return an orphaned spatial, or null if the asset was not found
      */
-    private Spatial loadModelFromAsset(String assetPath, boolean useCache) {
+    private Spatial loadCgmFromAsset(String assetPath, boolean useCache) {
         SimpleApplication application = Maud.getApplication();
         AssetManager assetManager = application.getAssetManager();
 
         ModelKey key = new ModelKey(assetPath);
         if (!useCache) {
             /*
-             * Delete the model's key from the asset manager's cache, to force a
+             * Delete the asset's key from the asset manager's cache, to force a
              * fresh load from persistent storage.
              */
             assetManager.deleteFromCache(key);
@@ -804,13 +806,13 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Quietly load a model file without adding it to the scene. If successful,
-     * set {@link #baseFilePath}.
+     * Quietly load a CG model file without adding it to the scene. If
+     * successful, set {@link #baseFilePath}.
      *
      * @param filePath (not null)
      * @return an orphaned spatial, or null if an error occurred
      */
-    private Spatial loadModelFromFile(String filePath) {
+    private Spatial loadCgmFromFile(String filePath) {
         ModelKey key = new ModelKey(filePath);
         InputStream inputStream;
         try {
@@ -928,14 +930,14 @@ public class LoadedCgm implements Cloneable {
     /**
      * Test for issues with a CG model.
      *
-     * @param modelRoot (not null)
+     * @param cgmRoot (not null)
      * @return false if issues found, otherwise true
      */
-    private boolean validateModel(Spatial modelRoot) {
-        assert modelRoot != null;
+    private boolean validateCgm(Spatial cgmRoot) {
+        assert cgmRoot != null;
 
         SkeletonControl skeletonControl;
-        skeletonControl = modelRoot.getControl(SkeletonControl.class);
+        skeletonControl = cgmRoot.getControl(SkeletonControl.class);
         if (skeletonControl == null) {
             logger.warning("lacks a skeleton control");
             return false;
@@ -961,7 +963,7 @@ public class LoadedCgm implements Cloneable {
                 return false;
             }
         }
-        AnimControl animControl = modelRoot.getControl(AnimControl.class);
+        AnimControl animControl = cgmRoot.getControl(AnimControl.class);
         if (animControl == null) {
             logger.warning("model lacks an animation control");
             return false;

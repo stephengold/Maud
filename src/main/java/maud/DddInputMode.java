@@ -374,7 +374,7 @@ class DddInputMode extends InputMode {
         } else if (actionString.startsWith(loadCgmAssetPrefix)) {
             String path;
             path = MyString.remainder(actionString, loadCgmAssetPrefix);
-            Maud.model.target.loadModelAsset(path);
+            Maud.model.target.loadCgmAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(loadCgmFilePrefix)) {
@@ -385,7 +385,7 @@ class DddInputMode extends InputMode {
         } else if (actionString.startsWith(loadCgmNamedPrefix)) {
             String name;
             name = MyString.remainder(actionString, loadCgmNamedPrefix);
-            Maud.model.target.loadModelNamed(name);
+            Maud.model.target.loadCgmNamed(name);
             handled = true;
 
         } else if (actionString.startsWith(loadMappingAssetPrefix)) {
@@ -403,7 +403,7 @@ class DddInputMode extends InputMode {
         } else if (actionString.startsWith(loadSourceCgmAssetPrefix)) {
             String path;
             path = MyString.remainder(actionString, loadSourceCgmAssetPrefix);
-            Maud.model.source.loadModelAsset(path);
+            Maud.model.source.loadCgmAsset(path);
             handled = true;
 
         } else if (actionString.startsWith(loadSourceCgmFilePrefix)) {
@@ -415,7 +415,7 @@ class DddInputMode extends InputMode {
         } else if (actionString.startsWith(loadSourceCgmNamedPrefix)) {
             String name;
             name = MyString.remainder(actionString, loadSourceCgmNamedPrefix);
-            Maud.model.source.loadModelNamed(name);
+            Maud.model.source.loadCgmNamed(name);
             handled = true;
         }
 
