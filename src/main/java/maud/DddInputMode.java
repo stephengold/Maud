@@ -312,8 +312,8 @@ class DddInputMode extends InputMode {
     private boolean copyAction(String actionString) {
         boolean handled = false;
         if (actionString.startsWith(copyAnimationPrefix)) {
-            String destName = MyString.remainder(actionString,
-                    copyAnimationPrefix);
+            String destName;
+            destName = MyString.remainder(actionString, copyAnimationPrefix);
             Maud.model.target.animation.copyAndLoad(destName);
             handled = true;
         }
@@ -357,66 +357,52 @@ class DddInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean loadAction(String actionString) {
-        boolean handled = false;
+        boolean handled = true;
+        String name, path;
         if (actionString.equals("load mapping asset")) {
             Maud.gui.dialogs.loadMappingAsset();
-            handled = true;
 
         } else if (actionString.equals("load retargetedPose")) {
             Maud.model.target.animation.loadRetargetedPose();
-            handled = true;
 
         } else if (actionString.startsWith(loadAnimationPrefix)) {
-            String name = MyString.remainder(actionString, loadAnimationPrefix);
+            name = MyString.remainder(actionString, loadAnimationPrefix);
             Maud.model.target.animation.load(name);
-            handled = true;
 
         } else if (actionString.startsWith(loadCgmAssetPrefix)) {
-            String path;
             path = MyString.remainder(actionString, loadCgmAssetPrefix);
             Maud.model.target.loadCgmAsset(path);
-            handled = true;
 
         } else if (actionString.startsWith(loadCgmFilePrefix)) {
-            String path = MyString.remainder(actionString, loadCgmFilePrefix);
+            path = MyString.remainder(actionString, loadCgmFilePrefix);
             Maud.gui.menus.loadModelFile(path);
-            handled = true;
 
         } else if (actionString.startsWith(loadCgmNamedPrefix)) {
-            String name;
             name = MyString.remainder(actionString, loadCgmNamedPrefix);
             Maud.model.target.loadCgmNamed(name);
-            handled = true;
 
         } else if (actionString.startsWith(loadMappingAssetPrefix)) {
-            String path;
             path = MyString.remainder(actionString, loadMappingAssetPrefix);
             Maud.model.mapping.loadMappingAsset(path);
-            handled = true;
 
         } else if (actionString.startsWith(loadSourceAnimationPrefix)) {
-            String name;
             name = MyString.remainder(actionString, loadSourceAnimationPrefix);
             Maud.model.source.animation.load(name);
-            handled = true;
 
         } else if (actionString.startsWith(loadSourceCgmAssetPrefix)) {
-            String path;
             path = MyString.remainder(actionString, loadSourceCgmAssetPrefix);
             Maud.model.source.loadCgmAsset(path);
-            handled = true;
 
         } else if (actionString.startsWith(loadSourceCgmFilePrefix)) {
-            String path;
             path = MyString.remainder(actionString, loadSourceCgmFilePrefix);
             Maud.gui.menus.loadSourceModelFile(path);
-            handled = true;
 
         } else if (actionString.startsWith(loadSourceCgmNamedPrefix)) {
-            String name;
             name = MyString.remainder(actionString, loadSourceCgmNamedPrefix);
             Maud.model.source.loadCgmNamed(name);
-            handled = true;
+
+        } else {
+            handled = false;
         }
 
         return handled;
