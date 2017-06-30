@@ -581,44 +581,6 @@ public class Util {
     }
 
     /**
-     * Copy a bone track, altering its duration and adjusting all its keyframes
-     * proportionately. TODO sort methods
-     *
-     * @param oldTrack (not null, unaffected)
-     * @param newDuration new duration (in seconds, &ge;0)
-     * @return a new instance
-     */
-    public static BoneTrack setDuration(BoneTrack oldTrack, float newDuration) {
-        Validate.nonNegative(newDuration, "duration");
-
-        BoneTrack result = oldTrack.clone();
-        float[] newTimes = result.getKeyFrameTimes();
-
-        float oldDuration = oldTrack.getLength();
-        float[] oldTimes = oldTrack.getKeyFrameTimes();
-        int numFrames = oldTimes.length;
-        assert numFrames == 1 || oldDuration > 0f : numFrames;
-
-        for (int frameIndex = 0; frameIndex < numFrames; frameIndex++) {
-            float oldTime = oldTimes[frameIndex];
-            assert oldTime <= oldDuration : oldTime;
-
-            float newTime;
-            if (oldDuration == 0f) {
-                assert frameIndex == 0 : frameIndex;
-                assert oldTime == 0f : oldTime;
-                newTime = 0f;
-            } else {
-                newTime = newDuration * oldTime / oldDuration;
-                newTime = FastMath.clamp(newTime, 0f, newDuration);
-            }
-            newTimes[frameIndex] = newTime;
-        }
-
-        return result;
-    }
-
-    /**
      * Remove all controls from the specified subtree of the scene graph. Note:
      * recursive!
      *
@@ -747,6 +709,44 @@ public class Util {
         angle += QUARTER_PI;
         angles[axisIndex] = (float) angle;
         input.fromAngles(angles);
+    }
+
+    /**
+     * Copy a bone track, altering its duration and adjusting all its keyframes
+     * proportionately.
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param newDuration new duration (in seconds, &ge;0)
+     * @return a new instance
+     */
+    public static BoneTrack setDuration(BoneTrack oldTrack, float newDuration) {
+        Validate.nonNegative(newDuration, "duration");
+
+        BoneTrack result = oldTrack.clone();
+        float[] newTimes = result.getKeyFrameTimes();
+
+        float oldDuration = oldTrack.getLength();
+        float[] oldTimes = oldTrack.getKeyFrameTimes();
+        int numFrames = oldTimes.length;
+        assert numFrames == 1 || oldDuration > 0f : numFrames;
+
+        for (int frameIndex = 0; frameIndex < numFrames; frameIndex++) {
+            float oldTime = oldTimes[frameIndex];
+            assert oldTime <= oldDuration : oldTime;
+
+            float newTime;
+            if (oldDuration == 0f) {
+                assert frameIndex == 0 : frameIndex;
+                assert oldTime == 0f : oldTime;
+                newTime = 0f;
+            } else {
+                newTime = newDuration * oldTime / oldDuration;
+                newTime = FastMath.clamp(newTime, 0f, newDuration);
+            }
+            newTimes[frameIndex] = newTime;
+        }
+
+        return result;
     }
     // *************************************************************************
     // new methods exposed
