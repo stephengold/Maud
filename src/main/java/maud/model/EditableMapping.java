@@ -109,24 +109,30 @@ public class EditableMapping extends LoadedMapping {
     }
 
     /**
-     * Add a bone mapping for the selected bones.
+     * Add a bone mapping for the selected source and target bones.
      */
     public void mapBones() {
         if (!isBoneMappingSelected() && Maud.model.source.bone.isSelected()
                 && Maud.model.target.bone.isSelected()) {
             String sourceBoneName = Maud.model.source.bone.getName();
+            String targetBoneName = Maud.model.target.bone.getName();
+            /*
+             * Remove any prior mappings involving those bones.
+             */
             BoneMapping boneMapping = mapping.getForSource(sourceBoneName);
             if (boneMapping != null) {
                 mapping.removeMapping(boneMapping);
             }
-
-            String targetBoneName = Maud.model.target.bone.getName();
             boneMapping = mapping.get(targetBoneName);
             if (boneMapping != null) {
                 mapping.removeMapping(boneMapping);
             }
+            /*
+             * Predict what the twist will be.
+             */
+            Quaternion twist = estimateTwist();
+            mapping.map(targetBoneName, sourceBoneName, twist);
 
-            mapping.map(targetBoneName, sourceBoneName);
             String event = "map bone " + targetBoneName;
             setEdited(event);
         }
@@ -247,6 +253,21 @@ public class EditableMapping extends LoadedMapping {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Predict what the twist should be for the selected bones.
+     *
+     * @return a new quaternion
+     */
+    public Quaternion estimateTwist() {
+        Quaternion sourceMo = Maud.model.source.bone.modelOrientation(null);
+        Quaternion targetMo = Maud.model.target.bone.modelOrientation(null);
+        Quaternion invSourceMo = sourceMo.inverse();
+        Quaternion twist = invSourceMo.mult(targetMo, null);
+        Util.cardinalizeLocal(twist);
+
+        return twist;
+    }
 
     /**
      * Increment the count of unsaved edits and update the edit history.
