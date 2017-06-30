@@ -900,6 +900,13 @@ public class LoadedCGModel implements Cloneable {
             logger.warning("rotation data have wrong length");
             return false;
         }
+        for (Quaternion rotation : rotations) {
+            float norm = rotation.norm();
+            if (Math.abs(norm - 1f) > 0.0001f) {
+                logger.warning("rotation data not normalized");
+                return false;
+            }
+        }
         Vector3f[] scales = boneTrack.getScales();
         if (scales == null) { // JME3 allows this
             logger.warning("bone track lacks scale data");
@@ -923,8 +930,8 @@ public class LoadedCGModel implements Cloneable {
     private boolean validateModel(Spatial modelRoot) {
         assert modelRoot != null;
 
-        SkeletonControl skeletonControl = modelRoot.getControl(
-                SkeletonControl.class);
+        SkeletonControl skeletonControl;
+        skeletonControl = modelRoot.getControl(SkeletonControl.class);
         if (skeletonControl == null) {
             logger.warning("lacks a skeleton control");
             return false;
