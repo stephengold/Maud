@@ -421,6 +421,7 @@ class AxesTool extends WindowController {
      */
     private void updateLabels() {
         float lineWidth = Maud.model.axes.getLineWidth();
+        lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
     }
 

@@ -118,11 +118,13 @@ class SkeletonTool extends WindowController {
         Slider slider = Maud.gui.getSlider("skeletonLineWidth");
         float lineWidth = model.getLineWidth();
         slider.setValue(lineWidth);
+        lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("skeletonLineWidth", lineWidth, " pixels");
 
         slider = Maud.gui.getSlider("skeletonPointSize");
         float pointSize = model.getPointSize();
         slider.setValue(pointSize);
+        pointSize = Math.round(pointSize);
         Maud.gui.updateSliderStatus("skeletonPointSize", pointSize, " pixels");
     }
 }

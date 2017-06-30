@@ -141,6 +141,7 @@ class BoundsTool extends WindowController {
         Slider slider = Maud.gui.getSlider("boundsLineWidth");
         float lineWidth = model.getLineWidth();
         slider.setValue(lineWidth);
+        lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("boundsLineWidth", lineWidth, " pixels");
 
         Maud.gui.setIgnoreGuiChanges(false);
