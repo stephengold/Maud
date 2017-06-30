@@ -46,7 +46,7 @@ import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
 
 /**
- * Encapsulate a pose for a CG model.
+ * Encapsulate a pose for a particular skeleton.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -66,7 +66,7 @@ public class Pose implements JmeCloneable {
      */
     private List<Transform> transforms;
     /**
-     * the skeleton for which this pose was generated, or null for none
+     * the skeleton on which this pose is based, or null for none
      * <p>
      * This skeleton provides the name, index, parent, children, and bind
      * transform of each bone. All other bone information is disregarded. In
@@ -78,7 +78,7 @@ public class Pose implements JmeCloneable {
     // constructors
 
     /**
-     * Instantiate a pose for the specified skeleton.
+     * Instantiate bind pose for the specified skeleton.
      *
      * @param skeleton (may be null)
      */
@@ -100,6 +100,22 @@ public class Pose implements JmeCloneable {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Calculate the bind transform of the indexed bone.
+     *
+     * @param boneIndex which bone to use (&ge;0)
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
+     */
+    public Transform bindTransform(int boneIndex, Transform storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        Bone bone = skeleton.getBone(boneIndex);
+        storeResult = MySkeleton.copyBindTransform(bone, storeResult);
+
+        return storeResult;
+    }
 
     /**
      * Convert this pose to an animation. The resulting animation will have zero
@@ -202,9 +218,7 @@ public class Pose implements JmeCloneable {
     }
 
     /**
-     * Calculate the local transform of the indexed bone. When applied as a left
-     * factor, the local transform converts from the bone's coordinate system to
-     * the parent bone's coordinate system.
+     * Calculate the local transform of the indexed bone.
      *
      * @param boneIndex which bone to use (&ge;0)
      * @param storeResult (modified if not null)
@@ -216,8 +230,7 @@ public class Pose implements JmeCloneable {
         /*
          * Start with the bone's bind transform.
          */
-        Bone bone = skeleton.getBone(boneIndex);
-        storeResult = MySkeleton.copyBindTransform(bone, storeResult);
+        storeResult = bindTransform(boneIndex, storeResult);
         /*
          * Apply the user/animation transform in a simple (yet peculiar) way
          * to obtain the bone's local transform.
@@ -303,6 +316,29 @@ public class Pose implements JmeCloneable {
     }
 
     /**
+     * Enumerate all bones in a pre-order depth-first traversal of the skeleton,
+     * such that child bones are never visited before their ancestors.
+     *
+     * @return a new array of indices
+     */
+    public int[] preOrderIndices() {
+        int numBones = skeleton.getBoneCount();
+        List<Integer> indexList = new ArrayList<>(numBones);
+        Bone[] roots = skeleton.getRoots();
+        for (Bone root : roots) {
+            addPreOrderIndices(root, indexList);
+        }
+        assert indexList.size() == numBones : indexList.size();
+
+        int[] result = new int[numBones];
+        for (int i = 0; i < numBones; i++) {
+            result[i] = indexList.get(i);
+        }
+
+        return result;
+    }
+
+    /**
      * Reset the rotation of the indexed bone to identity.
      *
      * @param boneIndex which bone (&ge;0)
@@ -360,6 +396,25 @@ public class Pose implements JmeCloneable {
         Transform transform = transforms.get(boneIndex);
         Vector3f translation = transform.getTranslation();
         translation.zero();
+    }
+
+    /**
+     * Enumerate all root bones in the skeleton.
+     *
+     * @return a new array of indices
+     */
+    public int[] rootBoneIndices() {
+        Bone[] roots = skeleton.getRoots();
+        int numRootBones = roots.length;
+        int[] result = new int[numRootBones];
+        for (int rootIndex = 0; rootIndex < numRootBones; rootIndex++) {
+            Bone root = roots[rootIndex];
+            int boneIndex = skeleton.getBoneIndex(root);
+            assert boneIndex >= 0 : boneIndex;
+            result[rootIndex] = boneIndex;
+        }
+
+        return result;
     }
 
     /**
@@ -568,6 +623,22 @@ public class Pose implements JmeCloneable {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Add the indices of the specified bone and its descendent to the specified
+     * list.
+     *
+     * @param bone starting bone in the skeleton (not null, unaffected)
+     * @param indexList list of bone indices (not null, appended to)
+     */
+    private void addPreOrderIndices(Bone bone, List<Integer> indexList) {
+        int boneIndex = skeleton.getBoneIndex(bone);
+        assert boneIndex >= 0 : boneIndex;
+        indexList.add(boneIndex);
+        for (Bone child : bone.getChildren()) {
+            addPreOrderIndices(child, indexList);
+        }
+    }
 
     /**
      * Calculate the local rotation for the specified bone to give it the
