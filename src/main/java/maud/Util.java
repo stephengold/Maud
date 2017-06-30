@@ -188,46 +188,18 @@ public class Util {
     }
 
     /**
-     * Find the cardinal quaternion closest to the specified quaternion.
+     * Find a cardinal quaternion similar to the specified input. A cardinal
+     * quaternion is one for which the rotations angles on all three axes are
+     * integer multiples of Pi/2 radians.
      *
      * @param input (not null, modified)
      */
     public static void cardinalizeLocal(Quaternion input) {
         Validate.nonNull(input, "input");
 
-        Quaternion bestCardinal = new Quaternion();
-        float maxDot = bestCardinal.dot(input);
-
-        Quaternion cardinal = new Quaternion();
-        Vector3f axis1 = new Vector3f();
-        Vector3f axis2 = new Vector3f();
-        Vector3f axis3 = new Vector3f();
-
-        for (int index1 = 0; index1 < 3; index1++) {
-            for (int sign1 = -1; sign1 <= 1; sign1 += 2) {
-                axisVector(index1, 1f, axis1);
-                axis1.multLocal(sign1);
-
-                for (int index2 = 0; index2 < 3; index2++) {
-                    if (index1 != index2) {
-                        for (int sign2 = -1; sign2 <= 1; sign2 += 2) {
-                            axisVector(index2, 1f, axis2);
-                            axis2.multLocal(sign2);
-                            axis1.cross(axis2, axis3);
-                            cardinal.fromAxes(axis1, axis2, axis3);
-
-                            float dot = cardinal.dot(input);
-                            if (dot > maxDot) {
-                                maxDot = dot;
-                                bestCardinal.set(cardinal);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        input.set(bestCardinal);
+        snapLocal(input, 0);
+        snapLocal(input, 1);
+        snapLocal(input, 2);
     }
 
     /**
@@ -610,7 +582,7 @@ public class Util {
 
     /**
      * Copy a bone track, altering its duration and adjusting all its keyframes
-     * proportionately.
+     * proportionately. TODO sort methods
      *
      * @param oldTrack (not null, unaffected)
      * @param newDuration new duration (in seconds, &ge;0)
