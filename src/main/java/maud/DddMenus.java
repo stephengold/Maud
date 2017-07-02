@@ -69,40 +69,6 @@ class DddMenus {
     // new methods exposed
 
     /**
-     * Handle a "load cgm file" action where the argument may be the name of a
-     * folder/directory. TODO sort
-     *
-     * @param filePath action argument (not null)
-     */
-    void loadTargetCgmFile(String filePath) {
-        File file = new File(filePath);
-        if (file.isDirectory()) {
-            buildFolderMenu(filePath, "");
-            String menuPrefix = DddInputMode.loadCgmFilePrefix + filePath;
-            if (!menuPrefix.endsWith("/")) {
-                menuPrefix += "/";
-            }
-            builder.show(menuPrefix);
-
-        } else if (file.canRead()) {
-            Maud.model.target.loadFile(file);
-
-        } else {
-            /*
-             * Treat the file path as a prefix.
-             */
-            String folderName = file.getParent();
-            String prefix = file.getName();
-            buildFolderMenu(folderName, prefix);
-            String menuPrefix = DddInputMode.loadCgmFilePrefix + folderName;
-            if (!menuPrefix.endsWith("/")) {
-                menuPrefix += "/";
-            }
-            builder.show(menuPrefix);
-        }
-    }
-
-    /**
      * Handle a "load sourceCgm file" action where the argument may be the name
      * of a folder/directory.
      *
@@ -131,6 +97,40 @@ class DddMenus {
             buildFolderMenu(folderName, prefix);
             String menuPrefix = DddInputMode.loadSourceCgmFilePrefix
                     + folderName;
+            if (!menuPrefix.endsWith("/")) {
+                menuPrefix += "/";
+            }
+            builder.show(menuPrefix);
+        }
+    }
+
+    /**
+     * Handle a "load cgm file" action where the argument may be the name of a
+     * folder/directory.
+     *
+     * @param filePath action argument (not null)
+     */
+    void loadTargetCgmFile(String filePath) {
+        File file = new File(filePath);
+        if (file.isDirectory()) {
+            buildFolderMenu(filePath, "");
+            String menuPrefix = DddInputMode.loadCgmFilePrefix + filePath;
+            if (!menuPrefix.endsWith("/")) {
+                menuPrefix += "/";
+            }
+            builder.show(menuPrefix);
+
+        } else if (file.canRead()) {
+            Maud.model.target.loadFile(file);
+
+        } else {
+            /*
+             * Treat the file path as a prefix.
+             */
+            String folderName = file.getParent();
+            String prefix = file.getName();
+            buildFolderMenu(folderName, prefix);
+            String menuPrefix = DddInputMode.loadCgmFilePrefix + folderName;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }

@@ -782,23 +782,6 @@ public class Util {
     }
 
     /**
-     * Round the rotation angle of the indexed axis to the nearest Pi/2 radians.
-     * TODO sort
-     *
-     * @param input (not null, modified)
-     * @param axisIndex which axis (&ge;0, &lt;3)
-     */
-    public static void snapLocal(Quaternion input, int axisIndex) {
-        float[] angles = new float[3];
-        input.toAngles(angles);
-        double angle = angles[axisIndex];
-        angle -= MyMath.modulo(angle - QUARTER_PI, HALF_PI);
-        angle += QUARTER_PI;
-        angles[axisIndex] = (float) angle;
-        input.fromAngles(angles);
-    }
-
-    /**
      * Copy a bone track, altering its duration and adjusting all its keyframes
      * proportionately.
      *
@@ -834,6 +817,22 @@ public class Util {
         }
 
         return result;
+    }
+
+    /**
+     * Round the rotation angle of the indexed axis to the nearest Pi/2 radians.
+     *
+     * @param input (not null, modified)
+     * @param axisIndex which axis (&ge;0, &lt;3)
+     */
+    public static void snapLocal(Quaternion input, int axisIndex) {
+        float[] angles = new float[3];
+        input.toAngles(angles);
+        double angle = angles[axisIndex];
+        angle -= MyMath.modulo(angle - QUARTER_PI, HALF_PI);
+        angle += QUARTER_PI;
+        angles[axisIndex] = (float) angle;
+        input.fromAngles(angles);
     }
     // *************************************************************************
     // new methods exposed
