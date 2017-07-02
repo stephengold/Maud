@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
 import maud.model.History;
+import maud.model.Locators;
 
 /**
  * Input mode for Maud's "3D View" screen.
@@ -64,6 +65,10 @@ class DddInputMode extends InputMode {
      * action prefix: remainder is a name for the new animation
      */
     final static String copyAnimationPrefix = "copy animation ";
+    /**
+     * action prefix: remainder is a filesystem path to a folder/directory
+     */
+    final static String deleteLocatorPrefix = "delete locator ";
     /**
      * action prefix: remainder is the name of an animation
      */
@@ -100,6 +105,11 @@ class DddInputMode extends InputMode {
      * action prefix: remainder is the name of a CG model in jme3-testdata
      */
     final static String loadSourceCgmNamedPrefix = "load sourceCgm named ";
+    /**
+     * action prefix: remainder is a filesystem path to a folder/directory
+     * optionally terminated by a magic filename
+     */
+    final static String newLocatorPrefix = "new locator ";
     /**
      * action prefix: remainder is a name for the new animation
      */
@@ -328,23 +338,28 @@ class DddInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean deleteAction(String actionString) {
-        boolean handled = false;
+        boolean handled = true;
         switch (actionString) {
             case "delete animation":
                 Maud.model.target.animation.delete();
-                handled = true;
                 break;
             case "delete control":
                 Maud.model.target.sgc.delete();
-                handled = true;
                 break;
             case "delete mapping":
                 Maud.model.mapping.deleteBone();
-                handled = true;
                 break;
             case "delete userKey":
                 Maud.model.misc.deleteUserKey();
-                handled = true;
+                break;
+            default:
+                handled = false;
+                if (actionString.startsWith(deleteLocatorPrefix)) {
+                    String arg;
+                    arg = MyString.remainder(actionString, deleteLocatorPrefix);
+                    Locators.remove(arg);
+                    handled = true;
+                }
         }
 
         return handled;
@@ -409,24 +424,44 @@ class DddInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "new ".
+     * Process an action that starts with "new".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean newAction(String actionString) {
+        boolean handled = true;
+        switch (actionString) {
+            case "new checkpoint":
+                Maud.gui.addCheckpoint("user interface");
+                break;
+            case "new mapping":
+                Maud.model.mapping.mapBones();
+                break;
+            case "new pose":
+                Maud.gui.dialogs.newPose();
+                break;
+            case "new userKey":
+                Maud.gui.menus.selectUserDataType();
+                break;
+            default:
+                handled = newAction2(actionString);
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process an action that starts with "new" -- 2nd part: test prefixes.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean newAction2(String actionString) {
         boolean handled = false;
-        if (actionString.equals("new checkpoint")) {
-            Maud.gui.addCheckpoint("user interface");
-            handled = true;
-        } else if (actionString.equals("new mapping")) {
-            Maud.model.mapping.mapBones();
-            handled = true;
-        } else if (actionString.equals("new pose")) {
-            Maud.gui.dialogs.newPose();
-            handled = true;
-        } else if (actionString.equals("new userKey")) {
-            Maud.gui.menus.selectUserDataType();
+        if (actionString.startsWith(newLocatorPrefix)) {
+            String path = MyString.remainder(actionString, newLocatorPrefix);
+            Maud.gui.menus.newLocator(path);
             handled = true;
 
         } else if (actionString.startsWith(newPosePrefix)) {
