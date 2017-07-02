@@ -27,9 +27,13 @@
 package maud;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
@@ -65,15 +69,15 @@ class DddMenus {
     // new methods exposed
 
     /**
-     * Handle a "load model file" action where the argument may be the name of a
-     * folder/directory.
+     * Handle a "load cgm file" action where the argument may be the name of a
+     * folder/directory. TODO rename loadTargetCgmFile
      *
      * @param filePath action argument (not null)
      */
     void loadModelFile(String filePath) {
         File file = new File(filePath);
         if (file.isDirectory()) {
-            buildFileMenu(filePath);
+            buildFolderMenu(filePath, "");
             String menuPrefix = DddInputMode.loadCgmFilePrefix + filePath;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
@@ -82,19 +86,32 @@ class DddMenus {
 
         } else if (file.canRead()) {
             Maud.model.target.loadCgmFile(file);
+
+        } else {
+            /*
+             * Treat the file path as a prefix.
+             */
+            String folderName = file.getParent();
+            String prefix = file.getName();
+            buildFolderMenu(folderName, prefix);
+            String menuPrefix = DddInputMode.loadCgmFilePrefix + folderName;
+            if (!menuPrefix.endsWith("/")) {
+                menuPrefix += "/";
+            }
+            builder.show(menuPrefix);
         }
     }
 
     /**
-     * Handle a "load sourceModel file" action where the argument may be the
-     * name of a folder/directory.
+     * Handle a "load sourceCgm file" action where the argument may be the name
+     * of a folder/directory. TODO rename loadSourceCgmFile
      *
      * @param filePath action argument (not null)
      */
     void loadSourceModelFile(String filePath) {
         File file = new File(filePath);
         if (file.isDirectory()) {
-            buildFileMenu(filePath);
+            buildFolderMenu(filePath, "");
             String menuPrefix;
             menuPrefix = DddInputMode.loadSourceCgmFilePrefix + filePath;
             if (!menuPrefix.endsWith("/")) {
@@ -104,6 +121,20 @@ class DddMenus {
 
         } else if (file.canRead()) {
             Maud.model.source.loadCgmFile(file);
+
+        } else {
+            /*
+             * Treat the file path as a prefix.
+             */
+            String folderName = file.getParent();
+            String prefix = file.getName();
+            buildFolderMenu(folderName, prefix);
+            String menuPrefix = DddInputMode.loadSourceCgmFilePrefix
+                    + folderName;
+            if (!menuPrefix.endsWith("/")) {
+                menuPrefix += "/";
+            }
+            builder.show(menuPrefix);
         }
     }
 
@@ -411,34 +442,72 @@ class DddMenus {
      * Build a menu of the files (and subdirectories/subfolders) in the
      * specified directory/folder.
      *
-     * @param path file path to the directory/folder (not null)
+     * @param folderPath file path to the directory/folder (not null)
+     * @param prefix required name prefix (not null)
      */
-    private void buildFileMenu(String path) {
-        assert path != null;
+    private void buildFolderMenu(String folderPath, String prefix) {
+        assert folderPath != null;
+        assert prefix != null;
 
-        builder.reset();
-
-        File file = new File(path);
+        File file = new File(folderPath);
         File[] files = file.listFiles();
         if (files == null) {
             return;
         }
-
-        if (file.getParentFile() != null) {
-            builder.addFolder("..");
-        }
+        /*
+         * Generate a map from file names (with the specified prefix)
+         * to file objects.
+         */
+        Map<String, File> fileMap = new TreeMap<>();
         for (File f : files) {
             String name = f.getName();
-            if (f.isDirectory()) {
-                builder.addFolder(name);
-            } else if (name.endsWith(".blend")) {
-                builder.addBlend(name);
-            } else if (name.endsWith(".j3o")) {
-                builder.addJme(name);
-            } else if (name.endsWith(".mesh.xml")) {
-                builder.addOgre(name);
+            if (name.startsWith(prefix)) {
+                File oldFile = fileMap.put(name, f);
+                assert oldFile == null : oldFile;
+            }
+        }
+        File parent = file.getParentFile();
+        if (parent != null) {
+            if ("..".startsWith(prefix)) {
+                File oldFile = fileMap.put("..", parent);
+                assert oldFile == null : oldFile;
+            }
+        }
+
+        buildFolderMenu(fileMap);
+    }
+
+    /**
+     * Build a menu of the files (and subdirectories/subfolders) in the
+     * specified map.
+     *
+     * @param fileMap map of files to include (not null)
+     */
+    private void buildFolderMenu(Map<String, File> fileMap) {
+        assert fileMap != null;
+        /*
+         * Generate a list of file names (and prefixes) to display in the menu.
+         */
+        Set<String> nameSet = fileMap.keySet();
+        int numNames = nameSet.size();
+        List<String> nameList = new ArrayList<>(numNames);
+        nameList.addAll(nameSet);
+        MyString.reduce(nameList, 20);
+        Collections.sort(nameList);
+        /*
+         * Build the menu.
+         */
+        builder.reset();
+        for (String name : nameList) {
+            if (fileMap.containsKey(name)) {
+                File f = fileMap.get(name);
+                if (f.isDirectory()) {
+                    builder.addFolder(name);
+                } else {
+                    builder.addFile(name);
+                }
             } else {
-                builder.add(name);
+                builder.addEllipsis(name);
             }
         }
     }
@@ -1008,7 +1077,7 @@ class DddMenus {
                 break;
 
             case "File":
-                buildFileMenu("/");
+                buildFolderMenu("/", "");
                 builder.show(DddInputMode.loadSourceCgmFilePrefix + "/");
                 handled = true;
                 break;
@@ -1041,7 +1110,7 @@ class DddMenus {
                 break;
 
             case "File":
-                buildFileMenu("/");
+                buildFolderMenu("/", "");
                 builder.show(DddInputMode.loadCgmFilePrefix + "/");
                 handled = true;
                 break;
@@ -1541,7 +1610,7 @@ class DddMenus {
             if (Maud.model.target.bones.hasBone(name)) {
                 builder.addBone(name);
             } else {
-                builder.add(name);
+                builder.addEllipsis(name);
             }
         }
         builder.show(DddInputMode.selectBonePrefix);
@@ -1564,7 +1633,7 @@ class DddMenus {
             if (Maud.model.source.bones.hasBone(name)) {
                 builder.addBone(name);
             } else {
-                builder.add(name);
+                builder.addEllipsis(name);
             }
         }
         builder.show(DddInputMode.selectSourceBonePrefix);
