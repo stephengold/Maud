@@ -136,6 +136,26 @@ class MenuBuilder {
     }
 
     /**
+     * Add a filename item to the menu.
+     *
+     * @param filename the name of the file (not null, not empty)
+     */
+    void addFile(String filename) {
+        Validate.nonEmpty(filename, "item");
+        if (filename.endsWith(".blend")) {
+            addBlend(filename);
+        } else if (filename.endsWith(".bvh")) {
+            addBvh(filename);
+        } else if (filename.endsWith(".j3o")) {
+            addJme(filename);
+        } else if (filename.endsWith(".mesh.xml")) {
+            addOgre(filename);
+        } else {
+            add(filename); // TODO ? icon
+        }
+    }
+
+    /**
      * Add an item with the folder/directory icon to the menu.
      *
      * @param item (not null, not empty)
