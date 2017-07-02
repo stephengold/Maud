@@ -400,13 +400,13 @@ public class Util {
 
     /**
      * Load a BVH asset as a CG model without logging any warning/error
-     * messages. TODO rename loadBvhAsset
+     * messages.
      *
      * @param assetManager asset manager
      * @param assetPath path to BVH asset
      * @return a new orphan spatial, or null if unsuccessful
      */
-    public static Spatial loadBvhAsCgm(AssetManager assetManager,
+    public static Spatial loadBvhAsset(AssetManager assetManager,
             String assetPath) {
         if (assetManager == null || assetPath == null) {
             return null;
@@ -469,14 +469,13 @@ public class Util {
     }
 
     /**
-     * Load a CG model asset without logging any warning/error messages. TODO
-     * rename loadCgmAsset
+     * Load a CG model asset without logging any warning/error messages.
      *
      * @param assetManager asset manager
      * @param assetPath path to CG model asset
      * @return a new orphan spatial, or null if unsuccessful
      */
-    public static Spatial loadCgmQuietly(AssetManager assetManager,
+    public static Spatial loadCgmAsset(AssetManager assetManager,
             String assetPath) {
         if (assetManager == null || assetPath == null) {
             return null;
@@ -784,6 +783,7 @@ public class Util {
 
     /**
      * Round the rotation angle of the indexed axis to the nearest Pi/2 radians.
+     * TODO sort
      *
      * @param input (not null, modified)
      * @param axisIndex which axis (&ge;0, &lt;3)

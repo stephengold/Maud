@@ -70,11 +70,11 @@ class DddMenus {
 
     /**
      * Handle a "load cgm file" action where the argument may be the name of a
-     * folder/directory. TODO rename loadTargetCgmFile
+     * folder/directory. TODO sort
      *
      * @param filePath action argument (not null)
      */
-    void loadModelFile(String filePath) {
+    void loadTargetCgmFile(String filePath) {
         File file = new File(filePath);
         if (file.isDirectory()) {
             buildFolderMenu(filePath, "");
@@ -85,7 +85,7 @@ class DddMenus {
             builder.show(menuPrefix);
 
         } else if (file.canRead()) {
-            Maud.model.target.loadCgmFile(file);
+            Maud.model.target.loadFile(file);
 
         } else {
             /*
@@ -104,11 +104,11 @@ class DddMenus {
 
     /**
      * Handle a "load sourceCgm file" action where the argument may be the name
-     * of a folder/directory. TODO rename loadSourceCgmFile
+     * of a folder/directory.
      *
      * @param filePath action argument (not null)
      */
-    void loadSourceModelFile(String filePath) {
+    void loadSourceCgmFile(String filePath) {
         File file = new File(filePath);
         if (file.isDirectory()) {
             buildFolderMenu(filePath, "");
@@ -120,7 +120,7 @@ class DddMenus {
             builder.show(menuPrefix);
 
         } else if (file.canRead()) {
-            Maud.model.source.loadCgmFile(file);
+            Maud.model.source.loadFile(file);
 
         } else {
             /*

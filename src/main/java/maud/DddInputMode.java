@@ -371,15 +371,15 @@ class DddInputMode extends InputMode {
 
         } else if (actionString.startsWith(loadCgmAssetPrefix)) {
             path = MyString.remainder(actionString, loadCgmAssetPrefix);
-            Maud.model.target.loadCgmAsset(path);
+            Maud.model.target.loadAsset(path);
 
         } else if (actionString.startsWith(loadCgmFilePrefix)) {
             path = MyString.remainder(actionString, loadCgmFilePrefix);
-            Maud.gui.menus.loadModelFile(path);
+            Maud.gui.menus.loadTargetCgmFile(path);
 
         } else if (actionString.startsWith(loadCgmNamedPrefix)) {
             name = MyString.remainder(actionString, loadCgmNamedPrefix);
-            Maud.model.target.loadCgmNamed(name);
+            Maud.model.target.loadNamed(name);
 
         } else if (actionString.startsWith(loadMappingAssetPrefix)) {
             path = MyString.remainder(actionString, loadMappingAssetPrefix);
@@ -391,15 +391,15 @@ class DddInputMode extends InputMode {
 
         } else if (actionString.startsWith(loadSourceCgmAssetPrefix)) {
             path = MyString.remainder(actionString, loadSourceCgmAssetPrefix);
-            Maud.model.source.loadCgmAsset(path);
+            Maud.model.source.loadAsset(path);
 
         } else if (actionString.startsWith(loadSourceCgmFilePrefix)) {
             path = MyString.remainder(actionString, loadSourceCgmFilePrefix);
-            Maud.gui.menus.loadSourceModelFile(path);
+            Maud.gui.menus.loadSourceCgmFile(path);
 
         } else if (actionString.startsWith(loadSourceCgmNamedPrefix)) {
             name = MyString.remainder(actionString, loadSourceCgmNamedPrefix);
-            Maud.model.source.loadCgmNamed(name);
+            Maud.model.source.loadNamed(name);
 
         } else {
             handled = false;

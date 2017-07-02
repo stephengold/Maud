@@ -473,12 +473,11 @@ public class LoadedCgm implements Cloneable {
 
     /**
      * Unload the current CG model, if any, and load from the specified asset.
-     * TODO rename
      *
      * @param assetPath path to the asset to load (not null)
      * @return true if successful, otherwise false
      */
-    public boolean loadCgmAsset(String assetPath) {
+    public boolean loadAsset(String assetPath) {
         Validate.nonNull(assetPath, "asset path");
 
         Spatial loaded = loadFromAsset(assetPath, false);
@@ -492,12 +491,11 @@ public class LoadedCgm implements Cloneable {
 
     /**
      * Unload the current CG model, if any, and load from the specified file.
-     * TODO rename
      *
      * @param filePath path to the file to load (not null)
      * @return true if successful, otherwise false
      */
-    public boolean loadCgmFile(File filePath) {
+    public boolean loadFile(File filePath) {
         String canonicalPath;
         try {
             canonicalPath = filePath.getCanonicalPath();
@@ -516,12 +514,12 @@ public class LoadedCgm implements Cloneable {
 
     /**
      * Unload the current CG model, if any, and load the named one from the
-     * jme3-testdata asset pack. TODO rename
+     * jme3-testdata asset pack.
      *
      * @param cgmName which CG model to load (not null, not empty)
      * @return true if successful, otherwise false
      */
-    public boolean loadCgmNamed(String cgmName) {
+    public boolean loadNamed(String cgmName) {
         String fileName;
         switch (cgmName) {
             case "Boat":
@@ -781,7 +779,7 @@ public class LoadedCgm implements Cloneable {
                  */
                 assetManager.deleteFromCache(key);
             }
-            loaded = Util.loadBvhAsCgm(assetManager, assetPath);
+            loaded = Util.loadBvhAsset(assetManager, assetPath);
         } else {
             ModelKey key = new ModelKey(assetPath);
             ext = key.getExtension();
@@ -792,7 +790,7 @@ public class LoadedCgm implements Cloneable {
                  */
                 assetManager.deleteFromCache(key);
             }
-            loaded = Util.loadCgmQuietly(assetManager, assetPath);
+            loaded = Util.loadCgmAsset(assetManager, assetPath);
         }
         if (loaded == null) {
             logger.log(Level.SEVERE, "Failed to load model from asset {0}",

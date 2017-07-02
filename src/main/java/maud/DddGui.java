@@ -474,7 +474,7 @@ public class DddGui extends GuiScreenController {
         setListener(inputMode);
         super.initialize(stateManager, application);
 
-        Maud.model.target.loadCgmNamed("Elephant");
+        Maud.model.target.loadNamed("Elephant");
     }
 
     /**
