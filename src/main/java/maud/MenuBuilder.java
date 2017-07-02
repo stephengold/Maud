@@ -73,10 +73,10 @@ class MenuBuilder {
     }
 
     /**
-     * Add an item with an icon to the menu.
+     * Add an item with the specified icon.
      *
      * @param item (not null, not empty)
-     * @param iconAssetPath (may be null)
+     * @param iconAssetPath path to the icon's image asset (may be null)
      */
     void add(String item, String iconAssetPath) {
         Validate.nonEmpty(item, "item");
@@ -106,6 +106,16 @@ class MenuBuilder {
     }
 
     /**
+     * Add an item with the BVH icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addBvh(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/bvh.png");
+    }
+
+    /**
      * Add an item with the dialog icon to the menu.
      *
      * @param item (not null, not empty)
@@ -116,7 +126,17 @@ class MenuBuilder {
     }
 
     /**
-     * Add an item with the folder icon to the menu.
+     * Add an item with the ellipsis icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addEllipsis(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/ellipsis.png");
+    }
+
+    /**
+     * Add an item with the folder/directory icon to the menu.
      *
      * @param item (not null, not empty)
      */
