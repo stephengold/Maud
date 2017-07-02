@@ -1472,7 +1472,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Tool"
                                  id="id28ToAvoidNiftyWarning"
                                  width="40px">
-                            <interact onRelease="perform(select tool control)"/>
+                            <interact onRelease="perform(select tool sgc)"/>
                         </control>
                         <control name="label" text="  User keys:  "/>
                         <control name="label" id="spatialKeys"
