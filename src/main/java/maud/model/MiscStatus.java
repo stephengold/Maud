@@ -284,7 +284,7 @@ public class MiscStatus implements Cloneable {
     // Object methods
 
     /**
-     * Create a copy of this object.
+     * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
      * @throws CloneNotSupportedException if superclass isn't cloneable

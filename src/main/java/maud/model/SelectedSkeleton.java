@@ -350,7 +350,7 @@ public class SelectedSkeleton implements Cloneable {
      * Check for issues with a bone.
      *
      * @param bone (may be null)
-     * @param nameSet (not null)
+     * @param nameSet (not null, modified)
      * @return false if issues found, otherwise true
      */
     boolean validateBone(Bone bone, Set<String> nameSet) {
