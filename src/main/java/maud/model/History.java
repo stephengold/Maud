@@ -35,7 +35,7 @@ import jme3utilities.Validate;
 import maud.Maud;
 
 /**
- * Edit history for Maud.
+ * Edit history for Maud. Note: not checkpointed!
  *
  * @author Stephen Gold sgold@sonic.net
  */

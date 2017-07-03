@@ -50,7 +50,7 @@ import jme3utilities.math.MyMath;
 import maud.model.LoadedCgm;
 
 /**
- * Visualization of a loaded CG model, component of a DddModel.
+ * 3D visualization of a CG model, a component of a LoadedCgm.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -75,7 +75,7 @@ public class CgmView implements JmeCloneable {
      */
     private AnimControl animControl;
     /**
-     * the MVC model that owns this view
+     * the CG model that owns this view
      */
     private LoadedCgm model;
     /**
@@ -104,7 +104,7 @@ public class CgmView implements JmeCloneable {
     /**
      * Instantiate a new visualization.
      *
-     * @param loadedModel MVC model that will own this view (not null)
+     * @param loadedModel loaded CG model that will own this view (not null)
      * @param parentNode attachment point in the scene graph (not null)
      */
     public CgmView(LoadedCgm loadedModel, Node parentNode) {
@@ -170,7 +170,7 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Replace the CG model with a newly loaded one.
+     * Replace the CG model with a newly loaded one. TODO rename
      *
      * @param loadedRoot (not null)
      */
@@ -251,7 +251,8 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Alter which MVC model corresponds with this view. Used after cloning.
+     * Alter which loaded CG model corresponds with this view. Used after
+     * cloning. TODO rename
      *
      * @param loadedModel (not null)
      */
