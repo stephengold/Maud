@@ -217,6 +217,56 @@ public class EditableMapping extends LoadedMapping {
         assetPath = null;
         setEdited("unload mapping");
     }
+
+    /**
+     * Write this mapping to a file.
+     *
+     * @param path file path (not null, not empty)
+     * @return true if successful, otherwise false
+     */
+    public boolean writeToFile(String path) {
+        Validate.nonEmpty(path, "path");
+
+        File file = new File(path);
+        BinaryExporter exporter = BinaryExporter.getInstance();
+
+        boolean success = true;
+        try {
+            exporter.save(mapping, file);
+        } catch (IOException exception) {
+            success = false;
+        }
+
+        String filePath = file.getAbsolutePath();
+        filePath = filePath.replaceAll("\\\\", "/");
+
+        if (success) {
+            String af = assetFolderForWrite();
+            if (filePath.startsWith(af)) {
+                assetFolder = af;
+                assetPath = MyString.remainder(filePath, af);
+            } else if (filePath.endsWith(assetPath) && !assetPath.isEmpty()) {
+                int length = filePath.length() - assetPath.length();
+                assetFolder = filePath.substring(0, length);
+            } else {
+                assetFolder = "";
+                assetPath = "";
+            }
+            if (assetPath.startsWith("/")) {
+                assetPath = MyString.remainder(assetPath, "/");
+            }
+            String eventDescription = "write mapping to " + filePath;
+            setPristine(eventDescription);
+            logger.log(Level.INFO, "Wrote mapping to file {0}",
+                    MyString.quote(filePath));
+        } else {
+            logger.log(Level.SEVERE,
+                    "I/O exception while writing mapping to file {0}",
+                    MyString.quote(filePath));
+        }
+
+        return success;
+    }
     // *************************************************************************
     // LoadedMapping methods
 
@@ -325,55 +375,5 @@ public class EditableMapping extends LoadedMapping {
         editCount = 0;
         editedTwist = null;
         History.addEvent(eventDescription);
-    }
-
-    /**
-     * Write this mapping to a file. TODO sort methods
-     *
-     * @param path file path (not null, not empty)
-     * @return true if successful, otherwise false
-     */
-    public boolean writeToFile(String path) {
-        Validate.nonEmpty(path, "path");
-
-        File file = new File(path);
-        BinaryExporter exporter = BinaryExporter.getInstance();
-
-        boolean success = true;
-        try {
-            exporter.save(mapping, file);
-        } catch (IOException exception) {
-            success = false;
-        }
-
-        String filePath = file.getAbsolutePath();
-        filePath = filePath.replaceAll("\\\\", "/");
-
-        if (success) {
-            String af = assetFolderForWrite();
-            if (filePath.startsWith(af)) {
-                assetFolder = af;
-                assetPath = MyString.remainder(filePath, af);
-            } else if (filePath.endsWith(assetPath) && !assetPath.isEmpty()) {
-                int length = filePath.length() - assetPath.length();
-                assetFolder = filePath.substring(0, length);
-            } else {
-                assetFolder = "";
-                assetPath = "";
-            }
-            if (assetPath.startsWith("/")) {
-                assetPath = MyString.remainder(assetPath, "/");
-            }
-            String eventDescription = "write mapping to " + filePath;
-            setPristine(eventDescription);
-            logger.log(Level.INFO, "Wrote mapping to file {0}",
-                    MyString.quote(filePath));
-        } else {
-            logger.log(Level.SEVERE,
-                    "I/O exception while writing mapping to file {0}",
-                    MyString.quote(filePath));
-        }
-
-        return success;
     }
 }

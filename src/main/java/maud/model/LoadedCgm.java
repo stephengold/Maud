@@ -91,13 +91,13 @@ public class LoadedCgm implements Cloneable {
      */
     public CgmView view = null;
     /**
-     * the loaded animation for the CG model TODO sort fields
-     */
-    public LoadedAnimation animation = new LoadedAnimation();
-    /**
      * bone transforms of the displayed pose
      */
     public DisplayedPose pose = new DisplayedPose();
+    /**
+     * the loaded animation for the CG model
+     */
+    public LoadedAnimation animation = new LoadedAnimation();
     /**
      * which bone in selected in the CG model
      */

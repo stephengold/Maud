@@ -354,7 +354,26 @@ class DddMenus {
     }
 
     /**
-     * Handle a "select spatialChild" action with no argument. TODO sort
+     * Handle a "select spatial" action with an argument.
+     *
+     * @param argument action argument (not null)
+     */
+    void selectSpatial(String argument, boolean includeNodes) {
+        if (Maud.model.target.hasSpatial(argument)) {
+            Maud.model.target.spatial.select(argument);
+
+        } else {
+            /*
+             * Treat the argument as a spatial-name prefix.
+             */
+            List<String> names;
+            names = Maud.model.target.listSpatialNames(argument, includeNodes);
+            showSpatialSubmenu(names, includeNodes);
+        }
+    }
+
+    /**
+     * Handle a "select spatialChild" action with no argument.
      */
     void selectSpatialChild() {
         int numChildren = Maud.model.target.spatial.countChildren();
@@ -379,25 +398,6 @@ class DddMenus {
                 }
             }
             builder.show(DddInputMode.selectSpatialChildPrefix);
-        }
-    }
-
-    /**
-     * Handle a "select spatial" action with an argument.
-     *
-     * @param argument action argument (not null)
-     */
-    void selectSpatial(String argument, boolean includeNodes) {
-        if (Maud.model.target.hasSpatial(argument)) {
-            Maud.model.target.spatial.select(argument);
-
-        } else {
-            /*
-             * Treat the argument as a spatial-name prefix.
-             */
-            List<String> names;
-            names = Maud.model.target.listSpatialNames(argument, includeNodes);
-            showSpatialSubmenu(names, includeNodes);
         }
     }
 
