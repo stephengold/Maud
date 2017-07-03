@@ -759,12 +759,12 @@ class DddMenus {
          */
         builder.addJme("Boat");
         builder.addJme("Buggy");
-        builder.add("Ferrari");
+        builder.addOgre("Ferrari");
         builder.addOgre("HoverTank");
         builder.addOgre("MonkeyHead");
         builder.addOgre("Sign Post");
         builder.addOgre("SpaceCraft");
-        builder.add("Teapot");
+        builder.addGeometry("Teapot");
         builder.addOgre("Tree");
     }
 

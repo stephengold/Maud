@@ -28,7 +28,9 @@ package maud;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 
 /**
@@ -142,13 +144,17 @@ class MenuBuilder {
      */
     void addFile(String filename) {
         Validate.nonEmpty(filename, "item");
+
         if (filename.endsWith(".blend")) {
             addBlend(filename);
         } else if (filename.endsWith(".bvh")) {
             addBvh(filename);
         } else if (filename.endsWith(".j3o")) {
             addJme(filename);
-        } else if (filename.endsWith(".mesh.xml")) {
+        } else if (filename.endsWith(".obj")) {
+            addGeometry(filename);
+        } else if (filename.endsWith(".mesh.xml")
+                || filename.endsWith(".scene")) {
             addOgre(filename);
         } else {
             add(filename); // TODO ? icon
@@ -267,6 +273,9 @@ class MenuBuilder {
      * Display the menu in the "3D View" screen.
      */
     void show(String actionPrefix) {
+        logger.log(Level.INFO, "actionPrefix = {0}",
+                MyString.quote(actionPrefix));
+
         String[] itemArray = copyItems();
         String[] iconArray = copyIcons();
         Maud.gui.showPopupMenu(actionPrefix, itemArray, iconArray);
