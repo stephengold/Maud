@@ -37,7 +37,6 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
 import maud.model.History;
-import maud.model.Locators;
 
 /**
  * Input mode for Maud's "3D View" screen.
@@ -68,48 +67,59 @@ class DddInputMode extends InputMode {
     /**
      * action prefix: remainder is a filesystem path to a folder/directory
      */
-    final static String deleteLocatorPrefix = "delete locator ";
+    final static String deleteAssetFolderPrefix = "delete assetFolder ";
     /**
      * action prefix: remainder is the name of an animation
      */
     final static String loadAnimationPrefix = "load animation ";
     /**
-     * action prefix: remainder is an asset path to a CG model
+     * action prefix: remainder is an asset-folder index followed by an asset
+     * path to a CG model
      */
     final static String loadCgmAssetPrefix = "load cgm asset ";
     /**
-     * action prefix: remainder is a file path to a CG model
+     * action prefix: remainder is an asset-folder or else "From classpath"
      */
-    final static String loadCgmFilePrefix = "load cgm file ";
+    final static String loadCgmLocatorPrefix = "load cgm locator ";
     /**
      * action prefix: remainder is the name of a CG model in jme3-testdata
      */
     final static String loadCgmNamedPrefix = "load cgm named ";
     /**
-     * action prefix: remainder is an asset path to a skeleton mapping
+     * action prefix: remainder is an asset-folder index followed by an asset
+     * path to a skeleton mapping
      */
     final static String loadMappingAssetPrefix = "load mapping asset ";
+    /**
+     * action prefix: remainder is an asset-folder or else "From classpath"
+     */
+    final static String loadMappingLocatorPrefix = "load mapping locator ";
+    /**
+     * action prefix: remainder is the name of a mapping asset
+     */
+    final static String loadMappingNamedPrefix = "load mapping named ";
     /**
      * action prefix: remainder is the name of a source animation
      */
     final static String loadSourceAnimationPrefix = "load sourceAnimation ";
     /**
-     * action prefix: remainder is an asset path to a CG model
+     * action prefix: remainder is an asset-folder index followed by an asset
+     * path to a CG model
      */
-    final static String loadSourceCgmAssetPrefix = "load sourceCgm asset ";
+    final static String loadSourceCgmAssetPrefix = "load sourceCgm assetFolder ";
     /**
-     * action prefix: remainder is a file path to a CG model
+     * action prefix: remainder is an asset-folder or else "From classpath"
      */
-    final static String loadSourceCgmFilePrefix = "load sourceCgm file ";
+    final static String loadSourceCgmLocatorPrefix = "load sourceCgm locator ";
     /**
      * action prefix: remainder is the name of a CG model in jme3-testdata
      */
     final static String loadSourceCgmNamedPrefix = "load sourceCgm named ";
     /**
      * action prefix: remainder is a filesystem path to a folder/directory
-     * optionally terminated by a magic filename
+     * optionally with a magic filename
      */
-    final static String newLocatorPrefix = "new locator ";
+    final static String newAssetFolderPrefix = "new assetFolder ";
     /**
      * action prefix: remainder is a name for the new animation
      */
@@ -141,17 +151,13 @@ class DddInputMode extends InputMode {
      */
     final static String retargetAnimationPrefix = "retarget animation ";
     /**
-     * action prefix: remainder is a base asset path
+     * action prefix: remainder is a base file path
      */
-    final static String saveCgmAssetPrefix = "save cgm asset ";
+    final static String saveCgmPrefix = "save cgm ";
     /**
      * action prefix: remainder is a base file path
      */
-    final static String saveCgmFilePrefix = "save cgm file ";
-    /**
-     * action prefix: remainder is an asset path
-     */
-    final static String saveMappingAssetPrefix = "save mapping asset ";
+    final static String saveMappingPrefix = "save mapping ";
     /**
      * action prefix: remainder is the name of a bone or a prefix thereof
      */
@@ -354,10 +360,10 @@ class DddInputMode extends InputMode {
                 break;
             default:
                 handled = false;
-                if (actionString.startsWith(deleteLocatorPrefix)) {
-                    String arg;
-                    arg = MyString.remainder(actionString, deleteLocatorPrefix);
-                    Locators.remove(arg);
+                if (actionString.startsWith(deleteAssetFolderPrefix)) {
+                    String arg = MyString.remainder(actionString,
+                            deleteAssetFolderPrefix);
+                    Maud.model.folders.remove(arg);
                     handled = true;
                 }
         }
@@ -373,9 +379,9 @@ class DddInputMode extends InputMode {
      */
     private boolean loadAction(String actionString) {
         boolean handled = true;
-        String name, path;
+        String args, name, path;
         if (actionString.equals("load mapping asset")) {
-            Maud.gui.dialogs.loadMappingAsset();
+            Maud.gui.menus.loadMappingAsset();
 
         } else if (actionString.equals("load retargetedPose")) {
             Maud.model.target.animation.loadRetargetedPose();
@@ -385,12 +391,12 @@ class DddInputMode extends InputMode {
             Maud.model.target.animation.load(name);
 
         } else if (actionString.startsWith(loadCgmAssetPrefix)) {
-            path = MyString.remainder(actionString, loadCgmAssetPrefix);
-            Maud.model.target.loadAsset(path);
+            args = MyString.remainder(actionString, loadCgmAssetPrefix);
+            Maud.gui.menus.loadCgmAsset(args, Maud.model.target);
 
-        } else if (actionString.startsWith(loadCgmFilePrefix)) {
-            path = MyString.remainder(actionString, loadCgmFilePrefix);
-            Maud.gui.menus.loadTargetCgmFile(path);
+        } else if (actionString.startsWith(loadCgmLocatorPrefix)) {
+            path = MyString.remainder(actionString, loadCgmLocatorPrefix);
+            Maud.gui.menus.loadCgmLocator(path, Maud.model.target);
 
         } else if (actionString.startsWith(loadCgmNamedPrefix)) {
             name = MyString.remainder(actionString, loadCgmNamedPrefix);
@@ -398,19 +404,27 @@ class DddInputMode extends InputMode {
 
         } else if (actionString.startsWith(loadMappingAssetPrefix)) {
             path = MyString.remainder(actionString, loadMappingAssetPrefix);
-            Maud.model.mapping.loadMappingAsset(path);
+            Maud.gui.menus.loadMappingAsset(path);
+
+        } else if (actionString.startsWith(loadMappingLocatorPrefix)) {
+            path = MyString.remainder(actionString, loadMappingLocatorPrefix);
+            Maud.gui.menus.loadMappingLocator(path);
+
+        } else if (actionString.startsWith(loadMappingNamedPrefix)) {
+            name = MyString.remainder(actionString, loadMappingNamedPrefix);
+            Maud.model.mapping.loadNamed(name);
 
         } else if (actionString.startsWith(loadSourceAnimationPrefix)) {
             name = MyString.remainder(actionString, loadSourceAnimationPrefix);
             Maud.model.source.animation.load(name);
 
         } else if (actionString.startsWith(loadSourceCgmAssetPrefix)) {
-            path = MyString.remainder(actionString, loadSourceCgmAssetPrefix);
-            Maud.model.source.loadAsset(path);
+            args = MyString.remainder(actionString, loadSourceCgmAssetPrefix);
+            Maud.gui.menus.loadCgmAsset(args, Maud.model.source);
 
-        } else if (actionString.startsWith(loadSourceCgmFilePrefix)) {
-            path = MyString.remainder(actionString, loadSourceCgmFilePrefix);
-            Maud.gui.menus.loadSourceCgmFile(path);
+        } else if (actionString.startsWith(loadSourceCgmLocatorPrefix)) {
+            path = MyString.remainder(actionString, loadSourceCgmLocatorPrefix);
+            Maud.gui.menus.loadCgmLocator(path, Maud.model.source);
 
         } else if (actionString.startsWith(loadSourceCgmNamedPrefix)) {
             name = MyString.remainder(actionString, loadSourceCgmNamedPrefix);
@@ -459,9 +473,10 @@ class DddInputMode extends InputMode {
      */
     private boolean newAction2(String actionString) {
         boolean handled = false;
-        if (actionString.startsWith(newLocatorPrefix)) {
-            String path = MyString.remainder(actionString, newLocatorPrefix);
-            Maud.gui.menus.newLocator(path);
+        if (actionString.startsWith(newAssetFolderPrefix)) {
+            String path = MyString.remainder(actionString,
+                    newAssetFolderPrefix);
+            Maud.gui.menus.newAssetFolder(path);
             handled = true;
 
         } else if (actionString.startsWith(newPosePrefix)) {
@@ -738,21 +753,14 @@ class DddInputMode extends InputMode {
      */
     private boolean saveAction(String actionString) {
         boolean handled = false;
-        if (actionString.startsWith(saveCgmAssetPrefix)) {
-            String path;
-            path = MyString.remainder(actionString, saveCgmAssetPrefix);
-            Maud.model.target.writeToAsset(path);
-            handled = true;
-
-        } else if (actionString.startsWith(saveCgmFilePrefix)) {
-            String path = MyString.remainder(actionString, saveCgmFilePrefix);
+        if (actionString.startsWith(saveCgmPrefix)) {
+            String path = MyString.remainder(actionString, saveCgmPrefix);
             Maud.model.target.writeToFile(path);
             handled = true;
 
-        } else if (actionString.startsWith(saveMappingAssetPrefix)) {
-            String path;
-            path = MyString.remainder(actionString, saveMappingAssetPrefix);
-            Maud.model.mapping.writeToAsset(path);
+        } else if (actionString.startsWith(saveMappingPrefix)) {
+            String path = MyString.remainder(actionString, saveMappingPrefix);
+            Maud.model.mapping.writeToFile(path);
             handled = true;
         }
 

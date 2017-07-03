@@ -29,7 +29,8 @@ package maud.model;
 import java.util.logging.Logger;
 
 /**
- * The MVC model for the "3D View" screen in the Maud application.
+ * An MVC-model state for the "3D View" screen in the Maud application. Includes
+ * all state that's checkpointed.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -45,6 +46,10 @@ public class DddModel {
     // *************************************************************************
     // fields
 
+    /**
+     * known asset folders
+     */
+    final public AssetFolders folders;
     /**
      * status of the visible coordinate axes
      */
@@ -88,6 +93,7 @@ public class DddModel {
      * Instantiate an MVC model with the default settings.
      */
     public DddModel() {
+        folders = new AssetFolders();
         axes = new AxesStatus();
         bounds = new BoundsStatus();
         camera = new CameraStatus();
@@ -100,13 +106,14 @@ public class DddModel {
     }
 
     /**
-     * Instantiate an MVC model with settings copied from another model
+     * Instantiate an MVC model with settings copied from another MVC-model
      * instance.
      *
      * @param other (not null)
      */
     public DddModel(DddModel other) {
         try {
+            folders = other.folders.clone();
             axes = other.axes.clone();
             bounds = other.bounds.clone();
             camera = other.camera.clone();

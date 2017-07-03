@@ -46,11 +46,6 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.bvh.BVHAnimData;
 import com.jme3.util.clone.Cloner;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,6 +57,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.CgmView;
+import maud.Locators;
 import maud.Maud;
 import maud.Util;
 
@@ -95,7 +91,7 @@ public class LoadedCgm implements Cloneable {
      */
     public CgmView view = null;
     /**
-     * the loaded animation for the CG model
+     * the loaded animation for the CG model TODO sort fields
      */
     public LoadedAnimation animation = new LoadedAnimation();
     /**
@@ -127,19 +123,22 @@ public class LoadedCgm implements Cloneable {
      */
     protected Spatial rootSpatial = null;
     /**
-     * asset path of the CG model, less extension
+     * absolute filesystem path to asset folder, or "" if unknown, or null if no
+     * CG model loaded
+     */
+    protected String assetFolder = null;
+    /**
+     * asset path less extension, or "" if unknown, or null if no CG model
+     * loaded
      */
     protected String baseAssetPath = null;
     /**
-     * filesystem path of the CG model, less extension
-     */
-    protected String baseFilePath = null;
-    /**
-     * extension of the CG model
+     * extension of the asset path, or "" if unknown, or null if no CG model
+     * loaded
      */
     protected String extension = null;
     /**
-     * name of the CG model
+     * name of the CG model, or null if no CG model loaded
      */
     protected String name = null;
     /**
@@ -238,9 +237,19 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
+     * Read the asset folder of the loaded CG model.
+     *
+     * @return absolute filesystem path, or "" if not known (not null)
+     */
+    public String getAssetFolder() {
+        assert assetFolder != null;
+        return assetFolder;
+    }
+
+    /**
      * Read the asset path of the loaded CG model, less extension.
      *
-     * @return path, or "" if not known (not null)
+     * @return base path, or "" if not known (not null)
      */
     public String getAssetPath() {
         assert baseAssetPath != null;
@@ -284,16 +293,6 @@ public class LoadedCgm implements Cloneable {
     public String getExtension() {
         assert extension != null;
         return extension;
-    }
-
-    /**
-     * Read the filesystem path of the loaded CG model, less extension.
-     *
-     * @return path, or "" if not known (not null)
-     */
-    public String getFilePath() {
-        assert baseFilePath != null;
-        return baseFilePath;
     }
 
     /**
@@ -474,36 +473,17 @@ public class LoadedCgm implements Cloneable {
     /**
      * Unload the current CG model, if any, and load from the specified asset.
      *
-     * @param assetPath path to the asset to load (not null)
+     * @param rootPath file path to the asset root (not null, not empty)
+     * @param assetPath path to the asset to load (not null, not empty)
      * @return true if successful, otherwise false
      */
-    public boolean loadAsset(String assetPath) {
-        Validate.nonNull(assetPath, "asset path");
+    public boolean loadAsset(String rootPath, String assetPath) {
+        Validate.nonEmpty(rootPath, "root path");
+        Validate.nonEmpty(assetPath, "asset path");
 
+        Locators.useFilesystem(rootPath);
         Spatial loaded = loadFromAsset(assetPath, false);
-        if (loaded == null) {
-            return false;
-        } else {
-            postLoad(loaded);
-            return true;
-        }
-    }
-
-    /**
-     * Unload the current CG model, if any, and load from the specified file.
-     *
-     * @param filePath path to the file to load (not null)
-     * @return true if successful, otherwise false
-     */
-    public boolean loadFile(File filePath) {
-        String canonicalPath;
-        try {
-            canonicalPath = filePath.getCanonicalPath();
-        } catch (IOException e) {
-            return false;
-        }
-
-        Spatial loaded = loadFromFile(canonicalPath);
+        Locators.useDefault();
         if (loaded == null) {
             return false;
         } else {
@@ -596,8 +576,8 @@ public class LoadedCgm implements Cloneable {
      * Unload the CG model.
      */
     public void unload() {
+        assetFolder = null;
         baseAssetPath = null;
-        baseFilePath = null;
         extension = null;
         name = null;
         rootSpatial = null;
@@ -770,7 +750,7 @@ public class LoadedCgm implements Cloneable {
         String ext;
         Spatial loaded;
         if (assetPath.endsWith(".bvh")) {
-            AssetKey<BVHAnimData> key = new AssetKey<BVHAnimData>(assetPath);
+            AssetKey<BVHAnimData> key = new AssetKey<>(assetPath);
             ext = key.getExtension();
             if (!useCache) {
                 /*
@@ -807,68 +787,8 @@ public class LoadedCgm implements Cloneable {
                 int pathLength = assetPath.length() - extLength - 1;
                 baseAssetPath = assetPath.substring(0, pathLength);
             }
-            baseFilePath = "";
+            assetFolder = Locators.getAssetFolder();
             name = loaded.getName();
-        }
-
-        return loaded;
-    }
-
-    /**
-     * Quietly load a CG model file without adding it to the scene. If
-     * successful, set {@link #baseFilePath}.
-     *
-     * @param filePath (not null)
-     * @return an orphaned spatial, or null if an error occurred
-     */
-    private Spatial loadFromFile(String filePath) {
-        /*
-         * Open the inpuot stream.
-         */
-        InputStream inputStream;
-        try {
-            inputStream = new FileInputStream(filePath);
-        } catch (FileNotFoundException e) {
-            return null;
-        }
-
-        SimpleApplication application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-        /*
-         * Load the CG model quietly.
-         */
-        String ext;
-        Spatial loaded;
-        if (filePath.endsWith(".bvh")) {
-            AssetKey<BVHAnimData> key = new AssetKey<BVHAnimData>(filePath);
-            ext = key.getExtension();
-            loaded = Util.loadBvhStream(assetManager, inputStream, key);
-        } else {
-            ModelKey key = new ModelKey(filePath);
-            ext = key.getExtension();
-            loaded = Util.loadCgmStream(assetManager, inputStream, key);
-        }
-        if (loaded == null) {
-            logger.log(Level.SEVERE, "Failed to load model from file {0}",
-                    MyString.quote(filePath));
-        } else {
-            logger.log(Level.INFO, "Loaded model from file {0}",
-                    MyString.quote(filePath));
-
-            baseAssetPath = "";
-            extension = ext;
-            int extLength = extension.length();
-            if (extLength == 0) {
-                baseFilePath = filePath;
-            } else {
-                int pathLength = filePath.length() - extLength - 1;
-                baseFilePath = filePath.substring(0, pathLength);
-            }
-            if (filePath.endsWith(".bvh")) {
-                name = baseFilePath;
-            } else {
-                name = loaded.getName();
-            }
         }
 
         return loaded;

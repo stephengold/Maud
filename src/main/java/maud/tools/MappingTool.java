@@ -107,8 +107,8 @@ public class MappingTool extends WindowController {
          */
         String assetPath = Maud.model.mapping.getAssetPath();
         String assetDesc;
-        if (assetPath == null) {
-            assetDesc = "( none loaded )";
+        if (assetPath.isEmpty()) {
+            assetDesc = "unknown";
         } else {
             assetDesc = MyString.quote(assetPath);
         }

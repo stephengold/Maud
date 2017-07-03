@@ -232,6 +232,9 @@ public class Maud extends GuiApplication {
     public void guiInitializeApplication() {
         logger.info("");
 
+        Locators.setAssetManager(assetManager);
+        Locators.useDefault();
+        
         StartScreen startScreen = new StartScreen();
         stateManager.attach(startScreen);
     }

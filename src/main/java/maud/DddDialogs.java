@@ -26,13 +26,10 @@
  */
 package maud;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.Nifty;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
@@ -44,7 +41,6 @@ import jme3utilities.nifty.IntegerDialog;
 import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
-import maud.model.LoadedCgm;
 
 /**
  * Dialog boxes created by Maud's "3D View" screen.
@@ -150,55 +146,6 @@ class DddDialogs {
         }
         Maud.gui.closeAllPopups();
         Maud.gui.showInfoDialog("License information", text2);
-    }
-
-    /**
-     * Display a "load (source)model asset" dialog.
-     *
-     * @param actionPrefix for the dialog (not null)
-     * @param cgm which CG model to read the defaults from (not null)
-     */
-    void loadCgmFromAsset(String actionPrefix, LoadedCgm cgm) {
-        assert actionPrefix != null;
-
-        String basePath = cgm.getAssetPath();
-        String extension = cgm.getExtension();
-        String assetPath = String.format("%s.%s", basePath, extension);
-        List<String> modelExts = new ArrayList<>(4);
-        modelExts.add(".blend");
-        modelExts.add(".bvh");
-        modelExts.add(".j3o");
-        modelExts.add(".mesh.xml");
-
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-        AssetDialog controller;
-        controller = new AssetDialog("Load", modelExts, assetManager);
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter asset path for model:", assetPath,
-                actionPrefix, controller);
-    }
-
-    /**
-     * Display a "load mapping asset" dialog.
-     */
-    void loadMappingAsset() {
-        String assetPath = Maud.model.mapping.getAssetPath();
-        if (assetPath == null) {
-            assetPath = "SkeletonMappings/SinbadToJaime.j3o";
-        }
-        List<String> modelExts = new ArrayList<>(1);
-        modelExts.add(".j3o");
-
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-        AssetDialog controller;
-        controller = new AssetDialog("Load", modelExts, assetManager);
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter asset path for skeleton mapping:",
-                assetPath, DddInputMode.loadMappingAssetPrefix, controller);
     }
 
     /**
@@ -310,36 +257,23 @@ class DddDialogs {
     }
 
     /**
-     * Display a "save model asset" dialog.
+     * Display a "save cgm" dialog.
      */
-    void saveCgmToAsset() {
-        String baseAssetPath = Maud.model.target.getAssetPath();
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter base asset path for model:",
-                baseAssetPath, "Save", DddInputMode.saveCgmAssetPrefix, null);
-    }
-
-    /**
-     * Display a "save model file" dialog.
-     */
-    void saveCgmToFile() {
-        String baseFilePath = Maud.model.target.getFilePath();
+    void saveCgm() {
+        String baseFilePath = Maud.model.target.baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for model:",
-                baseFilePath, "Save", DddInputMode.saveCgmFilePrefix, null);
+                baseFilePath, "Save", DddInputMode.saveCgmPrefix, null);
     }
 
     /**
-     * Display a "save mapping asset" dialog.
+     * Display a "save mapping" dialog.
      */
-    void saveMappingToAsset() {
-        String assetPath = Maud.model.mapping.getAssetPath();
-        if (assetPath == null) {
-            assetPath = "SkeletonMappings/AToB.j3o";
-        }
+    void saveMapping() {
+        String baseFilePath = Maud.model.mapping.baseFilePathForWrite();
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter asset path for mapping:", assetPath,
-                "Save", DddInputMode.saveMappingAssetPrefix, null);
+        Maud.gui.showTextEntryDialog("Enter base file path for mapping:",
+                baseFilePath, "Save", DddInputMode.saveMappingPrefix, null);
     }
 
     /**

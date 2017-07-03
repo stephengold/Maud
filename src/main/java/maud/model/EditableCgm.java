@@ -47,7 +47,6 @@ import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.ui.ActionApplication;
 import maud.Maud;
 
 /**
@@ -155,6 +154,26 @@ public class EditableCgm extends LoadedCgm {
         selectedSpatial.setUserData(key, data);
         setEdited("add user key");
         Maud.model.misc.selectUserKey(key);
+    }
+
+    /**
+     * Determine the default base path for writing the CG model to the
+     * filesystem.
+     *
+     * @return absolute filesystem path less extension, or "" if unknown (not
+     * null)
+     */
+    public String baseFilePathForWrite() {
+        String result = "";
+        String assetPath = getAssetPath();
+        if (!assetPath.isEmpty()) {
+            String folder = assetFolderForWrite();
+            File file = new File(folder, assetPath);
+            result = file.getAbsolutePath();
+            result = result.replaceAll("\\\\", "/");
+        }
+
+        return result;
     }
 
     /**
@@ -416,31 +435,13 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Write the CG model to the specified asset.
-     *
-     * @param baseAssetPath asset path without any extension (not null)
-     * @return true if successful, otherwise false
-     */
-    public boolean writeToAsset(String baseAssetPath) {
-        Validate.nonNull(baseAssetPath, "asset path");
-
-        String baseFilePath = ActionApplication.filePath(baseAssetPath);
-        boolean success = writeToFile(baseFilePath);
-        if (success) {
-            this.baseAssetPath = baseAssetPath;
-        }
-
-        return success;
-    }
-
-    /**
      * Write the CG model to the specified file.
      *
-     * @param baseFilePath file path without any extension (not null)
+     * @param baseFilePath file path without any extension (not null, not empty)
      * @return true if successful, otherwise false
      */
     public boolean writeToFile(String baseFilePath) {
-        Validate.nonNull(baseFilePath, "file path");
+        Validate.nonEmpty(baseFilePath, "base file path");
 
         String filePath = baseFilePath + ".j3o";
         File file = new File(filePath);
@@ -452,11 +453,29 @@ public class EditableCgm extends LoadedCgm {
         } catch (IOException exception) {
             success = false;
         }
+
+        filePath = file.getAbsolutePath();
+        filePath = filePath.replaceAll("\\\\", "/");
+
         if (success) {
-            baseAssetPath = "";
-            this.baseFilePath = baseFilePath;
+            String af = assetFolderForWrite();
+            if (baseFilePath.startsWith(af)) {
+                assetFolder = af;
+                baseAssetPath = MyString.remainder(baseFilePath, af);
+            } else if (baseFilePath.endsWith(baseAssetPath)
+                    && !baseAssetPath.isEmpty()) {
+                int length = baseFilePath.length() - baseAssetPath.length();
+                assetFolder = baseFilePath.substring(0, length);
+            } else {
+                assetFolder = "";
+                baseAssetPath = "";
+            }
+            if (baseAssetPath.startsWith("/")) {
+                baseAssetPath = MyString.remainder(baseAssetPath, "/");
+            }
+
             extension = "j3o";
-            String eventDescription = "write model " + baseFilePath;
+            String eventDescription = "write model to " + filePath;
             setPristine(eventDescription);
             logger.log(Level.INFO, "Wrote model to file {0}",
                     MyString.quote(filePath));
@@ -503,6 +522,23 @@ public class EditableCgm extends LoadedCgm {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Determine the default asset folder for writing the CG model to the
+     * filesystem.
+     *
+     * @return absolute filesystem path (not null, not empty)
+     */
+    private String assetFolderForWrite() {
+        String result = assetFolder;
+        if (result.isEmpty()) {
+            File wa = new File("Written Assets");
+            result = wa.getAbsolutePath();
+            result = result.replaceAll("\\\\", "/");
+        }
+
+        return result;
+    }
 
     /**
      * Repair minor issues with a CG model, such as repetitious keyframes.

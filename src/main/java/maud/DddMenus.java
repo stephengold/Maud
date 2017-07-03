@@ -39,7 +39,6 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.model.LoadedCgm;
-import maud.model.Locators;
 
 /**
  * Menus in Maud's "3D View" screen.
@@ -51,6 +50,10 @@ class DddMenus {
     // constants and loggers
 
     /**
+     * maximum number of items in a menu
+     */
+    final private static int maxItems = 19;
+    /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
@@ -58,7 +61,7 @@ class DddMenus {
     /**
      * magic filename used in "add locator" menus
      */
-    final private static String addThis = "! add this";
+    final private static String addThis = "! add this folder";
     /**
      * level separator in menu action strings
      */
@@ -74,34 +77,45 @@ class DddMenus {
     // new methods exposed
 
     /**
-     * Handle a "load sourceCgm file" action where the argument may be the name
-     * of a folder/directory.
+     * Handle a "load (source)cgm asset" action with arguments.
      *
-     * @param filePath action argument (not null)
+     * @param args action arguments (not null, not empty)
+     * @param cgm (not null)
      */
-    void loadSourceCgmFile(String filePath) {
-        File file = new File(filePath);
+    void loadCgmAsset(String args, LoadedCgm cgm) {
+        String menuPrefix = null;
+        if (cgm == Maud.model.source) {
+            menuPrefix = DddInputMode.loadSourceCgmAssetPrefix;
+        } else if (cgm == Maud.model.target) {
+            menuPrefix = DddInputMode.loadCgmAssetPrefix;
+        } else {
+            assert false;
+        }
+
+        String indexString = args.split(" ")[0];
+        String rootPath = Maud.model.folders.pathForIndex(indexString);
+        String assetPath = MyString.remainder(args, indexString + " ");
+        File file = new File(rootPath, assetPath);
         if (file.isDirectory()) {
-            buildFolderMenu(filePath, "");
-            String menuPrefix;
-            menuPrefix = DddInputMode.loadSourceCgmFilePrefix + filePath;
+            String folderPath = file.getAbsolutePath();
+            buildFolderMenu(folderPath, "");
+            menuPrefix += args;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }
             builder.show(menuPrefix);
 
         } else if (file.canRead()) {
-            Maud.model.source.loadFile(file);
+            cgm.loadAsset(rootPath, assetPath);
 
         } else {
             /*
-             * Treat the file path as a prefix.
+             * Treat the pathname as a prefix.
              */
             String folderName = file.getParent();
             String prefix = file.getName();
             buildFolderMenu(folderName, prefix);
-            String menuPrefix = DddInputMode.loadSourceCgmFilePrefix
-                    + folderName;
+            menuPrefix += folderName;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }
@@ -110,36 +124,92 @@ class DddMenus {
     }
 
     /**
-     * Handle a "load cgm file" action where the argument may be the name of a
-     * folder/directory.
+     * Handle a "load (source)cgm locator" action with argument.
      *
-     * @param filePath action argument (not null)
+     * @param path action argument (not null, not empty)
+     * @param cgm (not null)
      */
-    void loadTargetCgmFile(String filePath) {
-        File file = new File(filePath);
+    void loadCgmLocator(String path, LoadedCgm cgm) {
+        if (path.equals("From classpath")) {
+            buildTestDataMenu();
+            String menuPrefix = null;
+            if (cgm == Maud.model.source) {
+                menuPrefix = DddInputMode.loadSourceCgmNamedPrefix;
+            } else if (cgm == Maud.model.target) {
+                menuPrefix = DddInputMode.loadCgmNamedPrefix;
+            } else {
+                assert false;
+            }
+            builder.show(menuPrefix);
+
+        } else {
+            String indexString = Maud.model.folders.indexForPath(path);
+            String args = indexString + " " + "/";
+            loadCgmAsset(args, cgm);
+        }
+    }
+
+    /**
+     * Display a "load mapping asset" action without arguments.
+     */
+    void loadMappingAsset() {
+        buildLocatorMenu();
+        builder.show(DddInputMode.loadMappingLocatorPrefix);
+    }
+
+    /**
+     * Handle a "load mapping asset" action with arguments.
+     *
+     * @param args action arguments (not null, not empty)
+     */
+    void loadMappingAsset(String args) {
+        String menuPrefix = DddInputMode.loadMappingAssetPrefix;
+        String indexString = args.split(" ")[0];
+        String rootPath = Maud.model.folders.pathForIndex(indexString);
+        String assetPath = MyString.remainder(args, indexString + " ");
+        File file = new File(rootPath, assetPath);
         if (file.isDirectory()) {
-            buildFolderMenu(filePath, "");
-            String menuPrefix = DddInputMode.loadCgmFilePrefix + filePath;
+            String folderPath = file.getAbsolutePath();
+            buildFolderMenu(folderPath, "");
+            menuPrefix += args;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }
             builder.show(menuPrefix);
 
         } else if (file.canRead()) {
-            Maud.model.target.loadFile(file);
+            Maud.model.mapping.loadAsset(rootPath, assetPath);
 
         } else {
             /*
-             * Treat the argument as a file-path prefix.
+             * Treat the pathname as a prefix.
              */
             String folderName = file.getParent();
             String prefix = file.getName();
             buildFolderMenu(folderName, prefix);
-            String menuPrefix = DddInputMode.loadCgmFilePrefix + folderName;
+            menuPrefix += folderName;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }
             builder.show(menuPrefix);
+        }
+    }
+
+    /**
+     * Handle a "load mapping locator" action.
+     *
+     * @param path action argument (not null, not empty)
+     * @param cgm (not null)
+     */
+    void loadMappingLocator(String path) {
+        if (path.equals("From classpath")) {
+            buildClasspathMappingMenu();
+            builder.show(DddInputMode.loadMappingNamedPrefix);
+
+        } else {
+            String indexString = Maud.model.folders.indexForPath(path);
+            String args = indexString + " " + "/";
+            DddMenus.this.loadMappingAsset(args);
         }
     }
 
@@ -148,11 +218,11 @@ class DddMenus {
      *
      * @param argument action argument (not null)
      */
-    void newLocator(String argument) {
+    void newAssetFolder(String argument) {
         if (argument.endsWith(addThis)) {
             int length = argument.length() - addThis.length();
             String path = argument.substring(0, length);
-            Locators.add(path);
+            Maud.model.folders.add(path);
 
         } else {
             Map<String, File> folderMap = folderMap(argument);
@@ -164,7 +234,7 @@ class DddMenus {
             }
             String folderPath = file.getAbsolutePath();
             String menuPrefix;
-            menuPrefix = DddInputMode.newLocatorPrefix + folderPath + "/";
+            menuPrefix = DddInputMode.newAssetFolderPrefix + folderPath + "/";
             builder.show(menuPrefix);
         }
     }
@@ -378,7 +448,7 @@ class DddMenus {
     private void assetFolders() {
         builder.reset();
         builder.add("Add");
-        if (Locators.hasRemovable()) {
+        if (Maud.model.folders.hasRemovable()) {
             builder.add("Remove");
         }
         builder.show("select menuItem CGM -> Asset folders -> ");
@@ -483,6 +553,19 @@ class DddMenus {
     }
 
     /**
+     * Build a "CGM -> Mapping -> From classpath" menu.
+     */
+    private void buildClasspathMappingMenu() {
+        builder.reset();
+
+        builder.addJme("BallerinaToMhGame");
+        builder.addJme("FlipToMhGame");
+        builder.addJme("FlipToSinbad");
+        builder.addJme("FooterToMhGame");
+        builder.addJme("SinbadToJaime");
+    }
+
+    /**
      * Build a menu of the files (and subdirectories/subfolders) in the
      * specified directory/folder.
      *
@@ -496,6 +579,7 @@ class DddMenus {
         File file = new File(folderPath);
         File[] files = file.listFiles();
         if (files == null) {
+            builder.reset();
             return;
         }
         /*
@@ -536,7 +620,7 @@ class DddMenus {
         int numNames = nameSet.size();
         List<String> nameList = new ArrayList<>(numNames);
         nameList.addAll(nameSet);
-        MyString.reduce(nameList, 20);
+        MyString.reduce(nameList, maxItems);
         Collections.sort(nameList);
         /*
          * Build the menu.
@@ -588,14 +672,15 @@ class DddMenus {
     }
 
     /**
-     * Build a "CGM -> Source/Target -> Load -> File" menu.
+     * Build a "CGM -> Source/Target -> Load" menu.
      */
     private void buildLocatorMenu() {
         builder.reset();
-        List<String> pathList = Locators.listAll();
+        List<String> pathList = Maud.model.folders.listAll();
         for (String path : pathList) {
             builder.addFolder(path);
         }
+        builder.add("From classpath");
     }
 
     /**
@@ -655,7 +740,7 @@ class DddMenus {
     }
 
     /**
-     * Build a "CGM -> Source/Target -> Load -> Testdata" menu.
+     * Build a "CGM -> Source/Target -> From classpath" menu.
      */
     private void buildTestDataMenu() {
         builder.reset();
@@ -697,6 +782,27 @@ class DddMenus {
         builder.addTool("Skeleton");
         builder.addTool("Skeleton color");
         builder.addTool("Sky");
+    }
+
+    /**
+     * Generate a map from drive paths (roots) to file objects.
+     *
+     * @return a new map of drives
+     */
+    private Map<String, File> driveMap() {
+        Map<String, File> result = new TreeMap<>();
+
+        File[] roots = File.listRoots();
+        for (File root : roots) {
+            if (root.isDirectory()) {
+                String absoluteDirPath = root.getAbsolutePath();
+                absoluteDirPath = absoluteDirPath.replaceAll("\\\\", "/");
+                File oldFile = result.put(absoluteDirPath, root);
+                assert oldFile == null : oldFile;
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -751,28 +857,6 @@ class DddMenus {
             Maud.gui.showPopupMenu(DddInputMode.loadSourceAnimationPrefix,
                     animationNames);
         }
-    }
-
-    /**
-     * Display a "CGM -> Source -> Load" menu.
-     */
-    private void loadSourceCgm() {
-        builder.reset();
-        builder.add("Testdata");
-        builder.addDialog("Asset");
-        builder.add("File");
-        builder.show("select menuItem CGM -> Source -> Load -> ");
-    }
-
-    /**
-     * Display a "CGM -> Target -> Load" menu.
-     */
-    private void loadTargetCgm() {
-        builder.reset();
-        builder.add("Testdata");
-        builder.addDialog("Asset");
-        builder.add("File");
-        builder.show("select menuItem CGM -> Target -> Load -> ");
     }
 
     /**
@@ -901,19 +985,19 @@ class DddMenus {
         boolean handled = false;
         switch (remainder) {
             case "Add":
-                Map<String, File> folderMap = folderMap("/");
-                buildFolderMenu(folderMap);
-                builder.show(DddInputMode.newLocatorPrefix + "/");
+                Map<String, File> driveMap = driveMap();
+                buildFolderMenu(driveMap);
+                builder.show(DddInputMode.newAssetFolderPrefix);
                 handled = true;
                 break;
 
             case "Remove":
                 builder.reset();
-                List<String> pathList = Locators.listRemovable();
+                List<String> pathList = Maud.model.folders.listAll();
                 for (String path : pathList) {
                     builder.addFolder(path);
                 }
-                builder.show(DddInputMode.deleteLocatorPrefix);
+                builder.show(DddInputMode.deleteAssetFolderPrefix);
                 handled = true;
         }
 
@@ -1197,72 +1281,6 @@ class DddMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the "CGM -> Source -> Load" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuLoadSourceCgm(String remainder) {
-        assert remainder != null;
-
-        boolean handled = false;
-        switch (remainder) {
-            case "Asset":
-                Maud.gui.dialogs.loadCgmFromAsset(
-                        DddInputMode.loadSourceCgmAssetPrefix,
-                        Maud.model.source);
-                handled = true;
-                break;
-
-            case "File":
-                buildLocatorMenu();
-                builder.show(DddInputMode.loadSourceCgmFilePrefix);
-                handled = true;
-                break;
-
-            case "Testdata":
-                buildTestDataMenu();
-                builder.show(DddInputMode.loadSourceCgmNamedPrefix);
-                handled = true;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "CGM -> Target -> Load" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuLoadTargetCgm(String remainder) {
-        assert remainder != null;
-
-        boolean handled = false;
-        switch (remainder) {
-            case "Asset":
-                Maud.gui.dialogs.loadCgmFromAsset(
-                        DddInputMode.loadCgmAssetPrefix,
-                        Maud.model.target);
-                handled = true;
-                break;
-
-            case "File":
-                buildLocatorMenu();
-                builder.show(DddInputMode.loadCgmFilePrefix);
-                handled = true;
-                break;
-
-            case "Testdata":
-                buildTestDataMenu();
-                builder.show(DddInputMode.loadCgmNamedPrefix);
-                handled = true;
-        }
-
-        return handled;
-    }
-
-    /**
      * Handle a "select menuItem" action the Keyframe menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -1318,12 +1336,12 @@ class DddMenus {
                 break;
 
             case "Load":
-                Maud.gui.dialogs.loadMappingAsset();
+                loadMappingAsset();
                 handled = true;
                 break;
 
             case "Save":
-                Maud.gui.dialogs.saveMappingToAsset();
+                Maud.gui.dialogs.saveMapping();
                 handled = true;
                 break;
 
@@ -1375,22 +1393,16 @@ class DddMenus {
         assert remainder != null;
 
         boolean handled = false;
-        String loadPrefix = "Load" + menuSeparator;
-        if (remainder.startsWith(loadPrefix)) {
-            String selectArg = MyString.remainder(remainder, loadPrefix);
-            handled = menuLoadSourceCgm(selectArg);
+        switch (remainder) {
+            case "Load":
+                buildLocatorMenu();
+                builder.show(DddInputMode.loadSourceCgmLocatorPrefix);
+                handled = true;
+                break;
 
-        } else {
-            switch (remainder) {
-                case "Load":
-                    loadSourceCgm();
-                    handled = true;
-                    break;
-
-                case "Unload":
-                    Maud.model.source.unload();
-                    handled = true;
-            }
+            case "Unload":
+                Maud.model.source.unload();
+                handled = true;
         }
 
         return handled;
@@ -1530,32 +1542,21 @@ class DddMenus {
         assert remainder != null;
 
         boolean handled = false;
-        String loadPrefix = "Load" + menuSeparator;
-        if (remainder.startsWith(loadPrefix)) {
-            String selectArg = MyString.remainder(remainder, loadPrefix);
-            handled = menuLoadTargetCgm(selectArg);
+        switch (remainder) {
+            case "Load":
+                buildLocatorMenu();
+                builder.show(DddInputMode.loadCgmLocatorPrefix);
+                handled = true;
+                break;
 
-        } else {
-            switch (remainder) {
-                case "Load":
-                    loadTargetCgm();
-                    handled = true;
-                    break;
+            case "Save":
+                Maud.gui.dialogs.saveCgm();
+                handled = true;
+                break;
 
-                case "Save as asset":
-                    Maud.gui.dialogs.saveCgmToAsset();
-                    handled = true;
-                    break;
-
-                case "Save as file":
-                    Maud.gui.dialogs.saveCgmToFile();
-                    handled = true;
-                    break;
-
-                case "Tool":
-                    Maud.gui.tools.select("cgm");
-                    handled = true;
-            }
+            case "Tool":
+                Maud.gui.tools.select("cgm");
+                handled = true;
         }
 
         return handled;
@@ -1740,7 +1741,7 @@ class DddMenus {
     private void showBoneSubmenu(List<String> nameList) {
         assert nameList != null;
 
-        MyString.reduce(nameList, 20);
+        MyString.reduce(nameList, maxItems);
         Collections.sort(nameList);
 
         builder.reset();
@@ -1763,7 +1764,7 @@ class DddMenus {
     private void showSourceBoneSubmenu(List<String> nameList) {
         assert nameList != null;
 
-        MyString.reduce(nameList, 20);
+        MyString.reduce(nameList, maxItems);
         Collections.sort(nameList);
 
         builder.reset();
@@ -1789,7 +1790,7 @@ class DddMenus {
             boolean includeNodes) {
         assert nameList != null;
 
-        MyString.reduce(nameList, 20);
+        MyString.reduce(nameList, maxItems);
         Collections.sort(nameList);
 
         builder.reset();
@@ -1831,8 +1832,7 @@ class DddMenus {
 
         builder.addTool("Tool");
         builder.add("Load");
-        builder.addDialog("Save as asset");
-        builder.addDialog("Save as file");
+        builder.addDialog("Save");
 
         builder.show("select menuItem CGM -> Target -> ");
     }

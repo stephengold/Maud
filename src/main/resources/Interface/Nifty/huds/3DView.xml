@@ -601,19 +601,19 @@ the menu bar, status bar, and tool windows.
                     </panel>
                     <panel/>
                     <panel childLayout="horizontal">
-                        <control name="label" text="Asset base path:  "
+                        <control name="label" text="Asset folder:  "
                                  textHAlign="right"
                                  width="100px"/>
-                        <control name="label" id="cgmAbp"
+                        <control name="label" id="cgmAf"
                                  backgroundColor="#ffff"
                                  width="*"/>
                     </panel>
                     <panel/>
                     <panel childLayout="horizontal">
-                        <control name="label" text="File base path:  "
+                        <control name="label" text="Asset base path:  "
                                  textHAlign="right"
                                  width="100px"/>
-                        <control name="label" id="cgmFbp"
+                        <control name="label" id="cgmAbp"
                                  backgroundColor="#ffff"
                                  width="*"/>
                     </panel>

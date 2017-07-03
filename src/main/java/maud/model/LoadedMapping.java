@@ -42,13 +42,14 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import maud.Locators;
 import maud.Maud;
 import maud.Pose;
 import maud.Util;
 
 /**
  * The loaded skeleton mapping in the Maud application. TODO split off selected
- * mapping?
+ * bone mapping?
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -69,13 +70,17 @@ public class LoadedMapping implements Cloneable {
      */
     private boolean invertMapFlag = false;
     /**
-     * the skeleton mapping
+     * the mapping
      */
     protected SkeletonMapping mapping = new SkeletonMapping();
     /**
-     * asset path to the skeleton mapping, or null if none loaded
+     * absolute filesystem path to asset folder, or "" if unknown
      */
-    protected String assetPath = null;
+    protected String assetFolder = "";
+    /**
+     * asset path, or "" if unknown
+     */
+    protected String assetPath = "";
     // *************************************************************************
     // new methods exposed
 
@@ -171,9 +176,19 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
+     * Read the asset folder of the loaded skeleton mapping.
+     *
+     * @return filesystem path, or "" if unknown (not null)
+     */
+    public String getAssetFolder() {
+        assert assetFolder != null;
+        return assetFolder;
+    }
+
+    /**
      * Read the asset path to the loaded skeleton mapping.
      *
-     * @return path (or null if none selected)
+     * @return path (or "" if unknown)
      */
     public String getAssetPath() {
         return assetPath;
@@ -265,26 +280,48 @@ public class LoadedMapping implements Cloneable {
     /**
      * Unload the current mapping and load the specified asset.
      *
-     * @param assetPath path to the mapping asset to load (not null)
+     * @param assetFolder file path to the asset root (not null, not empty)
+     * @param assetPath path to the asset to load (not null, not empty)
      * @return true if successful, otherwise false
      */
-    public boolean loadMappingAsset(String assetPath) {
-        Validate.nonNull(assetPath, "asset path");
+    public boolean loadAsset(String assetFolder, String assetPath) {
+        Validate.nonEmpty(assetFolder, "asset folder");
+        Validate.nonEmpty(assetPath, "asset path");
 
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-
+        AssetManager assetManager = Locators.getAssetManager();
         AssetKey<SkeletonMapping> key = new AssetKey<>(assetPath);
+
         boolean result;
+        Locators.useFilesystem(assetFolder);
         try {
             mapping = assetManager.loadAsset(key);
+            this.assetFolder = assetFolder;
             this.assetPath = assetPath;
             result = true;
-        } catch (AssetLoadException e) {
+        } catch (AssetLoadException exception) {
             result = false;
         }
+        Locators.useDefault();
 
         return result;
+    }
+
+    /**
+     * Unload the current mapping and load the named one from the classpath.
+     *
+     * @param mappingName which mapping to load (not null, not empty)
+     */
+    public void loadNamed(String mappingName) {
+        String path = String.format("SkeletonMappings/%s.j3o", mappingName);
+
+        AssetManager assetManager = Locators.getAssetManager();
+        AssetKey<SkeletonMapping> key = new AssetKey<>(path);
+        try {
+            mapping = assetManager.loadAsset(key);
+            assetFolder = "";
+            assetPath = path;
+        } catch (AssetLoadException exception) {
+        }
     }
 
     /**

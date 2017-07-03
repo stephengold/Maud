@@ -35,7 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.ui.ActionApplication;
 import maud.Maud;
 import maud.Util;
 
@@ -66,6 +65,25 @@ public class EditableMapping extends LoadedMapping {
     private String editedTwist = null;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Determine the default base path for writing the mapping to the
+     * filesystem.
+     *
+     * @return base filesystem path, or "" if unknown (not null)
+     */
+    public String baseFilePathForWrite() {
+        String result = "";
+        String aPath = getAssetPath();
+        if (!aPath.isEmpty()) {
+            String folder = assetFolderForWrite();
+            File file = new File(folder, aPath);
+            result = file.getAbsolutePath();
+            result = result.replaceAll("\\\\", "/");
+        }
+
+        return result;
+    }
 
     /**
      * Cardinalize the effective twist of the selected bone mapping.
@@ -195,26 +213,9 @@ public class EditableMapping extends LoadedMapping {
      */
     public void unload() {
         mapping.clear();
+        assetFolder = null;
         assetPath = null;
         setEdited("unload mapping");
-    }
-
-    /**
-     * Write this mapping to an asset.
-     *
-     * @param assetPath asset path (not null)
-     * @return true if successful, otherwise false
-     */
-    public boolean writeToAsset(String assetPath) {
-        Validate.nonNull(assetPath, "asset path");
-
-        String filePath = ActionApplication.filePath(assetPath);
-        boolean success = writeToFile(filePath);
-        if (success) {
-            this.assetPath = assetPath;
-        }
-
-        return success;
     }
     // *************************************************************************
     // LoadedMapping methods
@@ -222,16 +223,20 @@ public class EditableMapping extends LoadedMapping {
     /**
      * Unload the current mapping and load the specified asset.
      *
-     * @param assetPath path to the mapping asset to load (not null)
+     * @param assetFolder file path to the asset root (not null, not empty)
+     * @param assetPath path to the asset to load (not null, not empty)
      * @return true if successful, otherwise false
      */
     @Override
-    public boolean loadMappingAsset(String assetPath) {
-        Validate.nonNull(assetPath, "asset path");
+    public boolean loadAsset(String assetFolder, String assetPath) {
+        Validate.nonEmpty(assetFolder, "asset folder");
+        Validate.nonEmpty(assetPath, "asset path");
 
-        boolean result = super.loadMappingAsset(assetPath);
+        boolean result = super.loadAsset(assetFolder, assetPath);
+
         if (result) {
-            String eventDescription = "load mapping " + assetPath;
+            String eventDescription = String.format("load mapping %s %s",
+                    MyString.quote(assetFolder), MyString.quote(assetPath));
             setPristine(eventDescription);
         }
 
@@ -255,11 +260,28 @@ public class EditableMapping extends LoadedMapping {
     // private methods
 
     /**
+     * Determine the default asset folder for writing the mapping to the
+     * filesystem.
+     *
+     * @return absolute filesystem path (not null, not empty)
+     */
+    private String assetFolderForWrite() {
+        String result = assetFolder;
+        if (result.isEmpty()) {
+            File wa = new File("Written Assets");
+            result = wa.getAbsolutePath();
+            result = result.replaceAll("\\\\", "/");
+        }
+
+        return result;
+    }
+
+    /**
      * Predict what the twist should be for the selected bones.
      *
      * @return a new quaternion
      */
-    public Quaternion estimateTwist() {
+    private Quaternion estimateTwist() {
         Quaternion sourceMo = Maud.model.source.bone.modelOrientation(null);
         Quaternion targetMo = Maud.model.target.bone.modelOrientation(null);
         Quaternion invSourceMo = sourceMo.inverse();
@@ -306,15 +328,15 @@ public class EditableMapping extends LoadedMapping {
     }
 
     /**
-     * Write this mapping to a file.
+     * Write this mapping to a file. TODO sort methods
      *
-     * @param filePath file path (not null)
+     * @param path file path (not null, not empty)
      * @return true if successful, otherwise false
      */
-    public boolean writeToFile(String filePath) {
-        Validate.nonNull(filePath, "file path");
+    public boolean writeToFile(String path) {
+        Validate.nonEmpty(path, "path");
 
-        File file = new File(filePath);
+        File file = new File(path);
         BinaryExporter exporter = BinaryExporter.getInstance();
 
         boolean success = true;
@@ -323,8 +345,26 @@ public class EditableMapping extends LoadedMapping {
         } catch (IOException exception) {
             success = false;
         }
+
+        String filePath = file.getAbsolutePath();
+        filePath = filePath.replaceAll("\\\\", "/");
+
         if (success) {
-            String eventDescription = "write mapping " + filePath;
+            String af = assetFolderForWrite();
+            if (filePath.startsWith(af)) {
+                assetFolder = af;
+                assetPath = MyString.remainder(filePath, af);
+            } else if (filePath.endsWith(assetPath) && !assetPath.isEmpty()) {
+                int length = filePath.length() - assetPath.length();
+                assetFolder = filePath.substring(0, length);
+            } else {
+                assetFolder = "";
+                assetPath = "";
+            }
+            if (assetPath.startsWith("/")) {
+                assetPath = MyString.remainder(assetPath, "/");
+            }
+            String eventDescription = "write mapping to " + filePath;
             setPristine(eventDescription);
             logger.log(Level.INFO, "Wrote mapping to file {0}",
                     MyString.quote(filePath));
