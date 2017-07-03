@@ -434,41 +434,6 @@ public class Util {
     }
 
     /**
-     * Load a BVH file as a CG model without logging any warning/error messages.
-     *
-     * @param assetManager asset manager
-     * @param inputStream path to BVH asset
-     * @param key asset key
-     * @return a new orphan spatial, or null if unsuccessful
-     */
-    public static Spatial loadBvhStream(AssetManager assetManager,
-            InputStream inputStream, AssetKey<BVHAnimData> key) {
-        if (assetManager == null || inputStream == null || key == null) {
-            return null;
-        }
-
-        BVHAnimData loadedData;
-        try {
-            loadedData = assetManager.loadAssetFromStream(key, inputStream);
-        } catch (AssetNotFoundException | NoSuchElementException e) {
-            return null;
-        }
-
-        Skeleton skeleton = loadedData.getSkeleton();
-        SkeletonControl skeletonControl = new SkeletonControl(skeleton);
-
-        AnimControl animControl = new AnimControl(skeleton);
-        Animation anim = loadedData.getAnimation();
-        animControl.addAnim(anim);
-
-        Spatial result = new Node("bvhStream");
-        result.addControl(animControl);
-        result.addControl(skeletonControl);
-
-        return result;
-    }
-
-    /**
      * Load a CG model asset without logging any warning/error messages.
      *
      * @param assetManager asset manager
@@ -504,55 +469,7 @@ public class Util {
         Spatial loaded;
         try {
             loaded = assetManager.loadModel(key);
-        } catch (AssetNotFoundException e) {
-            loaded = null;
-        }
-        /*
-         * Restore logging levels.
-         */
-        faceLogger.setLevel(faceLevel);
-        meshLoaderLogger.setLevel(meshLoaderLevel);
-        materialLoaderLogger.setLevel(materialLoaderLevel);
-
-        return loaded;
-    }
-
-    /**
-     * Load a CG model from a stream without logging any warning/error messages.
-     *
-     * @param assetManager asset manager
-     * @param stream input stream to read from
-     * @param key model key
-     * @return a new orphan spatial, or null if unsuccessful
-     */
-    public static Spatial loadCgmStream(AssetManager assetManager,
-            InputStream stream, ModelKey key) {
-        if (assetManager == null || stream == null || key == null) {
-            return null;
-        }
-        /*
-         * Temporarily hush warnings about errors during triangulation,
-         * vertices with >4 weights, and unsupported pass directives.
-         */
-        Logger faceLogger = Logger.getLogger(Face.class.getName());
-        Level faceLevel = faceLogger.getLevel();
-        faceLogger.setLevel(Level.SEVERE);
-
-        Logger meshLoaderLogger = Logger.getLogger(MeshLoader.class.getName());
-        Level meshLoaderLevel = meshLoaderLogger.getLevel();
-        meshLoaderLogger.setLevel(Level.SEVERE);
-
-        Logger materialLoaderLogger = Logger.getLogger(
-                MaterialLoader.class.getName());
-        Level materialLoaderLevel = materialLoaderLogger.getLevel();
-        materialLoaderLogger.setLevel(Level.SEVERE);
-        /*
-         * Load the model.
-         */
-        Spatial loaded;
-        try {
-            loaded = assetManager.loadAssetFromStream(key, stream);
-        } catch (AssetLoadException e) {
+        } catch (AssetNotFoundException | AssetLoadException exception) {
             loaded = null;
         }
         /*
