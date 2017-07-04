@@ -375,6 +375,9 @@ public class CgmView implements JmeCloneable {
      * Update the user transforms of all bones using the MVC model.
      */
     void updatePose() {
+        if (!model.isLoaded()) {
+            return;
+        }
         int boneCount = model.bones.countBones();
         int numTransforms = model.pose.getPose().countBones();
         assert numTransforms == boneCount : numTransforms;
