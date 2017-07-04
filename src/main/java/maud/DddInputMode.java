@@ -962,6 +962,10 @@ class DddInputMode extends InputMode {
                 Maud.model.camera.toggleProjection();
                 handled = true;
                 break;
+            case "toggle viewMode":
+                Maud.model.misc.toggleViewMode();
+                handled = true;
+                break;
         }
 
         return handled;

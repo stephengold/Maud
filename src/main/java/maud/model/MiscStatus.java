@@ -76,6 +76,10 @@ public class MiscStatus implements Cloneable {
      */
     private String selectedUserKey = null;
     /**
+     * view mode (either "animation" or "scene")
+     */
+    private String viewMode = "scene";
+    /**
      * center location of the top of the platform (in world coordinates, not
      * null)
      */
@@ -164,6 +168,15 @@ public class MiscStatus implements Cloneable {
      */
     public String getSelectedUserKey() {
         return selectedUserKey;
+    }
+
+    /**
+     * Read the view mode.
+     *
+     * @return either "animation" or "scene"
+     */
+    public String getViewMode() {
+        return viewMode;
     }
 
     /**
@@ -275,10 +288,40 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
+     * Alter the platform display mode.
+     *
+     * @param modeName either "animation" or "scene"
+     */
+    public void setViewMode(String modeName) {
+        Validate.nonNull(modeName, "mode name");
+
+        switch (modeName) {
+            case "animation":
+            case "scene":
+                viewMode = modeName;
+                break;
+            default:
+                logger.log(Level.SEVERE, "mode name={0}", modeName);
+                throw new IllegalArgumentException("invalid mode name");
+        }
+    }
+
+    /**
      * Toggle the angle display mode.
      */
     public void toggleAnglesInDegrees() {
         setAnglesInDegrees(!anglesInDegrees);
+    }
+
+    /**
+     * Toggle the view mode.
+     */
+    public void toggleViewMode() {
+        if (viewMode.equals("scene")) {
+            viewMode = "animation";
+        } else {
+            viewMode = "scene";
+        }
     }
     // *************************************************************************
     // Object methods
