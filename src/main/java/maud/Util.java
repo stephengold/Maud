@@ -32,7 +32,6 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
-import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
@@ -45,6 +44,8 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -56,7 +57,7 @@ import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
@@ -76,11 +77,11 @@ public class Util {
     // constants and loggers
 
     /**
-     * Pi/2
+     * Pi/2 or 180 degrees
      */
     public static final double HALF_PI = Math.PI / 2.0;
     /**
-     * Pi/4
+     * Pi/4 or 90 degrees
      */
     public static final double QUARTER_PI = Math.PI / 4.0;
     /**
@@ -206,6 +207,37 @@ public class Util {
     }
 
     /**
+     * Test whether the bounds of the specified view port contain the specified
+     * screen position.
+     *
+     * @param viewPort (not null, unaffected)
+     * @param screenXY (in pixels, not null, unaffected)
+     *
+     * @return true if contained, otherwise false
+     */
+    public static boolean contains(ViewPort viewPort, Vector2f screenXY) {
+        Validate.nonNull(viewPort, "view port");
+        Validate.nonNull(screenXY, "screen xy");
+
+        Camera camera = viewPort.getCamera();
+        float xFraction = screenXY.x / camera.getWidth();
+        float leftX = camera.getViewPortLeft();
+        float rightX = camera.getViewPortRight();
+
+        boolean result = false;
+        if (xFraction > leftX && xFraction < rightX) {
+            float yFraction = screenXY.y / camera.getHeight();
+            float bottomY = camera.getViewPortBottom();
+            float topY = camera.getViewPortTop();
+            if (yFraction > bottomY && yFraction < topY) {
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Count how many vertices in the specified subtree of the scene graph are
      * directly influenced by the indexed bone. Note: recursive!
      *
@@ -302,7 +334,7 @@ public class Util {
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
-    static void interpolateTransform(float time, float[] times,
+    public static Transform interpolateTransform(float time, float[] times,
             Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales,
             Transform storeResult) {
         if (storeResult == null) {
@@ -339,6 +371,8 @@ public class Util {
             scale.interpolateLocal(scales[startFrame], scales[endFrame],
                     fraction);
         }
+
+        return storeResult;
     }
 
     /**
@@ -393,6 +427,44 @@ public class Util {
             float factor = radius / result.length();
             assert factor <= 1f : factor;
             result.multLocal(factor);
+        }
+
+        return result;
+    }
+
+    /**
+     * Enumerate all view ports that contain the specified screen position.
+     *
+     * @param screenXY (in pixels, not null, unaffected)
+     * @param renderManager (not null)
+     *
+     * @return a new list of pre-existing view ports
+     */
+    public static List<ViewPort> listViewPorts(RenderManager renderManager,
+            Vector2f screenXY) {
+        Validate.nonNull(screenXY, "screen xy");
+
+        List<ViewPort> result = new ArrayList<>(4);
+
+        List<ViewPort> preViews = renderManager.getPreViews();
+        for (ViewPort preView : preViews) {
+            if (contains(preView, screenXY)) {
+                result.add(preView);
+            }
+        }
+
+        List<ViewPort> mainViews = renderManager.getMainViews();
+        for (ViewPort mainView : mainViews) {
+            if (contains(mainView, screenXY)) {
+                result.add(mainView);
+            }
+        }
+
+        List<ViewPort> postViews = renderManager.getPostViews();
+        for (ViewPort postView : postViews) {
+            if (contains(postView, screenXY)) {
+                result.add(postView);
+            }
         }
 
         return result;
