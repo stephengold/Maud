@@ -216,6 +216,7 @@ I therefore acknowledge the following software developers:
   + the Nifty graphical user interface
   + Open Broadcaster Software
   + the RealWorld Cursor Editor
+  + the WinMerge differencing and merging tool
 
 I am grateful to JFrog and Github for providing free hosting for the
 Maud Project and many other open-source projects.
