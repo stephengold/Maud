@@ -121,9 +121,9 @@ public class CgmView implements JmeCloneable {
      */
     private Geometry cursor;
     /**
-     * CG model that owns this view (not null) TODO rename cgm
+     * CG model that owns this view (not null)
      */
-    private LoadedCgm model;
+    private LoadedCgm cgm;
     /**
      * attachment point for CG models (applies transforms)
      */
@@ -180,7 +180,7 @@ public class CgmView implements JmeCloneable {
         Validate.nonNull(parentNode, "parent");
         Validate.nonNull(port2, "view port2");
 
-        model = loadedCgm;
+        cgm = loadedCgm;
         parent = parentNode;
         viewPort1 = port1;
         viewPort2 = port2;
@@ -199,7 +199,7 @@ public class CgmView implements JmeCloneable {
 
         Bone bone = skeleton.getBone(boneIndex);
         Vector3f modelLocation = bone.getModelSpacePosition();
-        Transform worldTransform = copyWorldTransform();
+        Transform worldTransform = worldTransform();
         Vector3f location = worldTransform.transformVector(modelLocation, null);
 
         return location;
@@ -207,11 +207,11 @@ public class CgmView implements JmeCloneable {
 
     /**
      * Copy the world transform of the CG model, based on an animated geometry
-     * if possible. TODO rename worldTransform
+     * if possible. TODO sort methods
      *
      * @return a new instance
      */
-    public Transform copyWorldTransform() {
+    public Transform worldTransform() {
         Spatial basedOn = MySpatial.findAnimatedGeometry(cgmRoot);
         if (basedOn == null) {
             basedOn = cgmRoot;
@@ -330,11 +330,11 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Replace the CG model with a newly loaded one. TODO rename loadCgm
+     * Replace the CG model with a newly loaded one.
      *
      * @param loadedRoot (not null)
      */
-    public void loadModel(Spatial loadedRoot) {
+    public void loadCgm(Spatial loadedRoot) {
         Validate.nonNull(loadedRoot, "loaded root");
         /*
          * Detach the old spatial (if any) from the scene.
@@ -370,7 +370,7 @@ public class CgmView implements JmeCloneable {
      * @return the pre-existing spatial (not null)
      */
     public Spatial selectedSpatial() {
-        Spatial result = model.spatial.underRoot(cgmRoot);
+        Spatial result = cgm.spatial.underRoot(cgmRoot);
         return result;
     }
 
@@ -428,14 +428,14 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Alter which loaded CG model corresponds with this view. Used after
-     * cloning. TODO rename setCgm
+     * Alter which loaded CG model corresponds with this view. Invoked after
+     * cloning. TODO sort methods
      *
      * @param loadedModel (not null)
      */
-    public void setModel(LoadedCgm loadedModel) {
+    public void setCgm(LoadedCgm loadedModel) {
         Validate.nonNull(loadedModel, "loaded model");
-        model = loadedModel;
+        cgm = loadedModel;
     }
 
     /**
@@ -578,11 +578,11 @@ public class CgmView implements JmeCloneable {
             createLights();
             createSky();
         }
-        if (model.isLoaded()) {
+        if (cgm.isLoaded()) {
             updatePose();
             updateTransform();
 
-            Maud.gui.tools.update(model);
+            Maud.gui.tools.update(cgm);
 
             Camera camera = getCamera();
             skyControl.setCamera(camera); // note: target has 2 distinct cameras
@@ -757,29 +757,29 @@ public class CgmView implements JmeCloneable {
         maxExtent = 2f * MyMath.max(halfExtent.x, halfExtent.y, halfExtent.z);
         Vector3f min = box.getMin(null);
         float minY = min.y;
-        model.transform.loadCgm(center, minY, maxExtent);
+        cgm.transform.loadCgm(center, minY, maxExtent);
         /*
          * reset the camera, cursor, and platform
          */
         Vector3f baseLocation = new Vector3f(0f, 0f, 0f);
-        model.scenePov.setCursorLocation(baseLocation);
+        cgm.scenePov.setCursorLocation(baseLocation);
         Maud.model.misc.setPlatformDiameter(2f);
 
         Vector3f cameraLocation = new Vector3f(-2.4f, 1f, 1.6f);
-        model.scenePov.setCameraLocation(cameraLocation);
+        cgm.scenePov.setCameraLocation(cameraLocation);
     }
 
     /**
      * Update the user transforms of all bones based on the MVC model.
      */
     private void updatePose() {
-        int boneCount = model.bones.countBones();
-        int numTransforms = model.pose.getPose().countBones();
+        int boneCount = cgm.bones.countBones();
+        int numTransforms = cgm.pose.getPose().countBones();
         assert numTransforms == boneCount : numTransforms;
         assert skeleton == null
                 || skeleton.getBoneCount() == boneCount : boneCount;
 
-        Pose pose = model.pose.getPose();
+        Pose pose = cgm.pose.getPose();
         Transform transform = new Transform();
         Vector3f translation = transform.getTranslation();
         Quaternion rotation = transform.getRotation();
@@ -796,7 +796,7 @@ public class CgmView implements JmeCloneable {
      * Update the transform of the CG model based on the MVC model.
      */
     private void updateTransform() {
-        Transform transform = model.transform.worldTransform();
+        Transform transform = cgm.transform.worldTransform();
         parent.setLocalTransform(transform);
     }
 }

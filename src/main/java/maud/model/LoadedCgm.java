@@ -603,7 +603,7 @@ public class LoadedCgm implements Cloneable {
 
         validateCgm(cgmRoot);
         rootSpatial = cgmRoot.clone();
-        view.loadModel(cgmRoot);
+        view.loadCgm(cgmRoot);
         /*
          * Reset the selected bone/spatial and also the loaded animation.
          */
@@ -641,7 +641,7 @@ public class LoadedCgm implements Cloneable {
             clone.view = null;
         } else {
             clone.view = cloner.clone(view);
-            clone.view.setModel(clone);
+            clone.view.setCgm(clone);
         }
         /*
          * Initialize back pointers to the clone.

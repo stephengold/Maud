@@ -358,7 +358,7 @@ public class AxesTool extends WindowController {
                     transform = loadedCgm.bone.modelTransform(null);
                     // TODO use animated geometry
                     Transform worldTransform;
-                    worldTransform = loadedCgm.view.copyWorldTransform();
+                    worldTransform = loadedCgm.view.worldTransform();
                     transform.combineWithParent(worldTransform);
                 }
                 break;
