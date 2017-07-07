@@ -239,7 +239,7 @@ the menu bar, status bar, and tool windows.
                         <control name="label" id="boneIndex"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
-                                 width="65px"/>
+                                 width="75px"/>
                         <control name="button" id="boneNextButton"
                                  width="20px">
                             <interact onRelease="perform(next bone)"/>
