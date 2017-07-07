@@ -217,6 +217,8 @@ public class Camera implements Savable, Cloneable {
     /**
      * Constructor instantiates a new <code>Camera</code> object. All
      * values of the camera are set to default.
+     * @param width display width in pixels
+     * @param height display height in pixels
      */
     public Camera(int width, int height) {
         this();
@@ -635,6 +637,7 @@ public class Camera implements Savable, Cloneable {
      * <code>getDirection</code> retrieves the direction vector the camera is
      * facing.
      *
+     * @param store storage for result, or null
      * @return the direction the camera is facing.
      * @see Camera#getDirection()
      */
@@ -645,6 +648,7 @@ public class Camera implements Savable, Cloneable {
     /**
      * <code>getLeft</code> retrieves the left axis of the camera.
      *
+     * @param store storage for result, or null
      * @return the left axis of the camera.
      * @see Camera#getLeft()
      */
@@ -655,6 +659,7 @@ public class Camera implements Savable, Cloneable {
     /**
      * <code>getUp</code> retrieves the up axis of the camera.
      *
+     * @param store storage for result, or null
      * @return the up axis of the camera.
      * @see Camera#getUp()
      */
@@ -693,6 +698,7 @@ public class Camera implements Savable, Cloneable {
      * given a direction and an up vector.
      *
      * @param direction the direction this camera is facing.
+     * @param up direction vector
      */
     public void lookAtDirection(Vector3f direction, Vector3f up) {
         this.rotation.lookAt(direction, up);
@@ -1090,7 +1096,7 @@ public class Camera implements Savable, Cloneable {
      * use the matrix for computing the view projection matrix as well.
      * Use null argument to return to normal functionality.
      *
-     * @param projMatrix
+     * @param projMatrix projection matrix to use, or null
      */
     public void setProjectionMatrix(Matrix4f projMatrix) {
         if (projMatrix == null) {
@@ -1351,6 +1357,10 @@ public class Camera implements Savable, Cloneable {
     }
 
     /**
+     * @param screenPosition input coordinates
+     * @param projectionZPos z position
+     * @param store storage for result, or null
+     * @return world coordinates
      * @see Camera#getWorldCoordinates
      */
     public Vector3f getWorldCoordinates(Vector2f screenPosition,
@@ -1375,7 +1385,9 @@ public class Camera implements Savable, Cloneable {
 
     /**
      * Converts the given position from world space to screen space.
-     * 
+     *
+     * @param worldPos input coordinates
+     * @return a new coordinate vector
      * @see Camera#getScreenCoordinates
      */
     public Vector3f getScreenCoordinates(Vector3f worldPos) {
@@ -1385,6 +1397,9 @@ public class Camera implements Savable, Cloneable {
     /**
      * Converts the given position from world space to screen space.
      *
+     * @param worldPosition input coordinates
+     * @param store storage for result, or null
+     * @return coordinate vector
      * @see Camera#getScreenCoordinates(Vector3f, Vector3f)
      */
     public Vector3f getScreenCoordinates(Vector3f worldPosition, Vector3f store) {
