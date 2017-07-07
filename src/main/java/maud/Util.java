@@ -106,7 +106,7 @@ public class Util {
     /**
      * Generate an axis-aligned vector with the specified length.
      *
-     * @param axisIndex 0&rarr;X, 1&rarrlY, 2&rarr;Z
+     * @param axisIndex 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      * @param length how long (ge;0)
      * @param storeResult (modified if not null)
      * @return vector (either storeResult or a new instance)
@@ -520,7 +520,7 @@ public class Util {
 
         ModelKey key = new ModelKey(assetPath);
         /*
-         * Temporarily hush warnings about errors during triangulation,
+         * Temporarily hush warnings about failures to triangulate,
          * vertices with >4 weights, and unsupported pass directives.
          */
         Logger faceLogger = Logger.getLogger(Face.class.getName());
@@ -711,9 +711,14 @@ public class Util {
             if (boneMapping != null) {
                 String sourceName = boneMapping.getSourceName();
                 int iSource = sourceSkeleton.getBoneIndex(sourceName);
-                BoneTrack track = retargetTrack(sourceAnimation, sourceSkeleton,
-                        targetSkeleton, mapping, iSource, iTarget);
-                result.addTrack(track);
+                BoneTrack sourceTrack;
+                sourceTrack = MyAnimation.findTrack(sourceAnimation, iSource);
+                if (sourceTrack != null) {
+                    BoneTrack track;
+                    track = retargetTrack(sourceAnimation, sourceTrack,
+                            sourceSkeleton, targetSkeleton, mapping, iTarget);
+                    result.addTrack(track);
+                }
             }
         }
 
@@ -727,23 +732,22 @@ public class Util {
      * @param sourceAnimation which animation to re-target (not null,
      * unaffected)
      * @param sourceSkeleton (not null, unaffected)
+     * @param sourceTrack input bone track (not null, unaffected)
      * @param targetSkeleton (not null, unaffected)
      * @param mapping which skeleton mapping to use (not null, unaffected)
-     * @param sourceBoneIndex index of the source bone (&ge;0)
      * @param targetBoneIndex index of the target bone (&ge;0)
      * @return a new bone track
      */
     public static BoneTrack retargetTrack(Animation sourceAnimation,
-            Skeleton sourceSkeleton, Skeleton targetSkeleton,
-            SkeletonMapping mapping, int sourceBoneIndex, int targetBoneIndex) {
+            BoneTrack sourceTrack, Skeleton sourceSkeleton,
+            Skeleton targetSkeleton, SkeletonMapping mapping,
+            int targetBoneIndex) {
         Validate.nonNull(sourceSkeleton, "source skeleton");
+        Validate.nonNull(sourceTrack, "source track");
         Validate.nonNull(targetSkeleton, "target skeleton");
         Validate.nonNull(mapping, "mapping");
-        Validate.nonNegative(sourceBoneIndex, "source bone index");
         Validate.nonNegative(targetBoneIndex, "target bone index");
 
-        BoneTrack sourceTrack;
-        sourceTrack = MyAnimation.findTrack(sourceAnimation, sourceBoneIndex);
         float[] times = sourceTrack.getTimes();
         int numKeyframes = times.length;
         Vector3f[] translations = new Vector3f[numKeyframes];
