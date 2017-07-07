@@ -88,7 +88,7 @@ public class AxesTool extends WindowController {
         int axisIndex = model.getDragAxis();
         boolean farSide = model.isDraggingFarSide();
 
-        AxesControl axesControl = cgm.view.getAxesControl();
+        AxesControl axesControl = cgm.getView().getAxesControl();
         assert axesControl.isEnabled();
         Spatial axesSpatial = axesControl.getSpatial();
         /*
@@ -99,7 +99,7 @@ public class AxesTool extends WindowController {
         /*
          * Calculate the new axis direction in local coordinates.
          */
-        Camera camera = cgm.view.getCamera();
+        Camera camera = cgm.getView().getCamera();
         Ray worldRay = Util.mouseRay(camera, inputManager);
         Ray localRay = Util.localizeRay(worldRay, axesSpatial);
         float radius = axesControl.getAxisLength();
@@ -126,7 +126,7 @@ public class AxesTool extends WindowController {
         assert axisIndex >= 0 : axisIndex;
         assert axisIndex < 3 : axisIndex;
 
-        AxesControl axesControl = cgm.view.getAxesControl();
+        AxesControl axesControl = cgm.getView().getAxesControl();
         assert axesControl.isEnabled();
         Spatial axesSpatial = axesControl.getSpatial();
         /*
@@ -168,7 +168,7 @@ public class AxesTool extends WindowController {
         Vector3f result = null;
         Transform transform = worldTransform(cgm);
         if (transform != null) {
-            AxesControl axesControl = cgm.view.getAxesControl();
+            AxesControl axesControl = cgm.getView().getAxesControl();
             result = axesControl.tipLocation(axisIndex);
         }
 
@@ -181,7 +181,7 @@ public class AxesTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateVisualizer(LoadedCgm cgm) {
-        AxesControl axesControl = cgm.view.getAxesControl();
+        AxesControl axesControl = cgm.getView().getAxesControl();
         Transform transform = worldTransform(cgm);
         if (transform == null) {
             axesControl.setEnabled(false);
@@ -358,7 +358,7 @@ public class AxesTool extends WindowController {
                     transform = loadedCgm.bone.modelTransform(null);
                     // TODO use animated geometry
                     Transform worldTransform;
-                    worldTransform = loadedCgm.view.worldTransform();
+                    worldTransform = loadedCgm.getView().worldTransform();
                     transform.combineWithParent(worldTransform);
                 }
                 break;
@@ -374,7 +374,7 @@ public class AxesTool extends WindowController {
 
             case "spatial":
                 if (loadedCgm.isLoaded()) {
-                    Spatial spatial = loadedCgm.view.selectedSpatial();
+                    Spatial spatial = loadedCgm.getView().selectedSpatial();
                     transform = spatial.getWorldTransform();
                 }
                 break;

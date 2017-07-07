@@ -151,8 +151,8 @@ public class DddGui extends GuiScreenController {
      */
     public LoadedCgm mouseCgm() {
         Vector2f screenXY = inputManager.getCursorPosition();
-        ViewPort sourceViewPort = Maud.model.source.view.getViewPort();
-        ViewPort targetViewPort = Maud.model.target.view.getViewPort();
+        ViewPort sourceViewPort = Maud.model.source.getView().getViewPort();
+        ViewPort targetViewPort = Maud.model.target.getView().getViewPort();
 
         LoadedCgm cgm = null;
         List<ViewPort> viewPorts = Util.listViewPorts(renderManager, screenXY);
@@ -549,8 +549,8 @@ public class DddGui extends GuiScreenController {
 
         Maud application = Maud.getApplication();
         application.updateViewPorts();
-        Maud.model.source.view.update();
-        Maud.model.target.view.update();
+        Maud.model.source.getView().update();
+        Maud.model.target.getView().update();
     }
     // *************************************************************************
     // ScreenController methods

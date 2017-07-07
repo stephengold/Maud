@@ -67,7 +67,7 @@ class RenderTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateShadowFilter(LoadedCgm cgm) {
-        DirectionalLightShadowFilter dlsf = cgm.view.getDlsf();
+        DirectionalLightShadowFilter dlsf = cgm.getView().getDlsf();
         if (dlsf != null) {
             boolean enable = Maud.model.misc.areShadowsRendered();
             dlsf.setEnabled(enable);

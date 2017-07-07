@@ -79,12 +79,14 @@ class SkeletonColorTool extends WindowController {
     }
 
     /**
-     * Update a SkeletonDebugControl from the MVC model.
+     * Update a SkeletonDebugControl based on the MVC model. TODO rename
+     * updateVisualizer
      *
      * @param modelCgm which CG model's view to update (not null)
      */
     void updateSdc(LoadedCgm modelCgm) {
-        SkeletonDebugControl control = modelCgm.view.getSkeletonDebugControl();
+        SkeletonDebugControl control;
+        control = modelCgm.getView().getSkeletonDebugControl();
         if (control == null) {
             return;
         }

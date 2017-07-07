@@ -43,6 +43,7 @@ import jme3utilities.MyAsset;
 import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.CgmView;
 import maud.Maud;
 import maud.Util;
 import maud.model.LoadedCgm;
@@ -95,18 +96,19 @@ public class CursorTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateScene(LoadedCgm cgm) {
-        Geometry cursor = cgm.view.getCursor();
+        CgmView sceneView = cgm.getView();
+        Geometry cursor = sceneView.getCursor();
         /*
          * visibility
          */
         boolean wasVisible = (cursor != null);
         boolean visible = Maud.model.cursor.isVisible();
         if (wasVisible && !visible) {
-            cgm.view.setCursor(null);
+            sceneView.setCursor(null);
             cursor = null;
         } else if (!wasVisible && visible) {
             cursor = createCursor();
-            cgm.view.setCursor(cursor);
+            sceneView.setCursor(cursor);
         }
 
         if (cursor != null) {
@@ -137,12 +139,13 @@ public class CursorTool extends WindowController {
      */
     public void warpCursor() {
         LoadedCgm cgm = Maud.gui.mouseCgm();
-        Camera camera = cgm.view.getCamera();
+        CgmView sceneView = cgm.getView();
+        Camera camera = sceneView.getCamera();
         Ray ray = Util.mouseRay(camera, inputManager);
         /*
          * Trace the ray to the CG model's visualization.
          */
-        Spatial cgmRoot = cgm.view.getCgmRoot();
+        Spatial cgmRoot = sceneView.getCgmRoot();
         Vector3f targetContactPoint = findContact(cgmRoot, ray);
 
         if (targetContactPoint != null) {
@@ -151,7 +154,7 @@ public class CursorTool extends WindowController {
             /*
              * The ray missed the CG model; try to trace it to the platform.
              */
-            Spatial platform = cgm.view.getPlatform();
+            Spatial platform = sceneView.getPlatform();
             if (platform != null) {
                 Vector3f platformContactPoint = findContact(platform, ray);
                 if (platformContactPoint != null) {

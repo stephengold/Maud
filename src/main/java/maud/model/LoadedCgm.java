@@ -99,9 +99,9 @@ public class LoadedCgm implements Cloneable {
     public ScenePov scenePov = new ScenePov();
     /**
      * 3D visualization of the CG model (set by {@link #setView(maud.CgmView)}
-     * or {@link #clone()}) TODO rename sceneView
+     * or {@link #clone()})
      */
-    public CgmView view = null;
+    private CgmView sceneView = null;
     /**
      * which bone in selected in the CG model
      */
@@ -316,6 +316,16 @@ public class LoadedCgm implements Cloneable {
     Spatial getRootSpatial() {
         assert rootSpatial != null;
         return rootSpatial;
+    }
+
+    /**
+     * Access the corresponding view.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public CgmView getView() {
+        assert sceneView != null;
+        return sceneView;
     }
 
     /**
@@ -572,7 +582,7 @@ public class LoadedCgm implements Cloneable {
      */
     public void setView(CgmView newView) {
         Validate.nonNull(newView, "new view");
-        view = newView;
+        sceneView = newView;
     }
 
     /**
@@ -584,7 +594,7 @@ public class LoadedCgm implements Cloneable {
         extension = null;
         name = null;
         rootSpatial = null;
-        view.unloadModel();
+        sceneView.unloadModel();
         /*
          * Reset the selected bone.
          */
@@ -603,7 +613,7 @@ public class LoadedCgm implements Cloneable {
 
         validateCgm(cgmRoot);
         rootSpatial = cgmRoot.clone();
-        view.loadCgm(cgmRoot);
+        sceneView.loadCgm(cgmRoot);
         /*
          * Reset the selected bone/spatial and also the loaded animation.
          */
@@ -637,11 +647,11 @@ public class LoadedCgm implements Cloneable {
         clone.track = track.clone();
         clone.transform = transform.clone();
 
-        if (view == null) {
-            clone.view = null;
+        if (sceneView == null) {
+            clone.sceneView = null;
         } else {
-            clone.view = cloner.clone(view);
-            clone.view.setCgm(clone);
+            clone.sceneView = cloner.clone(sceneView);
+            clone.sceneView.setCgm(clone);
         }
         /*
          * Initialize back pointers to the clone.
