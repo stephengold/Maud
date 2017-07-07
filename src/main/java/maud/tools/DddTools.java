@@ -34,7 +34,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.nifty.WindowController;
 import maud.DddGui;
-import maud.Maud;
+import maud.model.LoadedCgm;
 
 /**
  * Tool windows in Maud's "3D View" screen.
@@ -60,7 +60,7 @@ public class DddTools {
     /**
      * controller for the "Axes Tool" window
      */
-    final AxesTool axes;
+    final public AxesTool axes;
     /**
      * controller for the "Bone Rotation Tool" window
      */
@@ -138,6 +138,10 @@ public class DddTools {
      */
     final SkeletonTool skeleton;
     /**
+     * controller for the "Sky Tool" window
+     */
+    final SkyTool sky;
+    /**
      * controller for the "Source Animation Tool" window
      */
     final SourceAnimationTool sourceAnimation;
@@ -157,10 +161,6 @@ public class DddTools {
      * controller for the "Spatial Translation Tool" window
      */
     final SpatialTranslationTool spatialTranslation;
-    /**
-     * controller for the "Sky Tool" window
-     */
-    final SkyTool sky;
     /**
      * controller for the "Twist Tool" window
      */
@@ -450,19 +450,21 @@ public class DddTools {
 
     /**
      * Updates performed even when all tools are disabled. (Invoked once per
-     * render pass.)
+     * render pass for each loaded CG model.)
+     *
+     * @param loadedCgm which CG model to update (not null)
      */
-    public void update() {
-        axes.updateVisualizations();
-        bounds.updateVisualizations();
-        camera.updateCamera();
-        cursor.updateCursor();
-        platform.updateScene();
-        render.updateShadowFilter();
-        skeleton.updateSdc(Maud.model.source);
-        skeleton.updateSdc(Maud.model.target);
-        skeletonColor.updateSdc(Maud.model.source);
-        skeletonColor.updateSdc(Maud.model.target);
-        sky.updateSkyControl();
+    public void update(LoadedCgm loadedCgm) {
+        Validate.nonNull(loadedCgm, "loaded model");
+
+        axes.updateVisualizer(loadedCgm);
+        bounds.updateVisualizer(loadedCgm);
+        camera.updateCamera(loadedCgm);
+        cursor.updateScene(loadedCgm);
+        platform.updateScene(loadedCgm);
+        render.updateShadowFilter(loadedCgm);
+        skeleton.updateSdc(loadedCgm);
+        skeletonColor.updateSdc(loadedCgm);
+        sky.updateSkyControl(loadedCgm);
     }
 }

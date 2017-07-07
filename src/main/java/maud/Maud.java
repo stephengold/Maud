@@ -29,9 +29,14 @@ package maud;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.audio.openal.ALAudioRenderer;
+import com.jme3.renderer.Camera;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.system.AppSettings;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
@@ -54,6 +59,10 @@ public class Maud extends GuiApplication {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * additional scenes (besides rootNode and guiRoot) for rendering
+     */
+    final private static List<Spatial> addedScenes = new ArrayList<>(3);
     /**
      * message logger for this class
      */
@@ -90,11 +99,28 @@ public class Maud extends GuiApplication {
      */
     private static Maud application;
     /**
-     * printer for scene dumps
+     * printer for scene dumps TODO rename dumper
      */
     final private static Printer printer = new Printer();
+    /**
+     * view port for left half of split screen
+     */
+    private ViewPort sourceCgmViewPort;
+    /**
+     * view port for right half of split screen
+     */
+    private ViewPort targetCgmViewPort;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Process a "print scene" action.
+     */
+    public void dumpScene() {
+        printer.setPrintCull(true);
+        printer.setPrintTransform(true);
+        printer.printSubtree(rootNode);
+    }
 
     /**
      * Access the application.
@@ -112,22 +138,22 @@ public class Maud extends GuiApplication {
      */
     public static void main(String[] arguments) {
         /*
-         * Mute the chatty loggers found in some imported packages.
+        * Mute the chatty loggers found in some imported packages.
          */
         Misc.setLoggingLevels(Level.WARNING);
         Logger.getLogger(ALAudioRenderer.class.getName())
                 .setLevel(Level.SEVERE);
         /*
-         * Lower logging thresholds for classes of interest.
+        * Lower logging thresholds for classes of interest.
          */
         Logger.getLogger(LoadedCgm.class.getName()).setLevel(Level.INFO);
         History.logger.setLevel(Level.INFO);
         /*
-         * Instantiate the application.
+        * Instantiate the application.
          */
         application = new Maud();
         /*
-         * Customize the window's title bar.
+        * Customize the window's title bar.
          */
         AppSettings settings = new AppSettings(true);
         settings.setTitle(windowTitle);
@@ -135,7 +161,7 @@ public class Maud extends GuiApplication {
 
         application.start();
         /*
-         * ... and onward to Maud.guiInitializeApplication()!
+        * ... and onward to Maud.guiInitializeApplication()!
          */
     }
 
@@ -158,6 +184,16 @@ public class Maud extends GuiApplication {
         ScreenshotAppState screenShotState = new ScreenshotAppState();
         boolean success = stateManager.attach(screenShotState);
         assert success;
+    }
+
+    /**
+     * Update the configuration of the view ports.
+     */
+    public void updateViewPorts() {
+        boolean splitScreen = Maud.model.source.isLoaded();
+        sourceCgmViewPort.setEnabled(splitScreen);
+        targetCgmViewPort.setEnabled(splitScreen);
+        viewPort.setEnabled(!splitScreen);
     }
     // *************************************************************************
     // ActionApplication methods
@@ -201,9 +237,7 @@ public class Maud extends GuiApplication {
                     break;
 
                 case "print scene":
-                    printer.setPrintCull(true);
-                    printer.setPrintTransform(true);
-                    printer.printSubtree(rootNode);
+                    dumpScene();
                     handled = true;
                     break;
 
@@ -234,7 +268,7 @@ public class Maud extends GuiApplication {
 
         Locators.setAssetManager(assetManager);
         Locators.useDefault();
-        
+
         StartScreen startScreen = new StartScreen();
         stateManager.attach(startScreen);
     }
@@ -254,6 +288,14 @@ public class Maud extends GuiApplication {
             startup1();
             didStartup1 = true;
         }
+        /*
+         * Update the logical/geometric state of all scenes other than
+         * rootNode and guiNode.
+         */
+        for (Spatial scene : addedScenes) {
+            scene.updateLogicalState(tpf);
+            scene.updateGeometricState();
+        }
     }
     // *************************************************************************
     // private methods
@@ -269,17 +311,10 @@ public class Maud extends GuiApplication {
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
         /*
-         * Add attachment points to the scene graph.
-         */        
-        Node sourceParent = new Node("parent for source CGM");
-        rootNode.attachChild(sourceParent);
-        CgmView sourceView = new CgmView(model.source, sourceParent);
-        model.source.setView(sourceView);
-
-        Node targetParent = new Node("parent for target CGM");
-        rootNode.attachChild(targetParent);
-        CgmView targetView = new CgmView(model.target, targetParent);
-        model.target.setView(targetView);
+         * Create 2 view ports for split-screen editing.
+         */
+        createSourceCgmViewPort();
+        createTargetCgmViewPort();
         /*
          * Attach screen controllers for the "3D View" screen and BindScreen.
          */
@@ -295,5 +330,70 @@ public class Maud extends GuiApplication {
          */
         setDisplayFps(false);
         setDisplayStatView(false);
+    }
+
+    /**
+     * Create view port for the source CG model's scene.
+     */
+    private void createSourceCgmViewPort() {
+        Camera camera = cam.clone();
+        float bottomEdge = 0f;
+        float leftEdge = 0f;
+        float rightEdge = 0.5f;
+        float topEdge = 1f;
+        camera.setViewPort(leftEdge, rightEdge, bottomEdge, topEdge);
+        // TODO why is resize() needed?
+        camera.resize(cam.getWidth(), cam.getHeight(), true);
+        sourceCgmViewPort = renderManager.createMainView("Source Scene",
+                camera);
+        sourceCgmViewPort.setClearFlags(true, true, true);
+        sourceCgmViewPort.setEnabled(false);
+        /*
+         * Attach a scene to the new view port.
+         */
+        Node scene = new Node("root for source CGM view");
+        sourceCgmViewPort.attachScene(scene);
+        addedScenes.add(scene);
+        /*
+         * Add an attachment point to the scene.
+         */
+        Node parent = new Node("parent for source CGM");
+        scene.attachChild(parent);
+
+        CgmView view;
+        view = new CgmView(Maud.model.source, parent, null, sourceCgmViewPort);
+        Maud.model.source.setView(view);
+    }
+
+    /**
+     * Create a split-screen view port for target CG model's scene.
+     */
+    private void createTargetCgmViewPort() {
+        Camera camera = cam.clone();
+        logger.log(Level.SEVERE, "target cam {0}", camera.hashCode());
+        float bottomEdge = 0f;
+        float leftEdge = 0.5f;
+        float rightEdge = 1f;
+        float topEdge = 1f;
+        camera.setViewPort(leftEdge, rightEdge, bottomEdge, topEdge);
+        // TODO why is resize() needed?
+        camera.resize(cam.getWidth(), cam.getHeight(), true);
+        targetCgmViewPort = renderManager.createMainView("Target Scene",
+                camera);
+        targetCgmViewPort.setClearFlags(true, true, true);
+        targetCgmViewPort.setEnabled(false);
+        /*
+         * Attach the existing scene to the new view port.
+         */
+        targetCgmViewPort.attachScene(rootNode);
+        /*
+         * Add an attachment point to the scene.
+         */
+        Node parent = new Node("parent for target CGM");
+        rootNode.attachChild(parent);
+
+        CgmView view = new CgmView(Maud.model.target, parent, viewPort,
+                targetCgmViewPort);
+        Maud.model.target.setView(view);
     }
 }

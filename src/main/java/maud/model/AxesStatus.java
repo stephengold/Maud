@@ -177,7 +177,8 @@ public class AxesStatus implements Cloneable {
      *
      * @param axisIndex which axis to drag (&ge;0, &lt;3)
      * @param cgm which CG model (not null)
-     * @param farSideFlag
+     * @param farSideFlag true &rarr; drag on the far side of the axis origin,
+     * false to drag on near side
      */
     public void setDraggingAxis(int axisIndex, LoadedCgm cgm,
             boolean farSideFlag) {

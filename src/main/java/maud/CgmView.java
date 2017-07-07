@@ -33,24 +33,38 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
+import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
+import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
+import jme3utilities.debug.AxesControl;
+import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.debug.SkeletonDebugControl;
 import jme3utilities.math.MyMath;
+import jme3utilities.sky.SkyControl;
+import jme3utilities.sky.Updater;
 import maud.model.LoadedCgm;
 
 /**
- * 3D visualization of a CG model, a component of a LoadedCgm.
+ * 3D visualization of a CG model, a accessed by way of LoadedCgm. TODO rename
+ * SceneView
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -58,6 +72,14 @@ public class CgmView implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * width and height of rendered shadow maps (pixels per side, &gt;0)
+     */
+    final private static int shadowMapSize = 4_096;
+    /**
+     * number of shadow map splits (&gt;0)
+     */
+    final private static int shadowMapSplits = 3;
     /**
      * message logger for this class
      */
@@ -70,49 +92,98 @@ public class CgmView implements JmeCloneable {
     // *************************************************************************
     // fields
 
+    /*
+     * ambient light added to the scene (not null)
+     */
+    private AmbientLight ambientLight = new AmbientLight();
     /**
-     * the animation control with the selected skeleton
+     * animation control with the selected skeleton
      */
     private AnimControl animControl;
+    /*
+     * visualizer for axes added to the scene
+     */
+    private AxesControl axesControl;
+    /*
+     * visualizer for bounding boxes added to the scene
+     */
+    private BoundsVisualizer boundsVisualizer;
+    /*
+     * directional added to the scene (not null)
+     */
+    private DirectionalLight mainLight = new DirectionalLight();
     /**
-     * the CG model that owns this view
+     * shadow filter for the scene
+     */
+    private DirectionalLightShadowFilter dlsf = null;
+    /**
+     * indicator for the 3D cursor, or null if none
+     */
+    private Geometry cursor;
+    /**
+     * CG model that owns this view (not null) TODO rename cgm
      */
     private LoadedCgm model;
     /**
-     * attachment point in the scene graph (used for transforms)
+     * attachment point for CG models (applies transforms)
      */
     final private Node parent;
     /**
-     * the selected skeleton in this view's copy of its CG model
+     * selected skeleton in this view's copy of its CG model
      */
     private Skeleton skeleton;
     /**
-     * the skeleton control with the selected skeleton
+     * skeleton control with the selected skeleton
      */
     private SkeletonControl skeletonControl;
     /**
-     * the skeleton debug control with the selected skeleton
+     * skeleton debug control with the selected skeleton
      */
     private SkeletonDebugControl skeletonDebugControl;
     /**
-     * the root spatial in this view's copy of its CG model
+     * sky simulation added to the scene
+     */
+    private SkyControl skyControl;
+    /**
+     * root spatial in this view's copy of the CG model
      */
     private Spatial cgmRoot;
+    /**
+     * horizontal platform added to the scene, or null if none
+     */
+    private Spatial platform = null;
+    /**
+     * view port used when the screen is not split, or null for none
+     */
+    private ViewPort viewPort1 = null;
+    /**
+     * view port used when the screen is split (not null)
+     */
+    private ViewPort viewPort2;
     // *************************************************************************
     // constructors
 
     /**
      * Instantiate a new visualization.
      *
-     * @param loadedModel loaded CG model that will own this view (not null)
-     * @param parentNode attachment point in the scene graph (not null)
+     * @param loadedCgm loaded CG model that will own this view (not null, alias
+     * created)
+     * @param parentNode attachment point in the scene graph (not null, alias
+     * created)
+     * @param port1 initial view port, or null for none (alias created)
+     * @param port2 view port to use after the screen is split (not null, alias
+     * created)
      */
-    public CgmView(LoadedCgm loadedModel, Node parentNode) {
-        Validate.nonNull(loadedModel, "loaded model");
+    CgmView(LoadedCgm loadedCgm, Node parentNode, ViewPort port1,
+            ViewPort port2) {
+        Validate.nonNull(loadedCgm, "loaded model");
         Validate.nonNull(parentNode, "parent");
+        Validate.nonNull(port2, "view port2");
 
-        model = loadedModel;
+        model = loadedCgm;
         parent = parentNode;
+        viewPort1 = port1;
+        viewPort2 = port2;
     }
     // *************************************************************************
     // new methods exposed
@@ -136,7 +207,7 @@ public class CgmView implements JmeCloneable {
 
     /**
      * Copy the world transform of the CG model, based on an animated geometry
-     * if possible.
+     * if possible. TODO rename worldTransform
      *
      * @return a new instance
      */
@@ -151,7 +222,43 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Access the root spatial of the CG model.
+     * Access the axes visualizer added to the scene.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public AxesControl getAxesControl() {
+        assert axesControl != null;
+        return axesControl;
+    }
+
+    /**
+     * Access the bounds visualizer added to the scene.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public BoundsVisualizer getBoundsVisualizer() {
+        assert boundsVisualizer != null;
+        return boundsVisualizer;
+    }
+
+    /**
+     * Access the camera used to render the scene.
+     *
+     * @return a pre-existing instance, or null if none
+     */
+    public Camera getCamera() {
+        Camera result = null;
+
+        ViewPort viewPort = getViewPort();
+        if (viewPort != null) {
+            result = viewPort.getCamera();
+        }
+
+        return result;
+    }
+
+    /**
+     * Access the CG model's root spatial.
      *
      * @return the pre-existing instance (not null)
      */
@@ -161,7 +268,34 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Access the skeleton debug control for the CG model.
+     * Access the indicator for the 3D cursor.
+     *
+     * @return the pre-existing instance, or null if none
+     */
+    public Geometry getCursor() {
+        return cursor;
+    }
+
+    /**
+     * Access the scene's shadow filter.
+     *
+     * @return the pre-existing instance, or null if none
+     */
+    public DirectionalLightShadowFilter getDlsf() {
+        return dlsf;
+    }
+
+    /**
+     * Access the spatial for the platform added to the scene.
+     *
+     * @return the pre-existing instance, or null if none
+     */
+    public Spatial getPlatform() {
+        return platform;
+    }
+
+    /**
+     * Access the skeleton debug control.
      *
      * @return the pre-existing instance, or null if none
      */
@@ -170,7 +304,33 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Replace the CG model with a newly loaded one. TODO rename
+     * Access the sky added to the scene.
+     *
+     * @return the pre-existing instance
+     */
+    public SkyControl getSkyControl() {
+        return skyControl;
+    }
+
+    /**
+     * Access the view port being used to render the scene.
+     *
+     * @return a pre-existing, enabled view port or null if none
+     */
+    public ViewPort getViewPort() {
+        ViewPort result;
+        if (Maud.model.source.isLoaded()) {
+            result = viewPort2;
+        } else {
+            result = viewPort1;
+        }
+
+        assert result == null || result.isEnabled();
+        return result;
+    }
+
+    /**
+     * Replace the CG model with a newly loaded one. TODO rename loadCgm
      *
      * @param loadedRoot (not null)
      */
@@ -188,7 +348,8 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Re-install this visualization in the scene graph.
+     * Re-install this visualization in the appropriate scene graph. Invoked
+     * when restoring a checkpoint.
      */
     public void reinstall() {
         /*
@@ -227,6 +388,22 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
+     * Alter which cursor indicator is attached to the scene.
+     *
+     * @param cursorSpatial (may be null)
+     */
+    public void setCursor(Geometry cursorSpatial) {
+        if (cursor != null) {
+            cursor.removeFromParent();
+        }
+        if (cursorSpatial != null) {
+            Node scene = (Node) getScene();
+            scene.attachChild(cursorSpatial);
+        }
+        cursor = cursorSpatial;
+    }
+
+    /**
      * Alter the cull hint of the selected spatial.
      *
      * @param newHint new value for cull hint (not null)
@@ -252,13 +429,29 @@ public class CgmView implements JmeCloneable {
 
     /**
      * Alter which loaded CG model corresponds with this view. Used after
-     * cloning. TODO rename
+     * cloning. TODO rename setCgm
      *
      * @param loadedModel (not null)
      */
     public void setModel(LoadedCgm loadedModel) {
         Validate.nonNull(loadedModel, "loaded model");
         model = loadedModel;
+    }
+
+    /**
+     * Alter which platform spatial is attached to the scene.
+     *
+     * @param platformSpatial (may be null, alias created)
+     */
+    public void setPlatform(Spatial platformSpatial) {
+        if (platform != null) {
+            platform.removeFromParent();
+        }
+        if (platformSpatial != null) {
+            Node scene = (Node) getScene();
+            scene.attachChild(platformSpatial);
+        }
+        platform = platformSpatial;
     }
 
     /**
@@ -372,57 +565,58 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Update the user transforms of all bones using the MVC model.
+     * Update prior to rendering. (Invoked once per render pass on each
+     * instance.)
      */
-    void updatePose() {
-        if (!model.isLoaded()) {
-            return;
+    void update() {
+        if (skyControl == null) {
+            /*
+             * Initialize scene on first update.
+             */
+            createAxes();
+            createBounds();
+            createLights();
+            createSky();
         }
-        int boneCount = model.bones.countBones();
-        int numTransforms = model.pose.getPose().countBones();
-        assert numTransforms == boneCount : numTransforms;
-        assert skeleton == null
-                || skeleton.getBoneCount() == boneCount : boneCount;
+        if (model.isLoaded()) {
+            updatePose();
+            updateTransform();
 
-        Pose pose = model.pose.getPose();
-        Transform transform = new Transform();
-        Vector3f translation = transform.getTranslation();
-        Quaternion rotation = transform.getRotation();
-        Vector3f scale = transform.getScale();
+            Maud.gui.tools.update(model);
 
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            pose.userTransform(boneIndex, transform);
-            Bone bone = skeleton.getBone(boneIndex);
-            bone.setUserTransforms(translation, rotation, scale);
+            Camera camera = getCamera();
+            skyControl.setCamera(camera); // note: target has 2 distinct cameras
         }
-    }
-
-    /**
-     * Update the transform of the CG model.
-     *
-     * @param angle in radians
-     */
-    void updateTransform() {
-        Transform transform = model.transform.worldTransform();
-        parent.setLocalTransform(transform);
     }
     // *************************************************************************
     // JmeCloner methods
 
     /**
-     * Convert this shallow-cloned instance into a deep-cloned one, using the
+     * Convert this shallow-cloned view into a deep-cloned one, using the
      * specified cloner and original to resolve copied fields.
      *
      * @param cloner the cloner currently cloning this control (not null)
-     * @param original the control from which this control was shallow-cloned
+     * @param original the view from which this view was shallow-cloned (unused)
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
+        ambientLight = cloner.clone(ambientLight);
         animControl = cloner.clone(animControl);
+        axesControl = cloner.clone(axesControl);
+        boundsVisualizer = cloner.clone(boundsVisualizer);
+        // cgm not cloned: modified later
         cgmRoot = cloner.clone(cgmRoot);
+        cursor = cloner.clone(cursor);
+        dlsf = cloner.clone(dlsf);
+        mainLight = cloner.clone(mainLight);
+        // parent not cloned
+        platform = cloner.clone(platform);
         skeleton = cloner.clone(skeleton);
         skeletonControl = cloner.clone(skeletonControl);
         skeletonDebugControl = cloner.clone(skeletonDebugControl);
+        skyControl = cloner.clone(skyControl);
+        viewPort1 = cloner.clone(viewPort1);
+        viewPort2 = cloner.clone(viewPort2);
     }
 
     /**
@@ -441,6 +635,92 @@ public class CgmView implements JmeCloneable {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Add an axes visualizer to the root node of this view.
+     */
+    private void createAxes() {
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
+        axesControl = new AxesControl(assetManager, 1f, 1f);
+
+        Node axesNode = new Node("axes node");
+        axesNode.addControl(axesControl);
+
+        Node scene = (Node) getScene();
+        scene.attachChild(axesNode);
+    }
+
+    /**
+     * Add a bounds visualizer to root node of this view.
+     */
+    private void createBounds() {
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
+        boundsVisualizer = new BoundsVisualizer(assetManager);
+        Spatial scene = getScene();
+        scene.addControl(boundsVisualizer);
+    }
+
+    /**
+     * Add lights and shadows to this view.
+     */
+    private void createLights() {
+        /*
+         * Name the lights.
+         */
+        ambientLight.setName("ambient light");
+        mainLight.setName("main light");
+        /*
+         * Light the scene.
+         */
+        Spatial scene = getScene();
+        scene.addLight(ambientLight);
+        scene.addLight(mainLight);
+        /*
+         * Add a shadow filter.
+         */
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
+        dlsf = new DirectionalLightShadowFilter(assetManager, shadowMapSize,
+                shadowMapSplits);
+        dlsf.setEdgeFilteringMode(EdgeFilteringMode.PCF8);
+        dlsf.setLight(mainLight);
+        if (viewPort1 != null) {
+            Misc.getFpp(viewPort1, assetManager).addFilter(dlsf);
+        }
+        Misc.getFpp(viewPort2, assetManager).addFilter(dlsf);
+    }
+
+    /**
+     * Add a sky to this view.
+     */
+    private void createSky() {
+        Maud application = Maud.getApplication();
+        AssetManager assetManager = application.getAssetManager();
+        Camera camera = viewPort2.getCamera();
+        skyControl = new SkyControl(assetManager, camera, 0.9f, false, true);
+        Spatial scene = getScene();
+        scene.addControl(skyControl);
+
+        Updater updater = skyControl.getUpdater();
+        updater.setAmbientLight(ambientLight);
+        updater.setMainLight(mainLight);
+        //updater.addShadowFilter(dlsf);
+    }
+
+    /**
+     * Access the scene (root node) of this visualization.
+     *
+     * @return the pre-existing instance
+     */
+    private Spatial getScene() {
+        List<Spatial> scenes = viewPort2.getScenes();
+        assert scenes.size() == 1 : scenes.size();
+        Spatial result = scenes.get(0);
+
+        return result;
+    }
 
     /**
      * Alter a newly loaded CG model to prepare it for visualization. Assumes
@@ -465,8 +745,7 @@ public class CgmView implements JmeCloneable {
          */
         setSkeleton(skeleton, false);
         /*
-         * Configure the world transform based on the bindPosition of
-         * the dominant root bone and the range of model-space coordinates in
+         * Configure the world transform based on the bounding box of
          * the CG model.
          */
         parent.setLocalTransform(transformIdentity);
@@ -483,12 +762,41 @@ public class CgmView implements JmeCloneable {
          * reset the camera, cursor, and platform
          */
         Vector3f baseLocation = new Vector3f(0f, 0f, 0f);
-        Maud.model.cursor.setLocation(baseLocation);
+        model.scenePov.setCursorLocation(baseLocation);
         Maud.model.misc.setPlatformDiameter(2f);
-        Maud.model.misc.setPlatformLocation(baseLocation);
 
         Vector3f cameraLocation = new Vector3f(-2.4f, 1f, 1.6f);
-        Maud.model.camera.setLocation(cameraLocation);
-        Maud.model.camera.setScale(1f);
+        model.scenePov.setCameraLocation(cameraLocation);
+    }
+
+    /**
+     * Update the user transforms of all bones based on the MVC model.
+     */
+    private void updatePose() {
+        int boneCount = model.bones.countBones();
+        int numTransforms = model.pose.getPose().countBones();
+        assert numTransforms == boneCount : numTransforms;
+        assert skeleton == null
+                || skeleton.getBoneCount() == boneCount : boneCount;
+
+        Pose pose = model.pose.getPose();
+        Transform transform = new Transform();
+        Vector3f translation = transform.getTranslation();
+        Quaternion rotation = transform.getRotation();
+        Vector3f scale = transform.getScale();
+
+        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
+            pose.userTransform(boneIndex, transform);
+            Bone bone = skeleton.getBone(boneIndex);
+            bone.setUserTransforms(translation, rotation, scale);
+        }
+    }
+
+    /**
+     * Update the transform of the CG model based on the MVC model.
+     */
+    private void updateTransform() {
+        Transform transform = model.transform.worldTransform();
+        parent.setLocalTransform(transform);
     }
 }

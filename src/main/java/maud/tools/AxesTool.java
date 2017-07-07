@@ -26,13 +26,12 @@
  */
 package maud.tools;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.controls.Slider;
@@ -54,7 +53,7 @@ import maud.model.LoadedCgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class AxesTool extends WindowController {
+public class AxesTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -63,25 +62,6 @@ class AxesTool extends WindowController {
      */
     final private static Logger logger = Logger.getLogger(
             AxesTool.class.getName());
-    // *************************************************************************
-    // fields
-
-    /**
-     * SG control to display coordinate axes for the source CG model
-     */
-    private AxesControl sourceAxesControl;
-    /**
-     * SG control to display coordinate axes for the target CG model
-     */
-    private AxesControl targetAxesControl;
-    /**
-     * SG node to translate and rotate the axes for the source CG model
-     */
-    final private Node sourceAxesNode = new Node("source axes node");
-    /**
-     * SG node to translate and rotate the axes for the target CG model
-     */
-    final private Node targetAxesNode = new Node("target axes node");
     // *************************************************************************
     // constructors
 
@@ -98,6 +78,43 @@ class AxesTool extends WindowController {
     // new methods exposed
 
     /**
+     * While dragging an axis, update the orientation of the visualized object
+     * in the MVC model.
+     */
+    public void dragAxis() {
+        AxesStatus model = Maud.model.axes;
+        LoadedCgm cgm = model.getDragCgm();
+        assert cgm.isLoaded();
+        int axisIndex = model.getDragAxis();
+        boolean farSide = model.isDraggingFarSide();
+
+        AxesControl axesControl = cgm.view.getAxesControl();
+        assert axesControl.isEnabled();
+        Spatial axesSpatial = axesControl.getSpatial();
+        /*
+         * Calculate the old axis direction in local coordinates.
+         */
+        Vector3f oldDirection = Util.axisVector(axisIndex, 1f, null);
+        assert oldDirection.isUnitVector() : oldDirection;
+        /*
+         * Calculate the new axis direction in local coordinates.
+         */
+        Camera camera = cgm.view.getCamera();
+        Ray worldRay = Util.mouseRay(camera, inputManager);
+        Ray localRay = Util.localizeRay(worldRay, axesSpatial);
+        float radius = axesControl.getAxisLength();
+        Vector3f newDirection = Util.lineMeetsSphere(localRay, radius, farSide);
+        newDirection.divideLocal(radius);
+        assert newDirection.isUnitVector() : newDirection;
+
+        Vector3f cross = oldDirection.cross(newDirection);
+        float crossNorm = cross.length();
+        if (crossNorm > 0f) {
+            rotateObject(cross, cgm);
+        }
+    }
+
+    /**
      * Test whether the indexed axis points toward or away from the camera.
      *
      * @param cgm which CG model (not null, unaffected)
@@ -109,7 +126,7 @@ class AxesTool extends WindowController {
         assert axisIndex >= 0 : axisIndex;
         assert axisIndex < 3 : axisIndex;
 
-        AxesControl axesControl = findControl(cgm);
+        AxesControl axesControl = cgm.view.getAxesControl();
         assert axesControl.isEnabled();
         Spatial axesSpatial = axesControl.getSpatial();
         /*
@@ -117,7 +134,7 @@ class AxesTool extends WindowController {
          */
         Vector3f tailLocation = axesSpatial.getWorldTranslation();
         Vector3f tipLocation = axesControl.tipLocation(axisIndex);
-        Vector3f cameraLocation = Maud.model.camera.copyLocation(null);
+        Vector3f cameraLocation = cgm.scenePov.cameraLocation(null);
         float tailDS = cameraLocation.distanceSquared(tailLocation);
         float tipDS = cameraLocation.distanceSquared(tipLocation);
 
@@ -140,18 +157,18 @@ class AxesTool extends WindowController {
      * Calculate the tip location of the indexed axis for the specified CG
      * model.
      *
-     * @param loadedCgm which CG model (not null, unaffected)
-     * @param axisIndex which axis in the CGM's AxesControl (&ge;0, &lt;3)
+     * @param cgm which CG model (not null, unaffected)
+     * @param axisIndex which axis in the CG model's AxesControl (&ge;0, &lt;3)
      * @return a new vector (in world coordinates) or null if axis not displayed
      */
-    Vector3f tipLocation(LoadedCgm loadedCgm, int axisIndex) {
-        Validate.nonNull(loadedCgm, "loaded model");
+    Vector3f tipLocation(LoadedCgm cgm, int axisIndex) {
+        Validate.nonNull(cgm, "loaded model");
         Validate.inRange(axisIndex, "axis index", 0, 2);
 
         Vector3f result = null;
-        Transform transform = worldTransform(loadedCgm);
+        Transform transform = worldTransform(cgm);
         if (transform != null) {
-            AxesControl axesControl = findControl(loadedCgm);
+            AxesControl axesControl = cgm.view.getAxesControl();
             result = axesControl.tipLocation(axisIndex);
         }
 
@@ -159,43 +176,38 @@ class AxesTool extends WindowController {
     }
 
     /**
-     * Updates performed even when the tool is disabled. (Invoked once per
-     * render pass.)
+     * Update the CG model's visualizer based on the MVC model.
+     *
+     * @param cgm which CG model (not null)
      */
-    void updateVisualizations() {
-        if (Maud.model.axes.isDraggingAxis()) {
-            dragAxis();
+    void updateVisualizer(LoadedCgm cgm) {
+        AxesControl axesControl = cgm.view.getAxesControl();
+        Transform transform = worldTransform(cgm);
+        if (transform == null) {
+            axesControl.setEnabled(false);
+        } else {
+            Node axesNode = (Node) axesControl.getSpatial();
+            axesNode.setLocalTransform(transform);
+            axesControl.setEnabled(true);
+
+            Vector3f axesOrigin = transform.getTranslation();
+            Vector3f cameraLocation = cgm.scenePov.cameraLocation(null);
+            float distance = axesOrigin.distance(cameraLocation);
+            Vector3f scale = transform.getScale();
+            float maxScale = MyMath.max(scale.x, scale.y, scale.z);
+            float length = 0.2f * distance / maxScale;
+
+            boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
+            float lineWidth = Maud.model.axes.getLineWidth();
+
+            axesControl.setAxisLength(length);
+            axesControl.setDepthTest(depthTestFlag);
+            axesControl.setEnabled(true);
+            axesControl.setLineWidth(lineWidth);
         }
-        /*
-         * Update the transform and AxesControl settings for each CG model.
-         */
-        updateAxes(Maud.model.source, sourceAxesControl, sourceAxesNode);
-        updateAxes(Maud.model.target, targetAxesControl, targetAxesNode);
     }
     // *************************************************************************
     // AppState methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application that owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-        /*
-         * Instantiate and add/attach the AxesControls/nodes.
-         */
-        sourceAxesControl = new AxesControl(assetManager, 1f, 1f);
-        sourceAxesNode.addControl(sourceAxesControl);
-        rootNode.attachChild(sourceAxesNode);
-
-        targetAxesControl = new AxesControl(assetManager, 1f, 1f);
-        targetAxesNode.addControl(targetAxesControl);
-        rootNode.attachChild(targetAxesNode);
-    }
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -219,63 +231,6 @@ class AxesTool extends WindowController {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * While dragging an axis, update the orientation of the visualized object
-     * in the MVC model.
-     */
-    private void dragAxis() {
-        AxesStatus model = Maud.model.axes;
-        LoadedCgm cgm = model.getDragCgm();
-        assert cgm.isLoaded();
-        int axisIndex = model.getDragAxis();
-        boolean farSide = model.isDraggingFarSide();
-
-        AxesControl axesControl = findControl(cgm);
-        assert axesControl.isEnabled();
-        Spatial axesSpatial = axesControl.getSpatial();
-        /*
-         * Calculate the old axis direction in local coordinates.
-         */
-        Vector3f oldDirection = Util.axisVector(axisIndex, 1f, null);
-        assert oldDirection.isUnitVector() : oldDirection;
-        /*
-         * Calculate the new axis direction in local coordinates.
-         */
-        Ray worldRay = Util.mouseRay(cam, inputManager);
-        Ray localRay = Util.localizeRay(worldRay, axesSpatial);
-        float radius = axesControl.getAxisLength();
-        Vector3f newDirection = Util.lineMeetsSphere(localRay, radius, farSide);
-        newDirection.divideLocal(radius);
-        assert newDirection.isUnitVector() : newDirection;
-
-        Vector3f cross = oldDirection.cross(newDirection);
-        float crossNorm = cross.length();
-        if (crossNorm > 0f) {
-            rotateObject(cross, cgm);
-        }
-    }
-
-    /**
-     * Access the axes control for the specified CG model.
-     *
-     * @param cgm which CG model (not null, unaffected)
-     * @return the pre-existing instance
-     */
-    private AxesControl findControl(LoadedCgm cgm) {
-        assert cgm != null;
-
-        AxesControl result;
-        if (cgm == Maud.model.source) {
-            result = sourceAxesControl;
-        } else if (cgm == Maud.model.target) {
-            result = targetAxesControl;
-        } else {
-            throw new IllegalArgumentException();
-        }
-
-        return result;
-    }
 
     /**
      * Rotate the visualized bone using the specified quaternion.
@@ -380,43 +335,6 @@ class AxesTool extends WindowController {
     }
 
     /**
-     * Update the transform and AxesControl settings for the specified CG model.
-     *
-     * @param loadedCgm which CG model (not null)
-     * @param axesControl (not null)
-     * @param axesNode (not null)
-     */
-    private void updateAxes(LoadedCgm loadedCgm, AxesControl axesControl,
-            Node axesNode) {
-        assert loadedCgm != null;
-        assert axesControl != null;
-        assert axesNode != null;
-
-        Transform transform = worldTransform(loadedCgm);
-        if (transform == null) {
-            axesControl.setEnabled(false);
-        } else {
-            axesNode.setLocalTransform(transform);
-            axesControl.setEnabled(true);
-
-            Vector3f axesOrigin = transform.getTranslation();
-            Vector3f cameraLocation = Maud.model.camera.copyLocation(null);
-            float distance = axesOrigin.distance(cameraLocation);
-            Vector3f scale = transform.getScale();
-            float maxScale = MyMath.max(scale.x, scale.y, scale.z);
-            float length = 0.2f * distance / maxScale;
-
-            boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
-            float lineWidth = Maud.model.axes.getLineWidth();
-
-            axesControl.setAxisLength(length);
-            axesControl.setDepthTest(depthTestFlag);
-            axesControl.setEnabled(true);
-            axesControl.setLineWidth(lineWidth);
-        }
-    }
-
-    /**
      * Update the status labels based on the MVC model.
      */
     private void updateLabels() {
@@ -438,7 +356,7 @@ class AxesTool extends WindowController {
             case "bone":
                 if (loadedCgm.bone.isSelected()) {
                     transform = loadedCgm.bone.modelTransform(null);
-                    // TODO use animated spatial
+                    // TODO use animated geometry
                     Transform worldTransform;
                     worldTransform = loadedCgm.view.copyWorldTransform();
                     transform.combineWithParent(worldTransform);

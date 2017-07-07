@@ -28,6 +28,7 @@ package maud.tools;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
@@ -179,14 +180,15 @@ public class BoneTool extends WindowController {
      * bone.
      *
      * @param cgm which CG model contains the bone (not null, unaffected)
-     * @param boneIndex which bone in the CGM's selected skeleton (&ge;0)
+     * @param boneIndex which bone in the CG model's selected skeleton (&ge;0)
      * @return squared distance in pixels (&ge;0)
      */
     private float boneDSquared(LoadedCgm cgm, int boneIndex) {
         assert boneIndex >= 0 : boneIndex;
 
+        Camera camera = cgm.view.getCamera();
         Vector3f boneWorld = cgm.view.boneLocation(boneIndex);
-        Vector3f boneScreen = cam.getScreenCoordinates(boneWorld);
+        Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
         Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
         Vector2f mouseXY = inputManager.getCursorPosition();
         float dSquared = mouseXY.distanceSquared(boneXY);
@@ -229,7 +231,7 @@ public class BoneTool extends WindowController {
      * axis tip.
      *
      * @param cgm which CG model (not null, unaffected)
-     * @param axisIndex which axis in the CGM's axes control (&ge;0, &lt;3)
+     * @param axisIndex which axis in the CG model's axes control (&ge;0, &lt;3)
      * @return squared distance in pixels (&ge;0)
      */
     private float tipDSquared(LoadedCgm cgm, int axisIndex) {
@@ -240,7 +242,8 @@ public class BoneTool extends WindowController {
         float dSquared = Float.MAX_VALUE;
         Vector3f tipWorld = Maud.gui.tools.axes.tipLocation(cgm, axisIndex);
         if (tipWorld != null) {
-            Vector3f tipScreen = cam.getScreenCoordinates(tipWorld);
+            Camera camera = cgm.view.getCamera();
+            Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);
             Vector2f tipXY = new Vector2f(tipScreen.x, tipScreen.y);
             Vector2f mouseXY = inputManager.getCursorPosition();
             dSquared = mouseXY.distanceSquared(tipXY);

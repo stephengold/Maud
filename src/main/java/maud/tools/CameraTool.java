@@ -33,6 +33,7 @@ import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
@@ -41,7 +42,8 @@ import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.CameraStatus;
+import maud.model.LoadedCgm;
+import maud.model.Pov;
 
 /**
  * The controller for the "Camera Tool" window in Maud's "3D View" screen.
@@ -107,36 +109,39 @@ public class CameraTool
     // new methods exposed
 
     /**
-     * Update the JME camera from the MVC model.
+     * Update a CG model's scene camera based on the MVC model.
+     *
+     * @param cgm which CG model (not null)
      */
-    void updateCamera() {
-        CameraStatus model = Maud.model.camera;
-
-        if (model.isOrbitMode()) {
-            model.aim();
+    void updateCamera(LoadedCgm cgm) {
+        if (Maud.model.camera.isOrbitMode()) {
+            cgm.scenePov.aim(); // TODO necessary?
         }
-        Vector3f location = model.copyLocation(null);
-        cam.setLocation(location);
-        Quaternion orientation = model.copyOrientation(null);
-        cam.setRotation(orientation);
+        Camera camera = cgm.view.getCamera();
+        if (camera != null) {
+            Vector3f location = cgm.scenePov.cameraLocation(null);
+            camera.setLocation(location);
+            Quaternion orientation = cgm.scenePov.cameraOrientation(null);
+            camera.setRotation(orientation);
 
-        float aspectRatio = MyCamera.aspectRatio(cam);
-        float far = model.getFrustumFar();
-        float near = model.getFrustumNear();
-        boolean parallel = model.isParallelProjection();
-        if (parallel) {
-            float h = 0.4f * model.range();
-            float w = aspectRatio * h;
-            cam.setFrustumBottom(-h);
-            cam.setFrustumFar(far);
-            cam.setFrustumLeft(-w);
-            cam.setFrustumNear(near);
-            cam.setFrustumRight(w);
-            cam.setFrustumTop(h);
-            cam.setParallelProjection(true);
-        } else {
-            float yDegrees = model.getFrustumYDegrees();
-            cam.setFrustumPerspective(yDegrees, aspectRatio, near, far);
+            float aspectRatio = MyCamera.aspectRatio(camera);
+            float far = Maud.model.camera.getFrustumFar();
+            float near = Maud.model.camera.getFrustumNear();
+            boolean parallel = Maud.model.camera.isParallelProjection();
+            if (parallel) {
+                float h = 0.4f * cgm.scenePov.range();
+                float w = aspectRatio * h;
+                camera.setFrustumBottom(-h);
+                camera.setFrustumFar(far);
+                camera.setFrustumLeft(-w);
+                camera.setFrustumNear(near);
+                camera.setFrustumRight(w);
+                camera.setFrustumTop(h);
+                camera.setParallelProjection(true);
+            } else {
+                float yDegrees = Maud.model.camera.getFrustumYDegrees();
+                camera.setFrustumPerspective(yDegrees, aspectRatio, near, far);
+            }
         }
     }
     // *************************************************************************
@@ -148,51 +153,51 @@ public class CameraTool
      */
     void mapButton() {
         /*
-         * Turning the mouse wheel up triggers move backward.
+         * Turning the mouse wheel up triggers Pov.moveBackward().
          */
         boolean wheelUp = true;
-        MouseAxisTrigger backwardTrigger = new MouseAxisTrigger(
-                MouseInput.AXIS_WHEEL, wheelUp);
+        MouseAxisTrigger backwardTrigger;
+        backwardTrigger = new MouseAxisTrigger(MouseInput.AXIS_WHEEL, wheelUp);
         inputManager.addMapping(moveBackwardEvent, backwardTrigger);
         inputManager.addListener(this, moveBackwardEvent);
         /*
          * Turning the mouse wheel down triggers move forward.
          */
         boolean wheelDown = false;
-        MouseAxisTrigger forwardTrigger = new MouseAxisTrigger(
-                MouseInput.AXIS_WHEEL, wheelDown);
+        MouseAxisTrigger forwardTrigger;
+        forwardTrigger = new MouseAxisTrigger(MouseInput.AXIS_WHEEL, wheelDown);
         inputManager.addMapping(moveForwardEvent, forwardTrigger);
         inputManager.addListener(this, moveForwardEvent);
         /*
          * Dragging up with MMB triggers move down.
          */
         boolean up = false;
-        MouseAxisTrigger downTrigger = new MouseAxisTrigger(
-                MouseInput.AXIS_Y, up);
+        MouseAxisTrigger downTrigger;
+        downTrigger = new MouseAxisTrigger(MouseInput.AXIS_Y, up);
         inputManager.addMapping(moveDownEvent, downTrigger);
         inputManager.addListener(this, moveDownEvent);
         /*
          * Dragging left with MMB triggers move right.
          */
         boolean left = true;
-        MouseAxisTrigger leftTrigger = new MouseAxisTrigger(
-                MouseInput.AXIS_X, left);
+        MouseAxisTrigger leftTrigger;
+        leftTrigger = new MouseAxisTrigger(MouseInput.AXIS_X, left);
         inputManager.addMapping(moveRightEvent, leftTrigger);
         inputManager.addListener(this, moveRightEvent);
         /*
-         * Dragging right with MMB triggers move left.
+         * Dragging right with MMB triggers Pov.moveLeft().
          */
         boolean right = false;
-        MouseAxisTrigger rightTrigger = new MouseAxisTrigger(
-                MouseInput.AXIS_X, right);
+        MouseAxisTrigger rightTrigger;
+        rightTrigger = new MouseAxisTrigger(MouseInput.AXIS_X, right);
         inputManager.addMapping(moveLeftEvent, rightTrigger);
         inputManager.addListener(this, moveLeftEvent);
         /*
-         * Dragging down with MMB triggers move up.
+         * Dragging down with MMB triggers Pov.moveUp().
          */
         boolean down = true;
-        MouseAxisTrigger upTrigger = new MouseAxisTrigger(
-                MouseInput.AXIS_Y, down);
+        MouseAxisTrigger upTrigger;
+        upTrigger = new MouseAxisTrigger(MouseInput.AXIS_Y, down);
         inputManager.addMapping(moveUpEvent, upTrigger);
         inputManager.addListener(this, moveUpEvent);
     }
@@ -208,44 +213,48 @@ public class CameraTool
     public void onAnalog(String eventString, float amount, float ignored) {
         Validate.nonNegative(amount, "amount");
         logger.log(Level.FINE, "Received analog event {0} with amount={1}",
-                new Object[]{
-                    MyString.quote(eventString), amount
-                });
+                new Object[]{MyString.quote(eventString), amount});
+
+        LoadedCgm cgm = Maud.gui.mouseCgm();
+        if (cgm == null) {
+            return;
+        }
+        Pov mousePov = cgm.scenePov;
 
         switch (eventString) {
             case moveBackwardEvent:
-                Maud.model.camera.moveBackward(+amount);
+                mousePov.moveBackward(+amount);
                 break;
 
             case moveDownEvent:
                 if (signals.test(cameraSignalName)) {
                     /* dragging */
-                    Maud.model.camera.moveUp(-amount);
+                    mousePov.moveUp(-amount);
                 }
                 break;
 
             case moveForwardEvent:
-                Maud.model.camera.moveBackward(-amount);
+                mousePov.moveBackward(-amount);
                 break;
 
             case moveLeftEvent:
                 if (signals.test(cameraSignalName)) {
                     /* dragging */
-                    Maud.model.camera.moveLeft(+amount);
+                    mousePov.moveLeft(+amount);
                 }
                 break;
 
             case moveRightEvent:
                 if (signals.test(cameraSignalName)) {
                     /* dragging */
-                    Maud.model.camera.moveLeft(-amount);
+                    mousePov.moveLeft(-amount);
                 }
                 break;
 
             case moveUpEvent:
                 if (signals.test(cameraSignalName)) {
                     /* dragging */
-                    Maud.model.camera.moveUp(+amount);
+                    mousePov.moveUp(+amount);
                 }
         }
     }

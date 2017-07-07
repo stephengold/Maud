@@ -37,9 +37,10 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
 import maud.model.History;
+import maud.model.LoadedCgm;
 
 /**
- * Input mode for Maud's "3D View" screen.
+ * Input mode for Maud's "3D View" screen. TODO rename EditorInputMode
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -981,7 +982,8 @@ class DddInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "view horizontal":
-                Maud.model.camera.goHorizontal();
+                LoadedCgm loadedCgm = Maud.gui.selectCgm();
+                loadedCgm.scenePov.goHorizontal();
                 handled = true;
                 break;
         }

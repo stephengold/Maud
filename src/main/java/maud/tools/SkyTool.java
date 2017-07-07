@@ -26,14 +26,13 @@
  */
 package maud.tools;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 import maud.Maud;
+import maud.model.LoadedCgm;
 
 /**
  * The controller for the "Sky Tool" window in Maud's "3D View" screen.
@@ -45,17 +44,18 @@ class SkyTool extends WindowController {
     // constants and loggers
 
     /**
+     * multiplier for ambient light
+     */
+    final private static float ambientMultiplier = 1f;
+    /**
+     * multiplier for main light
+     */
+    final private static float mainMultiplier = 2f;
+    /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
             SkyTool.class.getName());
-    // *************************************************************************
-    // fields
-
-    /**
-     * scene-graph control for sky simulation
-     */
-    private SkyControl skyControl = null;
     // *************************************************************************
     // constructors
 
@@ -71,36 +71,25 @@ class SkyTool extends WindowController {
     // new methods exposed
 
     /**
-     * Update the view's SkyControl from the MVC model.
+     * Update a CG model's added sky based on the MVC model.
+     *
+     * @param cgm which CG model (not null)
      */
-    void updateSkyControl() {
-        boolean enable = Maud.model.misc.isSkyRendered();
-        skyControl.setEnabled(enable);
+    void updateSkyControl(LoadedCgm cgm) {
+        SkyControl sky = cgm.view.getSkyControl();
+        if (sky != null) {
+            boolean enable = Maud.model.misc.isSkyRendered();
+            sky.setEnabled(enable);
+            sky.setCloudiness(0.5f);
+            sky.getSunAndStars().setHour(11f);
+
+            Updater updater = sky.getUpdater();
+            updater.setAmbientMultiplier(ambientMultiplier);
+            updater.setMainMultiplier(mainMultiplier);
+        }
     }
     // *************************************************************************
     // AppState methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application that owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-        assert Maud.gui.tools.render.isInitialized();
-        /*
-         * Create a daytime sky.
-         */
-        skyControl = new SkyControl(assetManager, cam, 0.9f, false, true);
-        rootNode.addControl(skyControl);
-        skyControl.setCloudiness(0.5f);
-        skyControl.getSunAndStars().setHour(11f);
-        Updater updater = skyControl.getUpdater();
-        Maud.gui.tools.render.configureUpdater(updater);
-    }
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

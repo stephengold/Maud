@@ -32,11 +32,10 @@ import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import maud.Maud;
 
 /**
  * The transform applied to a particular CG model visualization in Maud's "3D
- * View" screen.
+ * View" screen. TODO rename CgmTransform
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -44,11 +43,6 @@ public class TransformStatus implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
-    /**
-     * separation between the source and target CG models, when both are loaded
-     * (in world units)
-     */
-    final private static float zSeparation = 1f;
     /**
      * message logger for this class
      */
@@ -73,11 +67,6 @@ public class TransformStatus implements Cloneable {
      * Y-offset of the CG model's base (in world units)
      */
     private float yOffset = 0f;
-    /**
-     * the CG model this transform applies to (set by
-     * {@link #setCgm(LoadedCGModel)})
-     */
-    private LoadedCgm loadedCgm = null;
     /**
      * the location (in model space) of the CG model's dominant root bone
      */
@@ -114,17 +103,6 @@ public class TransformStatus implements Cloneable {
     }
 
     /**
-     * Alter which CG model this transform applies to. (Invoked only during
-     * initialization and cloning.)
-     *
-     * @param newLoaded (not null)
-     */
-    void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
-        loadedCgm = newLoaded;
-    }
-
-    /**
      * Calculate the transform to be applied to the CG model. Note that this may
      * differ from the transform of the CG model's root node.
      *
@@ -142,20 +120,7 @@ public class TransformStatus implements Cloneable {
         modelTranslation = new Vector3f(-bindLocation.x, 0f, -bindLocation.z);
         Vector3f worldTranslation;
         worldTranslation = result.transformVector(modelTranslation, null);
-        /*
-         * Displace along the Z-axis if 2 CGMs are loaded.
-         */
-        float zOffset;
-        if (loadedCgm == Maud.model.target) {
-            if (Maud.model.source.isLoaded()) {
-                zOffset = 0.5f * zSeparation;
-            } else {
-                zOffset = 0f;
-            }
-        } else {
-            zOffset = -0.5f * zSeparation;
-        }
-        worldTranslation.addLocal(0f, yOffset, zOffset);
+        worldTranslation.addLocal(0f, yOffset, 0f);
         result.setTranslation(worldTranslation);
 
         return result;

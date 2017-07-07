@@ -26,8 +26,6 @@
  */
 package maud.tools;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.controls.Slider;
@@ -54,17 +52,6 @@ class BoundsTool extends WindowController {
     final private static Logger logger = Logger.getLogger(
             BoundsTool.class.getName());
     // *************************************************************************
-    // fields
-
-    /**
-     * SG control to display bounds of the source CG model
-     */
-    private BoundsVisualizer sourceVisualizer;
-    /**
-     * SG control to display bounds of the target CG model
-     */
-    private BoundsVisualizer targetVisualizer;
-    // *************************************************************************
     // constructors
 
     /**
@@ -90,34 +77,28 @@ class BoundsTool extends WindowController {
     }
 
     /**
-     * Update the BoundsVisualizer settings for both CG models.
+     * Update a CG model's visualizer based on the MVC model.
+     *
+     * @param cgm which CG model (not null)
      */
-    void updateVisualizations() {
-        updateBounds(Maud.model.source, sourceVisualizer);
-        updateBounds(Maud.model.target, targetVisualizer);
+    void updateVisualizer(LoadedCgm cgm) {
+        BoundsVisualizer visualizer = cgm.view.getBoundsVisualizer();
+        visualizer.setEnabled(true);
+
+        ColorRGBA color = Maud.model.bounds.copyColor(null);
+        visualizer.setColor(color);
+
+        boolean depthTestFlag = Maud.model.bounds.getDepthTestFlag();
+        visualizer.setDepthTest(depthTestFlag);
+
+        float lineWidth = Maud.model.bounds.getLineWidth();
+        visualizer.setLineWidth(lineWidth);
+
+        Spatial selectedSpatial = cgm.view.selectedSpatial();
+        visualizer.setSubject(selectedSpatial);
     }
     // *************************************************************************
     // AppState methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application that owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-        /*
-         * Instantiate and add the visualizers.
-         */
-        sourceVisualizer = new BoundsVisualizer(assetManager);
-        rootNode.addControl(sourceVisualizer);
-
-        targetVisualizer = new BoundsVisualizer(assetManager);
-        rootNode.addControl(targetVisualizer);
-    }
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -145,36 +126,5 @@ class BoundsTool extends WindowController {
         Maud.gui.updateSliderStatus("boundsLineWidth", lineWidth, " pixels");
 
         Maud.gui.setIgnoreGuiChanges(false);
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Update the BoundsVisualizer settings for a CG model.
-     *
-     * @param loadedCgm (not null)
-     * @param visualizer (not null)
-     */
-    private void updateBounds(LoadedCgm loadedCgm,
-            BoundsVisualizer visualizer) {
-        assert visualizer != null;
-
-        if (loadedCgm.isLoaded()) {
-            visualizer.setEnabled(true);
-
-            ColorRGBA color = Maud.model.bounds.copyColor(null);
-            visualizer.setColor(color);
-
-            boolean depthTestFlag = Maud.model.bounds.getDepthTestFlag();
-            visualizer.setDepthTest(depthTestFlag);
-
-            float lineWidth = Maud.model.bounds.getLineWidth();
-            visualizer.setLineWidth(lineWidth);
-
-            Spatial selectedSpatial = loadedCgm.view.selectedSpatial();
-            visualizer.setSubject(selectedSpatial);
-        } else {
-            visualizer.setEnabled(false);
-        }
     }
 }

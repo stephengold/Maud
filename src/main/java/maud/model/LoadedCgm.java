@@ -86,18 +86,22 @@ public class LoadedCgm implements Cloneable {
     // fields
 
     /**
-     * visualization of the CG model (set by {@link #setView(maud.CgmView)} or
-     * {@link #clone()})
-     */
-    public CgmView view = null;
-    /**
      * bone transforms of the displayed pose
      */
     public DisplayedPose pose = new DisplayedPose();
     /**
-     * the loaded animation for the CG model
+     * loaded animation for the CG model
      */
     public LoadedAnimation animation = new LoadedAnimation();
+    /**
+     * POV for viewing the CG model
+     */
+    public ScenePov scenePov = new ScenePov();
+    /**
+     * 3D visualization of the CG model (set by {@link #setView(maud.CgmView)}
+     * or {@link #clone()}) TODO rename sceneView
+     */
+    public CgmView view = null;
     /**
      * which bone in selected in the CG model
      */
@@ -119,7 +123,7 @@ public class LoadedCgm implements Cloneable {
      */
     public SelectedTrack track = new SelectedTrack();
     /**
-     * the root spatial in the MVC model's copy of the CG model
+     * root spatial in the MVC model's copy of the CG model
      */
     protected Spatial rootSpatial = null;
     /**
@@ -159,7 +163,6 @@ public class LoadedCgm implements Cloneable {
         sgc.setCgm(this);
         spatial.setCgm(this);
         track.setCgm(this);
-        transform.setCgm(this);
     }
     // *************************************************************************
     // new methods exposed
@@ -628,6 +631,7 @@ public class LoadedCgm implements Cloneable {
         clone.bones = bones.clone();
         clone.pose = cloner.clone(pose);
         clone.rootSpatial = cloner.clone(rootSpatial);
+        clone.scenePov = cloner.clone(scenePov);
         clone.sgc = sgc.clone();
         clone.spatial = spatial.clone();
         clone.track = track.clone();
@@ -649,7 +653,6 @@ public class LoadedCgm implements Cloneable {
         clone.sgc.setCgm(clone);
         clone.spatial.setCgm(clone);
         clone.track.setCgm(clone);
-        clone.transform.setCgm(clone);
 
         return clone;
     }

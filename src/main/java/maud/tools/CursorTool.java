@@ -34,6 +34,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -44,6 +45,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.Util;
+import maud.model.LoadedCgm;
 
 /**
  * The controller for the "Cursor Tool" window in Maud's "3D View" screen.
@@ -65,14 +67,6 @@ public class CursorTool extends WindowController {
      * asset path of the CG model for the 3-D cursor
      */
     final private static String assetPath = "Models/indicators/3d cursor/3d cursor.blend";
-    // *************************************************************************
-    // fields
-
-    /**
-     * geometry for the 3D cursor, set by
-     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
-     */
-    private Geometry geometry = null;
     // *************************************************************************
     // constructors
 
@@ -96,85 +90,72 @@ public class CursorTool extends WindowController {
     }
 
     /**
-     * Update the cursor from the MVC model.
+     * Update a CG model's scene graph based on the MVC model.
+     *
+     * @param cgm which CG model (not null)
      */
-    void updateCursor() {
+    void updateScene(LoadedCgm cgm) {
+        Geometry cursor = cgm.view.getCursor();
         /*
          * visibility
          */
-        boolean wasVisible = (geometry.getParent() != null);
+        boolean wasVisible = (cursor != null);
         boolean visible = Maud.model.cursor.isVisible();
         if (wasVisible && !visible) {
-            rootNode.detachChild(geometry);
+            cgm.view.setCursor(null);
+            cursor = null;
         } else if (!wasVisible && visible) {
-            rootNode.attachChild(geometry);
+            cursor = createCursor();
+            cgm.view.setCursor(cursor);
         }
-        if (visible) {
+
+        if (cursor != null) {
             /*
              * color
              */
             ColorRGBA newColor = Maud.model.cursor.copyColor(null);
-            Material material = geometry.getMaterial();
+            Material material = cursor.getMaterial();
             material.setColor("Color", newColor); // note: creates alias
             /*
              * location
              */
-            Vector3f newLocation = Maud.model.cursor.copyLocation(null);
-            MySpatial.setWorldLocation(geometry, newLocation);
+            Vector3f newLocation = cgm.scenePov.cursorLocation(null);
+            MySpatial.setWorldLocation(cursor, newLocation);
             /*
              * scale
              */
-            float newScale = Maud.model.cursor.worldScale();
+            float newScale = cgm.scenePov.worldScaleForCursor();
             if (newScale != 0f) {
-                MySpatial.setWorldScale(geometry, newScale);
+                MySpatial.setWorldScale(cursor, newScale);
             }
         }
     }
 
     /**
-     * Attempt to warp the cursor to the screen coordinates of the mouse
+     * Attempt to warp the 3D cursor to the screen coordinates of the mouse
      * pointer.
      */
     public void warpCursor() {
-        Ray ray = Util.mouseRay(cam, inputManager);
+        LoadedCgm cgm = Maud.gui.mouseCgm();
+        Camera camera = cgm.view.getCamera();
+        Ray ray = Util.mouseRay(camera, inputManager);
         /*
-         * Trace the ray to each CG model's visualization.
+         * Trace the ray to the CG model's visualization.
          */
-        Vector3f sourceContactPoint;
-        if (Maud.model.source.isLoaded()) {
-            Spatial cgmRoot = Maud.model.source.view.getCgmRoot();
-            sourceContactPoint = findContact(cgmRoot, ray);
-        } else {
-            sourceContactPoint = null;
-        }
-        Spatial cgmRoot = Maud.model.target.view.getCgmRoot();
+        Spatial cgmRoot = cgm.view.getCgmRoot();
         Vector3f targetContactPoint = findContact(cgmRoot, ray);
 
-        Vector3f viewPoint = cam.getLocation();
-        if (sourceContactPoint != null && targetContactPoint != null) {
-            float sourceRange = viewPoint.distance(sourceContactPoint);
-            float targetRange = viewPoint.distance(targetContactPoint);
-            if (sourceRange < targetRange) {
-                Maud.model.cursor.setLocation(sourceContactPoint);
-            } else {
-                Maud.model.cursor.setLocation(targetContactPoint);
-            }
-
-        } else if (sourceContactPoint != null) {
-            Maud.model.cursor.setLocation(sourceContactPoint);
-
-        } else if (targetContactPoint != null) {
-            Maud.model.cursor.setLocation(targetContactPoint);
-
+        if (targetContactPoint != null) {
+            cgm.scenePov.setCursorLocation(targetContactPoint);
         } else {
             /*
-             * The ray missed the CG models; try to trace it to the platform.
+             * The ray missed the CG model; try to trace it to the platform.
              */
-            Spatial platform = Maud.gui.tools.platform.getSpatial();
+            Spatial platform = cgm.view.getPlatform();
             if (platform != null) {
                 Vector3f platformContactPoint = findContact(platform, ray);
                 if (platformContactPoint != null) {
-                    Maud.model.cursor.setLocation(platformContactPoint);
+                    cgm.scenePov.setCursorLocation(platformContactPoint);
                 }
             }
         }
@@ -192,19 +173,6 @@ public class CursorTool extends WindowController {
     public void initialize(AppStateManager stateManager,
             Application application) {
         super.initialize(stateManager, application);
-        /*
-         * Load a geometry for the cursor.
-         */
-        Node node = (Node) assetManager.loadModel(assetPath);
-        Node node2 = (Node) node.getChild(0);
-        Node node3 = (Node) node2.getChild(0);
-        geometry = (Geometry) node3.getChild(0);
-        geometry.removeFromParent();
-        /*
-         * Create a material for it.
-         */
-        Material material = MyAsset.createUnshadedMaterial(assetManager);
-        geometry.setMaterial(material);
     }
 
     /**
@@ -225,6 +193,25 @@ public class CursorTool extends WindowController {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Create a star-shaped 3D cursor.
+     *
+     * @return a new, orphaned spatial
+     */
+    private Geometry createCursor() {
+        Node node = (Node) assetManager.loadModel(assetPath);
+        Node node2 = (Node) node.getChild(0);
+        Node node3 = (Node) node2.getChild(0);
+        Geometry result = (Geometry) node3.getChild(0);
+
+        result.removeFromParent();
+
+        Material material = MyAsset.createUnshadedMaterial(assetManager);
+        result.setMaterial(material);
+
+        return result;
+    }
 
     /**
      * For the specified camera ray, find the 1st point of contact on a triangle

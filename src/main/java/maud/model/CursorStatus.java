@@ -27,10 +27,8 @@
 package maud.model;
 
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
-import maud.Maud;
 
 /**
  * The status of the 3D cursor in Maud's "3D View" screen.
@@ -61,10 +59,6 @@ public class CursorStatus implements Cloneable {
      * angular size of the cursor (in arbitrary units, &gt;0)
      */
     private float size = 0.2f;
-    /**
-     * location of the cursor (in world coordinates)
-     */
-    private Vector3f location = new Vector3f();
     // *************************************************************************
     // new methods exposed
 
@@ -79,21 +73,6 @@ public class CursorStatus implements Cloneable {
             storeResult = new ColorRGBA();
         }
         storeResult.set(color);
-
-        return storeResult;
-    }
-
-    /**
-     * Copy the location of the cursor.
-     *
-     * @param storeResult (modified if not null)
-     * @return world coordinates (either storeResult or a new vector)
-     */
-    public Vector3f copyLocation(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-        storeResult.set(location);
 
         return storeResult;
     }
@@ -128,16 +107,6 @@ public class CursorStatus implements Cloneable {
     }
 
     /**
-     * Alter the location of the cursor.
-     *
-     * @param newLocation (in world coordinates, not null, unaffected)
-     */
-    public void setLocation(Vector3f newLocation) {
-        Validate.nonNull(newLocation, "location");
-        location.set(newLocation);
-    }
-
-    /**
      * Alter the size of the cursor.
      *
      * @param newSize (in arbitrary units, &ge;0)
@@ -155,19 +124,6 @@ public class CursorStatus implements Cloneable {
     public void setVisible(boolean newState) {
         visible = newState;
     }
-
-    /**
-     * Calculate the scale of the cursor.
-     *
-     * @return world scale factor (&ge;0)
-     */
-    public float worldScale() {
-        float range = Maud.model.camera.range(location);
-        float worldScale = size * range;
-
-        assert worldScale >= 0f : worldScale;
-        return worldScale;
-    }
     // *************************************************************************
     // Object methods
 
@@ -181,8 +137,6 @@ public class CursorStatus implements Cloneable {
     public CursorStatus clone() throws CloneNotSupportedException {
         CursorStatus clone = (CursorStatus) super.clone();
         clone.color = color.clone();
-        clone.location = location.clone();
-
         return clone;
     }
 }

@@ -30,7 +30,9 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
@@ -42,6 +44,7 @@ import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.screen.Screen;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -57,7 +60,8 @@ import maud.tools.DddTools;
 
 /**
  * The screen controller for the GUI portion of Maud's "3D View" screen. The GUI
- * includes a menu bar, numerous tool windows, and a status bar.
+ * includes a menu bar, numerous tool windows, and a status bar. TODO rename
+ * EditorGui
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -137,6 +141,32 @@ public class DddGui extends GuiScreenController {
         String message = String.format("added checkpoint[%d] from %s at %s",
                 checkpointIndex, source, creationTime);
         setStatus(message);
+    }
+
+    /**
+     * Select a loaded CG model (source or target) based on the screen position
+     * of the mouse pointer.
+     *
+     * @return a pre-existing instance, or null if none applies
+     */
+    public LoadedCgm mouseCgm() {
+        Vector2f screenXY = inputManager.getCursorPosition();
+        ViewPort sourceViewPort = Maud.model.source.view.getViewPort();
+        ViewPort targetViewPort = Maud.model.target.view.getViewPort();
+
+        LoadedCgm cgm = null;
+        List<ViewPort> viewPorts = Util.listViewPorts(renderManager, screenXY);
+        for (ViewPort vp : viewPorts) {
+            if (vp.isEnabled()) {
+                if (vp == sourceViewPort) {
+                    cgm = Maud.model.source;
+                } else if (vp == targetViewPort) {
+                    cgm = Maud.model.target;
+                }
+            }
+        }
+
+        return cgm;
     }
 
     /**
@@ -347,7 +377,7 @@ public class DddGui extends GuiScreenController {
 
     /**
      * Select a loaded CG model (source or target) based on the "sourceModel"
-     * signal.
+     * signal. TODO rename signalCgm
      *
      * @return a pre-existing instance (not null)
      */
@@ -472,6 +502,7 @@ public class DddGui extends GuiScreenController {
         inputMode.setEnabled(true);
         inputMode.influence(this);
         setListener(inputMode);
+
         super.initialize(stateManager, application);
 
         Maud.model.target.loadNamed("Jaime");
@@ -490,25 +521,19 @@ public class DddGui extends GuiScreenController {
         if (!tools.getTool("camera").isInitialized()) {
             return;
         }
-
-        tools.update();
         /*
-         * Update animations even if the animation tool is disabled.
+         * Update animations even when the animation tool is disabled.
          */
         if (Maud.model.source.animation.isMoving()) {
             updateTrackTime(Maud.model.source, tpf);
-        }
-        if (Maud.model.source.isLoaded()) {
-            Maud.model.source.view.updatePose();
         }
         if (Maud.model.target.animation.isMoving()) {
             updateTrackTime(Maud.model.target, tpf);
         } else if (Maud.model.target.animation.isRetargetedPose()) {
             Maud.model.target.pose.setToAnimation();
         }
-        Maud.model.target.view.updatePose();
         /*
-         * Rotate one of the views' CG models around its Y-axis.
+         * Based on signal input, rotate a loaded CG model around its Y-axis.
          */
         LoadedCgm cgmToRotate = selectCgm();
         if (signals.test(modelCCWSignalName)) {
@@ -517,8 +542,15 @@ public class DddGui extends GuiScreenController {
         if (signals.test(modelCWSignalName)) {
             cgmToRotate.transform.rotateY(-tpf);
         }
-        Maud.model.source.view.updateTransform();
-        Maud.model.target.view.updateTransform();
+
+        if (Maud.model.axes.isDraggingAxis()) {
+            Maud.gui.tools.axes.dragAxis();
+        }
+
+        Maud application = Maud.getApplication();
+        application.updateViewPorts();
+        Maud.model.source.view.update();
+        Maud.model.target.view.update();
     }
     // *************************************************************************
     // ScreenController methods
