@@ -26,7 +26,6 @@
  */
 package maud.model;
 
-import com.jme3.math.Vector3f;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,11 +78,6 @@ public class MiscStatus implements Cloneable {
      * view mode (either "animation" or "scene")
      */
     private String viewMode = "scene";
-    /**
-     * center location of the top of the platform (in world coordinates, not
-     * null)
-     */
-    private Vector3f platformLocation = new Vector3f();
     // *************************************************************************
     // new methods exposed
 
@@ -121,16 +115,6 @@ public class MiscStatus implements Cloneable {
         }
 
         return index;
-    }
-
-    /**
-     * Copy the center location of the top of the platform.
-     *
-     * @return a new vector (in world coordinates)
-     */
-    public Vector3f copyPlatformLocation() {
-        Vector3f result = platformLocation.clone();
-        return result;
     }
 
     /**
@@ -241,16 +225,6 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Alter the center location of the top of the platform.
-     *
-     * @param newLocation world coordinates (not null, unaffected)
-     */
-    public void setPlatformLocation(Vector3f newLocation) {
-        Validate.nonNull(newLocation, "location");
-        platformLocation.set(newLocation);
-    }
-
-    /**
      * Alter the platform display mode.
      *
      * @param modeName either "none" or "square"
@@ -335,7 +309,6 @@ public class MiscStatus implements Cloneable {
     @Override
     public MiscStatus clone() throws CloneNotSupportedException {
         MiscStatus clone = (MiscStatus) super.clone();
-        clone.platformLocation = platformLocation.clone();
         return clone;
     }
 }
