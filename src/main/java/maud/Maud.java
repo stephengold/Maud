@@ -370,7 +370,6 @@ public class Maud extends GuiApplication {
      */
     private void createTargetCgmViewPort() {
         Camera camera = cam.clone();
-        logger.log(Level.SEVERE, "target cam {0}", camera.hashCode());
         float bottomEdge = 0f;
         float leftEdge = 0.5f;
         float rightEdge = 1f;
