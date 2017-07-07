@@ -39,7 +39,7 @@ import maud.model.LoadedCgm;
 import maud.model.LoadedMapping;
 
 /**
- * The controller for the "Bone Tool" window in Maud's "3D View" screen.
+ * The controller for the "Bone Tool" window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */

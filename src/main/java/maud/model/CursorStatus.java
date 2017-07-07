@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * The status of the 3D cursor in Maud's "3D View" screen.
+ * The status of the 3D cursor in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */

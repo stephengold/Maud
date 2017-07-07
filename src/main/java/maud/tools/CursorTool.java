@@ -49,7 +49,7 @@ import maud.Util;
 import maud.model.LoadedCgm;
 
 /**
- * The controller for the "Cursor Tool" window in Maud's "3D View" screen.
+ * The controller for the "Cursor Tool" window in Maud's editor screen.
  *
  * The left mouse button (LMB) positions the 3D cursor.
  *

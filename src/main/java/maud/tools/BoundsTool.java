@@ -39,7 +39,7 @@ import maud.model.BoundsStatus;
 import maud.model.LoadedCgm;
 
 /**
- * The controller for the "Bounds Tool" window in Maud's "3D View" screen.
+ * The controller for the "Bounds Tool" window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */

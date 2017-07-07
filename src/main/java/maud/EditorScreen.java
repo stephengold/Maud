@@ -56,16 +56,15 @@ import jme3utilities.ui.InputMode;
 import maud.model.Checkpoint;
 import maud.model.History;
 import maud.model.LoadedCgm;
-import maud.tools.DddTools;
+import maud.tools.EditorTools;
 
 /**
- * The screen controller for the GUI portion of Maud's "3D View" screen. The GUI
- * includes a menu bar, numerous tool windows, and a status bar. TODO rename
- * EditorGui
+ * The screen controller for Maud's editor screen. The GUI includes a menu bar,
+ * numerous tool windows, and a status bar.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class DddGui extends GuiScreenController {
+public class EditorScreen extends GuiScreenController {
     // *************************************************************************
     // constants and loggers
 
@@ -73,7 +72,7 @@ public class DddGui extends GuiScreenController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            DddGui.class.getName());
+            EditorScreen.class.getName());
     /**
      * name of the signal that rotates the model counter-clockwise around +Y
      */
@@ -97,19 +96,19 @@ public class DddGui extends GuiScreenController {
     /**
      * dialog boxes created by this screen
      */
-    final DddDialogs dialogs = new DddDialogs();
+    final EditorDialogs dialogs = new EditorDialogs();
     /**
      * input mode for this screen
      */
-    final DddInputMode inputMode = new DddInputMode();
+    final EditorInputMode inputMode = new EditorInputMode();
     /**
      * menus for this screen
      */
-    final DddMenus menus = new DddMenus();
+    final EditorMenus menus = new EditorMenus();
     /**
      * controllers for tool windows
      */
-    final public DddTools tools = new DddTools(this);
+    final public EditorTools tools = new EditorTools(this);
     // *************************************************************************
     // constructors
 
@@ -117,8 +116,8 @@ public class DddGui extends GuiScreenController {
      * Instantiate an uninitialized, disabled display that will not be enabled
      * during initialization.
      */
-    DddGui() {
-        super("3D View", "Interface/Nifty/huds/3DView.xml", false);
+    EditorScreen() {
+        super("editor", "Interface/Nifty/huds/editor.xml", false);
     }
     // *************************************************************************
     // new methods exposed

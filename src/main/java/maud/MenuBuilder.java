@@ -270,7 +270,7 @@ class MenuBuilder {
     }
 
     /**
-     * Display the menu in the "3D View" screen.
+     * Display the menu in the editor screen.
      */
     void show(String actionPrefix) {
         logger.log(Level.INFO, "actionPrefix = {0}",

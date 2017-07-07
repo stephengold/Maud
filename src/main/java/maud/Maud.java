@@ -45,7 +45,7 @@ import jme3utilities.debug.Printer;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
-import maud.model.DddModel;
+import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedCgm;
 
@@ -87,13 +87,13 @@ public class Maud extends GuiApplication {
      */
     final static BindScreen bindScreen = new BindScreen();
     /**
-     * GUI portion of the "3D View" screen, with links to tools
+     * GUI portion of the editor screen, with links to tools
      */
-    final public static DddGui gui = new DddGui();
+    final public static EditorScreen gui = new EditorScreen();
     /**
-     * MVC model for the "3D View" screen
+     * MVC model for the editor screen
      */
-    public static DddModel model = new DddModel();
+    public static EditorModel model = new EditorModel();
     /**
      * application instance, set by {@link #main(java.lang.String[])}
      */
@@ -166,14 +166,14 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Initialization performed the 1st time the "3D View" screen is displayed.
+     * Initialization performed the 1st time the editor screen is displayed.
      */
     void startup2() {
         logger.info("");
         /*
-         * Attach controllers for windows in the "3D View" screen.
+         * Attach controllers for windows in the editor screen.
          */
-        gui.tools.attachAll(stateManager);
+        gui.tools.attachAll(stateManager); // TODO attach()
         /*
          * Disable flyCam.
          */
@@ -316,11 +316,11 @@ public class Maud extends GuiApplication {
         createSourceCgmViewPort();
         createTargetCgmViewPort();
         /*
-         * Attach screen controllers for the "3D View" screen and BindScreen.
+         * Attach screen controllers for the editor screen and bind screen.
          */
         stateManager.attachAll(gui, bindScreen);
         /*
-         * Configure and attach input mode for the "3D View" screen.
+         * Configure and attach input mode for the editor screen.
          */
         gui.inputMode.setConfigPath(hotkeyBindingsAssetPath);
         stateManager.attach(gui.inputMode);

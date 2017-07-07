@@ -46,7 +46,7 @@ import maud.model.LoadedCgm;
 import maud.model.Pov;
 
 /**
- * The controller for the "Camera Tool" window in Maud's "3D View" screen.
+ * The controller for the "Camera Tool" window in Maud's editor screen.
  * <p>
  * The camera is primarily controlled by turning the scroll wheel and dragging
  * with the middle mouse button (MMB). There are two modes: "orbit" mode in

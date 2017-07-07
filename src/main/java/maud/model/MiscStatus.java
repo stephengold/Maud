@@ -34,7 +34,7 @@ import jme3utilities.math.MyMath;
 import maud.Maud;
 
 /**
- * The MVC model of miscellaneous details in Maud's "3D View" screen.
+ * The MVC model of miscellaneous details in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */

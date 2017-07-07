@@ -29,12 +29,12 @@ package maud.tools;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import java.util.logging.Logger;
 import jme3utilities.nifty.WindowController;
-import maud.DddGui;
+import maud.EditorScreen;
 import maud.Maud;
 import maud.model.LoadedCgm;
 
 /**
- * The controller for the "Render Tool" window in Maud's "3D View" screen.
+ * The controller for the "Render Tool" window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -55,7 +55,7 @@ class RenderTool extends WindowController {
      *
      * @param screenController
      */
-    RenderTool(DddGui screenController) {
+    RenderTool(EditorScreen screenController) {
         super(screenController, "renderTool", false);
     }
     // *************************************************************************

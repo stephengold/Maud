@@ -34,7 +34,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 
 /**
- * The controller for the "Source Animation Tool" window in Maud's "3D View"
+ * The controller for the "Source Animation Tool" window in Maud's editor
  * screen.
  *
  * @author Stephen Gold sgold@sonic.net

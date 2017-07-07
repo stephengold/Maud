@@ -33,7 +33,7 @@ import jme3utilities.MyString;
 import maud.Maud;
 
 /**
- * The status of the camera in Maud's "3D View" screen.
+ * The status of the camera in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */

@@ -38,12 +38,12 @@ import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.nifty.WindowController;
 import maud.CgmView;
-import maud.DddGui;
+import maud.EditorScreen;
 import maud.Maud;
 import maud.model.LoadedCgm;
 
 /**
- * The controller for the "Platform Tool" window in Maud's "3D View" screen.
+ * The controller for the "Platform Tool" window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -81,7 +81,7 @@ public class PlatformTool extends WindowController {
      *
      * @param screenController
      */
-    PlatformTool(DddGui screenController) {
+    PlatformTool(EditorScreen screenController) {
         super(screenController, "platformTool", false);
     }
     // *************************************************************************

@@ -43,11 +43,11 @@ import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
 
 /**
- * Dialog boxes created by Maud's "3D View" screen.
+ * Dialog boxes created by Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class DddDialogs {
+class EditorDialogs {
     // *************************************************************************
     // constants and loggers
 
@@ -55,7 +55,7 @@ class DddDialogs {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            DddDialogs.class.getName());
+            EditorDialogs.class.getName());
     // *************************************************************************
     // new methods exposed
 
@@ -97,7 +97,7 @@ class DddDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter name for copied animation:",
-                fromName, DddInputMode.copyAnimationPrefix, controller);
+                fromName, EditorInputMode.copyAnimationPrefix, controller);
     }
 
     /**
@@ -155,7 +155,7 @@ class DddDialogs {
         DialogController controller = new AnimationNameDialog("Create");
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                "pose", DddInputMode.newPosePrefix, controller);
+                "pose", EditorInputMode.newPosePrefix, controller);
     }
 
     /**
@@ -178,7 +178,7 @@ class DddDialogs {
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter reduction factor:", "2",
-                    DddInputMode.reduceAnimationPrefix, controller);
+                    EditorInputMode.reduceAnimationPrefix, controller);
         }
     }
 
@@ -192,7 +192,7 @@ class DddDialogs {
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter reduction factor:", "2",
-                    DddInputMode.reduceTrackPrefix, controller);
+                    EditorInputMode.reduceTrackPrefix, controller);
         }
     }
 
@@ -206,7 +206,7 @@ class DddDialogs {
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new name for the animation:",
-                    oldName, DddInputMode.renameAnimationPrefix,
+                    oldName, EditorInputMode.renameAnimationPrefix,
                     controller);
         }
     }
@@ -221,7 +221,7 @@ class DddDialogs {
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new name for the bone:",
-                    oldName, DddInputMode.renameBonePrefix, controller);
+                    oldName, EditorInputMode.renameBonePrefix, controller);
         }
     }
 
@@ -240,7 +240,7 @@ class DddDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog(prompt, oldName,
-                DddInputMode.renameSpatialPrefix, controller);
+                EditorInputMode.renameSpatialPrefix, controller);
     }
 
     /**
@@ -252,7 +252,7 @@ class DddDialogs {
             DialogController controller = new UserKeyDialog("Rename");
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter a new key for the user data:",
-                    oldName, DddInputMode.renameUserKeyPrefix, controller);
+                    oldName, EditorInputMode.renameUserKeyPrefix, controller);
         }
     }
 
@@ -263,7 +263,7 @@ class DddDialogs {
         String baseFilePath = Maud.model.target.baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for model:",
-                baseFilePath, "Save", DddInputMode.saveCgmPrefix, null);
+                baseFilePath, "Save", EditorInputMode.saveCgmPrefix, null);
     }
 
     /**
@@ -273,7 +273,7 @@ class DddDialogs {
         String baseFilePath = Maud.model.mapping.baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for mapping:",
-                baseFilePath, "Save", DddInputMode.saveMappingPrefix, null);
+                baseFilePath, "Save", EditorInputMode.saveMappingPrefix, null);
     }
 
     /**
@@ -288,7 +288,7 @@ class DddDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                oldName, DddInputMode.retargetAnimationPrefix, controller);
+                oldName, EditorInputMode.retargetAnimationPrefix, controller);
     }
 
     /**
@@ -310,7 +310,7 @@ class DddDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
-                defaultText, DddInputMode.setDurationPrefix, controller);
+                defaultText, EditorInputMode.setDurationPrefix, controller);
     }
 
     /**

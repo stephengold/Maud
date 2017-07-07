@@ -29,12 +29,12 @@ package maud.model;
 import java.util.logging.Logger;
 
 /**
- * An MVC-model state for the "3D View" screen in the Maud application. Includes
+ * An MVC-model state for the editor screen in the Maud application. Includes
  * all state that's checkpointed.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class DddModel {
+public class EditorModel {
     // *************************************************************************
     // constants and loggers
 
@@ -42,7 +42,7 @@ public class DddModel {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            LoadedCgm.class.getName());
+            EditorModel.class.getName());
     // *************************************************************************
     // fields
 
@@ -92,7 +92,7 @@ public class DddModel {
     /**
      * Instantiate an MVC model with the default settings.
      */
-    public DddModel() {
+    public EditorModel() {
         folders = new AssetFolders();
         axes = new AxesStatus();
         bounds = new BoundsStatus();
@@ -111,7 +111,7 @@ public class DddModel {
      *
      * @param other (not null)
      */
-    public DddModel(DddModel other) {
+    public EditorModel(EditorModel other) {
         try {
             folders = other.folders.clone();
             axes = other.axes.clone();

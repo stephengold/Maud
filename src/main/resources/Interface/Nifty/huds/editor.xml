@@ -31,7 +31,7 @@ Nifty XML to lay out the GUI portion of Maud's "3D View" screen:
 the menu bar, status bar, and tool windows.
 -->
 <nifty xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
-    <screen id="3D View" controller="maud.DddGui">
+    <screen id="editor" controller="maud.EditorScreen">
         <layer childLayout="vertical">
             <panel id="menu bar"
                    childLayout="horizontal"

@@ -56,7 +56,7 @@ public class Checkpoint {
     /**
      * a copy of the MVC model at time of creation
      */
-    final private DddModel model;
+    final private EditorModel model;
     /**
      * list of events since the previous checkpoint
      */
@@ -74,7 +74,7 @@ public class Checkpoint {
         timestamp = new Date();
         Maud.model.mapping.onCheckpoint();
         Maud.model.target.onCheckpoint();
-        model = new DddModel(Maud.model);
+        model = new EditorModel(Maud.model);
         eventDescriptions.addAll(descriptions);
     }
     // *************************************************************************
@@ -107,7 +107,7 @@ public class Checkpoint {
      * Copy this checkpoint to the application's live state.
      */
     void restore() {
-        Maud.model = new DddModel(model);
+        Maud.model = new EditorModel(model);
         Maud.model.source.getView().reinstall();
         Maud.model.target.getView().reinstall();
     }

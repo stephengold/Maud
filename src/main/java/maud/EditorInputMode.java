@@ -40,11 +40,11 @@ import maud.model.History;
 import maud.model.LoadedCgm;
 
 /**
- * Input mode for Maud's "3D View" screen. TODO rename EditorInputMode
+ * Input mode for Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class DddInputMode extends InputMode {
+class EditorInputMode extends InputMode {
     // *************************************************************************
     // constants and loggers
 
@@ -52,7 +52,7 @@ class DddInputMode extends InputMode {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            DddInputMode.class.getName());
+            EditorInputMode.class.getName());
     /**
      * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
      */
@@ -205,8 +205,8 @@ class DddInputMode extends InputMode {
     /**
      * Instantiate a disabled, uninitialized mode.
      */
-    DddInputMode() {
-        super("3D View");
+    EditorInputMode() {
+        super("editor");
     }
     // *************************************************************************
     // ActionListener methods

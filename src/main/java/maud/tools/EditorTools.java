@@ -33,15 +33,15 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.nifty.WindowController;
-import maud.DddGui;
+import maud.EditorScreen;
 import maud.model.LoadedCgm;
 
 /**
- * Tool windows in Maud's "3D View" screen.
+ * Tool windows in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class DddTools {
+public class EditorTools {
     // *************************************************************************
     // constants and loggers
 
@@ -49,7 +49,7 @@ public class DddTools {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            DddTools.class.getName());
+            EditorTools.class.getName());
     // *************************************************************************
     // fields
 
@@ -177,7 +177,7 @@ public class DddTools {
      *
      * @param screen the screen's controller (not null)
      */
-    public DddTools(DddGui screen) {
+    public EditorTools(EditorScreen screen) {
         Validate.nonNull(screen, "screen");
 
         animation = new AnimationTool(screen);

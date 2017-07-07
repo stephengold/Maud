@@ -35,7 +35,7 @@ import maud.Maud;
 import maud.model.LoadedCgm;
 
 /**
- * The controller for the "Sky Tool" window in Maud's "3D View" screen.
+ * The controller for the "Sky Tool" window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
