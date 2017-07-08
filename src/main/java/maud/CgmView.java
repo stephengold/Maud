@@ -44,13 +44,10 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.DirectionalLightShadowFilter;
-import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
@@ -72,14 +69,6 @@ public class CgmView implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
-    /**
-     * width and height of rendered shadow maps (pixels per side, &gt;0)
-     */
-    final private static int shadowMapSize = 4_096;
-    /**
-     * number of shadow map splits (&gt;0)
-     */
-    final private static int shadowMapSplits = 3;
     /**
      * message logger for this class
      */
@@ -112,10 +101,6 @@ public class CgmView implements JmeCloneable {
      * directional added to the scene (not null)
      */
     private DirectionalLight mainLight = new DirectionalLight();
-    /**
-     * shadow filter for the scene
-     */
-    private DirectionalLightShadowFilter dlsf = null;
     /**
      * indicator for the 3D cursor, or null if none
      */
@@ -277,12 +262,13 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Access the scene's shadow filter.
+     * Access the scene's main (directional) light.
      *
-     * @return the pre-existing instance, or null if none
+     * @return the pre-existing instance (not null)
      */
-    public DirectionalLightShadowFilter getDlsf() {
-        return dlsf;
+    public DirectionalLight getMainLight() {
+        assert mainLight != null;
+        return mainLight;
     }
 
     /**
@@ -304,18 +290,19 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Access the sky added to the scene.
+     * Access the sky control added to the scene.
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     public SkyControl getSkyControl() {
+        assert skyControl != null;
         return skyControl;
     }
 
     /**
      * Access the view port being used to render the scene.
      *
-     * @return a pre-existing, enabled view port or null if none
+     * @return a pre-existing, enabled view port, or null if none
      */
     public ViewPort getViewPort() {
         ViewPort result;
@@ -371,6 +358,7 @@ public class CgmView implements JmeCloneable {
      */
     public Spatial selectedSpatial() {
         Spatial result = cgm.spatial.underRoot(cgmRoot);
+        assert result != null;
         return result;
     }
 
@@ -604,10 +592,9 @@ public class CgmView implements JmeCloneable {
         animControl = cloner.clone(animControl);
         axesControl = cloner.clone(axesControl);
         boundsVisualizer = cloner.clone(boundsVisualizer);
-        // cgm not cloned: modified later
+        // cgm not cloned: set later
         cgmRoot = cloner.clone(cgmRoot);
         cursor = cloner.clone(cursor);
-        dlsf = cloner.clone(dlsf);
         mainLight = cloner.clone(mainLight);
         // parent not cloned
         platform = cloner.clone(platform);
@@ -615,8 +602,7 @@ public class CgmView implements JmeCloneable {
         skeletonControl = cloner.clone(skeletonControl);
         skeletonDebugControl = cloner.clone(skeletonDebugControl);
         skyControl = cloner.clone(skyControl);
-        viewPort1 = cloner.clone(viewPort1);
-        viewPort2 = cloner.clone(viewPort2);
+        // viewPort1, viewPort2 not cloned
     }
 
     /**
@@ -677,19 +663,6 @@ public class CgmView implements JmeCloneable {
         Spatial scene = getScene();
         scene.addLight(ambientLight);
         scene.addLight(mainLight);
-        /*
-         * Add a shadow filter.
-         */
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-        dlsf = new DirectionalLightShadowFilter(assetManager, shadowMapSize,
-                shadowMapSplits);
-        dlsf.setEdgeFilteringMode(EdgeFilteringMode.PCF8);
-        dlsf.setLight(mainLight);
-        if (viewPort1 != null) {
-            Misc.getFpp(viewPort1, assetManager).addFilter(dlsf);
-        }
-        Misc.getFpp(viewPort2, assetManager).addFilter(dlsf);
     }
 
     /**
@@ -712,13 +685,14 @@ public class CgmView implements JmeCloneable {
     /**
      * Access the scene (root node) of this visualization.
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     private Spatial getScene() {
         List<Spatial> scenes = viewPort2.getScenes();
         assert scenes.size() == 1 : scenes.size();
         Spatial result = scenes.get(0);
 
+        assert result != null;
         return result;
     }
 

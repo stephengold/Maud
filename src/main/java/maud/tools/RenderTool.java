@@ -26,9 +26,16 @@
  */
 package maud.tools;
 
+import com.jme3.light.DirectionalLight;
+import com.jme3.post.Filter;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.renderer.ViewPort;
 import com.jme3.shadow.DirectionalLightShadowFilter;
+import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.nifty.WindowController;
+import maud.CgmView;
 import maud.EditorScreen;
 import maud.Maud;
 import maud.model.LoadedCgm;
@@ -67,8 +74,20 @@ class RenderTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateShadowFilter(LoadedCgm cgm) {
-        DirectionalLightShadowFilter dlsf = cgm.getView().getDlsf();
-        if (dlsf != null) {
+        CgmView view = cgm.getView();
+        ViewPort vp = view.getViewPort();
+        if (vp != null) {
+            FilterPostProcessor fpp = Misc.getFpp(vp, assetManager);
+
+            DirectionalLightShadowFilter dlsf = null;
+            List<Filter> filterList = fpp.getFilterList();
+            for (Filter filter : filterList) {
+                if (filter instanceof DirectionalLightShadowFilter) {
+                    dlsf = (DirectionalLightShadowFilter) filter;
+                }
+            }
+            DirectionalLight mainLight = view.getMainLight();
+            dlsf.setLight(mainLight);
             boolean enable = Maud.model.misc.areShadowsRendered();
             dlsf.setEnabled(enable);
         }

@@ -29,11 +29,14 @@ package maud;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.audio.openal.ALAudioRenderer;
+import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.BVHLoader;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +63,14 @@ public class Maud extends GuiApplication {
     // constants and loggers
 
     /**
+     * width and height of rendered shadow maps (pixels per side, &gt;0)
+     */
+    final private static int shadowMapSize = 4_096;
+    /**
+     * number of shadow map splits in shadow filters (&gt;0)
+     */
+    final private static int shadowMapSplits = 3;
+    /**
      * additional scenes (besides rootNode and guiRoot) for rendering
      */
     final private static List<Spatial> addedScenes = new ArrayList<>(3);
@@ -79,13 +90,13 @@ public class Maud extends GuiApplication {
     // fields
 
     /**
-     * true once {@link #startup1()} has completed, until then false
-     */
-    private boolean didStartup1 = false;
-    /**
      * Nifty screen for editing hotkey bindings
      */
     final static BindScreen bindScreen = new BindScreen();
+    /**
+     * true once {@link #startup1()} has completed, until then false
+     */
+    private boolean didStartup1 = false;
     /**
      * GUI portion of the editor screen, with links to tools
      */
@@ -290,7 +301,7 @@ public class Maud extends GuiApplication {
         }
         /*
          * Update the logical/geometric state of all scenes other than
-         * rootNode and guiNode.
+         * rootNode and guiNode. TODO: an app state for each view port
          */
         for (Spatial scene : addedScenes) {
             scene.updateLogicalState(tpf);
@@ -301,17 +312,34 @@ public class Maud extends GuiApplication {
     // private methods
 
     /**
+     * Add shadows to the specified view port, without specifying a light.
+     */
+    private void addShadows(ViewPort vp) {
+        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(
+                assetManager, shadowMapSize, shadowMapSplits);
+        dlsf.setEdgeFilteringMode(EdgeFilteringMode.PCF8);
+        dlsf.setEnabled(false);
+
+        FilterPostProcessor fpp = Misc.getFpp(vp, assetManager);
+        fpp.addFilter(dlsf);
+    }
+
+    /**
      * Initialization performed during the 1st invocation of
      * {@link #simpleUpdate(float)}.
      */
     private void startup1() {
         logger.info("");
         /*
-         * register a loader for BVH files
+         * Register a loader for BVH files.
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
         /*
-         * Create 2 view ports for split-screen editing.
+         * Add shadows to the default view port.
+         */
+        addShadows(viewPort);
+        /*
+         * Create 2 view ports for split-screen editing, also with shadows.
          */
         createSourceCgmViewPort();
         createTargetCgmViewPort();
@@ -348,10 +376,11 @@ public class Maud extends GuiApplication {
                 camera);
         sourceCgmViewPort.setClearFlags(true, true, true);
         sourceCgmViewPort.setEnabled(false);
+        addShadows(sourceCgmViewPort);
         /*
          * Attach a scene to the new view port.
          */
-        Node scene = new Node("root for source CGM view");
+        Node scene = new Node("Root for source CGM view");
         sourceCgmViewPort.attachScene(scene);
         addedScenes.add(scene);
         /*
@@ -381,6 +410,7 @@ public class Maud extends GuiApplication {
                 camera);
         targetCgmViewPort.setClearFlags(true, true, true);
         targetCgmViewPort.setEnabled(false);
+        addShadows(targetCgmViewPort);
         /*
          * Attach the existing scene to the new view port.
          */
