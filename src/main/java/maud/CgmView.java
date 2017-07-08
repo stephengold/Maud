@@ -713,7 +713,7 @@ public class CgmView implements JmeCloneable {
         /*
          * Remove all scene-graph controls.
          */
-        Util.removeAllControls(cgmRoot);
+        MySpatial.removeAllControls(cgmRoot);
         /*
          * Create and add scene-graph controls for the skeleton.
          */

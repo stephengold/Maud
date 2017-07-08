@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import maud.Maud;
 import maud.Util;
 
@@ -204,7 +205,7 @@ public class EditableMapping extends LoadedMapping {
 
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();
-        Util.snapLocal(twist, axisIndex);
+        MyMath.snapLocal(twist, axisIndex);
         setEditedTwist();
     }
 

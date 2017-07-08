@@ -36,14 +36,15 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
+import jme3utilities.MyCamera;
 import jme3utilities.Validate;
 import jme3utilities.debug.AxesControl;
 import jme3utilities.math.MyMath;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.Pose;
-import maud.Util;
 import maud.model.AxesStatus;
 import maud.model.EditableCgm;
 import maud.model.LoadedCgm;
@@ -94,16 +95,17 @@ public class AxesTool extends WindowController {
         /*
          * Calculate the old axis direction in local coordinates.
          */
-        Vector3f oldDirection = Util.axisVector(axisIndex, 1f, null);
+        Vector3f oldDirection = MyVector3f.axisVector(axisIndex, 1f, null);
         assert oldDirection.isUnitVector() : oldDirection;
         /*
          * Calculate the new axis direction in local coordinates.
          */
         Camera camera = cgm.getView().getCamera();
-        Ray worldRay = Util.mouseRay(camera, inputManager);
-        Ray localRay = Util.localizeRay(worldRay, axesSpatial);
+        Ray worldRay = MyCamera.mouseRay(camera, inputManager);
+        Ray localRay = MyMath.localizeRay(worldRay, axesSpatial);
         float radius = axesControl.getAxisLength();
-        Vector3f newDirection = Util.lineMeetsSphere(localRay, radius, farSide);
+        Vector3f newDirection;
+        newDirection = MyVector3f.lineMeetsSphere(localRay, radius, farSide);
         newDirection.divideLocal(radius);
         assert newDirection.isUnitVector() : newDirection;
 

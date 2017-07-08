@@ -40,12 +40,12 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
+import jme3utilities.MyCamera;
 import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.CgmView;
 import maud.Maud;
-import maud.Util;
 import maud.model.LoadedCgm;
 
 /**
@@ -141,7 +141,7 @@ public class CursorTool extends WindowController {
         LoadedCgm cgm = Maud.gui.mouseCgm();
         CgmView sceneView = cgm.getView();
         Camera camera = sceneView.getCamera();
-        Ray ray = Util.mouseRay(camera, inputManager);
+        Ray ray = MyCamera.mouseRay(camera, inputManager);
         /*
          * Trace the ray to the CG model's visualization.
          */

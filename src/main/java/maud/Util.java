@@ -36,21 +36,17 @@ import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
-import com.jme3.input.InputManager;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.bvh.BVHAnimData;
 import com.jme3.scene.plugins.bvh.BoneMapping;
@@ -63,6 +59,7 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
+import jme3utilities.MyCamera;
 import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -76,14 +73,6 @@ public class Util {
     // *************************************************************************
     // constants and loggers
 
-    /**
-     * Pi/2 or 180 degrees
-     */
-    public static final double HALF_PI = Math.PI / 2.0;
-    /**
-     * Pi/4 or 90 degrees
-     */
-    public static final double QUARTER_PI = Math.PI / 4.0;
     /**
      * message logger for this class
      */
@@ -102,37 +91,6 @@ public class Util {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Generate an axis-aligned vector with the specified length.
-     *
-     * @param axisIndex 0&rarr;X, 1&rarr;Y, 2&rarr;Z
-     * @param length how long (ge;0)
-     * @param storeResult (modified if not null)
-     * @return vector (either storeResult or a new instance)
-     */
-    public static Vector3f axisVector(int axisIndex, float length,
-            Vector3f storeResult) {
-        Validate.inRange(axisIndex, "axis index", 0, 2);
-        Validate.nonNegative(length, "length");
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-
-        storeResult.zero();
-        switch (axisIndex) {
-            case 0:
-                storeResult.x = length;
-                break;
-            case 1:
-                storeResult.y = length;
-                break;
-            case 2:
-                storeResult.z = length;
-        }
-
-        return storeResult;
-    }
 
     /**
      * Calculate the bone transform for the specified track and time, using
@@ -201,40 +159,9 @@ public class Util {
     public static void cardinalizeLocal(Quaternion input) {
         Validate.nonNull(input, "input");
 
-        snapLocal(input, 0);
-        snapLocal(input, 1);
-        snapLocal(input, 2);
-    }
-
-    /**
-     * Test whether the bounds of the specified view port contain the specified
-     * screen position.
-     *
-     * @param viewPort (not null, unaffected)
-     * @param screenXY (in pixels, not null, unaffected)
-     *
-     * @return true if contained, otherwise false
-     */
-    public static boolean contains(ViewPort viewPort, Vector2f screenXY) {
-        Validate.nonNull(viewPort, "view port");
-        Validate.nonNull(screenXY, "screen xy");
-
-        Camera camera = viewPort.getCamera();
-        float xFraction = screenXY.x / camera.getWidth();
-        float leftX = camera.getViewPortLeft();
-        float rightX = camera.getViewPortRight();
-
-        boolean result = false;
-        if (xFraction > leftX && xFraction < rightX) {
-            float yFraction = screenXY.y / camera.getHeight();
-            float bottomY = camera.getViewPortBottom();
-            float topY = camera.getViewPortTop();
-            if (yFraction > bottomY && yFraction < topY) {
-                result = true;
-            }
-        }
-
-        return result;
+        MyMath.snapLocal(input, 0);
+        MyMath.snapLocal(input, 1);
+        MyMath.snapLocal(input, 2);
     }
 
     /**
@@ -376,63 +303,6 @@ public class Util {
     }
 
     /**
-     * Find the specified intersection between the line containing the specified
-     * ray and an origin-centered sphere. If there's no intersection, find the
-     * point on the sphere closest to the line.
-     *
-     * @param ray which ray to test (not null)
-     * @param radius size of the sphere (&ge;0)
-     * @param farSide which intersection to use: true&rarr;far side of sphere,
-     * false&rarr;near side
-     * @return a new coordinate vector
-     */
-    public static Vector3f lineMeetsSphere(Ray ray, float radius,
-            boolean farSide) {
-        Validate.nonNull(ray, "ray");
-        Validate.nonNegative(radius, "radius");
-
-        Vector3f direction = ray.getDirection();
-        Vector3f vertex = ray.getOrigin();
-        float dDotV = direction.dot(vertex);
-        float normV2 = vertex.lengthSquared();
-        float discriminant = dDotV * dDotV - normV2 + radius * radius;
-
-        Vector3f result;
-        if (discriminant >= 0f) {
-            /*
-             * Calculate the pseudodistance from the ray's vertex
-             * to the intersection.
-             */
-            float t = -dDotV;
-            if (farSide) {
-                t += FastMath.sqrt(discriminant);
-            } else {
-                t -= FastMath.sqrt(discriminant);
-            }
-            /*
-             * Calculate the position of that point on the line.
-             */
-            result = direction.mult(t);
-            result.addLocal(vertex);
-
-        } else {
-            /*
-             * Calculate the line's closest approach to the origin.
-             */
-            Vector3f projection = direction.mult(dDotV);
-            result = vertex.subtract(projection);
-            /*
-             * Scale to the surface of the sphere.
-             */
-            float factor = radius / result.length();
-            assert factor <= 1f : factor;
-            result.multLocal(factor);
-        }
-
-        return result;
-    }
-
-    /**
      * Enumerate all view ports that contain the specified screen position.
      *
      * @param screenXY (in pixels, not null, unaffected)
@@ -448,21 +318,21 @@ public class Util {
 
         List<ViewPort> preViews = renderManager.getPreViews();
         for (ViewPort preView : preViews) {
-            if (contains(preView, screenXY)) {
+            if (MyCamera.contains(preView, screenXY)) {
                 result.add(preView);
             }
         }
 
         List<ViewPort> mainViews = renderManager.getMainViews();
         for (ViewPort mainView : mainViews) {
-            if (contains(mainView, screenXY)) {
+            if (MyCamera.contains(mainView, screenXY)) {
                 result.add(mainView);
             }
         }
 
         List<ViewPort> postViews = renderManager.getPostViews();
         for (ViewPort postView : postViews) {
-            if (contains(postView, screenXY)) {
+            if (MyCamera.contains(postView, screenXY)) {
                 result.add(postView);
             }
         }
@@ -555,63 +425,6 @@ public class Util {
     }
 
     /**
-     * Transform a ray from world coordinates to the local coordinates of the
-     * specified spatial.
-     *
-     * @param worldRay input ray to transform (not null, unaffected)
-     * @param spatial which spatial (not null)
-     * @return a new instance
-     */
-    public static Ray localizeRay(Ray worldRay, Spatial spatial) {
-        Vector3f worldVertex = worldRay.getOrigin();
-        Vector3f worldDirection = worldRay.getDirection();
-        /*
-         * Choose a sample point on the ray.
-         */
-        float t = worldVertex.length();
-        if (t == 0f) {
-            t = 1f;
-        }
-        assert t > 0f : t;
-        Vector3f worldSample = worldDirection.mult(t);
-        worldSample.addLocal(worldVertex);
-        /*
-         * Transform the vertex and the sample point.
-         */
-        Vector3f localVertex = spatial.worldToLocal(worldVertex, null);
-        Vector3f localSample = spatial.worldToLocal(worldSample, null);
-
-        Vector3f localDirection = localSample.subtract(localVertex);
-        localDirection.normalizeLocal();
-        Ray result = new Ray(localVertex, localDirection);
-
-        return result;
-    }
-
-    /**
-     * Convert the mouse-pointer location into a ray.
-     *
-     * @param camera (not null)
-     * @param inputManager (not null)
-     *
-     * @return a new ray in world coordinates
-     */
-    public static Ray mouseRay(Camera camera, InputManager inputManager) {
-        Vector2f screenXY = inputManager.getCursorPosition();
-        /*
-         * Convert screen coordinates to world coordinates.
-         */
-        Vector3f vertex = camera.getWorldCoordinates(screenXY, 0f);
-        Vector3f far = camera.getWorldCoordinates(screenXY, 1f);
-
-        Vector3f direction = far.subtract(vertex);
-        direction.normalizeLocal();
-        Ray ray = new Ray(vertex, direction);
-
-        return ray;
-    }
-
-    /**
      * Copy a bone track, reducing the number of keyframes by the specified
      * factor.
      *
@@ -656,26 +469,6 @@ public class Util {
     }
 
     /**
-     * Remove all controls from the specified subtree of the scene graph. Note:
-     * recursive!
-     *
-     * @param subtree (not null)
-     */
-    public static void removeAllControls(Spatial subtree) {
-        while (subtree.getNumControls() > 0) {
-            Control control = subtree.getControl(0);
-            subtree.removeControl(control);
-        }
-        if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                removeAllControls(child);
-            }
-        }
-    }
-
-    /**
      * Re-target the specified animation from the specified source skeleton to
      * the specified target skeleton using the specified mapping.
      *
@@ -713,7 +506,7 @@ public class Util {
                 int iSource = sourceSkeleton.getBoneIndex(sourceName);
                 BoneTrack sourceTrack;
                 sourceTrack = MyAnimation.findTrack(sourceAnimation, iSource);
-                if (sourceTrack != null) {
+                if (sourceTrack != null) { // handle null sourceTrack
                     BoneTrack track;
                     track = retargetTrack(sourceAnimation, sourceTrack,
                             sourceSkeleton, targetSkeleton, mapping, iTarget);
@@ -810,57 +603,5 @@ public class Util {
         }
 
         return result;
-    }
-
-    /**
-     * Round the rotation angle of the indexed axis to the nearest Pi/2 radians.
-     *
-     * @param input (not null, modified)
-     * @param axisIndex which axis (&ge;0, &lt;3)
-     */
-    public static void snapLocal(Quaternion input, int axisIndex) {
-        float[] angles = new float[3];
-        input.toAngles(angles);
-        double angle = angles[axisIndex];
-        angle -= MyMath.modulo(angle - QUARTER_PI, HALF_PI);
-        angle += QUARTER_PI;
-        angles[axisIndex] = (float) angle;
-        input.fromAngles(angles);
-    }
-    // *************************************************************************
-    // new methods exposed
-
-    /**
-     * Console application to test the Util class.
-     *
-     * @param ignored command-line arguments
-     */
-    public static void main(String[] ignored) {
-        Quaternion cardinal = new Quaternion();
-        Quaternion c2 = new Quaternion();
-        Vector3f axis1 = new Vector3f();
-        Vector3f axis2 = new Vector3f();
-        Vector3f axis3 = new Vector3f();
-        for (int index1 = 0; index1 < 3; index1++) {
-            for (int sign1 = -1; sign1 < 2; sign1 += 2) {
-                axisVector(index1, 1f, axis1);
-                axis1.multLocal(sign1);
-
-                for (int index2 = 0; index2 < 3; index2++) {
-                    if (index1 != index2) {
-                        for (int sign2 = -1; sign2 < 2; sign2 += 2) {
-                            axisVector(index2, 1f, axis2);
-                            axis2.multLocal(sign2);
-                            axis1.cross(axis2, axis3);
-                            cardinal.fromAxes(axis1, axis2, axis3);
-
-                            c2.set(cardinal);
-                            cardinalizeLocal(c2);
-                            assert cardinal.equals(c2);
-                        }
-                    }
-                }
-            }
-        }
     }
 }
