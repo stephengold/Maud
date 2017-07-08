@@ -589,6 +589,8 @@ public class LoadedCgm implements Cloneable {
      * Unload the CG model.
      */
     public void unload() {
+        assert this == Maud.model.source;
+
         assetFolder = null;
         baseAssetPath = null;
         extension = null;
@@ -599,6 +601,10 @@ public class LoadedCgm implements Cloneable {
          * Reset the selected bone.
          */
         bone.deselect();
+
+        if (Maud.model.target.animation.isRetargetedPose()) {
+            Maud.model.target.animation.loadBindPose();
+        }
     }
     // *************************************************************************
     // protected methods
