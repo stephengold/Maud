@@ -125,7 +125,16 @@ public class Maud extends GuiApplication {
     // new methods exposed
 
     /**
-     * Process a "print scene" action.
+     * Process a "dump renderer" action.
+     */
+    public void dumpRenderer() {
+        dumper.setPrintCull(true);
+        dumper.setPrintTransform(true);
+        dumper.dump(renderManager);
+    }
+
+    /**
+     * Process a "dump scene" action.
      */
     public void dumpScene() {
         dumper.setPrintCull(true);
@@ -241,14 +250,19 @@ public class Maud extends GuiApplication {
                     MyString.quote(actionString));
 
             switch (actionString) {
-                case "edit bindings":
-                    InputMode im = InputMode.getActiveMode();
-                    bindScreen.activate(im);
+                case "dump renderer":
+                    dumpRenderer();
                     handled = true;
                     break;
 
-                case "print scene":
+                case "dump scene":
                     dumpScene();
+                    handled = true;
+                    break;
+
+                case "edit bindings":
+                    InputMode im = InputMode.getActiveMode();
+                    bindScreen.activate(im);
                     handled = true;
                     break;
 
