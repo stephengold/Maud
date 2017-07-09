@@ -144,7 +144,7 @@ public class CgmView implements JmeCloneable {
     /**
      * view port used when the screen is split (not null)
      */
-    private ViewPort viewPort2;
+    final private ViewPort viewPort2;
     // *************************************************************************
     // constructors
 
@@ -188,22 +188,6 @@ public class CgmView implements JmeCloneable {
         Vector3f location = worldTransform.transformVector(modelLocation, null);
 
         return location;
-    }
-
-    /**
-     * Copy the world transform of the CG model, based on an animated geometry
-     * if possible. TODO sort methods
-     *
-     * @return a new instance
-     */
-    public Transform worldTransform() {
-        Spatial basedOn = MySpatial.findAnimatedGeometry(cgmRoot);
-        if (basedOn == null) {
-            basedOn = cgmRoot;
-        }
-        Transform transform = basedOn.getWorldTransform();
-
-        return transform.clone();
     }
 
     /**
@@ -363,6 +347,17 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
+     * Alter which loaded CG model corresponds with this view. Invoked after
+     * cloning.
+     *
+     * @param loadedModel (not null)
+     */
+    public void setCgm(LoadedCgm loadedModel) {
+        Validate.nonNull(loadedModel, "loaded model");
+        cgm = loadedModel;
+    }
+
+    /**
      * Visualize a different CG model, or none.
      *
      * @param newCgmRoot CG model's root spatial, or null if none (unaffected)
@@ -413,17 +408,6 @@ public class CgmView implements JmeCloneable {
 
         Spatial spatial = selectedSpatial();
         spatial.setShadowMode(newMode);
-    }
-
-    /**
-     * Alter which loaded CG model corresponds with this view. Invoked after
-     * cloning. TODO sort methods
-     *
-     * @param loadedModel (not null)
-     */
-    public void setCgm(LoadedCgm loadedModel) {
-        Validate.nonNull(loadedModel, "loaded model");
-        cgm = loadedModel;
     }
 
     /**
@@ -575,6 +559,22 @@ public class CgmView implements JmeCloneable {
             Camera camera = getCamera();
             skyControl.setCamera(camera); // note: target has 2 distinct cameras
         }
+    }
+
+    /**
+     * Copy the world transform of the CG model, based on an animated geometry
+     * if possible.
+     *
+     * @return a new instance
+     */
+    public Transform worldTransform() {
+        Spatial basedOn = MySpatial.findAnimatedGeometry(cgmRoot);
+        if (basedOn == null) {
+            basedOn = cgmRoot;
+        }
+        Transform transform = basedOn.getWorldTransform();
+
+        return transform.clone();
     }
     // *************************************************************************
     // JmeCloner methods
