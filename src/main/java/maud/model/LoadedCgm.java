@@ -56,9 +56,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import maud.CgmView;
 import maud.Locators;
 import maud.Maud;
+import maud.SceneView;
 import maud.Util;
 
 /**
@@ -101,7 +101,7 @@ public class LoadedCgm implements Cloneable {
      * 3D visualization of the CG model (set by {@link #setView(maud.CgmView)}
      * or {@link #clone()})
      */
-    private CgmView sceneView = null;
+    private SceneView sceneView = null;
     /**
      * which bone in selected in the CG model
      */
@@ -323,7 +323,7 @@ public class LoadedCgm implements Cloneable {
      *
      * @return the pre-existing instance (not null)
      */
-    public CgmView getView() {
+    public SceneView getView() {
         assert sceneView != null;
         return sceneView;
     }
@@ -580,7 +580,7 @@ public class LoadedCgm implements Cloneable {
      *
      * @param newView (not null)
      */
-    public void setView(CgmView newView) {
+    public void setView(SceneView newView) {
         Validate.nonNull(newView, "new view");
         sceneView = newView;
     }

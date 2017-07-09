@@ -44,8 +44,8 @@ import jme3utilities.MyCamera;
 import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
-import maud.CgmView;
 import maud.Maud;
+import maud.SceneView;
 import maud.model.LoadedCgm;
 
 /**
@@ -96,7 +96,7 @@ public class CursorTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateScene(LoadedCgm cgm) {
-        CgmView sceneView = cgm.getView();
+        SceneView sceneView = cgm.getView();
         Geometry cursor = sceneView.getCursor();
         /*
          * visibility
@@ -139,7 +139,7 @@ public class CursorTool extends WindowController {
      */
     public void warpCursor() {
         LoadedCgm cgm = Maud.gui.mouseCgm();
-        CgmView sceneView = cgm.getView();
+        SceneView sceneView = cgm.getView();
         Camera camera = sceneView.getCamera();
         Ray ray = MyCamera.mouseRay(camera, inputManager);
         /*

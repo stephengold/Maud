@@ -60,12 +60,11 @@ import jme3utilities.sky.Updater;
 import maud.model.LoadedCgm;
 
 /**
- * 3D visualization of a CG model, a accessed by way of LoadedCgm. TODO rename
- * SceneView
+ * A rendered 3D visualization of a loaded CG model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class CgmView implements JmeCloneable {
+public class SceneView implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -73,7 +72,7 @@ public class CgmView implements JmeCloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            CgmView.class.getName());
+            SceneView.class.getName());
     /**
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
@@ -159,7 +158,7 @@ public class CgmView implements JmeCloneable {
      * @param port2 view port to use after the screen is split (not null, alias
      * created)
      */
-    CgmView(LoadedCgm loadedCgm, Node parentNode, ViewPort port1,
+    SceneView(LoadedCgm loadedCgm, Node parentNode, ViewPort port1,
             ViewPort port2) {
         Validate.nonNull(loadedCgm, "loaded model");
         Validate.nonNull(parentNode, "parent");
@@ -611,9 +610,9 @@ public class CgmView implements JmeCloneable {
      * @return a new instance
      */
     @Override
-    public CgmView jmeClone() {
+    public SceneView jmeClone() {
         try {
-            CgmView clone = (CgmView) super.clone();
+            SceneView clone = (SceneView) super.clone();
             return clone;
         } catch (CloneNotSupportedException exception) {
             throw new RuntimeException(exception);

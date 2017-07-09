@@ -116,11 +116,11 @@ public class Maud extends GuiApplication {
     /**
      * view port for left half of split screen
      */
-    private ViewPort sourceCgmViewPort;
+    private ViewPort sourceSceneViewPort;
     /**
      * view port for right half of split screen
      */
-    private ViewPort targetCgmViewPort;
+    private ViewPort targetSceneViewPort;
     // *************************************************************************
     // new methods exposed
 
@@ -202,8 +202,8 @@ public class Maud extends GuiApplication {
      */
     public void updateViewPorts() {
         boolean splitScreen = Maud.model.source.isLoaded();
-        sourceCgmViewPort.setEnabled(splitScreen);
-        targetCgmViewPort.setEnabled(splitScreen);
+        sourceSceneViewPort.setEnabled(splitScreen);
+        targetSceneViewPort.setEnabled(splitScreen);
         viewPort.setEnabled(!splitScreen);
     }
     // *************************************************************************
@@ -372,16 +372,16 @@ public class Maud extends GuiApplication {
         camera.setViewPort(leftEdge, rightEdge, bottomEdge, topEdge);
         // TODO why is resize() needed?
         camera.resize(cam.getWidth(), cam.getHeight(), true);
-        sourceCgmViewPort = renderManager.createMainView("Source Scene",
+        sourceSceneViewPort = renderManager.createMainView("Source Scene",
                 camera);
-        sourceCgmViewPort.setClearFlags(true, true, true);
-        sourceCgmViewPort.setEnabled(false);
-        addShadows(sourceCgmViewPort);
+        sourceSceneViewPort.setClearFlags(true, true, true);
+        sourceSceneViewPort.setEnabled(false);
+        addShadows(sourceSceneViewPort);
         /*
          * Attach a scene to the new view port.
          */
-        Node scene = new Node("Root for source CGM view");
-        sourceCgmViewPort.attachScene(scene);
+        Node scene = new Node("Root for source scene view");
+        sourceSceneViewPort.attachScene(scene);
         addedScenes.add(scene);
         /*
          * Add an attachment point to the scene.
@@ -389,9 +389,9 @@ public class Maud extends GuiApplication {
         Node parent = new Node("parent for source CGM");
         scene.attachChild(parent);
 
-        CgmView view;
-        view = new CgmView(Maud.model.source, parent, null, sourceCgmViewPort);
-        Maud.model.source.setView(view);
+        SceneView sceneView = new SceneView(Maud.model.source, parent, null,
+                sourceSceneViewPort);
+        Maud.model.source.setView(sceneView);
     }
 
     /**
@@ -406,23 +406,23 @@ public class Maud extends GuiApplication {
         camera.setViewPort(leftEdge, rightEdge, bottomEdge, topEdge);
         // TODO why is resize() needed?
         camera.resize(cam.getWidth(), cam.getHeight(), true);
-        targetCgmViewPort = renderManager.createMainView("Target Scene",
+        targetSceneViewPort = renderManager.createMainView("Target Scene",
                 camera);
-        targetCgmViewPort.setClearFlags(true, true, true);
-        targetCgmViewPort.setEnabled(false);
-        addShadows(targetCgmViewPort);
+        targetSceneViewPort.setClearFlags(true, true, true);
+        targetSceneViewPort.setEnabled(false);
+        addShadows(targetSceneViewPort);
         /*
          * Attach the existing scene to the new view port.
          */
-        targetCgmViewPort.attachScene(rootNode);
+        targetSceneViewPort.attachScene(rootNode);
         /*
          * Add an attachment point to the scene.
          */
         Node parent = new Node("parent for target CGM");
         rootNode.attachChild(parent);
 
-        CgmView view = new CgmView(Maud.model.target, parent, viewPort,
-                targetCgmViewPort);
+        SceneView view = new SceneView(Maud.model.target, parent, viewPort,
+                targetSceneViewPort);
         Maud.model.target.setView(view);
     }
 }

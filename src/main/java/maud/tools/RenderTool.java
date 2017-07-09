@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.nifty.WindowController;
-import maud.CgmView;
 import maud.EditorScreen;
 import maud.Maud;
+import maud.SceneView;
 import maud.model.LoadedCgm;
 
 /**
@@ -74,7 +74,7 @@ class RenderTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateShadowFilter(LoadedCgm cgm) {
-        CgmView view = cgm.getView();
+        SceneView view = cgm.getView();
         ViewPort vp = view.getViewPort();
         if (vp != null) {
             FilterPostProcessor fpp = Misc.getFpp(vp, assetManager);

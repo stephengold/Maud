@@ -37,9 +37,9 @@ import com.jme3.texture.Texture;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.nifty.WindowController;
-import maud.CgmView;
 import maud.EditorScreen;
 import maud.Maud;
+import maud.SceneView;
 import maud.model.LoadedCgm;
 
 /**
@@ -93,7 +93,7 @@ public class PlatformTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateScene(LoadedCgm cgm) {
-        CgmView sceneView = cgm.getView();
+        SceneView sceneView = cgm.getView();
         Spatial platform = sceneView.getPlatform();
 
         String mode = Maud.model.misc.getPlatformMode();

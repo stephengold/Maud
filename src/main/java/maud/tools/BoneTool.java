@@ -33,8 +33,8 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
-import maud.CgmView;
 import maud.Maud;
+import maud.SceneView;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMapping;
 
@@ -187,7 +187,7 @@ public class BoneTool extends WindowController {
     private float boneDSquared(LoadedCgm cgm, int boneIndex) {
         assert boneIndex >= 0 : boneIndex;
 
-        CgmView sceneView = cgm.getView();
+        SceneView sceneView = cgm.getView();
         Camera camera = sceneView.getCamera();
         Vector3f boneWorld = sceneView.boneLocation(boneIndex);
         Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
