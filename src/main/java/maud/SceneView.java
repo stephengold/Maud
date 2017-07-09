@@ -60,7 +60,7 @@ import jme3utilities.sky.Updater;
 import maud.model.LoadedCgm;
 
 /**
- * A rendered 3D visualization of a loaded CG model.
+ * A rendered 3D visualization of a loaded CG model in a view port.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -349,7 +349,7 @@ public class SceneView implements JmeCloneable {
      * Alter which loaded CG model corresponds with this view. Invoked after
      * cloning.
      *
-     * @param loadedModel (not null)
+     * @param loadedModel (not null) TODO rename loadedCgm
      */
     public void setCgm(LoadedCgm loadedModel) {
         Validate.nonNull(loadedModel, "loaded model");

@@ -44,7 +44,7 @@ import maud.Util;
 
 /**
  * The MVC model of the loaded animation in the Maud application. For loading
- * purposes, the bind pose is treated as an animation.
+ * purposes, the bind pose is treated as an animation. TODO rename PlayAnimation
  *
  * @author Stephen Gold sgold@sonic.net
  */

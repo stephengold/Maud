@@ -34,8 +34,8 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 
 /**
- * The transform applied to a particular CG model visualization in Maud's "3D
- * View" screen. TODO rename CgmTransform
+ * The transform applied to a particular CG model visualization in Maud's editor
+ * screen. TODO rename CgmTransform
  *
  * @author Stephen Gold sgold@sonic.net
  */
