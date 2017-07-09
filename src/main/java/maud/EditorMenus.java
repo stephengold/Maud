@@ -209,7 +209,7 @@ class EditorMenus {
         } else {
             String indexString = Maud.model.folders.indexForPath(path);
             String args = indexString + " " + "/";
-            EditorMenus.this.loadMappingAsset(args);
+            loadMappingAsset(args);
         }
     }
 
