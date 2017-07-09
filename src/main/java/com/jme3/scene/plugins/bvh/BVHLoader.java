@@ -119,33 +119,27 @@ public class BVHLoader implements AssetLoader {
             if (bone.getChannels() != null) {
                 for (BVHChannel bVHChannel : bone.getChannels()) {
 
-                    if (bVHChannel.getName().equals(
-                            BVHChannel.BVH_CHANNEL_X_POSITION)) {
+                    if (bVHChannel.getName().equals("Xposition")) {
                         t.setX(bVHChannel.getValues().get(i));
                     }
-                    if (bVHChannel.getName().equals(
-                            BVHChannel.BVH_CHANNEL_Y_POSITION)) {
+                    if (bVHChannel.getName().equals("Yposition")) {
                         t.setY(bVHChannel.getValues().get(i));
                     }
-                    if (bVHChannel.getName().equals(
-                            BVHChannel.BVH_CHANNEL_Z_POSITION)) {
+                    if (bVHChannel.getName().equals("Zposition")) {
                         t.setZ(bVHChannel.getValues().get(i));
                     }
-                    if (bVHChannel.getName().equals(
-                            BVHChannel.BVH_CHANNEL_X_ROTATION)) {
+                    if (bVHChannel.getName().equals("Xrotation")) {
 
                         rx.fromAngleAxis(
                                 (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
                                 Vector3f.UNIT_X);
                     }
-                    if (bVHChannel.getName().equals(
-                            BVHChannel.BVH_CHANNEL_Y_ROTATION)) {
+                    if (bVHChannel.getName().equals("Yrotation")) {
                         ry.fromAngleAxis(
                                 (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
                                 Vector3f.UNIT_Y);
                     }
-                    if (bVHChannel.getName().equals(
-                            BVHChannel.BVH_CHANNEL_Z_ROTATION)) {
+                    if (bVHChannel.getName().equals("Zrotation")) {
                         rz.fromAngleAxis(
                                 (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
                                 Vector3f.UNIT_Z);

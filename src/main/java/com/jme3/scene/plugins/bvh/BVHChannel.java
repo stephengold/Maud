@@ -17,15 +17,6 @@ public class BVHChannel {
      */
     final private static Logger logger = Logger.getLogger(
             BVHChannel.class.getName());
-    /*
-     * channel names
-     */
-    public final static String BVH_CHANNEL_X_POSITION = "Xposition";
-    public final static String BVH_CHANNEL_X_ROTATION = "Xrotation";
-    public final static String BVH_CHANNEL_Y_POSITION = "Yposition";
-    public final static String BVH_CHANNEL_Y_ROTATION = "Yrotation";
-    public final static String BVH_CHANNEL_Z_POSITION = "Zposition";
-    public final static String BVH_CHANNEL_Z_ROTATION = "Zrotation";
     // *************************************************************************
     // fields
 
