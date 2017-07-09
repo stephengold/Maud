@@ -44,7 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
-import jme3utilities.debug.Printer;
+import jme3utilities.debug.Dumper;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
@@ -98,6 +98,10 @@ public class Maud extends GuiApplication {
      */
     private boolean didStartup1 = false;
     /**
+     * dumper for scene dumps
+     */
+    final private static Dumper dumper = new Dumper();
+    /**
      * GUI portion of the editor screen, with links to tools
      */
     final public static EditorScreen gui = new EditorScreen();
@@ -109,10 +113,6 @@ public class Maud extends GuiApplication {
      * application instance, set by {@link #main(java.lang.String[])}
      */
     private static Maud application;
-    /**
-     * printer for scene dumps TODO rename dumper
-     */
-    final private static Printer printer = new Printer();
     /**
      * view port for left half of split screen
      */
@@ -128,9 +128,9 @@ public class Maud extends GuiApplication {
      * Process a "print scene" action.
      */
     public void dumpScene() {
-        printer.setPrintCull(true);
-        printer.setPrintTransform(true);
-        printer.printSubtree(rootNode);
+        dumper.setPrintCull(true);
+        dumper.setPrintTransform(true);
+        dumper.dump(rootNode);
     }
 
     /**

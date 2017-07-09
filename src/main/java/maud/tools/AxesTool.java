@@ -38,7 +38,7 @@ import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
 import jme3utilities.Validate;
-import jme3utilities.debug.AxesControl;
+import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.BasicScreenController;
@@ -89,9 +89,9 @@ public class AxesTool extends WindowController {
         int axisIndex = model.getDragAxis();
         boolean farSide = model.isDraggingFarSide();
 
-        AxesControl axesControl = cgm.getView().getAxesControl();
-        assert axesControl.isEnabled();
-        Spatial axesSpatial = axesControl.getSpatial();
+        AxesVisualizer visualizer = cgm.getView().getAxesVisualizer();
+        assert visualizer.isEnabled();
+        Spatial axesSpatial = visualizer.getSpatial();
         /*
          * Calculate the old axis direction in local coordinates.
          */
@@ -103,7 +103,7 @@ public class AxesTool extends WindowController {
         Camera camera = cgm.getView().getCamera();
         Ray worldRay = MyCamera.mouseRay(camera, inputManager);
         Ray localRay = MyMath.localizeRay(worldRay, axesSpatial);
-        float radius = axesControl.getAxisLength();
+        float radius = visualizer.getAxisLength();
         Vector3f newDirection;
         newDirection = MyVector3f.lineMeetsSphere(localRay, radius, farSide);
         newDirection.divideLocal(radius);
@@ -128,14 +128,14 @@ public class AxesTool extends WindowController {
         assert axisIndex >= 0 : axisIndex;
         assert axisIndex < 3 : axisIndex;
 
-        AxesControl axesControl = cgm.getView().getAxesControl();
-        assert axesControl.isEnabled();
-        Spatial axesSpatial = axesControl.getSpatial();
+        AxesVisualizer visualizer = cgm.getView().getAxesVisualizer();
+        assert visualizer.isEnabled();
+        Spatial axesSpatial = visualizer.getSpatial();
         /*
          * Calculate distances to the tip and tail of the axis arrow.
          */
         Vector3f tailLocation = axesSpatial.getWorldTranslation();
-        Vector3f tipLocation = axesControl.tipLocation(axisIndex);
+        Vector3f tipLocation = visualizer.tipLocation(axisIndex);
         Vector3f cameraLocation = cgm.scenePov.cameraLocation(null);
         float tailDS = cameraLocation.distanceSquared(tailLocation);
         float tipDS = cameraLocation.distanceSquared(tipLocation);
@@ -170,8 +170,8 @@ public class AxesTool extends WindowController {
         Vector3f result = null;
         Transform transform = worldTransform(cgm);
         if (transform != null) {
-            AxesControl axesControl = cgm.getView().getAxesControl();
-            result = axesControl.tipLocation(axisIndex);
+            AxesVisualizer visualizer = cgm.getView().getAxesVisualizer();
+            result = visualizer.tipLocation(axisIndex);
         }
 
         return result;
@@ -183,7 +183,7 @@ public class AxesTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateVisualizer(LoadedCgm cgm) {
-        AxesControl axesControl = cgm.getView().getAxesControl();
+        AxesVisualizer axesControl = cgm.getView().getAxesVisualizer();
         Transform transform = worldTransform(cgm);
         if (transform == null) {
             axesControl.setEnabled(false);

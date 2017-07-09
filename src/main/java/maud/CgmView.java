@@ -51,9 +51,9 @@ import java.util.logging.Logger;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
-import jme3utilities.debug.AxesControl;
+import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.debug.BoundsVisualizer;
-import jme3utilities.debug.SkeletonDebugControl;
+import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.math.MyMath;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
@@ -92,7 +92,7 @@ public class CgmView implements JmeCloneable {
     /*
      * visualizer for axes added to the scene
      */
-    private AxesControl axesControl;
+    private AxesVisualizer axesVisualizer;
     /*
      * visualizer for bounding boxes added to the scene
      */
@@ -122,9 +122,9 @@ public class CgmView implements JmeCloneable {
      */
     private SkeletonControl skeletonControl;
     /**
-     * skeleton debug control with the selected skeleton
+     * skeleton visualizer with the selected skeleton
      */
-    private SkeletonDebugControl skeletonDebugControl;
+    private SkeletonVisualizer skeletonVisualizer;
     /**
      * sky simulation added to the scene
      */
@@ -195,9 +195,9 @@ public class CgmView implements JmeCloneable {
      *
      * @return the pre-existing instance (not null)
      */
-    public AxesControl getAxesControl() {
-        assert axesControl != null;
-        return axesControl;
+    public AxesVisualizer getAxesVisualizer() {
+        assert axesVisualizer != null;
+        return axesVisualizer;
     }
 
     /**
@@ -265,12 +265,12 @@ public class CgmView implements JmeCloneable {
     }
 
     /**
-     * Access the skeleton debug control.
+     * Access the skeleton visualizer.
      *
      * @return the pre-existing instance, or null if none
      */
-    public SkeletonDebugControl getSkeletonDebugControl() {
-        return skeletonDebugControl;
+    public SkeletonVisualizer getSkeletonVisualizer() {
+        return skeletonVisualizer;
     }
 
     /**
@@ -443,9 +443,9 @@ public class CgmView implements JmeCloneable {
             controlled = skeletonControl.getSpatial();
             controlled.removeControl(skeletonControl);
         }
-        if (skeletonDebugControl != null) {
-            controlled = skeletonDebugControl.getSpatial();
-            controlled.removeControl(skeletonDebugControl);
+        if (skeletonVisualizer != null) {
+            controlled = skeletonVisualizer.getSpatial();
+            controlled.removeControl(skeletonVisualizer);
         }
 
         if (selectedSpatialFlag) {
@@ -458,7 +458,7 @@ public class CgmView implements JmeCloneable {
             animControl = null;
             skeleton = null;
             skeletonControl = null;
-            skeletonDebugControl = null;
+            skeletonVisualizer = null;
         } else {
             skeleton = Cloner.deepClone(newSkeleton);
             MySkeleton.setUserControl(skeleton, true);
@@ -472,14 +472,14 @@ public class CgmView implements JmeCloneable {
 
             Maud application = Maud.getApplication();
             AssetManager assetManager = application.getAssetManager();
-            skeletonDebugControl = new SkeletonDebugControl(assetManager);
-            controlled.addControl(skeletonDebugControl);
-            skeletonDebugControl.setSkeleton(skeleton);
+            skeletonVisualizer = new SkeletonVisualizer(assetManager);
+            controlled.addControl(skeletonVisualizer);
+            skeletonVisualizer.setSkeleton(skeleton);
             /*
              * Update the control to initialize vertex positions.
              */
-            skeletonDebugControl.setEnabled(true);
-            skeletonDebugControl.update(0f);
+            skeletonVisualizer.setEnabled(true);
+            skeletonVisualizer.update(0f);
         }
     }
 
@@ -533,7 +533,7 @@ public class CgmView implements JmeCloneable {
         animControl = null;
         skeleton = null;
         skeletonControl = null;
-        skeletonDebugControl = null;
+        skeletonVisualizer = null;
     }
 
     /**
@@ -590,7 +590,7 @@ public class CgmView implements JmeCloneable {
     public void cloneFields(Cloner cloner, Object original) {
         ambientLight = cloner.clone(ambientLight);
         animControl = cloner.clone(animControl);
-        axesControl = cloner.clone(axesControl);
+        axesVisualizer = cloner.clone(axesVisualizer);
         boundsVisualizer = cloner.clone(boundsVisualizer);
         // cgm not cloned: set later
         cgmRoot = cloner.clone(cgmRoot);
@@ -600,7 +600,7 @@ public class CgmView implements JmeCloneable {
         platform = cloner.clone(platform);
         skeleton = cloner.clone(skeleton);
         skeletonControl = cloner.clone(skeletonControl);
-        skeletonDebugControl = cloner.clone(skeletonDebugControl);
+        skeletonVisualizer = cloner.clone(skeletonVisualizer);
         skyControl = cloner.clone(skyControl);
         // viewPort1, viewPort2 not cloned
     }
@@ -628,10 +628,10 @@ public class CgmView implements JmeCloneable {
     private void createAxes() {
         Maud application = Maud.getApplication();
         AssetManager assetManager = application.getAssetManager();
-        axesControl = new AxesControl(assetManager, 1f, 1f);
+        axesVisualizer = new AxesVisualizer(assetManager, 1f, 1f);
 
         Node axesNode = new Node("axes node");
-        axesNode.addControl(axesControl);
+        axesNode.addControl(axesVisualizer);
 
         Node scene = (Node) getScene();
         scene.attachChild(axesNode);

@@ -28,7 +28,7 @@ package maud.tools;
 
 import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
-import jme3utilities.debug.SkeletonDebugControl;
+import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
@@ -78,24 +78,23 @@ class SkeletonColorTool extends WindowController {
     }
 
     /**
-     * Update a SkeletonDebugControl based on the MVC model. TODO rename
-     * updateVisualizer
+     * Update a skeleton visualizer based on the MVC model.
      *
      * @param modelCgm which CG model's view to update (not null)
      */
-    void updateSdc(LoadedCgm modelCgm) {
-        SkeletonDebugControl control;
-        control = modelCgm.getView().getSkeletonDebugControl();
-        if (control == null) {
+    void updateVisualizer(LoadedCgm modelCgm) {
+        SkeletonVisualizer visualizer;
+        visualizer = modelCgm.getView().getSkeletonVisualizer();
+        if (visualizer == null) {
             return;
         }
         SkeletonStatus model = Maud.model.skeleton;
 
         ColorRGBA color = model.copyLinkColor(null);
-        control.setLineColor(color);
+        visualizer.setLineColor(color);
 
         color = model.copyTracklessColor(null); // TODO avoid extra garbage
-        control.setPointColor(color);
+        visualizer.setPointColor(color);
 
         model.copyTrackedColor(color);
         int numBones = modelCgm.bones.countBones();
@@ -103,10 +102,10 @@ class SkeletonColorTool extends WindowController {
             if (modelCgm.animation.isRetargetedPose()) {
                 String name = modelCgm.bones.getBoneName(boneIndex);
                 if (Maud.model.mapping.isBoneMapped(name)) {
-                    control.setPointColor(boneIndex, color);
+                    visualizer.setPointColor(boneIndex, color);
                 }
             } else if (modelCgm.animation.hasTrackForBone(boneIndex)) {
-                control.setPointColor(boneIndex, color);
+                visualizer.setPointColor(boneIndex, color);
             }
         }
     }

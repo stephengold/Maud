@@ -463,8 +463,8 @@ public class EditorTools {
         cursor.updateScene(loadedCgm);
         platform.updateScene(loadedCgm);
         render.updateShadowFilter(loadedCgm);
-        skeleton.updateSdc(loadedCgm);
-        skeletonColor.updateSdc(loadedCgm);
+        skeleton.updateVisualizer(loadedCgm);
+        skeletonColor.updateVisualizer(loadedCgm);
         sky.updateSkyControl(loadedCgm);
     }
 }

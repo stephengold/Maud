@@ -28,7 +28,7 @@ package maud.tools;
 
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
-import jme3utilities.debug.SkeletonDebugControl;
+import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
@@ -75,28 +75,27 @@ class SkeletonTool extends WindowController {
     }
 
     /**
-     * Update a SkeletonDebugControl based on the MVC model. TODO rename
-     * updateVisualizer
+     * Update a skeleton visualizer based on the MVC model.
      *
      * @param modelCgm which CG model's view to update (not null)
      */
-    void updateSdc(LoadedCgm modelCgm) {
-        SkeletonDebugControl control;
-        control = modelCgm.getView().getSkeletonDebugControl();
-        if (control == null) {
+    void updateVisualizer(LoadedCgm modelCgm) {
+        SkeletonVisualizer visualizer;
+        visualizer = modelCgm.getView().getSkeletonVisualizer();
+        if (visualizer == null) {
             return;
         }
         SkeletonStatus model = Maud.model.skeleton;
 
         boolean visible = model.isVisible();
-        control.setEnabled(visible);
+        visualizer.setEnabled(visible);
 
         float lineWidth = model.getLineWidth();
-        control.setLineWidth(lineWidth);
+        visualizer.setLineWidth(lineWidth);
 
-        if (control.supportsPointSize()) {
+        if (visualizer.supportsPointSize()) {
             float pointSize = model.getPointSize();
-            control.setPointSize(pointSize);
+            visualizer.setPointSize(pointSize);
         }
     }
     // *************************************************************************
