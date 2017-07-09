@@ -376,11 +376,11 @@ public class EditorScreen extends GuiScreenController {
 
     /**
      * Select a loaded CG model (source or target) based on the "sourceModel"
-     * signal. TODO rename signalCgm
+     * signal.
      *
      * @return a pre-existing instance (not null)
      */
-    LoadedCgm selectCgm() {
+    LoadedCgm signalCgm() {
         LoadedCgm cgm;
         if (signals.test(sourceModelSignalName)
                 && Maud.model.source.isLoaded()) {
@@ -534,7 +534,7 @@ public class EditorScreen extends GuiScreenController {
         /*
          * Based on signal input, rotate a loaded CG model around its Y-axis.
          */
-        LoadedCgm cgmToRotate = selectCgm();
+        LoadedCgm cgmToRotate = signalCgm();
         if (signals.test(modelCCWSignalName)) {
             cgmToRotate.transform.rotateY(tpf);
         }

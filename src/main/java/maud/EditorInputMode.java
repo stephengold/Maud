@@ -982,7 +982,7 @@ class EditorInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "view horizontal":
-                LoadedCgm loadedCgm = Maud.gui.selectCgm();
+                LoadedCgm loadedCgm = Maud.gui.signalCgm();
                 loadedCgm.scenePov.goHorizontal();
                 handled = true;
                 break;
