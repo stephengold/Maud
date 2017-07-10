@@ -76,7 +76,7 @@ class SkyTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateSkyControl(LoadedCgm cgm) {
-        SkyControl sky = cgm.getView().getSkyControl();
+        SkyControl sky = cgm.getSceneView().getSkyControl();
         if (sky != null) {
             boolean enable = Maud.model.misc.isSkyRendered();
             sky.setEnabled(enable);

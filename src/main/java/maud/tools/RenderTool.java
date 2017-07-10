@@ -74,7 +74,7 @@ class RenderTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateShadowFilter(LoadedCgm cgm) {
-        SceneView view = cgm.getView();
+        SceneView view = cgm.getSceneView();
         ViewPort vp = view.getViewPort();
         if (vp != null && vp.isEnabled()) {
             FilterPostProcessor fpp = Misc.getFpp(vp, assetManager);

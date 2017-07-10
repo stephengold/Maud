@@ -150,8 +150,8 @@ public class EditorScreen extends GuiScreenController {
      */
     public LoadedCgm mouseCgm() {
         Vector2f screenXY = inputManager.getCursorPosition();
-        ViewPort sourceViewPort = Maud.model.source.getView().getViewPort();
-        ViewPort targetViewPort = Maud.model.target.getView().getViewPort();
+        ViewPort sourceViewPort = Maud.model.source.getSceneView().getViewPort();
+        ViewPort targetViewPort = Maud.model.target.getSceneView().getViewPort();
 
         LoadedCgm cgm = null;
         List<ViewPort> viewPorts = Util.listViewPorts(renderManager, screenXY);
@@ -548,8 +548,8 @@ public class EditorScreen extends GuiScreenController {
 
         Maud application = Maud.getApplication();
         application.updateViewPorts();
-        Maud.model.source.getView().update();
-        Maud.model.target.getView().update();
+        Maud.model.source.getSceneView().update();
+        Maud.model.target.getSceneView().update();
         Maud.model.source.getScoreView().update();
         Maud.model.target.getScoreView().update();
     }

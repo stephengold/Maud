@@ -344,7 +344,7 @@ public class EditableCgm extends LoadedCgm {
         if (oldHint != newHint) {
             modelSpatial.setCullHint(newHint);
             setEdited("change cull hint");
-            getView().setHint(newHint);
+            getSceneView().setHint(newHint);
         }
     }
 
@@ -361,7 +361,7 @@ public class EditableCgm extends LoadedCgm {
         if (oldMode != newMode) {
             modelSpatial.setShadowMode(newMode);
             setEdited("change shadow mode");
-            getView().setMode(newMode);
+            getSceneView().setMode(newMode);
         }
     }
 
@@ -399,7 +399,7 @@ public class EditableCgm extends LoadedCgm {
 
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         selectedSpatial.setLocalRotation(rotation);
-        getView().setSpatialRotation(rotation);
+        getSceneView().setSpatialRotation(rotation);
         setEditedSpatialTransform();
     }
 
@@ -416,7 +416,7 @@ public class EditableCgm extends LoadedCgm {
 
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         selectedSpatial.setLocalScale(scale);
-        getView().setSpatialScale(scale);
+        getSceneView().setSpatialScale(scale);
         setEditedSpatialTransform();
     }
 
@@ -430,7 +430,7 @@ public class EditableCgm extends LoadedCgm {
 
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         selectedSpatial.setLocalTranslation(translation);
-        getView().setSpatialTranslation(translation);
+        getSceneView().setSpatialTranslation(translation);
         setEditedSpatialTransform();
     }
 

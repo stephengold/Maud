@@ -96,7 +96,7 @@ public class CursorTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateScene(LoadedCgm cgm) {
-        SceneView sceneView = cgm.getView();
+        SceneView sceneView = cgm.getSceneView();
         Geometry cursor = sceneView.getCursor();
         /*
          * visibility
@@ -139,7 +139,7 @@ public class CursorTool extends WindowController {
      */
     public void warpCursor() {
         LoadedCgm cgm = Maud.gui.mouseCgm();
-        SceneView sceneView = cgm.getView();
+        SceneView sceneView = cgm.getSceneView();
         Camera camera = sceneView.getCamera();
         Ray ray = MyCamera.mouseRay(camera, inputManager);
         /*

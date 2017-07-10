@@ -303,7 +303,7 @@ public class CameraTool
         if (Maud.model.camera.isOrbitMode()) {
             cgm.scenePov.aim(); // TODO necessary?
         }
-        Camera camera = cgm.getView().getCamera();
+        Camera camera = cgm.getSceneView().getCamera();
         if (camera != null) {
             Vector3f location = cgm.scenePov.cameraLocation(null);
             camera.setLocation(location);

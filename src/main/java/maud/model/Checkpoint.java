@@ -108,7 +108,7 @@ public class Checkpoint {
      */
     void restore() {
         Maud.model = new EditorModel(model);
-        Maud.model.source.getView().reinstall();
-        Maud.model.target.getView().reinstall();
+        Maud.model.source.getSceneView().reinstall();
+        Maud.model.target.getSceneView().reinstall();
     }
 }

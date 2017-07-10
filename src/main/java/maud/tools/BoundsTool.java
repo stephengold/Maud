@@ -83,7 +83,7 @@ class BoundsTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateVisualizer(LoadedCgm cgm) {
-        SceneView sceneView = cgm.getView();
+        SceneView sceneView = cgm.getSceneView();
         BoundsVisualizer visualizer = sceneView.getBoundsVisualizer();
         visualizer.setEnabled(true);
 

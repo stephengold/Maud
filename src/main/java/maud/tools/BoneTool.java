@@ -187,7 +187,7 @@ public class BoneTool extends WindowController {
     private float boneDSquared(LoadedCgm cgm, int boneIndex) {
         assert boneIndex >= 0 : boneIndex;
 
-        SceneView sceneView = cgm.getView();
+        SceneView sceneView = cgm.getSceneView();
         Camera camera = sceneView.getCamera();
         Vector3f boneWorld = sceneView.boneLocation(boneIndex);
         Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
@@ -244,7 +244,7 @@ public class BoneTool extends WindowController {
         float dSquared = Float.MAX_VALUE;
         Vector3f tipWorld = Maud.gui.tools.axes.tipLocation(cgm, axisIndex);
         if (tipWorld != null) {
-            Camera camera = cgm.getView().getCamera();
+            Camera camera = cgm.getSceneView().getCamera();
             Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);
             Vector2f tipXY = new Vector2f(tipScreen.x, tipScreen.y);
             Vector2f mouseXY = inputManager.getCursorPosition();

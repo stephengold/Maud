@@ -93,7 +93,7 @@ public class PlatformTool extends WindowController {
      * @param cgm which CG model (not null)
      */
     void updateScene(LoadedCgm cgm) {
-        SceneView sceneView = cgm.getView();
+        SceneView sceneView = cgm.getSceneView();
         Spatial platform = sceneView.getPlatform();
 
         String mode = Maud.model.misc.getPlatformMode();

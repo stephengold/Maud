@@ -329,11 +329,11 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Access the corresponding scene view. TODO rename getSceneView
+     * Access the corresponding scene view.
      *
      * @return the pre-existing instance (not null)
      */
-    public SceneView getView() {
+    public SceneView getSceneView() {
         assert sceneView != null;
         return sceneView;
     }

@@ -84,7 +84,7 @@ class SkeletonColorTool extends WindowController {
      */
     void updateVisualizer(LoadedCgm modelCgm) {
         SkeletonVisualizer visualizer;
-        visualizer = modelCgm.getView().getSkeletonVisualizer();
+        visualizer = modelCgm.getSceneView().getSkeletonVisualizer();
         if (visualizer == null) {
             return;
         }
