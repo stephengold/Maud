@@ -75,7 +75,7 @@ public class MiscStatus implements Cloneable {
      */
     private String selectedUserKey = null;
     /**
-     * view mode (either "animation" or "scene")
+     * view mode (either "scene" or "score")
      */
     private String viewMode = "scene";
     // *************************************************************************
@@ -157,7 +157,7 @@ public class MiscStatus implements Cloneable {
     /**
      * Read the view mode.
      *
-     * @return either "animation" or "scene"
+     * @return either "scene" or "score"
      */
     public String getViewMode() {
         return viewMode;
@@ -264,14 +264,14 @@ public class MiscStatus implements Cloneable {
     /**
      * Alter the platform display mode.
      *
-     * @param modeName either "animation" or "scene"
+     * @param modeName either "scene" or "score"
      */
     public void setViewMode(String modeName) {
         Validate.nonNull(modeName, "mode name");
 
         switch (modeName) {
-            case "animation":
             case "scene":
+            case "score":
                 viewMode = modeName;
                 break;
             default:
@@ -292,7 +292,7 @@ public class MiscStatus implements Cloneable {
      */
     public void toggleViewMode() {
         if (viewMode.equals("scene")) {
-            viewMode = "animation";
+            viewMode = "score";
         } else {
             viewMode = "scene";
         }
