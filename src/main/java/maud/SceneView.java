@@ -161,7 +161,7 @@ public class SceneView implements JmeCloneable {
     SceneView(LoadedCgm loadedCgm, Node parentNode, ViewPort port1,
             ViewPort port2) {
         Validate.nonNull(loadedCgm, "loaded model");
-        Validate.nonNull(parentNode, "parent");
+        Validate.nonNull(parentNode, "parent node");
         Validate.nonNull(port2, "view port2");
 
         cgm = loadedCgm;
@@ -302,17 +302,17 @@ public class SceneView implements JmeCloneable {
     /**
      * Replace the CG model with a newly loaded one.
      *
-     * @param loadedRoot (not null)
+     * @param cgmRoot (not null)
      */
-    public void loadCgm(Spatial loadedRoot) {
-        Validate.nonNull(loadedRoot, "loaded root");
+    public void loadCgm(Spatial cgmRoot) {
+        Validate.nonNull(cgmRoot, "model root");
         /*
          * Detach the old spatial (if any) from the scene.
          */
         if (cgmRoot != null) {
             parent.detachChild(cgmRoot);
         }
-        setCgmRoot(loadedRoot);
+        setCgmRoot(cgmRoot);
 
         prepareForViewing();
     }
