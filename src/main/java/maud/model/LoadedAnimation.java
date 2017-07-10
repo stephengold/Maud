@@ -32,6 +32,7 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
 import com.jme3.math.Transform;
+import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -303,6 +304,30 @@ public class LoadedAnimation implements Cloneable {
     public float getTime() {
         assert time >= 0f : time;
         return time;
+    }
+
+    /**
+     * Test whether the animation track for the indexed bone has scales.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @return true if it has scales, otherwise false
+     */
+    public boolean hasScales(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        boolean result = false;
+        Animation animation = getAnimation();
+        if (animation != null) {
+            BoneTrack boneTrack = MyAnimation.findTrack(animation, boneIndex);
+            if (boneTrack != null) {
+                Vector3f[] scales = boneTrack.getScales();
+                if (scales != null) {
+                    return true;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
