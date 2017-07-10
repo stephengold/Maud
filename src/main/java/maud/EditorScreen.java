@@ -550,6 +550,8 @@ public class EditorScreen extends GuiScreenController {
         application.updateViewPorts();
         Maud.model.source.getView().update();
         Maud.model.target.getView().update();
+        Maud.model.source.getScoreView().update();
+        Maud.model.target.getScoreView().update();
     }
     // *************************************************************************
     // ScreenController methods

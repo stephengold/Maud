@@ -114,13 +114,25 @@ public class Maud extends GuiApplication {
      */
     private static Maud application;
     /**
-     * view port for left half of split screen
+     * view port for left half of split screen in scene mode
      */
     private ViewPort sourceSceneViewPort;
     /**
-     * view port for right half of split screen
+     * view port for left half of split screen in score mode
      */
-    private ViewPort targetSceneViewPort;
+    private ViewPort sourceScoreViewPort;
+    /**
+     * view port for right half of split screen in scene mode
+     */
+    private ViewPort targetSceneHalfViewPort;
+    /**
+     * view port for right half of split screen in score mode
+     */
+    private ViewPort targetScoreHalfViewPort;
+    /**
+     * view port for unified screen in score mode
+     */
+    private ViewPort targetScoreWideViewPort;
     // *************************************************************************
     // new methods exposed
 
@@ -193,7 +205,7 @@ public class Maud extends GuiApplication {
         /*
          * Attach controllers for windows in the editor screen.
          */
-        gui.tools.attachAll(stateManager); // TODO attach()
+        gui.tools.attachAll(stateManager);
         /*
          * Disable flyCam.
          */
@@ -207,13 +219,20 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Update the configuration of the view ports.
+     * Update the configuration of view ports to reflect the MVC model.
      */
     public void updateViewPorts() {
+        String viewMode = Maud.model.misc.getViewMode();
+        boolean scoreMode = viewMode.equals("score");
         boolean splitScreen = Maud.model.source.isLoaded();
-        sourceSceneViewPort.setEnabled(splitScreen);
-        targetSceneViewPort.setEnabled(splitScreen);
-        viewPort.setEnabled(!splitScreen);
+
+        sourceSceneViewPort.setEnabled(!scoreMode && splitScreen);
+        targetSceneHalfViewPort.setEnabled(!scoreMode && splitScreen);
+        viewPort.setEnabled(!scoreMode && !splitScreen);
+
+        sourceScoreViewPort.setEnabled(scoreMode && splitScreen);
+        targetScoreHalfViewPort.setEnabled(scoreMode && splitScreen);
+        targetScoreWideViewPort.setEnabled(scoreMode && !splitScreen);
     }
     // *************************************************************************
     // ActionApplication methods
@@ -339,8 +358,130 @@ public class Maud extends GuiApplication {
     }
 
     /**
+     * Instantiate a camera for a half-width view port.
+     *
+     * @param leftEdge which side (0 &rarr; left, 0.5 &rarr; right)
+     * @return a new instance with perspective projection
+     */
+    private Camera createHalfCamera(float leftEdge) {
+        Camera camera = cam.clone();
+        float bottomEdge = 0f;
+        float rightEdge = leftEdge + 0.5f;
+        float topEdge = 1f;
+        camera.setViewPort(leftEdge, rightEdge, bottomEdge, topEdge);
+
+        return camera;
+    }
+
+    /**
+     * Create a view port for the source scene.
+     *
+     * @return the attachment point (a new instance)
+     */
+    private Node createSourceSceneViewPort() {
+        Camera camera = createHalfCamera(0f);
+        sourceSceneViewPort = renderManager.createMainView("Source Scene",
+                camera);
+        sourceSceneViewPort.setClearFlags(true, true, true);
+        sourceSceneViewPort.setEnabled(false);
+        addShadows(sourceSceneViewPort);
+        /*
+         * Attach a scene to the new view port.
+         */
+        Node scene = new Node("Root for source scene");
+        sourceSceneViewPort.attachScene(scene);
+        addedScenes.add(scene);
+        /*
+         * Add an attachment point to the scene.
+         */
+        Node parent = new Node("parent for source CGM");
+        scene.attachChild(parent);
+
+        return parent;
+    }
+
+    /**
+     * Create a half-width view port for the source score.
+     */
+    private void createSourceScoreViewPort() {
+        Camera camera = createHalfCamera(0f);
+        camera.setParallelProjection(true);
+        sourceScoreViewPort = renderManager.createMainView(
+                "Source Score", camera);
+        sourceScoreViewPort.setClearFlags(true, true, true);
+        sourceScoreViewPort.setEnabled(false);
+        /*
+         * Attach a scene to the new view port.
+         */
+        Node root = new Node("Root for source score");
+        sourceScoreViewPort.attachScene(root);
+        addedScenes.add(root);
+    }
+
+    /**
+     * Create a half-width view port for the target scene in split-screen mode.
+     *
+     * @return the attachment point (a new instance)
+     */
+    private Node createTargetSceneViewPort() {
+        Camera camera = createHalfCamera(0.5f);
+        targetSceneHalfViewPort = renderManager.createMainView("Target Scene",
+                camera);
+        targetSceneHalfViewPort.setClearFlags(true, true, true);
+        targetSceneHalfViewPort.setEnabled(false);
+        addShadows(targetSceneHalfViewPort);
+        /*
+         * Attach the existing scene to the new view port.
+         */
+        targetSceneHalfViewPort.attachScene(rootNode);
+        /*
+         * Add an attachment point to the scene.
+         */
+        Node parent = new Node("parent for target CGM");
+        rootNode.attachChild(parent);
+
+        return parent;
+    }
+
+    /**
+     * Create a half-width view port for the target score in split-screen mode.
+     */
+    private void createTargetScoreHalfViewPort() {
+        Camera camera = createHalfCamera(0.5f);
+        camera.setParallelProjection(true);
+        targetScoreHalfViewPort = renderManager.createMainView(
+                "Target Score Half", camera);
+        targetScoreHalfViewPort.setClearFlags(true, true, true);
+        targetScoreHalfViewPort.setEnabled(false);
+        /*
+         * Attach a scene to the new view port.
+         */
+        Node root = new Node("Root for target score half");
+        targetScoreHalfViewPort.attachScene(root);
+        addedScenes.add(root);
+    }
+
+    /**
+     * Create a full-width view port for the target score.
+     */
+    private void createTargetScoreWideViewPort() {
+        Camera camera = cam.clone();
+        camera.setParallelProjection(true);
+        targetScoreWideViewPort = renderManager.createMainView(
+                "Target Score Wide", camera);
+        targetScoreWideViewPort.setClearFlags(true, true, true);
+        targetScoreWideViewPort.setEnabled(false);
+        /*
+         * Attach a scene to the new view port.
+         */
+        Node root = new Node("Root for target score wide");
+        targetScoreWideViewPort.attachScene(root);
+        addedScenes.add(root);
+    }
+
+    /**
      * Initialization performed during the 1st invocation of
-     * {@link #simpleUpdate(float)}.
+     * {@link #simpleUpdate(float)}. TODO sort methods
      */
     private void startup1() {
         logger.info("");
@@ -349,14 +490,34 @@ public class Maud extends GuiApplication {
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
         /*
-         * Add shadows to the default view port.
+         * Add shadows to the view port for the main scene.
          */
         addShadows(viewPort);
         /*
-         * Create 2 view ports for split-screen editing, also with shadows.
+         * Create 2 view ports for split-screen scenes, also with shadows.
          */
-        createSourceCgmViewPort();
-        createTargetCgmViewPort();
+        Node sourceSceneParent = createSourceSceneViewPort();
+        Node targetSceneParent = createTargetSceneViewPort();
+        /*
+         * Create 3 view ports for scores.
+         */
+        createSourceScoreViewPort();
+        createTargetScoreHalfViewPort();
+        createTargetScoreWideViewPort();
+        /*
+         * Create 2 scene views and 2 score views.
+         */
+        SceneView sourceSceneView = new SceneView(Maud.model.source,
+                sourceSceneParent, null, sourceSceneViewPort);
+        SceneView targetSceneView = new SceneView(Maud.model.target,
+                targetSceneParent, viewPort, targetSceneHalfViewPort);
+        ScoreView sourceScoreView = new ScoreView(Maud.model.source,
+                null, sourceScoreViewPort);
+        ScoreView targetScoreView = new ScoreView(Maud.model.target,
+                targetScoreWideViewPort, targetScoreHalfViewPort);
+
+        Maud.model.source.setViews(sourceSceneView, sourceScoreView);
+        Maud.model.target.setViews(targetSceneView, targetScoreView);
         /*
          * Attach screen controllers for the editor screen and bind screen.
          */
@@ -372,71 +533,5 @@ public class Maud extends GuiApplication {
          */
         setDisplayFps(false);
         setDisplayStatView(false);
-    }
-
-    /**
-     * Create view port for the source CG model's scene.
-     */
-    private void createSourceCgmViewPort() {
-        Camera camera = cam.clone();
-        float bottomEdge = 0f;
-        float leftEdge = 0f;
-        float rightEdge = 0.5f;
-        float topEdge = 1f;
-        camera.setViewPort(leftEdge, rightEdge, bottomEdge, topEdge);
-        // TODO why is resize() needed?
-        camera.resize(cam.getWidth(), cam.getHeight(), true);
-        sourceSceneViewPort = renderManager.createMainView("Source Scene",
-                camera);
-        sourceSceneViewPort.setClearFlags(true, true, true);
-        sourceSceneViewPort.setEnabled(false);
-        addShadows(sourceSceneViewPort);
-        /*
-         * Attach a scene to the new view port.
-         */
-        Node scene = new Node("Root for source scene view");
-        sourceSceneViewPort.attachScene(scene);
-        addedScenes.add(scene);
-        /*
-         * Add an attachment point to the scene.
-         */
-        Node parent = new Node("parent for source CGM");
-        scene.attachChild(parent);
-
-        SceneView sceneView = new SceneView(Maud.model.source, parent, null,
-                sourceSceneViewPort);
-        Maud.model.source.setView(sceneView);
-    }
-
-    /**
-     * Create a split-screen view port for target CG model's scene.
-     */
-    private void createTargetCgmViewPort() {
-        Camera camera = cam.clone();
-        float bottomEdge = 0f;
-        float leftEdge = 0.5f;
-        float rightEdge = 1f;
-        float topEdge = 1f;
-        camera.setViewPort(leftEdge, rightEdge, bottomEdge, topEdge);
-        // TODO why is resize() needed?
-        camera.resize(cam.getWidth(), cam.getHeight(), true);
-        targetSceneViewPort = renderManager.createMainView("Target Scene",
-                camera);
-        targetSceneViewPort.setClearFlags(true, true, true);
-        targetSceneViewPort.setEnabled(false);
-        addShadows(targetSceneViewPort);
-        /*
-         * Attach the existing scene to the new view port.
-         */
-        targetSceneViewPort.attachScene(rootNode);
-        /*
-         * Add an attachment point to the scene.
-         */
-        Node parent = new Node("parent for target CGM");
-        rootNode.attachChild(parent);
-
-        SceneView view = new SceneView(Maud.model.target, parent, viewPort,
-                targetSceneViewPort);
-        Maud.model.target.setView(view);
     }
 }

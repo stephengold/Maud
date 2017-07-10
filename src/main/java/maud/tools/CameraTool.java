@@ -109,39 +109,16 @@ public class CameraTool
     // new methods exposed
 
     /**
-     * Update a CG model's scene camera based on the MVC model.
+     * Update a CG model's active camera based on the MVC model.
      *
      * @param cgm which CG model (not null)
      */
     void updateCamera(LoadedCgm cgm) {
-        if (Maud.model.camera.isOrbitMode()) {
-            cgm.scenePov.aim(); // TODO necessary?
-        }
-        Camera camera = cgm.getView().getCamera();
-        if (camera != null) {
-            Vector3f location = cgm.scenePov.cameraLocation(null);
-            camera.setLocation(location);
-            Quaternion orientation = cgm.scenePov.cameraOrientation(null);
-            camera.setRotation(orientation);
-
-            float aspectRatio = MyCamera.aspectRatio(camera);
-            float far = Maud.model.camera.getFrustumFar();
-            float near = Maud.model.camera.getFrustumNear();
-            boolean parallel = Maud.model.camera.isParallelProjection();
-            if (parallel) {
-                float h = 0.4f * cgm.scenePov.range();
-                float w = aspectRatio * h;
-                camera.setFrustumBottom(-h);
-                camera.setFrustumFar(far);
-                camera.setFrustumLeft(-w);
-                camera.setFrustumNear(near);
-                camera.setFrustumRight(w);
-                camera.setFrustumTop(h);
-                camera.setParallelProjection(true);
-            } else {
-                float yDegrees = Maud.model.camera.getFrustumYDegrees();
-                camera.setFrustumPerspective(yDegrees, aspectRatio, near, far);
-            }
+        String viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals("scene")) {
+            updateSceneCamera(cgm);
+        } else {
+            updateScoreCamera(cgm);
         }
     }
     // *************************************************************************
@@ -315,5 +292,61 @@ public class CameraTool
         }
 
         Maud.gui.setIgnoreGuiChanges(false);
+    }
+
+    /**
+     * Update a CG model's scene camera based on the MVC model.
+     *
+     * @param cgm which CG model (not null)
+     */
+    private void updateSceneCamera(LoadedCgm cgm) {
+        if (Maud.model.camera.isOrbitMode()) {
+            cgm.scenePov.aim(); // TODO necessary?
+        }
+        Camera camera = cgm.getView().getCamera();
+        if (camera != null) {
+            Vector3f location = cgm.scenePov.cameraLocation(null);
+            camera.setLocation(location);
+            Quaternion orientation = cgm.scenePov.cameraOrientation(null);
+            camera.setRotation(orientation);
+
+            float aspectRatio = MyCamera.aspectRatio(camera);
+            float far = Maud.model.camera.getFrustumFar();
+            float near = Maud.model.camera.getFrustumNear();
+            boolean parallel = Maud.model.camera.isParallelProjection();
+            if (parallel) {
+                float h = 0.4f * cgm.scenePov.range();
+                float w = aspectRatio * h;
+                camera.setFrustumBottom(-h);
+                camera.setFrustumFar(far);
+                camera.setFrustumLeft(-w);
+                camera.setFrustumNear(near);
+                camera.setFrustumRight(w);
+                camera.setFrustumTop(h);
+                camera.setParallelProjection(true);
+            } else {
+                float yDegrees = Maud.model.camera.getFrustumYDegrees();
+                camera.setFrustumPerspective(yDegrees, aspectRatio, near, far);
+            }
+        }
+    }
+
+    /**
+     * Update a CG model's score camera based on the MVC model.
+     *
+     * @param cgm which CG model (not null)
+     */
+    private void updateScoreCamera(LoadedCgm cgm) {
+        Camera camera = cgm.getScoreView().getCamera();
+        if (camera != null) {
+            Vector3f location = cgm.scorePov.cameraLocation(null);
+            camera.setLocation(location);
+            float h = 4f;
+            float w = 0.6f;
+            camera.setFrustumBottom(-h);
+            camera.setFrustumLeft(-w);
+            camera.setFrustumRight(w);
+            camera.setFrustumTop(h);
+        }
     }
 }

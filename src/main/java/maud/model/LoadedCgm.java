@@ -59,13 +59,14 @@ import jme3utilities.Validate;
 import maud.Locators;
 import maud.Maud;
 import maud.SceneView;
+import maud.ScoreView;
 import maud.Util;
 
 /**
  * MVC model for a loaded computer-graphics (CG) model in the Maud application:
  * encapsulates the CG model's tree of spatials, keeps track of where it was
- * loaded from, and provides access to related MVC model state: the loaded
- * animation and the selected spatial/control/skeleton/pose/bone/etc.
+ * loaded from, and provides access to related MVC model state including the
+ * loaded animation and the selected spatial/control/skeleton/pose/bone/etc.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -94,14 +95,23 @@ public class LoadedCgm implements Cloneable {
      */
     public LoadedAnimation animation = new LoadedAnimation();
     /**
-     * POV for viewing the CG model
+     * POV for viewing the scene
      */
     public ScenePov scenePov = new ScenePov();
     /**
-     * 3D visualization of the CG model (set by {@link #setView(maud.CgmView)}
-     * or {@link #clone()})
+     * POV for viewing the score
+     */
+    public ScorePov scorePov = new ScorePov();
+    /**
+     * rendered 3D visualization the CG model (set by
+     * {@link #setView(maud.CgmView)} or {@link #clone()})
      */
     private SceneView sceneView = null;
+    /**
+     * 2D visualization of the loaded animation (set by
+     * {@link #setView(maud.CgmView)} or {@link #clone()})
+     */
+    private ScoreView scoreView = null;
     /**
      * which bone in selected in the CG model
      */
@@ -319,13 +329,23 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Access the corresponding view.
+     * Access the corresponding scene view. TODO rename getSceneView
      *
      * @return the pre-existing instance (not null)
      */
     public SceneView getView() {
         assert sceneView != null;
         return sceneView;
+    }
+
+    /**
+     * Access the corresponding score view.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public ScoreView getScoreView() {
+        assert scoreView != null;
+        return scoreView;
     }
 
     /**
@@ -576,13 +596,17 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Initialize the reference to the corresponding visualization.
+     * Initialize the reference to the corresponding visualizations.
      *
-     * @param newView (not null)
+     * @param scene (not null)
+     * @param score (not null)
      */
-    public void setView(SceneView newView) {
-        Validate.nonNull(newView, "new view");
-        sceneView = newView;
+    public void setViews(SceneView scene, ScoreView score) {
+        Validate.nonNull(scene, "scene");
+        Validate.nonNull(scene, "score");
+
+        sceneView = scene;
+        scoreView = score;
     }
 
     /**
@@ -648,24 +672,25 @@ public class LoadedCgm implements Cloneable {
         clone.pose = cloner.clone(pose);
         clone.rootSpatial = cloner.clone(rootSpatial);
         clone.scenePov = cloner.clone(scenePov);
+        clone.sceneView = cloner.clone(sceneView);
+        clone.scoreView = cloner.clone(scoreView);
         clone.sgc = sgc.clone();
         clone.spatial = spatial.clone();
         clone.track = track.clone();
         clone.transform = transform.clone();
-
-        if (sceneView == null) {
-            clone.sceneView = null;
-        } else {
-            clone.sceneView = cloner.clone(sceneView);
-            clone.sceneView.setCgm(clone);
-        }
         /*
-         * Initialize back pointers to the clone.
+         * Set back pointers to the clone.
          */
         clone.animation.setCgm(clone);
         clone.bone.setCgm(clone);
         clone.bones.setCgm(clone);
         clone.pose.setCgm(clone);
+        if (clone.sceneView != null) {
+            clone.sceneView.setCgm(clone);
+        }
+        if (clone.scoreView != null) {
+            clone.scoreView.setCgm(clone);
+        }
         clone.sgc.setCgm(clone);
         clone.spatial.setCgm(clone);
         clone.track.setCgm(clone);

@@ -218,7 +218,7 @@ public class SceneView implements JmeCloneable {
         Camera result = null;
 
         ViewPort viewPort = getViewPort();
-        if (viewPort != null) {
+        if (viewPort != null && viewPort.isEnabled()) {
             result = viewPort.getCamera();
         }
 
@@ -285,7 +285,7 @@ public class SceneView implements JmeCloneable {
     /**
      * Access the view port being used to render the scene.
      *
-     * @return a pre-existing, enabled view port, or null if none
+     * @return a pre-existing view port, or null if none
      */
     public ViewPort getViewPort() {
         ViewPort result;
@@ -295,7 +295,6 @@ public class SceneView implements JmeCloneable {
             result = viewPort1;
         }
 
-        assert result == null || result.isEnabled();
         return result;
     }
 
@@ -556,7 +555,9 @@ public class SceneView implements JmeCloneable {
             Maud.gui.tools.update(cgm);
 
             Camera camera = getCamera();
-            skyControl.setCamera(camera); // note: target has 2 distinct cameras
+            if (camera != null) {
+                skyControl.setCamera(camera);
+            }
         }
     }
 
