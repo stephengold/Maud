@@ -26,10 +26,14 @@
  */
 package maud.model;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
+import maud.ScoreView;
 
 /**
  * The positions of a score camera and time cursor in Maud's edit screen.
@@ -57,13 +61,17 @@ public class ScorePov implements Cloneable, Pov {
     // fields
 
     /**
-     * location of the score camera (in world coordinates)
+     * half-height of the frustum (in world units)
      */
-    private Vector3f cameraLocation = new Vector3f();
+    private float halfHeight = 1f;
     /**
-     * the location of the 3D cursor (in world coordinates)
+     * location of the camera (in world coordinates)
      */
-    private Vector3f cursorLocation = new Vector3f();
+    private Vector3f cameraLocation = new Vector3f(0.5f, 0f, 0f);
+    /**
+     * the location of the cursor (in world coordinates)
+     */
+    private Vector3f cursorLocation = new Vector3f(0f, 0f, 0f);
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_Y}
      */
@@ -84,6 +92,15 @@ public class ScorePov implements Cloneable, Pov {
         storeResult.set(cursorLocation);
 
         return storeResult;
+    }
+
+    /**
+     * Read the half-height for the frustum.
+     *
+     * @return half-height (in world units, &gt;0)
+     */
+    public float getHalfHeight() {
+        return halfHeight;
     }
 
     /**
@@ -119,8 +136,8 @@ public class ScorePov implements Cloneable, Pov {
     @Override
     public ScorePov clone() throws CloneNotSupportedException {
         ScorePov clone = (ScorePov) super.clone();
-        clone.cursorLocation = cursorLocation.clone();
         clone.cameraLocation = cameraLocation.clone();
+        clone.cursorLocation = cursorLocation.clone();
 
         return clone;
     }
@@ -167,7 +184,9 @@ public class ScorePov implements Cloneable, Pov {
      */
     @Override
     public void moveBackward(float amount) {
-        // TODO
+        float rate = 1f + dollyInOutRate / 100f;
+        float factor = FastMath.pow(rate, amount);
+        halfHeight *= factor;
     }
 
     /**
@@ -177,7 +196,7 @@ public class ScorePov implements Cloneable, Pov {
      */
     @Override
     public void moveLeft(float amount) {
-        // TODO
+        // intentionally ignored
     }
 
     /**
@@ -187,6 +206,16 @@ public class ScorePov implements Cloneable, Pov {
      */
     @Override
     public void moveUp(float amount) {
-        // TODO
+        Maud app = Maud.getApplication();
+        Camera camera = app.getCamera();
+        float displayHeight = camera.getHeight();
+
+        LoadedCgm cgm = Maud.gui.mouseCgm();
+        ScoreView view = cgm.getScoreView();
+        float viewHeight = view.getHeight();
+
+        float yLocation = cameraLocation.y;
+        yLocation += (2048f * halfHeight / displayHeight) * amount;
+        cameraLocation.y = FastMath.clamp(yLocation, -viewHeight, 0f);
     }
 }

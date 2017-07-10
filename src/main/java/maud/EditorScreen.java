@@ -149,18 +149,30 @@ public class EditorScreen extends GuiScreenController {
      * @return a pre-existing instance, or null if none applies
      */
     public LoadedCgm mouseCgm() {
-        Vector2f screenXY = inputManager.getCursorPosition();
-        ViewPort sourceViewPort = Maud.model.source.getSceneView().getViewPort();
-        ViewPort targetViewPort = Maud.model.target.getSceneView().getViewPort();
+        LoadedCgm source = Maud.model.source;
+        LoadedCgm target = Maud.model.target;
 
-        LoadedCgm cgm = null;
+        ViewPort sourceVp, targetVp;
+        String viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals("score")) {
+            sourceVp = source.getScoreView().getViewPort();
+            targetVp = target.getScoreView().getViewPort();
+        } else {
+            sourceVp = source.getSceneView().getViewPort();
+            targetVp = target.getSceneView().getViewPort();
+        }
+
+        Vector2f screenXY = inputManager.getCursorPosition();
         List<ViewPort> viewPorts = Util.listViewPorts(renderManager, screenXY);
+        LoadedCgm cgm = null;
         for (ViewPort vp : viewPorts) {
             if (vp.isEnabled()) {
-                if (vp == sourceViewPort) {
-                    cgm = Maud.model.source;
-                } else if (vp == targetViewPort) {
-                    cgm = Maud.model.target;
+                if (vp == sourceVp) {
+                    cgm = source;
+                    break;
+                } else if (vp == targetVp) {
+                    cgm = target;
+                    break;
                 }
             }
         }

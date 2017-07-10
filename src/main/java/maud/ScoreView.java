@@ -54,6 +54,14 @@ public class ScoreView implements JmeCloneable {
     // constants and loggers
 
     /**
+     * end-cap mesh for bone tracks without scaling
+     */
+    final private static Finial finialNoScales = new Finial(true, true, false);
+    /**
+     * end-cap mesh for bone tracks with scaling
+     */
+    final private static Finial finialWithScales = new Finial(true, true, true);
+    /**
      * Z-coordinate for lines
      */
     final private static float z = -10f;
@@ -71,7 +79,7 @@ public class ScoreView implements JmeCloneable {
     private final ColorRGBA backgroundColor = new ColorRGBA(
             0.84f, 0.84f, 0.72f, 1f);
     /**
-     * canvas height (in staves, &ge;1)
+     * height of the score (in world units, &gt;0)
      */
     private float height = 1f;
     /**
@@ -134,6 +142,16 @@ public class ScoreView implements JmeCloneable {
     }
 
     /**
+     * Read the height of the score.
+     *
+     * @return height (in world units, &gt;0)
+     */
+    public float getHeight() {
+        assert height > 0f : height;
+        return height;
+    }
+
+    /**
      * Access the view port being used to render the score.
      *
      * @return a pre-existing, enabled view port, or null if none
@@ -184,14 +202,42 @@ public class ScoreView implements JmeCloneable {
             height = 0f;
             int numBones = cgm.bones.countBones();
             for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-                Rectangle staff = new Rectangle(0f, 1f, 0f, 1f,
-                        -0.3f, 1.1f, 0f, -0.9f, 1f);
-                String name = String.format("bone%d", boneIndex);
-                Geometry geom = new Geometry(name, staff);
-                geom.setLocalTranslation(0f, -height, z);
-                geom.setMaterial(border);
-                parent.attachChild(geom);
-                height += 1f;
+                float staffHeight = 0f;
+                if (cgm.animation.hasTrackForBone(boneIndex)) {
+                    Finial finial;
+                    if (cgm.animation.hasScales(boneIndex)) {
+                        finial = finialWithScales;
+                    } else {
+                        finial = finialNoScales;
+                    }
+                    staffHeight = finial.getHeight();
+
+                    String name;
+                    Geometry geom;
+
+                    name = String.format("left finial%d", boneIndex);
+                    geom = new Geometry(name, finial);
+                    geom.setLocalTranslation(0f, -height, z);
+                    geom.setMaterial(border);
+                    parent.attachChild(geom);
+
+                    name = String.format("right finial%d", boneIndex);
+                    geom = new Geometry(name, finial);
+                    geom.setLocalTranslation(1f, -height, z);
+                    geom.setLocalScale(-1f, 1f, 1f);
+                    geom.setMaterial(border);
+                    parent.attachChild(geom);
+
+                    Rectangle staff = new Rectangle(0f, 1f, 0f, 1f,
+                            0f, 1f, 0f, -staffHeight, 1f);
+                    name = String.format("staff%d", boneIndex);
+                    geom = new Geometry(name, staff);
+                    geom.setLocalTranslation(0f, -height, z);
+                    geom.setMaterial(border);
+                    parent.attachChild(geom);
+                }
+
+                height += staffHeight;
             }
             height += 0.2f;
 

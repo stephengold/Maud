@@ -196,42 +196,48 @@ public class CameraTool
         if (cgm == null) {
             return;
         }
-        Pov mousePov = cgm.scenePov;
+        Pov pov;
+        String viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals("score")) {
+            pov = cgm.scorePov;
+        } else {
+            pov = cgm.scenePov;
+        }
 
         switch (eventString) {
             case moveBackwardEvent:
-                mousePov.moveBackward(+amount);
+                pov.moveBackward(+amount);
                 break;
 
             case moveDownEvent:
                 if (signals.test(cameraSignalName)) {
                     /* dragging */
-                    mousePov.moveUp(-amount);
+                    pov.moveUp(-amount);
                 }
                 break;
 
             case moveForwardEvent:
-                mousePov.moveBackward(-amount);
+                pov.moveBackward(-amount);
                 break;
 
             case moveLeftEvent:
                 if (signals.test(cameraSignalName)) {
                     /* dragging */
-                    mousePov.moveLeft(+amount);
+                    pov.moveLeft(+amount);
                 }
                 break;
 
             case moveRightEvent:
                 if (signals.test(cameraSignalName)) {
                     /* dragging */
-                    mousePov.moveLeft(-amount);
+                    pov.moveLeft(-amount);
                 }
                 break;
 
             case moveUpEvent:
                 if (signals.test(cameraSignalName)) {
                     /* dragging */
-                    mousePov.moveUp(+amount);
+                    pov.moveUp(+amount);
                 }
         }
     }
@@ -341,7 +347,7 @@ public class CameraTool
         if (camera != null) {
             Vector3f location = cgm.scorePov.cameraLocation(null);
             camera.setLocation(location);
-            float h = 4f;
+            float h = cgm.scorePov.getHalfHeight();
             float w = 0.6f;
             camera.setFrustumBottom(-h);
             camera.setFrustumLeft(-w);
