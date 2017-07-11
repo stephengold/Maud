@@ -195,6 +195,29 @@ public class Util {
     }
 
     /**
+     * Test whether the specified vector contains more than one value.
+     *
+     * @param vector input (not null)
+     * @return true if multiple values found, otherwise false
+     */
+    public static boolean distinct(float[] vector) {
+        Validate.nonNull(vector, "vector");
+
+        boolean result = false;
+        if (vector.length > 1) {
+            float first = vector[0];
+            for (float value : vector) {
+                if (value != first) {
+                    result = true;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Find the root bone in the specified skeleton that has the greatest
      * influence on the meshes in the specified subtree.
      *
