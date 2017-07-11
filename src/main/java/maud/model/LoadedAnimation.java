@@ -31,6 +31,7 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
@@ -275,6 +276,24 @@ public class LoadedAnimation implements Cloneable {
         }
 
         return index;
+    }
+
+    /**
+     * Find the track for the indexed bone.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @return the pre-existing instance, or null if none
+     */
+    BoneTrack findTrackForBone(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        BoneTrack result = null;
+        Animation animation = getAnimation();
+        if (animation != null) {
+            result = MyAnimation.findTrack(animation, boneIndex);
+        }
+
+        return result;
     }
 
     /**
@@ -845,6 +864,108 @@ public class LoadedAnimation implements Cloneable {
      */
     public void togglePaused() {
         setPaused(!pausedFlag);
+    }
+
+    /**
+     * Copy the keyframe rotations from the track for the indexed bone to the
+     * parallel arrays provided.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @param storeWs (not null, modified)
+     * @param storeXs (not null, modified)
+     * @param storeYs (not null, modified)
+     * @param storeZs (not null, modified)
+     */
+    public void trackRotations(int boneIndex, float[] storeWs, float[] storeXs,
+            float[] storeYs, float[] storeZs) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        BoneTrack track = findTrackForBone(boneIndex);
+        Quaternion[] rotations = track.getRotations();
+        int numFrames = rotations.length;
+        assert numFrames == storeWs.length : numFrames;
+        assert numFrames == storeXs.length : numFrames;
+        assert numFrames == storeYs.length : numFrames;
+        assert numFrames == storeZs.length : numFrames;
+
+        for (int i = 0; i < numFrames; i++) {
+            storeWs[i] = rotations[i].getW();
+            storeXs[i] = rotations[i].getX();
+            storeYs[i] = rotations[i].getY();
+            storeZs[i] = rotations[i].getZ();
+        }
+    }
+
+    /**
+     * Copy the keyframe scales from the track for the indexed bone to the
+     * parallel arrays provided.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @param storeXs (not null, modified)
+     * @param storeYs (not null, modified)
+     * @param storeZs (not null, modified)
+     */
+    public void trackScales(int boneIndex, float[] storeXs, float[] storeYs,
+            float[] storeZs) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        BoneTrack track = findTrackForBone(boneIndex);
+        Vector3f[] scales = track.getScales();
+        int numFrames = scales.length;
+        assert numFrames == storeXs.length : numFrames;
+        assert numFrames == storeYs.length : numFrames;
+        assert numFrames == storeZs.length : numFrames;
+
+        for (int i = 0; i < numFrames; i++) {
+            storeXs[i] = scales[i].x;
+            storeYs[i] = scales[i].y;
+            storeZs[i] = scales[i].z;
+        }
+    }
+
+    /**
+     * Copy the keyframe times from the track for the indexed bone.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @return a new array
+     */
+    public float[] trackTimes(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        BoneTrack track = findTrackForBone(boneIndex);
+        float[] times = track.getTimes();
+        int numFrames = times.length;
+        float[] result = new float[numFrames];
+        System.arraycopy(times, 0, result, 0, numFrames);
+
+        return result;
+    }
+
+    /**
+     * Copy the keyframe translations from the track for the indexed bone to the
+     * parallel arrays provided.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @param storeXs (not null, modified)
+     * @param storeYs (not null, modified)
+     * @param storeZs (not null, modified)
+     */
+    public void trackTranslations(int boneIndex, float[] storeXs,
+            float[] storeYs, float[] storeZs) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        BoneTrack track = findTrackForBone(boneIndex);
+        Vector3f[] translations = track.getTranslations();
+        int numFrames = translations.length;
+        assert numFrames == storeXs.length : numFrames;
+        assert numFrames == storeYs.length : numFrames;
+        assert numFrames == storeZs.length : numFrames;
+
+        for (int i = 0; i < numFrames; i++) {
+            storeXs[i] = translations[i].x;
+            storeYs[i] = translations[i].y;
+            storeZs[i] = translations[i].z;
+        }
     }
 
     /**
