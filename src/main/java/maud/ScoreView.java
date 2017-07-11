@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
+import jme3utilities.Rectangle;
 import jme3utilities.Validate;
 import maud.model.LoadedCgm;
 
@@ -81,13 +82,18 @@ public class ScoreView {
      * hash-mark mesh to represent a bone without a track
      */
     final private static Line hashMark = new Line(
-            new Vector3f(-hashSize, 0f, 0f),
-            new Vector3f(0f, 0f, 0f));
+            new Vector3f(-hashSize, 0f, 0f), new Vector3f(0f, 0f, 0f)
+    );
     /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
             ScoreView.class.getName());
+    /**
+     * rectangle to represent a bone track when the POV is zoomed out
+     */
+    final private static Rectangle rectangle = new Rectangle(0f, 1f, 0f, 1f,
+            -hashSize, 0f, -1f, 0f, 1f);
     // *************************************************************************
     // fields
 
@@ -288,6 +294,9 @@ public class ScoreView {
             for (currentBone = 0; currentBone < numBones;
                     currentBone++) {
                 makeStaff();
+                if (currentBone != numBones - 1) {
+                    height += 0.1f; // space between staves
+                }
             }
 
             makeGnomon();
@@ -364,27 +373,31 @@ public class ScoreView {
      * Add the time indicator (currently just a vertical line) to the visuals.
      */
     private void makeGnomon() {
-        float time = cgm.animation.getTime();
         float duration = cgm.animation.getDuration();
         float x = 0f;
         if (duration > 0f) {
+            float time = cgm.animation.getTime();
             x = time / duration;
         }
-        Vector3f start = new Vector3f(x, 0.3f, 0f);
-        Vector3f end = new Vector3f(x, -height - 0.3f, 0f);
+
+        float handleSize = 0.1f * cgm.scorePov.getHalfHeight();
+        Vector3f start = new Vector3f(x, handleSize, z);
+        Vector3f end = new Vector3f(x, -height - handleSize, z);
         Line line = new Line(start, end);
 
         Geometry geometry = new Geometry("gnomon", line);
-        geometry.setLocalTranslation(0f, 0f, z);
         geometry.setMaterial(notSelected);
-
         visuals.attachChild(geometry);
     }
 
     /**
-     * Add a pair of hash marks to indicate a non-animated bone.
+     * Add a pair of hash marks to indicate a bone.
+     *
+     * @param staffHeight (&ge;0)
      */
-    private void makeHashes() {
+    private void makeHashes(float staffHeight) {
+        float y = -height - staffHeight / 2;
+
         Material material = notSelected;
         int selectedBoneIndex = cgm.bone.getIndex();
         if (currentBone == selectedBoneIndex) {
@@ -393,13 +406,13 @@ public class ScoreView {
 
         String name = String.format("left hash%d", currentBone);
         Geometry geometry = new Geometry(name, hashMark);
-        geometry.setLocalTranslation(0f, -height, z);
+        geometry.setLocalTranslation(0f, y, z);
         geometry.setMaterial(material);
         visuals.attachChild(geometry);
 
         name = String.format("right hash%d", currentBone);
         geometry = new Geometry(name, hashMark);
-        geometry.setLocalTranslation(1f, -height, z);
+        geometry.setLocalTranslation(1f, y, z);
         geometry.setLocalScale(-1f, 1f, 1f);
         geometry.setMaterial(material);
         visuals.attachChild(geometry);
@@ -437,6 +450,35 @@ public class ScoreView {
             makeSparkline(tempX, tempY, Mesh.Mode.Points, suffix + "p", yIndex,
                     material);
         }
+    }
+
+    /**
+     * Add a pair of rectangles to indicate an animated bone.
+     *
+     * @param staffHeight (&ge;0)
+     */
+    private void makeRectangles(float staffHeight) {
+        assert staffHeight >= 0f : staffHeight;
+
+        Material material = notSelected;
+        int selectedBoneIndex = cgm.bone.getIndex();
+        if (currentBone == selectedBoneIndex) {
+            material = selected;
+        }
+
+        String name = String.format("left rect%d", currentBone);
+        Geometry geometry = new Geometry(name, rectangle);
+        geometry.setLocalTranslation(0f, -height, z);
+        geometry.setLocalScale(1f, staffHeight, 1f);
+        geometry.setMaterial(material);
+        visuals.attachChild(geometry);
+
+        name = String.format("right rect%d", currentBone);
+        geometry = new Geometry(name, rectangle);
+        geometry.setLocalTranslation(1f + hashSize, -height, z);
+        geometry.setLocalScale(1f, staffHeight, 1f);
+        geometry.setMaterial(material);
+        visuals.attachChild(geometry);
     }
 
     /**
@@ -522,21 +564,35 @@ public class ScoreView {
     }
 
     /**
-     * If the current bone has a track, add a staff to visualize it. Otherwise,
-     * add hashes as a placeholder.
+     * Add a staff to visualize the current bone.
      */
     private void makeStaff() {
-        // TODO use an appropriate level of detail
         if (cgm.animation.hasTrackForBone(currentBone)) {
-            float staffHeight = makeFinials();
+            float staffHeight;
+            float zoom = cgm.scorePov.getHalfHeight();
+            if (zoom > 10f) {
+                /*
+                 * zoomed out too far to include detailed finials
+                 */
+                boolean hasScales = cgm.animation.hasScales(currentBone);
+                int numFeet = hasScales ? 10 : 7;
+                staffHeight = (float) (numFeet * Finial.hpf);
+                if (zoom > 25f) {
+                    makeHashes(staffHeight);
+                } else {
+                    makeRectangles(staffHeight);
+                }
+            } else {
+                staffHeight = makeFinials();
+            }
             makeSparklines();
-            boneYs.put(currentBone, -height - staffHeight / 2f);
+            boneYs.put(currentBone, -height - staffHeight / 2);
             height += staffHeight;
+
         } else {
-            makeHashes();
+            makeHashes(0f);
             boneYs.put(currentBone, -height);
         }
-        height += 0.1f; // space between staves
     }
 
     /**
