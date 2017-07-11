@@ -98,11 +98,6 @@ public class ScoreView {
     // fields
 
     /**
-     * background color for this view TODO configure it
-     */
-    private final ColorRGBA backgroundColor = new ColorRGBA(
-            0.84f, 0.84f, 0.72f, 1f);
-    /**
      * height of this score (in world units, &ge;0)
      */
     private float height = 0f;
@@ -283,6 +278,7 @@ public class ScoreView {
         ViewPort viewPort = getViewPort();
         if (viewPort != null && viewPort.isEnabled()) {
             assert cgm.isLoaded();
+            ColorRGBA backgroundColor = Maud.model.misc.backgroundColor(null);
             viewPort.setBackgroundColor(backgroundColor);
 
             Spatial parentSpatial = viewPort.getScenes().get(0);

@@ -26,6 +26,7 @@
  */
 package maud.model;
 
+import com.jme3.math.ColorRGBA;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,6 +64,10 @@ public class MiscStatus implements Cloneable {
      */
     private boolean skyRendered = true;
     /**
+     * background color for score views
+     */
+    private ColorRGBA scoreBackground = new ColorRGBA(0.84f, 0.84f, 0.72f, 1f);
+    /**
      * diameter of the platform (in world units, &gt;0)
      */
     private float platformDiameter = 1f;
@@ -88,6 +93,21 @@ public class MiscStatus implements Cloneable {
      */
     public boolean areShadowsRendered() {
         return shadowsRendered;
+    }
+
+    /**
+     * Copy the background color for score views.
+     *
+     * @param storeResult (modified if not null)
+     * @return color (either storeResult or a new instance)
+     */
+    public ColorRGBA backgroundColor(ColorRGBA storeResult) {
+        if (storeResult == null) {
+            storeResult = new ColorRGBA();
+        }
+        storeResult.set(scoreBackground);
+
+        return storeResult;
     }
 
     /**
@@ -215,6 +235,15 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
+     * Alter the background color for score views.
+     *
+     * @param newColor (not null, unaffected)
+     */
+    public void setBackgroundColor(ColorRGBA newColor) {
+        scoreBackground.set(newColor);
+    }
+
+    /**
      * Alter the diameter of the platform.
      *
      * @param diameter (in world units, &gt;0)
@@ -309,6 +338,8 @@ public class MiscStatus implements Cloneable {
     @Override
     public MiscStatus clone() throws CloneNotSupportedException {
         MiscStatus clone = (MiscStatus) super.clone();
+        clone.scoreBackground = scoreBackground.clone();
+
         return clone;
     }
 }

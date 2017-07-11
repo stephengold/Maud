@@ -62,6 +62,10 @@ public class EditorTools {
      */
     final public AxesTool axes;
     /**
+     * controller for the "Background" window
+     */
+    final BackgroundTool background;
+    /**
      * controller for the "Bone Rotation Tool" window
      */
     final BoneRotationTool boneRotation;
@@ -182,6 +186,7 @@ public class EditorTools {
 
         animation = new AnimationTool(screen);
         axes = new AxesTool(screen);
+        background = new BackgroundTool(screen);
         boneRotation = new BoneRotationTool(screen);
         boneScale = new BoneScaleTool(screen);
         bone = new BoneTool(screen);
@@ -220,12 +225,12 @@ public class EditorTools {
      */
     public void attachAll(AppStateManager stateManager) {
         stateManager.attach(cursor); // cursor before camera
-        stateManager.attachAll(animation, axes, bone, boneRotation, boneScale,
-                boneTranslation, bounds, camera, cullHint, history, keyframe,
-                mapping, cgm, platform, render, retarget, sgc, shadowMode,
-                skeleton, skeletonColor, sky, sourceAnimation, spatial,
-                spatialRotation, spatialScale, spatialTranslation, twist,
-                userData);
+        stateManager.attachAll(animation, axes, background, bone, boneRotation,
+                boneScale, boneTranslation, bounds, camera, cullHint, history,
+                keyframe, mapping, cgm, platform, render, retarget, sgc,
+                shadowMode, skeleton, skeletonColor, sky, sourceAnimation,
+                spatial, spatialRotation, spatialScale, spatialTranslation,
+                twist, userData);
     }
 
     /**
@@ -244,6 +249,9 @@ public class EditorTools {
                 break;
             case "axes":
                 controller = axes;
+                break;
+            case "background":
+                controller = background;
                 break;
             case "bone":
                 controller = bone;
@@ -349,6 +357,12 @@ public class EditorTools {
 
             case "axesLineWidthSlider":
                 axes.onSliderChanged();
+                break;
+
+            case "bgRSlider":
+            case "bgGSlider":
+            case "bgBSlider":
+                background.onSliderChanged();
                 break;
 
             case "xAngSlider":

@@ -226,6 +226,40 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="backgroundTool" title="Background Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="140px" width="190px" x="25" y="75">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="bgRSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="bgGSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="bgBSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="110px" width="90px">
+                            <control name="label" id="bgRSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="bgGSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="bgBSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="boneTool" title="Bone Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"

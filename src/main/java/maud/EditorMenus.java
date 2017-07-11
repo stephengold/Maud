@@ -772,16 +772,21 @@ class EditorMenus {
      * Build a View menu.
      */
     private void buildViewMenu() {
-        builder.addTool("Axes");
-        builder.addTool("Bounds");
-        builder.addTool("Camera");
-        builder.addTool("Cursor");
-        builder.addTool("Physics");
-        builder.addTool("Platform");
-        builder.addTool("Render");
-        builder.addTool("Skeleton");
-        builder.addTool("Skeleton color");
-        builder.addTool("Sky");
+        String viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals("scene")) {
+            builder.addTool("Axes");
+            builder.addTool("Bounds");
+            builder.addTool("Camera");
+            builder.addTool("Cursor");
+            builder.addTool("Physics");
+            builder.addTool("Platform");
+            builder.addTool("Render");
+            builder.addTool("Skeleton");
+            builder.addTool("Skeleton color");
+            builder.addTool("Sky");
+        } else {
+            builder.addTool("Background");
+        }
     }
 
     /**
@@ -1575,6 +1580,10 @@ class EditorMenus {
         switch (remainder) {
             case "Axes":
                 Maud.gui.tools.select("axes");
+                handled = true;
+                break;
+            case "Background":
+                Maud.gui.tools.select("background");
                 handled = true;
                 break;
             case "Bounds":
