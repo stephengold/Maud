@@ -99,17 +99,17 @@ public class LoadedCgm implements Cloneable {
      */
     public ScenePov scenePov = new ScenePov();
     /**
-     * POV for viewing the score
-     */
-    public ScorePov scorePov = new ScorePov();
-    /**
      * rendered 3D visualization the CG model (set by
      * {@link #setView(maud.CgmView)} or {@link #clone()})
      */
     private SceneView sceneView = null;
     /**
+     * POV for viewing the score
+     */
+    public ScorePov scorePov = new ScorePov();
+    /**
      * 2D visualization of the loaded animation (set by
-     * {@link #setView(maud.CgmView)} or {@link #clone()})
+     * {@link #setViews(maud.SceneView, maud.ScoreView)}
      */
     private ScoreView scoreView = null;
     /**
@@ -673,7 +673,6 @@ public class LoadedCgm implements Cloneable {
         clone.rootSpatial = cloner.clone(rootSpatial);
         clone.scenePov = cloner.clone(scenePov);
         clone.sceneView = cloner.clone(sceneView);
-        clone.scoreView = cloner.clone(scoreView);
         clone.sgc = sgc.clone();
         clone.spatial = spatial.clone();
         clone.track = track.clone();
@@ -687,9 +686,6 @@ public class LoadedCgm implements Cloneable {
         clone.pose.setCgm(clone);
         if (clone.sceneView != null) {
             clone.sceneView.setCgm(clone);
-        }
-        if (clone.scoreView != null) {
-            clone.scoreView.setCgm(clone);
         }
         clone.sgc.setCgm(clone);
         clone.spatial.setCgm(clone);

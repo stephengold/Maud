@@ -45,7 +45,7 @@ public class ScorePov implements Cloneable, Pov {
     // constants and loggers
 
     /**
-     * rate to dolly in/out (orbit mode only, percentage points per wheel notch)
+     * rate to dolly in/out (percentage points per wheel notch)
      */
     final private static float dollyInOutRate = 15f;
     /**
@@ -63,11 +63,11 @@ public class ScorePov implements Cloneable, Pov {
     /**
      * half-height of the frustum (in world units)
      */
-    private float halfHeight = 1f;
+    private float halfHeight = 5f;
     /**
      * location of the camera (in world coordinates)
      */
-    private Vector3f cameraLocation = new Vector3f(0.5f, 0f, 0f);
+    private Vector3f cameraLocation = new Vector3f(0.5f, -4f, 0f);
     /**
      * the location of the cursor (in world coordinates)
      */
@@ -104,14 +104,16 @@ public class ScorePov implements Cloneable, Pov {
     }
 
     /**
-     * Alter the camera location.
+     * Alter the camera's Y-coordinate.
      *
-     * @param timeFraction (&ge;0, &le;1)
+     * @param yLocation new location for camera
      */
-    public void setCameraLocation(float timeFraction) {
-        Validate.fraction(timeFraction, "time fraction");
+    public void setCameraY(float yLocation) {
+        LoadedCgm cgm = Maud.gui.mouseCgm();
+        ScoreView view = cgm.getScoreView();
+        float viewHeight = view.getHeight();
 
-        // TODO
+        cameraLocation.y = FastMath.clamp(yLocation, -viewHeight, 0f);
     }
 
     /**
@@ -196,7 +198,7 @@ public class ScorePov implements Cloneable, Pov {
      */
     @Override
     public void moveLeft(float amount) {
-        // intentionally ignored
+        // Left/right movement is disabled.
     }
 
     /**
@@ -210,12 +212,8 @@ public class ScorePov implements Cloneable, Pov {
         Camera camera = app.getCamera();
         float displayHeight = camera.getHeight();
 
-        LoadedCgm cgm = Maud.gui.mouseCgm();
-        ScoreView view = cgm.getScoreView();
-        float viewHeight = view.getHeight();
-
         float yLocation = cameraLocation.y;
         yLocation += (2048f * halfHeight / displayHeight) * amount;
-        cameraLocation.y = FastMath.clamp(yLocation, -viewHeight, 0f);
+        setCameraY(yLocation);
     }
 }

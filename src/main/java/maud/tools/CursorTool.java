@@ -46,6 +46,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.SceneView;
+import maud.ScoreView;
 import maud.model.LoadedCgm;
 
 /**
@@ -134,33 +135,19 @@ public class CursorTool extends WindowController {
     }
 
     /**
-     * Attempt to warp the 3D cursor to the screen coordinates of the mouse
+     * Attempt to warp the cursor to the screen coordinates of the mouse
      * pointer.
      */
     public void warpCursor() {
         LoadedCgm cgm = Maud.gui.mouseCgm();
-        SceneView sceneView = cgm.getSceneView();
-        Camera camera = sceneView.getCamera();
-        Ray ray = MyCamera.mouseRay(camera, inputManager);
-        /*
-         * Trace the ray to the CG model's visualization.
-         */
-        Spatial cgmRoot = sceneView.getCgmRoot();
-        Vector3f targetContactPoint = findContact(cgmRoot, ray);
-
-        if (targetContactPoint != null) {
-            cgm.scenePov.setCursorLocation(targetContactPoint);
+        if (cgm == null) {
+            return;
+        }
+        String viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals("score")) {
+            warpCursorScore(cgm);
         } else {
-            /*
-             * The ray missed the CG model; try to trace it to the platform.
-             */
-            Spatial platform = sceneView.getPlatform();
-            if (platform != null) {
-                Vector3f platformContactPoint = findContact(platform, ray);
-                if (platformContactPoint != null) {
-                    cgm.scenePov.setCursorLocation(platformContactPoint);
-                }
-            }
+            warpCursorScene(cgm);
         }
     }
     // *************************************************************************
@@ -251,5 +238,54 @@ public class CursorTool extends WindowController {
         }
 
         return null;
+    }
+
+    /**
+     * Warp the 3D cursor in "scene" mode.
+     *
+     * @param cgm which CG model (not null)
+     */
+    private void warpCursorScene(LoadedCgm cgm) {
+        assert cgm != null;
+
+        SceneView sceneView = cgm.getSceneView();
+        Camera camera = sceneView.getCamera();
+        Ray ray = MyCamera.mouseRay(camera, inputManager);
+        /*
+         * Trace the ray to the CG model's visualization.
+         */
+        Spatial cgmRoot = sceneView.getCgmRoot();
+        Vector3f targetContactPoint = findContact(cgmRoot, ray);
+
+        if (targetContactPoint != null) {
+            cgm.scenePov.setCursorLocation(targetContactPoint);
+        } else {
+            /*
+             * The ray missed the CG model; try to trace it to the platform.
+             */
+            Spatial platform = sceneView.getPlatform();
+            if (platform != null) {
+                Vector3f platformContactPoint = findContact(platform, ray);
+                if (platformContactPoint != null) {
+                    cgm.scenePov.setCursorLocation(platformContactPoint);
+                }
+            }
+        }
+    }
+
+    /**
+     * Warp the 2D cursor in "score" mode.
+     *
+     * @param cgm which CG model (not null)
+     */
+    private void warpCursorScore(LoadedCgm cgm) {
+        assert cgm != null;
+
+        ScoreView scoreView = cgm.getScoreView();
+        Camera camera = scoreView.getCamera();
+        Ray ray = MyCamera.mouseRay(camera, inputManager);
+        Vector3f origin = ray.getOrigin();
+        float newY = origin.y;
+        cgm.scorePov.setCameraY(newY);
     }
 }

@@ -35,6 +35,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.SceneView;
+import maud.ScoreView;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMapping;
 
@@ -182,18 +183,27 @@ public class BoneTool extends WindowController {
      *
      * @param cgm which CG model contains the bone (not null, unaffected)
      * @param boneIndex which bone in the CG model's selected skeleton (&ge;0)
-     * @return squared distance in pixels (&ge;0)
+     * @return square of the distance in pixels (&ge;0)
      */
     private float boneDSquared(LoadedCgm cgm, int boneIndex) {
         assert boneIndex >= 0 : boneIndex;
 
-        SceneView sceneView = cgm.getSceneView();
-        Camera camera = sceneView.getCamera();
-        Vector3f boneWorld = sceneView.boneLocation(boneIndex);
-        Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
-        Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
         Vector2f mouseXY = inputManager.getCursorPosition();
-        float dSquared = mouseXY.distanceSquared(boneXY);
+
+        float dSquared;
+        String viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals("score")) {
+            ScoreView scoreView = cgm.getScoreView();
+            dSquared = scoreView.dSquared(boneIndex, mouseXY);
+
+        } else {
+            SceneView sceneView = cgm.getSceneView();
+            Camera camera = sceneView.getCamera();
+            Vector3f boneWorld = sceneView.boneLocation(boneIndex);
+            Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
+            Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
+            dSquared = mouseXY.distanceSquared(boneXY);
+        }
 
         return dSquared;
     }
@@ -217,13 +227,19 @@ public class BoneTool extends WindowController {
             }
         }
 
-        for (int axisIndex = 0; axisIndex < 3; axisIndex++) {
-            float dSquared = tipDSquared(cgm, axisIndex);
-            if (dSquared < bestDSquared) {
-                bestDSquared = dSquared;
-                bestAxisIndex = axisIndex;
-                bestBoneIndex = -1;
-                bestCgm = cgm;
+        String viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals("scene")) {
+            /*
+             * In scene mode, include axis tips as well.
+             */
+            for (int axisIndex = 0; axisIndex < 3; axisIndex++) {
+                float dSquared = tipDSquared(cgm, axisIndex);
+                if (dSquared < bestDSquared) {
+                    bestDSquared = dSquared;
+                    bestAxisIndex = axisIndex;
+                    bestBoneIndex = -1;
+                    bestCgm = cgm;
+                }
             }
         }
     }
