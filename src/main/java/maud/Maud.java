@@ -79,9 +79,9 @@ public class Maud extends GuiApplication {
      */
     final private static Logger logger = Logger.getLogger(Maud.class.getName());
     /**
-     * path to hotkey bindings configuration asset
+     * path to the asset used to configure hotkey bindings
      */
-    final private static String hotkeyBindingsAssetPath = "Interface/bindings/3DView.properties";
+    final private static String hotkeyBindingsAssetPath = "Interface/bindings/editor.properties";
     /**
      * application name for the window's title bar
      */
@@ -170,22 +170,22 @@ public class Maud extends GuiApplication {
      */
     public static void main(String[] arguments) {
         /*
-        * Mute the chatty loggers found in some imported packages.
+         * Mute the chatty loggers found in some imported packages.
          */
         Misc.setLoggingLevels(Level.WARNING);
         Logger.getLogger(ALAudioRenderer.class.getName())
                 .setLevel(Level.SEVERE);
         /*
-        * Lower logging thresholds for classes of interest.
+         * Lower logging thresholds for classes of interest.
          */
         Logger.getLogger(LoadedCgm.class.getName()).setLevel(Level.INFO);
         History.logger.setLevel(Level.INFO);
         /*
-        * Instantiate the application.
+         * Instantiate the application.
          */
         application = new Maud();
         /*
-        * Customize the window's title bar.
+         * Customize the display's title bar.
          */
         AppSettings settings = new AppSettings(true);
         settings.setTitle(windowTitle);
@@ -193,7 +193,7 @@ public class Maud extends GuiApplication {
 
         application.start();
         /*
-        * ... and onward to Maud.guiInitializeApplication()!
+         * ... and onward to Maud.guiInitializeApplication()!
          */
     }
 
