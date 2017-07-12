@@ -481,7 +481,7 @@ public class Maud extends GuiApplication {
 
     /**
      * Initialization performed during the 1st invocation of
-     * {@link #simpleUpdate(float)}. TODO sort methods
+     * {@link #simpleUpdate(float)}.
      */
     private void startup1() {
         logger.info("");

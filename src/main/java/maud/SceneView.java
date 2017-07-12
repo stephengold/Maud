@@ -173,7 +173,8 @@ public class SceneView implements JmeCloneable {
     // new methods exposed
 
     /**
-     * Calculate the location of an indexed bone, for selection.
+     * Calculate the location of an indexed bone, for selection. TODO replace
+     * with a method to calculate dSquared
      *
      * @param boneIndex which bone to locate (&ge;0)
      * @return a new vector (in world coordinates)

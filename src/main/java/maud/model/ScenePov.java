@@ -318,7 +318,7 @@ public class ScenePov implements Cloneable, Pov {
     @Override
     public void updateCamera() {
         if (Maud.model.camera.isOrbitMode()) {
-            aim(); // TODO necessary?
+            aim(); // in case the 3D cursor moved
         }
 
         SceneView view = loadedCgm.getSceneView();

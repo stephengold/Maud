@@ -230,7 +230,7 @@ public class BoneTool extends WindowController {
         String viewMode = Maud.model.misc.getViewMode();
         if (viewMode.equals("scene")) {
             /*
-             * In scene mode, include axis tips as well.
+             * In scene mode, include axis tips in the search.
              */
             for (int axisIndex = 0; axisIndex < 3; axisIndex++) {
                 float dSquared = tipDSquared(cgm, axisIndex);
