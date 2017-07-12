@@ -158,9 +158,13 @@ public class ScoreView {
      */
     final private ViewPort viewPort1;
     /**
-     * view port used when the screen is split (not null)
+     * view port used in score view mode when the screen is split (not null)
      */
     final private ViewPort viewPort2;
+    /**
+     * view port used in hybrid view mode, or null for none
+     */
+    final private ViewPort viewPort3;
     // *************************************************************************
     // constructors
 
@@ -170,12 +174,14 @@ public class ScoreView {
      * @param port1 initial view port, or null for none (alias created)
      * @param port2 view port to use after the screen is split (not null, alias
      * created)
+     * @param port3 view port to use in hybrid view mode (alias created)
      */
-    public ScoreView(ViewPort port1, ViewPort port2) {
+    public ScoreView(ViewPort port1, ViewPort port2, ViewPort port3) {
         Validate.nonNull(port2, "port2");
 
         viewPort1 = port1;
         viewPort2 = port2;
+        viewPort3 = port3;
     }
     // *************************************************************************
     // new methods exposed
@@ -251,11 +257,16 @@ public class ScoreView {
      * @return a pre-existing, enabled view port, or null if none
      */
     public ViewPort getViewPort() {
-        ViewPort result;
-        if (Maud.model.source.isLoaded()) {
-            result = viewPort2;
-        } else {
-            result = viewPort1;
+        ViewPort result = null;
+        String viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals("hybrid")) {
+            result = viewPort3;
+        } else if (viewMode.equals("score")) {
+            if (Maud.model.source.isLoaded()) {
+                result = viewPort2;
+            } else {
+                result = viewPort1;
+            }
         }
 
         return result;
@@ -268,7 +279,7 @@ public class ScoreView {
      * @param renderCgm which CG model to render (not null)
      */
     void update(LoadedCgm renderCgm) {
-        if (notSelected == null) {
+        if (notSelected == null) { // TODO add an init method
             initializeMaterials();
         }
         boneYs.clear();
@@ -277,6 +288,9 @@ public class ScoreView {
         if (viewPort != null && viewPort.isEnabled()) {
             cgm = renderCgm;
             assert renderCgm.isLoaded();
+
+            cgm.scorePov.updateCamera();
+
             ColorRGBA backgroundColor = Maud.model.misc.backgroundColor(null);
             viewPort.setBackgroundColor(backgroundColor);
 

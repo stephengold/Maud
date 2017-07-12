@@ -463,17 +463,19 @@ public class EditorTools {
     }
 
     /**
-     * Updates performed even when all tools are disabled. (Invoked once per
-     * render pass for each loaded CG model.)
+     * Scene updates performed even when all tools are disabled. (Invoked once
+     * per render pass for each CG model that's rendered to a scene view.)
      *
-     * @param loadedCgm which CG model to update (not null)
+     * @param loadedCgm which CG model is being rendered (not null)
      */
-    public void update(LoadedCgm loadedCgm) {
+    public void updateScene(LoadedCgm loadedCgm) {
         Validate.nonNull(loadedCgm, "loaded model");
+        assert loadedCgm.getSceneView().getCamera() != null;
+
+        loadedCgm.scenePov.updateCamera();
 
         axes.updateVisualizer(loadedCgm);
         bounds.updateVisualizer(loadedCgm);
-        camera.updateCamera(loadedCgm);
         cursor.updateScene(loadedCgm);
         platform.updateScene(loadedCgm);
         render.updateShadowFilter(loadedCgm);

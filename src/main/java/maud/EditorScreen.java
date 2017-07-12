@@ -151,26 +151,20 @@ public class EditorScreen extends GuiScreenController {
     public LoadedCgm mouseCgm() {
         LoadedCgm source = Maud.model.source;
         LoadedCgm target = Maud.model.target;
-
-        ViewPort sourceVp, targetVp;
-        String viewMode = Maud.model.misc.getViewMode();
-        if (viewMode.equals("score")) {
-            sourceVp = source.getScoreView().getViewPort();
-            targetVp = target.getScoreView().getViewPort();
-        } else {
-            sourceVp = source.getSceneView().getViewPort();
-            targetVp = target.getSceneView().getViewPort();
-        }
+        ViewPort sScene = source.getSceneView().getViewPort();
+        ViewPort sScore = source.getScoreView().getViewPort();
+        ViewPort tScene = target.getSceneView().getViewPort();
+        ViewPort tScore = target.getScoreView().getViewPort();
 
         Vector2f screenXY = inputManager.getCursorPosition();
         List<ViewPort> viewPorts = Util.listViewPorts(renderManager, screenXY);
         LoadedCgm cgm = null;
         for (ViewPort vp : viewPorts) {
             if (vp.isEnabled()) {
-                if (vp == sourceVp) {
+                if (vp == sScene || vp == sScore) {
                     cgm = source;
                     break;
-                } else if (vp == targetVp) {
+                } else if (vp == tScene || vp == tScore) {
                     cgm = target;
                     break;
                 }
@@ -178,6 +172,37 @@ public class EditorScreen extends GuiScreenController {
         }
 
         return cgm;
+    }
+
+    /**
+     * Select a view mode based on the screen position of the mouse pointer.
+     *
+     * @return "scene" or "score" or null if neither applies
+     */
+    public String mouseViewMode() {
+        LoadedCgm source = Maud.model.source;
+        LoadedCgm target = Maud.model.target;
+        ViewPort sScene = source.getSceneView().getViewPort();
+        ViewPort sScore = source.getScoreView().getViewPort();
+        ViewPort tScene = target.getSceneView().getViewPort();
+        ViewPort tScore = target.getScoreView().getViewPort();
+
+        Vector2f screenXY = inputManager.getCursorPosition();
+        List<ViewPort> viewPorts = Util.listViewPorts(renderManager, screenXY);
+        String result = null;
+        for (ViewPort vp : viewPorts) {
+            if (vp.isEnabled()) {
+                if (vp == sScene || vp == tScene) {
+                    result = "scene";
+                    break;
+                } else if (vp == sScore || vp == tScore) {
+                    result = "score";
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -530,8 +555,8 @@ public class EditorScreen extends GuiScreenController {
         Maud application = Maud.getApplication();
         application.updateViewPorts();
 
-        String viewMode = Maud.model.misc.getViewMode();
-        if (viewMode.equals("scene")) {
+        String viewMode = mouseViewMode();
+        if ("scene".equals(viewMode)) {
             /*
              * Based on mouse pointer position, select a loaded CG model
              * to rotate around its Y-axis.
@@ -553,11 +578,8 @@ public class EditorScreen extends GuiScreenController {
 
         Maud.model.source.getSceneView().update();
         Maud.model.target.getSceneView().update();
-
-        if (viewMode.equals("score")) {
-            Maud.model.source.getScoreView().update(Maud.model.source);
-            Maud.model.target.getScoreView().update(Maud.model.target);
-        }
+        Maud.model.source.getScoreView().update(Maud.model.source);
+        Maud.model.target.getScoreView().update(Maud.model.target);
     }
     // *************************************************************************
     // ScreenController methods

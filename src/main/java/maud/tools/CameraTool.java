@@ -42,12 +42,13 @@ import maud.model.LoadedCgm;
 import maud.model.Pov;
 
 /**
- * The controller for the "Camera Tool" window in Maud's editor screen.
+ * The controller for the "Camera Tool" window in Maud's editor screen. The
+ * camera tool controls camera modes used in "scene" views.
  * <p>
- * The camera is primarily controlled by turning the scroll wheel and dragging
- * with the middle mouse button (MMB). There are two modes: "orbit" mode in
- * which the camera stays pointed at the 3D cursor, and "fly" mode in which the
- * camera turns freely.
+ * Maud's cameras are primarily controlled by turning the scroll wheel and
+ * dragging with the middle mouse button (MMB). In scene views, there are two
+ * modes: "orbit" mode in which the camera points toward the 3D cursor, and
+ * "fly" mode in which the camera turns freely.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -100,22 +101,6 @@ public class CameraTool
      */
     CameraTool(BasicScreenController screenController) {
         super(screenController, "cameraTool", false);
-    }
-    // *************************************************************************
-    // new methods exposed
-
-    /**
-     * Update a CG model's active camera based on the MVC model.
-     *
-     * @param cgm which CG model (not null)
-     */
-    void updateCamera(LoadedCgm cgm) {
-        String viewMode = Maud.model.misc.getViewMode();
-        if (viewMode.equals("scene")) {
-            cgm.scenePov.updateCamera();
-        } else {
-            cgm.scorePov.updateCamera();
-        }
     }
     // *************************************************************************
     // AnalogListener methods
@@ -193,7 +178,7 @@ public class CameraTool
             return;
         }
         Pov pov;
-        String viewMode = Maud.model.misc.getViewMode();
+        String viewMode = Maud.gui.mouseViewMode();
         if (viewMode.equals("score")) {
             pov = cgm.scorePov;
         } else {

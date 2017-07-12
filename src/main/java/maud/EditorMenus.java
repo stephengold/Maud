@@ -773,7 +773,7 @@ class EditorMenus {
      */
     private void buildViewMenu() {
         String viewMode = Maud.model.misc.getViewMode();
-        if (viewMode.equals("scene")) {
+        if (viewMode.equals("scene") || viewMode.equals("hybrid")) {
             builder.addTool("Axes");
             builder.addTool("Bounds");
             builder.addTool("Camera");
@@ -784,7 +784,8 @@ class EditorMenus {
             builder.addTool("Skeleton");
             builder.addTool("Skeleton color");
             builder.addTool("Sky");
-        } else {
+        }
+        if (viewMode.equals("score") || viewMode.equals("hybrid")) {
             builder.addTool("Background");
         }
     }

@@ -190,20 +190,28 @@ public class BoneTool extends WindowController {
 
         Vector2f mouseXY = inputManager.getCursorPosition();
 
-        float dSquared;
-        String viewMode = Maud.model.misc.getViewMode();
-        if (viewMode.equals("score")) {
-            ScoreView scoreView = cgm.getScoreView();
-            dSquared = scoreView.dSquared(boneIndex, mouseXY);
-
-        } else {
-            SceneView sceneView = cgm.getSceneView();
+        float sceneDSquared = Float.POSITIVE_INFINITY;
+        SceneView sceneView = cgm.getSceneView();
+        if (sceneView != null) {
             Camera camera = sceneView.getCamera();
-            Vector3f boneWorld = sceneView.boneLocation(boneIndex);
-            Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
-            Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
-            dSquared = mouseXY.distanceSquared(boneXY);
+            if (camera != null) {
+                Vector3f boneWorld = sceneView.boneLocation(boneIndex);
+                Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
+                Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
+                sceneDSquared = mouseXY.distanceSquared(boneXY);
+            }
         }
+
+        float scoreDSquared = Float.POSITIVE_INFINITY;
+        ScoreView scoreView = cgm.getScoreView();
+        if (scoreView != null) {
+            Camera camera = scoreView.getCamera();
+            if (camera != null) {
+                scoreDSquared = scoreView.dSquared(boneIndex, mouseXY);
+            }
+        }
+
+        float dSquared = Math.min(sceneDSquared, scoreDSquared);
 
         return dSquared;
     }
@@ -227,7 +235,7 @@ public class BoneTool extends WindowController {
             }
         }
 
-        String viewMode = Maud.model.misc.getViewMode();
+        String viewMode = Maud.gui.mouseViewMode();
         if (viewMode.equals("scene")) {
             /*
              * In scene mode, include axis tips in the search.
@@ -261,10 +269,12 @@ public class BoneTool extends WindowController {
         Vector3f tipWorld = Maud.gui.tools.axes.tipLocation(cgm, axisIndex);
         if (tipWorld != null) {
             Camera camera = cgm.getSceneView().getCamera();
-            Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);
-            Vector2f tipXY = new Vector2f(tipScreen.x, tipScreen.y);
-            Vector2f mouseXY = inputManager.getCursorPosition();
-            dSquared = mouseXY.distanceSquared(tipXY);
+            if (camera != null) {
+                Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);
+                Vector2f tipXY = new Vector2f(tipScreen.x, tipScreen.y);
+                Vector2f mouseXY = inputManager.getCursorPosition();
+                dSquared = mouseXY.distanceSquared(tipXY);
+            }
         }
 
         return dSquared;

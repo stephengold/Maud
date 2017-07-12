@@ -50,9 +50,10 @@ import maud.ScoreView;
 import maud.model.LoadedCgm;
 
 /**
- * The controller for the "Cursor Tool" window in Maud's editor screen.
- *
- * The left mouse button (LMB) positions the 3D cursor.
+ * The controller for the "Cursor Tool" window in Maud's editor screen. The
+ * cursor tool controls the appearance of 3D cursors displayed in "scene" views.
+ * <p>
+ * In scene views, the left mouse button (LMB) repositions the 3D cursor.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -140,14 +141,13 @@ public class CursorTool extends WindowController {
      */
     public void warpCursor() {
         LoadedCgm cgm = Maud.gui.mouseCgm();
-        if (cgm == null) {
-            return;
-        }
-        String viewMode = Maud.model.misc.getViewMode();
-        if (viewMode.equals("score")) {
-            warpCursorScore(cgm);
-        } else {
-            warpCursorScene(cgm);
+        if (cgm != null) {
+            String viewMode = Maud.gui.mouseViewMode();
+            if (viewMode.equals("score")) {
+                warpCursorScore(cgm);
+            } else {
+                warpCursorScene(cgm);
+            }
         }
     }
     // *************************************************************************

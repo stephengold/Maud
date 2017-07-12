@@ -211,9 +211,9 @@ public class SceneView implements JmeCloneable {
     }
 
     /**
-     * Access the camera used to render the scene.
+     * Access the camera used to render the scene view.
      *
-     * @return a pre-existing instance, or null if none
+     * @return a pre-existing instance, or null if not rendered
      */
     public Camera getCamera() {
         Camera result = null;
@@ -289,8 +289,9 @@ public class SceneView implements JmeCloneable {
      * @return a pre-existing view port, or null if none
      */
     public ViewPort getViewPort() {
-        ViewPort result;
-        if (Maud.model.source.isLoaded()) {
+        ViewPort result = null;
+        String viewMode = Maud.model.misc.getViewMode();
+        if (Maud.model.source.isLoaded() || viewMode.equals("hybrid")) {
             result = viewPort2;
         } else {
             result = viewPort1;
@@ -349,11 +350,11 @@ public class SceneView implements JmeCloneable {
      * Alter which loaded CG model corresponds with this view. Invoked after
      * cloning.
      *
-     * @param loadedModel (not null) TODO rename loadedCgm
+     * @param loadedCgm (not null)
      */
-    public void setCgm(LoadedCgm loadedModel) {
-        Validate.nonNull(loadedModel, "loaded model");
-        cgm = loadedModel;
+    public void setCgm(LoadedCgm loadedCgm) {
+        Validate.nonNull(loadedCgm, "loaded model");
+        cgm = loadedCgm;
     }
 
     /**
@@ -540,7 +541,7 @@ public class SceneView implements JmeCloneable {
      * instance.)
      */
     void update() {
-        if (skyControl == null) {
+        if (skyControl == null) {  // TODO add an init method
             /*
              * Initialize scene on first update.
              */
@@ -549,16 +550,13 @@ public class SceneView implements JmeCloneable {
             createLights();
             createSky();
         }
-        if (cgm.isLoaded()) {
+
+        Camera camera = getCamera();
+        if (camera != null) {
             updatePose();
             updateTransform();
-
-            Maud.gui.tools.update(cgm);
-
-            Camera camera = getCamera();
-            if (camera != null) {
-                skyControl.setCamera(camera);
-            }
+            Maud.gui.tools.updateScene(cgm);
+            skyControl.setCamera(camera);
         }
     }
 

@@ -536,6 +536,10 @@ class EditorInputMode extends InputMode {
             case "next userData":
                 Maud.model.misc.selectNextUserKey();
                 handled = true;
+                break;
+            case "next viewMode":
+                Maud.model.misc.selectNextViewMode();
+                handled = true;
         }
 
         return handled;
@@ -962,11 +966,6 @@ class EditorInputMode extends InputMode {
             case "toggle projection":
                 Maud.model.camera.toggleProjection();
                 handled = true;
-                break;
-            case "toggle viewMode":
-                Maud.model.misc.toggleViewMode();
-                handled = true;
-                break;
         }
 
         return handled;
@@ -982,8 +981,8 @@ class EditorInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "view horizontal":
-                String viewMode = Maud.model.misc.getViewMode();
-                if (viewMode.equals("scene")) {
+                String viewMode = Maud.gui.mouseViewMode();
+                if ("scene".equals(viewMode)) {
                     LoadedCgm loadedCgm = Maud.gui.mouseCgm();
                     loadedCgm.scenePov.goHorizontal();
                 }

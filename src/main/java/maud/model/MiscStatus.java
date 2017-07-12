@@ -52,15 +52,16 @@ public class MiscStatus implements Cloneable {
     // fields
 
     /**
-     * angle display mode (true &rarr; degrees, false &rarr; radians)
+     * angle display units (true &rarr; degrees, false &rarr; radians)
      */
     private boolean anglesInDegrees = true;
     /**
-     * shadows (true &rarr; rendered, false &rarr; not rendered)
+     * shadows in scene views (true &rarr; rendered, false &rarr; not rendered)
      */
     private boolean shadowsRendered = true;
     /**
-     * sky background (true &rarr; rendered, false &rarr; not rendered)
+     * sky background in scene views (true &rarr; rendered, false &rarr; not
+     * rendered)
      */
     private boolean skyRendered = true;
     /**
@@ -68,11 +69,11 @@ public class MiscStatus implements Cloneable {
      */
     private ColorRGBA scoreBackground = new ColorRGBA(0.84f, 0.84f, 0.72f, 1f);
     /**
-     * diameter of the platform (in world units, &gt;0)
+     * diameter of the platform in scene views (in world units, &gt;0)
      */
     private float platformDiameter = 1f;
     /**
-     * platform mode (either "none" or "square")
+     * type of platform in scene views (either "none" or "square")
      */
     private String platformMode = "square";
     /**
@@ -80,14 +81,14 @@ public class MiscStatus implements Cloneable {
      */
     private String selectedUserKey = null;
     /**
-     * view mode (either "scene" or "score")
+     * view mode ("hybrid" or "scene" or "score")
      */
     private String viewMode = "scene";
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Test whether shadows are rendered.
+     * Test whether shadows are rendered in scene views.
      *
      * @return true if rendered, otherwise false
      */
@@ -147,7 +148,7 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Read the diameter of the platform.
+     * Read the diameter of the platform in scene views.
      *
      * @return diameter (in world units, &gt;0)
      */
@@ -157,7 +158,7 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Read the platform mode.
+     * Read the type of platform in scene views.
      *
      * @return either "none" or "square"
      */
@@ -177,14 +178,14 @@ public class MiscStatus implements Cloneable {
     /**
      * Read the view mode.
      *
-     * @return either "scene" or "score"
+     * @return either "hybrid" or "scene" or "score"
      */
     public String getViewMode() {
         return viewMode;
     }
 
     /**
-     * Test whether the sky background is being rendered.
+     * Test whether the sky background is rendered in scene views.
      *
      * @return true if rendered, otherwise false
      */
@@ -202,6 +203,26 @@ public class MiscStatus implements Cloneable {
         int nextIndex = MyMath.modulo(index + 1, numKeys);
         String nextName = keyList.get(nextIndex);
         selectUserKey(nextName);
+    }
+
+    /**
+     * Cycle through view modes.
+     */
+    public void selectNextViewMode() {
+        switch (viewMode) {
+            case "hybrid":
+                viewMode = "scene";
+                break;
+            case "scene":
+                viewMode = "score";
+                break;
+            case "score":
+                viewMode = "hybrid";
+                break;
+            default:
+                logger.log(Level.SEVERE, "view mode={0}", viewMode);
+                throw new IllegalStateException("invalid view mode");
+        }
     }
 
     /**
@@ -226,7 +247,7 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Alter the angle display mode.
+     * Alter the angle display units.
      *
      * @param newState true &rarr; degrees, false &rarr; radians
      */
@@ -244,7 +265,7 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Alter the diameter of the platform.
+     * Alter the diameter of the platform in scene views.
      *
      * @param diameter (in world units, &gt;0)
      */
@@ -254,7 +275,7 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Alter the platform display mode.
+     * Alter the type of platform in scene views.
      *
      * @param modeName either "none" or "square"
      */
@@ -273,7 +294,7 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Alter the rendering of shadows.
+     * Alter the rendering of shadows in scene views.
      *
      * @param newState true &rarr; rendered, false &rarr; not rendered
      */
@@ -282,7 +303,7 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Alter the rendering of the sky background.
+     * Alter the rendering of the sky background in scene views.
      *
      * @param newState true &rarr; rendered, false &rarr; not rendered
      */
@@ -291,14 +312,15 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Alter the platform display mode.
+     * Alter the view mode.
      *
-     * @param modeName either "scene" or "score"
+     * @param modeName "hybrid" or "scene" or "score"
      */
     public void setViewMode(String modeName) {
         Validate.nonNull(modeName, "mode name");
 
         switch (modeName) {
+            case "hybrid":
             case "scene":
             case "score":
                 viewMode = modeName;
@@ -310,21 +332,10 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Toggle the angle display mode.
+     * Toggle the angle display units.
      */
     public void toggleAnglesInDegrees() {
         setAnglesInDegrees(!anglesInDegrees);
-    }
-
-    /**
-     * Toggle the view mode.
-     */
-    public void toggleViewMode() {
-        if (viewMode.equals("scene")) {
-            viewMode = "score";
-        } else {
-            viewMode = "scene";
-        }
     }
     // *************************************************************************
     // Object methods
