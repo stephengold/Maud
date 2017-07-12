@@ -387,25 +387,6 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Select a loaded CG model (source or target) based on the "sourceModel"
-     * signal.
-     *
-     * @return a pre-existing instance (not null)
-     */
-    LoadedCgm signalCgm() {
-        LoadedCgm cgm;
-        if (signals.test(sourceModelSignalName)
-                && Maud.model.source.isLoaded()) {
-            cgm = Maud.model.source;
-        } else {
-            cgm = Maud.model.target;
-        }
-
-        assert cgm != null;
-        return cgm;
-    }
-
-    /**
      * Handle a "select spatialChild" action with arguments.
      *
      * @param argument action argument (not null)
@@ -520,8 +501,8 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Callback to update this screen prior to rendering. (Invoked once per
-     * render pass.)
+     * Callback to update the editor screen prior to rendering. (Invoked once
+     * per render pass.)
      *
      * @param tpf time interval between render passes (in seconds, &ge;0)
      */
@@ -543,7 +524,9 @@ public class EditorScreen extends GuiScreenController {
         } else if (Maud.model.target.animation.isRetargetedPose()) {
             Maud.model.target.pose.setToAnimation();
         }
-
+        /*
+         * Configure view ports based on the MVC model.
+         */
         Maud application = Maud.getApplication();
         application.updateViewPorts();
 

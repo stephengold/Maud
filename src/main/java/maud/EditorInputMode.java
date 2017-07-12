@@ -982,8 +982,11 @@ class EditorInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "view horizontal":
-                LoadedCgm loadedCgm = Maud.gui.signalCgm();
-                loadedCgm.scenePov.goHorizontal();
+                String viewMode = Maud.model.misc.getViewMode();
+                if (viewMode.equals("scene")) {
+                    LoadedCgm loadedCgm = Maud.gui.mouseCgm();
+                    loadedCgm.scenePov.goHorizontal();
+                }
                 handled = true;
                 break;
         }
