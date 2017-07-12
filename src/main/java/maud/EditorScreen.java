@@ -520,7 +520,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Callback to update this state prior to rendering. (Invoked once per
+     * Callback to update this screen prior to rendering. (Invoked once per
      * render pass.)
      *
      * @param tpf time interval between render passes (in seconds, &ge;0)
@@ -544,7 +544,8 @@ public class EditorScreen extends GuiScreenController {
             Maud.model.target.pose.setToAnimation();
         }
         /*
-         * Based on signal input, rotate a loaded CG model around its Y-axis.
+         * Based on signal input, select a loaded CG model
+         * to rotate around its Y-axis.
          */
         LoadedCgm cgmToRotate = signalCgm();
         if (signals.test(modelCCWSignalName)) {
@@ -560,10 +561,15 @@ public class EditorScreen extends GuiScreenController {
 
         Maud application = Maud.getApplication();
         application.updateViewPorts();
+
         Maud.model.source.getSceneView().update();
         Maud.model.target.getSceneView().update();
-        Maud.model.source.getScoreView().update();
-        Maud.model.target.getScoreView().update();
+
+        String viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals("score")) {
+            Maud.model.source.getScoreView().update(Maud.model.source);
+            Maud.model.target.getScoreView().update(Maud.model.target);
+        }
     }
     // *************************************************************************
     // ScreenController methods

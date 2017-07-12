@@ -511,10 +511,9 @@ public class Maud extends GuiApplication {
                 sourceSceneParent, null, sourceSceneViewPort);
         SceneView targetSceneView = new SceneView(Maud.model.target,
                 targetSceneParent, viewPort, targetSceneHalfViewPort);
-        ScoreView sourceScoreView = new ScoreView(Maud.model.source,
-                null, sourceScoreViewPort);
-        ScoreView targetScoreView = new ScoreView(Maud.model.target,
-                targetScoreWideViewPort, targetScoreHalfViewPort);
+        ScoreView sourceScoreView = new ScoreView(null, sourceScoreViewPort);
+        ScoreView targetScoreView = new ScoreView(targetScoreWideViewPort,
+                targetScoreHalfViewPort);
 
         Maud.model.source.setViews(sourceSceneView, sourceScoreView);
         Maud.model.target.setViews(targetSceneView, targetScoreView);

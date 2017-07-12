@@ -26,34 +26,15 @@
  */
 package maud.model;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-
 /**
- * Interface to a camera in Maud's edit screen.
+ * Interface to a camera's MVC model in Maud's edit screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
 public interface Pov {
     /**
-     * Copy the location of the camera.
-     *
-     * @param storeResult (modified if not null)
-     * @return world coordinates (either storeResult or a new vector)
-     */
-    Vector3f cameraLocation(Vector3f storeResult);
-
-    /**
-     * Copy the orientation of the camera.
-     *
-     * @param storeResult (modified if not null)
-     * @return rotation relative to world coordinates (either storeResult or a
-     * new instance)
-     */
-    Quaternion cameraOrientation(Quaternion storeResult);
-
-    /**
-     * Move the camera forward/backward when the scroll wheel is turned.
+     * Zoom the camera and/or move it forward/backward when the scroll wheel is
+     * turned.
      *
      * @param amount scroll wheel notches
      */
@@ -72,4 +53,17 @@ public interface Pov {
      * @param amount drag component
      */
     void moveUp(float amount);
+
+    /**
+     * Alter which loaded CG model corresponds to this POV. (Invoked only during
+     * initialization and cloning.)
+     *
+     * @param newLoaded (not null)
+     */
+    void setCgm(LoadedCgm newLoaded);
+
+    /**
+     * Update the camera used to render this POV.
+     */
+    void updateCamera();
 }

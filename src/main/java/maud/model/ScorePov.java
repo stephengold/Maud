@@ -27,16 +27,14 @@
 package maud.model;
 
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import java.util.logging.Logger;
-import jme3utilities.Validate;
 import maud.Maud;
 import maud.ScoreView;
 
 /**
- * The positions of a score camera and time cursor in Maud's edit screen.
+ * The positions of a score camera in Maud's edit screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -48,6 +46,10 @@ public class ScorePov implements Cloneable, Pov {
      * rate to dolly in/out (percentage points per wheel notch)
      */
     final private static float dollyInOutRate = 15f;
+    /**
+     * 1/2 the width of the camera frustum (world units)
+     */
+    final private static float halfWidth = 0.6f;
     /**
      * message logger for this class
      */
@@ -65,34 +67,16 @@ public class ScorePov implements Cloneable, Pov {
      */
     private float halfHeight = 5f;
     /**
+     * loaded CG model containing this POV (set by
+     * {@link #setCgm(LoadedCGModel)})
+     */
+    private LoadedCgm loadedCgm = null;
+    /**
      * location of the camera (in world coordinates)
      */
     private Vector3f cameraLocation = new Vector3f(0.5f, -4f, 0f);
-    /**
-     * the location of the cursor (in world coordinates)
-     */
-    private Vector3f cursorLocation = new Vector3f(0f, 0f, 0f);
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_Y}
-     */
-    final private static Vector3f yAxis = new Vector3f(0f, 1f, 0f);
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Copy the location of the cursor.
-     *
-     * @param storeResult (modified if not null)
-     * @return world coordinates (either storeResult or a new vector)
-     */
-    public Vector3f cursorLocation(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-        storeResult.set(cursorLocation);
-
-        return storeResult;
-    }
 
     /**
      * Read the half-height for the frustum.
@@ -115,17 +99,6 @@ public class ScorePov implements Cloneable, Pov {
 
         cameraLocation.y = FastMath.clamp(yLocation, -viewHeight, 0f);
     }
-
-    /**
-     * Alter the location of the cursor.
-     *
-     * @param timeFraction (&ge;0, &le;1)
-     */
-    public void setCursorLocation(float timeFraction) {
-        Validate.fraction(timeFraction, "time fraction");
-
-        // TODO
-    }
     // *************************************************************************
     // Object methods
 
@@ -139,45 +112,11 @@ public class ScorePov implements Cloneable, Pov {
     public ScorePov clone() throws CloneNotSupportedException {
         ScorePov clone = (ScorePov) super.clone();
         clone.cameraLocation = cameraLocation.clone();
-        clone.cursorLocation = cursorLocation.clone();
 
         return clone;
     }
     // *************************************************************************
     // Pov methods
-
-    /**
-     * Copy the location of the camera.
-     *
-     * @param storeResult (modified if not null)
-     * @return world coordinates (either storeResult or a new vector)
-     */
-    @Override
-    public Vector3f cameraLocation(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-        storeResult.set(cameraLocation);
-
-        return storeResult;
-    }
-
-    /**
-     * Copy the orientation of the camera.
-     *
-     * @param storeResult (modified if not null)
-     * @return rotation relative to world coordinates (either storeResult or a
-     * new instance)
-     */
-    @Override
-    public Quaternion cameraOrientation(Quaternion storeResult) {
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-        storeResult.lookAt(cameraDirection, yAxis);
-
-        return storeResult;
-    }
 
     /**
      * Zoom the camera when the scroll wheel is turned.
@@ -215,5 +154,33 @@ public class ScorePov implements Cloneable, Pov {
         float yLocation = cameraLocation.y;
         yLocation += (2048f * halfHeight / displayHeight) * amount;
         setCameraY(yLocation);
+    }
+
+    /**
+     * Alter which loaded CG model corresponds to this POV. (Invoked only during
+     * initialization and cloning.)
+     *
+     * @param newLoaded (not null)
+     */
+    @Override
+    public void setCgm(LoadedCgm newLoaded) {
+        assert newLoaded != null;
+        loadedCgm = newLoaded;
+    }
+
+    /**
+     * Update the camera for this POV.
+     */
+    @Override
+    public void updateCamera() {
+        ScoreView view = loadedCgm.getScoreView();
+        Camera camera = view.getCamera();
+        if (camera != null) {
+            camera.setLocation(cameraLocation);
+            camera.setFrustumBottom(-halfHeight);
+            camera.setFrustumLeft(-halfWidth);
+            camera.setFrustumRight(halfWidth);
+            camera.setFrustumTop(halfHeight);
+        }
     }
 }

@@ -118,13 +118,13 @@ public class ScoreView {
      */
     private int currentBone;
     /**
+     * the CG model being rendered
+     */
+    private LoadedCgm cgm;
+    /**
      * world Y-coordinate of each bone
      */
     final private Map<Integer, Float> boneYs = new HashMap<>(120);
-    /**
-     * CG model that owns this view (not null)
-     */
-    final private LoadedCgm cgm;
     /**
      * material for finials of non-selected bones
      */
@@ -167,17 +167,13 @@ public class ScoreView {
     /**
      * Instantiate a new visualization.
      *
-     * @param loadedCgm loaded CG model that will own this view (not null, alias
-     * created)
      * @param port1 initial view port, or null for none (alias created)
      * @param port2 view port to use after the screen is split (not null, alias
      * created)
      */
-    public ScoreView(LoadedCgm loadedCgm, ViewPort port1, ViewPort port2) {
-        Validate.nonNull(loadedCgm, "loaded model");
+    public ScoreView(ViewPort port1, ViewPort port2) {
         Validate.nonNull(port2, "port2");
 
-        cgm = loadedCgm;
         viewPort1 = port1;
         viewPort2 = port2;
     }
@@ -268,8 +264,10 @@ public class ScoreView {
     /**
      * Update prior to rendering. (Invoked once per render pass on each
      * instance.)
+     *
+     * @param renderCgm which CG model to render (not null)
      */
-    void update() {
+    void update(LoadedCgm renderCgm) {
         if (notSelected == null) {
             initializeMaterials();
         }
@@ -277,7 +275,8 @@ public class ScoreView {
 
         ViewPort viewPort = getViewPort();
         if (viewPort != null && viewPort.isEnabled()) {
-            assert cgm.isLoaded();
+            cgm = renderCgm;
+            assert renderCgm.isLoaded();
             ColorRGBA backgroundColor = Maud.model.misc.backgroundColor(null);
             viewPort.setBackgroundColor(backgroundColor);
 

@@ -31,12 +31,8 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.MouseAxisTrigger;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyCamera;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
@@ -116,9 +112,9 @@ public class CameraTool
     void updateCamera(LoadedCgm cgm) {
         String viewMode = Maud.model.misc.getViewMode();
         if (viewMode.equals("scene")) {
-            updateSceneCamera(cgm);
+            cgm.scenePov.updateCamera();
         } else {
-            updateScoreCamera(cgm);
+            cgm.scorePov.updateCamera();
         }
     }
     // *************************************************************************
@@ -298,61 +294,5 @@ public class CameraTool
         }
 
         Maud.gui.setIgnoreGuiChanges(false);
-    }
-
-    /**
-     * Update a CG model's scene camera based on the MVC model.
-     *
-     * @param cgm which CG model (not null)
-     */
-    private void updateSceneCamera(LoadedCgm cgm) {
-        if (Maud.model.camera.isOrbitMode()) {
-            cgm.scenePov.aim(); // TODO necessary?
-        }
-        Camera camera = cgm.getSceneView().getCamera();
-        if (camera != null) {
-            Vector3f location = cgm.scenePov.cameraLocation(null);
-            camera.setLocation(location);
-            Quaternion orientation = cgm.scenePov.cameraOrientation(null);
-            camera.setRotation(orientation);
-
-            float aspectRatio = MyCamera.aspectRatio(camera);
-            float far = Maud.model.camera.getFrustumFar();
-            float near = Maud.model.camera.getFrustumNear();
-            boolean parallel = Maud.model.camera.isParallelProjection();
-            if (parallel) {
-                float h = 0.4f * cgm.scenePov.range();
-                float w = aspectRatio * h;
-                camera.setFrustumBottom(-h);
-                camera.setFrustumFar(far);
-                camera.setFrustumLeft(-w);
-                camera.setFrustumNear(near);
-                camera.setFrustumRight(w);
-                camera.setFrustumTop(h);
-                camera.setParallelProjection(true);
-            } else {
-                float yDegrees = Maud.model.camera.getFrustumYDegrees();
-                camera.setFrustumPerspective(yDegrees, aspectRatio, near, far);
-            }
-        }
-    }
-
-    /**
-     * Update a CG model's score camera based on the MVC model.
-     *
-     * @param cgm which CG model (not null)
-     */
-    private void updateScoreCamera(LoadedCgm cgm) {
-        Camera camera = cgm.getScoreView().getCamera();
-        if (camera != null) {
-            Vector3f location = cgm.scorePov.cameraLocation(null);
-            camera.setLocation(location);
-            float h = cgm.scorePov.getHalfHeight();
-            float w = 0.6f;
-            camera.setFrustumBottom(-h);
-            camera.setFrustumLeft(-w);
-            camera.setFrustumRight(w);
-            camera.setFrustumTop(h);
-        }
     }
 }

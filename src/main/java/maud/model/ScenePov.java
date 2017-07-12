@@ -29,10 +29,13 @@ package maud.model;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import java.util.logging.Logger;
+import jme3utilities.MyCamera;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
+import maud.SceneView;
 
 /**
  * The positions of a scene camera and 3D cursor in Maud's edit screen.
@@ -60,11 +63,25 @@ public class ScenePov implements Cloneable, Pov {
     // fields
 
     /**
-     * direction the CGM camera points (unit vector in world coordinates)
+     * distance to the far plane of the view frustum (in world units,
+     * &gt;frustumNear)
+     */
+    private float frustumFar = 100f;
+    /**
+     * distance to the near plane of the view frustum (in world units, &gt;0)
+     */
+    private float frustumNear = 0.01f;
+    /**
+     * loaded CG model containing this POV (set by
+     * {@link #setCgm(LoadedCGModel)})
+     */
+    private LoadedCgm loadedCgm = null;
+    /**
+     * direction the scene camera points (unit vector in world coordinates)
      */
     private Vector3f cameraDirection = new Vector3f(1f, 0f, 0f);
     /**
-     * location of the CGM camera (in world coordinates)
+     * location of the scene camera (in world coordinates)
      */
     private Vector3f cameraLocation = new Vector3f();
     /**
@@ -81,6 +98,21 @@ public class ScenePov implements Cloneable, Pov {
     public void aim() {
         assert Maud.model.camera.isOrbitMode();
         setCameraLocation(cameraLocation.clone());
+    }
+
+    /**
+     * Copy the location of the camera.
+     *
+     * @param storeResult (modified if not null)
+     * @return world coordinates (either storeResult or a new vector)
+     */
+    public Vector3f cameraLocation(Vector3f storeResult) {
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+        storeResult.set(cameraLocation);
+
+        return storeResult;
     }
 
     /**
@@ -198,40 +230,8 @@ public class ScenePov implements Cloneable, Pov {
     // Pov methods
 
     /**
-     * Copy the location of the camera.
-     *
-     * @param storeResult (modified if not null)
-     * @return world coordinates (either storeResult or a new vector)
-     */
-    @Override
-    public Vector3f cameraLocation(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-        storeResult.set(cameraLocation);
-
-        return storeResult;
-    }
-
-    /**
-     * Copy the orientation of the camera.
-     *
-     * @param storeResult (modified if not null)
-     * @return rotation relative to world coordinates (either storeResult or a
-     * new instance)
-     */
-    @Override
-    public Quaternion cameraOrientation(Quaternion storeResult) {
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-        storeResult.lookAt(cameraDirection, yAxis);
-
-        return storeResult;
-    }
-
-    /**
-     * Move the camera forward/backward when the scroll wheel is turned.
+     * Zoom the camera and/or move it forward/backward when the scroll wheel is
+     * turned.
      *
      * @param amount scroll wheel notches
      */
@@ -299,6 +299,55 @@ public class ScenePov implements Cloneable, Pov {
             rotate.multLocal(cameraDirection);
         }
     }
+
+    /**
+     * Alter which loaded CG model corresponds to this POV. (Invoked only during
+     * initialization and cloning.)
+     *
+     * @param newLoaded (not null)
+     */
+    @Override
+    public void setCgm(LoadedCgm newLoaded) {
+        assert newLoaded != null;
+        loadedCgm = newLoaded;
+    }
+
+    /**
+     * Update the camera for this POV.
+     */
+    @Override
+    public void updateCamera() {
+        if (Maud.model.camera.isOrbitMode()) {
+            aim(); // TODO necessary?
+        }
+
+        SceneView view = loadedCgm.getSceneView();
+        Camera camera = view.getCamera();
+        if (camera != null) {
+            camera.setLocation(cameraLocation);
+            Quaternion orientation = cameraOrientation(null);
+            camera.setRotation(orientation);
+
+            float aspectRatio = MyCamera.aspectRatio(camera);
+            float far = frustumFar; // TODO adjust based on range to cursor
+            float near = frustumNear;
+            boolean parallel = Maud.model.camera.isParallelProjection();
+            if (parallel) {
+                float halfHeight = 0.4f * range();
+                float halfWidth = aspectRatio * halfHeight;
+                camera.setFrustumBottom(-halfHeight);
+                camera.setFrustumFar(far);
+                camera.setFrustumLeft(-halfWidth);
+                camera.setFrustumNear(near);
+                camera.setFrustumRight(halfWidth);
+                camera.setFrustumTop(halfHeight);
+                camera.setParallelProjection(true);
+            } else {
+                float yDegrees = Maud.model.camera.getFrustumYDegrees();
+                camera.setFrustumPerspective(yDegrees, aspectRatio, near, far);
+            }
+        }
+    }
     // *************************************************************************
     // private methods
 
@@ -318,6 +367,22 @@ public class ScenePov implements Cloneable, Pov {
         }
 
         return azimuthAngle;
+    }
+
+    /**
+     * Calculate the orientation of the camera.
+     *
+     * @param storeResult (modified if not null)
+     * @return rotation relative to world coordinates (either storeResult or a
+     * new instance)
+     */
+    private Quaternion cameraOrientation(Quaternion storeResult) {
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+        storeResult.lookAt(cameraDirection, yAxis);
+
+        return storeResult;
     }
 
     /**

@@ -171,6 +171,8 @@ public class LoadedCgm implements Cloneable {
         bones.setCgm(this);
         pose.setCgm(this);
         sgc.setCgm(this);
+        scenePov.setCgm(this);
+        scorePov.setCgm(this);
         spatial.setCgm(this);
         track.setCgm(this);
     }
@@ -603,7 +605,7 @@ public class LoadedCgm implements Cloneable {
      */
     public void setViews(SceneView scene, ScoreView score) {
         Validate.nonNull(scene, "scene");
-        Validate.nonNull(scene, "score");
+        Validate.nonNull(score, "score");
 
         sceneView = scene;
         scoreView = score;
@@ -673,20 +675,23 @@ public class LoadedCgm implements Cloneable {
         clone.rootSpatial = cloner.clone(rootSpatial);
         clone.scenePov = cloner.clone(scenePov);
         clone.sceneView = cloner.clone(sceneView);
+        clone.scorePov = cloner.clone(scorePov);
         clone.sgc = sgc.clone();
         clone.spatial = spatial.clone();
         clone.track = track.clone();
         clone.transform = transform.clone();
         /*
-         * Set back pointers to the clone.
+         * Direct the back pointers to the clone.
          */
         clone.animation.setCgm(clone);
         clone.bone.setCgm(clone);
         clone.bones.setCgm(clone);
         clone.pose.setCgm(clone);
+        clone.scenePov.setCgm(clone);
         if (clone.sceneView != null) {
             clone.sceneView.setCgm(clone);
         }
+        clone.scorePov.setCgm(clone);
         clone.sgc.setCgm(clone);
         clone.spatial.setCgm(clone);
         clone.track.setCgm(clone);
