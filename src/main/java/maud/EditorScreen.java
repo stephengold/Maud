@@ -543,29 +543,34 @@ public class EditorScreen extends GuiScreenController {
         } else if (Maud.model.target.animation.isRetargetedPose()) {
             Maud.model.target.pose.setToAnimation();
         }
-        /*
-         * Based on signal input, select a loaded CG model
-         * to rotate around its Y-axis.
-         */
-        LoadedCgm cgmToRotate = signalCgm();
-        if (signals.test(modelCCWSignalName)) {
-            cgmToRotate.transform.rotateY(tpf);
-        }
-        if (signals.test(modelCWSignalName)) {
-            cgmToRotate.transform.rotateY(-tpf);
-        }
-
-        if (Maud.model.axes.isDraggingAxis()) {
-            Maud.gui.tools.axes.dragAxis();
-        }
 
         Maud application = Maud.getApplication();
         application.updateViewPorts();
 
+        String viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals("scene")) {
+            /*
+             * Based on mouse pointer position, select a loaded CG model
+             * to rotate around its Y-axis.
+             */
+            LoadedCgm cgmToRotate = mouseCgm();
+            if (cgmToRotate != null) {
+                if (signals.test(modelCCWSignalName)) {
+                    cgmToRotate.transform.rotateY(tpf);
+                }
+                if (signals.test(modelCWSignalName)) {
+                    cgmToRotate.transform.rotateY(-tpf);
+                }
+            }
+
+            if (Maud.model.axes.isDraggingAxis()) {
+                Maud.gui.tools.axes.dragAxis();
+            }
+        }
+
         Maud.model.source.getSceneView().update();
         Maud.model.target.getSceneView().update();
 
-        String viewMode = Maud.model.misc.getViewMode();
         if (viewMode.equals("score")) {
             Maud.model.source.getScoreView().update(Maud.model.source);
             Maud.model.target.getScoreView().update(Maud.model.target);
