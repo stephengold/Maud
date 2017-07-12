@@ -33,7 +33,7 @@ import jme3utilities.MyString;
 import maud.Maud;
 
 /**
- * The status of the camera in Maud's editor screen.
+ * Status of the scene cameras in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -75,14 +75,6 @@ public class CameraStatus implements Cloneable {
      * movement rate (fly mode only, world units per scroll wheel notch)
      */
     private float flyRate = 0.1f;
-    /**
-     * distance to the far plane of the view frustum (in world units, &gt;0)
-     */
-    private float frustumFar = 100f;
-    /**
-     * distance to the near plane of the view frustum (in world units, &gt;0)
-     */
-    private float frustumNear = 0.01f;
     /**
      * maximum distance of camera from the 3D cursor (orbit mode only, in world
      * units, &gt;0)
@@ -127,28 +119,6 @@ public class CameraStatus implements Cloneable {
     float getFlyRate() {
         assert flyRate > 0f : flyRate;
         return flyRate;
-    }
-
-    /**
-     * Read the distance to the far plane of the camera's frustum.
-     *
-     * @return distance (in world units, &gt;0)
-     */
-    public float getFrustumFar() {
-        assert frustumFar > 0f : frustumFar;
-        assert frustumFar > frustumNear : frustumFar;
-        return frustumFar;
-    }
-
-    /**
-     * Read the distance to the near plane of the camera's frustum.
-     *
-     * @return distance (in world units, &gt;0)
-     */
-    public float getFrustumNear() {
-        assert frustumNear > 0f : frustumNear;
-        assert frustumFar > frustumNear : frustumFar;
-        return frustumNear;
     }
 
     /**
