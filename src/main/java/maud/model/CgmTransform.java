@@ -34,12 +34,11 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 
 /**
- * The transform applied to a particular CG model visualization in Maud's editor
- * screen. TODO rename CgmTransform
+ * The transform applied to a loaded CG model in "scene" mode.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class TransformStatus implements Cloneable {
+public class CgmTransform implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -47,7 +46,7 @@ public class TransformStatus implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            TransformStatus.class.getName());
+            CgmTransform.class.getName());
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_Y}
      */
@@ -135,9 +134,10 @@ public class TransformStatus implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public TransformStatus clone() throws CloneNotSupportedException {
-        TransformStatus clone = (TransformStatus) super.clone();
+    public CgmTransform clone() throws CloneNotSupportedException {
+        CgmTransform clone = (CgmTransform) super.clone();
         clone.bindLocation = bindLocation.clone();
+
         return clone;
     }
 }

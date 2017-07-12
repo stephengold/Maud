@@ -87,6 +87,10 @@ public class LoadedCgm implements Cloneable {
     // fields
 
     /**
+     * world transform of the visualization
+     */
+    public CgmTransform transform = new CgmTransform();
+    /**
      * bone transforms of the displayed pose
      */
     public DisplayedPose pose = new DisplayedPose();
@@ -155,10 +159,6 @@ public class LoadedCgm implements Cloneable {
      * name of the CG model, or null if no CG model loaded
      */
     protected String name = null;
-    /**
-     * world transform of the visualization
-     */
-    public TransformStatus transform = new TransformStatus();
     // *************************************************************************
     // constructors
 
