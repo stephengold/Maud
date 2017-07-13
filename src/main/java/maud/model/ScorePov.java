@@ -30,6 +30,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 import maud.Maud;
 import maud.ScoreView;
 
@@ -47,7 +48,15 @@ public class ScorePov implements Cloneable, Pov {
      */
     final private static float dollyInOutRate = 15f;
     /**
-     * 1/2 the width of the camera frustum (world units)
+     * maximum half height of the camera's frustum (in world units)
+     */
+    final private static float maxHalfHeight = 100f;
+    /**
+     * minimum half height of the camera's frustum (in world units)
+     */
+    final private static float minHalfHeight = 0.1f;
+    /**
+     * 1/2 the width of the camera's frustum (in world units)
      */
     final private static float halfWidth = 0.6f;
     /**
@@ -55,15 +64,11 @@ public class ScorePov implements Cloneable, Pov {
      */
     final private static Logger logger = Logger.getLogger(
             ScorePov.class.getName());
-    /**
-     * direction the score camera points (unit vector in world coordinates)
-     */
-    final private static Vector3f cameraDirection = new Vector3f(0f, 0f, -1f);
     // *************************************************************************
     // fields
 
     /**
-     * half-height of the frustum (in world units)
+     * 1/2 the height of the camera's frustum (in world units, &gt;0)
      */
     private float halfHeight = 5f;
     /**
@@ -79,7 +84,7 @@ public class ScorePov implements Cloneable, Pov {
     // new methods exposed
 
     /**
-     * Read the half-height for the frustum.
+     * Read the half height for the frustum.
      *
      * @return half-height (in world units, &gt;0)
      */
@@ -90,14 +95,24 @@ public class ScorePov implements Cloneable, Pov {
     /**
      * Alter the camera's Y-coordinate.
      *
-     * @param yLocation new location for camera
+     * @param yLocation new vertical location for camera
      */
     public void setCameraY(float yLocation) {
         LoadedCgm cgm = Maud.gui.mouseCgm();
         ScoreView view = cgm.getScoreView();
-        float viewHeight = view.getHeight();
+        float maxY = 0f;
+        float minY = -view.getHeight();
+        cameraLocation.y = FastMath.clamp(yLocation, minY, maxY);
+    }
 
-        cameraLocation.y = FastMath.clamp(yLocation, -viewHeight, 0f);
+    /**
+     * Alter the half height for the frustum.
+     *
+     * @param newValue new half height for frustum (in world units, &gt;0)
+     */
+    public void setHalfHeight(float newValue) {
+        Validate.positive(newValue, "new value");
+        halfHeight = FastMath.clamp(newValue, minHalfHeight, maxHalfHeight);
     }
     // *************************************************************************
     // Object methods
@@ -127,7 +142,7 @@ public class ScorePov implements Cloneable, Pov {
     public void moveBackward(float amount) {
         float rate = 1f + dollyInOutRate / 100f;
         float factor = FastMath.pow(rate, amount);
-        halfHeight *= factor;
+        setHalfHeight(halfHeight * factor);
     }
 
     /**
