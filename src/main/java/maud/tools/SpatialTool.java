@@ -98,10 +98,6 @@ class SpatialTool extends WindowController {
         RenderQueue.Bucket bucket;
         bucket = Maud.model.target.spatial.getLocalQueueBucket();
         String bucketText = bucket.toString();
-        if (bucket == RenderQueue.Bucket.Inherit) {
-            bucket = Maud.model.target.spatial.getQueueBucket();
-            bucketText += String.format(": %s", bucket.toString());
-        }
         Maud.gui.setStatusText("spatialBucket", " " + bucketText);
     }
 
@@ -141,10 +137,6 @@ class SpatialTool extends WindowController {
     private void updateHint() {
         Spatial.CullHint hint = Maud.model.target.spatial.getLocalCullHint();
         String hintText = hint.toString();
-        if (hint == Spatial.CullHint.Inherit) {
-            hint = Maud.model.target.spatial.getCullHint();
-            hintText += String.format(": %s", hint.toString());
-        }
         Maud.gui.setStatusText("spatialHint", " " + hintText);
     }
 
@@ -262,11 +254,6 @@ class SpatialTool extends WindowController {
         RenderQueue.ShadowMode mode;
         mode = Maud.model.target.spatial.getLocalShadowMode();
         String shadowsText = mode.toString();
-        if (mode == RenderQueue.ShadowMode.Inherit) {
-            mode = Maud.model.target.spatial.getShadowMode();
-            shadowsText += String.format(": %s", mode.toString());
-        }
-
         Maud.gui.setStatusText("spatialShadows", " " + shadowsText);
     }
 
