@@ -60,7 +60,7 @@ import jme3utilities.sky.Updater;
 import maud.model.LoadedCgm;
 
 /**
- * A rendered 3D visualization of a loaded CG model in a view port.
+ * A rendered 3D visualization of a loaded CG model in Maud's "scene" mode.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -109,7 +109,7 @@ public class SceneView implements JmeCloneable {
      */
     private LoadedCgm cgm;
     /**
-     * attachment point for CG models (applies transforms)
+     * attachment point for CG models (applies shadowMode and transforms)
      */
     final private Node parent;
     /**
@@ -289,12 +289,12 @@ public class SceneView implements JmeCloneable {
      * @return a pre-existing view port, or null if none
      */
     public ViewPort getViewPort() {
-        ViewPort result = null;
+        ViewPort result;
         String viewMode = Maud.model.misc.getViewMode();
         if (Maud.model.source.isLoaded() || viewMode.equals("hybrid")) {
-            result = viewPort2;
+            result = viewPort2; // split-screen view port
         } else {
-            result = viewPort1;
+            result = viewPort1; // not split
         }
 
         return result;
@@ -310,9 +310,7 @@ public class SceneView implements JmeCloneable {
         /*
          * Detach the old spatial (if any) from the scene.
          */
-        if (cgmRoot != null) {
-            parent.detachChild(cgmRoot);
-        }
+        parent.detachAllChildren();
         setCgmRoot(cgmRoot);
 
         prepareForViewing();
@@ -434,32 +432,16 @@ public class SceneView implements JmeCloneable {
      * root, true &rarr; selected spatial
      */
     public void setSkeleton(Skeleton newSkeleton, boolean selectedSpatialFlag) {
-        Spatial controlled;
-        if (animControl != null) {
-            controlled = animControl.getSpatial();
-            controlled.removeControl(animControl);
-        }
-        if (skeletonControl != null) {
-            controlled = skeletonControl.getSpatial();
-            controlled.removeControl(skeletonControl);
-        }
-        if (skeletonVisualizer != null) {
-            controlled = skeletonVisualizer.getSpatial();
-            controlled.removeControl(skeletonVisualizer);
-        }
+        clearSkeleton();
 
-        if (selectedSpatialFlag) {
-            controlled = selectedSpatial();
-        } else {
-            controlled = cgmRoot;
-        }
+        if (newSkeleton != null) {
+            Spatial controlled;
+            if (selectedSpatialFlag) {
+                controlled = selectedSpatial();
+            } else {
+                controlled = cgmRoot;
+            }
 
-        if (newSkeleton == null) {
-            animControl = null;
-            skeleton = null;
-            skeletonControl = null;
-            skeletonVisualizer = null;
-        } else {
             skeleton = Cloner.deepClone(newSkeleton);
             MySkeleton.setUserControl(skeleton, true);
 
@@ -554,6 +536,7 @@ public class SceneView implements JmeCloneable {
         Camera camera = getCamera();
         if (camera != null) {
             updatePose();
+            updateShadowMode();
             updateTransform();
             Maud.gui.tools.updateScene(cgm);
             skyControl.setCamera(camera);
@@ -620,6 +603,30 @@ public class SceneView implements JmeCloneable {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Visualize no skeleton.
+     */
+    private void clearSkeleton() {
+        Spatial controlled;
+        if (animControl != null) {
+            controlled = animControl.getSpatial();
+            controlled.removeControl(animControl);
+        }
+        if (skeletonControl != null) {
+            controlled = skeletonControl.getSpatial();
+            controlled.removeControl(skeletonControl);
+        }
+        if (skeletonVisualizer != null) {
+            controlled = skeletonVisualizer.getSpatial();
+            controlled.removeControl(skeletonVisualizer);
+        }
+
+        animControl = null;
+        skeleton = null;
+        skeletonControl = null;
+        skeletonVisualizer = null;
+    }
 
     /**
      * Add an axes visualizer to the root node of this view.
@@ -766,7 +773,21 @@ public class SceneView implements JmeCloneable {
     }
 
     /**
-     * Update the transform of the CG model based on the MVC model.
+     * Update the shadow mode of the CG model's parent based on the MVC model.
+     */
+    private void updateShadowMode() {
+        RenderQueue.ShadowMode mode;
+        boolean enableShadows = Maud.model.misc.areShadowsRendered();
+        if (enableShadows) {
+            mode = RenderQueue.ShadowMode.CastAndReceive;
+        } else {
+            mode = RenderQueue.ShadowMode.Off;
+        }
+        parent.setShadowMode(mode);
+    }
+
+    /**
+     * Update the transform of the CG model's parent based on the MVC model.
      */
     private void updateTransform() {
         Transform transform = cgm.transform.worldTransform();
