@@ -340,7 +340,9 @@ public class Maud extends GuiApplication {
     @Override
     public void guiInitializeApplication() {
         logger.info("");
-
+        if (!Misc.areAssertionsEnabled()) {
+            logger.warning("Assertions are disabled.");
+        }
         Locators.setAssetManager(assetManager);
         Locators.useDefault();
 
