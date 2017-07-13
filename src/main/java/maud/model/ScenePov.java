@@ -328,7 +328,7 @@ public class ScenePov implements Cloneable, Pov {
             Quaternion orientation = cameraOrientation(null);
             camera.setRotation(orientation);
 
-            float aspectRatio = MyCamera.aspectRatio(camera);
+            float aspectRatio = MyCamera.frustumAspectRatio(camera);
             float far = frustumFar; // TODO adjust based on range to cursor
             float near = frustumNear;
             boolean parallel = Maud.model.camera.isParallelProjection();

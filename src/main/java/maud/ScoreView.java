@@ -43,7 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
-import jme3utilities.Rectangle;
+import jme3utilities.RectangleMesh;
 import jme3utilities.Validate;
 import maud.model.LoadedCgm;
 
@@ -92,8 +92,8 @@ public class ScoreView {
     /**
      * rectangle to represent a bone track when the POV is zoomed out
      */
-    final private static Rectangle rectangle = new Rectangle(0f, 1f, 0f, 1f,
-            -hashSize, 0f, -1f, 0f, 1f);
+    final private static RectangleMesh rectangle = new RectangleMesh(-hashSize,
+            0f, -1f, 0f, 1f);
     // *************************************************************************
     // fields
 

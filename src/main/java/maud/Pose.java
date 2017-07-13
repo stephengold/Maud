@@ -40,10 +40,10 @@ import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 
 /**
  * Encapsulate a pose for a particular skeleton.
@@ -139,7 +139,7 @@ public class Pose implements JmeCloneable {
         Transform transform = new Transform();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             userTransform(boneIndex, transform);
-            if (!Misc.isIdentity(transform)) {
+            if (!MyMath.isIdentity(transform)) {
                 Vector3f translation = transform.getTranslation();
                 Quaternion rotation = transform.getRotation();
                 Vector3f scale = transform.getScale();
