@@ -546,11 +546,12 @@ public class Maud extends GuiApplication {
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
         /*
-         * Add shadows to the view port for the main scene view.
+         * Configure the default view port for the target scene wide view.
          */
+        cam.setName("Target Scene Wide");
         addShadows(viewPort);
         /*
-         * Create 2 view ports for split-screen scene views, also with shadows.
+         * Create 2 view ports for split-screen scene views.
          */
         Node sourceSceneParent = createSourceSceneViewPort();
         Node targetSceneParent = createTargetSceneViewPort();
