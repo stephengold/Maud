@@ -48,7 +48,7 @@ import jme3utilities.Validate;
 import maud.model.LoadedCgm;
 
 /**
- * A 2D visualization of a loaded animation in a view port.
+ * A 2D visualization of a loaded animation in Maud's "score" mode.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -428,14 +428,15 @@ public class ScoreView {
     }
 
     /**
-     * Add sparklines to visualize the data in the current bone's track.
+     * Add sparklines to visualize a single data series in the current bone's
+     * track.
      *
      * @param pxx array of X-values for points (not null, unaffected)
      * @param pyy array of Y-values for points (not null, unaffected)
      * @param lxx array of X-values for lines (not null, unaffected)
      * @param lyy array of X-values for lines (not null, unaffected)
      * @param suffix suffix for the geometry name (not null)
-     * @param yIndex position in the staff (&ge;0, 0&rarr; top position)
+     * @param yIndex position in the staff (&ge;0, &lt;10, 0&rarr; top position)
      * @param material material for the geometry (not null)
      */
     private void makePlot(float[] pxx, float[] pyy, float[] lxx, float[] lyy,
@@ -446,13 +447,21 @@ public class ScoreView {
         assert lyy != null;
         assert suffix != null;
         assert yIndex >= 0 : yIndex;
+        assert yIndex < 10 : yIndex;
         assert material != null;
 
         if (Util.distinct(pyy)) {
             makeSparkline(pxx, pyy, Mesh.Mode.Points, suffix + "p", yIndex,
                     material);
-            makeSparkline(lxx, lyy, Mesh.Mode.Lines, suffix + "l", yIndex,
-                    material);
+
+            float zoom = cgm.scorePov.getHalfHeight();
+            if (zoom < 10f) {
+                /*
+                 * Draw lines only when zoomed in.
+                 */
+                makeSparkline(lxx, lyy, Mesh.Mode.Lines, suffix + "l", yIndex,
+                        material);
+            }
         } else {
             tempX[0] = pxx[0];
             tempY[0] = pyy[0];
@@ -491,7 +500,7 @@ public class ScoreView {
     }
 
     /**
-     * Add sparklines to visualize bone rotations.
+     * Add 3 plots to visualize bone rotations.
      */
     private void makeRotation() {
         cgm.animation.trackRotations(currentBone, ws, xs, ys, zs);
@@ -508,7 +517,7 @@ public class ScoreView {
     }
 
     /**
-     * Add sparklines to visualize bone scales.
+     * Add 3 plots to visualize bone scales.
      */
     private void makeScale() {
         cgm.animation.trackScales(currentBone, xs, ys, zs);
@@ -528,7 +537,7 @@ public class ScoreView {
      * @param yy array of Y-values for the sparkline (not null, unaffected)
      * @param mode mesh mode for the sparkline (Mode.LineStrip, or Mode.Points)
      * @param suffix suffix for the geometry name (not null)
-     * @param yIndex position in the staff (&ge;0, 0&rarr; top position)
+     * @param yIndex position in the staff (&ge;0, &lt;10, 0&rarr; top position)
      * @param material material for the geometry (not null)
      */
     private void makeSparkline(float[] xx, float[] yy, Mesh.Mode mode,
@@ -536,6 +545,8 @@ public class ScoreView {
         assert xx != null;
         assert yy != null;
         assert suffix != null;
+        assert yIndex >= 0 : yIndex;
+        assert yIndex < 10 : yIndex;
         assert material != null;
 
         Sparkline sparkline = new Sparkline(xx, yy, sparklineHeight, mode);
@@ -605,7 +616,7 @@ public class ScoreView {
     }
 
     /**
-     * Add 3 sparklines to visualize bone translations.
+     * Add 3 plots to visualize bone translations.
      */
     private void makeTranslation() {
         cgm.animation.trackTranslations(currentBone, xs, ys, zs);
