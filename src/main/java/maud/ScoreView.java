@@ -51,6 +51,8 @@ import jme3utilities.MyAsset;
 import jme3utilities.Validate;
 import jme3utilities.mesh.RectangleMesh;
 import jme3utilities.mesh.RectangleOutlineMesh;
+import maud.mesh.Finial;
+import maud.mesh.Sparkline;
 import maud.model.LoadedCgm;
 
 /**

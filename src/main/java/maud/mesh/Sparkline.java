@@ -23,7 +23,7 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.mesh;
 
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer.Type;

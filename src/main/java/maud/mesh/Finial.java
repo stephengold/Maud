@@ -23,7 +23,7 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.mesh;
 
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
@@ -37,10 +37,10 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * A 2D, static, line-mode mesh intended to be used as an end cap for a staff. A
- * finial can have up to 3 limbs (for translation, rotation, and scale). A
- * branch has either 3 or 4 crowsfeet, with each foot marking 1 end of a
- * sparkline.
+ * A 2D, static, line-mode mesh in the XY plane, intended to be used as an end
+ * cap for a staff. A finial can have up to 3 limbs (for translation, rotation,
+ * and scale). A branch has either 3 or 4 crowsfeet, with each foot marking 1
+ * end of a sparkline.
  * <p>
  * In local coordinates, a finial extends from -width to 0 in X and from -height
  * to 0 in Y.
