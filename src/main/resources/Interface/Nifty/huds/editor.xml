@@ -218,8 +218,7 @@ the menu bar, status bar, and tool windows.
                              height="40px"
                              initial="4" max="7" min="1" stepSize="0.001"/>
                     <panel style="indentPanel">
-                        <control name="checkbox" id="axesDepthTestCheckBox"
-                                 checked="false"/>
+                        <control name="checkbox" id="axesDepthTestCheckBox"/>
                         <control name="label" width="12px"/>
                         <control name="label" text="depth test"/>
                     </panel>
@@ -718,7 +717,6 @@ the menu bar, status bar, and tool windows.
                 <panel childLayout="vertical">
                     <panel style="indentPanel">
                         <control name="checkbox" id="3DCursorCheckBox"
-                                 checked="true"
                                  width="20"/>
                         <control name="label" width="12"/>
                         <control name="label" text="show 3-D cursor"/>
@@ -1029,7 +1027,6 @@ the menu bar, status bar, and tool windows.
                 <panel childLayout="vertical">
                     <panel style="indentPanel">
                         <control name="checkbox" id="shadowsCheckBox"
-                                 checked="true"
                                  width="20"/>
                         <control name="label" width="12"/>
                         <control name="label" text="shadows"/>
@@ -1183,7 +1180,6 @@ the menu bar, status bar, and tool windows.
                 <panel childLayout="vertical">
                     <panel style="indentPanel">
                         <control name="checkbox" id="skeletonCheckBox"
-                                 checked="true"
                                  width="20"/>
                         <control name="label"
                                  width="12"/>
@@ -1423,7 +1419,6 @@ the menu bar, status bar, and tool windows.
                 <panel childLayout="vertical">
                     <panel style="indentPanel">
                         <control name="checkbox" id="skyCheckBox"
-                                 checked="true"
                                  width="20"/>
                         <control name="label" width="12"/>
                         <control name="label" text="show sky"/>
