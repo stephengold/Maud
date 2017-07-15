@@ -30,12 +30,13 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import java.util.logging.Logger;
+import jme3utilities.MyCamera;
 import jme3utilities.Validate;
 import maud.Maud;
 import maud.ScoreView;
 
 /**
- * The positions of a score camera in Maud's edit screen.
+ * The position of a score-mode camera in Maud's edit screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -58,7 +59,7 @@ public class ScorePov implements Cloneable, Pov {
     /**
      * 1/2 the width of the camera's frustum (in world units)
      */
-    final private static float halfWidth = 0.6f;
+    final private static float halfWidth = 0.65f;
     /**
      * message logger for this class
      */
@@ -79,17 +80,52 @@ public class ScorePov implements Cloneable, Pov {
     /**
      * location of the camera (in world coordinates)
      */
-    private Vector3f cameraLocation = new Vector3f(0.5f, -4f, 0f);
+    private Vector3f cameraLocation = new Vector3f(0.4f, -4f, 0f);
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Read the half height for the frustum.
+     * Calculate how much the camera magnifies the Y axis relative to the X
+     * axis.
+     *
+     * @return compression factor (&gt;0)
+     */
+    public float compression() {
+        ScoreView view = loadedCgm.getScoreView();
+        Camera camera = view.getCamera();
+        float far = MyCamera.frustumAspectRatio(camera);
+        float var = MyCamera.viewAspectRatio(camera);
+        float factor = far / var;
+
+        assert factor > 0f : factor;
+        return factor;
+    }
+
+    /**
+     * Read the half height for the camera's frustum.
      *
      * @return half-height (in world units, &gt;0)
      */
     public float getHalfHeight() {
+        assert halfHeight > 0f : halfHeight;
         return halfHeight;
+    }
+
+    /**
+     * Calculate the world X-coordinate at the left edge of the camera's
+     * frustum.
+     *
+     * @return coordinate value
+     */
+    public float leftX() {
+        ScoreView view = loadedCgm.getScoreView();
+        Camera camera = view.getCamera();
+        float left = camera.getFrustumLeft();
+        assert left < 0f : left;
+        float center = camera.getLocation().x;
+        float result = center + left;
+
+        return result;
     }
 
     /**
@@ -152,7 +188,7 @@ public class ScorePov implements Cloneable, Pov {
      */
     @Override
     public void moveLeft(float amount) {
-        // Left/right movement is disabled.
+        // Left/right movement is disabled in score mode.
     }
 
     /**

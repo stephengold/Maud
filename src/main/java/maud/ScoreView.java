@@ -27,6 +27,10 @@
 package maud;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
+import com.jme3.font.LineWrapMode;
+import com.jme3.font.Rectangle;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -34,6 +38,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -43,8 +48,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
-import jme3utilities.RectangleMesh;
 import jme3utilities.Validate;
+import jme3utilities.mesh.RectangleMesh;
+import jme3utilities.mesh.RectangleOutlineMesh;
 import maud.model.LoadedCgm;
 
 /**
@@ -57,11 +63,7 @@ public class ScoreView {
     // constants and loggers
 
     /**
-     * horizontal size of hash mark (in world units)
-     */
-    final private static float hashSize = 0.05f;
-    /**
-     * height of a spark line (in world units, &ge;0)
+     * height of a spark line (in world units)
      */
     final private static float sparklineHeight = 0.08f;
     /**
@@ -75,11 +77,16 @@ public class ScoreView {
     final private static Finial finialWithScales = new Finial(true, true, true,
             sparklineHeight);
     /**
-     * Z-coordinate for lines
+     * horizontal size of hash mark (in world units)
+     */
+    final private static float hashSize = 0.05f;
+    /**
+     * world Z-coordinate for lines
      */
     final private static float z = -10f;
     /**
-     * hash-mark mesh to represent a bone without a track
+     * hash-mark mesh to represent a bone without a track, or any bone when the
+     * POV is zoomed all the way out
      */
     final private static Line hashMark = new Line(
             new Vector3f(-hashSize, 0f, 0f), new Vector3f(0f, 0f, 0f)
@@ -90,23 +97,29 @@ public class ScoreView {
     final private static Logger logger = Logger.getLogger(
             ScoreView.class.getName());
     /**
-     * rectangle to represent a bone track when the POV is zoomed out
+     * rectangle for a right end cap when the POV is zoomed part way out
      */
-    final private static RectangleMesh rectangle = new RectangleMesh(-hashSize,
-            0f, -1f, 0f, 1f);
+    final private static Mesh rectangle = new RectangleOutlineMesh(0f, hashSize,
+            -1f, 0f);
     // *************************************************************************
     // fields
 
+    /**
+     * font for labels
+     */
+    private static BitmapFont labelFont = null;
     /**
      * height of this score (in world units, &ge;0)
      */
     private float height = 0f;
     /**
-     * array to pass a single X value to makeSparkline()
+     * array to pass a single X value to
+     * {@link #attachSparkline(float[], float[], com.jme3.scene.Mesh.Mode, java.lang.String, int, com.jme3.material.Material)}
      */
     final private float[] tempX = new float[1];
     /**
-     * array to pass a single Y value to makeSparkline()
+     * array to pass a single Y value to
+     * {@link #attachSparkline(float[], float[], com.jme3.scene.Mesh.Mode, java.lang.String, int, com.jme3.material.Material)}
      */
     final private float[] tempY = new float[1];
     /**
@@ -126,13 +139,21 @@ public class ScoreView {
      */
     final private Map<Integer, Float> boneYs = new HashMap<>(120);
     /**
+     * material for label backgrounds of non-selected bones
+     */
+    private static Material bgNotSelected = null;
+    /**
+     * material for label backgrounds of selected bones
+     */
+    private static Material bgSelected = null;
+    /**
      * material for finials of non-selected bones
      */
-    private static Material notSelected = null;
+    private static Material wireNotSelected = null;
     /**
      * material for finials of selected bones
      */
-    private static Material selected = null;
+    private static Material wireSelected = null;
     /**
      * material for sparklines of W components
      */
@@ -279,8 +300,11 @@ public class ScoreView {
      * @param renderCgm which CG model to render (not null)
      */
     void update(LoadedCgm renderCgm) {
-        if (notSelected == null) { // TODO add an init method
-            initializeMaterials();
+        if (wireNotSelected == null) { // TODO add an init method
+            Maud application = Maud.getApplication();
+            AssetManager assetManager = application.getAssetManager();
+            initializeMaterials(assetManager);
+            labelFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         }
         boneYs.clear();
 
@@ -300,78 +324,48 @@ public class ScoreView {
             height = 0f;
 
             int numBones = cgm.bones.countBones();
-            for (currentBone = 0; currentBone < numBones;
-                    currentBone++) {
-                makeStaff();
+            for (currentBone = 0; currentBone < numBones; currentBone++) {
+                attachStaff();
                 if (currentBone != numBones - 1) {
                     height += 0.1f; // space between staves
                 }
             }
 
-            makeGnomon();
+            attachGnomon();
         }
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Initialize wireframe materials.
-     */
-    private void initializeMaterials() {
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
-
-        ColorRGBA black = new ColorRGBA(0f, 0f, 0f, 1f);
-        notSelected = MyAsset.createWireframeMaterial(assetManager, black);
-
-        ColorRGBA white = new ColorRGBA(1f, 1f, 1f, 1f);
-        selected = MyAsset.createWireframeMaterial(assetManager, white);
-
-        wMaterial = MyAsset.createWireframeMaterial(assetManager, white);
-        wMaterial.setFloat("PointSize", 3f);
-
-        ColorRGBA red = new ColorRGBA(1f, 0f, 0f, 1f);
-        xMaterial = MyAsset.createWireframeMaterial(assetManager, red);
-        xMaterial.setFloat("PointSize", 3f);
-
-        ColorRGBA green = new ColorRGBA(0f, 1f, 0f, 1f);
-        yMaterial = MyAsset.createWireframeMaterial(assetManager, green);
-        yMaterial.setFloat("PointSize", 3f);
-
-        ColorRGBA blue = new ColorRGBA(0f, 0f, 1f, 1f);
-        zMaterial = MyAsset.createWireframeMaterial(assetManager, blue);
-        zMaterial.setFloat("PointSize", 3f);
-    }
-
-    /**
-     * Add a pair of finials to the visuals.
+     * Attach a pair of finials to the visuals.
      *
      * @return the height of each finial (in world units, &ge;0)
      */
-    private float makeFinials() {
+    private float attachFinials() {
         Finial finial = finialNoScales;
         boolean hasScales = cgm.animation.hasScales(currentBone);
         if (hasScales) {
             finial = finialWithScales;
         }
 
-        Material material = notSelected;
+        Material wireMaterial = wireNotSelected;
         int selectedBoneIndex = cgm.bone.getIndex();
         if (currentBone == selectedBoneIndex) {
-            material = selected;
+            wireMaterial = wireSelected;
         }
 
         String name = String.format("left finial%d", currentBone);
         Geometry geometry = new Geometry(name, finial);
         geometry.setLocalTranslation(0f, -height, z);
-        geometry.setMaterial(material);
+        geometry.setMaterial(wireMaterial);
         visuals.attachChild(geometry);
 
         name = String.format("right finial%d", currentBone);
         geometry = new Geometry(name, finial);
         geometry.setLocalTranslation(1f, -height, z);
         geometry.setLocalScale(-1f, 1f, 1f);
-        geometry.setMaterial(material);
+        geometry.setMaterial(wireMaterial);
         visuals.attachChild(geometry);
 
         float staffHeight = finial.getHeight();
@@ -379,9 +373,10 @@ public class ScoreView {
     }
 
     /**
-     * Add the time indicator (currently just a vertical line) to the visuals.
+     * Attach the time indicator (currently just a vertical line) to the
+     * visuals.
      */
-    private void makeGnomon() {
+    private void attachGnomon() {
         float duration = cgm.animation.getDuration();
         float x = 0f;
         if (duration > 0f) {
@@ -395,22 +390,22 @@ public class ScoreView {
         Line line = new Line(start, end);
 
         Geometry geometry = new Geometry("gnomon", line);
-        geometry.setMaterial(notSelected);
+        geometry.setMaterial(wireNotSelected);
         visuals.attachChild(geometry);
     }
 
     /**
-     * Add a pair of hash marks to indicate a bone.
+     * Attach a pair of hash marks to indicate a bone.
      *
      * @param staffHeight (&ge;0)
      */
-    private void makeHashes(float staffHeight) {
+    private void attachHashes(float staffHeight) {
         float y = -height - staffHeight / 2;
 
-        Material material = notSelected;
+        Material material = wireNotSelected;
         int selectedBoneIndex = cgm.bone.getIndex();
         if (currentBone == selectedBoneIndex) {
-            material = selected;
+            material = wireSelected;
         }
 
         String name = String.format("left hash%d", currentBone);
@@ -428,7 +423,7 @@ public class ScoreView {
     }
 
     /**
-     * Add sparklines to visualize a single data series in the current bone's
+     * Attach sparklines to visualize a single data series in the current bone's
      * track.
      *
      * @param pxx array of X-values for points (not null, unaffected)
@@ -439,7 +434,7 @@ public class ScoreView {
      * @param yIndex position in the staff (&ge;0, &lt;10, 0&rarr; top position)
      * @param material material for the geometry (not null)
      */
-    private void makePlot(float[] pxx, float[] pyy, float[] lxx, float[] lyy,
+    private void attachPlot(float[] pxx, float[] pyy, float[] lxx, float[] lyy,
             String suffix, int yIndex, Material material) {
         assert pxx != null;
         assert pyy != null;
@@ -451,58 +446,97 @@ public class ScoreView {
         assert material != null;
 
         if (Util.distinct(pyy)) {
-            makeSparkline(pxx, pyy, Mesh.Mode.Points, suffix + "p", yIndex,
+            attachSparkline(pxx, pyy, Mesh.Mode.Points, suffix + "p", yIndex,
                     material);
 
             float zoom = cgm.scorePov.getHalfHeight();
             if (zoom < 10f) {
                 /*
-                 * Draw lines only when zoomed in.
+                 * Draw connecting lines only when zoomed in.
                  */
-                makeSparkline(lxx, lyy, Mesh.Mode.Lines, suffix + "l", yIndex,
+                attachSparkline(lxx, lyy, Mesh.Mode.Lines, suffix + "l", yIndex,
                         material);
             }
         } else {
+            /*
+             * Series consists entirely of single value: show 1st keyframe only.
+             */
             tempX[0] = pxx[0];
             tempY[0] = pyy[0];
-            makeSparkline(tempX, tempY, Mesh.Mode.Points, suffix + "p", yIndex,
-                    material);
+            attachSparkline(tempX, tempY, Mesh.Mode.Points, suffix + "p",
+                    yIndex, material);
         }
     }
 
     /**
-     * Add a pair of rectangles to indicate an animated bone.
+     * Attach a pair of rectangles to indicate an animated bone.
      *
-     * @param staffHeight (&ge;0)
+     * @param staffHeight (in world units, &ge;0)
      */
-    private void makeRectangles(float staffHeight) {
+    private void attachRectangles(float staffHeight) {
         assert staffHeight >= 0f : staffHeight;
 
-        Material material = notSelected;
+        Material bgMaterial, wireMaterial;
         int selectedBoneIndex = cgm.bone.getIndex();
         if (currentBone == selectedBoneIndex) {
-            material = selected;
+            bgMaterial = bgSelected;
+            wireMaterial = wireSelected;
+        } else {
+            bgMaterial = bgNotSelected;
+            wireMaterial = wireNotSelected;
         }
-
-        String name = String.format("left rect%d", currentBone);
-        Geometry geometry = new Geometry(name, rectangle);
-        geometry.setLocalTranslation(0f, -height, z);
-        geometry.setLocalScale(1f, staffHeight, 1f);
-        geometry.setMaterial(material);
+        /*
+         * Calculate the width of the left-hand rectangle, which will contain
+         * the name of the current bone, as much as will fit.
+         */
+        float sizeFactor = 0.042f * staffHeight; // text height relative to bg
+        String boneName = cgm.bones.getBoneName(currentBone);
+        float boxWidth = sizeFactor * (4f + labelFont.getLineWidth(boneName));
+        float leftX = cgm.scorePov.leftX();
+        float compression = cgm.scorePov.compression();
+        float maxWidth = -leftX / compression;
+        float minWidth = hashSize / compression;
+        boxWidth = FastMath.clamp(boxWidth, minWidth, maxWidth);
+        /*
+         * Attach a text node for the bone name.
+         */
+        BitmapText label = new BitmapText(labelFont);
+        visuals.attachChild(label);
+        label.setBox(new Rectangle(0f, 0f, boxWidth, staffHeight));
+        label.setLineWrapMode(LineWrapMode.Clip);
+        label.setLocalScale(compression, 1f, 1f);
+        label.setLocalTranslation(-boxWidth * compression, -height, z + 0.2f);
+        String labelName = String.format("label%d", currentBone);
+        label.setName(labelName);
+        label.setQueueBucket(RenderQueue.Bucket.Transparent);
+        float size = sizeFactor * labelFont.getPreferredSize();
+        label.setSize(size);
+        label.setText(boneName);
+        /*
+         * Attach background geometry to the text node.
+         */
+        String bgName = String.format("bg%d", currentBone);
+        Mesh bgMesh = new RectangleMesh(0f, boxWidth, -staffHeight, 0f, 1f);
+        Geometry bg = new Geometry(bgName, bgMesh);
+        label.attachChild(bg);
+        bg.setLocalTranslation(0f, 0f, -0.01f); // slightly behind the text
+        bg.setMaterial(bgMaterial);
+        bg.setQueueBucket(RenderQueue.Bucket.Opaque);
+        /*
+         * Attach an outline geometry for the right-hand rectangle.
+         */
+        String rectName = String.format("right rect%d", currentBone);
+        Geometry geometry = new Geometry(rectName, rectangle);
         visuals.attachChild(geometry);
-
-        name = String.format("right rect%d", currentBone);
-        geometry = new Geometry(name, rectangle);
-        geometry.setLocalTranslation(1f + hashSize, -height, z);
         geometry.setLocalScale(1f, staffHeight, 1f);
-        geometry.setMaterial(material);
-        visuals.attachChild(geometry);
+        geometry.setLocalTranslation(1f, -height, z);
+        geometry.setMaterial(wireMaterial);
     }
 
     /**
-     * Add 3 plots to visualize bone rotations.
+     * Attach 3 plots to visualize bone rotations.
      */
-    private void makeRotation() {
+    private void attachRotations() {
         cgm.animation.trackRotations(currentBone, ws, xs, ys, zs);
         Util.normalize(ws);
         Util.normalize(xs);
@@ -510,28 +544,28 @@ public class ScoreView {
         Util.normalize(zs);
 
         // TODO interpolation
-        makePlot(ts, ws, ts, ws, "rw", 3, wMaterial);
-        makePlot(ts, xs, ts, xs, "rx", 4, xMaterial);
-        makePlot(ts, ys, ts, ys, "ry", 5, yMaterial);
-        makePlot(ts, zs, ts, zs, "rz", 6, zMaterial);
+        attachPlot(ts, ws, ts, ws, "rw", 3, wMaterial);
+        attachPlot(ts, xs, ts, xs, "rx", 4, xMaterial);
+        attachPlot(ts, ys, ts, ys, "ry", 5, yMaterial);
+        attachPlot(ts, zs, ts, zs, "rz", 6, zMaterial);
     }
 
     /**
-     * Add 3 plots to visualize bone scales.
+     * Attach 3 plots to visualize bone scales.
      */
-    private void makeScale() {
+    private void attachScales() {
         cgm.animation.trackScales(currentBone, xs, ys, zs);
         Util.normalize(xs);
         Util.normalize(ys);
         Util.normalize(zs);
 
-        makePlot(ts, xs, ts, xs, "sx", 7, xMaterial);
-        makePlot(ts, ys, ts, ys, "sy", 8, yMaterial);
-        makePlot(ts, zs, ts, zs, "sz", 9, zMaterial);
+        attachPlot(ts, xs, ts, xs, "sx", 7, xMaterial);
+        attachPlot(ts, ys, ts, ys, "sy", 8, yMaterial);
+        attachPlot(ts, zs, ts, zs, "sz", 9, zMaterial);
     }
 
     /**
-     * Add a single sparkline to the visualization.
+     * Attach a single sparkline to the visualization.
      *
      * @param xx array of X-values for the sparkline (not null, unaffected)
      * @param yy array of Y-values for the sparkline (not null, unaffected)
@@ -540,7 +574,7 @@ public class ScoreView {
      * @param yIndex position in the staff (&ge;0, &lt;10, 0&rarr; top position)
      * @param material material for the geometry (not null)
      */
-    private void makeSparkline(float[] xx, float[] yy, Mesh.Mode mode,
+    private void attachSparkline(float[] xx, float[] yy, Mesh.Mode mode,
             String suffix, int yIndex, Material material) {
         assert xx != null;
         assert yy != null;
@@ -561,9 +595,9 @@ public class ScoreView {
     }
 
     /**
-     * Add the sparklines for the current bone.
+     * Attach the sparklines for the current bone.
      */
-    private void makeSparklines() {
+    private void attachSparklines() {
         ts = cgm.animation.trackTimes(currentBone);
         float duration = cgm.animation.getDuration();
         Util.normalize(ts, 0f, duration);
@@ -576,21 +610,21 @@ public class ScoreView {
             zs = new float[numFrames];
         }
 
-        makeTranslation();
-        makeRotation();
+        attachTranslations();
+        attachRotations();
         if (cgm.animation.hasScales(currentBone)) {
-            makeScale();
+            attachScales();
         }
     }
 
     /**
-     * Add a staff to visualize the current bone.
+     * Attach a staff to visualize the current bone.
      */
-    private void makeStaff() {
+    private void attachStaff() {
         if (cgm.animation.hasTrackForBone(currentBone)) {
             float staffHeight;
             float zoom = cgm.scorePov.getHalfHeight();
-            if (zoom > 10f) {
+            if (zoom > 4f) { // was 10
                 /*
                  * zoomed out too far to include detailed finials
                  */
@@ -598,34 +632,66 @@ public class ScoreView {
                 int numFeet = hasScales ? 10 : 7;
                 staffHeight = (float) (numFeet * Finial.hpf);
                 if (zoom > 25f) {
-                    makeHashes(staffHeight);
+                    attachHashes(staffHeight);
                 } else {
-                    makeRectangles(staffHeight);
+                    attachRectangles(staffHeight);
                 }
             } else {
-                staffHeight = makeFinials();
+                staffHeight = attachFinials();
             }
-            makeSparklines();
+            attachSparklines();
             boneYs.put(currentBone, -height - staffHeight / 2);
             height += staffHeight;
 
         } else {
-            makeHashes(0f);
+            attachHashes(0f);
             boneYs.put(currentBone, -height);
         }
     }
 
     /**
-     * Add 3 plots to visualize bone translations.
+     * Attach 3 plots to visualize bone translations.
      */
-    private void makeTranslation() {
+    private void attachTranslations() {
         cgm.animation.trackTranslations(currentBone, xs, ys, zs);
         Util.normalize(xs);
         Util.normalize(ys);
         Util.normalize(zs);
 
-        makePlot(ts, xs, ts, xs, "tx", 0, xMaterial);
-        makePlot(ts, ys, ts, ys, "ty", 1, yMaterial);
-        makePlot(ts, zs, ts, zs, "tz", 2, zMaterial);
+        attachPlot(ts, xs, ts, xs, "tx", 0, xMaterial);
+        attachPlot(ts, ys, ts, ys, "ty", 1, yMaterial);
+        attachPlot(ts, zs, ts, zs, "tz", 2, zMaterial);
+    }
+
+    /**
+     * Initialize materials used in score views.
+     *
+     * @param assetManager (not null)
+     */
+    private void initializeMaterials(AssetManager assetManager) {
+        assert assetManager != null;
+
+        ColorRGBA black = new ColorRGBA(0f, 0f, 0f, 1f);
+        ColorRGBA blue = new ColorRGBA(0f, 0f, 1f, 1f);
+        ColorRGBA green = new ColorRGBA(0f, 1f, 0f, 1f);
+        ColorRGBA grey = new ColorRGBA(0.5f, 0.5f, 0.5f, 1f);
+        ColorRGBA red = new ColorRGBA(1f, 0f, 0f, 1f);
+        ColorRGBA white = new ColorRGBA(1f, 1f, 1f, 1f);
+        float pointSize = 3f;
+
+        bgNotSelected = MyAsset.createUnshadedMaterial(assetManager, grey);
+        bgSelected = MyAsset.createUnshadedMaterial(assetManager, black);
+
+        wireNotSelected = MyAsset.createWireframeMaterial(assetManager, grey);
+        wireSelected = MyAsset.createWireframeMaterial(assetManager, black);
+
+        wMaterial = MyAsset.createWireframeMaterial(assetManager, white,
+                pointSize);
+        xMaterial = MyAsset.createWireframeMaterial(assetManager, red,
+                pointSize);
+        yMaterial = MyAsset.createWireframeMaterial(assetManager, green,
+                pointSize);
+        zMaterial = MyAsset.createWireframeMaterial(assetManager, blue,
+                pointSize);
     }
 }

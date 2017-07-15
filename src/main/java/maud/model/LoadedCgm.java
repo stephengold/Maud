@@ -56,7 +56,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import maud.Locators;
+import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.SceneView;
 import maud.ScoreView;

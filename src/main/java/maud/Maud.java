@@ -343,8 +343,6 @@ public class Maud extends GuiApplication {
         if (!Misc.areAssertionsEnabled()) {
             logger.warning("Assertions are disabled.");
         }
-        Locators.setAssetManager(assetManager);
-        Locators.useDefault();
 
         StartScreen startScreen = new StartScreen();
         stateManager.attach(startScreen);

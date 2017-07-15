@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import maud.Locators;
+import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.Pose;
 import maud.Util;
