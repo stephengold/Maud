@@ -220,8 +220,7 @@ class EditorMenus {
      */
     void newAssetFolder(String argument) {
         if (argument.endsWith(addThis)) {
-            int length = argument.length() - addThis.length();
-            String path = argument.substring(0, length);
+            String path = MyString.removeSuffix(argument, addThis);
             Maud.model.folders.add(path);
 
         } else {

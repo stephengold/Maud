@@ -247,8 +247,7 @@ public class EditableMapping extends LoadedMapping {
                 assetFolder = af;
                 assetPath = MyString.remainder(filePath, af);
             } else if (filePath.endsWith(assetPath) && !assetPath.isEmpty()) {
-                int length = filePath.length() - assetPath.length();
-                assetFolder = filePath.substring(0, length);
+                assetFolder = MyString.removeSuffix(filePath, assetPath);
             } else {
                 assetFolder = "";
                 assetPath = "";

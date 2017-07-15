@@ -464,8 +464,8 @@ public class EditableCgm extends LoadedCgm {
                 baseAssetPath = MyString.remainder(baseFilePath, af);
             } else if (baseFilePath.endsWith(baseAssetPath)
                     && !baseAssetPath.isEmpty()) {
-                int length = baseFilePath.length() - baseAssetPath.length();
-                assetFolder = baseFilePath.substring(0, length);
+                assetFolder = MyString.removeSuffix(baseFilePath,
+                        baseAssetPath);
             } else {
                 assetFolder = "";
                 baseAssetPath = "";
