@@ -84,6 +84,13 @@ public class Sparkline extends Mesh {
                 indices[2 * i + 1] = (short) (i + 1);
             }
             setBuffer(Type.Index, 2, indices);
+
+        } else if (mode == Mode.LineStrip) {
+            short[] indices = new short[numVertices];
+            for (int i = 0; i < numVertices; i++) {
+                indices[i] = (short) i;
+            }
+            setBuffer(Type.Index, 2, indices);
         }
 
         setMode(mode);

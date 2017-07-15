@@ -538,8 +538,8 @@ public class ScoreView {
                 /*
                  * Draw connecting lines only when zoomed in.
                  */
-                attachSparkline(lxx, lyy, Mesh.Mode.Lines, suffix + "l", yIndex,
-                        material);
+                attachSparkline(lxx, lyy, Mesh.Mode.LineStrip, suffix + "l",
+                        yIndex, material);
             }
         } else {
             /*
