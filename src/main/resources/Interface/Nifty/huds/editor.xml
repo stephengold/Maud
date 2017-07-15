@@ -216,7 +216,7 @@ the menu bar, status bar, and tool windows.
                     <control name="horizontalSlider" id="axesLineWidthSlider"
                              buttonStepSize="1"
                              height="40px"
-                             initial="4" max="7" min="1" stepSize="0.001"/>
+                             max="7" min="1" stepSize="0.001"/>
                     <panel style="indentPanel">
                         <control name="checkbox" id="axesDepthTestCheckBox"/>
                         <control name="label" width="12px"/>
@@ -360,15 +360,15 @@ the menu bar, status bar, and tool windows.
                         <control name="verticalSlider" id="xAngSlider"
                                  buttonStepSize="1.57"
                                  height="180"
-                                 initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
+                                 max="3.14" min="-3.14" stepSize="0.001"/>
                         <control name="verticalSlider" id="yAngSlider"
                                  buttonStepSize="1.57"
                                  height="180"
-                                 initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
+                                 max="3.14" min="-3.14" stepSize="0.001"/>
                         <control name="verticalSlider" id="zAngSlider"
                                  buttonStepSize="1.57"
                                  height="180"
-                                 initial="0" max="1.57" min="-1.57" stepSize="0.001"/>
+                                 max="1.57" min="-1.57" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160px" width="110px">
                             <control name="label" id="xAngSliderStatus"
@@ -420,21 +420,21 @@ the menu bar, status bar, and tool windows.
                     <control name="label" text="Master control:"/>
                     <control name="horizontalSlider" id="offMasterSlider"
                              buttonStepSize="1"
-                             initial="0" max="3" min="-2" stepSize="0.001"/>
+                             max="3" min="-2" stepSize="0.001"/>
                     <control name="label" text="Per-axis controls:"/>
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xOffSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="0" max="1" min="-1" stepSize="0.001"/>
+                                 max="1" min="-1" stepSize="0.001"/>
                         <control name="verticalSlider" id="yOffSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="0" max="1" min="-1" stepSize="0.001"/>
+                                 max="1" min="-1" stepSize="0.001"/>
                         <control name="verticalSlider" id="zOffSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="0" max="1" min="-1" stepSize="0.001"/>
+                                 max="1" min="-1" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160px" width="100px">
                             <control name="label" id="xOffSliderStatus"
@@ -479,15 +479,15 @@ the menu bar, status bar, and tool windows.
                         <control name="verticalSlider" id="xScaSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                                 max="3" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="yScaSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                                 max="3" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="zScaSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                                 max="3" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160px" width="80px">
                             <control name="label" id="xScaSliderStatus"
@@ -728,15 +728,15 @@ the menu bar, status bar, and tool windows.
                         <control name="verticalSlider" id="cursorRSlider"
                                  buttonStepSize="1"
                                  height="130"
-                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                                 max="1" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="cursorGSlider"
                                  buttonStepSize="1"
                                  height="130"
-                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                                 max="1" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="cursorBSlider"
                                  buttonStepSize="1"
                                  height="130"
-                                 initial="1" max="1" min="0" stepSize="0.001"/>
+                                 max="1" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="130" width="105">
                             <control name="label" id="cursorRSliderStatus"
@@ -1191,14 +1191,14 @@ the menu bar, status bar, and tool windows.
                     <control name="horizontalSlider" id="skeletonLineWidthSlider"
                              buttonStepSize="1"
                              height="30"
-                             initial="2" max="10" min="0" stepSize="1"/>
+                             max="10" min="0" stepSize="1"/>
                     <panel style="statusPanel">
                         <control name="label" id="skeletonPointSizeSliderStatus"/>
                     </panel>
                     <control name="horizontalSlider" id="skeletonPointSizeSlider"
                              buttonStepSize="1"
                              height="30"
-                             initial="4" max="10" min="0" stepSize="1"/>
+                             max="10" min="0" stepSize="1"/>
                 </panel>
             </control>
 
@@ -1594,15 +1594,15 @@ the menu bar, status bar, and tool windows.
                         <control name="verticalSlider" id="xSaSlider"
                                  buttonStepSize="1.57"
                                  height="180"
-                                 initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
+                                 max="3.14" min="-3.14" stepSize="0.001"/>
                         <control name="verticalSlider" id="ySaSlider"
                                  buttonStepSize="1.57"
                                  height="180"
-                                 initial="0" max="3.14" min="-3.14" stepSize="0.001"/>
+                                 max="3.14" min="-3.14" stepSize="0.001"/>
                         <control name="verticalSlider" id="zSaSlider"
                                  buttonStepSize="1.57"
                                  height="180"
-                                 initial="0" max="1.57" min="-1.57" stepSize="0.001"/>
+                                 max="1.57" min="-1.57" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160px" width="110px">
                             <control name="label" id="xSaSliderStatus"
@@ -1641,15 +1641,15 @@ the menu bar, status bar, and tool windows.
                         <control name="verticalSlider" id="xSsSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                                 max="3" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="ySsSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                                 max="3" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="zSsSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="1" max="3" min="0" stepSize="0.001"/>
+                                 max="3" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160px" width="80px">
                             <control name="label" id="xSsSliderStatus"
@@ -1679,21 +1679,21 @@ the menu bar, status bar, and tool windows.
                     <control name="label" text="Master control:"/>
                     <control name="horizontalSlider" id="soMasterSlider"
                              buttonStepSize="1"
-                             initial="0" max="3" min="-2" stepSize="0.001"/>
+                             max="3" min="-2" stepSize="0.001"/>
                     <control name="label" text="Per-axis controls:"/>
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xSoSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="0" max="1" min="-1" stepSize="0.001"/>
+                                 max="1" min="-1" stepSize="0.001"/>
                         <control name="verticalSlider" id="ySoSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="0" max="1" min="-1" stepSize="0.001"/>
+                                 max="1" min="-1" stepSize="0.001"/>
                         <control name="verticalSlider" id="zSoSlider"
                                  buttonStepSize="1"
                                  height="160"
-                                 initial="0" max="1" min="-1" stepSize="0.001"/>
+                                 max="1" min="-1" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160px" width="100px">
                             <control name="label" id="xSoSliderStatus"
