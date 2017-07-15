@@ -26,18 +26,17 @@
  */
 package maud.tools;
 
-import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 
 /**
- * The controller for the "Background Tool" window in Maud's editor screen.
+ * The controller for the "Score Tool" window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BackgroundTool extends WindowController {
+class ScoreTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -45,27 +44,17 @@ class BackgroundTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            BackgroundTool.class.getName());
+            ScoreTool.class.getName());
     // *************************************************************************
     // constructors
 
     /**
      * Instantiate an uninitialized controller.
      *
-     * @param screenController
+     * @param screenController (not null)
      */
-    BackgroundTool(BasicScreenController screenController) {
-        super(screenController, "backgroundTool", false);
-    }
-    // *************************************************************************
-    // new methods exposed
-
-    /**
-     * Update the MVC model based on the sliders.
-     */
-    void onSliderChanged() {
-        ColorRGBA color = Maud.gui.readColorBank("bg");
-        Maud.model.score.setBackgroundColor(color);
+    ScoreTool(BasicScreenController screenController) {
+        super(screenController, "scoreTool", false);
     }
     // *************************************************************************
     // AppState methods
@@ -82,8 +71,14 @@ class BackgroundTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        ColorRGBA color = Maud.model.score.backgroundColor(null);
-        Maud.gui.setColorBank("bg", color);
+        boolean translations = Maud.model.score.showsTranslations();
+        Maud.gui.setChecked("scoreTranslations", translations);
+
+        boolean rotations = Maud.model.score.showsRotations();
+        Maud.gui.setChecked("scoreRotations", rotations);
+
+        boolean scales = Maud.model.score.showsScales();
+        Maud.gui.setChecked("scoreScales", scales);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

@@ -216,56 +216,66 @@ public class EditorScreen extends GuiScreenController {
             final CheckBoxStateChangedEvent event) {
         Validate.nonNull(boxId, "check box id");
         Validate.nonNull(event, "event");
+        assert boxId.endsWith("CheckBox");
 
         if (ignoreGuiChanges || !hasStarted()) {
             return;
         }
 
         boolean isChecked = event.isChecked();
-
-        switch (boxId) {
-            case "3DCursorCheckBox":
+        String prefix = MyString.removeSuffix(boxId, "CheckBox");
+        switch (prefix) {
+            case "3DCursor":
                 Maud.model.cursor.setVisible(isChecked);
                 break;
-            case "axesDepthTestCheckBox":
+            case "axesDepthTest":
                 Maud.model.axes.setDepthTestFlag(isChecked);
                 break;
-            case "boundsDepthTestCheckBox":
+            case "boundsDepthTest":
                 Maud.model.bounds.setDepthTestFlag(isChecked);
                 break;
-            case "invertRmaCheckBox":
-            case "invertRma2CheckBox":
+            case "invertRma":
+            case "invertRma2":
                 Maud.model.mapping.setInvertMap(isChecked);
                 break;
-            case "loopCheckBox":
+            case "loop":
                 Maud.model.target.animation.setContinue(isChecked);
                 break;
-            case "loopSourceCheckBox":
+            case "loopSource":
                 Maud.model.source.animation.setContinue(isChecked);
                 break;
-            case "pinCheckBox":
+            case "pin":
                 Maud.model.target.animation.setPinned(isChecked);
                 break;
-            case "pinSourceCheckBox":
+            case "pinSource":
                 Maud.model.source.animation.setPinned(isChecked);
                 break;
-            case "pongCheckBox":
+            case "pong":
                 Maud.model.target.animation.setReverse(isChecked);
                 break;
-            case "pongSourceCheckBox":
+            case "pongSource":
                 Maud.model.source.animation.setReverse(isChecked);
                 break;
-            case "shadowsCheckBox":
+            case "scoreRotations":
+                Maud.model.score.setShowRotations(isChecked);
+                break;
+            case "scoreScales":
+                Maud.model.score.setShowScales(isChecked);
+                break;
+            case "scoreTranslations":
+                Maud.model.score.setShowTranslations(isChecked);
+                break;
+            case "shadows":
                 Maud.model.misc.setShadowsRendered(isChecked);
                 break;
-            case "skeletonCheckBox":
+            case "skeleton":
                 Maud.model.skeleton.setVisible(isChecked);
                 break;
-            case "skyCheckBox":
+            case "sky":
                 Maud.model.misc.setSkyRendered(isChecked);
                 break;
             default:
-                logger.log(Level.WARNING, "unknown check box with id={0}",
+                logger.log(Level.WARNING, "check box with unknown id={0}",
                         MyString.quote(boxId));
         }
     }

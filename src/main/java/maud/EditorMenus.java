@@ -786,6 +786,7 @@ class EditorMenus {
         }
         if (viewMode.equals("score") || viewMode.equals("hybrid")) {
             builder.addTool("Background");
+            builder.addTool("Score");
         }
     }
 
@@ -1606,6 +1607,10 @@ class EditorMenus {
                 break;
             case "Render":
                 Maud.gui.tools.select("render");
+                handled = true;
+                break;
+            case "Score":
+                Maud.gui.tools.select("score");
                 handled = true;
                 break;
             case "Skeleton":

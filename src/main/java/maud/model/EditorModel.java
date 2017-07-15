@@ -83,6 +83,10 @@ public class EditorModel {
      */
     final public MiscStatus misc;
     /**
+     * options for "score" views
+     */
+    final public ScoreOptions score;
+    /**
      * status of the skeleton visualization(s)
      */
     final public SkeletonStatus skeleton;
@@ -102,6 +106,7 @@ public class EditorModel {
         mapping = new EditableMapping();
         source = new LoadedCgm();
         misc = new MiscStatus();
+        score = new ScoreOptions();
         skeleton = new SkeletonStatus();
     }
 
@@ -122,6 +127,7 @@ public class EditorModel {
             mapping = other.mapping.clone();
             source = other.source.clone();
             misc = other.misc.clone();
+            score = other.score.clone();
             skeleton = other.skeleton.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException();

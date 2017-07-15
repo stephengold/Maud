@@ -65,23 +65,13 @@ public class ScoreView {
     // constants and loggers
 
     /**
-     * height of a spark line (in world units)
-     */
-    final private static float sparklineHeight = 0.08f;
-    /**
-     * end-cap mesh to represent a bone track without scales
-     */
-    final private static Finial finialNoScales = new Finial(true, true, false,
-            sparklineHeight);
-    /**
-     * end-cap mesh to represent a bone track with scales
-     */
-    final private static Finial finialWithScales = new Finial(true, true, true,
-            sparklineHeight);
-    /**
      * horizontal size of hash mark (in world units)
      */
     final private static float hashSize = 0.05f;
+    /**
+     * height of a spark line (in world units)
+     */
+    final private static float sparklineHeight = 0.08f;
     /**
      * world Z-coordinate for lines
      */
@@ -111,6 +101,14 @@ public class ScoreView {
      */
     private static BitmapFont labelFont = null;
     /**
+     * end-cap mesh for a bone track that includes scales
+     */
+    private static Finial finialComplete;
+    /**
+     * end-cap mesh for a bone track without scales
+     */
+    private static Finial finialNoScales;
+    /**
      * height of this score (in world units, &ge;0)
      */
     private float height = 0f;
@@ -132,6 +130,10 @@ public class ScoreView {
      * index of the bone currently being visualized
      */
     private int currentBone;
+    /**
+     * count of plots added to the current staff (&ge;0)
+     */
+    private int numPlots = 0;
     /**
      * the CG model being rendered
      */
@@ -317,8 +319,16 @@ public class ScoreView {
 
             cgm.scorePov.updateCamera();
 
-            ColorRGBA backgroundColor = Maud.model.misc.backgroundColor(null);
+            ColorRGBA backgroundColor = Maud.model.score.backgroundColor(null);
             viewPort.setBackgroundColor(backgroundColor);
+
+            boolean translations = Maud.model.score.showsTranslations();
+            boolean rotations = Maud.model.score.showsRotations();
+            boolean scales = Maud.model.score.showsScales();
+            finialComplete = new Finial(translations, rotations, scales,
+                    sparklineHeight);
+            finialNoScales = new Finial(translations, rotations, false,
+                    sparklineHeight);
 
             Spatial parentSpatial = viewPort.getScenes().get(0);
             visuals = (Node) parentSpatial;
@@ -412,14 +422,10 @@ public class ScoreView {
     /**
      * Attach a pair of finials to indicate an animated bone.
      *
-     * @return the height of each finial (in world units, &ge;0)
+     * @param finial which mesh to use (not null)
      */
-    private float attachFinials() {
-        Finial finial = finialNoScales;
-        boolean hasScales = cgm.animation.hasScales(currentBone);
-        if (hasScales) {
-            finial = finialWithScales;
-        }
+    private void attachFinials(Finial finial) {
+        assert finial != null;
 
         Material wireMaterial = wireNotSelected;
         int selectedBoneIndex = cgm.bone.getIndex();
@@ -454,8 +460,6 @@ public class ScoreView {
         geometry.setLocalScale(-1f, 1f, 1f);
         geometry.setMaterial(wireMaterial);
         visuals.attachChild(geometry);
-
-        return staffHeight;
     }
 
     /**
@@ -602,7 +606,7 @@ public class ScoreView {
     /**
      * Attach 3 plots to visualize bone rotations.
      */
-    private void attachRotations() {
+    private void attachRotationPlots() {
         cgm.animation.trackRotations(currentBone, ws, xs, ys, zs);
         Util.normalize(ws);
         Util.normalize(xs);
@@ -610,10 +614,11 @@ public class ScoreView {
         Util.normalize(zs);
 
         // TODO interpolation
-        attachPlot(ts, ws, ts, ws, "rw", 3, wMaterial);
-        attachPlot(ts, xs, ts, xs, "rx", 4, xMaterial);
-        attachPlot(ts, ys, ts, ys, "ry", 5, yMaterial);
-        attachPlot(ts, zs, ts, zs, "rz", 6, zMaterial);
+        attachPlot(ts, ws, ts, ws, "rw", numPlots, wMaterial);
+        attachPlot(ts, xs, ts, xs, "rx", numPlots + 1, xMaterial);
+        attachPlot(ts, ys, ts, ys, "ry", numPlots + 2, yMaterial);
+        attachPlot(ts, zs, ts, zs, "rz", numPlots + 3, zMaterial);
+        numPlots += 4;
     }
 
     /**
@@ -625,9 +630,10 @@ public class ScoreView {
         Util.normalize(ys);
         Util.normalize(zs);
 
-        attachPlot(ts, xs, ts, xs, "sx", 7, xMaterial);
-        attachPlot(ts, ys, ts, ys, "sy", 8, yMaterial);
-        attachPlot(ts, zs, ts, zs, "sz", 9, zMaterial);
+        attachPlot(ts, xs, ts, xs, "sx", numPlots, xMaterial);
+        attachPlot(ts, ys, ts, ys, "sy", numPlots + 1, yMaterial);
+        attachPlot(ts, zs, ts, zs, "sz", numPlots + 2, zMaterial);
+        numPlots += 3;
     }
 
     /**
@@ -676,9 +682,20 @@ public class ScoreView {
             zs = new float[numFrames];
         }
 
-        attachTranslations();
-        attachRotations();
-        if (cgm.animation.hasScales(currentBone)) {
+        numPlots = 0;
+        boolean showTranslations = Maud.model.score.showsTranslations();
+        if (showTranslations) {
+            attachTranslationPlots();
+        }
+
+        boolean showRotations = Maud.model.score.showsRotations();
+        if (showRotations) {
+            attachRotationPlots();
+        }
+
+        boolean showScales = Maud.model.score.showsScales();
+        boolean hasScales = cgm.animation.hasScales(currentBone);
+        if (showScales && hasScales) {
             attachScales();
         }
     }
@@ -688,22 +705,25 @@ public class ScoreView {
      */
     private void attachStaff() {
         if (cgm.animation.hasTrackForBone(currentBone)) {
-            float staffHeight;
+            Finial finial = finialNoScales;
+            boolean hasScales = cgm.animation.hasScales(currentBone);
+            if (hasScales) {
+                finial = finialComplete;
+            }
+
+            float staffHeight = finial.getHeight();
             float zoom = cgm.scorePov.getHalfHeight();
-            if (zoom > 4f) { // was 10
+            if (zoom > 4f) {
                 /*
-                 * zoomed out too far to include detailed finials
+                 * zoomed out too far to render detailed finials
                  */
-                boolean hasScales = cgm.animation.hasScales(currentBone);
-                int numFeet = hasScales ? 10 : 7;
-                staffHeight = (float) (numFeet * Finial.hpf);
                 if (zoom > 25f) {
                     attachHashes(staffHeight);
                 } else {
                     attachRectangles(staffHeight);
                 }
             } else {
-                staffHeight = attachFinials();
+                attachFinials(finial);
             }
             attachSparklines();
             boneYs.put(currentBone, -height - staffHeight / 2);
@@ -718,15 +738,16 @@ public class ScoreView {
     /**
      * Attach 3 plots to visualize bone translations.
      */
-    private void attachTranslations() {
+    private void attachTranslationPlots() {
         cgm.animation.trackTranslations(currentBone, xs, ys, zs);
         Util.normalize(xs);
         Util.normalize(ys);
         Util.normalize(zs);
 
-        attachPlot(ts, xs, ts, xs, "tx", 0, xMaterial);
-        attachPlot(ts, ys, ts, ys, "ty", 1, yMaterial);
-        attachPlot(ts, zs, ts, zs, "tz", 2, zMaterial);
+        attachPlot(ts, xs, ts, xs, "tx", numPlots, xMaterial);
+        attachPlot(ts, ys, ts, ys, "ty", numPlots + 1, yMaterial);
+        attachPlot(ts, zs, ts, zs, "tz", numPlots + 2, zMaterial);
+        numPlots += 3;
     }
 
     /**

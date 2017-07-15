@@ -1103,6 +1103,33 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="scoreTool" title="Score Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="160px" width="160px" x="20" y="80">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="checkbox" id="scoreTranslationsCheckBox"
+                                 width="20px"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="show translations"/>
+                    </panel>
+                    <panel childLayout="horizontal">
+                        <control name="checkbox" id="scoreRotationsCheckBox"
+                                 width="20px"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="show rotations"/>
+                    </panel>
+                    <panel childLayout="horizontal">
+                        <control name="checkbox" id="scoreScalesCheckBox"
+                                 width="20px"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="show scales"/>
+                    </panel>
+                </panel>
+            </control>
+
+
             <control name="window" id="sgcTool" title="Control Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"

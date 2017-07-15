@@ -126,6 +126,10 @@ public class EditorTools {
      */
     final public RetargetTool retarget;
     /**
+     * controller for the "Score Tool" window
+     */
+    final ScoreTool score;
+    /**
      * controller for the "Control Tool" window
      */
     final SgcTool sgc;
@@ -202,6 +206,7 @@ public class EditorTools {
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
         retarget = new RetargetTool(screen);
+        score = new ScoreTool(screen);
         sgc = new SgcTool(screen);
         shadowMode = new ShadowModeTool(screen);
         skeletonColor = new SkeletonColorTool(screen);
@@ -227,7 +232,7 @@ public class EditorTools {
         stateManager.attach(cursor); // cursor before camera
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cullHint, history,
-                keyframe, mapping, cgm, platform, render, retarget, sgc,
+                keyframe, mapping, cgm, platform, render, retarget, score, sgc,
                 shadowMode, skeleton, skeletonColor, sky, sourceAnimation,
                 spatial, spatialRotation, spatialScale, spatialTranslation,
                 twist, userData);
@@ -297,6 +302,9 @@ public class EditorTools {
                 break;
             case "retarget":
                 controller = retarget;
+                break;
+            case "score":
+                controller = score;
                 break;
             case "sgc":
                 controller = sgc;
@@ -397,12 +405,6 @@ public class EditorTools {
                 cursor.onSliderChanged();
                 break;
 
-            case "xTwistSlider":
-            case "yTwistSlider":
-            case "zTwistSlider":
-                twist.onSliderChanged();
-                break;
-
             case "skeletonLineWidthSlider":
             case "skeletonPointSizeSlider":
                 skeleton.onSliderChanged();
@@ -442,6 +444,12 @@ public class EditorTools {
             case "ySoSlider":
             case "zSoSlider":
                 spatialTranslation.onSliderChanged();
+                break;
+
+            case "xTwistSlider":
+            case "yTwistSlider":
+            case "zTwistSlider":
+                twist.onSliderChanged();
                 break;
 
             default:
