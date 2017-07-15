@@ -338,7 +338,77 @@ public class ScoreView {
     // private methods
 
     /**
-     * Attach a pair of finials to the visuals.
+     * Attach a right-aligned bone label to the visuals.
+     *
+     * @param rightX world X coordinate for the right edge of the label
+     * @param centerY world Y coordinate for the center of the label
+     * @param minWidth minimum width of label (in compressed units, &gt;0)
+     * @param maxWidth maximum width of label (in compressed units, &gt;0)
+     * @param maxHeight minimum height of label (in world units, &gt;0)
+     */
+    private void attachBoneLabel(float rightX, float centerY, float minWidth,
+            float maxWidth, float maxHeight) {
+        assert minWidth > 0f : minWidth;
+        assert maxWidth >= minWidth : maxWidth;
+        assert maxHeight > 0f : maxHeight;
+
+        Material bgMaterial;
+        int selectedBoneIndex = cgm.bone.getIndex();
+        if (currentBone == selectedBoneIndex) {
+            bgMaterial = bgSelected;
+        } else {
+            bgMaterial = bgNotSelected;
+        }
+
+        String text = cgm.bones.getBoneName(currentBone);
+        /*
+         * Calculate the effective width and height for the label and the size
+         * for the text.
+         */
+        float boxHeight = maxHeight;
+        float sizeFactor = 0.042f * boxHeight; // relative to preferred size
+        float boxWidth = sizeFactor * (4f + labelFont.getLineWidth(text));
+        if (boxWidth > maxWidth) {
+            /*
+             * Shrink to avoid clipping.
+             */
+            boxHeight *= maxWidth / boxWidth;
+            sizeFactor *= maxWidth / boxWidth;
+            boxWidth = sizeFactor * (4f + labelFont.getLineWidth(text));
+        }
+        boxWidth = FastMath.clamp(boxWidth, minWidth, maxWidth);
+        /*
+         * Attach a text node.
+         */
+        BitmapText label = new BitmapText(labelFont);
+        visuals.attachChild(label);
+        label.setBox(new Rectangle(0f, 0f, boxWidth, boxHeight));
+        label.setLineWrapMode(LineWrapMode.Clip);
+        float compression = cgm.scorePov.compression();
+        label.setLocalScale(compression, 1f, 1f);
+        float leftX = rightX - boxWidth * compression;
+        float topY = centerY + boxHeight / 2;
+        label.setLocalTranslation(leftX, topY, z + 0.2f);
+        String labelName = String.format("label%d", currentBone);
+        label.setName(labelName);
+        label.setQueueBucket(RenderQueue.Bucket.Transparent);
+        float size = sizeFactor * labelFont.getPreferredSize();
+        label.setSize(size);
+        label.setText(text);
+        /*
+         * Attach a background geometry to the text node.
+         */
+        String bgName = String.format("bg%d", currentBone);
+        Mesh bgMesh = new RectangleMesh(0f, boxWidth, -boxHeight, 0f, 1f);
+        Geometry bg = new Geometry(bgName, bgMesh);
+        label.attachChild(bg);
+        bg.setLocalTranslation(0f, 0f, -0.01f); // slightly behind the text
+        bg.setMaterial(bgMaterial);
+        bg.setQueueBucket(RenderQueue.Bucket.Opaque);
+    }
+
+    /**
+     * Attach a pair of finials to indicate an animated bone.
      *
      * @return the height of each finial (in world units, &ge;0)
      */
@@ -354,13 +424,28 @@ public class ScoreView {
         if (currentBone == selectedBoneIndex) {
             wireMaterial = wireSelected;
         }
-
+        /*
+         * Attach the left-hand finial.
+         */
         String name = String.format("left finial%d", currentBone);
         Geometry geometry = new Geometry(name, finial);
         geometry.setLocalTranslation(0f, -height, z);
         geometry.setMaterial(wireMaterial);
         visuals.attachChild(geometry);
-
+        /*
+         * Attach a bone label to the left of the left-hand finial.
+         */
+        float leftX = cgm.scorePov.leftX();
+        float rightX = -hashSize;
+        float staffHeight = finial.getHeight();
+        float middleY = -(height + staffHeight / 2);
+        float compression = cgm.scorePov.compression();
+        float maxWidth = (rightX - leftX) / compression;
+        float minWidth = hashSize / compression;
+        attachBoneLabel(rightX, middleY, minWidth, maxWidth, staffHeight);
+        /*
+         * Attach the right-hand finial.
+         */
         name = String.format("right finial%d", currentBone);
         geometry = new Geometry(name, finial);
         geometry.setLocalTranslation(1f, -height, z);
@@ -368,7 +453,6 @@ public class ScoreView {
         geometry.setMaterial(wireMaterial);
         visuals.attachChild(geometry);
 
-        float staffHeight = finial.getHeight();
         return staffHeight;
     }
 
@@ -476,57 +560,37 @@ public class ScoreView {
     private void attachRectangles(float staffHeight) {
         assert staffHeight >= 0f : staffHeight;
 
-        Material bgMaterial, wireMaterial;
+        Material wireMaterial;
         int selectedBoneIndex = cgm.bone.getIndex();
         if (currentBone == selectedBoneIndex) {
-            bgMaterial = bgSelected;
             wireMaterial = wireSelected;
         } else {
-            bgMaterial = bgNotSelected;
             wireMaterial = wireNotSelected;
         }
         /*
-         * Calculate the width of the left-hand rectangle, which will contain
-         * the name of the current bone, as much as will fit.
+         * Attach the left-hand rectangle: a narrow outline.
          */
-        float sizeFactor = 0.042f * staffHeight; // text height relative to bg
-        String boneName = cgm.bones.getBoneName(currentBone);
-        float boxWidth = sizeFactor * (4f + labelFont.getLineWidth(boneName));
-        float leftX = cgm.scorePov.leftX();
-        float compression = cgm.scorePov.compression();
-        float maxWidth = -leftX / compression;
-        float minWidth = hashSize / compression;
-        boxWidth = FastMath.clamp(boxWidth, minWidth, maxWidth);
-        /*
-         * Attach a text node for the bone name.
-         */
-        BitmapText label = new BitmapText(labelFont);
-        visuals.attachChild(label);
-        label.setBox(new Rectangle(0f, 0f, boxWidth, staffHeight));
-        label.setLineWrapMode(LineWrapMode.Clip);
-        label.setLocalScale(compression, 1f, 1f);
-        label.setLocalTranslation(-boxWidth * compression, -height, z + 0.2f);
-        String labelName = String.format("label%d", currentBone);
-        label.setName(labelName);
-        label.setQueueBucket(RenderQueue.Bucket.Transparent);
-        float size = sizeFactor * labelFont.getPreferredSize();
-        label.setSize(size);
-        label.setText(boneName);
-        /*
-         * Attach background geometry to the text node.
-         */
-        String bgName = String.format("bg%d", currentBone);
-        Mesh bgMesh = new RectangleMesh(0f, boxWidth, -staffHeight, 0f, 1f);
-        Geometry bg = new Geometry(bgName, bgMesh);
-        label.attachChild(bg);
-        bg.setLocalTranslation(0f, 0f, -0.01f); // slightly behind the text
-        bg.setMaterial(bgMaterial);
-        bg.setQueueBucket(RenderQueue.Bucket.Opaque);
-        /*
-         * Attach an outline geometry for the right-hand rectangle.
-         */
-        String rectName = String.format("right rect%d", currentBone);
+        String rectName = String.format("left rect%d", currentBone);
         Geometry geometry = new Geometry(rectName, rectangle);
+        visuals.attachChild(geometry);
+        geometry.setLocalScale(-0.2f, staffHeight, 1f);
+        geometry.setLocalTranslation(0f, -height, z);
+        geometry.setMaterial(wireMaterial);
+        /*
+         * Attach a bone label to the left of the left-hand rectangle.
+         */
+        float leftX = cgm.scorePov.leftX();
+        float rightX = -0.2f * hashSize;
+        float middleY = -(height + staffHeight / 2);
+        float compression = cgm.scorePov.compression();
+        float maxWidth = (rightX - leftX) / compression;
+        float minWidth = hashSize / compression;
+        attachBoneLabel(rightX, middleY, minWidth, maxWidth, staffHeight);
+        /*
+         * Attach the right-hand rectangle: an outline.
+         */
+        rectName = String.format("right rect%d", currentBone);
+        geometry = new Geometry(rectName, rectangle);
         visuals.attachChild(geometry);
         geometry.setLocalScale(1f, staffHeight, 1f);
         geometry.setLocalTranslation(1f, -height, z);
