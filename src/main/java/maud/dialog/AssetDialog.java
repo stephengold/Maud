@@ -23,7 +23,7 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.dialog;
 
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
@@ -45,7 +45,7 @@ import jme3utilities.nifty.DialogController;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class AssetDialog implements DialogController {
+public class AssetDialog implements DialogController {
     // *************************************************************************
     // constants and loggers
 
@@ -79,9 +79,9 @@ class AssetDialog implements DialogController {
      *
      * @param description (not null)
      * @param extList list of accepted extensions (not null)
-     * @param manager the asset manager (not null)
+     * @param assetManager the asset manager (not null)
      */
-    AssetDialog(String description, Collection<String> extList,
+    public AssetDialog(String description, Collection<String> extList,
             AssetManager assetManager) {
         assert description != null;
         assert !description.isEmpty();

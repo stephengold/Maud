@@ -48,6 +48,7 @@ import jme3utilities.debug.Dumper;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
+import maud.dialog.QuitDialog;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedCgm;

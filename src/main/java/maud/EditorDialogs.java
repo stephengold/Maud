@@ -41,6 +41,10 @@ import jme3utilities.nifty.IntegerDialog;
 import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
+import maud.dialog.AnimationNameDialog;
+import maud.dialog.BoneRenameDialog;
+import maud.dialog.SpatialNameDialog;
+import maud.dialog.UserKeyDialog;
 
 /**
  * Dialog boxes created by Maud's editor screen.

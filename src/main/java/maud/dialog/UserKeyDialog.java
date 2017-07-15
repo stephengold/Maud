@@ -23,7 +23,7 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.dialog;
 
 import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.controls.TextField;
@@ -32,13 +32,14 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.DialogController;
+import maud.Maud;
 
 /**
  * Controller for a text-entry dialog box used to name a new user key.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class UserKeyDialog implements DialogController {
+public class UserKeyDialog implements DialogController {
     // *************************************************************************
     // constants and loggers
 
@@ -63,7 +64,7 @@ class UserKeyDialog implements DialogController {
      *
      * @param description (not null, not empty)
      */
-    UserKeyDialog(String description) {
+    public UserKeyDialog(String description) {
         assert description != null;
         assert !description.isEmpty();
 

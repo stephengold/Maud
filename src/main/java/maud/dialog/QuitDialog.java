@@ -23,7 +23,7 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.dialog;
 
 import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.elements.Element;
@@ -35,7 +35,7 @@ import jme3utilities.nifty.DialogController;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class QuitDialog implements DialogController {
+public class QuitDialog implements DialogController {
     // *************************************************************************
     // constants and loggers
 

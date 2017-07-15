@@ -23,7 +23,7 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.dialog;
 
 import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.controls.TextField;
@@ -32,6 +32,7 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.DialogController;
+import maud.Maud;
 import maud.model.SelectedSkeleton;
 
 /**
@@ -39,7 +40,7 @@ import maud.model.SelectedSkeleton;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneRenameDialog implements DialogController {
+public class BoneRenameDialog implements DialogController {
     // *************************************************************************
     // constants and loggers
 
@@ -64,7 +65,7 @@ class BoneRenameDialog implements DialogController {
      *
      * @param description (not null)
      */
-    BoneRenameDialog(String description) {
+    public BoneRenameDialog(String description) {
         assert description != null;
         assert !description.isEmpty();
 
