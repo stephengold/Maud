@@ -218,14 +218,16 @@ public class Finial extends Mesh {
             sSca = put3();
         }
         /*
-         * connecting vertical bar
+         * connecting vertical bar, if needed
          */
         if (tra && sca) {
             shorts.put(sTra).put(sSca);
         } else if (tra && rot) {
             shorts.put(sTra).put(sRot);
-        } else {
+        } else if (rot && sca) {
             shorts.put(sRot).put(sSca);
+        } else {
+            shorts.put(sTra).put(sTra); // no bar
         }
 
         floats.flip(); // prepare for reading
