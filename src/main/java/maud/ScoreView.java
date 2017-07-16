@@ -44,7 +44,10 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
@@ -223,29 +226,33 @@ public class ScoreView {
         Validate.nonNegative(boneI, "bone index");
         Validate.nonNull(p, "input point");
 
-        float boneY = boneYs.get(boneI);
-        Vector3f boneInWorld0 = new Vector3f(0f, boneY, z);
-        Vector3f boneInWorld1 = new Vector3f(1f, boneY, z);
-        /*
-         * Calculate the endpoints of the segment in screen space
-         * that represent the bone.
-         */
-        Camera camera = getCamera();
-        Vector3f boneInScreen0 = camera.getScreenCoordinates(boneInWorld0);
-        Vector3f boneInScreen1 = camera.getScreenCoordinates(boneInWorld1);
-        Vector2f a = new Vector2f(boneInScreen0.x, boneInScreen0.y);
-        Vector2f b = new Vector2f(boneInScreen1.x, boneInScreen1.y);
-        /*
-         * Calculate the point on the bone segment closest to the input point.
-         */
-        Vector2f bma = b.subtract(a);
-        Vector2f pma = p.subtract(a);
-        float dot = bma.dot(pma);
-        float t = dot / bma.lengthSquared();
-        t = FastMath.clamp(t, 0f, 1f);
-        Vector2f closest = new Vector2f(a.x + t * bma.x, a.y + t * bma.y);
+        float dSquared = Float.POSITIVE_INFINITY;
+        if (boneYs.containsKey(boneI)) {
+            float boneY = boneYs.get(boneI);
+            Vector3f boneInWorld0 = new Vector3f(0f, boneY, z);
+            Vector3f boneInWorld1 = new Vector3f(1f, boneY, z);
+            /*
+             * Calculate the endpoints of the segment in screen space
+             * that represent the bone.
+             */
+            Camera camera = getCamera();
+            Vector3f boneInScreen0 = camera.getScreenCoordinates(boneInWorld0);
+            Vector3f boneInScreen1 = camera.getScreenCoordinates(boneInWorld1);
+            Vector2f a = new Vector2f(boneInScreen0.x, boneInScreen0.y);
+            Vector2f b = new Vector2f(boneInScreen1.x, boneInScreen1.y);
+            /*
+             * Calculate the point on the bone segment closest
+             * to the input point.
+             */
+            Vector2f bma = b.subtract(a);
+            Vector2f pma = p.subtract(a);
+            float dot = bma.dot(pma);
+            float t = dot / bma.lengthSquared();
+            t = FastMath.clamp(t, 0f, 1f);
+            Vector2f closest = new Vector2f(a.x + t * bma.x, a.y + t * bma.y);
 
-        float dSquared = p.distanceSquared(closest);
+            dSquared = p.distanceSquared(closest);
+        }
 
         return dSquared;
     }
@@ -330,24 +337,67 @@ public class ScoreView {
             finialNoScales = new Finial(translations, rotations, false,
                     sparklineHeight);
 
-            Spatial parentSpatial = viewPort.getScenes().get(0);
-            visuals = (Node) parentSpatial;
+            List<Spatial> roots = viewPort.getScenes();
+            int numRoots = roots.size();
+            assert numRoots == 1 : numRoots;
+            Spatial visualsSpatial = roots.get(0);
+            visuals = (Node) visualsSpatial;
             visuals.detachAllChildren();
             height = 0f;
 
-            int numBones = cgm.bones.countBones();
-            for (currentBone = 0; currentBone < numBones; currentBone++) {
-                attachStaff();
-                if (currentBone != numBones - 1) {
-                    height += 0.1f; // space between staves
-                }
+            String bonesShown = Maud.model.score.bonesShown(cgm);
+            switch (bonesShown) {
+                case "all":
+                    attachAllBones();
+                    break;
+                case "ancestors":
+                    List<Integer> indices = cgm.bone.listAncestorIndices();
+                    Collections.reverse(indices);
+                    attachStaves(indices);
+                    break;
+                case "family":
+                    attachFamilyBones();
+                    break;
+                case "none":
+                    break;
+                case "roots":
+                    indices = cgm.bones.listRootIndices();
+                    attachStaves(indices);
+                    break;
+                case "selected":
+                    currentBone = cgm.bone.getIndex();
+                    attachStaff();
+                    break;
+                case "tracked":
+                    indices = cgm.animation.listBoneIndicesWithTracks();
+                    Collections.sort(indices);
+                    attachStaves(indices);
+                    break;
+                default:
+                    assert false;
             }
 
             attachGnomon();
+
+            float yLocation = cgm.scorePov.getCameraY();
+            cgm.scorePov.setCameraY(yLocation);
         }
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Attach staves for all bones, in index order.
+     */
+    private void attachAllBones() {
+        int numBones = cgm.bones.countBones();
+        for (currentBone = 0; currentBone < numBones; currentBone++) {
+            if (currentBone > 0) {
+                height += 0.1f; // space between staves
+            }
+            attachStaff();
+        }
+    }
 
     /**
      * Attach a right-aligned bone label to the visuals.
@@ -417,6 +467,27 @@ public class ScoreView {
         bg.setLocalTranslation(0f, 0f, -0.01f); // slightly behind the text
         bg.setMaterial(bgMaterial);
         bg.setQueueBucket(RenderQueue.Bucket.Opaque);
+    }
+
+    /**
+     * Attach staves for the selected bone and its parent (if any) and any
+     * children, in tree order.
+     */
+    private void attachFamilyBones() {
+        List<Integer> boneIndices = new ArrayList<>(6);
+
+        if (!cgm.bone.isRootBone()) {
+            int parentIndex = cgm.bone.parentIndex();
+            boneIndices.add(parentIndex);
+        }
+
+        int index = cgm.bone.getIndex();
+        boneIndices.add(index);
+
+        List<Integer> childIndices = cgm.bone.listChildIndices();
+        boneIndices.addAll(childIndices);
+
+        attachStaves(boneIndices);
     }
 
     /**
@@ -542,7 +613,7 @@ public class ScoreView {
             float zoom = cgm.scorePov.getHalfHeight();
             if (zoom < 10f) {
                 /*
-                 * Draw connecting lines only when zoomed in.
+                 * Draw the connecting lines only when zoomed in.
                  */
                 attachSparkline(lxx, lyy, Mesh.Mode.LineStrip, suffix + "l",
                         yIndex, material);
@@ -732,6 +803,24 @@ public class ScoreView {
         } else {
             attachHashes(0f);
             boneYs.put(currentBone, -height);
+        }
+    }
+
+    /**
+     * Attach staves for the indexed bones in the order specified.
+     *
+     * @param indices list of bone indices (not null)
+     */
+    private void attachStaves(List<Integer> indices) {
+        assert indices != null;
+
+        int numShown = indices.size();
+        for (int i = 0; i < numShown; i++) {
+            if (i > 0) {
+                height += 0.1f; // space between staves
+            }
+            currentBone = indices.get(i);
+            attachStaff();
         }
     }
 

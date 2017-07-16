@@ -1103,29 +1103,90 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="scoreTool" title="Score Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="160px" width="160px" x="20" y="80">
+                     height="212px" width="320px" x="20" y="80">
                 <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="label"
+                                 text="Components to plot:"
+                                 hAlign="left"/>
+                    </panel>
                     <panel childLayout="horizontal">
                         <control name="checkbox" id="scoreTranslationsCheckBox"
                                  width="20px"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="show translations"/>
-                    </panel>
-                    <panel childLayout="horizontal">
+                        <control name="label" text="  translations      "/>
                         <control name="checkbox" id="scoreRotationsCheckBox"
                                  width="20px"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="show rotations"/>
-                    </panel>
-                    <panel childLayout="horizontal">
+                        <control name="label" text="  rotations      "/>
                         <control name="checkbox" id="scoreScalesCheckBox"
                                  width="20px"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="show scales"/>
+                        <control name="label" text="  scales"/>
+                    </panel>
+                    <panel height="20px"/>
+                    <panel childLayout="horizontal">
+                        <panel childLayout="vertical">
+                            <control name="label"
+                                     text="When no bone is selected:"
+                                     hAlign="left"/>
+                            <control name="radioButtonGroup" id="scoreNoneGroup"/>
+                            <panel childLayout="horizontal">
+                                <control name="radioButton" id="scoreNoneAllRadioButton"
+                                         group="scoreNoneGroup"/>
+                                <control name="label" width="12px"/>
+                                <control name="label" text="show all bones"/>
+                            </panel>
+                            <panel childLayout="horizontal">
+                                <control name="radioButton" id="scoreNoneRootsRadioButton"
+                                         group="scoreNoneGroup"/>
+                                <control name="label" width="12px"/>
+                                <control name="label" text="show roots"/>
+                            </panel>
+                            <panel childLayout="horizontal">
+                                <control name="radioButton" id="scoreNoneTrackedRadioButton"
+                                         group="scoreNoneGroup"/>
+                                <control name="label" width="12px"/>
+                                <control name="label" text="show tracked"/>
+                            </panel>
+                            <panel childLayout="horizontal">
+                                <control name="radioButton" id="scoreNoneNoneRadioButton"
+                                         group="scoreNoneGroup"/>
+                                <control name="label" width="12px"/>
+                                <control name="label" text="show no bones"/>
+                            </panel>
+                        </panel>
+                        <panel/>
+                        <panel childLayout="vertical">
+                            <control name="label"
+                                     text="When a bone is selected:"
+                                     hAlign="left"/>
+                            <control name="radioButtonGroup" id="scoreWhenGroup"/>
+                            <panel childLayout="horizontal">
+                                <control name="radioButton" id="scoreWhenSelectedRadioButton"
+                                         group="scoreWhenGroup"/>
+                                <control name="label" width="12px"/>
+                                <control name="label" text="show selected only"/>
+                            </panel>
+                            <panel childLayout="horizontal">
+                                <control name="radioButton" id="scoreWhenFamilyRadioButton"
+                                         group="scoreWhenGroup"/>
+                                <control name="label" width="12px"/>
+                                <control name="label" text="show family"/>
+                            </panel>
+                            <panel childLayout="horizontal">
+                                <control name="radioButton" id="scoreWhenAncestorsRadioButton"
+                                         group="scoreWhenGroup"/>
+                                <control name="label" width="12px"/>
+                                <control name="label" text="show ancestors"/>
+                            </panel>
+                            <panel childLayout="horizontal">
+                                <control name="radioButton" id="scoreWhenAllRadioButton"
+                                         group="scoreWhenGroup"/>
+                                <control name="label" width="12px"/>
+                                <control name="label" text="show all bones"/>
+                            </panel>
+                        </panel>
                     </panel>
                 </panel>
             </control>
-
 
             <control name="window" id="sgcTool" title="Control Tool"
                      backgroundColor="#ffcf"

@@ -80,6 +80,45 @@ class ScoreTool extends WindowController {
         boolean scales = Maud.model.score.showsScales();
         Maud.gui.setChecked("scoreScales", scales);
 
+        String niftyId;
+        String showWhenSelected = Maud.model.score.getShowWhenSelected();
+        switch (showWhenSelected) {
+            case "all":
+                niftyId = "scoreWhenAllRadioButton";
+                break;
+            case "ancestors":
+                niftyId = "scoreWhenAncestorsRadioButton";
+                break;
+            case "family":
+                niftyId = "scoreWhenFamilyRadioButton";
+                break;
+            case "selected":
+                niftyId = "scoreWhenSelectedRadioButton";
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        Maud.gui.setRadioButton(niftyId);
+
+        String showNoneSelected = Maud.model.score.getShowNoneSelected();
+        switch (showNoneSelected) {
+            case "all":
+                niftyId = "scoreNoneAllRadioButton";
+                break;
+            case "none":
+                niftyId = "scoreNoneNoneRadioButton";
+                break;
+            case "roots":
+                niftyId = "scoreNoneRootsRadioButton";
+                break;
+            case "tracked":
+                niftyId = "scoreNoneTrackedRadioButton";
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        Maud.gui.setRadioButton(niftyId);
+
         Maud.gui.setIgnoreGuiChanges(false);
     }
 }

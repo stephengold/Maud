@@ -27,7 +27,9 @@
 package maud.model;
 
 import com.jme3.math.ColorRGBA;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 
 /**
  * Options for "score" views in Maud's editor screen.
@@ -62,6 +64,15 @@ public class ScoreOptions implements Cloneable {
      * background color for score views
      */
     private ColorRGBA scoreBackground = new ColorRGBA(0.84f, 0.84f, 0.72f, 1f);
+    /**
+     * bones shown when none is selected ("all", "none", "roots", or "tracked")
+     */
+    private String showNoneSelected = "all";
+    /**
+     * bones shown when a one is selected ("all", "ancestors", "family", or
+     * "selected")
+     */
+    private String showWhenSelected = "selected";
     // *************************************************************************
     // new methods exposed
 
@@ -81,12 +92,69 @@ public class ScoreOptions implements Cloneable {
     }
 
     /**
+     * Determine which bones to show.
+     *
+     * @param cgm which CG model to use (not null)
+     * @return "all", "ancestors", "family", "none", "roots", "selected", or
+     * "tracked"
+     */
+    public String bonesShown(LoadedCgm cgm) {
+        Validate.nonNull(cgm, "model");
+
+        String result;
+        if (cgm.bone.isSelected()) {
+            result = showWhenSelected;
+        } else {
+            result = showNoneSelected;
+        }
+
+        return result;
+    }
+
+    /**
+     * Determine which bones to show when no bone is selected.
+     *
+     * @return "all", "none", "roots", or "tracked"
+     */
+    public String getShowNoneSelected() {
+        return showNoneSelected;
+    }
+
+    /**
+     * Determine which bones to show when a bone is selected.
+     *
+     * @return "all", "ancestors", "family", or "selected"
+     */
+    public String getShowWhenSelected() {
+        return showWhenSelected;
+    }
+
+    /**
      * Alter the background color.
      *
      * @param newColor (not null, unaffected)
      */
     public void setBackgroundColor(ColorRGBA newColor) {
         scoreBackground.set(newColor);
+    }
+
+    /**
+     * Alter which bones to show when no bone is selected
+     *
+     * @param newSetting "all", "none", "roots", or "tracked"
+     */
+    public void setShowNoneSelected(String newSetting) {
+        switch (newSetting) {
+            case "all":
+            case "none":
+            case "roots":
+            case "tracked":
+                showNoneSelected = newSetting;
+                break;
+            default:
+                logger.log(Level.SEVERE, "setting={0}", newSetting);
+                throw new IllegalArgumentException("invalid setting");
+        }
     }
 
     /**
@@ -128,6 +196,25 @@ public class ScoreOptions implements Cloneable {
             showTranslationsFlag = newSetting;
         } else {
             showTranslationsFlag = true;
+        }
+    }
+
+    /**
+     * Alter which bones to show when a bone is selected
+     *
+     * @param newSetting ("all", "ancestors", "family", "selected")
+     */
+    public void setShowWhenSelected(String newSetting) {
+        switch (newSetting) {
+            case "all":
+            case "ancestors":
+            case "family":
+            case "selected":
+                showWhenSelected = newSetting;
+                break;
+            default:
+                logger.log(Level.SEVERE, "setting={0}", newSetting);
+                throw new IllegalArgumentException("invalid setting");
         }
     }
 

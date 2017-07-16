@@ -339,6 +339,32 @@ public class EditorScreen extends GuiScreenController {
                 Maud.model.target.setHint(Spatial.CullHint.Never);
                 break;
 
+            case "scoreNoneAllRadioButton":
+                Maud.model.score.setShowNoneSelected("all");
+                break;
+            case "scoreNoneNoneRadioButton":
+                Maud.model.score.setShowNoneSelected("none");
+                break;
+            case "scoreNoneRootsRadioButton":
+                Maud.model.score.setShowNoneSelected("roots");
+                break;
+            case "scoreNoneTrackedRadioButton":
+                Maud.model.score.setShowNoneSelected("tracked");
+                break;
+
+            case "scoreWhenAllRadioButton":
+                Maud.model.score.setShowWhenSelected("all");
+                break;
+            case "scoreWhenAncestorsRadioButton":
+                Maud.model.score.setShowWhenSelected("ancestors");
+                break;
+            case "scoreWhenFamilyRadioButton":
+                Maud.model.score.setShowWhenSelected("family");
+                break;
+            case "scoreWhenSelectedRadioButton":
+                Maud.model.score.setShowWhenSelected("selected");
+                break;
+
             case "shadowOffRadioButton":
                 Maud.model.target.setMode(RenderQueue.ShadowMode.Off);
                 break;
