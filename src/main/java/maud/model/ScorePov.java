@@ -85,6 +85,15 @@ public class ScorePov implements Cloneable, Pov {
     // new methods exposed
 
     /**
+     * Read the camera's vertical location.
+     *
+     * @return Y coordinate of camera (in world space)
+     */
+    public float getCameraY() {
+        return cameraLocation.y;
+    }
+
+    /**
      * Calculate how much the camera magnifies the Y axis relative to the X
      * axis.
      *
@@ -129,13 +138,12 @@ public class ScorePov implements Cloneable, Pov {
     }
 
     /**
-     * Alter the camera's Y-coordinate.
+     * Alter the camera's vertical location.
      *
-     * @param yLocation new vertical location for camera
+     * @param yLocation new Y coordinate (in world space)
      */
     public void setCameraY(float yLocation) {
-        LoadedCgm cgm = Maud.gui.mouseCgm();
-        ScoreView view = cgm.getScoreView();
+        ScoreView view = loadedCgm.getScoreView();
         float maxY = 0f;
         float minY = -view.getHeight();
         cameraLocation.y = FastMath.clamp(yLocation, minY, maxY);
