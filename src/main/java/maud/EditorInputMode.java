@@ -705,6 +705,11 @@ class EditorInputMode extends InputMode {
                 Maud.model.target.bone.resetScale();
                 handled = true;
                 break;
+            case "reset bone selection":
+                LoadedCgm cgm = Maud.gui.mouseCgm();
+                cgm.bone.deselect();
+                handled = true;
+                break;
 
             case "reset spatial rotation":
                 Maud.model.target.setSpatialRotation(rotationIdentity);
