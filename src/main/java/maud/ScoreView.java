@@ -68,6 +68,10 @@ public class ScoreView {
     // constants and loggers
 
     /**
+     * gap between bone labels and left edge of viewport (in world units)
+     */
+    final private static float leftGap = 0.01f;
+    /**
      * horizontal size of hash mark (in world units)
      */
     final private static float hashSize = 0.05f;
@@ -514,7 +518,7 @@ public class ScoreView {
         /*
          * Attach a bone label to the left of the left-hand finial.
          */
-        float leftX = cgm.scorePov.leftX();
+        float leftX = cgm.scorePov.leftX() + leftGap;
         float rightX = -hashSize;
         float staffHeight = finial.getHeight();
         float middleY = -(height + staffHeight / 2);
@@ -654,9 +658,9 @@ public class ScoreView {
         geometry.setLocalTranslation(0f, -height, z);
         geometry.setMaterial(wireMaterial);
         /*
-         * Attach a bone label to the left of the left-hand rectangle.
+         * Attach a bone label overlapping the left-hand rectangle.
          */
-        float leftX = cgm.scorePov.leftX();
+        float leftX = cgm.scorePov.leftX() + leftGap;
         float rightX = -0.2f * hashSize;
         float middleY = -(height + staffHeight / 2);
         float compression = cgm.scorePov.compression();
@@ -775,15 +779,15 @@ public class ScoreView {
      * Attach a staff to visualize the current bone.
      */
     private void attachStaff() {
+        float zoom = cgm.scorePov.getHalfHeight();
         if (cgm.animation.hasTrackForBone(currentBone)) {
             Finial finial = finialNoScales;
             boolean hasScales = cgm.animation.hasScales(currentBone);
             if (hasScales) {
                 finial = finialComplete;
             }
-
             float staffHeight = finial.getHeight();
-            float zoom = cgm.scorePov.getHalfHeight();
+
             if (zoom > 4f) {
                 /*
                  * zoomed out too far to render detailed finials
@@ -801,7 +805,22 @@ public class ScoreView {
             height += staffHeight;
 
         } else {
+            /*
+             * no animation track for the current bone
+             */
             attachHashes(0f);
+            if (zoom < 4f) {
+                /*
+                 * Attach a bone label overlapping the left-hand hash mark.
+                 */
+                float leftX = cgm.scorePov.leftX() + leftGap;
+                float rightX = -0.2f * hashSize;
+                float middleY = -height;
+                float compression = cgm.scorePov.compression();
+                float maxWidth = (rightX - leftX) / compression;
+                float minWidth = hashSize / compression;
+                attachBoneLabel(rightX, middleY, minWidth, maxWidth, 0.09f);
+            }
             boneYs.put(currentBone, -height);
         }
     }
