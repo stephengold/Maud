@@ -319,7 +319,7 @@ public class SelectedSkeleton implements Cloneable {
     /**
      * Enumerate the root bones in the selected skeleton.
      *
-     * @return a new list of names
+     * @return a new list of bone names (each non-empty)
      */
     public List<String> listRootBoneNames() {
         List<String> boneNames = new ArrayList<>(5);
@@ -334,6 +334,25 @@ public class SelectedSkeleton implements Cloneable {
         }
 
         return boneNames;
+    }
+
+    /**
+     * Enumerate the root bones in the selected skeleton.
+     *
+     * @return a new list of bone indices
+     */
+    public List<Integer> listRootIndices() {
+        List<Integer> result = new ArrayList<>(5);
+        Skeleton skeleton = findSkeleton();
+        if (skeleton != null) {
+            Bone[] roots = skeleton.getRoots();
+            for (Bone rootBone : roots) {
+                int index = skeleton.getBoneIndex(rootBone);
+                result.add(index);
+            }
+        }
+
+        return result;
     }
 
     /**
