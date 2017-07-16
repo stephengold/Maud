@@ -471,9 +471,32 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * List the indices of all bones with tracks in the loaded animation.
+     *
+     * @return a new list, in arbitrary order
+     */
+    public List<Integer> listBoneIndicesWithTracks() {
+        int numTracks = countTracks();
+        List<Integer> result = new ArrayList<>(numTracks);
+        Animation animation = getAnimation();
+        if (animation != null) {
+            Track[] tracks = animation.getTracks();
+            for (Track track : tracks) {
+                if (track instanceof BoneTrack) {
+                    BoneTrack boneTrack = (BoneTrack) track;
+                    int index = boneTrack.getTargetBoneIndex();
+                    result.add(index);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * List the names of all bones with tracks in the loaded animation.
      *
-     * @return a new list
+     * @return a new list, in arbitrary order
      */
     public List<String> listBonesWithTrack() {
         int numTracks = countTracks();
