@@ -235,6 +235,49 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
+     * Enumerate the indices of the selected bone and all its ancestors.
+     *
+     * @return a new list
+     */
+    public List<Integer> listAncestorIndices() {
+        List<Integer> result = new ArrayList<>(6);
+        Skeleton skeleton = loadedCgm.bones.findSkeleton();
+        Bone bone = getBone();
+        while (bone != null) {
+            int index = skeleton.getBoneIndex(bone);
+            result.add(index);
+            bone = bone.getParent();
+        }
+
+        return result;
+    }
+
+    /**
+     * Enumerate the indices of all children of the selected bone.
+     *
+     * @return a new list
+     */
+    public List<Integer> listChildIndices() {
+        List<Integer> result;
+        Bone bone = getBone();
+        if (bone == null) {
+            result = new ArrayList<>(0);
+        } else {
+            Skeleton skeleton = loadedCgm.bones.findSkeleton();
+
+            List<Bone> children = bone.getChildren();
+            int numChildren = children.size();
+            result = new ArrayList<>(numChildren);
+            for (Bone child : children) {
+                int index = skeleton.getBoneIndex(child);
+                result.add(index);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Enumerate the names of all children of the selected bone.
      *
      * @return a new list
@@ -283,6 +326,23 @@ public class SelectedBone implements Cloneable {
         storeResult = pose.modelTransform(boneIndex, storeResult);
 
         return storeResult;
+    }
+
+    /**
+     * Find the index of the parent of the selected bone.
+     *
+     * @return bone index, or -1 if none
+     */
+    public int parentIndex() {
+        int index = -1;
+        Bone bone = getBone();
+        if (bone != null) {
+            Skeleton skeleton = loadedCgm.bones.findSkeleton();
+            Bone parent = bone.getParent();
+            index = skeleton.getBoneIndex(parent);
+        }
+
+        return index;
     }
 
     /**
