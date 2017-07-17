@@ -49,6 +49,10 @@ public class ScorePov implements Cloneable, Pov {
      */
     final private static float dollyInOutRate = 15f;
     /**
+     * 1/2 the width of the camera's frustum (in world units)
+     */
+    final private static float halfWidth = 0.7f;
+    /**
      * maximum half height of the camera's frustum (in world units)
      */
     final private static float maxHalfHeight = 100f;
@@ -56,10 +60,6 @@ public class ScorePov implements Cloneable, Pov {
      * minimum half height of the camera's frustum (in world units)
      */
     final private static float minHalfHeight = 0.1f;
-    /**
-     * 1/2 the width of the camera's frustum (in world units)
-     */
-    final private static float halfWidth = 0.65f;
     /**
      * message logger for this class
      */
@@ -80,7 +80,7 @@ public class ScorePov implements Cloneable, Pov {
     /**
      * location of the camera (in world coordinates)
      */
-    private Vector3f cameraLocation = new Vector3f(0.4f, -4f, 0f);
+    private Vector3f cameraLocation = new Vector3f(0.45f, -4f, 0f);
     // *************************************************************************
     // new methods exposed
 
@@ -133,6 +133,23 @@ public class ScorePov implements Cloneable, Pov {
         assert left < 0f : left;
         float center = camera.getLocation().x;
         float result = center + left;
+
+        return result;
+    }
+
+    /**
+     * Calculate the world X-coordinate at the right edge of the camera's
+     * frustum.
+     *
+     * @return coordinate value
+     */
+    public float rightX() {
+        ScoreView view = loadedCgm.getScoreView();
+        Camera camera = view.getCamera();
+        float right = camera.getFrustumRight();
+        assert right > 0f : right;
+        float center = camera.getLocation().x;
+        float result = center + right;
 
         return result;
     }

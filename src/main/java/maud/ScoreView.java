@@ -55,11 +55,12 @@ import jme3utilities.Validate;
 import jme3utilities.mesh.RectangleMesh;
 import jme3utilities.mesh.RectangleOutlineMesh;
 import maud.mesh.Finial;
+import maud.mesh.RoundedRectangle;
 import maud.mesh.Sparkline;
 import maud.model.LoadedCgm;
 
 /**
- * A 2D visualization of a loaded animation in Maud's "score" mode.
+ * A 2D, score-mode visualization of a loaded animation in Maud.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -68,7 +69,8 @@ public class ScoreView {
     // constants and loggers
 
     /**
-     * gap between bone labels and left edge of viewport (in world units)
+     * horizontal gap between visuals and left/right edges of the viewport (in
+     * world units) TODO rename xGap
      */
     final private static float leftGap = 0.01f;
     /**
@@ -80,9 +82,25 @@ public class ScoreView {
      */
     final private static float sparklineHeight = 0.08f;
     /**
-     * world Z-coordinate for lines
+     * world X-coordinate for left edges of sparklines
+     */
+    final private static float xLeftMargin = 0f;
+    /**
+     * world X-coordinate for right edges of sparklines
+     */
+    final private static float xRightMargin = 1f;
+    /**
+     * vertical gap between staves (in world units)
+     */
+    final private static float yGap = 0.1f;
+    /**
+     * world Z-coordinate for lines TODO rename zLines
      */
     final private static float z = -10f;
+    /**
+     * world Z-coordinate for labels and icons
+     */
+    final private static float zLabels = z + 1f;
     /**
      * hash-mark mesh to represent a bone without a track, or any bone when the
      * POV is zoomed all the way out
@@ -96,7 +114,13 @@ public class ScoreView {
     final private static Logger logger = Logger.getLogger(
             ScoreView.class.getName());
     /**
-     * rectangle for a right end cap when the POV is zoomed part way out
+     * square mesh for a transform icon
+     */
+    final private static Mesh iconMesh = new RoundedRectangle(0f, 1f, -0.5f,
+            0.5f, 0.3f, 1f);
+    /**
+     * rectangular outline for an end cap when the POV is zoomed part way out
+     * TODO rename outlineMesh
      */
     final private static Mesh rectangle = new RectangleOutlineMesh(0f, hashSize,
             -1f, 0f);
@@ -134,7 +158,7 @@ public class ScoreView {
      */
     private float[] ts, ws, xs, ys, zs;
     /**
-     * index of the bone currently being visualized
+     * index (in the selected skeleton) of the bone currently being visualized
      */
     private int currentBone;
     /**
@@ -157,6 +181,18 @@ public class ScoreView {
      * material for label backgrounds of selected bones
      */
     private static Material bgSelected = null;
+    /**
+     * material for rotation icons
+     */
+    private static Material rotMaterial;
+    /**
+     * material for scale icons
+     */
+    private static Material scaMaterial;
+    /**
+     * material for translation icons
+     */
+    private static Material traMaterial;
     /**
      * material for finials of non-selected bones
      */
@@ -208,7 +244,7 @@ public class ScoreView {
      * created)
      * @param port3 view port to use in hybrid view mode (alias created)
      */
-    public ScoreView(ViewPort port1, ViewPort port2, ViewPort port3) {
+    ScoreView(ViewPort port1, ViewPort port2, ViewPort port3) {
         Validate.nonNull(port2, "port2");
 
         viewPort1 = port1;
@@ -268,7 +304,6 @@ public class ScoreView {
      */
     public Camera getCamera() {
         Camera result = null;
-
         ViewPort viewPort = getViewPort();
         if (viewPort != null) {
             result = viewPort.getCamera();
@@ -278,7 +313,7 @@ public class ScoreView {
     }
 
     /**
-     * Read the height of this score.
+     * Read the height of this score, not including the gnomon.
      *
      * @return height (in world units, &ge;0)
      */
@@ -292,7 +327,7 @@ public class ScoreView {
      *
      * @return a pre-existing, enabled view port, or null if none
      */
-    public ViewPort getViewPort() {
+    ViewPort getViewPort() {
         ViewPort result = null;
         String viewMode = Maud.model.misc.getViewMode();
         if (viewMode.equals("hybrid")) {
@@ -397,7 +432,7 @@ public class ScoreView {
         int numBones = cgm.bones.countBones();
         for (currentBone = 0; currentBone < numBones; currentBone++) {
             if (currentBone > 0) {
-                height += 0.1f; // space between staves
+                height += yGap;
             }
             attachStaff();
         }
@@ -454,7 +489,7 @@ public class ScoreView {
         label.setLocalScale(compression, 1f, 1f);
         float leftX = rightX - boxWidth * compression;
         float topY = centerY + boxHeight / 2;
-        label.setLocalTranslation(leftX, topY, z + 0.2f);
+        label.setLocalTranslation(leftX, topY, zLabels);
         String labelName = String.format("label%d", currentBone);
         label.setName(labelName);
         label.setQueueBucket(RenderQueue.Bucket.Transparent);
@@ -512,14 +547,14 @@ public class ScoreView {
          */
         String name = String.format("left finial%d", currentBone);
         Geometry geometry = new Geometry(name, finial);
-        geometry.setLocalTranslation(0f, -height, z);
-        geometry.setMaterial(wireMaterial);
         visuals.attachChild(geometry);
+        geometry.setLocalTranslation(xLeftMargin, -height, z);
+        geometry.setMaterial(wireMaterial);
         /*
          * Attach a bone label to the left of the left-hand finial.
          */
         float leftX = cgm.scorePov.leftX() + leftGap;
-        float rightX = -hashSize;
+        float rightX = xLeftMargin - hashSize;
         float staffHeight = finial.getHeight();
         float middleY = -(height + staffHeight / 2);
         float compression = cgm.scorePov.compression();
@@ -531,10 +566,42 @@ public class ScoreView {
          */
         name = String.format("right finial%d", currentBone);
         geometry = new Geometry(name, finial);
-        geometry.setLocalTranslation(1f, -height, z);
+        visuals.attachChild(geometry);
+        geometry.setLocalTranslation(xRightMargin, -height, z);
         geometry.setLocalScale(-1f, 1f, 1f);
         geometry.setMaterial(wireMaterial);
-        visuals.attachChild(geometry);
+        /*
+         * Attach transform icons to the right of the right-hand finial.
+         */
+        leftX = xRightMargin + hashSize * 2f / 3;
+        rightX = cgm.scorePov.rightX() - leftGap;
+        maxWidth = (rightX - leftX) / compression;
+        middleY = -height - sparklineHeight / 2 - (float) Finial.hpf;
+
+        boolean translations = Maud.model.score.showsTranslations();
+        if (translations) {
+            float maxHeight = 2 * (float) Finial.hpf;
+            attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "tra",
+                    traMaterial);
+            middleY -= 3 * (float) Finial.hpf;
+        }
+
+        boolean rotations = Maud.model.score.showsRotations();
+        if (rotations) {
+            middleY -= 0.5f * (float) Finial.hpf;
+            float maxHeight = 3 * (float) Finial.hpf;
+            attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "rot",
+                    rotMaterial);
+            middleY -= 3.5f * (float) Finial.hpf;
+        }
+
+        boolean scales = Maud.model.score.showsScales();
+        boolean hasScales = cgm.animation.hasScales(currentBone);
+        if (scales && hasScales) {
+            float maxHeight = 2 * (float) Finial.hpf;
+            attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "sca",
+                    scaMaterial);
+        }
     }
 
     /**
@@ -575,14 +642,14 @@ public class ScoreView {
 
         String name = String.format("left hash%d", currentBone);
         Geometry geometry = new Geometry(name, hashMark);
-        geometry.setLocalTranslation(0f, y, z);
+        geometry.setLocalTranslation(xLeftMargin, y, z);
         geometry.setMaterial(material);
         visuals.attachChild(geometry);
 
         name = String.format("right hash%d", currentBone);
         geometry = new Geometry(name, hashMark);
-        geometry.setLocalTranslation(1f, y, z);
-        geometry.setLocalScale(-1f, 1f, 1f);
+        geometry.setLocalTranslation(xRightMargin, y, z);
+        geometry.setLocalScale(-1f, 1f, 1f); // grows to the right
         geometry.setMaterial(material);
         visuals.attachChild(geometry);
     }
@@ -655,7 +722,7 @@ public class ScoreView {
         Geometry geometry = new Geometry(rectName, rectangle);
         visuals.attachChild(geometry);
         geometry.setLocalScale(-0.2f, staffHeight, 1f);
-        geometry.setLocalTranslation(0f, -height, z);
+        geometry.setLocalTranslation(xLeftMargin, -height, z);
         geometry.setMaterial(wireMaterial);
         /*
          * Attach a bone label overlapping the left-hand rectangle.
@@ -674,7 +741,7 @@ public class ScoreView {
         geometry = new Geometry(rectName, rectangle);
         visuals.attachChild(geometry);
         geometry.setLocalScale(1f, staffHeight, 1f);
-        geometry.setLocalTranslation(1f, -height, z);
+        geometry.setLocalTranslation(xRightMargin, -height, z);
         geometry.setMaterial(wireMaterial);
     }
 
@@ -736,7 +803,7 @@ public class ScoreView {
 
         float yOffset = sparklineHeight + yIndex * (float) Finial.hpf;
         float y = -height - yOffset;
-        geometry.setLocalTranslation(0f, y, z);
+        geometry.setLocalTranslation(xLeftMargin, y, z);
         geometry.setMaterial(material);
         visuals.attachChild(geometry);
     }
@@ -836,11 +903,38 @@ public class ScoreView {
         int numShown = indices.size();
         for (int i = 0; i < numShown; i++) {
             if (i > 0) {
-                height += 0.1f; // space between staves
+                height += yGap;
             }
             currentBone = indices.get(i);
             attachStaff();
         }
+    }
+
+    /**
+     * Attach a left-aligned transform icon to the visuals.
+     *
+     * @param leftX world X coordinate for the left edge of the icon
+     * @param middleY world Y coordinate for the center of the icon
+     * @param maxWidth maximum width of icon (in compressed units, &gt;0)
+     * @param maxHeight maximum height of icon (in world units, &gt;0)
+     * @param prefix prefix for the geometry name (not null)
+     * @param material material to apply (not null)
+     */
+    private void attachTransformIcon(float leftX, float middleY, float maxWidth,
+            float maxHeight, String prefix, Material material) {
+        assert maxHeight > 0f : maxHeight;
+        assert maxWidth > 0f : maxWidth;
+        assert material != null;
+
+        float size = Math.min(maxHeight, maxWidth);
+        String name = String.format("%s%d", prefix, currentBone);
+        Geometry geometry = new Geometry(name, iconMesh);
+        visuals.attachChild(geometry);
+        float compression = cgm.scorePov.compression();
+        geometry.setLocalScale(compression * size, size, 1f);
+        geometry.setLocalTranslation(leftX, middleY, zLabels);
+        geometry.setMaterial(material);
+        geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
     }
 
     /**
@@ -888,5 +982,12 @@ public class ScoreView {
                 pointSize);
         zMaterial = MyAsset.createWireframeMaterial(assetManager, blue,
                 pointSize);
+
+        traMaterial = MyAsset.createUnshadedMaterial(assetManager,
+                "Textures/icons/translate.png");
+        rotMaterial = MyAsset.createUnshadedMaterial(assetManager,
+                "Textures/icons/rotate.png");
+        scaMaterial = MyAsset.createUnshadedMaterial(assetManager,
+                "Textures/icons/scale.png");
     }
 }
