@@ -69,11 +69,6 @@ public class ScoreView {
     // constants and loggers
 
     /**
-     * horizontal gap between visuals and left/right edges of the viewport (in
-     * world units) TODO rename xGap
-     */
-    final private static float leftGap = 0.01f;
-    /**
      * horizontal size of hash mark (in world units)
      */
     final private static float hashSize = 0.05f;
@@ -81,6 +76,11 @@ public class ScoreView {
      * height of a spark line (in world units)
      */
     final private static float sparklineHeight = 0.08f;
+    /**
+     * horizontal gap between visuals and left/right edges of the viewport (in
+     * world units)
+     */
+    final private static float xGap = 0.01f;
     /**
      * world X-coordinate for left edges of sparklines
      */
@@ -94,13 +94,13 @@ public class ScoreView {
      */
     final private static float yGap = 0.1f;
     /**
-     * world Z-coordinate for lines TODO rename zLines
+     * world Z-coordinate for lines
      */
-    final private static float z = -10f;
+    final private static float zLines = -10f;
     /**
      * world Z-coordinate for labels and icons
      */
-    final private static float zLabels = z + 1f;
+    final private static float zLabels = zLines + 1f;
     /**
      * hash-mark mesh to represent a bone without a track, or any bone when the
      * POV is zoomed all the way out
@@ -120,10 +120,9 @@ public class ScoreView {
             0.5f, 0.3f, 1f);
     /**
      * rectangular outline for an end cap when the POV is zoomed part way out
-     * TODO rename outlineMesh
      */
-    final private static Mesh rectangle = new RectangleOutlineMesh(0f, hashSize,
-            -1f, 0f);
+    final private static Mesh outlineMesh = new RectangleOutlineMesh(0f,
+            hashSize, -1f, 0f);
     // *************************************************************************
     // fields
 
@@ -269,8 +268,8 @@ public class ScoreView {
         float dSquared = Float.POSITIVE_INFINITY;
         if (boneYs.containsKey(boneI)) {
             float boneY = boneYs.get(boneI);
-            Vector3f boneInWorld0 = new Vector3f(0f, boneY, z);
-            Vector3f boneInWorld1 = new Vector3f(1f, boneY, z);
+            Vector3f boneInWorld0 = new Vector3f(0f, boneY, zLines);
+            Vector3f boneInWorld1 = new Vector3f(1f, boneY, zLines);
             /*
              * Calculate the endpoints of the segment in screen space
              * that represent the bone.
@@ -548,12 +547,12 @@ public class ScoreView {
         String name = String.format("left finial%d", currentBone);
         Geometry geometry = new Geometry(name, finial);
         visuals.attachChild(geometry);
-        geometry.setLocalTranslation(xLeftMargin, -height, z);
+        geometry.setLocalTranslation(xLeftMargin, -height, zLines);
         geometry.setMaterial(wireMaterial);
         /*
          * Attach a bone label to the left of the left-hand finial.
          */
-        float leftX = cgm.scorePov.leftX() + leftGap;
+        float leftX = cgm.scorePov.leftX() + xGap;
         float rightX = xLeftMargin - hashSize;
         float staffHeight = finial.getHeight();
         float middleY = -(height + staffHeight / 2);
@@ -567,14 +566,14 @@ public class ScoreView {
         name = String.format("right finial%d", currentBone);
         geometry = new Geometry(name, finial);
         visuals.attachChild(geometry);
-        geometry.setLocalTranslation(xRightMargin, -height, z);
+        geometry.setLocalTranslation(xRightMargin, -height, zLines);
         geometry.setLocalScale(-1f, 1f, 1f);
         geometry.setMaterial(wireMaterial);
         /*
          * Attach transform icons to the right of the right-hand finial.
          */
         leftX = xRightMargin + hashSize * 2f / 3;
-        rightX = cgm.scorePov.rightX() - leftGap;
+        rightX = cgm.scorePov.rightX() - xGap;
         maxWidth = (rightX - leftX) / compression;
         middleY = -height - sparklineHeight / 2 - (float) Finial.hpf;
 
@@ -617,8 +616,8 @@ public class ScoreView {
         }
 
         float handleSize = 0.1f * cgm.scorePov.getHalfHeight();
-        Vector3f start = new Vector3f(x, handleSize, z);
-        Vector3f end = new Vector3f(x, -height - handleSize, z);
+        Vector3f start = new Vector3f(x, handleSize, zLines);
+        Vector3f end = new Vector3f(x, -height - handleSize, zLines);
         Line line = new Line(start, end);
 
         Geometry geometry = new Geometry("gnomon", line);
@@ -642,13 +641,13 @@ public class ScoreView {
 
         String name = String.format("left hash%d", currentBone);
         Geometry geometry = new Geometry(name, hashMark);
-        geometry.setLocalTranslation(xLeftMargin, y, z);
+        geometry.setLocalTranslation(xLeftMargin, y, zLines);
         geometry.setMaterial(material);
         visuals.attachChild(geometry);
 
         name = String.format("right hash%d", currentBone);
         geometry = new Geometry(name, hashMark);
-        geometry.setLocalTranslation(xRightMargin, y, z);
+        geometry.setLocalTranslation(xRightMargin, y, zLines);
         geometry.setLocalScale(-1f, 1f, 1f); // grows to the right
         geometry.setMaterial(material);
         visuals.attachChild(geometry);
@@ -719,15 +718,15 @@ public class ScoreView {
          * Attach the left-hand rectangle: a narrow outline.
          */
         String rectName = String.format("left rect%d", currentBone);
-        Geometry geometry = new Geometry(rectName, rectangle);
+        Geometry geometry = new Geometry(rectName, outlineMesh);
         visuals.attachChild(geometry);
         geometry.setLocalScale(-0.2f, staffHeight, 1f);
-        geometry.setLocalTranslation(xLeftMargin, -height, z);
+        geometry.setLocalTranslation(xLeftMargin, -height, zLines);
         geometry.setMaterial(wireMaterial);
         /*
          * Attach a bone label overlapping the left-hand rectangle.
          */
-        float leftX = cgm.scorePov.leftX() + leftGap;
+        float leftX = cgm.scorePov.leftX() + xGap;
         float rightX = -0.2f * hashSize;
         float middleY = -(height + staffHeight / 2);
         float compression = cgm.scorePov.compression();
@@ -738,10 +737,10 @@ public class ScoreView {
          * Attach the right-hand rectangle: an outline.
          */
         rectName = String.format("right rect%d", currentBone);
-        geometry = new Geometry(rectName, rectangle);
+        geometry = new Geometry(rectName, outlineMesh);
         visuals.attachChild(geometry);
         geometry.setLocalScale(1f, staffHeight, 1f);
-        geometry.setLocalTranslation(xRightMargin, -height, z);
+        geometry.setLocalTranslation(xRightMargin, -height, zLines);
         geometry.setMaterial(wireMaterial);
     }
 
@@ -803,7 +802,7 @@ public class ScoreView {
 
         float yOffset = sparklineHeight + yIndex * (float) Finial.hpf;
         float y = -height - yOffset;
-        geometry.setLocalTranslation(xLeftMargin, y, z);
+        geometry.setLocalTranslation(xLeftMargin, y, zLines);
         geometry.setMaterial(material);
         visuals.attachChild(geometry);
     }
@@ -880,7 +879,7 @@ public class ScoreView {
                 /*
                  * Attach a bone label overlapping the left-hand hash mark.
                  */
-                float leftX = cgm.scorePov.leftX() + leftGap;
+                float leftX = cgm.scorePov.leftX() + xGap;
                 float rightX = -0.2f * hashSize;
                 float middleY = -height;
                 float compression = cgm.scorePov.compression();
