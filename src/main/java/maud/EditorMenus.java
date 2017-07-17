@@ -795,6 +795,7 @@ class EditorMenus {
      * Build a View menu.
      */
     private void buildViewMenu() {
+        builder.add("Mode");
         String viewMode = Maud.model.misc.getViewMode();
         if (viewMode.equals("scene") || viewMode.equals("hybrid")) {
             builder.addTool("Axes");
@@ -1561,53 +1562,83 @@ class EditorMenus {
     private boolean menuView(String remainder) {
         assert remainder != null;
 
-        boolean handled = false;
+        boolean handled = true;
+        String modePrefix = "Mode" + menuSeparator;
+        if (remainder.startsWith(modePrefix)) {
+            String arg = MyString.remainder(remainder, modePrefix);
+            handled = menuViewMode(arg);
+
+        } else {
+            switch (remainder) {
+                case "Axes":
+                    Maud.gui.tools.select("axes");
+                    break;
+                case "Background":
+                    Maud.gui.tools.select("background");
+                    break;
+                case "Bounds":
+                    Maud.gui.tools.select("bounds");
+                    break;
+                case "Camera":
+                    Maud.gui.tools.select("camera");
+                    break;
+                case "Cursor":
+                    Maud.gui.tools.select("cursor");
+                    break;
+                case "Mode":
+                    selectViewMode();
+                    break;
+                case "Physics":
+                    handled = false;
+                    break;
+                case "Platform":
+                    Maud.gui.tools.select("platform");
+                    break;
+                case "Render":
+                    Maud.gui.tools.select("render");
+                    break;
+                case "Score":
+                    Maud.gui.tools.select("score");
+                    break;
+                case "Skeleton":
+                    Maud.gui.tools.select("skeleton");
+                    break;
+                case "Skeleton color":
+                    Maud.gui.tools.select("skeletonColor");
+                    break;
+                case "Sky":
+                    Maud.gui.tools.select("sky");
+                    break;
+                default:
+                    handled = false;
+            }
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "View -> Mode" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuViewMode(String remainder) {
+        assert remainder != null;
+
+        boolean handled = true;
         switch (remainder) {
-            case "Axes":
-                Maud.gui.tools.select("axes");
-                handled = true;
+            case "Hybrid":
+                Maud.model.misc.setViewMode("hybrid");
                 break;
-            case "Background":
-                Maud.gui.tools.select("background");
-                handled = true;
-                break;
-            case "Bounds":
-                Maud.gui.tools.select("bounds");
-                handled = true;
-                break;
-            case "Camera":
-                Maud.gui.tools.select("camera");
-                handled = true;
-                break;
-            case "Cursor":
-                Maud.gui.tools.select("cursor");
-                handled = true;
-                break;
-            case "Physics":
-                break;
-            case "Platform":
-                Maud.gui.tools.select("platform");
-                handled = true;
-                break;
-            case "Render":
-                Maud.gui.tools.select("render");
-                handled = true;
+            case "Scene":
+                Maud.model.misc.setViewMode("scene");
                 break;
             case "Score":
-                Maud.gui.tools.select("score");
-                handled = true;
+                Maud.model.misc.setViewMode("score");
                 break;
-            case "Skeleton":
-                Maud.gui.tools.select("skeleton");
-                handled = true;
-                break;
-            case "Skeleton color":
-                Maud.gui.tools.select("skeletonColor");
-                handled = true;
-                break;
-            case "Sky":
-                Maud.gui.tools.select("sky");
-                handled = true;
+            default:
+                handled = false;
         }
 
         return handled;
@@ -1728,6 +1759,24 @@ class EditorMenus {
         }
 
         builder.show("select menuItem Spatial -> Select -> ");
+    }
+
+    /**
+     * Handle a "select viewMode" action without an argument.
+     */
+    private void selectViewMode() {
+        builder.reset();
+        String viewMode = Maud.model.misc.getViewMode();
+        if (!viewMode.equals("scene")) {
+            builder.add("Scene");
+        }
+        if (!viewMode.equals("score")) {
+            builder.add("Score");
+        }
+        if (!viewMode.equals("hybrid")) {
+            builder.add("Hybrid");
+        }
+        builder.show("select menuItem View -> Mode -> ");
     }
 
     /**
