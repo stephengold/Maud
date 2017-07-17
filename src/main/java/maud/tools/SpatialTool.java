@@ -76,6 +76,7 @@ class SpatialTool extends WindowController {
 
         updateTreePosition();
 
+        updateBatchHint();
         updateBucket();
         updateChildren();
         updateSgcs();
@@ -90,6 +91,15 @@ class SpatialTool extends WindowController {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Update the display of the spatial's batch hint.
+     */
+    private void updateBatchHint() {
+        Spatial.BatchHint hint = Maud.model.target.spatial.getLocalBatchHint();
+        String text = hint.toString();
+        Maud.gui.setStatusText("spatialBatchHint", " " + text);
+    }
 
     /**
      * Update the display of the spatial's render-queue bucket.
@@ -132,7 +142,7 @@ class SpatialTool extends WindowController {
     }
 
     /**
-     * Update the display of the spatial's cull hints.
+     * Update the display of the spatial's cull hint.
      */
     private void updateHint() {
         Spatial.CullHint hint = Maud.model.target.spatial.getLocalCullHint();

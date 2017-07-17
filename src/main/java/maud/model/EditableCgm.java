@@ -332,11 +332,27 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter the batch hint of the selected spatial.
+     *
+     * @param newHint new value for batch hint (not null)
+     */
+    public void setBatchHint(Spatial.BatchHint newHint) {
+        Validate.nonNull(newHint, "batch hint");
+
+        Spatial modelSpatial = spatial.underRoot(rootSpatial);
+        Spatial.BatchHint oldHint = modelSpatial.getLocalBatchHint();
+        if (oldHint != newHint) {
+            modelSpatial.setBatchHint(newHint);
+            setEdited("change batch hint");
+        }
+    }
+
+    /**
      * Alter the cull hint of the selected spatial.
      *
      * @param newHint new value for cull hint (not null)
      */
-    public void setHint(Spatial.CullHint newHint) {
+    public void setCullHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
         Spatial modelSpatial = spatial.underRoot(rootSpatial);
@@ -344,16 +360,16 @@ public class EditableCgm extends LoadedCgm {
         if (oldHint != newHint) {
             modelSpatial.setCullHint(newHint);
             setEdited("change cull hint");
-            getSceneView().setHint(newHint);
+            getSceneView().setCullHint(newHint);
         }
     }
 
     /**
-     * Alter the shadow mode of the selected spatial.
+     * Alter the shadow mode of the selected spatial. TODO sort methods
      *
      * @param newMode new value for shadow mode (not null)
      */
-    public void setMode(RenderQueue.ShadowMode newMode) {
+    public void setShadowMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "shadow mode");
 
         Spatial modelSpatial = spatial.underRoot(rootSpatial);
@@ -387,6 +403,23 @@ public class EditableCgm extends LoadedCgm {
             boneTrack.setKeyframes(times, translations, rotations, scales);
         }
         setEdited("replace keyframes");
+    }
+
+    /**
+     * Alter the queue bucket of the selected spatial.
+     *
+     * @param newBucket new value for queue bucket (not null)
+     */
+    public void setQueueBucket(RenderQueue.Bucket newBucket) {
+        Validate.nonNull(newBucket, "queue bucket");
+
+        Spatial modelSpatial = spatial.underRoot(rootSpatial);
+        RenderQueue.Bucket oldBucket = modelSpatial.getLocalQueueBucket();
+        if (oldBucket != newBucket) {
+            modelSpatial.setQueueBucket(newBucket);
+            setEdited("change queue bucket");
+            getSceneView().setQueueBucket(newBucket);
+        }
     }
 
     /**

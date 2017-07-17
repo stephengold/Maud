@@ -677,39 +677,6 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
-            <control name="window" id="cullHintTool" title="Cull Hint Tool"
-                     backgroundColor="#ffcf"
-                     hideOnClose="true"
-                     height="130px" width="160px" x="20" y="80">
-                <panel childLayout="vertical">
-                    <control name="radioButtonGroup" id="cullGroup"/>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="cullInheritRadioButton"
-                                 group="cullGroup"/>
-                        <control name="label" width="12"/>
-                        <control name="label" text="inherit from parent"/>
-                    </panel>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="cullDynamicRadioButton"
-                                 group="cullGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="dynamic culling"/>
-                    </panel>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="cullAlwaysRadioButton"
-                                 group="cullGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="always cull"/>
-                    </panel>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="cullNeverRadioButton"
-                                 group="cullGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="never cull"/>
-                    </panel>
-                </panel>
-            </control>
-
             <control name="window" id="cursorTool" title="Cursor Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
@@ -1352,45 +1319,6 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
-            <control name="window" id="shadowModeTool" title="Shadow Mode Tool"
-                     backgroundColor="#ffcf"
-                     hideOnClose="true"
-                     height="160px" width="160px" x="20" y="80">
-                <panel childLayout="vertical">
-                    <control name="radioButtonGroup" id="shadowGroup"/>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="shadowOffRadioButton"
-                                 group="shadowGroup"/>
-                        <control name="label" width="12"/>
-                        <control name="label" text="off"/>
-                    </panel>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="shadowCastRadioButton"
-                                 group="shadowGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="cast only"/>
-                    </panel>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="shadowReceiveRadioButton"
-                                 group="shadowGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="receive only"/>
-                    </panel>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="shadowCastAndReceiveRadioButton"
-                                 group="shadowGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="cast and receive"/>
-                    </panel>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="shadowInheritRadioButton"
-                                 group="shadowGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="inherit from parent"/>
-                    </panel>
-                </panel>
-            </control>
-
             <control name="window" id="sourceAnimationTool" title="Source Animation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
@@ -1603,44 +1531,58 @@ the menu bar, status bar, and tool windows.
                     </panel>
                     <panel/>
                     <panel childLayout="horizontal">
-                        <control name="label" text="Shadows:  "
+                        <control name="label" text="Shadow mode:  "
                                  textHAlign="right"
-                                 width="60px"/>
+                                 width="90px"/>
                         <control name="label" id="spatialShadows"
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Edit"
                                  id="id30ToAvoidNiftyWarning"
                                  width="50px">
-                            <interact onRelease="perform(select tool shadowMode)"/>
-                        </control>
-                    </panel>
-                    <panel/>
-                    <panel childLayout="horizontal">
-                        <control name="label" text="Bucket:  "
-                                 textHAlign="right"
-                                 width="60px"/>
-                        <control name="label" id="spatialBucket"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" label="Edit"
-                                 id="id31ToAvoidNiftyWarning"
-                                 width="50px">
-                            <interact onRelease="perform(edit bucket)"/>
+                            <interact onRelease="perform(set shadowMode)"/>
                         </control>
                     </panel>
                     <panel/>
                     <panel childLayout="horizontal">
                         <control name="label" text="Cull hint:  "
                                  textHAlign="right"
-                                 width="60px"/>
+                                 width="90px"/>
                         <control name="label" id="spatialHint"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Edit"
+                                 id="id31ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(set cullHint)"/>
+                        </control>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Queue bucket:  "
+                                 textHAlign="right"
+                                 width="90px"/>
+                        <control name="label" id="spatialBucket"
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Edit"
                                  id="id32ToAvoidNiftyWarning"
                                  width="50px">
-                            <interact onRelease="perform(select tool cullHint)"/>
+                            <interact onRelease="perform(set queueBucket)"/>
+                        </control>
+                    </panel>
+                    <panel/>
+                    <panel childLayout="horizontal">
+                        <control name="label" text="Batch hint:  "
+                                 textHAlign="right"
+                                 width="90px"/>
+                        <control name="label" id="spatialBatchHint"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Edit"
+                                 id="id33ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(set batchHint)"/>
                         </control>
                     </panel>
                 </panel>

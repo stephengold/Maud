@@ -392,11 +392,11 @@ public class SceneView implements JmeCloneable {
     }
 
     /**
-     * Alter the cull hint of the selected spatial.
+     * Alter the cull hint of the selected spatial. TODO sort methods
      *
      * @param newHint new value for cull hint (not null)
      */
-    public void setHint(Spatial.CullHint newHint) {
+    public void setCullHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
         Spatial spatial = selectedSpatial();
@@ -429,6 +429,18 @@ public class SceneView implements JmeCloneable {
             scene.attachChild(platformSpatial);
         }
         platform = platformSpatial;
+    }
+
+    /**
+     * Alter the queue bucket of the selected spatial.
+     *
+     * @param newBucket new value for queue bucket (not null)
+     */
+    public void setQueueBucket(RenderQueue.Bucket newBucket) {
+        Validate.nonNull(newBucket, "queue bucket");
+
+        Spatial spatial = selectedSpatial();
+        spatial.setQueueBucket(newBucket);
     }
 
     /**

@@ -33,8 +33,6 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
-import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
@@ -326,19 +324,6 @@ public class EditorScreen extends GuiScreenController {
                 Maud.model.camera.setMode("parallel");
                 break;
 
-            case "cullInheritRadioButton":
-                Maud.model.target.setHint(Spatial.CullHint.Inherit);
-                break;
-            case "cullDynamicRadioButton":
-                Maud.model.target.setHint(Spatial.CullHint.Dynamic);
-                break;
-            case "cullAlwaysRadioButton":
-                Maud.model.target.setHint(Spatial.CullHint.Always);
-                break;
-            case "cullNeverRadioButton":
-                Maud.model.target.setHint(Spatial.CullHint.Never);
-                break;
-
             case "scoreNoneAllRadioButton":
                 Maud.model.score.setShowNoneSelected("all");
                 break;
@@ -363,22 +348,6 @@ public class EditorScreen extends GuiScreenController {
                 break;
             case "scoreWhenSelectedRadioButton":
                 Maud.model.score.setShowWhenSelected("selected");
-                break;
-
-            case "shadowOffRadioButton":
-                Maud.model.target.setMode(RenderQueue.ShadowMode.Off);
-                break;
-            case "shadowCastRadioButton":
-                Maud.model.target.setMode(RenderQueue.ShadowMode.Cast);
-                break;
-            case "shadowReceiveRadioButton":
-                Maud.model.target.setMode(RenderQueue.ShadowMode.Receive);
-                break;
-            case "shadowCastAndReceiveRadioButton":
-                Maud.model.target.setMode(RenderQueue.ShadowMode.CastAndReceive);
-                break;
-            case "shadowInheritRadioButton":
-                Maud.model.target.setMode(RenderQueue.ShadowMode.Inherit);
                 break;
 
             case "noPlatformRadioButton":

@@ -26,6 +26,8 @@
  */
 package maud;
 
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Spatial;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -447,6 +449,58 @@ class EditorMenus {
             builder.add(key);
         }
         builder.show(EditorInputMode.selectUserKeyPrefix);
+    }
+
+    /**
+     * Display a menu to set the batch hint of the current spatial using the
+     * "set batchHint " action prefix.
+     */
+    void setBatchHint() {
+        builder.reset();
+        for (Spatial.BatchHint hint : Spatial.BatchHint.values()) {
+            String name = hint.toString();
+            builder.add(name);
+        }
+        builder.show(EditorInputMode.setBatchHintPrefix);
+    }
+
+    /**
+     * Display a menu to set the cull hint of the current spatial using the "set
+     * cullHint " action prefix.
+     */
+    void setCullHint() {
+        builder.reset();
+        for (Spatial.CullHint hint : Spatial.CullHint.values()) {
+            String name = hint.toString();
+            builder.add(name);
+        }
+        builder.show(EditorInputMode.setCullHintPrefix);
+    }
+
+    /**
+     * Display a menu to set the render bucket of the current spatial using the
+     * "set renderBucket " action prefix.
+     */
+    void setQueueBucket() {
+        builder.reset();
+        for (RenderQueue.Bucket bucket : RenderQueue.Bucket.values()) {
+            String name = bucket.toString();
+            builder.add(name);
+        }
+        builder.show(EditorInputMode.setQueueBucketPrefix);
+    }
+
+    /**
+     * Display a menu to set the shadow mode of the current spatial using the
+     * "set shadowMode " action prefix.
+     */
+    void setShadowMode() {
+        builder.reset();
+        for (RenderQueue.ShadowMode mode : RenderQueue.ShadowMode.values()) {
+            String name = mode.toString();
+            builder.add(name);
+        }
+        builder.show(EditorInputMode.setShadowModePrefix);
     }
     // *************************************************************************
     // private methods

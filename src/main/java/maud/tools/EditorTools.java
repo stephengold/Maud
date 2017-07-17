@@ -94,10 +94,6 @@ public class EditorTools {
      */
     final CgmTool cgm;
     /**
-     * controller for the "Cull Hint Tool" window
-     */
-    final CullHintTool cullHint;
-    /**
      * controller for the "Cursor Tool" window
      */
     final public CursorTool cursor;
@@ -133,10 +129,6 @@ public class EditorTools {
      * controller for the "Control Tool" window
      */
     final SgcTool sgc;
-    /**
-     * controller for the "Shadow Tool" window
-     */
-    final ShadowModeTool shadowMode;
     /**
      * controller for the "Skeleton Color Tool" window
      */
@@ -198,7 +190,6 @@ public class EditorTools {
         bounds = new BoundsTool(screen);
         camera = new CameraTool(screen);
         cgm = new CgmTool(screen);
-        cullHint = new CullHintTool(screen);
         cursor = new CursorTool(screen);
         history = new HistoryTool(screen);
         keyframe = new KeyframeTool(screen);
@@ -208,7 +199,6 @@ public class EditorTools {
         retarget = new RetargetTool(screen);
         score = new ScoreTool(screen);
         sgc = new SgcTool(screen);
-        shadowMode = new ShadowModeTool(screen);
         skeletonColor = new SkeletonColorTool(screen);
         skeleton = new SkeletonTool(screen);
         sourceAnimation = new SourceAnimationTool(screen);
@@ -231,9 +221,9 @@ public class EditorTools {
     public void attachAll(AppStateManager stateManager) {
         stateManager.attach(cursor); // cursor before camera
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
-                boneScale, boneTranslation, bounds, camera, cullHint, history,
+                boneScale, boneTranslation, bounds, camera, history,
                 keyframe, mapping, cgm, platform, render, retarget, score, sgc,
-                shadowMode, skeleton, skeletonColor, sky, sourceAnimation,
+                skeleton, skeletonColor, sky, sourceAnimation,
                 spatial, spatialRotation, spatialScale, spatialTranslation,
                 twist, userData);
     }
@@ -279,9 +269,6 @@ public class EditorTools {
             case "cgm":
                 controller = cgm;
                 break;
-            case "cullHint":
-                controller = cullHint;
-                break;
             case "cursor":
                 controller = cursor;
                 break;
@@ -308,9 +295,6 @@ public class EditorTools {
                 break;
             case "sgc":
                 controller = sgc;
-                break;
-            case "shadowMode":
-                controller = shadowMode;
                 break;
             case "skeleton":
                 controller = skeleton;

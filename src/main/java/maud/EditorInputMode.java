@@ -32,6 +32,8 @@ import com.jme3.asset.AssetManager;
 import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Spatial;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -190,7 +192,26 @@ public class EditorInputMode extends InputMode {
      * action prefix: remainder is a pre-existing user key
      */
     final static String selectUserKeyPrefix = "select userKey ";
+    /**
+     * action prefix: remainder is the name of a batch hint
+     */
+    final static String setBatchHintPrefix = "set batchHint ";
+    /**
+     * action prefix: remainder is the name of a cull hint
+     */
+    final static String setCullHintPrefix = "set cullHint ";
+    /**
+     * action prefix: remainder is a duration in seconds
+     */
     final static String setDurationPrefix = "set duration ";
+    /**
+     * action prefix: remainder is the name of a queue bucket
+     */
+    final static String setQueueBucketPrefix = "set queueBucket ";
+    /**
+     * action prefix: remainder is the name of a shadow mode
+     */
+    final static String setShadowModePrefix = "set shadowMode ";
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
      */
@@ -915,6 +936,18 @@ public class EditorInputMode extends InputMode {
     private boolean setAction(String actionString) {
         boolean handled = true;
         switch (actionString) {
+            case "set batchHint":
+                Maud.gui.menus.setBatchHint();
+                break;
+            case "set cullHint":
+                Maud.gui.menus.setCullHint();
+                break;
+            case "set queueBucket":
+                Maud.gui.menus.setQueueBucket();
+                break;
+            case "set shadowMode":
+                Maud.gui.menus.setShadowMode();
+                break;
             case "set track rotation all":
                 Maud.model.target.track.setTrackRotationAll();
                 break;
@@ -949,6 +982,27 @@ public class EditorInputMode extends InputMode {
                 arg = MyString.remainder(actionString, setDurationPrefix);
                 float value = Float.parseFloat(arg);
                 Maud.model.target.animation.setDuration(value);
+                handled = true;
+            } else if (actionString.startsWith(setBatchHintPrefix)) {
+                arg = MyString.remainder(actionString, setBatchHintPrefix);
+                Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
+                Maud.model.target.setBatchHint(value);
+                handled = true;
+            } else if (actionString.startsWith(setCullHintPrefix)) {
+                arg = MyString.remainder(actionString, setCullHintPrefix);
+                Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
+                Maud.model.target.setCullHint(value);
+                handled = true;
+            } else if (actionString.startsWith(setQueueBucketPrefix)) {
+                arg = MyString.remainder(actionString, setQueueBucketPrefix);
+                RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
+                Maud.model.target.setQueueBucket(value);
+                handled = true;
+            } else if (actionString.startsWith(setShadowModePrefix)) {
+                arg = MyString.remainder(actionString, setShadowModePrefix);
+                RenderQueue.ShadowMode value;
+                value = RenderQueue.ShadowMode.valueOf(arg);
+                Maud.model.target.setShadowMode(value);
                 handled = true;
             }
         }

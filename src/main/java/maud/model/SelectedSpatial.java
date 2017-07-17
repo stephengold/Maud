@@ -242,13 +242,13 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Read the effective cull hint of the selected spatial.
+     * Read the local batch hint of the selected spatial.
      *
      * @return hint (not null)
      */
-    public Spatial.CullHint getCullHint() {
+    public Spatial.BatchHint getLocalBatchHint() {
         Spatial spatial = modelSpatial();
-        Spatial.CullHint result = spatial.getCullHint();
+        Spatial.BatchHint result = spatial.getLocalBatchHint();
 
         assert result != null;
         return result;
@@ -359,32 +359,6 @@ public class SelectedSpatial implements Cloneable {
             result = parent.getName();
         }
 
-        return result;
-    }
-
-    /**
-     * Read the effective render bucket of the selected spatial.
-     *
-     * @return bucket (not null)
-     */
-    public RenderQueue.Bucket getQueueBucket() {
-        Spatial spatial = modelSpatial();
-        RenderQueue.Bucket result = spatial.getQueueBucket();
-
-        assert result != null;
-        return result;
-    }
-
-    /**
-     * Read the effective shadow mode of the selected spatial.
-     *
-     * @return mode (not null)
-     */
-    public RenderQueue.ShadowMode getShadowMode() {
-        Spatial spatial = modelSpatial();
-        RenderQueue.ShadowMode result = spatial.getShadowMode();
-
-        assert result != null;
         return result;
     }
 
