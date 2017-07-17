@@ -88,7 +88,7 @@ public class EditorTools {
     /**
      * controller for the "Camera Tool" window
      */
-    final CameraTool camera;
+    final public CameraTool camera;
     /**
      * controller for the "Model Tool" window
      */

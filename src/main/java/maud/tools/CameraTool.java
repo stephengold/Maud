@@ -26,8 +26,7 @@
  */
 package maud.tools;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
+import com.jme3.input.InputManager;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.MouseAxisTrigger;
@@ -109,56 +108,73 @@ public class CameraTool
      * Map the middle mouse button (MMB) and mouse wheel, which together control
      * the camera position.
      */
-    void mapButton() {
+    public void mapButton() {
+        Maud application = Maud.getApplication();
+        InputManager inputMgr = application.getInputManager();
         /*
          * Turning the mouse wheel up triggers Pov.moveBackward().
          */
         boolean wheelUp = true;
         MouseAxisTrigger backwardTrigger;
         backwardTrigger = new MouseAxisTrigger(MouseInput.AXIS_WHEEL, wheelUp);
-        inputManager.addMapping(moveBackwardEvent, backwardTrigger);
-        inputManager.addListener(this, moveBackwardEvent);
+        inputMgr.addMapping(moveBackwardEvent, backwardTrigger);
+        inputMgr.addListener(this, moveBackwardEvent);
         /*
          * Turning the mouse wheel down triggers move forward.
          */
         boolean wheelDown = false;
         MouseAxisTrigger forwardTrigger;
         forwardTrigger = new MouseAxisTrigger(MouseInput.AXIS_WHEEL, wheelDown);
-        inputManager.addMapping(moveForwardEvent, forwardTrigger);
-        inputManager.addListener(this, moveForwardEvent);
+        inputMgr.addMapping(moveForwardEvent, forwardTrigger);
+        inputMgr.addListener(this, moveForwardEvent);
         /*
          * Dragging up with MMB triggers move down.
          */
         boolean up = false;
         MouseAxisTrigger downTrigger;
         downTrigger = new MouseAxisTrigger(MouseInput.AXIS_Y, up);
-        inputManager.addMapping(moveDownEvent, downTrigger);
-        inputManager.addListener(this, moveDownEvent);
+        inputMgr.addMapping(moveDownEvent, downTrigger);
+        inputMgr.addListener(this, moveDownEvent);
         /*
          * Dragging left with MMB triggers move right.
          */
         boolean left = true;
         MouseAxisTrigger leftTrigger;
         leftTrigger = new MouseAxisTrigger(MouseInput.AXIS_X, left);
-        inputManager.addMapping(moveRightEvent, leftTrigger);
-        inputManager.addListener(this, moveRightEvent);
+        inputMgr.addMapping(moveRightEvent, leftTrigger);
+        inputMgr.addListener(this, moveRightEvent);
         /*
          * Dragging right with MMB triggers Pov.moveLeft().
          */
         boolean right = false;
         MouseAxisTrigger rightTrigger;
         rightTrigger = new MouseAxisTrigger(MouseInput.AXIS_X, right);
-        inputManager.addMapping(moveLeftEvent, rightTrigger);
-        inputManager.addListener(this, moveLeftEvent);
+        inputMgr.addMapping(moveLeftEvent, rightTrigger);
+        inputMgr.addListener(this, moveLeftEvent);
         /*
          * Dragging down with MMB triggers Pov.moveUp().
          */
         boolean down = true;
         MouseAxisTrigger upTrigger;
         upTrigger = new MouseAxisTrigger(MouseInput.AXIS_Y, down);
-        inputManager.addMapping(moveUpEvent, upTrigger);
-        inputManager.addListener(this, moveUpEvent);
+        inputMgr.addMapping(moveUpEvent, upTrigger);
+        inputMgr.addListener(this, moveUpEvent);
     }
+
+    /**
+     * Unmap the middle mouse button (MMB) and mouse wheel, which together
+     * control the camera position.
+     */
+    public void unmapButton() {
+        inputManager.deleteMapping(moveForwardEvent);
+        inputManager.deleteMapping(moveBackwardEvent);
+        inputManager.deleteMapping(moveDownEvent);
+        inputManager.deleteMapping(moveRightEvent);
+        inputManager.deleteMapping(moveLeftEvent);
+        inputManager.deleteMapping(moveUpEvent);
+    }
+    // *************************************************************************
+    // AnalogListener methods
 
     /**
      * Process an analog event from the mouse.
@@ -174,7 +190,7 @@ public class CameraTool
                 new Object[]{MyString.quote(eventString), amount});
 
         LoadedCgm cgm = Maud.gui.mouseCgm();
-        if (cgm == null) {
+        if (cgm == null || signals == null) {
             return;
         }
         Pov pov;
@@ -222,35 +238,8 @@ public class CameraTool
                 }
         }
     }
-
-    /**
-     * Unmap the middle mouse button (MMB) and mouse wheel, which together
-     * control the camera position. TODO when to invoke?
-     */
-    void unmapButton() {
-        inputManager.deleteMapping(moveForwardEvent);
-        inputManager.deleteMapping(moveBackwardEvent);
-        inputManager.deleteMapping(moveDownEvent);
-        inputManager.deleteMapping(moveRightEvent);
-        inputManager.deleteMapping(moveLeftEvent);
-        inputManager.deleteMapping(moveUpEvent);
-    }
     // *************************************************************************
     // AppState methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application that owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-        assert Maud.gui.tools.getTool("cursor").isInitialized();
-        mapButton();
-    }
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

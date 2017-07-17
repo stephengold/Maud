@@ -44,7 +44,7 @@ import maud.model.LoadedCgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class EditorInputMode extends InputMode {
+public class EditorInputMode extends InputMode {
     // *************************************************************************
     // constants and loggers
 
@@ -293,6 +293,24 @@ class EditorInputMode extends InputMode {
     }
     // *************************************************************************
     // InputMode methods
+
+    /**
+     * Activate this input mode.
+     */
+    @Override
+    public void activate() {
+        super.activate();
+        Maud.gui.tools.camera.mapButton();
+    }
+
+    /**
+     * Deactivate this input mode.
+     */
+    @Override
+    public void deactivate() {
+        Maud.gui.tools.camera.unmapButton();
+        super.deactivate();
+    }
 
     /**
      * Hotkey bindings used if the configuration asset is missing.
