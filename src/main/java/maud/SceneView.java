@@ -37,6 +37,7 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
@@ -173,21 +174,27 @@ public class SceneView implements JmeCloneable {
     // new methods exposed
 
     /**
-     * Calculate the location of an indexed bone, for selection. TODO replace
-     * with a method to calculate dSquared
+     * Calculate the distance from the specified screen coordinates to the
+     * screen location of the indexed bone.
      *
-     * @param boneIndex which bone to locate (&ge;0)
-     * @return a new vector (in world coordinates)
+     * @param boneIndex which bone (&ge;0)
+     * @param inputXY input screen coordinates (not null)
+     * @return square of the distance in pixels (&ge;0)
      */
-    public Vector3f boneLocation(int boneIndex) {
+    public float dSquared(int boneIndex, Vector2f inputXY) {
         Validate.nonNegative(boneIndex, "bone index");
+        Validate.nonNull(inputXY, "input point");
 
         Bone bone = skeleton.getBone(boneIndex);
         Vector3f modelLocation = bone.getModelSpacePosition();
         Transform worldTransform = worldTransform();
-        Vector3f location = worldTransform.transformVector(modelLocation, null);
+        Vector3f boneWorld = worldTransform.transformVector(modelLocation, null);
+        Camera camera = getCamera();
+        Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
+        Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
+        float result = inputXY.distanceSquared(boneXY);
 
-        return location;
+        return result;
     }
 
     /**

@@ -200,10 +200,7 @@ public class BoneTool extends WindowController {
         if (sceneView != null) {
             Camera camera = sceneView.getCamera();
             if (camera != null) {
-                Vector3f boneWorld = sceneView.boneLocation(boneIndex);
-                Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
-                Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
-                sceneDSquared = mouseXY.distanceSquared(boneXY);
+                sceneDSquared = sceneView.dSquared(boneIndex, mouseXY);
             }
         }
 
