@@ -291,37 +291,44 @@ public class LoadedMapping implements Cloneable {
         AssetManager assetManager = Locators.getAssetManager();
         AssetKey<SkeletonMapping> key = new AssetKey<>(assetPath);
 
-        boolean result;
+        boolean success;
         Locators.useFilesystem(assetFolder);
         try {
             mapping = assetManager.loadAsset(key);
             this.assetFolder = assetFolder;
             this.assetPath = assetPath;
-            result = true;
+            success = true;
         } catch (AssetLoadException exception) {
-            result = false;
+            success = false;
         }
         Locators.useDefault();
 
-        return result;
+        return success;
     }
 
     /**
      * Unload the current mapping and load the named one from the classpath.
      *
      * @param mappingName which mapping to load (not null, not empty)
+     * @return true if successful, otherwise false
      */
-    public void loadNamed(String mappingName) {
-        String path = String.format("SkeletonMappings/%s.j3o", mappingName);
+    public boolean loadNamed(String mappingName) {
+        Validate.nonEmpty(mappingName, "mapping name");
 
+        String path = String.format("SkeletonMappings/%s.j3o", mappingName);
         AssetManager assetManager = Locators.getAssetManager();
         AssetKey<SkeletonMapping> key = new AssetKey<>(path);
+        boolean success;
         try {
             mapping = assetManager.loadAsset(key);
             assetFolder = "";
             assetPath = path;
+            success = true;
         } catch (AssetLoadException exception) {
+            success = false;
         }
+
+        return success;
     }
 
     /**

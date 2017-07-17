@@ -282,15 +282,34 @@ public class EditableMapping extends LoadedMapping {
         Validate.nonEmpty(assetFolder, "asset folder");
         Validate.nonEmpty(assetPath, "asset path");
 
-        boolean result = super.loadAsset(assetFolder, assetPath);
-
-        if (result) {
+        boolean success = super.loadAsset(assetFolder, assetPath);
+        if (success) {
             String eventDescription = String.format("load mapping %s %s",
                     MyString.quote(assetFolder), MyString.quote(assetPath));
             setPristine(eventDescription);
         }
 
-        return result;
+        return success;
+    }
+
+    /**
+     * Unload the current mapping and load the named one from the classpath.
+     *
+     * @param mappingName which mapping to load (not null, not empty)
+     * @return true if successful, otherwise false
+     */
+    @Override
+    public boolean loadNamed(String mappingName) {
+        Validate.nonEmpty(mappingName, "mapping name");
+
+        boolean success = super.loadNamed(mappingName);
+        if (success) {
+            String eventDescription = String.format("load mapping named %s",
+                    MyString.quote(mappingName));
+            setPristine(eventDescription);
+        }
+
+        return success;
     }
     // *************************************************************************
     // Object methods
