@@ -49,6 +49,10 @@ public class BoneTool extends WindowController {
     // constants and loggers
 
     /**
+     * largest squared distance for bone/axis selection (in pixels squared)
+     */
+    final private static float dSquaredThreshold = 1000f;
+    /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
@@ -101,7 +105,8 @@ public class BoneTool extends WindowController {
         }
         selectBestInCgm(Maud.model.target);
 
-        if (bestCgm != null) {
+        if (bestDSquared < dSquaredThreshold) {
+            assert bestCgm != null;
             if (bestAxisIndex >= 0) {
                 boolean farSide = Maud.gui.tools.axes.isAxisReceding(bestCgm,
                         bestAxisIndex);
