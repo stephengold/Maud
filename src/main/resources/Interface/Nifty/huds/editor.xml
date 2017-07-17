@@ -629,7 +629,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Load"
                                  id="id3ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(select menuItem CGM -> Target -> Load)"/>
+                            <interact onRelease="perform(select menuItem CGM -> Load)"/>
                         </control>
                     </panel>
                     <panel/>
@@ -1047,7 +1047,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Load"
                                  id="id16ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(select menuItem CGM -> Target -> Load)"/>
+                            <interact onRelease="perform(select menuItem CGM -> Load)"/>
                         </control>
                     </panel>
                     <panel height="8px"/>
@@ -1059,7 +1059,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Load"
                                  id="id17ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(select menuItem CGM -> Source -> Load)"/>
+                            <interact onRelease="perform(select menuItem CGM -> Source model -> Load)"/>
                         </control>
                     </panel>
                     <panel height="8px"/>

@@ -544,15 +544,18 @@ class EditorMenus {
      * Build a CGM menu.
      */
     private void buildCgmMenu() {
-        builder.add("Target");
-        builder.add("Source");
-        builder.add("Mapping");
+        builder.addTool("Tool");
+        builder.add("Load");
+        builder.addDialog("Save");
+
+        builder.add("Source model");
+        builder.add("Skeleton mapping");
         builder.add("Asset folders");
         builder.addTool("History");
     }
 
     /**
-     * Build a "CGM -> Mapping -> From classpath" menu.
+     * Build a "CGM -> Skeleton mapping -> From classpath" menu.
      */
     private void buildClasspathMappingMenu() {
         builder.reset();
@@ -671,7 +674,7 @@ class EditorMenus {
     }
 
     /**
-     * Build a "CGM -> Source/Target -> Load" menu.
+     * Build a "CGM -> Load" or "CGM -> Source model -> Load" menu.
      */
     private void buildLocatorMenu() {
         builder.reset();
@@ -739,7 +742,7 @@ class EditorMenus {
     }
 
     /**
-     * Build a "CGM -> Source/Target -> From classpath" menu.
+     * Build a "... -> Load -> From classpath" menu.
      */
     private void buildTestDataMenu() {
         builder.reset();
@@ -866,7 +869,7 @@ class EditorMenus {
     }
 
     /**
-     * Display a "CGM -> Mapping" menu.
+     * Display a "CGM -> Skeleton mapping" menu.
      */
     private void mapping() {
         builder.reset();
@@ -878,7 +881,7 @@ class EditorMenus {
         }
         builder.addDialog("Save");
         builder.addTool("Twist tool");
-        builder.show("select menuItem CGM -> Mapping -> ");
+        builder.show("select menuItem CGM -> Skeleton mapping -> ");
     }
 
     /**
@@ -996,7 +999,6 @@ class EditorMenus {
                 builder.show(EditorInputMode.newAssetFolderPrefix);
                 handled = true;
                 break;
-
             case "Remove":
                 builder.reset();
                 List<String> pathList = Maud.model.folders.listAll();
@@ -1202,9 +1204,8 @@ class EditorMenus {
 
         boolean handled = false;
         String folderPrefix = "Asset folders" + menuSeparator;
-        String mappingPrefix = "Mapping" + menuSeparator;
-        String sourcePrefix = "Source" + menuSeparator;
-        String targetPrefix = "Target" + menuSeparator;
+        String mappingPrefix = "Skeleton mapping" + menuSeparator;
+        String sourcePrefix = "Source model" + menuSeparator;
         if (remainder.startsWith(folderPrefix)) {
             String selectArg = MyString.remainder(remainder, folderPrefix);
             handled = menuAssetFolders(selectArg);
@@ -1217,34 +1218,35 @@ class EditorMenus {
             String selectArg = MyString.remainder(remainder, sourcePrefix);
             handled = menuSourceCgm(selectArg);
 
-        } else if (remainder.startsWith(targetPrefix)) {
-            String selectArg = MyString.remainder(remainder, targetPrefix);
-            handled = menuTargetCgm(selectArg);
-
         } else {
             switch (remainder) {
                 case "Asset folders":
                     assetFolders();
                     handled = true;
                     break;
-
                 case "History":
                     Maud.gui.tools.select("history");
                     handled = true;
                     break;
-
-                case "Mapping":
+                case "Load":
+                    buildLocatorMenu();
+                    builder.show(EditorInputMode.loadCgmLocatorPrefix);
+                    handled = true;
+                    break;
+                case "Skeleton mapping":
                     mapping();
                     handled = true;
                     break;
-
-                case "Source":
+                case "Save":
+                    Maud.gui.dialogs.saveCgm();
+                    handled = true;
+                    break;
+                case "Source model":
                     sourceCgm();
                     handled = true;
                     break;
-
-                case "Target":
-                    targetCgm();
+                case "Tool":
+                    Maud.gui.tools.select("cgm");
                     handled = true;
             }
         }
@@ -1267,17 +1269,14 @@ class EditorMenus {
                 Maud.gui.dialogs.aboutMaud();
                 handled = true;
                 break;
-
             case "JME3 homepage":
                 Misc.browseWeb("http://jmonkeyengine.org/");
                 handled = true;
                 break;
-
             case "License":
                 Maud.gui.dialogs.license();
                 handled = true;
                 break;
-
             case "Source":
                 Misc.browseWeb("https://github.com/stephengold/Maud");
                 handled = true;
@@ -1326,7 +1325,8 @@ class EditorMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the "CGM -> Mapping" menu.
+     * Handle a "select menuItem" action from the "CGM -> Skeleton mapping"
+     * menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1340,27 +1340,22 @@ class EditorMenus {
                 Maud.model.mapping.invert();
                 handled = true;
                 break;
-
             case "Load":
                 loadMappingAsset();
                 handled = true;
                 break;
-
             case "Save":
                 Maud.gui.dialogs.saveMapping();
                 handled = true;
                 break;
-
             case "Tool":
                 Maud.gui.tools.select("mapping");
                 handled = true;
                 break;
-
             case "Twist tool":
                 Maud.gui.tools.select("twist");
                 handled = true;
                 break;
-
             case "Unload":
                 Maud.model.mapping.unload();
                 handled = true;
@@ -1390,7 +1385,7 @@ class EditorMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the "CGM -> Source" menu.
+     * Handle a "select menuItem" action from the "CGM -> Source model" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1532,36 +1527,6 @@ class EditorMenus {
                 break;
             case "Root":
                 Maud.model.target.spatial.selectModelRoot();
-                handled = true;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "CGM -> Target" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuTargetCgm(String remainder) {
-        assert remainder != null;
-
-        boolean handled = false;
-        switch (remainder) {
-            case "Load":
-                buildLocatorMenu();
-                builder.show(EditorInputMode.loadCgmLocatorPrefix);
-                handled = true;
-                break;
-
-            case "Save":
-                Maud.gui.dialogs.saveCgm();
-                handled = true;
-                break;
-
-            case "Tool":
-                Maud.gui.tools.select("cgm");
                 handled = true;
         }
 
@@ -1825,7 +1790,7 @@ class EditorMenus {
     }
 
     /**
-     * Display a "CGM -> Source" menu.
+     * Display a "CGM -> Source model" menu.
      */
     private void sourceCgm() {
         builder.reset();
@@ -1835,19 +1800,6 @@ class EditorMenus {
             builder.add("Unload");
         }
 
-        builder.show("select menuItem CGM -> Source -> ");
-    }
-
-    /**
-     * Display a "CGM -> Target" menu.
-     */
-    private void targetCgm() {
-        builder.reset();
-
-        builder.addTool("Tool");
-        builder.add("Load");
-        builder.addDialog("Save");
-
-        builder.show("select menuItem CGM -> Target -> ");
+        builder.show("select menuItem CGM -> Source model -> ");
     }
 }
