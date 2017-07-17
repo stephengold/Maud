@@ -318,9 +318,7 @@ public class Maud extends GuiApplication {
                     break;
 
                 case "quit":
-                    QuitDialog controller = new QuitDialog();
-                    gui.showConfirmDialog("Quit Maud?", "",
-                            SimpleApplication.INPUT_MAPPING_EXIT, controller);
+                    quit();
                     handled = true;
             }
         }
@@ -534,6 +532,38 @@ public class Maud extends GuiApplication {
         Node root = new Node("Root for " + name);
         targetScoreWideViewPort.attachScene(root);
         addedScenes.add(root);
+    }
+
+    /**
+     * If confirmed, terminate the application.
+     */
+    private void quit() {
+        int cgmEdits = Maud.model.target.countUnsavedEdits();
+        int mapEdits = Maud.model.mapping.countUnsavedEdits();
+
+        String message;
+        if (cgmEdits + mapEdits == 0) {
+            message = "Quit Maud?";
+        } else {
+            message = "You've made ";
+            if (cgmEdits > 0) {
+                message += String.format("%d unsaved edit%s to the model",
+                        cgmEdits, cgmEdits == 1 ? "" : "s");
+            }
+            if (cgmEdits > 0 && mapEdits > 0) {
+                message += " and ";
+            }
+            if (mapEdits > 0) {
+                message += String.format(
+                        "%d unsaved edit%s to the skeleton mapping", mapEdits,
+                        mapEdits == 1 ? "" : "s");
+            }
+            message += ".\nReally quit Maud?";
+        }
+
+        QuitDialog controller = new QuitDialog();
+        gui.showConfirmDialog(message, "", SimpleApplication.INPUT_MAPPING_EXIT,
+                controller);
     }
 
     /**
