@@ -434,17 +434,40 @@ public class LoadedCgm implements Cloneable {
     /**
      * Enumerate all known animations and poses for the loaded CG model.
      *
-     * @return a new collection of names, including bind pose and (if
-     * applicable) retargeted pose
+     * @return a new list of names, including bind pose and (if applicable)
+     * retargeted pose
      */
-    public Collection<String> listAnimationNames() {
-        Collection<String> names = listAnimationsSorted();
+    public List<String> listAnimationNames() {
+        List<String> names = listAnimationsSorted();
         names.add(LoadedAnimation.bindPoseName);
         if (this == Maud.model.target && Maud.model.source.isLoaded()) {
             names.add(LoadedAnimation.retargetedPoseName);
         }
 
         return names;
+    }
+
+    /**
+     * Enumerate all known animations and poses for the loaded CG model with the
+     * specified prefix.
+     *
+     * @param prefix (not null)
+     * @return a new list of names, including (if applicable) bind pose and
+     * retargeted pose
+     */
+    public List<String> listAnimationNames(String prefix) {
+        Validate.nonNull(prefix, "prefix");
+
+        List<String> names = listAnimationNames();
+        int size = names.size();
+        List<String> result = new ArrayList<>(size);
+        for (String aName : names) {
+            if (aName.startsWith(prefix)) {
+                result.add(aName);
+            }
+        }
+
+        return result;
     }
 
     /**

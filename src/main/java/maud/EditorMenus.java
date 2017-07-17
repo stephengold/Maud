@@ -28,7 +28,6 @@ package maud;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
+import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 
 /**
@@ -75,6 +75,27 @@ class EditorMenus {
     final private static MenuBuilder builder = new MenuBuilder();
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Handle a "load (source)animation" action with an argument.
+     *
+     * @param argument action argument (not null)
+     * @param cgm which load slot (not null)
+     */
+    void loadAnimation(String argument, LoadedCgm cgm) {
+        if (cgm.hasAnimation(argument)
+                || argument.equals(LoadedAnimation.bindPoseName)
+                || argument.equals(LoadedAnimation.retargetedPoseName)) {
+            cgm.animation.load(argument);
+        } else {
+            /*
+             * Treat the argument as an animation-name prefix.
+             */
+            List<String> animationNames;
+            animationNames = cgm.listAnimationNames(argument);
+            showAnimationSubmenu(animationNames, cgm);
+        }
+    }
 
     /**
      * Handle a "load (source)cgm asset" action with arguments.
@@ -861,10 +882,9 @@ class EditorMenus {
      */
     private void loadSourceAnimation() {
         if (Maud.model.source.isLoaded()) {
-            Collection<String> animationNames;
+            List<String> animationNames;
             animationNames = Maud.model.source.listAnimationNames();
-            Maud.gui.showPopupMenu(EditorInputMode.loadSourceAnimationPrefix,
-                    animationNames);
+            showAnimationSubmenu(animationNames, Maud.model.source);
         }
     }
 
@@ -946,10 +966,9 @@ class EditorMenus {
                 Maud.gui.dialogs.setDuration();
                 break;
             case "Load":
-                Collection<String> animationNames;
+                List<String> animationNames;
                 animationNames = Maud.model.target.listAnimationNames();
-                Maud.gui.showPopupMenu(EditorInputMode.loadAnimationPrefix,
-                        animationNames);
+                showAnimationSubmenu(animationNames, Maud.model.target);
                 break;
             case "Load source":
                 loadSourceAnimation();
@@ -1709,6 +1728,42 @@ class EditorMenus {
         }
 
         builder.show("select menuItem Spatial -> Select -> ");
+    }
+
+    /**
+     * Display a submenu for selecting a target animation by name using the
+     * "select (source)animation" action prefix.
+     *
+     * @param nameList list of names from which to select (not null)
+     * @param cgm which load slot (not null)
+     */
+    private void showAnimationSubmenu(List<String> nameList, LoadedCgm cgm) {
+        assert nameList != null;
+        assert cgm != null;
+
+        MyString.reduce(nameList, maxItems);
+        Collections.sort(nameList);
+
+        builder.reset();
+        for (String name : nameList) {
+            if (cgm.hasAnimation(name)) {
+                builder.add(name); // TODO icon
+            } else if (name.equals(LoadedAnimation.bindPoseName)) {
+                builder.add(name);
+            } else if (name.equals(LoadedAnimation.retargetedPoseName)) {
+                builder.add(name);
+            } else {
+                builder.addEllipsis(name);
+            }
+        }
+
+        if (cgm == Maud.model.target) {
+            builder.show(EditorInputMode.loadAnimationPrefix);
+        } else if (cgm == Maud.model.source) {
+            builder.show(EditorInputMode.loadSourceAnimationPrefix);
+        } else {
+            assert false;
+        }
     }
 
     /**

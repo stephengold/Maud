@@ -406,8 +406,8 @@ public class EditorInputMode extends InputMode {
             Maud.model.target.animation.loadRetargetedPose();
 
         } else if (actionString.startsWith(loadAnimationPrefix)) {
-            name = MyString.remainder(actionString, loadAnimationPrefix);
-            Maud.model.target.animation.load(name);
+            args = MyString.remainder(actionString, loadAnimationPrefix);
+            Maud.gui.menus.loadAnimation(args, Maud.model.target);
 
         } else if (actionString.startsWith(loadCgmAssetPrefix)) {
             args = MyString.remainder(actionString, loadCgmAssetPrefix);
@@ -434,8 +434,8 @@ public class EditorInputMode extends InputMode {
             Maud.model.mapping.loadNamed(name);
 
         } else if (actionString.startsWith(loadSourceAnimationPrefix)) {
-            name = MyString.remainder(actionString, loadSourceAnimationPrefix);
-            Maud.model.source.animation.load(name);
+            args = MyString.remainder(actionString, loadSourceAnimationPrefix);
+            Maud.gui.menus.loadAnimation(args, Maud.model.source);
 
         } else if (actionString.startsWith(loadSourceCgmAssetPrefix)) {
             args = MyString.remainder(actionString, loadSourceCgmAssetPrefix);
