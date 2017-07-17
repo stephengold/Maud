@@ -64,7 +64,7 @@ public class RoundedRectangle extends Mesh {
 
     /**
      * Instantiate an axis-aligned, rounded unit square with a corner radius of
-     * 0.1 right-handed normals and X and Y extending from 0 to 1.
+     * 0.1, right-handed normals, and X and Y extending from 0 to 1.
      */
     public RoundedRectangle() {
         this(0f, 1f, 0f, 1f, 0.1f, 1f);
@@ -109,7 +109,7 @@ public class RoundedRectangle extends Mesh {
         centerX = x1 + cornerRadius;
         centerY = y1 + cornerRadius;
         for (int edge = 0; edge <= epa; edge++) {
-            float theta = FastMath.HALF_PI * edge / (float) epa;
+            float theta = FastMath.HALF_PI * edge / epa;
             float sin = FastMath.sin(theta);
             float cos = FastMath.cos(theta);
             positions[3 * vIndex] = centerX - cornerRadius * cos;
@@ -119,7 +119,7 @@ public class RoundedRectangle extends Mesh {
 
         centerX = x2 - cornerRadius;
         for (int edge = 0; edge <= epa; edge++) {
-            float theta = FastMath.HALF_PI * edge / (float) epa;
+            float theta = FastMath.HALF_PI * edge / epa;
             float sin = FastMath.sin(theta);
             float cos = FastMath.cos(theta);
             positions[3 * vIndex] = centerX + cornerRadius * sin;
@@ -129,7 +129,7 @@ public class RoundedRectangle extends Mesh {
 
         centerY = y2 - cornerRadius;
         for (int edge = 0; edge <= epa; edge++) {
-            float theta = FastMath.HALF_PI * edge / (float) epa;
+            float theta = FastMath.HALF_PI * edge / epa;
             float sin = FastMath.sin(theta);
             float cos = FastMath.cos(theta);
             positions[3 * vIndex] = centerX + cornerRadius * cos;
@@ -139,7 +139,7 @@ public class RoundedRectangle extends Mesh {
 
         centerX = x1 + cornerRadius;
         for (int edge = 0; edge <= epa; edge++) {
-            float theta = FastMath.HALF_PI * edge / (float) epa;
+            float theta = FastMath.HALF_PI * edge / epa;
             float sin = FastMath.sin(theta);
             float cos = FastMath.cos(theta);
             positions[3 * vIndex] = centerX - cornerRadius * sin;
@@ -158,7 +158,6 @@ public class RoundedRectangle extends Mesh {
             float y = positions[3 * vi + 1];
             texCoords[2 * vi] = (x - x1) / (x2 - x1);
             texCoords[2 * vi + 1] = (y - y1) / (y2 - y1);
-            logger.log(Level.SEVERE, "x={0}  y={1}", new Object[]{x, y});
         }
         indices[numVertices] = 1;
 
