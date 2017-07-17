@@ -40,8 +40,8 @@ dependencies {
     compile 'jme3utilities:jme3-utilities-heart:0.9.11'
     compile 'jme3utilities:SkyControl:0.9.5'
     compile 'jme3utilities:jme3-utilities-debug:0.7.1'
-    compile 'jme3utilities:jme3-utilities-ui:0.5.4'
-    compile 'jme3utilities:jme3-utilities-nifty:0.6.7'
+    compile 'jme3utilities:jme3-utilities-ui:0.5.5'
+    compile 'jme3utilities:jme3-utilities-nifty:0.6.8'
 }
 
 clean { dependsOn 'cleanDLLs', 'cleanWrittenAssets' }
