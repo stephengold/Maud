@@ -385,7 +385,6 @@ public class EditorTools {
                 boneScale.onSliderChanged();
                 break;
 
-            case "offMasterSlider":
             case "xOffSlider":
             case "yOffSlider":
             case "zOffSlider":
@@ -439,7 +438,11 @@ public class EditorTools {
                 spatialScale.onSliderChanged();
                 break;
 
+            case "offMasterSlider":
             case "soMasterSlider":
+                // do nothing
+                break;
+
             case "xSoSlider":
             case "ySoSlider":
             case "zSoSlider":
