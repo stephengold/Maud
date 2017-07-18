@@ -43,7 +43,9 @@ import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
 import maud.dialog.AnimationNameDialog;
 import maud.dialog.BoneRenameDialog;
+import maud.dialog.LongDialog;
 import maud.dialog.SpatialNameDialog;
+import maud.dialog.TextEntryDialog;
 import maud.dialog.UserKeyDialog;
 
 /**
@@ -321,6 +323,43 @@ class EditorDialogs {
      * Display a "set userData" dialog.
      */
     void setUserData() {
-        // TODO
+        String key = Maud.model.misc.getSelectedUserKey();
+        Object data = Maud.model.target.spatial.getUserData(key);
+        if (data instanceof Boolean) {
+            boolean oldValue = (boolean) data;
+            String newValue = Boolean.toString(!oldValue); // toggle value
+            Maud.model.target.setUserData(newValue);
+
+        } else if (data instanceof Float) {
+            DialogController controller = new FloatDialog("Set",
+                    Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
+            float oldValue = (float) data;
+            String stringData = Float.toString(oldValue);
+            Maud.gui.showTextEntryDialog("Enter new float value:", stringData,
+                    EditorInputMode.setUserDataPrefix, controller);
+
+        } else if (data instanceof Integer) {
+            DialogController controller = new IntegerDialog("Set",
+                    Integer.MIN_VALUE, Integer.MAX_VALUE);
+            int oldValue = (int) data;
+            String stringData = Integer.toString(oldValue);
+            Maud.gui.showTextEntryDialog("Enter new integer value:", stringData,
+                    EditorInputMode.setUserDataPrefix, controller);
+
+        } else if (data instanceof Long) {
+            DialogController controller = new LongDialog("Set",
+                    Long.MIN_VALUE, Long.MAX_VALUE);
+            long oldValue = (long) data;
+            String stringData = Long.toString(oldValue);
+            Maud.gui.showTextEntryDialog("Enter new long integer value:",
+                    stringData, EditorInputMode.setUserDataPrefix, controller);
+
+        } else if (data instanceof String) {
+            DialogController controller = new TextEntryDialog();
+            String oldValue = (String) data;
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog("Enter new string value:", oldValue,
+                    "Set", EditorInputMode.setUserDataPrefix, controller);
+        }
     }
 }

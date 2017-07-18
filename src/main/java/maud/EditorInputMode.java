@@ -213,6 +213,10 @@ public class EditorInputMode extends InputMode {
      */
     final static String setShadowModePrefix = "set shadowMode ";
     /**
+     * action prefix: remainder is the new value
+     */
+    final static String setUserDataPrefix = "set userData ";
+    /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
      */
     final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
@@ -969,42 +973,51 @@ public class EditorInputMode extends InputMode {
             case "set twist snapZ":
                 Maud.model.mapping.snapTwist(2);
                 break;
-            case "set userdata":
+            case "set userData":
                 Maud.gui.dialogs.setUserData();
                 break;
             default:
-                handled = false;
+                handled = setAction2(actionString);
         }
 
-        if (!handled) {
-            String arg;
-            if (actionString.startsWith(setDurationPrefix)) {
-                arg = MyString.remainder(actionString, setDurationPrefix);
-                float value = Float.parseFloat(arg);
-                Maud.model.target.animation.setDuration(value);
-                handled = true;
-            } else if (actionString.startsWith(setBatchHintPrefix)) {
-                arg = MyString.remainder(actionString, setBatchHintPrefix);
-                Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
-                Maud.model.target.setBatchHint(value);
-                handled = true;
-            } else if (actionString.startsWith(setCullHintPrefix)) {
-                arg = MyString.remainder(actionString, setCullHintPrefix);
-                Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
-                Maud.model.target.setCullHint(value);
-                handled = true;
-            } else if (actionString.startsWith(setQueueBucketPrefix)) {
-                arg = MyString.remainder(actionString, setQueueBucketPrefix);
-                RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
-                Maud.model.target.setQueueBucket(value);
-                handled = true;
-            } else if (actionString.startsWith(setShadowModePrefix)) {
-                arg = MyString.remainder(actionString, setShadowModePrefix);
-                RenderQueue.ShadowMode value;
-                value = RenderQueue.ShadowMode.valueOf(arg);
-                Maud.model.target.setShadowMode(value);
-                handled = true;
-            }
+        return handled;
+    }
+
+    /**
+     * Process an action that starts with "set" -- 2nd part: test prefixes.
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean setAction2(String actionString) {
+        boolean handled = true;
+        String arg;
+        if (actionString.startsWith(setDurationPrefix)) {
+            arg = MyString.remainder(actionString, setDurationPrefix);
+            float value = Float.parseFloat(arg);
+            Maud.model.target.animation.setDuration(value);
+        } else if (actionString.startsWith(setBatchHintPrefix)) {
+            arg = MyString.remainder(actionString, setBatchHintPrefix);
+            Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
+            Maud.model.target.setBatchHint(value);
+        } else if (actionString.startsWith(setCullHintPrefix)) {
+            arg = MyString.remainder(actionString, setCullHintPrefix);
+            Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
+            Maud.model.target.setCullHint(value);
+        } else if (actionString.startsWith(setQueueBucketPrefix)) {
+            arg = MyString.remainder(actionString, setQueueBucketPrefix);
+            RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
+            Maud.model.target.setQueueBucket(value);
+        } else if (actionString.startsWith(setShadowModePrefix)) {
+            arg = MyString.remainder(actionString, setShadowModePrefix);
+            RenderQueue.ShadowMode value;
+            value = RenderQueue.ShadowMode.valueOf(arg);
+            Maud.model.target.setShadowMode(value);
+        } else if (actionString.startsWith(setUserDataPrefix)) {
+            arg = MyString.remainder(actionString, setUserDataPrefix);
+            Maud.model.target.setUserData(arg);
+        } else {
+            handled = false;
         }
 
         return handled;

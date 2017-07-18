@@ -468,6 +468,38 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter the selected user data.
+     *
+     * @param valueString string representation of the new value (not null)
+     */
+    public void setUserData(String valueString) {
+        Validate.nonNull(valueString, "value string");
+
+        String key = Maud.model.misc.getSelectedUserKey();
+        Spatial sp = spatial.modelSpatial();
+        Object data = spatial.getUserData(key);
+        if (data instanceof Boolean) {
+            boolean valueBoolean = Boolean.parseBoolean(valueString);
+            sp.setUserData(key, valueBoolean);
+
+        } else if (data instanceof Float) {
+            float valueFloat = Float.parseFloat(valueString);
+            sp.setUserData(key, valueFloat);
+
+        } else if (data instanceof Integer) {
+            int valueInteger = Integer.parseInt(valueString);
+            sp.setUserData(key, valueInteger);
+
+        } else if (data instanceof Long) {
+            long valueLong = Long.parseLong(valueString);
+            sp.setUserData(key, valueLong);
+
+        } else if (data instanceof String) {
+            sp.setUserData(key, valueString);
+        }
+    }
+
+    /**
      * Write the CG model to the specified file.
      *
      * @param baseFilePath file path without any extension (not null, not empty)

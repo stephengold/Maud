@@ -138,11 +138,13 @@ class UserDataTool extends WindowController {
      * Update the value label.
      */
     private void updateValue() {
-        String valueText;
+        String eButton, valueText;
         String key = Maud.model.misc.getSelectedUserKey();
         if (key == null) {
+            eButton = "";
             valueText = "";
         } else {
+            eButton = "Alter";
             Object data = Maud.model.target.spatial.getUserData(key);
             if (data instanceof String) {
                 String string = (String) data;
@@ -152,5 +154,6 @@ class UserDataTool extends WindowController {
             }
         }
         Maud.gui.setStatusText("userValue", " " + valueText);
+        Maud.gui.setButtonLabel("userDataEditButton", eButton);
     }
 }
