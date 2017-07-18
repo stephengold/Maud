@@ -66,9 +66,7 @@ public class Sparkline extends Mesh {
         assert mode == Mode.Lines || mode == Mode.LineStrip
                 || mode == Mode.Points : mode;
 
-        int numVertices = xs.length;
-        assert numVertices == ys.length;
-
+        int numVertices = Math.min(xs.length, ys.length);
         float[] positions = new float[3 * numVertices];
         for (int i = 0; i < numVertices; i++) {
             positions[3 * i] = xs[i];

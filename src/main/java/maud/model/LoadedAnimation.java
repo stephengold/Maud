@@ -906,11 +906,6 @@ public class LoadedAnimation implements Cloneable {
         BoneTrack track = findTrackForBone(boneIndex);
         Quaternion[] rotations = track.getRotations();
         int numFrames = rotations.length;
-        assert numFrames == storeWs.length : numFrames;
-        assert numFrames == storeXs.length : numFrames;
-        assert numFrames == storeYs.length : numFrames;
-        assert numFrames == storeZs.length : numFrames;
-
         for (int i = 0; i < numFrames; i++) {
             storeWs[i] = rotations[i].getW();
             storeXs[i] = rotations[i].getX();
@@ -935,10 +930,6 @@ public class LoadedAnimation implements Cloneable {
         BoneTrack track = findTrackForBone(boneIndex);
         Vector3f[] scales = track.getScales();
         int numFrames = scales.length;
-        assert numFrames == storeXs.length : numFrames;
-        assert numFrames == storeYs.length : numFrames;
-        assert numFrames == storeZs.length : numFrames;
-
         for (int i = 0; i < numFrames; i++) {
             storeXs[i] = scales[i].x;
             storeYs[i] = scales[i].y;
@@ -980,10 +971,6 @@ public class LoadedAnimation implements Cloneable {
         BoneTrack track = findTrackForBone(boneIndex);
         Vector3f[] translations = track.getTranslations();
         int numFrames = translations.length;
-        assert numFrames == storeXs.length : numFrames;
-        assert numFrames == storeYs.length : numFrames;
-        assert numFrames == storeZs.length : numFrames;
-
         for (int i = 0; i < numFrames; i++) {
             storeXs[i] = translations[i].x;
             storeYs[i] = translations[i].y;
