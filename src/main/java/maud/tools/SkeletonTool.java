@@ -111,21 +111,24 @@ class SkeletonTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
+        Maud.gui.setIgnoreGuiChanges(true);
         SkeletonStatus model = Maud.model.skeleton;
 
         boolean visible = model.isVisible();
         Maud.gui.setChecked("skeleton", visible);
 
-        Slider slider = Maud.gui.getSlider("skeletonLineWidth");
         float lineWidth = model.getLineWidth();
+        Slider slider = Maud.gui.getSlider("skeletonLineWidth");
         slider.setValue(lineWidth);
         lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("skeletonLineWidth", lineWidth, " pixels");
 
-        slider = Maud.gui.getSlider("skeletonPointSize");
         float pointSize = model.getPointSize();
+        slider = Maud.gui.getSlider("skeletonPointSize");
         slider.setValue(pointSize);
         pointSize = Math.round(pointSize);
         Maud.gui.updateSliderStatus("skeletonPointSize", pointSize, " pixels");
+
+        Maud.gui.setIgnoreGuiChanges(false);
     }
 }
