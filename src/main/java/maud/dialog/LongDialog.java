@@ -130,9 +130,9 @@ public class LongDialog implements DialogController {
         try {
             long inputValue = Long.parseLong(text);
             if (inputValue < minValue) {
-                feedbackMessage = String.format("must not be <%ld", minValue);
+                feedbackMessage = String.format("must not be <%d", minValue);
             } else if (inputValue > maxValue) {
-                feedbackMessage = String.format("must not be >%ld", maxValue);
+                feedbackMessage = String.format("must not be >%d", maxValue);
             } else {
                 commitLabel = commitDescription;
             }
