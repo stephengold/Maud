@@ -123,7 +123,7 @@ public class AxesTool extends WindowController {
      * @param axisIndex which axis (&ge;0, &lt;2)
      * @return true if pointing away, otherwise false
      */
-    boolean isAxisReceding(LoadedCgm cgm, int axisIndex) {
+    public boolean isAxisReceding(LoadedCgm cgm, int axisIndex) {
         assert cgm != null;
         assert axisIndex >= 0 : axisIndex;
         assert axisIndex < 3 : axisIndex;
@@ -139,7 +139,6 @@ public class AxesTool extends WindowController {
         Vector3f cameraLocation = cgm.scenePov.cameraLocation(null);
         float tailDS = cameraLocation.distanceSquared(tailLocation);
         float tipDS = cameraLocation.distanceSquared(tipLocation);
-
         if (tipDS > tailDS) {
             return true;
         } else {
@@ -163,7 +162,7 @@ public class AxesTool extends WindowController {
      * @param axisIndex which axis in the CG model's AxesControl (&ge;0, &lt;3)
      * @return a new vector (in world coordinates) or null if axis not displayed
      */
-    Vector3f tipLocation(LoadedCgm cgm, int axisIndex) {
+    public Vector3f tipLocation(LoadedCgm cgm, int axisIndex) {
         Validate.nonNull(cgm, "loaded model");
         Validate.inRange(axisIndex, "axis index", 0, 2);
 
