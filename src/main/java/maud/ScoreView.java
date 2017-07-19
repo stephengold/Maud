@@ -32,8 +32,10 @@ import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
 import com.jme3.font.Rectangle;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -44,6 +46,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
+import com.jme3.texture.Texture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,6 +60,7 @@ import jme3utilities.mesh.RectangleOutlineMesh;
 import maud.mesh.Finial;
 import maud.mesh.RoundedRectangle;
 import maud.mesh.Sparkline;
+import maud.mesh.YSwarm;
 import maud.model.LoadedCgm;
 
 /**
@@ -68,6 +72,22 @@ public class ScoreView {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * color for the w-axis (white)
+     */
+    final private static ColorRGBA wColor = new ColorRGBA(1f, 1f, 1f, 1f);
+    /**
+     * color for the X-axis (red)
+     */
+    final private static ColorRGBA xColor = new ColorRGBA(1f, 0f, 0f, 1f);
+    /**
+     * color for the Y-axis (green)
+     */
+    final private static ColorRGBA yColor = new ColorRGBA(0f, 1f, 0f, 1f);
+    /**
+     * color for the Z-axis (blue)
+     */
+    final private static ColorRGBA zColor = new ColorRGBA(0f, 0f, 1f, 1f);
     /**
      * horizontal size of hash mark (in world units)
      */
@@ -181,6 +201,10 @@ public class ScoreView {
      */
     private static Material bgSelected = null;
     /**
+     * material for pose markers
+     */
+    private static Material poseMaterial;
+    /**
      * material for rotation icons
      */
     private static Material rotMaterial;
@@ -232,6 +256,10 @@ public class ScoreView {
      * view port used in hybrid view mode, or null for none
      */
     final private ViewPort viewPort3;
+    /**
+     * mesh for pose markers
+     */
+    final private YSwarm poseMesh = new YSwarm(10 * 255);
     // *************************************************************************
     // constructors
 
@@ -356,6 +384,7 @@ public class ScoreView {
             labelFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         }
         boneYs.clear();
+        poseMesh.clear();
 
         ViewPort viewPort = getViewPort();
         if (viewPort != null && viewPort.isEnabled()) {
@@ -604,8 +633,7 @@ public class ScoreView {
     }
 
     /**
-     * Attach the time indicator (currently just a vertical line) to the
-     * visuals.
+     * Attach the time indicator to the visuals.
      */
     private void attachGnomon() {
         float duration = cgm.animation.getDuration();
@@ -615,14 +643,26 @@ public class ScoreView {
             x = time / duration;
         }
 
-        float handleSize = 0.1f * cgm.scorePov.getHalfHeight();
+        float handleSize = 0.1f * cgm.scorePov.getHalfHeight(); // world units
         Vector3f start = new Vector3f(x, handleSize, zLines);
         Vector3f end = new Vector3f(x, -height - handleSize, zLines);
         Line line = new Line(start, end);
 
         Geometry geometry = new Geometry("gnomon", line);
-        geometry.setMaterial(wireNotSelected);
         visuals.attachChild(geometry);
+        geometry.setMaterial(wireNotSelected);
+
+        boolean isEmpty = poseMesh.isEmpty();
+        poseMesh.flip();
+        if (!isEmpty) {
+            /*
+             * Attach a point mesh to represent the current pose.
+             */
+            geometry = new Geometry("pose points", poseMesh);
+            visuals.attachChild(geometry);
+            geometry.setLocalTranslation(x, 0f, zLines);
+            geometry.setMaterial(poseMaterial);
+        }
     }
 
     /**
@@ -749,6 +789,12 @@ public class ScoreView {
      */
     private void attachRotationPlots() {
         cgm.animation.trackRotations(currentBone, ws, xs, ys, zs);
+        Quaternion user = cgm.pose.getPose().userRotation(currentBone, null);
+        int poseFrame = ts.length;
+        ws[poseFrame] = user.getW();
+        xs[poseFrame] = user.getX();
+        ys[poseFrame] = user.getY();
+        zs[poseFrame] = user.getZ();
         Util.normalize(ws);
         Util.normalize(xs);
         Util.normalize(ys);
@@ -759,14 +805,32 @@ public class ScoreView {
         attachPlot(ts, xs, ts, xs, "rx", numPlots + 1, xMaterial);
         attachPlot(ts, ys, ts, ys, "ry", numPlots + 2, yMaterial);
         attachPlot(ts, zs, ts, zs, "rz", numPlots + 3, zMaterial);
+
+        float scoreY = scoreY(ws[poseFrame], numPlots);
+        poseMesh.add(scoreY, wColor);
+
+        scoreY = scoreY(xs[poseFrame], numPlots + 1);
+        poseMesh.add(scoreY, xColor);
+
+        scoreY = scoreY(ys[poseFrame], numPlots + 2);
+        poseMesh.add(scoreY, yColor);
+
+        scoreY = scoreY(zs[poseFrame], numPlots + 3);
+        poseMesh.add(scoreY, zColor);
+
         numPlots += 4;
     }
 
     /**
      * Attach 3 plots to visualize bone scales.
      */
-    private void attachScales() {
+    private void attachScalePlots() {
         cgm.animation.trackScales(currentBone, xs, ys, zs);
+        Vector3f user = cgm.pose.getPose().userScale(currentBone, null);
+        int poseFrame = ts.length;
+        xs[poseFrame] = user.x;
+        ys[poseFrame] = user.y;
+        zs[poseFrame] = user.z;
         Util.normalize(xs);
         Util.normalize(ys);
         Util.normalize(zs);
@@ -774,6 +838,16 @@ public class ScoreView {
         attachPlot(ts, xs, ts, xs, "sx", numPlots, xMaterial);
         attachPlot(ts, ys, ts, ys, "sy", numPlots + 1, yMaterial);
         attachPlot(ts, zs, ts, zs, "sz", numPlots + 2, zMaterial);
+
+        float scoreY = scoreY(xs[poseFrame], numPlots);
+        poseMesh.add(scoreY, xColor);
+
+        scoreY = scoreY(ys[poseFrame], numPlots + 1);
+        poseMesh.add(scoreY, yColor);
+
+        scoreY = scoreY(zs[poseFrame], numPlots + 2);
+        poseMesh.add(scoreY, zColor);
+
         numPlots += 3;
     }
 
@@ -815,7 +889,7 @@ public class ScoreView {
         float duration = cgm.animation.getDuration();
         Util.normalize(ts, 0f, duration);
 
-        int numFrames = ts.length;
+        int numFrames = ts.length + 1; // +1 for pose transform
         if (ws == null || numFrames != ws.length) {
             ws = new float[numFrames];
             xs = new float[numFrames];
@@ -837,7 +911,7 @@ public class ScoreView {
         boolean showScales = Maud.model.score.showsScales();
         boolean hasScales = cgm.animation.hasScales(currentBone);
         if (showScales && hasScales) {
-            attachScales();
+            attachScalePlots();
         }
     }
 
@@ -866,6 +940,7 @@ public class ScoreView {
             } else {
                 attachFinials(finial);
             }
+
             attachSparklines();
             boneYs.put(currentBone, -height - staffHeight / 2);
             height += staffHeight;
@@ -941,6 +1016,11 @@ public class ScoreView {
      */
     private void attachTranslationPlots() {
         cgm.animation.trackTranslations(currentBone, xs, ys, zs);
+        Vector3f user = cgm.pose.getPose().userTranslation(currentBone, null);
+        int poseFrame = ts.length;
+        xs[poseFrame] = user.x;
+        ys[poseFrame] = user.y;
+        zs[poseFrame] = user.z;
         Util.normalize(xs);
         Util.normalize(ys);
         Util.normalize(zs);
@@ -948,6 +1028,16 @@ public class ScoreView {
         attachPlot(ts, xs, ts, xs, "tx", numPlots, xMaterial);
         attachPlot(ts, ys, ts, ys, "ty", numPlots + 1, yMaterial);
         attachPlot(ts, zs, ts, zs, "tz", numPlots + 2, zMaterial);
+
+        float scoreY = scoreY(xs[poseFrame], numPlots);
+        poseMesh.add(scoreY, xColor);
+
+        scoreY = scoreY(ys[poseFrame], numPlots + 1);
+        poseMesh.add(scoreY, yColor);
+
+        scoreY = scoreY(zs[poseFrame], numPlots + 2);
+        poseMesh.add(scoreY, zColor);
+
         numPlots += 3;
     }
 
@@ -960,12 +1050,7 @@ public class ScoreView {
         assert assetManager != null;
 
         ColorRGBA black = new ColorRGBA(0f, 0f, 0f, 1f);
-        ColorRGBA blue = new ColorRGBA(0f, 0f, 1f, 1f);
-        ColorRGBA green = new ColorRGBA(0f, 1f, 0f, 1f);
         ColorRGBA grey = new ColorRGBA(0.5f, 0.5f, 0.5f, 1f);
-        ColorRGBA red = new ColorRGBA(1f, 0f, 0f, 1f);
-        ColorRGBA white = new ColorRGBA(1f, 1f, 1f, 1f);
-        float pointSize = 3f;
 
         bgNotSelected = MyAsset.createUnshadedMaterial(assetManager, grey);
         bgSelected = MyAsset.createUnshadedMaterial(assetManager, black);
@@ -973,13 +1058,14 @@ public class ScoreView {
         wireNotSelected = MyAsset.createWireframeMaterial(assetManager, grey);
         wireSelected = MyAsset.createWireframeMaterial(assetManager, black);
 
-        wMaterial = MyAsset.createWireframeMaterial(assetManager, white,
+        float pointSize = 3f;
+        wMaterial = MyAsset.createWireframeMaterial(assetManager, wColor,
                 pointSize);
-        xMaterial = MyAsset.createWireframeMaterial(assetManager, red,
+        xMaterial = MyAsset.createWireframeMaterial(assetManager, xColor,
                 pointSize);
-        yMaterial = MyAsset.createWireframeMaterial(assetManager, green,
+        yMaterial = MyAsset.createWireframeMaterial(assetManager, yColor,
                 pointSize);
-        zMaterial = MyAsset.createWireframeMaterial(assetManager, blue,
+        zMaterial = MyAsset.createWireframeMaterial(assetManager, zColor,
                 pointSize);
 
         traMaterial = MyAsset.createUnshadedMaterial(assetManager,
@@ -988,5 +1074,31 @@ public class ScoreView {
                 "Textures/icons/rotate.png");
         scaMaterial = MyAsset.createUnshadedMaterial(assetManager,
                 "Textures/icons/scale.png");
+
+        poseMaterial = new Material(assetManager,
+                "MatDefs/wireframe/multicolor2.j3md");
+        poseMaterial.setFloat("PointSize", 2f * pointSize);
+        Texture poseShape = MyAsset.loadTexture(assetManager,
+                "Textures/shapes/saltire.png");
+        poseMaterial.setTexture("PointShape", poseShape);
+        RenderState rs = poseMaterial.getAdditionalRenderState();
+        rs.setBlendMode(RenderState.BlendMode.Alpha);
+        rs.setDepthTest(false);
+        rs.setWireframe(true);
+    }
+
+    /**
+     * Convert a sparkline ordinate value to a world Y coordinate.
+     *
+     * @param ordinate input sparkline ordinate
+     * @param yIndex position in the staff (&ge;0, &lt;10, 0&rarr; top position)
+     * @return world Y coordinate
+     */
+    private float scoreY(float ordinate, int yIndex) {
+        float result = -height;
+        result -= sparklineHeight * (1f - ordinate);
+        result -= yIndex * (float) Finial.hpf;
+
+        return result;
     }
 }
