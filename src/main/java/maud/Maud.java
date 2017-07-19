@@ -145,8 +145,8 @@ public class Maud extends GuiApplication {
      * Process a "dump renderer" action.
      */
     public void dumpRenderer() {
-        dumper.setPrintCull(true);
-        dumper.setPrintTransform(true);
+        dumper.setDumpCull(true);
+        dumper.setDumpTransform(true);
         dumper.dump(renderManager);
     }
 
@@ -154,8 +154,8 @@ public class Maud extends GuiApplication {
      * Process a "dump scene" action.
      */
     public void dumpScene() {
-        dumper.setPrintCull(true);
-        dumper.setPrintTransform(true);
+        dumper.setDumpCull(true);
+        dumper.setDumpTransform(true);
         dumper.dump(rootNode);
     }
 
