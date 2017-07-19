@@ -61,11 +61,11 @@ import jme3utilities.sky.Updater;
 import maud.model.LoadedCgm;
 
 /**
- * A rendered 3D visualization of a loaded CG model in Maud's "scene" mode.
+ * A 3D visualization of a loaded CG model in a scene-mode viewport.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SceneView implements JmeCloneable {
+public class SceneView implements EditorView, JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -174,30 +174,6 @@ public class SceneView implements JmeCloneable {
     // new methods exposed
 
     /**
-     * Calculate the distance from the specified screen coordinates to the
-     * screen location of the indexed bone.
-     *
-     * @param boneIndex which bone (&ge;0)
-     * @param inputXY input screen coordinates (not null)
-     * @return square of the distance in pixels (&ge;0)
-     */
-    public float dSquared(int boneIndex, Vector2f inputXY) {
-        Validate.nonNegative(boneIndex, "bone index");
-        Validate.nonNull(inputXY, "input point");
-
-        Bone bone = skeleton.getBone(boneIndex);
-        Vector3f modelLocation = bone.getModelSpacePosition();
-        Transform worldTransform = worldTransform();
-        Vector3f boneWorld = worldTransform.transformVector(modelLocation, null);
-        Camera camera = getCamera();
-        Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
-        Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
-        float result = inputXY.distanceSquared(boneXY);
-
-        return result;
-    }
-
-    /**
      * Access the axes visualizer added to the scene.
      *
      * @return the pre-existing instance (not null)
@@ -215,22 +191,6 @@ public class SceneView implements JmeCloneable {
     public BoundsVisualizer getBoundsVisualizer() {
         assert boundsVisualizer != null;
         return boundsVisualizer;
-    }
-
-    /**
-     * Access the camera used to render the scene view.
-     *
-     * @return a pre-existing instance, or null if not rendered
-     */
-    public Camera getCamera() {
-        Camera result = null;
-
-        ViewPort viewPort = getViewPort();
-        if (viewPort != null && viewPort.isEnabled()) {
-            result = viewPort.getCamera();
-        }
-
-        return result;
     }
 
     /**
@@ -253,7 +213,7 @@ public class SceneView implements JmeCloneable {
     }
 
     /**
-     * Access the scene's main (directional) light.
+     * Access the main (directional) light added to the scene.
      *
      * @return the pre-existing instance (not null)
      */
@@ -263,7 +223,7 @@ public class SceneView implements JmeCloneable {
     }
 
     /**
-     * Access the spatial for the platform added to the scene.
+     * Access the spatial for the scene's platform.
      *
      * @return the pre-existing instance, or null if none
      */
@@ -272,7 +232,7 @@ public class SceneView implements JmeCloneable {
     }
 
     /**
-     * Access the skeleton visualizer.
+     * Access the skeleton visualizer added to the scene.
      *
      * @return the pre-existing instance, or null if none
      */
@@ -288,23 +248,6 @@ public class SceneView implements JmeCloneable {
     public SkyControl getSkyControl() {
         assert skyControl != null;
         return skyControl;
-    }
-
-    /**
-     * Access the view port being used to render the scene.
-     *
-     * @return a pre-existing view port, or null if none
-     */
-    public ViewPort getViewPort() {
-        ViewPort result;
-        String viewMode = Maud.model.misc.getViewMode();
-        if (Maud.model.source.isLoaded() || viewMode.equals("hybrid")) {
-            result = viewPort2; // split-screen view port
-        } else {
-            result = viewPort1; // not split
-        }
-
-        return result;
     }
 
     /**
@@ -538,10 +481,121 @@ public class SceneView implements JmeCloneable {
     }
 
     /**
-     * Update prior to rendering. (Invoked once per render pass on each
-     * instance.)
+     * Copy the world transform of the CG model, based on an animated geometry
+     * if possible.
+     *
+     * @return a new instance
      */
-    void update() {
+    public Transform worldTransform() {
+        Spatial basedOn = MySpatial.findAnimatedGeometry(cgmRoot);
+        if (basedOn == null) {
+            basedOn = cgmRoot;
+        }
+        Transform transform = basedOn.getWorldTransform();
+
+        return transform.clone();
+    }
+    // *************************************************************************
+    // EditorView methods
+
+    /**
+     * Consider for selection all bones and axes in this view.
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    @Override
+    public void considerAll(Selection selection) {
+        Camera camera = getCamera();
+
+        boolean isSelected = cgm.bone.isSelected();
+        String mode = Maud.model.axes.getMode();
+        if (isSelected && mode.equals("bone")) {
+            for (int axisIndex = 0; axisIndex < 3; axisIndex++) {
+                Vector3f tipWorld;
+                tipWorld = Maud.gui.tools.axes.tipLocation(cgm, axisIndex);
+                Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);
+                Vector2f tipXY = new Vector2f(tipScreen.x, tipScreen.y);
+                selection.considerPoseAxis(cgm, axisIndex, false, tipXY);
+            }
+        }
+
+        boolean isVisible = Maud.model.skeleton.isVisible();
+        float pointSize = Maud.model.skeleton.getPointSize();
+        pointSize = Math.round(pointSize);
+        if (isVisible && pointSize >= 1f) {
+            Pose pose = cgm.pose.getPose();
+            int numBones = pose.countBones();
+            int selectedBone = cgm.bone.getIndex();
+            Vector2f inputXY = selection.copyInputXY();
+            for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+                if (boneIndex != selectedBone) {
+                    Vector3f modelLocation;
+                    modelLocation = pose.modelLocation(boneIndex, null);
+                    Transform worldTransform = worldTransform();
+                    Vector3f boneWorld = worldTransform.transformVector(
+                            modelLocation, null);
+                    Vector3f boneScreen;
+                    boneScreen = camera.getScreenCoordinates(boneWorld);
+                    Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
+                    float dSquared = boneXY.distanceSquared(inputXY);
+                    selection.considerBone(cgm, boneIndex, dSquared);
+                }
+            }
+        }
+    }
+
+    /**
+     * Access the camera used to render this view.
+     *
+     * @return a pre-existing instance, or null if not rendered
+     */
+    @Override
+    public Camera getCamera() {
+        Camera result = null;
+        ViewPort viewPort = getViewPort();
+        if (viewPort != null && viewPort.isEnabled()) {
+            result = viewPort.getCamera();
+        }
+
+        return result;
+    }
+
+    /**
+     * Read the mode of this view.
+     *
+     * @return "scene"
+     */
+    @Override
+    public String getMode() {
+        return "scene";
+    }
+
+    /**
+     * Access the view port used to render this view.
+     *
+     * @return the pre-existing view port
+     */
+    @Override
+    public ViewPort getViewPort() {
+        ViewPort result;
+        String viewMode = Maud.model.misc.getViewMode();
+        if (Maud.model.source.isLoaded() || viewMode.equals("hybrid")) {
+            result = viewPort2; // split-screen view port
+        } else {
+            result = viewPort1; // not split
+        }
+
+        return result;
+    }
+
+    /**
+     * Update this view prior to rendering. (Invoked once per render pass on
+     * each instance.)
+     *
+     * @param ignored not used
+     */
+    @Override
+    public void update(LoadedCgm ignored) {
         if (skyControl == null) {  // TODO add an init method
             /*
              * Initialize scene on first update.
@@ -561,24 +615,8 @@ public class SceneView implements JmeCloneable {
             skyControl.setCamera(camera);
         }
     }
-
-    /**
-     * Copy the world transform of the CG model, based on an animated geometry
-     * if possible.
-     *
-     * @return a new instance
-     */
-    public Transform worldTransform() {
-        Spatial basedOn = MySpatial.findAnimatedGeometry(cgmRoot);
-        if (basedOn == null) {
-            basedOn = cgmRoot;
-        }
-        Transform transform = basedOn.getWorldTransform();
-
-        return transform.clone();
-    }
     // *************************************************************************
-    // JmeCloner methods
+    // JmeCloneable methods
 
     /**
      * Convert this shallow-cloned view into a deep-cloned one, using the

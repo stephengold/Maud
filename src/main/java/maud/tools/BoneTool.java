@@ -26,18 +26,11 @@
  */
 package maud.tools;
 
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.SceneView;
-import maud.ScoreView;
-import maud.model.LoadedCgm;
-import maud.model.LoadedMapping;
 
 /**
  * The controller for the "Bone Tool" window in Maud's editor screen.
@@ -49,33 +42,10 @@ public class BoneTool extends WindowController {
     // constants and loggers
 
     /**
-     * largest squared distance for bone/axis selection (in pixels squared)
-     */
-    final private static float dSquaredThreshold = 1000f;
-    /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
             BoneTool.class.getName());
-    // *************************************************************************
-    // fields
-
-    /**
-     * smallest squared distance from the mouse pointer (&ge;0)
-     */
-    private float bestDSquared;
-    /**
-     * index of the axis whose tip is closest to the mouse pointer, or -1
-     */
-    private int bestAxisIndex;
-    /**
-     * index of the bone closest to the mouse pointer, or -1
-     */
-    private int bestBoneIndex;
-    /**
-     * CG model containing the feature closest to the mouse pointer, or null
-     */
-    private LoadedCgm bestCgm;
     // *************************************************************************
     // constructors
 
@@ -86,51 +56,6 @@ public class BoneTool extends WindowController {
      */
     BoneTool(BasicScreenController screenController) {
         super(screenController, "boneTool", false);
-    }
-    // *************************************************************************
-    // new methods exposed
-
-    /**
-     * Select the bone or axis tip whose screen coordinates are nearest to the
-     * mouse pointer.
-     */
-    public void selectXY() {
-        bestAxisIndex = -1;
-        bestBoneIndex = -1;
-        bestCgm = null;
-        bestDSquared = Float.MAX_VALUE;
-
-        if (Maud.model.source.isLoaded()) {
-            selectBestInCgm(Maud.model.source);
-        }
-        selectBestInCgm(Maud.model.target);
-
-        if (bestDSquared < dSquaredThreshold) {
-            assert bestCgm != null;
-            if (bestAxisIndex >= 0) {
-                boolean farSide = Maud.gui.tools.axes.isAxisReceding(bestCgm,
-                        bestAxisIndex);
-                Maud.model.axes.setDraggingAxis(bestAxisIndex, bestCgm,
-                        farSide);
-            }
-            if (bestBoneIndex >= 0) {
-                bestCgm.bone.select(bestBoneIndex);
-
-                if (Maud.model.target.animation.isRetargetedPose()) {
-                    /*
-                     * Also select the mapped bone (if any).
-                     */
-                    LoadedMapping mapping = Maud.model.mapping;
-                    if (bestCgm == Maud.model.source
-                            && mapping.isSourceBoneMapped(bestBoneIndex)) {
-                        Maud.model.mapping.selectFromSource();
-                    } else if (bestCgm == Maud.model.target
-                            && mapping.isTargetBoneMapped(bestBoneIndex)) {
-                        Maud.model.mapping.selectFromTarget();
-                    }
-                }
-            }
-        }
     }
     // *************************************************************************
     // AppState methods
@@ -181,106 +106,6 @@ public class BoneTool extends WindowController {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Calculate the squared distance between the mouse pointer and the indexed
-     * bone.
-     *
-     * @param cgm which CG model contains the bone (not null, unaffected)
-     * @param boneIndex which bone in the CG model's selected skeleton (&ge;0)
-     * @return square of the distance in pixels (&ge;0)
-     */
-    private float boneDSquared(LoadedCgm cgm, int boneIndex) {
-        assert boneIndex >= 0 : boneIndex;
-
-        Vector2f mouseXY = inputManager.getCursorPosition();
-
-        float sceneDSquared = Float.POSITIVE_INFINITY;
-        SceneView sceneView = cgm.getSceneView();
-        if (sceneView != null) {
-            Camera camera = sceneView.getCamera();
-            if (camera != null) {
-                sceneDSquared = sceneView.dSquared(boneIndex, mouseXY);
-            }
-        }
-
-        float scoreDSquared = Float.POSITIVE_INFINITY;
-        ScoreView scoreView = cgm.getScoreView();
-        if (scoreView != null) {
-            Camera camera = scoreView.getCamera();
-            if (camera != null) {
-                scoreDSquared = scoreView.dSquared(boneIndex, mouseXY);
-            }
-        }
-
-        float dSquared = Math.min(sceneDSquared, scoreDSquared);
-
-        return dSquared;
-    }
-
-    /**
-     * Find the bone or axis tip in the specified CG model whose screen
-     * coordinates are nearest to the mouse pointer. Assumes bestDSquared has
-     * been initialized.
-     *
-     * @param cgm which CG model (not null)
-     */
-    private void selectBestInCgm(LoadedCgm cgm) {
-        int numBones = cgm.bones.countBones();
-        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            float dSquared = boneDSquared(cgm, boneIndex);
-            if (dSquared < bestDSquared) {
-                bestDSquared = dSquared;
-                bestAxisIndex = -1;
-                bestBoneIndex = boneIndex;
-                bestCgm = cgm;
-            }
-        }
-
-        String viewMode = Maud.gui.mouseViewMode();
-        if (viewMode.equals("scene")) {
-            /*
-             * In scene mode, include axis tips in the search.
-             */
-            for (int axisIndex = 0; axisIndex < 3; axisIndex++) {
-                float dSquared = tipDSquared(cgm, axisIndex);
-                if (dSquared < bestDSquared) {
-                    bestDSquared = dSquared;
-                    bestAxisIndex = axisIndex;
-                    bestBoneIndex = -1;
-                    bestCgm = cgm;
-                }
-            }
-        }
-    }
-
-    /**
-     * Calculate the squared distance between the mouse pointer and the indexed
-     * axis tip.
-     *
-     * @param cgm which CG model (not null, unaffected)
-     * @param axisIndex which axis in the CG model's axes control (&ge;0, &lt;3)
-     * @return squared distance in pixels (&ge;0)
-     */
-    private float tipDSquared(LoadedCgm cgm, int axisIndex) {
-        assert cgm != null;
-        assert axisIndex >= 0 : axisIndex;
-        assert axisIndex < 3 : axisIndex;
-
-        float dSquared = Float.MAX_VALUE;
-        Vector3f tipWorld = Maud.gui.tools.axes.tipLocation(cgm, axisIndex);
-        if (tipWorld != null) {
-            Camera camera = cgm.getSceneView().getCamera();
-            if (camera != null) {
-                Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);
-                Vector2f tipXY = new Vector2f(tipScreen.x, tipScreen.y);
-                Vector2f mouseXY = inputManager.getCursorPosition();
-                dSquared = mouseXY.distanceSquared(tipXY);
-            }
-        }
-
-        return dSquared;
-    }
 
     /**
      * Update the children status and button.

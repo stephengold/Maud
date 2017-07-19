@@ -52,6 +52,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.Validate;
@@ -64,11 +65,11 @@ import maud.mesh.YSwarm;
 import maud.model.LoadedCgm;
 
 /**
- * A 2D, score-mode visualization of a loaded animation in Maud.
+ * A 2D visualization of a loaded animation in a score-mode viewport.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class ScoreView {
+public class ScoreView implements EditorView {
     // *************************************************************************
     // constants and loggers
 
@@ -189,9 +190,9 @@ public class ScoreView {
      */
     private LoadedCgm cgm;
     /**
-     * world Y-coordinate of each bone
+     * min/max world Y-coordinates of each bone
      */
-    final private Map<Integer, Float> boneYs = new HashMap<>(120);
+    final private Map<Integer, Vector2f> boneYs = new HashMap<>(120);
     /**
      * material for label backgrounds of non-selected bones
      */
@@ -282,46 +283,53 @@ public class ScoreView {
     // new methods exposed
 
     /**
-     * Calculate the distance from the specified screen coordinates to the
-     * screen segment of the indexed bone.
+     * Read the height of this score, not including the gnomon.
      *
-     * @param boneI which bone (&ge;0)
-     * @param p input screen coordinates (not null)
-     * @return square of the distance in pixels (&ge;0)
+     * @return height (in world units, &ge;0)
      */
-    public float dSquared(int boneI, Vector2f p) {
-        Validate.nonNegative(boneI, "bone index");
-        Validate.nonNull(p, "input point");
+    public float getHeight() {
+        assert height >= 0f : height;
+        return height;
+    }
+    // *************************************************************************
+    // EditorView methods
 
-        float dSquared = Float.POSITIVE_INFINITY;
-        if (boneYs.containsKey(boneI)) {
-            float boneY = boneYs.get(boneI);
-            Vector3f boneInWorld0 = new Vector3f(0f, boneY, zLines);
-            Vector3f boneInWorld1 = new Vector3f(1f, boneY, zLines);
-            /*
-             * Calculate the endpoints of the segment in screen space
-             * that represent the bone.
-             */
-            Camera camera = getCamera();
-            Vector3f boneInScreen0 = camera.getScreenCoordinates(boneInWorld0);
-            Vector3f boneInScreen1 = camera.getScreenCoordinates(boneInWorld1);
-            Vector2f a = new Vector2f(boneInScreen0.x, boneInScreen0.y);
-            Vector2f b = new Vector2f(boneInScreen1.x, boneInScreen1.y);
-            /*
-             * Calculate the point on the bone segment closest
-             * to the input point.
-             */
-            Vector2f bma = b.subtract(a);
-            Vector2f pma = p.subtract(a);
-            float dot = bma.dot(pma);
-            float t = dot / bma.lengthSquared();
-            t = FastMath.clamp(t, 0f, 1f);
-            Vector2f closest = new Vector2f(a.x + t * bma.x, a.y + t * bma.y);
-
-            dSquared = p.distanceSquared(closest);
+    /**
+     * Consider for selection all bones and axes in this view.
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    @Override
+    public void considerAll(Selection selection) {
+        Camera camera = getCamera();
+        boolean isSelected = cgm.bone.isSelected();
+        if (isSelected) {
+            // TODO
         }
+        
+        Vector2f inputXY = selection.copyInputXY();
+        int selectedBone = cgm.bone.getIndex();
+        for (Entry<Integer, Vector2f> entry : boneYs.entrySet()) {
+            int boneIndex = entry.getKey();
+            if (boneIndex != selectedBone) {
+                Vector2f minMax = entry.getValue();
 
-        return dSquared;
+                Vector3f world1 = new Vector3f(xRightMargin, minMax.x, zLines);
+                Vector3f world2 = new Vector3f(xRightMargin, minMax.y, zLines);
+                Vector3f screen1 = camera.getScreenCoordinates(world1);
+                Vector3f screen2 = camera.getScreenCoordinates(world2);
+
+                float dSquared;
+                if (Util.isBetween(screen1.y, inputXY.y, screen2.y)) {
+                    dSquared = 0f;
+                } else {
+                    float dSquared1 = FastMath.sqr(inputXY.y - screen1.y);
+                    float dSquared2 = FastMath.sqr(inputXY.y - screen2.y);
+                    dSquared = Math.min(dSquared1, dSquared2);
+                }
+                selection.considerBone(cgm, boneIndex, dSquared);
+            }
+        }
     }
 
     /**
@@ -329,6 +337,7 @@ public class ScoreView {
      *
      * @return a pre-existing instance, or null if none
      */
+    @Override
     public Camera getCamera() {
         Camera result = null;
         ViewPort viewPort = getViewPort();
@@ -340,21 +349,22 @@ public class ScoreView {
     }
 
     /**
-     * Read the height of this score, not including the gnomon.
+     * Read the mode of this view.
      *
-     * @return height (in world units, &ge;0)
+     * @return "score"
      */
-    public float getHeight() {
-        assert height >= 0f : height;
-        return height;
+    @Override
+    public String getMode() {
+        return "score";
     }
 
     /**
-     * Access the view port being used to render this score.
+     * Access the view port used to render this view.
      *
-     * @return a pre-existing, enabled view port, or null if none
+     * @return the pre-existing view port
      */
-    ViewPort getViewPort() {
+    @Override
+    public ViewPort getViewPort() {
         ViewPort result = null;
         String viewMode = Maud.model.misc.getViewMode();
         if (viewMode.equals("hybrid")) {
@@ -371,12 +381,15 @@ public class ScoreView {
     }
 
     /**
-     * Update prior to rendering. (Invoked once per render pass on each
-     * instance.)
+     * Update this view prior to rendering. (Invoked once per render pass on
+     * each instance.)
      *
      * @param renderCgm which CG model to render (not null)
      */
-    void update(LoadedCgm renderCgm) {
+    @Override
+    public void update(LoadedCgm renderCgm) {
+        Validate.nonNull(renderCgm, "render model");
+
         if (wireNotSelected == null) { // TODO add an init method
             Maud application = Maud.getApplication();
             AssetManager assetManager = application.getAssetManager();
@@ -920,13 +933,15 @@ public class ScoreView {
      */
     private void attachStaff() {
         float zoom = cgm.scorePov.getHalfHeight();
+        float staffHeight;
+
         if (cgm.animation.hasTrackForBone(currentBone)) {
             Finial finial = finialNoScales;
             boolean hasScales = cgm.animation.hasScales(currentBone);
             if (hasScales) {
                 finial = finialComplete;
             }
-            float staffHeight = finial.getHeight();
+            staffHeight = finial.getHeight();
 
             if (zoom > 4f) {
                 /*
@@ -942,8 +957,6 @@ public class ScoreView {
             }
 
             attachSparklines();
-            boneYs.put(currentBone, -height - staffHeight / 2);
-            height += staffHeight;
 
         } else {
             /*
@@ -962,8 +975,13 @@ public class ScoreView {
                 float minWidth = hashSize / compression;
                 attachBoneLabel(rightX, middleY, minWidth, maxWidth, 0.09f);
             }
-            boneYs.put(currentBone, -height);
+            staffHeight = 0f;
         }
+
+        float newHeight = height + staffHeight;
+        Vector2f minMax = new Vector2f(-newHeight, -height);
+        boneYs.put(currentBone, minMax);
+        height = newHeight;
     }
 
     /**

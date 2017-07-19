@@ -67,6 +67,10 @@ public class EditorScreen extends GuiScreenController {
     // constants and loggers
 
     /**
+     * largest squared distance for bone/axis selection (in pixels squared)
+     */
+    final private static float dSquaredThreshold = 1000f;
+    /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
@@ -173,31 +177,52 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
+     * Select a view based on the screen position of the mouse pointer.
+     *
+     * @return the pre-existing instance, or null if none applies
+     */
+    public EditorView mouseView() {
+        LoadedCgm source = Maud.model.source;
+        LoadedCgm target = Maud.model.target;
+        EditorView sScene = source.getSceneView();
+        EditorView sScore = source.getScoreView();
+        EditorView tScene = target.getSceneView();
+        EditorView tScore = target.getScoreView();
+
+        Vector2f screenXY = inputManager.getCursorPosition();
+        List<ViewPort> viewPorts = Util.listViewPorts(renderManager, screenXY);
+        EditorView result = null;
+        for (ViewPort vp : viewPorts) {
+            if (vp.isEnabled()) {
+                if (vp == sScene.getViewPort()) {
+                    result = sScene;
+                    break;
+                } else if (vp == sScore.getViewPort()) {
+                    result = sScore;
+                    break;
+                } else if (vp == tScene.getViewPort()) {
+                    result = tScene;
+                    break;
+                } else if (vp == tScore.getViewPort()) {
+                    result = tScore;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Select a view mode based on the screen position of the mouse pointer.
      *
      * @return "scene" or "score" or null if neither applies
      */
     public String mouseViewMode() {
-        LoadedCgm source = Maud.model.source;
-        LoadedCgm target = Maud.model.target;
-        ViewPort sScene = source.getSceneView().getViewPort();
-        ViewPort sScore = source.getScoreView().getViewPort();
-        ViewPort tScene = target.getSceneView().getViewPort();
-        ViewPort tScore = target.getScoreView().getViewPort();
-
-        Vector2f screenXY = inputManager.getCursorPosition();
-        List<ViewPort> viewPorts = Util.listViewPorts(renderManager, screenXY);
         String result = null;
-        for (ViewPort vp : viewPorts) {
-            if (vp.isEnabled()) {
-                if (vp == sScene || vp == tScene) {
-                    result = "scene";
-                    break;
-                } else if (vp == sScore || vp == tScore) {
-                    result = "score";
-                    break;
-                }
-            }
+        EditorView view = mouseView();
+        if (view != null) {
+            result = view.getMode();
         }
 
         return result;
@@ -447,6 +472,22 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
+     * Select the bone or axis tip whose screen coordinates are nearest to the
+     * mouse pointer.
+     */
+    void selectXY() {
+        LoadedCgm mouseCgm = Maud.gui.mouseCgm();
+        EditorView mouseView = Maud.gui.mouseView();
+        if (mouseCgm == null || mouseView == null) {
+            return;
+        }
+        Vector2f mouseXY = inputManager.getCursorPosition();
+        Selection selection = new Selection(mouseXY, dSquaredThreshold);
+        mouseView.considerAll(selection);
+        selection.select();
+    }
+
+    /**
      * Set a bank of 3 sliders that control a color.
      *
      * @param prefix unique id prefix of the bank (not null)
@@ -580,9 +621,11 @@ public class EditorScreen extends GuiScreenController {
                 Maud.gui.tools.axes.dragAxis();
             }
         }
-
-        Maud.model.source.getSceneView().update();
-        Maud.model.target.getSceneView().update();
+        /*
+         * Update the views.
+         */
+        Maud.model.source.getSceneView().update(null);
+        Maud.model.target.getSceneView().update(null);
         Maud.model.source.getScoreView().update(Maud.model.source);
         Maud.model.target.getScoreView().update(Maud.model.target);
     }
