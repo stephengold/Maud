@@ -56,6 +56,7 @@ import java.util.Map.Entry;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import jme3utilities.mesh.RectangleMesh;
 import jme3utilities.mesh.RectangleOutlineMesh;
 import maud.mesh.Finial;
@@ -306,7 +307,7 @@ public class ScoreView implements EditorView {
         if (isSelected) {
             // TODO
         }
-        
+
         Vector2f inputXY = selection.copyInputXY();
         int selectedBone = cgm.bone.getIndex();
         for (Entry<Integer, Vector2f> entry : boneYs.entrySet()) {
@@ -808,10 +809,10 @@ public class ScoreView implements EditorView {
         xs[poseFrame] = user.getX();
         ys[poseFrame] = user.getY();
         zs[poseFrame] = user.getZ();
-        Util.normalize(ws);
-        Util.normalize(xs);
-        Util.normalize(ys);
-        Util.normalize(zs);
+        MyMath.normalize(ws);
+        MyMath.normalize(xs);
+        MyMath.normalize(ys);
+        MyMath.normalize(zs);
 
         // TODO interpolation
         attachPlot(ts, ws, ts, ws, "rw", numPlots, wMaterial);
@@ -844,9 +845,9 @@ public class ScoreView implements EditorView {
         xs[poseFrame] = user.x;
         ys[poseFrame] = user.y;
         zs[poseFrame] = user.z;
-        Util.normalize(xs);
-        Util.normalize(ys);
-        Util.normalize(zs);
+        MyMath.normalize(xs);
+        MyMath.normalize(ys);
+        MyMath.normalize(zs);
 
         attachPlot(ts, xs, ts, xs, "sx", numPlots, xMaterial);
         attachPlot(ts, ys, ts, ys, "sy", numPlots + 1, yMaterial);
@@ -900,7 +901,7 @@ public class ScoreView implements EditorView {
     private void attachSparklines() {
         ts = cgm.animation.trackTimes(currentBone);
         float duration = cgm.animation.getDuration();
-        Util.normalize(ts, 0f, duration);
+        MyMath.normalize(ts, 0f, duration);
 
         int numFrames = ts.length + 1; // +1 for pose transform
         if (ws == null || numFrames != ws.length) {
@@ -1039,9 +1040,9 @@ public class ScoreView implements EditorView {
         xs[poseFrame] = user.x;
         ys[poseFrame] = user.y;
         zs[poseFrame] = user.z;
-        Util.normalize(xs);
-        Util.normalize(ys);
-        Util.normalize(zs);
+        MyMath.normalize(xs);
+        MyMath.normalize(ys);
+        MyMath.normalize(zs);
 
         attachPlot(ts, xs, ts, xs, "tx", numPlots, xMaterial);
         attachPlot(ts, ys, ts, ys, "ty", numPlots + 1, yMaterial);
