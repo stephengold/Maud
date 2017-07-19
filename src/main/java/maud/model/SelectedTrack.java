@@ -213,6 +213,21 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
+     * Find the time of the indexed keyframe in the selected bone track.
+     *
+     * @param keyframeIndex which keyframe (&ge;0)
+     * @return animation time (&ge;0)
+     */
+    public float keyframeTime(int keyframeIndex) {
+        BoneTrack track = findTrack();
+        float[] times = track.getTimes();
+        float result = times[keyframeIndex];
+
+        assert result >= 0f : result;
+        return result;
+    }
+
+    /**
      * Find the time of the last keyframe in the selected bone track.
      *
      * @return animation time (&ge;0)
