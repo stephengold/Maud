@@ -225,6 +225,28 @@ public class Pose implements JmeCloneable {
     }
 
     /**
+     * Calculate the location of the indexed bone in the coordinate system of an
+     * animated spatial.
+     *
+     * @param boneIndex which bone to use (&ge;0)
+     * @param storeResult (modified if not null)
+     * @return location in model space (either storeResult or a new instance)
+     */
+    public Vector3f modelLocation(int boneIndex, Vector3f storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        Transform modelTransform = modelTransform(boneIndex, null);
+        Vector3f modelLocation = modelTransform.getTranslation();
+        if (storeResult == null) {
+            storeResult = modelLocation;
+        } else {
+            storeResult.set(modelLocation);
+        }
+
+        return storeResult;
+    }
+
+    /**
      * Calculate the orientation of the indexed bone in the coordinate system of
      * an animated spatial.
      *
