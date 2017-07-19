@@ -326,6 +326,26 @@ public class Util {
     }
 
     /**
+     * Test whether b is between a and c.
+     *
+     * @param a 1st input value
+     * @param b 2nd input value
+     * @param c 3rd input value
+     * @return true if b is between a and c (inclusive), otherwise false
+     */
+    public static boolean isBetween(float a, float b, float c) {
+        if (a > c) {
+            return a >= b && b >= c;
+        } else if (a < c) {
+            return a <= b && b <= c;
+        } else if (a == c) {
+            return a == b;
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
      * Enumerate all view ports that contain the specified screen position.
      *
      * @param screenXY (in pixels, not null, unaffected)
@@ -448,7 +468,8 @@ public class Util {
     }
 
     /**
-     * Normalize a dataset to [0, 1]. If min=max, all data will be set to 0.5.
+     * Normalize a dataset to [0, 1]. If min=max, all data will be set to 0.5 .
+     * TODO use MyMath.normalize() instead
      *
      * @param data data to normalize (not null, modified)
      */
@@ -470,7 +491,8 @@ public class Util {
 
     /**
      * Normalize a dataset to [0, 1] using the specified min and max. If
-     * min=max, all data will be set to 0.5.
+     * min=max, all data will be set to 0.5 . TODO use MyMath.normalize()
+     * instead
      *
      * @param data data to normalize (not null, modified)
      * @param min minimum value
