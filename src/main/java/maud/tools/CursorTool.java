@@ -57,7 +57,7 @@ import maud.model.LoadedCgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class CursorTool extends WindowController {
+class CursorTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -131,22 +131,6 @@ public class CursorTool extends WindowController {
             float newScale = cgm.scenePov.worldScaleForCursor();
             if (newScale != 0f) {
                 MySpatial.setWorldScale(cursor, newScale);
-            }
-        }
-    }
-
-    /**
-     * Attempt to warp the cursor to the screen coordinates of the mouse
-     * pointer.
-     */
-    public void warpCursor() {
-        LoadedCgm cgm = Maud.gui.mouseCgm();
-        if (cgm != null) {
-            String viewMode = Maud.gui.mouseViewMode();
-            if (viewMode.equals("score")) {
-                warpCursorScore(cgm);
-            } else {
-                warpCursorScene(cgm);
             }
         }
     }

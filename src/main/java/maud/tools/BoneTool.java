@@ -37,7 +37,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class BoneTool extends WindowController {
+class BoneTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 

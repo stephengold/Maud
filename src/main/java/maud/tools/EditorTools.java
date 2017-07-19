@@ -76,7 +76,7 @@ public class EditorTools {
     /**
      * controller for the "Bone Tool" window
      */
-    final public BoneTool bone;
+    final BoneTool bone;
     /**
      * controller for the "Bone Translation Tool" window
      */
@@ -96,7 +96,7 @@ public class EditorTools {
     /**
      * controller for the "Cursor Tool" window
      */
-    final public CursorTool cursor;
+    final CursorTool cursor;
     /**
      * controller for the "History Tool" window
      */
@@ -112,7 +112,7 @@ public class EditorTools {
     /**
      * controller for the "Platform Tool" window
      */
-    final public PlatformTool platform;
+    final PlatformTool platform;
     /**
      * controller for the "Render Tool" window
      */
@@ -120,7 +120,7 @@ public class EditorTools {
     /**
      * controller for the "Retarget Tool" window
      */
-    final public RetargetTool retarget;
+    final RetargetTool retarget;
     /**
      * controller for the "Score Tool" window
      */

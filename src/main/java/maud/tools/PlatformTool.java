@@ -47,7 +47,7 @@ import maud.model.LoadedCgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class PlatformTool extends WindowController {
+class PlatformTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 

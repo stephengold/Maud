@@ -37,7 +37,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class RetargetTool extends WindowController {
+class RetargetTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
