@@ -33,9 +33,13 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
+import com.jme3.input.InputManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -49,6 +53,7 @@ import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MyCamera;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
@@ -615,6 +620,37 @@ public class SceneView implements EditorView, JmeCloneable {
             skyControl.setCamera(camera);
         }
     }
+
+    /**
+     * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
+     */
+    @Override
+    public void warpCursor() {
+        Maud application = Maud.getApplication();
+        InputManager inputManager = application.getInputManager();
+        Camera camera = getCamera();
+        Ray ray = MyCamera.mouseRay(camera, inputManager);
+        /*
+         * Trace the ray to the CG model's visualization.
+         */
+        Spatial cgmRoot = getCgmRoot();
+        Vector3f targetContactPoint = findContact(cgmRoot, ray);
+
+        if (targetContactPoint != null) {
+            cgm.scenePov.setCursorLocation(targetContactPoint);
+        } else {
+            /*
+             * The ray missed the CG model; try to trace it to the platform.
+             */
+            Spatial platform = getPlatform();
+            if (platform != null) {
+                Vector3f platformContactPoint = findContact(platform, ray);
+                if (platformContactPoint != null) {
+                    cgm.scenePov.setCursorLocation(platformContactPoint);
+                }
+            }
+        }
+    }
     // *************************************************************************
     // JmeCloneable methods
 
@@ -743,6 +779,44 @@ public class SceneView implements EditorView, JmeCloneable {
         updater.setAmbientLight(ambientLight);
         updater.setMainLight(mainLight);
         //updater.addShadowFilter(dlsf);
+    }
+
+    /**
+     * For the specified camera ray, find the 1st point of contact on a triangle
+     * facing the camera.
+     *
+     * @param spatial (not null, unaffected)
+     * @param ray (not null, unaffected)
+     * @return a new vector in world coordinates, or null if none found
+     */
+    private Vector3f findContact(Spatial spatial, Ray ray) {
+        CollisionResults results = new CollisionResults();
+        spatial.collideWith(ray, results);
+        /*
+         * Collision results are sorted by increaing distance from the camera,
+         * so the first result is also the nearest one.
+         */
+        Camera cam = getCamera();
+        Vector3f cameraLocation = cam.getLocation();
+        for (int resultIndex = 0; resultIndex < results.size(); resultIndex++) {
+            /*
+             * Calculate the offset from the camera to the point of contact.
+             */
+            CollisionResult result = results.getCollision(resultIndex);
+            Vector3f contactPoint = result.getContactPoint();
+            Vector3f offset = contactPoint.subtract(cameraLocation);
+            /*
+             * If the dot product of the normal with the offset is negative,
+             * then the triangle faces the camera.  Return the point of contact.
+             */
+            Vector3f normal = result.getContactNormal();
+            float dotProduct = offset.dot(normal);
+            if (dotProduct < 0f) {
+                return contactPoint;
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -71,4 +71,9 @@ public interface EditorView {
      * @param renderCgm which CG model to render
      */
     void update(LoadedCgm renderCgm);
+
+    /**
+     * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
+     */
+    void warpCursor();
 }

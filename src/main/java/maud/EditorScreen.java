@@ -545,6 +545,16 @@ public class EditorScreen extends GuiScreenController {
 
         return color;
     }
+
+    /**
+     * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
+     */
+    void warpCursor() {
+        EditorView mouseView = Maud.gui.mouseView();
+        if (mouseView != null) {
+            mouseView.warpCursor();
+        }
+    }
     // *************************************************************************
     // AppState methods
 

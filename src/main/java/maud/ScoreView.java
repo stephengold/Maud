@@ -31,11 +31,13 @@ import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
 import com.jme3.font.Rectangle;
+import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -55,6 +57,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
+import jme3utilities.MyCamera;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.mesh.RectangleMesh;
@@ -463,6 +466,20 @@ public class ScoreView implements EditorView {
             float yLocation = cgm.scorePov.getCameraY();
             cgm.scorePov.setCameraY(yLocation);
         }
+    }
+
+    /**
+     * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
+     */
+    @Override
+    public void warpCursor() {
+        Maud application = Maud.getApplication();
+        InputManager inputManager = application.getInputManager();
+        Camera camera = getCamera();
+        Ray ray = MyCamera.mouseRay(camera, inputManager);
+        Vector3f origin = ray.getOrigin();
+        float newY = origin.y;
+        cgm.scorePov.setCameraY(newY);
     }
     // *************************************************************************
     // private methods

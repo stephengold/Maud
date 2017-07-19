@@ -1093,7 +1093,7 @@ public class EditorInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "warp cursor":
-                Maud.gui.tools.cursor.warpCursor();
+                Maud.gui.warpCursor();
                 handled = true;
         }
 
