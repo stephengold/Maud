@@ -335,12 +335,7 @@ public class SelectedSpatial implements Cloneable {
      */
     public String getName() {
         Spatial spatial = modelSpatial();
-        String result;
-        if (spatial == null) {
-            result = null;
-        } else {
-            result = spatial.getName();
-        }
+        String result = spatial.getName();
 
         return result;
     }

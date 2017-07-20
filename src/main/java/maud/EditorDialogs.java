@@ -287,9 +287,6 @@ class EditorDialogs {
      */
     void retargetAnimation() {
         String oldName = Maud.model.source.animation.getName();
-        if (oldName == null) {
-            oldName = "";
-        }
         DialogController controller = new AnimationNameDialog("Retarget");
 
         Maud.gui.closeAllPopups();

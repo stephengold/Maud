@@ -77,16 +77,14 @@ class SkyTool extends WindowController {
      */
     void updateSkyControl(LoadedCgm cgm) {
         SkyControl sky = cgm.getSceneView().getSkyControl();
-        if (sky != null) {
-            boolean enable = Maud.model.misc.isSkyRendered();
-            sky.setEnabled(enable);
-            sky.setCloudiness(0.5f);
-            sky.getSunAndStars().setHour(11f);
+        boolean enable = Maud.model.misc.isSkyRendered();
+        sky.setEnabled(enable);
+        sky.setCloudiness(0.5f);
+        sky.getSunAndStars().setHour(11f);
 
-            Updater updater = sky.getUpdater();
-            updater.setAmbientMultiplier(ambientMultiplier);
-            updater.setMainMultiplier(mainMultiplier);
-        }
+        Updater updater = sky.getUpdater();
+        updater.setAmbientMultiplier(ambientMultiplier);
+        updater.setMainMultiplier(mainMultiplier);
     }
     // *************************************************************************
     // AppState methods
