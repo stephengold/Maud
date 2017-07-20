@@ -324,7 +324,7 @@ public class SceneView implements EditorView, JmeCloneable {
     }
 
     /**
-     * Alter the cull hint of the selected spatial. TODO sort methods
+     * Alter the cull hint of the selected spatial.
      *
      * @param newHint new value for cull hint (not null)
      */

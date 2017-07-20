@@ -182,7 +182,6 @@ public class BVHLoader implements AssetLoader {
             for (int i = 0; i < animation.getNbFrames(); i++) {
                 readChannelsValue(animation.getHierarchy());
             }
-
         }
 
         compileData();
