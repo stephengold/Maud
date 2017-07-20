@@ -324,6 +324,18 @@ public class SceneView implements EditorView, JmeCloneable {
     }
 
     /**
+     * Alter the cull hint of the selected spatial. TODO sort methods
+     *
+     * @param newHint new value for cull hint (not null)
+     */
+    public void setCullHint(Spatial.CullHint newHint) {
+        Validate.nonNull(newHint, "cull hint");
+
+        Spatial spatial = selectedSpatial();
+        spatial.setCullHint(newHint);
+    }
+
+    /**
      * Alter which cursor indicator is attached to the scene.
      *
      * @param cursorSpatial (may be null)
@@ -337,18 +349,6 @@ public class SceneView implements EditorView, JmeCloneable {
             scene.attachChild(cursorSpatial);
         }
         cursor = cursorSpatial;
-    }
-
-    /**
-     * Alter the cull hint of the selected spatial. TODO sort methods
-     *
-     * @param newHint new value for cull hint (not null)
-     */
-    public void setCullHint(Spatial.CullHint newHint) {
-        Validate.nonNull(newHint, "cull hint");
-
-        Spatial spatial = selectedSpatial();
-        spatial.setCullHint(newHint);
     }
 
     /**
