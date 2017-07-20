@@ -26,25 +26,18 @@
  */
 package maud.tools;
 
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
-import jme3utilities.MyCamera;
 import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.SceneView;
-import maud.ScoreView;
 import maud.model.LoadedCgm;
 
 /**
@@ -171,91 +164,5 @@ class CursorTool extends WindowController {
         result.setMaterial(material);
 
         return result;
-    }
-
-    /**
-     * For the specified camera ray, find the 1st point of contact on a triangle
-     * that faces the camera.
-     *
-     * @param spatial (not null, unaffected)
-     * @param ray (not null, unaffected)
-     * @return a new vector in world coordinates, or null if none found
-     */
-    private Vector3f findContact(Spatial spatial, Ray ray) {
-        CollisionResults results = new CollisionResults();
-        spatial.collideWith(ray, results);
-        /*
-         * Collision results are sorted by increaing distance from the camera,
-         * so the first result is also the nearest one.
-         */
-        Vector3f cameraLocation = cam.getLocation();
-        for (int resultIndex = 0; resultIndex < results.size(); resultIndex++) {
-            /*
-             * Calculate the offset from the camera to the point of contact.
-             */
-            CollisionResult result = results.getCollision(resultIndex);
-            Vector3f contactPoint = result.getContactPoint();
-            Vector3f offset = contactPoint.subtract(cameraLocation);
-            /*
-             * If the dot product of the normal with the offset is negative,
-             * then the triangle faces the camera.  Return the point of contact.
-             */
-            Vector3f normal = result.getContactNormal();
-            float dotProduct = offset.dot(normal);
-            if (dotProduct < 0f) {
-                return contactPoint;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Warp the 3D cursor in "scene" mode.
-     *
-     * @param cgm which CG model (not null)
-     */
-    private void warpCursorScene(LoadedCgm cgm) {
-        assert cgm != null;
-
-        SceneView sceneView = cgm.getSceneView();
-        Camera camera = sceneView.getCamera();
-        Ray ray = MyCamera.mouseRay(camera, inputManager);
-        /*
-         * Trace the ray to the CG model's visualization.
-         */
-        Spatial cgmRoot = sceneView.getCgmRoot();
-        Vector3f targetContactPoint = findContact(cgmRoot, ray);
-
-        if (targetContactPoint != null) {
-            cgm.scenePov.setCursorLocation(targetContactPoint);
-        } else {
-            /*
-             * The ray missed the CG model; try to trace it to the platform.
-             */
-            Spatial platform = sceneView.getPlatform();
-            if (platform != null) {
-                Vector3f platformContactPoint = findContact(platform, ray);
-                if (platformContactPoint != null) {
-                    cgm.scenePov.setCursorLocation(platformContactPoint);
-                }
-            }
-        }
-    }
-
-    /**
-     * Warp the 2D cursor in "score" mode.
-     *
-     * @param cgm which CG model (not null)
-     */
-    private void warpCursorScore(LoadedCgm cgm) {
-        assert cgm != null;
-
-        ScoreView scoreView = cgm.getScoreView();
-        Camera camera = scoreView.getCamera();
-        Ray ray = MyCamera.mouseRay(camera, inputManager);
-        Vector3f origin = ray.getOrigin();
-        float newY = origin.y;
-        cgm.scorePov.setCameraY(newY);
     }
 }
