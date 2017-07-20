@@ -121,16 +121,19 @@ class UserDataTool extends WindowController {
      * Update the "selected key" label and rename button label.
      */
     private void updateKey() {
-        String keyText, rButton;
+        String dButton, keyText, rButton;
         String key = Maud.model.misc.getSelectedUserKey();
         if (key == null) {
+            dButton = "";
             keyText = "(none selected)";
             rButton = "";
         } else {
+            dButton = "Delete";
             keyText = MyString.quote(key);
             rButton = "Rename";
         }
         Maud.gui.setStatusText("userKey", " " + keyText);
+        Maud.gui.setButtonLabel("userKeyDeleteButton", dButton);
         Maud.gui.setButtonLabel("userKeyRenameButton", rButton);
     }
 
