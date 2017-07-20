@@ -39,10 +39,7 @@ import com.jme3.asset.ModelKey;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -53,13 +50,11 @@ import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
-import jme3utilities.MyCamera;
 import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -162,60 +157,6 @@ public class Util {
         MyMath.snapLocal(input, 0);
         MyMath.snapLocal(input, 1);
         MyMath.snapLocal(input, 2);
-    }
-
-    /**
-     * Copy a bone track, deleting the indexed keyframe (which mustn't be the
-     * 1st).
-     *
-     * @param oldTrack (not null, unaffected)
-     * @param frameIndex which keyframe (&gt;0)
-     * @return a new instance
-     */
-    public static BoneTrack deleteKeyframe(BoneTrack oldTrack, int frameIndex) {
-        float[] oldTimes = oldTrack.getKeyFrameTimes();
-        int oldCount = oldTimes.length;
-        Validate.inRange(frameIndex, "keyframe index", 1, oldCount - 1);
-
-        Vector3f[] oldTranslations = oldTrack.getTranslations();
-        Quaternion[] oldRotations = oldTrack.getRotations();
-        Vector3f[] oldScales = oldTrack.getScales();
-
-        int newCount = oldCount - 1;
-        Vector3f[] newTranslations = new Vector3f[newCount];
-        Quaternion[] newRotations = new Quaternion[newCount];
-        Vector3f[] newScales;
-        if (oldScales == null) {
-            newScales = null;
-        } else {
-            newScales = new Vector3f[newCount];
-        }
-        float[] newTimes = new float[newCount];
-
-        for (int newIndex = 0; newIndex < newCount; newIndex++) {
-            int oldIndex = newIndex;
-            if (newIndex >= frameIndex) {
-                ++oldIndex;
-            }
-            newTranslations[newIndex] = oldTranslations[oldIndex].clone();
-            newRotations[newIndex] = oldRotations[oldIndex].clone();
-            if (oldScales != null) {
-                newScales[newIndex] = oldScales[oldIndex].clone();
-            }
-            newTimes[newIndex] = oldTimes[oldIndex];
-        }
-
-        int boneIndex = oldTrack.getTargetBoneIndex();
-        BoneTrack result;
-        if (newScales == null) {
-            result = new BoneTrack(boneIndex, newTimes, newTranslations,
-                    newRotations);
-        } else {
-            result = new BoneTrack(boneIndex, newTimes, newTranslations,
-                    newRotations, newScales);
-        }
-
-        return result;
     }
 
     /**
@@ -380,64 +321,6 @@ public class Util {
     }
 
     /**
-     * Test whether b is between a and c.
-     *
-     * @param a 1st input value
-     * @param b 2nd input value
-     * @param c 3rd input value
-     * @return true if b is between a and c (inclusive), otherwise false
-     */
-    public static boolean isBetween(float a, float b, float c) {
-        if (a > c) {
-            return a >= b && b >= c;
-        } else if (a < c) {
-            return a <= b && b <= c;
-        } else if (a == c) {
-            return a == b;
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     * Enumerate all view ports that contain the specified screen position.
-     *
-     * @param screenXY (in pixels, not null, unaffected)
-     * @param renderManager (not null)
-     *
-     * @return a new list of pre-existing view ports
-     */
-    public static List<ViewPort> listViewPorts(RenderManager renderManager,
-            Vector2f screenXY) {
-        Validate.nonNull(screenXY, "screen xy");
-
-        List<ViewPort> result = new ArrayList<>(4);
-
-        List<ViewPort> preViews = renderManager.getPreViews();
-        for (ViewPort preView : preViews) {
-            if (MyCamera.contains(preView, screenXY)) {
-                result.add(preView);
-            }
-        }
-
-        List<ViewPort> mainViews = renderManager.getMainViews();
-        for (ViewPort mainView : mainViews) {
-            if (MyCamera.contains(mainView, screenXY)) {
-                result.add(mainView);
-            }
-        }
-
-        List<ViewPort> postViews = renderManager.getPostViews();
-        for (ViewPort postView : postViews) {
-            if (MyCamera.contains(postView, screenXY)) {
-                result.add(postView);
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Load a BVH asset as a CG model without logging any warning/error
      * messages.
      *
@@ -519,50 +402,6 @@ public class Util {
         materialLoaderLogger.setLevel(materialLoaderLevel);
 
         return loaded;
-    }
-
-    /**
-     * Copy a bone track, reducing the number of keyframes by the specified
-     * factor. TODO use MyAnimation.reduce()
-     *
-     * @param oldTrack (not null, unaffected)
-     * @param factor reduction factor (&ge;2)
-     * @return a new instance
-     */
-    public static BoneTrack reduce(BoneTrack oldTrack, int factor) {
-        Validate.inRange(factor, "factor", 2, Integer.MAX_VALUE);
-
-        Vector3f[] oldTranslations = oldTrack.getTranslations();
-        Quaternion[] oldRotations = oldTrack.getRotations();
-        Vector3f[] oldScales = oldTrack.getScales();
-        float[] oldTimes = oldTrack.getKeyFrameTimes();
-        int oldCount = oldTimes.length;
-        assert oldCount > 0 : oldCount;
-
-        int newCount = 1 + (oldCount - 1) / factor;
-        Vector3f[] newTranslations = new Vector3f[newCount];
-        Quaternion[] newRotations = new Quaternion[newCount];
-        Vector3f[] newScales;
-        if (oldScales == null) {
-            newScales = null;
-        } else {
-            newScales = new Vector3f[newCount];
-        }
-        float[] newTimes = new float[newCount];
-
-        for (int newIndex = 0; newIndex < newCount; newIndex++) {
-            int oldIndex = newIndex * factor;
-            newTranslations[newIndex] = oldTranslations[oldIndex].clone();
-            newRotations[newIndex] = oldRotations[oldIndex].clone();
-            newScales[newIndex] = oldScales[oldIndex].clone();
-            newTimes[newIndex] = oldTimes[oldIndex];
-        }
-
-        int boneIndex = oldTrack.getTargetBoneIndex();
-        BoneTrack result = new BoneTrack(boneIndex, newTimes, newTranslations,
-                newRotations, newScales);
-
-        return result;
     }
 
     /**

@@ -235,7 +235,7 @@ public class LoadedAnimation implements Cloneable {
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
                 if (boneTrack.getTargetBoneIndex() == boneIndex) {
-                    clone = Util.deleteKeyframe(boneTrack, frameIndex);
+                    clone = MyAnimation.deleteKeyframe(boneTrack, frameIndex);
                 } else {
                     clone = track.clone();
                 }
@@ -715,7 +715,7 @@ public class LoadedAnimation implements Cloneable {
             Track clone;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                clone = Util.reduce(boneTrack, factor);
+                clone = MyAnimation.reduce(boneTrack, factor);
             } else {
                 clone = track.clone();
             }

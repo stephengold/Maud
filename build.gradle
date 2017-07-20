@@ -37,7 +37,7 @@ dependencies {
     compile "org.jmonkeyengine:jme3-terrain:${jmonkeyengineVersion}"
     // from stephengold's repositories:
     compile 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
-    compile 'jme3utilities:jme3-utilities-heart:0.9.12'
+    compile 'jme3utilities:jme3-utilities-heart:0.9.13'
     compile 'jme3utilities:SkyControl:0.9.5'
     compile 'jme3utilities:jme3-utilities-debug:0.7.2'
     compile 'jme3utilities:jme3-utilities-ui:0.5.5'

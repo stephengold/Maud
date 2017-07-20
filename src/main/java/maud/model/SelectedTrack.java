@@ -40,7 +40,6 @@ import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
-import maud.Util;
 
 /**
  * The MVC model of the selected track in the Maud application.
@@ -288,7 +287,7 @@ public class SelectedTrack implements Cloneable {
             Track clone;
             if (track == selectedTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                clone = Util.reduce(boneTrack, factor);
+                clone = MyAnimation.reduce(boneTrack, factor);
             } else {
                 clone = track.clone();
             }

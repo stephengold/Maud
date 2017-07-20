@@ -59,6 +59,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
 import jme3utilities.Validate;
+import jme3utilities.math.MyArray;
 import jme3utilities.math.MyMath;
 import jme3utilities.mesh.RectangleMesh;
 import jme3utilities.mesh.RectangleOutlineMesh;
@@ -320,7 +321,7 @@ public class ScoreView implements EditorView {
             Vector3f world2 = new Vector3f(xRightMargin, minMax.y, zLines);
             Vector3f screen1 = camera.getScreenCoordinates(world1);
             Vector3f screen2 = camera.getScreenCoordinates(world2);
-            if (Util.isBetween(screen1.y, inputXY.y, screen2.y)) {
+            if (MyMath.isBetween(screen1.y, inputXY.y, screen2.y)) {
                 for (Entry<Integer, Float> entry : frameXs.entrySet()) {
                     float frameX = entry.getValue();
                     Vector3f world = new Vector3f(frameX, minMax.y, zLines);
@@ -343,7 +344,7 @@ public class ScoreView implements EditorView {
                 Vector3f screen2 = camera.getScreenCoordinates(world2);
 
                 float dSquared;
-                if (Util.isBetween(screen1.y, inputXY.y, screen2.y)) {
+                if (MyMath.isBetween(screen1.y, inputXY.y, screen2.y)) {
                     dSquared = 0f;
                 } else {
                     float dSquared1 = FastMath.sqr(inputXY.y - screen1.y);
@@ -846,10 +847,10 @@ public class ScoreView implements EditorView {
         xs[poseFrame] = user.getX();
         ys[poseFrame] = user.getY();
         zs[poseFrame] = user.getZ();
-        MyMath.normalize(ws);
-        MyMath.normalize(xs);
-        MyMath.normalize(ys);
-        MyMath.normalize(zs);
+        MyArray.normalize(ws);
+        MyArray.normalize(xs);
+        MyArray.normalize(ys);
+        MyArray.normalize(zs);
 
         // TODO interpolation
         attachPlot(ts, ws, ts, ws, "rw", numPlots, wMaterial);
@@ -882,9 +883,9 @@ public class ScoreView implements EditorView {
         xs[poseFrame] = user.x;
         ys[poseFrame] = user.y;
         zs[poseFrame] = user.z;
-        MyMath.normalize(xs);
-        MyMath.normalize(ys);
-        MyMath.normalize(zs);
+        MyArray.normalize(xs);
+        MyArray.normalize(ys);
+        MyArray.normalize(zs);
 
         attachPlot(ts, xs, ts, xs, "sx", numPlots, xMaterial);
         attachPlot(ts, ys, ts, ys, "sy", numPlots + 1, yMaterial);
@@ -938,7 +939,7 @@ public class ScoreView implements EditorView {
     private void attachSparklines() {
         ts = cgm.animation.trackTimes(currentBone);
         float duration = cgm.animation.getDuration();
-        MyMath.normalize(ts, 0f, duration);
+        MyArray.normalize(ts, 0f, duration);
 
         int selectedBone = cgm.bone.getIndex();
         if (currentBone == selectedBone) {
@@ -1085,9 +1086,9 @@ public class ScoreView implements EditorView {
         xs[poseFrame] = user.x;
         ys[poseFrame] = user.y;
         zs[poseFrame] = user.z;
-        MyMath.normalize(xs);
-        MyMath.normalize(ys);
-        MyMath.normalize(zs);
+        MyArray.normalize(xs);
+        MyArray.normalize(ys);
+        MyArray.normalize(zs);
 
         attachPlot(ts, xs, ts, xs, "tx", numPlots, xMaterial);
         attachPlot(ts, ys, ts, ys, "ty", numPlots + 1, yMaterial);

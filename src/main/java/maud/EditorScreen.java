@@ -45,6 +45,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyCamera;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -159,7 +160,8 @@ public class EditorScreen extends GuiScreenController {
         ViewPort tScore = target.getScoreView().getViewPort();
 
         Vector2f screenXY = inputManager.getCursorPosition();
-        List<ViewPort> viewPorts = Util.listViewPorts(renderManager, screenXY);
+        List<ViewPort> viewPorts;
+        viewPorts = MyCamera.listViewPorts(renderManager, screenXY);
         LoadedCgm cgm = null;
         for (ViewPort vp : viewPorts) {
             if (vp.isEnabled()) {
@@ -190,7 +192,8 @@ public class EditorScreen extends GuiScreenController {
         EditorView tScore = target.getScoreView();
 
         Vector2f screenXY = inputManager.getCursorPosition();
-        List<ViewPort> viewPorts = Util.listViewPorts(renderManager, screenXY);
+        List<ViewPort> viewPorts;
+        viewPorts = MyCamera.listViewPorts(renderManager, screenXY);
         EditorView result = null;
         for (ViewPort vp : viewPorts) {
             if (vp.isEnabled()) {
