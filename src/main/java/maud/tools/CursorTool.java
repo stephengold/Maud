@@ -26,8 +26,6 @@
  */
 package maud.tools;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
@@ -136,18 +134,6 @@ class CursorTool extends WindowController {
     }
     // *************************************************************************
     // AppState methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application that owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-    }
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
