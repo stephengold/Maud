@@ -34,7 +34,6 @@ import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import java.util.Collections;
@@ -337,25 +336,21 @@ public class LoadedMapping implements Cloneable {
      * @return true if they match, otherwise false
      */
     public boolean matchesSource() {
-        boolean matches = false;
-        Spatial sourceCgm = Maud.model.source.getRootSpatial();
-        if (sourceCgm != null) {
-            /*
-             * Are all source bones in the effective mapping present
-             * in the source CG model?
-             */
-            matches = true;
-            List<String> names;
-            if (isInvertingMap()) {
-                names = mapping.listTargetBones();
-            } else {
-                names = mapping.listSourceBones();
-            }
-            for (String name : names) {
-                if (!Maud.model.source.bones.hasBone(name)) {
-                    matches = false;
-                    break;
-                }
+        /*
+         * Are all source bones in the effective mapping present
+         * in the source CG model?
+         */
+        boolean matches = true;
+        List<String> names;
+        if (isInvertingMap()) {
+            names = mapping.listTargetBones();
+        } else {
+            names = mapping.listSourceBones();
+        }
+        for (String name : names) {
+            if (!Maud.model.source.bones.hasBone(name)) {
+                matches = false;
+                break;
             }
         }
 
