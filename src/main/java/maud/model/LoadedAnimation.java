@@ -214,6 +214,41 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Delete the selected keyframe, which mustn't be the 1st keyframe in its
+     * bone track.
+     */
+    public void deleteKeyframe() {
+        assert isReal();
+        int boneIndex = loadedCgm.bone.getIndex();
+        assert boneIndex >= 0 : boneIndex;
+        assert hasTrackForBone(boneIndex);
+        int frameIndex = loadedCgm.track.findKeyframe();
+        assert frameIndex > 0 : frameIndex;
+
+        float duration = getDuration();
+        Animation newAnimation = new Animation(loadedName, duration);
+
+        Animation loaded = getAnimation();
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track clone;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                if (boneTrack.getTargetBoneIndex() == boneIndex) {
+                    clone = Util.deleteKeyframe(boneTrack, frameIndex);
+                } else {
+                    clone = track.clone();
+                }
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        editableCgm.replaceAnimation(loaded, newAnimation);
+    }
+
+    /**
      * Find the keyframe with the latest time in the loaded animation.
      *
      * @return track time (in seconds, &ge;0)

@@ -744,7 +744,10 @@ class EditorMenus {
             builder.add("Move");
             builder.add("Copy");
             builder.add("New from pose");
-            builder.add("Delete");
+            int frameIndex = Maud.model.target.track.findKeyframe();
+            if (frameIndex > 0) {
+                builder.add("Delete");
+            }
         }
     }
 
@@ -1368,31 +1371,31 @@ class EditorMenus {
     private boolean menuKeyframe(String remainder) {
         assert remainder != null;
 
-        boolean handled = false;
+        boolean handled = true;
         switch (remainder) {
+            case "Delete":
+                Maud.model.target.animation.deleteKeyframe();
+                break;
             case "Reduce":
                 Maud.gui.dialogs.reduceTrack();
-                handled = true;
                 break;
             case "Select first":
                 Maud.model.target.animation.selectKeyframeFirst();
-                handled = true;
                 break;
             case "Select last":
                 Maud.model.target.animation.selectKeyframeLast();
-                handled = true;
                 break;
             case "Select next":
                 Maud.model.target.animation.selectKeyframeNext();
-                handled = true;
                 break;
             case "Select previous":
                 Maud.model.target.animation.selectKeyframePrevious();
-                handled = true;
                 break;
             case "Tool":
                 Maud.gui.tools.select("keyframe");
-                handled = true;
+                break;
+            default:
+                handled = false;
         }
 
         return handled;
