@@ -194,7 +194,11 @@ public class ScoreView implements EditorView {
      */
     private LoadedCgm cgm;
     /**
-     * min/max world Y-coordinates of each bone
+     * world X-coordinates of each keyframe in the selected track
+     */
+    final private Map<Integer, Float> frameXs = new HashMap<>(40);
+    /**
+     * min/max world Y-coordinates of each bone in the CG model
      */
     final private Map<Integer, Vector2f> boneYs = new HashMap<>(120);
     /**
@@ -299,20 +303,35 @@ public class ScoreView implements EditorView {
     // EditorView methods
 
     /**
-     * Consider for selection all bones and axes in this view.
+     * Consider selecting each bone, axis, and keyframe in this view.
      *
      * @param selection best selection found so far (not null, modified)
      */
     @Override
     public void considerAll(Selection selection) {
         Camera camera = getCamera();
+        int selectedBone = cgm.bone.getIndex();
+        Vector2f inputXY = selection.copyInputXY();
+
         boolean isSelected = cgm.bone.isSelected();
         if (isSelected) {
-            // TODO
+            Vector2f minMax = boneYs.get(selectedBone);
+            Vector3f world1 = new Vector3f(xRightMargin, minMax.x, zLines);
+            Vector3f world2 = new Vector3f(xRightMargin, minMax.y, zLines);
+            Vector3f screen1 = camera.getScreenCoordinates(world1);
+            Vector3f screen2 = camera.getScreenCoordinates(world2);
+            if (Util.isBetween(screen1.y, inputXY.y, screen2.y)) {
+                for (Entry<Integer, Float> entry : frameXs.entrySet()) {
+                    float frameX = entry.getValue();
+                    Vector3f world = new Vector3f(frameX, minMax.y, zLines);
+                    Vector3f screen = camera.getScreenCoordinates(world);
+                    float dSquared = FastMath.sqr(inputXY.x - screen.x);
+                    int frameIndex = entry.getKey();
+                    selection.considerKeyframe(cgm, frameIndex, dSquared);
+                }
+            }
         }
 
-        Vector2f inputXY = selection.copyInputXY();
-        int selectedBone = cgm.bone.getIndex();
         for (Entry<Integer, Vector2f> entry : boneYs.entrySet()) {
             int boneIndex = entry.getKey();
             if (boneIndex != selectedBone) {
@@ -401,6 +420,7 @@ public class ScoreView implements EditorView {
             labelFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         }
         boneYs.clear();
+        frameXs.clear();
         poseMesh.clear();
 
         ViewPort viewPort = getViewPort();
@@ -919,6 +939,14 @@ public class ScoreView implements EditorView {
         ts = cgm.animation.trackTimes(currentBone);
         float duration = cgm.animation.getDuration();
         MyMath.normalize(ts, 0f, duration);
+
+        int selectedBone = cgm.bone.getIndex();
+        if (currentBone == selectedBone) {
+            assert frameXs.isEmpty();
+            for (int i = 0; i < ts.length; i++) {
+                frameXs.put(i, ts[i]);
+            }
+        }
 
         int numFrames = ts.length + 1; // +1 for pose transform
         if (ws == null || numFrames != ws.length) {

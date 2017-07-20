@@ -133,15 +133,14 @@ public class Selection {
      *
      * @param cgm CG model that contains the bone track (not null)
      * @param frameIndex which keyframe to select (&ge;0)
-     * @param screenXY screen coordinates of the axis (in pixels, not null,
-     * unaffected)
+     * @param dSquared squared distance between the keyframe's screen location
+     * and {@link #inputXY} (in pixels squared, &ge;0)
      */
     public void considerKeyframe(LoadedCgm cgm, int frameIndex,
-            Vector2f screenXY) {
+            float dSquared) {
         Validate.nonNull(cgm, "model");
         Validate.nonNegative(frameIndex, "frame index");
 
-        float dSquared = screenXY.distanceSquared(inputXY);
         if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
             bestAxisIndex = -1;
