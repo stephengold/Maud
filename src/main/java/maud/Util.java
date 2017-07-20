@@ -165,6 +165,60 @@ public class Util {
     }
 
     /**
+     * Copy a bone track, deleting the indexed keyframe (which mustn't be the
+     * 1st).
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param frameIndex which keyframe (&gt;0)
+     * @return a new instance
+     */
+    public static BoneTrack deleteKeyframe(BoneTrack oldTrack, int frameIndex) {
+        float[] oldTimes = oldTrack.getKeyFrameTimes();
+        int oldCount = oldTimes.length;
+        Validate.inRange(frameIndex, "keyframe index", 1, oldCount - 1);
+
+        Vector3f[] oldTranslations = oldTrack.getTranslations();
+        Quaternion[] oldRotations = oldTrack.getRotations();
+        Vector3f[] oldScales = oldTrack.getScales();
+
+        int newCount = oldCount - 1;
+        Vector3f[] newTranslations = new Vector3f[newCount];
+        Quaternion[] newRotations = new Quaternion[newCount];
+        Vector3f[] newScales;
+        if (oldScales == null) {
+            newScales = null;
+        } else {
+            newScales = new Vector3f[newCount];
+        }
+        float[] newTimes = new float[newCount];
+
+        for (int newIndex = 0; newIndex < newCount; newIndex++) {
+            int oldIndex = newIndex;
+            if (newIndex >= frameIndex) {
+                ++oldIndex;
+            }
+            newTranslations[newIndex] = oldTranslations[oldIndex].clone();
+            newRotations[newIndex] = oldRotations[oldIndex].clone();
+            if (oldScales != null) {
+                newScales[newIndex] = oldScales[oldIndex].clone();
+            }
+            newTimes[newIndex] = oldTimes[oldIndex];
+        }
+
+        int boneIndex = oldTrack.getTargetBoneIndex();
+        BoneTrack result;
+        if (newScales == null) {
+            result = new BoneTrack(boneIndex, newTimes, newTranslations,
+                    newRotations);
+        } else {
+            result = new BoneTrack(boneIndex, newTimes, newTranslations,
+                    newRotations, newScales);
+        }
+
+        return result;
+    }
+
+    /**
      * Count how many vertices in the specified subtree of the scene graph are
      * directly influenced by the indexed bone. Note: recursive!
      *
@@ -469,7 +523,7 @@ public class Util {
 
     /**
      * Copy a bone track, reducing the number of keyframes by the specified
-     * factor.
+     * factor. TODO use MyAnimation.reduce()
      *
      * @param oldTrack (not null, unaffected)
      * @param factor reduction factor (&ge;2)
