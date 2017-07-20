@@ -63,15 +63,6 @@ public class ScenePov implements Cloneable, Pov {
     // fields
 
     /**
-     * distance to the far plane of the view frustum (in world units,
-     * &gt;frustumNear)
-     */
-    private float frustumFar = 100f;
-    /**
-     * distance to the near plane of the view frustum (in world units, &gt;0)
-     */
-    private float frustumNear = 0.01f;
-    /**
      * loaded CG model containing this POV (set by
      * {@link #setCgm(LoadedCGModel)})
      */
