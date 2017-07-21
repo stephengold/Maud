@@ -111,11 +111,12 @@ class KeyframeTool extends WindowController {
     // private methods
 
     /**
-     * Update the delete/insert buttons.
+     * Update the delete/insert/set-to-pose/wrap buttons.
      */
     private void updateEditButtons() {
         String dButton = "";
         String iButton = "";
+        String sButton = "";
         String wButton = "";
 
         if (Maud.model.target.track.isTrackSelected()) {
@@ -125,11 +126,15 @@ class KeyframeTool extends WindowController {
             } else if (index > 0) {
                 dButton = "Delete";
             }
+            sButton = "Set all to pose";
             wButton = "Wrap track";
         }
 
         Maud.gui.setButtonLabel("deleteSingleKeyframeButton", dButton);
         Maud.gui.setButtonLabel("insertSingleKeyframeButton", iButton);
+        Maud.gui.setButtonLabel("rotationsToPoseKeyframeButton", sButton);
+        Maud.gui.setButtonLabel("scalesToPoseKeyframeButton", sButton);
+        Maud.gui.setButtonLabel("translationsToPoseKeyframeButton", sButton);
         Maud.gui.setButtonLabel("wrapTrackButton", wButton);
     }
 

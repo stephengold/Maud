@@ -775,8 +775,7 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="center"
                                  width="40px"/>
                         <panel width="10px"/>
-                        <control name="button" label="Set all to pose"
-                                 id="id6ToAvoidNiftyWarning"
+                        <control name="button" id="translationsToPoseKeyframeButton"
                                  width="95px">
                             <interact onRelease="perform(set track translation all)"/>
                         </control>
@@ -790,8 +789,7 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="center"
                                  width="40px"/>
                         <panel width="10px"/>
-                        <control name="button" label="Set all to pose"
-                                 id="id7ToAvoidNiftyWarning"
+                        <control name="button" id="rotationsToPoseKeyframeButton"
                                  width="95px">
                             <interact onRelease="perform(set track rotation all)"/>
                         </control>
@@ -805,8 +803,7 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="center"
                                  width="40px"/>
                         <panel width="10px"/>
-                        <control name="button" label="Set all to pose"
-                                 id="id8ToAvoidNiftyWarning"
+                        <control name="button" id="scalesToPoseKeyframeButton"
                                  width="95px">
                             <interact onRelease="perform(set track scale all)"/>
                         </control>
