@@ -154,11 +154,17 @@ class AnimationTool extends WindowController {
     }
 
     /**
-     * Update the loop check box and the pause button label.
+     * Update the freeze/loop/pin/pong check boxes and the pause button label.
      */
     private void updateLooping() {
+        boolean frozen = Maud.model.target.pose.isFrozen();
+        Maud.gui.setChecked("freeze", frozen);
         boolean looping = Maud.model.target.animation.willContinue();
         Maud.gui.setChecked("loop", looping);
+        boolean pinned = Maud.model.target.animation.isPinned();
+        Maud.gui.setChecked("pin", pinned);
+        boolean ponging = Maud.model.target.animation.willReverse();
+        Maud.gui.setChecked("pong", ponging);
 
         String pButton = "";
         float duration = Maud.model.target.animation.getDuration();

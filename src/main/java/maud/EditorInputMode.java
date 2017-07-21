@@ -1049,6 +1049,10 @@ public class EditorInputMode extends InputMode {
                 Maud.model.axes.toggleDragSide();
                 handled = true;
                 break;
+            case "toggle freeze target":
+                Maud.model.target.pose.toggleFrozen();
+                handled = true;
+                break;
             case "toggle pause":
                 Maud.model.source.animation.togglePaused();
                 Maud.model.target.animation.togglePaused();

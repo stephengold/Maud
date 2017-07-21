@@ -260,6 +260,9 @@ public class EditorScreen extends GuiScreenController {
             case "boundsDepthTest":
                 Maud.model.bounds.setDepthTestFlag(isChecked);
                 break;
+            case "freeze":
+                Maud.model.target.pose.setFrozen(isChecked);
+                break;
             case "invertRma":
             case "invertRma2":
                 Maud.model.mapping.setInvertMap(isChecked);

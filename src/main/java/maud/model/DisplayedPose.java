@@ -53,6 +53,11 @@ public class DisplayedPose implements JmeCloneable {
     // fields
 
     /**
+     * false &rarr; update displayed pose when animation time changes, true
+     * &rarr; don't update
+     */
+    private boolean frozenFlag = false;
+    /**
      * the pose, including a skeleton and a user/animation transform for each
      * bone
      */
@@ -75,6 +80,15 @@ public class DisplayedPose implements JmeCloneable {
     }
 
     /**
+     * Test whether the pose is frozen.
+     *
+     * @return false if updated when animation time changes, otherwise true
+     */
+    public boolean isFrozen() {
+        return frozenFlag;
+    }
+
+    /**
      * Reset the displayed pose to bind pose.
      *
      * @param skeleton (may be null, alias created)
@@ -92,6 +106,20 @@ public class DisplayedPose implements JmeCloneable {
     void setCgm(LoadedCgm newLoaded) {
         assert newLoaded != null;
         loadedCgm = newLoaded;
+    }
+
+    /**
+     * Alter whether the pose is frozen. When unfreezing, set the pose using the
+     * current animation.
+     *
+     * @param newSetting false &rarr; update pose automatically when the
+     * animation time changes, true &rarr; don't update
+     */
+    public void setFrozen(boolean newSetting) {
+        if (frozenFlag && !newSetting) {
+            loadedCgm.pose.setToAnimation();
+        }
+        frozenFlag = newSetting;
     }
 
     /**
@@ -149,6 +177,13 @@ public class DisplayedPose implements JmeCloneable {
         Transform animT = loadedCgm.animation.boneTransform(boneIndex, null);
         Vector3f animV = animT.getTranslation();
         pose.setTranslation(boneIndex, animV);
+    }
+
+    /**
+     * Toggle whether the pose is frozen.
+     */
+    public void toggleFrozen() {
+        setFrozen(!frozenFlag);
     }
     // *************************************************************************
     // JmeCloner methods

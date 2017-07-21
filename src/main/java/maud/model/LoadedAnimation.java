@@ -82,6 +82,7 @@ public class LoadedAnimation implements Cloneable {
     private boolean pausedFlag = false;
     /**
      * true &rarr; root bones pinned to bindPos, false &rarr; free to translate
+     * TODO move to DisplayedPose
      */
     private boolean pinnedFlag = true;
     /**
@@ -299,7 +300,8 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Read the name of the loaded animation.
      *
-     * @return the name, or bindPoseName if in bind pose (not null)
+     * @return the name, or bindPoseName if in bind pose, or retargetedPoseName
+     * if in retarget pose (not null)
      */
     public String getName() {
         assert loadedName != null;
@@ -572,6 +574,7 @@ public class LoadedAnimation implements Cloneable {
         time = 0f;
 
         loadedCgm.pose.setToAnimation();
+        loadedCgm.pose.setFrozen(false);
     }
 
     /**
@@ -595,6 +598,7 @@ public class LoadedAnimation implements Cloneable {
             speed = 0f;
             time = 0f;
             loadedCgm.pose.setToAnimation();
+            loadedCgm.pose.setFrozen(false);
         }
     }
 
@@ -827,8 +831,8 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Alter the animation time. Has no effect in bind pose or if the loaded
-     * animation has zero duration.
+     * Alter the animation time. Update the pose unless it's frozen. Has no
+     * effect in bind pose or if the loaded animation has zero duration.
      *
      * @param newTime seconds since start (&ge;0, &le;duration)
      */
@@ -838,7 +842,10 @@ public class LoadedAnimation implements Cloneable {
 
         if (duration > 0f) {
             time = newTime;
-            loadedCgm.pose.setToAnimation();
+            boolean frozen = loadedCgm.pose.isFrozen();
+            if (!frozen) {
+                loadedCgm.pose.setToAnimation();
+            }
         }
     }
 
