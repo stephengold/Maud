@@ -288,7 +288,8 @@ public class SelectedTrack implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation);
+        editableCgm.replaceAnimation(loaded, newAnimation,
+                "thin keyframes ina single bone track");
     }
 
     /**

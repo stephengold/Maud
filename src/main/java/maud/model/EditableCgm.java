@@ -320,15 +320,18 @@ public class EditableCgm extends LoadedCgm {
      *
      * @param oldAnimation (not null)
      * @param newAnimation (not null)
+     * @param eventDescription description for the edit history (not null)
      */
-    void replaceAnimation(Animation oldAnimation, Animation newAnimation) {
+    void replaceAnimation(Animation oldAnimation, Animation newAnimation,
+            String eventDescription) {
         assert oldAnimation != null;
         assert newAnimation != null;
+        assert eventDescription != null;
 
         AnimControl animControl = getAnimControl();
         animControl.removeAnim(oldAnimation);
         animControl.addAnim(newAnimation);
-        setEdited("replace animation");
+        setEdited(eventDescription);
     }
 
     /**
@@ -646,6 +649,8 @@ public class EditableCgm extends LoadedCgm {
      * @param eventDescription description of causative event (not null)
      */
     private void setEdited(String eventDescription) {
+        assert eventDescription != null;
+
         ++editCount;
         editedSpatialTransform = "";
         History.addEvent(eventDescription);

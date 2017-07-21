@@ -118,7 +118,7 @@ public class LoadedAnimation implements Cloneable {
 
     /**
      * Using the current pose, add a keyframe to the selected track at the
-     * current time.
+     * current time. TODO move to SelectedTrack
      */
     public void addSingleKeyframe() {
         if (!loadedCgm.track.isTrackSelected()) {
@@ -154,7 +154,8 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation);
+        editableCgm.replaceAnimation(loaded, newAnimation,
+                "add single keyframe");
     }
 
     /**
@@ -257,7 +258,7 @@ public class LoadedAnimation implements Cloneable {
 
     /**
      * Delete the selected keyframe, which mustn't be the 1st keyframe in its
-     * bone track.
+     * bone track. TODO move to SelectedTrack
      */
     public void deleteSingleKeyframe() {
         if (!loadedCgm.track.isTrackSelected()) {
@@ -290,7 +291,8 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation);
+        editableCgm.replaceAnimation(loaded, newAnimation,
+                "delete single keyframe");
     }
 
     /**
@@ -767,7 +769,8 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation);
+        editableCgm.replaceAnimation(loaded, newAnimation,
+                "thin keyframes across bone tracks");
     }
 
     /**
@@ -791,7 +794,7 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation);
+        editableCgm.replaceAnimation(loaded, newAnimation, "rename animation");
         loadedName = newName;
     }
 
@@ -903,6 +906,7 @@ public class LoadedAnimation implements Cloneable {
 
         Animation newAnimation = new Animation(loadedName, newDuration);
         Animation loaded = getAnimation();
+        float oldDuration = loaded.getLength();
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track newTrack;
@@ -914,7 +918,14 @@ public class LoadedAnimation implements Cloneable {
             }
             newAnimation.addTrack(newTrack);
         }
-        editableCgm.replaceAnimation(loaded, newAnimation);
+
+        String eventDescription;
+        if (newDuration > oldDuration) {
+            eventDescription = "slow down animation";
+        } else {
+            eventDescription = "speed up animation";
+        }
+        editableCgm.replaceAnimation(loaded, newAnimation, eventDescription);
     }
 
     /**
