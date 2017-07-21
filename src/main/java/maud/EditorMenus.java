@@ -760,7 +760,7 @@ class EditorMenus {
             builder.add("Select next");
             builder.add("Select last");
             builder.add("Move");
-            int frameIndex = Maud.model.target.track.findKeyframe();
+            int frameIndex = Maud.model.target.track.findKeyframeIndex();
             if (frameIndex == -1) {
                 builder.add("Insert from pose");
             }

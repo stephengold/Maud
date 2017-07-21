@@ -161,7 +161,7 @@ public class SelectedTrack implements Cloneable {
         if (!isTrackSelected()) {
             return;
         }
-        int frameIndex = findKeyframe();
+        int frameIndex = findKeyframeIndex();
         if (frameIndex < 1) {
             return;
         }
@@ -188,11 +188,11 @@ public class SelectedTrack implements Cloneable {
 
     /**
      * Find the index of the keyframe (if any) in the selected track at the
-     * current track time. TODO rename findKeyframeIndex
+     * current track time.
      *
      * @return keyframe index, or -1 if no keyframe
      */
-    public int findKeyframe() {
+    public int findKeyframeIndex() {
         BoneTrack track = findTrack();
         float time = loadedCgm.animation.getTime();
         int frameIndex = Util.findKeyframeIndex(track, time);
@@ -227,7 +227,7 @@ public class SelectedTrack implements Cloneable {
         if (!isTrackSelected()) {
             return;
         }
-        int frameIndex = findKeyframe();
+        int frameIndex = findKeyframeIndex();
         if (frameIndex != -1) {
             return;
         }

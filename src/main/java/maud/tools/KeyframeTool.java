@@ -83,7 +83,7 @@ class KeyframeTool extends WindowController {
             }
 
         } else {
-            int index = Maud.model.target.track.findKeyframe();
+            int index = Maud.model.target.track.findKeyframeIndex();
             if (index == -1) {
                 if (numKeyframes == 1) {
                     indexText = "one keyframe";
@@ -119,7 +119,7 @@ class KeyframeTool extends WindowController {
         String wButton = "";
 
         if (Maud.model.target.track.isTrackSelected()) {
-            int index = Maud.model.target.track.findKeyframe();
+            int index = Maud.model.target.track.findKeyframeIndex();
             if (index == -1) {
                 iButton = "Insert";
             } else if (index > 0) {
