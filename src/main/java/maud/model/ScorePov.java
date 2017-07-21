@@ -27,6 +27,7 @@
 package maud.model;
 
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import java.util.logging.Logger;
@@ -77,6 +78,10 @@ public class ScorePov implements Cloneable, Pov {
      * {@link #setCgm(LoadedCGModel)})
      */
     private LoadedCgm loadedCgm = null;
+    /**
+     * range of world Y coordinates occupied by the most recently selected bone
+     */
+    private Vector2f oldMinMaxY = new Vector2f();
     /**
      * location of the camera (in world coordinates)
      */
@@ -188,6 +193,7 @@ public class ScorePov implements Cloneable, Pov {
     public ScorePov clone() throws CloneNotSupportedException {
         ScorePov clone = (ScorePov) super.clone();
         clone.cameraLocation = cameraLocation.clone();
+        clone.oldMinMaxY = oldMinMaxY.clone();
 
         return clone;
     }
@@ -207,7 +213,7 @@ public class ScorePov implements Cloneable, Pov {
     }
 
     /**
-     * Move the camera left/right when the mouse is dragged from left/right.
+     * Move the camera left/right when the mouse is dragged left/right.
      *
      * @param amount drag component
      */
@@ -252,6 +258,19 @@ public class ScorePov implements Cloneable, Pov {
         ScoreView view = loadedCgm.getScoreView();
         Camera camera = view.getCamera();
         if (camera != null) {
+            float hh = getHalfHeight();
+            float y = getCameraY();
+            Vector2f minMaxY = view.selectedMinMaxY();
+            if (minMaxY == null) {
+                oldMinMaxY.zero();
+            } else if (!minMaxY.equals(oldMinMaxY)) {
+                y = (minMaxY.x + minMaxY.y) / 2;
+                hh = 0.6f + 0.6f * Math.abs(minMaxY.y - y);
+                oldMinMaxY.set(minMaxY);
+            }
+            setHalfHeight(hh);
+            setCameraY(y);
+
             camera.setLocation(cameraLocation);
             camera.setFrustumBottom(-halfHeight);
             camera.setFrustumLeft(-halfWidth);

@@ -405,6 +405,22 @@ public class ScoreView implements EditorView {
     }
 
     /**
+     * Calculate the range of Y coordinates occupied by the selected bone.
+     *
+     * @return min/max Y coordinates (in world units), or null if no bone
+     * selected
+     */
+    public Vector2f selectedMinMaxY() {
+        Vector2f result = null;
+        if (cgm.bone.isSelected()) {
+            int selectedBoneIndex = cgm.bone.getIndex();
+            result = boneYs.get(selectedBoneIndex);
+        }
+
+        return result;
+    }
+
+    /**
      * Update this view prior to rendering. (Invoked once per render pass on
      * each instance.)
      *
@@ -428,8 +444,6 @@ public class ScoreView implements EditorView {
         if (viewPort != null && viewPort.isEnabled()) {
             cgm = renderCgm;
             assert renderCgm.isLoaded();
-
-            cgm.scorePov.updateCamera();
 
             ColorRGBA backgroundColor = Maud.model.score.backgroundColor(null);
             viewPort.setBackgroundColor(backgroundColor);
@@ -484,8 +498,7 @@ public class ScoreView implements EditorView {
 
             attachGnomon();
 
-            float yLocation = cgm.scorePov.getCameraY();
-            cgm.scorePov.setCameraY(yLocation);
+            cgm.scorePov.updateCamera();
         }
     }
 
@@ -655,6 +668,7 @@ public class ScoreView implements EditorView {
          */
         leftX = xRightMargin + hashSize * 2f / 3;
         rightX = cgm.scorePov.rightX() - xGap;
+        assert rightX > leftX : rightX;
         maxWidth = (rightX - leftX) / compression;
         middleY = -height - sparklineHeight / 2 - (float) Finial.hpf;
 
