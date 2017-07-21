@@ -140,7 +140,7 @@ public class EditableCgm extends LoadedCgm {
                 object = 0;
                 break;
             case "long":
-                object = new Long(0);
+                object = 0L;
                 break;
             case "string":
                 object = "";
