@@ -111,23 +111,23 @@ class KeyframeTool extends WindowController {
     // private methods
 
     /**
-     * Update the add/delete buttons.
+     * Update the delete/insert buttons.
      */
     private void updateEditButtons() {
-        String aButton = "";
         String dButton = "";
+        String iButton = "";
 
         if (Maud.model.target.track.isTrackSelected()) {
             int index = Maud.model.target.track.findKeyframe();
             if (index == -1) {
-                aButton = "Add";
+                iButton = "Insert";
             } else if (index > 0) {
                 dButton = "Delete";
             }
         }
 
-        Maud.gui.setButtonLabel("newKeyframeButton", aButton);
-        Maud.gui.setButtonLabel("deleteKeyframeButton", dButton);
+        Maud.gui.setButtonLabel("deleteSingleKeyframeButton", dButton);
+        Maud.gui.setButtonLabel("insertSingleKeyframeButton", iButton);
     }
 
     /**

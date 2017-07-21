@@ -846,12 +846,12 @@ the menu bar, status bar, and tool windows.
                     </panel>
                     <panel childLayout="horizontal" height="27px">
                         <panel/>
-                        <control name="button" id="newKeyframeButton"
+                        <control name="button" id="insertSingleKeyframeButton"
                                  width="55px">
                             <interact onRelease="perform(new singleKeyframe)"/>
                         </control>
                         <panel/>
-                        <control name="button" id="deleteKeyframeButton"
+                        <control name="button" id="deleteSingleKeyframeButton"
                                  width="55px">
                             <interact onRelease="perform(delete singleKeyframe)"/>
                         </control>
