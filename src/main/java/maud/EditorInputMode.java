@@ -399,6 +399,9 @@ public class EditorInputMode extends InputMode {
             case "delete mapping":
                 Maud.model.mapping.deleteBone();
                 break;
+            case "delete singleKeyframe":
+                Maud.model.target.animation.deleteSingleKeyframe();
+                break;
             case "delete userKey":
                 Maud.model.misc.deleteUserKey();
                 break;
@@ -498,6 +501,9 @@ public class EditorInputMode extends InputMode {
                 break;
             case "new pose":
                 Maud.gui.dialogs.newPose();
+                break;
+            case "new singleKeyframe":
+                Maud.model.target.animation.addSingleKeyframe();
                 break;
             case "new userKey":
                 Maud.gui.menus.selectUserDataType();

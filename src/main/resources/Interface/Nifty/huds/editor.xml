@@ -756,17 +756,15 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="keyframeTool" title="Keyframe Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="200px" width="270px" x="65" y="35">
+                     height="218px" width="270px" x="65" y="35">
                 <panel childLayout="vertical">
-                    <panel height="2px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="27px">
                         <control name="label" text="Track:  "/>
                         <control name="label" id="trackDescription"
                                  backgroundColor="#ffff"
                                  width="*"/>
                     </panel>
-                    <panel height="8px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="27px">
                         <control name="label" text="Translations:  "
                                  textHAlign="right"
                                  width="80px"/>
@@ -781,8 +779,7 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(set track translation all)"/>
                         </control>
                     </panel>
-                    <panel height="14px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="27px">
                         <control name="label" text="Rotations:  "
                                  textHAlign="right"
                                  width="80px"/>
@@ -797,8 +794,7 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(set track rotation all)"/>
                         </control>
                     </panel>
-                    <panel height="14px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="27px">
                         <control name="label" text="Scales:  "
                                  textHAlign="right"
                                  width="80px"/>
@@ -813,21 +809,19 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(set track scale all)"/>
                         </control>
                     </panel>
-                    <panel height="16px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="27px">
                         <control name="label" id="keyframeIndex"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="90px"/>
-                        <control name="label" text="  time ="/>
+                        <control name="label" text="  time = "/>
                         <control name="label" id="keyframeTime"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="40px"/>
-                        <control name="label" text="sec"/>
+                        <control name="label" text=" sec"/>
                     </panel>
-                    <panel height="8px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="27px">
                         <panel/>
                         <control name="button" id="firstKeyframeButton"
                                  width="55px">
@@ -850,7 +844,19 @@ the menu bar, status bar, and tool windows.
                         </control>
                         <panel/>
                     </panel>
-                    <panel/>
+                    <panel childLayout="horizontal" height="27px">
+                        <panel/>
+                        <control name="button" id="newKeyframeButton"
+                                 width="55px">
+                            <interact onRelease="perform(new singleKeyframe)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="deleteKeyframeButton"
+                                 width="55px">
+                            <interact onRelease="perform(delete singleKeyframe)"/>
+                        </control>
+                        <panel/>
+                    </panel>
                 </panel>
             </control>
 

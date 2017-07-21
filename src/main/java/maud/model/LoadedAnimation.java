@@ -42,6 +42,7 @@ import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
+import maud.Pose;
 import maud.Util;
 
 /**
@@ -114,6 +115,47 @@ public class LoadedAnimation implements Cloneable {
     private String loadedName = null;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Using the current pose, add a keyframe to the selected track at the
+     * current time.
+     */
+    public void addSingleKeyframe() {
+        if (!loadedCgm.track.isTrackSelected()) {
+            return;
+        }
+        int frameIndex = loadedCgm.track.findKeyframe();
+        if (frameIndex != -1) {
+            return;
+        }
+
+        assert time > 0f : time;
+        float duration = getDuration();
+        assert time <= duration : time;
+        Animation newAnimation = new Animation(loadedName, duration);
+
+        int boneIndex = loadedCgm.bone.getIndex();
+        Animation loaded = getAnimation();
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track clone;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                if (boneTrack.getTargetBoneIndex() == boneIndex) {
+                    Pose pose = loadedCgm.pose.getPose();
+                    Transform user = pose.userTransform(boneIndex, null);
+                    clone = Util.addKeyframe(boneTrack, time, user);
+                } else {
+                    clone = track.clone();
+                }
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        editableCgm.replaceAnimation(loaded, newAnimation);
+    }
 
     /**
      * Calculate the current transform of the indexed bone.
@@ -217,13 +259,16 @@ public class LoadedAnimation implements Cloneable {
      * Delete the selected keyframe, which mustn't be the 1st keyframe in its
      * bone track.
      */
-    public void deleteKeyframe() {
-        assert isReal();
+    public void deleteSingleKeyframe() {
+        if (!loadedCgm.track.isTrackSelected()) {
+            return;
+        }
+        int frameIndex = loadedCgm.track.findKeyframe();
+        if (frameIndex < 1) {
+            return;
+        }
         int boneIndex = loadedCgm.bone.getIndex();
         assert boneIndex >= 0 : boneIndex;
-        assert hasTrackForBone(boneIndex);
-        int frameIndex = loadedCgm.track.findKeyframe();
-        assert frameIndex > 0 : frameIndex;
 
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
@@ -769,9 +814,11 @@ public class LoadedAnimation implements Cloneable {
      */
     public void selectKeyframeFirst() {
         BoneTrack track = loadedCgm.track.findTrack();
-        float[] times = track.getTimes();
-        float t = times[0];
-        setTime(t);
+        if (track != null) {
+            float[] times = track.getTimes();
+            float t = times[0];
+            setTime(t);
+        }
     }
 
     /**
@@ -779,10 +826,12 @@ public class LoadedAnimation implements Cloneable {
      */
     public void selectKeyframeLast() {
         BoneTrack track = loadedCgm.track.findTrack();
-        float[] times = track.getTimes();
-        int lastIndex = times.length - 1;
-        float t = times[lastIndex];
-        setTime(t);
+        if (track != null) {
+            float[] times = track.getTimes();
+            int lastIndex = times.length - 1;
+            float t = times[lastIndex];
+            setTime(t);
+        }
     }
 
     /**
@@ -790,11 +839,13 @@ public class LoadedAnimation implements Cloneable {
      */
     public void selectKeyframeNext() {
         BoneTrack track = loadedCgm.track.findTrack();
-        float[] times = track.getTimes();
-        for (int iFrame = 0; iFrame < times.length; iFrame++) {
-            if (times[iFrame] > time) {
-                setTime(times[iFrame]);
-                break;
+        if (track != null) {
+            float[] times = track.getTimes();
+            for (int iFrame = 0; iFrame < times.length; iFrame++) {
+                if (times[iFrame] > time) {
+                    setTime(times[iFrame]);
+                    break;
+                }
             }
         }
     }
@@ -804,11 +855,13 @@ public class LoadedAnimation implements Cloneable {
      */
     public void selectKeyframePrevious() {
         BoneTrack track = loadedCgm.track.findTrack();
-        float[] times = track.getTimes();
-        for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
-            if (times[iFrame] < time) {
-                setTime(times[iFrame]);
-                break;
+        if (track != null) {
+            float[] times = track.getTimes();
+            for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
+                if (times[iFrame] < time) {
+                    setTime(times[iFrame]);
+                    break;
+                }
             }
         }
     }

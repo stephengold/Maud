@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
+import maud.Util;
 
 /**
  * The MVC model of the selected track in the Maud application.
@@ -158,15 +159,8 @@ public class SelectedTrack implements Cloneable {
      */
     public int findKeyframe() {
         BoneTrack track = findTrack();
-        float[] times = track.getTimes();
-
-        int frameIndex = -1;
-        for (int iFrame = 0; iFrame < times.length; iFrame++) {
-            if (loadedCgm.animation.getTime() == times[iFrame]) {
-                frameIndex = iFrame;
-                break;
-            }
-        }
+        float time = loadedCgm.animation.getTime();
+        int frameIndex = Util.findKeyframeIndex(track, time);
 
         return frameIndex;
     }

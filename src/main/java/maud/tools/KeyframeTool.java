@@ -102,12 +102,33 @@ class KeyframeTool extends WindowController {
         Maud.gui.setStatusText("keyframeIndex", indexText);
         Maud.gui.setStatusText("keyframeTime", timeText);
 
+        updateEditButtons();
         updateNavigationButtons();
         updateTrackDescription();
         updateTransforms();
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Update the add/delete buttons.
+     */
+    private void updateEditButtons() {
+        String aButton = "";
+        String dButton = "";
+
+        if (Maud.model.target.track.isTrackSelected()) {
+            int index = Maud.model.target.track.findKeyframe();
+            if (index == -1) {
+                aButton = "Add";
+            } else if (index > 0) {
+                dButton = "Delete";
+            }
+        }
+
+        Maud.gui.setButtonLabel("newKeyframeButton", aButton);
+        Maud.gui.setButtonLabel("deleteKeyframeButton", dButton);
+    }
 
     /**
      * Update the 4 navigation buttons.
@@ -121,15 +142,19 @@ class KeyframeTool extends WindowController {
         int numKeyframes = Maud.model.target.track.countKeyframes();
         if (numKeyframes > 0) {
             float time = Maud.model.target.animation.getTime();
-
-            firstButton = "First";
+            if (time != 0f) {
+                firstButton = "First";
+            }
             if (time > 0f) {
                 previousButton = "Previous";
             }
-            if (time < Maud.model.target.track.lastKeyframeTime()) {
+            float lastKeyframeTime = Maud.model.target.track.lastKeyframeTime();
+            if (time < lastKeyframeTime) {
                 nextButton = "Next";
             }
-            lastButton = "Last";
+            if (time != lastKeyframeTime) {
+                lastButton = "Last";
+            }
         }
 
         Maud.gui.setButtonLabel("firstKeyframeButton", firstButton);

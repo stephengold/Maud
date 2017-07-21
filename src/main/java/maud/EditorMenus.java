@@ -1374,7 +1374,7 @@ class EditorMenus {
         boolean handled = true;
         switch (remainder) {
             case "Delete":
-                Maud.model.target.animation.deleteKeyframe();
+                Maud.model.target.animation.deleteSingleKeyframe();
                 break;
             case "Reduce":
                 Maud.gui.dialogs.reduceTrack();
