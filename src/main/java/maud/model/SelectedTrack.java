@@ -30,6 +30,7 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Track;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,6 +41,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
+import maud.Pose;
 import maud.Util;
 
 /**
@@ -152,8 +154,48 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
+     * Delete the selected keyframe, which mustn't be the 1st keyframe in the
+     * track.
+     */
+    public void deleteSingleKeyframe() {
+        if (!isTrackSelected()) {
+            return;
+        }
+        int frameIndex = findKeyframe();
+        if (frameIndex < 1) {
+            return;
+        }
+        int boneIndex = loadedCgm.bone.getIndex();
+        assert boneIndex >= 0 : boneIndex;
+
+        String animationName = loadedCgm.animation.getName();
+        float duration = loadedCgm.animation.getDuration();
+        Animation newAnimation = new Animation(animationName, duration);
+
+        Animation oldAnimation = loadedCgm.animation.getAnimation();
+        Track[] loadedTracks = oldAnimation.getTracks();
+        for (Track track : loadedTracks) {
+            Track clone;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                if (boneTrack.getTargetBoneIndex() == boneIndex) {
+                    clone = MyAnimation.deleteKeyframe(boneTrack, frameIndex);
+                } else {
+                    clone = track.clone();
+                }
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+                "delete single keyframe");
+    }
+
+    /**
      * Find the index of the keyframe (if any) in the selected track at the
-     * current track time.
+     * current track time. TODO rename findKeyframeIndex
      *
      * @return keyframe index, or -1 if no keyframe
      */
@@ -182,6 +224,50 @@ public class SelectedTrack implements Cloneable {
         BoneTrack track = MyAnimation.findTrack(anim, boneIndex);
 
         return track;
+    }
+
+    /**
+     * Using the current pose, add a keyframe to the track at the current
+     * animation time.
+     */
+    public void insertSingleKeyframe() {
+        if (!isTrackSelected()) {
+            return;
+        }
+        int frameIndex = findKeyframe();
+        if (frameIndex != -1) {
+            return;
+        }
+
+        float time = loadedCgm.animation.getTime();
+        assert time > 0f : time;
+        float duration = loadedCgm.animation.getDuration();
+        assert time <= duration : time;
+        String animationName = loadedCgm.animation.getName();
+        Animation newAnimation = new Animation(animationName, duration);
+
+        int boneIndex = loadedCgm.bone.getIndex();
+        Animation oldAnimation = loadedCgm.animation.getAnimation();
+        Track[] loadedTracks = oldAnimation.getTracks();
+        for (Track track : loadedTracks) {
+            Track clone;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                if (boneTrack.getTargetBoneIndex() == boneIndex) {
+                    Pose pose = loadedCgm.pose.getPose();
+                    Transform user = pose.userTransform(boneIndex, null);
+                    clone = Util.addKeyframe(boneTrack, time, user);
+                } else {
+                    clone = track.clone();
+                }
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+                "insert single keyframe");
     }
 
     /**
@@ -289,11 +375,70 @@ public class SelectedTrack implements Cloneable {
         }
 
         editableCgm.replaceAnimation(loaded, newAnimation,
-                "thin keyframes ina single bone track");
+                "thin keyframes in a single bone track");
     }
 
     /**
-     * Alter which CG model contains the spatial.
+     * Select the 1st keyframe in the track.
+     */
+    public void selectFirstKeyframe() {
+        BoneTrack track = findTrack();
+        if (track != null) {
+            float[] times = track.getTimes();
+            float t = times[0];
+            loadedCgm.animation.setTime(t);
+        }
+    }
+
+    /**
+     * Select the last keyframe in the track.
+     */
+    public void selectLastKeyframe() {
+        BoneTrack track = findTrack();
+        if (track != null) {
+            float[] times = track.getTimes();
+            int lastIndex = times.length - 1;
+            float t = times[lastIndex];
+            loadedCgm.animation.setTime(t);
+        }
+    }
+
+    /**
+     * Select the next keyframe in the track.
+     */
+    public void selectNextKeyframe() {
+        BoneTrack track = findTrack();
+        if (track != null) {
+            float time = loadedCgm.animation.getTime();
+            float[] times = track.getTimes();
+            for (int iFrame = 0; iFrame < times.length; iFrame++) {
+                if (times[iFrame] > time) {
+                    loadedCgm.animation.setTime(times[iFrame]);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Select the previous keyframe in the track.
+     */
+    public void selectPreviousKeyframe() {
+        BoneTrack track = findTrack();
+        if (track != null) {
+            float time = loadedCgm.animation.getTime();
+            float[] times = track.getTimes();
+            for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
+                if (times[iFrame] < time) {
+                    loadedCgm.animation.setTime(times[iFrame]);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Alter which CG model contains the track.
      *
      * @param newLoaded (not null)
      */

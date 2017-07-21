@@ -1394,25 +1394,25 @@ class EditorMenus {
         boolean handled = true;
         switch (remainder) {
             case "Delete":
-                Maud.model.target.animation.deleteSingleKeyframe();
+                Maud.model.target.track.deleteSingleKeyframe();
                 break;
             case "Insert from pose":
-                Maud.model.target.animation.addSingleKeyframe();
+                Maud.model.target.track.insertSingleKeyframe();
                 break;
             case "Reduce":
                 Maud.gui.dialogs.reduceTrack();
                 break;
             case "Select first":
-                Maud.model.target.animation.selectKeyframeFirst();
+                Maud.model.target.track.selectFirstKeyframe();
                 break;
             case "Select last":
-                Maud.model.target.animation.selectKeyframeLast();
+                Maud.model.target.track.selectLastKeyframe();
                 break;
             case "Select next":
-                Maud.model.target.animation.selectKeyframeNext();
+                Maud.model.target.track.selectNextKeyframe();
                 break;
             case "Select previous":
-                Maud.model.target.animation.selectKeyframePrevious();
+                Maud.model.target.track.selectPreviousKeyframe();
                 break;
             case "Tool":
                 Maud.gui.tools.select("keyframe");

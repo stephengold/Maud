@@ -400,7 +400,7 @@ public class EditorInputMode extends InputMode {
                 Maud.model.mapping.deleteBone();
                 break;
             case "delete singleKeyframe":
-                Maud.model.target.animation.deleteSingleKeyframe();
+                Maud.model.target.track.deleteSingleKeyframe();
                 break;
             case "delete userKey":
                 Maud.model.misc.deleteUserKey();
@@ -503,7 +503,7 @@ public class EditorInputMode extends InputMode {
                 Maud.gui.dialogs.newPose();
                 break;
             case "new singleKeyframe":
-                Maud.model.target.animation.addSingleKeyframe();
+                Maud.model.target.track.insertSingleKeyframe();
                 break;
             case "new userKey":
                 Maud.gui.menus.selectUserDataType();
@@ -842,16 +842,16 @@ public class EditorInputMode extends InputMode {
                 Maud.model.target.bone.selectParent();
                 break;
             case "select keyframeFirst":
-                Maud.model.target.animation.selectKeyframeFirst();
+                Maud.model.target.track.selectFirstKeyframe();
                 break;
             case "select keyframeLast":
-                Maud.model.target.animation.selectKeyframeLast();
+                Maud.model.target.track.selectLastKeyframe();
                 break;
             case "select keyframeNext":
-                Maud.model.target.animation.selectKeyframeNext();
+                Maud.model.target.track.selectNextKeyframe();
                 break;
             case "select keyframePrevious":
-                Maud.model.target.animation.selectKeyframePrevious();
+                Maud.model.target.track.selectPreviousKeyframe();
                 break;
             case "select mapSourceBone":
                 Maud.model.mapping.selectFromSource();

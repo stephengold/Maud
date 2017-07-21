@@ -42,7 +42,6 @@ import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
-import maud.Pose;
 import maud.Util;
 
 /**
@@ -115,48 +114,6 @@ public class LoadedAnimation implements Cloneable {
     private String loadedName = null;
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Using the current pose, add a keyframe to the selected track at the
-     * current time. TODO move to SelectedTrack
-     */
-    public void addSingleKeyframe() {
-        if (!loadedCgm.track.isTrackSelected()) {
-            return;
-        }
-        int frameIndex = loadedCgm.track.findKeyframe();
-        if (frameIndex != -1) {
-            return;
-        }
-
-        assert time > 0f : time;
-        float duration = getDuration();
-        assert time <= duration : time;
-        Animation newAnimation = new Animation(loadedName, duration);
-
-        int boneIndex = loadedCgm.bone.getIndex();
-        Animation loaded = getAnimation();
-        Track[] loadedTracks = loaded.getTracks();
-        for (Track track : loadedTracks) {
-            Track clone;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                if (boneTrack.getTargetBoneIndex() == boneIndex) {
-                    Pose pose = loadedCgm.pose.getPose();
-                    Transform user = pose.userTransform(boneIndex, null);
-                    clone = Util.addKeyframe(boneTrack, time, user);
-                } else {
-                    clone = track.clone();
-                }
-            } else {
-                clone = track.clone();
-            }
-            newAnimation.addTrack(clone);
-        }
-
-        editableCgm.replaceAnimation(loaded, newAnimation,
-                "add single keyframe");
-    }
 
     /**
      * Calculate the current transform of the indexed bone.
@@ -254,45 +211,6 @@ public class LoadedAnimation implements Cloneable {
             assert isRetargetedPose();
             logger.log(Level.WARNING, "cannot delete retargeted pose");
         }
-    }
-
-    /**
-     * Delete the selected keyframe, which mustn't be the 1st keyframe in its
-     * bone track. TODO move to SelectedTrack
-     */
-    public void deleteSingleKeyframe() {
-        if (!loadedCgm.track.isTrackSelected()) {
-            return;
-        }
-        int frameIndex = loadedCgm.track.findKeyframe();
-        if (frameIndex < 1) {
-            return;
-        }
-        int boneIndex = loadedCgm.bone.getIndex();
-        assert boneIndex >= 0 : boneIndex;
-
-        float duration = getDuration();
-        Animation newAnimation = new Animation(loadedName, duration);
-
-        Animation loaded = getAnimation();
-        Track[] loadedTracks = loaded.getTracks();
-        for (Track track : loadedTracks) {
-            Track clone;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                if (boneTrack.getTargetBoneIndex() == boneIndex) {
-                    clone = MyAnimation.deleteKeyframe(boneTrack, frameIndex);
-                } else {
-                    clone = track.clone();
-                }
-            } else {
-                clone = track.clone();
-            }
-            newAnimation.addTrack(clone);
-        }
-
-        editableCgm.replaceAnimation(loaded, newAnimation,
-                "delete single keyframe");
     }
 
     /**
@@ -810,63 +728,6 @@ public class LoadedAnimation implements Cloneable {
         float newTime = Float.valueOf(name);
         // TODO validate
         setTime(newTime);
-    }
-
-    /**
-     * Select the first keyframe in the selected bone track.
-     */
-    public void selectKeyframeFirst() {
-        BoneTrack track = loadedCgm.track.findTrack();
-        if (track != null) {
-            float[] times = track.getTimes();
-            float t = times[0];
-            setTime(t);
-        }
-    }
-
-    /**
-     * Select the last keyframe in the selected bone track.
-     */
-    public void selectKeyframeLast() {
-        BoneTrack track = loadedCgm.track.findTrack();
-        if (track != null) {
-            float[] times = track.getTimes();
-            int lastIndex = times.length - 1;
-            float t = times[lastIndex];
-            setTime(t);
-        }
-    }
-
-    /**
-     * Select the next keyframe in the selected bone track.
-     */
-    public void selectKeyframeNext() {
-        BoneTrack track = loadedCgm.track.findTrack();
-        if (track != null) {
-            float[] times = track.getTimes();
-            for (int iFrame = 0; iFrame < times.length; iFrame++) {
-                if (times[iFrame] > time) {
-                    setTime(times[iFrame]);
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * Select the next keyframe in the selected bone track.
-     */
-    public void selectKeyframePrevious() {
-        BoneTrack track = loadedCgm.track.findTrack();
-        if (track != null) {
-            float[] times = track.getTimes();
-            for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
-                if (times[iFrame] < time) {
-                    setTime(times[iFrame]);
-                    break;
-                }
-            }
-        }
     }
 
     /**
