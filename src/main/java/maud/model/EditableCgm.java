@@ -368,23 +368,6 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Alter the shadow mode of the selected spatial. TODO sort methods
-     *
-     * @param newMode new value for shadow mode (not null)
-     */
-    public void setShadowMode(RenderQueue.ShadowMode newMode) {
-        Validate.nonNull(newMode, "shadow mode");
-
-        Spatial modelSpatial = spatial.underRoot(rootSpatial);
-        RenderQueue.ShadowMode oldMode = modelSpatial.getLocalShadowMode();
-        if (oldMode != newMode) {
-            modelSpatial.setShadowMode(newMode);
-            setEdited("change shadow mode");
-            getSceneView().setMode(newMode);
-        }
-    }
-
-    /**
      * Alter all keyframes in the selected bone track.
      *
      * @param times array of keyframe times (not null, not empty)
@@ -422,6 +405,23 @@ public class EditableCgm extends LoadedCgm {
             modelSpatial.setQueueBucket(newBucket);
             setEdited("change queue bucket");
             getSceneView().setQueueBucket(newBucket);
+        }
+    }
+
+    /**
+     * Alter the shadow mode of the selected spatial.
+     *
+     * @param newMode new value for shadow mode (not null)
+     */
+    public void setShadowMode(RenderQueue.ShadowMode newMode) {
+        Validate.nonNull(newMode, "shadow mode");
+
+        Spatial modelSpatial = spatial.underRoot(rootSpatial);
+        RenderQueue.ShadowMode oldMode = modelSpatial.getLocalShadowMode();
+        if (oldMode != newMode) {
+            modelSpatial.setShadowMode(newMode);
+            setEdited("change shadow mode");
+            getSceneView().setMode(newMode);
         }
     }
 
