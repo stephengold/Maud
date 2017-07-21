@@ -318,6 +318,7 @@ public class Util {
 
         float[] times = track.getTimes();
         int result = -1;
+        // TODO binary search
         for (int frameIndex = 0; frameIndex < times.length; frameIndex++) {
             if (times[frameIndex] == time) {
                 result = frameIndex;

@@ -67,7 +67,7 @@ public class EditorModel {
      */
     final public CursorStatus cursor;
     /**
-     * the target CG model
+     * load slot for the (editable) target CG model
      */
     final public EditableCgm target;
     /**
@@ -75,7 +75,7 @@ public class EditorModel {
      */
     final public EditableMapping mapping;
     /**
-     * the (read-only) source CG model
+     * load slot for the (read-only) source CG model
      */
     final public LoadedCgm source;
     /**

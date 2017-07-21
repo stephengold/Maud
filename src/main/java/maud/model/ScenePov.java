@@ -246,7 +246,7 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
-     * Move the camera left/right when the mouse is dragged from left/right.
+     * Move the camera left/right when the mouse is dragged left/right.
      *
      * @param amount drag component
      */
