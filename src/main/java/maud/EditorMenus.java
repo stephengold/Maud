@@ -552,11 +552,14 @@ class EditorMenus {
      */
     private void buildAnimationMenu() {
         builder.addTool("Tool");
-        builder.add("Load");
-        builder.addDialog("New from pose");
-        builder.addDialog("New from copy");
+        if (Maud.model.target.bones.countBones() > 0) {
+            builder.add("Load");
+            builder.addDialog("New from pose");
+            builder.addDialog("New from copy");
+        }
         builder.addTool("Source tool");
-        if (Maud.model.source.isLoaded()) {
+        if (Maud.model.source.isLoaded()
+                && Maud.model.source.bones.countBones() > 0) {
             builder.add("Load source");
         }
         builder.addTool("New from retarget");
@@ -1870,12 +1873,16 @@ class EditorMenus {
      * Display a submenu for selecting a target animation by name using the
      * "select (source)animation" action prefix.
      *
-     * @param nameList list of names from which to select (not null)
+     * @param nameList list of names from which to select (not null, modified)
      * @param cgm which load slot (not null)
      */
     private void showAnimationSubmenu(List<String> nameList, LoadedCgm cgm) {
         assert nameList != null;
         assert cgm != null;
+
+        String loadedAnimation = cgm.animation.getName();
+        boolean success = nameList.remove(loadedAnimation);
+        assert success;
 
         MyString.reduce(nameList, maxItems);
         Collections.sort(nameList);
