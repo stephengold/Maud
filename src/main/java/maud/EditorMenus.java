@@ -536,7 +536,7 @@ class EditorMenus {
     }
 
     /**
-     * Display a "CGM -> Asset folders" menu.
+     * Display a "Settings -> Asset folders" menu.
      */
     private void assetFolders() {
         builder.reset();
@@ -544,7 +544,7 @@ class EditorMenus {
         if (Maud.model.folders.hasRemovable()) {
             builder.add("Remove");
         }
-        builder.show("select menuItem CGM -> Asset folders -> ");
+        builder.show("select menuItem Settings -> Asset folders -> ");
     }
 
     /**
@@ -644,7 +644,6 @@ class EditorMenus {
 
         builder.add("Source model");
         builder.add("Skeleton mapping");
-        builder.add("Asset folders");
         builder.addTool("History");
     }
 
@@ -797,6 +796,7 @@ class EditorMenus {
      * Build a Settings menu.
      */
     private void buildSettingsMenu() {
+        builder.add("Asset folders");
         builder.add("Initial model");
         builder.add("Hotkeys");
         builder.add("Locale");
@@ -1080,7 +1080,8 @@ class EditorMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the "CGM -> Asset folders" menu.
+     * Handle a "select menuItem" action from the "Settings -> Asset folders"
+     * menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1299,15 +1300,10 @@ class EditorMenus {
     private boolean menuCgm(String remainder) {
         assert remainder != null;
 
-        boolean handled = false;
-        String folderPrefix = "Asset folders" + menuSeparator;
+        boolean handled;
         String mappingPrefix = "Skeleton mapping" + menuSeparator;
         String sourcePrefix = "Source model" + menuSeparator;
-        if (remainder.startsWith(folderPrefix)) {
-            String selectArg = MyString.remainder(remainder, folderPrefix);
-            handled = menuAssetFolders(selectArg);
-
-        } else if (remainder.startsWith(mappingPrefix)) {
+        if (remainder.startsWith(mappingPrefix)) {
             String selectArg = MyString.remainder(remainder, mappingPrefix);
             handled = menuMapping(selectArg);
 
@@ -1316,35 +1312,29 @@ class EditorMenus {
             handled = menuSourceCgm(selectArg);
 
         } else {
+            handled = true;
             switch (remainder) {
-                case "Asset folders":
-                    assetFolders();
-                    handled = true;
-                    break;
                 case "History":
                     Maud.gui.tools.select("history");
-                    handled = true;
                     break;
                 case "Load":
                     buildLocatorMenu();
                     builder.show(EditorInputMode.loadCgmLocatorPrefix);
-                    handled = true;
-                    break;
-                case "Skeleton mapping":
-                    mapping();
-                    handled = true;
                     break;
                 case "Save":
                     Maud.gui.dialogs.saveCgm();
-                    handled = true;
+                    break;
+                case "Skeleton mapping":
+                    mapping();
                     break;
                 case "Source model":
                     sourceCgm();
-                    handled = true;
                     break;
                 case "Tool":
                     Maud.gui.tools.select("cgm");
-                    handled = true;
+                    break;
+                default:
+                    handled = false;
             }
         }
 
@@ -1473,12 +1463,25 @@ class EditorMenus {
     private boolean menuSettings(String remainder) {
         assert remainder != null;
 
-        boolean handled = false;
-        switch (remainder) {
-            case "Hotkeys":
-                Maud.gui.closeAllPopups();
-                Maud.bindScreen.activate(Maud.gui.inputMode);
-                handled = true;
+        boolean handled;
+        String folderPrefix = "Asset folders" + menuSeparator;
+        if (remainder.startsWith(folderPrefix)) {
+            String selectArg = MyString.remainder(remainder, folderPrefix);
+            handled = menuAssetFolders(selectArg);
+
+        } else {
+            handled = true;
+            switch (remainder) {
+                case "Asset folders":
+                    assetFolders();
+                    break;
+                case "Hotkeys":
+                    Maud.gui.closeAllPopups();
+                    Maud.bindScreen.activate(Maud.gui.inputMode);
+                    break;
+                default:
+                    handled = false;
+            }
         }
 
         return handled;
