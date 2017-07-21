@@ -761,9 +761,10 @@ class EditorMenus {
             builder.add("Select next");
             builder.add("Select last");
             builder.add("Move");
-            builder.add("Copy");
-            builder.add("New from pose");
             int frameIndex = Maud.model.target.track.findKeyframe();
+            if (frameIndex == -1) {
+                builder.add("Insert from pose");
+            }
             if (frameIndex > 0) {
                 builder.add("Delete");
             }
@@ -1394,6 +1395,9 @@ class EditorMenus {
         switch (remainder) {
             case "Delete":
                 Maud.model.target.animation.deleteSingleKeyframe();
+                break;
+            case "Insert from pose":
+                Maud.model.target.animation.addSingleKeyframe();
                 break;
             case "Reduce":
                 Maud.gui.dialogs.reduceTrack();
