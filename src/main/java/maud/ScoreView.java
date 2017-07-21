@@ -49,7 +49,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
 import com.jme3.texture.Texture;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -602,20 +601,12 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attach staves for the selected bone and its parent (if any) and any
-     * children, in tree order.
+     * Attach staves for the selected bone, its ancestors (if any), and its
+     * children (if any), in tree order.
      */
     private void attachFamilyBones() {
-        List<Integer> boneIndices = new ArrayList<>(6);
-
-        if (!cgm.bone.isRootBone()) {
-            int parentIndex = cgm.bone.parentIndex();
-            boneIndices.add(parentIndex);
-        }
-
-        int index = cgm.bone.getIndex();
-        boneIndices.add(index);
-
+        List<Integer> boneIndices = cgm.bone.listAncestorIndices();
+        Collections.reverse(boneIndices);
         List<Integer> childIndices = cgm.bone.listChildIndices();
         boneIndices.addAll(childIndices);
 

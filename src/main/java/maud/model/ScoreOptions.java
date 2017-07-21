@@ -72,7 +72,7 @@ public class ScoreOptions implements Cloneable {
      * bones shown when a one is selected ("all", "ancestors", "family", or
      * "selected")
      */
-    private String showWhenSelected = "selected";
+    private String showWhenSelected = "family";
     // *************************************************************************
     // new methods exposed
 
