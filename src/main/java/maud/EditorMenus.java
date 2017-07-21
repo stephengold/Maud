@@ -445,8 +445,11 @@ class EditorMenus {
     void selectUserKey() {
         builder.reset();
         List<String> keyList = Maud.model.target.spatial.listUserKeys();
+        String selectedKey = Maud.model.misc.getSelectedUserKey();
         for (String key : keyList) {
-            builder.add(key);
+            if (!key.equals(selectedKey)) {
+                builder.add(key);
+            }
         }
         builder.show(EditorInputMode.selectUserKeyPrefix);
     }
@@ -457,9 +460,13 @@ class EditorMenus {
      */
     void setBatchHint() {
         builder.reset();
+        Spatial.BatchHint selectedHint;
+        selectedHint = Maud.model.target.spatial.getLocalBatchHint();
         for (Spatial.BatchHint hint : Spatial.BatchHint.values()) {
-            String name = hint.toString();
-            builder.add(name);
+            if (!hint.equals(selectedHint)) {
+                String name = hint.toString();
+                builder.add(name);
+            }
         }
         builder.show(EditorInputMode.setBatchHintPrefix);
     }
@@ -470,9 +477,13 @@ class EditorMenus {
      */
     void setCullHint() {
         builder.reset();
+        Spatial.CullHint selectedHint;
+        selectedHint = Maud.model.target.spatial.getLocalCullHint();
         for (Spatial.CullHint hint : Spatial.CullHint.values()) {
-            String name = hint.toString();
-            builder.add(name);
+            if (!hint.equals(selectedHint)) {
+                String name = hint.toString();
+                builder.add(name);
+            }
         }
         builder.show(EditorInputMode.setCullHintPrefix);
     }
@@ -483,9 +494,13 @@ class EditorMenus {
      */
     void setQueueBucket() {
         builder.reset();
+        RenderQueue.Bucket selectedBucket;
+        selectedBucket = Maud.model.target.spatial.getLocalQueueBucket();
         for (RenderQueue.Bucket bucket : RenderQueue.Bucket.values()) {
-            String name = bucket.toString();
-            builder.add(name);
+            if (!bucket.equals(selectedBucket)) {
+                String name = bucket.toString();
+                builder.add(name);
+            }
         }
         builder.show(EditorInputMode.setQueueBucketPrefix);
     }
@@ -496,9 +511,13 @@ class EditorMenus {
      */
     void setShadowMode() {
         builder.reset();
+        RenderQueue.ShadowMode selectedMode;
+        selectedMode = Maud.model.target.spatial.getLocalShadowMode();
         for (RenderQueue.ShadowMode mode : RenderQueue.ShadowMode.values()) {
-            String name = mode.toString();
-            builder.add(name);
+            if (!mode.equals(selectedMode)) {
+                String name = mode.toString();
+                builder.add(name);
+            }
         }
         builder.show(EditorInputMode.setShadowModePrefix);
     }

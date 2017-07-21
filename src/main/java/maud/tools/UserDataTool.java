@@ -82,24 +82,24 @@ class UserDataTool extends WindowController {
     // private methods
 
     /**
-     * Update the index status and previous/next/select buttons.
+     * Update the index status and next/previous/select buttons.
      */
     private void updateIndex() {
-        String indexText, nButton, pButton, sButton;
+        String indexText;
+        String nButton = "", pButton = "", sButton = "";
 
         int numKeys = Maud.model.target.spatial.countUserKeys();
         int selectedIndex = Maud.model.misc.findUserKeyIndex();
         if (selectedIndex >= 0) {
-            indexText = String.format("#%d of %d", selectedIndex + 1,
-                    numKeys);
-            nButton = "+";
-            pButton = "-";
-            sButton = "Select";
-
-        } else {
+            indexText = String.format("#%d of %d", selectedIndex + 1, numKeys);
+            if (numKeys > 1) {
+                nButton = "+";
+                pButton = "-";
+                sButton = "Select";
+            }
+        } else { // no key selected
             if (numKeys == 0) {
                 indexText = "no keys";
-                sButton = "";
             } else if (numKeys == 1) {
                 indexText = "one key";
                 sButton = "Select";
@@ -107,8 +107,6 @@ class UserDataTool extends WindowController {
                 indexText = String.format("%d keys", numKeys);
                 sButton = "Select";
             }
-            nButton = "";
-            pButton = "";
         }
 
         Maud.gui.setStatusText("userDataIndex", indexText);

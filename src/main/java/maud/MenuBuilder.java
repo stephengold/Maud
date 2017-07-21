@@ -270,14 +270,17 @@ class MenuBuilder {
     }
 
     /**
-     * Display the menu in the editor screen.
+     * Display the menu in the editor screen, unless it's empty.
      */
     void show(String actionPrefix) {
         logger.log(Level.INFO, "actionPrefix = {0}",
                 MyString.quote(actionPrefix));
 
-        String[] itemArray = copyItems();
-        String[] iconArray = copyIcons();
-        Maud.gui.showPopupMenu(actionPrefix, itemArray, iconArray);
+        int numItems = items.size();
+        if (numItems > 0) {
+            String[] itemArray = copyItems();
+            String[] iconArray = copyIcons();
+            Maud.gui.showPopupMenu(actionPrefix, itemArray, iconArray);
+        }
     }
 }
