@@ -851,6 +851,11 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(new singleKeyframe)"/>
                         </control>
                         <panel/>
+                        <control name="button" id="wrapTrackButton"
+                                 width="70px">
+                            <interact onRelease="perform(wrap track)"/>
+                        </control>
+                        <panel/>
                         <control name="button" id="deleteSingleKeyframeButton"
                                  width="55px">
                             <interact onRelease="perform(delete singleKeyframe)"/>

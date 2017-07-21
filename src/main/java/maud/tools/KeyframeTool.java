@@ -116,6 +116,7 @@ class KeyframeTool extends WindowController {
     private void updateEditButtons() {
         String dButton = "";
         String iButton = "";
+        String wButton = "";
 
         if (Maud.model.target.track.isTrackSelected()) {
             int index = Maud.model.target.track.findKeyframe();
@@ -124,10 +125,12 @@ class KeyframeTool extends WindowController {
             } else if (index > 0) {
                 dButton = "Delete";
             }
+            wButton = "Wrap track";
         }
 
         Maud.gui.setButtonLabel("deleteSingleKeyframeButton", dButton);
         Maud.gui.setButtonLabel("insertSingleKeyframeButton", iButton);
+        Maud.gui.setButtonLabel("wrapTrackButton", wButton);
     }
 
     /**

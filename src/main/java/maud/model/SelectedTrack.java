@@ -168,21 +168,14 @@ public class SelectedTrack implements Cloneable {
         int boneIndex = loadedCgm.bone.getIndex();
         assert boneIndex >= 0 : boneIndex;
 
-        String animationName = loadedCgm.animation.getName();
-        float duration = loadedCgm.animation.getDuration();
-        Animation newAnimation = new Animation(animationName, duration);
-
+        Animation newAnimation = newAnimation();
+        BoneTrack selectedTrack = findTrack();
         Animation oldAnimation = loadedCgm.animation.getAnimation();
-        Track[] loadedTracks = oldAnimation.getTracks();
-        for (Track track : loadedTracks) {
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
             Track clone;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                if (boneTrack.getTargetBoneIndex() == boneIndex) {
-                    clone = MyAnimation.deleteKeyframe(boneTrack, frameIndex);
-                } else {
-                    clone = track.clone();
-                }
+            if (track == selectedTrack) {
+                clone = MyAnimation.deleteKeyframe(selectedTrack, frameIndex);
             } else {
                 clone = track.clone();
             }
@@ -238,28 +231,22 @@ public class SelectedTrack implements Cloneable {
         if (frameIndex != -1) {
             return;
         }
-
         float time = loadedCgm.animation.getTime();
         assert time > 0f : time;
         float duration = loadedCgm.animation.getDuration();
         assert time <= duration : time;
-        String animationName = loadedCgm.animation.getName();
-        Animation newAnimation = new Animation(animationName, duration);
 
-        int boneIndex = loadedCgm.bone.getIndex();
+        Animation newAnimation = newAnimation();
+        BoneTrack selectedTrack = findTrack();
         Animation oldAnimation = loadedCgm.animation.getAnimation();
-        Track[] loadedTracks = oldAnimation.getTracks();
-        for (Track track : loadedTracks) {
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
             Track clone;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                if (boneTrack.getTargetBoneIndex() == boneIndex) {
-                    Pose pose = loadedCgm.pose.getPose();
-                    Transform user = pose.userTransform(boneIndex, null);
-                    clone = Util.addKeyframe(boneTrack, time, user);
-                } else {
-                    clone = track.clone();
-                }
+            if (track == selectedTrack) {
+                Pose pose = loadedCgm.pose.getPose();
+                int boneIndex = selectedTrack.getTargetBoneIndex();
+                Transform user = pose.userTransform(boneIndex, null);
+                clone = Util.addKeyframe(selectedTrack, time, user);
             } else {
                 clone = track.clone();
             }
@@ -356,25 +343,21 @@ public class SelectedTrack implements Cloneable {
         Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
         assert loadedCgm.bone.hasTrack();
 
-        float duration = loadedCgm.animation.getDuration();
-        String name = loadedCgm.animation.getName();
-        Animation newAnimation = new Animation(name, duration);
-
-        Animation loaded = loadedCgm.animation.getAnimation();
-        Track selectedTrack = findTrack();
-        Track[] loadedTracks = loaded.getTracks();
-        for (Track track : loadedTracks) {
+        Animation newAnimation = newAnimation();
+        BoneTrack selectedTrack = findTrack();
+        Animation oldAnimation = loadedCgm.animation.getAnimation();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
             Track clone;
             if (track == selectedTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                clone = MyAnimation.reduce(boneTrack, factor);
+                clone = MyAnimation.reduce(selectedTrack, factor);
             } else {
                 clone = track.clone();
             }
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation,
+        editableCgm.replaceAnimation(oldAnimation, newAnimation,
                 "thin keyframes in a single bone track");
     }
 
@@ -516,6 +499,33 @@ public class SelectedTrack implements Cloneable {
             editableCgm.setKeyframes(times, translations, rotations, scales);
         }
     }
+
+    /**
+     * Alter the track's end-time keyframe to match the 1st keyframe. If the
+     * track doesn't end with a keyframe, append one.
+     */
+    public void wrap() {
+        if (!isTrackSelected()) {
+            return;
+        }
+
+        Animation newAnimation = newAnimation();
+        BoneTrack selectedTrack = findTrack();
+        Animation oldAnimation = loadedCgm.animation.getAnimation();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
+            Track clone;
+            if (track == selectedTrack) {
+                float endTime = loadedCgm.animation.getDuration();
+                clone = Util.wrap(selectedTrack, endTime);
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        editableCgm.replaceAnimation(oldAnimation, newAnimation, "wrap track");
+    }
     // *************************************************************************
     // Object methods
 
@@ -529,5 +539,21 @@ public class SelectedTrack implements Cloneable {
     public SelectedTrack clone() throws CloneNotSupportedException {
         SelectedTrack clone = (SelectedTrack) super.clone();
         return clone;
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Create an empty animation with the same name and duration as the selected
+     * animation.
+     *
+     * @return a new instance
+     */
+    private Animation newAnimation() {
+        float duration = loadedCgm.animation.getDuration();
+        String name = loadedCgm.animation.getName();
+        Animation result = new Animation(name, duration);
+
+        return result;
     }
 }

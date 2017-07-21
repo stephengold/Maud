@@ -753,7 +753,7 @@ class EditorMenus {
     private void buildKeyframeMenu() {
         builder.addTool("Tool");
         if (Maud.model.target.bone.hasTrack()) {
-            builder.addDialog("Reduce");
+            builder.addDialog("Reduce"); // rename Reduce track
             builder.add("Select by time");
             builder.add("Select first");
             builder.add("Select previous");
@@ -764,6 +764,7 @@ class EditorMenus {
             if (frameIndex == -1) {
                 builder.add("Insert from pose");
             }
+            builder.add("Wrap track");
             if (frameIndex > 0) {
                 builder.add("Delete");
             }
@@ -1406,6 +1407,9 @@ class EditorMenus {
                 break;
             case "Tool":
                 Maud.gui.tools.select("keyframe");
+                break;
+            case "Wrap track":
+                Maud.model.target.track.wrap();
                 break;
             default:
                 handled = false;

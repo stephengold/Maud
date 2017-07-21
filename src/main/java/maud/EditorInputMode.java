@@ -302,6 +302,9 @@ public class EditorInputMode extends InputMode {
                     break;
                 case "warp":
                     handled = warpAction(actionString);
+                    break;
+                case "wrap":
+                    handled = wrapAction(actionString);
             }
 
         } else if ("select screenXY".equals(actionString)) {
@@ -1100,6 +1103,23 @@ public class EditorInputMode extends InputMode {
         switch (actionString) {
             case "warp cursor":
                 Maud.gui.warpCursor();
+                handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process an action that starts with "wrap".
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean wrapAction(String actionString) {
+        boolean handled = false;
+        switch (actionString) {
+            case "wrap track":
+                Maud.model.target.track.wrap();
                 handled = true;
         }
 
