@@ -148,6 +148,11 @@ public class ScoreView implements EditorView {
      */
     final private static Mesh outlineMesh = new RectangleOutlineMesh(0f,
             hashSize, -1f, 0f);
+    /**
+     * rotation of 90 degrees around the Z axis
+     */
+    final private static Quaternion quarterZ = new Quaternion().fromAngles(0f,
+            0f, FastMath.HALF_PI);
     // *************************************************************************
     // fields
 
@@ -536,8 +541,9 @@ public class ScoreView implements EditorView {
      * @param rightX world X coordinate for the right edge of the label
      * @param centerY world Y coordinate for the center of the label
      * @param minWidth minimum width of label (in compressed units, &gt;0)
-     * @param maxWidth maximum width of label (in compressed units, &gt;0)
-     * @param maxHeight minimum height of label (in world units, &gt;0)
+     * @param maxWidth maximum width of label (in compressed units,
+     * &ge;minWidth)
+     * @param maxHeight maximum height of label (in world units, &gt;0)
      */
     private void attachBoneLabel(float rightX, float centerY, float minWidth,
             float maxWidth, float maxHeight) {
@@ -553,51 +559,101 @@ public class ScoreView implements EditorView {
             bgMaterial = bgNotSelected;
         }
 
-        String text = cgm.bones.getBoneName(currentBone);
+        String boneName = cgm.bones.getBoneName(currentBone);
+        float boneNameSize = 4f + labelFont.getLineWidth(boneName);
         /*
          * Calculate the effective width and height for the label and the size
-         * for the text.
+         * for the text assuming horizontal (normal) text.
          */
-        float boxHeight = maxHeight;
-        float sizeFactor = 0.042f * boxHeight; // relative to preferred size
-        float boxWidth = sizeFactor * (4f + labelFont.getLineWidth(text));
-        if (boxWidth > maxWidth) {
+        float h1 = maxHeight;
+        float sizeFactor1 = 0.042f * h1; // relative to preferred size
+        float w1 = sizeFactor1 * boneNameSize;
+        if (w1 > maxWidth) {
             /*
              * Shrink to avoid clipping.
              */
-            boxHeight *= maxWidth / boxWidth;
-            sizeFactor *= maxWidth / boxWidth;
-            boxWidth = sizeFactor * (4f + labelFont.getLineWidth(text));
+            h1 *= maxWidth / w1;
+            sizeFactor1 *= maxWidth / w1;
+            w1 = sizeFactor1 * boneNameSize;
         }
-        boxWidth = FastMath.clamp(boxWidth, minWidth, maxWidth);
+        w1 = FastMath.clamp(w1, minWidth, maxWidth);
         /*
-         * Attach a text node.
+         * Calculate the effective width and height for the label and the size
+         * for the text assuming vertical (rotated) text.
          */
-        BitmapText label = new BitmapText(labelFont);
+        float w2 = maxWidth;
+        float sizeFactor2 = 0.042f * w2; // relative to preferred size
+        float h2 = sizeFactor2 * boneNameSize;
+        if (h2 > maxHeight) {
+            /*
+             * Shrink to avoid clipping.
+             */
+            w2 *= maxHeight / h2;
+            sizeFactor2 *= maxHeight / h2;
+            h2 = sizeFactor2 * boneNameSize;
+        }
+        h2 = FastMath.clamp(h2, minWidth, maxHeight);
+        /*
+         * Decide whether to rotate the label.
+         */
+        if (h2 * w2 > h1 * w1) {
+            attachBoneLabelVertical(boneName, sizeFactor2, bgMaterial,
+                    rightX, centerY, w2, h2);
+        } else {
+            attachBoneLabelHorizontal(boneName, sizeFactor1, bgMaterial,
+                    rightX, centerY, w1, h1);
+        }
+    }
+
+    /**
+     * Attach a horizontal label to the visuals.
+     *
+     * @param labelText text of the label (not null)
+     * @param sizeFactor text size relative to preferred size (&gt;0)
+     * @param bgMaterial (not null)
+     * @param rightX world X coordinate for the right edge of the label
+     * @param centerY world Y coordinate for the center of the label
+     * @param xWidth width of label (in compressed units, &gt;0)
+     * @param yHeight height of label (in world units, &gt;0)
+     */
+    private void attachBoneLabelHorizontal(String labelText, float sizeFactor,
+            Material bgMaterial, float rightX, float centerY, float xWidth,
+            float yHeight) {
+        String nameSuffix = String.format("%d", currentBone);
+        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
+                xWidth, yHeight);
         visuals.attachChild(label);
-        label.setBox(new Rectangle(0f, 0f, boxWidth, boxHeight));
-        label.setLineWrapMode(LineWrapMode.Clip);
         float compression = cgm.scorePov.compression();
         label.setLocalScale(compression, 1f, 1f);
-        float leftX = rightX - boxWidth * compression;
-        float topY = centerY + boxHeight / 2;
-        label.setLocalTranslation(leftX, topY, zLabels);
-        String labelName = String.format("label%d", currentBone);
-        label.setName(labelName);
-        label.setQueueBucket(RenderQueue.Bucket.Transparent);
-        float size = sizeFactor * labelFont.getPreferredSize();
-        label.setSize(size);
-        label.setText(text);
-        /*
-         * Attach a background geometry to the text node.
-         */
-        String bgName = String.format("bg%d", currentBone);
-        Mesh bgMesh = new RectangleMesh(0f, boxWidth, -boxHeight, 0f, 1f);
-        Geometry bg = new Geometry(bgName, bgMesh);
-        label.attachChild(bg);
-        bg.setLocalTranslation(0f, 0f, -0.01f); // slightly behind the text
-        bg.setMaterial(bgMaterial);
-        bg.setQueueBucket(RenderQueue.Bucket.Opaque);
+        float x = rightX - xWidth * compression;
+        float y = centerY + yHeight / 2;
+        label.setLocalTranslation(x, y, zLabels);
+    }
+
+    /**
+     * Attach a vertical label to the visuals.
+     *
+     * @param labelText text of the label (not null)
+     * @param sizeFactor text size relative to preferred size (&gt;0)
+     * @param bgMaterial (not null)
+     * @param bottomX world X coordinate for the bottom edge of the label
+     * @param centerY world Y coordinate for the center of the label
+     * @param xHeight height of label (in compressed units, &gt;0)
+     * @param yWidth width of label (in world units, &gt;0)
+     */
+    private void attachBoneLabelVertical(String labelText, float sizeFactor,
+            Material bgMaterial, float bottomX, float centerY, float xHeight,
+            float yWidth) {
+        String nameSuffix = String.format("%d", currentBone);
+        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
+                yWidth, xHeight);
+        visuals.attachChild(label);
+        label.setLocalRotation(quarterZ);
+        float compression = cgm.scorePov.compression();
+        label.setLocalScale(1f, compression, 1f);
+        float x = bottomX - xHeight * compression;
+        float y = centerY - yWidth / 2;
+        label.setLocalTranslation(x, y, zLabels);
     }
 
     /**
@@ -1155,6 +1211,46 @@ public class ScoreView implements EditorView {
         rs.setBlendMode(RenderState.BlendMode.Alpha);
         rs.setDepthTest(false);
         rs.setWireframe(true);
+    }
+
+    /**
+     * Create the bitmap text and background for a label, but don't parent or
+     * transform it.
+     *
+     * @param labelText text of the label (not null)
+     * @param sizeFactor text size relative to preferred size (&gt;0)
+     * @param bgMaterial (not null)
+     * @param width size in the local X direction (in local units, &gt;0)
+     * @param height size in the local Y direction (in local units, &gt;0)
+     * @return a new orphan spatial with its local origin at its upper left
+     * corner
+     */
+    private Spatial makeLabel(String labelText, String nameSuffix,
+            float sizeFactor, Material bgMaterial, float width, float height) {
+        /*
+         * Create a bitmap text node.
+         */
+        BitmapText spatial = new BitmapText(labelFont);
+        spatial.setBox(new Rectangle(0f, 0f, width, height));
+        spatial.setLineWrapMode(LineWrapMode.Clip);
+        String labelName = "label" + nameSuffix;
+        spatial.setName(labelName);
+        spatial.setQueueBucket(RenderQueue.Bucket.Transparent);
+        float size = sizeFactor * labelFont.getPreferredSize();
+        spatial.setSize(size);
+        spatial.setText(labelText);
+        /*
+         * Attach a rectangular background geometry to the node.
+         */
+        String bgName = "bg" + nameSuffix;
+        Mesh bgMesh = new RectangleMesh(0f, width, -height, 0f, 1f);
+        Geometry bg = new Geometry(bgName, bgMesh);
+        spatial.attachChild(bg);
+        bg.setLocalTranslation(0f, 0f, -0.01f); // slightly behind the text
+        bg.setMaterial(bgMaterial);
+        bg.setQueueBucket(RenderQueue.Bucket.Opaque);
+
+        return spatial;
     }
 
     /**
