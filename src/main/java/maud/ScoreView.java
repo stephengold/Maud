@@ -308,7 +308,7 @@ public class ScoreView implements EditorView {
     // EditorView methods
 
     /**
-     * Consider selecting each bone, axis, and keyframe in this view.
+     * Consider selecting each bone, gnomon, and keyframe in this view.
      *
      * @param selection best selection found so far (not null, modified)
      */
@@ -358,6 +358,12 @@ public class ScoreView implements EditorView {
                 selection.considerBone(cgm, boneIndex, dSquared);
             }
         }
+
+        float gnomonX = gnomonX();
+        Vector3f world = new Vector3f(gnomonX, 0f, zLines);
+        Vector3f screen = camera.getScreenCoordinates(world);
+        float dSquared = FastMath.sqr(inputXY.x - screen.x);
+        selection.considerGnomon(cgm, dSquared);
     }
 
     /**
@@ -619,6 +625,12 @@ public class ScoreView implements EditorView {
     private void attachBoneLabelHorizontal(String labelText, float sizeFactor,
             Material bgMaterial, float rightX, float centerY, float xWidth,
             float yHeight) {
+        assert labelText != null;
+        assert sizeFactor > 0f : sizeFactor;
+        assert bgMaterial != null;
+        assert xWidth > 0f : xWidth;
+        assert yHeight > 0f : yHeight;
+
         String nameSuffix = String.format("%d", currentBone);
         Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
                 xWidth, yHeight);
@@ -644,6 +656,12 @@ public class ScoreView implements EditorView {
     private void attachBoneLabelVertical(String labelText, float sizeFactor,
             Material bgMaterial, float bottomX, float centerY, float xHeight,
             float yWidth) {
+        assert labelText != null;
+        assert sizeFactor > 0f : sizeFactor;
+        assert bgMaterial != null;
+        assert xHeight > 0f : xHeight;
+        assert yWidth > 0f : yWidth;
+
         String nameSuffix = String.format("%d", currentBone);
         Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
                 yWidth, xHeight);
@@ -695,6 +713,7 @@ public class ScoreView implements EditorView {
          */
         float leftX = cgm.scorePov.leftX() + xGap;
         float rightX = xLeftMargin - hashSize;
+        assert leftX < rightX : leftX;
         float staffHeight = finial.getHeight();
         float middleY = -(height + staffHeight / 2);
         float compression = cgm.scorePov.compression();
@@ -715,7 +734,7 @@ public class ScoreView implements EditorView {
          */
         leftX = xRightMargin + hashSize * 2f / 3;
         rightX = cgm.scorePov.rightX() - xGap;
-        assert rightX > leftX : rightX;
+        assert rightX > leftX : rightX; // scorePov not updated?
         maxWidth = (rightX - leftX) / compression;
         middleY = -height - sparklineHeight / 2 - (float) Finial.hpf;
 
@@ -749,16 +768,10 @@ public class ScoreView implements EditorView {
      * Attach the time indicator to the visuals.
      */
     private void attachGnomon() {
-        float duration = cgm.animation.getDuration();
-        float x = 0f;
-        if (duration > 0f) {
-            float time = cgm.animation.getTime();
-            x = time / duration;
-        }
-
+        float gnomonX = gnomonX();
         float handleSize = 0.1f * cgm.scorePov.getHalfHeight(); // world units
-        Vector3f start = new Vector3f(x, handleSize, zLines);
-        Vector3f end = new Vector3f(x, -height - handleSize, zLines);
+        Vector3f start = new Vector3f(gnomonX, handleSize, zLines);
+        Vector3f end = new Vector3f(gnomonX, -height - handleSize, zLines);
         Line line = new Line(start, end);
 
         Geometry geometry = new Geometry("gnomon", line);
@@ -773,7 +786,7 @@ public class ScoreView implements EditorView {
              */
             geometry = new Geometry("pose points", poseMesh);
             visuals.attachChild(geometry);
-            geometry.setLocalTranslation(x, 0f, zLines);
+            geometry.setLocalTranslation(gnomonX, 0f, zLines);
             geometry.setMaterial(poseMaterial);
         }
     }
@@ -1168,7 +1181,27 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Initialize materials used in score views.
+     * Calculate the location of the gnomon (time indicator).
+     *
+     * @return global X coordinate (&ge;xLeftMargin, &le;xRightMargin)
+     */
+    private float gnomonX() {
+        float result;
+        float duration = cgm.animation.getDuration();
+        if (duration > 0f) {
+            float time = cgm.animation.getTime();
+            result = time / duration;
+        } else {
+            result = 0f;
+        }
+
+        assert result >= xLeftMargin : result;
+        assert result <= xRightMargin : result;
+        return result;
+    }
+
+    /**
+     * Initialize the materials used in score views.
      *
      * @param assetManager (not null)
      */
@@ -1227,6 +1260,11 @@ public class ScoreView implements EditorView {
      */
     private Spatial makeLabel(String labelText, String nameSuffix,
             float sizeFactor, Material bgMaterial, float width, float height) {
+        assert labelText != null;
+        assert sizeFactor > 0f : sizeFactor;
+        assert bgMaterial != null;
+        assert width > 0f : width;
+        assert height > 0f : height;
         /*
          * Create a bitmap text node.
          */

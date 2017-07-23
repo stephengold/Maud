@@ -32,6 +32,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
@@ -635,6 +636,18 @@ public class EditorScreen extends GuiScreenController {
 
             if (Maud.model.axes.isDraggingAxis()) {
                 Maud.gui.tools.axes.dragAxis();
+            }
+
+        } else if ("score".equals(viewMode)) {
+            LoadedCgm cgm = Maud.model.score.getDraggingGnomonCgm();
+            if (cgm != null) {
+                Camera camera = cgm.getScoreView().getCamera();
+                Vector2f mouseXY = inputManager.getCursorPosition();
+                Vector3f world = camera.getWorldCoordinates(mouseXY, 0f);
+                float worldX = FastMath.clamp(world.x, 0f, 1f);
+                float duration = cgm.animation.getDuration();
+                float newTime = worldX * duration;
+                cgm.animation.setTime(newTime);
             }
         }
         /*

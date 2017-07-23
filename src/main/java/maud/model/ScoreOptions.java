@@ -30,6 +30,7 @@ import com.jme3.math.ColorRGBA;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
 
 /**
  * Options for "score" views in Maud's editor screen.
@@ -64,6 +65,10 @@ public class ScoreOptions implements Cloneable {
      * background color for score views
      */
     private ColorRGBA scoreBackground = new ColorRGBA(0.84f, 0.84f, 0.72f, 1f);
+    /**
+     * which gnomon is being dragged ("none", "source", or "target")
+     */
+    private String dragGnomon = "none";
     /**
      * bones shown when none is selected ("all", "none", "roots", or "tracked")
      */
@@ -112,6 +117,29 @@ public class ScoreOptions implements Cloneable {
     }
 
     /**
+     * Access the loaded CG model whose gnomon is being dragged.
+     *
+     * @return a loaded CG model, or null
+     */
+    public LoadedCgm getDraggingGnomonCgm() {
+        LoadedCgm result;
+        switch (dragGnomon) {
+            case "none":
+                result = null;
+                break;
+            case "source":
+                result = Maud.model.source;
+                break;
+            case "target":
+                result = Maud.model.target;
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        return result;
+    }
+
+    /**
      * Determine which bones to show when no bone is selected.
      *
      * @return "all", "none", "roots", or "tracked"
@@ -136,6 +164,23 @@ public class ScoreOptions implements Cloneable {
      */
     public void setBackgroundColor(ColorRGBA newColor) {
         scoreBackground.set(newColor);
+    }
+
+    /**
+     * Alter which gnomon is being dragged.
+     *
+     * @param cgm a loaded CG model, or null
+     */
+    public void setDraggingGnomon(LoadedCgm cgm) {
+        if (cgm == Maud.model.target) {
+            dragGnomon = "target";
+        } else if (cgm == Maud.model.source) {
+            dragGnomon = "source";
+        } else if (cgm == null) {
+            dragGnomon = "none";
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     /**

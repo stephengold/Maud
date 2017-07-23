@@ -33,7 +33,7 @@ import maud.model.LoadedCgm;
 import maud.model.LoadedMapping;
 
 /**
- * Encapsulate a bone/keyframe/axis selection from the user interface.
+ * Encapsulate a bone/keyframe/axis/gnomon selection from the user interface.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -71,8 +71,8 @@ public class Selection {
      */
     private LoadedCgm bestCgm;
     /**
-     * type of selection ("none", "bone", "keyframe", "pose rotation axis", or
-     * "pose transform axis")
+     * type of selection ("none", "bone", "gnomon", "keyframe", "pose rotation
+     * axis", or "pose transform axis")
      */
     private String bestType;
     /**
@@ -124,6 +124,27 @@ public class Selection {
             bestFrameIndex = -1;
             bestCgm = cgm;
             bestType = "bone";
+        }
+    }
+
+    /**
+     * Consider selecting the gnomon.
+     *
+     * @param cgm CG model that contains the bone (not null)
+     * @param dSquared squared distance between the gnomon's screen location and
+     * {@link #inputXY} (in pixels squared, &ge;0)
+     */
+    public void considerGnomon(LoadedCgm cgm, float dSquared) {
+        Validate.nonNull(cgm, "model");
+        Validate.nonNegative(dSquared, "distance squared");
+
+        if (dSquared < bestDSquared) {
+            bestDSquared = dSquared;
+            bestAxisIndex = -1;
+            bestBoneIndex = -1;
+            bestFrameIndex = -1;
+            bestCgm = cgm;
+            bestType = "gnomon";
         }
     }
 
@@ -206,6 +227,9 @@ public class Selection {
             case "bone":
                 selectBone();
                 break;
+            case "gnomon":
+                selectGnomon();
+                break;
             case "keyframe":
                 selectKeyframe();
                 break;
@@ -242,6 +266,13 @@ public class Selection {
                 Maud.model.mapping.selectFromTarget();
             }
         }
+    }
+
+    /**
+     * Select the gnomon in a score view.
+     */
+    private void selectGnomon() {
+        Maud.model.score.setDraggingGnomon(bestCgm);
     }
 
     /**
