@@ -32,6 +32,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
+import com.jme3.animation.Track;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
@@ -89,7 +90,7 @@ public class Util {
 
     /**
      * Copy a bone track, inserting a keyframe at the specified time (which
-     * mustn't already have a keyframe).
+     * mustn't already have a keyframe). TODO rename insertKeyframe
      *
      * @param oldTrack (not null, unaffected)
      * @param frameTime when to insert (&gt;0)
@@ -145,6 +146,58 @@ public class Util {
 
         int boneIndex = oldTrack.getTargetBoneIndex();
         BoneTrack result = new BoneTrack(boneIndex, newTimes, translations,
+                rotations, scales);
+
+        return result;
+    }
+
+    /**
+     * Copy a bone track, deleting everything before the specified time, and
+     * making it the start of the animation.
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param neckTime cutoff time (&gt;0)
+     * @return a new instance
+     */
+    public static BoneTrack behead(BoneTrack oldTrack, float neckTime) {
+        Validate.positive(neckTime, "neck time");
+
+        float[] oldTimes = oldTrack.getKeyFrameTimes();
+        Vector3f[] oldTranslations = oldTrack.getTranslations();
+        Quaternion[] oldRotations = oldTrack.getRotations();
+        Vector3f[] oldScales = oldTrack.getScales();
+        int oldCount = oldTimes.length;
+
+        int neckIndex = findPreviousKeyframeIndex(oldTrack, neckTime);
+        int newCount = oldCount - neckIndex;
+        Vector3f[] translations = new Vector3f[newCount];
+        Quaternion[] rotations = new Quaternion[newCount];
+        Vector3f[] scales = null;
+        if (oldScales != null) {
+            scales = new Vector3f[newCount];
+        }
+        float[] times = new float[newCount];
+
+        Transform user = interpolateTransform(neckTime, oldTimes,
+                oldTranslations, oldRotations, oldScales, null);
+        translations[0] = user.getTranslation();
+        rotations[0] = user.getRotation();
+        if (scales != null) {
+            scales[0] = user.getScale();
+        }
+        times[0] = 0f;
+        for (int newIndex = 1; newIndex < newCount; newIndex++) {
+            int oldIndex = newIndex + neckIndex;
+            translations[newIndex] = oldTranslations[oldIndex].clone();
+            rotations[newIndex] = oldRotations[oldIndex].clone();
+            if (scales != null) {
+                scales[newIndex] = oldScales[oldIndex].clone();
+            }
+            times[newIndex] = oldTimes[oldIndex] - neckTime;
+        }
+
+        int boneIndex = oldTrack.getTargetBoneIndex();
+        BoneTrack result = new BoneTrack(boneIndex, times, translations,
                 rotations, scales);
 
         return result;
@@ -311,21 +364,71 @@ public class Util {
      *
      * @param track which track to search (not null, unaffected)
      * @param time track time (in seconds, &ge;0)
-     * @return index, or -1 if keyframe not found
+     * @return keyframe index (&ge;0) or -1 if keyframe not found
      */
-    public static int findKeyframeIndex(BoneTrack track, float time) {
+    public static int findKeyframeIndex(Track track, float time) {
         Validate.nonNegative(time, "time");
 
-        float[] times = track.getTimes();
-        int result = -1;
-        // TODO binary search
-        for (int frameIndex = 0; frameIndex < times.length; frameIndex++) {
-            if (times[frameIndex] == time) {
-                result = frameIndex;
+        float[] times = track.getKeyFrameTimes();
+        int result = findPreviousIndex(time, times);
+        if (result >= 0 && times[result] != time) {
+            result = -1;
+        }
+
+        return result;
+    }
+
+    /**
+     * Find the index of the last value &le; the specified one in a sorted
+     * array, using binary search.
+     *
+     * @param value value to search for
+     * @param array array to search (not null, strictly monotonic increasing
+     * order, unaffected)
+     * @return array index (&ge;0) or -1 if array is empty or value&le;array[0]
+     */
+    public static int findPreviousIndex(float value, float[] array) {
+        Validate.nonNull(array, "array");
+
+        int lowerBound = -1;
+        int upperBound = array.length - 1;
+        int result;
+        while (true) {
+            if (upperBound == lowerBound) {
+                result = lowerBound;
+                break;
+            }
+            int testIndex = (lowerBound + upperBound + 1) / 2;
+            float testValue = array[testIndex];
+            if (value > testValue) {
+                lowerBound = testIndex;
+            } else if (value < testValue) {
+                upperBound = testIndex - 1;
+            } else if (value == testValue) {
+                result = testIndex;
                 break;
             }
         }
 
+        assert result >= -1 : result;
+        return result;
+    }
+
+    /**
+     * Find the index of the keyframe at or before the specified time in the
+     * specified track.
+     *
+     * @param track which track to search (not null, unaffected)
+     * @param time track time (in seconds, &ge;0)
+     * @return keyframe index (&ge;0)
+     */
+    public static int findPreviousKeyframeIndex(Track track, float time) {
+        Validate.nonNegative(time, "time");
+
+        float[] times = track.getKeyFrameTimes();
+        int result = findPreviousIndex(time, times);
+
+        assert result >= 0 : result;
         return result;
     }
 
@@ -373,16 +476,11 @@ public class Util {
             storeResult = new Transform();
         }
 
-        int lastFrame = times.length - 1;
-        int startFrame = -1;
-        // TODO binary search
-        for (int iFrame = 0; iFrame < lastFrame; iFrame++) {
-            if (time >= times[iFrame] && time <= times[iFrame + 1]) {
-                startFrame = iFrame;
-                break;
-            }
+        int startFrame = findPreviousIndex(time, times);
+        if (startFrame == -1) {
+            findPreviousIndex(time, times);
         }
-        assert startFrame >= 0 : startFrame;
+        assert time >= times[startFrame] : time;
         int endFrame = startFrame + 1;
         float frameDuration = times[endFrame] - times[startFrame];
         assert frameDuration > 0f : frameDuration;
@@ -589,6 +687,46 @@ public class Util {
 
         BoneTrack result = new BoneTrack(targetBoneIndex, times, translations,
                 rotations, scales);
+
+        return result;
+    }
+
+    /**
+     * Copy a bone track, truncating it at the specified time.
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param endTime cutoff time (&ge;0)
+     * @return a new instance
+     */
+    public static BoneTrack truncate(BoneTrack oldTrack, float endTime) {
+        Validate.positive(endTime, "end time");
+
+        float[] oldTimes = oldTrack.getKeyFrameTimes();
+        Vector3f[] oldTranslations = oldTrack.getTranslations();
+        Quaternion[] oldRotations = oldTrack.getRotations();
+        Vector3f[] oldScales = oldTrack.getScales();
+
+        int newCount = 1 + findPreviousKeyframeIndex(oldTrack, endTime);
+        Vector3f[] translations = new Vector3f[newCount];
+        Quaternion[] rotations = new Quaternion[newCount];
+        Vector3f[] scales = null;
+        if (oldScales != null) {
+            scales = new Vector3f[newCount];
+        }
+        float[] times = new float[newCount];
+
+        for (int frameIndex = 0; frameIndex < newCount; frameIndex++) {
+            translations[frameIndex] = oldTranslations[frameIndex].clone();
+            rotations[frameIndex] = oldRotations[frameIndex].clone();
+            if (oldScales != null) {
+                scales[frameIndex] = oldScales[frameIndex].clone();
+            }
+            times[frameIndex] = oldTimes[frameIndex];
+        }
+
+        int boneIndex = oldTrack.getTargetBoneIndex();
+        BoneTrack result = MyAnimation.newBoneTrack(boneIndex, times,
+                translations, rotations, scales);
 
         return result;
     }
