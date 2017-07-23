@@ -554,22 +554,27 @@ class EditorMenus {
         builder.addTool("Tool");
         if (Maud.model.target.bones.countBones() > 0) {
             builder.add("Load");
-            builder.addDialog("New from pose");
             builder.addDialog("New from copy");
+            builder.addDialog("New from pose");
+            builder.addTool("New from retarget");
+        }
+        if (Maud.model.target.animation.isReal()) {
+            builder.add("Behead");
+            builder.addDialog("Change duration");
+            builder.addDialog("Delete");
+            builder.add("Delete keyframes");
+            builder.add("Insert keyframes");
+            builder.addDialog("Reduce");
+            builder.addDialog("Rename");
+            builder.add("Truncate");
+            builder.add("Wrap all tracks");
         }
         builder.addTool("Source tool");
         if (Maud.model.source.isLoaded()
                 && Maud.model.source.bones.countBones() > 0) {
             builder.add("Load source");
         }
-        builder.addTool("New from retarget");
-        if (Maud.model.target.animation.isReal()) {
-            builder.addDialog("Duration");
-            builder.addDialog("Reduce");
-            builder.addDialog("Rename");
-            builder.add("Tweening");
-            builder.addDialog("Delete");
-        }
+        //builder.add("Tweening");
     }
 
     /**
@@ -1041,11 +1046,20 @@ class EditorMenus {
 
         boolean handled = true;
         switch (remainder) {
+            case "Behead":
+                Maud.model.target.animation.behead();
+                break;
+            case "Change duration":
+                Maud.gui.dialogs.setDuration();
+                break;
             case "Delete":
                 Maud.gui.dialogs.deleteAnimation();
                 break;
-            case "Duration":
-                Maud.gui.dialogs.setDuration();
+            case "Delete keyframes":
+                Maud.model.target.animation.deleteKeyframes();
+                break;
+            case "Insert keyframes":
+                Maud.model.target.animation.insertKeyframes();
                 break;
             case "Load":
                 List<String> animationNames;
@@ -1075,6 +1089,12 @@ class EditorMenus {
                 break;
             case "Tool":
                 Maud.gui.tools.select("animation");
+                break;
+            case "Truncate":
+                Maud.model.target.animation.truncate();
+                break;
+            case "Wrap all tracks":
+                Maud.model.target.animation.wrapAllTracks();
                 break;
             default:
                 handled = false;

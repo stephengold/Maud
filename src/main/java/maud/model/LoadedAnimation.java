@@ -42,11 +42,13 @@ import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
+import maud.Pose;
 import maud.Util;
 
 /**
  * The MVC model of the loaded animation in the Maud application. For loading
- * purposes, the bind pose is treated as an animation. TODO rename PlayAnimation
+ * purposes, the bind pose is treated as an animation. TODO rename
+ * SelectedAnimation
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -60,12 +62,11 @@ public class LoadedAnimation implements Cloneable {
     final private static Logger logger = Logger.getLogger(
             LoadedAnimation.class.getName());
     /**
-     * dummy animation name used to indicate bind pose (no animation loaded)
+     * dummy animation name to denote the bind pose (no animation loaded)
      */
     final public static String bindPoseName = "( bind pose )";
     /**
-     * dummy animation name used to indicate a retargeted pose (no animation
-     * loaded)
+     * dummy animation name to denote a retargeted pose (no animation loaded)
      */
     final public static String retargetedPoseName = "( retargeted pose )";
     // *************************************************************************
@@ -101,7 +102,7 @@ public class LoadedAnimation implements Cloneable {
      */
     private float speed = 1f;
     /**
-     * current animation time (in seconds, &ge;0)
+     * current animation time (in seconds, &ge;0) TODO rename currentTime
      */
     private float time = 0f;
     /**
@@ -115,6 +116,34 @@ public class LoadedAnimation implements Cloneable {
     private String loadedName = null;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Delete everything before the current animation time, and make that the
+     * start of the animation.
+     */
+    public void behead() {
+        if (time == 0f) {
+            return;
+        }
+        Animation loaded = getAnimation();
+        float oldDuration = loaded.getLength();
+        float newDuration = oldDuration - time;
+        Animation newAnimation = new Animation(loadedName, newDuration);
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track newTrack;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                newTrack = Util.behead(boneTrack, time);
+            } else {
+                newTrack = track.clone(); // TODO
+            }
+            newAnimation.addTrack(newTrack);
+        }
+        time = 0f;
+        editableCgm.replaceAnimation(loaded, newAnimation,
+                "behead an animation");
+    }
 
     /**
      * Calculate the current transform of the indexed bone.
@@ -211,6 +240,42 @@ public class LoadedAnimation implements Cloneable {
         } else {
             assert isRetargetedPose();
             logger.log(Level.WARNING, "cannot delete retargeted pose");
+        }
+    }
+
+    /**
+     * Delete all keyframes at the current animation time, which must be &gt;0.
+     */
+    public void deleteKeyframes() {
+        if (time <= 0f) {
+            return;
+        }
+        float duration = getDuration();
+        Animation newAnimation = new Animation(loadedName, duration);
+        int numDeletions = 0;
+        Animation loaded = getAnimation();
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track newTrack;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                int keyframeIndex = Util.findKeyframeIndex(boneTrack, time);
+                if (keyframeIndex >= 1) {
+                    newTrack = MyAnimation.deleteKeyframe(boneTrack,
+                            keyframeIndex);
+                    ++numDeletions;
+                } else {
+                    newTrack = track.clone();
+                }
+            } else {
+                newTrack = track.clone(); // TODO other track types
+            }
+            newAnimation.addTrack(newTrack);
+        }
+
+        if (numDeletions > 0) {
+            editableCgm.replaceAnimation(loaded, newAnimation,
+                    "delete keyframes from an animation");
         }
     }
 
@@ -368,6 +433,34 @@ public class LoadedAnimation implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Insert a keyframe in each bone track at the current animation time, based
+     * on the displayed pose.
+     */
+    public void insertKeyframes() {
+        float duration = getDuration();
+        Animation newAnimation = new Animation(loadedName, duration);
+        Pose pose = loadedCgm.pose.getPose();
+
+        Animation loaded = getAnimation();
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) { // TODO add more tracks
+            Track newTrack;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                int boneIndex = boneTrack.getTargetBoneIndex();
+                Transform user = pose.userTransform(boneIndex, null);
+                newTrack = Util.addKeyframe(boneTrack, time, user);
+            } else {
+                newTrack = track.clone(); // TODO
+            }
+            newAnimation.addTrack(newTrack);
+        }
+
+        editableCgm.replaceAnimation(loaded, newAnimation,
+                "insert keyframes into an animation");
     }
 
     /**
@@ -692,7 +785,7 @@ public class LoadedAnimation implements Cloneable {
         }
 
         editableCgm.replaceAnimation(loaded, newAnimation,
-                "thin keyframes across bone tracks");
+                "thin the keyframes in an animation");
     }
 
     /**
@@ -716,8 +809,9 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation, "rename animation");
         loadedName = newName;
+        editableCgm.replaceAnimation(loaded, newAnimation,
+                "rename an animation");
     }
 
     /**
@@ -779,16 +873,16 @@ public class LoadedAnimation implements Cloneable {
                 BoneTrack boneTrack = (BoneTrack) track;
                 newTrack = Util.setDuration(boneTrack, newDuration);
             } else {
-                newTrack = track.clone(); // TODO
+                newTrack = track.clone(); // TODO other track types
             }
             newAnimation.addTrack(newTrack);
         }
 
         String eventDescription;
         if (newDuration > oldDuration) {
-            eventDescription = "slow down animation";
+            eventDescription = "slow down an animation";
         } else {
-            eventDescription = "speed up animation";
+            eventDescription = "speed up an animation";
         }
         editableCgm.replaceAnimation(loaded, newAnimation, eventDescription);
     }
@@ -946,6 +1040,29 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Delete everything after the current animation time, and make that the end
+     * of the animation.
+     */
+    public void truncate() {
+        Animation newAnimation = new Animation(loadedName, time);
+        Animation loaded = getAnimation();
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track newTrack;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                newTrack = Util.truncate(boneTrack, time);
+            } else {
+                newTrack = track.clone(); // TODO other track types
+            }
+            newAnimation.addTrack(newTrack);
+        }
+
+        editableCgm.replaceAnimation(loaded, newAnimation,
+                "truncate an animation");
+    }
+
+    /**
      * Test whether the loaded animation will play continuously.
      *
      * @return true if continuous loop, false otherwise
@@ -961,6 +1078,30 @@ public class LoadedAnimation implements Cloneable {
      */
     public boolean willReverse() {
         return reverseFlag;
+    }
+
+    /**
+     * Set the final bone transform of each track to match its initial bone
+     * transform.
+     */
+    public void wrapAllTracks() {
+        Animation loaded = getAnimation();
+        float duration = loaded.getLength();
+        Animation newAnimation = new Animation(loadedName, duration);
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track newTrack;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                newTrack = Util.wrap(boneTrack, duration);
+            } else {
+                newTrack = track.clone(); // TODO other track types
+            }
+            newAnimation.addTrack(newTrack);
+        }
+
+        editableCgm.replaceAnimation(loaded, newAnimation,
+                "wrap all tracks in animation");
     }
     // *************************************************************************
     // Object methods
