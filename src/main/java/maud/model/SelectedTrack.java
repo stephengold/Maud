@@ -40,7 +40,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
-import jme3utilities.math.MyVector3f;
 import maud.Pose;
 import maud.Util;
 
@@ -250,7 +249,7 @@ public class SelectedTrack implements Cloneable {
                 Pose pose = loadedCgm.pose.getPose();
                 int boneIndex = selectedTrack.getTargetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
-                clone = Util.addKeyframe(selectedTrack, time, user);
+                clone = Util.insertKeyframe(selectedTrack, time, user);
             } else {
                 clone = track.clone();
             }

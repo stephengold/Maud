@@ -452,7 +452,7 @@ public class LoadedAnimation implements Cloneable {
                 BoneTrack boneTrack = (BoneTrack) track;
                 int boneIndex = boneTrack.getTargetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
-                newTrack = Util.addKeyframe(boneTrack, time, user);
+                newTrack = Util.insertKeyframe(boneTrack, time, user);
             } else {
                 newTrack = track.clone(); // TODO
             }
