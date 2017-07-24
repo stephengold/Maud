@@ -152,12 +152,10 @@ class MenuBuilder {
         } else if (filename.endsWith(".j3o")) {
             addJme(filename);
         } else if (filename.endsWith(".obj")) {
-            addGeometry(filename);
+            addGeometry(filename); // TODO poser icon
         } else if (filename.endsWith(".mesh.xml")
                 || filename.endsWith(".scene")) {
             addOgre(filename);
-        } else {
-            add(filename); // TODO ? icon
         }
     }
 
