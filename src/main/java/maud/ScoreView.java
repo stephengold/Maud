@@ -842,21 +842,24 @@ public class ScoreView implements EditorView {
         assert yIndex < 10 : yIndex;
         assert material != null;
 
-        if (Util.distinct(pyy)) {
+        assert pxx[0] == 0f : pxx[0];
+        assert lxx[0] == 0f : lxx[0];
+
+        if (Util.distinct(pyy, pxx.length)) {
             attachSparkline(pxx, pyy, Mesh.Mode.Points, suffix + "p", yIndex,
                     material);
-
             float zoom = cgm.scorePov.getHalfHeight();
             if (zoom < 10f) {
                 /*
-                 * Draw the connecting lines only when zoomed in.
+                 * Draw connecting lines only when zoomed in.
                  */
                 attachSparkline(lxx, lyy, Mesh.Mode.LineStrip, suffix + "l",
                         yIndex, material);
             }
+
         } else {
             /*
-             * Series consists entirely of single value: show 1st keyframe only.
+             * Series consists of a single value: draw the 1st keyframe only.
              */
             tempX[0] = pxx[0];
             tempY[0] = pyy[0];
@@ -999,12 +1002,12 @@ public class ScoreView implements EditorView {
         Sparkline sparkline = new Sparkline(xx, yy, sparklineHeight, mode);
         String name = String.format("%d%s", currentBone, suffix);
         Geometry geometry = new Geometry(name, sparkline);
+        visuals.attachChild(geometry);
 
         float yOffset = sparklineHeight + yIndex * (float) Finial.hpf;
         float y = -height - yOffset;
         geometry.setLocalTranslation(xLeftMargin, y, zLines);
         geometry.setMaterial(material);
-        visuals.attachChild(geometry);
     }
 
     /**

@@ -51,8 +51,10 @@ import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
@@ -178,8 +180,8 @@ public class Util {
         }
         float[] times = new float[newCount];
 
-        Transform user = interpolateTransform(neckTime, oldTimes,
-                oldTranslations, oldRotations, oldScales, null);
+        Transform user = interpolate(neckTime, oldTimes, oldTranslations,
+                oldRotations, oldScales, null);
         translations[0] = user.getTranslation();
         rotations[0] = user.getRotation();
         if (scales != null) {
@@ -204,8 +206,8 @@ public class Util {
     }
 
     /**
-     * Calculate the bone transform for the specified track and time, using
-     * linear interpolation with no blending.
+     * Calculate the bone transform for the specified track and time, using the
+     * default techniques.
      *
      * @param track (not null, unaffected)
      * @param time animation time input
@@ -251,9 +253,9 @@ public class Util {
 
         } else {
             /*
-             * Interpolate between two successive frames.
+             * Interpolate between frames.
              */
-            interpolateTransform(time, times, translations, rotations, scales,
+            interpolate(time, times, translations, rotations, scales,
                     storeResult);
         }
 
@@ -273,6 +275,25 @@ public class Util {
         MyMath.snapLocal(input, 0);
         MyMath.snapLocal(input, 1);
         MyMath.snapLocal(input, 2);
+    }
+
+    /**
+     * Count the number of distinct vectors in an array, without distinguishing
+     * 0 from -0.
+     *
+     * @param array input (not null, unaffected)
+     * @return count (&ge;0)
+     */
+    public static int countNe(Vector3f[] array) {
+        int length = array.length;
+        Set<Vector3f> distinct = new HashSet<>(length);
+        for (Vector3f vector : array) {
+            Vector3f standard = Util.standardize(vector, null);
+            distinct.add(standard);
+        }
+        int count = distinct.size();
+
+        return count;
     }
 
     /**
@@ -306,19 +327,23 @@ public class Util {
     }
 
     /**
-     * Test whether the specified vector contains more than one value.
+     * Test whether the first N elements of the specified vector contain &gt;1
+     * distinct values, without distinguishing 0 from -0.
      *
-     * @param vector input (not null)
+     * @param vector input (not null, unaffected)
+     * @param n number of elements to consider
      * @return true if multiple values found, otherwise false
      */
-    public static boolean distinct(float[] vector) {
+    public static boolean distinct(float[] vector, int n) {
         Validate.nonNull(vector, "vector");
+        Validate.inRange(n, "length", 0, vector.length);
 
         boolean result = false;
-        if (vector.length > 1) {
-            float first = vector[0];
-            for (float value : vector) {
-                if (value != first) { // compareTo?
+        if (n > 1) {
+            float firstValue = vector[0];
+            for (int i = 1; i < n; i++) {
+                float value = vector[i];
+                if (value != firstValue) {
                     result = true;
                     break;
                 }
@@ -459,47 +484,101 @@ public class Util {
     }
 
     /**
-     * Interpolate linearly between keyframes of a bone track.
+     * Interpolate between quaternions in a time sequence.
      *
-     * @param time (in seconds)
+     * @param time (in seconds, &gt;times[0], &lt;times[last])
      * @param times (not null, unaffected)
-     * @param translations (not null, unaffected)
-     * @param rotations (not null, unaffected)
-     * @param scales (may be null, unaffected)
+     * @param quaternions (not null, unaffected, same length as times)
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
-    public static Transform interpolateTransform(float time, float[] times,
+    public static Quaternion interpolate(float time, float[] times,
+            Quaternion[] quaternions, Quaternion storeResult) {
+        assert time >= times[0] : time;
+        assert time < times[times.length - 1] : time;
+        assert times.length == quaternions.length;
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        int index1 = findPreviousIndex(time, times);
+        int index2 = index1 + 1;
+        float interval = times[index2] - times[index1];
+        assert interval > 0f : interval;
+        float fraction = (time - times[index1]) / interval;
+        storeResult.set(quaternions[index1]);
+        if (ne(storeResult, quaternions[index2])) {
+            storeResult.nlerp(quaternions[index2], fraction);
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Interpolate between vectors in a time sequence.
+     *
+     * @param time (in seconds, &gt;times[0], &lt;times[last])
+     * @param times (not null, unaffected)
+     * @param vectors (not null, unaffected, same length as times)
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
+     */
+    public static Vector3f interpolate(float time, float[] times,
+            Vector3f[] vectors, Vector3f storeResult) {
+        assert time >= times[0] : time;
+        assert time < times[times.length - 1] : time;
+        assert times.length == vectors.length;
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        int index1 = findPreviousIndex(time, times);
+        int index2 = index1 + 1;
+        float interval = times[index2] - times[index1];
+        assert interval > 0f : interval;
+        float f2 = (time - times[index1]) / interval;
+        float f1 = 1f - f2;
+        storeResult.set(vectors[index1]);
+        Vector3f v2 = vectors[index2];
+        if (storeResult.x != v2.x) {
+            storeResult.x = f1 * storeResult.x + f2 * v2.x;
+        }
+        if (storeResult.y != v2.y) {
+            storeResult.y = f1 * storeResult.y + f2 * v2.y;
+        }
+        if (storeResult.z != v2.z) {
+            storeResult.z = f1 * storeResult.z + f2 * v2.z;
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Interpolate between keyframes in a bone track using the default
+     * techniques.
+     *
+     * @param time (in seconds, &gt;times[0], &lt;times[last])
+     * @param times (not null, unaffected)
+     * @param translations (not null, unaffected, same length as times)
+     * @param rotations (not null, unaffected, same length as times)
+     * @param scales (may be null, unaffected, same length as times)
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
+     */
+    public static Transform interpolate(float time, float[] times,
             Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales,
             Transform storeResult) {
         if (storeResult == null) {
             storeResult = new Transform();
         }
 
-        int startFrame = findPreviousIndex(time, times);
-        if (startFrame == -1) {
-            findPreviousIndex(time, times);
-        }
-        assert time >= times[startFrame] : time;
-        int endFrame = startFrame + 1;
-        float frameDuration = times[endFrame] - times[startFrame];
-        assert frameDuration > 0f : frameDuration;
-        float fraction = (time - times[startFrame]) / frameDuration;
-
-        Vector3f translation = storeResult.getTranslation();
-        translation.interpolateLocal(translations[startFrame],
-                translations[endFrame], fraction);
-
-        Quaternion rotation = storeResult.getRotation();
-        rotation.set(rotations[startFrame]);
-        rotation.nlerp(rotations[endFrame], fraction);
-
+        Util.interpolate(time, times, translations,
+                storeResult.getTranslation());
+        Util.interpolate(time, times, rotations, storeResult.getRotation());
         if (scales == null) {
             storeResult.setScale(scaleIdentity);
         } else {
-            Vector3f scale = storeResult.getScale();
-            scale.interpolateLocal(scales[startFrame], scales[endFrame],
-                    fraction);
+            Util.interpolate(time, times, scales, storeResult.getScale());
         }
 
         return storeResult;
@@ -587,6 +666,25 @@ public class Util {
         materialLoaderLogger.setLevel(materialLoaderLevel);
 
         return loaded;
+    }
+
+    /**
+     * Test whether two quaternions are distinct, without distinguishing 0 from
+     * -0.
+     *
+     * @param a 1st input quaternion (not null, unaffected)
+     * @param b 2nd input quaternion (not null, unaffected)
+     * @return true if distinct, otherwise false
+     */
+    public static boolean ne(Quaternion a, Quaternion b) {
+        Validate.nonNull(a, "1st input quaternion");
+        Validate.nonNull(b, "2nd input quaternion");
+
+        boolean result = a.getW() != b.getW()
+                || a.getX() != b.getX()
+                || a.getY() != b.getY()
+                || a.getZ() != b.getZ();
+        return result;
     }
 
     /**
@@ -689,6 +787,71 @@ public class Util {
                 rotations, scales);
 
         return result;
+    }
+
+    /**
+     * Standardize a single-precision floating-point value in preparation for
+     * hashing.
+     *
+     * @param input input value
+     * @return an equivalent value that's not -0
+     */
+    public static float standardize(float input) {
+        float result = input;
+        if (Float.compare(input, -0f) == 0) {
+            result = 0f;
+        }
+
+        return result;
+    }
+
+    /**
+     * Standardize a quaternion in preparation for hashing.
+     *
+     * @param input (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return an equivalent quaternion without negative zeroes (either
+     * storeResult or a new instance)
+     */
+    public static Quaternion standardize(Quaternion input,
+            Quaternion storeResult) {
+        Validate.nonNull(input, "input quaternion");
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        float w = input.getW();
+        float x = input.getX();
+        float y = input.getY();
+        float z = input.getZ();
+        w = standardize(w);
+        x = standardize(x);
+        y = standardize(y);
+        z = standardize(z);
+        storeResult.set(x, y, z, w);
+
+        return storeResult;
+    }
+
+    /**
+     * Standardize a vector in preparation for hashing.
+     *
+     * @param input (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return an equivalent vector without negative zeroes (either storeResult
+     * or a new instance)
+     */
+    public static Vector3f standardize(Vector3f input, Vector3f storeResult) {
+        Validate.nonNull(input, "input vector");
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        storeResult.x = standardize(input.x);
+        storeResult.y = standardize(input.y);
+        storeResult.z = standardize(input.z);
+
+        return storeResult;
     }
 
     /**
