@@ -34,44 +34,59 @@ the menu bar, status bar, and tool windows.
     <screen id="editor" controller="maud.EditorScreen">
         <layer childLayout="vertical">
             <panel id="menu bar"
-                   childLayout="horizontal"
-                   height="20px">
-                <control name="button" id="ViewButton" label="1] View"
-                         width="60px">
-                    <interact onRelease="perform(select menuItem View)"/>
-                </control>
-                <control name="button" id="CGMButton" label="2] Model"
-                         width="70px">
-                    <interact onRelease="perform(select menuItem CGM)"/>
-                </control>
-                <control name="button" id="SpatialButton" label="3] Spatial"
-                         width="75px">
-                    <interact onRelease="perform(select menuItem Spatial)"/>
-                </control>
-                <control name="button" id="AnimationButton" label="4] Animation"
-                         width="80px">
-                    <interact onRelease="perform(select menuItem Animation)"/>
-                </control>
-                <control name="button" id="BoneButton" label="5] Bone"
-                         width="60px">
-                    <interact onRelease="perform(select menuItem Bone)"/>
-                </control>
-                <control name="button" id="KeyframeButton" label="6] Keyframe"
-                         width="80px">
-                    <interact onRelease="perform(select menuItem Keyframe)"/>
-                </control>
-                <control name="button" id="PhysicsButton" label="7] Physics"
-                         width="70px">
-                    <interact onRelease="perform(select menuItem Physics)"/>
-                </control>
-                <control name="button" id="SettingsButton" label="8] Settings"
-                         width="70px">
-                    <interact onRelease="perform(select menuItem Settings)"/>
-                </control>
-                <control name="button" id="HelpButton" label="9] Help"
-                         width="60px">
-                    <interact onRelease="perform(select menuItem Help)"/>
-                </control>
+                   childLayout="vertical">
+                <panel id="menu bar top row"
+                       childLayout="horizontal"
+                       height="20px">
+                    <control name="button" id="ViewButton" label="1] View"
+                             width="60px">
+                        <interact onRelease="perform(select menuItem View)"/>
+                    </control>
+                    <control name="button" id="CGMButton" label="2] Models"
+                             width="70px">
+                        <interact onRelease="perform(select menuItem CGM)"/>
+                    </control>
+                    <control name="button" id="MapButton" label="3] Map"
+                             width="55px">
+                        <interact onRelease="perform(select menuItem Map)"/>
+                    </control>
+                    <control name="button" id="SpatialButton" label="4] Spatial"
+                             width="75px">
+                        <interact onRelease="perform(select menuItem Spatial)"/>
+                    </control>
+                    <control name="button" id="AnimationButton" label="5] Animations"
+                             width="88px">
+                        <interact onRelease="perform(select menuItem Animation)"/>
+                    </control>
+                    <control name="button" id="BoneButton" label="6] Bone"
+                             width="60px">
+                        <interact onRelease="perform(select menuItem Bone)"/>
+                    </control>
+                    <control name="button" id="KeyframeButton" label="7] Keyframe"
+                             width="80px">
+                        <interact onRelease="perform(select menuItem Keyframe)"/>
+                    </control>
+                    <control name="button" id="PhysicsButton" label="8] Physics"
+                             width="70px">
+                        <interact onRelease="perform(select menuItem Physics)"/>
+                    </control>
+                </panel>
+                <panel id="menu bar bottom row"
+                       childLayout="horizontal"
+                       height="20px">
+                    <control name="button" id="HistoryButton" label="9] History"
+                             width="70px">
+                        <interact onRelease="perform(select menuItem History)"/>
+                    </control>
+                    <control name="button" id="SettingsButton" label="0] Settings"
+                             width="70px">
+                        <interact onRelease="perform(select menuItem Settings)"/>
+                    </control>
+                    <control name="button" id="HelpButton" label="-] Help"
+                             width="55px">
+                        <interact onRelease="perform(select menuItem Help)"/>
+                    </control>
+                </panel>
             </panel>
             <panel/>
             <panel id="status bar"

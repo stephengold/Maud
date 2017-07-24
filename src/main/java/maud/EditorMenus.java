@@ -574,7 +574,7 @@ class EditorMenus {
                 && Maud.model.source.bones.countBones() > 0) {
             builder.add("Load source");
         }
-        //builder.add("Tweening");
+        //builder.add("Tweening"); TODO
     }
 
     /**
@@ -649,10 +649,7 @@ class EditorMenus {
         builder.addTool("Tool");
         builder.add("Load");
         builder.addDialog("Save");
-
         builder.add("Source model");
-        builder.add("Skeleton mapping");
-        builder.addTool("History");
     }
 
     /**
@@ -749,10 +746,17 @@ class EditorMenus {
     private void buildHelpMenu() {
         builder.addDialog("About Maud");
         builder.addDialog("License");
-        builder.add("Wiki");
-        builder.add("Javadoc");
+        //builder.add("Wiki"); TODO
+        //builder.add("Javadoc"); TODO
         builder.add("Source");
         builder.add("JME3 homepage");
+    }
+
+    /**
+     * Build a History menu.
+     */
+    private void buildHistoryMenu() {
+        builder.addTool("Tool");
     }
 
     /**
@@ -792,6 +796,21 @@ class EditorMenus {
     }
 
     /**
+     * Display a Map menu.
+     */
+    private void buildMapMenu() {
+        builder.reset();
+        builder.addTool("Tool");
+        builder.addDialog("Load");
+        if (Maud.model.mapping.countMappings() > 0) {
+            builder.add("Invert");
+            builder.add("Unload");
+        }
+        builder.addDialog("Save");
+        builder.addTool("Twist tool");
+    }
+
+    /**
      * Build a Physics menu.
      */
     private void buildPhysicsMenu() {
@@ -806,9 +825,9 @@ class EditorMenus {
      */
     private void buildSettingsMenu() {
         builder.add("Asset folders");
-        builder.add("Initial model");
+        //builder.add("Initial model"); TODO
         builder.add("Hotkeys");
-        builder.add("Locale");
+        //builder.add("Locale"); TODO
     }
 
     /**
@@ -976,22 +995,6 @@ class EditorMenus {
     }
 
     /**
-     * Display a "CGM -> Skeleton mapping" menu.
-     */
-    private void mapping() {
-        builder.reset();
-        builder.addTool("Tool");
-        builder.addDialog("Load");
-        if (Maud.model.mapping.countMappings() > 0) {
-            builder.add("Invert");
-            builder.add("Unload");
-        }
-        builder.addDialog("Save");
-        builder.addTool("Twist tool");
-        builder.show("select menuItem CGM -> Skeleton mapping -> ");
-    }
-
-    /**
      * Handle a "select menuItem" action for a submenu.
      *
      * @param menuName name of the menu (not null)
@@ -1016,11 +1019,17 @@ class EditorMenus {
             case "Help":
                 handled = menuHelp(remainder);
                 break;
+            case "History":
+                handled = menuHistory(remainder);
+                break;
             case "Keyframe":
                 handled = menuKeyframe(remainder);
                 break;
+            case "Map":
+                handled = menuMap(remainder);
+                break;
             case "Physics":
-                //handled = menuPhysics(remainder);
+                handled = menuPhysics(remainder);
                 break;
             case "Settings":
                 handled = menuSettings(remainder);
@@ -1160,8 +1169,14 @@ class EditorMenus {
             case "Help":
                 buildHelpMenu();
                 break;
+            case "History":
+                buildHistoryMenu();
+                break;
             case "Keyframe":
                 buildKeyframeMenu();
+                break;
+            case "Map":
+                buildMapMenu();
                 break;
             case "Physics":
                 buildPhysicsMenu();
@@ -1325,13 +1340,8 @@ class EditorMenus {
         assert remainder != null;
 
         boolean handled;
-        String mappingPrefix = "Skeleton mapping" + menuSeparator;
         String sourcePrefix = "Source model" + menuSeparator;
-        if (remainder.startsWith(mappingPrefix)) {
-            String selectArg = MyString.remainder(remainder, mappingPrefix);
-            handled = menuMapping(selectArg);
-
-        } else if (remainder.startsWith(sourcePrefix)) {
+        if (remainder.startsWith(sourcePrefix)) {
             String selectArg = MyString.remainder(remainder, sourcePrefix);
             handled = menuSourceCgm(selectArg);
 
@@ -1347,9 +1357,6 @@ class EditorMenus {
                     break;
                 case "Save":
                     Maud.gui.dialogs.saveCgm();
-                    break;
-                case "Skeleton mapping":
-                    mapping();
                     break;
                 case "Source model":
                     sourceCgm();
@@ -1391,6 +1398,27 @@ class EditorMenus {
             case "Source":
                 Misc.browseWeb("https://github.com/stephengold/Maud");
                 handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the History menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuHistory(String remainder) {
+        assert remainder != null;
+
+        boolean handled = true;
+        switch (remainder) {
+            case "Tool":
+                Maud.gui.tools.select("history");
+                break;
+            default:
+                handled = false;
         }
 
         return handled;
@@ -1442,13 +1470,12 @@ class EditorMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the "CGM -> Skeleton mapping"
-     * menu.
+     * Handle a "select menuItem" action from the Map menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuMapping(String remainder) {
+    private boolean menuMap(String remainder) {
         assert remainder != null;
 
         boolean handled = false;
@@ -1476,6 +1503,24 @@ class EditorMenus {
             case "Unload":
                 Maud.model.mapping.unload();
                 handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the Physics menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuPhysics(String remainder) {
+        assert remainder != null;
+
+        boolean handled = true;
+        switch (remainder) {
+            default:
+                handled = false;
         }
 
         return handled;
