@@ -111,13 +111,16 @@ public class SelectedSgc implements Cloneable {
      * Access the selected SG control in the specified CG model.
      *
      * @param cgmRoot root of the CG model (not null)
-     * @return the pre-existing instance, or null if none selected
+     * @return the pre-existing instance, or null if none selected/found
      */
     Control findSgc(Spatial cgmRoot) {
         Control sgc = null;
         if (selectedIndex != -1) {
             Spatial spatial = loadedCgm.spatial.underRoot(cgmRoot);
-            sgc = spatial.getControl(selectedIndex);
+            int numControls = spatial.getNumControls();
+            if (selectedIndex < numControls) {
+                sgc = spatial.getControl(selectedIndex);
+            }
         }
 
         return sgc;
@@ -200,10 +203,11 @@ public class SelectedSgc implements Cloneable {
 
         selectedIndex = newIndex;
 
-        Boolean selecteSpatialFlag = false;
-        Skeleton newSkeleton = loadedCgm.bones.findSkeleton(selecteSpatialFlag);
+        Boolean selectedSpatialFlag = false;
+        Skeleton newSkeleton;
+        newSkeleton = loadedCgm.bones.findSkeleton(selectedSpatialFlag);
         if (oldSkeleton != newSkeleton) {
-            onSkeletonChanged(newSkeleton, selecteSpatialFlag);
+            onSkeletonChanged(newSkeleton, selectedSpatialFlag);
         }
 
         AnimControl newAnimControl = loadedCgm.getAnimControl();
