@@ -31,6 +31,7 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -48,6 +49,8 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
+import maud.SceneView;
+import maud.Util;
 
 /**
  * MVC model for an editable computer-graphics (CG) model in the Maud
@@ -114,6 +117,11 @@ public class EditableCgm extends LoadedCgm {
         assert newSgc != null;
 
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
+        if (newSgc instanceof PhysicsControl) {
+            PhysicsControl physicsControl = (PhysicsControl) newSgc;
+            SceneView sceneView = getSceneView();
+            sceneView.addPhysicsControl(physicsControl);
+        }
         selectedSpatial.addControl(newSgc);
         setEdited("add control");
     }
@@ -196,14 +204,21 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete the selected control from the selected spatial.
+     * Remove the selected control from the selected spatial. TODO rename
+     * removeSgc
      */
     void deleteControl() {
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         Control selectedSgc = sgc.findSgc(rootSpatial);
+        if (selectedSgc instanceof PhysicsControl) {
+            PhysicsControl pc = (PhysicsControl) selectedSgc;
+            int position = Util.pcToPosition(selectedSpatial, pc);
+            SceneView sceneView = getSceneView();
+            sceneView.removePhysicsControl(position);
+        }
         boolean success = selectedSpatial.removeControl(selectedSgc);
         assert success;
-        setEdited("delete control");
+        setEdited("remove control");
     }
 
     /**
@@ -403,8 +418,8 @@ public class EditableCgm extends LoadedCgm {
         RenderQueue.Bucket oldBucket = modelSpatial.getLocalQueueBucket();
         if (oldBucket != newBucket) {
             modelSpatial.setQueueBucket(newBucket);
-            setEdited("change queue bucket");
             getSceneView().setQueueBucket(newBucket);
+            setEdited("change queue bucket");
         }
     }
 
@@ -420,8 +435,8 @@ public class EditableCgm extends LoadedCgm {
         RenderQueue.ShadowMode oldMode = modelSpatial.getLocalShadowMode();
         if (oldMode != newMode) {
             modelSpatial.setShadowMode(newMode);
-            setEdited("change shadow mode");
             getSceneView().setMode(newMode);
+            setEdited("change shadow mode");
         }
     }
 

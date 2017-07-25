@@ -30,9 +30,14 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
@@ -102,6 +107,10 @@ public class SceneView implements EditorView, JmeCloneable {
      * visualizer for bounding boxes added to the scene
      */
     private BoundsVisualizer boundsVisualizer;
+    /**
+     * app state for Bullet physics
+     */
+    final private BulletAppState bulletAppState;
     /*
      * directional added to the scene (not null)
      */
@@ -168,15 +177,37 @@ public class SceneView implements EditorView, JmeCloneable {
             ViewPort port2) {
         Validate.nonNull(loadedCgm, "loaded model");
         Validate.nonNull(parentNode, "parent node");
-        Validate.nonNull(port2, "view port2");
+        Validate.nonNull(port2, "port2");
 
         cgm = loadedCgm;
         parent = parentNode;
         viewPort1 = port1;
         viewPort2 = port2;
+        bulletAppState = makeBullet(port1, port2);
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Add a copy of the specified physics control to the selected spatial and
+     * the physics space.
+     *
+     * @param physicsControl (not null, unaffected)
+     */
+    public void addPhysicsControl(PhysicsControl physicsControl) {
+        Validate.nonNull(physicsControl, "physics control");
+
+        PhysicsControl copy = Cloner.deepClone(physicsControl);
+        if (copy instanceof PhysicsRigidBody) {
+            PhysicsRigidBody body = (PhysicsRigidBody) copy;
+            body.setKinematic(true);
+        }
+        Spatial spatial = selectedSpatial();
+        spatial.addControl(copy);
+
+        PhysicsSpace space = getPhysicsSpace();
+        space.add(copy);
+    }
 
     /**
      * Access the axes visualizer added to the scene.
@@ -228,6 +259,17 @@ public class SceneView implements EditorView, JmeCloneable {
     }
 
     /**
+     * Access the physics space for the scene.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public PhysicsSpace getPhysicsSpace() {
+        PhysicsSpace space = bulletAppState.getPhysicsSpace();
+        assert space != null;
+        return space;
+    }
+
+    /**
      * Access the spatial for the scene's platform.
      *
      * @return the pre-existing instance, or null if none
@@ -262,9 +304,10 @@ public class SceneView implements EditorView, JmeCloneable {
      */
     public void loadCgm(Spatial cgmRoot) {
         Validate.nonNull(cgmRoot, "model root");
-        /*
-         * Detach the old spatial (if any) from the scene.
-         */
+
+        if (this.cgmRoot != null) {
+            Util.disablePhysicsControls(this.cgmRoot);
+        }
         parent.detachAllChildren();
         setCgmRoot(cgmRoot);
 
@@ -286,6 +329,22 @@ public class SceneView implements EditorView, JmeCloneable {
         if (cgmRoot != null) {
             parent.attachChild(cgmRoot);
         }
+    }
+
+    /**
+     * Remove an existing physics control from the selected spatial and the
+     * physics space.
+     *
+     * @param position position among the physics controls added to the selected
+     * spatial (ge;0)
+     */
+    public void removePhysicsControl(int position) {
+        Validate.nonNegative(position, "position");
+
+        Spatial spatial = selectedSpatial();
+        PhysicsControl pc = Util.pcFromPosition(spatial, position);
+        pc.setEnabled(false);
+        spatial.removeControl(pc);
     }
 
     /**
@@ -469,13 +528,14 @@ public class SceneView implements EditorView, JmeCloneable {
     }
 
     /**
-     * Unload the CG model.
+     * Unload the CG model. TODO rename unloadCgm
      */
     public void unloadModel() {
         /*
          * Detach the old spatial (if any) from the scene.
          */
         if (cgmRoot != null) {
+            Util.disablePhysicsControls(cgmRoot);
             parent.detachChild(cgmRoot);
         }
         setCgmRoot(null);
@@ -667,17 +727,18 @@ public class SceneView implements EditorView, JmeCloneable {
         animControl = cloner.clone(animControl);
         axesVisualizer = cloner.clone(axesVisualizer);
         boundsVisualizer = cloner.clone(boundsVisualizer);
+        // bulletAppState not cloned: shared
         // cgm not cloned: set later
         cgmRoot = cloner.clone(cgmRoot);
         cursor = cloner.clone(cursor);
         mainLight = cloner.clone(mainLight);
-        // parent not cloned
+        // parent not cloned: shared
         platform = cloner.clone(platform);
         skeleton = cloner.clone(skeleton);
         skeletonControl = cloner.clone(skeletonControl);
         skeletonVisualizer = cloner.clone(skeletonVisualizer);
         skyControl = cloner.clone(skyControl);
-        // viewPort1, viewPort2 not cloned
+        // viewPort1, viewPort2 not cloned: shared
     }
 
     /**
@@ -826,10 +887,50 @@ public class SceneView implements EditorView, JmeCloneable {
      */
     private Spatial getScene() {
         List<Spatial> scenes = viewPort2.getScenes();
-        assert scenes.size() == 1 : scenes.size();
+        assert scenes.size() == 2 : scenes.size();
         Spatial result = scenes.get(0);
 
         assert result != null;
+        return result;
+    }
+
+    /**
+     * Create and configure an app state to manage the Bullet physics for this
+     * view.
+     *
+     * @param viewPort1 (may be null)
+     * @param viewPort2 (not null)
+     * @return a new instance
+     */
+    private BulletAppState makeBullet(ViewPort viewPort1, ViewPort viewPort2) {
+        assert viewPort2 != null;
+
+        float radius = 1000f;
+        Vector3f worldMin = new Vector3f(-radius, -radius, -radius);
+        Vector3f worldMax = new Vector3f(radius, radius, radius);
+        PhysicsSpace.BroadphaseType sweep3;
+        sweep3 = PhysicsSpace.BroadphaseType.AXIS_SWEEP_3;
+        BulletAppState result = new BulletAppState(worldMin, worldMax, sweep3);
+
+        ViewPort[] viewPorts;
+        if (viewPort1 == null) {
+            viewPorts = new ViewPort[1];
+            viewPorts[0] = viewPort2;
+        } else {
+            viewPorts = new ViewPort[2];
+            viewPorts[0] = viewPort1;
+            viewPorts[1] = viewPort2;
+        }
+        result.setDebugViewPorts(viewPorts);
+
+        result.setDebugEnabled(true);
+        result.setSpeed(0f);
+        result.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+
+        Maud application = Maud.getApplication();
+        AppStateManager stateManager = application.getStateManager();
+        stateManager.attach(result);
+
         return result;
     }
 
@@ -839,18 +940,22 @@ public class SceneView implements EditorView, JmeCloneable {
      */
     private void prepareForViewing() {
         /*
-         * Attach the CG model to the scene graph.
+         * Attach the CG model to the view's scene graph.
          */
         parent.attachChild(cgmRoot);
         /*
-         * Use the skeleton from the first AnimControl or
+         * Use the skeleton from the 1st AnimControl or
          * SkeletonControl in the CG model's root spatial.
          */
         skeleton = MySkeleton.findSkeleton(cgmRoot);
         /*
-         * Remove all scene-graph controls.
+         * Remove all scene-graph controls except those concerned with physics.
+         * Enabled those SGCs and configure their physics spaces so that the
+         * BulletDebugAppState can render their collision shapes.
          */
-        MySpatial.removeAllControls(cgmRoot);
+        Util.removeNonPhysicsControls(cgmRoot);
+        PhysicsSpace space = getPhysicsSpace();
+        Util.enablePhysicsControls(cgmRoot, space);
         /*
          * Create and add scene-graph controls for the skeleton.
          */
