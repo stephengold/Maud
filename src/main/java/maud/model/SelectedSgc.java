@@ -55,7 +55,8 @@ public class SelectedSgc implements Cloneable {
     // fields
 
     /**
-     * index of the selected SG control, or -1 for none selected
+     * position of the selected SG control in the MVC model, or -1 for none
+     * selected
      */
     private int selectedIndex = -1;
     /**
@@ -75,7 +76,7 @@ public class SelectedSgc implements Cloneable {
             AnimControl oldAnimControl = loadedCgm.getAnimControl();
 
             EditableCgm editableCgm = (EditableCgm) loadedCgm;
-            editableCgm.deleteControl();
+            editableCgm.deleteSgc();
             selectedIndex = -1;
 
             Boolean selectedSpatialFlag = false;
@@ -127,7 +128,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Read the index of the selected SG control.
+     * Read the position of the selected SG control in the MVC model.
      *
      * @return the SG control index, or -1 if none selected
      */

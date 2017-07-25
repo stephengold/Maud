@@ -204,10 +204,9 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Remove the selected control from the selected spatial. TODO rename
-     * removeSgc
+     * Delete the selected control.
      */
-    void deleteControl() {
+    void deleteSgc() {
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         Control selectedSgc = sgc.findSgc(rootSpatial);
         if (selectedSgc instanceof PhysicsControl) {
@@ -218,17 +217,17 @@ public class EditableCgm extends LoadedCgm {
         }
         boolean success = selectedSpatial.removeControl(selectedSgc);
         assert success;
-        setEdited("remove control");
+        setEdited("delete control");
     }
 
     /**
-     * Delete the selected user key from the selected spatial.
+     * Delete the selected user-data key from the selected spatial.
      */
     void deleteUserKey() {
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         String key = Maud.model.misc.getSelectedUserKey();
         selectedSpatial.setUserData(key, null);
-        setEdited("delete user key");
+        setEdited("delete user-data key");
     }
 
     /**
