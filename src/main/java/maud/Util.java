@@ -37,6 +37,22 @@ import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingSphere;
+import com.jme3.bounding.BoundingVolume;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
+import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.bullet.joints.PhysicsJoint;
+import com.jme3.bullet.objects.PhysicsCharacter;
+import com.jme3.bullet.objects.PhysicsGhostObject;
+import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
@@ -45,12 +61,15 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.bvh.BVHAnimData;
 import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
+import java.io.PrintStream;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -58,7 +77,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
+import jme3utilities.MyControl;
 import jme3utilities.MySkeleton;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 
@@ -79,6 +100,13 @@ public class Util {
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
      */
     final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
+    // *************************************************************************
+    // fields
+
+    /**
+     * stream to use for dumping
+     */
+    static PrintStream stream;
     // *************************************************************************
     // constructors
 
@@ -234,6 +262,116 @@ public class Util {
     }
 
     /**
+     * Generate a textual description of a collision shape.
+     *
+     * @param shape (not null)
+     * @return description (not null)
+     */
+    public static String describe(CollisionShape shape) {
+        Validate.nonNull(shape, "shape");
+
+        String name = shape.getClass().getSimpleName();
+        if (name.endsWith("CollisionShape")) {
+            name = MyString.removeSuffix(name, "CollisionShape");
+        }
+
+        String result = name;
+        if (shape instanceof CapsuleCollisionShape) {
+            CapsuleCollisionShape capsule = (CapsuleCollisionShape) shape;
+            int axis = capsule.getAxis();
+            result += describeAxis(axis);
+            float height = capsule.getHeight();
+            float radius = capsule.getRadius();
+            result += String.format("[h=%f,r=%f]", height, radius);
+
+        } else if (shape instanceof CompoundCollisionShape) {
+            CompoundCollisionShape compound = (CompoundCollisionShape) shape;
+            String desc = describeChildShapes(compound);
+            result += String.format("[%s]", desc);
+
+        } else if (shape instanceof CylinderCollisionShape) {
+            CylinderCollisionShape cylinder = (CylinderCollisionShape) shape;
+            int axis = cylinder.getAxis();
+            result += describeAxis(axis);
+            Vector3f halfExtents = cylinder.getHalfExtents();
+            result += String.format("[hx=%f,hy=%f,hz=%f]",
+                    halfExtents.x, halfExtents.y, halfExtents.z);
+
+        } else if (shape instanceof SphereCollisionShape) {
+            SphereCollisionShape sphere = (SphereCollisionShape) shape;
+            float radius = sphere.getRadius();
+            result += String.format("[r=%f]", radius);
+        }
+
+        return result;
+    }
+
+    /**
+     * Generate a textual description of a Bullet axis.
+     *
+     * @param axis (0&rarr;X, 1&rarr;Y, 2&rarr;Z)
+     * @return description (not null)
+     */
+    public static String describeAxis(int axis) {
+        Validate.inRange(axis, "axis", 0, 2);
+
+        String result;
+        switch (axis) {
+            case PhysicsSpace.AXIS_X:
+                result = "X";
+                break;
+            case PhysicsSpace.AXIS_Y:
+                result = "Y";
+                break;
+            case PhysicsSpace.AXIS_Z:
+                result = "Z";
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        return result;
+    }
+
+    /**
+     * Generate a textual description of a compound shape's children.
+     *
+     * @param compound shape being described (not null)
+     * @return description (not null)
+     */
+    public static String describeChildShapes(CompoundCollisionShape compound) {
+        StringBuilder result = new StringBuilder(20);
+        boolean addSeparators = false;
+        List<ChildCollisionShape> children = compound.getChildren();
+        int count = children.size();
+        for (int i = 0; i < count; i++) {
+            ChildCollisionShape child = children.get(i);
+            if (addSeparators) {
+                result.append("  ");
+            } else {
+                addSeparators = true;
+            }
+            String desc = describe(child.shape);
+            result.append(desc);
+
+            Vector3f location = child.location;
+            desc = String.format("@[%.3f, %.3f, %.3f]",
+                    location.x, location.y, location.z);
+            result.append(desc);
+
+            Quaternion rotation = new Quaternion();
+            rotation.fromRotationMatrix(child.rotation);
+            if (!rotation.isIdentity()) {
+                result.append("rot");
+                desc = rotation.toString();
+                result.append(desc);
+            }
+        }
+
+        return result.toString();
+    }
+
+    /**
      * Count how many vertices in the specified subtree of the scene graph are
      * directly influenced by the indexed bone. Note: recursive!
      *
@@ -261,6 +399,30 @@ public class Util {
         }
 
         return result;
+    }
+
+    /**
+     * Disable all physics controls added to the specified subtree of the scene
+     * graph. Disabling the contols removes any collision objects they may have
+     * added to physics space. Note: recursive!
+     *
+     * @param subtree (not null)
+     */
+    public static void disablePhysicsControls(Spatial subtree) {
+        int numControls = subtree.getNumControls();
+        for (int controlI = 0; controlI < numControls; controlI++) {
+            Control control = subtree.getControl(controlI);
+            if (control instanceof PhysicsControl) {
+                MyControl.setEnabled(control, false);
+            }
+        }
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                disablePhysicsControls(child);
+            }
+        }
     }
 
     /**
@@ -318,6 +480,169 @@ public class Util {
         }
 
         return result;
+    }
+
+    /**
+     * Dump the specified character.
+     *
+     * @param character the character to dump (not null)
+     */
+    public static void dump(PhysicsCharacter character) {
+        long objectId = character.getObjectId();
+        stream.printf("  character #%s ", Long.toHexString(objectId));
+
+        Vector3f location = character.getPhysicsLocation();
+        stream.printf("loc=[%.3f, %.3f, %.3f]",
+                location.x, location.y, location.z);
+
+        stream.println();
+
+    }
+
+    /**
+     * Dump the specified ghost object.
+     *
+     * @param ghost the ghost object to dump (not null)
+     */
+    public static void dump(PhysicsGhostObject ghost) {
+        long objectId = ghost.getObjectId();
+        stream.printf("  ghost #%s ", Long.toHexString(objectId));
+
+        Vector3f location = ghost.getPhysicsLocation();
+        stream.printf("loc=[%.3f, %.3f, %.3f]",
+                location.x, location.y, location.z);
+
+        stream.println();
+    }
+
+    /**
+     * Dump the specified joint.
+     *
+     * @param joint the joint to dump (not null)
+     */
+    public static void dump(PhysicsJoint joint) {
+        long objectId = joint.getObjectId();
+        long aId = joint.getBodyA().getObjectId();
+        long bId = joint.getBodyB().getObjectId();
+        stream.printf("  joint #%s a=%s,b=%s", Long.toHexString(objectId),
+                Long.toHexString(aId), Long.toHexString(bId));
+
+        stream.println();
+    }
+
+    /**
+     * Dump the specified rigid body.
+     *
+     * @param body the rigid body to dump (not null)
+     */
+    public static void dump(PhysicsRigidBody body) {
+        long objectId = body.getObjectId();
+        float mass = body.getMass();
+        stream.printf("  rigid body #%s mass=%f",
+                Long.toHexString(objectId), mass);
+
+        Vector3f location = body.getPhysicsLocation();
+        stream.printf(" loc=[%.3f, %.3f, %.3f]",
+                location.x, location.y, location.z);
+
+        CollisionShape shape = body.getCollisionShape();
+        String desc = describe(shape);
+        stream.printf(" shape=%s", desc);
+
+        Vector3f scale = shape.getScale();
+        if (scale.x != 1f || scale.y != 1f || scale.z != 1f) {
+            stream.printf(" sca=[%.3f, %.3f, %.3f]", scale.x, scale.y, scale.z);
+        }
+
+        stream.println();
+    }
+
+    /**
+     * Dump the specified vehicle.
+     *
+     * @param vehicle the vehicle to dump (not null)
+     */
+    public static void dump(PhysicsVehicle vehicle) {
+        long objectId = vehicle.getObjectId();
+        float mass = vehicle.getMass();
+        stream.printf("  vehicle #%s mass=%f", Long.toHexString(objectId),
+                mass);
+
+        Vector3f location = vehicle.getPhysicsLocation();
+        stream.printf(" loc=[%.3f, %.3f, %.3f]",
+                location.x, location.y, location.z);
+
+        stream.println();
+    }
+
+    /**
+     * Dump the specified physics space.
+     *
+     * @param space the physics space to dump (not null)
+     */
+    public static void dump(PhysicsSpace space) {
+        Collection<PhysicsCharacter> characters = space.getCharacterList();
+        Collection<PhysicsGhostObject> ghosts = space.getGhostObjectList();
+        Collection<PhysicsJoint> joints = space.getJointList();
+        Collection<PhysicsRigidBody> rigidBodies = space.getRigidBodyList();
+        Collection<PhysicsVehicle> vehicles = space.getVehicleList();
+
+        int numCharacters = characters.size();
+        int numGhosts = ghosts.size();
+        int numJoints = joints.size();
+        int numBodies = rigidBodies.size();
+        int numVehicles = vehicles.size();
+
+        stream.printf("%nphysics space with %d character%s, %d ghost%s, ",
+                numCharacters, (numCharacters == 1) ? "" : "s",
+                numGhosts, (numGhosts == 1) ? "" : "s");
+        stream.printf("%d joint%s, %d rigid bod%s, and %d vehicle%s%n",
+                numJoints, (numJoints == 1) ? "" : "s",
+                numBodies, (numBodies == 1) ? "y" : "ies",
+                numJoints, (numVehicles == 1) ? "" : "s");
+
+        for (PhysicsCharacter character : characters) {
+            dump(character);
+        }
+        for (PhysicsGhostObject ghost : ghosts) {
+            dump(ghost);
+        }
+        for (PhysicsJoint joint : joints) {
+            dump(joint);
+        }
+        for (PhysicsRigidBody rigid : rigidBodies) {
+            dump(rigid);
+        }
+        for (PhysicsVehicle vehicle : vehicles) {
+            dump(vehicle);
+        }
+    }
+
+    /**
+     * Enable all physics controls added to the specified subtree of the scene
+     * graph and configure their physics spaces. Note: recursive!
+     *
+     * @param subtree (not null)
+     * @param space physics space to use, or null for none
+     */
+    public static void enablePhysicsControls(Spatial subtree,
+            PhysicsSpace space) {
+        int numControls = subtree.getNumControls();
+        for (int controlI = 0; controlI < numControls; controlI++) {
+            Control control = subtree.getControl(controlI);
+            if (control instanceof PhysicsControl) {
+                PhysicsControl pc = (PhysicsControl) control;
+                pc.setPhysicsSpace(space);
+                pc.setEnabled(true);
+            }
+        }
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                enablePhysicsControls(child, space);
+            }
+        }
     }
 
     /**
@@ -635,7 +960,8 @@ public class Util {
         ModelKey key = new ModelKey(assetPath);
         /*
          * Temporarily hush warnings about failures to triangulate,
-         * vertices with >4 weights, and unsupported pass directives.
+         * vertices with >4 weights, shapes that can't be scaled, and
+         * unsupported pass directives.
          */
         Logger faceLogger = Logger.getLogger(Face.class.getName());
         Level faceLevel = faceLogger.getLevel();
@@ -649,6 +975,12 @@ public class Util {
                 MaterialLoader.class.getName());
         Level materialLoaderLevel = materialLoaderLogger.getLevel();
         materialLoaderLogger.setLevel(Level.SEVERE);
+
+        Logger compoundCollisionShapeLogger = Logger.getLogger(
+                CompoundCollisionShape.class.getName());
+        Level compoundCollisionShapeLevel;
+        compoundCollisionShapeLevel = compoundCollisionShapeLogger.getLevel();
+        compoundCollisionShapeLogger.setLevel(Level.SEVERE);
         /*
          * Load the model.
          */
@@ -664,8 +996,47 @@ public class Util {
         faceLogger.setLevel(faceLevel);
         meshLoaderLogger.setLevel(meshLoaderLevel);
         materialLoaderLogger.setLevel(materialLoaderLevel);
+        compoundCollisionShapeLogger.setLevel(compoundCollisionShapeLevel);
 
         return loaded;
+    }
+
+    /**
+     * Create a collision shape suitable for the specified spatial.
+     *
+     * @param spatial (not null)
+     * @return a new instance
+     */
+    public static CollisionShape makeShape(Spatial spatial) {
+        CollisionShape childShape;
+        BoundingVolume bound = spatial.getWorldBound();
+        if (bound instanceof BoundingBox) {
+            BoundingBox boundingBox = (BoundingBox) bound;
+            float xHalfExtent = boundingBox.getXExtent();
+            float yHalfExtent = boundingBox.getYExtent();
+            float zHalfExtent = boundingBox.getZExtent();
+            // TODO consider other possible axes for the capsule
+            float radius = Math.max(xHalfExtent, zHalfExtent);
+            if (yHalfExtent > radius) {
+                float height = 2 * (yHalfExtent - radius);
+                childShape = new CapsuleCollisionShape(radius, height);
+            } else {
+                childShape = new SphereCollisionShape(yHalfExtent);
+            }
+        } else if (bound instanceof BoundingSphere) {
+            BoundingSphere boundingSphere = (BoundingSphere) bound;
+            float radius = boundingSphere.getRadius();
+            childShape = new SphereCollisionShape(radius);
+        } else {
+            throw new IllegalStateException();
+        }
+        CompoundCollisionShape result = new CompoundCollisionShape();
+        Vector3f location = bound.getCenter();
+        Vector3f translation = spatial.getWorldTranslation();
+        location.subtractLocal(translation);
+        result.addChildShape(childShape, location);
+
+        return result;
     }
 
     /**
@@ -685,6 +1056,77 @@ public class Util {
                 || a.getY() != b.getY()
                 || a.getZ() != b.getZ();
         return result;
+    }
+
+    /**
+     * Find the SGC in the specified position among physics controls in the
+     * specified spatial.
+     *
+     * @param spatial which spatial to scan (not null)
+     * @param position position index (&ge;0)
+     * @return the pre-existing physics control instance (not null)
+     */
+    public static PhysicsControl pcFromPosition(Spatial spatial, int position) {
+        Validate.nonNegative(position, "position");
+
+        int numSgcs = spatial.getNumControls();
+        int pcCount = 0;
+        for (int controlIndex = 0; controlIndex < numSgcs; controlIndex++) {
+            Control control = spatial.getControl(controlIndex);
+            if (control instanceof PhysicsControl) {
+                if (pcCount == position) {
+                    return (PhysicsControl) control;
+                }
+                ++pcCount;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
+    /**
+     * Calculate the position of the specified SGC among the physics controls in
+     * the specified spatial.
+     *
+     * @param spatial which spatial to scan (not null)
+     * @param pc (a control added to that spatial)
+     * @return position index (&ge;0)
+     */
+    public static int pcToPosition(Spatial spatial, PhysicsControl pc) {
+        int numSgcs = spatial.getNumControls();
+        int result = 0;
+        for (int controlIndex = 0; controlIndex < numSgcs; controlIndex++) {
+            Control control = spatial.getControl(controlIndex);
+            if (control instanceof PhysicsControl) {
+                if (control == pc) {
+                    return result;
+                }
+                ++result;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
+    /**
+     * Remove all non-physics controls from the specified subtree of the scene
+     * graph. Note: recursive!
+     *
+     * @param subtree (not null)
+     */
+    public static void removeNonPhysicsControls(Spatial subtree) {
+        int numControls = subtree.getNumControls();
+        for (int controlI = numControls - 1; controlI >= 0; controlI--) {
+            Control control = subtree.getControl(controlI);
+            if (!(control instanceof PhysicsControl)) {
+                subtree.removeControl(control);
+            }
+        }
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                removeNonPhysicsControls(child);
+            }
+        }
     }
 
     /**
@@ -938,6 +1380,7 @@ public class Util {
      *
      * @param oldTrack (not null, unaffected)
      * @param endTime when to insert (&gt;0)
+     * @return a new instance
      */
     public static BoneTrack wrap(BoneTrack oldTrack, float endTime) {
         Validate.positive(endTime, "end time");
