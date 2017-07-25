@@ -37,7 +37,7 @@ import maud.model.LoadedCgm;
  */
 public interface EditorView {
     /**
-     * Consider for selection all bones and axes in this view.
+     * Consider selecting each axis, bone, gnomon, and keyframe in this view.
      *
      * @param bestSelection best selection found so far (not null, modified)
      */

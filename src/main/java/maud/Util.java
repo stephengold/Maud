@@ -1034,6 +1034,7 @@ public class Util {
         Vector3f location = bound.getCenter();
         Vector3f translation = spatial.getWorldTranslation();
         location.subtractLocal(translation);
+        // TODO account for rotation
         result.addChildShape(childShape, location);
 
         return result;
