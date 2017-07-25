@@ -782,11 +782,7 @@ class EditorMenus {
         builder.addTool("Tool");
         if (Maud.model.target.bone.hasTrack()) {
             builder.addDialog("Reduce"); // rename Reduce track
-            builder.add("Select by time");
-            builder.add("Select first");
-            builder.add("Select previous");
-            builder.add("Select next");
-            builder.add("Select last");
+            builder.add("Select");
             builder.add("Move");
             int frameIndex = Maud.model.target.track.findKeyframeIndex();
             if (frameIndex == -1) {
@@ -1428,7 +1424,7 @@ class EditorMenus {
     }
 
     /**
-     * Handle a "select menuItem" action the Keyframe menu.
+     * Handle a "select menuItem" action from the Keyframe menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -1436,34 +1432,62 @@ class EditorMenus {
     private boolean menuKeyframe(String remainder) {
         assert remainder != null;
 
+        boolean handled;
+        String selectPrefix = "Select" + menuSeparator;
+        if (remainder.startsWith(selectPrefix)) {
+            String arg = MyString.remainder(remainder, selectPrefix);
+            handled = menuKeyframeSelect(arg);
+
+        } else {
+            handled = true;
+            switch (remainder) {
+                case "Delete":
+                    Maud.model.target.track.deleteSingleKeyframe();
+                    break;
+                case "Insert from pose":
+                    Maud.model.target.track.insertSingleKeyframe();
+                    break;
+                case "Reduce":
+                    Maud.gui.dialogs.reduceTrack();
+                    break;
+                case "Select":
+                    selectKeyframe();
+                    break;
+                case "Tool":
+                    Maud.gui.tools.select("keyframe");
+                    break;
+                case "Wrap track":
+                    Maud.model.target.track.wrap();
+                    break;
+                default:
+                    handled = false;
+            }
+        }
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "Keyframe -> Select" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuKeyframeSelect(String remainder) {
+        assert remainder != null;
+
         boolean handled = true;
         switch (remainder) {
-            case "Delete":
-                Maud.model.target.track.deleteSingleKeyframe();
-                break;
-            case "Insert from pose":
-                Maud.model.target.track.insertSingleKeyframe();
-                break;
-            case "Reduce":
-                Maud.gui.dialogs.reduceTrack();
-                break;
-            case "Select first":
+            case "First":
                 Maud.model.target.track.selectFirstKeyframe();
                 break;
-            case "Select last":
+            case "Last":
                 Maud.model.target.track.selectLastKeyframe();
                 break;
-            case "Select next":
+            case "Next":
                 Maud.model.target.track.selectNextKeyframe();
                 break;
-            case "Select previous":
+            case "Previous":
                 Maud.model.target.track.selectPreviousKeyframe();
-                break;
-            case "Tool":
-                Maud.gui.tools.select("keyframe");
-                break;
-            case "Wrap track":
-                Maud.model.target.track.wrap();
                 break;
             default:
                 handled = false;
@@ -1914,6 +1938,18 @@ class EditorMenus {
     private void selectBoneByParent() {
         List<String> boneNames = Maud.model.target.bones.listRootBoneNames();
         Maud.gui.showPopupMenu(ActionPrefix.selectBoneChild, boneNames);
+    }
+
+    /**
+     * Display a "Keyframe -> Select" menu.
+     */
+    private void selectKeyframe() {
+        builder.reset();
+        builder.addTool("First");
+        builder.addTool("Previous");
+        builder.addTool("Next");
+        builder.addTool("Last");
+        builder.show("select menuItem Keyframe -> Select -> ");
     }
 
     /**
