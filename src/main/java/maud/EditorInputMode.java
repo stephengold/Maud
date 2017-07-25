@@ -248,7 +248,7 @@ class EditorInputMode extends InputMode {
                 Maud.model.target.sgc.delete();
                 break;
             case "delete mapping":
-                Maud.model.mapping.deleteBone();
+                Maud.model.map.deleteBone();
                 break;
             case "delete singleKeyframe":
                 Maud.model.target.track.deleteSingleKeyframe();
@@ -278,8 +278,8 @@ class EditorInputMode extends InputMode {
     private boolean loadAction(String actionString) {
         boolean handled = true;
         String args, name, path;
-        if (actionString.equals("load mapping asset")) {
-            Maud.gui.menus.loadMappingAsset();
+        if (actionString.equals("load map asset")) {
+            Maud.gui.menus.loadMapAsset();
 
         } else if (actionString.equals("load retargetedPose")) {
             Maud.model.target.animation.loadRetargetedPose();
@@ -301,20 +301,20 @@ class EditorInputMode extends InputMode {
             name = MyString.remainder(actionString, ActionPrefix.loadCgmNamed);
             Maud.model.target.loadNamed(name);
 
-        } else if (actionString.startsWith(ActionPrefix.loadMappingAsset)) {
+        } else if (actionString.startsWith(ActionPrefix.loadMapAsset)) {
             path = MyString.remainder(actionString,
-                    ActionPrefix.loadMappingAsset);
-            Maud.gui.menus.loadMappingAsset(path);
+                    ActionPrefix.loadMapAsset);
+            Maud.gui.menus.loadMapAsset(path);
 
-        } else if (actionString.startsWith(ActionPrefix.loadMappingLocator)) {
+        } else if (actionString.startsWith(ActionPrefix.loadMapLocator)) {
             path = MyString.remainder(actionString,
-                    ActionPrefix.loadMappingLocator);
-            Maud.gui.menus.loadMappingLocator(path);
+                    ActionPrefix.loadMapLocator);
+            Maud.gui.menus.loadMapLocator(path);
 
-        } else if (actionString.startsWith(ActionPrefix.loadMappingNamed)) {
+        } else if (actionString.startsWith(ActionPrefix.loadMapNamed)) {
             name = MyString.remainder(actionString,
-                    ActionPrefix.loadMappingNamed);
-            Maud.model.mapping.loadNamed(name);
+                    ActionPrefix.loadMapNamed);
+            Maud.model.map.loadNamed(name);
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceAnimation)) {
             args = MyString.remainder(actionString,
@@ -359,7 +359,7 @@ class EditorInputMode extends InputMode {
                 Maud.gui.addCheckpoint("user interface");
                 break;
             case "new mapping":
-                Maud.model.mapping.mapBones();
+                Maud.model.map.mapBones();
                 break;
             case "new singleKeyframe":
                 Maud.model.target.track.insertSingleKeyframe();
@@ -436,7 +436,7 @@ class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "next mapping":
-                Maud.model.mapping.selectNext();
+                Maud.model.map.selectNext();
                 handled = true;
                 break;
             case "next sourceAnimation":
@@ -481,7 +481,7 @@ class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "previous mapping":
-                Maud.model.mapping.selectPrevious();
+                Maud.model.map.selectPrevious();
                 handled = true;
                 break;
             case "previous sourceAnimation":
@@ -640,7 +640,7 @@ class EditorInputMode extends InputMode {
                 break;
 
             case "reset twist":
-                Maud.model.mapping.setTwist(rotationIdentity);
+                Maud.model.map.setTwist(rotationIdentity);
                 handled = true;
         }
 
@@ -659,7 +659,7 @@ class EditorInputMode extends InputMode {
         if (actionString.startsWith(ActionPrefix.retargetAnimation)) {
             String name = MyString.remainder(actionString,
                     ActionPrefix.retargetAnimation);
-            Maud.model.mapping.retargetAndLoad(name);
+            Maud.model.map.retargetAndLoad(name);
             handled = true;
 
         } else if (actionString.equals("retarget animation")) {
@@ -684,10 +684,10 @@ class EditorInputMode extends InputMode {
             Maud.model.target.writeToFile(path);
             handled = true;
 
-        } else if (actionString.startsWith(ActionPrefix.saveMapping)) {
+        } else if (actionString.startsWith(ActionPrefix.saveMap)) {
             String path;
-            path = MyString.remainder(actionString, ActionPrefix.saveMapping);
-            Maud.model.mapping.writeToFile(path);
+            path = MyString.remainder(actionString, ActionPrefix.saveMap);
+            Maud.model.map.writeToFile(path);
             handled = true;
         }
 
@@ -722,10 +722,10 @@ class EditorInputMode extends InputMode {
                 Maud.model.target.track.selectPreviousKeyframe();
                 break;
             case "select mapSourceBone":
-                Maud.model.mapping.selectFromSource();
+                Maud.model.map.selectFromSource();
                 break;
             case "select mapTargetBone":
-                Maud.model.mapping.selectFromTarget();
+                Maud.model.map.selectFromTarget();
                 break;
             case "select screenXY":
                 Maud.gui.selectXY();
@@ -841,16 +841,16 @@ class EditorInputMode extends InputMode {
                 Maud.model.target.track.setTrackTranslationAll();
                 break;
             case "set twist cardinal":
-                Maud.model.mapping.cardinalizeTwist();
+                Maud.model.map.cardinalizeTwist();
                 break;
             case "set twist snapX":
-                Maud.model.mapping.snapTwist(0);
+                Maud.model.map.snapTwist(0);
                 break;
             case "set twist snapY":
-                Maud.model.mapping.snapTwist(1);
+                Maud.model.map.snapTwist(1);
                 break;
             case "set twist snapZ":
-                Maud.model.mapping.snapTwist(2);
+                Maud.model.map.snapTwist(2);
                 break;
             case "set userData":
                 Maud.gui.dialogs.setUserData();

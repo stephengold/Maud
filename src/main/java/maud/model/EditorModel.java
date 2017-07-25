@@ -71,9 +71,9 @@ public class EditorModel {
      */
     final public EditableCgm target;
     /**
-     * the loaded skeleton mapping
+     * the loaded skeleton map
      */
-    final public EditableMapping mapping;
+    final public EditableMap map;
     /**
      * load slot for the (read-only) source CG model
      */
@@ -103,7 +103,7 @@ public class EditorModel {
         camera = new CameraStatus();
         cursor = new CursorStatus();
         target = new EditableCgm();
-        mapping = new EditableMapping();
+        map = new EditableMap();
         source = new LoadedCgm();
         misc = new MiscStatus();
         score = new ScoreOptions();
@@ -124,7 +124,7 @@ public class EditorModel {
             camera = other.camera.clone();
             cursor = other.cursor.clone();
             target = other.target.clone();
-            mapping = other.mapping.clone();
+            map = other.map.clone();
             source = other.source.clone();
             misc = other.misc.clone();
             score = other.score.clone();

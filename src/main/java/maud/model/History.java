@@ -101,7 +101,7 @@ public class History {
     }
 
     /**
-     * Record an event: an edit/load/save of the mapping or target CG model.
+     * Record an event: an edit/load/save of the map or target CG model.
      *
      * @param description (not null)
      */

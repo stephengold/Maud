@@ -71,17 +71,17 @@ class ActionPrefix {
     final static String loadCgmNamed = "load cgm named ";
     /**
      * argument is an asset-folder index followed by an asset path to a skeleton
-     * mapping
+     * map
      */
-    final static String loadMappingAsset = "load mapping asset ";
+    final static String loadMapAsset = "load map asset ";
     /**
-     * argument is an asset-folder or else "From classpath"
+     * argument is an asset folder or else "From classpath"
      */
-    final static String loadMappingLocator = "load mapping locator ";
+    final static String loadMapLocator = "load map locator ";
     /**
-     * argument is the name of a mapping asset
+     * argument is the name of a map asset
      */
-    final static String loadMappingNamed = "load mapping named ";
+    final static String loadMapNamed = "load map named ";
     /**
      * argument is the name of a source animation
      */
@@ -140,7 +140,7 @@ class ActionPrefix {
     /**
      * argument is a base file path
      */
-    final static String saveMapping = "save mapping ";
+    final static String saveMap = "save map ";
     /**
      * argument is the name of a bone or a prefix thereof
      */

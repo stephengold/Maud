@@ -173,20 +173,20 @@ class EditorMenus {
     }
 
     /**
-     * Display a "load mapping asset" action without arguments.
+     * Display a "load map asset" action without arguments.
      */
-    void loadMappingAsset() {
+    void loadMapAsset() {
         buildLocatorMenu();
-        builder.show(ActionPrefix.loadMappingLocator);
+        builder.show(ActionPrefix.loadMapLocator);
     }
 
     /**
-     * Handle a "load mapping asset" action with arguments.
+     * Handle a "load map asset" action with arguments.
      *
      * @param args action arguments (not null, not empty)
      */
-    void loadMappingAsset(String args) {
-        String menuPrefix = ActionPrefix.loadMappingAsset;
+    void loadMapAsset(String args) {
+        String menuPrefix = ActionPrefix.loadMapAsset;
         String indexString = args.split(" ")[0];
         String rootPath = Maud.model.folders.pathForIndex(indexString);
         String assetPath = MyString.remainder(args, indexString + " ");
@@ -201,7 +201,7 @@ class EditorMenus {
             builder.show(menuPrefix);
 
         } else if (file.canRead()) {
-            Maud.model.mapping.loadAsset(rootPath, assetPath);
+            Maud.model.map.loadAsset(rootPath, assetPath);
 
         } else {
             /*
@@ -219,20 +219,20 @@ class EditorMenus {
     }
 
     /**
-     * Handle a "load mapping locator" action.
+     * Handle a "load map locator" action.
      *
      * @param path action argument (not null, not empty)
      * @param cgm (not null)
      */
-    void loadMappingLocator(String path) {
+    void loadMapLocator(String path) {
         if (path.equals("From classpath")) {
-            buildClasspathMappingMenu();
-            builder.show(ActionPrefix.loadMappingNamed);
+            buildClasspathMapMenu();
+            builder.show(ActionPrefix.loadMapNamed);
 
         } else {
             String indexString = Maud.model.folders.indexForPath(path);
             String args = indexString + " " + "/";
-            loadMappingAsset(args);
+            loadMapAsset(args);
         }
     }
 
@@ -646,7 +646,7 @@ class EditorMenus {
         }
 
         String sourceBoneName = Maud.model.source.bone.getName();
-        String boneName = Maud.model.mapping.targetBoneName(sourceBoneName);
+        String boneName = Maud.model.map.targetBoneName(sourceBoneName);
         if (boneName != null && Maud.model.target.bones.hasBone(boneName)) {
             builder.addBone("Mapped");
         }
@@ -681,9 +681,9 @@ class EditorMenus {
     }
 
     /**
-     * Build a "CGM -> Skeleton mapping -> From classpath" menu.
+     * Build a "Map -> Load -> From classpath" menu.
      */
-    private void buildClasspathMappingMenu() {
+    private void buildClasspathMapMenu() {
         builder.reset();
 
         builder.addJme("BallerinaToMhGame");
@@ -829,7 +829,7 @@ class EditorMenus {
         builder.reset();
         builder.addTool("Tool");
         builder.addDialog("Load");
-        if (Maud.model.mapping.countMappings() > 0) {
+        if (Maud.model.map.countMappings() > 0) {
             builder.add("Invert");
             builder.add("Unload");
         }
@@ -869,7 +869,7 @@ class EditorMenus {
         }
 
         String targetBoneName = Maud.model.target.bone.getName();
-        String boneName = Maud.model.mapping.sourceBoneName(targetBoneName);
+        String boneName = Maud.model.map.sourceBoneName(targetBoneName);
         if (boneName != null && Maud.model.source.bones.hasBone(boneName)) {
             builder.addBone("Mapped");
         }
@@ -1323,7 +1323,7 @@ class EditorMenus {
                 handled = true;
                 break;
             case "Mapped":
-                Maud.model.mapping.selectFromSource();
+                Maud.model.map.selectFromSource();
                 handled = true;
                 break;
             case "Next":
@@ -1362,7 +1362,7 @@ class EditorMenus {
         boolean handled = false;
         switch (remainder) {
             case "Mapped":
-                Maud.model.mapping.selectFromTarget();
+                Maud.model.map.selectFromTarget();
                 handled = true;
                 break;
             case "Root":
@@ -1552,19 +1552,19 @@ class EditorMenus {
         boolean handled = false;
         switch (remainder) {
             case "Invert":
-                Maud.model.mapping.invert();
+                Maud.model.map.invert();
                 handled = true;
                 break;
             case "Load":
-                loadMappingAsset();
+                EditorMenus.this.loadMapAsset();
                 handled = true;
                 break;
             case "Save":
-                Maud.gui.dialogs.saveMapping();
+                Maud.gui.dialogs.saveMap();
                 handled = true;
                 break;
             case "Tool":
-                Maud.gui.tools.select("mapping");
+                Maud.gui.tools.select("map");
                 handled = true;
                 break;
             case "Twist tool":
@@ -1572,7 +1572,7 @@ class EditorMenus {
                 handled = true;
                 break;
             case "Unload":
-                Maud.model.mapping.unload();
+                Maud.model.map.unload();
                 handled = true;
         }
 

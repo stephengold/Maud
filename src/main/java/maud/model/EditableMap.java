@@ -40,11 +40,11 @@ import maud.Maud;
 import maud.Util;
 
 /**
- * The loaded skeleton mapping in the Maud application.
+ * The loaded skeleton map in the Maud application, with editing features.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class EditableMapping extends LoadedMapping {
+public class EditableMap extends LoadedMap {
     // *************************************************************************
     // constants and loggers
 
@@ -52,12 +52,12 @@ public class EditableMapping extends LoadedMapping {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            EditableMapping.class.getName());
+            EditableMap.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * count of unsaved edits to the skeleton mapping (&ge;0)
+     * count of unsaved edits to the map (&ge;0)
      */
     private int editCount = 0;
     /**
@@ -68,8 +68,7 @@ public class EditableMapping extends LoadedMapping {
     // new methods exposed
 
     /**
-     * Determine the default base path for writing the mapping to the
-     * filesystem.
+     * Determine the default base path for writing the map to the filesystem.
      *
      * @return base filesystem path, or "" if unknown (not null)
      */
@@ -111,19 +110,19 @@ public class EditableMapping extends LoadedMapping {
     public void deleteBone() {
         BoneMapping boneMapping = selectedMapping();
         if (boneMapping != null) {
-            mapping.removeMapping(boneMapping);
+            map.removeMapping(boneMapping);
             setEdited("delete bone mapping");
         }
     }
 
     /**
-     * Invert the skeleton mapping.
+     * Invert the map.
      */
     public void invert() {
-        if (mapping.countMappings() > 0) {
-            mapping = mapping.inverse();
+        if (map.countMappings() > 0) {
+            map = map.inverse();
             assetPath = null;
-            setEdited("invert skeleton mapping");
+            setEdited("invert skeleton map");
         }
     }
 
@@ -138,19 +137,19 @@ public class EditableMapping extends LoadedMapping {
             /*
              * Remove any prior mappings involving those bones.
              */
-            BoneMapping boneMapping = mapping.getForSource(sourceBoneName);
+            BoneMapping boneMapping = map.getForSource(sourceBoneName);
             if (boneMapping != null) {
-                mapping.removeMapping(boneMapping);
+                map.removeMapping(boneMapping);
             }
-            boneMapping = mapping.get(targetBoneName);
+            boneMapping = map.get(targetBoneName);
             if (boneMapping != null) {
-                mapping.removeMapping(boneMapping);
+                map.removeMapping(boneMapping);
             }
             /*
              * Predict what the twist will be.
              */
             Quaternion twist = estimateTwist();
-            mapping.map(targetBoneName, sourceBoneName, twist);
+            map.map(targetBoneName, sourceBoneName, twist);
 
             String event = "map bone " + targetBoneName;
             setEdited(event);
@@ -172,9 +171,9 @@ public class EditableMapping extends LoadedMapping {
      */
     void renameBone(String oldName, String newName) {
         if (isInvertingMap()) {
-            mapping.renameSourceBone(oldName, newName);
+            map.renameSourceBone(oldName, newName);
         } else {
-            mapping.renameTargetBone(oldName, newName);
+            map.renameTargetBone(oldName, newName);
         }
     }
 
@@ -210,17 +209,17 @@ public class EditableMapping extends LoadedMapping {
     }
 
     /**
-     * Unload the skeleton mapping.
+     * Unload the map.
      */
     public void unload() {
-        mapping.clear();
+        map.clear();
         assetFolder = null;
         assetPath = null;
-        setEdited("unload mapping");
+        setEdited("unload map");
     }
 
     /**
-     * Write this mapping to a file.
+     * Write the map to a file.
      *
      * @param path file path (not null, not empty)
      * @return true if successful, otherwise false
@@ -233,7 +232,7 @@ public class EditableMapping extends LoadedMapping {
 
         boolean success = true;
         try {
-            exporter.save(mapping, file);
+            exporter.save(map, file);
         } catch (IOException exception) {
             success = false;
         }
@@ -255,23 +254,23 @@ public class EditableMapping extends LoadedMapping {
             if (assetPath.startsWith("/")) {
                 assetPath = MyString.remainder(assetPath, "/");
             }
-            String eventDescription = "write mapping to " + filePath;
+            String eventDescription = "write map to " + filePath;
             setPristine(eventDescription);
-            logger.log(Level.INFO, "Wrote mapping to file {0}",
+            logger.log(Level.INFO, "Wrote map to file {0}",
                     MyString.quote(filePath));
         } else {
             logger.log(Level.SEVERE,
-                    "I/O exception while writing mapping to file {0}",
+                    "I/O exception while writing map to file {0}",
                     MyString.quote(filePath));
         }
 
         return success;
     }
     // *************************************************************************
-    // LoadedMapping methods
+    // LoadedMap methods
 
     /**
-     * Unload the current mapping and load the specified asset.
+     * Unload the current map and load the specified asset.
      *
      * @param assetFolder file path to the asset root (not null, not empty)
      * @param assetPath path to the asset to load (not null, not empty)
@@ -284,7 +283,7 @@ public class EditableMapping extends LoadedMapping {
 
         boolean success = super.loadAsset(assetFolder, assetPath);
         if (success) {
-            String eventDescription = String.format("load mapping %s %s",
+            String eventDescription = String.format("load map %s %s",
                     MyString.quote(assetFolder), MyString.quote(assetPath));
             setPristine(eventDescription);
         }
@@ -293,19 +292,19 @@ public class EditableMapping extends LoadedMapping {
     }
 
     /**
-     * Unload the current mapping and load the named one from the classpath.
+     * Unload the current map and load the named one from the classpath.
      *
-     * @param mappingName which mapping to load (not null, not empty)
+     * @param mapName which map to load (not null, not empty)
      * @return true if successful, otherwise false
      */
     @Override
-    public boolean loadNamed(String mappingName) {
-        Validate.nonEmpty(mappingName, "mapping name");
+    public boolean loadNamed(String mapName) {
+        Validate.nonEmpty(mapName, "map name");
 
-        boolean success = super.loadNamed(mappingName);
+        boolean success = super.loadNamed(mapName);
         if (success) {
-            String eventDescription = String.format("load mapping named %s",
-                    MyString.quote(mappingName));
+            String eventDescription = String.format("load map named %s",
+                    MyString.quote(mapName));
             setPristine(eventDescription);
         }
 
@@ -321,16 +320,15 @@ public class EditableMapping extends LoadedMapping {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public EditableMapping clone() throws CloneNotSupportedException {
-        EditableMapping clone = (EditableMapping) super.clone();
+    public EditableMap clone() throws CloneNotSupportedException {
+        EditableMap clone = (EditableMap) super.clone();
         return clone;
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Determine the default asset folder for writing the mapping to the
-     * filesystem.
+     * Determine the default asset folder for writing the map to the filesystem.
      *
      * @return absolute filesystem path (not null, not empty)
      */
@@ -386,7 +384,7 @@ public class EditableMapping extends LoadedMapping {
     }
 
     /**
-     * Mark the mapping as pristine.
+     * Mark the map as pristine (no unsaved edits).
      *
      * @param eventDescription description of causative event (not null)
      */

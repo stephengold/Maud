@@ -504,15 +504,15 @@ public class Pose implements JmeCloneable {
      * Configure this pose by re-targeting the specified source pose.
      *
      * @param sourcePose which source pose to re-target (not null, unaffected)
-     * @param mapping skeleton mapping to use (not null, unaffected)
+     * @param map skeleton map to use (not null, unaffected)
      */
-    public void setToRetarget(Pose sourcePose, SkeletonMapping mapping) {
+    public void setToRetarget(Pose sourcePose, SkeletonMapping map) {
         Validate.nonNull(sourcePose, "source pose");
-        Validate.nonNull(mapping, "mapping");
+        Validate.nonNull(map, "map");
 
         Bone[] rootBones = skeleton.getRoots();
         for (Bone rootBone : rootBones) {
-            retargetBones(rootBone, sourcePose, mapping);
+            retargetBones(rootBone, sourcePose, map);
         }
     }
 
@@ -701,20 +701,20 @@ public class Pose implements JmeCloneable {
      *
      * @param bone the bone to start with (not null, unaffected)
      * @param sourcePose which source pose to re-target (not null, unaffected)
-     * @param mapping skeleton mapping to use (not null, unaffected)
+     * @param map skeleton map to use (not null, unaffected)
      */
     private void retargetBones(Bone bone, Pose sourcePose,
-            SkeletonMapping mapping) {
+            SkeletonMapping map) {
         assert bone != null;
         assert sourcePose != null;
-        assert mapping != null;
+        assert map != null;
 
         int targetIndex = skeleton.getBoneIndex(bone);
         Transform userTransform = transforms.get(targetIndex);
         userTransform.loadIdentity();
 
         String targetName = bone.getName();
-        BoneMapping boneMapping = mapping.get(targetName);
+        BoneMapping boneMapping = map.get(targetName);
         if (boneMapping != null) {
             /*
              * Calculate the orientation of the source bone in model space.
@@ -730,7 +730,7 @@ public class Pose implements JmeCloneable {
 
         List<Bone> children = bone.getChildren();
         for (Bone childBone : children) {
-            retargetBones(childBone, sourcePose, mapping);
+            retargetBones(childBone, sourcePose, map);
         }
     }
 }

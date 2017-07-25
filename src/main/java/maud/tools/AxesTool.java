@@ -256,7 +256,7 @@ public class AxesTool extends WindowController {
 
         } else if (cgm == Maud.model.target
                 && cgm.animation.isRetargetedPose()
-                && Maud.model.mapping.isBoneMappingSelected()) {
+                && Maud.model.map.isBoneMappingSelected()) {
             /*
              * Apply the rotation to the target bone in the displayed pose.
              */
@@ -266,7 +266,7 @@ public class AxesTool extends WindowController {
 
         if (newUserRotation != null && !cgm.bone.shouldEnableControls()) {
             assert Maud.model.target.animation.isRetargetedPose();
-            assert Maud.model.mapping.isBoneMappingSelected();
+            assert Maud.model.map.isBoneMappingSelected();
             /*
              * Infer a new effective twist for the selected bone mapping.
              */
@@ -274,7 +274,7 @@ public class AxesTool extends WindowController {
             Quaternion targetMo = Maud.model.target.bone.modelOrientation(null);
             Quaternion invSourceMo = sourceMo.inverse();
             Quaternion newEffectiveTwist = invSourceMo.mult(targetMo);
-            Maud.model.mapping.setTwist(newEffectiveTwist);
+            Maud.model.map.setTwist(newEffectiveTwist);
         }
     }
 

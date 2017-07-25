@@ -551,7 +551,7 @@ public class Maud extends GuiApplication {
      */
     private void quit() {
         int cgmEdits = Maud.model.target.countUnsavedEdits();
-        int mapEdits = Maud.model.mapping.countUnsavedEdits();
+        int mapEdits = Maud.model.map.countUnsavedEdits();
 
         String message;
         if (cgmEdits + mapEdits == 0) {
@@ -567,7 +567,7 @@ public class Maud extends GuiApplication {
             }
             if (mapEdits > 0) {
                 message += String.format(
-                        "%d unsaved edit%s to the skeleton mapping", mapEdits,
+                        "%d unsaved edit%s to the skeleton map", mapEdits,
                         mapEdits == 1 ? "" : "s");
             }
             message += ".\nReally quit Maud?";

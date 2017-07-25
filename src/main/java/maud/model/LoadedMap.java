@@ -47,12 +47,12 @@ import maud.Pose;
 import maud.Util;
 
 /**
- * The loaded skeleton mapping in the Maud application. TODO split off selected
- * bone mapping?
+ * The loaded skeleton map in the Maud application, without editing features.
+ * TODO split off selected bone mapping?
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class LoadedMapping implements Cloneable {
+public class LoadedMap implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -60,18 +60,18 @@ public class LoadedMapping implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            LoadedMapping.class.getName());
+            LoadedMap.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * true &rarr; invert the loaded mapping, false &rarr; don't invert it
+     * true &rarr; invert the loaded map, false &rarr; don't invert it
      */
     private boolean invertMapFlag = false;
     /**
-     * the mapping
+     * the map itself
      */
-    protected SkeletonMapping mapping = new SkeletonMapping();
+    protected SkeletonMapping map = new SkeletonMapping();
     /**
      * absolute filesystem path to asset folder, or "" if unknown
      */
@@ -151,12 +151,12 @@ public class LoadedMapping implements Cloneable {
      * @return count (&ge;0)
      */
     public int countMappings() {
-        int result = mapping.countMappings();
+        int result = map.countMappings();
         return result;
     }
 
     /**
-     * Find the index of the selected mapping.
+     * Find the index of the selected bone mapping.
      *
      * @return index, or -1 if none selected
      */
@@ -175,7 +175,7 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Read the asset folder of the loaded skeleton mapping.
+     * Read the asset folder of the loaded map.
      *
      * @return filesystem path, or "" if unknown (not null)
      */
@@ -185,7 +185,7 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Read the asset path to the loaded skeleton mapping.
+     * Read the asset path to the loaded map.
      *
      * @return path (or "" if unknown)
      */
@@ -204,9 +204,9 @@ public class LoadedMapping implements Cloneable {
 
         BoneMapping boneMapping;
         if (isInvertingMap()) {
-            boneMapping = mapping.getForSource(targetBoneName);
+            boneMapping = map.getForSource(targetBoneName);
         } else {
-            boneMapping = mapping.get(targetBoneName);
+            boneMapping = map.get(targetBoneName);
         }
         if (boneMapping == null) {
             return false;
@@ -230,9 +230,9 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Test whether to invert the mapping before applying it.
+     * Test whether to invert the map before applying it.
      *
-     * @return true if inverting the mapping, otherwise false
+     * @return true if inverting the map, otherwise false
      */
     public boolean isInvertingMap() {
         return invertMapFlag;
@@ -250,9 +250,9 @@ public class LoadedMapping implements Cloneable {
         String boneName = Maud.model.source.bones.getBoneName(boneIndex);
         BoneMapping boneMapping;
         if (isInvertingMap()) {
-            boneMapping = mapping.get(boneName);
+            boneMapping = map.get(boneName);
         } else {
-            boneMapping = mapping.getForSource(boneName);
+            boneMapping = map.getForSource(boneName);
         }
         if (boneMapping == null) {
             return false;
@@ -277,7 +277,7 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Unload the current mapping and load the specified asset.
+     * Unload the current map and load from the specified asset.
      *
      * @param assetFolder file path to the asset root (not null, not empty)
      * @param assetPath path to the asset to load (not null, not empty)
@@ -293,7 +293,7 @@ public class LoadedMapping implements Cloneable {
         boolean success;
         Locators.useFilesystem(assetFolder);
         try {
-            mapping = assetManager.loadAsset(key);
+            map = assetManager.loadAsset(key);
             this.assetFolder = assetFolder;
             this.assetPath = assetPath;
             success = true;
@@ -306,20 +306,20 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Unload the current mapping and load the named one from the classpath.
+     * Unload the current map and load the named one from the classpath.
      *
-     * @param mappingName which mapping to load (not null, not empty)
+     * @param mapName which map to load (not null, not empty)
      * @return true if successful, otherwise false
      */
-    public boolean loadNamed(String mappingName) {
-        Validate.nonEmpty(mappingName, "mapping name");
+    public boolean loadNamed(String mapName) {
+        Validate.nonEmpty(mapName, "map name");
 
-        String path = String.format("SkeletonMappings/%s.j3o", mappingName);
+        String path = String.format("SkeletonMaps/%s.j3o", mapName);
         AssetManager assetManager = Locators.getAssetManager();
         AssetKey<SkeletonMapping> key = new AssetKey<>(path);
         boolean success;
         try {
-            mapping = assetManager.loadAsset(key);
+            map = assetManager.loadAsset(key);
             assetFolder = "";
             assetPath = path;
             success = true;
@@ -331,21 +331,21 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Test whether the loaded mapping matches the source CG model.
+     * Test whether the loaded map matches the source CG model.
      *
      * @return true if they match, otherwise false
      */
     public boolean matchesSource() {
         /*
-         * Are all source bones in the effective mapping present
+         * Are all source bones in the effective map present
          * in the source CG model?
          */
         boolean matches = true;
         List<String> names;
         if (isInvertingMap()) {
-            names = mapping.listTargetBones();
+            names = map.listTargetBones();
         } else {
-            names = mapping.listSourceBones();
+            names = map.listSourceBones();
         }
         for (String name : names) {
             if (!Maud.model.source.bones.hasBone(name)) {
@@ -358,21 +358,21 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Test whether the mapping matches the target CG model.
+     * Test whether the map matches the target CG model.
      *
      * @return true if they match, otherwise false
      */
     public boolean matchesTarget() {
         /*
-         * Are all target bones in the effective mapping
+         * Are all target bones in the effective map
          * present in the target CG model?
          */
         boolean matches = true;
         List<String> names;
         if (isInvertingMap()) {
-            names = mapping.listSourceBones();
+            names = map.listSourceBones();
         } else {
-            names = mapping.listTargetBones();
+            names = map.listTargetBones();
         }
         for (String name : names) {
             if (!Maud.model.target.bones.hasBone(name)) {
@@ -445,7 +445,7 @@ public class LoadedMapping implements Cloneable {
     }
 
     /**
-     * Alter whether to invert the loaded mapping before applying it.
+     * Alter whether to invert the loaded map before applying it.
      *
      * @param newSetting true &rarr; invert it, false &rarr; don't invert it
      */
@@ -464,12 +464,12 @@ public class LoadedMapping implements Cloneable {
 
         String result = null;
         if (invertMapFlag) {
-            BoneMapping boneMapping = mapping.getForSource(targetBoneName);
+            BoneMapping boneMapping = map.getForSource(targetBoneName);
             if (boneMapping != null) {
                 result = boneMapping.getTargetName();
             }
         } else {
-            BoneMapping boneMapping = mapping.get(targetBoneName);
+            BoneMapping boneMapping = map.get(targetBoneName);
             if (boneMapping != null) {
                 result = boneMapping.getSourceName();
             }
@@ -489,12 +489,12 @@ public class LoadedMapping implements Cloneable {
 
         String result = null;
         if (invertMapFlag) {
-            BoneMapping boneMapping = mapping.get(sourceBoneName);
+            BoneMapping boneMapping = map.get(sourceBoneName);
             if (boneMapping != null) {
                 result = boneMapping.getSourceName();
             }
         } else {
-            BoneMapping boneMapping = mapping.getForSource(sourceBoneName);
+            BoneMapping boneMapping = map.getForSource(sourceBoneName);
             if (boneMapping != null) {
                 result = boneMapping.getTargetName();
             }
@@ -519,7 +519,7 @@ public class LoadedMapping implements Cloneable {
                 sourceBoneName = targetBoneName;
                 targetBoneName = swap;
             }
-            BoneMapping boneMapping = mapping.get(targetBoneName);
+            BoneMapping boneMapping = map.get(targetBoneName);
             if (boneMapping != null) {
                 String name = boneMapping.getSourceName();
                 if (name.equals(sourceBoneName)) {
@@ -540,9 +540,9 @@ public class LoadedMapping implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public LoadedMapping clone() throws CloneNotSupportedException {
-        LoadedMapping clone = (LoadedMapping) super.clone();
-        clone.mapping = mapping.clone();
+    public LoadedMap clone() throws CloneNotSupportedException {
+        LoadedMap clone = (LoadedMap) super.clone();
+        clone.map = map.clone();
 
         return clone;
     }
@@ -550,16 +550,16 @@ public class LoadedMapping implements Cloneable {
     // private methods
 
     /**
-     * Calculate an effective skeleton mapping.
+     * Calculate an effective skeleton map.
      *
-     * @return a new mapping
+     * @return a new map
      */
-    private SkeletonMapping effectiveMapping() {
+    private SkeletonMapping effectiveMap() {
         SkeletonMapping result;
         if (invertMapFlag) {
-            result = mapping.inverse();
+            result = map.inverse();
         } else {
-            result = mapping.clone();
+            result = map.clone();
         }
 
         return result;
@@ -577,7 +577,7 @@ public class LoadedMapping implements Cloneable {
 
         BoneMapping result = null;
         if (invertMapFlag) {
-            BoneMapping inverse = mapping.getForSource(targetBoneName);
+            BoneMapping inverse = map.getForSource(targetBoneName);
             if (inverse != null) {
                 String sourceBoneName = inverse.getTargetName();
                 Quaternion inverseTwist = inverse.getTwist();
@@ -585,7 +585,7 @@ public class LoadedMapping implements Cloneable {
                 result = new BoneMapping(targetBoneName, sourceBoneName, twist);
             }
         } else {
-            result = mapping.get(targetBoneName);
+            result = map.get(targetBoneName);
         }
 
         return result;
@@ -597,7 +597,7 @@ public class LoadedMapping implements Cloneable {
      * @return a new list
      */
     private List<String> listSorted() {
-        List<String> result = mapping.listTargetBones();
+        List<String> result = map.listTargetBones();
         Collections.sort(result);
 
         return result;
@@ -614,9 +614,9 @@ public class LoadedMapping implements Cloneable {
         Animation sourceAnimation = Maud.model.source.animation.getAnimation();
         Skeleton sourceSkeleton = Maud.model.source.bones.findSkeleton();
         Skeleton targetSkeleton = Maud.model.target.bones.findSkeleton();
-        SkeletonMapping effMapping = effectiveMapping();
+        SkeletonMapping effectiveMap = effectiveMap();
         Animation retargeted = Util.retargetAnimation(sourceAnimation,
-                sourceSkeleton, targetSkeleton, effMapping, newAnimationName);
+                sourceSkeleton, targetSkeleton, effectiveMap, newAnimationName);
 
         float duration = retargeted.getLength();
         assert duration >= 0f : duration;

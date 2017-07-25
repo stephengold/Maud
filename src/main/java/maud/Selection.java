@@ -30,7 +30,7 @@ import com.jme3.math.Vector2f;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.model.LoadedCgm;
-import maud.model.LoadedMapping;
+import maud.model.LoadedMap;
 
 /**
  * Encapsulate a bone/keyframe/axis/gnomon selection from the user interface.
@@ -257,13 +257,13 @@ public class Selection {
             /*
              * Also select the mapped bone (if any).
              */
-            LoadedMapping mapping = Maud.model.mapping;
+            LoadedMap map = Maud.model.map;
             if (bestCgm == Maud.model.source
-                    && mapping.isSourceBoneMapped(bestBoneIndex)) {
-                Maud.model.mapping.selectFromSource();
+                    && map.isSourceBoneMapped(bestBoneIndex)) {
+                Maud.model.map.selectFromSource();
             } else if (bestCgm == Maud.model.target
-                    && mapping.isTargetBoneMapped(bestBoneIndex)) {
-                Maud.model.mapping.selectFromTarget();
+                    && map.isTargetBoneMapped(bestBoneIndex)) {
+                Maud.model.map.selectFromTarget();
             }
         }
     }

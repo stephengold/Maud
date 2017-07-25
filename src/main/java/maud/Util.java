@@ -1132,23 +1132,23 @@ public class Util {
 
     /**
      * Re-target the specified animation from the specified source skeleton to
-     * the specified target skeleton using the specified mapping.
+     * the specified target skeleton using the specified map.
      *
      * @param sourceAnimation which animation to re-target (not null,
      * unaffected)
      * @param sourceSkeleton (not null, unaffected)
      * @param targetSkeleton (not null, unaffected)
-     * @param mapping which skeleton mapping to use (not null, unaffected)
+     * @param map which skeleton map to use (not null, unaffected)
      * @param animationName name for the resulting animation (not null)
      * @return a new animation
      */
     public static Animation retargetAnimation(Animation sourceAnimation,
             Skeleton sourceSkeleton, Skeleton targetSkeleton,
-            SkeletonMapping mapping, String animationName) {
+            SkeletonMapping map, String animationName) {
         Validate.nonNull(sourceAnimation, "source animation");
         Validate.nonNull(sourceSkeleton, "source skeleton");
         Validate.nonNull(targetSkeleton, "target skeleton");
-        Validate.nonNull(mapping, "mapping");
+        Validate.nonNull(map, "map");
         Validate.nonNull(animationName, "animation name");
         /*
          * Start with an empty animation.
@@ -1162,14 +1162,14 @@ public class Util {
         for (int iTarget = 0; iTarget < numTargetBones; iTarget++) {
             Bone targetBone = targetSkeleton.getBone(iTarget);
             String targetName = targetBone.getName();
-            BoneMapping boneMapping = mapping.get(targetName);
+            BoneMapping boneMapping = map.get(targetName);
             if (boneMapping != null) {
                 String sourceName = boneMapping.getSourceName();
                 int iSource = sourceSkeleton.getBoneIndex(sourceName);
                 BoneTrack sourceTrack;
                 sourceTrack = MyAnimation.findTrack(sourceAnimation, iSource);
                 BoneTrack track = retargetTrack(sourceAnimation, sourceTrack,
-                        sourceSkeleton, targetSkeleton, mapping, iTarget);
+                        sourceSkeleton, targetSkeleton, map, iTarget);
                 result.addTrack(track);
             }
         }
@@ -1179,23 +1179,23 @@ public class Util {
 
     /**
      * Re-target the specified bone track from the specified source skeleton to
-     * the specified target skeleton using the specified mapping.
+     * the specified target skeleton using the specified map.
      *
      * @param sourceAnimation the animation to re-target, or null for bind pose
      * @param sourceSkeleton (not null, unaffected)
      * @param sourceTrack input bone track (not null, unaffected)
      * @param targetSkeleton (not null, unaffected)
-     * @param mapping which skeleton mapping to use (not null, unaffected)
+     * @param map which skeleton map to use (not null, unaffected)
      * @param targetBoneIndex index of the target bone (&ge;0)
      * @return a new bone track
      */
     public static BoneTrack retargetTrack(Animation sourceAnimation,
             BoneTrack sourceTrack, Skeleton sourceSkeleton,
-            Skeleton targetSkeleton, SkeletonMapping mapping,
+            Skeleton targetSkeleton, SkeletonMapping map,
             int targetBoneIndex) {
         Validate.nonNull(sourceSkeleton, "source skeleton");
         Validate.nonNull(targetSkeleton, "target skeleton");
-        Validate.nonNull(mapping, "mapping");
+        Validate.nonNull(map, "map");
         Validate.nonNegative(targetBoneIndex, "target bone index");
 
         float[] times;
@@ -1217,7 +1217,7 @@ public class Util {
         for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
             float trackTime = times[frameIndex];
             sourcePose.setToAnimation(sourceAnimation, trackTime);
-            targetPose.setToRetarget(sourcePose, mapping);
+            targetPose.setToRetarget(sourcePose, map);
 
             Transform userTransform;
             userTransform = targetPose.userTransform(targetBoneIndex, null);

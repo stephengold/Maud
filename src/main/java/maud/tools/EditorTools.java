@@ -278,7 +278,7 @@ public class EditorTools {
             case "keyframe":
                 controller = keyframe;
                 break;
-            case "mapping":
+            case "map":
                 controller = mapping;
                 break;
             case "platform":

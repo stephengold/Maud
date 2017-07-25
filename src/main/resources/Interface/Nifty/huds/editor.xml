@@ -886,20 +886,20 @@ the menu bar, status bar, and tool windows.
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="25px">
                         <control name="label" text="Asset path:  "/>
-                        <control name="label" id="mappingAssetPath"
+                        <control name="label" id="mapAssetPath"
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Load"
                                  id="id10ToAvoidNiftyWarning"
                                  width="40px">
-                            <interact onRelease="perform(load mapping asset)"/>
+                            <interact onRelease="perform(load map asset)"/>
                         </control>
                     </panel>
                     <panel/>
                     <panel childLayout="horizontal" height="25px">
                         <control name="label" text="Edit status:  "
                                  textHAlign="left"/>
-                        <control name="label" id="mappingPristine"
+                        <control name="label" id="mapPristine"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="70px"/>
