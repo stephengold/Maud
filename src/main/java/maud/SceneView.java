@@ -528,9 +528,9 @@ public class SceneView implements EditorView, JmeCloneable {
     }
 
     /**
-     * Unload the CG model. TODO rename unloadCgm
+     * Update the scene when unloading the CG model.
      */
-    public void unloadModel() {
+    public void unloadCgm() {
         /*
          * Detach the old spatial (if any) from the scene.
          */

@@ -645,7 +645,7 @@ public class LoadedCgm implements Cloneable {
         extension = null;
         name = null;
         rootSpatial = null;
-        sceneView.unloadModel();
+        sceneView.unloadCgm();
         /*
          * Reset the selected bone.
          */
