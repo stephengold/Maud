@@ -29,6 +29,7 @@ package maud;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.audio.openal.ALAudioRenderer;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
@@ -135,11 +136,22 @@ public class Maud extends GuiApplication {
      */
     private ViewPort targetScoreRightViewPort;
     /**
-     * entire editor screen in score mode
+     * the whole editor screen in score mode
      */
     private ViewPort targetScoreWideViewPort;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Process a "dump physicsSpace" action.
+     */
+    public void dumpPhysicsSpace() {
+        Util.stream = System.out;
+        LoadedCgm cgm = gui.mouseCgm();
+        SceneView sceneView = cgm.getSceneView();
+        PhysicsSpace space = sceneView.getPhysicsSpace();
+        Util.dump(space);
+    }
 
     /**
      * Process a "dump renderer" action.
@@ -300,26 +312,26 @@ public class Maud extends GuiApplication {
             logger.log(Level.INFO, "Got ongoing action {0}",
                     MyString.quote(actionString));
 
+            handled = true;
             switch (actionString) {
+                case "dump physicsSpace":
+                    dumpPhysicsSpace();
+                    break;
                 case "dump renderer":
                     dumpRenderer();
-                    handled = true;
                     break;
-
                 case "dump scene":
                     dumpScene();
-                    handled = true;
                     break;
-
                 case "edit bindings":
                     InputMode im = InputMode.getActiveMode();
                     bindScreen.activate(im);
-                    handled = true;
                     break;
-
                 case "quit":
                     quit();
-                    handled = true;
+                    break;
+                default:
+                    handled = false;
             }
         }
 
@@ -594,7 +606,7 @@ public class Maud extends GuiApplication {
         createTargetScoreRightViewPort();
         createTargetScoreWideViewPort();
         /*
-         * Create 2 scene views.
+         * Create 2 scene views, each with its own bulletAppState.
          */
         SceneView sourceSceneView = new SceneView(Maud.model.source,
                 sourceSceneParent, null, sourceSceneViewPort);
