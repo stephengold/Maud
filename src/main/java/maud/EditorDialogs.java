@@ -49,7 +49,7 @@ import maud.dialog.TextEntryDialog;
 import maud.dialog.UserKeyDialog;
 
 /**
- * Dialog boxes created by Maud's editor screen.
+ * Dialog boxes created by Maud's "editor" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -103,7 +103,7 @@ class EditorDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter name for copied animation:",
-                fromName, EditorInputMode.copyAnimationPrefix, controller);
+                fromName, ActionPrefix.copyAnimation, controller);
     }
 
     /**
@@ -161,7 +161,7 @@ class EditorDialogs {
         DialogController controller = new AnimationNameDialog("Create");
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                "pose", EditorInputMode.newPosePrefix, controller);
+                "pose", ActionPrefix.newPose, controller);
     }
 
     /**
@@ -184,7 +184,7 @@ class EditorDialogs {
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter reduction factor:", "2",
-                    EditorInputMode.reduceAnimationPrefix, controller);
+                    ActionPrefix.reduceAnimation, controller);
         }
     }
 
@@ -198,7 +198,7 @@ class EditorDialogs {
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter reduction factor:", "2",
-                    EditorInputMode.reduceTrackPrefix, controller);
+                    ActionPrefix.reduceTrack, controller);
         }
     }
 
@@ -212,7 +212,7 @@ class EditorDialogs {
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new name for the animation:",
-                    oldName, EditorInputMode.renameAnimationPrefix,
+                    oldName, ActionPrefix.renameAnimation,
                     controller);
         }
     }
@@ -227,7 +227,7 @@ class EditorDialogs {
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new name for the bone:",
-                    oldName, EditorInputMode.renameBonePrefix, controller);
+                    oldName, ActionPrefix.renameBone, controller);
         }
     }
 
@@ -246,7 +246,7 @@ class EditorDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog(prompt, oldName,
-                EditorInputMode.renameSpatialPrefix, controller);
+                ActionPrefix.renameSpatial, controller);
     }
 
     /**
@@ -258,7 +258,7 @@ class EditorDialogs {
             DialogController controller = new UserKeyDialog("Rename");
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter a new key for the user data:",
-                    oldName, EditorInputMode.renameUserKeyPrefix, controller);
+                    oldName, ActionPrefix.renameUserKey, controller);
         }
     }
 
@@ -269,7 +269,7 @@ class EditorDialogs {
         String baseFilePath = Maud.model.target.baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for model:",
-                baseFilePath, "Save", EditorInputMode.saveCgmPrefix, null);
+                baseFilePath, "Save", ActionPrefix.saveCgm, null);
     }
 
     /**
@@ -279,7 +279,7 @@ class EditorDialogs {
         String baseFilePath = Maud.model.mapping.baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for mapping:",
-                baseFilePath, "Save", EditorInputMode.saveMappingPrefix, null);
+                baseFilePath, "Save", ActionPrefix.saveMapping, null);
     }
 
     /**
@@ -291,7 +291,7 @@ class EditorDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                oldName, EditorInputMode.retargetAnimationPrefix, controller);
+                oldName, ActionPrefix.retargetAnimation, controller);
     }
 
     /**
@@ -313,7 +313,7 @@ class EditorDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
-                defaultText, EditorInputMode.setDurationPrefix, controller);
+                defaultText, ActionPrefix.setDuration, controller);
     }
 
     /**
@@ -333,7 +333,7 @@ class EditorDialogs {
             float oldValue = (float) data;
             String stringData = Float.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new float value:", stringData,
-                    EditorInputMode.setUserDataPrefix, controller);
+                    ActionPrefix.setUserData, controller);
 
         } else if (data instanceof Integer) {
             DialogController controller = new IntegerDialog("Set",
@@ -341,7 +341,7 @@ class EditorDialogs {
             int oldValue = (int) data;
             String stringData = Integer.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new integer value:", stringData,
-                    EditorInputMode.setUserDataPrefix, controller);
+                    ActionPrefix.setUserData, controller);
 
         } else if (data instanceof Long) {
             DialogController controller = new LongDialog("Set",
@@ -349,14 +349,14 @@ class EditorDialogs {
             long oldValue = (long) data;
             String stringData = Long.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new long integer value:",
-                    stringData, EditorInputMode.setUserDataPrefix, controller);
+                    stringData, ActionPrefix.setUserData, controller);
 
         } else if (data instanceof String) {
             DialogController controller = new TextEntryDialog();
             String oldValue = (String) data;
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new string value:", oldValue,
-                    "Set", EditorInputMode.setUserDataPrefix, controller);
+                    "Set", ActionPrefix.setUserData, controller);
         }
     }
 }

@@ -46,7 +46,7 @@ import maud.model.LoadedCgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class EditorInputMode extends InputMode {
+class EditorInputMode extends InputMode {
     // *************************************************************************
     // constants and loggers
 
@@ -60,162 +60,9 @@ public class EditorInputMode extends InputMode {
      */
     final private static Quaternion rotationIdentity = new Quaternion();
     /**
-     * asset path to the cursor for this mode
+     * asset path to the cursor for this input mode
      */
     final private static String assetPath = "Textures/cursors/default.cur";
-    /**
-     * action prefix: remainder is a name for the new animation
-     */
-    final static String copyAnimationPrefix = "copy animation ";
-    /**
-     * action prefix: remainder is a filesystem path to a folder/directory
-     */
-    final static String deleteAssetFolderPrefix = "delete assetFolder ";
-    /**
-     * action prefix: remainder is the name of an animation
-     */
-    final static String loadAnimationPrefix = "load animation ";
-    /**
-     * action prefix: remainder is an asset-folder index followed by an asset
-     * path to a CG model
-     */
-    final static String loadCgmAssetPrefix = "load cgm asset ";
-    /**
-     * action prefix: remainder is an asset-folder or else "From classpath"
-     */
-    final static String loadCgmLocatorPrefix = "load cgm locator ";
-    /**
-     * action prefix: remainder is the name of a CG model in jme3-testdata
-     */
-    final static String loadCgmNamedPrefix = "load cgm named ";
-    /**
-     * action prefix: remainder is an asset-folder index followed by an asset
-     * path to a skeleton mapping
-     */
-    final static String loadMappingAssetPrefix = "load mapping asset ";
-    /**
-     * action prefix: remainder is an asset-folder or else "From classpath"
-     */
-    final static String loadMappingLocatorPrefix = "load mapping locator ";
-    /**
-     * action prefix: remainder is the name of a mapping asset
-     */
-    final static String loadMappingNamedPrefix = "load mapping named ";
-    /**
-     * action prefix: remainder is the name of a source animation
-     */
-    final static String loadSourceAnimationPrefix = "load sourceAnimation ";
-    /**
-     * action prefix: remainder is an asset-folder index followed by an asset
-     * path to a CG model
-     */
-    final static String loadSourceCgmAssetPrefix = "load sourceCgm assetFolder ";
-    /**
-     * action prefix: remainder is an asset-folder or else "From classpath"
-     */
-    final static String loadSourceCgmLocatorPrefix = "load sourceCgm locator ";
-    /**
-     * action prefix: remainder is the name of a CG model in jme3-testdata
-     */
-    final static String loadSourceCgmNamedPrefix = "load sourceCgm named ";
-    /**
-     * action prefix: remainder is a filesystem path to a folder/directory
-     * optionally with a magic filename
-     */
-    final static String newAssetFolderPrefix = "new assetFolder ";
-    /**
-     * action prefix: remainder is a name for the new animation
-     */
-    final static String newPosePrefix = "new pose ";
-    /**
-     * action prefix: remainder consists of the new type, key, and value
-     */
-    final static String newUserKeyPrefix = "new userKey ";
-    final static String reduceAnimationPrefix = "reduce animation ";
-    final static String reduceTrackPrefix = "reduce track ";
-    /**
-     * action prefix: remainder is the new name for the loaded animation
-     */
-    final static String renameAnimationPrefix = "rename animation ";
-    /**
-     * action prefix: remainder is the new name for the selected bone
-     */
-    final static String renameBonePrefix = "rename bone ";
-    /**
-     * action prefix: remainder is the new name for the selected spatial
-     */
-    final static String renameSpatialPrefix = "rename spatial ";
-    /**
-     * action prefix: remainder is the new name for the key
-     */
-    final static String renameUserKeyPrefix = "rename userKey ";
-    /**
-     * action prefix: remainder is the name for the new animation
-     */
-    final static String retargetAnimationPrefix = "retarget animation ";
-    /**
-     * action prefix: remainder is a base file path
-     */
-    final static String saveCgmPrefix = "save cgm ";
-    /**
-     * action prefix: remainder is a base file path
-     */
-    final static String saveMappingPrefix = "save mapping ";
-    /**
-     * action prefix: remainder is the name of a bone or a prefix thereof
-     */
-    final static String selectBonePrefix = "select bone ";
-    final static String selectBoneChildPrefix = "select boneChild ";
-    final static String selectControlPrefix = "select control ";
-    /**
-     * action prefix: remainder is the name of a geometry or a prefix thereof
-     */
-    final static String selectGeometryPrefix = "select geometry ";
-    /**
-     * action prefix: remainder is the menu path of a menu item
-     */
-    final static String selectMenuItemPrefix = "select menuItem ";
-    /**
-     * action prefix: remainder is the name of a source bone or a prefix thereof
-     */
-    final static String selectSourceBonePrefix = "select sourceBone ";
-    final static String selectSpatialChildPrefix = "select spatialChild ";
-    /**
-     * action prefix: remainder is the name of a spatial or a prefix thereof
-     */
-    final static String selectSpatialPrefix = "select spatial ";
-    /**
-     * action prefix: remainder is the name of a tool window
-     */
-    final static String selectToolPrefix = "select tool ";
-    /**
-     * action prefix: remainder is a pre-existing user key
-     */
-    final static String selectUserKeyPrefix = "select userKey ";
-    /**
-     * action prefix: remainder is the name of a batch hint
-     */
-    final static String setBatchHintPrefix = "set batchHint ";
-    /**
-     * action prefix: remainder is the name of a cull hint
-     */
-    final static String setCullHintPrefix = "set cullHint ";
-    /**
-     * action prefix: remainder is a duration in seconds
-     */
-    final static String setDurationPrefix = "set duration ";
-    /**
-     * action prefix: remainder is the name of a queue bucket
-     */
-    final static String setQueueBucketPrefix = "set queueBucket ";
-    /**
-     * action prefix: remainder is the name of a shadow mode
-     */
-    final static String setShadowModePrefix = "set shadowMode ";
-    /**
-     * action prefix: remainder is the new value
-     */
-    final static String setUserDataPrefix = "set userData ";
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
      */
@@ -375,9 +222,9 @@ public class EditorInputMode extends InputMode {
      */
     private boolean copyAction(String actionString) {
         boolean handled = false;
-        if (actionString.startsWith(copyAnimationPrefix)) {
-            String destName;
-            destName = MyString.remainder(actionString, copyAnimationPrefix);
+        if (actionString.startsWith(ActionPrefix.copyAnimation)) {
+            String destName = MyString.remainder(actionString,
+                    ActionPrefix.copyAnimation);
             Maud.model.target.animation.copyAndLoad(destName);
             handled = true;
         }
@@ -411,9 +258,9 @@ public class EditorInputMode extends InputMode {
                 break;
             default:
                 handled = false;
-                if (actionString.startsWith(deleteAssetFolderPrefix)) {
+                if (actionString.startsWith(ActionPrefix.deleteAssetFolder)) {
                     String arg = MyString.remainder(actionString,
-                            deleteAssetFolderPrefix);
+                            ActionPrefix.deleteAssetFolder);
                     Maud.model.folders.remove(arg);
                     handled = true;
                 }
@@ -437,48 +284,56 @@ public class EditorInputMode extends InputMode {
         } else if (actionString.equals("load retargetedPose")) {
             Maud.model.target.animation.loadRetargetedPose();
 
-        } else if (actionString.startsWith(loadAnimationPrefix)) {
-            args = MyString.remainder(actionString, loadAnimationPrefix);
+        } else if (actionString.startsWith(ActionPrefix.loadAnimation)) {
+            args = MyString.remainder(actionString, ActionPrefix.loadAnimation);
             Maud.gui.menus.loadAnimation(args, Maud.model.target);
 
-        } else if (actionString.startsWith(loadCgmAssetPrefix)) {
-            args = MyString.remainder(actionString, loadCgmAssetPrefix);
+        } else if (actionString.startsWith(ActionPrefix.loadCgmAsset)) {
+            args = MyString.remainder(actionString, ActionPrefix.loadCgmAsset);
             Maud.gui.menus.loadCgmAsset(args, Maud.model.target);
 
-        } else if (actionString.startsWith(loadCgmLocatorPrefix)) {
-            path = MyString.remainder(actionString, loadCgmLocatorPrefix);
+        } else if (actionString.startsWith(ActionPrefix.loadCgmLocator)) {
+            path = MyString.remainder(actionString,
+                    ActionPrefix.loadCgmLocator);
             Maud.gui.menus.loadCgmLocator(path, Maud.model.target);
 
-        } else if (actionString.startsWith(loadCgmNamedPrefix)) {
-            name = MyString.remainder(actionString, loadCgmNamedPrefix);
+        } else if (actionString.startsWith(ActionPrefix.loadCgmNamed)) {
+            name = MyString.remainder(actionString, ActionPrefix.loadCgmNamed);
             Maud.model.target.loadNamed(name);
 
-        } else if (actionString.startsWith(loadMappingAssetPrefix)) {
-            path = MyString.remainder(actionString, loadMappingAssetPrefix);
+        } else if (actionString.startsWith(ActionPrefix.loadMappingAsset)) {
+            path = MyString.remainder(actionString,
+                    ActionPrefix.loadMappingAsset);
             Maud.gui.menus.loadMappingAsset(path);
 
-        } else if (actionString.startsWith(loadMappingLocatorPrefix)) {
-            path = MyString.remainder(actionString, loadMappingLocatorPrefix);
+        } else if (actionString.startsWith(ActionPrefix.loadMappingLocator)) {
+            path = MyString.remainder(actionString,
+                    ActionPrefix.loadMappingLocator);
             Maud.gui.menus.loadMappingLocator(path);
 
-        } else if (actionString.startsWith(loadMappingNamedPrefix)) {
-            name = MyString.remainder(actionString, loadMappingNamedPrefix);
+        } else if (actionString.startsWith(ActionPrefix.loadMappingNamed)) {
+            name = MyString.remainder(actionString,
+                    ActionPrefix.loadMappingNamed);
             Maud.model.mapping.loadNamed(name);
 
-        } else if (actionString.startsWith(loadSourceAnimationPrefix)) {
-            args = MyString.remainder(actionString, loadSourceAnimationPrefix);
+        } else if (actionString.startsWith(ActionPrefix.loadSourceAnimation)) {
+            args = MyString.remainder(actionString,
+                    ActionPrefix.loadSourceAnimation);
             Maud.gui.menus.loadAnimation(args, Maud.model.source);
 
-        } else if (actionString.startsWith(loadSourceCgmAssetPrefix)) {
-            args = MyString.remainder(actionString, loadSourceCgmAssetPrefix);
+        } else if (actionString.startsWith(ActionPrefix.loadSourceCgmAsset)) {
+            args = MyString.remainder(actionString,
+                    ActionPrefix.loadSourceCgmAsset);
             Maud.gui.menus.loadCgmAsset(args, Maud.model.source);
 
-        } else if (actionString.startsWith(loadSourceCgmLocatorPrefix)) {
-            path = MyString.remainder(actionString, loadSourceCgmLocatorPrefix);
+        } else if (actionString.startsWith(ActionPrefix.loadSourceCgmLocator)) {
+            path = MyString.remainder(actionString,
+                    ActionPrefix.loadSourceCgmLocator);
             Maud.gui.menus.loadCgmLocator(path, Maud.model.source);
 
-        } else if (actionString.startsWith(loadSourceCgmNamedPrefix)) {
-            name = MyString.remainder(actionString, loadSourceCgmNamedPrefix);
+        } else if (actionString.startsWith(ActionPrefix.loadSourceCgmNamed)) {
+            name = MyString.remainder(actionString,
+                    ActionPrefix.loadSourceCgmNamed);
             Maud.model.source.loadNamed(name);
 
         } else {
@@ -527,19 +382,21 @@ public class EditorInputMode extends InputMode {
      */
     private boolean newAction2(String actionString) {
         boolean handled = false;
-        if (actionString.startsWith(newAssetFolderPrefix)) {
+        if (actionString.startsWith(ActionPrefix.newAssetFolder)) {
             String path = MyString.remainder(actionString,
-                    newAssetFolderPrefix);
+                    ActionPrefix.newAssetFolder);
             Maud.gui.menus.newAssetFolder(path);
             handled = true;
 
-        } else if (actionString.startsWith(newPosePrefix)) {
-            String name = MyString.remainder(actionString, newPosePrefix);
+        } else if (actionString.startsWith(ActionPrefix.newPose)) {
+            String name;
+            name = MyString.remainder(actionString, ActionPrefix.newPose);
             Maud.model.target.animation.poseAndLoad(name);
             handled = true;
 
-        } else if (actionString.startsWith(newUserKeyPrefix)) {
-            String args = MyString.remainder(actionString, newUserKeyPrefix);
+        } else if (actionString.startsWith(ActionPrefix.newUserKey)) {
+            String args;
+            args = MyString.remainder(actionString, ActionPrefix.newUserKey);
             if (args.contains(" ")) {
                 String type = args.split(" ")[0];
                 String key = MyString.remainder(args, type + " ");
@@ -655,14 +512,16 @@ public class EditorInputMode extends InputMode {
             Maud.gui.dialogs.reduceTrack();
             handled = true;
 
-        } else if (actionString.startsWith(reduceAnimationPrefix)) {
-            String f = MyString.remainder(actionString, reduceAnimationPrefix);
+        } else if (actionString.startsWith(ActionPrefix.reduceAnimation)) {
+            String f;
+            f = MyString.remainder(actionString, ActionPrefix.reduceAnimation);
             int factor = Integer.parseInt(f);
             Maud.model.target.animation.reduce(factor);
             handled = true;
 
-        } else if (actionString.startsWith(reduceTrackPrefix)) {
-            String f = MyString.remainder(actionString, reduceTrackPrefix);
+        } else if (actionString.startsWith(ActionPrefix.reduceTrack)) {
+            String f;
+            f = MyString.remainder(actionString, ActionPrefix.reduceTrack);
             int factor = Integer.parseInt(f);
             Maud.model.target.track.reduceTrack(factor);
             handled = true;
@@ -699,24 +558,27 @@ public class EditorInputMode extends InputMode {
 
         if (!handled) {
             String newName;
-            if (actionString.startsWith(renameAnimationPrefix)) {
+            if (actionString.startsWith(ActionPrefix.renameAnimation)) {
                 newName = MyString.remainder(actionString,
-                        renameAnimationPrefix);
+                        ActionPrefix.renameAnimation);
                 Maud.model.target.animation.rename(newName);
                 handled = true;
 
-            } else if (actionString.startsWith(renameBonePrefix)) {
-                newName = MyString.remainder(actionString, renameBonePrefix);
+            } else if (actionString.startsWith(ActionPrefix.renameBone)) {
+                newName = MyString.remainder(actionString,
+                        ActionPrefix.renameBone);
                 Maud.model.target.renameBone(newName);
                 handled = true;
 
-            } else if (actionString.startsWith(renameSpatialPrefix)) {
-                newName = MyString.remainder(actionString, renameSpatialPrefix);
+            } else if (actionString.startsWith(ActionPrefix.renameSpatial)) {
+                newName = MyString.remainder(actionString,
+                        ActionPrefix.renameSpatial);
                 Maud.model.target.renameSpatial(newName);
                 handled = true;
 
-            } else if (actionString.startsWith(renameUserKeyPrefix)) {
-                newName = MyString.remainder(actionString, renameUserKeyPrefix);
+            } else if (actionString.startsWith(ActionPrefix.renameUserKey)) {
+                newName = MyString.remainder(actionString,
+                        ActionPrefix.renameUserKey);
                 Maud.model.target.renameUserKey(newName);
                 handled = true;
             }
@@ -794,9 +656,9 @@ public class EditorInputMode extends InputMode {
     private boolean retargetAction(String actionString) {
         boolean handled = false;
 
-        if (actionString.startsWith(retargetAnimationPrefix)) {
+        if (actionString.startsWith(ActionPrefix.retargetAnimation)) {
             String name = MyString.remainder(actionString,
-                    retargetAnimationPrefix);
+                    ActionPrefix.retargetAnimation);
             Maud.model.mapping.retargetAndLoad(name);
             handled = true;
 
@@ -816,13 +678,15 @@ public class EditorInputMode extends InputMode {
      */
     private boolean saveAction(String actionString) {
         boolean handled = false;
-        if (actionString.startsWith(saveCgmPrefix)) {
-            String path = MyString.remainder(actionString, saveCgmPrefix);
+        if (actionString.startsWith(ActionPrefix.saveCgm)) {
+            String path;
+            path = MyString.remainder(actionString, ActionPrefix.saveCgm);
             Maud.model.target.writeToFile(path);
             handled = true;
 
-        } else if (actionString.startsWith(saveMappingPrefix)) {
-            String path = MyString.remainder(actionString, saveMappingPrefix);
+        } else if (actionString.startsWith(ActionPrefix.saveMapping)) {
+            String path;
+            path = MyString.remainder(actionString, ActionPrefix.saveMapping);
             Maud.model.mapping.writeToFile(path);
             handled = true;
         }
@@ -891,50 +755,55 @@ public class EditorInputMode extends InputMode {
     private boolean selectAction2(String actionString) {
         boolean handled = true;
         String arg;
-        if (actionString.startsWith(selectBonePrefix)) {
-            arg = MyString.remainder(actionString, selectBonePrefix);
+        if (actionString.startsWith(ActionPrefix.selectBone)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectBone);
             Maud.gui.menus.selectBone(arg);
 
-        } else if (actionString.startsWith(selectBoneChildPrefix)) {
-            arg = MyString.remainder(actionString, selectBoneChildPrefix);
+        } else if (actionString.startsWith(ActionPrefix.selectBoneChild)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectBoneChild);
             Maud.gui.menus.selectBoneChild(arg);
 
-        } else if (actionString.startsWith(selectControlPrefix)) {
-            arg = MyString.remainder(actionString, selectControlPrefix);
+        } else if (actionString.startsWith(ActionPrefix.selectControl)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectControl);
             Maud.model.target.sgc.select(arg);
 
-        } else if (actionString.startsWith(selectGeometryPrefix)) {
-            arg = MyString.remainder(actionString, selectGeometryPrefix);
+        } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
             Maud.gui.menus.selectSpatial(arg, false);
 
-        } else if (actionString.startsWith(selectSourceBonePrefix)) {
-            arg = MyString.remainder(actionString, selectSourceBonePrefix);
+        } else if (actionString.startsWith(ActionPrefix.selectSourceBone)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectSourceBone);
             Maud.gui.menus.selectSourceBone(arg);
 
-        } else if (actionString.startsWith(selectSpatialChildPrefix)) {
-            arg = MyString.remainder(actionString, selectSpatialChildPrefix);
+        } else if (actionString.startsWith(ActionPrefix.selectSpatialChild)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectSpatialChild);
             Maud.gui.selectSpatialChild(arg);
 
-        } else if (actionString.startsWith(selectSpatialPrefix)) {
-            arg = MyString.remainder(actionString, selectSpatialPrefix);
+        } else if (actionString.startsWith(ActionPrefix.selectSpatial)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectSpatial);
             Maud.gui.menus.selectSpatial(arg, true);
 
-        } else if (actionString.startsWith(selectUserKeyPrefix)) {
-            arg = MyString.remainder(actionString, selectUserKeyPrefix);
+        } else if (actionString.startsWith(ActionPrefix.selectUserKey)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectUserKey);
             Maud.model.misc.selectUserKey(arg);
 
         } else {
             handled = false;
         }
 
-        if (!handled && actionString.startsWith(selectMenuItemPrefix)) {
+        if (!handled && actionString.startsWith(ActionPrefix.selectMenuItem)) {
             String menuPath;
-            menuPath = MyString.remainder(actionString, selectMenuItemPrefix);
+            menuPath = MyString.remainder(actionString,
+                    ActionPrefix.selectMenuItem);
             handled = Maud.gui.menus.selectMenuItem(menuPath);
         }
-        if (!handled && actionString.startsWith(selectToolPrefix)) {
+        if (!handled && actionString.startsWith(ActionPrefix.selectTool)) {
             String toolName;
-            toolName = MyString.remainder(actionString, selectToolPrefix);
+            toolName = MyString.remainder(actionString,
+                    ActionPrefix.selectTool);
             handled = Maud.gui.selectTool(toolName);
         }
 
@@ -1002,29 +871,29 @@ public class EditorInputMode extends InputMode {
     private boolean setAction2(String actionString) {
         boolean handled = true;
         String arg;
-        if (actionString.startsWith(setDurationPrefix)) {
-            arg = MyString.remainder(actionString, setDurationPrefix);
+        if (actionString.startsWith(ActionPrefix.setDuration)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setDuration);
             float value = Float.parseFloat(arg);
             Maud.model.target.animation.setDuration(value);
-        } else if (actionString.startsWith(setBatchHintPrefix)) {
-            arg = MyString.remainder(actionString, setBatchHintPrefix);
+        } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
             Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
             Maud.model.target.setBatchHint(value);
-        } else if (actionString.startsWith(setCullHintPrefix)) {
-            arg = MyString.remainder(actionString, setCullHintPrefix);
+        } else if (actionString.startsWith(ActionPrefix.setCullHint)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setCullHint);
             Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
             Maud.model.target.setCullHint(value);
-        } else if (actionString.startsWith(setQueueBucketPrefix)) {
-            arg = MyString.remainder(actionString, setQueueBucketPrefix);
+        } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
             RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
             Maud.model.target.setQueueBucket(value);
-        } else if (actionString.startsWith(setShadowModePrefix)) {
-            arg = MyString.remainder(actionString, setShadowModePrefix);
+        } else if (actionString.startsWith(ActionPrefix.setShadowMode)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);
             RenderQueue.ShadowMode value;
             value = RenderQueue.ShadowMode.valueOf(arg);
             Maud.model.target.setShadowMode(value);
-        } else if (actionString.startsWith(setUserDataPrefix)) {
-            arg = MyString.remainder(actionString, setUserDataPrefix);
+        } else if (actionString.startsWith(ActionPrefix.setUserData)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setUserData);
             Maud.model.target.setUserData(arg);
         } else {
             handled = false;

@@ -108,9 +108,9 @@ class EditorMenus {
     void loadCgmAsset(String args, LoadedCgm cgm) {
         String menuPrefix = null;
         if (cgm == Maud.model.source) {
-            menuPrefix = EditorInputMode.loadSourceCgmAssetPrefix;
+            menuPrefix = ActionPrefix.loadSourceCgmAsset;
         } else if (cgm == Maud.model.target) {
-            menuPrefix = EditorInputMode.loadCgmAssetPrefix;
+            menuPrefix = ActionPrefix.loadCgmAsset;
         } else {
             assert false;
         }
@@ -157,9 +157,9 @@ class EditorMenus {
             buildTestDataMenu();
             String menuPrefix = null;
             if (cgm == Maud.model.source) {
-                menuPrefix = EditorInputMode.loadSourceCgmNamedPrefix;
+                menuPrefix = ActionPrefix.loadSourceCgmNamed;
             } else if (cgm == Maud.model.target) {
-                menuPrefix = EditorInputMode.loadCgmNamedPrefix;
+                menuPrefix = ActionPrefix.loadCgmNamed;
             } else {
                 assert false;
             }
@@ -177,7 +177,7 @@ class EditorMenus {
      */
     void loadMappingAsset() {
         buildLocatorMenu();
-        builder.show(EditorInputMode.loadMappingLocatorPrefix);
+        builder.show(ActionPrefix.loadMappingLocator);
     }
 
     /**
@@ -186,7 +186,7 @@ class EditorMenus {
      * @param args action arguments (not null, not empty)
      */
     void loadMappingAsset(String args) {
-        String menuPrefix = EditorInputMode.loadMappingAssetPrefix;
+        String menuPrefix = ActionPrefix.loadMappingAsset;
         String indexString = args.split(" ")[0];
         String rootPath = Maud.model.folders.pathForIndex(indexString);
         String assetPath = MyString.remainder(args, indexString + " ");
@@ -227,7 +227,7 @@ class EditorMenus {
     void loadMappingLocator(String path) {
         if (path.equals("From classpath")) {
             buildClasspathMappingMenu();
-            builder.show(EditorInputMode.loadMappingNamedPrefix);
+            builder.show(ActionPrefix.loadMappingNamed);
 
         } else {
             String indexString = Maud.model.folders.indexForPath(path);
@@ -255,7 +255,7 @@ class EditorMenus {
                 file = file.getParentFile();
             }
             String folderPath = file.getAbsolutePath();
-            String menuPrefix = EditorInputMode.newAssetFolderPrefix + folderPath + "/";
+            String menuPrefix = ActionPrefix.newAssetFolder + folderPath + "/";
             builder.show(menuPrefix);
         }
     }
@@ -317,7 +317,7 @@ class EditorMenus {
                     builder.add(name);
                 }
             }
-            builder.show(EditorInputMode.selectBoneChildPrefix);
+            builder.show(ActionPrefix.selectBoneChild);
         }
     }
 
@@ -418,7 +418,7 @@ class EditorMenus {
                     builder.addGeometry(choice);
                 }
             }
-            builder.show(EditorInputMode.selectSpatialChildPrefix);
+            builder.show(ActionPrefix.selectSpatialChild);
         }
     }
 
@@ -434,7 +434,7 @@ class EditorMenus {
         builder.add("string");
         builder.add("long");
         // TODO savable, list, map, array
-        builder.show(EditorInputMode.newUserKeyPrefix);
+        builder.show(ActionPrefix.newUserKey);
     }
 
     /**
@@ -450,7 +450,7 @@ class EditorMenus {
                 builder.add(key);
             }
         }
-        builder.show(EditorInputMode.selectUserKeyPrefix);
+        builder.show(ActionPrefix.selectUserKey);
     }
 
     /**
@@ -467,7 +467,7 @@ class EditorMenus {
                 builder.add(name);
             }
         }
-        builder.show(EditorInputMode.setBatchHintPrefix);
+        builder.show(ActionPrefix.setBatchHint);
     }
 
     /**
@@ -484,7 +484,7 @@ class EditorMenus {
                 builder.add(name);
             }
         }
-        builder.show(EditorInputMode.setCullHintPrefix);
+        builder.show(ActionPrefix.setCullHint);
     }
 
     /**
@@ -501,7 +501,7 @@ class EditorMenus {
                 builder.add(name);
             }
         }
-        builder.show(EditorInputMode.setQueueBucketPrefix);
+        builder.show(ActionPrefix.setQueueBucket);
     }
 
     /**
@@ -518,7 +518,7 @@ class EditorMenus {
                 builder.add(name);
             }
         }
-        builder.show(EditorInputMode.setShadowModePrefix);
+        builder.show(ActionPrefix.setShadowMode);
     }
     // *************************************************************************
     // private methods
@@ -537,7 +537,7 @@ class EditorMenus {
             assert oldFile == null : oldFile;
         }
         buildFolderMenu(fileMap);
-        builder.show(EditorInputMode.newAssetFolderPrefix);
+        builder.show(ActionPrefix.newAssetFolder);
     }
 
     /**
@@ -1149,7 +1149,7 @@ class EditorMenus {
                 for (String path : pathList) {
                     builder.addFolder(path);
                 }
-                builder.show(EditorInputMode.deleteAssetFolderPrefix);
+                builder.show(ActionPrefix.deleteAssetFolder);
                 handled = true;
         }
 
@@ -1210,7 +1210,7 @@ class EditorMenus {
             logger.log(Level.WARNING, "no items for the {0} menu",
                     MyString.quote(menuName));
         } else {
-            String actionPrefix = EditorInputMode.selectMenuItemPrefix + menuName
+            String actionPrefix = ActionPrefix.selectMenuItem + menuName
                     + menuSeparator;
             builder.show(actionPrefix);
         }
@@ -1366,7 +1366,7 @@ class EditorMenus {
                     break;
                 case "Load":
                     buildLocatorMenu();
-                    builder.show(EditorInputMode.loadCgmLocatorPrefix);
+                    builder.show(ActionPrefix.loadCgmLocator);
                     break;
                 case "Save":
                     Maud.gui.dialogs.saveCgm();
@@ -1591,7 +1591,7 @@ class EditorMenus {
         switch (remainder) {
             case "Load":
                 buildLocatorMenu();
-                builder.show(EditorInputMode.loadSourceCgmLocatorPrefix);
+                builder.show(ActionPrefix.loadSourceCgmLocator);
                 handled = true;
                 break;
 
@@ -1840,7 +1840,7 @@ class EditorMenus {
      */
     private void selectBoneByParent() {
         List<String> boneNames = Maud.model.target.bones.listRootBoneNames();
-        Maud.gui.showPopupMenu(EditorInputMode.selectBoneChildPrefix, boneNames);
+        Maud.gui.showPopupMenu(ActionPrefix.selectBoneChild, boneNames);
     }
 
     /**
@@ -1851,7 +1851,8 @@ class EditorMenus {
         if (numRoots == 1) {
             Maud.model.target.bone.selectFirstRoot();
         } else if (numRoots > 1) {
-            List<String> boneNames = Maud.model.target.bones.listRootBoneNames();
+            List<String> boneNames;
+            boneNames = Maud.model.target.bones.listRootBoneNames();
             showBoneSubmenu(boneNames);
         }
     }
@@ -1865,7 +1866,7 @@ class EditorMenus {
             builder.add(name);
         }
         builder.add(LoadedCgm.noControl);
-        builder.show(EditorInputMode.selectControlPrefix);
+        builder.show(ActionPrefix.selectControl);
     }
 
     /**
@@ -1985,9 +1986,9 @@ class EditorMenus {
         }
 
         if (cgm == Maud.model.target) {
-            builder.show(EditorInputMode.loadAnimationPrefix);
+            builder.show(ActionPrefix.loadAnimation);
         } else if (cgm == Maud.model.source) {
-            builder.show(EditorInputMode.loadSourceAnimationPrefix);
+            builder.show(ActionPrefix.loadSourceAnimation);
         } else {
             assert false;
         }
@@ -2013,7 +2014,7 @@ class EditorMenus {
                 builder.addEllipsis(name);
             }
         }
-        builder.show(EditorInputMode.selectBonePrefix);
+        builder.show(ActionPrefix.selectBone);
     }
 
     /**
@@ -2036,7 +2037,7 @@ class EditorMenus {
                 builder.addEllipsis(name);
             }
         }
-        builder.show(EditorInputMode.selectSourceBonePrefix);
+        builder.show(ActionPrefix.selectSourceBone);
     }
 
     /**
@@ -2065,9 +2066,9 @@ class EditorMenus {
             }
         }
         if (includeNodes) {
-            builder.show(EditorInputMode.selectSpatialPrefix);
+            builder.show(ActionPrefix.selectSpatial);
         } else {
-            builder.show(EditorInputMode.selectGeometryPrefix);
+            builder.show(ActionPrefix.selectGeometry);
         }
     }
 
