@@ -564,14 +564,13 @@ public class SceneView implements EditorView, JmeCloneable {
     // EditorView methods
 
     /**
-     * Consider for selection all bones and axes in this view.
+     * Consider selecting each axis tip and bone in this view.
      *
      * @param selection best selection found so far (not null, modified)
      */
     @Override
     public void considerAll(Selection selection) {
         Camera camera = getCamera();
-
         boolean isSelected = cgm.bone.isSelected();
         String mode = Maud.model.axes.getMode();
         if (isSelected && mode.equals("bone")) {
@@ -584,27 +583,23 @@ public class SceneView implements EditorView, JmeCloneable {
             }
         }
 
-        boolean isVisible = Maud.model.skeleton.isVisible();
-        float pointSize = Maud.model.skeleton.getPointSize();
-        pointSize = Math.round(pointSize);
-        if (isVisible && pointSize >= 1f) {
-            Pose pose = cgm.pose.getPose();
-            int numBones = pose.countBones();
-            int selectedBone = cgm.bone.getIndex();
-            Vector2f inputXY = selection.copyInputXY();
-            for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-                if (boneIndex != selectedBone) {
-                    Vector3f modelLocation;
-                    modelLocation = pose.modelLocation(boneIndex, null);
-                    Transform worldTransform = worldTransform();
-                    Vector3f boneWorld = worldTransform.transformVector(
-                            modelLocation, null);
-                    Vector3f boneScreen;
-                    boneScreen = camera.getScreenCoordinates(boneWorld);
-                    Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
-                    float dSquared = boneXY.distanceSquared(inputXY);
-                    selection.considerBone(cgm, boneIndex, dSquared);
-                }
+        Pose pose = cgm.pose.getPose();
+        int selectedBone = cgm.bone.getIndex();
+        Vector2f inputXY = selection.copyInputXY();
+
+        int numBones = pose.countBones();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            if (boneIndex != selectedBone) {
+                Vector3f modelLocation;
+                modelLocation = pose.modelLocation(boneIndex, null);
+                Transform worldTransform = worldTransform();
+                Vector3f boneWorld = worldTransform.transformVector(
+                        modelLocation, null);
+                Vector3f boneScreen;
+                boneScreen = camera.getScreenCoordinates(boneWorld);
+                Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
+                float dSquared = boneXY.distanceSquared(inputXY);
+                selection.considerBone(cgm, boneIndex, dSquared);
             }
         }
     }
