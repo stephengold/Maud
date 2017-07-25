@@ -676,6 +676,7 @@ class EditorMenus {
         builder.addTool("Tool");
         builder.add("Load");
         builder.addDialog("Save");
+        //builder.add("Export"); TODO
         builder.add("Source model");
     }
 
@@ -1144,7 +1145,7 @@ class EditorMenus {
                 Maud.gui.dialogs.copyAnimation();
                 break;
             case "Pose":
-                Maud.gui.dialogs.newPose();
+                Maud.gui.dialogs.newAnimationFromPose();
                 break;
             case "Retarget":
                 Maud.gui.tools.select("retarget");

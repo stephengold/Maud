@@ -352,14 +352,14 @@ class EditorInputMode extends InputMode {
     private boolean newAction(String actionString) {
         boolean handled = true;
         switch (actionString) {
+            case "new animation fromPose":
+                Maud.gui.dialogs.newAnimationFromPose();
+                break;
             case "new checkpoint":
                 Maud.gui.addCheckpoint("user interface");
                 break;
             case "new mapping":
                 Maud.model.mapping.mapBones();
-                break;
-            case "new pose":
-                Maud.gui.dialogs.newPose();
                 break;
             case "new singleKeyframe":
                 Maud.model.target.track.insertSingleKeyframe();
@@ -388,9 +388,9 @@ class EditorInputMode extends InputMode {
             Maud.gui.menus.newAssetFolder(path);
             handled = true;
 
-        } else if (actionString.startsWith(ActionPrefix.newPose)) {
-            String name;
-            name = MyString.remainder(actionString, ActionPrefix.newPose);
+        } else if (actionString.startsWith(ActionPrefix.newAnimationFromPose)) {
+            String name = MyString.remainder(actionString,
+                    ActionPrefix.newAnimationFromPose);
             Maud.model.target.animation.poseAndLoad(name);
             handled = true;
 

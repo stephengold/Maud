@@ -155,13 +155,13 @@ class EditorDialogs {
     }
 
     /**
-     * Display a "new pose" dialog.
+     * Display a "new animation fromPose" dialog.
      */
-    void newPose() {
+    void newAnimationFromPose() {
         DialogController controller = new AnimationNameDialog("Create");
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                "pose", ActionPrefix.newPose, controller);
+                "pose", ActionPrefix.newAnimationFromPose, controller);
     }
 
     /**

@@ -99,14 +99,14 @@ class ActionPrefix {
      */
     final static String loadSourceCgmNamed = "load sourceCgm named ";
     /**
+     * argument is a name for the new animation
+     */
+    final static String newAnimationFromPose = "new animation fromPose ";
+    /**
      * argument is a filesystem path to a folder/directory optionally with a
      * magic filename
      */
     final static String newAssetFolder = "new assetFolder ";
-    /**
-     * argument is a name for the new animation
-     */
-    final static String newPose = "new pose ";
     /**
      * remainder consists of the new type, key, and value
      */
