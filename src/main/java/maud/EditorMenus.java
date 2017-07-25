@@ -773,6 +773,7 @@ class EditorMenus {
      */
     private void buildHistoryMenu() {
         builder.addTool("Tool");
+        //builder.add("Clear"); TODO
     }
 
     /**
@@ -781,17 +782,19 @@ class EditorMenus {
     private void buildKeyframeMenu() {
         builder.addTool("Tool");
         if (Maud.model.target.bone.hasTrack()) {
-            builder.addDialog("Reduce"); // rename Reduce track
-            builder.add("Select");
-            builder.add("Move");
-            int frameIndex = Maud.model.target.track.findKeyframeIndex();
-            if (frameIndex == -1) {
-                builder.add("Insert from pose");
+            if (!Maud.model.target.animation.isMoving()) {
+                builder.add("Select");
+                int frameIndex = Maud.model.target.track.findKeyframeIndex();
+                if (frameIndex == -1) {
+                    builder.add("Insert from pose");
+                }
+                if (frameIndex > 0) {
+                    builder.add("Delete");
+                    //builder.add("Move"); TODO
+                }
             }
+            builder.addDialog("Reduce track");
             builder.add("Wrap track");
-            if (frameIndex > 0) {
-                builder.add("Delete");
-            }
         }
     }
 
@@ -1447,7 +1450,7 @@ class EditorMenus {
                 case "Insert from pose":
                     Maud.model.target.track.insertSingleKeyframe();
                     break;
-                case "Reduce":
+                case "Reduce track":
                     Maud.gui.dialogs.reduceTrack();
                     break;
                 case "Select":
