@@ -29,6 +29,8 @@ package maud.model;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
@@ -48,6 +50,8 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
+import maud.SceneView;
+import maud.Util;
 
 /**
  * The MVC model of the selected spatial in the Maud application.
@@ -95,12 +99,30 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Add a GhostControl to the selected spatial and select the new control.
+     */
+    public void addGhostControl() {
+        GhostControl newSgc = new GhostControl();
+        SceneView sceneView = loadedCgm.getSceneView();
+        Spatial viewSpatial = sceneView.selectedSpatial();
+        CollisionShape shape = Util.makeShape(viewSpatial);
+        newSgc.setCollisionShape(shape);
+
+        editableCgm.addSgc(newSgc);
+        editableCgm.sgc.select(newSgc);
+    }
+
+    /**
      * Add a RigidBodyControl to the selected spatial and select the new
      * control.
      */
     public void addRigidBodyControl() {
         float mass = 1f;
         RigidBodyControl newSgc = new RigidBodyControl(mass);
+        SceneView sceneView = loadedCgm.getSceneView();
+        Spatial viewSpatial = sceneView.selectedSpatial();
+        CollisionShape shape = Util.makeShape(viewSpatial);
+        newSgc.setCollisionShape(shape);
 
         editableCgm.addSgc(newSgc);
         editableCgm.sgc.select(newSgc);

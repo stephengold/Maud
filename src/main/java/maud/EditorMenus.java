@@ -1519,6 +1519,12 @@ class EditorMenus {
 
         boolean handled = true;
         switch (remainder) {
+            case "Add":
+                Maud.model.target.spatial.addRigidBodyControl();
+                break;
+            case "Mass": // TODO
+            case "Tool": // TODO
+            case "Remove": // TODO
             default:
                 handled = false;
         }
