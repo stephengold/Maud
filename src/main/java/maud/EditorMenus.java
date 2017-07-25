@@ -541,6 +541,17 @@ class EditorMenus {
     }
 
     /**
+     * Display a "Animation -> Add new" menu.
+     */
+    private void addNewAnimation() {
+        builder.reset();
+        builder.addDialog("Copy");
+        builder.addDialog("Pose");
+        builder.addTool("Retarget");
+        builder.show("select menuItem Animation -> Add new -> ");
+    }
+
+    /**
      * Display a "Spatial -> Add control" menu.
      */
     private void addSgc() {
@@ -570,9 +581,8 @@ class EditorMenus {
         builder.addTool("Tool");
         if (Maud.model.target.bones.countBones() > 0) {
             builder.add("Load");
-            builder.addDialog("New from copy");
-            builder.addDialog("New from pose");
-            builder.addTool("New from retarget");
+            builder.add("Add new");
+            //builder.add("Unload");
         }
         if (Maud.model.target.animation.isReal()) {
             builder.add("Behead");
@@ -585,7 +595,7 @@ class EditorMenus {
             builder.add("Truncate");
             builder.add("Wrap all tracks");
         }
-        builder.addTool("Source tool");
+        builder.addTool("Source tool"); // TODO submenu
         if (Maud.model.source.isLoaded()
                 && Maud.model.source.bones.countBones() > 0) {
             builder.add("Load source");
@@ -599,15 +609,16 @@ class EditorMenus {
     private void buildBoneMenu() {
         builder.addTool("Tool");
         builder.add("Select");
+        //builder.add("Deselect"); TODO
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
         if (Maud.model.target.bone.isSelected()) {
-            builder.add("Attach prop");
+            //builder.add("Attach prop"); TODO
             builder.addDialog("Rename");
         }
         if (Maud.model.source.isLoaded()) {
-            builder.add("Select source");
+            builder.add("Select source"); // TODO submenu
         }
     }
 
@@ -1057,57 +1068,86 @@ class EditorMenus {
     private boolean menuAnimation(String remainder) {
         assert remainder != null;
 
+        boolean handled;
+        String addNewPrefix = "Add new" + menuSeparator;
+        if (remainder.startsWith(addNewPrefix)) {
+            String arg = MyString.remainder(remainder, addNewPrefix);
+            handled = menuAnimationAddNew(arg);
+
+        } else {
+            handled = true;
+            switch (remainder) {
+                case "Add new":
+                    addNewAnimation();
+                    break;
+                case "Behead":
+                    Maud.model.target.animation.behead();
+                    break;
+                case "Change duration":
+                    Maud.gui.dialogs.setDuration();
+                    break;
+                case "Delete":
+                    Maud.gui.dialogs.deleteAnimation();
+                    break;
+                case "Delete keyframes":
+                    Maud.model.target.animation.deleteKeyframes();
+                    break;
+                case "Insert keyframes":
+                    Maud.model.target.animation.insertKeyframes();
+                    break;
+                case "Load":
+                    List<String> animationNames;
+                    animationNames = Maud.model.target.listAnimationNames();
+                    showAnimationSubmenu(animationNames, Maud.model.target);
+                    break;
+                case "Load source":
+                    loadSourceAnimation();
+                    break;
+                case "Reduce":
+                    Maud.gui.dialogs.reduceAnimation();
+                    break;
+                case "Rename":
+                    Maud.gui.dialogs.renameAnimation();
+                    break;
+                case "Source tool":
+                    Maud.gui.tools.select("sourceAnimation");
+                    break;
+                case "Tool":
+                    Maud.gui.tools.select("animation");
+                    break;
+                case "Truncate":
+                    Maud.model.target.animation.truncate();
+                    break;
+                case "Wrap all tracks":
+                    Maud.model.target.animation.wrapAllTracks();
+                    break;
+                default:
+                    handled = false;
+            }
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "Animation -> Add new" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuAnimationAddNew(String remainder) {
+        assert remainder != null;
+
         boolean handled = true;
         switch (remainder) {
-            case "Behead":
-                Maud.model.target.animation.behead();
-                break;
-            case "Change duration":
-                Maud.gui.dialogs.setDuration();
-                break;
-            case "Delete":
-                Maud.gui.dialogs.deleteAnimation();
-                break;
-            case "Delete keyframes":
-                Maud.model.target.animation.deleteKeyframes();
-                break;
-            case "Insert keyframes":
-                Maud.model.target.animation.insertKeyframes();
-                break;
-            case "Load":
-                List<String> animationNames;
-                animationNames = Maud.model.target.listAnimationNames();
-                showAnimationSubmenu(animationNames, Maud.model.target);
-                break;
-            case "Load source":
-                loadSourceAnimation();
-                break;
-            case "New from copy":
+            case "Copy":
                 Maud.gui.dialogs.copyAnimation();
                 break;
-            case "New from pose":
+            case "Pose":
                 Maud.gui.dialogs.newPose();
                 break;
-            case "New from retarget":
+            case "Retarget":
                 Maud.gui.tools.select("retarget");
-                break;
-            case "Reduce":
-                Maud.gui.dialogs.reduceAnimation();
-                break;
-            case "Rename":
-                Maud.gui.dialogs.renameAnimation();
-                break;
-            case "Source tool":
-                Maud.gui.tools.select("sourceAnimation");
-                break;
-            case "Tool":
-                Maud.gui.tools.select("animation");
-                break;
-            case "Truncate":
-                Maud.model.target.animation.truncate();
-                break;
-            case "Wrap all tracks":
-                Maud.model.target.animation.wrapAllTracks();
                 break;
             default:
                 handled = false;
