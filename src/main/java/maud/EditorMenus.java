@@ -255,8 +255,7 @@ class EditorMenus {
                 file = file.getParentFile();
             }
             String folderPath = file.getAbsolutePath();
-            String menuPrefix;
-            menuPrefix = EditorInputMode.newAssetFolderPrefix + folderPath + "/";
+            String menuPrefix = EditorInputMode.newAssetFolderPrefix + folderPath + "/";
             builder.show(menuPrefix);
         }
     }
@@ -523,6 +522,23 @@ class EditorMenus {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Display an "Settings -> Asset folders -> Add" menu.
+     */
+    private void addAssetFolder() {
+        Map<String, File> fileMap = driveMap();
+        String workPath = System.getProperty("user.dir");
+        File work = new File(workPath);
+        if (work.isDirectory()) {
+            String absoluteDirPath = work.getAbsolutePath();
+            absoluteDirPath = absoluteDirPath.replaceAll("\\\\", "/");
+            File oldFile = fileMap.put(absoluteDirPath, work);
+            assert oldFile == null : oldFile;
+        }
+        buildFolderMenu(fileMap);
+        builder.show(EditorInputMode.newAssetFolderPrefix);
+    }
 
     /**
      * Display a "Spatial -> Add control" menu.
@@ -927,7 +943,6 @@ class EditorMenus {
      */
     private Map<String, File> driveMap() {
         Map<String, File> result = new TreeMap<>();
-
         File[] roots = File.listRoots();
         for (File root : roots) {
             if (root.isDirectory()) {
@@ -1125,9 +1140,7 @@ class EditorMenus {
         boolean handled = false;
         switch (remainder) {
             case "Add":
-                Map<String, File> driveMap = driveMap();
-                buildFolderMenu(driveMap);
-                builder.show(EditorInputMode.newAssetFolderPrefix);
+                addAssetFolder();
                 handled = true;
                 break;
             case "Remove":
