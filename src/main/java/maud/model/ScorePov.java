@@ -90,15 +90,6 @@ public class ScorePov implements Cloneable, Pov {
     // new methods exposed
 
     /**
-     * Read the camera's vertical location.
-     *
-     * @return Y coordinate of camera (in world space)
-     */
-    public float getCameraY() {
-        return cameraLocation.y;
-    }
-
-    /**
      * Calculate how much the camera magnifies the Y axis relative to the X
      * axis.
      *
@@ -113,6 +104,15 @@ public class ScorePov implements Cloneable, Pov {
 
         assert factor > 0f : factor;
         return factor;
+    }
+
+    /**
+     * Read the camera's vertical location.
+     *
+     * @return Y coordinate of camera (in world space)
+     */
+    public float getCameraY() {
+        return cameraLocation.y;
     }
 
     /**
