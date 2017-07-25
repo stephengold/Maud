@@ -213,8 +213,8 @@ public class EditableMap extends LoadedMap {
      */
     public void unload() {
         map.clear();
-        assetFolder = null;
-        assetPath = null;
+        assetFolder = "";
+        assetPath = "";
         setEdited("unload map");
     }
 
