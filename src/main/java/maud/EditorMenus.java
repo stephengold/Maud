@@ -919,20 +919,10 @@ class EditorMenus {
         builder.add("Mode");
         String viewMode = Maud.model.misc.getViewMode();
         if (viewMode.equals("scene") || viewMode.equals("hybrid")) {
-            builder.addTool("Axes");
-            builder.addTool("Bounds");
-            builder.addTool("Camera");
-            builder.addTool("Cursor");
-            builder.addTool("Physics");
-            builder.addTool("Platform");
-            builder.addTool("Render");
-            builder.addTool("Skeleton");
-            builder.addTool("Skeleton color");
-            builder.addTool("Sky");
+            builder.add("Scene options");
         }
         if (viewMode.equals("score") || viewMode.equals("hybrid")) {
-            builder.addTool("Background");
-            builder.addTool("Score");
+            builder.add("Score options");
         }
     }
 
@@ -1546,6 +1536,81 @@ class EditorMenus {
     }
 
     /**
+     * Handle a "select menuItem" action from the "View -> Scenes" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuSceneView(String remainder) {
+        assert remainder != null;
+
+        boolean handled = true;
+        switch (remainder) {
+            case "Axes":
+                Maud.gui.tools.select("axes");
+                break;
+            case "Bounds":
+                Maud.gui.tools.select("bounds");
+                break;
+            case "Camera":
+                Maud.gui.tools.select("camera");
+                break;
+            case "Cursor":
+                Maud.gui.tools.select("cursor");
+                break;
+            case "Mode":
+                selectViewMode();
+                break;
+            case "Physics":
+                handled = false;
+                break;
+            case "Platform":
+                Maud.gui.tools.select("platform");
+                break;
+            case "Render":
+                Maud.gui.tools.select("render");
+                break;
+            case "Skeleton":
+                Maud.gui.tools.select("skeleton");
+                break;
+            case "Skeleton color":
+                Maud.gui.tools.select("skeletonColor");
+                break;
+            case "Sky":
+                Maud.gui.tools.select("sky");
+                break;
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "View -> Scores" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuScoreView(String remainder) {
+        assert remainder != null;
+
+        boolean handled = true;
+        switch (remainder) {
+            case "Background":
+                Maud.gui.tools.select("background");
+                break;
+            case "Tool":
+                Maud.gui.tools.select("score");
+                break;
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
+
+    /**
      * Handle a "select menuItem" action from the Settings menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -1738,50 +1803,30 @@ class EditorMenus {
 
         boolean handled = true;
         String modePrefix = "Mode" + menuSeparator;
+        String scenesPrefix = "Scene options" + menuSeparator;
+        String scoresPrefix = "Score options" + menuSeparator;
         if (remainder.startsWith(modePrefix)) {
             String arg = MyString.remainder(remainder, modePrefix);
             handled = menuViewMode(arg);
 
+        } else if (remainder.startsWith(scenesPrefix)) {
+            String arg = MyString.remainder(remainder, scenesPrefix);
+            handled = menuSceneView(arg);
+
+        } else if (remainder.startsWith(scoresPrefix)) {
+            String arg = MyString.remainder(remainder, scoresPrefix);
+            handled = menuScoreView(arg);
+
         } else {
             switch (remainder) {
-                case "Axes":
-                    Maud.gui.tools.select("axes");
-                    break;
-                case "Background":
-                    Maud.gui.tools.select("background");
-                    break;
-                case "Bounds":
-                    Maud.gui.tools.select("bounds");
-                    break;
-                case "Camera":
-                    Maud.gui.tools.select("camera");
-                    break;
-                case "Cursor":
-                    Maud.gui.tools.select("cursor");
-                    break;
                 case "Mode":
                     selectViewMode();
                     break;
-                case "Physics":
-                    handled = false;
+                case "Scene options":
+                    sceneViewOptions();
                     break;
-                case "Platform":
-                    Maud.gui.tools.select("platform");
-                    break;
-                case "Render":
-                    Maud.gui.tools.select("render");
-                    break;
-                case "Score":
-                    Maud.gui.tools.select("score");
-                    break;
-                case "Skeleton":
-                    Maud.gui.tools.select("skeleton");
-                    break;
-                case "Skeleton color":
-                    Maud.gui.tools.select("skeletonColor");
-                    break;
-                case "Sky":
-                    Maud.gui.tools.select("sky");
+                case "Score options":
+                    scoreViewOptions();
                     break;
                 default:
                     handled = false;
@@ -1816,6 +1861,34 @@ class EditorMenus {
         }
 
         return handled;
+    }
+
+    /**
+     * Display a "View -> Scene options" menu.
+     */
+    private void sceneViewOptions() {
+        builder.reset();
+        builder.addTool("Axes");
+        builder.addTool("Bounds");
+        builder.addTool("Camera");
+        builder.addTool("Cursor");
+        builder.addTool("Physics");
+        builder.addTool("Platform");
+        builder.addTool("Render");
+        builder.addTool("Skeleton");
+        builder.addTool("Skeleton color");
+        builder.addTool("Sky");
+        builder.show("select menuItem View -> Scene options -> ");
+    }
+
+    /**
+     * Display a "View -> Score options" menu.
+     */
+    private void scoreViewOptions() {
+        builder.reset();
+        builder.addTool("Tool");
+        builder.addTool("Background");
+        builder.show("select menuItem View -> Score options -> ");
     }
 
     /**
