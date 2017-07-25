@@ -479,19 +479,18 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Select the bone or axis tip whose screen coordinates are nearest to the
-     * mouse pointer.
+     * Select an axis, bone, gnomon, or keyframe based on the screen coordinates
+     * of the mouse pointer.
      */
     void selectXY() {
         LoadedCgm mouseCgm = Maud.gui.mouseCgm();
         EditorView mouseView = Maud.gui.mouseView();
-        if (mouseCgm == null || mouseView == null) {
-            return;
+        if (mouseCgm != null && mouseView != null) {
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            Selection selection = new Selection(mouseXY, dSquaredThreshold);
+            mouseView.considerAll(selection);
+            selection.select();
         }
-        Vector2f mouseXY = inputManager.getCursorPosition();
-        Selection selection = new Selection(mouseXY, dSquaredThreshold);
-        mouseView.considerAll(selection);
-        selection.select();
     }
 
     /**
