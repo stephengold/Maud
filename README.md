@@ -1,8 +1,6 @@
-# Maud
+<img height="150" src="https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/Maud.png" alt="Maud logo"/>
 
 Maud is an editor for the animated 3-D models used by jMonkeyEngine.
-
-<img height="150" src="https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/Maud.png" alt="Maud logo"/>
 
 Summary of features:
  + import models from Blender/Ogre/Wavefront and save to native J3O format
@@ -139,6 +137,61 @@ Other standard keyboard shortcuts include:
 Mouse-button assignments and keyboard shortcuts can be customized using the
 Bind screen (or by editing the "Interface/bindings/3DView.properties" asset)
 in which case shortcuts mentioned in this document might not work.
+
+### Views, models, and view modes in the Editor Screen
+
+At startup, the Editor Screen displays a "scene" view of a single model:  Jaime, from the
+jme3-testdata library.
+
+![](fig01.png "A screenshot of the Editor Screen at startup")
+
+A scene view consists of a 3-D render of a loaded model, possibly with a
+background, a cursor, a supporting platform, and/or overlaid visualizations.
+Visualization can include axes, a bounding box, physics objects, and/or a
+skeleton.  If you load and play an animation in scene view, you'll see the
+model's bones move, rather like it would in a game.
+
+The Editor Screen can also display "score" views of loaded animations.
+A score view is a schematic, like a musical score, with bones arranged
+vertically and time (indicated by a gnomon) progressing from left to right.
+
+While Maud can only edit one model at a time, the Editor Screen can split
+in half to display two different models.
+(This is useful when retargeting animations from one model to another.)
+The model being edited is called the "target" model.
+The other model is called the "source" model.
+
+The Editor Screen operates in three "view modes":
+"Scene Mode", "Score Mode", and "Hybrid Mode".
+
+<table>
+    <tr>
+        <th>View mode:</th>
+        <th>With no source model loaded:</th>
+        <th>With a source model loaded:</th>
+    </tr>
+    <tr>
+        <td>In Scene Mode...</td>
+        <td>A full-width scene view of the target model</td>
+        <td>A split screen with a scene view of the source model on the left
+            and a scene view of the target model on the right</td>
+    </tr>
+    <tr>
+        <td>In Score Mode...</td>
+        <td>A full-width score view of the target model</td>
+        <td>A split screen with a score view of the source model on the left
+            and a score view of the target model on the right</td>
+    </tr>
+    <tr>
+        <td>In Hybrid Mode...</td>
+        <td colspan="2">A split screen with a score view of the target model on the left
+            and a scene view of the target model on the right</td>
+    </tr>
+</table>
+
+Standard keyboard shortcuts for views and view modes include:
+ + "A" and "D" (in a scene view) to rotate a model left and right
+ + "`" (the backtick key) to cycle through the three view modes
 
 ### Maud's camera
 
