@@ -93,12 +93,12 @@ Clone the Maud repository using Git:
 
 ### Overview of the user interface
 
-Maud's user interface is composed 3 screens: "Start", "3D View", and "Bind".
+Maud's user interface is composed 3 screens: "Start", "Editor", and "Bind".
 The "Start" screen loads first. It merely displays the logo while some
-initialization takes place.  It should automatically give way to the 3D View
+initialization takes place.  It should automatically give way to the Editor
 screen after a few seconds.
 
-The 3D View screen is the main screen of Maud, where 3-D models are viewed
+The Editor screen is the main screen of Maud, where 3-D models are viewed
 and edited.  There's a menu bar across the top.  The rest of the user-interface
 is split into overlapping sub-windows called "tools".  At last count there
 were 29 tools.
@@ -204,7 +204,7 @@ The Camera Tool (selected via the View menu) can be used to change modes.
 
 "Orbit mode" is the camera's default movement mode.
 In orbit mode, the camera orbits the "3D cursor" -- typically visible
-as a small, white, 6-pointed star at the center of the 3D View screen.
+as a small, white, 6-pointed star at the center of the Editor screen.
 In orbit mode, turning the camera also changes its location, making it easy to
 view models from different directions.
 
