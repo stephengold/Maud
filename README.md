@@ -1,26 +1,33 @@
 # Maud
 
-Maud is an editor for animated 3-D models used by jMonkeyEngine.
+Maud is an editor for the animated 3-D models used by jMonkeyEngine.
 
-Summary of Maud features:
- + import models from Blender or Ogre XML (or Wavefront OBJ or Ogre DotScene)
+<img height="150" src="https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/Maud.png" alt="Maud logo"/>
+
+Summary of features:
+ + import models from Blender/Ogre/Wavefront and save to native J3O format
  + import animations from BVH
- + view animations forward/backward at various speeds
- + add new animation from poses or by altering existing animations
- + retarget animations from one model to another via skeleton mappings
- + undo/redo edits and review edit history
+ + visualize animations, axes, bones, bounding boxes, skeletons, and physics objects
+ + play animations forward/backward at various speeds and pause them
+ + add new animations from poses or by altering existing animations
+ + retarget animations from one model to another using skeleton maps
+ + insert keyframes in animations and bone tracks
+ + rename animations, bones, spatials, and user data
+ + change animation durations
+ + behead/truncate animations
+ + reduce/wrap animations and bone tracks
+ + delete animations, bone tracks, and keyframes
+ + add scene-graph controls and user data to spatials
+ + modify spatial transforms (translation, rotation, and scale)
+ + modify spatial batch modes, cull hints, render queues, shadow modes, and user data
+ + delete scene-graph controls and user data
+ + review edit history and undo/redo edits
  + customize mouse-button assignments and keyboard shortcuts
- + rename animations, bones, spatials, and user-data keys
- + change spatial transforms including translation, rotation, and scale
- + change shadow modes and cull hints
- + add user-data keys and scene-graph controls to spatials
- + complete source code provided under FreeBSD license
+ + complete Java source code provided under FreeBSD license
 
 Maud was designed for a desktop environment with a wheel mouse.
 
 Status as of July 2017: under development, will seek beta testers soon.
-
-<img height="100" src="https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/Maud.png" alt="Maud logo"/>
 
 ### Conventions
 
