@@ -112,6 +112,8 @@ is split into overlapping sub-windows called "tools".
 
 ![screenshot](fig02.png "Editor Screen with 3 tools visible and a menu active")
 
+#### Tools
+
 At last count there were 29 tools.
 Each tool can be independently hidden or made visible.
 
@@ -119,26 +121,41 @@ Selecting a tool makes it visible and moves it to the top layer for convenient
 use, but you can use a tool without it being on top.
 The controls in a tool will work even when partly obscured.
 You can move a tool by dragging its title bar with the left mouse button (LMB).
-If a tool gets in the way, you can dismiss it by clicking
-the X in its upper right corner.
-Dismissing a tool won't affect anything else, so it's always a safe move.
+
+If a tool gets in your way, you can hide it by clicking on
+the X in its upper right corner with the LMB.
+Hiding a tool won't affect anything else, so it's always a safe move.
+
+#### Menus
+
+Clicking on the menu bar with the LMB activates the corresponding menu.
+When a menu is active, the remainder of the screen darkens,
+and the mouse cursor becomes a right-pointing magenta arrow.
+You can then select a menu item by clicking on it with the LMB or RMB.
+
+Some menu items activate submenus.  Others display icons to help describe
+what they do:
+ + a wrench icon to select a tool
+ + a dialog box icon to open a modal dialog box
+ + a bone icon to select a bone
+ + and so forth.
 
 ![wrench icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/tool.png)
 ![dialog icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/dialog.png)
 ![bone icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/bone.png)
 
-Many menu items display icons to help describe what they do:
- + a wrench icon to select a tool
- + a dialog box icon to open a modal dialog box
- + a bone icon to select a bone
- + and so forth.
+Menus are context-sensitive, so for instance you'll see many more options
+in the Animation menu when an animation is loaded than when the model is
+in bind pose.
 
 Many menu items are numbered.  For instance, the first item in the menu bar is
 labeled "1] View".  The numbers indicate keyboard shortcuts for
 navigating menus.  In other words, you can select the View Menu by pressing
 the "1" key on the main keyboard (NOT the "1" key on the numeric keypad).
 
-Other keyboard shortcuts for Editor Screen include:
+#### Keyboard shortcuts
+
+Keyboard shortcuts for the Editor Screen include:
  + "E" to deselect the selected bone in a model
  + "." to pause/restart the loaded animation(s)
  + "Esc" to exit from the active menu (or from the Maud application)
@@ -148,21 +165,26 @@ Other keyboard shortcuts for Editor Screen include:
  + "F1" to switch to the Bind screen
 
 Mouse-button assignments and keyboard shortcuts can be customized using the
-Bind Screen (or by editing the "Interface/bindings/editor.properties" asset)
-in which case shortcuts mentioned in this document might not work.
+Bind Screen (or by editing the "Interface/bindings/editor.properties" asset
+prior to startup)
+in which case shortcuts described in this document might not work.
 
-### Views, models, and view modes in the Editor Screen
+### Views and models in the Editor Screen
 
-At startup, the Editor Screen displays a "scene" view of a single model:  Jaime, from the
-jme3-testdata library.
+At startup, the Editor Screen displays a "scene" view of a single model:
+Jaime, from the jme3-testdata library.
 
-![](fig01.png "A screenshot of the Editor Screen at startup")
+![screenshot](fig01.png "Editor Screen at startup")
 
 A scene view consists of a 3-D render of a loaded model, possibly with a
-background, a cursor, a supporting platform, and/or overlaid visualizations.
+background, a 3D cursor, a supporting platform, and/or overlaid visualizations.
 Visualization can include axes, a bounding box, physics objects, and/or a
 skeleton.  If you load and play an animation in a scene view, you'll see the
 model's bones move, rather like it would in a game.
+
+When the mouse cursor is in a scene view, you can use the "A" and "D" keys
+to rotate the model left and right.  (This won't alter the model itself,
+just how it is oriented in the scene.)
 
 The Editor Screen can also display "score" views of loaded animations.
 A score view is a schematic, like a musical score, with bones arranged
@@ -174,12 +196,15 @@ in half to display two different models.
 The model being edited is called the "target" model.
 The other model is called the "source" model.
 
-The Editor Screen operates in three "view modes":
+### Views modes of the Editor Screen
+
+The Editor Screen operates in three "view modes", namely:
 "Scene Mode", "Score Mode", and "Hybrid Mode".
+You can use the backtick key ("`") to cycle through these modes.
 
 <table>
     <tr>
-        <th>View mode:</th>
+        <th></th>
         <th>With no source model loaded:</th>
         <th>With a source model loaded:</th>
     </tr>
@@ -202,16 +227,15 @@ The Editor Screen operates in three "view modes":
     </tr>
 </table>
 
-Standard keyboard shortcuts for views and view modes include:
- + "A" and "D" (in a scene view) to rotate a model left and right
- + "`" (the backtick key) to cycle through the three view modes
+### Maud's cameras
 
-### Maud's camera
-
-The mouse wheel and middle mouse button (MMB) control the cameras (aka viewpoints).
-Turn the mouse wheel to move a camera forward or back.
+Each view has its own camera.
+The mouse wheel and middle mouse button (MMB) control Maud's cameras.
+Turn the mouse wheel to move a camera forward or backward.
 In scene views, drag with MMB to turn the camera.
 If score views, drag up/down with MMB to scroll the view down/up.
+
+#### Scene-view cameras
 
 Beyond that, it gets complicated, since scene-view cameras operate in
 2 "movement modes" and 2 "projection modes".
@@ -231,7 +255,7 @@ in the scene won't affect the 3D cursor.
 The Cursor Tool (selected by means of the View -> Scene menu)
 can be used to alter the appearance of the 3D cursor.
 
-"Fly Mode" is a scene camera's alternative movement mode.
+"Fly Mode" is a scene-view camera's alternative movement mode.
 In fly mode, the camera disregards the 3D cursor, enabling closeups of
 locations the 3D cursor can't easily reach, such as the interior
 of a model.
@@ -245,22 +269,29 @@ Standard keyboard shortcuts affecting the scene-view cameras:
  + "Numpad-1" to move (or rotate) to a horizontal view
  + "Numpad-5" to toggle between perspective and parallel projection modes
 
+#### Score-view cameras
+
 Score views don't have anything analogous to the 3D cursor, but you can
-still move the camera up/down by clicking LMB where you want the camera to look.
+move the score-view camera up/down by clicking LMB where you want it to look.
 
-### Loading (or importing) model assets
+## 3-D models
 
-As mentioned earlier, Maud always has a (target) model loaded, and in addition
-a second model (the source model) can be loaded.
+As mentioned above, Maud always has a (target) model loaded,
+and an additional model (the source model) can also be loaded.
 The source model can't be edited; only the target can be edited.
-However, the source model can be animated and viewed, and it can also supply
-animations for retargeting.
+
+The Model Tool (selected using "Models -> Tool") displays basic
+information about the loaded target model.
+
+### Loading (or importing) models from assets
 
 Models are loaded from assets, which can be located either in the
-Java classpath or in the filesystem.  Before loading an asset from
-the filesystem, you need to specify a folder (aka directory) where
-Maud can look for assets.  Select "Settings -> Asset folders -> Add", then
-navigate to the asset folder (which typically contains a "Model" subfolder)
+Java classpath or in the filesystem.
+
+Before loading an asset from the filesystem, you must specify
+a folder (aka directory) where Maud assets are located:
+select "Settings -> Asset folders -> Add",
+then navigate to the asset folder (it typically contains a "Model" subfolder),
 and select "! add this folder".
 
 To load a new target model, select the "Models -> Load" menu option.
