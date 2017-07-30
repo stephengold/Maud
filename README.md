@@ -294,12 +294,73 @@ select "Settings -> Asset folders -> Add",
 then navigate to the asset folder (it typically contains a "Model" subfolder),
 and select "! add this folder".
 
-To load a new target model, select the "Models -> Load" menu option.
+To load a new target model, select the "Models -> Load" menu item,
+then select an asset folder, then navigate to the model file.
+To load a new source model, select "Models -> Source model -> Load",
+then select an asset folder, then navigate to the model file.
 
-The Model Tool (selected via the Model->Target menu) displays basic
-information about the loaded target model.
+Maud can of course load models in jME's native binary format.
+To be recognized, such models must have filenames ending in ".j3o".
 
-TODO more
+Maud can also import models in other formats:
+ + Blender 3D (filename must end in ".blend")
+ + Ogre DotScene (filename must end in ".scene")
+ + Ogre XML (filename must end in ".mesh.xml")
+ + Wavefront OBJ (filename must end in ".obj")
+
+In addition, Biovision Hierarchy animations can be imported as models.
+To be recognized, the the filename name must end in ".bvh".
+The imported model will consist of a single node without any geometries.
+
+### Saving the target model
+
+To write the target model to a file in jME's native binary format,
+open the save dialog: "Models -> Save".
+Modify the base file path as desired, and click on the "Save" button.
+The suffix ".j3o" is automatically appended to the base file path.
+
+By default, models loaded from the classpath will be written to a
+"Written assets" folder under the application's working folder.
+Maud treats this asset folder as if it were part of the classpath.
+
+## Animations and poses
+
+In jME, animations are named parts of a 3D model, each with its own duration.
+Maud also treats the model's bind pose as a zero-duration
+animation for many purposes.
+
+The Animation Tool (selected using "Animations -> Tool")
+controls the target model's loaded animation.
+There's also a Source Animation Tool ("Animations -> Source tool")
+to control the source model's loaded animation.
+
+### Loading animations
+
+In Maud, "loading" an animation means selecting it for editing and display.
+To do this, select "Animations -> Load" and then the name of the animation.
+
+### Playing/pausing animations
+
+Once an animation is loaded, Maud can play it forward or backward at speeds
+of up to 2x.
+By default, Maud loops to the beginning (or end) of the loaded animation
+when it reached the end (or beginning).
+You can also instruct it to stop when it reaches the end (or beginning)
+of the loaded animation, or to reverse direction.
+
+You can also "pin" an animation.
+This holds all root bone(s) to the model origin for display purposes.
+
+As mentioned above, you can use the "." key to pause/restart the
+loaded animation(s).
+
+## Bones
+
+### Selecting bones
+
+## Skeleton maps
+
+## The edit history
 
 ## Next steps
 
