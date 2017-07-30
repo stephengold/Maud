@@ -200,7 +200,8 @@ The other model is called the "source" model.
 
 The Editor Screen operates in three "view modes", namely:
 "Scene Mode", "Score Mode", and "Hybrid Mode".
-You can use the backtick key ("`") to cycle through these modes.
+You can select a view mode using the "View -> Mode" submenu or
+use the backtick ("`") keyboard shortcut to cycle through these modes.
 
 <table>
     <tr>
@@ -239,7 +240,7 @@ If score views, drag up/down with MMB to scroll the view down/up.
 
 Beyond that, it gets complicated, since scene-view cameras operate in
 2 "movement modes" and 2 "projection modes".
-The Camera Tool (selected by means of the "View -> Scene" menu)
+The "Camera Tool" (selected using "View -> Scene options -> Camera")
 can be used to select these modes.
 
 "Orbit Mode" is a scene-view camera's default movement mode.
@@ -252,8 +253,8 @@ Move the 3D cursor to a new location by clicking LMB on an object in the view:
 either the model or its platform.
 The 3D cursor doesn't attach to any object, so moving or altering objects
 in the scene won't affect the 3D cursor.
-The Cursor Tool (selected by means of the View -> Scene menu)
-can be used to alter the appearance of the 3D cursor.
+The "Cursor Tool" (selected using "View -> Scene options -> Cursor")
+can alter the appearance of the 3D cursor.
 
 "Fly Mode" is a scene-view camera's alternative movement mode.
 In fly mode, the camera disregards the 3D cursor, enabling closeups of
@@ -280,7 +281,7 @@ As mentioned above, Maud always has a (target) model loaded,
 and an additional model (the source model) can also be loaded.
 The source model can't be edited; only the target can be edited.
 
-The Model Tool (selected using "Models -> Tool") displays basic
+The "Model Tool" (selected using "Models -> Tool") displays basic
 information about the loaded target model.
 
 ### Loading (or importing) models from assets
@@ -384,7 +385,7 @@ use caution with this technique.
 
 ## Animations and poses
 
-In jME, animations are named parts of a 3D model, each with its own duration.
+In jME, "animations" are named parts of a 3D model, each with its own duration.
 Maud also treats the model's bind pose as a zero-duration
 animation for many purposes.
 
@@ -395,27 +396,31 @@ to control the source model's loaded animation.
 
 ### Loading animations
 
-In Maud, "loading" an animation means selecting it for editing and display.
+In Maud, "loading" an animation means selecting it
+for visualization, playback, and editing.
 To do this, select "Animations -> Load" and then the name of the animation.
 
-### Playing/pausing animations
+### Playing, pausing, and pinning animations
 
 Once an animation is loaded, Maud can play it forward or backward at speeds
 of up to 2x.
-By default, Maud loops to the beginning (or end) of the loaded animation
-when it reached the end (or beginning).
-You can also instruct it to stop when it reaches the end (or beginning)
-of the loaded animation, or to reverse direction.
+Each animation tool has a slider to control the speed and direction
+of playback.
 
-You can also "pin" an animation.
-This holds all root bone(s) to the model origin for display purposes.
+Each animation tool also has a button to pause/resume the loaded animation.
+As mentioned above, you can also use the "." keyboard shortcut
+to pause/resume loaded animations.
 
-As mentioned above, you can use the "." key to pause/restart the
-loaded animation(s).
+By default, Maud "loops" to the start (or end) of the loaded animation
+when playback reaches the animation's end (or start).
+Using the animation tools, you can instruct Maud to pause and/or reverse
+direction ("pong") instead.
 
-## Bones
+Using the animation tools, you can also "pin" a loaded animation.
+Pinning an animation keeps its root bone(s) at the model origin
+for display purposes.
 
-### Selecting bones
+### Poses
 
 ## Skeleton maps
 
@@ -443,7 +448,7 @@ I therefore acknowledge the following software developers:
   + the Git revision control system
   + the Google Chrome web browser
   + the Java compiler, standard doclet, and runtime environment
-  + jMonkeyEngine and the jME3 Software Development Kit
+  + jMonkeyEngine and the jME3 Software Development Kit (SDK)
   + LWJGL, the Lightweight Java Game Library
   + Microsoft Windows
   + the NetBeans integrated development environment
