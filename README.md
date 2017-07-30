@@ -323,6 +323,65 @@ By default, models loaded from the classpath will be written to a
 "Written assets" folder under the application's working folder.
 Maud treats this asset folder as if it were part of the classpath.
 
+## Bones
+
+In jME, "bones" are named parts of a 3D model that can influence the positions
+of vertices in that model's meshes.
+A vertex can be influenced by up to 4 bones.
+A bone can also influence other bones, called its "children".
+A bone with no children is a "leaf" bone.
+A bone with no parent is a "root" bone.
+
+Each bone has a "head" around which it pivots.
+However a jME bone need not have a defined "tail", a length, or even direction.
+
+In a scene view, Maud visualizes each bone as a round dot
+(red or green by default)
+connected to its children by lines (white by default).
+(You can customize these colors with the "Skeleton Color Tool":
+"View -> Scene options -> Skeleton color".)
+
+In a score view, each bone is represented by horizontal "staff".
+If space permits, the staff includes a rectangular name label on the left.
+If the bone is tracked (more about that later) the staff also includes
+up to 10 stacked "sparklines" bracketed by a pair of "finials".
+The sparklines, rendered in four colors, represent animation data,
+and the finials help distinguish which sparkline is which.
+
+![screenshot](fig03.png "a detailed staff in a score view")
+
+Before editing a bone in Maud, you must "select" it.
+In a scene view, the selected bone (if any) is typically indicated by
+three arrows, denoting the axes of its local coordinate space.
+In a score view, the selected bone is indicated by dark finials and a
+dark background for its name label.
+
+The "Bone Tool" (selected using "Bone -> Tool") controls the target model's
+selected bone.
+
+### Selecting bones
+
+Maud offers many ways to select a bone.
+
+The "Bone -> Select" submenu enables you to select bones in the
+target model by name:
+ + from among all bones in the selected skeleton, or
+ + from among the root bones in that skeleton, or
+ + from among all bones with tracks in the loaded animation, or
+ + from among the children of the selected bone.
+It also enables you to navigate the bone hierarchy "by parent"
+or step through bones in numerical order ("Previous" and "Next").
+
+The Bone Tool provides more convenient interfaces to these same
+selection options.
+
+The quickest way to select a bone is to click the RMB on it.
+This works in both scene views and in score views, and
+for both the source model and the target model.
+However, since bones can appear very close together in scene views,
+and since the RMB is used to select objects besides bones,
+use caution with this technique.
+
 ## Animations and poses
 
 In jME, animations are named parts of a 3D model, each with its own duration.
