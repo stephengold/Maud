@@ -23,7 +23,8 @@ Summary of features:
  + customize mouse-button assignments and keyboard shortcuts
  + complete Java source code provided under FreeBSD license
 
-Maud was designed for a desktop environment with a wheel mouse.
+Maud was designed for a desktop environment with a wheel mouse and a display
+at least 640 pixels wide and 480 pixels tall.
 
 Status as of July 2017: under development, will seek beta testers soon.
 
@@ -45,12 +46,17 @@ https://github.com/stephengold/jme3-utilities
 Maud includes code from the the BVH Retarget Project at
 https://github.com/Nehon/bvhretarget
 
-## How to install the SDK and the Maud project
+## How to download and install a pre-compiled release of Maud
 
-### jMonkeyEngine3 (jME3) Software Development Kit (SDK)
+(Coming soon.)
 
-Maud currently targets Version 3.1 of jMonkeyEngine.  You are welcome to
-use the Engine without also using the SDK, but I use the SDK, and the following
+## How to build Maud from source
+
+### jMonkeyEngine (jME) Software Development Kit (SDK)
+
+Maud currently targets Version 3.1 of jME.  You are welcome to
+use jME without installing its Integrated Development Environment
+(IDE), but I use the IDE, and the following
 installation instructions assume you will too.
 
 The hardware and software requirements of the SDK are documented at
@@ -59,11 +65,11 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
  1. Download a jMonkeyEngine 3.1 SDK from https://github.com/jMonkeyEngine/sdk/releases
  2. Install the SDK, which includes:
    + the engine itself,
-   + an integrated development environment (IDE) based on NetBeans,
+   + the IDE, which is based on NetBeans,
    + various plugins, and
    + the Blender 3D application.
- 3. To open the project in the SDK (or NetBeans), you will need the "Gradle
-    Support" plugin.  Download and install it before proceeding.
+ 3. To open the Maud project in the IDE (or in NetBeans), you will need the
+    "Gradle Support" plugin.  Download and install it before proceeding.
 
 ### Source files
 
@@ -87,27 +93,31 @@ Clone the Maud repository using Git:
 ### Build the project
 
  1. In the "Projects" window, right-click on the "Maud" project to select it.
- 2. Select "Build".
+ 2. Select "Build" or "Run".
 
 ## Using Maud
 
 ### Overview of the user interface
 
 Maud's user interface is composed 3 screens: "Start", "Editor", and "Bind".
-The "Start" screen loads first. It merely displays the logo while some
-initialization takes place.  It should automatically give way to the Editor
-screen after a few seconds.
+The Start Screen loads first. It merely displays the Maud logo while
+initialization completes.  It should automatically transition to the Editor
+Screen after a few seconds.
 
-The Editor screen is the main screen of Maud, where 3-D models are viewed
-and edited.  There's a menu bar across the top.  The rest of the user-interface
+The Editor Screen is Maud's main screen, where 3-D models are viewed
+and edited.  There's a menu bar across the top and a message bar at the bottom.
+The rest of the user interface
 is split into overlapping sub-windows called "tools".  At last count there
 were 29 tools.
 
-Selecting a tool makes it visible and moves it to the top for convenient use,
-but the controls in the tool will work even when partly obscured.
-You can move a tool around by dragging its title bar with the left mouse
-button (LMB).
-You can dismiss a tool by clicking the X in its upper right corner.
+TODO screenshot here
+
+Selecting a tool makes it visible and moves it to the top layer for convenient
+use, but you can use a tool without it being on top.
+The controls in a tool will work even when partly obscured.
+You can move a tool by dragging its title bar with the left mouse button (LMB).
+If a tool gets in the way, you can dismiss it by clicking
+the X in its upper right corner.
 Dismissing a tool won't affect anything else, so it's always a safe move.
 
 ![wrench icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/tool.png)
@@ -118,24 +128,24 @@ Many menu items display icons to help describe what they do:
  + a wrench icon to select a tool
  + a dialog box icon to open a modal dialog box
  + a bone icon to select a bone
- + and so forth
+ + and so forth.
 
 Many menu items are numbered.  For instance, the first item in the menu bar is
-labeled "1] View".  The numbers indicate keyboard shortcuts for navigating menus
-and selecting items.  In other words, you can select the "View" menu by pressing
-the "1" key on the main keyboard (but not the one on the numeric keypad).
+labeled "1] View".  The numbers indicate keyboard shortcuts for
+navigating menus.  In other words, you can select the View Menu by pressing
+the "1" key on the main keyboard (NOT the "1" key on the numeric keypad).
 
-Other standard keyboard shortcuts include:
- + "A" and "D" to rotate the target model left and right
- + "." to pause/restart loaded animation(s)
- + "Esc" to quit from Maud
+Other keyboard shortcuts for Editor Screen include:
+ + "E" to deselect the selected bone in a model
+ + "." to pause/restart the loaded animation(s)
+ + "Esc" to exit from the active menu (or from the Maud application)
  + "X" to create a checkpoint
  + "Z" to undo to the previous checkpoint
  + "Y" to redo to the next checkpoint
  + "F1" to switch to the Bind screen
 
 Mouse-button assignments and keyboard shortcuts can be customized using the
-Bind screen (or by editing the "Interface/bindings/3DView.properties" asset)
+Bind Screen (or by editing the "Interface/bindings/editor.properties" asset)
 in which case shortcuts mentioned in this document might not work.
 
 ### Views, models, and view modes in the Editor Screen
@@ -148,7 +158,7 @@ jme3-testdata library.
 A scene view consists of a 3-D render of a loaded model, possibly with a
 background, a cursor, a supporting platform, and/or overlaid visualizations.
 Visualization can include axes, a bounding box, physics objects, and/or a
-skeleton.  If you load and play an animation in scene view, you'll see the
+skeleton.  If you load and play an animation in a scene view, you'll see the
 model's bones move, rather like it would in a game.
 
 The Editor Screen can also display "score" views of loaded animations.
@@ -195,54 +205,65 @@ Standard keyboard shortcuts for views and view modes include:
 
 ### Maud's camera
 
-The mouse wheel and middle mouse button (MMB) control the camera (viewpoint).
-Turn the wheel to move forward or back. Drag with MMB to turn the camera.
+The mouse wheel and middle mouse button (MMB) control the cameras (aka viewpoints).
+Turn the mouse wheel to move a camera forward or back.
+In scene views, drag with MMB to turn the camera.
+If score views, drag up/down with MMB to scroll the view down/up.
 
-Beyond that, it gets complicated, since Maud's camera (viewpoint) operates in
-2 movement modes and 2 projection modes.
-The Camera Tool (selected via the View menu) can be used to change modes.
+Beyond that, it gets complicated, since scene-view cameras operate in
+2 "movement modes" and 2 "projection modes".
+The Camera Tool (selected by means of the "View -> Scene" menu)
+can be used to select these modes.
 
-"Orbit mode" is the camera's default movement mode.
+"Orbit Mode" is a scene-view camera's default movement mode.
 In orbit mode, the camera orbits the "3D cursor" -- typically visible
-as a small, white, 6-pointed star at the center of the Editor screen.
+as a small, white, 6-pointed star at the center of the view.
 In orbit mode, turning the camera also changes its location, making it easy to
-view models from different directions.
+view models from many directions.
 
-Move the 3D cursor to a new location by clicking LMB on an object in the scene.
-The 3D cursor never attaches to any object, so moving or altering objects
+Move the 3D cursor to a new location by clicking LMB on an object in the view:
+either the model or its platform.
+The 3D cursor doesn't attach to any object, so moving or altering objects
 in the scene won't affect the 3D cursor.
-The Cursor Tool (selected via the View menu) can be used to alter the
-appearance of the 3D cursor.
+The Cursor Tool (selected by means of the View -> Scene menu)
+can be used to alter the appearance of the 3D cursor.
 
-"Fly mode" is the camera's alternative movement mode.
-In fly mode, the camera disregards the 3D cursor, allowing it to close in
-on locations where the 3D cursor can't easily reach, such as the interior
+"Fly Mode" is a scene camera's alternative movement mode.
+In fly mode, the camera disregards the 3D cursor, enabling closeups of
+locations the 3D cursor can't easily reach, such as the interior
 of a model.
 
-"Perspective mode" is the camera's default projection mode, and "parallel mode"
-is its alternative projection mode.  In parallel mode, the mouse wheel
+"Perspective Mode" is a scene-view camera's default projection mode,
+and "Parallel Mode" is the alternative.
+In Parallel Mode, the mouse wheel
 affects the scale of the projection without actually moving the camera.
 
-Standard keyboard shortcuts affecting the camera:
+Standard keyboard shortcuts affecting the scene-view cameras:
  + "Numpad-1" to move (or rotate) to a horizontal view
  + "Numpad-5" to toggle between perspective and parallel projection modes
 
+Score views don't have anything analogous to the 3D cursor, but you can
+still move the camera up/down by clicking LMB where you want the camera to look.
+
 ### Loading (or importing) model assets
 
-Maud always has a model, called the "target", loaded into the scene.
-At startup, Maud automatically loads the Jaime model (from the
-jme3-testdata library) as the target.
-
-In addition to the target, a second model, called the "source",
-can be loaded into the scene.
-The source can't be edited; only the target can be edited.
-However, the source can be animated and viewed, and it can supply
+As mentioned earlier, Maud always has a (target) model loaded, and in addition
+a second model (the source model) can be loaded.
+The source model can't be edited; only the target can be edited.
+However, the source model can be animated and viewed, and it can also supply
 animations for retargeting.
 
-To rotate the source, press "A" or "D" while holding down a shift key.
+Models are loaded from assets, which can be located either in the
+Java classpath or in the filesystem.  Before loading an asset from
+the filesystem, you need to specify a folder (aka directory) where
+Maud can look for assets.  Select "Settings -> Asset folders -> Add", then
+navigate to the asset folder (which typically contains a "Model" subfolder)
+and select "! add this folder".
+
+To load a new target model, select the "Models -> Load" menu option.
 
 The Model Tool (selected via the Model->Target menu) displays basic
-information about the target model.
+information about the loaded target model.
 
 TODO more
 
@@ -256,8 +277,7 @@ External links:
 
 ## Acknowledgments
 
-Like most projects, Maud builds on the work of many who have gone before.
-
+Like most projects, Maud builds on the work of those who went before.
 I therefore acknowledge the following software developers:
 + Rémy Bouquet (aka "nehon") for creating the BVH Retarget Project.
 + Paul Speed, for helpful insights that got me unstuck during debugging
@@ -278,7 +298,7 @@ I therefore acknowledge the following software developers:
   + the RealWorld Cursor Editor
   + the WinMerge differencing and merging tool
 
-I am grateful to JFrog and Github for providing free hosting for the
+I am grateful to JFrog and Github, for providing free hosting for the
 Maud Project and many other open-source projects.
 
 I'm also grateful to my dear Holly, for keeping me sane.
