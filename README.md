@@ -1,10 +1,10 @@
 <img height="150" src="https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/Maud.png" alt="Maud logo"/>
 
-Maud is an editor for the animated 3-D models used by jMonkeyEngine.
+Maud is an editor for the animated 3-D models used by jMonkeyEngine (jME).
 
 Summary of features:
  + import models from Blender/Ogre/Wavefront and save to native J3O format
- + import animations from BVH
+ + import animations from Biovision Hierarchy assets
  + visualize animations, axes, bones, bounding boxes, skeletons, and physics objects
  + play animations forward/backward at various speeds and pause them
  + add new animations from poses or by altering existing animations
@@ -21,10 +21,11 @@ Summary of features:
  + delete scene-graph controls and user data
  + review edit history and undo/redo edits
  + customize mouse-button assignments and keyboard shortcuts
- + complete Java source code provided under FreeBSD license
+ + complete Java source code provided under a BSD 3-Clause License
 
-Maud was designed for a desktop environment with a wheel mouse and a display
-at least 640 pixels wide and 480 pixels tall.
+Maud was designed for a desktop environment with:
+ + a wheel mouse and
+ + a display at least 640 pixels wide and 480 pixels tall.
 
 Status as of July 2017: under development, will seek beta testers soon.
 
@@ -52,7 +53,7 @@ https://github.com/Nehon/bvhretarget
 
 ## How to build Maud from source
 
-### jMonkeyEngine (jME) Software Development Kit (SDK)
+### jME Software Development Kit (SDK)
 
 Maud currently targets Version 3.1 of jME.  You are welcome to
 use jME without installing its Integrated Development Environment
@@ -64,9 +65,9 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
 
  1. Download a jMonkeyEngine 3.1 SDK from https://github.com/jMonkeyEngine/sdk/releases
  2. Install the SDK, which includes:
-   + the engine itself,
+   + the engine,
    + the IDE, which is based on NetBeans,
-   + various plugins, and
+   + various IDE plugins, and
    + the Blender 3D application.
  3. To open the Maud project in the IDE (or in NetBeans), you will need the
     "Gradle Support" plugin.  Download and install it before proceeding.
@@ -107,10 +108,12 @@ Screen after a few seconds.
 The Editor Screen is Maud's main screen, where 3-D models are viewed
 and edited.  There's a menu bar across the top and a message bar at the bottom.
 The rest of the user interface
-is split into overlapping sub-windows called "tools".  At last count there
-were 29 tools.
+is split into overlapping sub-windows called "tools".
 
-TODO screenshot here
+![screenshot](fig02.png "Editor Screen with 3 tools visible and a menu active")
+
+At last count there were 29 tools.
+Each tool can be independently hidden or made visible.
 
 Selecting a tool makes it visible and moves it to the top layer for convenient
 use, but you can use a tool without it being on top.
