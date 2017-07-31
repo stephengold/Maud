@@ -146,11 +146,10 @@ public class Maud extends GuiApplication {
      * Process a "dump physicsSpace" action.
      */
     public void dumpPhysicsSpace() {
-        Util.stream = System.out;
         LoadedCgm cgm = gui.mouseCgm();
         SceneView sceneView = cgm.getSceneView();
         PhysicsSpace space = sceneView.getPhysicsSpace();
-        Util.dump(space);
+        dumper.dump(space);
     }
 
     /**

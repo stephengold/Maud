@@ -847,7 +847,7 @@ public class ScoreView implements EditorView {
         assert pxx[0] == 0f : pxx[0];
         assert lxx[0] == 0f : lxx[0];
 
-        if (Util.distinct(pyy, pxx.length)) {
+        if (MyArray.distinct(pyy, pxx.length)) {
             attachSparkline(pxx, pyy, Mesh.Mode.Points, suffix + "p", yIndex,
                     material);
             float zoom = cgm.scorePov.getHalfHeight();

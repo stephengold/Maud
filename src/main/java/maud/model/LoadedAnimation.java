@@ -260,7 +260,8 @@ public class LoadedAnimation implements Cloneable {
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
                 int keyframeIndex;
-                keyframeIndex = Util.findKeyframeIndex(boneTrack, currentTime);
+                keyframeIndex = MyAnimation.findKeyframeIndex(boneTrack,
+                        currentTime);
                 if (keyframeIndex >= 1) {
                     newTrack = MyAnimation.deleteKeyframe(boneTrack,
                             keyframeIndex);
@@ -453,7 +454,8 @@ public class LoadedAnimation implements Cloneable {
                 BoneTrack boneTrack = (BoneTrack) track;
                 int boneIndex = boneTrack.getTargetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
-                newTrack = Util.insertKeyframe(boneTrack, currentTime, user);
+                newTrack = MyAnimation.insertKeyframe(boneTrack, currentTime,
+                        user);
             } else {
                 newTrack = track.clone(); // TODO
             }
@@ -872,7 +874,7 @@ public class LoadedAnimation implements Cloneable {
             Track newTrack;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                newTrack = Util.setDuration(boneTrack, newDuration);
+                newTrack = MyAnimation.setDuration(boneTrack, newDuration);
             } else {
                 newTrack = track.clone(); // TODO other track types
             }
@@ -1052,7 +1054,7 @@ public class LoadedAnimation implements Cloneable {
             Track newTrack;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                newTrack = Util.truncate(boneTrack, currentTime);
+                newTrack = MyAnimation.truncate(boneTrack, currentTime);
             } else {
                 newTrack = track.clone(); // TODO other track types
             }
@@ -1094,7 +1096,7 @@ public class LoadedAnimation implements Cloneable {
             Track newTrack;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                newTrack = Util.wrap(boneTrack, duration);
+                newTrack = MyAnimation.wrap(boneTrack, duration);
             } else {
                 newTrack = track.clone(); // TODO other track types
             }

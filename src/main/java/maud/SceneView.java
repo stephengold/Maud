@@ -306,7 +306,7 @@ public class SceneView implements EditorView, JmeCloneable {
         Validate.nonNull(cgmRoot, "model root");
 
         if (this.cgmRoot != null) {
-            Util.disablePhysicsControls(this.cgmRoot);
+            MySpatial.disablePhysicsControls(this.cgmRoot);
         }
         parent.detachAllChildren();
         setCgmRoot(cgmRoot);
@@ -535,7 +535,7 @@ public class SceneView implements EditorView, JmeCloneable {
          * Detach the old spatial (if any) from the scene.
          */
         if (cgmRoot != null) {
-            Util.disablePhysicsControls(cgmRoot);
+            MySpatial.disablePhysicsControls(cgmRoot);
             parent.detachChild(cgmRoot);
         }
         setCgmRoot(null);
@@ -948,9 +948,9 @@ public class SceneView implements EditorView, JmeCloneable {
          * Enabled those SGCs and configure their physics spaces so that the
          * BulletDebugAppState can render their collision shapes.
          */
-        Util.removeNonPhysicsControls(cgmRoot);
+        MySpatial.removeNonPhysicsControls(cgmRoot);
         PhysicsSpace space = getPhysicsSpace();
-        Util.enablePhysicsControls(cgmRoot, space);
+        MySpatial.enablePhysicsControls(cgmRoot, space);
         /*
          * Create and add scene-graph controls for the skeleton.
          */

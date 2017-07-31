@@ -40,8 +40,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
+import jme3utilities.math.MyQuaternion;
+import jme3utilities.math.MyVector3f;
 import maud.Pose;
-import maud.Util;
 
 /**
  * The MVC model of the selected track in the Maud application.
@@ -107,7 +108,7 @@ public class SelectedTrack implements Cloneable {
             Quaternion[] rotations = track.getRotations();
             Set<Quaternion> distinct = new HashSet<>(rotations.length);
             for (Quaternion rot : rotations) {
-                Quaternion standard = Util.standardize(rot, null);
+                Quaternion standard = MyQuaternion.standardize(rot, null);
                 distinct.add(standard);
             }
             count = distinct.size();
@@ -132,7 +133,7 @@ public class SelectedTrack implements Cloneable {
             if (scales == null) {
                 count = 0;
             } else {
-                count = Util.countNe(scales);
+                count = MyVector3f.countNe(scales);
             }
         }
 
@@ -150,7 +151,7 @@ public class SelectedTrack implements Cloneable {
         BoneTrack track = findTrack();
         if (track != null) {
             Vector3f[] offsets = track.getTranslations();
-            count = Util.countNe(offsets);
+            count = MyVector3f.countNe(offsets);
         }
 
         return count;
@@ -198,7 +199,7 @@ public class SelectedTrack implements Cloneable {
     public int findKeyframeIndex() {
         BoneTrack track = findTrack();
         float time = loadedCgm.animation.getTime();
-        int frameIndex = Util.findKeyframeIndex(track, time);
+        int frameIndex = MyAnimation.findKeyframeIndex(track, time);
 
         return frameIndex;
     }
@@ -249,7 +250,7 @@ public class SelectedTrack implements Cloneable {
                 Pose pose = loadedCgm.pose.getPose();
                 int boneIndex = selectedTrack.getTargetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
-                clone = Util.insertKeyframe(selectedTrack, time, user);
+                clone = MyAnimation.insertKeyframe(selectedTrack, time, user);
             } else {
                 clone = track.clone();
             }
@@ -520,7 +521,7 @@ public class SelectedTrack implements Cloneable {
             Track clone;
             if (track == selectedTrack) {
                 float endTime = loadedCgm.animation.getDuration();
-                clone = Util.wrap(selectedTrack, endTime);
+                clone = MyAnimation.wrap(selectedTrack, endTime);
             } else {
                 clone = track.clone();
             }
