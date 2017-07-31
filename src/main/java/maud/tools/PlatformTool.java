@@ -72,7 +72,7 @@ class PlatformTool extends WindowController {
     /**
      * path to texture asset for the platform
      */
-    final private static String textureAssetPath = "Textures/Terrain/splat/dirt.jpg";
+    final private static String textureAssetPath = "Textures/platform/rock_11474.jpg";
     // *************************************************************************
     // constructors
 

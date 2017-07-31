@@ -52,6 +52,10 @@ class EditorMenus {
     // constants and loggers
 
     /**
+     * true if jme3-testdata assets are available
+     */
+    final private static boolean haveTestdata = false;
+    /**
      * maximum number of items in a menu
      */
     final private static int maxItems = 19;
@@ -904,23 +908,29 @@ class EditorMenus {
          *
          * animated models:
          */
-        builder.addOgre("Elephant");
+        if (haveTestdata) {
+            builder.addOgre("Elephant");
+        }
         builder.addJme("Jaime");
-        builder.addOgre("Ninja");
-        builder.addOgre("Oto");
+        if (haveTestdata) {
+            builder.addOgre("Ninja");
+            builder.addOgre("Oto");
+        }
         builder.addOgre("Sinbad");
         /*
          * non-animated models:
          */
-        builder.addJme("Boat");
-        builder.addJme("Buggy");
-        builder.addOgre("Ferrari");
-        builder.addOgre("HoverTank");
-        builder.addOgre("MonkeyHead");
-        builder.addOgre("Sign Post");
-        builder.addOgre("SpaceCraft");
-        builder.addGeometry("Teapot");
-        builder.addOgre("Tree");
+        if (haveTestdata) {
+            builder.addJme("Boat");
+            builder.addJme("Buggy");
+            builder.addOgre("Ferrari");
+            builder.addOgre("HoverTank");
+            builder.addOgre("MonkeyHead");
+            builder.addOgre("Sign Post");
+            builder.addOgre("SpaceCraft");
+            builder.addGeometry("Teapot");
+            builder.addOgre("Tree");
+        }
     }
 
     /**

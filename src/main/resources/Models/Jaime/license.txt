@@ -1,0 +1,6 @@
+Licensing history for assets in src/main/resources/Models/Jaime
+
+Per the January 2013 forum post
+https://hub.jmonkeyengine.org/t/i-see-monkeys-everywhere/24752
+"The model is distributed under the same license as JME,
+so feel free to use it and do whatever you want with it."

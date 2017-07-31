@@ -553,18 +553,28 @@ Maud provides a "History Tool" ("History -> Tool").
 
 ## External links
 
-YouTube videos:
+YouTube videos about Maud:
   + May 2017 demo video (out-of-date!):
     https://www.youtube.com/watch?v=fSjsbyBWlPk
   + June 2017 retargeted animation video:
     https://www.youtube.com/watch?v=yRjh1rAsipI
 
+BVH resources:
+  + BVH format description:
+    http://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html
+  + free motion capture data from Ohio State University's ACCAD:
+    http://accad.osu.edu/research/mocap/mocap_data.htm
+  + motion capture data from Motcap.com (registration required):
+    http://motcap.com/
+
 ## Acknowledgments
 
 Like most projects, Maud builds on the work of those who went before.
-I therefore acknowledge the following software developers:
-+ Rémy Bouquet (aka "nehon") for creating the BVH Retarget Project.
+I therefore acknowledge the following artists and software developers:
++ Rémy Bouquet (aka "nehon") for creating the Jaime model and the BVH Retarget
+  Project and also for many helpful insights
 + Paul Speed (aka "pspeed") for many helpful insights
++ Zi Ye, for creating the Sinbad model
 + the creators of (and contributors to) the following software:
   + Adobe Photoshop Elements
   + the Blender 3D animation suite
