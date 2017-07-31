@@ -274,6 +274,9 @@ public class EditorScreen extends GuiScreenController {
             case "loopSource":
                 Maud.model.source.animation.setContinue(isChecked);
                 break;
+            case "physics":
+                Maud.model.scene.setPhysicsRendered(isChecked);
+                break;
             case "pin":
                 Maud.model.target.animation.setPinned(isChecked);
                 break;

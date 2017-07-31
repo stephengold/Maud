@@ -991,6 +991,19 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="physicsTool" title="Physics Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="160px" width="160px" x="20" y="80">
+                <panel childLayout="vertical">
+                    <panel style="indentPanel">
+                        <control name="checkbox" id="physicsCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  show physics"/>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="platformTool" title="Platform Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"

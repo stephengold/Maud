@@ -230,6 +230,16 @@ public class SceneView implements EditorView, JmeCloneable {
     }
 
     /**
+     * Access the Bullet app state for the scene.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public BulletAppState getBulletAppState() {
+        assert bulletAppState != null;
+        return bulletAppState;
+    }
+
+    /**
      * Access the CG model's root spatial.
      *
      * @return the pre-existing instance (not null)

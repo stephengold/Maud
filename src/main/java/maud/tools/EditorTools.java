@@ -110,6 +110,10 @@ public class EditorTools {
      */
     final MappingTool mapping;
     /**
+     * controller for the "Physics Tool" window
+     */
+    final PhysicsTool physics;
+    /**
      * controller for the "Platform Tool" window
      */
     final PlatformTool platform;
@@ -194,6 +198,7 @@ public class EditorTools {
         history = new HistoryTool(screen);
         keyframe = new KeyframeTool(screen);
         mapping = new MappingTool(screen);
+        physics = new PhysicsTool(screen);
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
         retarget = new RetargetTool(screen);
@@ -222,8 +227,8 @@ public class EditorTools {
         stateManager.attach(cursor); // cursor before camera
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, history,
-                keyframe, mapping, cgm, platform, render, retarget, score, sgc,
-                skeleton, skeletonColor, sky, sourceAnimation,
+                keyframe, mapping, cgm, physics, platform, render, retarget,
+                score, sgc, skeleton, skeletonColor, sky, sourceAnimation,
                 spatial, spatialRotation, spatialScale, spatialTranslation,
                 twist, userData);
     }
@@ -280,6 +285,9 @@ public class EditorTools {
                 break;
             case "map":
                 controller = mapping;
+                break;
+            case "physics":
+                controller = physics;
                 break;
             case "platform":
                 controller = platform;
@@ -472,6 +480,7 @@ public class EditorTools {
         axes.updateVisualizer(loadedCgm);
         bounds.updateVisualizer(loadedCgm);
         cursor.updateScene(loadedCgm);
+        physics.updateVisualizer(loadedCgm);
         platform.updateScene(loadedCgm);
         render.updateShadowFilter(loadedCgm);
         skeleton.updateVisualizer(loadedCgm);

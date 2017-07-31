@@ -1640,7 +1640,7 @@ class EditorMenus {
                 selectViewMode();
                 break;
             case "Physics":
-                handled = false;
+                Maud.gui.tools.select("physics");
                 break;
             case "Platform":
                 Maud.gui.tools.select("platform");
