@@ -19,7 +19,7 @@ Summary of features:
  + modify spatial transforms (translation, rotation, and scale)
  + modify spatial batch modes, cull hints, render queues, shadow modes, and user data
  + delete scene-graph controls and user data
- + review edit history and undo/redo edits
+ + review an unlimited edit history and undo/redo edits
  + customize mouse-button assignments and keyboard shortcuts
  + complete Java source code provided under a BSD 3-Clause License
 
@@ -184,7 +184,7 @@ model's bones move, rather like it would in a game.
 
 When the mouse cursor is in a scene view, you can use the "A" and "D" keys
 to rotate the model left and right.  (This won't alter the model itself,
-just how it is oriented in the scene.)
+only its orientation in scene views.)
 
 The Editor Screen can also display "score" views of loaded animations.
 A score view is a schematic, like a musical score, with bones arranged
@@ -334,12 +334,13 @@ A bone with no children is a "leaf" bone.
 A bone with no parent is a "root" bone.
 
 Each bone has a "head" around which it pivots.
-However a jME bone need not have a defined "tail", a length, or even direction.
+However a jME bone need not have a well-defined "tail", a length,
+or even a direction.
 
 In a scene view, Maud visualizes each bone as a round dot
 (red or green by default)
 connected to its children by lines (white by default).
-(You can customize these colors with the "Skeleton Color Tool":
+(You can customize these colors using the "Skeleton Color Tool":
 "View -> Scene options -> Skeleton color".)
 
 In a score view, each bone is represented by horizontal "staff".
@@ -376,18 +377,27 @@ or step through bones in numerical order ("Previous" and "Next").
 The Bone Tool provides more convenient interfaces to these same
 selection options.
 
-The quickest way to select a bone is to click the RMB on it.
+The quickest way to select a bone is to click the the right mouse
+button (RMB) on it.
 This works in both scene views and in score views, and
 for both the source model and the target model.
 However, since bones can appear very close together in scene views,
-and since the RMB is used to select objects besides bones,
+and since the RMB is also used to select objects other than bones,
 use caution with this technique.
 
-## Animations and poses
+## Animations
 
 In jME, "animations" are named parts of a 3D model, each with its own duration.
-Maud also treats the model's bind pose as a zero-duration
-animation for many purposes.
+In addition, Maud treats the model's bind pose as a zero-duration
+animation for most purposes.
+
+Real jME animations are made up of "tracks", usally bone tracks.
+Each bone track controls the local transform of a single bone.
+An animation need not include a track for every bone.
+Maud refers to bones that have tracks in the loaded animation
+as "tracked bones".
+
+Each track is composed of series of "keyframes", starting at time zero.
 
 The Animation Tool (selected using "Animations -> Tool")
 controls the target model's loaded animation.
@@ -397,8 +407,12 @@ to control the source model's loaded animation.
 ### Loading animations
 
 In Maud, "loading" an animation means selecting it
-for visualization, playback, and editing.
-To do this, select "Animations -> Load" and then the name of the animation.
+for visualization, playback, and/or editing.
+
+To load an animation for the target model,
+select "Animations -> Load" and then the name of the animation.
+To load an animation for the source model,
+select "Animations -> Load source" and then the name of the animation.
 
 ### Playing, pausing, and pinning animations
 
@@ -418,18 +432,18 @@ direction ("pong") instead.
 
 Using the animation tools, you can also "pin" a loaded animation.
 Pinning an animation keeps its root bone(s) at the model origin
-for display purposes.
+for display (scene view) purposes.
 
-### Poses
+## The pose
 
 ## Skeleton maps
 
 ## The edit history
 
-## Next steps
+## External links
 
-External links:
-  + May 2017 demo video:
+YouTube videos:
+  + May 2017 demo video (out-of-date!):
     https://www.youtube.com/watch?v=fSjsbyBWlPk
   + June 2017 retargeted animation video:
     https://www.youtube.com/watch?v=yRjh1rAsipI
