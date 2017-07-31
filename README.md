@@ -436,9 +436,120 @@ for display (scene view) purposes.
 
 ## The pose
 
+While an animation is playing on the target model, Maud typically refreshes
+the displayed bone transforms on every frame.
+Once the animation is paused, however, the target model's bone transforms
+become a new object (called the "pose") that can be modified independent
+of the loaded animation.
+
+Use the "Bone-Translation Tool" ("Bone -> Translate") to modify the local
+translation of the selected bone in the pose.
+Use the "Bone-Scale Tool" ("Bone -> Scale") to scale
+the selected bone in the pose.
+And use the "Bone-Rotation Tool" ("Bone -> Rotate") to rotate
+the selected bone in the pose.
+
+In a scene view, you can also rotate the selected bone by grabbing
+any of the bone's 3 axis arrows with the RMB and dragging with the mouse.
+The axis arrows are constrained to an invisible sphere surrounding the
+selected bone's head, so for many mouse-pointer screen locations,
+2 axis directions are possible.
+While you're dragging a bone axis, Maud remembers whether the axis
+inclines toward the camera or away from it.
+You can toggle this inclination using the "S" shortcut key.
+
+The pose has many uses.  For instance:
+To create a new, zero-length animation from the pose,
+select "Animations -> Add new -> Pose".
+To insert keyframes (and replace any pre-existing keyframes)
+at the current time in the loaded animation,
+select "Animations -> Insert keyframes".
+To insert a keyframe (or replace the pre-existing keyframe)
+at the current time in the selected bone track,
+select "Keyframe -> Insert from pose".
+To replace all keyframes in the selected bone
+track, use the "Set all to pose" buttons in the "Keyframe Tool"
+("Keyframe -> Tool").
+
+You can use the pose like a paste buffer, to copy bone transforms
+from one time to another.
+For this to work, you must "freeze" the pose so Maud won't
+overwrite it as soon as you change the animation time.
+To freeze the pose, either tick the "freeze" check box in the Animation Tool
+or use the "F" keyboard shortcut.
+Then go to the animation time when you want to paste and select
+"Keyframe -> Insert from pose" (to paste a single keyframe)
+or "Animations -> Insert keyframes" (to paste multiple keyframes).
+Remember to unfreeze the pose after you finish!
+
 ## Skeleton maps
 
+Once an animation is created for one model, it's a simple matter to
+copy it to another model, provided both models use the exact same
+skeleton.
+
+To retarget animations between models with different skeletons, Maud
+requires a "skeleton map" to match bones in the source model with
+corresponding ones in the target model.
+(Corresponding bones may have different names and/or indices.)
+
+Furthermore, since jME bones don't have defined tails,
+it's often necessary to adjust bone orientations when retargeting
+animations between models.
+To automate these adjustments, each bone mapping in a jME skeleton
+map includes a "twist" value.
+
+Maud has the capability to load skeleton maps from assets, edit
+them, save them, and use them to retarget animations.
+Sample skeleton maps are provided, such as "SinbadToJaime" which
+maps Sinbad's skeleton to that of Jaime.
+
+The "Mapping Tool" ("Map -> Tool") is useful for loading and
+editing skeleton maps.
+To do anything with a skeleton map, you must have a source model loaded.
+To add a new mapping between 2 bones, select the source bone in the source
+model and the target bone in the target model, then click LMB on
+the "Map" button in the lower left or use the equals ("=") keyboard shortcut.
+
+As long as the 2 selected bones map to each other in the loaded map,
+Maud considers that the corresponding bone mapping is selected.
+You can unmap the selected bone mapping (with the "Unmap" button) or
+adjust its twist value with the "Twist Tool" ("Map -> Twist Tool").
+
+When editing a skeleton map, it's helpful to see
+its effect on the target model in real time.
+To do this, click LMB on the "Show retargeted pose" button in the Mapping Tool or
+select "Animations -> Load -> (retargeted pose)".
+With this pseudo-animation loaded:
+ + changing the source pose automatically updates the target pose,
+ + changing the skeleton map automatically updates the target pose,
+ + selecting a mapped source bone also selects the corresponding target bone, and
+ + dragging axes of the target bone automatically updates the twist value of the selected bone mapping.
+
+When you're ready to retarget animations between models,
+use the "Retarget Tool" ("Animations -> Add new -> Retarget").
+
 ## The edit history
+
+Like any serious editor, Maud provides an "undo" capability.
+
+Maud's undo capability is based on checkpointing the editor's state.
+Tool visibility and positioning are not checkpointed, nor are shortcut
+key bindings, but nearly everything else is, including the view mode,
+view options, loaded models, maps, and animations, and selections.
+
+You can create a checkpoint at any time using the "X" keyboard shortcut
+or the "New checkpoint" button in the "History Tool" ("History -> Tool").
+To undo changes since the most recent checkpoint, use the "Z" keyboard shortcut.
+
+To safeguard your work since the last checkpoint,
+the "Z" key usually creates a new checkpoint as well.
+That allows you to to redo any changes you've undone
+by using the "Y" keyboard shortcut.
+
+Maud places no limit on the number of checkpoints you can create/undo/redo.
+To help you visualize and navigate your edit history,
+Maud provides a "History Tool" ("History -> Tool").
 
 ## External links
 
