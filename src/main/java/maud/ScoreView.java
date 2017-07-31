@@ -466,6 +466,8 @@ public class ScoreView implements EditorView {
             finialNoScales = new Finial(translations, rotations, false,
                     sparklineHeight);
 
+            cgm.scorePov.updatePartial();
+
             List<Spatial> roots = viewPort.getScenes();
             int numRoots = roots.size();
             assert numRoots == 1 : numRoots;

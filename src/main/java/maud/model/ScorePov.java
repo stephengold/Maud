@@ -180,6 +180,19 @@ public class ScorePov implements Cloneable, Pov {
         Validate.positive(newValue, "new value");
         halfHeight = FastMath.clamp(newValue, minHalfHeight, maxHalfHeight);
     }
+
+    /**
+     * Partially update the camera for this POV.
+     */
+    public void updatePartial() {
+        ScoreView view = loadedCgm.getScoreView();
+        Camera camera = view.getCamera();
+        camera.setLocation(cameraLocation);
+        camera.setFrustumBottom(-halfHeight);
+        camera.setFrustumLeft(-halfWidth);
+        camera.setFrustumRight(halfWidth);
+        camera.setFrustumTop(halfHeight);
+    }
     // *************************************************************************
     // Object methods
 
@@ -271,11 +284,7 @@ public class ScorePov implements Cloneable, Pov {
             setHalfHeight(hh);
             setCameraY(y);
 
-            camera.setLocation(cameraLocation);
-            camera.setFrustumBottom(-halfHeight);
-            camera.setFrustumLeft(-halfWidth);
-            camera.setFrustumRight(halfWidth);
-            camera.setFrustumTop(halfHeight);
+            updatePartial();
         }
     }
 }
