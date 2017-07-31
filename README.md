@@ -564,14 +564,15 @@ YouTube videos:
 Like most projects, Maud builds on the work of those who went before.
 I therefore acknowledge the following software developers:
 + Rémy Bouquet (aka "nehon") for creating the BVH Retarget Project.
-+ Paul Speed, for helpful insights that got me unstuck during debugging
++ Paul Speed (aka "pspeed") for many helpful insights
 + the creators of (and contributors to) the following software:
   + Adobe Photoshop Elements
-  + the Gradle build tool
   + the Blender 3D animation suite
-  + the FindBugs source code analyzer
-  + the Git revision control system
+  + the FindBugs source-code analyzer
+  + the Git revision-control system
+  + the GitK commit viewer
   + the Google Chrome web browser
+  + the Gradle build tool
   + the Java compiler, standard doclet, and runtime environment
   + jMonkeyEngine and the jME3 Software Development Kit (SDK)
   + LWJGL, the Lightweight Java Game Library
