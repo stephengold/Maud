@@ -575,13 +575,35 @@ BVH resources:
   + motion capture data from Motcap.com (registration required):
     http://motcap.com/
 
-### Conventions
+## Wishlist
+
+Maud is incomplete.
+The following features are on my "to do" list, in no particular order:
+ + advance/delay keyframe(s)
+ + smooth camera motion
+ + tools for Lights/Materials
+ + select the keyframe closest to the current animation time
+ + automatically create a checkpoint before every edit/unload
+ + tweening options for animations
+ + select bone mappings that don't correspond to the loaded models
+ + export a model to OBJ format
+ + export an animation to BVH format
+ + localization
+ + more scene-view options for platform/sky
+ + blend/concatenate animations
+ + tool tips
+ + mirror an animation/pose
+ + remember asset folders and tool positions from the previous invocation of Maud
+ + confirm before overwriting a file
+ + preserve a frozen pose when loading an animation
+
+## Conventions
 
 Maud's source code is compatible with both JDK 7 and JDK 8.
 
 World coordinate system: the Y axis points upward (toward the zenith).
 
-### History
+## History
 
 Since April 2017, the Maud project has been hosted at
 https://github.com/stephengold/Maud
