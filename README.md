@@ -242,7 +242,7 @@ Each view has its own camera.
 The mouse wheel and middle mouse button (MMB) control Maud's cameras.
 Turn the mouse wheel to move a camera forward or backward.
 In scene views, drag with MMB to turn the camera.
-If score views, drag up/down with MMB to scroll the view down/up.
+In score views, drag up/down with MMB to scroll the view down/up.
 
 #### Scene-view cameras
 
