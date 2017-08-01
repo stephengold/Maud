@@ -136,7 +136,7 @@ and edited.  There's a menu bar across the top and a message bar at the bottom.
 The rest of the user interface
 is split into overlapping sub-windows called "tools".
 
-![screenshot](fig02.png "Editor Screen with 3 tools visible and a menu active")
+![screenshot](figures/fig02.png "Editor Screen with 3 tools visible and a menu active")
 
 #### Tools
 
@@ -200,7 +200,7 @@ in which case shortcuts described in this document might not work.
 At startup, the Editor Screen displays a "scene" view of a single model:
 Jaime, from the jme3-testdata library.
 
-![screenshot](fig01.png "Editor Screen at startup")
+![screenshot](figures/fig01.png "Editor Screen at startup")
 
 A scene view consists of a 3-D render of a loaded model, possibly with a
 background, a 3D cursor, a supporting platform, and/or overlaid visualizations.
@@ -376,7 +376,7 @@ up to 10 stacked "sparklines" bracketed by a pair of "finials".
 The sparklines, rendered in four colors, represent animation data,
 and the finials help distinguish which sparkline is which.
 
-![screenshot](fig03.png "a detailed staff in a score view")
+![screenshot](figures/fig03.png "a detailed staff in a score view")
 
 Before editing a bone in Maud, you must "select" it.
 In a scene view, the selected bone (if any) is typically indicated by
