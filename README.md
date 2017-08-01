@@ -29,24 +29,6 @@ Maud was designed for a desktop environment with:
 
 Status as of August 2017: seeking alpha testers.
 
-### Conventions
-
-Maud's source code is compatible with both JDK 7 and JDK 8.
-
-World coordinate system: the Y axis points upward (toward the zenith).
-
-### History
-
-Since April 2017, the Maud project has been hosted at
-https://github.com/stephengold/Maud
-
-Maud began as a demo application for the jme3-utilities-debug library,
-part of the jme3-utilities project at
-https://github.com/stephengold/jme3-utilities
-
-Maud includes code from the the BVH Retarget Project at
-https://github.com/Nehon/bvhretarget
-
 ## How to download and install a pre-compiled release of Maud
 
 (To be determined.)
@@ -592,6 +574,24 @@ BVH resources:
     http://accad.osu.edu/research/mocap/mocap_data.htm
   + motion capture data from Motcap.com (registration required):
     http://motcap.com/
+
+### Conventions
+
+Maud's source code is compatible with both JDK 7 and JDK 8.
+
+World coordinate system: the Y axis points upward (toward the zenith).
+
+### History
+
+Since April 2017, the Maud project has been hosted at
+https://github.com/stephengold/Maud
+
+Maud began as a demo application for the jme3-utilities-debug library,
+part of the jme3-utilities project at
+https://github.com/stephengold/jme3-utilities
+
+Maud includes code from the the BVH Retarget Project at
+https://github.com/Nehon/bvhretarget
 
 ## Acknowledgments
 
