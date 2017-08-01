@@ -4,7 +4,7 @@ Maud is an editor for the animated 3-D models used by jMonkeyEngine (jME).
 
 Summary of features:
  + import models from Blender/Ogre/Wavefront and save to native J3O format
- + import animations from Biovision Hierarchy assets
+ + import animations from Biovision Hierarchy (BVH) assets
  + visualize animations, axes, bones, bounding boxes, skeletons, and physics objects
  + play animations forward/backward at various speeds and pause them
  + add new animations from poses or by altering existing animations
@@ -27,7 +27,7 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
-Status as of July 2017: under development, will seek beta testers soon.
+Status as of August 2017: seeking alpha testers.
 
 ### Conventions
 
@@ -49,7 +49,7 @@ https://github.com/Nehon/bvhretarget
 
 ## How to download and install a pre-compiled release of Maud
 
-(Coming soon.)
+(To be determined.)
 
 ## How to build Maud from source
 
@@ -63,20 +63,45 @@ installation instructions assume you will too.
 The hardware and software requirements of the SDK are documented at
 https://jmonkeyengine.github.io/wiki/jme3/requirements.html
 
- 1. Download a jMonkeyEngine 3.1 SDK from https://github.com/jMonkeyEngine/sdk/releases
+ 1. Download a jMonkeyEngine 3.1.0 Stable SDK installer from https://github.com/jMonkeyEngine/sdk/releases
  2. Install the SDK, which includes:
    + the engine,
    + the IDE, which is based on NetBeans,
    + various IDE plugins, and
    + the Blender 3D application.
- 3. To open the Maud project in the IDE (or in NetBeans), you will need the
-    "Gradle Support" plugin.  Download and install it before proceeding.
+ 3. When you execute the installer, it prompts you to
+    specify a folder for storing projects:
+   + Fill in the "Folder name" text box.
+     (The choice doesn't seem to matter much.)
+   + Click on the "Set Project Folder" button.
+ 4. Open the IDE.
+ 5. The first time you open the IDE, you should update
+    all the pre-installed plugins:
+   + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog
+   + Click on the "Update" button to open the "Plugin Installer" wizard.
+   + Click on the "Next >" button.
+   + After the plugins have downloaded, click "Finish".
+   + The IDE will restart.
+ 6. In order to open the Maud project in the IDE (or in NetBeans),
+    you will need to install the "Gradle Support" plugin:
+   + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog
+   + Click on the "Available Plugins" tab.
+   + Check the box next to "Gradle Support" in the "Gradle" category.
+   + Click on the "Install" button to open the the "Plugin Installer" wizard.
+   + Click on the "Next >" button.
+   + Check the box next to
+     "I accept the terms in all the license agreements."
+   + Click on the "Install" button.
+   + When the "Verify Certificate" dialog appears,
+     click on the "Continue" button.
+   + Click on the "Finish" button.
+   + The IDE will restart.
 
 ### Source files
 
 Clone the Maud repository using Git:
- 1. Open the Clone wizard in the IDE:
-   + Menu bar -> "Team" -> "Remote" -> "Clone..."
+ 1. Open the "Clone Repository" wizard in the IDE:
+   + Menu bar -> "Team" -> "Git" -> "Clone..."
  2. For "Repository URL:" specify
     "https://github.com/stephengold/Maud.git" (without the quotes).
  3. Clear the "User:" and "Password:" text boxes.
@@ -88,19 +113,20 @@ Clone the Maud repository using Git:
  8. Make sure the Checkout Branch is set to "master".
  9. Make sure the "Scan for NetBeans Projects after Clone" box is checked.
 10. Click on the "Finish" button.
-11. When the "Clone Complete" dialog appears, click on the "Open Project..."
+11. When the "Clone Completed" dialog appears, click on the "Open Project..."
     button.
 
 ### Build the project
 
- 1. In the "Projects" window, right-click on the "Maud" project to select it.
+ 1. In the "Projects" window of the IDE,
+    right-click on the "Maud" project to select it.
  2. Select "Build" or "Run".
 
 ## Using Maud
 
 ### Overview of the user interface
 
-Maud's user interface is composed 3 screens: "Start", "Editor", and "Bind".
+Maud's user interface consists of 3 screens: "Start", "Editor", and "Bind".
 The Start Screen loads first. It merely displays the Maud logo while
 initialization completes.  It should automatically transition to the Editor
 Screen after a few seconds.
