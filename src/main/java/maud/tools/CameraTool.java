@@ -37,17 +37,17 @@ import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCgm;
 import maud.model.Pov;
+import org.lwjgl.input.Mouse;
 
 /**
  * The controller for the "Camera Tool" window in Maud's editor screen. The
  * camera tool controls camera modes used in "scene" views.
  * <p>
  * Maud's cameras are primarily controlled by turning the scroll wheel and
- * dragging with the middle mouse button (MMB). In scene views, there are two
- * modes: "orbit" mode in which the camera points toward the 3D cursor, and
- * "fly" mode in which the camera turns freely.
+ * dragging with the middle mouse button (MMB). In scene views, there are 2
+ * movement modes: "orbit" mode, in which the camera always faces the 3D cursor,
+ * and "fly" mode, in which the camera turns freely.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -63,7 +63,7 @@ public class CameraTool
     final private static Logger logger = Logger.getLogger(
             CameraTool.class.getName());
     /**
-     * name of the signal which controls camera movement
+     * name of the signal that controls camera movement
      */
     final public static String cameraSignalName = "moveCamera";
     /**
@@ -71,48 +71,58 @@ public class CameraTool
      */
     final private static String moveBackwardEvent = "pov backward";
     /**
-     * analog event string to move down
-     */
-    final private static String moveDownEvent = "pov down";
-    /**
      * analog event string to move forward
      */
     final private static String moveForwardEvent = "pov forward";
+    // *************************************************************************
+    // fields
+
     /**
-     * analog event string to move left
+     * the POV that is being dragged, or null for none
      */
-    final private static String moveLeftEvent = "pov left";
-    /**
-     * analog event string to move right
-     */
-    final private static String moveRightEvent = "pov right";
-    /**
-     * analog event string to move up
-     */
-    final private static String moveUpEvent = "pov up";
+    private Pov dragPov = null;
     // *************************************************************************
     // constructors
 
     /**
      * Instantiate an uninitialized controller.
      *
-     * @param screenController
+     * @param screenController (not null)
      */
     CameraTool(BasicScreenController screenController) {
         super(screenController, "cameraTool", false);
     }
     // *************************************************************************
+    // new methods exposed
+
+    /**
+     * If a POV is being dragged, update it.
+     */
+    public void updatePov() {
+        if (signals.test(cameraSignalName)) { // dragging a POV
+            if (dragPov == null) { // a brand-new drag
+                dragPov = Maud.gui.mousePov();
+            } else {
+                float dx = Mouse.getDX();
+                float dy = Mouse.getDY();
+                dragPov.moveUp(-dy / 1024f);
+                dragPov.moveLeft(dx / 1024f);
+            }
+        } else {
+            dragPov = null;
+        }
+    }
+    // *************************************************************************
     // AnalogListener methods
 
     /**
-     * Map the middle mouse button (MMB) and mouse wheel, which together control
-     * the camera position.
+     * Map the mouse wheel.
      */
     public void mapButton() {
         Maud application = Maud.getApplication();
         InputManager inputMgr = application.getInputManager();
         /*
-         * Turning the mouse wheel up triggers Pov.moveBackward().
+         * Turning the mouse wheel up triggers positive Pov.moveBackward().
          */
         boolean wheelUp = true;
         MouseAxisTrigger backwardTrigger;
@@ -120,58 +130,21 @@ public class CameraTool
         inputMgr.addMapping(moveBackwardEvent, backwardTrigger);
         inputMgr.addListener(this, moveBackwardEvent);
         /*
-         * Turning the mouse wheel down triggers move forward.
+         * Turning the mouse wheel down triggers negative Pov.moveBackward().
          */
         boolean wheelDown = false;
         MouseAxisTrigger forwardTrigger;
         forwardTrigger = new MouseAxisTrigger(MouseInput.AXIS_WHEEL, wheelDown);
         inputMgr.addMapping(moveForwardEvent, forwardTrigger);
         inputMgr.addListener(this, moveForwardEvent);
-        /*
-         * Dragging up with MMB triggers move down.
-         */
-        boolean up = false;
-        MouseAxisTrigger downTrigger;
-        downTrigger = new MouseAxisTrigger(MouseInput.AXIS_Y, up);
-        inputMgr.addMapping(moveDownEvent, downTrigger);
-        inputMgr.addListener(this, moveDownEvent);
-        /*
-         * Dragging left with MMB triggers move right.
-         */
-        boolean left = true;
-        MouseAxisTrigger leftTrigger;
-        leftTrigger = new MouseAxisTrigger(MouseInput.AXIS_X, left);
-        inputMgr.addMapping(moveRightEvent, leftTrigger);
-        inputMgr.addListener(this, moveRightEvent);
-        /*
-         * Dragging right with MMB triggers Pov.moveLeft().
-         */
-        boolean right = false;
-        MouseAxisTrigger rightTrigger;
-        rightTrigger = new MouseAxisTrigger(MouseInput.AXIS_X, right);
-        inputMgr.addMapping(moveLeftEvent, rightTrigger);
-        inputMgr.addListener(this, moveLeftEvent);
-        /*
-         * Dragging down with MMB triggers Pov.moveUp().
-         */
-        boolean down = true;
-        MouseAxisTrigger upTrigger;
-        upTrigger = new MouseAxisTrigger(MouseInput.AXIS_Y, down);
-        inputMgr.addMapping(moveUpEvent, upTrigger);
-        inputMgr.addListener(this, moveUpEvent);
     }
 
     /**
-     * Unmap the middle mouse button (MMB) and mouse wheel, which together
-     * control the camera position.
+     * Unmap the mouse wheel.
      */
     public void unmapButton() {
         inputManager.deleteMapping(moveForwardEvent);
         inputManager.deleteMapping(moveBackwardEvent);
-        inputManager.deleteMapping(moveDownEvent);
-        inputManager.deleteMapping(moveRightEvent);
-        inputManager.deleteMapping(moveLeftEvent);
-        inputManager.deleteMapping(moveUpEvent);
     }
     // *************************************************************************
     // AnalogListener methods
@@ -189,16 +162,9 @@ public class CameraTool
         logger.log(Level.FINE, "Received analog event {0} with amount={1}",
                 new Object[]{MyString.quote(eventString), amount});
 
-        LoadedCgm cgm = Maud.gui.mouseCgm();
-        if (cgm == null || signals == null) {
+        Pov pov = Maud.gui.mousePov();
+        if (pov == null) {
             return;
-        }
-        Pov pov;
-        String viewMode = Maud.gui.mouseViewMode();
-        if (viewMode.equals("score")) {
-            pov = cgm.scorePov;
-        } else {
-            pov = cgm.scenePov;
         }
 
         switch (eventString) {
@@ -206,36 +172,13 @@ public class CameraTool
                 pov.moveBackward(+amount);
                 break;
 
-            case moveDownEvent:
-                if (signals.test(cameraSignalName)) {
-                    /* dragging */
-                    pov.moveUp(-amount);
-                }
-                break;
-
             case moveForwardEvent:
                 pov.moveBackward(-amount);
                 break;
 
-            case moveLeftEvent:
-                if (signals.test(cameraSignalName)) {
-                    /* dragging */
-                    pov.moveLeft(+amount);
-                }
-                break;
-
-            case moveRightEvent:
-                if (signals.test(cameraSignalName)) {
-                    /* dragging */
-                    pov.moveLeft(-amount);
-                }
-                break;
-
-            case moveUpEvent:
-                if (signals.test(cameraSignalName)) {
-                    /* dragging */
-                    pov.moveUp(+amount);
-                }
+            default:
+                logger.log(Level.WARNING, "unexpected analog event {0}",
+                        MyString.quote(eventString));
         }
     }
     // *************************************************************************

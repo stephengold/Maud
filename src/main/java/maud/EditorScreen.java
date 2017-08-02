@@ -56,6 +56,7 @@ import jme3utilities.ui.InputMode;
 import maud.model.Checkpoint;
 import maud.model.History;
 import maud.model.LoadedCgm;
+import maud.model.Pov;
 import maud.tools.EditorTools;
 
 /**
@@ -177,6 +178,44 @@ public class EditorScreen extends GuiScreenController {
         }
 
         return cgm;
+    }
+
+    /**
+     * Select a POV based on the screen position of the mouse pointer.
+     *
+     * @return the pre-existing instance, or null if none applies
+     */
+    public Pov mousePov() {
+        LoadedCgm source = Maud.model.source;
+        LoadedCgm target = Maud.model.target;
+        EditorView sScene = source.getSceneView();
+        EditorView sScore = source.getScoreView();
+        EditorView tScene = target.getSceneView();
+        EditorView tScore = target.getScoreView();
+
+        Vector2f screenXY = inputManager.getCursorPosition();
+        List<ViewPort> viewPorts;
+        viewPorts = MyCamera.listViewPorts(renderManager, screenXY);
+        Pov result = null;
+        for (ViewPort vp : viewPorts) {
+            if (vp.isEnabled()) {
+                if (vp == sScene.getViewPort()) {
+                    result = source.scenePov;
+                    break;
+                } else if (vp == sScore.getViewPort()) {
+                    result = source.scorePov;
+                    break;
+                } else if (vp == tScene.getViewPort()) {
+                    result = target.scenePov;
+                    break;
+                } else if (vp == tScore.getViewPort()) {
+                    result = target.scorePov;
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -652,6 +691,7 @@ public class EditorScreen extends GuiScreenController {
                 cgm.animation.setTime(newTime);
             }
         }
+        tools.camera.updatePov();
         /*
          * Update the views.
          */
