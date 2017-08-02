@@ -52,21 +52,26 @@ public class Sparkline extends Mesh {
     /**
      * Instantiate a sparkline for the specified data.
      *
+     * @param numVertices number of values to use (&ge;0)
      * @param xs X values, in ascending order, normalized to the range [0, 1]
-     * (not null, unaffected)
-     * @param ys Y values, normalized to the range [0, 1] (not null, unaffected)
+     * (not null, unaffected, length >= numVertices)
+     * @param ys Y values, normalized to the range [0, 1] (not null, unaffected,
+     * length >= numVertices)
      * @param height desired height of the mesh (in local units, &ge;0)
      * @param mode mode for the mesh (Mode.Lines, Mode.LineStrip, or
      * Mode.Points)
      */
-    public Sparkline(float[] xs, float ys[], float height, Mode mode) {
+    public Sparkline(int numVertices, float[] xs, float ys[], float height,
+            Mode mode) {
+        Validate.nonNegative(numVertices, "num vertices");
         Validate.nonNull(xs, "x values");
         Validate.nonNull(ys, "y values");
         Validate.nonNegative(height, "height");
         assert mode == Mode.Lines || mode == Mode.LineStrip
                 || mode == Mode.Points : mode;
+        assert xs.length >= numVertices : xs.length;
+        assert ys.length >= numVertices : ys.length;
 
-        int numVertices = Math.min(xs.length, ys.length);
         float[] positions = new float[3 * numVertices];
         for (int i = 0; i < numVertices; i++) {
             positions[3 * i] = xs[i];

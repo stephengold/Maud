@@ -833,12 +833,19 @@ public class ScoreView implements EditorView {
      * @param yIndex position in the staff (&ge;0, &lt;10, 0&rarr; top position)
      * @param material material for the geometry (not null)
      */
-    private void attachPlot(float[] pxx, float[] pyy, float[] lxx, float[] lyy,
+    private void attachPlot(int numPoints, float[] pxx, float[] pyy,
+            int numLineVertices, float[] lxx, float[] lyy,
             String suffix, int yIndex, Material material) {
+        assert numPoints >= 0 : numPoints;
         assert pxx != null;
+        assert pxx.length >= numPoints : pxx.length;
         assert pyy != null;
+        assert pyy.length >= numPoints : pyy.length;
+        assert numLineVertices >= 1 : numLineVertices;
         assert lxx != null;
+        assert lxx.length >= numLineVertices : lxx.length;
         assert lyy != null;
+        assert lyy.length >= numLineVertices : lyy.length;
         assert suffix != null;
         assert yIndex >= 0 : yIndex;
         assert yIndex < 10 : yIndex;
@@ -848,15 +855,15 @@ public class ScoreView implements EditorView {
         assert lxx[0] == 0f : lxx[0];
 
         if (MyArray.distinct(pyy, pxx.length)) {
-            attachSparkline(pxx, pyy, Mesh.Mode.Points, suffix + "p", yIndex,
-                    material);
+            attachSparkline(numPoints, pxx, pyy, Mesh.Mode.Points,
+                    suffix + "p", yIndex, material);
             float zoom = cgm.scorePov.getHalfHeight();
             if (zoom < 10f) {
                 /*
                  * Draw connecting lines only when zoomed in.
                  */
-                attachSparkline(lxx, lyy, Mesh.Mode.LineStrip, suffix + "l",
-                        yIndex, material);
+                attachSparkline(numLineVertices, lxx, lyy, Mesh.Mode.LineStrip,
+                        suffix + "l", yIndex, material);
             }
 
         } else {
@@ -865,7 +872,7 @@ public class ScoreView implements EditorView {
              */
             tempX[0] = pxx[0];
             tempY[0] = pyy[0];
-            attachSparkline(tempX, tempY, Mesh.Mode.Points, suffix + "p",
+            attachSparkline(1, tempX, tempY, Mesh.Mode.Points, suffix + "p",
                     yIndex, material);
         }
     }
@@ -932,10 +939,14 @@ public class ScoreView implements EditorView {
         MyArray.normalize(zs);
 
         // TODO interpolation
-        attachPlot(ts, ws, ts, ws, "rw", numPlots, wMaterial);
-        attachPlot(ts, xs, ts, xs, "rx", numPlots + 1, xMaterial);
-        attachPlot(ts, ys, ts, ys, "ry", numPlots + 2, yMaterial);
-        attachPlot(ts, zs, ts, zs, "rz", numPlots + 3, zMaterial);
+        attachPlot(poseFrame, ts, ws, poseFrame, ts, ws,
+                "rw", numPlots, wMaterial);
+        attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
+                "rx", numPlots + 1, xMaterial);
+        attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
+                "ry", numPlots + 2, yMaterial);
+        attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
+                "rz", numPlots + 3, zMaterial);
 
         float scoreY = scoreY(ws[poseFrame], numPlots);
         poseMesh.add(scoreY, wColor);
@@ -966,9 +977,12 @@ public class ScoreView implements EditorView {
         MyArray.normalize(ys);
         MyArray.normalize(zs);
 
-        attachPlot(ts, xs, ts, xs, "sx", numPlots, xMaterial);
-        attachPlot(ts, ys, ts, ys, "sy", numPlots + 1, yMaterial);
-        attachPlot(ts, zs, ts, zs, "sz", numPlots + 2, zMaterial);
+        attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
+                "sx", numPlots, xMaterial);
+        attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
+                "sy", numPlots + 1, yMaterial);
+        attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
+                "sz", numPlots + 2, zMaterial);
 
         float scoreY = scoreY(xs[poseFrame], numPlots);
         poseMesh.add(scoreY, xColor);
@@ -985,6 +999,7 @@ public class ScoreView implements EditorView {
     /**
      * Attach a single sparkline to the visualization.
      *
+     * @param numVertices number of values to use (&ge;0)
      * @param xx array of X-values for the sparkline (not null, unaffected)
      * @param yy array of Y-values for the sparkline (not null, unaffected)
      * @param mode mesh mode for the sparkline (Mode.LineStrip, or Mode.Points)
@@ -992,8 +1007,9 @@ public class ScoreView implements EditorView {
      * @param yIndex position in the staff (&ge;0, &lt;10, 0&rarr; top position)
      * @param material material for the geometry (not null)
      */
-    private void attachSparkline(float[] xx, float[] yy, Mesh.Mode mode,
-            String suffix, int yIndex, Material material) {
+    private void attachSparkline(int numVertices, float[] xx, float[] yy,
+            Mesh.Mode mode, String suffix, int yIndex, Material material) {
+        assert numVertices >= 0 : numVertices;
         assert xx != null;
         assert yy != null;
         assert suffix != null;
@@ -1001,7 +1017,8 @@ public class ScoreView implements EditorView {
         assert yIndex < 10 : yIndex;
         assert material != null;
 
-        Sparkline sparkline = new Sparkline(xx, yy, sparklineHeight, mode);
+        Sparkline sparkline = new Sparkline(numVertices, xx, yy,
+                sparklineHeight, mode);
         String name = String.format("%d%s", currentBone, suffix);
         Geometry geometry = new Geometry(name, sparkline);
         visuals.attachChild(geometry);
@@ -1028,8 +1045,11 @@ public class ScoreView implements EditorView {
             }
         }
 
-        int numFrames = ts.length + 1; // +1 for pose transform
-        if (ws == null || numFrames != ws.length) {
+        int numFrames = ts.length + 1; // +1 for pose transform TODO
+        if (ws == null || numFrames > ws.length) {
+            /*
+             * Allocate larger buffers for sparkline data.
+             */
             ws = new float[numFrames];
             xs = new float[numFrames];
             ys = new float[numFrames];
@@ -1169,9 +1189,12 @@ public class ScoreView implements EditorView {
         MyArray.normalize(ys);
         MyArray.normalize(zs);
 
-        attachPlot(ts, xs, ts, xs, "tx", numPlots, xMaterial);
-        attachPlot(ts, ys, ts, ys, "ty", numPlots + 1, yMaterial);
-        attachPlot(ts, zs, ts, zs, "tz", numPlots + 2, zMaterial);
+        attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
+                "tx", numPlots, xMaterial);
+        attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
+                "ty", numPlots + 1, yMaterial);
+        attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
+                "tz", numPlots + 2, zMaterial);
 
         float scoreY = scoreY(xs[poseFrame], numPlots);
         poseMesh.add(scoreY, xColor);
