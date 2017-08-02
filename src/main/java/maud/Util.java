@@ -163,7 +163,7 @@ public class Util {
         if (storeResult == null) {
             storeResult = new Transform();
         }
-        float[] times = track.getTimes();
+        float[] times = track.getKeyFrameTimes();
         int lastFrame = times.length - 1;
         assert lastFrame >= 0 : lastFrame;
 
@@ -181,18 +181,6 @@ public class Util {
                 storeResult.setScale(scaleIdentity);
             } else {
                 storeResult.setScale(scales[0]);
-            }
-
-        } else if (time >= times[lastFrame]) {
-            /*
-             * Copy the transform of the last frame.
-             */
-            storeResult.setTranslation(translations[lastFrame]);
-            storeResult.setRotation(rotations[lastFrame]);
-            if (scales == null) {
-                storeResult.setScale(scaleIdentity);
-            } else {
-                storeResult.setScale(scales[lastFrame]);
             }
 
         } else {
@@ -310,7 +298,7 @@ public class Util {
     /**
      * Interpolate between quaternions in a time sequence.
      *
-     * @param time (in seconds, &gt;times[0], &lt;times[last])
+     * @param time (in seconds, &gt;times[0])
      * @param times (not null, unaffected)
      * @param quaternions (not null, unaffected, same length as times)
      * @param storeResult (modified if not null)
@@ -319,20 +307,21 @@ public class Util {
     public static Quaternion interpolate(float time, float[] times,
             Quaternion[] quaternions, Quaternion storeResult) {
         assert time >= times[0] : time;
-        assert time < times[times.length - 1] : time;
         assert times.length == quaternions.length;
         if (storeResult == null) {
             storeResult = new Quaternion();
         }
 
         int index1 = MyArray.findPreviousIndex(time, times);
-        int index2 = index1 + 1;
-        float interval = times[index2] - times[index1];
-        assert interval > 0f : interval;
-        float fraction = (time - times[index1]) / interval;
         storeResult.set(quaternions[index1]);
-        if (MyQuaternion.ne(storeResult, quaternions[index2])) {
-            storeResult.nlerp(quaternions[index2], fraction);
+        if (index1 < times.length - 1) {
+            int index2 = index1 + 1;
+            float interval = times[index2] - times[index1];
+            assert interval > 0f : interval;
+            float fraction = (time - times[index1]) / interval;
+            if (MyQuaternion.ne(storeResult, quaternions[index2])) {
+                storeResult.nlerp(quaternions[index2], fraction);
+            }
         }
 
         return storeResult;
@@ -341,7 +330,7 @@ public class Util {
     /**
      * Interpolate between vectors in a time sequence.
      *
-     * @param time (in seconds, &gt;times[0], &lt;times[last])
+     * @param time (in seconds, &gt;times[0])
      * @param times (not null, unaffected)
      * @param vectors (not null, unaffected, same length as times)
      * @param storeResult (modified if not null)
@@ -350,28 +339,29 @@ public class Util {
     public static Vector3f interpolate(float time, float[] times,
             Vector3f[] vectors, Vector3f storeResult) {
         assert time >= times[0] : time;
-        assert time < times[times.length - 1] : time;
         assert times.length == vectors.length;
         if (storeResult == null) {
             storeResult = new Vector3f();
         }
 
         int index1 = MyArray.findPreviousIndex(time, times);
-        int index2 = index1 + 1;
-        float interval = times[index2] - times[index1];
-        assert interval > 0f : interval;
-        float f2 = (time - times[index1]) / interval;
-        float f1 = 1f - f2;
         storeResult.set(vectors[index1]);
-        Vector3f v2 = vectors[index2];
-        if (storeResult.x != v2.x) {
-            storeResult.x = f1 * storeResult.x + f2 * v2.x;
-        }
-        if (storeResult.y != v2.y) {
-            storeResult.y = f1 * storeResult.y + f2 * v2.y;
-        }
-        if (storeResult.z != v2.z) {
-            storeResult.z = f1 * storeResult.z + f2 * v2.z;
+        if (index1 < times.length - 1) {
+            int index2 = index1 + 1;
+            float interval = times[index2] - times[index1];
+            assert interval > 0f : interval;
+            float f2 = (time - times[index1]) / interval;
+            float f1 = 1f - f2;
+            Vector3f v2 = vectors[index2];
+            if (storeResult.x != v2.x) {
+                storeResult.x = f1 * storeResult.x + f2 * v2.x;
+            }
+            if (storeResult.y != v2.y) {
+                storeResult.y = f1 * storeResult.y + f2 * v2.y;
+            }
+            if (storeResult.z != v2.z) {
+                storeResult.z = f1 * storeResult.z + f2 * v2.z;
+            }
         }
 
         return storeResult;
@@ -381,7 +371,7 @@ public class Util {
      * Interpolate between keyframes in a bone track using the default
      * techniques.
      *
-     * @param time (in seconds, &gt;times[0], &lt;times[last])
+     * @param time (in seconds, &gt;times[0])
      * @param times (not null, unaffected)
      * @param translations (not null, unaffected, same length as times)
      * @param rotations (not null, unaffected, same length as times)
@@ -392,6 +382,7 @@ public class Util {
     public static Transform interpolate(float time, float[] times,
             Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales,
             Transform storeResult) {
+        assert time >= times[0] : time;
         if (storeResult == null) {
             storeResult = new Transform();
         }
@@ -662,7 +653,7 @@ public class Util {
             times = new float[numKeyframes];
             times[0] = 0f;
         } else {
-            times = sourceTrack.getTimes();
+            times = sourceTrack.getKeyFrameTimes();
             numKeyframes = times.length;
         }
         Vector3f[] translations = new Vector3f[numKeyframes];
