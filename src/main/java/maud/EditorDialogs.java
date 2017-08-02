@@ -75,19 +75,19 @@ class EditorDialogs {
                 + "urrently using Maud, a jMonkeyEngine application for edit"
                 + "ing animated models.\n\nThe version you are using includes "
                 + "the following libraries:";
-        text += String.format("\n   jme3-core version %s",
+        text += String.format("%n   jme3-core version %s",
                 MyString.quote(JmeVersion.FULL_NAME));
-        text += String.format("\n   nifty version %s",
+        text += String.format("%n   nifty version %s",
                 MyString.quote(niftyVersion));
-        text += String.format("\n   jme3-utilities-heart version %s",
+        text += String.format("%n   jme3-utilities-heart version %s",
                 MyString.quote(Misc.getVersionShort()));
-        text += String.format("\n   SkyControl version %s",
+        text += String.format("%n   SkyControl version %s",
                 MyString.quote(Constants.getVersionShort()));
-        text += String.format("\n   jme3-utilities-debug version %s",
+        text += String.format("%n   jme3-utilities-debug version %s",
                 MyString.quote(DebugVersion.getVersionShort()));
-        text += String.format("\n   jme3-utilities-ui version %s",
+        text += String.format("%n   jme3-utilities-ui version %s",
                 MyString.quote(UiVersion.getVersionShort()));
-        text += String.format("\n   jme3-utilities-nifty version %s\n\n",
+        text += String.format("%n   jme3-utilities-nifty version %s%n%n",
                 MyString.quote(LibraryVersion.getVersionShort()));
 
         Maud.gui.closeAllPopups();
@@ -147,7 +147,7 @@ class EditorDialogs {
             String contents = scanner.next();
             scanner.close();
             text2 = String.format(
-                    "Here's your software license for Maud:\n%s\n",
+                    "Here's your software license for Maud:%n%s%n",
                     contents);
         }
         Maud.gui.closeAllPopups();
