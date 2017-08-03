@@ -193,11 +193,15 @@ class ActionPrefix {
      */
     final static String setShadowMode = "set shadowMode ";
     /**
-     * argument is the name of vector interpolation technique
+     * argument is the name of a quaternion interpolation technique
+     */
+    final static String setTweenRotations = "set tweenRotations ";
+    /**
+     * argument is the name of a vector interpolation technique
      */
     final static String setTweenScales = "set tweenScales ";
     /**
-     * argument is the name of vector interpolation technique
+     * argument is the name of a vector interpolation technique
      */
     final static String setTweenTranslations = "set tweenTranslations ";
     /**

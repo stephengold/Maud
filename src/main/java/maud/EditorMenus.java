@@ -526,6 +526,22 @@ class EditorMenus {
     }
 
     /**
+     * Display a menu to set the rotation tweening mode using the "set
+     * tweenRotations " action prefix.
+     */
+    void setTweenRotations() {
+        builder.reset();
+        QuaternionInterpolation selected = Maud.model.misc.getTweenRotations();
+        for (QuaternionInterpolation t : QuaternionInterpolation.values()) {
+            if (!t.equals(selected)) {
+                String name = t.toString();
+                builder.add(name);
+            }
+        }
+        builder.show(ActionPrefix.setTweenRotations);
+    }
+
+    /**
      * Display a menu to set the scale tweening mode using the "set tweenScales
      * " action prefix.
      */

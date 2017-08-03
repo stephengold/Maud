@@ -65,7 +65,6 @@ import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
-import jme3utilities.math.MyArray;
 import jme3utilities.math.MyQuaternion;
 
 /**
@@ -313,38 +312,6 @@ public class Util {
         }
 
         return result;
-    }
-
-    /**
-     * Interpolate using Nlerp between quaternions in a time sequence.
-     *
-     * @param time (in seconds, &gt;times[0])
-     * @param times (not null, unaffected)
-     * @param quaternions (not null, unaffected, same length as times)
-     * @param storeResult (modified if not null)
-     * @return interpolated quaternion (either storeResult or a new instance)
-     */
-    public static Quaternion interpolate(float time, float[] times,
-            Quaternion[] quaternions, Quaternion storeResult) {
-        assert time >= times[0] : time;
-        assert times.length == quaternions.length;
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
-        int index1 = MyArray.findPreviousIndex(time, times);
-        storeResult.set(quaternions[index1]);
-        if (index1 < times.length - 1) {
-            int index2 = index1 + 1;
-            float interval = times[index2] - times[index1];
-            assert interval > 0f : interval;
-            float fraction = (time - times[index1]) / interval;
-            if (MyQuaternion.ne(storeResult, quaternions[index2])) {
-                storeResult.nlerp(quaternions[index2], fraction);
-            }
-        }
-
-        return storeResult;
     }
 
     /**
