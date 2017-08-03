@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
-import maud.Util;
+import maud.QuaternionInterpolation;
 import maud.VectorInterpolation;
 
 /**
@@ -91,6 +91,10 @@ public class MiscStatus implements Cloneable {
      * view mode ("hybrid" or "scene" or "score")
      */
     private String viewMode = "scene";
+    /**
+     * tweening technique for rotations
+     */
+    private QuaternionInterpolation tweenRotations = QuaternionInterpolation.Nlerp;
     /**
      * tweening technique for scales
      */
@@ -177,6 +181,15 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
+     * Read the tweening technique for rotations.
+     *
+     * @return enum (not null)
+     */
+    public QuaternionInterpolation getTweenRotations() {
+        return tweenRotations;
+    }
+
+    /**
      * Read the tweening technique for scales.
      *
      * @return enum (not null)
@@ -230,8 +243,8 @@ public class MiscStatus implements Cloneable {
 
         tweenTranslations.interpolate(time, times, duration, translations,
                 storeResult.getTranslation());
-
-        Util.interpolate(time, times, rotations, storeResult.getRotation());
+        tweenRotations.interpolate(time, times, duration, rotations,
+                storeResult.getRotation());
 
         if (scales == null) {
             storeResult.setScale(scaleIdentity);
@@ -359,6 +372,16 @@ public class MiscStatus implements Cloneable {
      */
     public void setSkyRendered(boolean newState) {
         skyRendered = newState;
+    }
+
+    /**
+     * Alter the tweening technique for rotations.
+     *
+     * @param newTechnique (not null)
+     */
+    public void setTweenRotations(QuaternionInterpolation newTechnique) {
+        Validate.nonNull(newTechnique, "new technique");
+        tweenRotations = newTechnique;
     }
 
     /**

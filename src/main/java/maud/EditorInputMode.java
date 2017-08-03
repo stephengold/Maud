@@ -840,6 +840,9 @@ class EditorInputMode extends InputMode {
             case "set track translation all":
                 Maud.model.target.track.setTrackTranslationAll();
                 break;
+            case "set tweenRotations":
+                Maud.gui.menus.setTweenRotations();
+                break;
             case "set tweenScales":
                 Maud.gui.menus.setTweenScales();
                 break;
@@ -895,9 +898,14 @@ class EditorInputMode extends InputMode {
             Maud.model.target.setQueueBucket(value);
         } else if (actionString.startsWith(ActionPrefix.setShadowMode)) {
             arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);
-            RenderQueue.ShadowMode value;
-            value = RenderQueue.ShadowMode.valueOf(arg);
+            RenderQueue.ShadowMode value = RenderQueue.ShadowMode.valueOf(arg);
             Maud.model.target.setShadowMode(value);
+        } else if (actionString.startsWith(ActionPrefix.setTweenRotations)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setTweenRotations);
+            QuaternionInterpolation value;
+            value = QuaternionInterpolation.valueOf(arg);
+            Maud.model.misc.setTweenRotations(value);
         } else if (actionString.startsWith(ActionPrefix.setTweenScales)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenScales);

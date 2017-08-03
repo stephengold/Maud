@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.QuaternionInterpolation;
 import maud.VectorInterpolation;
 
 /**
@@ -75,6 +76,11 @@ class TweeningTool extends WindowController {
         VectorInterpolation vTechnique = Maud.model.misc.getTweenTranslations();
         String desc = vTechnique.toString();
         Maud.gui.setStatusText("tweenTranslations", " " + desc);
+
+        QuaternionInterpolation qTechnique;
+        qTechnique = Maud.model.misc.getTweenRotations();
+        desc = qTechnique.toString();
+        Maud.gui.setStatusText("tweenRotations", " " + desc);
 
         vTechnique = Maud.model.misc.getTweenScales();
         desc = vTechnique.toString();

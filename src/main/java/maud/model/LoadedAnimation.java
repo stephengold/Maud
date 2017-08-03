@@ -43,6 +43,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
 import maud.Pose;
+import maud.QuaternionInterpolation;
 import maud.Util;
 import maud.VectorInterpolation;
 
@@ -971,14 +972,17 @@ public class LoadedAnimation implements Cloneable {
             float[] storeYs, float[] storeZs) {
         Validate.nonNegative(boneIndex, "bone index");
 
+        QuaternionInterpolation qTechnique;
+        qTechnique = Maud.model.misc.getTweenRotations();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
+        float duration = getDuration();
         Quaternion[] rotations = track.getRotations();
         Quaternion tempQ = new Quaternion();
 
         for (int iSample = 0; iSample < ts.length; iSample++) {
             float time = ts[iSample];
-            Util.interpolate(time, times, rotations, tempQ);
+            qTechnique.interpolate(time, times, duration, rotations, tempQ);
             storeWs[iSample] = tempQ.getW();
             storeXs[iSample] = tempQ.getX();
             storeYs[iSample] = tempQ.getY();
