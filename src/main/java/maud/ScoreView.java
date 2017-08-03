@@ -465,7 +465,9 @@ public class ScoreView implements EditorView {
 
             ColorRGBA backgroundColor = Maud.model.score.backgroundColor(null);
             viewPort.setBackgroundColor(backgroundColor);
-
+            /*
+             * Configure finials.
+             */
             boolean translations = Maud.model.score.showsTranslations();
             boolean rotations = Maud.model.score.showsRotations();
             boolean scales = Maud.model.score.showsScales();
@@ -478,15 +480,20 @@ public class ScoreView implements EditorView {
             /*
              * Determine the number of interpolated samples for each sparkline.
              */
-            ScoreView view = cgm.getScoreView();
-            Camera camera = view.getCamera();
-            Vector3f world = new Vector3f(xLeftMargin, 0f, zLines);
-            Vector3f left = camera.getScreenCoordinates(world);
-            world.x = xRightMargin;
-            Vector3f right = camera.getScreenCoordinates(world);
-            float dx = right.x - left.x;
-            numSamples = 1 + Math.round(dx);
-            assert numSamples > 0f : numSamples;
+            float duration = cgm.animation.getDuration();
+            if (duration > 0f) {
+                ScoreView view = cgm.getScoreView();
+                Camera camera = view.getCamera();
+                Vector3f world = new Vector3f(xLeftMargin, 0f, zLines);
+                Vector3f left = camera.getScreenCoordinates(world);
+                world.x = xRightMargin;
+                Vector3f right = camera.getScreenCoordinates(world);
+                float dx = right.x - left.x;
+                numSamples = 1 + Math.round(dx);
+                assert numSamples > 0f : numSamples;
+            } else {
+                numSamples = 0;
+            }
 
             List<Spatial> roots = viewPort.getScenes();
             int numRoots = roots.size();
@@ -1089,7 +1096,9 @@ public class ScoreView implements EditorView {
     private void attachSparklines() {
         ts = cgm.animation.trackTimes(currentBone);
         float duration = cgm.animation.getDuration();
-        MyArray.normalize(ts, 0f, duration);
+        if (duration > 0f) {
+            MyArray.normalize(ts, 0f, duration);
+        }
 
         int selectedBone = cgm.bone.getIndex();
         if (currentBone == selectedBone) {
