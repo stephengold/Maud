@@ -173,6 +173,10 @@ public class ScoreView implements EditorView {
      */
     private float height = 0f;
     /**
+     * temporary storage for interpolated bone-track samples
+     */
+    private float[] its, iws, ixs, iys, izs, nits;
+    /**
      * array to pass a single X value to
      * {@link #attachSparkline(float[], float[], com.jme3.scene.Mesh.Mode, java.lang.String, int, com.jme3.material.Material)}
      */
@@ -183,13 +187,17 @@ public class ScoreView implements EditorView {
      */
     final private float[] tempY = new float[1];
     /**
-     * temporary storage for bone-track data
+     * temporary storage for bone-track data (keyframes plus pose)
      */
     private float[] ts, ws, xs, ys, zs;
     /**
      * index (in the selected skeleton) of the bone currently being visualized
      */
     private int currentBone;
+    /**
+     * number of interpolated samples per sparkline, or 0 to use keyframes
+     */
+    private int numSamples = 0;
     /**
      * count of plots added to the current staff (&ge;0)
      */
@@ -467,6 +475,18 @@ public class ScoreView implements EditorView {
                     sparklineHeight);
 
             cgm.scorePov.updatePartial();
+            /*
+             * Determine the number of interpolated samples for each sparkline.
+             */
+            ScoreView view = cgm.getScoreView();
+            Camera camera = view.getCamera();
+            Vector3f world = new Vector3f(xLeftMargin, 0f, zLines);
+            Vector3f left = camera.getScreenCoordinates(world);
+            world.x = xRightMargin;
+            Vector3f right = camera.getScreenCoordinates(world);
+            float dx = right.x - left.x;
+            numSamples = 1 + Math.round(dx);
+            assert numSamples > 0f : numSamples;
 
             List<Spatial> roots = viewPort.getScenes();
             int numRoots = roots.size();
@@ -923,9 +943,13 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attach 3 plots to visualize bone rotations.
+     * Attach 4 plots to visualize bone rotations.
      */
     private void attachRotationPlots() {
+        if (numSamples > 0) {
+            cgm.animation.trackInterpolateRotations(its, currentBone,
+                    iws, ixs, iys, izs);
+        }
         cgm.animation.trackRotations(currentBone, ws, xs, ys, zs);
         Quaternion user = cgm.pose.getPose().userRotation(currentBone, null);
         int poseFrame = ts.length;
@@ -933,20 +957,33 @@ public class ScoreView implements EditorView {
         xs[poseFrame] = user.getX();
         ys[poseFrame] = user.getY();
         zs[poseFrame] = user.getZ();
-        MyArray.normalize(ws);
-        MyArray.normalize(xs);
-        MyArray.normalize(ys);
-        MyArray.normalize(zs);
+        /*
+         * Normalize the data.
+         */
+        normalize(poseFrame + 1, ws, numSamples, iws);
+        normalize(poseFrame + 1, xs, numSamples, ixs);
+        normalize(poseFrame + 1, ys, numSamples, iys);
+        normalize(poseFrame + 1, zs, numSamples, izs);
 
-        // TODO interpolation
-        attachPlot(poseFrame, ts, ws, poseFrame, ts, ws,
-                "rw", numPlots, wMaterial);
-        attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
-                "rx", numPlots + 1, xMaterial);
-        attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
-                "ry", numPlots + 2, yMaterial);
-        attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
-                "rz", numPlots + 3, zMaterial);
+        if (numSamples > 0) {
+            attachPlot(poseFrame, ts, ws, numSamples, nits, iws,
+                    "rw", numPlots, wMaterial);
+            attachPlot(poseFrame, ts, xs, numSamples, nits, ixs,
+                    "rx", numPlots + 1, xMaterial);
+            attachPlot(poseFrame, ts, ys, numSamples, nits, iys,
+                    "ry", numPlots + 2, yMaterial);
+            attachPlot(poseFrame, ts, zs, numSamples, nits, izs,
+                    "rz", numPlots + 3, zMaterial);
+        } else {
+            attachPlot(poseFrame, ts, ws, poseFrame, ts, ws,
+                    "rw", numPlots, wMaterial);
+            attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
+                    "rx", numPlots + 1, xMaterial);
+            attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
+                    "ry", numPlots + 2, yMaterial);
+            attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
+                    "rz", numPlots + 3, zMaterial);
+        }
 
         float scoreY = scoreY(ws[poseFrame], numPlots);
         poseMesh.add(scoreY, wColor);
@@ -967,22 +1004,39 @@ public class ScoreView implements EditorView {
      * Attach 3 plots to visualize bone scales.
      */
     private void attachScalePlots() {
+        if (numSamples > 0) {
+            cgm.animation.trackInterpolateScales(its, currentBone,
+                    ixs, iys, izs);
+        }
         cgm.animation.trackScales(currentBone, xs, ys, zs);
         Vector3f user = cgm.pose.getPose().userScale(currentBone, null);
         int poseFrame = ts.length;
         xs[poseFrame] = user.x;
         ys[poseFrame] = user.y;
         zs[poseFrame] = user.z;
-        MyArray.normalize(xs);
-        MyArray.normalize(ys);
-        MyArray.normalize(zs);
+        /*
+         * Normalize the data.
+         */
+        normalize(poseFrame + 1, xs, numSamples, ixs);
+        normalize(poseFrame + 1, ys, numSamples, iys);
+        normalize(poseFrame + 1, zs, numSamples, izs);
 
-        attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
-                "sx", numPlots, xMaterial);
-        attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
-                "sy", numPlots + 1, yMaterial);
-        attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
-                "sz", numPlots + 2, zMaterial);
+        if (numSamples > 0) {
+            attachPlot(poseFrame, ts, xs, numSamples, nits, ixs,
+                    "sx", numPlots, xMaterial);
+            attachPlot(poseFrame, ts, ys, numSamples, nits, iys,
+                    "sy", numPlots + 1, yMaterial);
+            attachPlot(poseFrame, ts, zs, numSamples, nits, izs,
+                    "sz", numPlots + 2, zMaterial);
+
+        } else {
+            attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
+                    "sx", numPlots, xMaterial);
+            attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
+                    "sy", numPlots + 1, yMaterial);
+            attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
+                    "sz", numPlots + 2, zMaterial);
+        }
 
         float scoreY = scoreY(xs[poseFrame], numPlots);
         poseMesh.add(scoreY, xColor);
@@ -1039,21 +1093,44 @@ public class ScoreView implements EditorView {
 
         int selectedBone = cgm.bone.getIndex();
         if (currentBone == selectedBone) {
+            /*
+             * Record the X-coordinates of all keyframes in the selected track.
+             */
             assert frameXs.isEmpty();
             for (int i = 0; i < ts.length; i++) {
                 frameXs.put(i, ts[i]);
             }
         }
 
-        int numFrames = ts.length + 1; // +1 for pose transform TODO
+        int numFrames = ts.length + 1;
         if (ws == null || numFrames > ws.length) {
             /*
-             * Allocate larger buffers for sparkline data.
+             * Allocate larger buffers for keyframe data.
              */
             ws = new float[numFrames];
             xs = new float[numFrames];
             ys = new float[numFrames];
             zs = new float[numFrames];
+        }
+        if (its == null || numSamples > its.length) {
+            /*
+             * Allocate larger buffers for interpolated samples.
+             */
+            its = new float[numSamples];
+            iws = new float[numSamples];
+            ixs = new float[numSamples];
+            iys = new float[numSamples];
+            izs = new float[numSamples];
+            nits = new float[numSamples];
+        }
+        /*
+         * Calculate sample times.
+         */
+        if (numSamples > 0) {
+            for (int i = 0; i < numSamples; i++) {
+                nits[i] = i / (float) (numSamples - 1);
+                its[i] = duration * nits[i];
+            }
         }
 
         numPlots = 0;
@@ -1101,7 +1178,6 @@ public class ScoreView implements EditorView {
             } else {
                 attachFinials(finial);
             }
-
             attachSparklines();
 
         } else {
@@ -1179,22 +1255,38 @@ public class ScoreView implements EditorView {
      * Attach 3 plots to visualize bone translations.
      */
     private void attachTranslationPlots() {
+        if (numSamples > 0) {
+            cgm.animation.trackInterpolateTranslations(its, currentBone,
+                    ixs, iys, izs);
+        }
         cgm.animation.trackTranslations(currentBone, xs, ys, zs);
         Vector3f user = cgm.pose.getPose().userTranslation(currentBone, null);
         int poseFrame = ts.length;
         xs[poseFrame] = user.x;
         ys[poseFrame] = user.y;
         zs[poseFrame] = user.z;
-        MyArray.normalize(xs);
-        MyArray.normalize(ys);
-        MyArray.normalize(zs);
+        /*
+         * Normalize the data.
+         */
+        normalize(poseFrame + 1, xs, numSamples, ixs);
+        normalize(poseFrame + 1, ys, numSamples, iys);
+        normalize(poseFrame + 1, zs, numSamples, izs);
 
-        attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
-                "tx", numPlots, xMaterial);
-        attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
-                "ty", numPlots + 1, yMaterial);
-        attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
-                "tz", numPlots + 2, zMaterial);
+        if (numSamples > 0) {
+            attachPlot(poseFrame, ts, xs, numSamples, nits, ixs,
+                    "tx", numPlots, xMaterial);
+            attachPlot(poseFrame, ts, ys, numSamples, nits, iys,
+                    "ty", numPlots + 1, yMaterial);
+            attachPlot(poseFrame, ts, zs, numSamples, nits, izs,
+                    "tz", numPlots + 2, zMaterial);
+        } else {
+            attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
+                    "tx", numPlots, xMaterial);
+            attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
+                    "ty", numPlots + 1, yMaterial);
+            attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
+                    "tz", numPlots + 2, zMaterial);
+        }
 
         float scoreY = scoreY(xs[poseFrame], numPlots);
         poseMesh.add(scoreY, xColor);
@@ -1272,6 +1364,46 @@ public class ScoreView implements EditorView {
         rs.setBlendMode(RenderState.BlendMode.Alpha);
         rs.setDepthTest(false);
         rs.setWireframe(true);
+    }
+
+    /**
+     * Normalize keyframe data and sampled data collectively.
+     *
+     * @param numK number of keyframe data points (&ge;0)
+     * @param kData keyframe data (not null, length >= numK)
+     * @param numS number of sampled data points (&ge;0)
+     * @param sData sampled data (not null, length >= numS)
+     */
+    private static void normalize(int numK, float[] kData, int numS,
+            float[] sData) {
+        assert numK >= 0 : numK;
+        assert numS >= 0 : numS;
+
+        float min = Float.POSITIVE_INFINITY;
+        float max = Float.NEGATIVE_INFINITY;
+
+        for (int i = 0; i < numK; i++) {
+            float value = kData[i];
+            if (value < min) {
+                min = value;
+            }
+            if (value > max) {
+                max = value;
+            }
+        }
+
+        for (int i = 0; i < numS; i++) {
+            float value = sData[i];
+            if (value < min) {
+                min = value;
+            }
+            if (value > max) {
+                max = value;
+            }
+        }
+
+        MyArray.normalize(kData, max, min);
+        MyArray.normalize(sData, max, min);
     }
 
     /**
