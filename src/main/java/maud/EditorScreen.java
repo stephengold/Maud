@@ -735,7 +735,9 @@ public class EditorScreen extends GuiScreenController {
         boolean cont = loadedCgm.animation.willContinue();
         boolean reverse = loadedCgm.animation.willReverse();
         float duration = loadedCgm.animation.getDuration();
-        if (cont && !reverse) {
+        if (duration == 0f) {
+            time = 0f;
+        } else if (cont && !reverse) {
             time = MyMath.modulo(time, duration); // wrap
         } else {
             float freeTime = time;
