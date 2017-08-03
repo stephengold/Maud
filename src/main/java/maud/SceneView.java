@@ -984,7 +984,7 @@ public class SceneView implements EditorView, JmeCloneable {
          */
         Vector3f baseLocation = new Vector3f(0f, 0f, 0f);
         cgm.scenePov.setCursorLocation(baseLocation);
-        Maud.model.misc.setPlatformDiameter(2f);
+        Maud.model.scene.setPlatformDiameter(2f);
 
         Vector3f cameraLocation = new Vector3f(-2.4f, 1f, 1.6f);
         cgm.scenePov.setCameraLocation(cameraLocation);
@@ -1018,7 +1018,7 @@ public class SceneView implements EditorView, JmeCloneable {
      */
     private void updateShadowMode() {
         RenderQueue.ShadowMode mode;
-        boolean enableShadows = Maud.model.misc.areShadowsRendered();
+        boolean enableShadows = Maud.model.scene.areShadowsRendered();
         if (enableShadows) {
             mode = RenderQueue.ShadowMode.CastAndReceive;
         } else {

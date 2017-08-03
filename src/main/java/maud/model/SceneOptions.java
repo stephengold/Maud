@@ -26,7 +26,9 @@
  */
 package maud.model;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 
 /**
  * Display options applicable to "scene" views in Maud's editor screen.
@@ -49,8 +51,53 @@ public class SceneOptions implements Cloneable {
      * true if physics objects are visualized, otherwise false
      */
     private boolean physicsRendered = true;
+    /**
+     * shadows in scene views (true &rarr; rendered, false &rarr; not rendered)
+     */
+    private boolean shadowsRendered = true;
+    /**
+     * sky background in scene views (true &rarr; rendered, false &rarr; not
+     * rendered)
+     */
+    private boolean skyRendered = true;
+    /**
+     * diameter of the platform in scene views (in world units, &gt;0)
+     */
+    private float platformDiameter = 1f;
+    /**
+     * type of platform in scene views (either "none" or "square")
+     */
+    private String platformMode = "square";
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Test whether shadows are rendered in scene views.
+     *
+     * @return true if rendered, otherwise false
+     */
+    public boolean areShadowsRendered() {
+        return shadowsRendered;
+    }
+
+    /**
+     * Read the diameter of the platform in scene views.
+     *
+     * @return diameter (in world units, &gt;0)
+     */
+    public float getPlatformDiameter() {
+        assert platformDiameter > 0f : platformDiameter;
+        return platformDiameter;
+    }
+
+    /**
+     * Read the type of platform in scene views.
+     *
+     * @return either "none" or "square"
+     */
+    public String getPlatformMode() {
+        return platformMode;
+    }
 
     /**
      * Test whether physics objects are visualized.
@@ -62,12 +109,68 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
+     * Test whether the sky background is rendered in scene views.
+     *
+     * @return true if rendered, otherwise false
+     */
+    public boolean isSkyRendered() {
+        return skyRendered;
+    }
+
+    /**
      * Alter whether physics objects are visualized.
      *
      * @param newSetting true to visualize, false to hide
      */
     public void setPhysicsRendered(boolean newSetting) {
         physicsRendered = newSetting;
+    }
+
+    /**
+     * Alter the diameter of the platform in scene views.
+     *
+     * @param diameter (in world units, &gt;0)
+     */
+    public void setPlatformDiameter(float diameter) {
+        Validate.positive(diameter, "diameter");
+        platformDiameter = diameter;
+    }
+
+    /**
+     * Alter the type of platform in scene views.
+     *
+     * @param modeName either "none" or "square"
+     */
+    public void setPlatformMode(String modeName) {
+        Validate.nonNull(modeName, "mode name");
+
+        switch (modeName) {
+            case "none":
+            case "square":
+                platformMode = modeName;
+                break;
+            default:
+                logger.log(Level.SEVERE, "mode name={0}", modeName);
+                throw new IllegalArgumentException("invalid mode name");
+        }
+    }
+
+    /**
+     * Alter the rendering of shadows in scene views.
+     *
+     * @param newState true &rarr; rendered, false &rarr; not rendered
+     */
+    public void setShadowsRendered(boolean newState) {
+        shadowsRendered = newState;
+    }
+
+    /**
+     * Alter the rendering of the sky background in scene views.
+     *
+     * @param newState true &rarr; rendered, false &rarr; not rendered
+     */
+    public void setSkyRendered(boolean newState) {
+        skyRendered = newState;
     }
     // *************************************************************************
     // Object methods
