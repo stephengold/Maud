@@ -88,7 +88,7 @@ class RenderTool extends WindowController {
             }
             DirectionalLight mainLight = view.getMainLight();
             dlsf.setLight(mainLight);
-            boolean enable = Maud.model.misc.areShadowsRendered();
+            boolean enable = Maud.model.scene.areShadowsRendered();
             dlsf.setEnabled(enable);
         }
     }
@@ -106,7 +106,7 @@ class RenderTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        boolean shadowsFlag = Maud.model.misc.areShadowsRendered();
+        boolean shadowsFlag = Maud.model.scene.areShadowsRendered();
         Maud.gui.setChecked("shadows", shadowsFlag);
     }
 }

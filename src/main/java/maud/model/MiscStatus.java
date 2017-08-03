@@ -64,26 +64,6 @@ public class MiscStatus implements Cloneable {
      */
     private boolean anglesInDegrees = true;
     /**
-     * shadows in scene views (true &rarr; rendered, false &rarr; not rendered)
-     * TODO move to SceneOptions
-     */
-    private boolean shadowsRendered = true;
-    /**
-     * sky background in scene views (true &rarr; rendered, false &rarr; not
-     * rendered) TODO move to SceneOptions
-     */
-    private boolean skyRendered = true;
-    /**
-     * diameter of the platform in scene views (in world units, &gt;0) TODO move
-     * to SceneOptions
-     */
-    private float platformDiameter = 1f;
-    /**
-     * type of platform in scene views (either "none" or "square") TODO move to
-     * SceneOptions
-     */
-    private String platformMode = "square";
-    /**
      * selected user key, or null if none selected
      */
     private String selectedUserKey = null;
@@ -105,16 +85,6 @@ public class MiscStatus implements Cloneable {
     private VectorInterpolation tweenTranslations = VectorInterpolation.Lerp;
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Test whether shadows are rendered in scene views. TODO move to
-     * SceneOptions
-     *
-     * @return true if rendered, otherwise false
-     */
-    public boolean areShadowsRendered() {
-        return shadowsRendered;
-    }
 
     /**
      * Delete (and deselect) the selected user key.
@@ -150,25 +120,6 @@ public class MiscStatus implements Cloneable {
      */
     public boolean getAnglesInDegrees() {
         return anglesInDegrees;
-    }
-
-    /**
-     * Read the diameter of the platform in scene views.
-     *
-     * @return diameter (in world units, &gt;0)
-     */
-    public float getPlatformDiameter() {
-        assert platformDiameter > 0f : platformDiameter;
-        return platformDiameter;
-    }
-
-    /**
-     * Read the type of platform in scene views.
-     *
-     * @return either "none" or "square"
-     */
-    public String getPlatformMode() {
-        return platformMode;
     }
 
     /**
@@ -257,15 +208,6 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Test whether the sky background is rendered in scene views.
-     *
-     * @return true if rendered, otherwise false
-     */
-    public boolean isSkyRendered() {
-        return skyRendered;
-    }
-
-    /**
      * Select the next user key in alphabetical order.
      */
     public void selectNextUserKey() {
@@ -325,53 +267,6 @@ public class MiscStatus implements Cloneable {
      */
     public void setAnglesInDegrees(boolean newState) {
         anglesInDegrees = newState;
-    }
-
-    /**
-     * Alter the diameter of the platform in scene views.
-     *
-     * @param diameter (in world units, &gt;0)
-     */
-    public void setPlatformDiameter(float diameter) {
-        Validate.positive(diameter, "diameter");
-        platformDiameter = diameter;
-    }
-
-    /**
-     * Alter the type of platform in scene views.
-     *
-     * @param modeName either "none" or "square"
-     */
-    public void setPlatformMode(String modeName) {
-        Validate.nonNull(modeName, "mode name");
-
-        switch (modeName) {
-            case "none":
-            case "square":
-                platformMode = modeName;
-                break;
-            default:
-                logger.log(Level.SEVERE, "mode name={0}", modeName);
-                throw new IllegalArgumentException("invalid mode name");
-        }
-    }
-
-    /**
-     * Alter the rendering of shadows in scene views.
-     *
-     * @param newState true &rarr; rendered, false &rarr; not rendered
-     */
-    public void setShadowsRendered(boolean newState) {
-        shadowsRendered = newState;
-    }
-
-    /**
-     * Alter the rendering of the sky background in scene views.
-     *
-     * @param newState true &rarr; rendered, false &rarr; not rendered
-     */
-    public void setSkyRendered(boolean newState) {
-        skyRendered = newState;
     }
 
     /**

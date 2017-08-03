@@ -338,13 +338,13 @@ public class EditorScreen extends GuiScreenController {
                 Maud.model.score.setShowTranslations(isChecked);
                 break;
             case "shadows":
-                Maud.model.misc.setShadowsRendered(isChecked);
+                Maud.model.scene.setShadowsRendered(isChecked);
                 break;
             case "skeleton":
                 Maud.model.skeleton.setVisible(isChecked);
                 break;
             case "sky":
-                Maud.model.misc.setSkyRendered(isChecked);
+                Maud.model.scene.setSkyRendered(isChecked);
                 break;
             default:
                 logger.log(Level.WARNING, "check box with unknown id={0}",
@@ -425,10 +425,10 @@ public class EditorScreen extends GuiScreenController {
                 break;
 
             case "noPlatformRadioButton":
-                Maud.model.misc.setPlatformMode("none");
+                Maud.model.scene.setPlatformMode("none");
                 break;
             case "squarePlatformRadioButton":
-                Maud.model.misc.setPlatformMode("square");
+                Maud.model.scene.setPlatformMode("square");
                 break;
 
             default:
