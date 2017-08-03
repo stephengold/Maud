@@ -1756,6 +1756,53 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="tweeningTool" title="Tweening Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="110px" width="300px" x="35" y="65">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" text="For translations:  "
+                                 textHAlign="right"
+                                 width="98px"/>
+                        <control name="label" id="tweenTranslations"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Edit"
+                                 id="id54ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(set tweenTranslations)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" text="For rotations:  "
+                                 textHAlign="right"
+                                 width="98px"/>
+                        <control name="label" id="tweenRotations"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Edit"
+                                 id="id55ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(set tweenRotations)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" text="For scales:  "
+                                 textHAlign="right"
+                                 width="98px"/>
+                        <control name="label" id="tweenScales"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" label="Edit"
+                                 id="id56ToAvoidNiftyWarning"
+                                 width="50px">
+                            <interact onRelease="perform(set tweenScales)"/>
+                        </control>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="twistTool" title="Twist Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
