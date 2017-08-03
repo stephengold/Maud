@@ -524,6 +524,38 @@ class EditorMenus {
         }
         builder.show(ActionPrefix.setShadowMode);
     }
+
+    /**
+     * Display a menu to set the scale tweening mode using the "set tweenScales
+     * " action prefix.
+     */
+    void setTweenScales() {
+        builder.reset();
+        VectorInterpolation selected = Maud.model.misc.getTweenScales();
+        for (VectorInterpolation t : VectorInterpolation.values()) {
+            if (!t.equals(selected)) {
+                String name = t.toString();
+                builder.add(name);
+            }
+        }
+        builder.show(ActionPrefix.setTweenScales);
+    }
+
+    /**
+     * Display a menu to set the translation tweening mode using the "set
+     * tweenTranslations " action prefix.
+     */
+    void setTweenTranslations() {
+        builder.reset();
+        VectorInterpolation selected = Maud.model.misc.getTweenTranslations();
+        for (VectorInterpolation t : VectorInterpolation.values()) {
+            if (!t.equals(selected)) {
+                String name = t.toString();
+                builder.add(name);
+            }
+        }
+        builder.show(ActionPrefix.setTweenTranslations);
+    }
     // *************************************************************************
     // private methods
 
@@ -588,6 +620,7 @@ class EditorMenus {
             builder.add("Add new");
             //builder.add("Unload");
         }
+        builder.addTool("Tweening");
         if (Maud.model.target.animation.isReal()) {
             builder.add("Behead");
             builder.addDialog("Change duration");
@@ -604,7 +637,6 @@ class EditorMenus {
                 && Maud.model.source.bones.countBones() > 0) {
             builder.add("Load source");
         }
-        //builder.add("Tweening"); TODO
     }
 
     /**
@@ -1128,6 +1160,9 @@ class EditorMenus {
                     break;
                 case "Truncate":
                     Maud.model.target.animation.truncate();
+                    break;
+                case "Tweening":
+                    Maud.gui.tools.select("tweening");
                     break;
                 case "Wrap all tracks":
                     Maud.model.target.animation.wrapAllTracks();

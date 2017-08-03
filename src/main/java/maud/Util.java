@@ -97,14 +97,33 @@ public class Util {
     // new methods exposed
 
     /**
+     * Accumulate a linear combination of vectors.
+     *
+     * @param total sum of the scaled inputs so far (not null, updated)
+     * @param input the vector to scale and add (not null, unaffected)
+     * @param scale scale factor to apply to the input
+     */
+    public static void accumulateScaled(Vector3f total, Vector3f input,
+            float scale) {
+        Validate.nonNull(total, "total");
+        Validate.nonNull(input, "input");
+
+        total.x += input.x * scale;
+        total.y += input.y * scale;
+        total.z += input.z * scale;
+    }
+
+    /**
      * Copy a bone track, deleting everything before the specified time, and
      * making it the start of the animation.
      *
      * @param oldTrack (not null, unaffected)
-     * @param neckTime cutoff time (&gt;0)
+     * @param neckTime cutoff time (in seconds, &gt;0)
+     * @param oldDuration (in seconds, &ge;neckTime)
      * @return a new instance
      */
-    public static BoneTrack behead(BoneTrack oldTrack, float neckTime) {
+    public static BoneTrack behead(BoneTrack oldTrack, float neckTime,
+            float oldDuration) {
         Validate.positive(neckTime, "neck time");
 
         float[] oldTimes = oldTrack.getKeyFrameTimes();
@@ -124,8 +143,8 @@ public class Util {
         }
         float[] times = new float[newCount];
 
-        Transform user = interpolate(neckTime, oldTimes, oldTranslations,
-                oldRotations, oldScales, null);
+        Transform user = Maud.model.misc.interpolate(neckTime, oldTimes,
+                oldDuration, oldTranslations, oldRotations, oldScales, null);
         translations[0] = user.getTranslation();
         rotations[0] = user.getRotation();
         if (scales != null) {
@@ -151,15 +170,16 @@ public class Util {
 
     /**
      * Calculate the bone transform for the specified track and time, using the
-     * default techniques.
+     * current techniques.
      *
-     * @param track (not null, unaffected)
-     * @param time animation time input
+     * @param track input (not null, unaffected)
+     * @param time animation time input (in seconds)
+     * @param duration (in seconds)
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
     public static Transform boneTransform(BoneTrack track, float time,
-            Transform storeResult) {
+            float duration, Transform storeResult) {
         if (storeResult == null) {
             storeResult = new Transform();
         }
@@ -187,8 +207,8 @@ public class Util {
             /*
              * Interpolate between frames.
              */
-            interpolate(time, times, translations, rotations, scales,
-                    storeResult);
+            Maud.model.misc.interpolate(time, times, duration, translations,
+                    rotations, scales, storeResult);
         }
 
         return storeResult;
@@ -296,13 +316,13 @@ public class Util {
     }
 
     /**
-     * Interpolate between quaternions in a time sequence.
+     * Interpolate using Nlerp between quaternions in a time sequence.
      *
      * @param time (in seconds, &gt;times[0])
      * @param times (not null, unaffected)
      * @param quaternions (not null, unaffected, same length as times)
      * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
+     * @return interpolated quaternion (either storeResult or a new instance)
      */
     public static Quaternion interpolate(float time, float[] times,
             Quaternion[] quaternions, Quaternion storeResult) {
@@ -322,78 +342,6 @@ public class Util {
             if (MyQuaternion.ne(storeResult, quaternions[index2])) {
                 storeResult.nlerp(quaternions[index2], fraction);
             }
-        }
-
-        return storeResult;
-    }
-
-    /**
-     * Interpolate between vectors in a time sequence.
-     *
-     * @param time (in seconds, &gt;times[0])
-     * @param times (not null, unaffected)
-     * @param vectors (not null, unaffected, same length as times)
-     * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
-     */
-    public static Vector3f interpolate(float time, float[] times,
-            Vector3f[] vectors, Vector3f storeResult) {
-        assert time >= times[0] : time;
-        assert times.length == vectors.length;
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-
-        int index1 = MyArray.findPreviousIndex(time, times);
-        storeResult.set(vectors[index1]);
-        if (index1 < times.length - 1) {
-            int index2 = index1 + 1;
-            float interval = times[index2] - times[index1];
-            assert interval > 0f : interval;
-            float f2 = (time - times[index1]) / interval;
-            float f1 = 1f - f2;
-            Vector3f v2 = vectors[index2];
-            if (storeResult.x != v2.x) {
-                storeResult.x = f1 * storeResult.x + f2 * v2.x;
-            }
-            if (storeResult.y != v2.y) {
-                storeResult.y = f1 * storeResult.y + f2 * v2.y;
-            }
-            if (storeResult.z != v2.z) {
-                storeResult.z = f1 * storeResult.z + f2 * v2.z;
-            }
-        }
-
-        return storeResult;
-    }
-
-    /**
-     * Interpolate between keyframes in a bone track using the default
-     * techniques.
-     *
-     * @param time (in seconds, &gt;times[0])
-     * @param times (not null, unaffected)
-     * @param translations (not null, unaffected, same length as times)
-     * @param rotations (not null, unaffected, same length as times)
-     * @param scales (may be null, unaffected, same length as times)
-     * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
-     */
-    public static Transform interpolate(float time, float[] times,
-            Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales,
-            Transform storeResult) {
-        assert time >= times[0] : time;
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
-
-        Util.interpolate(time, times, translations,
-                storeResult.getTranslation());
-        Util.interpolate(time, times, rotations, storeResult.getRotation());
-        if (scales == null) {
-            storeResult.setScale(scaleIdentity);
-        } else {
-            Util.interpolate(time, times, scales, storeResult.getScale());
         }
 
         return storeResult;

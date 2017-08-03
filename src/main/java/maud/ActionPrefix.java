@@ -193,6 +193,14 @@ class ActionPrefix {
      */
     final static String setShadowMode = "set shadowMode ";
     /**
+     * argument is the name of vector interpolation technique
+     */
+    final static String setTweenScales = "set tweenScales ";
+    /**
+     * argument is the name of vector interpolation technique
+     */
+    final static String setTweenTranslations = "set tweenTranslations ";
+    /**
      * argument is the new value
      */
     final static String setUserData = "set userData ";

@@ -44,6 +44,7 @@ import jme3utilities.math.MyMath;
 import maud.Maud;
 import maud.Pose;
 import maud.Util;
+import maud.VectorInterpolation;
 
 /**
  * The MVC model of the loaded animation in the Maud application. For loading
@@ -134,7 +135,7 @@ public class LoadedAnimation implements Cloneable {
             Track newTrack;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                newTrack = Util.behead(boneTrack, currentTime);
+                newTrack = Util.behead(boneTrack, currentTime, oldDuration);
             } else {
                 newTrack = track.clone(); // TODO other track types
             }
@@ -169,7 +170,8 @@ public class LoadedAnimation implements Cloneable {
             if (track == null) {
                 storeResult.loadIdentity();
             } else {
-                Util.boneTransform(track, currentTime, storeResult);
+                float duration = getDuration();
+                Util.boneTransform(track, currentTime, duration, storeResult);
             }
         }
 
@@ -646,7 +648,7 @@ public class LoadedAnimation implements Cloneable {
                 playSpeed = 0f;
             } else {
                 /*
-                 * Start the animation looping at normal speed.
+                 * Start the animation loopLerp at normal speed.
                  */
                 playSpeed = 1f;
             }
@@ -1023,14 +1025,17 @@ public class LoadedAnimation implements Cloneable {
             float[] storeXs, float[] storeYs, float[] storeZs) {
         Validate.nonNegative(boneIndex, "bone index");
 
+        VectorInterpolation vTechnique;
+        vTechnique = Maud.model.misc.getTweenScales();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
+        float duration = getDuration();
         Vector3f[] scales = track.getScales();
         Vector3f tempV = new Vector3f();
 
         for (int iSample = 0; iSample < ts.length; iSample++) {
             float time = ts[iSample];
-            Util.interpolate(time, times, scales, tempV);
+            vTechnique.interpolate(time, times, duration, scales, tempV);
             storeXs[iSample] = tempV.x;
             storeYs[iSample] = tempV.y;
             storeZs[iSample] = tempV.z;
@@ -1092,14 +1097,17 @@ public class LoadedAnimation implements Cloneable {
             float[] storeXs, float[] storeYs, float[] storeZs) {
         Validate.nonNegative(boneIndex, "bone index");
 
+        VectorInterpolation vTechnique;
+        vTechnique = Maud.model.misc.getTweenTranslations();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
-        Vector3f[] scales = track.getTranslations();
+        float duration = getDuration();
+        Vector3f[] translations = track.getTranslations();
         Vector3f tempV = new Vector3f();
 
         for (int iSample = 0; iSample < ts.length; iSample++) {
             float time = ts[iSample];
-            Util.interpolate(time, times, scales, tempV);
+            vTechnique.interpolate(time, times, duration, translations, tempV);
             storeXs[iSample] = tempV.x;
             storeYs[iSample] = tempV.y;
             storeZs[iSample] = tempV.z;

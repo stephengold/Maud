@@ -166,6 +166,10 @@ public class EditorTools {
      */
     final SpatialTranslationTool spatialTranslation;
     /**
+     * controller for the "Tweening Tool" window
+     */
+    final TweeningTool tweening;
+    /**
      * controller for the "Twist Tool" window
      */
     final TwistTool twist;
@@ -212,6 +216,7 @@ public class EditorTools {
         spatial = new SpatialTool(screen);
         spatialTranslation = new SpatialTranslationTool(screen);
         sky = new SkyTool(screen);
+        tweening = new TweeningTool(screen);
         twist = new TwistTool(screen);
         userData = new UserDataTool(screen);
     }
@@ -230,7 +235,7 @@ public class EditorTools {
                 keyframe, mapping, cgm, physics, platform, render, retarget,
                 score, sgc, skeleton, skeletonColor, sky, sourceAnimation,
                 spatial, spatialRotation, spatialScale, spatialTranslation,
-                twist, userData);
+                tweening, twist, userData);
     }
 
     /**
@@ -327,6 +332,9 @@ public class EditorTools {
                 break;
             case "sky":
                 controller = sky;
+                break;
+            case "tweening":
+                controller = tweening;
                 break;
             case "twist":
                 controller = twist;
