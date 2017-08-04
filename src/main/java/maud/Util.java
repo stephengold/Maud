@@ -44,6 +44,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -175,7 +176,7 @@ public class Util {
      * @param time animation time input (in seconds)
      * @param duration (in seconds)
      * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
+     * @return a transform (either storeResult or a new instance)
      */
     public static Transform boneTransform(BoneTrack track, float time,
             float duration, Transform storeResult) {
@@ -215,7 +216,7 @@ public class Util {
 
     /**
      * Find a cardinal quaternion similar to the specified input. A cardinal
-     * quaternion is one for which the rotations angles on all three axes are
+     * quaternion is one for which the rotations angles on all 3 axes are
      * integer multiples of Pi/2 radians.
      *
      * @param input (not null, modified)
@@ -226,6 +227,28 @@ public class Util {
         MyQuaternion.snapLocal(input, 0);
         MyQuaternion.snapLocal(input, 1);
         MyQuaternion.snapLocal(input, 2);
+    }
+
+    /**
+     * Clamp a double-precision value between 2 limits.
+     *
+     * @param dValue input value to be clamped
+     * @param min lower limit of the clamp
+     * @param max upper limit of the clamp
+     * @return the value between min and max inclusive that is closest to fValue
+     * @see com.jme3.math.FastMath#clamp(float,float,float)
+     */
+    public static double clamp(double dValue, double min, double max) {
+        double result;
+        if (dValue < min) {
+            result = min;
+        } else if (dValue > max) {
+            result = max;
+        } else {
+            result = dValue;
+        }
+
+        return result;
     }
 
     /**
@@ -285,6 +308,57 @@ public class Util {
             }
         }
 
+        return result;
+    }
+
+    /**
+     * Calculate the exponential of a pure quaternion.
+     *
+     * @param q input value (not null, unaffected, w=0)
+     * @param storeResult (modified if not null)
+     * @return a unit quaternion (either storeResult or a new instance)
+     */
+    public static Quaternion exp(Quaternion q, Quaternion storeResult) {
+        assert q.getW() == 0f : q;
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        double qx = q.getX();
+        double qy = q.getY();
+        double qz = q.getZ();
+        double theta = hypot(qx, qy, qz);
+        if (theta == 0.0) {
+            storeResult.loadIdentity();
+        } else {
+            float w = (float) Math.cos(theta);
+            double scale = Math.sin(theta) / theta;
+            float x = (float) (scale * qx);
+            float y = (float) (scale * qy);
+            float z = (float) (scale * qz);
+            storeResult.set(x, y, z, w);
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Compute sqrt(x^2 + y^2 + z^2).
+     *
+     * @param x 1st input value
+     * @param y 2nd input value
+     * @param z 3nd input value
+     * @return the positive square root of the sum of squares (&ge;0)
+     */
+    public static double hypot(double x, double y, double z) {
+        Validate.finite(x, "1st input value");
+        Validate.finite(y, "2nd input value");
+        Validate.finite(z, "3rd input value");
+
+        double sum = x * x + y * y + z * z;
+        double result = Math.sqrt(sum);
+
+        assert result >= 0f : result;
         return result;
     }
 
@@ -407,6 +481,44 @@ public class Util {
     }
 
     /**
+     * Calculate the natural logarithm of a unit quaternion. Generally the
+     * logarithm isn't itself a unit.
+     *
+     * @param q input value (not null, unaffected, norm=1)
+     * @param storeResult (modified if not null)
+     * @return a pure quaternion (either storeResult or a new instance)
+     */
+    public static Quaternion log(Quaternion q, Quaternion storeResult) {
+        validateUnit(q, "q", 0.0001f);
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        float inw = q.getW();
+        if (inw >= 1f || inw <= -1f) {
+            storeResult.set(0f, 0f, 0f, 0f);
+        } else {
+            double baseX = q.getX();
+            double baseY = q.getY();
+            double baseZ = q.getZ();
+            double sineTheta = hypot(baseX, baseY, baseZ);
+            sineTheta = clamp(sineTheta, 0.0, 1.0);
+            if (sineTheta == 0.0) {
+                storeResult.set(0f, 0f, 0f, 0f);
+            } else {
+                double theta = Math.asin(sineTheta);
+                double scale = theta / sineTheta;
+                float x = (float) (scale * baseX);
+                float y = (float) (scale * baseY);
+                float z = (float) (scale * baseZ);
+                storeResult.set(x, y, z, 0f);
+            }
+        }
+
+        return storeResult;
+    }
+
+    /**
      * Create a collision shape suitable for the specified spatial.
      *
      * @param spatial (not null)
@@ -491,6 +603,46 @@ public class Util {
             }
         }
         throw new IllegalArgumentException();
+    }
+
+    /**
+     * Calculate the specified power of a unit quaternion.
+     *
+     * @param base input value (not null, unaffected, norm=1)
+     * @param exponent the exponent
+     * @param storeResult (modified if not null)
+     * @return a unit quaternion (either storeResult or a new instance)
+     */
+    public static Quaternion pow(Quaternion base, float exponent,
+            Quaternion storeResult) {
+        validateUnit(base, "base", 0.0001f);
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        float baseW = base.getW();
+        if (baseW >= 1f || baseW <= -1f || exponent == 0f) {
+            storeResult.loadIdentity();
+        } else {
+            double baseX = base.getX();
+            double baseY = base.getY();
+            double baseZ = base.getZ();
+            double sineTheta = hypot(baseX, baseY, baseZ);
+            sineTheta = clamp(sineTheta, 0.0, 1.0);
+            if (sineTheta == 0.0) {
+                storeResult.loadIdentity();
+            } else {
+                double theta = Math.asin(sineTheta);
+                float w = (float) Math.cos(exponent * theta);
+                double scale = Math.sin(exponent * theta) / sineTheta;
+                float x = (float) (scale * baseX);
+                float y = (float) (scale * baseY);
+                float z = (float) (scale * baseZ);
+                storeResult.set(x, y, z, w);
+            }
+        }
+
+        return storeResult;
     }
 
     /**
@@ -593,5 +745,33 @@ public class Util {
                 rotations, scales);
 
         return result;
+    }
+
+    /**
+     * Validate a unit quaternion as a method argument.
+     *
+     * @param q quaternion to validate (not null, unaffected)
+     * @param description description of the quaternion
+     * @param tolerance for the norm (&ge;0)
+     * @throws IllegalArgumentException if the norm is out of tolerance
+     * @throws NullPointerException if the quaternion is null
+     */
+    public static void validateUnit(Quaternion q, String description,
+            float tolerance) {
+        Validate.nonNull(q, description);
+        float norm = q.norm();
+        float delta = FastMath.abs(1f - norm);
+        if (!(delta <= tolerance)) {
+            String what;
+            if (description == null) {
+                what = "quaternion argument";
+            } else {
+                what = description;
+            }
+            logger.log(Level.SEVERE, "norm({0})={1}", new Object[]{what, norm});
+            String message = String.format(
+                    "norm(%s) must be within %f of 1.", what, tolerance);
+            throw new IllegalArgumentException(message);
+        }
     }
 }
