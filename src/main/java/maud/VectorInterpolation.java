@@ -32,7 +32,8 @@ import jme3utilities.math.MyArray;
 import static maud.Util.accumulateScaled;
 
 /**
- * Enumerate (and implement) some interpolation techniques on Vector3f values.
+ * Enumerate and implement some interpolation techniques on time sequences of
+ * Vector3f values. TODO savable/reusable spline slopes
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -41,35 +42,37 @@ public enum VectorInterpolation {
     // values
 
     /**
-     * non-looping finite-difference cubic spline interpolation
+     * acyclic finite-difference cubic-spline interpolation
      */
     FdcSpline,
     /**
-     * non-looping linear (Lerp) interpolation
+     * acyclic linear (Lerp) interpolation
      */
     Lerp,
     /**
-     * looping finite-difference cubic spline interpolation
+     * cyclic finite-difference cubic-spline interpolation
      */
     LoopFdcSpline,
     /**
-     * looping linear (Lerp) interpolation
+     * cyclic linear (Lerp) interpolation
      */
     LoopLerp;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Interpolate among vectors in a time sequence using non-looping
-     * finite-difference cubic spline interpolation.
+     * Interpolate among vectors in an acyclic time sequence using cubic-spline
+     * interpolation.
      *
      * @param time (&ge;times[0])
-     * @param times (not null, unaffected, length&gt;0, in ascending order)
-     * @param vectors (not null, unaffected, same length as times)
+     * @param times (not null, unaffected, length&gt;0, in strictly ascending
+     * order)
+     * @param vectors function values (not null, unaffected, same length as
+     * times)
      * @param storeResult (modified if not null)
-     * @return interpolated vector (either storeResult or a new instance)
+     * @return an interpolated vector (either storeResult or a new instance)
      */
-    public static Vector3f fdcSpline(float time, float[] times,
+    public Vector3f cubicSpline(float time, float[] times,
             Vector3f[] vectors, Vector3f storeResult) {
         Validate.nonNull(times, "times");
         assert times.length > 0;
@@ -81,42 +84,46 @@ public enum VectorInterpolation {
         }
 
         int index1 = MyArray.findPreviousIndex(time, times);
-        assert index1 != -1;
+        Vector3f v1 = vectors[index1];
         int last = times.length - 1;
+
         if (index1 == last) {
-            storeResult.set(vectors[index1]);
+            storeResult.set(v1);
             return storeResult;
         }
         int index2 = index1 + 1;
+        Vector3f v2 = vectors[index2];
         float inter12 = times[index2] - times[index1];
         /*
-         * Estimate slopes at each end of the central interval
-         * using finite differences.
+         * Estimate slopes at either end of the central interval.
          */
-        Vector3f m1;
-        if (index1 == 0) {
-            m1 = fdSlope(inter12, index1, index2, vectors, null);
-        } else {
-            int index0 = index1 - 1;
-            float inter01 = times[index1] - times[index0];
-            m1 = fdSlope(inter01, inter12, index0, index1, index2, vectors,
-                    null);
-        }
+        Vector3f m1, m2;
+        switch (this) {
+            case FdcSpline: // use finite differences
+                if (index1 == 0) {
+                    m1 = fdSlope(inter12, v1, v2, null);
+                } else {
+                    int index0 = index1 - 1;
+                    Vector3f v0 = vectors[index0];
+                    float inter01 = times[index1] - times[index0];
+                    m1 = fdSlope(inter01, inter12, v0, v1, v2, null);
+                }
+                if (index2 == last) {
+                    m2 = fdSlope(inter12, v1, v2, null);
+                } else {
+                    int index3 = index2 + 1;
+                    Vector3f v3 = vectors[index3];
+                    float inter23 = times[index3] - times[index2];
+                    m2 = fdSlope(inter12, inter23, v1, v2, v3, null);
+                }
+                break;
 
-        Vector3f m2;
-        if (index2 == last) {
-            m2 = fdSlope(inter12, index1, index2, vectors, null);
-        } else {
-            int index3 = index2 + 1;
-            float inter23 = times[index3] - times[index2];
-            m2 = fdSlope(inter12, inter23, index1, index2, index3, vectors,
-                    null);
+            default:
+                throw new IllegalStateException();
         }
 
         float t = (time - times[index1]) / inter12;
-        Vector3f v1 = vectors[index1];
-        Vector3f v2 = vectors[index2];
-        cSpline(t, inter12, v1, v2, m1, m2, storeResult);
+        cubicSpline(t, inter12, v1, v2, m1, m2, storeResult);
 
         return storeResult;
     }
@@ -124,34 +131,34 @@ public enum VectorInterpolation {
     /**
      * Interpolate among vectors in a time sequence using this technique.
      *
-     * @param time the parameter value
-     * @param times to interpolate among (not null, unaffected, length>0, in
-     * ascending order)
-     * @param duration used for looping (&ge;times[last])
-     * @param vectors to interpolate among (not null, unaffected, same length as
+     * @param time parameter value
+     * @param times (not null, unaffected, length&gt;0, in strictly ascending
+     * order)
+     * @param cycleTime used for looping (&ge;times[last])
+     * @param vectors function values (not null, unaffected, same length as
      * times)
      * @param storeResult (modified if not null)
-     * @return interpolated vector (either storeResult or a new instance)
+     * @return an interpolated vector (either storeResult or a new instance)
      */
-    public Vector3f interpolate(float time, float[] times, float duration,
+    public Vector3f interpolate(float time, float[] times, float cycleTime,
             Vector3f[] vectors, Vector3f storeResult) {
         Validate.nonNull(times, "times");
         assert times.length > 0;
         assert times.length == vectors.length;
         int last = times.length - 1;
-        assert duration >= times[last] : duration;
+        assert cycleTime >= times[last] : cycleTime;
         if (storeResult == null) {
             storeResult = new Vector3f();
         }
 
-        if (last == 0) {
+        if (last == 0 || time < times[0]) {
             storeResult.set(vectors[0]);
             return storeResult;
         }
 
         switch (this) {
             case FdcSpline:
-                fdcSpline(time, times, vectors, storeResult);
+                cubicSpline(time, times, vectors, storeResult);
                 break;
 
             case Lerp:
@@ -159,29 +166,30 @@ public enum VectorInterpolation {
                 break;
 
             case LoopFdcSpline:
-                if (times[last] == duration) {
-                    if (last > 1) { // ignore the last point
-                        loopFdcSpline(time, last - 1, times, duration, vectors,
-                                storeResult);
-                    } else { // fall back on non-looping
-                        fdcSpline(time, times, vectors, storeResult);
+                if (times[last] == cycleTime) {
+                    if (last > 1) { // ignore the final point
+                        loopCubicSpline(time, last - 1, times, cycleTime,
+                                vectors, storeResult);
+                    } else { // fall back on acyclic
+                        cubicSpline(time, times, vectors, storeResult);
                     }
                 } else {
-                    loopFdcSpline(time, last, times, duration, vectors,
+                    loopCubicSpline(time, last, times, cycleTime, vectors,
                             storeResult);
                 }
                 break;
 
             case LoopLerp:
-                if (times[last] == duration) {
-                    if (last > 1) { // ignore the last point
-                        loopLerp(time, last - 1, times, duration, vectors,
+                if (times[last] == cycleTime) {
+                    if (last > 1) { // ignore the final point
+                        loopLerp(time, last - 1, times, cycleTime, vectors,
                                 storeResult);
-                    } else { // fall back on non-looping
+                    } else { // fall back on acyclic
                         lerp(time, times, vectors, storeResult);
                     }
                 } else {
-                    loopLerp(time, last, times, duration, vectors, storeResult);
+                    loopLerp(time, last, times, cycleTime, vectors,
+                            storeResult);
                 }
                 break;
 
@@ -193,15 +201,17 @@ public enum VectorInterpolation {
     }
 
     /**
-     * Interpolate among vectors in a time sequence using non-looping linear
-     * (Lerp) interpolation. This is essentially what AnimControl uses to
-     * interpolate translations and scales in bone tracks.
+     * Interpolate among vectors in an acyclic time sequence using linear (Lerp)
+     * interpolation. This is essentially what AnimControl uses to interpolate
+     * translations and scales in bone tracks.
      *
-     * @param time (&ge;times[0])
-     * @param times (not null, unaffected, length&gt;0, in ascending order)
-     * @param vectors (not null, unaffected, same length as times)
+     * @param time parameter value (&ge;times[0])
+     * @param times (not null, unaffected, length&gt;0, in strictly ascending
+     * order)
+     * @param vectors function values (not null, unaffected, same length as
+     * times, each not null)
      * @param storeResult (modified if not null)
-     * @return interpolated vector (either storeResult or a new instance)
+     * @return an interpolated vector (either storeResult or a new instance)
      */
     public static Vector3f lerp(float time, float[] times, Vector3f[] vectors,
             Vector3f storeResult) {
@@ -215,51 +225,44 @@ public enum VectorInterpolation {
         }
 
         int index1 = MyArray.findPreviousIndex(time, times);
-        assert index1 != -1;
-        storeResult.set(vectors[index1]);
+        Vector3f v1 = vectors[index1];
 
-        if (index1 < times.length - 1) { // not the last point
+        if (index1 >= times.length - 1) { // the last point
+            storeResult.set(vectors[index1]);
+        } else {
             int index2 = index1 + 1;
             float inter12 = times[index2] - times[index1];
             assert inter12 > 0f : inter12;
             float t = (time - times[index1]) / inter12;
-            float u = 1f - t;
             Vector3f v2 = vectors[index2];
-            if (storeResult.x != v2.x) {
-                storeResult.x = u * storeResult.x + t * v2.x;
-            }
-            if (storeResult.y != v2.y) {
-                storeResult.y = u * storeResult.y + t * v2.y;
-            }
-            if (storeResult.z != v2.z) {
-                storeResult.z = u * storeResult.z + t * v2.z;
-            }
+            lerp(t, v1, v2, storeResult);
         }
 
         return storeResult;
     }
 
     /**
-     * Interpolate among vectors in a time sequence using looping
-     * finite-difference cubic spline interpolation.
+     * Interpolate among vectors in a cyclic time sequence using cubic-spline
+     * interpolation.
      *
-     * @param time (&ge;0, &le;duration)
+     * @param time parameter value (&ge;0, &le;cycleTime)
      * @param last (index of the last point, &ge;1)
-     * @param times (not null, unaffected, in ascending order, times[0]==0)
-     * @param duration (&gt;times[last])
-     * @param vectors (not null, unaffected)
+     * @param times (not null, unaffected, in strictly ascending order,
+     * times[0]==0)
+     * @param cycleTime cycle time (&gt;times[last])
+     * @param vectors function values (not null, unaffected)
      * @param storeResult (modified if not null)
-     * @return interpolated vector (either storeResult or a new instance)
+     * @return an interpolated vector (either storeResult or a new instance)
      */
-    public static Vector3f loopFdcSpline(float time, int last, float[] times,
-            float duration, Vector3f[] vectors, Vector3f storeResult) {
-        Validate.inRange(time, "time", 0f, duration);
+    public Vector3f loopCubicSpline(float time, int last, float[] times,
+            float cycleTime, Vector3f[] vectors, Vector3f storeResult) {
+        Validate.inRange(time, "time", 0f, cycleTime);
         Validate.positive(last, "last");
         Validate.nonNull(times, "times");
         Validate.nonNull(vectors, "vectors");
         assert times.length > last : times.length;
         assert vectors.length > last : vectors.length;
-        assert duration > times[last] : duration;
+        assert cycleTime > times[last] : cycleTime;
         /*
          * Find 4 nearby points and calculate the 3 intervals.
          */
@@ -272,7 +275,7 @@ public enum VectorInterpolation {
             inter01 = times[index1] - times[index0];
         } else {
             index0 = last;
-            inter01 = duration - times[index0];
+            inter01 = cycleTime - times[index0];
         }
         assert inter01 > 0f : inter01;
 
@@ -281,7 +284,7 @@ public enum VectorInterpolation {
             inter12 = times[index2] - times[index1];
         } else {
             index2 = 0;
-            inter12 = duration - times[index1];
+            inter12 = cycleTime - times[last];
         }
         assert inter12 > 0f : inter12;
 
@@ -290,53 +293,60 @@ public enum VectorInterpolation {
             inter23 = times[index3] - times[index2];
         } else {
             index3 = 0;
-            inter23 = duration - times[index2];
+            inter23 = cycleTime - times[last];
         }
         assert inter23 > 0f : inter23;
-        /*
-         * Estimate slopes at each end of the central interval
-         * using finite differences.
-         */
-        Vector3f m1, m2;
-        m1 = fdSlope(inter01, inter12, index0, index1, index2, vectors, null);
-        m2 = fdSlope(inter12, inter23, index1, index2, index3, vectors, null);
 
-        float t = (time - times[index1]) / inter12;
+        Vector3f v0 = vectors[index0];
         Vector3f v1 = vectors[index1];
         Vector3f v2 = vectors[index2];
-        storeResult = cSpline(t, inter12, v1, v2, m1, m2, storeResult);
+        Vector3f v3 = vectors[index3];
+        /*
+         * Estimate slopes at either end of the central interval.
+         */
+        Vector3f m1, m2;
+        switch (this) {
+            case LoopFdcSpline: // use finite differences
+                m1 = fdSlope(inter01, inter12, v0, v1, v2, null);
+                m2 = fdSlope(inter12, inter23, v1, v2, v3, null);
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+
+        float t = (time - times[index1]) / inter12;
+        storeResult = cubicSpline(t, inter12, v1, v2, m1, m2, storeResult);
 
         return storeResult;
     }
 
     /**
-     * Interpolate among vectors in a time sequence using looping linear (Lerp)
+     * Interpolate among vectors in a cyclic time sequence using linear (Lerp)
      * interpolation.
      *
-     * @param time (in seconds, &ge;0, &le;duration)
+     * @param time parameter value (&ge;0, &le;cycleTime)
      * @param last (index of the last point, &ge;1)
-     * @param times (not null, unaffected)
-     * @param duration (in seconds, &gt;times[last])
-     * @param vectors (not null, unaffected)
+     * @param times (not null, unaffected, in strictly ascending order,
+     * times[0]==0)
+     * @param cycleTime cycle time (&gt;times[last])
+     * @param vectors function values (not null, unaffected, each not null)
      * @param storeResult (modified if not null)
-     * @return interpolated vector (either storeResult or a new instance)
+     * @return an interpolated vector (either storeResult or a new instance)
      */
     public static Vector3f loopLerp(float time, int last, float[] times,
-            float duration, Vector3f[] vectors, Vector3f storeResult) {
-        Validate.inRange(time, "time", 0f, duration);
+            float cycleTime, Vector3f[] vectors, Vector3f storeResult) {
+        Validate.inRange(time, "time", 0f, cycleTime);
         Validate.positive(last, "last");
         Validate.nonNull(times, "times");
         Validate.nonNull(vectors, "vectors");
         assert times.length > last : times.length;
         assert vectors.length > last : vectors.length;
-        assert duration > times[last] : duration;
+        assert cycleTime > times[last] : cycleTime;
         if (storeResult == null) {
             storeResult = new Vector3f();
         }
 
         int index1 = MyArray.findPreviousIndex(time, times);
-        storeResult.set(vectors[index1]);
-
         int index2; // keyframe index
         float interval; // interval between keyframes
         if (index1 < last) {
@@ -344,22 +354,14 @@ public enum VectorInterpolation {
             interval = times[index2] - times[index1];
         } else {
             index2 = 0;
-            interval = duration - times[index1];
+            interval = cycleTime - times[last];
         }
         assert interval > 0f : interval;
 
         float t = (time - times[index1]) / interval;
-        float u = 1f - t;
+        Vector3f v1 = vectors[index1];
         Vector3f v2 = vectors[index2];
-        if (storeResult.x != v2.x) {
-            storeResult.x = u * storeResult.x + t * v2.x;
-        }
-        if (storeResult.y != v2.y) {
-            storeResult.y = u * storeResult.y + t * v2.y;
-        }
-        if (storeResult.z != v2.z) {
-            storeResult.z = u * storeResult.z + t * v2.z;
-        }
+        lerp(t, v1, v2, storeResult);
 
         return storeResult;
     }
@@ -367,18 +369,18 @@ public enum VectorInterpolation {
     // private methods
 
     /**
-     * Interpolate a cubic spline in Hermite form.
+     * Interpolate between 2 vectors using a cubic spline in Hermite form.
      *
-     * @param t scaled parameter (&ge;0, &le;1)
-     * @param interval interval duration (&gt;0)
+     * @param t descaled parameter value (&ge;0, &le;1)
+     * @param interval length of the interval (&gt;0)
      * @param v1 function value at start of interval (not null, unaffected)
      * @param v2 function value at end of interval (not null, unaffected)
-     * @param m1 derivative at start of interval (not null, unaffected)
-     * @param m2 derivative at end of interval (not null, unaffected)
+     * @param m1 1st derivative at start of interval (not null, unaffected)
+     * @param m2 1st derivative at end of interval (not null, unaffected)
      * @param storeResult (modified if not null)
-     * @return interpolated vector (either storeResult or a new instance)
+     * @return an interpolated vector (either storeResult or a new instance)
      */
-    private static Vector3f cSpline(float t, float interval, Vector3f v1,
+    private static Vector3f cubicSpline(float t, float interval, Vector3f v1,
             Vector3f v2, Vector3f m1, Vector3f m2, Vector3f storeResult) {
         assert t >= 0f : t;
         assert t <= 1f : t;
@@ -409,61 +411,109 @@ public enum VectorInterpolation {
     }
 
     /**
-     * Using finite differences, estimate the derivative of an unknown function
-     * at 2 indexed points.
+     * Using finite differences, estimate the 1st derivative of an unknown
+     * function between 2 indexed points.
      *
-     * @param dt interval (&gt;0)
-     * @param index1 index of the 1st point (&ge;0)
-     * @param index2 index of the 2nd point (&ge;0)
-     * @param vectors data for points (not null, unaffected)
+     * @param dt length of the interval (&gt;0)
+     * @param v1 function value at the start point (not null, unaffected)
+     * @param v2 function value at the end point (not null, unaffected)
      * @param storeResult (modified if not null)
-     * @return derivative vector (either storeResult or a new instance)
+     * @return a derivative vector (either storeResult or a new instance)
      */
-    private static Vector3f fdSlope(float dt, int index1, int index2,
-            Vector3f[] vectors, Vector3f storeResult) {
+    private static Vector3f fdSlope(float dt, Vector3f v1, Vector3f v2,
+            Vector3f storeResult) {
         assert dt > 0f : dt;
+        assert v1 != null;
+        assert v2 != null;
         if (storeResult == null) {
             storeResult = new Vector3f();
         }
 
-        Vector3f v1 = vectors[index1];
-        Vector3f v2 = vectors[index2];
-
-        storeResult.x = (v2.x - v1.x) / dt;
-        storeResult.y = (v2.y - v1.y) / dt;
-        storeResult.z = (v2.z - v1.z) / dt;
+        storeResult.x = v2.x - v1.x;
+        storeResult.y = v2.y - v1.y;
+        storeResult.z = v2.z - v1.z;
+        storeResult.divideLocal(dt);
 
         return storeResult;
     }
 
     /**
-     * Using finite differences, estimate the derivative of an unknown function
-     * at the middle of 3 indexed points.
+     * Using finite differences, estimate the 1st derivative of an unknown
+     * function at the middle of 3 indexed points.
      *
-     * @param dt01 previous interval (&gt;0)
-     * @param dt12 following interval (&gt;0)
-     * @param index0 index of the previous point (&ge;0)
-     * @param index1 index of the current point (&ge;0)
-     * @param index2 index of the following point (&ge;0)
-     * @param vectors data for points (not null, unaffected)
+     * @param dt01 length of the preceeding interval (&gt;0)
+     * @param dt12 length of the following interval (&gt;0)
+     * @param v0 function value at the previous point (not null, unaffected)
+     * @param v1 function value at the current point (not null, unaffected)
+     * @param v2 function value at the next point (not null, unaffected)
      * @param storeResult (modified if not null)
-     * @return derivative vector (either storeResult or a new instance)
+     * @return a derivative vector (either storeResult or a new instance)
      */
-    private static Vector3f fdSlope(float dt01, float dt12, int index0,
-            int index1, int index2, Vector3f[] vectors, Vector3f storeResult) {
+    private static Vector3f fdSlope(float dt01, float dt12, Vector3f v0,
+            Vector3f v1, Vector3f v2, Vector3f storeResult) {
         assert dt01 > 0f : dt01;
         assert dt12 > 0f : dt12;
+        assert v0 != null;
+        assert v1 != null;
+        assert v2 != null;
         if (storeResult == null) {
             storeResult = new Vector3f();
         }
 
-        Vector3f v0 = vectors[index0];
-        Vector3f v1 = vectors[index1];
-        Vector3f v2 = vectors[index2];
+        storeResult.x = (v1.x - v0.x) / dt01 + (v2.x - v1.x) / dt12;
+        storeResult.y = (v1.y - v0.y) / dt01 + (v2.y - v1.y) / dt12;
+        storeResult.z = (v1.z - v0.z) / dt01 + (v2.z - v1.z) / dt12;
+        storeResult.divideLocal(2f);
 
-        storeResult.x = 0.5f * ((v1.x - v0.x) / dt01 + (v2.x - v1.x) / dt12);
-        storeResult.y = 0.5f * ((v1.y - v0.y) / dt01 + (v2.y - v1.y) / dt12);
-        storeResult.z = 0.5f * ((v1.z - v0.z) / dt01 + (v2.z - v1.z) / dt12);
+        return storeResult;
+    }
+
+    /**
+     * Interpolate between 2 unit single-precision values using linear (Lerp)
+     * interpolation. Unlike
+     * {@link com.jme3.math.FastMath#interpolateLinear(float, float, float)}, no
+     * rounding error is introduced when y1==y2.
+     *
+     * @param t descaled parameter value (&ge;0, &le;1)
+     * @param y1 function value at t=0
+     * @param y2 function value at t=1
+     * @return an interpolated function value
+     */
+    private static float lerp(float t, float y1, float y2) {
+        assert t >= 0f : t;
+        assert t <= 1f : t;
+
+        float lerp;
+        if (y1 == y2) {
+            lerp = y1;
+        } else {
+            lerp = (1f - t) * y1 + t * y2;
+        }
+
+        return lerp;
+    }
+
+    /**
+     * Interpolate between 2 vectors using linear (Lerp) interpolation. Unlike
+     * {@link com.jme3.math.FastMath#interpolateLinear(float, com.jme3.math.Vector3f, com.jme3.math.Vector3f, com.jme3.math.Vector3f)},
+     * no rounding error is introduced when v1==v2.
+     *
+     * @param t descaled parameter value (&ge;0, &le;1)
+     * @param v0 function value at t=0 (not null, unaffected, norm=1)
+     * @param v1 function value at t=1 (not null, unaffected, norm=1)
+     * @param storeResult (modified if not null)
+     * @return an interpolated vector (either storeResult or a new instance)
+     */
+    private static Vector3f lerp(float t, Vector3f v0, Vector3f v1,
+            Vector3f storeResult) {
+        Validate.inRange(t, "t", 0f, 1f);
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        storeResult.x = lerp(t, v0.x, v1.x);
+        storeResult.y = lerp(t, v0.y, v1.y);
+        storeResult.z = lerp(t, v0.z, v1.z);
 
         return storeResult;
     }
