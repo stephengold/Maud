@@ -43,6 +43,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
 import maud.Pose;
+import maud.RotationCurve;
 import maud.TweenRotations;
 import maud.TweenVectors;
 import maud.Util;
@@ -977,11 +978,12 @@ public class LoadedAnimation implements Cloneable {
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();
         Quaternion[] rotations = track.getRotations();
+        RotationCurve parms = technique.precompute(times, duration, rotations);
         Quaternion tempQ = new Quaternion();
 
         for (int iSample = 0; iSample < ts.length; iSample++) {
             float time = ts[iSample];
-            technique.interpolate(time, times, duration, rotations, tempQ);
+            technique.interpolate(time, parms, tempQ);
             storeWs[iSample] = tempQ.getW();
             storeXs[iSample] = tempQ.getX();
             storeYs[iSample] = tempQ.getY();
