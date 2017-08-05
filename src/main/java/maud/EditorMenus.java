@@ -531,8 +531,8 @@ class EditorMenus {
      */
     void setTweenRotations() {
         builder.reset();
-        QuaternionInterpolation selected = Maud.model.misc.getTweenRotations();
-        for (QuaternionInterpolation t : QuaternionInterpolation.values()) {
+        TweenRotations selected = Maud.model.misc.getTweenRotations();
+        for (TweenRotations t : TweenRotations.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
                 builder.add(name);
@@ -547,8 +547,8 @@ class EditorMenus {
      */
     void setTweenScales() {
         builder.reset();
-        VectorInterpolation selected = Maud.model.misc.getTweenScales();
-        for (VectorInterpolation t : VectorInterpolation.values()) {
+        TweenVectors selected = Maud.model.misc.getTweenScales();
+        for (TweenVectors t : TweenVectors.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
                 builder.add(name);
@@ -563,8 +563,8 @@ class EditorMenus {
      */
     void setTweenTranslations() {
         builder.reset();
-        VectorInterpolation selected = Maud.model.misc.getTweenTranslations();
-        for (VectorInterpolation t : VectorInterpolation.values()) {
+        TweenVectors selected = Maud.model.misc.getTweenTranslations();
+        for (TweenVectors t : TweenVectors.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
                 builder.add(name);

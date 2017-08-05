@@ -35,8 +35,8 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
-import maud.QuaternionInterpolation;
-import maud.VectorInterpolation;
+import maud.TweenRotations;
+import maud.TweenVectors;
 
 /**
  * The MVC model of miscellaneous details in Maud's editor screen.
@@ -74,15 +74,15 @@ public class MiscStatus implements Cloneable {
     /**
      * tweening technique for rotations
      */
-    private QuaternionInterpolation tweenRotations = QuaternionInterpolation.Nlerp;
+    private TweenRotations tweenRotations = TweenRotations.Nlerp;
     /**
      * tweening technique for scales
      */
-    private VectorInterpolation tweenScales = VectorInterpolation.Lerp;
+    private TweenVectors tweenScales = TweenVectors.Lerp;
     /**
      * tweening technique for translations
      */
-    private VectorInterpolation tweenTranslations = VectorInterpolation.Lerp;
+    private TweenVectors tweenTranslations = TweenVectors.Lerp;
     // *************************************************************************
     // new methods exposed
 
@@ -136,7 +136,7 @@ public class MiscStatus implements Cloneable {
      *
      * @return enum (not null)
      */
-    public QuaternionInterpolation getTweenRotations() {
+    public TweenRotations getTweenRotations() {
         return tweenRotations;
     }
 
@@ -145,7 +145,7 @@ public class MiscStatus implements Cloneable {
      *
      * @return enum (not null)
      */
-    public VectorInterpolation getTweenScales() {
+    public TweenVectors getTweenScales() {
         return tweenScales;
     }
 
@@ -154,7 +154,7 @@ public class MiscStatus implements Cloneable {
      *
      * @return enum (not null)
      */
-    public VectorInterpolation getTweenTranslations() {
+    public TweenVectors getTweenTranslations() {
         return tweenTranslations;
     }
 
@@ -274,7 +274,7 @@ public class MiscStatus implements Cloneable {
      *
      * @param newTechnique (not null)
      */
-    public void setTweenRotations(QuaternionInterpolation newTechnique) {
+    public void setTweenRotations(TweenRotations newTechnique) {
         Validate.nonNull(newTechnique, "new technique");
         tweenRotations = newTechnique;
     }
@@ -284,7 +284,7 @@ public class MiscStatus implements Cloneable {
      *
      * @param newTechnique (not null)
      */
-    public void setTweenScales(VectorInterpolation newTechnique) {
+    public void setTweenScales(TweenVectors newTechnique) {
         Validate.nonNull(newTechnique, "new technique");
         tweenScales = newTechnique;
     }
@@ -294,7 +294,7 @@ public class MiscStatus implements Cloneable {
      *
      * @param newTechnique (not null)
      */
-    public void setTweenTranslations(VectorInterpolation newTechnique) {
+    public void setTweenTranslations(TweenVectors newTechnique) {
         Validate.nonNull(newTechnique, "new technique");
         tweenTranslations = newTechnique;
     }
