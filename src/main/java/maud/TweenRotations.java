@@ -649,9 +649,9 @@ public enum TweenRotations {
     /**
      * Interpolate between 2 unit quaternions using spherical linear (Slerp)
      * interpolation. This method is slower (but more accurate) than
-     * {@link com.jme3.math.Quaternion#slerp(com.jme3.math.Quaternion, float)}
-     * and doesn't trash q1. The caller is responsible for flipping the sign of
-     * q0 or q1 when it's appropriate to do so.
+     * {@link com.jme3.math.Quaternion#slerp(com.jme3.math.Quaternion, float)},
+     * always produces a unit, and doesn't trash q1. The caller is responsible
+     * for flipping the sign of q0 or q1 when it's appropriate to do so.
      *
      * @param t descaled parameter value (&ge;0, &le;1)
      * @param q0 function value at t=0 (not null, unaffected, norm=1)
@@ -670,13 +670,11 @@ public enum TweenRotations {
         }
 
         Quaternion q0inverse = Util.conjugate(q0, null);
-        Quaternion ratio = q0inverse.mult(q1);
-        Quaternion power = Util.pow(ratio, t, null);
+        Quaternion ratio = q0inverse.multLocal(q1);
+        Quaternion power = Util.pow(ratio, t, ratio);
         storeResult.set(q0);
         storeResult.multLocal(power);
 
-        assert storeResult.norm() > 0.9999f : storeResult;
-        assert storeResult.norm() < 1.0001f : storeResult;
         return storeResult;
     }
 
@@ -737,14 +735,14 @@ public enum TweenRotations {
             storeResult = new Quaternion();
         }
 
-        Quaternion q1c = Util.conjugate(q1, null); // TODO less garbage
+        Quaternion q1c = Util.conjugate(q1, null);
         Quaternion turn0 = q1c.mult(q0);
-        Quaternion logTurn0 = Util.log(turn0, null);
+        Quaternion logTurn0 = Util.log(turn0, turn0);
         Quaternion turn2 = q1c.mult(q2);
-        Quaternion logTurn2 = Util.log(turn2, null);
-        Quaternion sum = logTurn2.add(logTurn0);
+        Quaternion logTurn2 = Util.log(turn2, turn2);
+        Quaternion sum = logTurn2.addLocal(logTurn0);
         sum.multLocal(-0.25f);
-        Quaternion exp = Util.exp(sum, null);
+        Quaternion exp = Util.exp(sum, sum);
         storeResult.set(q1);
         storeResult.multLocal(exp);
 
