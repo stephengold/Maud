@@ -312,6 +312,28 @@ public class Util {
     }
 
     /**
+     * Calculate the conjugate of a quaternion. For unit quaternions, the
+     * conjugate proves a fast way to calculate the inverse.
+     *
+     * @param q input value (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return a conjugate quaternion (either storeResult or a new instance)
+     */
+    public static Quaternion conjugate(Quaternion q, Quaternion storeResult) {
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        float qx = q.getX();
+        float qy = q.getY();
+        float qz = q.getZ();
+        float qw = q.getW();
+        storeResult.set(-qx, -qy, -qz, qw);
+
+        return storeResult;
+    }
+
+    /**
      * Calculate the exponential of a pure quaternion.
      *
      * @param q input value (not null, unaffected, w=0)
@@ -494,23 +516,23 @@ public class Util {
             storeResult = new Quaternion();
         }
 
-        float inw = q.getW();
-        if (inw >= 1f || inw <= -1f) {
+        float qw = q.getW();
+        if (qw >= 1f || qw <= -1f) {
             storeResult.set(0f, 0f, 0f, 0f);
         } else {
-            double baseX = q.getX();
-            double baseY = q.getY();
-            double baseZ = q.getZ();
-            double sineTheta = hypot(baseX, baseY, baseZ);
+            double qx = q.getX();
+            double qy = q.getY();
+            double qz = q.getZ();
+            double sineTheta = hypot(qx, qy, qz);
             sineTheta = clamp(sineTheta, 0.0, 1.0);
             if (sineTheta == 0.0) {
                 storeResult.set(0f, 0f, 0f, 0f);
             } else {
                 double theta = Math.asin(sineTheta);
                 double scale = theta / sineTheta;
-                float x = (float) (scale * baseX);
-                float y = (float) (scale * baseY);
-                float z = (float) (scale * baseZ);
+                float x = (float) (scale * qx);
+                float y = (float) (scale * qy);
+                float z = (float) (scale * qz);
                 storeResult.set(x, y, z, 0f);
             }
         }
