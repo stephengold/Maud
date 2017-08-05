@@ -37,7 +37,7 @@ import static maud.Util.accumulateScaled;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum VectorInterpolation {
+public enum TweenVectors {
     // *************************************************************************
     // values
 
@@ -134,7 +134,7 @@ public enum VectorInterpolation {
      * @param time parameter value
      * @param times (not null, unaffected, length&gt;0, in strictly ascending
      * order)
-     * @param cycleTime used for looping (&ge;times[last])
+     * @param cycleTime end time for looping (&ge;times[last])
      * @param vectors function values (not null, unaffected, same length as
      * times)
      * @param storeResult (modified if not null)

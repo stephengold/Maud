@@ -30,8 +30,8 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.QuaternionInterpolation;
-import maud.VectorInterpolation;
+import maud.TweenRotations;
+import maud.TweenVectors;
 
 /**
  * The controller for the "Tweening Tool" window in Maud's editor screen.
@@ -73,17 +73,16 @@ class TweeningTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        VectorInterpolation vTechnique = Maud.model.misc.getTweenTranslations();
-        String desc = vTechnique.toString();
+        TweenVectors tweenTranslations = Maud.model.misc.getTweenTranslations();
+        String desc = tweenTranslations.toString();
         Maud.gui.setStatusText("tweenTranslations", " " + desc);
 
-        QuaternionInterpolation qTechnique;
-        qTechnique = Maud.model.misc.getTweenRotations();
-        desc = qTechnique.toString();
+        TweenRotations tweenRotations = Maud.model.misc.getTweenRotations();
+        desc = tweenRotations.toString();
         Maud.gui.setStatusText("tweenRotations", " " + desc);
 
-        vTechnique = Maud.model.misc.getTweenScales();
-        desc = vTechnique.toString();
+        TweenVectors tweenScales = Maud.model.misc.getTweenScales();
+        desc = tweenScales.toString();
         Maud.gui.setStatusText("tweenScales", " " + desc);
 
         Maud.gui.setIgnoreGuiChanges(false);

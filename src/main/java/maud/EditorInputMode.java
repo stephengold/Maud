@@ -903,18 +903,17 @@ class EditorInputMode extends InputMode {
         } else if (actionString.startsWith(ActionPrefix.setTweenRotations)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenRotations);
-            QuaternionInterpolation value;
-            value = QuaternionInterpolation.valueOf(arg);
+            TweenRotations value = TweenRotations.valueOf(arg);
             Maud.model.misc.setTweenRotations(value);
         } else if (actionString.startsWith(ActionPrefix.setTweenScales)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenScales);
-            VectorInterpolation value = VectorInterpolation.valueOf(arg);
+            TweenVectors value = TweenVectors.valueOf(arg);
             Maud.model.misc.setTweenScales(value);
         } else if (actionString.startsWith(ActionPrefix.setTweenTranslations)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenTranslations);
-            VectorInterpolation value = VectorInterpolation.valueOf(arg);
+            TweenVectors value = TweenVectors.valueOf(arg);
             Maud.model.misc.setTweenTranslations(value);
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);

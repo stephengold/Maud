@@ -37,7 +37,7 @@ import jme3utilities.math.MyQuaternion;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum QuaternionInterpolation {
+public enum TweenRotations {
     // *************************************************************************
     // values
 
