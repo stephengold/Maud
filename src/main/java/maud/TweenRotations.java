@@ -467,10 +467,10 @@ public enum TweenRotations {
     public static Quaternion squad(float t, Quaternion p, Quaternion a,
             Quaternion b, Quaternion q, Quaternion storeResult) {
         Validate.inRange(t, "t", 0f, 1f);
-        Util.validateUnit(p, "p", 0.0001f);
-        Util.validateUnit(a, "a", 0.0001f);
-        Util.validateUnit(b, "b", 0.0001f);
-        Util.validateUnit(q, "q", 0.0001f);
+        MyQuaternion.validateUnit(p, "p", 0.0001f);
+        MyQuaternion.validateUnit(a, "a", 0.0001f);
+        MyQuaternion.validateUnit(b, "b", 0.0001f);
+        MyQuaternion.validateUnit(q, "q", 0.0001f);
         if (storeResult == null) {
             storeResult = new Quaternion();
         }
@@ -498,8 +498,8 @@ public enum TweenRotations {
     private Quaternion lerp(float t, Quaternion q0, Quaternion q1,
             Quaternion storeResult) {
         Validate.inRange(t, "t", 0f, 1f);
-        Util.validateUnit(q0, "q0", 0.0001f);
-        Util.validateUnit(q0, "q1", 0.0001f);
+        MyQuaternion.validateUnit(q0, "q0", 0.0001f);
+        MyQuaternion.validateUnit(q0, "q1", 0.0001f);
         if (storeResult == null) {
             storeResult = new Quaternion();
         }
@@ -663,15 +663,15 @@ public enum TweenRotations {
     private static Quaternion slerp(float t, Quaternion q0, Quaternion q1,
             Quaternion storeResult) {
         Validate.inRange(t, "t", 0f, 1f);
-        Util.validateUnit(q0, "q0", 0.0001f);
-        Util.validateUnit(q1, "q1", 0.0001f);
+        MyQuaternion.validateUnit(q0, "q0", 0.0001f);
+        MyQuaternion.validateUnit(q1, "q1", 0.0001f);
         if (storeResult == null) {
             storeResult = new Quaternion();
         }
 
-        Quaternion q0inverse = Util.conjugate(q0, null);
+        Quaternion q0inverse = MyQuaternion.conjugate(q0, null);
         Quaternion ratio = q0inverse.multLocal(q1);
-        Quaternion power = Util.pow(ratio, t, ratio);
+        Quaternion power = MyQuaternion.pow(ratio, t, ratio);
         storeResult.set(q0);
         storeResult.multLocal(power);
 
@@ -735,14 +735,14 @@ public enum TweenRotations {
             storeResult = new Quaternion();
         }
 
-        Quaternion q1c = Util.conjugate(q1, null);
+        Quaternion q1c = MyQuaternion.conjugate(q1, null);
         Quaternion turn0 = q1c.mult(q0);
-        Quaternion logTurn0 = Util.log(turn0, turn0);
+        Quaternion logTurn0 = MyQuaternion.log(turn0, turn0);
         Quaternion turn2 = q1c.mult(q2);
-        Quaternion logTurn2 = Util.log(turn2, turn2);
+        Quaternion logTurn2 = MyQuaternion.log(turn2, turn2);
         Quaternion sum = logTurn2.addLocal(logTurn0);
         sum.multLocal(-0.25f);
-        Quaternion exp = Util.exp(sum, sum);
+        Quaternion exp = MyQuaternion.exp(sum, sum);
         storeResult.set(q1);
         storeResult.multLocal(exp);
 
