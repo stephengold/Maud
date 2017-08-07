@@ -594,4 +594,101 @@ public class Util {
 
         return result;
     }
+
+    /**
+     * Interpolate between 2 unit quaternions using spherical linear (Slerp)
+     * interpolation. This method is slower (but more accurate) than
+     * {@link com.jme3.math.Quaternion#slerp(com.jme3.math.Quaternion, float)},
+     * always produces a unit, and doesn't trash q1. The caller is responsible
+     * for flipping the sign of q0 or q1 when it's appropriate to do so.
+     *
+     * @param t descaled parameter value (&ge;0, &le;1)
+     * @param q0 function value at t=0 (not null, unaffected, norm=1)
+     * @param q1 function value at t=1 (not null, unaffected, norm=1)
+     * @param storeResult (modified if not null)
+     * @return an interpolated unit quaternion (either storeResult or a new
+     * instance)
+     */
+    public static Quaternion slerp(float t, Quaternion q0, Quaternion q1,
+            Quaternion storeResult) {
+        Validate.inRange(t, "t", 0f, 1f);
+        MyQuaternion.validateUnit(q0, "q0", 0.0001f);
+        MyQuaternion.validateUnit(q1, "q1", 0.0001f);
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        Quaternion q0inverse = MyQuaternion.conjugate(q0, null);
+        Quaternion ratio = q0inverse.multLocal(q1);
+        Quaternion power = MyQuaternion.pow(ratio, t, ratio);
+        storeResult.set(q0);
+        storeResult.multLocal(power);
+
+        return storeResult;
+    }
+
+    /**
+     * Interpolate between 4 unit quaternions using the Squad function. The
+     * caller is responsible for flipping signs when it's appropriate to do so.
+     *
+     * @param t descaled parameter value (&ge;0, &le;1)
+     * @param p function value at t=0 (not null, unaffected, norm=1)
+     * @param a 1st control point (not null, unaffected, norm=1)
+     * @param b 2nd control point (not null, unaffected, norm=1)
+     * @param q function value at t=1 (not null, unaffected, norm=1)
+     * @param storeResult (modified if not null)
+     * @return interpolated unit quaternion (either storeResult or a new
+     * instance)
+     */
+    public static Quaternion squad(float t, Quaternion p, Quaternion a,
+            Quaternion b, Quaternion q, Quaternion storeResult) {
+        Validate.inRange(t, "t", 0f, 1f);
+        MyQuaternion.validateUnit(p, "p", 0.0001f);
+        MyQuaternion.validateUnit(a, "a", 0.0001f);
+        MyQuaternion.validateUnit(b, "b", 0.0001f);
+        MyQuaternion.validateUnit(q, "q", 0.0001f);
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        Quaternion qSlerp = slerp(t, p, q, null);
+        Quaternion aSlerp = slerp(t, a, b, null);
+        slerp(2f * t * (1f - t), qSlerp, aSlerp, storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Calculate Squad parameter "a" for a continuous 1st derivative at the
+     * middle point of 3 specified control points.
+     *
+     * @param q0 previous control point (not null, unaffected, norm=1)
+     * @param q1 current control point (not null, unaffected, norm=1)
+     * @param q2 following control point (not null, unaffected, norm=1)
+     * @param storeResult (modified if not null)
+     * @return a unit quaternion for use as a Squad parameter (either
+     * storeResult or a new instance)
+     */
+    public static Quaternion squadA(Quaternion q0, Quaternion q1,
+            Quaternion q2, Quaternion storeResult) {
+        MyQuaternion.validateUnit(q0, "q0", 0.0001f);
+        MyQuaternion.validateUnit(q1, "q1", 0.0001f);
+        MyQuaternion.validateUnit(q2, "q2", 0.0001f);
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        Quaternion q1c = MyQuaternion.conjugate(q1, null);
+        Quaternion turn0 = q1c.mult(q0);
+        Quaternion logTurn0 = MyQuaternion.log(turn0, turn0);
+        Quaternion turn2 = q1c.mult(q2);
+        Quaternion logTurn2 = MyQuaternion.log(turn2, turn2);
+        Quaternion sum = logTurn2.addLocal(logTurn0);
+        sum.multLocal(-0.25f);
+        Quaternion exp = MyQuaternion.exp(sum, sum);
+        storeResult.set(q1);
+        storeResult.multLocal(exp);
+
+        return storeResult;
+    }
 }
