@@ -156,6 +156,8 @@ class MenuBuilder {
         } else if (filename.endsWith(".mesh.xml")
                 || filename.endsWith(".scene")) {
             addOgre(filename);
+        } else if (filename.endsWith(".xbuf")) {
+            addXbuf(filename);
         }
     }
 
@@ -217,6 +219,16 @@ class MenuBuilder {
     void addTool(String item) {
         Validate.nonEmpty(item, "item");
         add(item, "Textures/icons/tool.png");
+    }
+
+    /**
+     * Add an item with the xbuf icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addXbuf(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/xbuf.png");
     }
 
     /**

@@ -24,6 +24,7 @@ repositories {
     maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' }
     maven { url 'https://dl.bintray.com/stephengold/jme3utilities' }
     maven { url 'https://jcenter.bintray.com' }
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -38,6 +39,8 @@ dependencies {
     compile "org.jmonkeyengine:jme3-lwjgl:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-plugins:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-terrain:${jmonkeyengineVersion}"
+    runtime 'ch.qos.logback:logback-classic:1.1.2'
+
     // from stephengold's repositories:
     //compile 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
     compile 'jme3utilities:jme3-utilities-heart:0.9.15'
@@ -45,6 +48,9 @@ dependencies {
     compile 'jme3utilities:jme3-utilities-debug:0.7.3'
     compile 'jme3utilities:jme3-utilities-ui:0.5.5'
     compile 'jme3utilities:jme3-utilities-nifty:0.6.8'
+
+    // from jitpack repositories:
+    compile "com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1"
 }
 
 clean { dependsOn 'cleanDLLs', 'cleanWrittenAssets' }
