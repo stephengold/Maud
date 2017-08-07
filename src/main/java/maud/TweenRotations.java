@@ -161,7 +161,7 @@ public enum TweenRotations {
      * technique and some precomputed parameters.
      *
      * @param time parameter value
-     * @param curve curve parameters (not null)
+     * @param curve curve parameters (not null, unaffected)
      * @param storeResult (modified if not null)
      * @return interpolated unit quaternion (either storeResult or a new
      * instance)
@@ -304,7 +304,7 @@ public enum TweenRotations {
      * @return an interpolated unit quaternion (either storeResult or a new
      * instance)
      */
-    public Quaternion loopSpline(float time, int last, float[] times,
+    public static Quaternion loopSpline(float time, int last, float[] times,
             float cycleTime, Quaternion[] quaternions, Quaternion storeResult) {
         Validate.inRange(time, "time", 0f, cycleTime);
         Validate.positive(last, "last");
@@ -328,21 +328,14 @@ public enum TweenRotations {
             interval = cycleTime - times[last];
         }
         assert interval > 0f : interval;
+        float t = (time - times[index1]) / interval;
         int index0 = (index1 == 0) ? last : index1 - 1;
         int index3 = (index2 == last) ? 0 : index2 + 1;
-
         Quaternion q0 = quaternions[index0];
         Quaternion q1 = quaternions[index1];
         Quaternion q2 = quaternions[index2];
         Quaternion q3 = quaternions[index3];
-        /*
-         * Calculate Squad parameter "a" at either end of the central interval.
-         */
-        Quaternion a1 = squadA(q0, q1, q2, null);
-        Quaternion a2 = squadA(q1, q2, q3, null);
-
-        float t = (time - times[index1]) / interval;
-        squad(t, q1, a1, a2, q2, storeResult);
+        flipSpline(t, q0, q1, q2, q3, storeResult);
 
         return storeResult;
     }
@@ -434,26 +427,19 @@ public enum TweenRotations {
         int index0 = (index1 == 0) ? 0 : index1 - 1;
         int index2 = index1 + 1;
         int index3 = (index2 == last) ? last : index2 + 1;
+        float inter12 = times[index2] - times[index1];
+        float t = (time - times[index1]) / inter12;
         Quaternion q0 = quaternions[index0];
         Quaternion q2 = quaternions[index2];
         Quaternion q3 = quaternions[index3];
-        /*
-         * Calculate Squad control points for either end of the central interval.
-         */
-        Quaternion a1 = squadA(q0, q1, q2, null);
-        Quaternion a2 = squadA(q1, q2, q3, null);
-        /*
-         * Interpolate using the Squad function.
-         */
-        float inter12 = times[index2] - times[index1];
-        float t = (time - times[index1]) / inter12;
-        squad(t, q1, a1, a2, q2, storeResult);
+        flipSpline(t, q0, q1, q2, q3, storeResult);
 
         return storeResult;
     }
 
     /**
-     * Interpolate between 4 unit quaternions using the Squad function.
+     * Interpolate between 4 unit quaternions using the Squad function. TODO
+     * make private
      *
      * @param t descaled parameter value (&ge;0, &le;1)
      * @param p function value at t=0 (not null, unaffected, norm=1)
@@ -483,6 +469,49 @@ public enum TweenRotations {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Interpolate between the 2 middle unit quaternions in a sequence of 4
+     * using cubic-spline interpolation based on the Squad function.
+     *
+     * @param t descaled parameter value (&ge;0, &le;1)
+     * @param q0 function value preceding q1 (not null, unaffected, norm=1)
+     * @param q1 function value at start of interval (not null, unaffected,
+     * norm=1)
+     * @param q2 function value at end of interval (not null, unaffected,
+     * norm=1)
+     * @param q3 function value following q1 (not null, unaffected, norm=1)
+     * @param storeResult (modified if not null)
+     * @return an interpolated unit quaternion (either storeResult or a new
+     * instance)
+     */
+    private static Quaternion flipSpline(float t, Quaternion q0, Quaternion q1,
+            Quaternion q2, Quaternion q3, Quaternion storeResult) {
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+        /*
+         * Flip signs as necessary to make dot products of successive
+         * sampled values non-negative.
+         */
+        if (q0.dot(q1) < 0f) {
+            q0 = q0.mult(-1f);
+        }
+        if (q1.dot(q2) < 0f) {
+            q2 = q2.mult(-1f);
+        }
+        if (q2.dot(q3) < 0f) {
+            q3 = q3.mult(-1f);
+        }
+        /*
+         * Calculate Squad parameter "a" at either end of the central interval.
+         */
+        Quaternion a1 = squadA(q0, q1, q2, null);
+        Quaternion a2 = squadA(q1, q2, q3, null);
+        squad(t, q1, a1, a2, q2, storeResult);
+
+        return storeResult;
+    }
 
     /**
      * Interpolate between 2 unit quaternions using linear (Nlerp/Slerp)
@@ -518,6 +547,10 @@ public enum TweenRotations {
                     break;
                 case LoopSlerp:
                 case Slerp:
+                    /*
+                     * Flip signs as necessary to make dot product
+                     * of the sampled values non-negative.
+                     */
                     if (q0.dot(q1) < 0f) {
                         Quaternion negQ1 = q1.mult(-1f);
                         slerp(t, q0, negQ1, storeResult);
@@ -556,21 +589,54 @@ public enum TweenRotations {
         Validate.inRange(time, "time", 0f, cycleTime);
         float[] times = curve.getTimes();
         int index1 = MyArray.findPreviousIndex(time, times);
-        Quaternion[] quaternions = curve.getQuaternions();
-        Quaternion q1 = quaternions[index1];
-        int lastIndex = curve.getLastIndex();
+        Quaternion q1 = curve.getStartValue(index1);
         /*
          * Interpolate using the Squad function.
          */
         float intervalDuration = curve.getIntervalDuration(index1);
         float t = (time - times[index1]) / intervalDuration;
-        Quaternion a1 = curve.getControlPoint(index1);
-        int index2 = (index1 + 1) % (lastIndex + 1);
-        Quaternion a2 = curve.getControlPoint(index2);
-        Quaternion q2 = quaternions[index2];
+        Quaternion a1 = curve.getControlPoint1(index1);
+        Quaternion a2 = curve.getControlPoint2(index1);
+        Quaternion q2 = curve.getEndValue(index1);
         squad(t, q1, a1, a2, q2, storeResult);
 
         return storeResult;
+    }
+
+    /**
+     * Precompute curve parameters for middle of 3 intervals in a spline.
+     *
+     * @param curve (not null, modified)
+     * @param index1
+     * @param inter12 duration of interval (&gt;0)
+     * @param q0 function value preceding q1 (not null, unaffected, norm=1)
+     * @param q1 function value at start of interval (not null, unaffected,
+     * norm=1)
+     * @param q2 function value at end of interval (not null, unaffected,
+     * norm=1)
+     * @param q3 function value following q1 (not null, unaffected, norm=1)
+     */
+    private static void precomputeFlipSpline(RotationCurve curve, int index1,
+            float inter12, Quaternion q0, Quaternion q1, Quaternion q2,
+            Quaternion q3) {
+        /*
+         * Flip signs as necessary to make dot products of successive
+         * sampled values non-negative.
+         */
+        if (q0.dot(q1) < 0f) {
+            q0 = q0.mult(-1f);
+        }
+        if (q1.dot(q2) < 0f) {
+            q2 = q2.mult(-1f);
+        }
+        if (q2.dot(q3) < 0f) {
+            q3 = q3.mult(-1f);
+        }
+        curve.setParameters(index1, q2, inter12);
+
+        Quaternion a = squadA(q0, q1, q2, null);
+        Quaternion b = squadA(q1, q2, q3, null);
+        curve.setControlPoints(index1, a, b);
     }
 
     /**
@@ -598,13 +664,12 @@ public enum TweenRotations {
                 inter12 = cycleTime - times[lastIndex];
             }
             assert inter12 > 0f : inter12;
-
+            int index3 = (index2 == lastIndex) ? 0 : index2 + 1;
             Quaternion q0 = quaternions[index0];
             Quaternion q1 = quaternions[index1];
             Quaternion q2 = quaternions[index2];
-            Quaternion squadA = squadA(q0, q1, q2, null);
-
-            curve.setParameters(index1, squadA, inter12);
+            Quaternion q3 = quaternions[index3];
+            precomputeFlipSpline(curve, index1, inter12, q0, q1, q2, q3);
         }
     }
 
@@ -637,12 +702,13 @@ public enum TweenRotations {
                 index2 = index1 + 1;
                 inter12 = times[index2] - times[index1];
             }
+            int index3 = (index2 == lastIndex) ? lastIndex : index2 + 1;
 
             Quaternion q0 = quaternions[index0];
             Quaternion q1 = quaternions[index1];
             Quaternion q2 = quaternions[index2];
-            Quaternion squadA = squadA(q0, q1, q2, null);
-            curve.setParameters(index1, squadA, inter12);
+            Quaternion q3 = quaternions[index3];
+            precomputeFlipSpline(curve, index1, inter12, q0, q1, q2, q3);
         }
     }
 
@@ -697,8 +763,7 @@ public enum TweenRotations {
         float[] times = curve.getTimes();
         assert time >= times[0] : time;
         int index1 = MyArray.findPreviousIndex(time, times);
-        Quaternion[] quaternions = curve.getQuaternions();
-        Quaternion q1 = quaternions[index1];
+        Quaternion q1 = curve.getStartValue(index1);
         int lastIndex = curve.getLastIndex();
         if (index1 == lastIndex) {
             storeResult.set(q1);
@@ -708,10 +773,9 @@ public enum TweenRotations {
              */
             float intervalDuration = curve.getIntervalDuration(index1);
             float t = (time - times[index1]) / intervalDuration;
-            Quaternion a1 = curve.getControlPoint(index1);
-            int index2 = index1 + 1;
-            Quaternion a2 = curve.getControlPoint(index2);
-            Quaternion q2 = quaternions[index2];
+            Quaternion a1 = curve.getControlPoint1(index1);
+            Quaternion a2 = curve.getControlPoint2(index1);
+            Quaternion q2 = curve.getEndValue(index1);
             squad(t, q1, a1, a2, q2, storeResult);
         }
 
