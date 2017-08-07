@@ -437,37 +437,6 @@ public enum TweenRotations {
 
         return storeResult;
     }
-
-    /**
-     * Interpolate between 4 unit quaternions using the Squad function. TODO
-     * make private
-     *
-     * @param t descaled parameter value (&ge;0, &le;1)
-     * @param p function value at t=0 (not null, unaffected, norm=1)
-     * @param a 1st control point (not null, unaffected, norm=1)
-     * @param b 2nd control point (not null, unaffected, norm=1)
-     * @param q function value at t=1 (not null, unaffected, norm=1)
-     * @param storeResult (modified if not null)
-     * @return interpolated unit quaternion (either storeResult or a new
-     * instance)
-     */
-    public static Quaternion squad(float t, Quaternion p, Quaternion a,
-            Quaternion b, Quaternion q, Quaternion storeResult) {
-        Validate.inRange(t, "t", 0f, 1f);
-        MyQuaternion.validateUnit(p, "p", 0.0001f);
-        MyQuaternion.validateUnit(a, "a", 0.0001f);
-        MyQuaternion.validateUnit(b, "b", 0.0001f);
-        MyQuaternion.validateUnit(q, "q", 0.0001f);
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
-        Quaternion qSlerp = slerp(t, p, q, null);
-        Quaternion aSlerp = slerp(t, a, b, null);
-        slerp(2f * t * (1f - t), qSlerp, aSlerp, storeResult);
-
-        return storeResult;
-    }
     // *************************************************************************
     // private methods
 
@@ -507,9 +476,9 @@ public enum TweenRotations {
         /*
          * Calculate Squad parameter "a" at either end of the central interval.
          */
-        Quaternion a1 = squadA(q0, q1, q2, null);
-        Quaternion a2 = squadA(q1, q2, q3, null);
-        squad(t, q1, a1, a2, q2, storeResult);
+        Quaternion a1 = Util.squadA(q0, q1, q2, null);
+        Quaternion a2 = Util.squadA(q1, q2, q3, null);
+        Util.squad(t, q1, a1, a2, q2, storeResult);
 
         return storeResult;
     }
@@ -554,9 +523,9 @@ public enum TweenRotations {
                      */
                     if (q0.dot(q1) < 0f) {
                         Quaternion negQ1 = q1.mult(-1f);
-                        slerp(t, q0, negQ1, storeResult);
+                        Util.slerp(t, q0, negQ1, storeResult);
                     } else {
-                        slerp(t, q0, q1, storeResult);
+                        Util.slerp(t, q0, q1, storeResult);
                     }
                     break;
                 default:
@@ -599,7 +568,7 @@ public enum TweenRotations {
         Quaternion a1 = curve.getControlPoint1(index1);
         Quaternion a2 = curve.getControlPoint2(index1);
         Quaternion q2 = curve.getEndValue(index1);
-        squad(t, q1, a1, a2, q2, storeResult);
+        Util.squad(t, q1, a1, a2, q2, storeResult);
 
         return storeResult;
     }
@@ -635,8 +604,8 @@ public enum TweenRotations {
         }
         curve.setParameters(index1, q2, inter12);
 
-        Quaternion a = squadA(q0, q1, q2, null);
-        Quaternion b = squadA(q1, q2, q3, null);
+        Quaternion a = Util.squadA(q0, q1, q2, null);
+        Quaternion b = Util.squadA(q1, q2, q3, null);
         curve.setControlPoints(index1, a, b);
     }
 
@@ -714,38 +683,6 @@ public enum TweenRotations {
     }
 
     /**
-     * Interpolate between 2 unit quaternions using spherical linear (Slerp)
-     * interpolation. This method is slower (but more accurate) than
-     * {@link com.jme3.math.Quaternion#slerp(com.jme3.math.Quaternion, float)},
-     * always produces a unit, and doesn't trash q1. The caller is responsible
-     * for flipping the sign of q0 or q1 when it's appropriate to do so.
-     *
-     * @param t descaled parameter value (&ge;0, &le;1)
-     * @param q0 function value at t=0 (not null, unaffected, norm=1)
-     * @param q1 function value at t=1 (not null, unaffected, norm=1)
-     * @param storeResult (modified if not null)
-     * @return an interpolated unit quaternion (either storeResult or a new
-     * instance)
-     */
-    private static Quaternion slerp(float t, Quaternion q0, Quaternion q1,
-            Quaternion storeResult) {
-        Validate.inRange(t, "t", 0f, 1f);
-        MyQuaternion.validateUnit(q0, "q0", 0.0001f);
-        MyQuaternion.validateUnit(q1, "q1", 0.0001f);
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
-        Quaternion q0inverse = MyQuaternion.conjugate(q0, null);
-        Quaternion ratio = q0inverse.multLocal(q1);
-        Quaternion power = MyQuaternion.pow(ratio, t, ratio);
-        storeResult.set(q0);
-        storeResult.multLocal(power);
-
-        return storeResult;
-    }
-
-    /**
      * Interpolate among unit quaternions in an acyclic time sequence using
      * cubic-spline interpolation based on the Squad function.
      *
@@ -777,39 +714,8 @@ public enum TweenRotations {
             Quaternion a1 = curve.getControlPoint1(index1);
             Quaternion a2 = curve.getControlPoint2(index1);
             Quaternion q2 = curve.getEndValue(index1);
-            squad(t, q1, a1, a2, q2, storeResult);
+            Util.squad(t, q1, a1, a2, q2, storeResult);
         }
-
-        return storeResult;
-    }
-
-    /**
-     * Calculate Squad parameter "a" for a continuous 1st derivative at the
-     * middle point of 3 specified control points.
-     *
-     * @param q0 previous control point (not null, unaffected, norm=1)
-     * @param q1 current control point (not null, unaffected, norm=1)
-     * @param q2 following control point (not null, unaffected, norm=1)
-     * @param storeResult (modified if not null)
-     * @return a unit quaternion for use as a Squad parameter (either
-     * storeResult or a new instance)
-     */
-    private static Quaternion squadA(Quaternion q0, Quaternion q1,
-            Quaternion q2, Quaternion storeResult) {
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
-        Quaternion q1c = MyQuaternion.conjugate(q1, null);
-        Quaternion turn0 = q1c.mult(q0);
-        Quaternion logTurn0 = MyQuaternion.log(turn0, turn0);
-        Quaternion turn2 = q1c.mult(q2);
-        Quaternion logTurn2 = MyQuaternion.log(turn2, turn2);
-        Quaternion sum = logTurn2.addLocal(logTurn0);
-        sum.multLocal(-0.25f);
-        Quaternion exp = MyQuaternion.exp(sum, sum);
-        storeResult.set(q1);
-        storeResult.multLocal(exp);
 
         return storeResult;
     }
