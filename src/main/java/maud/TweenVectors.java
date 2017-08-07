@@ -42,6 +42,10 @@ public enum TweenVectors {
     // values
 
     /**
+     * acyclic uniform Catmull-Rom cubic-spline interpolation
+     */
+    CatmullRomSpline,
+    /**
      * acyclic finite-difference cubic-spline interpolation
      */
     FdcSpline,
@@ -49,6 +53,10 @@ public enum TweenVectors {
      * acyclic linear (Lerp) interpolation
      */
     Lerp,
+    /**
+     * cyclic uniform Catmull-Rom cubic-spline interpolation
+     */
+    LoopCatmullRomSpline,
     /**
      * cyclic finite-difference cubic-spline interpolation
      */
@@ -99,22 +107,25 @@ public enum TweenVectors {
          */
         Vector3f m1, m2;
         switch (this) {
-            case FdcSpline: // use finite differences
+            case CatmullRomSpline:
+            case FdcSpline:
+            case LoopCatmullRomSpline:
+            case LoopFdcSpline:
                 if (index1 == 0) {
-                    m1 = fdSlope(inter12, v1, v2, null);
+                    m1 = slope(inter12, v1, v2, null);
                 } else {
                     int index0 = index1 - 1;
                     Vector3f v0 = vectors[index0];
                     float inter01 = times[index1] - times[index0];
-                    m1 = fdSlope(inter01, inter12, v0, v1, v2, null);
+                    m1 = slope(inter01, inter12, v0, v1, v2, null);
                 }
                 if (index2 == last) {
-                    m2 = fdSlope(inter12, v1, v2, null);
+                    m2 = slope(inter12, v1, v2, null);
                 } else {
                     int index3 = index2 + 1;
                     Vector3f v3 = vectors[index3];
                     float inter23 = times[index3] - times[index2];
-                    m2 = fdSlope(inter12, inter23, v1, v2, v3, null);
+                    m2 = slope(inter12, inter23, v1, v2, v3, null);
                 }
                 break;
 
@@ -157,6 +168,7 @@ public enum TweenVectors {
         }
 
         switch (this) {
+            case CatmullRomSpline:
             case FdcSpline:
                 cubicSpline(time, times, vectors, storeResult);
                 break;
@@ -165,6 +177,7 @@ public enum TweenVectors {
                 lerp(time, times, vectors, storeResult);
                 break;
 
+            case LoopCatmullRomSpline:
             case LoopFdcSpline:
                 if (times[last] == cycleTime) {
                     if (last > 1) { // ignore the final point
@@ -306,9 +319,10 @@ public enum TweenVectors {
          */
         Vector3f m1, m2;
         switch (this) {
-            case LoopFdcSpline: // use finite differences
-                m1 = fdSlope(inter01, inter12, v0, v1, v2, null);
-                m2 = fdSlope(inter12, inter23, v1, v2, v3, null);
+            case LoopCatmullRomSpline:
+            case LoopFdcSpline:
+                m1 = slope(inter01, inter12, v0, v1, v2, null);
+                m2 = slope(inter12, inter23, v1, v2, v3, null);
                 break;
             default:
                 throw new IllegalStateException();
@@ -411,8 +425,8 @@ public enum TweenVectors {
     }
 
     /**
-     * Using finite differences, estimate the 1st derivative of an unknown
-     * function between 2 indexed points.
+     * Estimate the 1st derivative of an unknown function between 2 indexed
+     * points. TODO reorder methods
      *
      * @param dt length of the interval (&gt;0)
      * @param v1 function value at the start point (not null, unaffected)
@@ -420,7 +434,7 @@ public enum TweenVectors {
      * @param storeResult (modified if not null)
      * @return a derivative vector (either storeResult or a new instance)
      */
-    private static Vector3f fdSlope(float dt, Vector3f v1, Vector3f v2,
+    private Vector3f slope(float dt, Vector3f v1, Vector3f v2,
             Vector3f storeResult) {
         assert dt > 0f : dt;
         assert v1 != null;
@@ -438,8 +452,8 @@ public enum TweenVectors {
     }
 
     /**
-     * Using finite differences, estimate the 1st derivative of an unknown
-     * function at the middle of 3 indexed points.
+     * Estimate the 1st derivative of an unknown function at the middle of 3
+     * indexed points. TODO reorder methods
      *
      * @param dt01 length of the preceeding interval (&gt;0)
      * @param dt12 length of the following interval (&gt;0)
@@ -449,7 +463,7 @@ public enum TweenVectors {
      * @param storeResult (modified if not null)
      * @return a derivative vector (either storeResult or a new instance)
      */
-    private static Vector3f fdSlope(float dt01, float dt12, Vector3f v0,
+    private Vector3f slope(float dt01, float dt12, Vector3f v0,
             Vector3f v1, Vector3f v2, Vector3f storeResult) {
         assert dt01 > 0f : dt01;
         assert dt12 > 0f : dt12;
@@ -460,10 +474,24 @@ public enum TweenVectors {
             storeResult = new Vector3f();
         }
 
-        storeResult.x = (v1.x - v0.x) / dt01 + (v2.x - v1.x) / dt12;
-        storeResult.y = (v1.y - v0.y) / dt01 + (v2.y - v1.y) / dt12;
-        storeResult.z = (v1.z - v0.z) / dt01 + (v2.z - v1.z) / dt12;
-        storeResult.divideLocal(2f);
+        switch (this) {
+            case CatmullRomSpline:
+            case LoopCatmullRomSpline:
+                float dt02 = dt01 + dt12;
+                storeResult.x = (v2.x - v0.x) / dt02;
+                storeResult.y = (v2.y - v0.y) / dt02;
+                storeResult.z = (v2.z - v0.z) / dt02;
+                break;
+            case FdcSpline:
+            case LoopFdcSpline:
+                storeResult.x = (v1.x - v0.x) / dt01 + (v2.x - v1.x) / dt12;
+                storeResult.y = (v1.y - v0.y) / dt01 + (v2.y - v1.y) / dt12;
+                storeResult.z = (v1.z - v0.z) / dt01 + (v2.z - v1.z) / dt12;
+                storeResult.divideLocal(2f);
+                break;
+            default:
+                throw new IllegalStateException();
+        }
 
         return storeResult;
     }
