@@ -315,6 +315,57 @@ public class Util {
     }
 
     /**
+     * Interpolate between 2 unit single-precision values using linear (Lerp)
+     * interpolation. Unlike
+     * {@link com.jme3.math.FastMath#interpolateLinear(float, float, float)}, no
+     * rounding error is introduced when y1==y2.
+     *
+     * @param t descaled parameter value (&ge;0, &le;1)
+     * @param y1 function value at t=0
+     * @param y2 function value at t=1
+     * @return an interpolated function value
+     */
+    public static float lerp(float t, float y1, float y2) {
+        Validate.inRange(t, "t", 0f, 1f);
+
+        float lerp;
+        if (y1 == y2) {
+            lerp = y1;
+        } else {
+            lerp = (1f - t) * y1 + t * y2;
+        }
+
+        return lerp;
+    }
+
+    /**
+     * Interpolate between 2 vectors using linear (Lerp) interpolation. Unlike
+     * {@link com.jme3.math.FastMath#interpolateLinear(float, com.jme3.math.Vector3f, com.jme3.math.Vector3f, com.jme3.math.Vector3f)},
+     * no rounding error is introduced when v1==v2.
+     *
+     * @param t descaled parameter value (&ge;0, &le;1)
+     * @param v0 function value at t=0 (not null, unaffected, norm=1)
+     * @param v1 function value at t=1 (not null, unaffected, norm=1)
+     * @param storeResult (modified if not null)
+     * @return an interpolated vector (either storeResult or a new instance)
+     */
+    public static Vector3f lerp(float t, Vector3f v0, Vector3f v1,
+            Vector3f storeResult) {
+        Validate.inRange(t, "t", 0f, 1f);
+        Validate.nonNull(v0, "v0");
+        Validate.nonNull(v1, "v1");
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        storeResult.x = lerp(t, v0.x, v1.x);
+        storeResult.y = lerp(t, v0.y, v1.y);
+        storeResult.z = lerp(t, v0.z, v1.z);
+
+        return storeResult;
+    }
+
+    /**
      * Load a BVH asset as a CG model without logging any warning/error
      * messages.
      *

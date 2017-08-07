@@ -248,7 +248,7 @@ public enum TweenVectors {
             assert inter12 > 0f : inter12;
             float t = (time - times[index1]) / inter12;
             Vector3f v2 = vectors[index2];
-            lerp(t, v1, v2, storeResult);
+            Util.lerp(t, v1, v2, storeResult);
         }
 
         return storeResult;
@@ -375,7 +375,7 @@ public enum TweenVectors {
         float t = (time - times[index1]) / interval;
         Vector3f v1 = vectors[index1];
         Vector3f v2 = vectors[index2];
-        lerp(t, v1, v2, storeResult);
+        Util.lerp(t, v1, v2, storeResult);
 
         return storeResult;
     }
@@ -426,7 +426,7 @@ public enum TweenVectors {
 
     /**
      * Estimate the 1st derivative of an unknown function between 2 indexed
-     * points. TODO reorder methods
+     * points.
      *
      * @param dt length of the interval (&gt;0)
      * @param v1 function value at the start point (not null, unaffected)
@@ -453,7 +453,7 @@ public enum TweenVectors {
 
     /**
      * Estimate the 1st derivative of an unknown function at the middle of 3
-     * indexed points. TODO reorder methods
+     * indexed points.
      *
      * @param dt01 length of the preceeding interval (&gt;0)
      * @param dt12 length of the following interval (&gt;0)
@@ -482,6 +482,7 @@ public enum TweenVectors {
                 storeResult.y = (v2.y - v0.y) / dt02;
                 storeResult.z = (v2.z - v0.z) / dt02;
                 break;
+
             case FdcSpline:
             case LoopFdcSpline:
                 storeResult.x = (v1.x - v0.x) / dt01 + (v2.x - v1.x) / dt12;
@@ -489,59 +490,10 @@ public enum TweenVectors {
                 storeResult.z = (v1.z - v0.z) / dt01 + (v2.z - v1.z) / dt12;
                 storeResult.divideLocal(2f);
                 break;
+
             default:
                 throw new IllegalStateException();
         }
-
-        return storeResult;
-    }
-
-    /**
-     * Interpolate between 2 unit single-precision values using linear (Lerp)
-     * interpolation. Unlike
-     * {@link com.jme3.math.FastMath#interpolateLinear(float, float, float)}, no
-     * rounding error is introduced when y1==y2.
-     *
-     * @param t descaled parameter value (&ge;0, &le;1)
-     * @param y1 function value at t=0
-     * @param y2 function value at t=1
-     * @return an interpolated function value
-     */
-    private static float lerp(float t, float y1, float y2) {
-        assert t >= 0f : t;
-        assert t <= 1f : t;
-
-        float lerp;
-        if (y1 == y2) {
-            lerp = y1;
-        } else {
-            lerp = (1f - t) * y1 + t * y2;
-        }
-
-        return lerp;
-    }
-
-    /**
-     * Interpolate between 2 vectors using linear (Lerp) interpolation. Unlike
-     * {@link com.jme3.math.FastMath#interpolateLinear(float, com.jme3.math.Vector3f, com.jme3.math.Vector3f, com.jme3.math.Vector3f)},
-     * no rounding error is introduced when v1==v2.
-     *
-     * @param t descaled parameter value (&ge;0, &le;1)
-     * @param v0 function value at t=0 (not null, unaffected, norm=1)
-     * @param v1 function value at t=1 (not null, unaffected, norm=1)
-     * @param storeResult (modified if not null)
-     * @return an interpolated vector (either storeResult or a new instance)
-     */
-    private static Vector3f lerp(float t, Vector3f v0, Vector3f v1,
-            Vector3f storeResult) {
-        Validate.inRange(t, "t", 0f, 1f);
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-
-        storeResult.x = lerp(t, v0.x, v1.x);
-        storeResult.y = lerp(t, v0.y, v1.y);
-        storeResult.z = lerp(t, v0.z, v1.z);
 
         return storeResult;
     }
