@@ -85,7 +85,7 @@ public enum TweenRotations {
      * @param time parameter value
      * @param times (not null, unaffected, length&gt;0, in strictly ascending
      * order)
-     * @param cycleTime end time for looping (&ge;times[last])
+     * @param cycleTime end time for looping (&ge;times[lastIndex])
      * @param quaternions function values (not null, unaffected, same length as
      * times, each norm=1)
      * @param storeResult (modified if not null)
@@ -97,13 +97,13 @@ public enum TweenRotations {
         Validate.nonNull(times, "times");
         assert times.length > 0;
         assert times.length == quaternions.length;
-        int last = times.length - 1;
-        assert cycleTime >= times[last] : cycleTime;
+        int lastIndex = times.length - 1;
+        assert cycleTime >= times[lastIndex] : cycleTime;
         if (storeResult == null) {
             storeResult = new Quaternion();
         }
 
-        if (last == 0 || time < times[0]) {
+        if (lastIndex == 0 || time < times[0]) {
             storeResult.set(quaternions[0]);
             return storeResult;
         }
@@ -112,29 +112,29 @@ public enum TweenRotations {
             case LoopNlerp:
             case LoopQuickSlerp:
             case LoopSlerp:
-                if (times[last] == cycleTime) {
-                    if (last > 1) { // ignore the final point
-                        loopLerp(time, last - 1, times, cycleTime, quaternions,
-                                storeResult);
+                if (times[lastIndex] == cycleTime) {
+                    if (lastIndex > 1) { // ignore the final point
+                        loopLerp(time, lastIndex - 1, times, cycleTime,
+                                quaternions, storeResult);
                     } else { // fall back on acyclic
                         lerp(time, times, quaternions, storeResult);
                     }
                 } else {
-                    loopLerp(time, last, times, cycleTime, quaternions,
+                    loopLerp(time, lastIndex, times, cycleTime, quaternions,
                             storeResult);
                 }
                 break;
 
             case LoopSpline:
-                if (times[last] == cycleTime) {
-                    if (last > 1) { // ignore the final point
-                        loopSpline(time, last - 1, times, cycleTime,
+                if (times[lastIndex] == cycleTime) {
+                    if (lastIndex > 1) { // ignore the final point
+                        loopSpline(time, lastIndex - 1, times, cycleTime,
                                 quaternions, storeResult);
                     } else { // fall back on acyclic
                         spline(time, times, quaternions, storeResult);
                     }
                 } else {
-                    loopSpline(time, last, times, cycleTime, quaternions,
+                    loopSpline(time, lastIndex, times, cycleTime, quaternions,
                             storeResult);
                 }
                 break;
@@ -229,7 +229,7 @@ public enum TweenRotations {
         int index1 = MyArray.findPreviousIndex(time, times);
         Quaternion q1 = quaternions[index1];
 
-        if (index1 >= times.length - 1) { // the last point
+        if (index1 >= times.length - 1) { // the last point to use
             storeResult.set(q1);
         } else {
             int index2 = index1 + 1;
@@ -248,24 +248,24 @@ public enum TweenRotations {
      * (Nlerp/Slerp) interpolation.
      *
      * @param time parameter value (&ge;0, &le;cycleTime)
-     * @param last (index of the last point, &ge;1)
+     * @param lastIndex (index of the last point to use, &ge;1)
      * @param times (not null, unaffected, in strictly ascending order,
      * times[0]==0)
-     * @param cycleTime cycle time (&gt;times[last])
+     * @param cycleTime cycle time (&gt;times[lastIndex])
      * @param quaternions function values (not null, unaffected, each norm=1)
      * @param storeResult (modified if not null)
      * @return an interpolated unit quaternion (either storeResult or a new
      * instance)
      */
-    public Quaternion loopLerp(float time, int last, float[] times,
+    public Quaternion loopLerp(float time, int lastIndex, float[] times,
             float cycleTime, Quaternion[] quaternions, Quaternion storeResult) {
         Validate.inRange(time, "time", 0f, cycleTime);
-        Validate.positive(last, "last");
+        Validate.positive(lastIndex, "last index");
         Validate.nonNull(times, "times");
         Validate.nonNull(quaternions, "quaternions");
-        assert times.length > last : times.length;
-        assert quaternions.length > last : quaternions.length;
-        assert cycleTime > times[last] : cycleTime;
+        assert times.length > lastIndex : times.length;
+        assert quaternions.length > lastIndex : quaternions.length;
+        assert cycleTime > times[lastIndex] : cycleTime;
         if (storeResult == null) {
             storeResult = new Quaternion();
         }
@@ -273,12 +273,12 @@ public enum TweenRotations {
         int index1 = MyArray.findPreviousIndex(time, times);
         int index2; // keyframe index
         float interval; // interval between keyframes
-        if (index1 < last) {
+        if (index1 < lastIndex) {
             index2 = index1 + 1;
             interval = times[index2] - times[index1];
         } else {
             index2 = 0;
-            interval = cycleTime - times[last];
+            interval = cycleTime - times[lastIndex];
         }
         assert interval > 0f : interval;
 
@@ -295,24 +295,25 @@ public enum TweenRotations {
      * cubic-spline interpolation based on the Squad function.
      *
      * @param time parameter value (&ge;0, &le;cycleTime)
-     * @param last (index of the last point, &ge;1)
+     * @param lastIndex (index of the last point to use, &ge;1)
      * @param times (not null, unaffected, in strictly ascending order,
      * times[0]==0)
-     * @param cycleTime cycle time (&gt;times[last])
+     * @param cycleTime cycle time (&gt;times[lastIndex])
      * @param quaternions function values (not null, unaffected, each norm=1)
      * @param storeResult (modified if not null)
      * @return an interpolated unit quaternion (either storeResult or a new
      * instance)
      */
-    public static Quaternion loopSpline(float time, int last, float[] times,
-            float cycleTime, Quaternion[] quaternions, Quaternion storeResult) {
+    public static Quaternion loopSpline(float time, int lastIndex,
+            float[] times, float cycleTime, Quaternion[] quaternions,
+            Quaternion storeResult) {
         Validate.inRange(time, "time", 0f, cycleTime);
-        Validate.positive(last, "last");
+        Validate.positive(lastIndex, "last index");
         Validate.nonNull(times, "times");
         Validate.nonNull(quaternions, "quaternions");
-        assert times.length > last : times.length;
-        assert quaternions.length > last : quaternions.length;
-        assert cycleTime > times[last] : cycleTime;
+        assert times.length > lastIndex : times.length;
+        assert quaternions.length > lastIndex : quaternions.length;
+        assert cycleTime > times[lastIndex] : cycleTime;
         if (storeResult == null) {
             storeResult = new Quaternion();
         }
@@ -320,17 +321,17 @@ public enum TweenRotations {
         int index1 = MyArray.findPreviousIndex(time, times);
         int index2; // keyframe index
         float interval; // interval between keyframes
-        if (index1 < last) {
+        if (index1 < lastIndex) {
             index2 = index1 + 1;
             interval = times[index2] - times[index1];
         } else {
             index2 = 0;
-            interval = cycleTime - times[last];
+            interval = cycleTime - times[lastIndex];
         }
         assert interval > 0f : interval;
         float t = (time - times[index1]) / interval;
-        int index0 = (index1 == 0) ? last : index1 - 1;
-        int index3 = (index2 == last) ? 0 : index2 + 1;
+        int index0 = (index1 == 0) ? lastIndex : index1 - 1;
+        int index3 = (index2 == lastIndex) ? 0 : index2 + 1;
         Quaternion q0 = quaternions[index0];
         Quaternion q1 = quaternions[index1];
         Quaternion q2 = quaternions[index2];
@@ -345,7 +346,7 @@ public enum TweenRotations {
      *
      * @param times (not null, unaffected, length&gt;0, in strictly ascending
      * order)
-     * @param cycleTime end time of loop (&ge;times[last])
+     * @param cycleTime end time of loop (&ge;times[lastIndex])
      * @param quaternions function values (not null, unaffected, same length as
      * times, each norm==1)
      * @return a new instance
@@ -355,8 +356,8 @@ public enum TweenRotations {
         Validate.nonNull(times, "times");
         assert times.length > 0;
         assert times.length == quaternions.length;
-        int last = times.length - 1;
-        assert cycleTime >= times[last] : cycleTime;
+        int lastIndex = times.length - 1;
+        assert cycleTime >= times[lastIndex] : cycleTime;
 
         RotationCurve result = new RotationCurve(times, cycleTime, quaternions);
         switch (this) {
@@ -369,14 +370,14 @@ public enum TweenRotations {
                 break;
 
             case LoopSpline:
-                if (times[last] == cycleTime) {
-                    if (last > 1) { // ignore the final point
-                        precomputeLoopSpline(result, last - 1);
+                if (times[lastIndex] == cycleTime) {
+                    if (lastIndex > 1) { // ignore the final point
+                        precomputeLoopSpline(result, lastIndex - 1);
                     } else { // fall back on acyclic
                         precomputeSpline(result);
                     }
                 } else {
-                    precomputeLoopSpline(result, last);
+                    precomputeLoopSpline(result, lastIndex);
                 }
                 break;
 
@@ -417,16 +418,16 @@ public enum TweenRotations {
 
         int index1 = MyArray.findPreviousIndex(time, times);
         Quaternion q1 = quaternions[index1];
-        int last = times.length - 1;
+        int lastIndex = times.length - 1;
 
-        if (index1 == last) {
+        if (index1 == lastIndex) {
             storeResult.set(q1);
             return storeResult;
         }
         // TODO try substituting q for a at the ends of the spline
         int index0 = (index1 == 0) ? 0 : index1 - 1;
         int index2 = index1 + 1;
-        int index3 = (index2 == last) ? last : index2 + 1;
+        int index3 = (index2 == lastIndex) ? lastIndex : index2 + 1;
         float inter12 = times[index2] - times[index1];
         float t = (time - times[index1]) / inter12;
         Quaternion q0 = quaternions[index0];
