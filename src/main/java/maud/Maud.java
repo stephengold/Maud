@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3_ext_xbuf.XbufLoader;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.debug.Dumper;
@@ -584,9 +585,10 @@ public class Maud extends GuiApplication {
     private void startup1() {
         logger.info("");
         /*
-         * Register a loader for BVH files.
+         * Register loaders for BVH and xbuf assets.
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
+        assetManager.registerLoader(XbufLoader.class, "xbuf");
         /*
          * Configure the default view port for the target scene wide view.
          */
