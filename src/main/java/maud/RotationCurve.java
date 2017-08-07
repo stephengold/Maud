@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * Encapsulate a rotation curve. This is a performance optimization when
+ * Encapsulate a rotation curve. This is a performance optimization for
  * interpolating many times on a single spline.
  *
  * @author Stephen Gold sgold@sonic.net
@@ -53,21 +53,29 @@ public class RotationCurve {
      */
     final private float cycleTime;
     /**
-     * duration of each interval, or null if not using splines
+     * duration of each interval
      */
     private float[] intervalDurations;
     /**
-     * sample times (not null, same length as quaternions)
+     * start time of each interval (not null, same length as quaternions)
      */
     final private float[] times;
     /**
-     * control points for samples, or null if not using splines
+     * 1st control point of each interval, or null if not using splines
      */
-    private Quaternion[] controlPoints;
+    private Quaternion[] controlPoint1s;
     /**
-     * function values at sample times (not null, same length as times)
+     * 2nd control point of each interval, or null if not using splines
      */
-    final private Quaternion[] quaternions;
+    private Quaternion[] controlPoint2s;
+    /**
+     * ending function value of each interval
+     */
+    private Quaternion[] endValues;
+    /**
+     * starting function value of each interval (not null, same length as times)
+     */
+    final private Quaternion[] startValues;
     // *************************************************************************
     // constructors
 
@@ -87,21 +95,37 @@ public class RotationCurve {
 
         this.times = times;
         this.cycleTime = cycleTime;
-        this.quaternions = quaternions;
-        this.controlPoints = null;
+        this.startValues = quaternions;
+
+        this.endValues = null;
         this.intervalDurations = null;
+
+        this.controlPoint1s = null;
+        this.controlPoint2s = null;
     }
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Access the control point that precedes the indexed sample.
+     * Access the 1st control point for the indexed interval.
      *
      * @param index which interval (&ge;0, &le;last)
      * @return the pre-existing instance (not null)
      */
-    Quaternion getControlPoint(int index) {
-        Quaternion controlPoint = controlPoints[index];
+    Quaternion getControlPoint1(int index) {
+        Quaternion controlPoint = controlPoint1s[index];
+        assert controlPoint != null;
+        return controlPoint;
+    }
+
+    /**
+     * Access the 2nd control point for the indexed interval.
+     *
+     * @param index which interval (&ge;0, &le;last)
+     * @return the pre-existing instance (not null)
+     */
+    Quaternion getControlPoint2(int index) {
+        Quaternion controlPoint = controlPoint2s[index];
         assert controlPoint != null;
         return controlPoint;
     }
@@ -111,6 +135,17 @@ public class RotationCurve {
      */
     float getCycleTime() {
         return cycleTime;
+    }
+
+    /**
+     * Access the ending function value of the indexed interval.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    Quaternion getEndValue(int index) {
+        Quaternion value = endValues[index];
+        assert value != null;
+        return value;
     }
 
     /**
@@ -131,7 +166,7 @@ public class RotationCurve {
      * @param newLastIndex new index (&ge;0)
      */
     int getLastIndex() {
-        int lastIndex = controlPoints.length - 1;
+        int lastIndex = controlPoint1s.length - 1;
         assert lastIndex >= 0 : lastIndex;
         return lastIndex;
     }
@@ -142,8 +177,19 @@ public class RotationCurve {
      * @return the pre-existing instance (not null)
      */
     Quaternion[] getQuaternions() {
-        assert quaternions != null;
-        return quaternions;
+        assert startValues != null;
+        return startValues;
+    }
+
+    /**
+     * Access the starting function value of the indexed interval.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    Quaternion getStartValue(int index) {
+        Quaternion value = startValues[index];
+        assert value != null;
+        return value;
     }
 
     /**
@@ -157,6 +203,24 @@ public class RotationCurve {
     }
 
     /**
+     * Alter the control points for the indexed interval. Used only for splines.
+     *
+     * @param index interval index (&ge;0, &le;last)
+     * @param controlPoint1 1st control point for interval (not null, alias
+     * created)
+     * @param controlPoint2 2nd control point for interval (not null, alias
+     * created)
+     */
+    void setControlPoints(int index, Quaternion controlPoint1,
+            Quaternion controlPoint2) {
+        Validate.nonNull(controlPoint1, "control point 1");
+        Validate.nonNull(controlPoint2, "control point 2");
+
+        controlPoint1s[index] = controlPoint1;
+        controlPoint2s[index] = controlPoint2;
+    }
+
+    /**
      * Alter the index of the last point to use.
      *
      * @param newLastIndex new index (&ge;0)
@@ -164,23 +228,24 @@ public class RotationCurve {
     void setLastIndex(int newLastIndex) {
         Validate.nonNegative(newLastIndex, "new last index");
 
-        controlPoints = new Quaternion[newLastIndex + 1];
+        controlPoint1s = new Quaternion[newLastIndex + 1];
+        controlPoint2s = new Quaternion[newLastIndex + 1];
+        endValues = new Quaternion[newLastIndex + 1];
         intervalDurations = new float[newLastIndex + 1];
     }
 
     /**
-     * Alter the spline parameters for the specified index.
+     * Alter the curve parameters for the indexed interval.
      *
-     * @param index sample or interval index (&ge;0, &le;last)
-     * @param controlPoint control point for sample (not null, alias created)
+     * @param index interval index (&ge;0, &le;last)
+     * @param endValue end value for interval (not null, alias created)
      * @param intervalDuration duration of interval (&gt;0)
      */
-    void setParameters(int index, Quaternion controlPoint,
-            float intervalDuration) {
-        Validate.nonNull(controlPoint, "control point");
+    void setParameters(int index, Quaternion endValue, float intervalDuration) {
+        Validate.nonNull(endValue, "end value");
         Validate.positive(intervalDuration, "interval duration");
 
-        controlPoints[index] = controlPoint;
+        endValues[index] = endValue;
         intervalDurations[index] = intervalDuration;
     }
 }
