@@ -540,6 +540,10 @@ public class LoadedCgm implements Cloneable {
         Validate.nonEmpty(assetPath, "asset path");
 
         Locators.useFilesystem(rootPath);
+        Locators.registerDefault();
+        List<String> assetFolders = Maud.model.folders.listAll();
+        Locators.register(assetFolders);
+        
         Spatial loaded = loadFromAsset(assetPath, false);
         Locators.useDefault();
         if (loaded == null) {
