@@ -960,6 +960,7 @@ class EditorMenus {
             builder.addOgre("Elephant");
         }
         builder.addJme("Jaime");
+        builder.addXbuf("Puppet");
         if (haveTestdata) {
             builder.addOgre("Ninja");
             builder.addOgre("Oto");
