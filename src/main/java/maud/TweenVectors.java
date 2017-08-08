@@ -29,6 +29,8 @@ package maud;
 import com.jme3.math.Vector3f;
 import jme3utilities.Validate;
 import jme3utilities.math.MyArray;
+import jme3utilities.math.MyMath;
+import jme3utilities.math.MyVector3f;
 import static maud.Util.accumulateScaled;
 
 /**
@@ -46,6 +48,10 @@ public enum TweenVectors {
      */
     CatmullRomSpline,
     /**
+     * acyclic centripetal Catmull-Rom cubic-spline interpolation
+     */
+    CentripetalSpline,
+    /**
      * acyclic finite-difference cubic-spline interpolation
      */
     FdcSpline,
@@ -57,6 +63,10 @@ public enum TweenVectors {
      * cyclic uniform Catmull-Rom cubic-spline interpolation
      */
     LoopCatmullRomSpline,
+    /**
+     * cyclic centripetal Catmull-Rom cubic-spline interpolation
+     */
+    LoopCentripetalSpline,
     /**
      * cyclic finite-difference cubic-spline interpolation
      */
@@ -94,23 +104,24 @@ public enum TweenVectors {
         int index1 = MyArray.findPreviousIndex(time, times);
         Vector3f v1 = vectors[index1];
         int last = times.length - 1;
-
         if (index1 == last) {
             storeResult.set(v1);
             return storeResult;
         }
+
         int index2 = index1 + 1;
         Vector3f v2 = vectors[index2];
         float inter12 = times[index2] - times[index1];
-        /*
-         * Estimate slopes at either end of the central interval.
-         */
-        Vector3f m1, m2;
+        float t = (time - times[index1]) / inter12;
         switch (this) {
             case CatmullRomSpline:
             case FdcSpline:
             case LoopCatmullRomSpline:
             case LoopFdcSpline:
+                /*
+                 * Estimate slopes at either end of the central interval.
+                 */
+                Vector3f m1;
                 if (index1 == 0) {
                     m1 = slope(inter12, v1, v2, null);
                 } else {
@@ -119,6 +130,7 @@ public enum TweenVectors {
                     float inter01 = times[index1] - times[index0];
                     m1 = slope(inter01, inter12, v0, v1, v2, null);
                 }
+                Vector3f m2;
                 if (index2 == last) {
                     m2 = slope(inter12, v1, v2, null);
                 } else {
@@ -127,14 +139,45 @@ public enum TweenVectors {
                     float inter23 = times[index3] - times[index2];
                     m2 = slope(inter12, inter23, v1, v2, v3, null);
                 }
+
+                cubicSpline(t, inter12, v1, v2, m1, m2, storeResult);
+                break;
+
+            case CentripetalSpline:
+            case LoopCentripetalSpline:
+                int index0;
+                for (index0 = index1 - 1; index0 >= 0; index0--) {
+                    if (Util.ne(vectors[index0], v1)) {
+                        break;
+                    }
+                }
+                Vector3f v0;
+                if (index0 < 0) {
+                    v0 = v1.mult(2f);
+                    v0.subtractLocal(v2);
+                } else {
+                    v0 = vectors[index0];
+                }
+                int index3;
+                for (index3 = index2 + 1; index3 <= last; index3++) {
+                    if (Util.ne(vectors[index3], v2)) {
+                        break;
+                    }
+                }
+                Vector3f v3;
+                if (index3 > last) {
+                    v3 = v2.mult(2f);
+                    v3.subtractLocal(v1);
+                } else {
+                    v3 = vectors[index3];
+                }
+
+                centripetal(t, v0, v1, v2, v3, storeResult);
                 break;
 
             default:
                 throw new IllegalStateException();
         }
-
-        float t = (time - times[index1]) / inter12;
-        cubicSpline(t, inter12, v1, v2, m1, m2, storeResult);
 
         return storeResult;
     }
@@ -168,6 +211,7 @@ public enum TweenVectors {
         }
 
         switch (this) {
+            case CentripetalSpline:
             case CatmullRomSpline:
             case FdcSpline:
                 cubicSpline(time, times, vectors, storeResult);
@@ -177,6 +221,7 @@ public enum TweenVectors {
                 lerp(time, times, vectors, storeResult);
                 break;
 
+            case LoopCentripetalSpline:
             case LoopCatmullRomSpline:
             case LoopFdcSpline:
                 if (times[last] == cycleTime) {
@@ -281,17 +326,8 @@ public enum TweenVectors {
          */
         int index1 = MyArray.findPreviousIndex(time, times);
 
-        float inter01, inter12, inter23; // intervals between points
-        int index0, index2, index3; // keyframe indices
-        if (index1 > 0) {
-            index0 = index1 - 1;
-            inter01 = times[index1] - times[index0];
-        } else {
-            index0 = last;
-            inter01 = cycleTime - times[index0];
-        }
-        assert inter01 > 0f : inter01;
-
+        float inter12;
+        int index2;
         if (index1 < last) {
             index2 = index1 + 1;
             inter12 = times[index2] - times[index1];
@@ -301,35 +337,72 @@ public enum TweenVectors {
         }
         assert inter12 > 0f : inter12;
 
-        if (index2 < last) {
-            index3 = index2 + 1;
-            inter23 = times[index3] - times[index2];
-        } else {
-            index3 = 0;
-            inter23 = cycleTime - times[last];
-        }
-        assert inter23 > 0f : inter23;
-
-        Vector3f v0 = vectors[index0];
         Vector3f v1 = vectors[index1];
         Vector3f v2 = vectors[index2];
-        Vector3f v3 = vectors[index3];
-        /*
-         * Estimate slopes at either end of the central interval.
-         */
-        Vector3f m1, m2;
+        Vector3f v0, v3;
+        int index0, index3;
+        float t = (time - times[index1]) / inter12;
+
         switch (this) {
             case LoopCatmullRomSpline:
             case LoopFdcSpline:
-                m1 = slope(inter01, inter12, v0, v1, v2, null);
-                m2 = slope(inter12, inter23, v1, v2, v3, null);
+                /*
+                 * Estimate slopes at either end of the central interval.
+                 */
+                float inter01;
+                if (index1 > 0) {
+                    index0 = index1 - 1;
+                    inter01 = times[index1] - times[index0];
+                } else {
+                    index0 = last;
+                    inter01 = cycleTime - times[index0];
+                }
+                assert inter01 > 0f : inter01;
+
+                float inter23;
+                if (index2 < last) {
+                    index3 = index2 + 1;
+                    inter23 = times[index3] - times[index2];
+                } else {
+                    index3 = 0;
+                    inter23 = cycleTime - times[last];
+                }
+                assert inter23 > 0f : inter23;
+
+                v0 = vectors[index0];
+                v3 = vectors[index3];
+                Vector3f m1 = slope(inter01, inter12, v0, v1, v2, null);
+                Vector3f m2 = slope(inter12, inter23, v1, v2, v3, null);
+
+                storeResult = cubicSpline(t, inter12, v1, v2, m1, m2,
+                        storeResult);
                 break;
+
+            case LoopCentripetalSpline:
+                int numVectors = last + 1;
+                for (index0 = MyMath.modulo(index1 - 1, numVectors);
+                        index0 != index1;
+                        index0 = MyMath.modulo(index0 - 1, numVectors)) {
+                    if (Util.ne(vectors[index0], v1)) {
+                        break;
+                    }
+                }
+                for (index3 = MyMath.modulo(index2 + 1, numVectors);
+                        index3 != index2;
+                        index3 = MyMath.modulo(index3 + 1, numVectors)) {
+                    if (Util.ne(vectors[index3], v2)) {
+                        break;
+                    }
+                }
+
+                v0 = vectors[index0];
+                v3 = vectors[index3];
+                storeResult = centripetal(t, v0, v1, v2, v3, storeResult);
+                break;
+
             default:
                 throw new IllegalStateException();
         }
-
-        float t = (time - times[index1]) / inter12;
-        storeResult = cubicSpline(t, inter12, v1, v2, m1, m2, storeResult);
 
         return storeResult;
     }
@@ -381,6 +454,92 @@ public enum TweenVectors {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Interpolate between 2 vectors using a centripetal Catmull-Rom spline.
+     *
+     * @param tt descaled parameter value (&ge;0, &le;1)
+     * @param v0 function value preceding v1 (not null, != v1, unaffected)
+     * @param v1 function value at start of interval (not null, unaffected)
+     * @param v2 function value at end of interval (not null, unaffected)
+     * @param v3 function value following v2 (not null, != v2, unaffected)
+     * @param storeResult (modified if not null)
+     * @return an interpolated vector (either storeResult or a new instance)
+     */
+    private static Vector3f centripetal(float tt, Vector3f v0, Vector3f v1,
+            Vector3f v2, Vector3f v3, Vector3f storeResult) {
+        assert tt >= 0f : tt;
+        assert tt <= 1f : tt;
+        assert v0 != null;
+        assert v1 != null;
+        assert v2 != null;
+        assert v3 != null;
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        double ds12 = MyVector3f.distanceSquared(v1, v2);
+        if (ds12 == 0.0) {
+            storeResult.set(v1);
+        } else {
+            float dt12 = (float) Util.fourthRoot(ds12);
+            if (dt12 == 0f) {
+                storeResult.set(v1);
+            } else {
+                double ds01 = MyVector3f.distanceSquared(v0, v1);
+                double ds23 = MyVector3f.distanceSquared(v2, v3);
+                float dt01 = (float) Util.fourthRoot(ds01);
+                float dt23 = (float) Util.fourthRoot(ds23);
+                centripetal(tt, v0, v1, v2, v3, dt01, dt12, dt23, storeResult);
+            }
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Interpolate between 2 vectors using a centripetal Catmull-Rom spline.
+     *
+     * @param tt descaled parameter value (&ge;0, &le;1)
+     * @param v0 function value preceding v1 (not null, unaffected)
+     * @param v1 function value at start of interval (not null, unaffected)
+     * @param v2 function value at end of interval (not null, unaffected)
+     * @param v3 function value following v2 (not null, unaffected)
+     * @param dt01 square root of distance from v0 to v1 (&gt;0)
+     * @param dt12 square root of distance from v1 to v2 (&gt;0)
+     * @param dt23 square root of distance from v2 to v3 (&gt;0)
+     * @param storeResult (modified if not null)
+     * @return an interpolated vector (either storeResult or a new instance)
+     */
+    private static Vector3f centripetal(float tt, Vector3f v0, Vector3f v1,
+            Vector3f v2, Vector3f v3, float dt01, float dt12, float dt23,
+            Vector3f storeResult) {
+        assert tt >= 0f : tt;
+        assert tt <= 1f : tt;
+        assert v0 != null;
+        assert v1 != null;
+        assert v2 != null;
+        assert v3 != null;
+        assert dt01 > 0f : dt01;
+        assert dt12 > 0f : dt12;
+        assert dt23 > 0f : dt23;
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        float t = tt * dt12;
+
+        Vector3f a1 = Util.lerp((t + dt01) / dt01, v0, v1, null);
+        Vector3f a2 = Util.lerp(t / dt12, v1, v2, null);
+        Vector3f a3 = Util.lerp((t - dt12) / dt23, v2, v3, null);
+
+        Vector3f b1 = Util.lerp((t + dt01) / (dt01 + dt12), a1, a2, null);
+        Vector3f b2 = Util.lerp(t / (dt12 + dt23), a2, a3, null);
+
+        Util.lerp(t, b1, b2, storeResult);
+
+        return storeResult;
+    }
 
     /**
      * Interpolate between 2 vectors using a cubic spline in Hermite form.
