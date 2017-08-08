@@ -31,11 +31,10 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyArray;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
-import static maud.Util.accumulateScaled;
 
 /**
  * Enumerate and implement some interpolation techniques on time sequences of
- * Vector3f values. TODO savable/reusable spline slopes
+ * Vector3f values.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -259,6 +258,47 @@ public enum TweenVectors {
     }
 
     /**
+     * Interpolate among vectors in a time sequence using this technique and
+     * precomputed parameters.
+     *
+     * @param time parameter value
+     * @param curve curve parameters (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return an interpolated vector (either storeResult or a new instance)
+     */
+    public Vector3f interpolate(float time, VectorCurve curve,
+            Vector3f storeResult) {
+        Validate.nonNull(curve, "curve");
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        switch (this) {
+            case CatmullRomSpline:
+            case CentripetalSpline:
+            case FdcSpline:
+            case LoopCatmullRomSpline:
+            case LoopCentripetalSpline:
+            case LoopFdcSpline:
+                spline(time, curve, storeResult);
+                break;
+
+            case Lerp:
+            case LoopLerp:
+                float[] times = curve.getTimes();
+                float cycleTime = curve.getCycleTime();
+                Vector3f[] vectors = curve.getValues();
+                interpolate(time, times, cycleTime, vectors, storeResult);
+                break;
+
+            default:
+                throw new IllegalStateException();
+        }
+
+        return storeResult;
+    }
+
+    /**
      * Interpolate among vectors in an acyclic time sequence using linear (Lerp)
      * interpolation. This is essentially what AnimControl uses to interpolate
      * translations and scales in bone tracks.
@@ -452,6 +492,60 @@ public enum TweenVectors {
 
         return storeResult;
     }
+
+    /**
+     * Precompute a curve from vectors in a time sequence.
+     *
+     * @param times (not null, unaffected, length&gt;0, in strictly ascending
+     * order)
+     * @param cycleTime end time of loop (&ge;times[lastIndex])
+     * @param vectors function values (not null, unaffected, same length as
+     * times, each norm==1)
+     * @return a new instance
+     */
+    public VectorCurve precompute(float[] times, float cycleTime,
+            Vector3f[] vectors) {
+        Validate.nonNull(times, "times");
+        assert times.length > 0;
+        assert times.length == vectors.length;
+        int lastIndex = times.length - 1;
+        assert cycleTime >= times[lastIndex] : cycleTime;
+
+        VectorCurve result = new VectorCurve(times, cycleTime, vectors);
+        switch (this) {
+            case CatmullRomSpline:
+            case CentripetalSpline:
+            case FdcSpline:
+                precomputeSpline(result);
+                break;
+
+            case LoopCatmullRomSpline:
+            case LoopCentripetalSpline:
+            case LoopFdcSpline:
+                if (times[lastIndex] == cycleTime) {
+                    if (lastIndex > 1) {
+                        // ignore the final point
+                        precomputeLoopSpline(result, lastIndex - 1);
+                    } else {
+                        // fall back on acyclic
+                        precomputeSpline(result);
+                    }
+                } else {
+                    precomputeLoopSpline(result, lastIndex);
+                }
+                break;
+
+            case Lerp:
+            case LoopLerp:
+                // don't precompute anything
+                break;
+
+            default:
+                throw new IllegalStateException();
+        }
+
+        return result;
+    }
     // *************************************************************************
     // private methods
 
@@ -576,11 +670,251 @@ public enum TweenVectors {
 
         storeResult.set(v1);
         storeResult.multLocal(h00);
-        accumulateScaled(storeResult, v2, h01);
-        accumulateScaled(storeResult, m1, interval * h10);
-        accumulateScaled(storeResult, m2, interval * h11);
+        Util.accumulateScaled(storeResult, v2, h01);
+        Util.accumulateScaled(storeResult, m1, interval * h10);
+        Util.accumulateScaled(storeResult, m2, interval * h11);
 
         return storeResult;
+    }
+
+    /**
+     * Precompute a curve for a cyclic spline.
+     *
+     * @param curve (not null, modified)
+     * @param lastIndex (&ge;0)
+     */
+    private void precomputeLoopSpline(VectorCurve curve, int lastIndex) {
+        setLastIndex(curve, lastIndex);
+
+        float[] times = curve.getTimes();
+        float cycleTime = curve.getCycleTime();
+        Vector3f[] vectors = curve.getValues();
+
+        for (int index1 = 0; index1 <= lastIndex; index1++) {
+            float inter12;
+            int index2;
+            if (index1 < lastIndex) {
+                index2 = index1 + 1;
+                inter12 = times[index2] - times[index1];
+            } else {
+                index2 = 0;
+                inter12 = cycleTime - times[lastIndex];
+            }
+            assert inter12 > 0f : inter12;
+
+            Vector3f v1 = vectors[index1];
+            Vector3f v2 = vectors[index2];
+            curve.setParameters(index1, v2, inter12);
+
+            Vector3f v0, v3;
+            int index0, index3;
+
+            switch (this) {
+                case LoopCatmullRomSpline:
+                case LoopFdcSpline:
+                    /*
+                     * Estimate slopes at either end of the central interval.
+                     */
+                    float inter01;
+                    if (index1 > 0) {
+                        index0 = index1 - 1;
+                        inter01 = times[index1] - times[index0];
+                    } else {
+                        index0 = lastIndex;
+                        inter01 = cycleTime - times[index0];
+                    }
+                    assert inter01 > 0f : inter01;
+
+                    float inter23;
+                    if (index2 < lastIndex) {
+                        index3 = index2 + 1;
+                        inter23 = times[index3] - times[index2];
+                    } else {
+                        index3 = 0;
+                        inter23 = cycleTime - times[lastIndex];
+                    }
+                    assert inter23 > 0f : inter23;
+                    v0 = vectors[index0];
+                    v3 = vectors[index3];
+                    Vector3f m1 = slope(inter01, inter12, v0, v1, v2, null);
+                    Vector3f m2 = slope(inter12, inter23, v1, v2, v3, null);
+                    curve.setAuxPoints(index1, m1, m2);
+                    break;
+
+                case LoopCentripetalSpline:
+                    int numVectors = lastIndex + 1;
+                    for (index0 = MyMath.modulo(index1 - 1, numVectors);
+                            index0 != index1;
+                            index0 = MyMath.modulo(index0 - 1, numVectors)) {
+                        if (Util.ne(vectors[index0], v1)) {
+                            break;
+                        }
+                    }
+                    for (index3 = MyMath.modulo(index2 + 1, numVectors);
+                            index3 != index2;
+                            index3 = MyMath.modulo(index3 + 1, numVectors)) {
+                        if (Util.ne(vectors[index3], v2)) {
+                            break;
+                        }
+                    }
+                    v0 = vectors[index0];
+                    v3 = vectors[index3];
+                    curve.setAuxPoints(index1, v0, v3);
+
+                    double ds12 = MyVector3f.distanceSquared(v1, v2);
+                    if (ds12 > 0.0) {
+                        float dt12 = (float) Util.fourthRoot(ds12);
+                        if (dt12 > 0f) {
+                            double ds01 = MyVector3f.distanceSquared(v0, v1);
+                            double ds23 = MyVector3f.distanceSquared(v2, v3);
+                            float dt01 = (float) Util.fourthRoot(ds01);
+                            float dt23 = (float) Util.fourthRoot(ds23);
+                            curve.setDts(index1, dt01, dt12, dt23);
+                        } else {
+                            curve.setDts(index1, 0f, 0f, 0f);
+                        }
+                    } else {
+                        curve.setDts(index1, 0f, 0f, 0f);
+                    }
+                    break;
+
+                default:
+                    throw new IllegalStateException();
+            }
+        }
+    }
+
+    /**
+     * Precompute a curve for an acyclic spline.
+     *
+     * @param curve (not null, modified)
+     */
+    private void precomputeSpline(VectorCurve curve) {
+        Vector3f[] vectors = curve.getValues();
+        int lastIndex = vectors.length - 1;
+        setLastIndex(curve, lastIndex);
+        float[] times = curve.getTimes();
+
+        for (int index1 = 0; index1 <= lastIndex; index1++) {
+            Vector3f v1 = vectors[index1];
+            int index2;
+            float inter12;
+            if (index1 == lastIndex) {
+                index2 = lastIndex;
+                inter12 = 1f;
+            } else {
+                index2 = index1 + 1;
+                inter12 = times[index2] - times[index1];
+            }
+            Vector3f v2 = vectors[index2];
+            curve.setParameters(index1, v2, inter12);
+
+            switch (this) {
+                case CatmullRomSpline:
+                case FdcSpline:
+                case LoopCatmullRomSpline:
+                case LoopFdcSpline:
+                    /*
+                     * Estimate slopes at either end of the central interval.
+                     */
+                    Vector3f m1;
+                    if (index1 == 0) {
+                        m1 = slope(inter12, v1, v2, null);
+                    } else {
+                        int index0 = index1 - 1;
+                        Vector3f v0 = vectors[index0];
+                        float inter01 = times[index1] - times[index0];
+                        m1 = slope(inter01, inter12, v0, v1, v2, null);
+                    }
+                    Vector3f m2;
+                    if (index2 == lastIndex) {
+                        m2 = slope(inter12, v1, v2, null);
+                    } else {
+                        int index3 = index2 + 1;
+                        Vector3f v3 = vectors[index3];
+                        float inter23 = times[index3] - times[index2];
+                        m2 = slope(inter12, inter23, v1, v2, v3, null);
+                    }
+                    curve.setAuxPoints(index1, m1, m2);
+                    break;
+
+                case CentripetalSpline:
+                case LoopCentripetalSpline:
+                    int index0;
+                    for (index0 = index1 - 1; index0 >= 0; index0--) {
+                        if (Util.ne(vectors[index0], v1)) {
+                            break;
+                        }
+                    }
+                    Vector3f v0;
+                    if (index0 < 0) {
+                        v0 = v1.mult(2f);
+                        v0.subtractLocal(v2);
+                    } else {
+                        v0 = vectors[index0];
+                    }
+                    int index3;
+                    for (index3 = index2 + 1; index3 <= lastIndex; index3++) {
+                        if (Util.ne(vectors[index3], v2)) {
+                            break;
+                        }
+                    }
+                    Vector3f v3;
+                    if (index3 > lastIndex) {
+                        v3 = v2.mult(2f);
+                        v3.subtractLocal(v1);
+                    } else {
+                        v3 = vectors[index3];
+                    }
+                    curve.setAuxPoints(index1, v0, v3);
+
+                    double ds12 = MyVector3f.distanceSquared(v1, v2);
+                    if (ds12 > 0.0) {
+                        float dt12 = (float) Util.fourthRoot(ds12);
+                        if (dt12 > 0f) {
+                            double ds01 = MyVector3f.distanceSquared(v0, v1);
+                            double ds23 = MyVector3f.distanceSquared(v2, v3);
+                            float dt01 = (float) Util.fourthRoot(ds01);
+                            float dt23 = (float) Util.fourthRoot(ds23);
+                            curve.setDts(index1, dt01, dt12, dt23);
+                        } else {
+                            curve.setDts(index1, 0f, 0f, 0f);
+                        }
+                    } else {
+                        curve.setDts(index1, 0f, 0f, 0f);
+                    }
+                    break;
+
+                default:
+                    throw new IllegalStateException();
+            }
+        }
+    }
+
+    /**
+     * Alter the number of samples in the specified curve.
+     *
+     * @param curve (not null, modified)
+     * @param lastIndex new value (&ge;0)
+     */
+    private void setLastIndex(VectorCurve curve, int lastIndex) {
+        boolean allocateDts;
+        switch (this) {
+            case CatmullRomSpline:
+            case FdcSpline:
+            case LoopCatmullRomSpline:
+            case LoopFdcSpline:
+                allocateDts = false;
+                curve.setLastIndex(lastIndex, allocateDts);
+                break;
+            case CentripetalSpline:
+            case LoopCentripetalSpline:
+                allocateDts = true;
+                curve.setLastIndex(lastIndex, allocateDts);
+                break;
+            default:
+                throw new IllegalStateException();
+        }
     }
 
     /**
@@ -648,6 +982,62 @@ public enum TweenVectors {
                 storeResult.y = (v1.y - v0.y) / dt01 + (v2.y - v1.y) / dt12;
                 storeResult.z = (v1.z - v0.z) / dt01 + (v2.z - v1.z) / dt12;
                 storeResult.divideLocal(2f);
+                break;
+
+            default:
+                throw new IllegalStateException();
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Interpolate among vectors in a time sequence using spline interpolation
+     * and precomputed parameters.
+     *
+     * @param time parameter value (&ge;0, &le;cycleTime)
+     * @param curve vector curve (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return an interpolated vector (either storeResult or a new instance)
+     */
+    private Vector3f spline(float time, VectorCurve curve,
+            Vector3f storeResult) {
+        assert time >= 0f : time;
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        float cycleTime = curve.getCycleTime();
+        Validate.inRange(time, "time", 0f, cycleTime);
+        float[] times = curve.getTimes();
+        int index1 = MyArray.findPreviousIndex(time, times);
+        float intervalDuration = curve.getIntervalDuration(index1);
+        float t = (time - times[index1]) / intervalDuration;
+        Vector3f v1 = curve.getStartValue(index1);
+        Vector3f v2 = curve.getEndValue(index1);
+        switch (this) {
+            case CatmullRomSpline:
+            case FdcSpline:
+            case LoopCatmullRomSpline:
+            case LoopFdcSpline:
+                Vector3f m1 = curve.getAux1(index1);
+                Vector3f m2 = curve.getAux2(index1);
+                cubicSpline(t, intervalDuration, v1, v2, m1, m2, storeResult);
+                break;
+
+            case CentripetalSpline:
+            case LoopCentripetalSpline:
+                float dt12 = curve.getDt12(index1);
+                if (dt12 == 0f) {
+                    storeResult.set(v1);
+                } else {
+                    Vector3f v0 = curve.getAux1(index1);
+                    Vector3f v3 = curve.getAux2(index1);
+                    float dt01 = curve.getDt01(index1);
+                    float dt23 = curve.getDt23(index1);
+                    centripetal(t, v0, v1, v2, v3, dt01, dt12, dt23,
+                            storeResult);
+                }
                 break;
 
             default:
