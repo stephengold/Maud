@@ -289,6 +289,23 @@ public class Util {
     }
 
     /**
+     * Extract the 4th root of a double-precision value. This method is faster
+     * than Math.pow(d, 0.25).
+     *
+     * @param dValue input 4th power to be extracted (&ge;0)
+     * @return the positive 4th root of dValue (&ge;0)
+     * @see java.lang.Math#cbrt(double)
+     */
+    public static double fourthRoot(double dValue) {
+        Validate.nonNegative(dValue, "dValue");
+        double sqrt = Math.sqrt(dValue);
+        double result = Math.sqrt(sqrt);
+
+        assert result >= 0.0 : result;
+        return result;
+    }
+
+    /**
      * Count how many vertices in the specified subtree of the scene graph are
      * influenced by the indexed bone and its descendents. Note: recursive!
      *
@@ -315,35 +332,35 @@ public class Util {
     }
 
     /**
-     * Interpolate between 2 unit single-precision values using linear (Lerp)
-     * interpolation. Unlike
+     * Interpolate between (or extrapolate from) 2 single-precision values using
+     * linear (Lerp) *polation. Unlike
      * {@link com.jme3.math.FastMath#interpolateLinear(float, float, float)}, no
      * rounding error is introduced when y1==y2.
      *
-     * @param t descaled parameter value (&ge;0, &le;1)
+     * @param t descaled parameter value (0&rarr;v0, 1&rarr;v1)
      * @param y1 function value at t=0
      * @param y2 function value at t=1
      * @return an interpolated function value
      */
     public static float lerp(float t, float y1, float y2) {
-        Validate.inRange(t, "t", 0f, 1f);
-
         float lerp;
         if (y1 == y2) {
             lerp = y1;
         } else {
-            lerp = (1f - t) * y1 + t * y2;
+            float u = 1f - t;
+            lerp = u * y1 + t * y2;
         }
 
         return lerp;
     }
 
     /**
-     * Interpolate between 2 vectors using linear (Lerp) interpolation. Unlike
+     * Interpolate between (or extrapolate from) 2 vectors using linear (Lerp)
+     * *polation. Unlike
      * {@link com.jme3.math.FastMath#interpolateLinear(float, com.jme3.math.Vector3f, com.jme3.math.Vector3f, com.jme3.math.Vector3f)},
      * no rounding error is introduced when v1==v2.
      *
-     * @param t descaled parameter value (&ge;0, &le;1)
+     * @param t descaled parameter value (0&rarr;v0, 1&rarr;v1)
      * @param v0 function value at t=0 (not null, unaffected, norm=1)
      * @param v1 function value at t=1 (not null, unaffected, norm=1)
      * @param storeResult (modified if not null)
@@ -351,7 +368,6 @@ public class Util {
      */
     public static Vector3f lerp(float t, Vector3f v0, Vector3f v1,
             Vector3f storeResult) {
-        Validate.inRange(t, "t", 0f, 1f);
         Validate.nonNull(v0, "v0");
         Validate.nonNull(v1, "v1");
         if (storeResult == null) {
@@ -493,6 +509,21 @@ public class Util {
         // TODO account for rotation
         result.addChildShape(childShape, location);
 
+        return result;
+    }
+
+    /**
+     * Test whether two vectors are distinct, without distinguishing 0 from -0.
+     *
+     * @param v1 1st input vector (not null, unaffected)
+     * @param v2 2nd input vector (not null, unaffected)
+     * @return true if distinct, otherwise false
+     */
+    public static boolean ne(Vector3f v1, Vector3f v2) {
+        Validate.nonNull(v1, "1st input vector");
+        Validate.nonNull(v2, "2nd input vector");
+
+        boolean result = v1.x != v2.x || v1.y != v2.y || v1.z != v2.z;
         return result;
     }
 
