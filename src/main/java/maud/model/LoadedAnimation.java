@@ -47,6 +47,7 @@ import maud.RotationCurve;
 import maud.TweenRotations;
 import maud.TweenVectors;
 import maud.Util;
+import maud.VectorCurve;
 
 /**
  * The MVC model of the loaded animation in the Maud application. For loading
@@ -1035,11 +1036,12 @@ public class LoadedAnimation implements Cloneable {
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();
         Vector3f[] scales = track.getScales();
+        VectorCurve parms = technique.precompute(times, duration, scales);
         Vector3f tempV = new Vector3f();
 
         for (int iSample = 0; iSample < ts.length; iSample++) {
             float time = ts[iSample];
-            technique.interpolate(time, times, duration, scales, tempV);
+            technique.interpolate(time, parms, tempV);
             storeXs[iSample] = tempV.x;
             storeYs[iSample] = tempV.y;
             storeZs[iSample] = tempV.z;
@@ -1106,11 +1108,12 @@ public class LoadedAnimation implements Cloneable {
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();
         Vector3f[] translations = track.getTranslations();
+        VectorCurve parms = technique.precompute(times, duration, translations);
         Vector3f tempV = new Vector3f();
 
         for (int iSample = 0; iSample < ts.length; iSample++) {
             float time = ts[iSample];
-            technique.interpolate(time, times, duration, translations, tempV);
+            technique.interpolate(time, parms, tempV);
             storeXs[iSample] = tempV.x;
             storeYs[iSample] = tempV.y;
             storeZs[iSample] = tempV.z;

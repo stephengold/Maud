@@ -57,7 +57,7 @@ public class RotationCurve {
      */
     private float[] intervalDurations;
     /**
-     * start time of each interval (not null, same length as quaternions)
+     * start time of each interval (not null, same length as startValues)
      */
     final private float[] times;
     /**
