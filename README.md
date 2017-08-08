@@ -623,6 +623,7 @@ I therefore acknowledge the following artists and software developers:
   Project and also for many helpful insights
 + Paul Speed (aka "pspeed") for many helpful insights
 + Zi Ye, for creating the Sinbad model
++ Nathan Vegdahl, for creating the Puppet model
 + the creators of (and contributors to) the following software:
   + Adobe Photoshop Elements
   + the Blender 3D animation suite

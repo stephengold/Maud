@@ -591,6 +591,9 @@ public class LoadedCgm implements Cloneable {
             case "Oto":
                 fileName = "Oto.mesh.xml";
                 break;
+            case "Puppet":
+                fileName = "Puppet.xbuf";
+                break;
             case "Sign Post":
                 fileName = "Sign Post.mesh.xml";
                 break;

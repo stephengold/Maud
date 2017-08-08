@@ -6,9 +6,11 @@ maud software packages Copyright (c) 2017 Stephen Gold
 All rights reserved.
 
 Note: the following license does not apply to the certain assets/resources
-("3d cursor.blend", "rock_11474.jpg", 8 files in 
-src/main/resources/Models/Sinbad, and the 15 images in
-src/main/resources/textures/icons) which are separately licensed.
+("3d cursor.blend", "rock_11474.jpg",
+2 files in src/main/resources/Models/Puppet,
+8 files in src/main/resources/Models/Sinbad, and
+the 15 images in src/main/resources/textures/icons)
+which are separately licensed.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
