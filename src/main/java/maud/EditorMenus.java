@@ -116,37 +116,57 @@ class EditorMenus {
         } else if (cgm == Maud.model.target) {
             menuPrefix = ActionPrefix.loadCgmAsset;
         } else {
-            assert false;
+            throw new IllegalArgumentException();
         }
 
         String indexString = args.split(" ")[0];
         String rootPath = Maud.model.folders.pathForIndex(indexString);
         String assetPath = MyString.remainder(args, indexString + " ");
-        File file = new File(rootPath, assetPath);
-        if (file.isDirectory()) {
-            String folderPath = file.getAbsolutePath();
-            buildFolderMenu(folderPath, "");
-            menuPrefix += args;
-            if (!menuPrefix.endsWith("/")) {
-                menuPrefix += "/";
-            }
-            builder.show(menuPrefix);
 
-        } else if (file.canRead()) {
-            cgm.loadAsset(rootPath, assetPath);
-
-        } else {
-            /*
-             * Treat the pathname as a prefix.
-             */
-            String folderName = file.getParent();
-            String prefix = file.getName();
-            buildFolderMenu(folderName, prefix);
-            menuPrefix += folderName;
-            if (!menuPrefix.endsWith("/")) {
-                menuPrefix += "/";
+        if (rootPath.endsWith(".jar") || rootPath.endsWith(".zip")) {
+            List<String> entryNames = Util.zipEntries(rootPath, assetPath);
+            int numEntries = entryNames.size();
+            List<String> cgmEntries = new ArrayList<String>(numEntries);
+            for (String entryName : entryNames) {
+                if (MenuBuilder.hasCgmSuffix(entryName)) {
+                    cgmEntries.add(entryName);
+                }
             }
-            builder.show(menuPrefix);
+            if (cgmEntries.size() == 1 && cgmEntries.contains(assetPath)) {
+                cgm.loadAsset(rootPath, assetPath);
+            } else if (!cgmEntries.isEmpty()) {
+                builder.reset();
+                builder.addFiles(cgmEntries, maxItems);
+                builder.show(menuPrefix + indexString + " ");
+            }
+
+        } else { // not a JAR or ZIP
+            File file = new File(rootPath, assetPath);
+            if (file.isDirectory()) {
+                String folderPath = file.getAbsolutePath();
+                buildFolderMenu(folderPath, "");
+                menuPrefix += args;
+                if (!menuPrefix.endsWith("/")) {
+                    menuPrefix += "/";
+                }
+                builder.show(menuPrefix);
+
+            } else if (file.canRead()) {
+                cgm.loadAsset(rootPath, assetPath);
+
+            } else {
+                /*
+                 * Treat the pathname as a prefix.
+                 */
+                String folderName = file.getParent();
+                String prefix = file.getName();
+                buildFolderMenu(folderName, prefix);
+                menuPrefix += folderName;
+                if (!menuPrefix.endsWith("/")) {
+                    menuPrefix += "/";
+                }
+                builder.show(menuPrefix);
+            }
         }
     }
 
@@ -249,6 +269,9 @@ class EditorMenus {
         if (argument.endsWith(addThis)) {
             String path = MyString.removeSuffix(argument, addThis);
             Maud.model.folders.add(path);
+
+        } else if (argument.endsWith(".jar") || argument.endsWith(".zip")) {
+            Maud.model.folders.add(argument);
 
         } else {
             Map<String, File> folderMap = folderMap(argument);
@@ -869,7 +892,13 @@ class EditorMenus {
         builder.reset();
         List<String> pathList = Maud.model.folders.listAll();
         for (String path : pathList) {
-            builder.addFolder(path);
+            if (path.endsWith(".jar")) {
+                builder.addJar(path);
+            } else if (path.endsWith(".zip")) {
+                builder.addZip(path);
+            } else {
+                builder.addFolder(path);
+            }
         }
         builder.add("From classpath");
     }
@@ -1038,9 +1067,9 @@ class EditorMenus {
 
         File[] files = file.listFiles();
         for (File f : files) {
-            if (f.isDirectory()) {
-                String name = f.getName();
-                if (name.startsWith(namePrefix)) {
+            String name = f.getName();
+            if (name.startsWith(namePrefix)) {
+                if (f.isDirectory() || name.endsWith(".jar") || name.endsWith(".zip")) {
                     File oldFile = result.put(name, f);
                     assert oldFile == null : oldFile;
                 }
