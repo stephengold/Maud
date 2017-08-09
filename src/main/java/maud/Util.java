@@ -32,9 +32,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
-import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
@@ -62,7 +60,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -404,7 +401,7 @@ public class Util {
         BVHAnimData loadedData;
         try {
             loadedData = (BVHAnimData) assetManager.loadAsset(assetPath);
-        } catch (AssetNotFoundException | NoSuchElementException e) {
+        } catch (RuntimeException e) {
             return null;
         }
 
@@ -470,7 +467,7 @@ public class Util {
         Spatial loaded;
         try {
             loaded = assetManager.loadModel(key);
-        } catch (AssetNotFoundException | AssetLoadException exception) {
+        } catch (RuntimeException exception) {
             loaded = null;
         }
         /*
