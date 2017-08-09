@@ -33,7 +33,8 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * The MVC model of asset folders known to Maud.
+ * The MVC model of asset locations (directories/folders/JARs/ZIPs) known to
+ * Maud.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -50,40 +51,40 @@ public class AssetFolders implements Cloneable {
     // fields
 
     /**
-     * absolute filesystem paths to all asset folders (other than "Written
+     * absolute filesystem paths to all asset locations (other than "Written
      * Assets") that are known to Maud
      */
-    private List<String> folderPaths = new ArrayList<>(5);
+    private List<String> knownPaths = new ArrayList<>(6);
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Add an asset folder, if it's not already known to Maud.
+     * Add an asset location, if it's not already known to Maud.
      *
-     * @param path a filesystem path to the folder (not null, not empty)
+     * @param path a filesystem path to the directory/folder/JAR/ZIP (not null,
+     * not empty)
      */
     public void add(String path) {
-        Validate.nonEmpty(path, "folder path");
+        Validate.nonEmpty(path, "path");
 
-        File folder = new File(path);
-        assert folder.isDirectory();
-        String folderPath = folder.getAbsolutePath();
-        folderPath = folderPath.replaceAll("\\\\", "/");
-        assert folderPath != null;
-        assert !folderPath.isEmpty();
+        File file = new File(path);
+        String absolutePath = file.getAbsolutePath();
+        absolutePath = absolutePath.replaceAll("\\\\", "/");
+        assert absolutePath != null;
+        assert !absolutePath.isEmpty();
 
-        if (!folderPaths.contains(folderPath)) {
-            folderPaths.add(folderPath);
+        if (!knownPaths.contains(absolutePath)) {
+            knownPaths.add(absolutePath);
         }
     }
 
     /**
-     * Test whether there are any asset folders that can be removed.
+     * Test whether there are any asset locations that can be removed.
      *
-     * @return true if there is 1 or more, otherwise false
+     * @return true if there is one or more, otherwise false
      */
     public boolean hasRemovable() {
-        int count = folderPaths.size();
+        int count = knownPaths.size();
         if (count >= 1) {
             return true;
         } else {
@@ -92,15 +93,16 @@ public class AssetFolders implements Cloneable {
     }
 
     /**
-     * Find the file locator index for the specified asset folder.
+     * Find the file locator index for the specified asset location.
      *
-     * @param folderPath absolute path to the asset folder (not null, not empty)
+     * @param path absolute path to the directory/folder/JAR/ZIP (not null, not
+     * empty)
      * @return a decimal string
      */
-    public String indexForPath(String folderPath) {
-        Validate.nonEmpty(folderPath, "folder path");
+    public String indexForPath(String path) {
+        Validate.nonEmpty(path, "path");
 
-        int index = folderPaths.indexOf(folderPath);
+        int index = knownPaths.indexOf(path);
         assert index != -1;
         String result = Integer.toString(index);
 
@@ -108,43 +110,44 @@ public class AssetFolders implements Cloneable {
     }
 
     /**
-     * Enumerate all asset folders.
+     * Enumerate all asset locations (other than the default locators) that are
+     * known to Maud.
      *
      * @return a new list of absolute paths
      */
     public List<String> listAll() {
-        int numPaths = folderPaths.size();
+        int numPaths = knownPaths.size();
         List<String> result = new ArrayList<>(numPaths);
-        result.addAll(folderPaths);
+        result.addAll(knownPaths);
 
         return result;
     }
 
     /**
-     * Read the path of the indexed asset folder.
+     * Read the path of the indexed asset location.
      *
      * @param indexString a decimal string (not null, not empty)
-     * @return absolute path to the folder (not null)
+     * @return absolute path to the directory/folder/JAR/ZIP (not null)
      */
     public String pathForIndex(String indexString) {
         Validate.nonEmpty(indexString, "index string");
 
         int index = Integer.parseInt(indexString);
-        String result = folderPaths.get(index);
+        String result = knownPaths.get(index);
 
         return result;
     }
 
     /**
-     * Remove the specified asset folder.
+     * Remove the specified asset location.
      *
-     * @param folderPath absolute path to the asset folder (not null)
+     * @param path absolute path to the directory/folder/JAR/ZIP (not null)
      */
-    public void remove(String folderPath) {
-        Validate.nonEmpty(folderPath, "folder path");
+    public void remove(String path) {
+        Validate.nonEmpty(path, "path");
 
-        if (folderPaths.contains(folderPath)) {
-            folderPaths.remove(folderPath);
+        if (knownPaths.contains(path)) {
+            knownPaths.remove(path);
         } else {
             assert false;
         }
@@ -161,7 +164,7 @@ public class AssetFolders implements Cloneable {
     @Override
     public AssetFolders clone() throws CloneNotSupportedException {
         AssetFolders clone = (AssetFolders) super.clone();
-        clone.folderPaths = new ArrayList<>(folderPaths);
+        clone.knownPaths = new ArrayList<>(knownPaths);
 
         return clone;
     }

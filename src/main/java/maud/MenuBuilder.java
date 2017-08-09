@@ -27,6 +27,7 @@
 package maud;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -138,26 +139,62 @@ class MenuBuilder {
     }
 
     /**
-     * Add a filename item to the menu.
+     * Add a filename (or zip entry name) item to the menu.
      *
-     * @param filename the name of the file (not null, not empty)
+     * @param name the name of the file/entry (not null, not empty)
      */
-    void addFile(String filename) {
-        Validate.nonEmpty(filename, "item");
+    void addFile(String name) {
+        Validate.nonEmpty(name, "name");
 
-        if (filename.endsWith(".blend")) {
-            addBlend(filename);
-        } else if (filename.endsWith(".bvh")) {
-            addBvh(filename);
-        } else if (filename.endsWith(".j3o")) {
-            addJme(filename);
-        } else if (filename.endsWith(".obj")) {
-            addGeometry(filename); // TODO poser icon
-        } else if (filename.endsWith(".mesh.xml")
-                || filename.endsWith(".scene")) {
-            addOgre(filename);
-        } else if (filename.endsWith(".xbuf")) {
-            addXbuf(filename);
+        if (name.endsWith(".blend")) {
+            addBlend(name);
+        } else if (name.endsWith(".bvh")) {
+            addBvh(name);
+        } else if (name.endsWith(".j3o")) {
+            addJme(name);
+        } else if (name.endsWith(".jar")) {
+            addJar(name);
+        } else if (name.endsWith(".obj")) {
+            addGeometry(name); // TODO use a Poser icon here
+        } else if (name.endsWith(".mesh.xml")
+                || name.endsWith(".scene")) {
+            addOgre(name);
+        } else if (name.endsWith(".xbuf")) {
+            addXbuf(name);
+        } else if (name.endsWith(".zip")) {
+            addZip(name);
+        } else if (name.endsWith("/")) {
+            addFolder(name);
+        } else {
+            assert !hasCgmSuffix(name);
+        }
+    }
+
+    /**
+     * Reduce a list of filenames (or zip entry names) to the specified number
+     * and add them to the menu.
+     *
+     * @param names the list of names (not null)
+     * @param maxItems maximum number of menu items to add (&ge;2)
+     */
+    void addFiles(List<String> names, int maxItems) {
+        Validate.nonNull(names, "names");
+        Validate.inRange(maxItems, "max items", 2, Integer.MAX_VALUE);
+        /*
+         * Generate the list of names and prefixes to add.
+         */
+        int numNames = names.size();
+        List<String> menuList = new ArrayList<>(numNames);
+        menuList.addAll(names);
+        MyString.reduce(menuList, maxItems);
+        Collections.sort(menuList);
+
+        for (String menuItems : menuList) {
+            if (names.contains(menuItems)) {
+                addFile(menuItems);
+            } else { // prefix
+                addEllipsis(menuItems);
+            }
         }
     }
 
@@ -179,6 +216,16 @@ class MenuBuilder {
     void addGeometry(String item) {
         Validate.nonEmpty(item, "item");
         add(item, "Textures/icons/geometry.png");
+    }
+
+    /**
+     * Add an item with the JAR icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addJar(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/jar.png");
     }
 
     /**
@@ -222,13 +269,23 @@ class MenuBuilder {
     }
 
     /**
-     * Add an item with the xbuf icon to the menu.
+     * Add an item with the Xbuf icon to the menu.
      *
      * @param item (not null, not empty)
      */
     void addXbuf(String item) {
         Validate.nonEmpty(item, "item");
         add(item, "Textures/icons/xbuf.png");
+    }
+
+    /**
+     * Add an item with the ZIP icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addZip(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/zip.png");
     }
 
     /**
@@ -256,6 +313,33 @@ class MenuBuilder {
         String[] result = new String[numItems];
         for (int i = 0; i < numItems; i++) {
             result[i] = items.get(i);
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether a filename (or zip entry name) has a CGM suffix.
+     *
+     * @param name the name of the file/entry (not null, not empty)
+     */
+    static boolean hasCgmSuffix(String name) {
+        Validate.nonEmpty(name, "name");
+
+        boolean result = false;
+        if (name.endsWith(".blend")) {
+            result = true;
+        } else if (name.endsWith(".bvh")) {
+            result = true;
+        } else if (name.endsWith(".j3o")) {
+            result = true;
+        } else if (name.endsWith(".obj")) {
+            result = true;
+        } else if (name.endsWith(".mesh.xml")
+                || name.endsWith(".scene")) {
+            result = true;
+        } else if (name.endsWith(".xbuf")) {
+            result = true;
         }
 
         return result;

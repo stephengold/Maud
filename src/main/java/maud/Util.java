@@ -338,34 +338,6 @@ public class Util {
     }
 
     /**
-     * Enumerate all non-directory entries in the named JAR whose names start
-     * with the specified prefix.
-     *
-     * @param jarPath filesystem path to the JAR (not null, not empty)
-     * @param entryPrefix (not null)
-     * @return a new list
-     */
-    public static List<String> jarFiles(String jarPath, String entryPrefix) {
-        List<String> result = new ArrayList<>(50);
-
-        try (FileInputStream fileIn = new FileInputStream(jarPath)) {
-            ZipInputStream zipIn = new ZipInputStream(fileIn);
-            for (ZipEntry entry = zipIn.getNextEntry();
-                    entry != null;
-                    entry = zipIn.getNextEntry()) {
-                String name = "/" + entry.getName();
-                if (name.startsWith(entryPrefix) && !entry.isDirectory()) {
-                    result.add(name);
-                }
-            }
-        } catch (IOException e) {
-            // stop reading entries
-        }
-
-        return result;
-    }
-
-    /**
      * Interpolate between (or extrapolate from) 2 single-precision values using
      * linear (Lerp) *polation. Unlike
      * {@link com.jme3.math.FastMath#interpolateLinear(float, float, float)}, no
@@ -488,7 +460,6 @@ public class Util {
         compoundCollisionShapeLevel = compoundCollisionShapeLogger.getLevel();
         compoundCollisionShapeLogger.setLevel(Level.SEVERE);
 
-        logger.severe("setting xbufloaderlevel");
         org.slf4j.Logger logger = LoggerFactory.getLogger("jme3_ext_xbuf.XbufLoader");
         ch.qos.logback.classic.Logger xbufLoaderLogger = (ch.qos.logback.classic.Logger) logger;
         ch.qos.logback.classic.Level xbufLoaderLevel = xbufLoaderLogger.getLevel();
@@ -813,5 +784,35 @@ public class Util {
         storeResult.multLocal(exp);
 
         return storeResult;
+    }
+
+    /**
+     * Enumerate all entries (in the specified JAR or ZIP) whose names begin
+     * with the specified prefix.
+     *
+     * @param zipPath filesystem path to the JAR or ZIP (not null, not empty)
+     * @param namePrefix (not null)
+     * @return a new list of entry names
+     */
+    public static List<String> zipEntries(String zipPath, String namePrefix) {
+        Validate.nonEmpty(zipPath, "zip path");
+        Validate.nonNull(namePrefix, "name prefix");
+
+        List<String> result = new ArrayList<>(90);
+        try (FileInputStream fileIn = new FileInputStream(zipPath);
+                ZipInputStream zipIn = new ZipInputStream(fileIn)) {
+            for (ZipEntry entry = zipIn.getNextEntry();
+                    entry != null;
+                    entry = zipIn.getNextEntry()) {
+                String entryName = "/" + entry.getName();
+                if (entryName.startsWith(namePrefix)) {
+                    result.add(entryName);
+                }
+            }
+        } catch (IOException e) {
+            // quit reading entries
+        }
+
+        return result;
     }
 }
