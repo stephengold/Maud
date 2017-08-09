@@ -28,17 +28,10 @@ package maud.model;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
-import com.jme3.animation.Bone;
-import com.jme3.animation.BoneTrack;
-import com.jme3.animation.Skeleton;
-import com.jme3.animation.SkeletonControl;
-import com.jme3.animation.Track;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -50,13 +43,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.Locators;
+import maud.CheckLoaded;
 import maud.Maud;
 import maud.SceneView;
 import maud.ScoreView;
@@ -543,7 +535,7 @@ public class LoadedCgm implements Cloneable {
         Locators.registerDefault();
         List<String> assetFolders = Maud.model.folders.listAll();
         Locators.register(assetFolders);
-        
+
         Spatial loaded = loadFromAsset(assetPath, false);
         Locators.useDefault();
         if (loaded == null) {
@@ -673,7 +665,7 @@ public class LoadedCgm implements Cloneable {
     protected void postLoad(Spatial cgmRoot) {
         assert cgmRoot != null;
 
-        validateCgm(cgmRoot);
+        CheckLoaded.cgm(cgmRoot);
         rootSpatial = cgmRoot.clone();
         sceneView.loadCgm(cgmRoot);
         /*
@@ -867,200 +859,5 @@ public class LoadedCgm implements Cloneable {
         }
 
         return loaded;
-    }
-
-    /**
-     * Test for issues with a BoneTrack.
-     *
-     * @param boneTrack (not null)
-     * @param numBones (&gt;0, &le;255)
-     * @param numFrames (&gt;0)
-     * @param targetBoneIndexSet (not null, modified)
-     * @return false if issues found, otherwise true
-     */
-    private boolean validateBoneTrack(BoneTrack boneTrack, int numBones,
-            int numFrames, Set<Integer> targetBoneIndexSet) {
-        assert numBones > 0 : numBones;
-        assert numBones <= 255 : numBones;
-        assert numFrames > 0 : numFrames;
-
-        int targetBoneIndex = boneTrack.getTargetBoneIndex();
-        if (targetBoneIndex < 0 || targetBoneIndex >= numBones) {
-            logger.warning("track for non-existant bone");
-            return false;
-        }
-        if (targetBoneIndexSet.contains(targetBoneIndex)) {
-            logger.warning("multiple tracks for same bone");
-            return false;
-        } else {
-            targetBoneIndexSet.add(targetBoneIndex);
-        }
-        Vector3f[] translations = boneTrack.getTranslations();
-        if (translations == null) {
-            logger.warning("bone track lacks translation data");
-            return false;
-        }
-        int numTranslations = translations.length;
-        if (numTranslations != numFrames) {
-            logger.warning("translation data have wrong length");
-            return false;
-        }
-        Quaternion[] rotations = boneTrack.getRotations();
-        if (rotations == null) {
-            logger.warning("bone track lacks rotation data");
-            return false;
-        }
-        int numRotations = rotations.length;
-        if (numRotations != numFrames) {
-            logger.warning("rotation data have wrong length");
-            return false;
-        }
-        for (Quaternion rotation : rotations) {
-            float norm = rotation.norm();
-            if (Math.abs(norm - 1f) > 0.0001f) {
-                logger.warning("rotation data not normalized");
-                return false;
-            }
-        }
-        Vector3f[] scales = boneTrack.getScales();
-        if (scales != null) {
-            int numScales = scales.length;
-            if (numScales != numFrames) {
-                logger.warning("scale data have wrong length");
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Test for issues with a CG model.
-     *
-     * @param cgmRoot (not null)
-     * @return false if issues found, otherwise true
-     */
-    private boolean validateCgm(Spatial cgmRoot) {
-        assert cgmRoot != null;
-
-        SkeletonControl skeletonControl;
-        skeletonControl = cgmRoot.getControl(SkeletonControl.class);
-        if (skeletonControl == null) {
-            logger.warning("lacks a skeleton control");
-            return false;
-        }
-        Skeleton skeleton = skeletonControl.getSkeleton();
-        if (skeleton == null) {
-            logger.warning("lacks a skeleton");
-            return false;
-        }
-        int numBones = skeleton.getBoneCount();  // TODO each skeleton
-        if (numBones > 255) {
-            logger.warning("too many bones");
-            return false;
-        }
-        if (numBones < 0) {
-            logger.warning("bone count is negative");
-            return false;
-        }
-        Set<String> nameSet = new TreeSet<>();
-        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            Bone b = skeleton.getBone(boneIndex);
-            if (!bones.validateBone(b, nameSet)) {
-                return false;
-            }
-        }
-        AnimControl animControl = cgmRoot.getControl(AnimControl.class);
-        if (animControl == null) {
-            logger.warning("model lacks an animation control");
-            return false;
-        }
-        Collection<String> animNames = animControl.getAnimationNames();
-        if (animNames.isEmpty()) {
-            logger.warning("model has no animations");
-            return false;
-        }
-        nameSet.clear();
-        for (String name : animNames) {
-            if (name == null) {
-                logger.warning("animation name is null");
-                return false;
-            }
-            if (name.length() == 0) {
-                logger.warning("animation name is empty");
-                return false;
-            }
-            if (LoadedAnimation.isReserved(name)) {
-                logger.warning("animation has reserved name");
-                return false;
-            }
-            if (nameSet.contains(name)) {
-                logger.warning("duplicate animation name");
-                return false;
-            }
-            nameSet.add(name);
-            Animation anim = animControl.getAnim(name);
-            if (anim == null) {
-                logger.warning("animation is null");
-                return false;
-            }
-            float duration = anim.getLength();
-            if (duration < 0f) {
-                logger.warning("animation has negative length");
-                return false;
-            }
-            Track[] tracks = anim.getTracks();
-            if (tracks == null) {
-                logger.warning("animation has no track data");
-                return false;
-            }
-            int numTracks = tracks.length;
-            if (numTracks == 0) {
-                logger.warning("animation has no tracks");
-                return false;
-            }
-            Set<Integer> targetBoneIndexSet = new TreeSet<>();
-            for (Track tr : tracks) {
-                float[] times = tr.getKeyFrameTimes();
-                if (times == null) {
-                    logger.warning("track has no keyframe data");
-                    return false;
-                }
-                int numFrames = times.length;
-                if (numFrames <= 0) {
-                    logger.warning("track has no keyframes");
-                    return false;
-                }
-                if (times[0] != 0f) {
-                    logger.warning("first keyframe not at t=0");
-                    return false;
-                }
-                float prev = -1f;
-                for (int frameIndex = 0; frameIndex < numFrames; frameIndex++) {
-                    float time = times[frameIndex];
-                    if (time < prev) {
-                        logger.warning("keyframes out of order");
-                        return false;
-                    } else if (time == prev) {
-                        logger.log(Level.WARNING,
-                                "multiple keyframes for t={0} in {1}",
-                                new Object[]{time, MyString.quote(name)});
-                    } else if (time > duration) {
-                        logger.warning("keyframe past end of animation");
-                        return false;
-                    }
-                    prev = time;
-                }
-                if (tr instanceof BoneTrack) {
-                    BoneTrack boneTrack = (BoneTrack) tr;
-                    if (!validateBoneTrack(boneTrack, numBones, numFrames,
-                            targetBoneIndexSet)) {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
     }
 }
