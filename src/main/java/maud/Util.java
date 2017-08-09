@@ -58,14 +58,20 @@ import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility methods for the Maud application. All methods should be static.
@@ -332,6 +338,34 @@ public class Util {
     }
 
     /**
+     * Enumerate all non-directory entries in the named JAR whose names start
+     * with the specified prefix.
+     *
+     * @param jarPath filesystem path to the JAR (not null, not empty)
+     * @param entryPrefix (not null)
+     * @return a new list
+     */
+    public static List<String> jarFiles(String jarPath, String entryPrefix) {
+        List<String> result = new ArrayList<>(50);
+
+        try (FileInputStream fileIn = new FileInputStream(jarPath)) {
+            ZipInputStream zipIn = new ZipInputStream(fileIn);
+            for (ZipEntry entry = zipIn.getNextEntry();
+                    entry != null;
+                    entry = zipIn.getNextEntry()) {
+                String name = "/" + entry.getName();
+                if (name.startsWith(entryPrefix) && !entry.isDirectory()) {
+                    result.add(name);
+                }
+            }
+        } catch (IOException e) {
+            // stop reading entries
+        }
+
+        return result;
+    }
+
+    /**
      * Interpolate between (or extrapolate from) 2 single-precision values using
      * linear (Lerp) *polation. Unlike
      * {@link com.jme3.math.FastMath#interpolateLinear(float, float, float)}, no
@@ -453,6 +487,12 @@ public class Util {
         Level compoundCollisionShapeLevel;
         compoundCollisionShapeLevel = compoundCollisionShapeLogger.getLevel();
         compoundCollisionShapeLogger.setLevel(Level.SEVERE);
+
+        logger.severe("setting xbufloaderlevel");
+        org.slf4j.Logger logger = LoggerFactory.getLogger("jme3_ext_xbuf.XbufLoader");
+        ch.qos.logback.classic.Logger xbufLoaderLogger = (ch.qos.logback.classic.Logger) logger;
+        ch.qos.logback.classic.Level xbufLoaderLevel = xbufLoaderLogger.getLevel();
+        xbufLoaderLogger.setLevel(ch.qos.logback.classic.Level.ERROR);
         /*
          * Load the model.
          */
@@ -469,6 +509,7 @@ public class Util {
         meshLoaderLogger.setLevel(meshLoaderLevel);
         materialLoaderLogger.setLevel(materialLoaderLevel);
         compoundCollisionShapeLogger.setLevel(compoundCollisionShapeLevel);
+        xbufLoaderLogger.setLevel(xbufLoaderLevel);
 
         return loaded;
     }

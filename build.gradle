@@ -25,7 +25,7 @@ repositories {
     //maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' }
     //maven { url 'https://dl.bintray.com/jmonkeyengine/contrib' }
     maven { url 'https://jcenter.bintray.com' }
-    maven { url "https://jitpack.io" }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -40,7 +40,7 @@ dependencies {
     compile "org.jmonkeyengine:jme3-lwjgl:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-plugins:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-terrain:${jmonkeyengineVersion}"
-    runtime 'ch.qos.logback:logback-classic:1.2.3'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
 
     // from stephengold's bintray repositories:
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
