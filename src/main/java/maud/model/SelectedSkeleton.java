@@ -35,8 +35,6 @@ import com.jme3.scene.control.Control;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -363,43 +361,6 @@ public class SelectedSkeleton implements Cloneable {
     void setCgm(LoadedCgm newLoaded) {
         assert newLoaded != null;
         loadedCgm = newLoaded;
-    }
-
-    /**
-     * Check for issues with a bone.
-     *
-     * @param bone (may be null)
-     * @param nameSet (not null, modified)
-     * @return false if issues found, otherwise true
-     */
-    boolean validateBone(Bone bone, Set<String> nameSet) {
-        assert nameSet != null;
-
-        if (bone == null) {
-            logger.warning("bone is null");
-            return false;
-        }
-        String name = bone.getName();
-        if (name == null) {
-            logger.warning("bone name is null");
-            return false;
-        }
-        if (name.length() == 0) {
-            logger.warning("bone name is empty");
-            return false;
-        }
-        if (name.equals(noBone)) {
-            logger.warning("bone has reserved name");
-            return false;
-        }
-        if (nameSet.contains(name)) {
-            logger.log(Level.WARNING, "duplicate bone name: {0}",
-                    MyString.quote(name));
-        } else {
-            nameSet.add(name);
-        }
-
-        return true;
     }
     // *************************************************************************
     // Object methods

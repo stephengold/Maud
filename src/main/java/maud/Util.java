@@ -385,6 +385,88 @@ public class Util {
     }
 
     /**
+     * Enumerate all controls of the specified type in the specified subtree of
+     * a scene graph. Note: recursive!
+     *
+     * @param <T>
+     * @param controlType
+     * @param subtree (not null)
+     * @param storeResult (added to if not null)
+     * @return an expanded list (either storeResult or a new instance)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Control> List<T> listControls(Class<T> controlType,
+            Spatial subtree, List<T> storeResult) {
+        Validate.nonNull(subtree, "subtree");
+        if (storeResult == null) {
+            storeResult = new ArrayList<>(4);
+        }
+
+        int numControls = subtree.getNumControls();
+        for (int controlIndex = 0; controlIndex < numControls; controlIndex++) {
+            Control control = subtree.getControl(controlIndex);
+            if (controlType.isAssignableFrom(control.getClass())
+                    && !storeResult.contains((T) control)) {
+                storeResult.add((T) control);
+            }
+        }
+
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                listControls(controlType, child, storeResult);
+            }
+        }
+
+        return (List<T>) storeResult;
+    }
+
+    /**
+     * Enumerate all skeleton instances in the specified subtree of a scene
+     * graph. Note: recursive!
+     *
+     * @param subtree (not null)
+     * @param storeResult (added to if not null)
+     * @return an expanded list (either storeResult or a new instance)
+     */
+    public static List<Skeleton> listSkeletons(Spatial subtree,
+            List<Skeleton> storeResult) {
+        Validate.nonNull(subtree, "subtree");
+        if (storeResult == null) {
+            storeResult = new ArrayList<>(4);
+        }
+
+        int numControls = subtree.getNumControls();
+        for (int controlIndex = 0; controlIndex < numControls; controlIndex++) {
+            Control control = subtree.getControl(controlIndex);
+            if (control instanceof AnimControl) {
+                AnimControl animControl = (AnimControl) control;
+                Skeleton skeleton = animControl.getSkeleton();
+                if (skeleton != null && !storeResult.contains(skeleton)) {
+                    storeResult.add(skeleton);
+                }
+            } else if (control instanceof SkeletonControl) {
+                SkeletonControl skeletonControl = (SkeletonControl) control;
+                Skeleton skeleton = skeletonControl.getSkeleton();
+                if (skeleton != null && !storeResult.contains(skeleton)) {
+                    storeResult.add(skeleton);
+                }
+            }
+        }
+
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                listSkeletons(child, storeResult);
+            }
+        }
+
+        return storeResult;
+    }
+
+    /**
      * Load a BVH asset as a CG model without logging any warning/error
      * messages.
      *
