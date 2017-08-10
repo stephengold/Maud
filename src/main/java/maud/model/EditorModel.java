@@ -49,7 +49,7 @@ public class EditorModel {
     /**
      * known asset locations
      */
-    final public AssetFolders locations;
+    final public AssetLocations locations;
     /**
      * status of the visible coordinate axes
      */
@@ -101,7 +101,7 @@ public class EditorModel {
      * Instantiate an MVC model with the default settings.
      */
     public EditorModel() {
-        locations = new AssetFolders();
+        locations = new AssetLocations();
         axes = new AxesStatus();
         bounds = new BoundsStatus();
         camera = new CameraStatus();
