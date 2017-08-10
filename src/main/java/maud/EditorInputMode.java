@@ -279,7 +279,7 @@ class EditorInputMode extends InputMode {
         boolean handled = true;
         String args, name, path;
         if (actionString.equals("load map asset")) {
-            Maud.gui.menus.loadMapAsset();
+            Maud.gui.buildMenus.loadMapAsset();
 
         } else if (actionString.equals("load retargetedPose")) {
             Maud.model.target.animation.loadRetargetedPose();
@@ -290,12 +290,12 @@ class EditorInputMode extends InputMode {
 
         } else if (actionString.startsWith(ActionPrefix.loadCgmAsset)) {
             args = MyString.remainder(actionString, ActionPrefix.loadCgmAsset);
-            Maud.gui.menus.loadCgmAsset(args, Maud.model.target);
+            Maud.gui.buildMenus.loadCgmAsset(args, Maud.model.target);
 
         } else if (actionString.startsWith(ActionPrefix.loadCgmLocator)) {
             path = MyString.remainder(actionString,
                     ActionPrefix.loadCgmLocator);
-            Maud.gui.menus.loadCgmLocator(path, Maud.model.target);
+            Maud.gui.buildMenus.loadCgmLocator(path, Maud.model.target);
 
         } else if (actionString.startsWith(ActionPrefix.loadCgmNamed)) {
             name = MyString.remainder(actionString, ActionPrefix.loadCgmNamed);
@@ -304,12 +304,12 @@ class EditorInputMode extends InputMode {
         } else if (actionString.startsWith(ActionPrefix.loadMapAsset)) {
             path = MyString.remainder(actionString,
                     ActionPrefix.loadMapAsset);
-            Maud.gui.menus.loadMapAsset(path);
+            Maud.gui.buildMenus.loadMapAsset(path);
 
         } else if (actionString.startsWith(ActionPrefix.loadMapLocator)) {
             path = MyString.remainder(actionString,
                     ActionPrefix.loadMapLocator);
-            Maud.gui.menus.loadMapLocator(path);
+            Maud.gui.buildMenus.loadMapLocator(path);
 
         } else if (actionString.startsWith(ActionPrefix.loadMapNamed)) {
             name = MyString.remainder(actionString,
@@ -324,12 +324,12 @@ class EditorInputMode extends InputMode {
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmAsset)) {
             args = MyString.remainder(actionString,
                     ActionPrefix.loadSourceCgmAsset);
-            Maud.gui.menus.loadCgmAsset(args, Maud.model.source);
+            Maud.gui.buildMenus.loadCgmAsset(args, Maud.model.source);
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmLocator)) {
             path = MyString.remainder(actionString,
                     ActionPrefix.loadSourceCgmLocator);
-            Maud.gui.menus.loadCgmLocator(path, Maud.model.source);
+            Maud.gui.buildMenus.loadCgmLocator(path, Maud.model.source);
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmNamed)) {
             name = MyString.remainder(actionString,
@@ -365,7 +365,7 @@ class EditorInputMode extends InputMode {
                 Maud.model.target.track.insertSingleKeyframe();
                 break;
             case "new userKey":
-                Maud.gui.menus.selectUserDataType();
+                Maud.gui.buildMenus.selectUserDataType();
                 break;
             default:
                 handled = newAction2(actionString);
@@ -385,7 +385,7 @@ class EditorInputMode extends InputMode {
         if (actionString.startsWith(ActionPrefix.newAssetFolder)) {
             String path = MyString.remainder(actionString,
                     ActionPrefix.newAssetFolder);
-            Maud.gui.menus.newAssetFolder(path);
+            Maud.gui.buildMenus.newAssetFolder(path);
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromPose)) {
@@ -731,13 +731,13 @@ class EditorInputMode extends InputMode {
                 Maud.gui.selectXY();
                 break;
             case "select spatialChild":
-                Maud.gui.menus.selectSpatialChild();
+                Maud.gui.buildMenus.selectSpatialChild();
                 break;
             case "select spatialParent":
                 Maud.model.target.spatial.selectParent();
                 break;
             case "select userKey":
-                Maud.gui.menus.selectUserKey();
+                Maud.gui.buildMenus.selectUserKey();
                 break;
             default:
                 handled = selectAction2(actionString);
@@ -762,7 +762,7 @@ class EditorInputMode extends InputMode {
         } else if (actionString.startsWith(ActionPrefix.selectBoneChild)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectBoneChild);
-            Maud.gui.menus.selectBoneChild(arg);
+            Maud.gui.buildMenus.selectBoneChild(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectControl)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectControl);
@@ -820,16 +820,16 @@ class EditorInputMode extends InputMode {
         boolean handled = true;
         switch (actionString) {
             case "set batchHint":
-                Maud.gui.menus.setBatchHint();
+                Maud.gui.buildMenus.setBatchHint();
                 break;
             case "set cullHint":
-                Maud.gui.menus.setCullHint();
+                Maud.gui.buildMenus.setCullHint();
                 break;
             case "set queueBucket":
-                Maud.gui.menus.setQueueBucket();
+                Maud.gui.buildMenus.setQueueBucket();
                 break;
             case "set shadowMode":
-                Maud.gui.menus.setShadowMode();
+                Maud.gui.buildMenus.setShadowMode();
                 break;
             case "set track rotation all":
                 Maud.model.target.track.setTrackRotationAll();
@@ -841,13 +841,13 @@ class EditorInputMode extends InputMode {
                 Maud.model.target.track.setTrackTranslationAll();
                 break;
             case "set tweenRotations":
-                Maud.gui.menus.setTweenRotations();
+                Maud.gui.buildMenus.setTweenRotations();
                 break;
             case "set tweenScales":
-                Maud.gui.menus.setTweenScales();
+                Maud.gui.buildMenus.setTweenScales();
                 break;
             case "set tweenTranslations":
-                Maud.gui.menus.setTweenTranslations();
+                Maud.gui.buildMenus.setTweenTranslations();
                 break;
             case "set twist cardinal":
                 Maud.model.map.cardinalizeTwist();

@@ -57,10 +57,13 @@ import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -286,6 +289,26 @@ public class Util {
                     maxInfluenced = numInfluenced;
                     result = rootBone;
                 }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Construct a map from drive paths (roots) to file objects.
+     *
+     * @return a new map of drives
+     */
+    public static Map<String, File> driveMap() {
+        Map<String, File> result = new TreeMap<>();
+        File[] roots = File.listRoots();
+        for (File root : roots) {
+            if (root.isDirectory()) {
+                String absoluteDirPath = root.getAbsolutePath();
+                absoluteDirPath = absoluteDirPath.replaceAll("\\\\", "/");
+                File oldFile = result.put(absoluteDirPath, root);
+                assert oldFile == null : oldFile;
             }
         }
 
