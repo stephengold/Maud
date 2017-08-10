@@ -62,6 +62,49 @@ class EditorMenus {
     // new methods exposed
 
     /**
+     * Generate a map from subfolder names (with the specified path prefix) to
+     * file objects.
+     *
+     * @param pathPrefix the file path prefix (not null)
+     * @return a new map of subfolders
+     */
+    static Map<String, File> folderMap(String pathPrefix) {
+        Map<String, File> result = new TreeMap<>();
+        String namePrefix;
+        File file = new File(pathPrefix);
+        if (file.isDirectory()) {
+            result.put(addThis, file);
+            namePrefix = "";
+        } else {
+            namePrefix = file.getName();
+            file = file.getParentFile();
+            assert file.isDirectory();
+        }
+
+        File[] files = file.listFiles();
+        for (File f : files) {
+            String name = f.getName();
+            if (name.startsWith(namePrefix)) {
+                if (f.isDirectory() || name.endsWith(".jar")
+                        || name.endsWith(".zip")) {
+                    File oldFile = result.put(name, f);
+                    assert oldFile == null : oldFile;
+                }
+            }
+        }
+
+        File parent = file.getParentFile();
+        if (parent != null) {
+            if ("..".startsWith(namePrefix)) {
+                File oldFile = result.put("..", parent);
+                assert oldFile == null : oldFile;
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Handle a "load (source)animation" action with an argument.
      *
      * @param argument action argument (not null)
@@ -190,49 +233,6 @@ class EditorMenus {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Generate a map from subfolder names (with the specified path prefix) to
-     * file objects. TODO reorder methods
-     *
-     * @param pathPrefix the file path prefix (not null)
-     * @return a new map of subfolders
-     */
-    static Map<String, File> folderMap(String pathPrefix) {
-        Map<String, File> result = new TreeMap<>();
-        String namePrefix;
-        File file = new File(pathPrefix);
-        if (file.isDirectory()) {
-            result.put(addThis, file);
-            namePrefix = "";
-        } else {
-            namePrefix = file.getName();
-            file = file.getParentFile();
-            assert file.isDirectory();
-        }
-
-        File[] files = file.listFiles();
-        for (File f : files) {
-            String name = f.getName();
-            if (name.startsWith(namePrefix)) {
-                if (f.isDirectory() || name.endsWith(".jar")
-                        || name.endsWith(".zip")) {
-                    File oldFile = result.put(name, f);
-                    assert oldFile == null : oldFile;
-                }
-            }
-        }
-
-        File parent = file.getParentFile();
-        if (parent != null) {
-            if ("..".startsWith(namePrefix)) {
-                File oldFile = result.put("..", parent);
-                assert oldFile == null : oldFile;
-            }
-        }
-
-        return result;
-    }
 
     /**
      * Display a "Animation -> Load source" menu.
