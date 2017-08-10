@@ -325,16 +325,22 @@ public class Pose implements JmeCloneable {
      * @return a new array of indices
      */
     public int[] preOrderIndices() {
-        int numBones = skeleton.getBoneCount();
-        List<Integer> indexList = new ArrayList<>(numBones);
+        int boneCount;
+        if (skeleton == null) {
+            boneCount = 0;
+        } else {
+            boneCount = skeleton.getBoneCount();
+        }
+
+        List<Integer> indexList = new ArrayList<>(boneCount);
         Bone[] roots = skeleton.getRoots();
         for (Bone root : roots) {
             addPreOrderIndices(root, indexList);
         }
-        assert indexList.size() == numBones : indexList.size();
+        assert indexList.size() == boneCount : indexList.size();
 
-        int[] result = new int[numBones];
-        for (int i = 0; i < numBones; i++) {
+        int[] result = new int[boneCount];
+        for (int i = 0; i < boneCount; i++) {
             result[i] = indexList.get(i);
         }
 
