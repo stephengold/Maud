@@ -556,7 +556,7 @@ public class Maud extends GuiApplication {
      */
     private void quit() {
         int cgmEdits = Maud.model.target.countUnsavedEdits();
-        int mapEdits = Maud.model.map.countUnsavedEdits();
+        int mapEdits = Maud.model.getMap().countUnsavedEdits();
 
         String message;
         if (cgmEdits + mapEdits == 0) {

@@ -84,7 +84,7 @@ public class TwistTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (Maud.model.map.isBoneMappingSelected()) {
+        if (Maud.model.getMap().isBoneMappingSelected()) {
             float[] angles = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 float value = sliders[iAxis].getValue();
@@ -92,7 +92,7 @@ public class TwistTool extends WindowController {
             }
             Quaternion twist = new Quaternion();
             twist.fromAngles(angles);
-            Maud.model.map.setTwist(twist);
+            Maud.model.getMap().setTwist(twist);
         }
     }
     // *************************************************************************
@@ -181,7 +181,7 @@ public class TwistTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the mapping twist.
      */
     private void setSlidersToTwist() {
-        Quaternion effTwist = Maud.model.map.copyTwist(null);
+        Quaternion effTwist = Maud.model.getMap().copyTwist(null);
         float[] angles = effTwist.toAngles(null);
         boolean degrees = Maud.model.misc.getAnglesInDegrees();
 
@@ -207,7 +207,7 @@ public class TwistTool extends WindowController {
      */
     private void updateSelected() {
         String rButton, sButton;
-        if (Maud.model.map.isBoneMappingSelected()) {
+        if (Maud.model.getMap().isBoneMappingSelected()) {
             setSlidersToTwist();
             rButton = "Reset";
             sButton = "Snap";

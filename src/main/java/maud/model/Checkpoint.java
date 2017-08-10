@@ -72,7 +72,7 @@ public class Checkpoint {
      */
     Checkpoint(List<String> descriptions) {
         timestamp = new Date();
-        Maud.model.map.onCheckpoint();
+        Maud.model.getMap().onCheckpoint();
         Maud.model.target.onCheckpoint();
         model = new EditorModel(Maud.model);
         eventDescriptions.addAll(descriptions);

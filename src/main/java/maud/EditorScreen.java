@@ -309,7 +309,7 @@ public class EditorScreen extends GuiScreenController {
                 break;
             case "invertRma":
             case "invertRma2":
-                Maud.model.map.setInvertMap(isChecked);
+                Maud.model.getMap().setInvertMap(isChecked);
                 break;
             case "loop":
                 Maud.model.target.animation.setContinue(isChecked);
