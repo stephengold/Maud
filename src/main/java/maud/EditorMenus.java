@@ -984,27 +984,25 @@ class EditorMenus {
     private boolean menuSpatialSelect(String remainder) {
         assert remainder != null;
 
-        boolean handled = false;
+        boolean handled = true;
         switch (remainder) {
             case "By name":
                 selectSpatial("", true);
-                handled = true;
                 break;
             case "Child":
-                Maud.gui.buildMenus.selectSpatialChild();
-                handled = true;
+                Maud.gui.buildMenus.selectSpatialChild("");
                 break;
             case "Geometry":
                 selectSpatial("", false);
-                handled = true;
                 break;
             case "Parent":
                 Maud.model.target.spatial.selectParent();
-                handled = true;
                 break;
             case "Root":
                 Maud.model.target.spatial.selectModelRoot();
-                handled = true;
+                break;
+            default:
+                handled = false;
         }
 
         return handled;

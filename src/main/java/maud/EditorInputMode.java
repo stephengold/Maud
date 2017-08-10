@@ -731,7 +731,7 @@ class EditorInputMode extends InputMode {
                 Maud.gui.selectXY();
                 break;
             case "select spatialChild":
-                Maud.gui.buildMenus.selectSpatialChild();
+                Maud.gui.buildMenus.selectSpatialChild("");
                 break;
             case "select spatialParent":
                 Maud.model.target.spatial.selectParent();
