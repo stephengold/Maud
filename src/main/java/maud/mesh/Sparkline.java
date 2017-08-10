@@ -54,9 +54,9 @@ public class Sparkline extends Mesh {
      *
      * @param numVertices number of values to use (&ge;0)
      * @param xs X values, in ascending order, normalized to the range [0, 1]
-     * (not null, unaffected, length >= numVertices)
+     * (not null, unaffected, length&ge;numVertices)
      * @param ys Y values, normalized to the range [0, 1] (not null, unaffected,
-     * length >= numVertices)
+     * length&ge;numVertices)
      * @param height desired height of the mesh (in local units, &ge;0)
      * @param mode mode for the mesh (Mode.Lines, Mode.LineStrip, or
      * Mode.Points)
