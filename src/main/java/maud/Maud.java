@@ -237,7 +237,7 @@ public class Maud extends GuiApplication {
          * Add a locator for browsing "Written Assets".
          */
         String wadp = getWrittenAssetDirPath();
-        Maud.model.folders.add(wadp);
+        Maud.model.locations.add(wadp);
     }
 
     /**
