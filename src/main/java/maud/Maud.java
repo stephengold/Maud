@@ -233,6 +233,11 @@ public class Maud extends GuiApplication {
         ScreenshotAppState screenShotState = new ScreenshotAppState();
         boolean success = stateManager.attach(screenShotState);
         assert success;
+        /*
+         * Add a locator for browsing "Written Assets".
+         */
+        String wadp = getWrittenAssetDirPath();
+        Maud.model.folders.add(wadp);
     }
 
     /**
