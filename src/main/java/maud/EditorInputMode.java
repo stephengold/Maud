@@ -319,22 +319,22 @@ class EditorInputMode extends InputMode {
         } else if (actionString.startsWith(ActionPrefix.loadSourceAnimation)) {
             args = MyString.remainder(actionString,
                     ActionPrefix.loadSourceAnimation);
-            Maud.gui.menus.loadAnimation(args, Maud.model.source);
+            Maud.gui.menus.loadAnimation(args, Maud.model.getSource());
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmAsset)) {
             args = MyString.remainder(actionString,
                     ActionPrefix.loadSourceCgmAsset);
-            Maud.gui.buildMenus.loadCgmAsset(args, Maud.model.source);
+            Maud.gui.buildMenus.loadCgmAsset(args, Maud.model.getSource());
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmLocator)) {
             path = MyString.remainder(actionString,
                     ActionPrefix.loadSourceCgmLocator);
-            Maud.gui.buildMenus.loadCgmLocator(path, Maud.model.source);
+            Maud.gui.buildMenus.loadCgmLocator(path, Maud.model.getSource());
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmNamed)) {
             name = MyString.remainder(actionString,
                     ActionPrefix.loadSourceCgmNamed);
-            Maud.model.source.loadNamed(name);
+            Maud.model.getSource().loadNamed(name);
 
         } else {
             handled = false;
@@ -440,7 +440,7 @@ class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "next sourceAnimation":
-                Maud.model.source.animation.loadNext();
+                Maud.model.getSource().animation.loadNext();
                 handled = true;
                 break;
             case "next userData":
@@ -485,7 +485,7 @@ class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "previous sourceAnimation":
-                Maud.model.source.animation.loadPrevious();
+                Maud.model.getSource().animation.loadPrevious();
                 handled = true;
                 break;
             case "previous userData":
@@ -947,12 +947,12 @@ class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "toggle pause":
-                Maud.model.source.animation.togglePaused();
+                Maud.model.getSource().animation.togglePaused();
                 Maud.model.target.animation.togglePaused();
                 handled = true;
                 break;
             case "toggle pause source":
-                Maud.model.source.animation.togglePaused();
+                Maud.model.getSource().animation.togglePaused();
                 handled = true;
                 break;
             case "toggle pause target":

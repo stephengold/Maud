@@ -88,7 +88,7 @@ public class MappingTool extends WindowController {
          */
         String mButton;
         if (Maud.model.target.animation.isRetargetedPose()
-                || !Maud.model.source.isLoaded()) {
+                || !Maud.model.getSource().isLoaded()) {
             mButton = "";
         } else {
             mButton = "Show retargeted pose";
@@ -133,7 +133,7 @@ public class MappingTool extends WindowController {
      */
     private void updateFeedback() {
         String feedback;
-        boolean sourceIsLoaded = Maud.model.source.isLoaded();
+        boolean sourceIsLoaded = Maud.model.getSource().isLoaded();
         if (Maud.model.map.matchesTarget()) {
             if (sourceIsLoaded) {
                 if (Maud.model.map.matchesSource()) {
@@ -194,7 +194,7 @@ public class MappingTool extends WindowController {
         if (Maud.model.map.isBoneMappingSelected()) {
             uButton = "Unmap";
         } else {
-            if (Maud.model.source.bone.isSelected()
+            if (Maud.model.getSource().bone.isSelected()
                     && Maud.model.target.bone.isSelected()) {
                 mButton = "Map";
             }
@@ -211,14 +211,14 @@ public class MappingTool extends WindowController {
          * description
          */
         String sourceBoneDesc;
-        if (Maud.model.source.bone.isSelected()) {
-            String sourceName = Maud.model.source.bone.getName();
+        if (Maud.model.getSource().bone.isSelected()) {
+            String sourceName = Maud.model.getSource().bone.getName();
             sourceBoneDesc = MyString.quote(sourceName);
             String target = Maud.model.map.targetBoneName(sourceName);
             if (target != null) {
                 sourceBoneDesc += String.format("  -> %s", target);
             }
-        } else if (Maud.model.source.isLoaded()) {
+        } else if (Maud.model.getSource().isLoaded()) {
             sourceBoneDesc = SelectedSkeleton.noBone;
         } else {
             sourceBoneDesc = "( no model )";
@@ -228,7 +228,7 @@ public class MappingTool extends WindowController {
          * select button
          */
         String sButton;
-        if (Maud.model.source.isLoaded()) {
+        if (Maud.model.getSource().isLoaded()) {
             sButton = "Select";
         } else {
             sButton = "";

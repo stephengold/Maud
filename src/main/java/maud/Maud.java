@@ -244,7 +244,7 @@ public class Maud extends GuiApplication {
      * Update the configuration of view ports to reflect the MVC model.
      */
     void updateViewPorts() {
-        boolean splitScreen = Maud.model.source.isLoaded();
+        boolean splitScreen = Maud.model.getSource().isLoaded();
 
         String viewMode = Maud.model.misc.getViewMode();
         switch (viewMode) {
@@ -614,7 +614,7 @@ public class Maud extends GuiApplication {
         /*
          * Create 2 scene views, each with its own bulletAppState.
          */
-        SceneView sourceSceneView = new SceneView(Maud.model.source,
+        SceneView sourceSceneView = new SceneView(Maud.model.getSource(),
                 sourceSceneParent, null, sourceSceneViewPort);
         SceneView targetSceneView = new SceneView(Maud.model.target,
                 targetSceneParent, viewPort, targetSceneRightViewPort);
@@ -628,7 +628,7 @@ public class Maud extends GuiApplication {
         /*
          * Attach views to CG model slots.
          */
-        Maud.model.source.setViews(sourceSceneView, sourceScoreView);
+        Maud.model.getSource().setViews(sourceSceneView, sourceScoreView);
         Maud.model.target.setViews(targetSceneView, targetScoreView);
         /*
          * Attach screen controllers for the editor screen and the bind screen.

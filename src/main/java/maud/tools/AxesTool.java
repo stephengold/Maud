@@ -271,7 +271,8 @@ public class AxesTool extends WindowController {
             /*
              * Infer a new effective twist for the selected bone mapping.
              */
-            Quaternion sourceMo = Maud.model.source.bone.modelOrientation(null);
+            Quaternion sourceMo;
+            sourceMo = Maud.model.getSource().bone.modelOrientation(null);
             Quaternion targetMo = Maud.model.target.bone.modelOrientation(null);
             Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
             Quaternion newEffectiveTwist = invSourceMo.mult(targetMo);

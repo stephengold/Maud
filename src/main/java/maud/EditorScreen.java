@@ -158,7 +158,7 @@ public class EditorScreen extends GuiScreenController {
      * @return a pre-existing instance, or null if none applies
      */
     public LoadedCgm mouseCgm() {
-        LoadedCgm source = Maud.model.source;
+        LoadedCgm source = Maud.model.getSource();
         LoadedCgm target = Maud.model.target;
         ViewPort sScene = source.getSceneView().getViewPort();
         ViewPort sScore = source.getScoreView().getViewPort();
@@ -190,7 +190,7 @@ public class EditorScreen extends GuiScreenController {
      * @return the pre-existing instance, or null if none applies
      */
     public Pov mousePov() {
-        LoadedCgm source = Maud.model.source;
+        LoadedCgm source = Maud.model.getSource();
         LoadedCgm target = Maud.model.target;
         EditorView sScene = source.getSceneView();
         EditorView sScore = source.getScoreView();
@@ -228,7 +228,7 @@ public class EditorScreen extends GuiScreenController {
      * @return the pre-existing instance, or null if none applies
      */
     public EditorView mouseView() {
-        LoadedCgm source = Maud.model.source;
+        LoadedCgm source = Maud.model.getSource();
         LoadedCgm target = Maud.model.target;
         EditorView sScene = source.getSceneView();
         EditorView sScore = source.getScoreView();
@@ -315,7 +315,7 @@ public class EditorScreen extends GuiScreenController {
                 Maud.model.target.animation.setContinue(isChecked);
                 break;
             case "loopSource":
-                Maud.model.source.animation.setContinue(isChecked);
+                Maud.model.getSource().animation.setContinue(isChecked);
                 break;
             case "physics":
                 Maud.model.scene.setPhysicsRendered(isChecked);
@@ -324,13 +324,13 @@ public class EditorScreen extends GuiScreenController {
                 Maud.model.target.animation.setPinned(isChecked);
                 break;
             case "pinSource":
-                Maud.model.source.animation.setPinned(isChecked);
+                Maud.model.getSource().animation.setPinned(isChecked);
                 break;
             case "pong":
                 Maud.model.target.animation.setReverse(isChecked);
                 break;
             case "pongSource":
-                Maud.model.source.animation.setReverse(isChecked);
+                Maud.model.getSource().animation.setReverse(isChecked);
                 break;
             case "scoreRotations":
                 Maud.model.getScore().setShowRotations(isChecked);
@@ -648,16 +648,18 @@ public class EditorScreen extends GuiScreenController {
         if (!tools.getTool("camera").isInitialized()) {
             return;
         }
+        LoadedCgm source = Maud.model.getSource();
+        LoadedCgm target = Maud.model.target;
         /*
          * Update animations even when the animation tool is disabled.
          */
-        if (Maud.model.source.animation.isMoving()) {
-            updateTrackTime(Maud.model.source, tpf);
+        if (source.animation.isMoving()) {
+            updateTrackTime(source, tpf);
         }
-        if (Maud.model.target.animation.isMoving()) {
-            updateTrackTime(Maud.model.target, tpf);
-        } else if (Maud.model.target.animation.isRetargetedPose()) {
-            Maud.model.target.pose.setToAnimation();
+        if (target.animation.isMoving()) {
+            updateTrackTime(target, tpf);
+        } else if (target.animation.isRetargetedPose()) {
+            target.pose.setToAnimation();
         }
         /*
          * Configure view ports based on the MVC model.
@@ -701,10 +703,10 @@ public class EditorScreen extends GuiScreenController {
         /*
          * Update the views.
          */
-        Maud.model.source.getSceneView().update(null);
-        Maud.model.target.getSceneView().update(null);
-        Maud.model.source.getScoreView().update(Maud.model.source);
-        Maud.model.target.getScoreView().update(Maud.model.target);
+        source.getSceneView().update(null);
+        target.getSceneView().update(null);
+        source.getScoreView().update(source);
+        target.getScoreView().update(target);
     }
     // *************************************************************************
     // ScreenController methods

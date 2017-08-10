@@ -201,14 +201,14 @@ class EditorMenus {
      * @param argument action argument (not null)
      */
     void selectSourceBone(String argument) {
-        if (Maud.model.source.bones.hasBone(argument)) {
-            Maud.model.source.bone.select(argument);
+        if (Maud.model.getSource().bones.hasBone(argument)) {
+            Maud.model.getSource().bone.select(argument);
         } else {
             /*
              * Treat the argument as a bone-name prefix.
              */
             List<String> boneNames;
-            boneNames = Maud.model.source.bones.listBoneNames(argument);
+            boneNames = Maud.model.getSource().bones.listBoneNames(argument);
             Maud.gui.buildMenus.showBoneSubmenu(boneNames);
         }
     }
@@ -238,11 +238,11 @@ class EditorMenus {
      * Display a "Animation -> Load source" menu.
      */
     private void loadSourceAnimation() {
-        if (Maud.model.source.isLoaded()) {
+        if (Maud.model.getSource().isLoaded()) {
             List<String> animationNames;
-            animationNames = Maud.model.source.listAnimationNames();
+            animationNames = Maud.model.getSource().listAnimationNames();
             Maud.gui.buildMenus.showAnimationSubmenu(animationNames,
-                    Maud.model.source);
+                    Maud.model.getSource());
         }
     }
 
@@ -876,7 +876,7 @@ class EditorMenus {
                 break;
 
             case "Unload":
-                Maud.model.source.unload();
+                Maud.model.getSource().unload();
                 handled = true;
         }
 
@@ -1113,11 +1113,12 @@ class EditorMenus {
      * Handle a "select sourceRootBone" action.
      */
     private void selectSourceRootBone() {
-        int numRoots = Maud.model.source.bones.countRootBones();
+        int numRoots = Maud.model.getSource().bones.countRootBones();
         if (numRoots == 1) {
-            Maud.model.source.bone.selectFirstRoot();
+            Maud.model.getSource().bone.selectFirstRoot();
         } else if (numRoots > 1) {
-            List<String> names = Maud.model.source.bones.listRootBoneNames();
+            List<String> names;
+            names = Maud.model.getSource().bones.listRootBoneNames();
             Maud.gui.buildMenus.showSourceBoneSubmenu(names);
         }
     }

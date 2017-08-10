@@ -66,7 +66,8 @@ public class ScoreOptions implements Cloneable {
      */
     private ColorRGBA scoreBackground = new ColorRGBA(0.84f, 0.84f, 0.72f, 1f);
     /**
-     * which gnomon is being dragged ("none", "source", or "target")
+     * which gnomon is being dragged ("none", "source", or "target") TODO move
+     * out of checkpointed state
      */
     private String dragGnomon = "none";
     /**
@@ -128,7 +129,7 @@ public class ScoreOptions implements Cloneable {
                 result = null;
                 break;
             case "source":
-                result = Maud.model.source;
+                result = Maud.model.getSource();
                 break;
             case "target":
                 result = Maud.model.target;
@@ -174,7 +175,7 @@ public class ScoreOptions implements Cloneable {
     public void setDraggingGnomon(LoadedCgm cgm) {
         if (cgm == Maud.model.target) {
             dragGnomon = "target";
-        } else if (cgm == Maud.model.source) {
+        } else if (cgm == Maud.model.getSource()) {
             dragGnomon = "source";
         } else if (cgm == null) {
             dragGnomon = "none";

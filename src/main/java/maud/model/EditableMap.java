@@ -130,9 +130,9 @@ public class EditableMap extends LoadedMap {
      * Add a bone mapping for the selected source and target bones.
      */
     public void mapBones() {
-        if (!isBoneMappingSelected() && Maud.model.source.bone.isSelected()
+        if (!isBoneMappingSelected() && Maud.model.getSource().bone.isSelected()
                 && Maud.model.target.bone.isSelected()) {
-            String sourceBoneName = Maud.model.source.bone.getName();
+            String sourceBoneName = Maud.model.getSource().bone.getName();
             String targetBoneName = Maud.model.target.bone.getName();
             /*
              * Remove any prior mappings involving those bones.
@@ -186,7 +186,7 @@ public class EditableMap extends LoadedMap {
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();
         if (isInvertingMap()) {
-            Quaternion tmp = newTwist.inverse();
+            Quaternion tmp = newTwist.inverse(); // TODO conjugate
             twist.set(tmp);
         } else {
             twist.set(newTwist);
@@ -344,14 +344,15 @@ public class EditableMap extends LoadedMap {
     }
 
     /**
-     * Predict what the twist should be for the selected bones.
+     * Predict what the twist should be for the selected mapping.
      *
      * @return a new quaternion
      */
     private Quaternion estimateTwist() {
-        Quaternion sourceMo = Maud.model.source.bone.modelOrientation(null);
+        Quaternion sourceMo;
+        sourceMo = Maud.model.getSource().bone.modelOrientation(null);
         Quaternion targetMo = Maud.model.target.bone.modelOrientation(null);
-        Quaternion invSourceMo = sourceMo.inverse();
+        Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
         Quaternion twist = invSourceMo.mult(targetMo, null);
         Util.cardinalizeLocal(twist);
 
