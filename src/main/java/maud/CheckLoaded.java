@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.model.LoadedAnimation;
-import static maud.model.SelectedSkeleton.noBone;
+import maud.model.SelectedSkeleton;
 
 /**
  * Utility methods to check for anomalies in objects loaded from assets. All
@@ -202,7 +202,7 @@ public class CheckLoaded {
             logger.warning("bone name is empty");
             return false;
         }
-        if (name.equals(noBone)) {
+        if (name.equals(SelectedSkeleton.noBone)) {
             logger.warning("bone has reserved name");
             return false;
         }
