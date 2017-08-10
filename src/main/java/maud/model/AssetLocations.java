@@ -38,7 +38,7 @@ import jme3utilities.Validate;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class AssetFolders implements Cloneable {
+public class AssetLocations implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -46,7 +46,7 @@ public class AssetFolders implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            AssetFolders.class.getName());
+            AssetLocations.class.getName());
     // *************************************************************************
     // fields
 
@@ -162,8 +162,8 @@ public class AssetFolders implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public AssetFolders clone() throws CloneNotSupportedException {
-        AssetFolders clone = (AssetFolders) super.clone();
+    public AssetLocations clone() throws CloneNotSupportedException {
+        AssetLocations clone = (AssetLocations) super.clone();
         clone.knownPaths = new ArrayList<>(knownPaths);
 
         return clone;
