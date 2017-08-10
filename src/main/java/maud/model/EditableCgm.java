@@ -36,6 +36,7 @@ import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.UserData;
 import com.jme3.scene.control.Control;
@@ -219,6 +220,19 @@ public class EditableCgm extends LoadedCgm {
         boolean success = selectedSpatial.removeControl(selectedSgc);
         assert success;
         setEdited("delete control");
+    }
+
+    /**
+     * Delete the selected spatial.
+     */
+    void deleteSpatial() {
+        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
+        Node parent = selectedSpatial.getParent();
+        int position = parent.detachChild(selectedSpatial);
+        assert position != -1;
+        SceneView sceneView = getSceneView();
+        sceneView.deleteSpatial();
+        setEdited("delete spatial");
     }
 
     /**

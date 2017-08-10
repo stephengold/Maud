@@ -223,6 +223,22 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Delete the selected spatial.
+     */
+    public void delete() {
+        Spatial selectedSpatial = modelSpatial();
+        Node parent = selectedSpatial.getParent();
+        if (parent != null) {
+            editableCgm.deleteSpatial();
+
+            int last = treePosition.size() - 1;
+            treePosition.remove(last);
+            assert modelSpatial() == parent;
+            postSelect();
+        }
+    }
+
+    /**
      * Describe the type of the selected spatial.
      *
      * @return textual description (not null)
