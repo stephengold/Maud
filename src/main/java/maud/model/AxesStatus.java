@@ -32,7 +32,8 @@ import jme3utilities.Validate;
 import maud.Maud;
 
 /**
- * The status of the visible coordinate axes in the Maud application.
+ * The status of the visible coordinate axes in the Maud application. TODO move
+ * drag state out of MVC model
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -40,6 +41,18 @@ public class AxesStatus implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * dummy axis index used to indicate that no axis is being dragged
+     */
+    final private static int noAxis = -1;
+    /**
+     * number of coordinate axes
+     */
+    final private static int numAxes = 3;
+    /**
+     * index of the last coordinate axes
+     */
+    final private static int lastAxis = numAxes - 1;
     /**
      * message logger for this class
      */
@@ -66,9 +79,9 @@ public class AxesStatus implements Cloneable {
      */
     private float lineWidth = 4f;
     /**
-     * index of the axis being dragged (&ge;0, &lt;3) or -1 for no axis
+     * index of the axis being dragged (&ge;0, &lt;3) or noAxis
      */
-    private int dragAxisIndex = -1;
+    private int dragAxisIndex = noAxis;
     /**
      * which set of axes is active (either "bone", "model", "none", "spatial",
      * or "world")
@@ -81,7 +94,7 @@ public class AxesStatus implements Cloneable {
      * Deselect axis dragging.
      */
     public void clearDragAxis() {
-        dragAxisIndex = -1;
+        dragAxisIndex = noAxis;
         assert !isDraggingAxis();
     }
 
@@ -102,7 +115,7 @@ public class AxesStatus implements Cloneable {
     public int getDragAxis() {
         assert isDraggingAxis();
         assert dragAxisIndex >= 0 : dragAxisIndex;
-        assert dragAxisIndex < 3 : dragAxisIndex;
+        assert dragAxisIndex < numAxes : dragAxisIndex;
         return dragAxisIndex;
     }
 
@@ -146,7 +159,7 @@ public class AxesStatus implements Cloneable {
      * @return true if selected, otherwise false
      */
     public boolean isDraggingAxis() {
-        if (dragAxisIndex == -1) {
+        if (dragAxisIndex == noAxis) {
             return false;
         } else {
             return true;
@@ -182,7 +195,7 @@ public class AxesStatus implements Cloneable {
      */
     public void setDraggingAxis(int axisIndex, LoadedCgm cgm,
             boolean farSideFlag) {
-        Validate.inRange(axisIndex, "axis index", 0, 2);
+        Validate.inRange(axisIndex, "axis index", 0, lastAxis);
         Validate.nonNull(cgm, "model");
 
         dragAxisIndex = axisIndex;
