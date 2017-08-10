@@ -47,9 +47,9 @@ public class EditorModel {
     // fields
 
     /**
-     * known asset folders
+     * known asset locations
      */
-    final public AssetFolders folders;
+    final public AssetFolders locations;
     /**
      * status of the visible coordinate axes
      */
@@ -101,7 +101,7 @@ public class EditorModel {
      * Instantiate an MVC model with the default settings.
      */
     public EditorModel() {
-        folders = new AssetFolders();
+        locations = new AssetFolders();
         axes = new AxesStatus();
         bounds = new BoundsStatus();
         camera = new CameraStatus();
@@ -123,7 +123,7 @@ public class EditorModel {
      */
     public EditorModel(EditorModel other) {
         try {
-            folders = other.folders.clone();
+            locations = other.locations.clone();
             axes = other.axes.clone();
             bounds = other.bounds.clone();
             camera = other.camera.clone();

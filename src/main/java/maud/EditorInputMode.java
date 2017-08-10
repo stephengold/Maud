@@ -261,7 +261,7 @@ class EditorInputMode extends InputMode {
                 if (actionString.startsWith(ActionPrefix.deleteAssetFolder)) {
                     String arg = MyString.remainder(actionString,
                             ActionPrefix.deleteAssetFolder);
-                    Maud.model.folders.remove(arg);
+                    Maud.model.locations.remove(arg);
                     handled = true;
                 }
         }
