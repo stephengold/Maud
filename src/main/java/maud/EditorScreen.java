@@ -99,6 +99,10 @@ public class EditorScreen extends GuiScreenController {
      */
     private boolean ignoreGuiChanges = false;
     /**
+     * build menus for this screen
+     */
+    final BuildMenus buildMenus = new BuildMenus();
+    /**
      * dialog boxes created by this screen
      */
     final EditorDialogs dialogs = new EditorDialogs();

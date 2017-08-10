@@ -365,8 +365,12 @@ class MenuBuilder {
 
     /**
      * Display the menu in the editor screen, unless it's empty.
+     *
+     * @param actionPrefix common prefix of the menu's action strings (not null,
+     * usually the final character will be a blank)
      */
     void show(String actionPrefix) {
+        Validate.nonNull(actionPrefix, "action prefix");
         logger.log(Level.INFO, "actionPrefix = {0}",
                 MyString.quote(actionPrefix));
 
