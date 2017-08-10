@@ -1165,54 +1165,47 @@ public class ScoreView implements EditorView {
      * Attach a staff to visualize the current bone.
      */
     private void attachStaff() {
-        float zoom = cgm.scorePov.getHalfHeight();
         float staffHeight;
-
-        if (cgm.animation.hasTrackForBone(currentBone)) {
-            Finial finial = finialNoScales;
+        Finial finial;
+        boolean trackedBone = cgm.animation.hasTrackForBone(currentBone);
+        if (trackedBone) {
+            finial = finialNoScales;
             boolean hasScales = cgm.animation.hasScales(currentBone);
             if (hasScales) {
                 finial = finialComplete;
             }
             staffHeight = finial.getHeight();
-
-            if (zoom > 4f) {
-                /*
-                 * zoomed out too far to render detailed finials
-                 */
-                if (zoom > 25f) {
-                    attachHashes(staffHeight);
-                } else {
-                    attachRectangles(staffHeight);
-                }
-            } else {
-                attachFinials(finial);
-            }
-            attachSparklines();
-
+            assert staffHeight > 0f : staffHeight;
         } else {
-            /*
-             * no animation track for the current bone
-             */
-            attachHashes(0f);
-            if (zoom < 4f) {
-                /*
-                 * Attach a bone label overlapping the left-hand hash mark.
-                 */
-                float leftX = cgm.scorePov.leftX() + xGap;
-                float rightX = -0.2f * hashSize;
-                float middleY = -height;
-                float compression = cgm.scorePov.compression();
-                float maxWidth = (rightX - leftX) / compression;
-                float minWidth = hashSize / compression;
-                attachBoneLabel(rightX, middleY, minWidth, maxWidth, 0.09f);
-            }
+            finial = null;
             staffHeight = 0f;
         }
-
+        /*
+         * Calculate the range of (world) Ys that the staff occupies.
+         */
         float newHeight = height + staffHeight;
-        Vector2f minMax = new Vector2f(-newHeight, -height);
-        boneYs.put(currentBone, minMax);
+        float minY = -newHeight;
+        float maxY = -height;
+        boneYs.put(currentBone, new Vector2f(minY, maxY));
+        /*
+         * Determine whether the staff is visible.
+         */
+        float cameraY = cgm.scorePov.getCameraY();
+        float halfHeight = cgm.scorePov.getHalfHeight();
+        assert halfHeight > 0f : halfHeight;
+        float bottomY = cameraY - halfHeight;
+        float topY = cameraY + halfHeight;
+        if (maxY >= bottomY && minY <= topY) {
+            /*
+             * It's at least partly visible.
+             */
+            if (trackedBone) {
+                attachTrackedStaff(finial);
+            } else {
+                attachTracklessStaff();
+            }
+        }
+
         height = newHeight;
     }
 
@@ -1232,6 +1225,49 @@ public class ScoreView implements EditorView {
             currentBone = indices.get(i);
             attachStaff();
         }
+    }
+
+    /**
+     * Attach a staff to visualize a trackless bone.
+     */
+    private void attachTracklessStaff() {
+        attachHashes(0f);
+        float zoom = cgm.scorePov.getHalfHeight();
+        if (zoom < 4f) {
+            /*
+             * Attach a bone label overlapping the left-hand hash mark.
+             */
+            float leftX = cgm.scorePov.leftX() + xGap;
+            float rightX = -0.2f * hashSize;
+            float middleY = -height;
+            float compression = cgm.scorePov.compression();
+            float maxWidth = (rightX - leftX) / compression;
+            float minWidth = hashSize / compression;
+            attachBoneLabel(rightX, middleY, minWidth, maxWidth, 0.09f);
+        }
+    }
+
+    /**
+     * Attach a staff to visualize a tracked bone.
+     *
+     * @param finial (not null)
+     */
+    private void attachTrackedStaff(Finial finial) {
+        float zoom = cgm.scorePov.getHalfHeight();
+        if (zoom > 4f) {
+            /*
+             * zoomed out too far to render detailed finials
+             */
+            float staffHeight = finial.getHeight();
+            if (zoom > 25f) {
+                attachHashes(staffHeight);
+            } else {
+                attachRectangles(staffHeight);
+            }
+        } else {
+            attachFinials(finial);
+        }
+        attachSparklines();
     }
 
     /**
