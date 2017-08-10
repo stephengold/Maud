@@ -126,7 +126,7 @@ class EditorMenus {
         if (rootPath.endsWith(".jar") || rootPath.endsWith(".zip")) {
             List<String> entryNames = Util.zipEntries(rootPath, assetPath);
             int numEntries = entryNames.size();
-            List<String> cgmEntries = new ArrayList<String>(numEntries);
+            List<String> cgmEntries = new ArrayList<>(numEntries);
             for (String entryName : entryNames) {
                 if (MenuBuilder.hasCgmSuffix(entryName)) {
                     cgmEntries.add(entryName);
@@ -965,14 +965,18 @@ class EditorMenus {
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
+        if (!Maud.model.target.spatial.isModelRoot()) {
+            builder.addTool("Delete");
+        }
         builder.addTool("Control tool");
         builder.add("Select control");
         builder.add("Add control");
         if (Maud.model.target.sgc.isSelected()) {
+            //builder.add("Deselect control"); TODO
             builder.add("Delete control");
         }
         builder.addTool("User data tool");
-        builder.addTool("Material");
+        //builder.addTool("Material"); TODO
     }
 
     /**
@@ -1072,7 +1076,8 @@ class EditorMenus {
         for (File f : files) {
             String name = f.getName();
             if (name.startsWith(namePrefix)) {
-                if (f.isDirectory() || name.endsWith(".jar") || name.endsWith(".zip")) {
+                if (f.isDirectory() || name.endsWith(".jar")
+                        || name.endsWith(".zip")) {
                     File oldFile = result.put(name, f);
                     assert oldFile == null : oldFile;
                 }
@@ -1861,6 +1866,9 @@ class EditorMenus {
                 case "Delete control":
                     Maud.gui.dialogs.deleteSgc();
                     break;
+                case "Delete":
+                    Maud.model.target.spatial.delete();
+                    break;
                 case "Rotate":
                     Maud.gui.tools.select("spatialRotation");
                     break;
@@ -2308,8 +2316,6 @@ class EditorMenus {
                 builder.addGeometry(name);
             } else if (includeNodes && Maud.model.target.hasNode(name)) {
                 builder.addNode(name);
-            } else {
-                builder.add(name);
             }
         }
         if (includeNodes) {

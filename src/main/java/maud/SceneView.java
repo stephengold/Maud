@@ -210,6 +210,15 @@ public class SceneView implements EditorView, JmeCloneable {
     }
 
     /**
+     * Delete the selected spatial.
+     */
+    public void deleteSpatial() {
+        Spatial spatial = selectedSpatial();
+        MySpatial.disablePhysicsControls(spatial);
+        spatial.removeFromParent();
+    }
+
+    /**
      * Access the axes visualizer added to the scene.
      *
      * @return the pre-existing instance (not null)
