@@ -276,7 +276,7 @@ class EditorDialogs {
      * Display a "save map" dialog.
      */
     void saveMap() {
-        String baseFilePath = Maud.model.map.baseFilePathForWrite();
+        String baseFilePath = Maud.model.getMap().baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for map:",
                 baseFilePath, "Save", ActionPrefix.saveMap, null);

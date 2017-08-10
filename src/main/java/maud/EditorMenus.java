@@ -472,7 +472,7 @@ class EditorMenus {
                 handled = true;
                 break;
             case "Mapped":
-                Maud.model.map.selectFromSource();
+                Maud.model.getMap().selectFromSource();
                 handled = true;
                 break;
             case "Next":
@@ -511,7 +511,7 @@ class EditorMenus {
         boolean handled = false;
         switch (remainder) {
             case "Mapped":
-                Maud.model.map.selectFromTarget();
+                Maud.model.getMap().selectFromTarget();
                 handled = true;
                 break;
             case "Root":
@@ -700,7 +700,7 @@ class EditorMenus {
         boolean handled = false;
         switch (remainder) {
             case "Invert":
-                Maud.model.map.invert();
+                Maud.model.getMap().invert();
                 handled = true;
                 break;
             case "Load":
@@ -720,7 +720,7 @@ class EditorMenus {
                 handled = true;
                 break;
             case "Unload":
-                Maud.model.map.unload();
+                Maud.model.getMap().unload();
                 handled = true;
         }
 

@@ -71,9 +71,9 @@ public class EditorModel {
      */
     final public EditableCgm target;
     /**
-     * the loaded skeleton map
+     * load slot for the skeleton map
      */
-    final public EditableMap map;
+    final private EditableMap map;
     /**
      * load slot for the (read-only) source CG model
      */
@@ -150,6 +150,16 @@ public class EditorModel {
     public AssetLocations getLocations() {
         assert locations != null;
         return locations;
+    }
+
+    /**
+     * Access the load slot for the skeleton map.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public EditableMap getMap() {
+        assert map != null;
+        return map;
     }
 
     /**

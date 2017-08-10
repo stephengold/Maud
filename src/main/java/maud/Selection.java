@@ -257,13 +257,13 @@ public class Selection {
             /*
              * Also select the mapped bone (if any).
              */
-            LoadedMap map = Maud.model.map;
+            LoadedMap map = Maud.model.getMap();
             if (bestCgm == Maud.model.getSource()
                     && map.isSourceBoneMapped(bestBoneIndex)) {
-                Maud.model.map.selectFromSource();
+                map.selectFromSource();
             } else if (bestCgm == Maud.model.target
                     && map.isTargetBoneMapped(bestBoneIndex)) {
-                Maud.model.map.selectFromTarget();
+                map.selectFromTarget();
             }
         }
     }

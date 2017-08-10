@@ -289,7 +289,7 @@ public class EditableCgm extends LoadedCgm {
         }
 
         if (success) {
-            Maud.model.map.renameBone(oldName, newName);
+            Maud.model.getMap().renameBone(oldName, newName);
             setEdited("rename bone");
         }
 

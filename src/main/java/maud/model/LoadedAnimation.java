@@ -164,7 +164,7 @@ public class LoadedAnimation implements Cloneable {
         Animation animation = getAnimation();
         if (animation == null) {
             if (isRetargetedPose()) {
-                Maud.model.map.boneTransform(boneIndex, storeResult);
+                Maud.model.getMap().boneTransform(boneIndex, storeResult);
             } else {
                 storeResult.loadIdentity();
             }

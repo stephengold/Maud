@@ -235,7 +235,7 @@ class BuildMenus {
             builder.show(menuPrefix);
 
         } else if (file.canRead()) {
-            Maud.model.map.loadAsset(rootPath, assetPath);
+            Maud.model.getMap().loadAsset(rootPath, assetPath);
 
         } else {
             /*
@@ -991,7 +991,7 @@ class BuildMenus {
         }
 
         String sourceBoneName = Maud.model.getSource().bone.getName();
-        String boneName = Maud.model.map.targetBoneName(sourceBoneName);
+        String boneName = Maud.model.getMap().targetBoneName(sourceBoneName);
         if (boneName != null && Maud.model.target.bones.hasBone(boneName)) {
             builder.addBone("Mapped");
         }
@@ -1181,7 +1181,7 @@ class BuildMenus {
         builder.reset();
         builder.addTool("Tool");
         builder.addDialog("Load");
-        if (Maud.model.map.countMappings() > 0) {
+        if (Maud.model.getMap().countMappings() > 0) {
             builder.add("Invert");
             builder.add("Unload");
         }
@@ -1221,7 +1221,7 @@ class BuildMenus {
         }
 
         String targetBoneName = Maud.model.target.bone.getName();
-        String boneName = Maud.model.map.sourceBoneName(targetBoneName);
+        String boneName = Maud.model.getMap().sourceBoneName(targetBoneName);
         if (boneName != null
                 && Maud.model.getSource().bones.hasBone(boneName)) {
             builder.addBone("Mapped");
