@@ -156,7 +156,7 @@ class EditorInputMode extends InputMode {
 
         } else if ("select screenXY".equals(actionString)) {
             Maud.model.axes.clearDragAxis();
-            Maud.model.score.setDraggingGnomon(null);
+            Maud.model.getScore().setDraggingGnomon(null);
             handled = true;
         }
 

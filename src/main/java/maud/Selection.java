@@ -272,7 +272,7 @@ public class Selection {
      * Select the gnomon in a score view.
      */
     private void selectGnomon() {
-        Maud.model.score.setDraggingGnomon(bestCgm);
+        Maud.model.getScore().setDraggingGnomon(bestCgm);
     }
 
     /**

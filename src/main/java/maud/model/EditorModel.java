@@ -89,7 +89,7 @@ public class EditorModel {
     /**
      * options for "score" views
      */
-    final public ScoreOptions score;
+    final private ScoreOptions score;
     /**
      * status of the skeleton visualization(s)
      */
@@ -150,5 +150,15 @@ public class EditorModel {
     public AssetLocations getLocations() {
         assert locations != null;
         return locations;
+    }
+
+    /**
+     * Access the options for "score" views.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public ScoreOptions getScore() {
+        assert score != null;
+        return score;
     }
 }
