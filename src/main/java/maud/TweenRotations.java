@@ -89,7 +89,7 @@ public enum TweenRotations {
      * @param quaternions function values (not null, unaffected, same length as
      * times, each norm=1)
      * @param storeResult (modified if not null)
-     * @return interpolated unit quaternion (either storeResult or a new
+     * @return an interpolated unit quaternion (either storeResult or a new
      * instance)
      */
     public Quaternion interpolate(float time, float[] times, float cycleTime,
@@ -163,7 +163,7 @@ public enum TweenRotations {
      * @param time parameter value
      * @param curve curve parameters (not null, unaffected)
      * @param storeResult (modified if not null)
-     * @return interpolated unit quaternion (either storeResult or a new
+     * @return an interpolated unit quaternion (either storeResult or a new
      * instance)
      */
     public Quaternion interpolate(float time, RotationCurve curve,

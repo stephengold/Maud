@@ -412,8 +412,8 @@ public class Util {
      * Enumerate all controls of the specified type in the specified subtree of
      * a scene graph. Note: recursive!
      *
-     * @param <T>
-     * @param controlType
+     * @param <T> superclass of Control
+     * @param controlType superclass of Control to search for
      * @param subtree (not null)
      * @param storeResult (added to if not null)
      * @return an expanded list (either storeResult or a new instance)
