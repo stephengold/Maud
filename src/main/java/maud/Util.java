@@ -430,7 +430,7 @@ public class Util {
         for (int controlIndex = 0; controlIndex < numControls; controlIndex++) {
             Control control = subtree.getControl(controlIndex);
             if (controlType.isAssignableFrom(control.getClass())
-                    && !storeResult.contains((T) control)) {
+                    && !storeResult.contains(control)) {
                 storeResult.add((T) control);
             }
         }
@@ -443,7 +443,7 @@ public class Util {
             }
         }
 
-        return (List<T>) storeResult;
+        return storeResult;
     }
 
     /**
