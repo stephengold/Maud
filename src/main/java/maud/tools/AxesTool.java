@@ -196,6 +196,7 @@ public class AxesTool extends WindowController {
             float distance = axesOrigin.distance(cameraLocation);
             Vector3f scale = transform.getScale();
             float maxScale = MyMath.max(scale.x, scale.y, scale.z);
+            assert maxScale > 0f : maxScale;
             float length = 0.2f * distance / maxScale;
 
             boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
@@ -272,7 +273,7 @@ public class AxesTool extends WindowController {
              */
             Quaternion sourceMo = Maud.model.source.bone.modelOrientation(null);
             Quaternion targetMo = Maud.model.target.bone.modelOrientation(null);
-            Quaternion invSourceMo = sourceMo.inverse();
+            Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
             Quaternion newEffectiveTwist = invSourceMo.mult(targetMo);
             Maud.model.map.setTwist(newEffectiveTwist);
         }
