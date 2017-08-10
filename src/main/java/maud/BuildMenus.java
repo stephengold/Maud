@@ -570,28 +570,37 @@ class BuildMenus {
     }
 
     /**
-     * Handle a "select spatialChild" action with no argument.
+     * Handle a "select spatialChild" action.
+     *
+     * @param itemPrefix prefix for filtering menu items (not null)
      */
-    void selectSpatialChild() {
+    void selectSpatialChild(String itemPrefix) {
         int numChildren = Maud.model.target.spatial.countChildren();
         if (numChildren == 1) {
             Maud.model.target.spatial.selectChild(0);
 
         } else if (numChildren > 1) {
+            List<String> children;
+            children = Maud.model.target.spatial.listNumberedChildren();
+
+            List<String> choices;
+            choices = Util.addStringsWithPrefix(children, itemPrefix, null);
+            MyString.reduce(choices, maxItems);
+            Collections.sort(choices);
+
             builder.reset();
-            for (int childIndex = 0; childIndex < numChildren; childIndex++) {
-                String choice = String.format("#%d", childIndex + 1);
-                String name;
-                name = Maud.model.target.spatial.getChildName(childIndex);
-                if (name != null) {
-                    choice += " " + MyString.quote(name);
-                }
-                boolean isANode;
-                isANode = Maud.model.target.spatial.isChildANode(childIndex);
-                if (isANode) {
-                    builder.addNode(choice);
+            for (String choice : choices) {
+                int childIndex = children.indexOf(choice);
+                if (childIndex >= 0) {
+                    boolean isANode = Maud.model.target.spatial.isChildANode(
+                            childIndex);
+                    if (isANode) {
+                        builder.addNode(choice);
+                    } else {
+                        builder.addGeometry(choice);
+                    }
                 } else {
-                    builder.addGeometry(choice);
+                    builder.addEllipsis(choice);
                 }
             }
             builder.show(ActionPrefix.selectSpatialChild);

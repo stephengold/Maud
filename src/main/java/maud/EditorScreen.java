@@ -495,17 +495,19 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Handle a "select spatialChild" action with arguments.
+     * Handle a "select spatialChild" action with an argument.
      *
      * @param argument action argument (not null)
      */
     void selectSpatialChild(String argument) {
-        String[] words = argument.split(" ");
-        String firstWord = words[0];
-        assert firstWord.startsWith("#") : firstWord;
-        String numberText = firstWord.substring(1);
-        int number = Integer.parseInt(numberText);
-        Maud.model.target.spatial.selectChild(number - 1);
+        List<String> children;
+        children = Maud.model.target.spatial.listNumberedChildren();
+        int childIndex = children.indexOf(argument);
+        if (childIndex >= 0) {
+            Maud.model.target.spatial.selectChild(childIndex);
+        } else {
+            Maud.gui.buildMenus.selectSpatialChild(argument);
+        }
     }
 
     /**

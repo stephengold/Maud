@@ -533,6 +533,25 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Enumerate all children of the selected spatial, numbering them to prevent
+     * duplication.
+     *
+     * @return a new list of numbered names ordered by index
+     */
+    public List<String> listNumberedChildren() {
+        int numChildren = countChildren();
+        List<String> result = new ArrayList<>(numChildren);
+        for (int childIndex = 0; childIndex < numChildren; childIndex++) {
+            String name = getChildName(childIndex);
+            String choice = String.format("%s [%d]", MyString.quote(name),
+                    childIndex);
+            result.add(choice);
+        }
+
+        return result;
+    }
+
+    /**
      * Enumerate all SG controls in the selected spatial and assign them names.
      *
      * @return a new list of names ordered by sgc index

@@ -120,6 +120,33 @@ public class Util {
     }
 
     /**
+     * Find all strings in the input list that begin with the specified prefix
+     * and add them to the result.
+     *
+     * @param inputList input list to filter (not null)
+     * @param prefix (not null)
+     * @param addResult (added to if not null)
+     * @return an expanded list (either storeResult or a new instance)
+     */
+    public static List<String> addStringsWithPrefix(List<String> inputList,
+            String prefix, List<String> addResult) {
+        Validate.nonNull(inputList, "input list");
+        Validate.nonNull(prefix, "prefix");
+        if (addResult == null) {
+            int size = inputList.size();
+            addResult = new ArrayList<>(size);
+        }
+
+        for (String string : inputList) {
+            if (string.startsWith(prefix)) {
+                addResult.add(string);
+            }
+        }
+
+        return addResult;
+    }
+
+    /**
      * Copy a bone track, deleting everything before the specified time, and
      * making that the start of the animation.
      *
