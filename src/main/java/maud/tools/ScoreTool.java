@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.ScoreOptions;
 
 /**
  * The controller for the "Score Tool" window in Maud's editor screen.
@@ -69,19 +70,20 @@ class ScoreTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
+        ScoreOptions model = Maud.model.getScore();
         Maud.gui.setIgnoreGuiChanges(true);
 
-        boolean translations = Maud.model.score.showsTranslations();
+        boolean translations = model.showsTranslations();
         Maud.gui.setChecked("scoreTranslations", translations);
 
-        boolean rotations = Maud.model.score.showsRotations();
+        boolean rotations = model.showsRotations();
         Maud.gui.setChecked("scoreRotations", rotations);
 
-        boolean scales = Maud.model.score.showsScales();
+        boolean scales = model.showsScales();
         Maud.gui.setChecked("scoreScales", scales);
 
         String niftyId;
-        String showWhenSelected = Maud.model.score.getShowWhenSelected();
+        String showWhenSelected = model.getShowWhenSelected();
         switch (showWhenSelected) {
             case "all":
                 niftyId = "scoreWhenAllRadioButton";
@@ -100,7 +102,7 @@ class ScoreTool extends WindowController {
         }
         Maud.gui.setRadioButton(niftyId);
 
-        String showNoneSelected = Maud.model.score.getShowNoneSelected();
+        String showNoneSelected = model.getShowNoneSelected();
         switch (showNoneSelected) {
             case "all":
                 niftyId = "scoreNoneAllRadioButton";

@@ -333,13 +333,13 @@ public class EditorScreen extends GuiScreenController {
                 Maud.model.source.animation.setReverse(isChecked);
                 break;
             case "scoreRotations":
-                Maud.model.score.setShowRotations(isChecked);
+                Maud.model.getScore().setShowRotations(isChecked);
                 break;
             case "scoreScales":
-                Maud.model.score.setShowScales(isChecked);
+                Maud.model.getScore().setShowScales(isChecked);
                 break;
             case "scoreTranslations":
-                Maud.model.score.setShowTranslations(isChecked);
+                Maud.model.getScore().setShowTranslations(isChecked);
                 break;
             case "shadows":
                 Maud.model.scene.setShadowsRendered(isChecked);
@@ -403,29 +403,29 @@ public class EditorScreen extends GuiScreenController {
                 break;
 
             case "scoreNoneAllRadioButton":
-                Maud.model.score.setShowNoneSelected("all");
+                Maud.model.getScore().setShowNoneSelected("all");
                 break;
             case "scoreNoneNoneRadioButton":
-                Maud.model.score.setShowNoneSelected("none");
+                Maud.model.getScore().setShowNoneSelected("none");
                 break;
             case "scoreNoneRootsRadioButton":
-                Maud.model.score.setShowNoneSelected("roots");
+                Maud.model.getScore().setShowNoneSelected("roots");
                 break;
             case "scoreNoneTrackedRadioButton":
-                Maud.model.score.setShowNoneSelected("tracked");
+                Maud.model.getScore().setShowNoneSelected("tracked");
                 break;
 
             case "scoreWhenAllRadioButton":
-                Maud.model.score.setShowWhenSelected("all");
+                Maud.model.getScore().setShowWhenSelected("all");
                 break;
             case "scoreWhenAncestorsRadioButton":
-                Maud.model.score.setShowWhenSelected("ancestors");
+                Maud.model.getScore().setShowWhenSelected("ancestors");
                 break;
             case "scoreWhenFamilyRadioButton":
-                Maud.model.score.setShowWhenSelected("family");
+                Maud.model.getScore().setShowWhenSelected("family");
                 break;
             case "scoreWhenSelectedRadioButton":
-                Maud.model.score.setShowWhenSelected("selected");
+                Maud.model.getScore().setShowWhenSelected("selected");
                 break;
 
             case "noPlatformRadioButton":
@@ -686,7 +686,7 @@ public class EditorScreen extends GuiScreenController {
             }
 
         } else if ("score".equals(viewMode)) {
-            LoadedCgm cgm = Maud.model.score.getDraggingGnomonCgm();
+            LoadedCgm cgm = Maud.model.getScore().getDraggingGnomonCgm();
             if (cgm != null) {
                 Camera camera = cgm.getScoreView().getCamera();
                 Vector2f mouseXY = inputManager.getCursorPosition();

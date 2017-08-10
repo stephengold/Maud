@@ -463,14 +463,15 @@ public class ScoreView implements EditorView {
             cgm = renderCgm;
             assert renderCgm.isLoaded();
 
-            ColorRGBA backgroundColor = Maud.model.score.backgroundColor(null);
+            ColorRGBA backgroundColor;
+            backgroundColor = Maud.model.getScore().backgroundColor(null);
             viewPort.setBackgroundColor(backgroundColor);
             /*
              * Configure finials.
              */
-            boolean translations = Maud.model.score.showsTranslations();
-            boolean rotations = Maud.model.score.showsRotations();
-            boolean scales = Maud.model.score.showsScales();
+            boolean translations = Maud.model.getScore().showsTranslations();
+            boolean rotations = Maud.model.getScore().showsRotations();
+            boolean scales = Maud.model.getScore().showsScales();
             finialComplete = new Finial(translations, rotations, scales,
                     sparklineHeight);
             finialNoScales = new Finial(translations, rotations, false,
@@ -503,7 +504,7 @@ public class ScoreView implements EditorView {
             visuals.detachAllChildren();
             height = 0f;
 
-            String bonesShown = Maud.model.score.bonesShown(cgm);
+            String bonesShown = Maud.model.getScore().bonesShown(cgm);
             switch (bonesShown) {
                 case "all":
                     attachAllBones();
@@ -767,7 +768,7 @@ public class ScoreView implements EditorView {
         maxWidth = (rightX - leftX) / compression;
         middleY = -height - sparklineHeight / 2 - (float) Finial.hpf;
 
-        boolean translations = Maud.model.score.showsTranslations();
+        boolean translations = Maud.model.getScore().showsTranslations();
         if (translations) {
             float maxHeight = 2 * (float) Finial.hpf;
             attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "tra",
@@ -775,7 +776,7 @@ public class ScoreView implements EditorView {
             middleY -= 3 * (float) Finial.hpf;
         }
 
-        boolean rotations = Maud.model.score.showsRotations();
+        boolean rotations = Maud.model.getScore().showsRotations();
         if (rotations) {
             middleY -= 0.5f * (float) Finial.hpf;
             float maxHeight = 3 * (float) Finial.hpf;
@@ -784,7 +785,7 @@ public class ScoreView implements EditorView {
             middleY -= 3.5f * (float) Finial.hpf;
         }
 
-        boolean scales = Maud.model.score.showsScales();
+        boolean scales = Maud.model.getScore().showsScales();
         boolean hasScales = cgm.animation.hasScales(currentBone);
         if (scales && hasScales) {
             float maxHeight = 2 * (float) Finial.hpf;
@@ -1143,17 +1144,17 @@ public class ScoreView implements EditorView {
         }
 
         numPlots = 0;
-        boolean showTranslations = Maud.model.score.showsTranslations();
+        boolean showTranslations = Maud.model.getScore().showsTranslations();
         if (showTranslations) {
             attachTranslationPlots();
         }
 
-        boolean showRotations = Maud.model.score.showsRotations();
+        boolean showRotations = Maud.model.getScore().showsRotations();
         if (showRotations) {
             attachRotationPlots();
         }
 
-        boolean showScales = Maud.model.score.showsScales();
+        boolean showScales = Maud.model.getScore().showsScales();
         boolean hasScales = cgm.animation.hasScales(currentBone);
         if (showScales && hasScales) {
             attachScalePlots();
