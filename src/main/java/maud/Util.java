@@ -32,6 +32,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
+import com.jme3.animation.Track;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.bounding.BoundingBox;
@@ -863,6 +864,26 @@ public class Util {
         storeResult.multLocal(exp);
 
         return storeResult;
+    }
+
+    /**
+     * Repair all tracks in which the 1st keyframe's time isn't 0.
+     *
+     * @param animation (not null)
+     * @return number of tracks edited
+     */
+    public static int zeroFirst(Animation animation) {
+        int numTracksEdited = 0;
+        Track[] tracks = animation.getTracks();
+        for (Track track : tracks) {
+            float[] times = track.getKeyFrameTimes();
+            if (times[0] != 0f) {
+                times[0] = 0f;
+                ++numTracksEdited;
+            }
+        }
+
+        return numTracksEdited;
     }
 
     /**
