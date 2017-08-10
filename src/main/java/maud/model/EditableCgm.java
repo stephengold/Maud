@@ -42,6 +42,7 @@ import com.jme3.scene.control.Control;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
@@ -628,32 +629,38 @@ public class EditableCgm extends LoadedCgm {
      * @param cgmRoot model to correct (not null)
      */
     private void repair(Spatial cgmRoot) {
-        boolean madeRepairs = false;
+        int numTracksZfed = 0;
+        int numTracksRred = 0;
 
-        AnimControl animControl = cgmRoot.getControl(AnimControl.class);
-        if (animControl == null) {
-            return;
+        List<AnimControl> animControls;
+        animControls = Util.listControls(AnimControl.class, cgmRoot, null);
+        for (AnimControl animControl : animControls) {
+            Collection<String> names = animControl.getAnimationNames();
+            for (String animationName : names) {
+                Animation anim = animControl.getAnim(animationName);
+                numTracksZfed += Util.zeroFirst(anim);
+                numTracksRred += MyAnimation.removeRepeats(anim);
+            }
         }
 
-        int numTracksEdited = 0;
-        Collection<String> names = animControl.getAnimationNames();
-        for (String animationName : names) {
-            Animation anim = animControl.getAnim(animationName);
-            numTracksEdited += MyAnimation.removeRepeats(anim);
-        }
-        if (numTracksEdited > 0) {
-            String message = "removed repeat keyframe(s) from ";
-            if (numTracksEdited == 1) {
+        if (numTracksZfed > 0) {
+            String message = "zeroed time of 1st keyframe in ";
+            if (numTracksZfed == 1) {
                 message += "one track";
             } else {
-                message += String.format("%d tracks", numTracksEdited);
+                message += String.format("%d tracks", numTracksZfed);
             }
-            logger.warning(message);
-            madeRepairs = true;
+            setEdited(message);
         }
 
-        if (madeRepairs) {
-            setEdited("repair model");
+        if (numTracksRred > 0) {
+            String message = "removed repeat keyframe(s) from ";
+            if (numTracksRred == 1) {
+                message += "one track";
+            } else {
+                message += String.format("%d tracks", numTracksRred);
+            }
+            setEdited(message);
         }
     }
 
