@@ -123,7 +123,7 @@ class BuildMenus {
      */
     void loadCgmAsset(String args, LoadedCgm cgm) {
         String menuPrefix = null;
-        if (cgm == Maud.model.source) {
+        if (cgm == Maud.model.getSource()) {
             menuPrefix = ActionPrefix.loadSourceCgmAsset;
         } else if (cgm == Maud.model.target) {
             menuPrefix = ActionPrefix.loadCgmAsset;
@@ -190,7 +190,7 @@ class BuildMenus {
         if (path.equals("From classpath")) {
             buildTestDataMenu();
             String menuPrefix = null;
-            if (cgm == Maud.model.source) {
+            if (cgm == Maud.model.getSource()) {
                 menuPrefix = ActionPrefix.loadSourceCgmNamed;
             } else if (cgm == Maud.model.target) {
                 menuPrefix = ActionPrefix.loadCgmNamed;
@@ -501,7 +501,7 @@ class BuildMenus {
      * Display a "Bone -> Select source" menu.
      */
     void selectSourceBone() {
-        if (Maud.model.source.isLoaded()) {
+        if (Maud.model.getSource().isLoaded()) {
             builder.reset();
             buildSourceBoneSelectMenu();
             builder.show("select menuItem Bone -> Select source -> ");
@@ -514,14 +514,14 @@ class BuildMenus {
      * @param argument action argument (not null)
      */
     void selectSourceBone(String argument) {
-        if (Maud.model.source.bones.hasBone(argument)) {
-            Maud.model.source.bone.select(argument);
+        if (Maud.model.getSource().bones.hasBone(argument)) {
+            Maud.model.getSource().bone.select(argument);
         } else {
             /*
              * Treat the argument as a bone-name prefix.
              */
             List<String> boneNames;
-            boneNames = Maud.model.source.bones.listBoneNames(argument);
+            boneNames = Maud.model.getSource().bones.listBoneNames(argument);
             showBoneSubmenu(boneNames);
         }
     }
@@ -805,7 +805,7 @@ class BuildMenus {
 
         if (cgm == Maud.model.target) {
             builder.show(ActionPrefix.loadAnimation);
-        } else if (cgm == Maud.model.source) {
+        } else if (cgm == Maud.model.getSource()) {
             builder.show(ActionPrefix.loadSourceAnimation);
         } else {
             assert false;
@@ -849,7 +849,7 @@ class BuildMenus {
 
         builder.reset();
         for (String name : nameList) {
-            if (Maud.model.source.bones.hasBone(name)) {
+            if (Maud.model.getSource().bones.hasBone(name)) {
                 builder.addBone(name);
             } else {
                 builder.addEllipsis(name);
@@ -894,7 +894,7 @@ class BuildMenus {
     void sourceCgm() {
         builder.reset();
         builder.add("Load");
-        if (Maud.model.source.isLoaded()) {
+        if (Maud.model.getSource().isLoaded()) {
             builder.add("Unload");
         }
         builder.show("select menuItem CGM -> Source model -> ");
@@ -942,8 +942,8 @@ class BuildMenus {
             builder.add("Wrap all tracks");
         }
         builder.addTool("Source tool"); // TODO submenu
-        if (Maud.model.source.isLoaded()
-                && Maud.model.source.bones.countBones() > 0) {
+        if (Maud.model.getSource().isLoaded()
+                && Maud.model.getSource().bones.countBones() > 0) {
             builder.add("Load source");
         }
     }
@@ -962,7 +962,7 @@ class BuildMenus {
             //builder.add("Attach prop"); TODO
             builder.addDialog("Rename");
         }
-        if (Maud.model.source.isLoaded()) {
+        if (Maud.model.getSource().isLoaded()) {
             builder.add("Select source"); // TODO submenu
         }
     }
@@ -990,7 +990,7 @@ class BuildMenus {
             builder.add("With track");
         }
 
-        String sourceBoneName = Maud.model.source.bone.getName();
+        String sourceBoneName = Maud.model.getSource().bone.getName();
         String boneName = Maud.model.map.targetBoneName(sourceBoneName);
         if (boneName != null && Maud.model.target.bones.hasBone(boneName)) {
             builder.addBone("Mapped");
@@ -1213,7 +1213,7 @@ class BuildMenus {
      * Build a "Bone -> Select source" menu.
      */
     private void buildSourceBoneSelectMenu() {
-        int numRoots = Maud.model.source.bones.countRootBones();
+        int numRoots = Maud.model.getSource().bones.countRootBones();
         if (numRoots == 1) {
             builder.addBone("Root");
         } else if (numRoots > 1) {
@@ -1222,7 +1222,8 @@ class BuildMenus {
 
         String targetBoneName = Maud.model.target.bone.getName();
         String boneName = Maud.model.map.sourceBoneName(targetBoneName);
-        if (boneName != null && Maud.model.source.bones.hasBone(boneName)) {
+        if (boneName != null
+                && Maud.model.getSource().bones.hasBone(boneName)) {
             builder.addBone("Mapped");
         }
     }

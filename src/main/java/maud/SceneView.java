@@ -658,7 +658,7 @@ public class SceneView implements EditorView, JmeCloneable {
     public ViewPort getViewPort() {
         ViewPort result;
         String viewMode = Maud.model.misc.getViewMode();
-        if (Maud.model.source.isLoaded() || viewMode.equals("hybrid")) {
+        if (Maud.model.getSource().isLoaded() || viewMode.equals("hybrid")) {
             result = viewPort2; // split-screen view port
         } else {
             result = viewPort1; // not split

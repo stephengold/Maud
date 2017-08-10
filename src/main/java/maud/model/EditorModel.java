@@ -77,7 +77,7 @@ public class EditorModel {
     /**
      * load slot for the (read-only) source CG model
      */
-    final public LoadedCgm source;
+    final private LoadedCgm source;
     /**
      * miscellaneous details
      */
@@ -160,5 +160,15 @@ public class EditorModel {
     public ScoreOptions getScore() {
         assert score != null;
         return score;
+    }
+
+    /**
+     * Access the load slot for the (read-only) source CG model.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public LoadedCgm getSource() {
+        assert source != null;
+        return source;
     }
 }

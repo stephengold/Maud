@@ -694,7 +694,7 @@ public class LoadedAnimation implements Cloneable {
      * Load retargeted pose.
      */
     public void loadRetargetedPose() {
-        if (Maud.model.source.isLoaded()) {
+        if (Maud.model.getSource().isLoaded()) {
             loadedName = retargetedPoseName;
             speed = 0f;
             currentTime = 0f;

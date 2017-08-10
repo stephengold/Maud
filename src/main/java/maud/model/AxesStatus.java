@@ -127,7 +127,7 @@ public class AxesStatus implements Cloneable {
     public LoadedCgm getDragCgm() {
         assert isDraggingAxis();
         if (dragSourceCgm) {
-            return Maud.model.source;
+            return Maud.model.getSource();
         } else {
             return Maud.model.target;
         }
@@ -200,7 +200,7 @@ public class AxesStatus implements Cloneable {
 
         dragAxisIndex = axisIndex;
         dragFarSide = farSideFlag;
-        if (cgm == Maud.model.source) {
+        if (cgm == Maud.model.getSource()) {
             dragSourceCgm = true;
         } else {
             dragSourceCgm = false;

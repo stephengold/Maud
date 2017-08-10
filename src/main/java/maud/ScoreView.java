@@ -412,7 +412,7 @@ public class ScoreView implements EditorView {
         if (viewMode.equals("hybrid")) {
             result = viewPort3;
         } else if (viewMode.equals("score")) {
-            if (Maud.model.source.isLoaded()) {
+            if (Maud.model.getSource().isLoaded()) {
                 result = viewPort2;
             } else {
                 result = viewPort1;

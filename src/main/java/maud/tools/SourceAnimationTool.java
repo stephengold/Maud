@@ -32,6 +32,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.LoadedCgm;
 
 /**
  * The controller for the "Source Animation Tool" window in Maud's editor
@@ -66,20 +67,21 @@ class SourceAnimationTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        float duration = Maud.model.source.animation.getDuration();
+        LoadedCgm model = Maud.model.getSource();
+        float duration = model.animation.getDuration();
         float speed;
         if (duration > 0f) {
             Slider slider = Maud.gui.getSlider("sSpeed");
             speed = slider.getValue();
-            Maud.model.source.animation.setSpeed(speed);
+            model.animation.setSpeed(speed);
         }
 
-        boolean moving = Maud.model.source.animation.isMoving();
+        boolean moving = model.animation.isMoving();
         if (!moving) {
             Slider slider = Maud.gui.getSlider("sourceTime");
             float fraction = slider.getValue();
             float time = fraction * duration;
-            Maud.model.source.animation.setTime(time);
+            model.animation.setTime(time);
         }
     }
     // *************************************************************************
@@ -97,15 +99,16 @@ class SourceAnimationTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
+        LoadedCgm model = Maud.model.getSource();
         String hasTrackText;
-        if (!Maud.model.source.isLoaded()) {
+        if (!model.isLoaded()) {
             hasTrackText = "no model";
-        } else if (!Maud.model.source.bone.isSelected()) {
+        } else if (!model.bone.isSelected()) {
             hasTrackText = "no bone";
-        } else if (!Maud.model.source.animation.isReal()) {
+        } else if (!model.animation.isReal()) {
             hasTrackText = "";
         } else {
-            if (Maud.model.source.bone.hasTrack()) {
+            if (model.bone.hasTrack()) {
                 hasTrackText = "has track";
             } else {
                 hasTrackText = "no track";
@@ -134,11 +137,12 @@ class SourceAnimationTool extends WindowController {
         String nButton = "";
         String pButton = "";
 
-        if (Maud.model.source.isLoaded()) {
+        LoadedCgm model = Maud.model.getSource();
+        if (model.isLoaded()) {
             lButton = "Load";
-            int numAnimations = Maud.model.source.countAnimations();
-            if (Maud.model.source.animation.isReal()) {
-                int selectedIndex = Maud.model.source.animation.findIndex();
+            int numAnimations = model.countAnimations();
+            if (model.animation.isReal()) {
+                int selectedIndex = model.animation.findIndex();
                 indexText = String.format("#%d of %d", selectedIndex + 1,
                         numAnimations);
                 nButton = "+";
@@ -167,13 +171,14 @@ class SourceAnimationTool extends WindowController {
      * Update the loop check box and the pause button label.
      */
     private void updateLooping() {
-        boolean looping = Maud.model.source.animation.willContinue();
+        LoadedCgm model = Maud.model.getSource();
+        boolean looping = model.animation.willContinue();
         Maud.gui.setChecked("loopSource", looping);
 
         String pButton = "";
-        float duration = Maud.model.source.animation.getDuration();
+        float duration = model.animation.getDuration();
         if (duration > 0f) {
-            boolean paused = Maud.model.source.animation.isPaused();
+            boolean paused = model.animation.isPaused();
             if (paused) {
                 pButton = "Resume";
             } else {
@@ -188,9 +193,10 @@ class SourceAnimationTool extends WindowController {
      */
     private void updateName() {
         String nameText;
-        if (Maud.model.source.isLoaded()) {
-            String name = Maud.model.source.animation.getName();
-            if (Maud.model.source.animation.isReal()) {
+        LoadedCgm model = Maud.model.getSource();
+        if (model.isLoaded()) {
+            String name = model.animation.getName();
+            if (model.animation.isReal()) {
                 nameText = MyString.quote(name);
             } else {
                 nameText = name;
@@ -205,7 +211,7 @@ class SourceAnimationTool extends WindowController {
      * Update the speed slider and its status label.
      */
     private void updateSpeed() {
-        float duration = Maud.model.source.animation.getDuration();
+        float duration = Maud.model.getSource().animation.getDuration();
         Slider slider = Maud.gui.getSlider("sSpeed");
         if (duration > 0f) {
             slider.enable();
@@ -213,7 +219,7 @@ class SourceAnimationTool extends WindowController {
             slider.disable();
         }
 
-        float speed = Maud.model.source.animation.getSpeed();
+        float speed = Maud.model.getSource().animation.getSpeed();
         slider.setValue(speed);
         Maud.gui.updateSliderStatus("sSpeed", speed, "x");
     }
@@ -222,11 +228,12 @@ class SourceAnimationTool extends WindowController {
      * Update the track counts.
      */
     private void updateTrackCounts() {
+        LoadedCgm model = Maud.model.getSource();
         String boneTracksText, otherTracksText;
-        if (Maud.model.source.isLoaded()) {
-            int numBoneTracks = Maud.model.source.animation.countBoneTracks();
+        if (model.isLoaded()) {
+            int numBoneTracks = model.animation.countBoneTracks();
             boneTracksText = String.format("%d", numBoneTracks);
-            int numTracks = Maud.model.source.animation.countTracks();
+            int numTracks = model.animation.countTracks();
             int numOtherTracks = numTracks - numBoneTracks;
             otherTracksText = String.format("%d", numOtherTracks);
         } else {
@@ -242,11 +249,12 @@ class SourceAnimationTool extends WindowController {
      * Update the track-time slider and its status label.
      */
     private void updateTrackTime() {
+        LoadedCgm model = Maud.model.getSource();
         /*
          * slider
          */
-        boolean moving = Maud.model.source.animation.isMoving();
-        float duration = Maud.model.source.animation.getDuration();
+        boolean moving = model.animation.isMoving();
+        float duration = model.animation.getDuration();
         Slider slider = Maud.gui.getSlider("sourceTime");
         if (duration == 0f || moving) {
             slider.disable();
@@ -259,7 +267,7 @@ class SourceAnimationTool extends WindowController {
             trackTime = 0f;
             slider.setValue(0f);
         } else {
-            trackTime = Maud.model.source.animation.getTime();
+            trackTime = model.animation.getTime();
             float fraction = trackTime / duration;
             slider.setValue(fraction);
         }
@@ -267,8 +275,7 @@ class SourceAnimationTool extends WindowController {
          * status label
          */
         String statusText;
-        if (!Maud.model.source.isLoaded()
-                || !Maud.model.source.animation.isReal()) {
+        if (!model.isLoaded() || !model.animation.isReal()) {
             statusText = "time = n/a";
         } else {
             statusText = String.format("time = %.3f / %.3f sec",

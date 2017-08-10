@@ -76,14 +76,14 @@ class RetargetTool extends WindowController {
         Maud.gui.setStatusText("targetName", " " + targetDesc);
 
         String sButton, sourceDesc;
-        if (!Maud.model.source.isLoaded()) {
+        if (!Maud.model.getSource().isLoaded()) {
             sourceDesc = "( none loaded )";
             sButton = "";
 
         } else {
-            String sourceName = Maud.model.source.getName();
+            String sourceName = Maud.model.getSource().getName();
             sourceDesc = MyString.quote(sourceName);
-            if (Maud.model.source.countAnimations() > 0) {
+            if (Maud.model.getSource().countAnimations() > 0) {
                 sButton = "Load";
             } else {
                 sButton = "";
@@ -109,16 +109,16 @@ class RetargetTool extends WindowController {
         String rButton = "";
         String sourceAnimDesc = "( none loaded )";
 
-        if (!Maud.model.source.isLoaded()) {
+        if (!Maud.model.getSource().isLoaded()) {
             feedback = "load the source model";
-        } else if (Maud.model.source.countAnimations() < 1) {
+        } else if (Maud.model.getSource().countAnimations() < 1) {
             feedback = "load an animated source model";
         } else {
-            boolean real = Maud.model.source.animation.isReal();
+            boolean real = Maud.model.getSource().animation.isReal();
             if (!real) {
                 feedback = "load a source animation";
             } else {
-                String name = Maud.model.source.animation.getName();
+                String name = Maud.model.getSource().animation.getName();
                 sourceAnimDesc = MyString.quote(name);
 
                 boolean matchesSource = Maud.model.map.matchesSource();
