@@ -101,7 +101,7 @@ class BuildMenus {
     void assetFolders() {
         builder.reset();
         builder.add("Add");
-        if (Maud.model.locations.hasRemovable()) {
+        if (Maud.model.getLocations().hasRemovable()) {
             builder.add("Remove");
         }
         builder.show("select menuItem Settings -> Asset folders -> ");
@@ -132,7 +132,7 @@ class BuildMenus {
         }
 
         String indexString = args.split(" ")[0];
-        String rootPath = Maud.model.locations.pathForIndex(indexString);
+        String rootPath = Maud.model.getLocations().pathForIndex(indexString);
         String assetPath = MyString.remainder(args, indexString + " ");
 
         if (rootPath.endsWith(".jar") || rootPath.endsWith(".zip")) {
@@ -200,7 +200,7 @@ class BuildMenus {
             builder.show(menuPrefix);
 
         } else {
-            String indexString = Maud.model.locations.indexForPath(path);
+            String indexString = Maud.model.getLocations().indexForPath(path);
             String args = indexString + " /";
             loadCgmAsset(args, cgm);
         }
@@ -222,7 +222,7 @@ class BuildMenus {
     void loadMapAsset(String args) {
         String menuPrefix = ActionPrefix.loadMapAsset;
         String indexString = args.split(" ")[0];
-        String rootPath = Maud.model.locations.pathForIndex(indexString);
+        String rootPath = Maud.model.getLocations().pathForIndex(indexString);
         String assetPath = MyString.remainder(args, indexString + " ");
         File file = new File(rootPath, assetPath);
         if (file.isDirectory()) {
@@ -264,7 +264,7 @@ class BuildMenus {
             builder.show(ActionPrefix.loadMapNamed);
 
         } else {
-            String indexString = Maud.model.locations.indexForPath(path);
+            String indexString = Maud.model.getLocations().indexForPath(path);
             String args = indexString + " /";
             loadMapAsset(args);
         }
@@ -296,7 +296,7 @@ class BuildMenus {
                 break;
             case "Remove":
                 builder.reset();
-                List<String> pathList = Maud.model.locations.listAll();
+                List<String> pathList = Maud.model.getLocations().listAll();
                 for (String path : pathList) {
                     builder.addFolder(path);
                 }
@@ -377,10 +377,10 @@ class BuildMenus {
     void newAssetFolder(String argument) {
         if (argument.endsWith(EditorMenus.addThis)) {
             String path = MyString.removeSuffix(argument, EditorMenus.addThis);
-            Maud.model.locations.add(path);
+            Maud.model.getLocations().add(path);
 
         } else if (argument.endsWith(".jar") || argument.endsWith(".zip")) {
-            Maud.model.locations.add(argument);
+            Maud.model.getLocations().add(argument);
 
         } else {
             Map<String, File> folderMap = EditorMenus.folderMap(argument);
@@ -1161,7 +1161,7 @@ class BuildMenus {
      */
     private void buildLocatorMenu() {
         builder.reset();
-        List<String> pathList = Maud.model.locations.listAll();
+        List<String> pathList = Maud.model.getLocations().listAll();
         for (String path : pathList) {
             if (path.endsWith(".jar")) {
                 builder.addJar(path);

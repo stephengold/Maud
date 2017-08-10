@@ -49,7 +49,7 @@ public class EditorModel {
     /**
      * known asset locations
      */
-    final public AssetLocations locations;
+    final private AssetLocations locations;
     /**
      * status of the visible coordinate axes
      */
@@ -121,7 +121,7 @@ public class EditorModel {
      *
      * @param other (not null)
      */
-    public EditorModel(EditorModel other) {
+    EditorModel(EditorModel other) {
         try {
             locations = other.locations.clone();
             axes = other.axes.clone();
@@ -138,5 +138,17 @@ public class EditorModel {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException();
         }
+    }
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Access the known asset locations.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public AssetLocations getLocations() {
+        assert locations != null;
+        return locations;
     }
 }
