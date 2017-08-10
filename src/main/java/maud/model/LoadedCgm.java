@@ -554,6 +554,7 @@ public class LoadedCgm implements Cloneable {
      * @return true if successful, otherwise false
      */
     public boolean loadNamed(String cgmName) {
+        String folderName = cgmName;
         String fileName;
         switch (cgmName) {
             case "Boat":
@@ -589,6 +590,10 @@ public class LoadedCgm implements Cloneable {
             case "Sign Post":
                 fileName = "Sign Post.mesh.xml";
                 break;
+            case "Sword":
+                fileName = "Sword.mesh.xml";
+                folderName = "Sinbad";
+                break;
             case "Sinbad":
                 fileName = "Sinbad.mesh.xml";
                 break;
@@ -608,7 +613,7 @@ public class LoadedCgm implements Cloneable {
                 throw new IllegalArgumentException(message);
         }
 
-        String assetPath = String.format("Models/%s/%s", cgmName, fileName);
+        String assetPath = String.format("Models/%s/%s", folderName, fileName);
         Spatial loaded = loadFromAsset(assetPath, false);
         if (loaded == null) {
             return false;

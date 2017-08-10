@@ -191,7 +191,7 @@ class EditorMenus {
 
         } else {
             String indexString = Maud.model.folders.indexForPath(path);
-            String args = indexString + " " + "/";
+            String args = indexString + " /";
             loadCgmAsset(args, cgm);
         }
     }
@@ -255,7 +255,7 @@ class EditorMenus {
 
         } else {
             String indexString = Maud.model.folders.indexForPath(path);
-            String args = indexString + " " + "/";
+            String args = indexString + " /";
             loadMapAsset(args);
         }
     }
@@ -989,11 +989,11 @@ class EditorMenus {
             builder.addOgre("Elephant");
         }
         builder.addJme("Jaime");
-        builder.addXbuf("Puppet");
         if (haveTestdata) {
             builder.addOgre("Ninja");
             builder.addOgre("Oto");
         }
+        builder.addXbuf("Puppet");
         builder.addOgre("Sinbad");
         /*
          * non-animated models:
@@ -1006,6 +1006,9 @@ class EditorMenus {
             builder.addOgre("MonkeyHead");
             builder.addOgre("Sign Post");
             builder.addOgre("SpaceCraft");
+        }
+        builder.addOgre("Sword");
+        if (haveTestdata) {
             builder.addGeometry("Teapot");
             builder.addOgre("Tree");
         }
