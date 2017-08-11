@@ -374,27 +374,6 @@ public class Pose implements JmeCloneable {
     }
 
     /**
-     * Alter the skeleton and reset all bones to bind pose.
-     *
-     * @param skeleton (may be null, otherwise an alias is created)
-     */
-    public void resetToBind(Skeleton skeleton) {
-        this.skeleton = skeleton;
-
-        int boneCount;
-        if (skeleton == null) {
-            boneCount = 0;
-        } else {
-            boneCount = skeleton.getBoneCount();
-        }
-        transforms.clear();
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
-            Transform transform = new Transform();
-            transforms.add(transform);
-        }
-    }
-
-    /**
      * Reset the translation of the indexed bone to zero.
      *
      * @param boneIndex which bone (&ge;0)
