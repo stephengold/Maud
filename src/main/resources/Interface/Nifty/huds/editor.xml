@@ -105,8 +105,27 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="animationTool" title="Animation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="250px" width="306px" x="75" y="25">
+                     height="270px" width="306px" x="75" y="25">
                 <panel childLayout="vertical">
+                    <panel childLayout="horizontal" height="30px">
+                        <control name="button" id="animControlPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous animControl)"/>
+                        </control>
+                        <control name="label" id="animControlIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="110px"/>
+                        <control name="button" id="animControlNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next animControl)"/>
+                        </control>
+                        <panel width="*"/>
+                        <control name="button" id="animControlSelectButton"
+                                 width="120px">
+                            <interact onRelease="perform(select animControl)"/>
+                        </control>
+                    </panel>
                     <panel childLayout="horizontal" height="30px">
                         <control name="button" id="animationPreviousButton"
                                  width="20px">
@@ -126,8 +145,7 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="center"
                                  width="65px"/>
                         <panel width="*"/>
-                        <control name="button" label="Load"
-                                 id="id1ToAvoidNiftyWarning"
+                        <control name="button" id="animationLoadButton"
                                  width="50px">
                             <interact onRelease="perform(select menuItem Animation -> Load)"/>
                         </control>
@@ -1360,8 +1378,27 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="sourceAnimationTool" title="Source Animation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="250px" width="290px" x="75" y="25">
+                     height="280px" width="290px" x="75" y="25">
                 <panel childLayout="vertical">
+                    <panel childLayout="horizontal" height="30px">
+                        <control name="button" id="sourceAnimControlPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous sourceAnimControl)"/>
+                        </control>
+                        <control name="label" id="sourceAnimControlIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="110px"/>
+                        <control name="button" id="sourceAnimControlNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next sourceAnimControl)"/>
+                        </control>
+                        <panel width="*"/>
+                        <control name="button" id="sourceAnimControlSelectButton"
+                                 width="120px">
+                            <interact onRelease="perform(select sourceAnimControl)"/>
+                        </control>
+                    </panel>
                     <panel childLayout="horizontal" height="30px">
                         <control name="button" id="sourceAnimationPreviousButton"
                                  width="20px">

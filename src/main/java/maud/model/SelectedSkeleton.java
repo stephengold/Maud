@@ -66,7 +66,7 @@ public class SelectedSkeleton implements Cloneable {
 
     /**
      * loaded CG model containing the skeleton (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * {@link #setCgm(LoadedCGModel)}) TODO rename cgm
      */
     private LoadedCgm loadedCgm = null;
     // *************************************************************************
@@ -351,6 +351,19 @@ public class SelectedSkeleton implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Alter the selected skeleton.
+     *
+     * @param newSkeleton (may be null, unaffected)
+     * @param selectedSpatialFlag where to add controls: false&rarr;CG model
+     * root, true&rarr;selected spatial
+     */
+    void set(Skeleton newSkeleton, boolean selectedSpatialFlag) {
+        loadedCgm.getSceneView().setSkeleton(newSkeleton, selectedSpatialFlag);
+        loadedCgm.bone.deselect();
+        loadedCgm.pose.resetToBind(newSkeleton);
     }
 
     /**

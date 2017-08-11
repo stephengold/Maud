@@ -116,6 +116,7 @@ class SourceAnimationTool extends WindowController {
         }
         Maud.gui.setStatusText("sourceAnimationHasTrack", " " + hasTrackText);
 
+        updateControlIndex();
         updateIndex();
         updateLooping();
         updateName();
@@ -129,6 +130,49 @@ class SourceAnimationTool extends WindowController {
     // private methods
 
     /**
+     * Update the control index status and previous/next/select buttons.
+     */
+    private void updateControlIndex() {
+        String indexText;
+        String sButton = "";
+        String nButton = "";
+        String pButton = "";
+
+        LoadedCgm model = Maud.model.getSource();
+        if (model.countAnimControls() > 0) {
+            sButton = "Select AnimControl";
+            int numAnimControls = model.countAnimControls();
+            if (model.isAnimControlSelected()) {
+                int selectedIndex = model.findAnimControlIndex();
+                indexText = String.format("#%d of %d", selectedIndex + 1,
+                        numAnimControls);
+                nButton = "+";
+                pButton = "-";
+            } else {
+                if (numAnimControls == 0) {
+                    indexText = "no AnimControls";
+                } else if (numAnimControls == 1) {
+                    indexText = "one AnimControl";
+                } else {
+                    indexText = String.format("%d AnimControls",
+                            numAnimControls);
+                }
+            }
+
+        } else if (model.isLoaded()) {
+            indexText = "not animated";
+
+        } else {
+            indexText = "no model loaded";
+        }
+
+        Maud.gui.setButtonLabel("sourceAnimControlPreviousButton", pButton);
+        Maud.gui.setStatusText("sourceAnimControlIndex", indexText);
+        Maud.gui.setButtonLabel("sourceAnimControlNextButton", nButton);
+        Maud.gui.setButtonLabel("sourceAnimControlSelectButton", sButton);
+    }
+
+    /**
      * Update the index status and previous/next/load buttons.
      */
     private void updateIndex() {
@@ -138,7 +182,7 @@ class SourceAnimationTool extends WindowController {
         String pButton = "";
 
         LoadedCgm model = Maud.model.getSource();
-        if (model.isLoaded()) {
+        if (model.isAnimControlSelected()) {
             lButton = "Load";
             int numAnimations = model.countAnimations();
             if (model.animation.isReal()) {
@@ -157,6 +201,8 @@ class SourceAnimationTool extends WindowController {
                     indexText = String.format("%d animations", numAnimations);
                 }
             }
+        } else if (model.isLoaded()) {
+            indexText = "not selected";
         } else {
             indexText = "no model";
         }

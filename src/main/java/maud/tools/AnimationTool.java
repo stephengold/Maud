@@ -32,6 +32,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.LoadedCgm;
 
 /**
  * The controller for the "Animation Tool" window in Maud's editor screen.
@@ -110,6 +111,7 @@ class AnimationTool extends WindowController {
         }
         Maud.gui.setStatusText("animationHasTrack", " " + hasTrackText);
 
+        updateControlIndex();
         updateIndex();
         updateLooping();
         updateName();
@@ -123,53 +125,102 @@ class AnimationTool extends WindowController {
     // private methods
 
     /**
+     * Update the control index status and previous/next/select buttons.
+     */
+    private void updateControlIndex() {
+        String indexText;
+        String sButton = "";
+        String nButton = "";
+        String pButton = "";
+
+        LoadedCgm model = Maud.model.target;
+        if (model.countAnimControls() > 0) {
+            sButton = "Select AnimControl";
+            int numAnimControls = model.countAnimControls();
+            if (model.isAnimControlSelected()) {
+                int selectedIndex = model.findAnimControlIndex();
+                indexText = String.format("#%d of %d", selectedIndex + 1,
+                        numAnimControls);
+                nButton = "+";
+                pButton = "-";
+            } else {
+                if (numAnimControls == 0) {
+                    indexText = "no AnimControls";
+                } else if (numAnimControls == 1) {
+                    indexText = "one AnimControl";
+                } else {
+                    indexText = String.format("%d AnimControls",
+                            numAnimControls);
+                }
+            }
+
+        } else {
+            indexText = "not animated";
+        }
+
+        Maud.gui.setButtonLabel("animControlPreviousButton", pButton);
+        Maud.gui.setStatusText("animControlIndex", indexText);
+        Maud.gui.setButtonLabel("animControlNextButton", nButton);
+        Maud.gui.setButtonLabel("animControlSelectButton", sButton);
+    }
+
+    /**
      * Update the index status and previous/next buttons.
      */
     private void updateIndex() {
-        String indexText, nButton, pButton;
+        String indexText;
+        String lButton = "";
+        String nButton = "";
+        String pButton = "";
 
-        int numAnimations = Maud.model.target.countAnimations();
-        if (Maud.model.target.animation.isReal()) {
-            int selectedIndex = Maud.model.target.animation.findIndex();
-            indexText = String.format("#%d of %d", selectedIndex + 1,
-                    numAnimations);
-            nButton = "+";
-            pButton = "-";
+        LoadedCgm model = Maud.model.target;
+        if (model.isAnimControlSelected()) {
+            lButton = "Load";
+            int numAnimations = model.countAnimations();
+            if (model.animation.isReal()) {
+                int selectedIndex = model.animation.findIndex();
+                indexText = String.format("#%d of %d", selectedIndex + 1,
+                        numAnimations);
+                nButton = "+";
+                pButton = "-";
 
-        } else {
-            if (numAnimations == 0) {
-                indexText = "no animations";
-            } else if (numAnimations == 1) {
-                indexText = "one animation";
             } else {
-                indexText = String.format("%d animations", numAnimations);
+                if (numAnimations == 0) {
+                    indexText = "no animations";
+                } else if (numAnimations == 1) {
+                    indexText = "one animation";
+                } else {
+                    indexText = String.format("%d animations", numAnimations);
+                }
             }
-            nButton = "";
-            pButton = "";
+        } else {
+            indexText = "not selected";
         }
 
         Maud.gui.setStatusText("animationIndex", indexText);
         Maud.gui.setButtonLabel("animationNextButton", nButton);
         Maud.gui.setButtonLabel("animationPreviousButton", pButton);
+        Maud.gui.setButtonLabel("animationLoadButton", lButton);
     }
 
     /**
      * Update the freeze/loop/pin/pong check boxes and the pause button label.
      */
     private void updateLooping() {
-        boolean frozen = Maud.model.target.pose.isFrozen();
+        LoadedCgm model = Maud.model.target;
+        boolean frozen = model.pose.isFrozen();
         Maud.gui.setChecked("freeze", frozen);
-        boolean looping = Maud.model.target.animation.willContinue();
+        boolean looping = model.animation.willContinue();
         Maud.gui.setChecked("loop", looping);
-        boolean pinned = Maud.model.target.animation.isPinned();
+        boolean pinned = model.animation.isPinned();
         Maud.gui.setChecked("pin", pinned);
-        boolean ponging = Maud.model.target.animation.willReverse();
+        boolean ponging = model.animation.willReverse();
         Maud.gui.setChecked("pong", ponging);
 
         String pButton = "";
-        float duration = Maud.model.target.animation.getDuration();
+        float duration = model.animation.getDuration();
         if (duration > 0f) {
-            boolean paused = Maud.model.target.animation.isPaused();
+            boolean paused = model.animation.isPaused();
             if (paused) {
                 pButton = "Resume";
             } else {
@@ -231,11 +282,12 @@ class AnimationTool extends WindowController {
      * Update the track-time slider and its status label.
      */
     private void updateTrackTime() {
+        LoadedCgm model = Maud.model.target;
         /*
          * slider
          */
-        boolean moving = Maud.model.target.animation.isMoving();
-        float duration = Maud.model.target.animation.getDuration();
+        boolean moving = model.animation.isMoving();
+        float duration = model.animation.getDuration();
         Slider slider = Maud.gui.getSlider("time");
         if (duration == 0f || moving) {
             slider.disable();
@@ -248,7 +300,7 @@ class AnimationTool extends WindowController {
             trackTime = 0f;
             slider.setValue(0f);
         } else {
-            trackTime = Maud.model.target.animation.getTime();
+            trackTime = model.animation.getTime();
             float fraction = trackTime / duration;
             slider.setValue(fraction);
         }
@@ -256,7 +308,7 @@ class AnimationTool extends WindowController {
          * status label
          */
         String statusText;
-        if (Maud.model.target.animation.isReal()) {
+        if (model.animation.isReal()) {
             statusText = String.format("time = %.3f / %.3f sec",
                     trackTime, duration);
         } else {

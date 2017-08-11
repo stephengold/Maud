@@ -425,6 +425,26 @@ class BuildMenus {
     }
 
     /**
+     * Handle a "select (source)animControl" action without an argument.
+     *
+     * @param cgm which load slot (not null)
+     */
+    void selectAnimControl(LoadedCgm cgm) {
+        builder.reset();
+        List<String> names = cgm.listAnimControlNames();
+        for (String name : names) {
+            builder.add(name);
+        }
+        if (cgm == Maud.model.target) {
+            builder.show("select animControl ");
+        } else if (cgm == Maud.model.getSource()) {
+            builder.show("select sourceAnimControl ");
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
      * Handle a "select bone" action without an argument.
      */
     void selectBone() {

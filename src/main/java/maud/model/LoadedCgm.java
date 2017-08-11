@@ -36,6 +36,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.bvh.BVHAnimData;
 import com.jme3.util.clone.Cloner;
@@ -47,6 +48,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import jme3utilities.ui.Locators;
 import maud.CheckLoaded;
 import maud.Maud;
@@ -172,7 +174,7 @@ public class LoadedCgm implements Cloneable {
     // new methods exposed
 
     /**
-     * Count the animations.
+     * Count real animations in the current anim control.
      *
      * @return count (&ge;0)
      */
@@ -188,6 +190,59 @@ public class LoadedCgm implements Cloneable {
 
         assert count >= 0 : count;
         return count;
+    }
+
+    /**
+     * Count anim controls.
+     *
+     * @return count (&ge;0)
+     */
+    public int countAnimControls() {
+        int count = 0;
+        if (isLoaded()) {
+            Spatial root = getRootSpatial();
+            count = Util.countControls(AnimControl.class, root);
+        }
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Find the index of the select anim control, if any.
+     *
+     * @return index, or -1 if no anim control is selected
+     */
+    public int findAnimControlIndex() {
+        int index;
+        AnimControl animControl = getAnimControl();
+        if (animControl == null) {
+            index = -1;
+        } else {
+            Spatial root = getRootSpatial();
+            List<AnimControl> list;
+            list = Util.listControls(AnimControl.class, root, null);
+            index = list.indexOf(animControl);
+            assert index != -1;
+        }
+
+        return index;
+    }
+
+    /**
+     * Find the specified spatial.
+     *
+     * @param newSpatial spatial to search for (not null)
+     * @return a new tree-position instance, or null if not found
+     */
+    List<Integer> findSpatial(Spatial newSpatial) {
+        List<Integer> treePosition = new ArrayList<>(4);
+        Spatial sp = findSpatial(newSpatial, rootSpatial, treePosition);
+        if (sp == null) {
+            treePosition = null;
+        }
+
+        return treePosition;
     }
 
     /**
@@ -233,11 +288,15 @@ public class LoadedCgm implements Cloneable {
      */
     AnimControl getAnimControl() {
         AnimControl animControl;
-        Control selectedSgc = sgc.findSgc();
-        if (selectedSgc instanceof AnimControl) {
-            animControl = (AnimControl) selectedSgc;
+        if (isLoaded()) {
+            Control selectedSgc = sgc.findSgc();
+            if (selectedSgc instanceof AnimControl) {
+                animControl = (AnimControl) selectedSgc;
+            } else {
+                animControl = rootSpatial.getControl(AnimControl.class);
+            }
         } else {
-            animControl = rootSpatial.getControl(AnimControl.class);
+            animControl = null;
         }
 
         return animControl;
@@ -401,6 +460,23 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
+     * Test whether an anim control is selected.
+     *
+     * @return true if one is selected, otherwise false
+     */
+    public boolean isAnimControlSelected() {
+        boolean result;
+        AnimControl animControl = getAnimControl();
+        if (animControl == null) {
+            result = false;
+        } else {
+            result = true;
+        }
+
+        return result;
+    }
+
+    /**
      * Test whether a CG model is loaded here.
      *
      * @return true if loaded, otherwise false
@@ -485,6 +561,41 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
+     * Enumerate all anim controls and assign them names.
+     *
+     * @return a new list of names
+     */
+    public List<String> listAnimControlNames() {
+        List<AnimControl> animControlList = listAnimControls();
+        int numAnimControls = animControlList.size();
+
+        List<String> nameList = new ArrayList<>(numAnimControls);
+        for (int index = 0; index < numAnimControls; index++) {
+            AnimControl animControl = animControlList.get(index);
+            Spatial sp = animControl.getSpatial();
+            String name = sp.getName();
+            name = MyString.quote(name);
+            nameList.add(name);
+        }
+        MyString.dedup(nameList, " #");
+
+        return nameList;
+    }
+
+    /**
+     * Enumerate all anim controls.
+     *
+     * @return a new list of pre-existing SGCs
+     */
+    public List<AnimControl> listAnimControls() {
+        Spatial root = getRootSpatial();
+        List<AnimControl> animControlList;
+        animControlList = Util.listControls(AnimControl.class, root, null);
+
+        return animControlList;
+    }
+
+    /**
      * Enumerate all meshes in the loaded CG model.
      *
      * @return a new list
@@ -505,8 +616,7 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Enumerate named spatials in the loaded CG model whose names begin with
-     * the specified prefix.
+     * Enumerate named spatials whose names begin with the specified prefix.
      *
      * @param prefix which name prefix (not null, may be empty)
      * @param includeNodes true &rarr; both nodes and geometries, false &rarr;
@@ -625,6 +735,67 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
+     * Handle a "next (source)animControl" action.
+     */
+    public void nextAnimControl() {
+        if (isAnimControlSelected()) {
+            List<AnimControl> list = listAnimControls();
+            AnimControl animControl = getAnimControl();
+            int index = list.indexOf(animControl);
+            assert index != -1;
+            int numAnimControls = list.size();
+            int nextIndex = MyMath.modulo(index + 1, numAnimControls);
+            animControl = list.get(nextIndex);
+            selectSgc(animControl);
+        }
+    }
+
+    /**
+     * Handle a "previous (source)animControl" action.
+     */
+    public void previousAnimControl() {
+        if (isAnimControlSelected()) {
+            List<AnimControl> list = listAnimControls();
+            AnimControl animControl = getAnimControl();
+            int index = list.indexOf(animControl);
+            assert index != -1;
+            int numAnimControls = list.size();
+            int nextIndex = MyMath.modulo(index - 1, numAnimControls);
+            animControl = list.get(nextIndex);
+            selectSgc(animControl);
+        }
+    }
+
+    /**
+     * Handle a "select (source)animControl" action with arguments.
+     *
+     * @param name name of the animControl to select (not null, not empty)
+     */
+    public void selectAnimControl(String name) {
+        Validate.nonEmpty(name, "name");
+
+        List<String> names = listAnimControlNames();
+        int index = names.indexOf(name);
+        assert index != -1;
+        List<AnimControl> animControls = listAnimControls();
+        AnimControl animControl = animControls.get(index);
+        selectSgc(animControl);
+    }
+
+    /**
+     * Alter the selected SG control.
+     *
+     * @param newSgc an abstract control to select, or null to select none
+     */
+    void selectSgc(AbstractControl newSgc) {
+        if (newSgc != null) {
+            Spatial sp = newSgc.getSpatial();
+            spatial.select(sp);
+        }
+        sgc.select(newSgc);
+    }
+
+    /**
      * Initialize the reference to the corresponding visualizations.
      *
      * @param scene (not null)
@@ -727,6 +898,45 @@ public class LoadedCgm implements Cloneable {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Find the specified spatial in the specified subtree. Note: recursive!
+     *
+     * @param newSpatial spatial to search for (not null)
+     * @param subtree which subtree to search (may be null, unaffected)
+     * @param storePosition tree position of the spatial (modified if found and
+     * not null)
+     * @return the pre-existing spatial, or null if not found
+     */
+    private Spatial findSpatial(Spatial newSpatial, Spatial subtree,
+            List<Integer> storePosition) {
+        Spatial result = null;
+        if (subtree != null) {
+            if (subtree.equals(newSpatial)) {
+                result = subtree;
+                if (storePosition != null) {
+                    storePosition.clear();
+                }
+
+            } else if (subtree instanceof Node) {
+                Node node = (Node) subtree;
+                List<Spatial> children = node.getChildren();
+                int numChildren = children.size();
+                for (int childI = 0; childI < numChildren; childI++) {
+                    Spatial child = children.get(childI);
+                    result = findSpatial(newSpatial, child, storePosition);
+                    if (result != null) {
+                        if (storePosition != null) {
+                            storePosition.add(0, childI);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
 
     /**
      * Find a spatial with the specified name in the specified subtree. Note:
