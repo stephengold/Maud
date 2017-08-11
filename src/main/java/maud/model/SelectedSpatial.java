@@ -223,18 +223,23 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Delete the selected spatial.
+     * If the selected spatial has a parent, delete the selected spatial and
+     * select the parent.
      */
     public void delete() {
         Spatial selectedSpatial = modelSpatial();
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
-            editableCgm.deleteSpatial();
+            loadedCgm.sgc.selectNone();
+            AnimControl oldAnimControl = loadedCgm.getAnimControl();
+            Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
 
+            editableCgm.deleteSpatial();
             int last = treePosition.size() - 1;
             treePosition.remove(last);
             assert modelSpatial() == parent;
-            postSelect();
+
+            postSelect(oldAnimControl, oldSkeleton);
         }
     }
 
@@ -659,6 +664,26 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Select the specified spatial.
+     *
+     * @param newSpatial (not null)
+     */
+    void select(Spatial newSpatial) {
+        Validate.nonNull(newSpatial, "spatial");
+
+        loadedCgm.sgc.selectNone();
+        AnimControl oldAnimControl = loadedCgm.getAnimControl();
+        Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+
+        List<Integer> position = loadedCgm.findSpatial(newSpatial);
+        assert position != null;
+        treePosition = position;
+        assert modelSpatial() == newSpatial;
+
+        postSelect(oldAnimControl, oldSkeleton);
+    }
+
+    /**
      * Select the named spatial.
      *
      * @param name (not null, not empty)
@@ -666,11 +691,16 @@ public class SelectedSpatial implements Cloneable {
     public void select(String name) {
         Validate.nonEmpty(name, "spatial name");
 
+        loadedCgm.sgc.selectNone();
+        AnimControl oldAnimControl = loadedCgm.getAnimControl();
+        Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+
         List<Integer> position = loadedCgm.findSpatialNamed(name);
         assert position != null;
         treePosition = position;
         assert modelSpatial().getName().equals(name);
-        postSelect();
+
+        postSelect(oldAnimControl, oldSkeleton);
     }
 
     /**
@@ -683,9 +713,14 @@ public class SelectedSpatial implements Cloneable {
 
         Spatial child = modelChild(childIndex);
         if (child != null) {
+            loadedCgm.sgc.selectNone();
+            AnimControl oldAnimControl = loadedCgm.getAnimControl();
+            Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+
             treePosition.add(childIndex);
             assert modelSpatial() == child;
-            postSelect();
+
+            postSelect(oldAnimControl, oldSkeleton);
         }
     }
 
@@ -693,9 +728,14 @@ public class SelectedSpatial implements Cloneable {
      * Select the CG model's root spatial.
      */
     public void selectModelRoot() {
+        loadedCgm.sgc.selectNone();
+        AnimControl oldAnimControl = loadedCgm.getAnimControl();
+        Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+
         treePosition.clear();
         assert modelSpatial() == loadedCgm.getRootSpatial();
-        postSelect();
+
+        postSelect(oldAnimControl, oldSkeleton);
     }
 
     /**
@@ -705,10 +745,15 @@ public class SelectedSpatial implements Cloneable {
         Spatial selectedSpatial = modelSpatial();
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
+            loadedCgm.sgc.selectNone();
+            AnimControl oldAnimControl = loadedCgm.getAnimControl();
+            Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+
             int last = treePosition.size() - 1;
             treePosition.remove(last);
             assert modelSpatial() == parent;
-            postSelect();
+
+            postSelect(oldAnimControl, oldSkeleton);
         }
     }
 
@@ -840,8 +885,19 @@ public class SelectedSpatial implements Cloneable {
     /**
      * Invoked after selecting a spatial.
      */
-    private void postSelect() {
-        loadedCgm.sgc.selectNone();
+    private void postSelect(AnimControl oldAnimControl, Skeleton oldSkeleton) {
+        Boolean selectedSpatialFlag = false;
+        Skeleton newSkeleton;
+        newSkeleton = loadedCgm.bones.findSkeleton(selectedSpatialFlag);
+        if (oldSkeleton != newSkeleton) {
+            loadedCgm.bones.set(newSkeleton, selectedSpatialFlag);
+        }
+
+        AnimControl newAnimControl = loadedCgm.getAnimControl();
+        if (oldAnimControl != newAnimControl) {
+            loadedCgm.animation.loadBindPose();
+        }
+
         Maud.model.misc.selectUserKey(null);
     }
 }

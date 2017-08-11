@@ -417,39 +417,40 @@ class EditorInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean nextAction(String actionString) {
-        boolean handled = false;
+        boolean handled = true;
         switch (actionString) {
             case "next animation":
                 Maud.model.target.animation.loadNext();
-                handled = true;
+                break;
+            case "next animControl":
+                Maud.model.target.nextAnimControl();
                 break;
             case "next bone":
                 Maud.model.target.bone.selectNext();
-                handled = true;
                 break;
             case "next checkpoint":
                 History.redo();
-                handled = true;
                 break;
             case "next control":
                 Maud.model.target.sgc.selectNext();
-                handled = true;
                 break;
             case "next mapping":
                 Maud.model.getMap().selectNext();
-                handled = true;
                 break;
             case "next sourceAnimation":
                 Maud.model.getSource().animation.loadNext();
-                handled = true;
+                break;
+            case "next sourceAnimControl":
+                Maud.model.getSource().nextAnimControl();
                 break;
             case "next userData":
                 Maud.model.misc.selectNextUserKey();
-                handled = true;
                 break;
             case "next viewMode":
                 Maud.model.misc.selectNextViewMode();
-                handled = true;
+                break;
+            default:
+                handled = false;
         }
 
         return handled;
@@ -462,35 +463,37 @@ class EditorInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean previousAction(String actionString) {
-        boolean handled = false;
+        boolean handled = true;
         switch (actionString) {
             case "previous animation":
                 Maud.model.target.animation.loadPrevious();
-                handled = true;
+                break;
+            case "previous animControl":
+                Maud.model.target.previousAnimControl();
                 break;
             case "previous bone":
                 Maud.model.target.bone.selectPrevious();
-                handled = true;
                 break;
             case "previous checkpoint":
                 History.undo();
-                handled = true;
                 break;
             case "previous control":
                 Maud.model.target.sgc.selectPrevious();
-                handled = true;
                 break;
             case "previous mapping":
                 Maud.model.getMap().selectPrevious();
-                handled = true;
                 break;
             case "previous sourceAnimation":
                 Maud.model.getSource().animation.loadPrevious();
-                handled = true;
+                break;
+            case "previous sourceAnimControl":
+                Maud.model.target.previousAnimControl();
                 break;
             case "previous userData":
                 Maud.model.misc.selectPreviousUserKey();
-                handled = true;
+                break;
+            default:
+                handled = false;
         }
 
         return handled;
@@ -703,6 +706,9 @@ class EditorInputMode extends InputMode {
     private boolean selectAction(String actionString) {
         boolean handled = true;
         switch (actionString) {
+            case "select animControl":
+                Maud.gui.buildMenus.selectAnimControl(Maud.model.target);
+                break;
             case "select boneChild":
                 Maud.gui.menus.selectBoneChild();
                 break;
@@ -730,6 +736,9 @@ class EditorInputMode extends InputMode {
             case "select screenXY":
                 Maud.gui.selectXY();
                 break;
+            case "select sourceAnimControl":
+                Maud.gui.buildMenus.selectAnimControl(Maud.model.getSource());
+                break;
             case "select spatialChild":
                 Maud.gui.buildMenus.selectSpatialChild("");
                 break;
@@ -755,7 +764,11 @@ class EditorInputMode extends InputMode {
     private boolean selectAction2(String actionString) {
         boolean handled = true;
         String arg;
-        if (actionString.startsWith(ActionPrefix.selectBone)) {
+        if (actionString.startsWith(ActionPrefix.selectAnimControl)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectAnimControl);
+            Maud.model.target.selectAnimControl(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectBone)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectBone);
             Maud.gui.menus.selectBone(arg);
 
@@ -771,6 +784,12 @@ class EditorInputMode extends InputMode {
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
             Maud.gui.menus.selectSpatial(arg, false);
+
+        } else if (actionString.startsWith(
+                ActionPrefix.selectSourceAnimControl)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectSourceAnimControl);
+            Maud.model.getSource().selectAnimControl(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectSourceBone)) {
             arg = MyString.remainder(actionString,
@@ -795,14 +814,12 @@ class EditorInputMode extends InputMode {
         }
 
         if (!handled && actionString.startsWith(ActionPrefix.selectMenuItem)) {
-            String menuPath;
-            menuPath = MyString.remainder(actionString,
+            String menuPath = MyString.remainder(actionString,
                     ActionPrefix.selectMenuItem);
             handled = Maud.gui.menus.selectMenuItem(menuPath);
         }
         if (!handled && actionString.startsWith(ActionPrefix.selectTool)) {
-            String toolName;
-            toolName = MyString.remainder(actionString,
+            String toolName = MyString.remainder(actionString,
                     ActionPrefix.selectTool);
             handled = Maud.gui.selectTool(toolName);
         }

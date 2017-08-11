@@ -142,6 +142,10 @@ class ActionPrefix {
      */
     final static String saveMap = "save map ";
     /**
+     * arguments are a spatial name and a deduplication index
+     */
+    final static String selectAnimControl = "select animControl ";
+    /**
      * argument is the name of a bone or a prefix thereof
      */
     final static String selectBone = "select bone ";
@@ -155,6 +159,10 @@ class ActionPrefix {
      * argument is the menu path of a menu item
      */
     final static String selectMenuItem = "select menuItem ";
+    /**
+     * arguments are a spatial name and a deduplication index
+     */
+    final static String selectSourceAnimControl = "select sourceAnimControl ";
     /**
      * argument is the name of a source bone or a prefix thereof
      */
