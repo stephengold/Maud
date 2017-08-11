@@ -187,7 +187,6 @@ public class MiscStatus implements Cloneable {
         Validate.nonNull(times, "times");
         Validate.nonNull(translations, "translations");
         Validate.nonNull(rotations, "rotations");
-        Validate.nonNull(scales, "scales");
         if (storeResult == null) {
             storeResult = new Transform();
         }
