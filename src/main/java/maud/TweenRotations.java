@@ -476,9 +476,9 @@ public enum TweenRotations {
         /*
          * Calculate Squad parameter "a" at either end of the central interval.
          */
-        Quaternion a1 = Util.squadA(q0, q1, q2, null);
-        Quaternion a2 = Util.squadA(q1, q2, q3, null);
-        Util.squad(t, q1, a1, a2, q2, storeResult);
+        Quaternion a1 = MyQuaternion.squadA(q0, q1, q2, null);
+        Quaternion a2 = MyQuaternion.squadA(q1, q2, q3, null);
+        MyQuaternion.squad(t, q1, a1, a2, q2, storeResult);
 
         return storeResult;
     }
@@ -523,9 +523,9 @@ public enum TweenRotations {
                      */
                     if (q0.dot(q1) < 0f) {
                         Quaternion negQ1 = q1.mult(-1f);
-                        Util.slerp(t, q0, negQ1, storeResult);
+                        MyQuaternion.slerp(t, q0, negQ1, storeResult);
                     } else {
-                        Util.slerp(t, q0, q1, storeResult);
+                        MyQuaternion.slerp(t, q0, q1, storeResult);
                     }
                     break;
                 default:
@@ -568,7 +568,7 @@ public enum TweenRotations {
         Quaternion a1 = curve.getControlPoint1(index1);
         Quaternion a2 = curve.getControlPoint2(index1);
         Quaternion q2 = curve.getEndValue(index1);
-        Util.squad(t, q1, a1, a2, q2, storeResult);
+        MyQuaternion.squad(t, q1, a1, a2, q2, storeResult);
 
         return storeResult;
     }
@@ -604,8 +604,8 @@ public enum TweenRotations {
         }
         curve.setParameters(index1, q2, inter12);
 
-        Quaternion a = Util.squadA(q0, q1, q2, null);
-        Quaternion b = Util.squadA(q1, q2, q3, null);
+        Quaternion a = MyQuaternion.squadA(q0, q1, q2, null);
+        Quaternion b = MyQuaternion.squadA(q1, q2, q3, null);
         curve.setControlPoints(index1, a, b);
     }
 
@@ -714,7 +714,7 @@ public enum TweenRotations {
             Quaternion a1 = curve.getControlPoint1(index1);
             Quaternion a2 = curve.getControlPoint2(index1);
             Quaternion q2 = curve.getEndValue(index1);
-            Util.squad(t, q1, a1, a2, q2, storeResult);
+            MyQuaternion.squad(t, q1, a1, a2, q2, storeResult);
         }
 
         return storeResult;

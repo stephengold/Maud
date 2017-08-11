@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -200,7 +201,7 @@ public class LoadedCgm implements Cloneable {
         int count = 0;
         if (isLoaded()) {
             Spatial root = getRootSpatial();
-            count = Util.countControls(AnimControl.class, root);
+            count = MySpatial.countControls(root, AnimControl.class);
         }
 
         assert count >= 0 : count;
@@ -220,7 +221,7 @@ public class LoadedCgm implements Cloneable {
         } else {
             Spatial root = getRootSpatial();
             List<AnimControl> list;
-            list = Util.listControls(AnimControl.class, root, null);
+            list = MySpatial.listControls(root, AnimControl.class, null);
             index = list.indexOf(animControl);
             assert index != -1;
         }
@@ -589,7 +590,7 @@ public class LoadedCgm implements Cloneable {
     public List<AnimControl> listAnimControls() {
         Spatial root = getRootSpatial();
         List<AnimControl> animControlList;
-        animControlList = Util.listControls(AnimControl.class, root, null);
+        animControlList = MySpatial.listControls(root, AnimControl.class, null);
 
         return animControlList;
     }

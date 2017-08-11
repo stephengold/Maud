@@ -48,6 +48,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
+import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
@@ -647,7 +648,7 @@ public class EditableCgm extends LoadedCgm {
         int numTracksRred = 0;
 
         List<AnimControl> animControls;
-        animControls = Util.listControls(AnimControl.class, cgmRoot, null);
+        animControls = MySpatial.listControls(cgmRoot, AnimControl.class, null);
         for (AnimControl animControl : animControls) {
             Collection<String> names = animControl.getAnimationNames();
             for (String animationName : names) {
@@ -658,7 +659,7 @@ public class EditableCgm extends LoadedCgm {
         }
 
         if (numTracksZfed > 0) {
-            String message = "zeroed time of 1st keyframe in ";
+            String message = "zero time of 1st keyframe in ";
             if (numTracksZfed == 1) {
                 message += "one track";
             } else {

@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
@@ -136,7 +137,7 @@ class BuildMenus {
         String assetPath = MyString.remainder(args, indexString + " ");
 
         if (rootPath.endsWith(".jar") || rootPath.endsWith(".zip")) {
-            List<String> entryNames = Util.zipEntries(rootPath, assetPath);
+            List<String> entryNames = Misc.listZipEntries(rootPath, assetPath);
             int numEntries = entryNames.size();
             List<String> cgmEntries = new ArrayList<>(numEntries);
             for (String entryName : entryNames) {
@@ -604,7 +605,7 @@ class BuildMenus {
             children = Maud.model.target.spatial.listNumberedChildren();
 
             List<String> choices;
-            choices = Util.addStringsWithPrefix(children, itemPrefix, null);
+            choices = MyString.addMatchPrefix(children, itemPrefix, null);
             MyString.reduce(choices, maxItems);
             Collections.sort(choices);
 
@@ -926,7 +927,7 @@ class BuildMenus {
      * Display an "Settings -> Asset folders -> Add" menu.
      */
     private void addAssetFolder() {
-        Map<String, File> fileMap = Util.driveMap();
+        Map<String, File> fileMap = Misc.driveMap();
         String workPath = System.getProperty("user.dir");
         File work = new File(workPath);
         if (work.isDirectory()) {

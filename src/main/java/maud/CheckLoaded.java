@@ -42,6 +42,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MySkeleton;
+import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.model.LoadedAnimation;
@@ -290,14 +292,14 @@ public class CheckLoaded {
     public static boolean cgm(Spatial cgmRoot) {
         Validate.nonNull(cgmRoot, "model root");
 
-        List<SkeletonControl> skeletonControls = Util.listControls(
-                SkeletonControl.class, cgmRoot, null);
+        List<SkeletonControl> skeletonControls = MySpatial.listControls(cgmRoot,
+                SkeletonControl.class, null);
         if (skeletonControls.isEmpty()) {
             logger.warning("lacks a skeleton control");
             return false;
         }
 
-        List<Skeleton> skeletons = Util.listSkeletons(cgmRoot, null);
+        List<Skeleton> skeletons = MySkeleton.listSkeletons(cgmRoot, null);
         if (skeletons.isEmpty()) {
             logger.warning("lacks a skeleton");
             return false;
@@ -309,7 +311,7 @@ public class CheckLoaded {
         }
 
         List<AnimControl> animControls;
-        animControls = Util.listControls(AnimControl.class, cgmRoot, null);
+        animControls = MySpatial.listControls(cgmRoot, AnimControl.class, null);
         if (animControls.isEmpty()) {
             logger.warning("model lacks an animation control");
             return false;
