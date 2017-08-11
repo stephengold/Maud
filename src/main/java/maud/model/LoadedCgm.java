@@ -28,7 +28,6 @@ package maud.model;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
-import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
@@ -573,9 +572,9 @@ public class LoadedCgm implements Cloneable {
         for (int index = 0; index < numAnimControls; index++) {
             AnimControl animControl = animControlList.get(index);
             Spatial sp = animControl.getSpatial();
-            String name = sp.getName();
-            name = MyString.quote(name);
-            nameList.add(name);
+            String spName = sp.getName();
+            spName = MyString.quote(spName);
+            nameList.add(spName);
         }
         MyString.dedup(nameList, " #");
 
@@ -624,16 +623,15 @@ public class LoadedCgm implements Cloneable {
      * @return a new list of names
      */
     public List<String> listSpatialNames(String prefix, boolean includeNodes) {
-        List<String> result;
-        result = listSpatialNames(rootSpatial, prefix, includeNodes);
-
-        return result;
+        List<String> list = listSpatialNames(rootSpatial, prefix, includeNodes);
+        return list;
     }
 
     /**
-     * Unload the current CG model, if any, and load from the specified asset.
+     * Unload the current CG model, if any, and load from the specified asset in
+     * the specified location.
      *
-     * @param rootPath file path to the asset root (not null, not empty)
+     * @param rootPath filesystem path to the asset root (not null, not empty)
      * @param assetPath path to the asset to load (not null, not empty)
      * @return true if successful, otherwise false
      */
@@ -641,13 +639,13 @@ public class LoadedCgm implements Cloneable {
         Validate.nonEmpty(rootPath, "root path");
         Validate.nonEmpty(assetPath, "asset path");
 
+        Locators.save();
         Locators.useFilesystem(rootPath);
-        Locators.registerDefault();
-        List<String> assetFolders = Maud.model.getLocations().listAll();
-        Locators.register(assetFolders);
 
         Spatial loaded = loadFromAsset(assetPath, false);
-        Locators.useDefault();
+
+        Locators.restore();
+
         if (loaded == null) {
             return false;
         } else {
@@ -657,8 +655,8 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Unload the current CG model, if any, and load the named one from the
-     * jme3-testdata asset pack.
+     * Unload the current CG model, if any, and load the named one (typically
+     * from the classpath).
      *
      * @param cgmName which CG model to load (not null, not empty)
      * @return true if successful, otherwise false
@@ -1024,8 +1022,8 @@ public class LoadedCgm implements Cloneable {
      * @return an orphaned spatial, or null if the asset was not found
      */
     private Spatial loadFromAsset(String assetPath, boolean useCache) {
-        SimpleApplication application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
+        AssetManager assetManager = Locators.getAssetManager();
+        Locators.save();
         /*
          * Load the CG model quietly.
          */
@@ -1042,6 +1040,7 @@ public class LoadedCgm implements Cloneable {
                 assetManager.deleteFromCache(key);
             }
             loaded = Util.loadBvhAsset(assetManager, assetPath);
+
         } else {
             ModelKey key = new ModelKey(assetPath);
             ext = key.getExtension();
@@ -1052,6 +1051,10 @@ public class LoadedCgm implements Cloneable {
                  */
                 assetManager.deleteFromCache(key);
             }
+            Locators.registerDefault();
+            List<String> assetFolders = Maud.model.getLocations().listAll();
+            Locators.register(assetFolders);
+
             loaded = Util.loadCgmAsset(assetManager, assetPath);
         }
         if (loaded == null) {
@@ -1069,10 +1072,11 @@ public class LoadedCgm implements Cloneable {
                 int pathLength = assetPath.length() - extLength - 1;
                 baseAssetPath = assetPath.substring(0, pathLength);
             }
-            assetFolder = Locators.getAssetFolder();
+            assetFolder = Locators.getRootPath();
             name = loaded.getName();
         }
 
+        Locators.restore();
         return loaded;
     }
 }
