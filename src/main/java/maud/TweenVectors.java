@@ -146,7 +146,7 @@ public enum TweenVectors {
             case LoopCentripetalSpline:
                 int index0;
                 for (index0 = index1 - 1; index0 >= 0; index0--) {
-                    if (Util.ne(vectors[index0], v1)) {
+                    if (MyVector3f.ne(vectors[index0], v1)) {
                         break;
                     }
                 }
@@ -159,7 +159,7 @@ public enum TweenVectors {
                 }
                 int index3;
                 for (index3 = index2 + 1; index3 <= last; index3++) {
-                    if (Util.ne(vectors[index3], v2)) {
+                    if (MyVector3f.ne(vectors[index3], v2)) {
                         break;
                     }
                 }
@@ -333,7 +333,7 @@ public enum TweenVectors {
             assert inter12 > 0f : inter12;
             float t = (time - times[index1]) / inter12;
             Vector3f v2 = vectors[index2];
-            Util.lerp(t, v1, v2, storeResult);
+            MyVector3f.lerp(t, v1, v2, storeResult);
         }
 
         return storeResult;
@@ -423,14 +423,14 @@ public enum TweenVectors {
                 for (index0 = MyMath.modulo(index1 - 1, numVectors);
                         index0 != index1;
                         index0 = MyMath.modulo(index0 - 1, numVectors)) {
-                    if (Util.ne(vectors[index0], v1)) {
+                    if (MyVector3f.ne(vectors[index0], v1)) {
                         break;
                     }
                 }
                 for (index3 = MyMath.modulo(index2 + 1, numVectors);
                         index3 != index2;
                         index3 = MyMath.modulo(index3 + 1, numVectors)) {
-                    if (Util.ne(vectors[index3], v2)) {
+                    if (MyVector3f.ne(vectors[index3], v2)) {
                         break;
                     }
                 }
@@ -488,7 +488,7 @@ public enum TweenVectors {
         float t = (time - times[index1]) / interval;
         Vector3f v1 = vectors[index1];
         Vector3f v2 = vectors[index2];
-        Util.lerp(t, v1, v2, storeResult);
+        MyVector3f.lerp(t, v1, v2, storeResult);
 
         return storeResult;
     }
@@ -576,14 +576,14 @@ public enum TweenVectors {
         if (ds12 == 0.0) {
             storeResult.set(v1);
         } else {
-            float dt12 = (float) Util.fourthRoot(ds12);
+            float dt12 = (float) MyMath.fourthRoot(ds12);
             if (dt12 == 0f) {
                 storeResult.set(v1);
             } else {
                 double ds01 = MyVector3f.distanceSquared(v0, v1);
                 double ds23 = MyVector3f.distanceSquared(v2, v3);
-                float dt01 = (float) Util.fourthRoot(ds01);
-                float dt23 = (float) Util.fourthRoot(ds23);
+                float dt01 = (float) MyMath.fourthRoot(ds01);
+                float dt23 = (float) MyMath.fourthRoot(ds23);
                 centripetal(tt, v0, v1, v2, v3, dt01, dt12, dt23, storeResult);
             }
         }
@@ -623,14 +623,14 @@ public enum TweenVectors {
 
         float t = tt * dt12;
 
-        Vector3f a1 = Util.lerp((t + dt01) / dt01, v0, v1, null);
-        Vector3f a2 = Util.lerp(t / dt12, v1, v2, null);
-        Vector3f a3 = Util.lerp((t - dt12) / dt23, v2, v3, null);
+        Vector3f a1 = MyVector3f.lerp((t + dt01) / dt01, v0, v1, null);
+        Vector3f a2 = MyVector3f.lerp(t / dt12, v1, v2, null);
+        Vector3f a3 = MyVector3f.lerp((t - dt12) / dt23, v2, v3, null);
 
-        Vector3f b1 = Util.lerp((t + dt01) / (dt01 + dt12), a1, a2, null);
-        Vector3f b2 = Util.lerp(t / (dt12 + dt23), a2, a3, null);
+        Vector3f b1 = MyVector3f.lerp((t + dt01) / (dt01 + dt12), a1, a2, null);
+        Vector3f b2 = MyVector3f.lerp(t / (dt12 + dt23), a2, a3, null);
 
-        Util.lerp(t, b1, b2, storeResult);
+        MyVector3f.lerp(t, b1, b2, storeResult);
 
         return storeResult;
     }
@@ -670,9 +670,9 @@ public enum TweenVectors {
 
         storeResult.set(v1);
         storeResult.multLocal(h00);
-        Util.accumulateScaled(storeResult, v2, h01);
-        Util.accumulateScaled(storeResult, m1, interval * h10);
-        Util.accumulateScaled(storeResult, m2, interval * h11);
+        MyVector3f.accumulateScaled(storeResult, v2, h01);
+        MyVector3f.accumulateScaled(storeResult, m1, interval * h10);
+        MyVector3f.accumulateScaled(storeResult, m2, interval * h11);
 
         return storeResult;
     }
@@ -746,14 +746,14 @@ public enum TweenVectors {
                     for (index0 = MyMath.modulo(index1 - 1, numVectors);
                             index0 != index1;
                             index0 = MyMath.modulo(index0 - 1, numVectors)) {
-                        if (Util.ne(vectors[index0], v1)) {
+                        if (MyVector3f.ne(vectors[index0], v1)) {
                             break;
                         }
                     }
                     for (index3 = MyMath.modulo(index2 + 1, numVectors);
                             index3 != index2;
                             index3 = MyMath.modulo(index3 + 1, numVectors)) {
-                        if (Util.ne(vectors[index3], v2)) {
+                        if (MyVector3f.ne(vectors[index3], v2)) {
                             break;
                         }
                     }
@@ -763,12 +763,12 @@ public enum TweenVectors {
 
                     double ds12 = MyVector3f.distanceSquared(v1, v2);
                     if (ds12 > 0.0) {
-                        float dt12 = (float) Util.fourthRoot(ds12);
+                        float dt12 = (float) MyMath.fourthRoot(ds12);
                         if (dt12 > 0f) {
                             double ds01 = MyVector3f.distanceSquared(v0, v1);
                             double ds23 = MyVector3f.distanceSquared(v2, v3);
-                            float dt01 = (float) Util.fourthRoot(ds01);
-                            float dt23 = (float) Util.fourthRoot(ds23);
+                            float dt01 = (float) MyMath.fourthRoot(ds01);
+                            float dt23 = (float) MyMath.fourthRoot(ds23);
                             curve.setDts(index1, dt01, dt12, dt23);
                         } else {
                             curve.setDts(index1, 0f, 0f, 0f);
@@ -842,7 +842,7 @@ public enum TweenVectors {
                 case LoopCentripetalSpline:
                     int index0;
                     for (index0 = index1 - 1; index0 >= 0; index0--) {
-                        if (Util.ne(vectors[index0], v1)) {
+                        if (MyVector3f.ne(vectors[index0], v1)) {
                             break;
                         }
                     }
@@ -855,7 +855,7 @@ public enum TweenVectors {
                     }
                     int index3;
                     for (index3 = index2 + 1; index3 <= lastIndex; index3++) {
-                        if (Util.ne(vectors[index3], v2)) {
+                        if (MyVector3f.ne(vectors[index3], v2)) {
                             break;
                         }
                     }
@@ -870,12 +870,12 @@ public enum TweenVectors {
 
                     double ds12 = MyVector3f.distanceSquared(v1, v2);
                     if (ds12 > 0.0) {
-                        float dt12 = (float) Util.fourthRoot(ds12);
+                        float dt12 = (float) MyMath.fourthRoot(ds12);
                         if (dt12 > 0f) {
                             double ds01 = MyVector3f.distanceSquared(v0, v1);
                             double ds23 = MyVector3f.distanceSquared(v2, v3);
-                            float dt01 = (float) Util.fourthRoot(ds01);
-                            float dt23 = (float) Util.fourthRoot(ds23);
+                            float dt01 = (float) MyMath.fourthRoot(ds01);
+                            float dt23 = (float) MyMath.fourthRoot(ds23);
                             curve.setDts(index1, dt01, dt12, dt23);
                         } else {
                             curve.setDts(index1, 0f, 0f, 0f);

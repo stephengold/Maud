@@ -57,17 +57,9 @@ import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.Validate;
@@ -101,50 +93,6 @@ public class Util {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Accumulate a linear combination of vectors.
-     *
-     * @param total sum of the scaled inputs so far (not null, updated)
-     * @param input the vector to scale and add (not null, unaffected)
-     * @param scale scale factor to apply to the input
-     */
-    public static void accumulateScaled(Vector3f total, Vector3f input,
-            float scale) {
-        Validate.nonNull(total, "total");
-        Validate.nonNull(input, "input");
-
-        total.x += input.x * scale;
-        total.y += input.y * scale;
-        total.z += input.z * scale;
-    }
-
-    /**
-     * Find all strings in the input list that begin with the specified prefix
-     * and add them to the result.
-     *
-     * @param inputList input list to filter (not null)
-     * @param prefix (not null)
-     * @param addResult (added to if not null)
-     * @return an expanded list (either storeResult or a new instance)
-     */
-    public static List<String> addStringsWithPrefix(List<String> inputList,
-            String prefix, List<String> addResult) {
-        Validate.nonNull(inputList, "input list");
-        Validate.nonNull(prefix, "prefix");
-        if (addResult == null) {
-            int size = inputList.size();
-            addResult = new ArrayList<>(size);
-        }
-
-        for (String string : inputList) {
-            if (string.startsWith(prefix)) {
-                addResult.add(string);
-            }
-        }
-
-        return addResult;
-    }
 
     /**
      * Copy a bone track, deleting everything before the specified time, and
@@ -263,38 +211,6 @@ public class Util {
     }
 
     /**
-     * Count all controls of the specified type in the specified subtree of a
-     * scene graph. Note: recursive!
-     *
-     * @param <T> superclass of Control
-     * @param controlType superclass of Control to search for
-     * @param subtree (not null)
-     * @return count (&ge;0)
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends Control> int countControls(Class<T> controlType,
-            Spatial subtree) {
-        int result = 0;
-        int numControls = subtree.getNumControls();
-        for (int controlIndex = 0; controlIndex < numControls; controlIndex++) {
-            Control control = subtree.getControl(controlIndex);
-            if (controlType.isAssignableFrom(control.getClass())) {
-                ++result;
-            }
-        }
-
-        if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                result += countControls(controlType, child);
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Count how many vertices in the specified subtree of the scene graph are
      * directly influenced by the indexed bone. Note: recursive!
      *
@@ -355,43 +271,6 @@ public class Util {
     }
 
     /**
-     * Construct a map from drive paths (roots) to file objects.
-     *
-     * @return a new map of drives
-     */
-    public static Map<String, File> driveMap() {
-        Map<String, File> result = new TreeMap<>();
-        File[] roots = File.listRoots();
-        for (File root : roots) {
-            if (root.isDirectory()) {
-                String absoluteDirPath = root.getAbsolutePath();
-                absoluteDirPath = absoluteDirPath.replaceAll("\\\\", "/");
-                File oldFile = result.put(absoluteDirPath, root);
-                assert oldFile == null : oldFile;
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Extract the 4th root of a double-precision value. This method is faster
-     * than Math.pow(d, 0.25).
-     *
-     * @param dValue input 4th power to be extracted (&ge;0)
-     * @return the positive 4th root of dValue (&ge;0)
-     * @see java.lang.Math#cbrt(double)
-     */
-    public static double fourthRoot(double dValue) {
-        Validate.nonNegative(dValue, "dValue");
-        double sqrt = Math.sqrt(dValue);
-        double result = Math.sqrt(sqrt);
-
-        assert result >= 0.0 : result;
-        return result;
-    }
-
-    /**
      * Count how many vertices in the specified subtree of the scene graph are
      * influenced by the indexed bone and its descendents. Note: recursive!
      *
@@ -415,138 +294,6 @@ public class Util {
         }
 
         return result;
-    }
-
-    /**
-     * Interpolate between (or extrapolate from) 2 single-precision values using
-     * linear (Lerp) *polation. Unlike
-     * {@link com.jme3.math.FastMath#interpolateLinear(float, float, float)}, no
-     * rounding error is introduced when y1==y2.
-     *
-     * @param t descaled parameter value (0&rarr;v0, 1&rarr;v1)
-     * @param y1 function value at t=0
-     * @param y2 function value at t=1
-     * @return an interpolated function value
-     */
-    public static float lerp(float t, float y1, float y2) {
-        float lerp;
-        if (y1 == y2) {
-            lerp = y1;
-        } else {
-            float u = 1f - t;
-            lerp = u * y1 + t * y2;
-        }
-
-        return lerp;
-    }
-
-    /**
-     * Interpolate between (or extrapolate from) 2 vectors using linear (Lerp)
-     * *polation. Unlike
-     * {@link com.jme3.math.FastMath#interpolateLinear(float, com.jme3.math.Vector3f, com.jme3.math.Vector3f, com.jme3.math.Vector3f)},
-     * no rounding error is introduced when v1==v2.
-     *
-     * @param t descaled parameter value (0&rarr;v0, 1&rarr;v1)
-     * @param v0 function value at t=0 (not null, unaffected, norm=1)
-     * @param v1 function value at t=1 (not null, unaffected, norm=1)
-     * @param storeResult (modified if not null)
-     * @return an interpolated vector (either storeResult or a new instance)
-     */
-    public static Vector3f lerp(float t, Vector3f v0, Vector3f v1,
-            Vector3f storeResult) {
-        Validate.nonNull(v0, "v0");
-        Validate.nonNull(v1, "v1");
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-
-        storeResult.x = lerp(t, v0.x, v1.x);
-        storeResult.y = lerp(t, v0.y, v1.y);
-        storeResult.z = lerp(t, v0.z, v1.z);
-
-        return storeResult;
-    }
-
-    /**
-     * Enumerate all controls of the specified type in the specified subtree of
-     * a scene graph. Note: recursive!
-     *
-     * @param <T> superclass of Control
-     * @param controlType superclass of Control to search for
-     * @param subtree (not null)
-     * @param storeResult (added to if not null)
-     * @return an expanded list (either storeResult or a new instance)
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends Control> List<T> listControls(Class<T> controlType,
-            Spatial subtree, List<T> storeResult) {
-        Validate.nonNull(subtree, "subtree");
-        if (storeResult == null) {
-            storeResult = new ArrayList<>(4);
-        }
-
-        int numControls = subtree.getNumControls();
-        for (int controlIndex = 0; controlIndex < numControls; controlIndex++) {
-            Control control = subtree.getControl(controlIndex);
-            if (controlType.isAssignableFrom(control.getClass())
-                    && !storeResult.contains(control)) {
-                storeResult.add((T) control);
-            }
-        }
-
-        if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                listControls(controlType, child, storeResult);
-            }
-        }
-
-        return storeResult;
-    }
-
-    /**
-     * Enumerate all skeleton instances in the specified subtree of a scene
-     * graph. Note: recursive!
-     *
-     * @param subtree (not null)
-     * @param storeResult (added to if not null)
-     * @return an expanded list (either storeResult or a new instance)
-     */
-    public static List<Skeleton> listSkeletons(Spatial subtree,
-            List<Skeleton> storeResult) {
-        Validate.nonNull(subtree, "subtree");
-        if (storeResult == null) {
-            storeResult = new ArrayList<>(4);
-        }
-
-        int numControls = subtree.getNumControls();
-        for (int controlIndex = 0; controlIndex < numControls; controlIndex++) {
-            Control control = subtree.getControl(controlIndex);
-            if (control instanceof AnimControl) {
-                AnimControl animControl = (AnimControl) control;
-                Skeleton skeleton = animControl.getSkeleton();
-                if (skeleton != null && !storeResult.contains(skeleton)) {
-                    storeResult.add(skeleton);
-                }
-            } else if (control instanceof SkeletonControl) {
-                SkeletonControl skeletonControl = (SkeletonControl) control;
-                Skeleton skeleton = skeletonControl.getSkeleton();
-                if (skeleton != null && !storeResult.contains(skeleton)) {
-                    storeResult.add(skeleton);
-                }
-            }
-        }
-
-        if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                listSkeletons(child, storeResult);
-            }
-        }
-
-        return storeResult;
     }
 
     /**
@@ -683,21 +430,6 @@ public class Util {
         // TODO account for rotation
         result.addChildShape(childShape, location);
 
-        return result;
-    }
-
-    /**
-     * Test whether two vectors are distinct, without distinguishing 0 from -0.
-     *
-     * @param v1 1st input vector (not null, unaffected)
-     * @param v2 2nd input vector (not null, unaffected)
-     * @return true if distinct, otherwise false
-     */
-    public static boolean ne(Vector3f v1, Vector3f v2) {
-        Validate.nonNull(v1, "1st input vector");
-        Validate.nonNull(v2, "2nd input vector");
-
-        boolean result = v1.x != v2.x || v1.y != v2.y || v1.z != v2.z;
         return result;
     }
 
@@ -852,103 +584,6 @@ public class Util {
     }
 
     /**
-     * Interpolate between 2 unit quaternions using spherical linear (Slerp)
-     * interpolation. This method is slower (but more accurate) than
-     * {@link com.jme3.math.Quaternion#slerp(com.jme3.math.Quaternion, float)},
-     * always produces a unit, and doesn't trash q1. The caller is responsible
-     * for flipping the sign of q0 or q1 when it's appropriate to do so.
-     *
-     * @param t descaled parameter value (&ge;0, &le;1)
-     * @param q0 function value at t=0 (not null, unaffected, norm=1)
-     * @param q1 function value at t=1 (not null, unaffected, norm=1)
-     * @param storeResult (modified if not null)
-     * @return an interpolated unit quaternion (either storeResult or a new
-     * instance)
-     */
-    public static Quaternion slerp(float t, Quaternion q0, Quaternion q1,
-            Quaternion storeResult) {
-        Validate.inRange(t, "t", 0f, 1f);
-        MyQuaternion.validateUnit(q0, "q0", 0.0001f);
-        MyQuaternion.validateUnit(q1, "q1", 0.0001f);
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
-        Quaternion q0inverse = MyQuaternion.conjugate(q0, null);
-        Quaternion ratio = q0inverse.multLocal(q1);
-        Quaternion power = MyQuaternion.pow(ratio, t, ratio);
-        storeResult.set(q0);
-        storeResult.multLocal(power);
-
-        return storeResult;
-    }
-
-    /**
-     * Interpolate between 4 unit quaternions using the Squad function. The
-     * caller is responsible for flipping signs when it's appropriate to do so.
-     *
-     * @param t descaled parameter value (&ge;0, &le;1)
-     * @param p function value at t=0 (not null, unaffected, norm=1)
-     * @param a 1st control point (not null, unaffected, norm=1)
-     * @param b 2nd control point (not null, unaffected, norm=1)
-     * @param q function value at t=1 (not null, unaffected, norm=1)
-     * @param storeResult (modified if not null)
-     * @return interpolated unit quaternion (either storeResult or a new
-     * instance)
-     */
-    public static Quaternion squad(float t, Quaternion p, Quaternion a,
-            Quaternion b, Quaternion q, Quaternion storeResult) {
-        Validate.inRange(t, "t", 0f, 1f);
-        MyQuaternion.validateUnit(p, "p", 0.0001f);
-        MyQuaternion.validateUnit(a, "a", 0.0001f);
-        MyQuaternion.validateUnit(b, "b", 0.0001f);
-        MyQuaternion.validateUnit(q, "q", 0.0001f);
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
-        Quaternion qSlerp = slerp(t, p, q, null);
-        Quaternion aSlerp = slerp(t, a, b, null);
-        slerp(2f * t * (1f - t), qSlerp, aSlerp, storeResult);
-
-        return storeResult;
-    }
-
-    /**
-     * Calculate Squad parameter "a" for a continuous 1st derivative at the
-     * middle point of 3 specified control points.
-     *
-     * @param q0 previous control point (not null, unaffected, norm=1)
-     * @param q1 current control point (not null, unaffected, norm=1)
-     * @param q2 following control point (not null, unaffected, norm=1)
-     * @param storeResult (modified if not null)
-     * @return a unit quaternion for use as a Squad parameter (either
-     * storeResult or a new instance)
-     */
-    public static Quaternion squadA(Quaternion q0, Quaternion q1,
-            Quaternion q2, Quaternion storeResult) {
-        MyQuaternion.validateUnit(q0, "q0", 0.0001f);
-        MyQuaternion.validateUnit(q1, "q1", 0.0001f);
-        MyQuaternion.validateUnit(q2, "q2", 0.0001f);
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
-        Quaternion q1c = MyQuaternion.conjugate(q1, null);
-        Quaternion turn0 = q1c.mult(q0);
-        Quaternion logTurn0 = MyQuaternion.log(turn0, turn0);
-        Quaternion turn2 = q1c.mult(q2);
-        Quaternion logTurn2 = MyQuaternion.log(turn2, turn2);
-        Quaternion sum = logTurn2.addLocal(logTurn0);
-        sum.multLocal(-0.25f);
-        Quaternion exp = MyQuaternion.exp(sum, sum);
-        storeResult.set(q1);
-        storeResult.multLocal(exp);
-
-        return storeResult;
-    }
-
-    /**
      * Repair all tracks in which the 1st keyframe's time isn't 0.
      *
      * @param animation (not null)
@@ -966,35 +601,5 @@ public class Util {
         }
 
         return numTracksEdited;
-    }
-
-    /**
-     * Enumerate all entries (in the specified JAR or ZIP) whose names begin
-     * with the specified prefix.
-     *
-     * @param zipPath filesystem path to the JAR or ZIP (not null, not empty)
-     * @param namePrefix (not null)
-     * @return a new list of entry names
-     */
-    public static List<String> zipEntries(String zipPath, String namePrefix) {
-        Validate.nonEmpty(zipPath, "zip path");
-        Validate.nonNull(namePrefix, "name prefix");
-
-        List<String> result = new ArrayList<>(90);
-        try (FileInputStream fileIn = new FileInputStream(zipPath);
-                ZipInputStream zipIn = new ZipInputStream(fileIn)) {
-            for (ZipEntry entry = zipIn.getNextEntry();
-                    entry != null;
-                    entry = zipIn.getNextEntry()) {
-                String entryName = "/" + entry.getName();
-                if (entryName.startsWith(namePrefix)) {
-                    result.add(entryName);
-                }
-            }
-        } catch (IOException e) {
-            // quit reading entries
-        }
-
-        return result;
     }
 }
