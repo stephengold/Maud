@@ -174,7 +174,7 @@ public class LoadedCgm implements Cloneable {
     // new methods exposed
 
     /**
-     * Count real animations in the current anim control.
+     * Count how many real animations there are in the selected anim control.
      *
      * @return count (&ge;0)
      */
@@ -539,8 +539,8 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Generate a sorted list of animation names, not including bind/mapped
-     * poses.
+     * Generate a sorted name list of the real animations in the selected anim
+     * control. Bind pose and mapped pose are not included.
      *
      * @return a new list
      */
@@ -849,6 +849,12 @@ public class LoadedCgm implements Cloneable {
         bone.deselect();
         spatial.selectModelRoot();
         animation.loadBindPose();
+
+        if (extension.equals("bvh") && countAnimations() == 1) {
+            List<String> names = listAnimationsSorted();
+            String name = names.get(0);
+            animation.load(name);
+        }
     }
     // *************************************************************************
     // Object methods
