@@ -263,6 +263,38 @@ public class Util {
     }
 
     /**
+     * Count all controls of the specified type in the specified subtree of a
+     * scene graph. Note: recursive!
+     *
+     * @param <T> superclass of Control
+     * @param controlType superclass of Control to search for
+     * @param subtree (not null)
+     * @return count (&ge;0)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Control> int countControls(Class<T> controlType,
+            Spatial subtree) {
+        int result = 0;
+        int numControls = subtree.getNumControls();
+        for (int controlIndex = 0; controlIndex < numControls; controlIndex++) {
+            Control control = subtree.getControl(controlIndex);
+            if (controlType.isAssignableFrom(control.getClass())) {
+                ++result;
+            }
+        }
+
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result += countControls(controlType, child);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Count how many vertices in the specified subtree of the scene graph are
      * directly influenced by the indexed bone. Note: recursive!
      *
