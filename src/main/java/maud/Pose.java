@@ -712,6 +712,7 @@ public class Pose implements JmeCloneable {
             Quaternion userRotation = userForModel(targetIndex, mo, null);
             Quaternion twist = boneMapping.getTwist();
             userRotation.mult(twist, userTransform.getRotation());
+            userTransform.getRotation().normalizeLocal();
         }
 
         List<Bone> children = bone.getChildren();
