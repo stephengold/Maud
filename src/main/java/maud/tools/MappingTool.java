@@ -134,7 +134,9 @@ public class MappingTool extends WindowController {
     private void updateFeedback() {
         String feedback;
         boolean sourceIsLoaded = Maud.model.getSource().isLoaded();
-        if (Maud.model.getMap().matchesTarget()) {
+        if (Maud.model.target.bones.findSkeleton() == null) {
+            feedback = "target skeleton not selected";
+        } else if (Maud.model.getMap().matchesTarget()) {
             if (sourceIsLoaded) {
                 if (Maud.model.getMap().matchesSource()) {
                     feedback = "";
