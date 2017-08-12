@@ -1055,10 +1055,12 @@ class BuildMenus {
     private void buildClasspathMapMenu() {
         builder.reset();
 
-        builder.addJme("BallerinaToMhGame");
-        builder.addJme("FlipToMhGame");
-        builder.addJme("FlipToSinbad");
-        builder.addJme("FooterToMhGame");
+        //builder.addJme("BallerinaToMhGame");
+        //builder.addJme("FlipToMhGame");
+        //builder.addJme("FlipToSinbad");
+        //builder.addJme("FooterToMhGame");
+        builder.addJme("PuppetToMhGame");
+        builder.addJme("PuppetToSinbad");
         builder.addJme("SinbadToJaime");
     }
 
