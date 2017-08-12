@@ -999,7 +999,7 @@ class EditorMenus {
                 Maud.model.target.spatial.selectParent();
                 break;
             case "Root":
-                Maud.model.target.spatial.selectModelRoot();
+                Maud.model.target.spatial.selectCgmRoot();
                 break;
             default:
                 handled = false;

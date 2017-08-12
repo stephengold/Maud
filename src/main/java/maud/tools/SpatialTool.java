@@ -231,7 +231,7 @@ class SpatialTool extends WindowController {
      */
     private void updateParent() {
         String parentText, spButton;
-        if (Maud.model.target.spatial.isModelRoot()) {
+        if (Maud.model.target.spatial.isCgmRoot()) {
             parentText = "none (the model root)";
             spButton = "";
         } else {
@@ -272,7 +272,7 @@ class SpatialTool extends WindowController {
      */
     private void updateTreePosition() {
         String positionText;
-        if (Maud.model.target.spatial.isModelRoot()) {
+        if (Maud.model.target.spatial.isCgmRoot()) {
             positionText = "model root";
         } else {
             positionText = Maud.model.target.spatial.toString();

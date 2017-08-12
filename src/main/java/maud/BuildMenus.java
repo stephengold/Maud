@@ -585,7 +585,7 @@ class BuildMenus {
             builder.add("Child");
         }
 
-        boolean isRoot = Maud.model.target.spatial.isModelRoot();
+        boolean isRoot = Maud.model.target.spatial.isCgmRoot();
         if (!isRoot) {
             builder.addNode("Parent");
         }
@@ -1263,7 +1263,7 @@ class BuildMenus {
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
-        if (!Maud.model.target.spatial.isModelRoot()) {
+        if (!Maud.model.target.spatial.isCgmRoot()) {
             builder.addTool("Delete");
         }
         builder.addTool("Control tool");
