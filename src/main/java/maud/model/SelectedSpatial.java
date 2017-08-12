@@ -511,12 +511,11 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Test whether the selected spatial is the root of the CG model. TODO
-     * rename isCgmRoot
+     * Test whether the selected spatial is the root of the CG model.
      *
      * @return true if it's the root, otherwise false
      */
-    public boolean isModelRoot() {
+    public boolean isCgmRoot() {
         if (treePosition.isEmpty()) {
             return true;
         } else {
@@ -735,9 +734,9 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Select the CG model's root spatial. TODO rename selectCgmRoot
+     * Select the CG model's root spatial.
      */
-    public void selectModelRoot() {
+    public void selectCgmRoot() {
         loadedCgm.sgc.selectNone();
         AnimControl oldAnimControl = loadedCgm.getAnimControl();
         Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
