@@ -31,6 +31,8 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.LoadedCgm;
+import maud.model.LoadedMap;
 
 /**
  * The controller for the "Retarget Tool" window in Maud's editor screen.
@@ -108,31 +110,34 @@ class RetargetTool extends WindowController {
         String feedback = "";
         String rButton = "";
         String sourceAnimDesc = "( none loaded )";
-
-        if (!Maud.model.getSource().isLoaded()) {
-            feedback = "load the source model";
-        } else if (Maud.model.getSource().countAnimations() < 1) {
+        LoadedCgm source = Maud.model.getSource();
+        LoadedMap map = Maud.model.getMap();
+        if (!source.isLoaded()) {
+            feedback = "load a source model";
+        } else if (source.countAnimations() < 1) {
             feedback = "load an animated source model";
         } else {
-            boolean real = Maud.model.getSource().animation.isReal();
+            boolean real = source.animation.isReal();
             if (!real) {
                 feedback = "load a source animation";
             } else {
-                String name = Maud.model.getSource().animation.getName();
+                String name = source.animation.getName();
                 sourceAnimDesc = MyString.quote(name);
 
-                boolean matchesSource = Maud.model.getMap().matchesSource();
-                int numBoneMappings = Maud.model.getMap().countMappings();
+                boolean matchesSource = map.matchesSource();
+                int numBoneMappings = map.countMappings();
                 if (numBoneMappings == 0) {
-                    feedback = "the mapping is empty";
-                } else if (Maud.model.getMap().matchesTarget()) {
+                    feedback = "the map is empty";
+                } else if (map.matchesTarget()) {
                     if (matchesSource) {
                         rButton = "Retarget";
                     } else {
-                        feedback = "mapping doesn't match source skeleton";
+                        feedback = "map doesn't match the source skeleton";
                     }
+                } else if (Maud.model.target.bones.findSkeleton() != null) {
+                    feedback = "select a target skeleton";
                 } else {
-                    feedback = "mapping doesn't match target skeleton";
+                    feedback = "map doesn't match the target skeleton";
                 }
             }
         }
