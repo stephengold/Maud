@@ -684,6 +684,9 @@ public class LoadedCgm implements Cloneable {
             case "Jaime":
                 fileName = "Jaime.j3o";
                 break;
+            case "MhGame":
+                fileName = "MhGame.mesh.xml";
+                break;
             case "MonkeyHead":
                 fileName = "MonkeyHead.mesh.xml";
                 break;

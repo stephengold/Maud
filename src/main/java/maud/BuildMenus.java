@@ -1283,7 +1283,8 @@ class BuildMenus {
     private void buildTestDataMenu() {
         builder.reset();
         /*
-         * Add items for the CG models in the jme3-testdata asset pack.
+         * Add items for CG models included with Maud.
+         * If haveTestdata is true, also for CG models in jme3-testdata.
          *
          * animated models:
          */
@@ -1291,6 +1292,7 @@ class BuildMenus {
             builder.addOgre("Elephant");
         }
         builder.addJme("Jaime");
+        builder.addOgre("MhGame");
         if (haveTestdata) {
             builder.addOgre("Ninja");
             builder.addOgre("Oto");
