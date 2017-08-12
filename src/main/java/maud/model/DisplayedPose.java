@@ -89,7 +89,7 @@ public class DisplayedPose implements JmeCloneable {
     }
 
     /**
-     * Reset the displayed pose to bind pose.
+     * Change skeletons and reset the post to bind pose.
      *
      * @param skeleton (may be null, alias created)
      */
