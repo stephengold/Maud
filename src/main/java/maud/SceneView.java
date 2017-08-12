@@ -473,8 +473,8 @@ public class SceneView implements EditorView, JmeCloneable {
      * Visualize a different skeleton, or none.
      *
      * @param newSkeleton (may be null, unaffected)
-     * @param selectedSpatialFlag where to add controls: false &rarr; CG model
-     * root, true &rarr; selected spatial
+     * @param selectedSpatialFlag where to add controls: false&rarr;CG model
+     * root, true&rarr;selected spatial
      */
     public void setSkeleton(Skeleton newSkeleton, boolean selectedSpatialFlag) {
         clearSkeleton();
@@ -1000,7 +1000,7 @@ public class SceneView implements EditorView, JmeCloneable {
     }
 
     /**
-     * Update the user transforms of all bones based on the MVC model.
+     * Update the pose based on the MVC model.
      */
     private void updatePose() {
         int boneCount = cgm.bones.countBones();

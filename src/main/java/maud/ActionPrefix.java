@@ -49,53 +49,51 @@ class ActionPrefix {
      */
     final static String copyAnimation = "copy animation ";
     /**
-     * argument is a filesystem path to a folder/directory
+     * argument is a filesystem path to an asset directory/folder/JAR/ZIP
      */
     final static String deleteAssetFolder = "delete assetFolder ";
     /**
-     * argument is the name of an animation
+     * argument is the name of an animation in the target CG model
      */
     final static String loadAnimation = "load animation ";
     /**
-     * remainder is an asset-folder index followed by an asset path to a CG
-     * model
+     * remainder is a location index followed by an asset path to a CG model
      */
     final static String loadCgmAsset = "load cgm asset ";
     /**
-     * argument is an asset-folder or else "From classpath"
+     * argument is an asset directory/folder/JAR/ZIP or else "From classpath"
      */
     final static String loadCgmLocator = "load cgm locator ";
     /**
-     * argument is the name of a CG model in jme3-testdata
+     * argument is the name of a CG model on the classpath
      */
     final static String loadCgmNamed = "load cgm named ";
     /**
-     * argument is an asset-folder index followed by an asset path to a skeleton
-     * map
+     * argument is an location index followed by an asset path to a skeleton map
      */
     final static String loadMapAsset = "load map asset ";
     /**
-     * argument is an asset folder or else "From classpath"
+     * argument is an asset directory/folder/JAR/ZIP or else "From classpath"
      */
     final static String loadMapLocator = "load map locator ";
     /**
-     * argument is the name of a map asset
+     * argument is the name of a map asset on the classpath
      */
     final static String loadMapNamed = "load map named ";
     /**
-     * argument is the name of a source animation
+     * argument is the name of an animation in the source CG model
      */
     final static String loadSourceAnimation = "load sourceAnimation ";
     /**
-     * argument is an asset-folder index followed by an asset path to a CG model
+     * argument is a location index followed by an asset path to a CG model
      */
     final static String loadSourceCgmAsset = "load sourceCgm assetFolder ";
     /**
-     * argument is an asset-folder or else "From classpath"
+     * argument is a directory/folder/JAR/ZIP or else "From classpath"
      */
     final static String loadSourceCgmLocator = "load sourceCgm locator ";
     /**
-     * argument is the name of a CG model in jme3-testdata
+     * argument is the name of a CG model on the classpath
      */
     final static String loadSourceCgmNamed = "load sourceCgm named ";
     /**
