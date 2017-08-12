@@ -169,10 +169,13 @@ class BuildMenus {
                 /*
                  * Treat the pathname as a prefix.
                  */
-                String folderName = file.getParent();
+                File parent = file.getParentFile();
+                String parentPath = parent.getAbsolutePath();
+                parentPath = parentPath.replaceAll("\\\\", "/");
                 String prefix = file.getName();
-                buildFolderMenu(folderName, prefix);
-                menuPrefix += folderName;
+                buildFolderMenu(parentPath, prefix);
+                parentPath = MyString.remainder(parentPath, rootPath);
+                menuPrefix += indexString + " " + parentPath;
                 if (!menuPrefix.endsWith("/")) {
                     menuPrefix += "/";
                 }
