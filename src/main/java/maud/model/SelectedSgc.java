@@ -179,6 +179,14 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
+     * After successfully loading a CG model, deselect the selected SG control,
+     * if any.
+     */
+    void postLoad() {
+        selectedIndex = -1;
+    }
+
+    /**
      * Select the specified SG control in the selected spatial.
      *
      * @param newSgc which SG control to select, or null to deselect

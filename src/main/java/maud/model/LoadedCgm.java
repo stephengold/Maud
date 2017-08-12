@@ -838,7 +838,7 @@ public class LoadedCgm implements Cloneable {
     /**
      * Invoked after successfully loading a CG model.
      *
-     * @param cgmRoot (not null)
+     * @param cgmRoot the newly loaded CGM (not null)
      */
     protected void postLoad(Spatial cgmRoot) {
         assert cgmRoot != null;
@@ -850,7 +850,7 @@ public class LoadedCgm implements Cloneable {
          * Reset the selected bone/spatial and also the loaded animation.
          */
         bone.deselect();
-        spatial.selectModelRoot();
+        spatial.postLoad();
         animation.loadBindPose();
 
         if (extension.equals("bvh") && countAnimations() == 1) {
