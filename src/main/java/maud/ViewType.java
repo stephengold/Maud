@@ -26,54 +26,26 @@
  */
 package maud;
 
-import com.jme3.renderer.Camera;
-import com.jme3.renderer.ViewPort;
-import maud.model.LoadedCgm;
-
 /**
- * Interface to an MVC view in Maud's edit screen.
+ * Enumerate the types of view found in the editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public interface EditorView {
-    /**
-     * Consider selecting each axis, bone, gnomon, and keyframe in this view.
-     *
-     * @param bestSelection best selection found so far (not null, modified)
-     */
-    void considerAll(Selection bestSelection);
+public enum ViewType {
+    // *************************************************************************
+    // values
 
     /**
-     * Access the camera used to render this view.
-     *
-     * @return a pre-existing instance, or null if not rendered
+     * A scene view consists of a 3-D render of a loaded model, possibly with a
+     * background, a 3D cursor, a supporting platform, and/or overlaid
+     * visualizations. Visualizations can include axes, a bounding box, physics
+     * objects, and/or a skeleton.
      */
-    Camera getCamera();
-
+    Scene,
     /**
-     * Read what type of view this is.
-     *
-     * @return enum (not null)
+     * A score view is a schematic, like a musical score, of a loaded animation.
+     * Bones are arranged vertically, and time (indicated by a gnomon)
+     * progresses from left to right.
      */
-    ViewType getType();
-
-    /**
-     * Access the view port used to render this view.
-     *
-     * @return the pre-existing view port
-     */
-    ViewPort getViewPort();
-
-    /**
-     * Update this view prior to rendering. (Invoked once per render pass on
-     * each instance.)
-     *
-     * @param renderCgm which CG model to render
-     */
-    void update(LoadedCgm renderCgm);
-
-    /**
-     * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
-     */
-    void warpCursor();
+    Score;
 }
