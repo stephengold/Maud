@@ -33,6 +33,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
+import maud.action.ActionPrefix;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.ViewMode;
@@ -42,7 +43,7 @@ import maud.model.ViewMode;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class EditorMenus {
+public class EditorMenus {
     // *************************************************************************
     // constants and loggers
 
@@ -111,7 +112,7 @@ class EditorMenus {
      * @param argument action argument (not null)
      * @param cgm which load slot (not null)
      */
-    void loadAnimation(String argument, LoadedCgm cgm) {
+    public void loadAnimation(String argument, LoadedCgm cgm) {
         if (cgm.hasAnimation(argument)
                 || argument.equals(LoadedAnimation.bindPoseName)
                 || argument.equals(LoadedAnimation.retargetedPoseName)) {
@@ -131,7 +132,7 @@ class EditorMenus {
      *
      * @param argument action argument (not null)
      */
-    void selectBone(String argument) {
+    public void selectBone(String argument) {
         if (Maud.model.target.bones.hasBone(argument)) {
             Maud.model.target.bone.select(argument);
 
@@ -148,7 +149,7 @@ class EditorMenus {
     /**
      * Handle a "select boneChild" action with no argument.
      */
-    void selectBoneChild() {
+    public void selectBoneChild() {
         if (Maud.model.target.bone.isSelected()) {
             int numChildren = Maud.model.target.bone.countChildren();
             if (numChildren == 1) {
@@ -181,7 +182,7 @@ class EditorMenus {
      * @param menuPath path to menu item (not null)
      * @return true if the action is handled, otherwise false
      */
-    boolean selectMenuItem(String menuPath) {
+    public boolean selectMenuItem(String menuPath) {
         boolean handled;
         int separatorBegin = menuPath.indexOf(menuSeparator);
         if (separatorBegin == -1) {
@@ -201,7 +202,7 @@ class EditorMenus {
      *
      * @param argument action argument (not null)
      */
-    void selectSourceBone(String argument) {
+    public void selectSourceBone(String argument) {
         if (Maud.model.getSource().bones.hasBone(argument)) {
             Maud.model.getSource().bone.select(argument);
         } else {
@@ -218,8 +219,10 @@ class EditorMenus {
      * Handle a "select spatial" action with an argument.
      *
      * @param argument action argument (not null)
+     * @param includeNodes true &rarr; include both nodes and geometries, false
+     * &rarr; include geometries only
      */
-    void selectSpatial(String argument, boolean includeNodes) {
+    public void selectSpatial(String argument, boolean includeNodes) {
         if (Maud.model.target.hasSpatial(argument)) {
             Maud.model.target.spatial.select(argument);
 

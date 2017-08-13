@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.action;
 
 import java.util.logging.Logger;
 
@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ActionPrefix {
+public class ActionPrefix {
     // *************************************************************************
     // constants and loggers
 
@@ -47,98 +47,104 @@ class ActionPrefix {
     /**
      * argument is a name for the new animation
      */
-    final static String copyAnimation = "copy animation ";
+    final public static String copyAnimation = "copy animation ";
     /**
      * argument is a filesystem path to an asset directory/folder/JAR/ZIP
      */
-    final static String deleteAssetFolder = "delete assetFolder ";
+    final public static String deleteAssetFolder = "delete assetFolder ";
     /**
      * argument is the name of an animation in the target CG model
      */
-    final static String loadAnimation = "load animation ";
+    final public static String loadAnimation = "load animation ";
     /**
      * remainder is a location index followed by an asset path to a CG model
      */
-    final static String loadCgmAsset = "load cgm asset ";
+    final public static String loadCgmAsset = "load cgm asset ";
     /**
      * argument is an asset directory/folder/JAR/ZIP or else "From classpath"
      */
-    final static String loadCgmLocator = "load cgm locator ";
+    final public static String loadCgmLocator = "load cgm locator ";
     /**
      * argument is the name of a CG model on the classpath
      */
-    final static String loadCgmNamed = "load cgm named ";
+    final public static String loadCgmNamed = "load cgm named ";
     /**
      * argument is an location index followed by an asset path to a skeleton map
      */
-    final static String loadMapAsset = "load map asset ";
+    final public static String loadMapAsset = "load map asset ";
     /**
      * argument is an asset directory/folder/JAR/ZIP or else "From classpath"
      */
-    final static String loadMapLocator = "load map locator ";
+    final public static String loadMapLocator = "load map locator ";
     /**
      * argument is the name of a map asset on the classpath
      */
-    final static String loadMapNamed = "load map named ";
+    final public static String loadMapNamed = "load map named ";
     /**
      * argument is the name of an animation in the source CG model
      */
-    final static String loadSourceAnimation = "load sourceAnimation ";
+    final public static String loadSourceAnimation = "load sourceAnimation ";
     /**
      * argument is a location index followed by an asset path to a CG model
      */
-    final static String loadSourceCgmAsset = "load sourceCgm assetFolder ";
+    final public static String loadSourceCgmAsset = "load sourceCgm assetFolder ";
     /**
      * argument is a directory/folder/JAR/ZIP or else "From classpath"
      */
-    final static String loadSourceCgmLocator = "load sourceCgm locator ";
+    final public static String loadSourceCgmLocator = "load sourceCgm locator ";
     /**
      * argument is the name of a CG model on the classpath
      */
-    final static String loadSourceCgmNamed = "load sourceCgm named ";
+    final public static String loadSourceCgmNamed = "load sourceCgm named ";
     /**
      * argument is a name for the new animation
      */
-    final static String newAnimationFromPose = "new animation fromPose ";
+    final public static String newAnimationFromPose = "new animation fromPose ";
     /**
      * argument is a filesystem path to a folder/directory optionally with a
      * magic filename
      */
-    final static String newAssetFolder = "new assetFolder ";
+    final public static String newAssetFolder = "new assetFolder ";
     /**
-     * remainder consists of the new type, key, and value
+     * arguments are the new type, key, and value
      */
-    final static String newUserKey = "new userKey ";
-    final static String reduceAnimation = "reduce animation ";
-    final static String reduceTrack = "reduce track ";
+    final public static String newUserKey = "new userKey ";
+    /**
+     * argument is a reduction factor
+     */
+    final public static String reduceAnimation = "reduce animation ";
+    /**
+     * argument is a reduction factor
+     */
+    final public static String reduceTrack = "reduce track ";
     /**
      * argument is the new name for the loaded animation
      */
-    final static String renameAnimation = "rename animation ";
+    final public static String renameAnimation = "rename animation ";
     /**
      * argument is the new name for the selected bone
      */
-    final static String renameBone = "rename bone ";
+    final public static String renameBone = "rename bone ";
     /**
      * argument is the new name for the selected spatial
      */
-    final static String renameSpatial = "rename spatial ";
+    final public static String renameSpatial = "rename spatial ";
     /**
      * argument is the new name for the key
      */
-    final static String renameUserKey = "rename userKey ";
+    final public static String renameUserKey = "rename userKey ";
     /**
      * argument is the name for the new animation
      */
-    final static String retargetAnimation = "retarget animation ";
+    final public static String retargetAnimation = "retarget animation ";
     /**
      * argument is a base file path
      */
-    final static String saveCgm = "save cgm ";
+    final public static String saveCgm = "save cgm ";
     /**
      * argument is a base file path
      */
-    final static String saveMap = "save map ";
+    final public static String saveMap = "save map ";
     /**
      * arguments are a spatial name and a deduplication index
      */
@@ -146,17 +152,17 @@ class ActionPrefix {
     /**
      * argument is the name of a bone or a prefix thereof
      */
-    final static String selectBone = "select bone ";
-    final static String selectBoneChild = "select boneChild ";
-    final static String selectControl = "select control ";
+    final public static String selectBone = "select bone ";
+    final public static String selectBoneChild = "select boneChild ";
+    final public static String selectControl = "select control ";
     /**
      * argument is the name of a geometry or a prefix thereof
      */
-    final static String selectGeometry = "select geometry ";
+    final public static String selectGeometry = "select geometry ";
     /**
      * argument is the menu path of a menu item
      */
-    final static String selectMenuItem = "select menuItem ";
+    final public static String selectMenuItem = "select menuItem ";
     /**
      * arguments are a spatial name and a deduplication index
      */
@@ -164,12 +170,12 @@ class ActionPrefix {
     /**
      * argument is the name of a source bone or a prefix thereof
      */
-    final static String selectSourceBone = "select sourceBone ";
-    final static String selectSpatialChild = "select spatialChild ";
+    final public static String selectSourceBone = "select sourceBone ";
     /**
      * argument is the name of a spatial or a prefix thereof
      */
-    final static String selectSpatial = "select spatial ";
+    final public static String selectSpatial = "select spatial ";
+    final public static String selectSpatialChild = "select spatialChild ";
     /**
      * argument is the name of a tool window
      */
@@ -177,43 +183,43 @@ class ActionPrefix {
     /**
      * argument is a pre-existing user key
      */
-    final static String selectUserKey = "select userKey ";
+    final public static String selectUserKey = "select userKey ";
     /**
      * argument is the name of a batch hint
      */
-    final static String setBatchHint = "set batchHint ";
+    final public static String setBatchHint = "set batchHint ";
     /**
      * argument is the name of a cull hint
      */
-    final static String setCullHint = "set cullHint ";
+    final public static String setCullHint = "set cullHint ";
     /**
      * argument is a duration in seconds
      */
-    final static String setDuration = "set duration ";
+    final public static String setDuration = "set duration ";
     /**
      * argument is the name of a queue bucket
      */
-    final static String setQueueBucket = "set queueBucket ";
+    final public static String setQueueBucket = "set queueBucket ";
     /**
      * argument is the name of a shadow mode
      */
-    final static String setShadowMode = "set shadowMode ";
+    final public static String setShadowMode = "set shadowMode ";
     /**
      * argument is the name of a quaternion interpolation technique
      */
-    final static String setTweenRotations = "set tweenRotations ";
+    final public static String setTweenRotations = "set tweenRotations ";
     /**
      * argument is the name of a vector interpolation technique
      */
-    final static String setTweenScales = "set tweenScales ";
+    final public static String setTweenScales = "set tweenScales ";
     /**
      * argument is the name of a vector interpolation technique
      */
-    final static String setTweenTranslations = "set tweenTranslations ";
+    final public static String setTweenTranslations = "set tweenTranslations ";
     /**
      * argument is the new value
      */
-    final static String setUserData = "set userData ";
+    final public static String setUserData = "set userData ";
     // *************************************************************************
     // constructors
 

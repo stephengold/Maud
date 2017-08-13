@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.action;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -38,6 +38,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
+import maud.Maud;
+import maud.TweenRotations;
+import maud.TweenVectors;
+import maud.ViewType;
 import maud.model.History;
 import maud.model.LoadedCgm;
 
@@ -46,7 +50,7 @@ import maud.model.LoadedCgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class EditorInputMode extends InputMode {
+public class EditorInputMode extends InputMode {
     // *************************************************************************
     // constants and loggers
 
@@ -77,7 +81,7 @@ class EditorInputMode extends InputMode {
     /**
      * Instantiate a disabled, uninitialized mode.
      */
-    EditorInputMode() {
+    public EditorInputMode() {
         super("editor");
     }
     // *************************************************************************

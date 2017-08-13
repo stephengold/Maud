@@ -41,6 +41,7 @@ import jme3utilities.nifty.IntegerDialog;
 import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
+import maud.action.ActionPrefix;
 import maud.dialog.AnimationNameDialog;
 import maud.dialog.BoneRenameDialog;
 import maud.dialog.LongDialog;
@@ -53,7 +54,7 @@ import maud.dialog.UserKeyDialog;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class EditorDialogs {
+public class EditorDialogs {
     // *************************************************************************
     // constants and loggers
 
@@ -157,7 +158,7 @@ class EditorDialogs {
     /**
      * Display a "new animation fromPose" dialog.
      */
-    void newAnimationFromPose() {
+    public void newAnimationFromPose() {
         DialogController controller = new AnimationNameDialog("Create");
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
@@ -166,8 +167,10 @@ class EditorDialogs {
 
     /**
      * Display a "new userKey" dialog.
+     *
+     * @param actionString (not null)
      */
-    void newUserKey(String actionString) {
+    public void newUserKey(String actionString) {
         DialogController controller = new UserKeyDialog("Create");
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a key for the new user data:",
@@ -177,7 +180,7 @@ class EditorDialogs {
     /**
      * Display a "reduce animation" dialog.
      */
-    void reduceAnimation() {
+    public void reduceAnimation() {
         if (Maud.model.target.animation.isReal()) {
             IntegerDialog controller;
             controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
@@ -191,7 +194,7 @@ class EditorDialogs {
     /**
      * Display a "reduce track" dialog.
      */
-    void reduceTrack() {
+    public void reduceTrack() {
         if (Maud.model.target.bone.hasTrack()) {
             IntegerDialog controller;
             controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
@@ -205,22 +208,21 @@ class EditorDialogs {
     /**
      * Display a "rename animation" dialog.
      */
-    void renameAnimation() {
+    public void renameAnimation() {
         if (Maud.model.target.animation.isReal()) {
             String oldName = Maud.model.target.animation.getName();
             DialogController controller = new AnimationNameDialog("Rename");
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new name for the animation:",
-                    oldName, ActionPrefix.renameAnimation,
-                    controller);
+                    oldName, ActionPrefix.renameAnimation, controller);
         }
     }
 
     /**
      * Display a "rename bone" dialog.
      */
-    void renameBone() {
+    public void renameBone() {
         if (Maud.model.target.bone.isSelected()) {
             String oldName = Maud.model.target.bone.getName();
             DialogController controller = new BoneRenameDialog("Rename");
@@ -234,7 +236,7 @@ class EditorDialogs {
     /**
      * Display a "rename spatial" dialog.
      */
-    void renameSpatial() {
+    public void renameSpatial() {
         String oldName = Maud.model.target.spatial.getName();
         DialogController controller = new SpatialNameDialog("Rename");
         String prompt;
@@ -252,7 +254,7 @@ class EditorDialogs {
     /**
      * Display a "rename userKey" dialog.
      */
-    void renameUserKey() {
+    public void renameUserKey() {
         String oldName = Maud.model.misc.getSelectedUserKey();
         if (oldName != null) {
             DialogController controller = new UserKeyDialog("Rename");
@@ -285,7 +287,7 @@ class EditorDialogs {
     /**
      * Display a "retarget animation" dialog.
      */
-    void retargetAnimation() {
+    public void retargetAnimation() {
         String oldName = Maud.model.getSource().animation.getName();
         DialogController controller = new AnimationNameDialog("Retarget");
 
@@ -319,7 +321,7 @@ class EditorDialogs {
     /**
      * Display a "set userData" dialog.
      */
-    void setUserData() {
+    public void setUserData() {
         String key = Maud.model.misc.getSelectedUserKey();
         Object data = Maud.model.target.spatial.getUserData(key);
         if (data instanceof Boolean) {

@@ -39,6 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
+import maud.action.ActionPrefix;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.ViewMode;
@@ -48,7 +49,7 @@ import maud.model.ViewMode;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BuildMenus {
+public class BuildMenus {
     // *************************************************************************
     // constants and loggers
 
@@ -123,7 +124,7 @@ class BuildMenus {
      * @param args action arguments (not null, not empty)
      * @param cgm (not null)
      */
-    void loadCgmAsset(String args, LoadedCgm cgm) {
+    public void loadCgmAsset(String args, LoadedCgm cgm) {
         String menuPrefix = null;
         if (cgm == Maud.model.getSource()) {
             menuPrefix = ActionPrefix.loadSourceCgmAsset;
@@ -191,7 +192,7 @@ class BuildMenus {
      * @param path action argument (not null, not empty)
      * @param cgm (not null)
      */
-    void loadCgmLocator(String path, LoadedCgm cgm) {
+    public void loadCgmLocator(String path, LoadedCgm cgm) {
         if (path.equals("From classpath")) {
             buildTestDataMenu();
             String menuPrefix = null;
@@ -214,7 +215,7 @@ class BuildMenus {
     /**
      * Display a "load map asset" action without arguments.
      */
-    void loadMapAsset() {
+    public void loadMapAsset() {
         buildLocatorMenu();
         builder.show(ActionPrefix.loadMapLocator);
     }
@@ -224,7 +225,7 @@ class BuildMenus {
      *
      * @param args action arguments (not null, not empty)
      */
-    void loadMapAsset(String args) {
+    public void loadMapAsset(String args) {
         String menuPrefix = ActionPrefix.loadMapAsset;
         String indexString = args.split(" ")[0];
         String rootPath = Maud.model.getLocations().pathForIndex(indexString);
@@ -261,9 +262,8 @@ class BuildMenus {
      * Handle a "load map locator" action.
      *
      * @param path action argument (not null, not empty)
-     * @param cgm (not null)
      */
-    void loadMapLocator(String path) {
+    public void loadMapLocator(String path) {
         if (path.equals("From classpath")) {
             buildClasspathMapMenu();
             builder.show(ActionPrefix.loadMapNamed);
@@ -382,7 +382,7 @@ class BuildMenus {
      *
      * @param argument action argument (not null)
      */
-    void newAssetFolder(String argument) {
+    public void newAssetFolder(String argument) {
         if (argument.endsWith(EditorMenus.addThis)) {
             String path = MyString.removeSuffix(argument, EditorMenus.addThis);
             Maud.model.getLocations().add(path);
@@ -437,7 +437,7 @@ class BuildMenus {
      *
      * @param cgm which load slot (not null)
      */
-    void selectAnimControl(LoadedCgm cgm) {
+    public void selectAnimControl(LoadedCgm cgm) {
         builder.reset();
         List<String> names = cgm.listAnimControlNames();
         for (String name : names) {
@@ -466,7 +466,7 @@ class BuildMenus {
      *
      * @param argument action argument (not null)
      */
-    void selectBoneChild(String argument) {
+    public void selectBoneChild(String argument) {
         if (argument.startsWith("!")) {
             String name = argument.substring(1);
             Maud.model.target.bone.select(name);
@@ -514,9 +514,9 @@ class BuildMenus {
     }
 
     /**
-     * Display a "Spatial -> Select control" menu.
+     * Display a "Spatial -&gt; Select control" menu.
      */
-    void selectSgc() {
+    public void selectSgc() {
         builder.reset();
         for (String name : Maud.model.target.spatial.listSgcNames()) {
             builder.add(name);
@@ -602,7 +602,7 @@ class BuildMenus {
      *
      * @param itemPrefix prefix for filtering menu items (not null)
      */
-    void selectSpatialChild(String itemPrefix) {
+    public void selectSpatialChild(String itemPrefix) {
         int numChildren = Maud.model.target.spatial.countChildren();
         if (numChildren == 1) {
             Maud.model.target.spatial.selectChild(0);
@@ -639,7 +639,7 @@ class BuildMenus {
      * Display a menu for selecting a user data type using the "new userKey "
      * action prefix.
      */
-    void selectUserDataType() {
+    public void selectUserDataType() {
         builder.reset();
         builder.add("integer");
         builder.add("float");
@@ -654,7 +654,7 @@ class BuildMenus {
      * Display a menu for selecting a user key using the "select userKey "
      * action prefix.
      */
-    void selectUserKey() {
+    public void selectUserKey() {
         builder.reset();
         List<String> keyList = Maud.model.target.spatial.listUserKeys();
         String selectedKey = Maud.model.misc.getSelectedUserKey();
@@ -684,7 +684,7 @@ class BuildMenus {
      * Display a menu to set the batch hint of the current spatial using the
      * "set batchHint " action prefix.
      */
-    void setBatchHint() {
+    public void setBatchHint() {
         builder.reset();
         Spatial.BatchHint selectedHint;
         selectedHint = Maud.model.target.spatial.getLocalBatchHint();
@@ -701,7 +701,7 @@ class BuildMenus {
      * Display a menu to set the cull hint of the current spatial using the "set
      * cullHint " action prefix.
      */
-    void setCullHint() {
+    public void setCullHint() {
         builder.reset();
         Spatial.CullHint selectedHint;
         selectedHint = Maud.model.target.spatial.getLocalCullHint();
@@ -718,7 +718,7 @@ class BuildMenus {
      * Display a menu to set the render bucket of the current spatial using the
      * "set renderBucket " action prefix.
      */
-    void setQueueBucket() {
+    public void setQueueBucket() {
         builder.reset();
         RenderQueue.Bucket selectedBucket;
         selectedBucket = Maud.model.target.spatial.getLocalQueueBucket();
@@ -735,7 +735,7 @@ class BuildMenus {
      * Display a menu to set the shadow mode of the current spatial using the
      * "set shadowMode " action prefix.
      */
-    void setShadowMode() {
+    public void setShadowMode() {
         builder.reset();
         RenderQueue.ShadowMode selectedMode;
         selectedMode = Maud.model.target.spatial.getLocalShadowMode();
@@ -752,7 +752,7 @@ class BuildMenus {
      * Display a menu to set the rotation tweening mode using the "set
      * tweenRotations " action prefix.
      */
-    void setTweenRotations() {
+    public void setTweenRotations() {
         builder.reset();
         TweenRotations selected = Maud.model.misc.getTweenRotations();
         for (TweenRotations t : TweenRotations.values()) {
@@ -768,7 +768,7 @@ class BuildMenus {
      * Display a menu to set the scale tweening mode using the "set tweenScales
      * " action prefix.
      */
-    void setTweenScales() {
+    public void setTweenScales() {
         builder.reset();
         TweenVectors selected = Maud.model.misc.getTweenScales();
         for (TweenVectors t : TweenVectors.values()) {
@@ -784,7 +784,7 @@ class BuildMenus {
      * Display a menu to set the translation tweening mode using the "set
      * tweenTranslations " action prefix.
      */
-    void setTweenTranslations() {
+    public void setTweenTranslations() {
         builder.reset();
         TweenVectors selected = Maud.model.misc.getTweenTranslations();
         for (TweenVectors t : TweenVectors.values()) {
