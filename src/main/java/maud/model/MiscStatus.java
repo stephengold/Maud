@@ -68,9 +68,9 @@ public class MiscStatus implements Cloneable {
      */
     private String selectedUserKey = null;
     /**
-     * view mode ("hybrid" or "scene" or "score")
+     * view mode
      */
-    private String viewMode = "scene";
+    private ViewMode viewMode = ViewMode.Scene;
     /**
      * tweening technique for rotations
      */
@@ -161,9 +161,9 @@ public class MiscStatus implements Cloneable {
     /**
      * Read the view mode.
      *
-     * @return either "hybrid" or "scene" or "score"
+     * @return enum (not null)
      */
-    public String getViewMode() {
+    public ViewMode getViewMode() {
         return viewMode;
     }
 
@@ -223,14 +223,14 @@ public class MiscStatus implements Cloneable {
      */
     public void selectNextViewMode() {
         switch (viewMode) {
-            case "hybrid":
-                viewMode = "scene";
+            case Hybrid:
+                viewMode = ViewMode.Scene;
                 break;
-            case "scene":
-                viewMode = "score";
+            case Scene:
+                viewMode = ViewMode.Score;
                 break;
-            case "score":
-                viewMode = "hybrid";
+            case Score:
+                viewMode = ViewMode.Hybrid;
                 break;
             default:
                 logger.log(Level.SEVERE, "view mode={0}", viewMode);
@@ -301,21 +301,11 @@ public class MiscStatus implements Cloneable {
     /**
      * Alter the view mode.
      *
-     * @param modeName "hybrid" or "scene" or "score"
+     * @param newMode enum (not null)
      */
-    public void setViewMode(String modeName) {
-        Validate.nonNull(modeName, "mode name");
-
-        switch (modeName) {
-            case "hybrid":
-            case "scene":
-            case "score":
-                viewMode = modeName;
-                break;
-            default:
-                logger.log(Level.SEVERE, "mode name={0}", modeName);
-                throw new IllegalArgumentException("invalid mode name");
-        }
+    public void setViewMode(ViewMode newMode) {
+        Validate.nonNull(newMode, "new mode");
+        viewMode = newMode;
     }
 
     /**

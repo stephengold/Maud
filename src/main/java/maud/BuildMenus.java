@@ -41,6 +41,7 @@ import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.ViewMode;
 
 /**
  * Build menus in Maud's editor screen.
@@ -667,15 +668,11 @@ class BuildMenus {
      */
     void selectViewMode() {
         builder.reset();
-        String viewMode = Maud.model.misc.getViewMode();
-        if (!viewMode.equals("scene")) {
-            builder.add("Scene");
-        }
-        if (!viewMode.equals("score")) {
-            builder.add("Score");
-        }
-        if (!viewMode.equals("hybrid")) {
-            builder.add("Hybrid");
+        ViewMode viewMode = Maud.model.misc.getViewMode();
+        for (ViewMode mode : ViewMode.values()) {
+            if (!mode.equals(viewMode)) {
+                builder.add(mode.toString());
+            }
         }
         builder.show("select menuItem View -> Mode -> ");
     }
@@ -1323,11 +1320,13 @@ class BuildMenus {
      */
     private void buildViewMenu() {
         builder.add("Mode");
-        String viewMode = Maud.model.misc.getViewMode();
-        if (viewMode.equals("scene") || viewMode.equals("hybrid")) {
+        ViewMode viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals(ViewMode.Scene)
+                || viewMode.equals(ViewMode.Hybrid)) {
             builder.add("Scene options");
         }
-        if (viewMode.equals("score") || viewMode.equals("hybrid")) {
+        if (viewMode.equals(ViewMode.Score)
+                || viewMode.equals(ViewMode.Hybrid)) {
             builder.add("Score options");
         }
     }

@@ -67,6 +67,7 @@ import maud.mesh.RoundedRectangle;
 import maud.mesh.Sparkline;
 import maud.mesh.YSwarm;
 import maud.model.LoadedCgm;
+import maud.model.ViewMode;
 
 /**
  * A 2D visualization of a loaded animation in a score-mode viewport.
@@ -408,10 +409,10 @@ public class ScoreView implements EditorView {
     @Override
     public ViewPort getViewPort() {
         ViewPort result = null;
-        String viewMode = Maud.model.misc.getViewMode();
-        if (viewMode.equals("hybrid")) {
+        ViewMode viewMode = Maud.model.misc.getViewMode();
+        if (viewMode.equals(ViewMode.Hybrid)) {
             result = viewPort3;
-        } else if (viewMode.equals("score")) {
+        } else if (viewMode.equals(ViewMode.Score)) {
             if (Maud.model.getSource().isLoaded()) {
                 result = viewPort2;
             } else {

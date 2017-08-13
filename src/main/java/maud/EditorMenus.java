@@ -35,6 +35,7 @@ import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.ViewMode;
 
 /**
  * Menus in Maud's editor screen.
@@ -1061,19 +1062,11 @@ class EditorMenus {
     private boolean menuViewMode(String remainder) {
         assert remainder != null;
 
-        boolean handled = true;
-        switch (remainder) {
-            case "Hybrid":
-                Maud.model.misc.setViewMode("hybrid");
-                break;
-            case "Scene":
-                Maud.model.misc.setViewMode("scene");
-                break;
-            case "Score":
-                Maud.model.misc.setViewMode("score");
-                break;
-            default:
-                handled = false;
+        boolean handled = false;
+        ViewMode viewMode = ViewMode.valueOf(remainder);
+        if (viewMode != null) {
+            handled = true;
+            Maud.model.misc.setViewMode(viewMode);
         }
 
         return handled;

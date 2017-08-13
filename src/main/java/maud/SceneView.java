@@ -69,6 +69,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 import maud.model.LoadedCgm;
+import maud.model.ViewMode;
 
 /**
  * A 3D visualization of a loaded CG model in a scene-mode viewport.
@@ -657,8 +658,9 @@ public class SceneView implements EditorView, JmeCloneable {
     @Override
     public ViewPort getViewPort() {
         ViewPort result;
-        String viewMode = Maud.model.misc.getViewMode();
-        if (Maud.model.getSource().isLoaded() || viewMode.equals("hybrid")) {
+        ViewMode viewMode = Maud.model.misc.getViewMode();
+        if (Maud.model.getSource().isLoaded()
+                || viewMode.equals(ViewMode.Hybrid)) {
             result = viewPort2; // split-screen view port
         } else {
             result = viewPort1; // not split
