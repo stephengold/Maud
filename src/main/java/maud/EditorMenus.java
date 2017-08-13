@@ -287,6 +287,9 @@ class EditorMenus {
             case "Settings":
                 handled = menuSettings(remainder);
                 break;
+            case "SGC":
+                handled = menuSgc(remainder);
+                break;
             case "Spatial":
                 handled = menuSpatial(remainder);
                 break;
@@ -861,6 +864,43 @@ class EditorMenus {
     }
 
     /**
+     * Handle a "select menuItem" action from the SGC menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuSgc(String remainder) {
+        assert remainder != null;
+
+        boolean handled = true;
+        String addPrefix = "Add" + menuSeparator;
+        if (remainder.startsWith(addPrefix)) {
+            String arg = MyString.remainder(remainder, addPrefix);
+            handled = menuSgcAdd(arg);
+
+        } else {
+            switch (remainder) {
+                case "Add":
+                    Maud.gui.buildMenus.addSgc();
+                    break;
+                case "Delete":
+                    Maud.gui.dialogs.deleteSgc();
+                    break;
+                case "Select":
+                    Maud.gui.buildMenus.selectSgc();
+                    break;
+                case "Tool":
+                    Maud.gui.tools.select("sgc");
+                    break;
+                default:
+                    handled = false;
+            }
+        }
+
+        return handled;
+    }
+
+    /**
      * Handle a "select menuItem" action from the "CGM -> Source model" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -898,7 +938,7 @@ class EditorMenus {
         String selectPrefix = "Select" + menuSeparator;
         if (remainder.startsWith(addControlPrefix)) {
             String arg = MyString.remainder(remainder, addControlPrefix);
-            handled = menuSpatialAddControl(arg);
+            handled = menuSgcAdd(arg);
 
         } else if (remainder.startsWith(selectPrefix)) {
             String arg = MyString.remainder(remainder, selectPrefix);
@@ -953,7 +993,7 @@ class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuSpatialAddControl(String remainder) {
+    private boolean menuSgcAdd(String remainder) {
         assert remainder != null;
 
         boolean handled = false;
