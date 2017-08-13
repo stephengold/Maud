@@ -53,6 +53,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
+import maud.action.EditorInputMode;
 import maud.model.Checkpoint;
 import maud.model.History;
 import maud.model.LoadedCgm;
@@ -101,11 +102,11 @@ public class EditorScreen extends GuiScreenController {
     /**
      * build menus for this screen
      */
-    final BuildMenus buildMenus = new BuildMenus();
+    final public BuildMenus buildMenus = new BuildMenus();
     /**
      * dialog boxes created by this screen
      */
-    final EditorDialogs dialogs = new EditorDialogs();
+    final public EditorDialogs dialogs = new EditorDialogs();
     /**
      * input mode for this screen
      */
@@ -113,7 +114,7 @@ public class EditorScreen extends GuiScreenController {
     /**
      * menus for this screen
      */
-    final EditorMenus menus = new EditorMenus();
+    final public EditorMenus menus = new EditorMenus();
     /**
      * controllers for tool windows
      */
@@ -137,7 +138,7 @@ public class EditorScreen extends GuiScreenController {
      * @param source textual description of what triggered invocation (not null
      * or empty)
      */
-    void addCheckpoint(String source) {
+    public void addCheckpoint(String source) {
         Validate.nonEmpty(source, "source");
 
         int checkpointIndex = History.addCheckpoint();
@@ -499,7 +500,7 @@ public class EditorScreen extends GuiScreenController {
      *
      * @param argument action argument (not null)
      */
-    void selectSpatialChild(String argument) {
+    public void selectSpatialChild(String argument) {
         List<String> children;
         children = Maud.model.target.spatial.listNumberedChildren();
         int childIndex = children.indexOf(argument);
@@ -516,7 +517,7 @@ public class EditorScreen extends GuiScreenController {
      * @param toolName which tool to select (not null)
      * @return true if the action is handled, otherwise false
      */
-    boolean selectTool(String toolName) {
+    public boolean selectTool(String toolName) {
         WindowController controller = tools.getTool(toolName);
         if (controller == null) {
             return false;
@@ -530,7 +531,7 @@ public class EditorScreen extends GuiScreenController {
      * Select an axis, bone, gnomon, or keyframe based on the screen coordinates
      * of the mouse pointer.
      */
-    void selectXY() {
+    public void selectXY() {
         LoadedCgm mouseCgm = Maud.gui.mouseCgm();
         EditorView mouseView = Maud.gui.mouseView();
         if (mouseCgm != null && mouseView != null) {
@@ -603,7 +604,7 @@ public class EditorScreen extends GuiScreenController {
     /**
      * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
      */
-    void warpCursor() {
+    public void warpCursor() {
         EditorView mouseView = Maud.gui.mouseView();
         if (mouseView != null) {
             mouseView.warpCursor();
