@@ -38,6 +38,12 @@ import maud.model.LoadedMap;
  * @author Stephen Gold sgold@sonic.net
  */
 public class Selection {
+
+    // *************************************************************************
+    // enums
+    private enum Type {
+        None, Bone, Gnomon, Keyframe, PoseRotationAxis, PoseTransformAxis;
+    }
     // *************************************************************************
     // constants and loggers
 
@@ -57,24 +63,23 @@ public class Selection {
     /**
      * the index of the axis to be selected, or -1 for none
      */
-    private int bestAxisIndex;
+    private int bestAxisIndex = -1;
     /**
      * the index of the bone to be selected, or -1 for none
      */
-    private int bestBoneIndex;
+    private int bestBoneIndex = -1;
     /**
      * the index of the keyframe to be selected, or -1 for none
      */
-    private int bestFrameIndex;
+    private int bestFrameIndex = -1;
     /**
      * the CG model to be selected, or null for none
      */
-    private LoadedCgm bestCgm;
+    private LoadedCgm bestCgm = null;
     /**
-     * type of selection ("none", "bone", "gnomon", "keyframe", "pose rotation
-     * axis", or "pose transform axis")
+     * type of object selected (not null)
      */
-    private String bestType;
+    private Type bestType = Type.None;
     /**
      * screen coordinates used to compare selections
      */
@@ -94,11 +99,7 @@ public class Selection {
         Validate.positive(dSquaredThreshold, "D-squared threshold");
 
         bestDSquared = dSquaredThreshold;
-        bestAxisIndex = -1;
-        bestBoneIndex = -1;
-        bestFrameIndex = -1;
         bestCgm = null;
-        bestType = "none";
         inputXY = screenXY.clone();
     }
     // *************************************************************************
@@ -123,7 +124,7 @@ public class Selection {
             bestBoneIndex = boneIndex;
             bestFrameIndex = -1;
             bestCgm = cgm;
-            bestType = "bone";
+            bestType = Type.Bone;
         }
     }
 
@@ -144,7 +145,7 @@ public class Selection {
             bestBoneIndex = -1;
             bestFrameIndex = -1;
             bestCgm = cgm;
-            bestType = "gnomon";
+            bestType = Type.Gnomon;
         }
     }
 
@@ -168,7 +169,7 @@ public class Selection {
             bestBoneIndex = cgm.bone.getIndex();
             bestFrameIndex = frameIndex;
             bestCgm = cgm;
-            bestType = "keyframe";
+            bestType = Type.Keyframe;
         }
     }
 
@@ -200,9 +201,9 @@ public class Selection {
             bestFrameIndex = -1;
             bestCgm = cgm;
             if (scoreView) {
-                bestType = "pose transform axis";
+                bestType = Type.PoseTransformAxis;
             } else {
-                bestType = "pose rotation axis";
+                bestType = Type.PoseRotationAxis;
             }
         }
     }
@@ -222,21 +223,21 @@ public class Selection {
      */
     public void select() {
         switch (bestType) {
-            case "none":
+            case None:
                 break;
-            case "bone":
+            case Bone:
                 selectBone();
                 break;
-            case "gnomon":
+            case Gnomon:
                 selectGnomon();
                 break;
-            case "keyframe":
+            case Keyframe:
                 selectKeyframe();
                 break;
-            case "pose rotation axis":
+            case PoseRotationAxis:
                 selectPoseRotationAxis();
                 break;
-            case "pose transform axis":
+            case PoseTransformAxis:
                 selectPoseTransformAxis();
                 break;
             default:
