@@ -127,15 +127,15 @@ class RetargetTool extends WindowController {
                 boolean matchesSource = map.matchesSource();
                 int numBoneMappings = map.countMappings();
                 if (numBoneMappings == 0) {
-                    feedback = "the map is empty";
+                    feedback = "the skeleton map is empty";
                 } else if (map.matchesTarget()) {
                     if (matchesSource) {
                         rButton = "Retarget";
                     } else {
                         feedback = "map doesn't match the source skeleton";
                     }
-                } else if (Maud.model.target.bones.findSkeleton() != null) {
-                    feedback = "select a target skeleton";
+                } else if (Maud.model.target.bones.findSkeleton() == null) {
+                    feedback = "select a target anim control";
                 } else {
                     feedback = "map doesn't match the target skeleton";
                 }
