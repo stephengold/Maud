@@ -54,6 +54,7 @@ import maud.dialog.QuitDialog;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedCgm;
+import maud.model.ViewMode;
 
 /**
  * GUI application to edit jMonkeyEngine animated 3-D CG models. The
@@ -246,9 +247,9 @@ public class Maud extends GuiApplication {
     void updateViewPorts() {
         boolean splitScreen = Maud.model.getSource().isLoaded();
 
-        String viewMode = Maud.model.misc.getViewMode();
+        ViewMode viewMode = Maud.model.misc.getViewMode();
         switch (viewMode) {
-            case "hybrid":
+            case Hybrid:
                 sourceSceneViewPort.setEnabled(false);
                 targetSceneRightViewPort.setEnabled(true);
                 viewPort.setEnabled(false);
@@ -258,7 +259,7 @@ public class Maud extends GuiApplication {
                 targetScoreWideViewPort.setEnabled(false);
                 break;
 
-            case "scene":
+            case Scene:
                 sourceSceneViewPort.setEnabled(splitScreen);
                 targetSceneRightViewPort.setEnabled(splitScreen);
                 viewPort.setEnabled(!splitScreen);
@@ -268,7 +269,7 @@ public class Maud extends GuiApplication {
                 targetScoreWideViewPort.setEnabled(false);
                 break;
 
-            case "score":
+            case Score:
                 sourceSceneViewPort.setEnabled(false);
                 targetSceneRightViewPort.setEnabled(false);
                 viewPort.setEnabled(false);
