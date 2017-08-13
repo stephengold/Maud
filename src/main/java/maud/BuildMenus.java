@@ -1055,13 +1055,10 @@ class BuildMenus {
     private void buildClasspathMapMenu() {
         builder.reset();
 
-        //builder.addJme("BallerinaToMhGame");
-        //builder.addJme("FlipToMhGame");
-        //builder.addJme("FlipToSinbad");
-        //builder.addJme("FooterToMhGame");
-        builder.addJme("PuppetToMhGame");
-        builder.addJme("PuppetToSinbad");
-        builder.addJme("SinbadToJaime");
+        builder.addJme("PuppetToMhGame"); // 51 mappings
+        builder.addJme("PuppetToSinbad"); // 50 mappings
+        builder.addJme("SinbadToJaime"); // 52 mappings
+        builder.addJme("SinbadToMhGame"); // 49 mappings
     }
 
     /**
