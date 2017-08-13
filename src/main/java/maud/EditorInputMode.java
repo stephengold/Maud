@@ -736,6 +736,9 @@ class EditorInputMode extends InputMode {
             case "select screenXY":
                 Maud.gui.selectXY();
                 break;
+            case "select sgc":
+                Maud.gui.buildMenus.selectSgc();
+                break;
             case "select sourceAnimControl":
                 Maud.gui.buildMenus.selectAnimControl(Maud.model.getSource());
                 break;

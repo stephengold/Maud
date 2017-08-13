@@ -54,19 +54,23 @@ the menu bar, status bar, and tool windows.
                              width="75px">
                         <interact onRelease="perform(select menuItem Spatial)"/>
                     </control>
-                    <control name="button" id="AnimationButton" label="5] Animations"
+                    <control name="button" id="ControlButton" label="5] Control"
+                             width="75px">
+                        <interact onRelease="perform(select menuItem SGC)"/>
+                    </control>
+                    <control name="button" id="AnimationButton" label="6] Animations"
                              width="88px">
                         <interact onRelease="perform(select menuItem Animation)"/>
                     </control>
-                    <control name="button" id="BoneButton" label="6] Bone"
+                    <control name="button" id="BoneButton" label="7] Bone"
                              width="60px">
                         <interact onRelease="perform(select menuItem Bone)"/>
                     </control>
-                    <control name="button" id="KeyframeButton" label="7] Keyframe"
+                    <control name="button" id="KeyframeButton" label="8] Keyframe"
                              width="80px">
                         <interact onRelease="perform(select menuItem Keyframe)"/>
                     </control>
-                    <control name="button" id="PhysicsButton" label="8] Physics"
+                    <control name="button" id="PhysicsButton" label="9] Physics"
                              width="70px">
                         <interact onRelease="perform(select menuItem Physics)"/>
                     </control>
@@ -74,15 +78,15 @@ the menu bar, status bar, and tool windows.
                 <panel id="menu bar bottom row"
                        childLayout="horizontal"
                        height="20px">
-                    <control name="button" id="HistoryButton" label="9] History"
+                    <control name="button" id="HistoryButton" label="0] History"
                              width="70px">
                         <interact onRelease="perform(select menuItem History)"/>
                     </control>
-                    <control name="button" id="SettingsButton" label="0] Settings"
+                    <control name="button" id="SettingsButton" label="-] Settings"
                              width="70px">
                         <interact onRelease="perform(select menuItem Settings)"/>
                     </control>
-                    <control name="button" id="HelpButton" label="-] Help"
+                    <control name="button" id="HelpButton" label="Help"
                              width="55px">
                         <interact onRelease="perform(select menuItem Help)"/>
                     </control>
@@ -1233,13 +1237,13 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Add"
                                  id="id20ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(select menuItem Spatial -> Add control)"/>
+                            <interact onRelease="perform(add sgc)"/>
                         </control>
                         <panel width="10px"/>
                         <control name="button" label="Select"
                                  id="id21ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(select menuItem Spatial -> Select control)"/>
+                            <interact onRelease="perform(select sgc)"/>
                         </control>
                     </panel>
                     <panel height="10px"/>

@@ -353,6 +353,9 @@ class BuildMenus {
             case "Settings":
                 buildSettingsMenu();
                 break;
+            case "SGC":
+                buildSgcMenu();
+                break;
             case "Spatial":
                 buildSpatialMenu();
                 break;
@@ -1233,6 +1236,19 @@ class BuildMenus {
     }
 
     /**
+     * Build an SGC menu.
+     */
+    private void buildSgcMenu() {
+        builder.addTool("Tool");
+        builder.add("Select");
+        builder.add("Add");
+        if (Maud.model.target.sgc.isSelected()) {
+            //builder.add("Deselect"); TODO
+            builder.add("Delete");
+        }
+    }
+
+    /**
      * Build a "Bone -> Select source" menu.
      */
     private void buildSourceBoneSelectMenu() {
@@ -1262,13 +1278,6 @@ class BuildMenus {
         builder.addTool("Translate");
         if (!Maud.model.target.spatial.isCgmRoot()) {
             builder.addTool("Delete");
-        }
-        builder.addTool("Control tool");
-        builder.add("Select control");
-        builder.add("Add control");
-        if (Maud.model.target.sgc.isSelected()) {
-            //builder.add("Deselect control"); TODO
-            builder.add("Delete control");
         }
         builder.addTool("User data tool");
         //builder.addTool("Material"); TODO
