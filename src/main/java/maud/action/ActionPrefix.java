@@ -73,7 +73,8 @@ public class ActionPrefix {
      */
     final public static String loadMapAsset = "load map asset ";
     /**
-     * argument is an asset directory/folder/JAR/ZIP or else "From classpath"
+     * argument is an asset directory/folder/JAR/ZIP or else "From classpath" or
+     * "Identity for source" or "Identity for target"
      */
     final public static String loadMapLocator = "load map locator ";
     /**

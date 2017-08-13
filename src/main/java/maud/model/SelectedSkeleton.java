@@ -116,7 +116,7 @@ public class SelectedSkeleton implements Cloneable {
      * came from the selected spatial, false if it came from the CG model root
      * @return the pre-existing instance, or null if none
      */
-    public Skeleton findSkeleton(Boolean storeSelectedSpatialFlag) {
+    Skeleton findSkeleton(Boolean storeSelectedSpatialFlag) {
         AnimControl animControl;
         boolean selectedSpatialFlag;
         SkeletonControl skeletonControl;
@@ -168,7 +168,7 @@ public class SelectedSkeleton implements Cloneable {
      *
      * @return the pre-existing instance, or null if none
      */
-    public Skeleton findSkeleton() {
+    Skeleton findSkeleton() {
         Skeleton result = findSkeleton(null);
         return result;
     }
@@ -251,6 +251,23 @@ public class SelectedSkeleton implements Cloneable {
     }
 
     /**
+     * Test whether a skeleton is selected.
+     *
+     * @return true if selected, otherwise false
+     */
+    public boolean isSelected() {
+        boolean result = false;
+        if (loadedCgm.isLoaded()) {
+            Skeleton skeleton = findSkeleton();
+            if (skeleton != null) {
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Enumerate bones in the selected skeleton.
      *
      * @return a new list of names, including noBone
@@ -295,7 +312,7 @@ public class SelectedSkeleton implements Cloneable {
     }
 
     /**
-     * Enumerate all children of the named bone in the selected sksleton.
+     * Enumerate all children of the named bone in the selected skeleton.
      *
      * @param parentName name of the parent bone
      * @return a new list of bone names

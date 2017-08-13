@@ -26,6 +26,8 @@
  */
 package maud.model;
 
+import com.jme3.animation.Bone;
+import com.jme3.animation.Skeleton;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
 import com.jme3.scene.plugins.bvh.BoneMapping;
@@ -116,14 +118,30 @@ public class EditableMap extends LoadedMap {
     }
 
     /**
-     * Invert the map.
+     * Replace the map with its own inverse.
      */
     public void invert() {
         if (map.countMappings() > 0) {
             map = map.inverse();
             assetPath = null;
-            setEdited("invert skeleton map");
+            setEdited("invert the skeleton map");
         }
+    }
+
+    /**
+     * Replace the map with an identity map for the source model.
+     */
+    public void loadIdentityForSource() {
+        Skeleton skeleton = Maud.model.getSource().bones.findSkeleton();
+        loadIdentity(skeleton);
+    }
+
+    /**
+     * Replace the map with an identity map for the target model.
+     */
+    public void loadIdentityForTarget() {
+        Skeleton skeleton = Maud.model.target.bones.findSkeleton();
+        loadIdentity(skeleton);
     }
 
     /**
@@ -219,7 +237,7 @@ public class EditableMap extends LoadedMap {
     }
 
     /**
-     * Write the map to a file.
+     * Write the map to a file. TODO append J3O extension
      *
      * @param path file path (not null, not empty)
      * @return true if successful, otherwise false
@@ -357,6 +375,27 @@ public class EditableMap extends LoadedMap {
         Util.cardinalizeLocal(twist);
 
         return twist;
+    }
+
+    /**
+     * Replace the map with an identity map for the specified skeleton.
+     *
+     * @param skeleton which skeleton to use (not null)
+     */
+    private void loadIdentity(Skeleton skeleton) {
+        map.clear();
+        int numBones = skeleton.getBoneCount();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            Bone bone = skeleton.getBone(boneIndex);
+            String name = bone.getName();
+            map.map(name, name);
+        }
+
+        assetFolder = "";
+        assetPath = "";
+        String event = String.format("load an identity map with %d bone%s",
+                numBones, numBones == 1 ? "" : "s");
+        setEdited(event);
     }
 
     /**

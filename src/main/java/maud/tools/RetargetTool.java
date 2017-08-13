@@ -134,7 +134,7 @@ class RetargetTool extends WindowController {
                     } else {
                         feedback = "map doesn't match the source skeleton";
                     }
-                } else if (Maud.model.target.bones.findSkeleton() == null) {
+                } else if (!Maud.model.target.bones.isSelected()) {
                     feedback = "select a target anim control";
                 } else {
                     feedback = "map doesn't match the target skeleton";
