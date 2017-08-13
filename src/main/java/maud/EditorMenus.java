@@ -1064,7 +1064,8 @@ class EditorMenus {
         String scoresPrefix = "Score options" + menuSeparator;
         if (remainder.startsWith(modePrefix)) {
             String arg = MyString.remainder(remainder, modePrefix);
-            handled = menuViewMode(arg);
+            menuViewMode(arg);
+            handled = true;
 
         } else if (remainder.startsWith(scenesPrefix)) {
             String arg = MyString.remainder(remainder, scenesPrefix);
@@ -1099,17 +1100,11 @@ class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuViewMode(String remainder) {
+    private void menuViewMode(String remainder) {
         assert remainder != null;
 
-        boolean handled = false;
         ViewMode viewMode = ViewMode.valueOf(remainder);
-        if (viewMode != null) {
-            handled = true;
-            Maud.model.misc.setViewMode(viewMode);
-        }
-
-        return handled;
+        Maud.model.misc.setViewMode(viewMode);
     }
 
     /**
