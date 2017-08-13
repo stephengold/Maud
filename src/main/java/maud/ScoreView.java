@@ -392,13 +392,13 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Read the mode of this view.
+     * Read what type of view this is.
      *
-     * @return "score"
+     * @return Score
      */
     @Override
-    public String getMode() {
-        return "score";
+    public ViewType getType() {
+        return ViewType.Score;
     }
 
     /**

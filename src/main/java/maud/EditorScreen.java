@@ -261,15 +261,15 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Select a view mode based on the screen position of the mouse pointer.
+     * Select a view type based on the screen position of the mouse pointer.
      *
-     * @return "scene" or "score" or null if neither applies
+     * @return an enum value, or null if neither applies
      */
-    public String mouseViewMode() {
-        String result = null;
+    public ViewType mouseViewType() {
+        ViewType result = null;
         EditorView view = mouseView();
         if (view != null) {
-            result = view.getMode();
+            result = view.getType();
         }
 
         return result;
@@ -667,8 +667,8 @@ public class EditorScreen extends GuiScreenController {
         Maud application = Maud.getApplication();
         application.updateViewPorts();
 
-        String viewMode = mouseViewMode();
-        if ("scene".equals(viewMode)) {
+        ViewType viewType = mouseViewType();
+        if (viewType == ViewType.Scene) {
             /*
              * Based on mouse pointer position, select a loaded CG model
              * to rotate around its Y-axis.
@@ -687,7 +687,7 @@ public class EditorScreen extends GuiScreenController {
                 Maud.gui.tools.axes.dragAxis();
             }
 
-        } else if ("score".equals(viewMode)) {
+        } else if (viewType == ViewType.Score) {
             LoadedCgm cgm = Maud.model.getScore().getDraggingGnomonCgm();
             if (cgm != null) {
                 Camera camera = cgm.getScoreView().getCamera();

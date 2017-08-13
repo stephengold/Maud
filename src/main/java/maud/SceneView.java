@@ -641,13 +641,13 @@ public class SceneView implements EditorView, JmeCloneable {
     }
 
     /**
-     * Read the mode of this view.
+     * Read what type of view this is.
      *
-     * @return "scene"
+     * @return Scene
      */
     @Override
-    public String getMode() {
-        return "scene";
+    public ViewType getType() {
+        return ViewType.Scene;
     }
 
     /**
