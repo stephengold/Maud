@@ -217,6 +217,12 @@ public class BuildMenus {
      */
     public void loadMapAsset() {
         buildLocatorMenu();
+        if (Maud.model.getSource().bones.isSelected()) {
+            builder.add("Identity for source");
+        }
+        if (Maud.model.target.bones.isSelected()) {
+            builder.add("Identity for target");
+        }
         builder.show(ActionPrefix.loadMapLocator);
     }
 
@@ -226,11 +232,12 @@ public class BuildMenus {
      * @param args action arguments (not null, not empty)
      */
     public void loadMapAsset(String args) {
-        String menuPrefix = ActionPrefix.loadMapAsset;
         String indexString = args.split(" ")[0];
         String rootPath = Maud.model.getLocations().pathForIndex(indexString);
         String assetPath = MyString.remainder(args, indexString + " ");
+
         File file = new File(rootPath, assetPath);
+        String menuPrefix = ActionPrefix.loadMapAsset;
         if (file.isDirectory()) {
             String folderPath = file.getAbsolutePath();
             buildFolderMenu(folderPath, "");
@@ -264,14 +271,24 @@ public class BuildMenus {
      * @param path action argument (not null, not empty)
      */
     public void loadMapLocator(String path) {
-        if (path.equals("From classpath")) {
-            buildClasspathMapMenu();
-            builder.show(ActionPrefix.loadMapNamed);
+        switch (path) {
+            case "From classpath":
+                buildClasspathMapMenu();
+                builder.show(ActionPrefix.loadMapNamed);
+                break;
 
-        } else {
-            String indexString = Maud.model.getLocations().indexForPath(path);
-            String args = indexString + " /";
-            loadMapAsset(args);
+            case "Identity for source":
+                Maud.model.getMap().loadIdentityForSource();
+                break;
+
+            case "Identity for target":
+                Maud.model.getMap().loadIdentityForTarget();
+                break;
+
+            default:
+                String indexString = Maud.model.getLocations().indexForPath(path);
+                String args = indexString + " /";
+                loadMapAsset(args);
         }
     }
 
