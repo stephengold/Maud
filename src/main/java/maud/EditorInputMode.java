@@ -487,7 +487,7 @@ class EditorInputMode extends InputMode {
                 Maud.model.getSource().animation.loadPrevious();
                 break;
             case "previous sourceAnimControl":
-                Maud.model.target.previousAnimControl();
+                Maud.model.getSource().previousAnimControl();
                 break;
             case "previous userData":
                 Maud.model.misc.selectPreviousUserKey();
