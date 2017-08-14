@@ -69,7 +69,7 @@ public class EditorDialogs {
     /**
      * Display an "About Maud" dialog.
      */
-    void aboutMaud() {
+    public void aboutMaud() {
         Nifty nifty = Maud.gui.getNifty();
         String niftyVersion = nifty.getVersion();
         String text = "Maud, by Stephen Gold\n\nYou are c"
@@ -98,7 +98,7 @@ public class EditorDialogs {
     /**
      * Display a "copy animation" dialog.
      */
-    void copyAnimation() {
+    public void copyAnimation() {
         String fromName = Maud.model.target.animation.getName();
         DialogController controller = new AnimationNameDialog("Copy");
 
@@ -110,7 +110,7 @@ public class EditorDialogs {
     /**
      * Display a "delete animation" dialog.
      */
-    void deleteAnimation() {
+    public void deleteAnimation() {
         String name = Maud.model.target.animation.getName();
         String message = String.format("Delete the %s animation?",
                 MyString.quote(name));
@@ -121,7 +121,7 @@ public class EditorDialogs {
     /**
      * Display a "delete control" dialog.
      */
-    void deleteSgc() {
+    public void deleteSgc() {
         String name = Maud.model.target.sgc.getName();
         String message;
         message = String.format("Delete the %s control?", MyString.quote(name));
@@ -131,10 +131,8 @@ public class EditorDialogs {
 
     /**
      * Display a License infobox.
-     *
-     * @param actionPrefix for the dialog (not null)
      */
-    void license() {
+    public void license() {
         File licenseFile = new File("LICENSE");
         Scanner scanner = null;
         try {
@@ -267,7 +265,7 @@ public class EditorDialogs {
     /**
      * Display a "save cgm" dialog.
      */
-    void saveCgm() {
+    public void saveCgm() {
         String baseFilePath = Maud.model.target.baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for model:",
@@ -277,7 +275,7 @@ public class EditorDialogs {
     /**
      * Display a "save map" dialog.
      */
-    void saveMap() {
+    public void saveMap() {
         String baseFilePath = Maud.model.getMap().baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for map:",
@@ -299,7 +297,7 @@ public class EditorDialogs {
     /**
      * Display a "set duration" dialog.
      */
-    void setDuration() {
+    public void setDuration() {
         float oldDuration = Maud.model.target.animation.getDuration();
         String defaultText = Float.toString(oldDuration);
 
