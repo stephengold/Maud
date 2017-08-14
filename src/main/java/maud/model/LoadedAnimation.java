@@ -543,13 +543,20 @@ public class LoadedAnimation implements Cloneable {
      * @return true if one is loaded, false if bind/retargeted pose is loaded
      */
     public boolean isReal() {
-        if (loadedName.equals(bindPoseName)) {
-            return false;
-        } else if (loadedName.equals(retargetedPoseName)) {
-            return false;
+        boolean result;
+        if (loadedCgm.isLoaded()) {
+            if (loadedName.equals(bindPoseName)) {
+                result = false;
+            } else if (loadedName.equals(retargetedPoseName)) {
+                result = false;
+            } else {
+                result = true;
+            }
         } else {
-            return true;
+            result = false;
         }
+
+        return result;
     }
 
     /**
