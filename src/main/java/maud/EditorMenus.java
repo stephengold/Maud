@@ -57,9 +57,9 @@ public class EditorMenus {
      */
     final static String addThis = "! add this folder";
     /**
-     * level separator in menu action strings
+     * level separator in menu paths
      */
-    final static String menuSeparator = " -> ";
+    final static String menuPathSeparator = " -> ";
     // *************************************************************************
     // new methods exposed
 
@@ -184,11 +184,11 @@ public class EditorMenus {
      */
     public boolean selectMenuItem(String menuPath) {
         boolean handled;
-        int separatorBegin = menuPath.indexOf(menuSeparator);
+        int separatorBegin = menuPath.indexOf(menuPathSeparator);
         if (separatorBegin == -1) {
             handled = Maud.gui.buildMenus.menuBar(menuPath);
         } else {
-            int separatorEnd = separatorBegin + menuSeparator.length();
+            int separatorEnd = separatorBegin + menuPathSeparator.length();
             String menuName = menuPath.substring(0, separatorBegin);
             String remainder = menuPath.substring(separatorEnd);
             handled = menu(menuName, remainder);
@@ -313,7 +313,7 @@ public class EditorMenus {
         assert remainder != null;
 
         boolean handled;
-        String addNewPrefix = "Add new" + menuSeparator;
+        String addNewPrefix = "Add new" + menuPathSeparator;
         if (remainder.startsWith(addNewPrefix)) {
             String arg = MyString.remainder(remainder, addNewPrefix);
             handled = menuAnimationAddNew(arg);
@@ -414,8 +414,8 @@ public class EditorMenus {
         assert remainder != null;
 
         boolean handled = true;
-        String selectPrefix = "Select" + menuSeparator;
-        String selectSourcePrefix = "Select source" + menuSeparator;
+        String selectPrefix = "Select" + menuPathSeparator;
+        String selectSourcePrefix = "Select source" + menuPathSeparator;
         if (remainder.startsWith(selectPrefix)) {
             String selectArg = MyString.remainder(remainder, selectPrefix);
             handled = menuBoneSelect(selectArg);
@@ -539,7 +539,7 @@ public class EditorMenus {
         assert remainder != null;
 
         boolean handled;
-        String sourcePrefix = "Source model" + EditorMenus.menuSeparator;
+        String sourcePrefix = "Source model" + EditorMenus.menuPathSeparator;
         if (remainder.startsWith(sourcePrefix)) {
             String selectArg = MyString.remainder(remainder, sourcePrefix);
             handled = menuSourceCgm(selectArg);
@@ -632,7 +632,7 @@ public class EditorMenus {
         assert remainder != null;
 
         boolean handled;
-        String selectPrefix = "Select" + menuSeparator;
+        String selectPrefix = "Select" + menuPathSeparator;
         if (remainder.startsWith(selectPrefix)) {
             String arg = MyString.remainder(remainder, selectPrefix);
             handled = menuKeyframeSelect(arg);
@@ -843,7 +843,7 @@ public class EditorMenus {
         assert remainder != null;
 
         boolean handled;
-        String folderPrefix = "Asset folders" + menuSeparator;
+        String folderPrefix = "Asset folders" + menuPathSeparator;
         if (remainder.startsWith(folderPrefix)) {
             String selectArg = MyString.remainder(remainder, folderPrefix);
             handled = Maud.gui.buildMenus.menuAssetFolders(selectArg);
@@ -876,7 +876,7 @@ public class EditorMenus {
         assert remainder != null;
 
         boolean handled = true;
-        String addPrefix = "Add" + menuSeparator;
+        String addPrefix = "Add" + menuPathSeparator;
         if (remainder.startsWith(addPrefix)) {
             String arg = MyString.remainder(remainder, addPrefix);
             handled = menuSgcAdd(arg);
@@ -937,8 +937,8 @@ public class EditorMenus {
         assert remainder != null;
 
         boolean handled = true;
-        String addControlPrefix = "Add control" + menuSeparator;
-        String selectPrefix = "Select" + menuSeparator;
+        String addControlPrefix = "Add control" + menuPathSeparator;
+        String selectPrefix = "Select" + menuPathSeparator;
         if (remainder.startsWith(addControlPrefix)) {
             String arg = MyString.remainder(remainder, addControlPrefix);
             handled = menuSgcAdd(arg);
@@ -1062,9 +1062,9 @@ public class EditorMenus {
         assert remainder != null;
 
         boolean handled = true;
-        String modePrefix = "Mode" + menuSeparator;
-        String scenesPrefix = "Scene options" + menuSeparator;
-        String scoresPrefix = "Score options" + menuSeparator;
+        String modePrefix = "Mode" + menuPathSeparator;
+        String scenesPrefix = "Scene options" + menuPathSeparator;
+        String scoresPrefix = "Score options" + menuPathSeparator;
         if (remainder.startsWith(modePrefix)) {
             String arg = MyString.remainder(remainder, modePrefix);
             menuViewMode(arg);
