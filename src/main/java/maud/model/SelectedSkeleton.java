@@ -65,10 +65,10 @@ public class SelectedSkeleton implements Cloneable {
     // fields
 
     /**
-     * loaded CG model containing the skeleton (set by
-     * {@link #setCgm(LoadedCGModel)}) TODO rename cgm
+     * CG-model load slot containing the skeleton (set by
+     * {@link #setCgm(LoadedCGModel)})
      */
-    private LoadedCgm loadedCgm = null;
+    private LoadedCgm cgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -125,7 +125,7 @@ public class SelectedSkeleton implements Cloneable {
          * If the selected SG control is an AnimControl or SkeletonControl,
          * use its skeleton, if it has one.
          */
-        Control selectedSgc = loadedCgm.sgc.findSgc();
+        Control selectedSgc = cgm.sgc.findSgc();
         if (selectedSgc instanceof AnimControl) {
             animControl = (AnimControl) selectedSgc;
             skeleton = animControl.getSkeleton();
@@ -143,7 +143,7 @@ public class SelectedSkeleton implements Cloneable {
          * If not, use the skeleton from the first AnimControl or
          * SkeletonControl in the CG model's root spatial.
          */
-        Spatial cgmRoot = loadedCgm.getRootSpatial();
+        Spatial cgmRoot = cgm.getRootSpatial();
         if (skeleton == null) {
             animControl = cgmRoot.getControl(AnimControl.class);
             if (animControl != null) {
@@ -257,7 +257,7 @@ public class SelectedSkeleton implements Cloneable {
      */
     public boolean isSelected() {
         boolean result = false;
-        if (loadedCgm.isLoaded()) {
+        if (cgm.isLoaded()) {
             Skeleton skeleton = findSkeleton();
             if (skeleton != null) {
                 result = true;
@@ -378,9 +378,9 @@ public class SelectedSkeleton implements Cloneable {
      * root, true&rarr;selected spatial
      */
     void set(Skeleton newSkeleton, boolean selectedSpatialFlag) {
-        loadedCgm.getSceneView().setSkeleton(newSkeleton, selectedSpatialFlag);
-        loadedCgm.bone.deselect();
-        loadedCgm.pose.resetToBind(newSkeleton);
+        cgm.getSceneView().setSkeleton(newSkeleton, selectedSpatialFlag);
+        cgm.bone.deselect();
+        cgm.pose.resetToBind(newSkeleton);
     }
 
     /**
@@ -390,7 +390,7 @@ public class SelectedSkeleton implements Cloneable {
      */
     void setCgm(LoadedCgm newLoaded) {
         assert newLoaded != null;
-        loadedCgm = newLoaded;
+        cgm = newLoaded;
     }
     // *************************************************************************
     // Object methods
