@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.view;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
@@ -68,6 +68,10 @@ import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.math.MyMath;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
+import maud.Maud;
+import maud.Pose;
+import maud.Selection;
+import maud.Util;
 import maud.model.LoadedCgm;
 import maud.model.ViewMode;
 
@@ -174,7 +178,7 @@ public class SceneView implements EditorView, JmeCloneable {
      * @param port2 view port to use after the screen is split (not null, alias
      * created)
      */
-    SceneView(LoadedCgm loadedCgm, Node parentNode, ViewPort port1,
+    public SceneView(LoadedCgm loadedCgm, Node parentNode, ViewPort port1,
             ViewPort port2) {
         Validate.nonNull(loadedCgm, "loaded model");
         Validate.nonNull(parentNode, "parent node");

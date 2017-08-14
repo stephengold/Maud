@@ -24,56 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
-
-import com.jme3.renderer.Camera;
-import com.jme3.renderer.ViewPort;
-import maud.model.LoadedCgm;
-
 /**
- * Interface to an MVC view in Maud's edit screen.
- *
- * @author Stephen Gold sgold@sonic.net
+ * MVC view classes, enums, and interfaces for the Maud application.
  */
-public interface EditorView {
-    /**
-     * Consider selecting each axis, bone, gnomon, and keyframe in this view.
-     *
-     * @param bestSelection best selection found so far (not null, modified)
-     */
-    void considerAll(Selection bestSelection);
-
-    /**
-     * Access the camera used to render this view.
-     *
-     * @return a pre-existing instance, or null if not rendered
-     */
-    Camera getCamera();
-
-    /**
-     * Read what type of view this is.
-     *
-     * @return enum (not null)
-     */
-    ViewType getType();
-
-    /**
-     * Access the view port used to render this view.
-     *
-     * @return the pre-existing view port
-     */
-    ViewPort getViewPort();
-
-    /**
-     * Update this view prior to rendering. (Invoked once per render pass on
-     * each instance.)
-     *
-     * @param renderCgm which CG model to render
-     */
-    void update(LoadedCgm renderCgm);
-
-    /**
-     * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
-     */
-    void warpCursor();
-}
+package maud.view;

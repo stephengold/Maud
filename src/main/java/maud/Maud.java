@@ -55,6 +55,8 @@ import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedCgm;
 import maud.model.ViewMode;
+import maud.view.SceneView;
+import maud.view.ScoreView;
 
 /**
  * GUI application to edit jMonkeyEngine animated 3-D CG models. The
@@ -591,7 +593,7 @@ public class Maud extends GuiApplication {
     private void startup1() {
         logger.info("");
         /*
-         * Register loaders for BVH and xbuf assets.
+         * Register loaders for BVH and Xbuf assets.
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
         assetManager.registerLoader(XbufLoader.class, "xbuf");

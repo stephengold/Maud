@@ -37,9 +37,9 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
 import maud.Maud;
-import maud.ViewType;
 import maud.model.History;
 import maud.model.LoadedCgm;
+import maud.view.ViewType;
 
 /**
  * Input mode for Maud's editor screen.

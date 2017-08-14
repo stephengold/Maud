@@ -35,7 +35,7 @@ import jme3utilities.MyCamera;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
-import maud.SceneView;
+import maud.view.SceneView;
 
 /**
  * The positions of a scene camera and 3D cursor in Maud's edit screen.

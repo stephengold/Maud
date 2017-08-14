@@ -52,8 +52,8 @@ import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.SceneView;
 import maud.Util;
+import maud.view.SceneView;
 
 /**
  * MVC model for an editable computer-graphics (CG) model in the Maud

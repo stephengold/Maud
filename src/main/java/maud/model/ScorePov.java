@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyCamera;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.ScoreView;
+import maud.view.ScoreView;
 
 /**
  * The position of a score-mode camera in Maud's edit screen.
