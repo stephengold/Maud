@@ -39,6 +39,7 @@ import jme3utilities.ui.InputMode;
 import maud.Maud;
 import maud.model.History;
 import maud.model.LoadedCgm;
+import maud.view.SceneDrag;
 import maud.view.ViewType;
 
 /**
@@ -155,7 +156,7 @@ public class EditorInputMode extends InputMode {
             }
 
         } else if ("select screenXY".equals(actionString)) {
-            Maud.model.axes.clearDragAxis();
+            SceneDrag.clearDragAxis();
             Maud.model.getScore().setDraggingGnomon(null);
             handled = true;
         }
@@ -723,7 +724,7 @@ public class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "toggle dragSide":
-                Maud.model.axes.toggleDragSide();
+                SceneDrag.toggleDragSide();
                 handled = true;
                 break;
             case "toggle freeze target":
