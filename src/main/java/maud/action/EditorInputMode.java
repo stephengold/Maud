@@ -40,6 +40,7 @@ import maud.Maud;
 import maud.model.History;
 import maud.model.LoadedCgm;
 import maud.view.SceneDrag;
+import maud.view.ScoreDrag;
 import maud.view.ViewType;
 
 /**
@@ -157,7 +158,7 @@ public class EditorInputMode extends InputMode {
 
         } else if ("select screenXY".equals(actionString)) {
             SceneDrag.clearDragAxis();
-            Maud.model.getScore().setDraggingGnomon(null);
+            ScoreDrag.setDraggingGnomon(null);
             handled = true;
         }
 
