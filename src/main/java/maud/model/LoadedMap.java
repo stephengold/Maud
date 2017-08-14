@@ -646,7 +646,9 @@ public class LoadedMap implements Cloneable {
         assert targetBoneName != null;
 
         String sourceBoneName = sourceBoneName(targetBoneName);
-        Maud.model.getSource().bone.select(sourceBoneName);
-        Maud.model.target.bone.select(targetBoneName);
+        if (sourceBoneName != null) {
+            Maud.model.getSource().bone.select(sourceBoneName);
+            Maud.model.target.bone.select(targetBoneName);
+        }
     }
 }
