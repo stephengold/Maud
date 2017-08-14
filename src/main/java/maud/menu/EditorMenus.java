@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.menu;
 
 import java.io.File;
 import java.util.List;
@@ -33,6 +33,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
+import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
@@ -855,8 +856,7 @@ public class EditorMenus {
                     Maud.gui.buildMenus.assetFolders();
                     break;
                 case "Hotkeys":
-                    Maud.gui.closeAllPopups();
-                    Maud.bindScreen.activate(Maud.gui.inputMode);
+                    Maud.gui.goBindScreen();
                     break;
                 default:
                     handled = false;

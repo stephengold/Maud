@@ -54,6 +54,8 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
+import maud.menu.BuildMenus;
+import maud.menu.EditorMenus;
 import maud.model.Checkpoint;
 import maud.model.History;
 import maud.model.LoadedCgm;
@@ -150,6 +152,14 @@ public class EditorScreen extends GuiScreenController {
         String message = String.format("added checkpoint[%d] from %s at %s",
                 checkpointIndex, source, creationTime);
         setStatus(message);
+    }
+
+    /**
+     * Activate "Bind" screen.
+     */
+    public void goBindScreen() {
+        closeAllPopups();
+        Maud.bindScreen.activate(inputMode);
     }
 
     /**
