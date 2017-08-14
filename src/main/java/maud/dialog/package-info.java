@@ -25,6 +25,6 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * Controllers for a dialog boxes in the Maud application.
+ * Controllers for the dialog boxes in the Maud application.
  */
 package maud.dialog;
