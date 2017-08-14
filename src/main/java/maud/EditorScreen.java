@@ -58,7 +58,7 @@ import maud.model.Checkpoint;
 import maud.model.History;
 import maud.model.LoadedCgm;
 import maud.model.Pov;
-import maud.tools.EditorTools;
+import maud.tool.EditorTools;
 
 /**
  * The screen controller for Maud's editor screen. The GUI includes a menu bar,
