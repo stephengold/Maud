@@ -32,6 +32,7 @@ import jme3utilities.Validate;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
 import maud.view.SceneDrag;
+import maud.view.ScoreDrag;
 
 /**
  * Encapsulate a bone/keyframe/axis/gnomon selection from the user interface.
@@ -274,7 +275,7 @@ public class Selection {
      * Select the gnomon in a score view.
      */
     private void selectGnomon() {
-        Maud.model.getScore().setDraggingGnomon(bestCgm);
+        ScoreDrag.setDraggingGnomon(bestCgm);
     }
 
     /**

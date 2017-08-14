@@ -64,6 +64,7 @@ import maud.model.Pov;
 import maud.tool.EditorTools;
 import maud.view.EditorView;
 import maud.view.SceneDrag;
+import maud.view.ScoreDrag;
 import maud.view.ViewType;
 
 /**
@@ -707,7 +708,7 @@ public class EditorScreen extends GuiScreenController {
             }
 
         } else if (viewType == ViewType.Score) {
-            LoadedCgm cgm = Maud.model.getScore().getDraggingGnomonCgm();
+            LoadedCgm cgm = ScoreDrag.getDraggingGnomonCgm();
             if (cgm != null) {
                 Camera camera = cgm.getScoreView().getCamera();
                 Vector2f mouseXY = inputManager.getCursorPosition();
