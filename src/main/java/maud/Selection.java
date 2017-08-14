@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
+import maud.view.SceneDrag;
 
 /**
  * Encapsulate a bone/keyframe/axis/gnomon selection from the user interface.
@@ -297,7 +298,7 @@ public class Selection {
 
         boolean farSide = Maud.gui.tools.axes.isAxisReceding(bestCgm,
                 bestAxisIndex);
-        Maud.model.axes.setDraggingAxis(bestAxisIndex, bestCgm, farSide);
+        SceneDrag.setDraggingAxis(bestAxisIndex, bestCgm, farSide);
     }
 
     /**

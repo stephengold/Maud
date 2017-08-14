@@ -45,9 +45,9 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.Pose;
-import maud.model.AxesStatus;
 import maud.model.EditableCgm;
 import maud.model.LoadedCgm;
+import maud.view.SceneDrag;
 
 /**
  * The controller for the "Axes Tool" window in Maud's editor screen.
@@ -83,11 +83,10 @@ public class AxesTool extends WindowController {
      * in the MVC model.
      */
     public void dragAxis() {
-        AxesStatus model = Maud.model.axes;
-        LoadedCgm cgm = model.getDragCgm();
+        LoadedCgm cgm = SceneDrag.getDragCgm();
         assert cgm.isLoaded();
-        int axisIndex = model.getDragAxis();
-        boolean farSide = model.isDraggingFarSide();
+        int axisIndex = SceneDrag.getDragAxis();
+        boolean farSide = SceneDrag.isDraggingFarSide();
 
         AxesVisualizer visualizer = cgm.getSceneView().getAxesVisualizer();
         assert visualizer.isEnabled();

@@ -63,6 +63,7 @@ import maud.model.LoadedCgm;
 import maud.model.Pov;
 import maud.tool.EditorTools;
 import maud.view.EditorView;
+import maud.view.SceneDrag;
 import maud.view.ViewType;
 
 /**
@@ -701,7 +702,7 @@ public class EditorScreen extends GuiScreenController {
                 }
             }
 
-            if (Maud.model.axes.isDraggingAxis()) {
+            if (SceneDrag.isDraggingAxis()) {
                 Maud.gui.tools.axes.dragAxis();
             }
 
