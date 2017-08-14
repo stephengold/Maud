@@ -67,6 +67,9 @@ class SelectAction {
             case "select animControl":
                 Maud.gui.buildMenus.selectAnimControl(Maud.model.target);
                 break;
+            case "select bone":
+                Maud.gui.buildMenus.selectBone();
+                break;
             case "select boneChild":
                 Maud.gui.boneMenus.selectBoneChild();
                 break;
@@ -99,6 +102,9 @@ class SelectAction {
                 break;
             case "select sourceAnimControl":
                 Maud.gui.buildMenus.selectAnimControl(Maud.model.getSource());
+                break;
+            case "select sourceBone":
+                Maud.gui.buildMenus.selectSourceBone();
                 break;
             case "select spatialChild":
                 Maud.gui.buildMenus.selectSpatialChild("");

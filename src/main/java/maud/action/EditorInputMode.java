@@ -278,11 +278,23 @@ public class EditorInputMode extends InputMode {
     private boolean loadAction(String actionString) {
         boolean handled = true;
         String args, name, path;
-        if (actionString.equals("load map asset")) {
+        if (actionString.equals("load animation")) {
+            Maud.gui.menus.loadAnimation(Maud.model.target);
+
+        } else if (actionString.equals("load cgm")) {
+            Maud.gui.buildMenus.loadCgm();
+
+        } else if (actionString.equals("load map asset")) {
             Maud.gui.buildMenus.loadMapAsset();
 
         } else if (actionString.equals("load retargetedPose")) {
             Maud.model.target.animation.loadRetargetedPose();
+
+        } else if (actionString.equals("load sourceAnimation")) {
+            Maud.gui.menus.loadAnimation(Maud.model.getSource());
+
+        } else if (actionString.equals("load sourceCgm")) {
+            Maud.gui.buildMenus.loadSourceCgm();
 
         } else if (actionString.startsWith(ActionPrefix.loadAnimation)) {
             args = MyString.remainder(actionString, ActionPrefix.loadAnimation);
