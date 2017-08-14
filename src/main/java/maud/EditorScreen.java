@@ -54,6 +54,7 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
+import maud.menu.BoneMenus;
 import maud.menu.BuildMenus;
 import maud.menu.EditorMenus;
 import maud.model.Checkpoint;
@@ -101,6 +102,10 @@ public class EditorScreen extends GuiScreenController {
      * GUI controls during an update
      */
     private boolean ignoreGuiChanges = false;
+    /**
+     * bone menus for this screen
+     */
+    final public BoneMenus boneMenus = new BoneMenus();
     /**
      * build menus for this screen
      */

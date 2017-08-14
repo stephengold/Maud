@@ -714,7 +714,7 @@ public class EditorInputMode extends InputMode {
                 Maud.gui.buildMenus.selectAnimControl(Maud.model.target);
                 break;
             case "select boneChild":
-                Maud.gui.menus.selectBoneChild();
+                Maud.gui.boneMenus.selectBoneChild();
                 break;
             case "select boneParent":
                 Maud.model.target.bone.selectParent();
@@ -777,7 +777,7 @@ public class EditorInputMode extends InputMode {
 
         } else if (actionString.startsWith(ActionPrefix.selectBone)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectBone);
-            Maud.gui.menus.selectBone(arg);
+            Maud.gui.boneMenus.selectBone(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectBoneChild)) {
             arg = MyString.remainder(actionString,
@@ -801,7 +801,7 @@ public class EditorInputMode extends InputMode {
         } else if (actionString.startsWith(ActionPrefix.selectSourceBone)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectSourceBone);
-            Maud.gui.menus.selectSourceBone(arg);
+            Maud.gui.boneMenus.selectSourceBone(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectSpatialChild)) {
             arg = MyString.remainder(actionString,

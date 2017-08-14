@@ -34,7 +34,6 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
-import maud.action.ActionPrefix;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.ViewMode;
@@ -129,55 +128,6 @@ public class EditorMenus {
     }
 
     /**
-     * Handle a "select bone" action with an argument.
-     *
-     * @param argument action argument (not null)
-     */
-    public void selectBone(String argument) {
-        if (Maud.model.target.bones.hasBone(argument)) {
-            Maud.model.target.bone.select(argument);
-
-        } else {
-            /*
-             * Treat the argument as a bone-name prefix.
-             */
-            List<String> boneNames;
-            boneNames = Maud.model.target.bones.listBoneNames(argument);
-            Maud.gui.buildMenus.showBoneSubmenu(boneNames);
-        }
-    }
-
-    /**
-     * Handle a "select boneChild" action with no argument.
-     */
-    public void selectBoneChild() {
-        if (Maud.model.target.bone.isSelected()) {
-            int numChildren = Maud.model.target.bone.countChildren();
-            if (numChildren == 1) {
-                Maud.model.target.bone.selectFirstChild();
-            } else if (numChildren > 1) {
-                List<String> boneNames;
-                boneNames = Maud.model.target.bone.listChildNames();
-                Maud.gui.buildMenus.showBoneSubmenu(boneNames);
-            }
-        }
-    }
-
-    /**
-     * Handle a "select boneWithTrack" action.
-     */
-    void selectBoneWithTrack() {
-        List<String> boneNames;
-        boneNames = Maud.model.target.animation.listBonesWithTrack();
-        int numBoneTracks = boneNames.size();
-        if (numBoneTracks == 1) {
-            Maud.model.target.bone.select(boneNames.get(0));
-        } else if (numBoneTracks > 1) {
-            Maud.gui.buildMenus.showBoneSubmenu(boneNames);
-        }
-    }
-
-    /**
      * Handle a "select menuItem" action for the editor screen.
      *
      * @param menuPath path to menu item (not null)
@@ -196,24 +146,6 @@ public class EditorMenus {
         }
 
         return handled;
-    }
-
-    /**
-     * Handle a "select sourceBone" action with an argument.
-     *
-     * @param argument action argument (not null)
-     */
-    public void selectSourceBone(String argument) {
-        if (Maud.model.getSource().bones.hasBone(argument)) {
-            Maud.model.getSource().bone.select(argument);
-        } else {
-            /*
-             * Treat the argument as a bone-name prefix.
-             */
-            List<String> boneNames;
-            boneNames = Maud.model.getSource().bones.listBoneNames(argument);
-            Maud.gui.buildMenus.showBoneSubmenu(boneNames);
-        }
     }
 
     /**
@@ -268,7 +200,7 @@ public class EditorMenus {
                 handled = menuAnimation(remainder);
                 break;
             case "Bone":
-                handled = menuBone(remainder);
+                handled = Maud.gui.boneMenus.menuBone(remainder);
                 break;
             case "CGM":
                 handled = menuCgm(remainder);
@@ -400,131 +332,6 @@ public class EditorMenus {
                 break;
             default:
                 handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the Bone menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuBone(String remainder) {
-        assert remainder != null;
-
-        boolean handled = true;
-        String selectPrefix = "Select" + menuPathSeparator;
-        String selectSourcePrefix = "Select source" + menuPathSeparator;
-        if (remainder.startsWith(selectPrefix)) {
-            String selectArg = MyString.remainder(remainder, selectPrefix);
-            handled = menuBoneSelect(selectArg);
-
-        } else if (remainder.startsWith(selectSourcePrefix)) {
-            String selectArg = MyString.remainder(remainder, selectSourcePrefix);
-            handled = menuBoneSelectSource(selectArg);
-
-        } else {
-            switch (remainder) {
-                case "Rename":
-                    Maud.gui.dialogs.renameBone();
-                    break;
-                case "Rotate":
-                    Maud.gui.tools.select("boneRotation");
-                    break;
-                case "Scale":
-                    Maud.gui.tools.select("boneScale");
-                    break;
-                case "Select":
-                    Maud.gui.buildMenus.selectBone();
-                    break;
-                case "Select source":
-                    Maud.gui.buildMenus.selectSourceBone();
-                    break;
-                case "Tool":
-                    Maud.gui.tools.select("bone");
-                    break;
-                case "Translate":
-                    Maud.gui.tools.select("boneTranslation");
-                    break;
-                default:
-                    handled = false;
-            }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "Bone -> Select" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuBoneSelect(String remainder) {
-        assert remainder != null;
-
-        boolean handled = false;
-        switch (remainder) {
-            case "By name":
-                selectBoneByName();
-                handled = true;
-                break;
-            case "By parent":
-                selectBoneByParent();
-                handled = true;
-                break;
-            case "Child":
-                selectBoneChild();
-                handled = true;
-                break;
-            case "Mapped":
-                Maud.model.getMap().selectFromSource();
-                handled = true;
-                break;
-            case "Next":
-                Maud.model.target.bone.selectNext();
-                handled = true;
-                break;
-            case "Parent":
-                Maud.model.target.bone.selectParent();
-                handled = true;
-                break;
-            case "Previous":
-                Maud.model.target.bone.selectPrevious();
-                handled = true;
-                break;
-            case "Root":
-                selectRootBone();
-                handled = true;
-                break;
-            case "With track":
-                selectBoneWithTrack();
-                handled = true;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "Bone -> Select source" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuBoneSelectSource(String remainder) {
-        assert remainder != null;
-
-        boolean handled = false;
-        switch (remainder) {
-            case "Mapped":
-                Maud.model.getMap().selectFromTarget();
-                handled = true;
-                break;
-            case "Root":
-                selectSourceRootBone();
-                handled = true;
         }
 
         return handled;
@@ -1108,49 +915,5 @@ public class EditorMenus {
 
         ViewMode viewMode = ViewMode.valueOf(remainder);
         Maud.model.misc.setViewMode(viewMode);
-    }
-
-    /**
-     * Select a bone by name, using submenus.
-     */
-    private void selectBoneByName() {
-        List<String> nameList = Maud.model.target.bones.listBoneNames();
-        Maud.gui.buildMenus.showBoneSubmenu(nameList);
-    }
-
-    /**
-     * Select a bone by parent, using submenus.
-     */
-    private void selectBoneByParent() {
-        List<String> boneNames = Maud.model.target.bones.listRootBoneNames();
-        Maud.gui.showPopupMenu(ActionPrefix.selectBoneChild, boneNames);
-    }
-
-    /**
-     * Handle a "select rootBone" action.
-     */
-    private void selectRootBone() {
-        int numRoots = Maud.model.target.bones.countRootBones();
-        if (numRoots == 1) {
-            Maud.model.target.bone.selectFirstRoot();
-        } else if (numRoots > 1) {
-            List<String> boneNames;
-            boneNames = Maud.model.target.bones.listRootBoneNames();
-            Maud.gui.buildMenus.showBoneSubmenu(boneNames);
-        }
-    }
-
-    /**
-     * Handle a "select sourceRootBone" action.
-     */
-    private void selectSourceRootBone() {
-        int numRoots = Maud.model.getSource().bones.countRootBones();
-        if (numRoots == 1) {
-            Maud.model.getSource().bone.selectFirstRoot();
-        } else if (numRoots > 1) {
-            List<String> names;
-            names = Maud.model.getSource().bones.listRootBoneNames();
-            Maud.gui.buildMenus.showSourceBoneSubmenu(names);
-        }
     }
 }
