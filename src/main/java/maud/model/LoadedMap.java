@@ -102,9 +102,8 @@ public class LoadedMap implements Cloneable {
         Bone targetBone = targetSkeleton.getBone(boneIndex);
         String targetName = targetBone.getName();
         BoneMapping boneMapping = effectiveMapping(targetName);
-        if (boneMapping != null) {
-            Skeleton sourceSkeleton;
-            sourceSkeleton = Maud.model.getSource().bones.findSkeleton();
+        Skeleton sourceSkeleton = Maud.model.getSource().bones.findSkeleton();
+        if (boneMapping != null && sourceSkeleton != null) {
             String sourceName = boneMapping.getSourceName();
             int sourceIndex = sourceSkeleton.getBoneIndex(sourceName);
             if (sourceIndex != -1) {
@@ -231,6 +230,20 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
+     * Test whether there are any bone mappings.
+     *
+     * @return true if no bone mappings, otherwise false
+     */
+    public boolean isEmpty() {
+        int count = map.countMappings();
+        if (count == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Test whether to invert the map before applying it.
      *
      * @return true if inverting the map, otherwise false
@@ -332,57 +345,55 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Test whether the loaded map matches the source CG model.
+     * Calculate how well the effective map matches the source skeleton.
      *
-     * @return true if they match, otherwise false
+     * @return fraction of the effective source bones that are found in the
+     * source skeleton (&ge;0, &le;1)
      */
-    public boolean matchesSource() {
-        /*
-         * Are all source bones in the effective map present
-         * in the source CG model?
-         */
-        boolean matches = true;
-        List<String> names;
+    public float matchesSource() {
+        List<String> boneNames;
         if (isInvertingMap()) {
-            names = map.listTargetBones();
+            boneNames = map.listTargetBones();
         } else {
-            names = map.listSourceBones();
+            boneNames = map.listSourceBones();
         }
-        for (String name : names) {
-            if (!Maud.model.getSource().bones.hasBone(name)) {
-                matches = false;
-                break;
+        SelectedSkeleton sourceSkeleton = Maud.model.getSource().bones;
+
+        int numMatches = 0;
+        for (String name : boneNames) {
+            if (sourceSkeleton.hasBone(name)) {
+                ++numMatches;
             }
         }
+        float result = ((float) numMatches) / boneNames.size();
 
-        return matches;
+        return result;
     }
 
     /**
-     * Test whether the map matches the target CG model.
+     * Calculate how well the effective map matches the target skeleton.
      *
-     * @return true if they match, otherwise false
+     * @return fraction of the effective target bones that are found in the
+     * target skeleton (&ge;0, &le;1)
      */
-    public boolean matchesTarget() {
-        /*
-         * Are all target bones in the effective map
-         * present in the target CG model?
-         */
-        boolean matches = true;
-        List<String> names;
+    public float matchesTarget() {
+        List<String> boneNames;
         if (isInvertingMap()) {
-            names = map.listSourceBones();
+            boneNames = map.listSourceBones();
         } else {
-            names = map.listTargetBones();
+            boneNames = map.listTargetBones();
         }
-        for (String name : names) {
-            if (!Maud.model.target.bones.hasBone(name)) {
-                matches = false;
-                break;
+        SelectedSkeleton targetSkeleton = Maud.model.target.bones;
+
+        int numMatches = 0;
+        for (String name : boneNames) {
+            if (targetSkeleton.hasBone(name)) {
+                ++numMatches;
             }
         }
+        float result = ((float) numMatches) / boneNames.size();
 
-        return matches;
+        return result;
     }
 
     /**

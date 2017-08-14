@@ -31,6 +31,8 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.LoadedCgm;
+import maud.model.LoadedMap;
 import maud.model.SelectedSkeleton;
 
 /**
@@ -133,26 +135,45 @@ public class MappingTool extends WindowController {
      */
     private void updateFeedback() {
         String feedback;
-        boolean sourceIsLoaded = Maud.model.getSource().isLoaded();
-        if (!Maud.model.target.bones.isSelected()) {
-            feedback = "target skeleton not selected";
-        } else if (Maud.model.getMap().matchesTarget()) {
-            if (sourceIsLoaded) {
-                if (Maud.model.getMap().matchesSource()) {
-                    feedback = "";
-                } else {
-                    feedback = "doesn't match the source skeleton";
-                }
-            } else {
-                feedback = "load the source model";
-            }
+
+        LoadedMap map = Maud.model.getMap();
+        LoadedCgm source = Maud.model.getSource();
+        LoadedCgm target = Maud.model.target;
+        if (!target.bones.isSelected()) {
+            feedback = "select the target skeleton";
+        } else if (!source.isLoaded()) {
+            feedback = "load the source model";
+        } else if (!source.bones.isSelected()) {
+            feedback = "select the source skeleton";
+        } else if (map.isEmpty()) {
+            feedback = "no bone mappings - load map or add";
         } else {
-            if (!sourceIsLoaded || Maud.model.getMap().matchesSource()) {
-                feedback = "doesn't match the target skeleton";
-            } else {
+            float matchesSource = map.matchesSource();
+            float matchesTarget = map.matchesTarget();
+            if (matchesTarget >= 0.9995f) {
+                if (matchesSource >= 0.9995f) {
+                    feedback = "";
+                } else if (matchesSource < 0.0005f) {
+                    feedback = "doesn't match the source skeleton";
+                } else {
+                    feedback = String.format(
+                            "%.1f%% matches the source skeleton",
+                            100f * matchesSource);
+                }
+
+            } else if (matchesSource >= 0.9995f) {
+                feedback = String.format(
+                        "%.1f%% matches the target skeleton",
+                        100f * matchesTarget);
+            } else if (matchesSource < 0.0005f && matchesTarget < 0.0005f) {
                 feedback = "doesn't match either skeleton";
+            } else {
+                feedback = String.format(
+                        "%.1f%% matches source, %.1f%% matches target",
+                        100f * matchesSource, 100f * matchesTarget);
             }
         }
+
         Maud.gui.setStatusText("mappingFeedback", feedback);
     }
 

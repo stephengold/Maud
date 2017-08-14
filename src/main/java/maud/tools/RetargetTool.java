@@ -99,51 +99,61 @@ class RetargetTool extends WindowController {
         Maud.gui.setStatusText("mappingCount", mappingDesc);
 
         updateBottom();
+        updateFeedback();
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Update the source animation, feedback line, and retarget button.
+     * Update the source animation.
      */
     private void updateBottom() {
-        String feedback = "";
-        String rButton = "";
-        String sourceAnimDesc = "( none loaded )";
+        String sourceAnimDesc = "";
         LoadedCgm source = Maud.model.getSource();
-        LoadedMap map = Maud.model.getMap();
-        if (!source.isLoaded()) {
-            feedback = "load a source model";
-        } else if (source.countAnimations() < 1) {
-            feedback = "load an animated source model";
-        } else {
-            boolean real = source.animation.isReal();
-            if (!real) {
-                feedback = "load a source animation";
-            } else {
-                String name = source.animation.getName();
-                sourceAnimDesc = MyString.quote(name);
+        boolean real = source.animation.isReal();
+        if (real) {
+            String name = source.animation.getName();
+            sourceAnimDesc = MyString.quote(name);
+        }
+        Maud.gui.setStatusText("sourceAnimation", " " + sourceAnimDesc);
+    }
 
-                boolean matchesSource = map.matchesSource();
-                int numBoneMappings = map.countMappings();
-                if (numBoneMappings == 0) {
-                    feedback = "the skeleton map is empty";
-                } else if (map.matchesTarget()) {
-                    if (matchesSource) {
-                        rButton = "Retarget";
-                    } else {
-                        feedback = "map doesn't match the source skeleton";
-                    }
-                } else if (!Maud.model.target.bones.isSelected()) {
-                    feedback = "select a target anim control";
+    /**
+     * Update the feedback line and retarget button.
+     */
+    private void updateFeedback() {
+        String feedback;
+        String rButton = "";
+
+        LoadedMap map = Maud.model.getMap();
+        LoadedCgm source = Maud.model.getSource();
+        LoadedCgm target = Maud.model.target;
+        if (!target.isAnimControlSelected()) {
+            feedback = "select the target anim control";
+        } else if (!source.isLoaded()) {
+            feedback = "load the source model";
+        } else if (!source.animation.isReal()) {
+            feedback = "load the source animation";
+        } else if (map.isEmpty()) {
+            feedback = "no bone mappings";
+        } else {
+            float matchesSource = map.matchesSource();
+            float matchesTarget = map.matchesTarget();
+            if (matchesTarget >= 0.9995f) {
+                if (matchesSource >= 0.9995f) {
+                    feedback = "";
+                    rButton = "Retarget";
                 } else {
-                    feedback = "map doesn't match the target skeleton";
+                    feedback = "map doesn't match the source skeleton";
                 }
+            } else if (matchesSource < 0.9995f) {
+                feedback = "map doesn't match either skeleton";
+            } else {
+                feedback = "map doesn't match the target skeleton";
             }
         }
 
         Maud.gui.setStatusText("retargetFeedback", feedback);
         Maud.gui.setButtonLabel("retargetButton", rButton);
-        Maud.gui.setStatusText("sourceAnimation", " " + sourceAnimDesc);
     }
 }
