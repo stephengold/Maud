@@ -57,11 +57,11 @@ public class BuildMenus {
     // constants and loggers
 
     /**
-     * true if jme3-testdata assets are available
+     * true if jme3-testdata assets are available on the classpath
      */
     final private static boolean haveTestdata = false;
     /**
-     * maximum number of items in a menu
+     * maximum number of items in a menu, determined by minimum screen height
      */
     final private static int maxItems = 19;
     /**
@@ -116,7 +116,7 @@ public class BuildMenus {
     /**
      * Handle a "load cgm asset" action without arguments.
      */
-    void loadCgm() {
+    public void loadCgm() {
         buildLocatorMenu();
         builder.show(ActionPrefix.loadCgmLocator);
     }
@@ -298,7 +298,7 @@ public class BuildMenus {
     /**
      * Handle a "load sourceCgm asset" action without arguments.
      */
-    void loadSourceCgm() {
+    public void loadSourceCgm() {
         buildLocatorMenu();
         builder.show(ActionPrefix.loadSourceCgmLocator);
     }
@@ -458,24 +458,26 @@ public class BuildMenus {
      * @param cgm which load slot (not null)
      */
     public void selectAnimControl(LoadedCgm cgm) {
-        builder.reset();
-        List<String> names = cgm.listAnimControlNames();
-        for (String name : names) {
-            builder.add(name);
-        }
-        if (cgm == Maud.model.target) {
-            builder.show("select animControl ");
-        } else if (cgm == Maud.model.getSource()) {
-            builder.show("select sourceAnimControl ");
-        } else {
-            throw new IllegalArgumentException();
+        if (cgm.isLoaded()) {
+            builder.reset();
+            List<String> names = cgm.listAnimControlNames();
+            for (String name : names) {
+                builder.add(name);
+            }
+            if (cgm == Maud.model.target) {
+                builder.show("select animControl ");
+            } else if (cgm == Maud.model.getSource()) {
+                builder.show("select sourceAnimControl ");
+            } else {
+                throw new IllegalArgumentException();
+            }
         }
     }
 
     /**
      * Handle a "select bone" action without an argument.
      */
-    void selectBone() {
+    public void selectBone() {
         builder.reset();
         buildBoneSelectMenu();
         builder.show("select menuItem Bone -> Select -> ");
@@ -548,7 +550,7 @@ public class BuildMenus {
     /**
      * Display a "Bone -> Select source" menu.
      */
-    void selectSourceBone() {
+    public void selectSourceBone() {
         if (Maud.model.getSource().isLoaded()) {
             builder.reset();
             buildSourceBoneSelectMenu();

@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.ViewMode;
@@ -107,6 +108,16 @@ public class EditorMenus {
     }
 
     /**
+     * Handle a "load (source)animation" action without arguments.
+     */
+    public void loadAnimation(LoadedCgm cgm) {
+        if (cgm.isLoaded()) {
+            List<String> animationNames = cgm.listAnimationNames();
+            Maud.gui.buildMenus.showAnimationSubmenu(animationNames, cgm);
+        }
+    }
+
+    /**
      * Handle a "load (source)animation" action with an argument.
      *
      * @param argument action argument (not null)
@@ -170,18 +181,6 @@ public class EditorMenus {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Display a "Animation -> Load source" menu.
-     */
-    private void loadSourceAnimation() {
-        if (Maud.model.getSource().isLoaded()) {
-            List<String> animationNames;
-            animationNames = Maud.model.getSource().listAnimationNames();
-            Maud.gui.buildMenus.showAnimationSubmenu(animationNames,
-                    Maud.model.getSource());
-        }
-    }
 
     /**
      * Handle a "select menuItem" action for a submenu.
@@ -253,12 +252,13 @@ public class EditorMenus {
 
         } else {
             handled = true;
+            EditableCgm target = Maud.model.target;
             switch (remainder) {
                 case "Add new":
                     Maud.gui.buildMenus.addNewAnimation();
                     break;
                 case "Behead":
-                    Maud.model.target.animation.behead();
+                    target.animation.behead();
                     break;
                 case "Change duration":
                     Maud.gui.dialogs.setDuration();
@@ -267,19 +267,16 @@ public class EditorMenus {
                     Maud.gui.dialogs.deleteAnimation();
                     break;
                 case "Delete keyframes":
-                    Maud.model.target.animation.deleteKeyframes();
+                    target.animation.deleteKeyframes();
                     break;
                 case "Insert keyframes":
-                    Maud.model.target.animation.insertKeyframes();
+                    target.animation.insertKeyframes();
                     break;
                 case "Load":
-                    List<String> animationNames;
-                    animationNames = Maud.model.target.listAnimationNames();
-                    Maud.gui.buildMenus.showAnimationSubmenu(animationNames,
-                            Maud.model.target);
+                    loadAnimation(target);
                     break;
                 case "Load source":
-                    loadSourceAnimation();
+                    loadAnimation(Maud.model.getSource());
                     break;
                 case "Reduce":
                     Maud.gui.dialogs.reduceAnimation();
@@ -294,13 +291,13 @@ public class EditorMenus {
                     Maud.gui.tools.select("animation");
                     break;
                 case "Truncate":
-                    Maud.model.target.animation.truncate();
+                    target.animation.truncate();
                     break;
                 case "Tweening":
                     Maud.gui.tools.select("tweening");
                     break;
                 case "Wrap all tracks":
-                    Maud.model.target.animation.wrapAllTracks();
+                    target.animation.wrapAllTracks();
                     break;
                 default:
                     handled = false;
