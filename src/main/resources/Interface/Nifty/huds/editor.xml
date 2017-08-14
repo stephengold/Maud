@@ -301,9 +301,10 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="boneTool" title="Bone Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="175px" width="280px" x="65" y="35">
+                     height="192px" width="280px" x="65" y="35">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal">
+                    <panel height="3px"/>
+                    <panel childLayout="horizontal" height="28px">
                         <control name="button" id="bonePreviousButton"
                                  width="20px">
                             <interact onRelease="perform(previous bone)"/>
@@ -328,11 +329,8 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(select bone)"/>
                         </control>
                     </panel>
-                    <panel height="10px"/>
-                    <panel childLayout="horizontal">
-                        <control name="label" text="Selected:  "
-                                 textHAlign="right"
-                                 width="68px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Selected:  "/>
                         <control name="label" id="boneName"
                                  backgroundColor="#ffff"
                                  width="*"/>
@@ -341,8 +339,13 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(rename bone)"/>
                         </control>
                     </panel>
-                    <panel height="6px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" id="boneInfluence"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Transform:  "
                                  textHAlign="right"
                                  width="68px"/>
@@ -361,8 +364,7 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(select tool boneTranslation)"/>
                         </control>
                     </panel>
-                    <panel height="10px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Parent:  "
                                  textHAlign="right"
                                  width="68px"/>
@@ -374,8 +376,7 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(select boneParent)"/>
                         </control>
                     </panel>
-                    <panel height="8px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Children:  "
                                  textHAlign="right"
                                  width="68px"/>

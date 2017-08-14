@@ -32,12 +32,14 @@ import com.jme3.animation.Skeleton;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Pose;
+import maud.Util;
 
 /**
  * The MVC model of the selected bone in the Maud application.
@@ -201,6 +203,29 @@ public class SelectedBone implements Cloneable {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Count how many mesh vertices are influenced by this bone.
+     *
+     * @return count (&ge;0)
+     */
+    public int influence() {
+        int count = 0;
+        if (isSelected()) {
+            Boolean selectedSpatialFlag = false;
+            Skeleton skeleton;
+            skeleton = loadedCgm.bones.findSkeleton(selectedSpatialFlag);
+            Spatial spatial;
+            if (selectedSpatialFlag) {
+                spatial = loadedCgm.spatial.modelSpatial();
+            } else {
+                spatial = loadedCgm.getRootSpatial();
+            }
+            count = Util.influence(spatial, skeleton, selectedIndex);
+        }
+
+        return count;
     }
 
     /**

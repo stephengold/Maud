@@ -31,6 +31,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.SelectedBone;
 
 /**
  * The controller for the "Bone Tool" window in Maud's editor screen.
@@ -71,38 +72,13 @@ class BoneTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        String hasTrackText, rButton, sButton, tButton;
-        if (Maud.model.target.bone.isSelected()) {
-            if (Maud.model.target.animation.isRetargetedPose()) {
-                String name = Maud.model.target.bone.getName();
-                if (Maud.model.getMap().isBoneMapped(name)) {
-                    hasTrackText = "mapped";
-                } else {
-                    hasTrackText = "unmapped";
-                }
-            } else if (Maud.model.target.bone.hasTrack()) {
-                hasTrackText = "has track";
-            } else {
-                hasTrackText = "no track";
-            }
-            rButton = "Rotate";
-            sButton = "Scale";
-            tButton = "Translate";
-        } else {
-            hasTrackText = "";
-            rButton = "";
-            sButton = "";
-            tButton = "";
-        }
-        Maud.gui.setStatusText("boneHasTrack", " " + hasTrackText);
-        Maud.gui.setButtonLabel("boneRotateButton", rButton);
-        Maud.gui.setButtonLabel("boneScaleButton", sButton);
-        Maud.gui.setButtonLabel("boneTranslateButton", tButton);
-
         updateChildren();
+        updateHasTrack();
         updateIndex();
+        updateInfluence();
         updateName();
         updateParent();
+        updateTransformButtons();
     }
     // *************************************************************************
     // private methods
@@ -113,13 +89,14 @@ class BoneTool extends WindowController {
     private void updateChildren() {
         String childText, scButton;
 
-        if (Maud.model.target.bone.isSelected()) {
-            int numChildren = Maud.model.target.bone.countChildren();
+        SelectedBone selectedBone = Maud.model.target.bone;
+        if (selectedBone.isSelected()) {
+            int numChildren = selectedBone.countChildren();
             if (numChildren > 1) {
                 childText = String.format("%d children", numChildren);
                 scButton = "Select";
             } else if (numChildren == 1) {
-                String childName = Maud.model.target.bone.getChildName(0);
+                String childName = selectedBone.getChildName(0);
                 childText = MyString.quote(childName);
                 scButton = "Select";
             } else {
@@ -134,6 +111,31 @@ class BoneTool extends WindowController {
 
         Maud.gui.setStatusText("boneChildren", " " + childText);
         Maud.gui.setButtonLabel("boneSelectChildButton", scButton);
+    }
+
+    /**
+     * Update the "has track" status.
+     */
+    private void updateHasTrack() {
+        String hasTrackText = "";
+
+        SelectedBone selectedBone = Maud.model.target.bone;
+        if (selectedBone.isSelected()) {
+            if (Maud.model.target.animation.isRetargetedPose()) {
+                String name = selectedBone.getName();
+                if (Maud.model.getMap().isBoneMapped(name)) {
+                    hasTrackText = "mapped";
+                } else {
+                    hasTrackText = "unmapped";
+                }
+            } else if (selectedBone.hasTrack()) {
+                hasTrackText = "has track";
+            } else {
+                hasTrackText = "no track";
+            }
+        }
+
+        Maud.gui.setStatusText("boneHasTrack", " " + hasTrackText);
     }
 
     /**
@@ -168,6 +170,18 @@ class BoneTool extends WindowController {
     }
 
     /**
+     * Update the influence status.
+     */
+    private void updateInfluence() {
+        String desc = "";
+        if (Maud.model.target.bone.isSelected()) {
+            int influence = Maud.model.target.bone.influence();
+            desc = String.format("influences %d vertices", influence);
+        }
+        Maud.gui.setStatusText("boneInfluence", desc);
+    }
+
+    /**
      * Update the name status and rename button.
      */
     private void updateName() {
@@ -193,8 +207,9 @@ class BoneTool extends WindowController {
     private void updateParent() {
         String parentText, spButton;
 
-        if (Maud.model.target.bone.isSelected()) {
-            if (Maud.model.target.bone.isRootBone()) {
+        SelectedBone selectedBone = Maud.model.target.bone;
+        if (selectedBone.isSelected()) {
+            if (selectedBone.isRootBone()) {
                 int numRoots = Maud.model.target.bones.countRootBones();
                 if (numRoots == 1) {
                     parentText = "none (the root)";
@@ -204,7 +219,7 @@ class BoneTool extends WindowController {
                 }
                 spButton = "";
             } else {
-                String parentName = Maud.model.target.bone.getParentName();
+                String parentName = selectedBone.getParentName();
                 parentText = MyString.quote(parentName);
                 spButton = "Select";
             }
@@ -216,5 +231,26 @@ class BoneTool extends WindowController {
 
         Maud.gui.setStatusText("boneParent", " " + parentText);
         Maud.gui.setButtonLabel("boneSelectParentButton", spButton);
+    }
+
+    /**
+     * Update the transform buttons.
+     */
+    private void updateTransformButtons() {
+        String rButton, sButton, tButton;
+
+        if (Maud.model.target.bone.isSelected()) {
+            rButton = "Rotate";
+            sButton = "Scale";
+            tButton = "Translate";
+        } else {
+            rButton = "";
+            sButton = "";
+            tButton = "";
+        }
+
+        Maud.gui.setButtonLabel("boneRotateButton", rButton);
+        Maud.gui.setButtonLabel("boneScaleButton", sButton);
+        Maud.gui.setButtonLabel("boneTranslateButton", tButton);
     }
 }
