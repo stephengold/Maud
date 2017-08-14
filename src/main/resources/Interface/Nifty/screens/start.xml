@@ -30,7 +30,7 @@
 Nifty XML to lay out Maud's "Start" screen.
 -->
 <nifty xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
-    <screen id="Start" controller="maud.StartScreen">
+    <screen id="start" controller="maud.StartScreen">
         <layer childLayout="center" backgroundColor="#ffff">
             <image filename="Textures/icons/Maud.png"/>
         </layer>

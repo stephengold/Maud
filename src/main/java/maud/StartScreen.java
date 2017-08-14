@@ -29,15 +29,15 @@ package maud;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import java.util.logging.Logger;
-import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.ui.InputMode;
 
 /**
- * The screen controller for Maud's "Start" screen.
+ * The screen controller for Maud's "start" screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class StartScreen extends GuiScreenController {
+class StartScreen extends BasicScreenController {
     // *************************************************************************
     // constants and loggers
 
@@ -46,15 +46,23 @@ public class StartScreen extends GuiScreenController {
      */
     final private static Logger logger = Logger.getLogger(
             StartScreen.class.getName());
+    /**
+     * Nifty id for this screen
+     */
+    final private static String screenId = "start";
+    /**
+     * asset path to Nifty XML layout of this screen
+     */
+    final private static String xmlAssetPath = "Interface/Nifty/screens/start.xml";
     // *************************************************************************
     // constructors
 
     /**
-     * Instantiate an uninitialized, disabled display that will be enabled
-     * during initialization.
+     * Instantiate an uninitialized, disabled screen that will be enabled during
+     * initialization.
      */
     StartScreen() {
-        super("Start", "Interface/Nifty/screens/Start.xml", true);
+        super(screenId, xmlAssetPath, true);
     }
     // *************************************************************************
     // AppState methods
