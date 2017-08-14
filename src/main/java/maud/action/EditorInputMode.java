@@ -32,15 +32,11 @@ import com.jme3.asset.AssetManager;
 import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Spatial;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
 import maud.Maud;
-import maud.TweenRotations;
-import maud.TweenVectors;
 import maud.ViewType;
 import maud.model.History;
 import maud.model.LoadedCgm;
@@ -140,10 +136,10 @@ public class EditorInputMode extends InputMode {
                     handled = saveAction(actionString);
                     break;
                 case "select":
-                    handled = selectAction(actionString);
+                    handled = SelectAction.process(actionString);
                     break;
                 case "set":
-                    handled = setAction(actionString);
+                    handled = SetAction.process(actionString);
                     break;
                 case "toggle":
                     handled = toggleAction(actionString);
@@ -696,254 +692,6 @@ public class EditorInputMode extends InputMode {
             path = MyString.remainder(actionString, ActionPrefix.saveMap);
             Maud.model.getMap().writeToFile(path);
             handled = true;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with "select".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean selectAction(String actionString) {
-        boolean handled = true;
-        switch (actionString) {
-            case "select animControl":
-                Maud.gui.buildMenus.selectAnimControl(Maud.model.target);
-                break;
-            case "select boneChild":
-                Maud.gui.boneMenus.selectBoneChild();
-                break;
-            case "select boneParent":
-                Maud.model.target.bone.selectParent();
-                break;
-            case "select keyframeFirst":
-                Maud.model.target.track.selectFirstKeyframe();
-                break;
-            case "select keyframeLast":
-                Maud.model.target.track.selectLastKeyframe();
-                break;
-            case "select keyframeNext":
-                Maud.model.target.track.selectNextKeyframe();
-                break;
-            case "select keyframePrevious":
-                Maud.model.target.track.selectPreviousKeyframe();
-                break;
-            case "select mapSourceBone":
-                Maud.model.getMap().selectFromSource();
-                break;
-            case "select mapTargetBone":
-                Maud.model.getMap().selectFromTarget();
-                break;
-            case "select screenXY":
-                Maud.gui.selectXY();
-                break;
-            case "select sgc":
-                Maud.gui.buildMenus.selectSgc();
-                break;
-            case "select sourceAnimControl":
-                Maud.gui.buildMenus.selectAnimControl(Maud.model.getSource());
-                break;
-            case "select spatialChild":
-                Maud.gui.buildMenus.selectSpatialChild("");
-                break;
-            case "select spatialParent":
-                Maud.model.target.spatial.selectParent();
-                break;
-            case "select userKey":
-                Maud.gui.buildMenus.selectUserKey();
-                break;
-            default:
-                handled = selectAction2(actionString);
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with "select" -- 2nd part: test prefixes.
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean selectAction2(String actionString) {
-        boolean handled = true;
-        String arg;
-        if (actionString.startsWith(ActionPrefix.selectAnimControl)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectAnimControl);
-            Maud.model.target.selectAnimControl(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectBone)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectBone);
-            Maud.gui.boneMenus.selectBone(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectBoneChild)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectBoneChild);
-            Maud.gui.buildMenus.selectBoneChild(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectControl)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectControl);
-            Maud.model.target.sgc.select(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
-            Maud.gui.menus.selectSpatial(arg, false);
-
-        } else if (actionString.startsWith(
-                ActionPrefix.selectSourceAnimControl)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectSourceAnimControl);
-            Maud.model.getSource().selectAnimControl(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectSourceBone)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectSourceBone);
-            Maud.gui.boneMenus.selectSourceBone(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectSpatialChild)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectSpatialChild);
-            Maud.gui.selectSpatialChild(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectSpatial)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectSpatial);
-            Maud.gui.menus.selectSpatial(arg, true);
-
-        } else if (actionString.startsWith(ActionPrefix.selectUserKey)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectUserKey);
-            Maud.model.misc.selectUserKey(arg);
-
-        } else {
-            handled = false;
-        }
-
-        if (!handled && actionString.startsWith(ActionPrefix.selectMenuItem)) {
-            String menuPath = MyString.remainder(actionString,
-                    ActionPrefix.selectMenuItem);
-            handled = Maud.gui.menus.selectMenuItem(menuPath);
-        }
-        if (!handled && actionString.startsWith(ActionPrefix.selectTool)) {
-            String toolName = MyString.remainder(actionString,
-                    ActionPrefix.selectTool);
-            handled = Maud.gui.selectTool(toolName);
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with "set".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean setAction(String actionString) {
-        boolean handled = true;
-        switch (actionString) {
-            case "set batchHint":
-                Maud.gui.buildMenus.setBatchHint();
-                break;
-            case "set cullHint":
-                Maud.gui.buildMenus.setCullHint();
-                break;
-            case "set queueBucket":
-                Maud.gui.buildMenus.setQueueBucket();
-                break;
-            case "set shadowMode":
-                Maud.gui.buildMenus.setShadowMode();
-                break;
-            case "set track rotation all":
-                Maud.model.target.track.setTrackRotationAll();
-                break;
-            case "set track scale all":
-                Maud.model.target.track.setTrackScaleAll();
-                break;
-            case "set track translation all":
-                Maud.model.target.track.setTrackTranslationAll();
-                break;
-            case "set tweenRotations":
-                Maud.gui.buildMenus.setTweenRotations();
-                break;
-            case "set tweenScales":
-                Maud.gui.buildMenus.setTweenScales();
-                break;
-            case "set tweenTranslations":
-                Maud.gui.buildMenus.setTweenTranslations();
-                break;
-            case "set twist cardinal":
-                Maud.model.getMap().cardinalizeTwist();
-                break;
-            case "set twist snapX":
-                Maud.model.getMap().snapTwist(0);
-                break;
-            case "set twist snapY":
-                Maud.model.getMap().snapTwist(1);
-                break;
-            case "set twist snapZ":
-                Maud.model.getMap().snapTwist(2);
-                break;
-            case "set userData":
-                Maud.gui.dialogs.setUserData();
-                break;
-            default:
-                handled = setAction2(actionString);
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with "set" -- 2nd part: test prefixes.
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean setAction2(String actionString) {
-        boolean handled = true;
-        String arg;
-        if (actionString.startsWith(ActionPrefix.setDuration)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setDuration);
-            float value = Float.parseFloat(arg);
-            Maud.model.target.animation.setDuration(value);
-        } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
-            Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
-            Maud.model.target.setBatchHint(value);
-        } else if (actionString.startsWith(ActionPrefix.setCullHint)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setCullHint);
-            Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
-            Maud.model.target.setCullHint(value);
-        } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
-            RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
-            Maud.model.target.setQueueBucket(value);
-        } else if (actionString.startsWith(ActionPrefix.setShadowMode)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);
-            RenderQueue.ShadowMode value = RenderQueue.ShadowMode.valueOf(arg);
-            Maud.model.target.setShadowMode(value);
-        } else if (actionString.startsWith(ActionPrefix.setTweenRotations)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setTweenRotations);
-            TweenRotations value = TweenRotations.valueOf(arg);
-            Maud.model.misc.setTweenRotations(value);
-        } else if (actionString.startsWith(ActionPrefix.setTweenScales)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setTweenScales);
-            TweenVectors value = TweenVectors.valueOf(arg);
-            Maud.model.misc.setTweenScales(value);
-        } else if (actionString.startsWith(ActionPrefix.setTweenTranslations)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setTweenTranslations);
-            TweenVectors value = TweenVectors.valueOf(arg);
-            Maud.model.misc.setTweenTranslations(value);
-        } else if (actionString.startsWith(ActionPrefix.setUserData)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setUserData);
-            Maud.model.target.setUserData(arg);
-        } else {
-            handled = false;
         }
 
         return handled;
