@@ -120,7 +120,7 @@ public class BoneMenus {
     }
 
     /**
-     * Handle a "select boneChild" action with no argument.
+     * Handle a "select boneChild" action without arguments.
      */
     public void selectBoneChild() {
         if (Maud.model.target.bone.isSelected()) {
