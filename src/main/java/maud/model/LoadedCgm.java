@@ -52,9 +52,9 @@ import jme3utilities.math.MyMath;
 import jme3utilities.ui.Locators;
 import maud.CheckLoaded;
 import maud.Maud;
-import maud.SceneView;
-import maud.ScoreView;
 import maud.Util;
+import maud.view.SceneView;
+import maud.view.ScoreView;
 
 /**
  * MVC model for a loaded computer-graphics (CG) model in the Maud application:

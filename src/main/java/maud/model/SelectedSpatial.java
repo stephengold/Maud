@@ -50,8 +50,8 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.SceneView;
 import maud.Util;
+import maud.view.SceneView;
 
 /**
  * The MVC model of the selected spatial in the Maud application.

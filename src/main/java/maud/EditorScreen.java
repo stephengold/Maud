@@ -62,6 +62,8 @@ import maud.model.History;
 import maud.model.LoadedCgm;
 import maud.model.Pov;
 import maud.tool.EditorTools;
+import maud.view.EditorView;
+import maud.view.ViewType;
 
 /**
  * The screen controller for Maud's editor screen. The GUI includes a menu bar,

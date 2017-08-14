@@ -37,8 +37,8 @@ import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.SceneView;
 import maud.model.LoadedCgm;
+import maud.view.SceneView;
 
 /**
  * The controller for the "Cursor Tool" window in Maud's editor screen. The

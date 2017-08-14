@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.view;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
@@ -62,6 +62,8 @@ import jme3utilities.math.MyArray;
 import jme3utilities.math.MyMath;
 import jme3utilities.mesh.RectangleMesh;
 import jme3utilities.mesh.RectangleOutlineMesh;
+import maud.Maud;
+import maud.Selection;
 import maud.mesh.Finial;
 import maud.mesh.RoundedRectangle;
 import maud.mesh.Sparkline;
@@ -294,7 +296,7 @@ public class ScoreView implements EditorView {
      * created)
      * @param port3 view port to use in hybrid view mode (alias created)
      */
-    ScoreView(ViewPort port1, ViewPort port2, ViewPort port3) {
+    public ScoreView(ViewPort port1, ViewPort port2, ViewPort port3) {
         Validate.nonNull(port2, "port2");
 
         viewPort1 = port1;
