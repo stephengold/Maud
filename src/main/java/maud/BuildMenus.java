@@ -387,7 +387,7 @@ public class BuildMenus {
                     MyString.quote(menuName));
         } else {
             String actionPrefix = ActionPrefix.selectMenuItem + menuName
-                    + EditorMenus.menuSeparator;
+                    + EditorMenus.menuPathSeparator;
             builder.show(actionPrefix);
         }
 
