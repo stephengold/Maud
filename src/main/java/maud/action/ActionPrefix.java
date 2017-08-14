@@ -154,7 +154,13 @@ public class ActionPrefix {
      * argument is the name of a bone or a prefix thereof
      */
     final public static String selectBone = "select bone ";
+    /**
+     * argument is the name of a target bone, possibly preceded by "!"
+     */
     final public static String selectBoneChild = "select boneChild ";
+    /**
+     * argument is an index or noControl
+     */
     final public static String selectControl = "select control ";
     /**
      * argument is the name of a geometry or a prefix thereof
@@ -176,6 +182,9 @@ public class ActionPrefix {
      * argument is the name of a spatial or a prefix thereof
      */
     final public static String selectSpatial = "select spatial ";
+    /**
+     * arguments are the quoted name of a spatial and a bracketed index
+     */
     final public static String selectSpatialChild = "select spatialChild ";
     /**
      * argument is the name of a tool window
