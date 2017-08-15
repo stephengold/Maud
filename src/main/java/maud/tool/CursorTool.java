@@ -37,6 +37,7 @@ import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.CursorStatus;
 import maud.model.LoadedCgm;
 import maud.view.SceneView;
 
@@ -80,7 +81,7 @@ class CursorTool extends WindowController {
      */
     void onSliderChanged() {
         ColorRGBA color = Maud.gui.readColorBank("cursor");
-        Maud.getModel().cursor.setColor(color);
+        Maud.getModel().scene.getCursor().setColor(color);
     }
 
     /**
@@ -95,7 +96,8 @@ class CursorTool extends WindowController {
          * visibility
          */
         boolean wasVisible = (cursor != null);
-        boolean visible = Maud.getModel().cursor.isVisible();
+        CursorStatus status = Maud.getModel().scene.getCursor();
+        boolean visible = status.isVisible();
         if (wasVisible && !visible) {
             sceneView.setCursor(null);
             cursor = null;
@@ -108,7 +110,7 @@ class CursorTool extends WindowController {
             /*
              * color
              */
-            ColorRGBA newColor = Maud.getModel().cursor.copyColor(null);
+            ColorRGBA newColor = status.copyColor(null);
             Material material = cursor.getMaterial();
             material.setColor("Color", newColor); // note: creates alias
             /*
@@ -138,10 +140,11 @@ class CursorTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        boolean visible = Maud.getModel().cursor.isVisible();
+        CursorStatus status = Maud.getModel().scene.getCursor();
+        boolean visible = status.isVisible();
         Maud.gui.setChecked("3DCursor", visible);
 
-        ColorRGBA color = Maud.getModel().cursor.copyColor(null);
+        ColorRGBA color = status.copyColor(null);
         Maud.gui.setColorBank("cursor", color);
     }
     // *************************************************************************

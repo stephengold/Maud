@@ -37,6 +37,7 @@ import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.CameraStatus;
 import maud.model.Pov;
 import org.lwjgl.input.Mouse;
 
@@ -196,14 +197,15 @@ public class CameraTool
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        boolean parallel = Maud.getModel().camera.isParallelProjection();
+        CameraStatus status = Maud.getModel().scene.getCamera();
+        boolean parallel = status.isParallelProjection();
         if (parallel) {
             Maud.gui.setRadioButton("parallelRadioButton");
         } else {
             Maud.gui.setRadioButton("perspectiveRadioButton");
         }
 
-        boolean orbit = Maud.getModel().camera.isOrbitMode();
+        boolean orbit = status.isOrbitMode();
         if (orbit) {
             Maud.gui.setRadioButton("orbitRadioButton");
         } else {

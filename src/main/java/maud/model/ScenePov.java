@@ -87,7 +87,7 @@ public class ScenePov implements Cloneable, Pov {
      * (Orbit mode only)
      */
     public void aim() {
-        assert Maud.getModel().camera.isOrbitMode();
+        assert Maud.getModel().scene.getCamera().isOrbitMode();
         setCameraLocation(cameraLocation.clone());
     }
 
@@ -125,7 +125,7 @@ public class ScenePov implements Cloneable, Pov {
      * Move/turn the camera to a horizontal orientation.
      */
     public void goHorizontal() {
-        if (Maud.getModel().camera.isOrbitMode()) {
+        if (Maud.getModel().scene.getCamera().isOrbitMode()) {
             float azimuthAngle = azimuthAngle();
             float range = range();
             setOrbitMode(0f, azimuthAngle, range);
@@ -157,7 +157,7 @@ public class ScenePov implements Cloneable, Pov {
     public void setCameraLocation(Vector3f newLocation) {
         Validate.nonNull(newLocation, "location");
 
-        if (Maud.getModel().camera.isOrbitMode()) {
+        if (Maud.getModel().scene.getCamera().isOrbitMode()) {
             /*
              * Calculate the new offset relative to the 3D cursor.
              */
@@ -188,13 +188,13 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
-     * Calculate the scale of the cursor.
+     * Calculate a scale factor for the cursor.
      *
      * @return world scale factor (&ge;0)
      */
     public float worldScaleForCursor() {
         float range = range();
-        float worldScale = Maud.getModel().cursor.getSize() * range;
+        float worldScale = Maud.getModel().scene.getCursor().getSize() * range;
 
         assert worldScale >= 0f : worldScale;
         return worldScale;
@@ -228,7 +228,7 @@ public class ScenePov implements Cloneable, Pov {
      */
     @Override
     public void moveBackward(float amount) {
-        CameraStatus status = Maud.getModel().camera;
+        CameraStatus status = Maud.getModel().scene.getCamera();
         if (status.isOrbitMode()) {
             float rate = 1f + dollyInOutRate / 100f;
             float factor = FastMath.pow(rate, amount);
@@ -253,7 +253,7 @@ public class ScenePov implements Cloneable, Pov {
      */
     @Override
     public void moveLeft(float amount) {
-        if (Maud.getModel().camera.isOrbitMode()) {
+        if (Maud.getModel().scene.getCamera().isOrbitMode()) {
             float azimuthAngle = azimuthAngle();
             azimuthAngle += 2f * amount;
 
@@ -275,11 +275,11 @@ public class ScenePov implements Cloneable, Pov {
      */
     @Override
     public void moveUp(float amount) {
-        if (Maud.getModel().camera.isOrbitMode()) {
+        CameraStatus status = Maud.getModel().scene.getCamera();
+        if (status.isOrbitMode()) {
             float elevationAngle = elevationAngle();
             elevationAngle += amount;
-            elevationAngle = Maud.getModel().camera.clampElevation(
-                    elevationAngle);
+            elevationAngle = status.clampElevation(elevationAngle);
 
             float azimuthAngle = azimuthAngle();
             float range = range();
@@ -310,7 +310,7 @@ public class ScenePov implements Cloneable, Pov {
      */
     @Override
     public void updateCamera() {
-        CameraStatus status = Maud.getModel().camera;
+        CameraStatus status = Maud.getModel().scene.getCamera();
         if (status.isOrbitMode()) {
             aim(); // in case the 3D cursor moved
         }
@@ -424,7 +424,7 @@ public class ScenePov implements Cloneable, Pov {
     private void setOrbitMode(float elevationAngle, float azimuthAngle,
             float range) {
         Validate.nonNegative(range, "range");
-        CameraStatus status = Maud.getModel().camera;
+        CameraStatus status = Maud.getModel().scene.getCamera();
         assert status.isOrbitMode();
         /*
          * Limit the range and elevation angle.

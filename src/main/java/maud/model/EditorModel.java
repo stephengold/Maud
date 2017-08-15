@@ -29,8 +29,8 @@ package maud.model;
 import java.util.logging.Logger;
 
 /**
- * An MVC-model state for the editor screen in the Maud application. Includes
- * all state that's checkpointed.
+ * An MVC-model state of the editor screen in the Maud application. Includes all
+ * state that's checkpointed.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -50,22 +50,6 @@ public class EditorModel {
      * list of known asset locations
      */
     final private AssetLocations locations;
-    /**
-     * status of the visible coordinate axes in scene views
-     */
-    final public AxesStatus axes;
-    /**
-     * status of the bounds visualization(s) in scene views
-     */
-    final public BoundsStatus bounds;
-    /**
-     * status of the camera(s) in scene views
-     */
-    final public CameraStatus camera;
-    /**
-     * status of the 3D cursor(s) in scene views
-     */
-    final public CursorStatus cursor;
     /**
      * load slot for the (editable) target (main) CG model
      */
@@ -90,10 +74,6 @@ public class EditorModel {
      * options for "score" views
      */
     final private ScoreOptions score;
-    /**
-     * status of the skeleton visualization(s) in scene views
-     */
-    final public SkeletonStatus skeleton;
     // *************************************************************************
     // constructors
 
@@ -102,17 +82,12 @@ public class EditorModel {
      */
     public EditorModel() {
         locations = new AssetLocations();
-        axes = new AxesStatus();
-        bounds = new BoundsStatus();
-        camera = new CameraStatus();
-        cursor = new CursorStatus();
         targetCgmLoadSlot = new EditableCgm();
         mapLoadSlot = new EditableMap();
         sourceCgmLoadSlot = new LoadedCgm();
         misc = new MiscStatus();
         scene = new SceneOptions();
         score = new ScoreOptions();
-        skeleton = new SkeletonStatus();
     }
 
     /**
@@ -124,17 +99,12 @@ public class EditorModel {
     EditorModel(EditorModel other) {
         try {
             locations = other.locations.clone();
-            axes = other.axes.clone();
-            bounds = other.bounds.clone();
-            camera = other.camera.clone();
-            cursor = other.cursor.clone();
             targetCgmLoadSlot = other.targetCgmLoadSlot.clone();
             mapLoadSlot = other.mapLoadSlot.clone();
             sourceCgmLoadSlot = other.sourceCgmLoadSlot.clone();
             misc = other.misc.clone();
             scene = other.scene.clone();
             score = other.score.clone();
-            skeleton = other.skeleton.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException();
         }
