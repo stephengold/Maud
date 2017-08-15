@@ -112,10 +112,10 @@ public class EditorInputMode extends InputMode {
                     handled = deleteAction(actionString);
                     break;
                 case "load":
-                    handled = loadAction(actionString);
+                    handled = LoadAction.process(actionString);
                     break;
                 case "new":
-                    handled = newAction(actionString);
+                    handled = NewAction.process(actionString);
                     break;
                 case "next":
                     handled = nextAction(actionString);
@@ -268,159 +268,6 @@ public class EditorInputMode extends InputMode {
                     Maud.getModel().getLocations().remove(arg);
                     handled = true;
                 }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with "load ".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean loadAction(String actionString) {
-        boolean handled = true;
-        String args, name, path;
-        if (actionString.equals("load animation")) {
-            Maud.gui.menus.loadAnimation(Maud.getModel().target);
-
-        } else if (actionString.equals("load cgm")) {
-            Maud.gui.buildMenus.loadCgm();
-
-        } else if (actionString.equals("load map asset")) {
-            Maud.gui.buildMenus.loadMapAsset();
-
-        } else if (actionString.equals("load retargetedPose")) {
-            Maud.getModel().target.animation.loadRetargetedPose();
-
-        } else if (actionString.equals("load sourceAnimation")) {
-            Maud.gui.menus.loadAnimation(Maud.getModel().getSource());
-
-        } else if (actionString.equals("load sourceCgm")) {
-            Maud.gui.buildMenus.loadSourceCgm();
-
-        } else if (actionString.startsWith(ActionPrefix.loadAnimation)) {
-            args = MyString.remainder(actionString, ActionPrefix.loadAnimation);
-            Maud.gui.menus.loadAnimation(args, Maud.getModel().target);
-
-        } else if (actionString.startsWith(ActionPrefix.loadCgmAsset)) {
-            args = MyString.remainder(actionString, ActionPrefix.loadCgmAsset);
-            Maud.gui.buildMenus.loadCgmAsset(args, Maud.getModel().target);
-
-        } else if (actionString.startsWith(ActionPrefix.loadCgmLocator)) {
-            path = MyString.remainder(actionString,
-                    ActionPrefix.loadCgmLocator);
-            Maud.gui.buildMenus.loadCgmLocator(path, Maud.getModel().target);
-
-        } else if (actionString.startsWith(ActionPrefix.loadCgmNamed)) {
-            name = MyString.remainder(actionString, ActionPrefix.loadCgmNamed);
-            Maud.getModel().target.loadNamed(name);
-
-        } else if (actionString.startsWith(ActionPrefix.loadMapAsset)) {
-            path = MyString.remainder(actionString,
-                    ActionPrefix.loadMapAsset);
-            Maud.gui.buildMenus.loadMapAsset(path);
-
-        } else if (actionString.startsWith(ActionPrefix.loadMapLocator)) {
-            path = MyString.remainder(actionString,
-                    ActionPrefix.loadMapLocator);
-            Maud.gui.buildMenus.loadMapLocator(path);
-
-        } else if (actionString.startsWith(ActionPrefix.loadMapNamed)) {
-            name = MyString.remainder(actionString,
-                    ActionPrefix.loadMapNamed);
-            Maud.getModel().getMap().loadNamed(name);
-
-        } else if (actionString.startsWith(ActionPrefix.loadSourceAnimation)) {
-            args = MyString.remainder(actionString,
-                    ActionPrefix.loadSourceAnimation);
-            Maud.gui.menus.loadAnimation(args, Maud.getModel().getSource());
-
-        } else if (actionString.startsWith(ActionPrefix.loadSourceCgmAsset)) {
-            args = MyString.remainder(actionString,
-                    ActionPrefix.loadSourceCgmAsset);
-            Maud.gui.buildMenus.loadCgmAsset(args, Maud.getModel().getSource());
-
-        } else if (actionString.startsWith(ActionPrefix.loadSourceCgmLocator)) {
-            path = MyString.remainder(actionString,
-                    ActionPrefix.loadSourceCgmLocator);
-            Maud.gui.buildMenus.loadCgmLocator(path, Maud.getModel().getSource());
-
-        } else if (actionString.startsWith(ActionPrefix.loadSourceCgmNamed)) {
-            name = MyString.remainder(actionString,
-                    ActionPrefix.loadSourceCgmNamed);
-            Maud.getModel().getSource().loadNamed(name);
-
-        } else {
-            handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with "new".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean newAction(String actionString) {
-        boolean handled = true;
-        switch (actionString) {
-            case "new animation fromPose":
-                Maud.gui.dialogs.newAnimationFromPose();
-                break;
-            case "new checkpoint":
-                Maud.gui.addCheckpoint("user interface");
-                break;
-            case "new mapping":
-                Maud.getModel().getMap().mapBones();
-                break;
-            case "new singleKeyframe":
-                Maud.getModel().target.track.insertSingleKeyframe();
-                break;
-            case "new userKey":
-                Maud.gui.buildMenus.selectUserDataType();
-                break;
-            default:
-                handled = newAction2(actionString);
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with "new" -- 2nd part: test prefixes.
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean newAction2(String actionString) {
-        boolean handled = false;
-        if (actionString.startsWith(ActionPrefix.newAssetFolder)) {
-            String path = MyString.remainder(actionString,
-                    ActionPrefix.newAssetFolder);
-            Maud.gui.buildMenus.newAssetFolder(path);
-            handled = true;
-
-        } else if (actionString.startsWith(ActionPrefix.newAnimationFromPose)) {
-            String name = MyString.remainder(actionString,
-                    ActionPrefix.newAnimationFromPose);
-            Maud.getModel().target.animation.poseAndLoad(name);
-            handled = true;
-
-        } else if (actionString.startsWith(ActionPrefix.newUserKey)) {
-            String args;
-            args = MyString.remainder(actionString, ActionPrefix.newUserKey);
-            if (args.contains(" ")) {
-                String type = args.split(" ")[0];
-                String key = MyString.remainder(args, type + " ");
-                Maud.getModel().target.addUserKey(type, key);
-            } else {
-                Maud.gui.dialogs.newUserKey(actionString + " ");
-            }
-            handled = true;
         }
 
         return handled;
