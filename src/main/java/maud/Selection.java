@@ -44,7 +44,7 @@ public class Selection {
     // *************************************************************************
     // enums
     private enum Type {
-        None, Bone, Gnomon, Keyframe, PoseRotationAxis, PoseTransformAxis;
+        None, Bone, Gnomon, Keyframe, PoseTransformAxis, SceneAxis;
     }
     // *************************************************************************
     // constants and loggers
@@ -176,8 +176,7 @@ public class Selection {
     }
 
     /**
-     * Consider selecting the indexed axis of the currently selected bone in the
-     * current pose.
+     * Consider selecting the indexed axis in the view.
      *
      * @param cgm CG model that contains the bone (not null)
      * @param axisIndex which axis to select (&ge;0)
@@ -186,7 +185,7 @@ public class Selection {
      * @param screenXY screen coordinates of the axis (in pixels, not null,
      * unaffected)
      */
-    public void considerPoseAxis(LoadedCgm cgm, int axisIndex,
+    public void considerAxis(LoadedCgm cgm, int axisIndex,
             boolean scoreView, Vector2f screenXY) {
         Validate.nonNull(cgm, "model");
         if (scoreView) {
@@ -199,13 +198,13 @@ public class Selection {
         if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
             bestAxisIndex = axisIndex;
-            bestBoneIndex = cgm.bone.getIndex();
+            bestBoneIndex = -1;
             bestFrameIndex = -1;
             bestCgm = cgm;
             if (scoreView) {
                 bestType = Type.PoseTransformAxis;
             } else {
-                bestType = Type.PoseRotationAxis;
+                bestType = Type.SceneAxis;
             }
         }
     }
@@ -236,11 +235,11 @@ public class Selection {
             case Keyframe:
                 selectKeyframe();
                 break;
-            case PoseRotationAxis:
-                selectPoseRotationAxis();
-                break;
             case PoseTransformAxis:
                 selectPoseTransformAxis();
+                break;
+            case SceneAxis:
+                selectSceneAxis();
                 break;
             default:
                 throw new IllegalStateException();
@@ -290,9 +289,9 @@ public class Selection {
     }
 
     /**
-     * Select the rotation axis of the selected bone in the current pose.
+     * Select an axis of the scene's axis visualizer.
      */
-    private void selectPoseRotationAxis() {
+    private void selectSceneAxis() {
         assert bestCgm != null;
         assert bestAxisIndex >= 0 : bestAxisIndex;
         assert bestAxisIndex < 3 : bestAxisIndex;
