@@ -26,7 +26,6 @@
  */
 package maud.model;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 
@@ -56,10 +55,9 @@ public class AxesStatus implements Cloneable {
      */
     private float lineWidth = 4f;
     /**
-     * which set of axes is active (either "bone", "model", "none", "spatial",
-     * or "world")
+     * which set of axes is displayed
      */
-    private String mode = "bone";
+    private AxesMode mode = AxesMode.Bone;
     // *************************************************************************
     // new methods exposed
 
@@ -83,11 +81,11 @@ public class AxesStatus implements Cloneable {
     }
 
     /**
-     * Read the current mode string.
+     * Read the current mode.
      *
-     * @return mode string (not null)
+     * @return mode enum (not null)
      */
-    public String getMode() {
+    public AxesMode getMode() {
         assert mode != null;
         return mode;
     }
@@ -114,23 +112,11 @@ public class AxesStatus implements Cloneable {
     /**
      * Alter the display mode.
      *
-     * @param modeName name of new axes display mode (not null)
+     * @param newMode enum of new display mode (not null)
      */
-    public void setMode(String modeName) {
-        Validate.nonNull(modeName, "mode name");
-
-        switch (modeName) {
-            case "bone":
-            case "model":
-            case "none":
-            case "spatial":
-            case "world":
-                mode = modeName;
-                break;
-            default:
-                logger.log(Level.SEVERE, "mode name={0}", modeName);
-                throw new IllegalArgumentException("invalid mode name");
-        }
+    public void setMode(AxesMode newMode) {
+        Validate.nonNull(newMode, "new mode");
+        mode = newMode;
     }
     // *************************************************************************
     // Object methods
