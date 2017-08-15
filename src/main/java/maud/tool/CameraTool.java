@@ -197,7 +197,7 @@ public class CameraTool
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        CameraStatus status = Maud.getModel().scene.getCamera();
+        CameraStatus status = Maud.getModel().getScene().getCamera();
         boolean parallel = status.isParallelProjection();
         if (parallel) {
             Maud.gui.setRadioButton("parallelRadioButton");

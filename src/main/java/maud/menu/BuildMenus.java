@@ -46,6 +46,7 @@ import maud.action.ActionPrefix;
 import maud.model.EditorModel;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.MiscStatus;
 import maud.model.SelectedSpatial;
 import maud.model.ViewMode;
 
@@ -690,7 +691,7 @@ public class BuildMenus {
 
         EditorModel model = Maud.getModel();
         List<String> keyList = model.getTarget().spatial.listUserKeys();
-        String selectedKey = model.misc.getSelectedUserKey();
+        String selectedKey = model.getMisc().getSelectedUserKey();
         for (String key : keyList) {
             if (!key.equals(selectedKey)) {
                 builder.add(key);
@@ -705,7 +706,7 @@ public class BuildMenus {
     void selectViewMode() {
         builder.reset();
 
-        ViewMode viewMode = Maud.getModel().misc.getViewMode();
+        ViewMode viewMode = Maud.getModel().getMisc().getViewMode();
         for (ViewMode mode : ViewMode.values()) {
             if (!mode.equals(viewMode)) {
                 builder.add(mode.toString());
@@ -792,7 +793,7 @@ public class BuildMenus {
      */
     public void setTweenRotations() {
         builder.reset();
-        TweenRotations selected = Maud.getModel().misc.getTweenRotations();
+        TweenRotations selected = Maud.getModel().getMisc().getTweenRotations();
         for (TweenRotations t : TweenRotations.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
@@ -808,7 +809,7 @@ public class BuildMenus {
      */
     public void setTweenScales() {
         builder.reset();
-        TweenVectors selected = Maud.getModel().misc.getTweenScales();
+        TweenVectors selected = Maud.getModel().getMisc().getTweenScales();
         for (TweenVectors t : TweenVectors.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
@@ -824,7 +825,8 @@ public class BuildMenus {
      */
     public void setTweenTranslations() {
         builder.reset();
-        TweenVectors selected = Maud.getModel().misc.getTweenTranslations();
+        MiscStatus misc = Maud.getModel().getMisc();
+        TweenVectors selected = misc.getTweenTranslations();
         for (TweenVectors t : TweenVectors.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
@@ -1368,7 +1370,7 @@ public class BuildMenus {
      */
     private void buildViewMenu() {
         builder.add("Mode");
-        ViewMode viewMode = Maud.getModel().misc.getViewMode();
+        ViewMode viewMode = Maud.getModel().getMisc().getViewMode();
         if (viewMode.equals(ViewMode.Scene)
                 || viewMode.equals(ViewMode.Hybrid)) {
             builder.add("Scene options");

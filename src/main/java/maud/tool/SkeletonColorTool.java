@@ -67,7 +67,7 @@ class SkeletonColorTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        SkeletonStatus status = Maud.getModel().scene.getSkeleton();
+        SkeletonStatus status = Maud.getModel().getScene().getSkeleton();
         ColorRGBA color = Maud.gui.readColorBank("ske");
         status.setLinkColor(color);
 
@@ -90,7 +90,7 @@ class SkeletonColorTool extends WindowController {
             return;
         }
 
-        SkeletonStatus status = Maud.getModel().scene.getSkeleton();
+        SkeletonStatus status = Maud.getModel().getScene().getSkeleton();
         ColorRGBA color = status.copyLinkColor(null);
         visualizer.setLineColor(color);
 
@@ -125,7 +125,7 @@ class SkeletonColorTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        SkeletonStatus status = Maud.getModel().scene.getSkeleton();
+        SkeletonStatus status = Maud.getModel().getScene().getSkeleton();
         ColorRGBA color = status.copyLinkColor(null);
         Maud.gui.setColorBank("ske", color);
 

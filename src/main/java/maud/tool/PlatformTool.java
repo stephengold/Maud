@@ -96,7 +96,7 @@ class PlatformTool extends WindowController {
         SceneView sceneView = cgm.getSceneView();
         Spatial platform = sceneView.getPlatform();
 
-        String mode = Maud.getModel().scene.getPlatformMode();
+        String mode = Maud.getModel().getScene().getPlatformMode();
         switch (mode) {
             case "none":
                 if (platform != null) {
@@ -117,7 +117,7 @@ class PlatformTool extends WindowController {
         }
 
         if (platform != null) {
-            float diameter = Maud.getModel().scene.getPlatformDiameter();
+            float diameter = Maud.getModel().getScene().getPlatformDiameter();
             platform.setLocalScale(diameter);
 
             Vector3f center = new Vector3f(0f, -diameter * squareThickness, 0f);

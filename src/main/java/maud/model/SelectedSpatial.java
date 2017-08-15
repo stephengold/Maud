@@ -907,6 +907,6 @@ public class SelectedSpatial implements Cloneable {
             loadedCgm.animation.loadBindPose();
         }
 
-        Maud.getModel().misc.selectUserKey(null);
+        Maud.getModel().getMisc().selectUserKey(null);
     }
 }

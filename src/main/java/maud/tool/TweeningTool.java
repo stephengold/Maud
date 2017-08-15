@@ -74,7 +74,7 @@ class TweeningTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        MiscStatus misc = Maud.getModel().misc;
+        MiscStatus misc = Maud.getModel().getMisc();
         TweenVectors tweenTranslations = misc.getTweenTranslations();
         String desc = tweenTranslations.toString();
         Maud.gui.setStatusText("tweenTranslations", " " + desc);

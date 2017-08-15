@@ -412,7 +412,7 @@ public class ScoreView implements EditorView {
     @Override
     public ViewPort getViewPort() {
         ViewPort result = null;
-        ViewMode viewMode = Maud.getModel().misc.getViewMode();
+        ViewMode viewMode = Maud.getModel().getMisc().getViewMode();
         if (viewMode.equals(ViewMode.Hybrid)) {
             result = viewPort3;
         } else if (viewMode.equals(ViewMode.Score)) {

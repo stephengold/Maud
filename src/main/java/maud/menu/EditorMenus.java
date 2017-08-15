@@ -917,6 +917,6 @@ public class EditorMenus {
         assert remainder != null;
 
         ViewMode viewMode = ViewMode.valueOf(remainder);
-        Maud.getModel().misc.setViewMode(viewMode);
+        Maud.getModel().getMisc().setViewMode(viewMode);
     }
 }

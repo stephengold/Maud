@@ -259,7 +259,7 @@ public class EditorInputMode extends InputMode {
                 target.track.deleteSingleKeyframe();
                 break;
             case "delete userKey":
-                Maud.getModel().misc.deleteUserKey();
+                Maud.getModel().getMisc().deleteUserKey();
                 break;
             default:
                 handled = false;
@@ -311,10 +311,10 @@ public class EditorInputMode extends InputMode {
                 model.getSource().nextAnimControl();
                 break;
             case "next userData":
-                model.misc.selectNextUserKey();
+                model.getMisc().selectNextUserKey();
                 break;
             case "next viewMode":
-                model.misc.selectNextViewMode();
+                model.getMisc().selectNextViewMode();
                 break;
             default:
                 handled = false;
@@ -360,7 +360,7 @@ public class EditorInputMode extends InputMode {
                 model.getSource().previousAnimControl();
                 break;
             case "previous userData":
-                model.misc.selectPreviousUserKey();
+                model.getMisc().selectPreviousUserKey();
                 break;
             default:
                 handled = false;
@@ -581,7 +581,7 @@ public class EditorInputMode extends InputMode {
         EditorModel model = Maud.getModel();
         switch (actionString) {
             case "toggle degrees":
-                model.misc.toggleAnglesInDegrees();
+                model.getMisc().toggleAnglesInDegrees();
                 handled = true;
                 break;
             case "toggle dragSide":
@@ -606,7 +606,7 @@ public class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "toggle projection":
-                model.scene.getCamera().toggleProjection();
+                model.getScene().getCamera().toggleProjection();
                 handled = true;
         }
 

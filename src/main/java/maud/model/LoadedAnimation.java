@@ -138,8 +138,8 @@ public class LoadedAnimation implements Cloneable {
             Track newTrack;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                Transform neck = Maud.getModel().misc.interpolate(currentTime,
-                        boneTrack, oldDuration, null);
+                Transform neck = Maud.getModel().getMisc().interpolate(
+                        currentTime, boneTrack, oldDuration, null);
                 newTrack = Util.behead(boneTrack, currentTime, neck,
                         oldDuration);
             } else {
@@ -984,7 +984,8 @@ public class LoadedAnimation implements Cloneable {
             float[] storeYs, float[] storeZs) {
         Validate.nonNegative(boneIndex, "bone index");
 
-        TweenRotations technique = Maud.getModel().misc.getTweenRotations();
+        TweenRotations technique;
+        technique = Maud.getModel().getMisc().getTweenRotations();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();
@@ -1041,7 +1042,7 @@ public class LoadedAnimation implements Cloneable {
             float[] storeXs, float[] storeYs, float[] storeZs) {
         Validate.nonNegative(boneIndex, "bone index");
 
-        TweenVectors technique = Maud.getModel().misc.getTweenScales();
+        TweenVectors technique = Maud.getModel().getMisc().getTweenScales();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();
@@ -1113,7 +1114,8 @@ public class LoadedAnimation implements Cloneable {
             float[] storeXs, float[] storeYs, float[] storeZs) {
         Validate.nonNegative(boneIndex, "bone index");
 
-        TweenVectors technique = Maud.getModel().misc.getTweenTranslations();
+        TweenVectors technique;
+        technique = Maud.getModel().getMisc().getTweenTranslations();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();

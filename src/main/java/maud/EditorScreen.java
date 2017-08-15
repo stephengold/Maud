@@ -321,7 +321,7 @@ public class EditorScreen extends GuiScreenController {
         EditorModel model = Maud.getModel();
         LoadedCgm source = model.getSource();
         EditableCgm target = model.getTarget();
-        SceneOptions scene = model.scene;
+        SceneOptions scene = model.getScene();
         boolean isChecked = event.isChecked();
         String prefix = MyString.removeSuffix(boxId, "CheckBox");
         switch (prefix) {
@@ -401,7 +401,7 @@ public class EditorScreen extends GuiScreenController {
         if (ignoreGuiChanges || !hasStarted() || !event.isSelected()) {
             return;
         }
-        SceneOptions scene = Maud.getModel().scene;
+        SceneOptions scene = Maud.getModel().getScene();
         ScoreOptions score = Maud.getModel().getScore();
 
         switch (buttonId) {

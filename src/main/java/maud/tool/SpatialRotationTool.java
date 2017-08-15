@@ -130,7 +130,7 @@ class SpatialRotationTool extends WindowController {
 
         setSlidersToTransform();
         String dButton;
-        if (Maud.getModel().misc.getAnglesInDegrees()) {
+        if (Maud.getModel().getMisc().getAnglesInDegrees()) {
             dButton = "radians";
         } else {
             dButton = "degrees";
@@ -150,7 +150,7 @@ class SpatialRotationTool extends WindowController {
         Quaternion rotation;
         rotation = Maud.getModel().getTarget().spatial.localRotation(null);
         float[] angles = rotation.toAngles(null);
-        boolean degrees = Maud.getModel().misc.getAnglesInDegrees();
+        boolean degrees = Maud.getModel().getMisc().getAnglesInDegrees();
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float angle = angles[iAxis];

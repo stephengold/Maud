@@ -664,7 +664,7 @@ public class SceneView implements EditorView, JmeCloneable {
     @Override
     public ViewPort getViewPort() {
         ViewPort result;
-        ViewMode viewMode = Maud.getModel().misc.getViewMode();
+        ViewMode viewMode = Maud.getModel().getMisc().getViewMode();
         if (Maud.getModel().getSource().isLoaded()
                 || viewMode.equals(ViewMode.Hybrid)) {
             result = viewPort2; // split-screen view port
@@ -1001,7 +1001,7 @@ public class SceneView implements EditorView, JmeCloneable {
          */
         Vector3f baseLocation = new Vector3f(0f, 0f, 0f);
         cgm.scenePov.setCursorLocation(baseLocation);
-        Maud.getModel().scene.setPlatformDiameter(2f);
+        Maud.getModel().getScene().setPlatformDiameter(2f);
 
         Vector3f cameraLocation = new Vector3f(-2.4f, 1f, 1.6f);
         cgm.scenePov.setCameraLocation(cameraLocation);
@@ -1035,7 +1035,7 @@ public class SceneView implements EditorView, JmeCloneable {
      */
     private void updateShadowMode() {
         RenderQueue.ShadowMode mode;
-        boolean enableShadows = Maud.getModel().scene.areShadowsRendered();
+        boolean enableShadows = Maud.getModel().getScene().areShadowsRendered();
         if (enableShadows) {
             mode = RenderQueue.ShadowMode.CastAndReceive;
         } else {

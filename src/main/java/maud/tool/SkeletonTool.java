@@ -67,7 +67,7 @@ class SkeletonTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        SkeletonStatus status = Maud.getModel().scene.getSkeleton();
+        SkeletonStatus status = Maud.getModel().getScene().getSkeleton();
         float lineWidth = Maud.gui.readSlider("skeletonLineWidth");
         status.setLineWidth(lineWidth);
 
@@ -86,7 +86,7 @@ class SkeletonTool extends WindowController {
         if (visualizer == null) {
             return;
         }
-        SkeletonStatus status = Maud.getModel().scene.getSkeleton();
+        SkeletonStatus status = Maud.getModel().getScene().getSkeleton();
 
         boolean visible = status.isVisible();
         visualizer.setEnabled(visible);
@@ -114,7 +114,7 @@ class SkeletonTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        SkeletonStatus status = Maud.getModel().scene.getSkeleton();
+        SkeletonStatus status = Maud.getModel().getScene().getSkeleton();
         boolean visible = status.isVisible();
         Maud.gui.setChecked("skeleton", visible);
 
