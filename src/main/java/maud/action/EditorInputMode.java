@@ -606,7 +606,7 @@ public class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "toggle projection":
-                model.camera.toggleProjection();
+                model.scene.getCamera().toggleProjection();
                 handled = true;
         }
 

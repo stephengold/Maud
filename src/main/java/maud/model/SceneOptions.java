@@ -48,22 +48,41 @@ public class SceneOptions implements Cloneable {
     // fields
 
     /**
+     * configuration of coordinate axes visualization(s)
+     */
+    private AxesStatus axes = new AxesStatus();
+    /**
      * true if physics objects are visualized, otherwise false
      */
     private boolean physicsRendered = true;
     /**
-     * shadows in scene views (true &rarr; rendered, false &rarr; not rendered)
+     * shadows (true &rarr; rendered, false &rarr; not rendered)
      */
     private boolean shadowsRendered = true;
     /**
-     * sky background in scene views (true &rarr; rendered, false &rarr; not
-     * rendered)
+     * sky background (true &rarr; rendered, false &rarr; not rendered)
      */
     private boolean skyRendered = true;
+    /**
+     * configuration of the bounds visualization(s)
+     */
+    private BoundsStatus bounds = new BoundsStatus();
+    /**
+     * configuration of the camera(s)
+     */
+    private CameraStatus camera = new CameraStatus();
+    /**
+     * configuration of the 3D cursor(s)
+     */
+    private CursorStatus cursor = new CursorStatus();
     /**
      * diameter of the platform in scene views (in world units, &gt;0)
      */
     private float platformDiameter = 1f;
+    /**
+     * configuration of the skeleton visualization(s)
+     */
+    private SkeletonStatus skeleton = new SkeletonStatus();
     /**
      * type of platform in scene views (either "none" or "square")
      */
@@ -78,6 +97,46 @@ public class SceneOptions implements Cloneable {
      */
     public boolean areShadowsRendered() {
         return shadowsRendered;
+    }
+
+    /**
+     * Access the configuration of coordinate axes visualization(s).
+     *
+     * @return the pre-existing instance
+     */
+    public AxesStatus getAxes() {
+        assert axes != null;
+        return axes;
+    }
+
+    /**
+     * Access the configuration of bounds visualization(s).
+     *
+     * @return the pre-existing instance
+     */
+    public BoundsStatus getBounds() {
+        assert bounds != null;
+        return bounds;
+    }
+
+    /**
+     * Access the configuration of the camera(s).
+     *
+     * @return the pre-existing instance
+     */
+    public CameraStatus getCamera() {
+        assert camera != null;
+        return camera;
+    }
+
+    /**
+     * Access the configuration of the 3D cursor(s).
+     *
+     * @return the pre-existing instance
+     */
+    public CursorStatus getCursor() {
+        assert cursor != null;
+        return cursor;
     }
 
     /**
@@ -106,6 +165,16 @@ public class SceneOptions implements Cloneable {
      */
     public boolean isPhysicsRendered() {
         return physicsRendered;
+    }
+
+    /**
+     * Access the configuration of the skeleton visualization(s).
+     *
+     * @return the pre-existing instance
+     */
+    public SkeletonStatus getSkeleton() {
+        assert skeleton != null;
+        return skeleton;
     }
 
     /**
@@ -184,6 +253,12 @@ public class SceneOptions implements Cloneable {
     @Override
     public SceneOptions clone() throws CloneNotSupportedException {
         SceneOptions clone = (SceneOptions) super.clone();
+        axes = axes.clone();
+        bounds = bounds.clone();
+        camera = camera.clone();
+        cursor = cursor.clone();
+        skeleton = skeleton.clone();
+
         return clone;
     }
 }

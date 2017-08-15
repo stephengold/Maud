@@ -70,11 +70,12 @@ class BoundsTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
+        BoundsStatus status = Maud.getModel().scene.getBounds();
         float lineWidth = Maud.gui.readSlider("boundsLineWidth");
-        Maud.getModel().bounds.setLineWidth(lineWidth);
+        status.setLineWidth(lineWidth);
 
         ColorRGBA color = Maud.gui.readColorBank("bounds");
-        Maud.getModel().bounds.setColor(color);
+        status.setColor(color);
     }
 
     /**
@@ -87,7 +88,7 @@ class BoundsTool extends WindowController {
         BoundsVisualizer visualizer = sceneView.getBoundsVisualizer();
         visualizer.setEnabled(true);
 
-        BoundsStatus status = Maud.getModel().bounds;
+        BoundsStatus status = Maud.getModel().scene.getBounds();
         ColorRGBA color = status.copyColor(null);
         visualizer.setColor(color);
 
@@ -113,7 +114,7 @@ class BoundsTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
-        BoundsStatus status = Maud.getModel().bounds;
+        BoundsStatus status = Maud.getModel().scene.getBounds();
         Maud.gui.setIgnoreGuiChanges(true);
 
         ColorRGBA color = status.copyColor(null);

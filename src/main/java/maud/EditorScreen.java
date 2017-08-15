@@ -64,6 +64,8 @@ import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedCgm;
 import maud.model.Pov;
+import maud.model.SceneOptions;
+import maud.model.ScoreOptions;
 import maud.model.SelectedSpatial;
 import maud.tool.EditorTools;
 import maud.view.EditorView;
@@ -317,18 +319,20 @@ public class EditorScreen extends GuiScreenController {
         }
 
         EditorModel model = Maud.getModel();
+        LoadedCgm source = model.getSource();
         EditableCgm target = model.getTarget();
+        SceneOptions scene = model.scene;
         boolean isChecked = event.isChecked();
         String prefix = MyString.removeSuffix(boxId, "CheckBox");
         switch (prefix) {
             case "3DCursor":
-                model.cursor.setVisible(isChecked);
+                scene.getCursor().setVisible(isChecked);
                 break;
             case "axesDepthTest":
-                model.axes.setDepthTestFlag(isChecked);
+                scene.getAxes().setDepthTestFlag(isChecked);
                 break;
             case "boundsDepthTest":
-                model.bounds.setDepthTestFlag(isChecked);
+                scene.getBounds().setDepthTestFlag(isChecked);
                 break;
             case "freeze":
                 target.pose.setFrozen(isChecked);
@@ -341,22 +345,22 @@ public class EditorScreen extends GuiScreenController {
                 target.animation.setContinue(isChecked);
                 break;
             case "loopSource":
-                Maud.getModel().getSource().animation.setContinue(isChecked);
+                source.animation.setContinue(isChecked);
                 break;
             case "physics":
-                model.scene.setPhysicsRendered(isChecked);
+                scene.setPhysicsRendered(isChecked);
                 break;
             case "pin":
                 target.animation.setPinned(isChecked);
                 break;
             case "pinSource":
-                Maud.getModel().getSource().animation.setPinned(isChecked);
+                source.animation.setPinned(isChecked);
                 break;
             case "pong":
                 target.animation.setReverse(isChecked);
                 break;
             case "pongSource":
-                Maud.getModel().getSource().animation.setReverse(isChecked);
+                source.animation.setReverse(isChecked);
                 break;
             case "scoreRotations":
                 model.getScore().setShowRotations(isChecked);
@@ -368,13 +372,13 @@ public class EditorScreen extends GuiScreenController {
                 model.getScore().setShowTranslations(isChecked);
                 break;
             case "shadows":
-                model.scene.setShadowsRendered(isChecked);
+                scene.setShadowsRendered(isChecked);
                 break;
             case "skeleton":
-                model.skeleton.setVisible(isChecked);
+                scene.getSkeleton().setVisible(isChecked);
                 break;
             case "sky":
-                model.scene.setSkyRendered(isChecked);
+                scene.setSkyRendered(isChecked);
                 break;
             default:
                 logger.log(Level.WARNING, "check box with unknown id={0}",
@@ -397,68 +401,70 @@ public class EditorScreen extends GuiScreenController {
         if (ignoreGuiChanges || !hasStarted() || !event.isSelected()) {
             return;
         }
+        SceneOptions scene = Maud.getModel().scene;
+        ScoreOptions score = Maud.getModel().getScore();
 
         switch (buttonId) {
             case "boneAxesRadioButton":
-                Maud.getModel().axes.setMode(AxesMode.Bone);
+                scene.getAxes().setMode(AxesMode.Bone);
                 break;
             case "modelAxesRadioButton":
-                Maud.getModel().axes.setMode(AxesMode.Cgm);
+                scene.getAxes().setMode(AxesMode.Cgm);
                 break;
             case "spatialAxesRadioButton":
-                Maud.getModel().axes.setMode(AxesMode.Spatial);
+                scene.getAxes().setMode(AxesMode.Spatial);
                 break;
             case "worldAxesRadioButton":
-                Maud.getModel().axes.setMode(AxesMode.World);
+                scene.getAxes().setMode(AxesMode.World);
                 break;
             case "hideAxesRadioButton":
-                Maud.getModel().axes.setMode(AxesMode.None);
+                scene.getAxes().setMode(AxesMode.None);
                 break;
 
             case "flyRadioButton":
-                Maud.getModel().camera.setMode("fly");
+                scene.getCamera().setMode("fly");
                 break;
             case "orbitRadioButton":
-                Maud.getModel().camera.setMode("orbit");
+                scene.getCamera().setMode("orbit");
                 break;
             case "perspectiveRadioButton":
-                Maud.getModel().camera.setMode("perspective");
+                scene.getCamera().setMode("perspective");
                 break;
             case "parallelRadioButton":
-                Maud.getModel().camera.setMode("parallel");
+                scene.getCamera().setMode("parallel");
                 break;
 
             case "scoreNoneAllRadioButton":
-                Maud.getModel().getScore().setShowNoneSelected("all");
+                score.setShowNoneSelected("all");
                 break;
             case "scoreNoneNoneRadioButton":
-                Maud.getModel().getScore().setShowNoneSelected("none");
+                score.setShowNoneSelected("none");
                 break;
             case "scoreNoneRootsRadioButton":
-                Maud.getModel().getScore().setShowNoneSelected("roots");
+                score.setShowNoneSelected("roots");
                 break;
             case "scoreNoneTrackedRadioButton":
-                Maud.getModel().getScore().setShowNoneSelected("tracked");
+                score.setShowNoneSelected("tracked");
                 break;
 
             case "scoreWhenAllRadioButton":
-                Maud.getModel().getScore().setShowWhenSelected("all");
+                score.setShowWhenSelected("all");
                 break;
             case "scoreWhenAncestorsRadioButton":
-                Maud.getModel().getScore().setShowWhenSelected("ancestors");
+                score.setShowWhenSelected("ancestors");
                 break;
             case "scoreWhenFamilyRadioButton":
-                Maud.getModel().getScore().setShowWhenSelected("family");
+                score.setShowWhenSelected("family");
                 break;
             case "scoreWhenSelectedRadioButton":
-                Maud.getModel().getScore().setShowWhenSelected("selected");
+                score.setShowWhenSelected("selected");
                 break;
 
             case "noPlatformRadioButton":
-                Maud.getModel().scene.setPlatformMode("none");
+                scene.setPlatformMode("none");
                 break;
             case "squarePlatformRadioButton":
-                Maud.getModel().scene.setPlatformMode("square");
+                scene.setPlatformMode("square");
                 break;
 
             default:
