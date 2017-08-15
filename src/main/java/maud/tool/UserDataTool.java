@@ -31,6 +31,8 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.EditableCgm;
+import maud.model.LoadedCgm;
 
 /**
  * The controller for the "User Data Tool" window in Maud's editor screen.
@@ -88,8 +90,9 @@ class UserDataTool extends WindowController {
         String indexText;
         String nButton = "", pButton = "", sButton = "";
 
-        int numKeys = Maud.getModel().getTarget().spatial.countUserKeys();
-        int selectedIndex = Maud.getModel().getMisc().findUserKeyIndex();
+        EditableCgm target = Maud.getModel().getTarget();
+        int numKeys = target.spatial.countUserKeys();
+        int selectedIndex = target.getUserData().findKeyIndex();
         if (selectedIndex >= 0) {
             indexText = String.format("#%d of %d", selectedIndex + 1, numKeys);
             if (numKeys > 1) {
@@ -120,7 +123,9 @@ class UserDataTool extends WindowController {
      */
     private void updateKey() {
         String dButton, keyText, rButton;
-        String key = Maud.getModel().getMisc().getSelectedUserKey();
+
+        LoadedCgm target = Maud.getModel().getTarget();
+        String key = target.getUserData().getKey();
         if (key == null) {
             dButton = "";
             keyText = "(none selected)";
@@ -130,6 +135,7 @@ class UserDataTool extends WindowController {
             keyText = MyString.quote(key);
             rButton = "Rename";
         }
+
         Maud.gui.setStatusText("userKey", " " + keyText);
         Maud.gui.setButtonLabel("userKeyDeleteButton", dButton);
         Maud.gui.setButtonLabel("userKeyRenameButton", rButton);
@@ -141,7 +147,8 @@ class UserDataTool extends WindowController {
     private void updateValue() {
         String eButton, valueText;
 
-        String key = Maud.getModel().getMisc().getSelectedUserKey();
+        LoadedCgm target = Maud.getModel().getTarget();
+        String key = target.getUserData().getKey();
         if (key == null) {
             eButton = "";
             valueText = "";

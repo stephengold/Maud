@@ -43,6 +43,7 @@ import maud.Maud;
 import maud.TweenRotations;
 import maud.TweenVectors;
 import maud.action.ActionPrefix;
+import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
@@ -689,9 +690,9 @@ public class BuildMenus {
     public void selectUserKey() {
         builder.reset();
 
-        EditorModel model = Maud.getModel();
-        List<String> keyList = model.getTarget().spatial.listUserKeys();
-        String selectedKey = model.getMisc().getSelectedUserKey();
+        EditableCgm target = Maud.getModel().getTarget();
+        List<String> keyList = target.spatial.listUserKeys();
+        String selectedKey = target.getUserData().getKey();
         for (String key : keyList) {
             if (!key.equals(selectedKey)) {
                 builder.add(key);

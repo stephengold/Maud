@@ -30,12 +30,9 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
-import jme3utilities.math.MyMath;
-import maud.Maud;
 import maud.TweenRotations;
 import maud.TweenVectors;
 
@@ -65,10 +62,6 @@ public class MiscStatus implements Cloneable {
      */
     private boolean anglesInDegrees = true;
     /**
-     * selected user key, or null if none selected
-     */
-    private String selectedUserKey = null;
-    /**
      * view mode
      */
     private ViewMode viewMode = ViewMode.Scene;
@@ -88,49 +81,12 @@ public class MiscStatus implements Cloneable {
     // new methods exposed
 
     /**
-     * Delete (and deselect) the selected user key.
-     */
-    public void deleteUserKey() {
-        if (selectedUserKey != null) {
-            Maud.getModel().getTarget().deleteUserKey();
-            selectedUserKey = null;
-        }
-    }
-
-    /**
-     * Find the index of the selected user key.
-     *
-     * @return index, or -1 if none selected
-     */
-    public int findUserKeyIndex() {
-        int index;
-        if (selectedUserKey == null) {
-            index = -1;
-        } else {
-            List<String> keyList;
-            keyList = Maud.getModel().getTarget().spatial.listUserKeys();
-            index = keyList.indexOf(selectedUserKey);
-        }
-
-        return index;
-    }
-
-    /**
      * Test whether to display angles in degrees.
      *
      * @return true for degrees, otherwise false
      */
     public boolean getAnglesInDegrees() {
         return anglesInDegrees;
-    }
-
-    /**
-     * Read the selected user key.
-     *
-     * @return a key, or null if none selected
-     */
-    public String getSelectedUserKey() {
-        return selectedUserKey;
     }
 
     /**
@@ -233,19 +189,6 @@ public class MiscStatus implements Cloneable {
     }
 
     /**
-     * Select the next user key in alphabetical order.
-     */
-    public void selectNextUserKey() {
-        LoadedCgm target = Maud.getModel().getTarget();
-        List<String> keyList = target.spatial.listUserKeys();
-        int numKeys = keyList.size();
-        int index = keyList.indexOf(selectedUserKey);
-        int nextIndex = MyMath.modulo(index + 1, numKeys);
-        String nextName = keyList.get(nextIndex);
-        selectUserKey(nextName);
-    }
-
-    /**
      * Cycle through view modes.
      */
     public void selectNextViewMode() {
@@ -263,28 +206,6 @@ public class MiscStatus implements Cloneable {
                 logger.log(Level.SEVERE, "view mode={0}", viewMode);
                 throw new IllegalStateException("invalid view mode");
         }
-    }
-
-    /**
-     * Select the previous user key in alphabetical order.
-     */
-    public void selectPreviousUserKey() {
-        LoadedCgm target = Maud.getModel().getTarget();
-        List<String> keyList = target.spatial.listUserKeys();
-        int numKeys = keyList.size();
-        int index = keyList.indexOf(selectedUserKey);
-        int nextIndex = MyMath.modulo(index - 1, numKeys);
-        String previousName = keyList.get(nextIndex);
-        selectUserKey(previousName);
-    }
-
-    /**
-     * Select the specified user key.
-     *
-     * @param key a key, or null to deselect
-     */
-    public void selectUserKey(String key) {
-        selectedUserKey = key;
     }
 
     /**

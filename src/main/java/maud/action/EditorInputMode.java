@@ -259,7 +259,7 @@ public class EditorInputMode extends InputMode {
                 target.track.deleteSingleKeyframe();
                 break;
             case "delete userKey":
-                Maud.getModel().getMisc().deleteUserKey();
+                target.getUserData().delete();
                 break;
             default:
                 handled = false;
@@ -311,7 +311,7 @@ public class EditorInputMode extends InputMode {
                 model.getSource().nextAnimControl();
                 break;
             case "next userData":
-                model.getMisc().selectNextUserKey();
+                target.getUserData().selectNextKey();
                 break;
             case "next viewMode":
                 model.getMisc().selectNextViewMode();
@@ -360,7 +360,7 @@ public class EditorInputMode extends InputMode {
                 model.getSource().previousAnimControl();
                 break;
             case "previous userData":
-                model.getMisc().selectPreviousUserKey();
+                target.getUserData().selectPreviousKey();
                 break;
             default:
                 handled = false;

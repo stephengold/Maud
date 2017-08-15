@@ -260,7 +260,8 @@ public class EditorDialogs {
      * Display a "rename userKey" dialog.
      */
     public void renameUserKey() {
-        String oldName = Maud.getModel().getMisc().getSelectedUserKey();
+        EditableCgm target = Maud.getModel().getTarget();
+        String oldName = target.getUserData().getKey();
         if (oldName != null) {
             DialogController controller = new UserKeyDialog("Rename");
             Maud.gui.closeAllPopups();
@@ -330,7 +331,7 @@ public class EditorDialogs {
      */
     public void setUserData() {
         EditableCgm target = Maud.getModel().getTarget();
-        String key = Maud.getModel().getMisc().getSelectedUserKey();
+        String key = target.getUserData().getKey();
         Object data = target.spatial.getUserData(key);
         if (data instanceof Boolean) {
             boolean oldValue = (boolean) data;
