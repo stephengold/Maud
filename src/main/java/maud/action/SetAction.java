@@ -33,6 +33,8 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.TweenRotations;
 import maud.TweenVectors;
+import maud.model.EditableCgm;
+import maud.model.EditorModel;
 
 /**
  * Process an action string that begins with "set".
@@ -67,6 +69,9 @@ class SetAction {
      */
     static boolean process(String actionString) {
         boolean handled = true;
+
+        EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
         switch (actionString) {
             case "set batchHint":
                 Maud.gui.buildMenus.setBatchHint();
@@ -81,13 +86,13 @@ class SetAction {
                 Maud.gui.buildMenus.setShadowMode();
                 break;
             case "set track rotation all":
-                Maud.getModel().target.track.setTrackRotationAll();
+                target.track.setTrackRotationAll();
                 break;
             case "set track scale all":
-                Maud.getModel().target.track.setTrackScaleAll();
+                target.track.setTrackScaleAll();
                 break;
             case "set track translation all":
-                Maud.getModel().target.track.setTrackTranslationAll();
+                target.track.setTrackTranslationAll();
                 break;
             case "set tweenRotations":
                 Maud.gui.buildMenus.setTweenRotations();
@@ -99,16 +104,16 @@ class SetAction {
                 Maud.gui.buildMenus.setTweenTranslations();
                 break;
             case "set twist cardinal":
-                Maud.getModel().getMap().cardinalizeTwist();
+                model.getMap().cardinalizeTwist();
                 break;
             case "set twist snapX":
-                Maud.getModel().getMap().snapTwist(0);
+                model.getMap().snapTwist(0); // TODO use named constant
                 break;
             case "set twist snapY":
-                Maud.getModel().getMap().snapTwist(1);
+                model.getMap().snapTwist(1);
                 break;
             case "set twist snapZ":
-                Maud.getModel().getMap().snapTwist(2);
+                model.getMap().snapTwist(2);
                 break;
             case "set userData":
                 Maud.gui.dialogs.setUserData();
@@ -130,45 +135,57 @@ class SetAction {
      */
     private static boolean processPrefixes(String actionString) {
         boolean handled = true;
+
+        EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
         String arg;
         if (actionString.startsWith(ActionPrefix.setDuration)) {
             arg = MyString.remainder(actionString, ActionPrefix.setDuration);
             float value = Float.parseFloat(arg);
-            Maud.getModel().target.animation.setDuration(value);
+            target.animation.setDuration(value);
+
         } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
             Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
-            Maud.getModel().target.setBatchHint(value);
+            target.setBatchHint(value);
+
         } else if (actionString.startsWith(ActionPrefix.setCullHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setCullHint);
             Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
-            Maud.getModel().target.setCullHint(value);
+            target.setCullHint(value);
+
         } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
             arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
             RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
-            Maud.getModel().target.setQueueBucket(value);
+            target.setQueueBucket(value);
+
         } else if (actionString.startsWith(ActionPrefix.setShadowMode)) {
             arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);
             RenderQueue.ShadowMode value = RenderQueue.ShadowMode.valueOf(arg);
-            Maud.getModel().target.setShadowMode(value);
+            target.setShadowMode(value);
+
         } else if (actionString.startsWith(ActionPrefix.setTweenRotations)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenRotations);
             TweenRotations value = TweenRotations.valueOf(arg);
-            Maud.getModel().misc.setTweenRotations(value);
+            model.misc.setTweenRotations(value);
+
         } else if (actionString.startsWith(ActionPrefix.setTweenScales)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenScales);
             TweenVectors value = TweenVectors.valueOf(arg);
-            Maud.getModel().misc.setTweenScales(value);
+            model.misc.setTweenScales(value);
+
         } else if (actionString.startsWith(ActionPrefix.setTweenTranslations)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenTranslations);
             TweenVectors value = TweenVectors.valueOf(arg);
-            Maud.getModel().misc.setTweenTranslations(value);
+            model.misc.setTweenTranslations(value);
+
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);
-            Maud.getModel().target.setUserData(arg);
+            target.setUserData(arg);
+
         } else {
             handled = false;
         }

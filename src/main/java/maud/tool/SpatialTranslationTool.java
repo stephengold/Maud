@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.SelectedSpatial;
 
 /**
  * The controller for the "Spatial-Translation Tool" window in Maud's editor
@@ -107,7 +108,7 @@ class SpatialTranslationTool extends WindowController {
 
         float masterScale = readScale();
         offsets.multLocal(masterScale);
-        Maud.getModel().target.setSpatialTranslation(offsets);
+        Maud.getModel().getTarget().setSpatialTranslation(offsets);
     }
     // *************************************************************************
     // AppState methods
@@ -163,7 +164,8 @@ class SpatialTranslationTool extends WindowController {
      * translation of the selected spatial.
      */
     private void setSlidersToTransform() {
-        Vector3f vector = Maud.getModel().target.spatial.localTranslation(null);
+        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        Vector3f vector = spatial.localTranslation(null);
         float[] offsets = vector.toArray(null);
 
         float scale = readScale();

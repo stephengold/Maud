@@ -48,6 +48,10 @@ import maud.dialog.LongDialog;
 import maud.dialog.SpatialNameDialog;
 import maud.dialog.TextEntryDialog;
 import maud.dialog.UserKeyDialog;
+import maud.model.EditableCgm;
+import maud.model.LoadedAnimation;
+import maud.model.SelectedBone;
+import maud.model.SelectedSpatial;
 
 /**
  * Dialog boxes created by Maud's "editor" screen.
@@ -99,7 +103,7 @@ public class EditorDialogs {
      * Display a "copy animation" dialog.
      */
     public void copyAnimation() {
-        String fromName = Maud.getModel().target.animation.getName();
+        String fromName = Maud.getModel().getTarget().animation.getName();
         DialogController controller = new AnimationNameDialog("Copy");
 
         Maud.gui.closeAllPopups();
@@ -111,7 +115,7 @@ public class EditorDialogs {
      * Display a "delete animation" dialog.
      */
     public void deleteAnimation() {
-        String name = Maud.getModel().target.animation.getName();
+        String name = Maud.getModel().getTarget().animation.getName();
         String message = String.format("Delete the %s animation?",
                 MyString.quote(name));
         Maud.gui.closeAllPopups();
@@ -122,7 +126,7 @@ public class EditorDialogs {
      * Display a "delete control" dialog.
      */
     public void deleteSgc() {
-        String name = Maud.getModel().target.sgc.getName();
+        String name = Maud.getModel().getTarget().sgc.getName();
         String message;
         message = String.format("Delete the %s control?", MyString.quote(name));
         Maud.gui.closeAllPopups();
@@ -179,7 +183,7 @@ public class EditorDialogs {
      * Display a "reduce animation" dialog.
      */
     public void reduceAnimation() {
-        if (Maud.getModel().target.animation.isReal()) {
+        if (Maud.getModel().getTarget().animation.isReal()) {
             IntegerDialog controller;
             controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
 
@@ -193,7 +197,7 @@ public class EditorDialogs {
      * Display a "reduce track" dialog.
      */
     public void reduceTrack() {
-        if (Maud.getModel().target.bone.hasTrack()) {
+        if (Maud.getModel().getTarget().bone.hasTrack()) {
             IntegerDialog controller;
             controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
 
@@ -207,8 +211,9 @@ public class EditorDialogs {
      * Display a "rename animation" dialog.
      */
     public void renameAnimation() {
-        if (Maud.getModel().target.animation.isReal()) {
-            String oldName = Maud.getModel().target.animation.getName();
+        LoadedAnimation animation = Maud.getModel().getTarget().animation;
+        if (animation.isReal()) {
+            String oldName = animation.getName();
             DialogController controller = new AnimationNameDialog("Rename");
 
             Maud.gui.closeAllPopups();
@@ -221,8 +226,9 @@ public class EditorDialogs {
      * Display a "rename bone" dialog.
      */
     public void renameBone() {
-        if (Maud.getModel().target.bone.isSelected()) {
-            String oldName = Maud.getModel().target.bone.getName();
+        SelectedBone bone = Maud.getModel().getTarget().bone;
+        if (bone.isSelected()) {
+            String oldName = bone.getName();
             DialogController controller = new BoneRenameDialog("Rename");
 
             Maud.gui.closeAllPopups();
@@ -235,10 +241,11 @@ public class EditorDialogs {
      * Display a "rename spatial" dialog.
      */
     public void renameSpatial() {
-        String oldName = Maud.getModel().target.spatial.getName();
+        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        String oldName = spatial.getName();
         DialogController controller = new SpatialNameDialog("Rename");
         String prompt;
-        if (Maud.getModel().target.spatial.isNode()) {
+        if (spatial.isNode()) {
             prompt = "Enter new name for the node:";
         } else {
             prompt = "Enter new name for the geometry:";
@@ -266,7 +273,8 @@ public class EditorDialogs {
      * Display a "save cgm" dialog.
      */
     public void saveCgm() {
-        String baseFilePath = Maud.getModel().target.baseFilePathForWrite();
+        EditableCgm target = Maud.getModel().getTarget();
+        String baseFilePath = target.baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for model:",
                 baseFilePath, "Save", ActionPrefix.saveCgm, null);
@@ -298,10 +306,11 @@ public class EditorDialogs {
      * Display a "set duration" dialog.
      */
     public void setDuration() {
-        float oldDuration = Maud.getModel().target.animation.getDuration();
+        LoadedAnimation animation = Maud.getModel().getTarget().animation;
+        float oldDuration = animation.getDuration();
         String defaultText = Float.toString(oldDuration);
 
-        float finalTime = Maud.getModel().target.animation.findLatestKeyframe();
+        float finalTime = animation.findLatestKeyframe();
         float min;
         if (finalTime > 0f) {
             min = 0.01f;
@@ -320,12 +329,13 @@ public class EditorDialogs {
      * Display a "set userData" dialog.
      */
     public void setUserData() {
+        EditableCgm target = Maud.getModel().getTarget();
         String key = Maud.getModel().misc.getSelectedUserKey();
-        Object data = Maud.getModel().target.spatial.getUserData(key);
+        Object data = target.spatial.getUserData(key);
         if (data instanceof Boolean) {
             boolean oldValue = (boolean) data;
             String newValue = Boolean.toString(!oldValue); // toggle value
-            Maud.getModel().target.setUserData(newValue);
+            target.setUserData(newValue);
 
         } else if (data instanceof Float) {
             DialogController controller = new FloatDialog("Set",

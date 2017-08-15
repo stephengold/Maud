@@ -116,7 +116,7 @@ public class SceneDrag {
         if (dragSourceCgm) {
             return Maud.getModel().getSource();
         } else {
-            return Maud.getModel().target;
+            return Maud.getModel().getTarget();
         }
     }
 

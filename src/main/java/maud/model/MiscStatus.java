@@ -92,7 +92,7 @@ public class MiscStatus implements Cloneable {
      */
     public void deleteUserKey() {
         if (selectedUserKey != null) {
-            Maud.getModel().target.deleteUserKey();
+            Maud.getModel().getTarget().deleteUserKey();
             selectedUserKey = null;
         }
     }
@@ -108,7 +108,7 @@ public class MiscStatus implements Cloneable {
             index = -1;
         } else {
             List<String> keyList;
-            keyList = Maud.getModel().target.spatial.listUserKeys();
+            keyList = Maud.getModel().getTarget().spatial.listUserKeys();
             index = keyList.indexOf(selectedUserKey);
         }
 
@@ -236,7 +236,8 @@ public class MiscStatus implements Cloneable {
      * Select the next user key in alphabetical order.
      */
     public void selectNextUserKey() {
-        List<String> keyList = Maud.getModel().target.spatial.listUserKeys();
+        LoadedCgm target = Maud.getModel().getTarget();
+        List<String> keyList = target.spatial.listUserKeys();
         int numKeys = keyList.size();
         int index = keyList.indexOf(selectedUserKey);
         int nextIndex = MyMath.modulo(index + 1, numKeys);
@@ -268,7 +269,8 @@ public class MiscStatus implements Cloneable {
      * Select the previous user key in alphabetical order.
      */
     public void selectPreviousUserKey() {
-        List<String> keyList = Maud.getModel().target.spatial.listUserKeys();
+        LoadedCgm target = Maud.getModel().getTarget();
+        List<String> keyList = target.spatial.listUserKeys();
         int numKeys = keyList.size();
         int index = keyList.indexOf(selectedUserKey);
         int nextIndex = MyMath.modulo(index - 1, numKeys);

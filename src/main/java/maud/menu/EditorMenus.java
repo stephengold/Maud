@@ -37,6 +37,7 @@ import maud.Maud;
 import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.SelectedSpatial;
 import maud.model.ViewMode;
 
 /**
@@ -169,7 +170,7 @@ public class EditorMenus {
      * &rarr; include geometries only
      */
     public void selectSpatial(String argument, boolean includeNodes) {
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         if (target.hasSpatial(argument)) {
             target.spatial.select(argument);
 
@@ -255,7 +256,7 @@ public class EditorMenus {
 
         } else {
             handled = true;
-            EditableCgm target = Maud.getModel().target;
+            EditableCgm target = Maud.getModel().getTarget();
             switch (remainder) {
                 case "Add new":
                     Maud.gui.buildMenus.addNewAnimation();
@@ -446,7 +447,7 @@ public class EditorMenus {
             handled = menuKeyframeSelect(arg);
 
         } else {
-            EditableCgm target = Maud.getModel().target;
+            EditableCgm target = Maud.getModel().getTarget();
             handled = true;
             switch (remainder) {
                 case "Delete":
@@ -483,7 +484,7 @@ public class EditorMenus {
     private boolean menuKeyframeSelect(String remainder) {
         assert remainder != null;
 
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         boolean handled = true;
         switch (remainder) {
             case "First":
@@ -556,7 +557,7 @@ public class EditorMenus {
         boolean handled = true;
         switch (remainder) {
             case "Add":
-                Maud.getModel().target.spatial.addRigidBodyControl();
+                Maud.getModel().getTarget().spatial.addRigidBodyControl();
                 break;
             case "Mass": // TODO
             case "Tool": // TODO
@@ -768,7 +769,7 @@ public class EditorMenus {
                     Maud.gui.dialogs.deleteSgc();
                     break;
                 case "Delete":
-                    Maud.getModel().target.spatial.delete();
+                    Maud.getModel().getTarget().spatial.delete();
                     break;
                 case "Rotate":
                     Maud.gui.tools.select("spatialRotation");
@@ -806,22 +807,22 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSgcAdd(String remainder) {
-        assert remainder != null;
-
         boolean handled = false;
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
         switch (remainder) {
             case "Anim":
-                Maud.getModel().target.spatial.addAnimControl();
+                spatial.addAnimControl();
                 handled = true;
                 break;
 
             case "RigidBody":
-                Maud.getModel().target.spatial.addRigidBodyControl();
+                spatial.addRigidBodyControl();
                 handled = true;
                 break;
 
             case "Skeleton":
-                Maud.getModel().target.spatial.addSkeletonControl();
+                spatial.addSkeletonControl();
                 handled = true;
         }
 
@@ -849,10 +850,10 @@ public class EditorMenus {
                 selectSpatial("", false);
                 break;
             case "Parent":
-                Maud.getModel().target.spatial.selectParent();
+                Maud.getModel().getTarget().spatial.selectParent();
                 break;
             case "Root":
-                Maud.getModel().target.spatial.selectCgmRoot();
+                Maud.getModel().getTarget().spatial.selectCgmRoot();
                 break;
             default:
                 handled = false;

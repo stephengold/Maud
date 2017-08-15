@@ -31,6 +31,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.EditableCgm;
 import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
 
@@ -90,7 +91,7 @@ class BoneTool extends WindowController {
     private void updateChildren() {
         String childText, scButton;
 
-        SelectedBone selectedBone = Maud.getModel().target.bone;
+        SelectedBone selectedBone = Maud.getModel().getTarget().bone;
         if (selectedBone.isSelected()) {
             int numChildren = selectedBone.countChildren();
             if (numChildren > 1) {
@@ -120,9 +121,9 @@ class BoneTool extends WindowController {
     private void updateHasTrack() {
         String hasTrackText = "";
 
-        SelectedBone selectedBone = Maud.getModel().target.bone;
+        SelectedBone selectedBone = Maud.getModel().getTarget().bone;
         if (selectedBone.isSelected()) {
-            if (Maud.getModel().target.animation.isRetargetedPose()) {
+            if (Maud.getModel().getTarget().animation.isRetargetedPose()) {
                 String name = selectedBone.getName();
                 if (Maud.getModel().getMap().isBoneMapped(name)) {
                     hasTrackText = "mapped";
@@ -146,7 +147,7 @@ class BoneTool extends WindowController {
         String indexText;
         String nButton, pButton;
 
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         int numBones = target.bones.countBones();
         if (target.bone.isSelected()) {
             int selectedIndex = target.bone.getIndex();
@@ -176,8 +177,10 @@ class BoneTool extends WindowController {
      */
     private void updateInfluence() {
         String desc = "";
-        if (Maud.getModel().target.bone.isSelected()) {
-            int influence = Maud.getModel().target.bone.influence();
+
+        SelectedBone bone = Maud.getModel().getTarget().bone;
+        if (bone.isSelected()) {
+            int influence = bone.influence();
             desc = String.format("influences %d vertices", influence);
         }
         Maud.gui.setStatusText("boneInfluence", desc);
@@ -189,8 +192,9 @@ class BoneTool extends WindowController {
     private void updateName() {
         String nameText, rButton;
 
-        if (Maud.getModel().target.bone.isSelected()) {
-            String name = Maud.getModel().target.bone.getName();
+        SelectedBone bone = Maud.getModel().getTarget().bone;
+        if (bone.isSelected()) {
+            String name = bone.getName();
             nameText = MyString.quote(name);
             rButton = "Rename";
 
@@ -209,10 +213,11 @@ class BoneTool extends WindowController {
     private void updateParent() {
         String parentText, spButton;
 
-        SelectedBone selectedBone = Maud.getModel().target.bone;
+        EditableCgm target = Maud.getModel().getTarget();
+        SelectedBone selectedBone = target.bone;
         if (selectedBone.isSelected()) {
             if (selectedBone.isRootBone()) {
-                int numRoots = Maud.getModel().target.bones.countRootBones();
+                int numRoots = target.bones.countRootBones();
                 if (numRoots == 1) {
                     parentText = "none (the root)";
                 } else {
@@ -241,7 +246,7 @@ class BoneTool extends WindowController {
     private void updateTransformButtons() {
         String rButton, sButton, tButton;
 
-        if (Maud.getModel().target.bone.isSelected()) {
+        if (Maud.getModel().getTarget().bone.isSelected()) {
             rButton = "Rotate";
             sButton = "Scale";
             tButton = "Translate";

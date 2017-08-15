@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.action.ActionPrefix;
+import maud.model.EditableCgm;
+import maud.model.EditorModel;
 import maud.model.LoadedCgm;
 
 /**
@@ -107,7 +109,7 @@ public class BoneMenus {
      * @param argument action argument (not null)
      */
     public void selectBone(String argument) {
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         if (target.bones.hasBone(argument)) {
             target.bone.select(argument);
 
@@ -124,7 +126,7 @@ public class BoneMenus {
      * Handle a "select boneChild" action without arguments.
      */
     public void selectBoneChild() {
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         if (target.bone.isSelected()) {
             int numChildren = target.bone.countChildren();
             if (numChildren == 1) {
@@ -140,11 +142,11 @@ public class BoneMenus {
      * Handle a "select boneWithTrack" action.
      */
     void selectBoneWithTrack() {
-        List<String> boneNames;
-        boneNames = Maud.getModel().target.animation.listBonesWithTrack();
+        EditableCgm target = Maud.getModel().getTarget();
+        List<String> boneNames = target.animation.listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
-            Maud.getModel().target.bone.select(boneNames.get(0));
+            target.bone.select(boneNames.get(0));
         } else if (numBoneTracks > 1) {
             Maud.gui.buildMenus.showBoneSubmenu(boneNames);
         }
@@ -177,9 +179,10 @@ public class BoneMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuBoneSelect(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
+
+        EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
         switch (remainder) {
             case "By name":
                 selectBoneByName();
@@ -191,16 +194,16 @@ public class BoneMenus {
                 selectBoneChild();
                 break;
             case "Mapped":
-                Maud.getModel().getMap().selectFromSource();
+                model.getMap().selectFromSource();
                 break;
             case "Next":
-                Maud.getModel().target.bone.selectNext();
+                target.bone.selectNext();
                 break;
             case "Parent":
-                Maud.getModel().target.bone.selectParent();
+                target.bone.selectParent();
                 break;
             case "Previous":
-                Maud.getModel().target.bone.selectPrevious();
+                target.bone.selectPrevious();
                 break;
             case "Root":
                 selectRootBone();
@@ -242,7 +245,8 @@ public class BoneMenus {
      * Select a bone by name, using submenus.
      */
     private void selectBoneByName() {
-        List<String> nameList = Maud.getModel().target.bones.listBoneNames();
+        LoadedCgm target = Maud.getModel().getTarget();
+        List<String> nameList = target.bones.listBoneNames();
         Maud.gui.buildMenus.showBoneSubmenu(nameList);
     }
 
@@ -250,8 +254,8 @@ public class BoneMenus {
      * Select a bone by parent, using submenus.
      */
     private void selectBoneByParent() {
-        List<String> boneNames;
-        boneNames = Maud.getModel().target.bones.listRootBoneNames();
+        LoadedCgm target = Maud.getModel().getTarget();
+        List<String> boneNames = target.bones.listRootBoneNames();
         Maud.gui.showPopupMenu(ActionPrefix.selectBoneChild, boneNames);
     }
 
@@ -259,7 +263,7 @@ public class BoneMenus {
      * Handle a "select rootBone" action.
      */
     private void selectRootBone() {
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         int numRoots = target.bones.countRootBones();
         if (numRoots == 1) {
             target.bone.selectFirstRoot();

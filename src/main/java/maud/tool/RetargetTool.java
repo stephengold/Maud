@@ -73,7 +73,7 @@ class RetargetTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        String targetName = Maud.getModel().target.getName();
+        String targetName = Maud.getModel().getTarget().getName();
         String targetDesc = MyString.quote(targetName);
         Maud.gui.setStatusText("targetName", " " + targetDesc);
 
@@ -130,7 +130,7 @@ class RetargetTool extends WindowController {
 
         LoadedMap map = Maud.getModel().getMap();
         LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         if (!target.isAnimControlSelected()) {
             feedback = "select the target anim control";
         } else if (!source.isLoaded()) {

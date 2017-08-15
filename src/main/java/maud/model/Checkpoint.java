@@ -74,7 +74,7 @@ public class Checkpoint {
         timestamp = new Date();
         EditorModel m = Maud.getModel();
         m.getMap().onCheckpoint();
-        m.target.onCheckpoint();
+        m.getTarget().onCheckpoint();
         model = new EditorModel(m);
 
         eventDescriptions.addAll(descriptions);
@@ -112,6 +112,6 @@ public class Checkpoint {
         EditorModel liveState = new EditorModel(model);
         Maud.setModel(liveState);
         liveState.getSource().getSceneView().reinstall();
-        liveState.target.getSceneView().reinstall();
+        liveState.getTarget().getSceneView().reinstall();
     }
 }

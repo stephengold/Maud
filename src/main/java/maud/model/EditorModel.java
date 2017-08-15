@@ -47,39 +47,39 @@ public class EditorModel {
     // fields
 
     /**
-     * known asset locations
+     * list of known asset locations
      */
     final private AssetLocations locations;
     /**
-     * status of the visible coordinate axes
+     * status of the visible coordinate axes in scene views
      */
     final public AxesStatus axes;
     /**
-     * status of the bounds visualization(s)
+     * status of the bounds visualization(s) in scene views
      */
     final public BoundsStatus bounds;
     /**
-     * status of the camera
+     * status of the camera(s) in scene views
      */
     final public CameraStatus camera;
     /**
-     * status of the 3D cursor
+     * status of the 3D cursor(s) in scene views
      */
     final public CursorStatus cursor;
     /**
-     * load slot for the (editable) target CG model
+     * load slot for the (editable) target (main) CG model
      */
-    final public EditableCgm target;
+    final private EditableCgm targetCgmLoadSlot;
     /**
      * load slot for the skeleton map
      */
-    final private EditableMap map;
+    final private EditableMap mapLoadSlot;
     /**
      * load slot for the (read-only) source CG model
      */
-    final private LoadedCgm source;
+    final private LoadedCgm sourceCgmLoadSlot;
     /**
-     * miscellaneous details
+     * miscellaneous status
      */
     final public MiscStatus misc;
     /**
@@ -91,7 +91,7 @@ public class EditorModel {
      */
     final private ScoreOptions score;
     /**
-     * status of the skeleton visualization(s)
+     * status of the skeleton visualization(s) in scene views
      */
     final public SkeletonStatus skeleton;
     // *************************************************************************
@@ -106,9 +106,9 @@ public class EditorModel {
         bounds = new BoundsStatus();
         camera = new CameraStatus();
         cursor = new CursorStatus();
-        target = new EditableCgm();
-        map = new EditableMap();
-        source = new LoadedCgm();
+        targetCgmLoadSlot = new EditableCgm();
+        mapLoadSlot = new EditableMap();
+        sourceCgmLoadSlot = new LoadedCgm();
         misc = new MiscStatus();
         scene = new SceneOptions();
         score = new ScoreOptions();
@@ -128,9 +128,9 @@ public class EditorModel {
             bounds = other.bounds.clone();
             camera = other.camera.clone();
             cursor = other.cursor.clone();
-            target = other.target.clone();
-            map = other.map.clone();
-            source = other.source.clone();
+            targetCgmLoadSlot = other.targetCgmLoadSlot.clone();
+            mapLoadSlot = other.mapLoadSlot.clone();
+            sourceCgmLoadSlot = other.sourceCgmLoadSlot.clone();
             misc = other.misc.clone();
             scene = other.scene.clone();
             score = other.score.clone();
@@ -158,8 +158,8 @@ public class EditorModel {
      * @return the pre-existing instance (not null)
      */
     public EditableMap getMap() {
-        assert map != null;
-        return map;
+        assert mapLoadSlot != null;
+        return mapLoadSlot;
     }
 
     /**
@@ -178,7 +178,17 @@ public class EditorModel {
      * @return the pre-existing instance (not null)
      */
     public LoadedCgm getSource() {
-        assert source != null;
-        return source;
+        assert sourceCgmLoadSlot != null;
+        return sourceCgmLoadSlot;
+    }
+
+    /**
+     * Access the load slot for the (editable) target (main) CG model.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public EditableCgm getTarget() {
+        assert targetCgmLoadSlot != null;
+        return targetCgmLoadSlot;
     }
 }

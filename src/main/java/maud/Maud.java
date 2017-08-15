@@ -580,7 +580,7 @@ public class Maud extends GuiApplication {
      * If confirmed, terminate the application.
      */
     private void quit() {
-        int cgmEdits = editorModel.target.countUnsavedEdits();
+        int cgmEdits = editorModel.getTarget().countUnsavedEdits();
         int mapEdits = editorModel.getMap().countUnsavedEdits();
 
         String message;
@@ -641,7 +641,7 @@ public class Maud extends GuiApplication {
          */
         SceneView sourceSceneView = new SceneView(editorModel.getSource(),
                 sourceSceneParent, null, sourceSceneViewPort);
-        SceneView targetSceneView = new SceneView(editorModel.target,
+        SceneView targetSceneView = new SceneView(editorModel.getTarget(),
                 targetSceneParent, viewPort, targetSceneRightViewPort);
         /*
          * Create 2 score views.
@@ -654,7 +654,7 @@ public class Maud extends GuiApplication {
          * Attach views to CG model slots.
          */
         editorModel.getSource().setViews(sourceSceneView, sourceScoreView);
-        editorModel.target.setViews(targetSceneView, targetScoreView);
+        editorModel.getTarget().setViews(targetSceneView, targetScoreView);
         /*
          * Attach screen controllers for the editor screen and the bind screen.
          */

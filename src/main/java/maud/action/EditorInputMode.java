@@ -38,6 +38,7 @@ import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
 import maud.Maud;
 import maud.model.EditableCgm;
+import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedCgm;
 import maud.view.SceneDrag;
@@ -228,7 +229,7 @@ public class EditorInputMode extends InputMode {
         if (actionString.startsWith(ActionPrefix.copyAnimation)) {
             String destName = MyString.remainder(actionString,
                     ActionPrefix.copyAnimation);
-            Maud.getModel().target.animation.copyAndLoad(destName);
+            Maud.getModel().getTarget().animation.copyAndLoad(destName);
             handled = true;
         }
 
@@ -243,7 +244,7 @@ public class EditorInputMode extends InputMode {
      */
     private boolean deleteAction(String actionString) {
         boolean handled = true;
-        EditableCgm target = Maud.getModel().target;
+        EditableCgm target = Maud.getModel().getTarget();
         switch (actionString) {
             case "delete animation":
                 target.animation.delete();
@@ -280,37 +281,40 @@ public class EditorInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean nextAction(String actionString) {
+        EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
+
         boolean handled = true;
         switch (actionString) {
             case "next animation":
-                Maud.getModel().target.animation.loadNext();
+                target.animation.loadNext();
                 break;
             case "next animControl":
-                Maud.getModel().target.nextAnimControl();
+                target.nextAnimControl();
                 break;
             case "next bone":
-                Maud.getModel().target.bone.selectNext();
+                target.bone.selectNext();
                 break;
             case "next checkpoint":
                 History.redo();
                 break;
             case "next control":
-                Maud.getModel().target.sgc.selectNext();
+                target.sgc.selectNext();
                 break;
             case "next mapping":
-                Maud.getModel().getMap().selectNext();
+                model.getMap().selectNext();
                 break;
             case "next sourceAnimation":
-                Maud.getModel().getSource().animation.loadNext();
+                model.getSource().animation.loadNext();
                 break;
             case "next sourceAnimControl":
-                Maud.getModel().getSource().nextAnimControl();
+                model.getSource().nextAnimControl();
                 break;
             case "next userData":
-                Maud.getModel().misc.selectNextUserKey();
+                model.misc.selectNextUserKey();
                 break;
             case "next viewMode":
-                Maud.getModel().misc.selectNextViewMode();
+                model.misc.selectNextViewMode();
                 break;
             default:
                 handled = false;
@@ -326,34 +330,37 @@ public class EditorInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean previousAction(String actionString) {
+        EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
+
         boolean handled = true;
         switch (actionString) {
             case "previous animation":
-                Maud.getModel().target.animation.loadPrevious();
+                target.animation.loadPrevious();
                 break;
             case "previous animControl":
-                Maud.getModel().target.previousAnimControl();
+                target.previousAnimControl();
                 break;
             case "previous bone":
-                Maud.getModel().target.bone.selectPrevious();
+                target.bone.selectPrevious();
                 break;
             case "previous checkpoint":
                 History.undo();
                 break;
             case "previous control":
-                Maud.getModel().target.sgc.selectPrevious();
+                target.sgc.selectPrevious();
                 break;
             case "previous mapping":
-                Maud.getModel().getMap().selectPrevious();
+                model.getMap().selectPrevious();
                 break;
             case "previous sourceAnimation":
-                Maud.getModel().getSource().animation.loadPrevious();
+                model.getSource().animation.loadPrevious();
                 break;
             case "previous sourceAnimControl":
-                Maud.getModel().getSource().previousAnimControl();
+                model.getSource().previousAnimControl();
                 break;
             case "previous userData":
-                Maud.getModel().misc.selectPreviousUserKey();
+                model.misc.selectPreviousUserKey();
                 break;
             default:
                 handled = false;
@@ -382,14 +389,14 @@ public class EditorInputMode extends InputMode {
             String f;
             f = MyString.remainder(actionString, ActionPrefix.reduceAnimation);
             int factor = Integer.parseInt(f);
-            Maud.getModel().target.animation.reduce(factor);
+            Maud.getModel().getTarget().animation.reduce(factor);
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.reduceTrack)) {
             String f;
             f = MyString.remainder(actionString, ActionPrefix.reduceTrack);
             int factor = Integer.parseInt(f);
-            Maud.getModel().target.track.reduceTrack(factor);
+            Maud.getModel().getTarget().track.reduceTrack(factor);
             handled = true;
         }
 
@@ -424,28 +431,29 @@ public class EditorInputMode extends InputMode {
 
         if (!handled) {
             String newName;
+            EditableCgm target = Maud.getModel().getTarget();
             if (actionString.startsWith(ActionPrefix.renameAnimation)) {
                 newName = MyString.remainder(actionString,
                         ActionPrefix.renameAnimation);
-                Maud.getModel().target.animation.rename(newName);
+                target.animation.rename(newName);
                 handled = true;
 
             } else if (actionString.startsWith(ActionPrefix.renameBone)) {
                 newName = MyString.remainder(actionString,
                         ActionPrefix.renameBone);
-                Maud.getModel().target.renameBone(newName);
+                target.renameBone(newName);
                 handled = true;
 
             } else if (actionString.startsWith(ActionPrefix.renameSpatial)) {
                 newName = MyString.remainder(actionString,
                         ActionPrefix.renameSpatial);
-                Maud.getModel().target.renameSpatial(newName);
+                target.renameSpatial(newName);
                 handled = true;
 
             } else if (actionString.startsWith(ActionPrefix.renameUserKey)) {
                 newName = MyString.remainder(actionString,
                         ActionPrefix.renameUserKey);
-                Maud.getModel().target.renameUserKey(newName);
+                target.renameUserKey(newName);
                 handled = true;
             }
         }
@@ -461,7 +469,7 @@ public class EditorInputMode extends InputMode {
      */
     private boolean resetAction(String actionString) {
         boolean handled = false;
-        EditableCgm target = Maud.getModel().target;
+        EditableCgm target = Maud.getModel().getTarget();
         switch (actionString) {
             case "reset bone ang anim":
                 target.bone.setRotationToAnimation();
@@ -548,7 +556,7 @@ public class EditorInputMode extends InputMode {
         if (actionString.startsWith(ActionPrefix.saveCgm)) {
             String path;
             path = MyString.remainder(actionString, ActionPrefix.saveCgm);
-            Maud.getModel().target.writeToFile(path);
+            Maud.getModel().getTarget().writeToFile(path);
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.saveMap)) {
@@ -569,9 +577,11 @@ public class EditorInputMode extends InputMode {
      */
     private boolean toggleAction(String actionString) {
         boolean handled = false;
+
+        EditorModel model = Maud.getModel();
         switch (actionString) {
             case "toggle degrees":
-                Maud.getModel().misc.toggleAnglesInDegrees();
+                model.misc.toggleAnglesInDegrees();
                 handled = true;
                 break;
             case "toggle dragSide":
@@ -579,24 +589,24 @@ public class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "toggle freeze target":
-                Maud.getModel().target.pose.toggleFrozen();
+                model.getTarget().pose.toggleFrozen();
                 handled = true;
                 break;
             case "toggle pause":
-                Maud.getModel().getSource().animation.togglePaused();
-                Maud.getModel().target.animation.togglePaused();
+                model.getSource().animation.togglePaused();
+                model.getTarget().animation.togglePaused();
                 handled = true;
                 break;
             case "toggle pause source":
-                Maud.getModel().getSource().animation.togglePaused();
+                model.getSource().animation.togglePaused();
                 handled = true;
                 break;
             case "toggle pause target":
-                Maud.getModel().target.animation.togglePaused();
+                model.getTarget().animation.togglePaused();
                 handled = true;
                 break;
             case "toggle projection":
-                Maud.getModel().camera.toggleProjection();
+                model.camera.toggleProjection();
                 handled = true;
         }
 
@@ -652,7 +662,7 @@ public class EditorInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "wrap track":
-                Maud.getModel().target.track.wrap();
+                Maud.getModel().getTarget().track.wrap();
                 handled = true;
         }
 

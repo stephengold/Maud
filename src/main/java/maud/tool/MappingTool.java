@@ -33,6 +33,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
+import maud.model.SelectedBone;
 import maud.model.SelectedSkeleton;
 
 /**
@@ -89,7 +90,7 @@ public class MappingTool extends WindowController {
          * the "retargeted pose" button
          */
         String mButton;
-        if (Maud.getModel().target.animation.isRetargetedPose()
+        if (Maud.getModel().getTarget().animation.isRetargetedPose()
                 || !Maud.getModel().getSource().isLoaded()) {
             mButton = "";
         } else {
@@ -138,7 +139,7 @@ public class MappingTool extends WindowController {
 
         LoadedMap map = Maud.getModel().getMap();
         LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         if (!target.bones.isSelected()) {
             feedback = "select the target skeleton";
         } else if (!source.isLoaded()) {
@@ -219,7 +220,7 @@ public class MappingTool extends WindowController {
             uButton = "Unmap";
         } else {
             if (Maud.getModel().getSource().bone.isSelected()
-                    && Maud.getModel().target.bone.isSelected()) {
+                    && Maud.getModel().getTarget().bone.isSelected()) {
                 mButton = "Map";
             }
         }
@@ -266,8 +267,10 @@ public class MappingTool extends WindowController {
      */
     private void updateTarget() {
         String targetBoneDesc;
-        if (Maud.getModel().target.bone.isSelected()) {
-            String targetName = Maud.getModel().target.bone.getName();
+
+        SelectedBone bone = Maud.getModel().getTarget().bone;
+        if (bone.isSelected()) {
+            String targetName = bone.getName();
             targetBoneDesc = MyString.quote(targetName);
             String source = Maud.getModel().getMap().sourceBoneName(targetName);
             if (source != null) {
@@ -276,6 +279,7 @@ public class MappingTool extends WindowController {
         } else {
             targetBoneDesc = SelectedSkeleton.noBone;
         }
+
         Maud.gui.setStatusText("targetBone", " " + targetBoneDesc);
     }
 }
