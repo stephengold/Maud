@@ -100,11 +100,13 @@ public class Util {
      *
      * @param oldTrack (not null, unaffected)
      * @param neckTime cutoff time (in seconds, &gt;0)
+     * @param neckTransform user transform of bone at the neck time (not null,
+     * unaffected)
      * @param oldDuration (in seconds, &ge;neckTime)
      * @return a new instance
      */
     public static BoneTrack behead(BoneTrack oldTrack, float neckTime,
-            float oldDuration) {
+            Transform neckTransform, float oldDuration) {
         Validate.positive(neckTime, "neck time");
 
         float[] oldTimes = oldTrack.getKeyFrameTimes();
@@ -124,8 +126,7 @@ public class Util {
         }
         float[] times = new float[newCount];
 
-        Transform user = Maud.getModel().misc.interpolate(neckTime, oldTimes,
-                oldDuration, oldTranslations, oldRotations, oldScales, null);
+        Transform user = neckTransform.clone();
         translations[0] = user.getTranslation();
         rotations[0] = user.getRotation();
         if (scales != null) {

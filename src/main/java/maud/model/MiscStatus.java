@@ -26,6 +26,7 @@
  */
 package maud.model;
 
+import com.jme3.animation.BoneTrack;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -166,6 +167,30 @@ public class MiscStatus implements Cloneable {
      */
     public ViewMode getViewMode() {
         return viewMode;
+    }
+
+    /**
+     * Interpolate between keyframes in a bone track using the current tweening
+     * techniques.
+     *
+     * @param time (in seconds, &ge;0, &le;duration)
+     * @param boneTrack (not null, unaffected)
+     * @param duration animation duration (in seconds, &gt;0)
+     * @param storeResult (modified if not null)
+     * @return transform (either storeResult or a new instance)
+     */
+    public Transform interpolate(float time, BoneTrack boneTrack,
+            float duration, Transform storeResult) {
+        Validate.inRange(time, "time", 0f, duration);
+
+        float[] times = boneTrack.getKeyFrameTimes();
+        Vector3f[] translations = boneTrack.getTranslations();
+        Quaternion[] rotations = boneTrack.getRotations();
+        Vector3f[] scales = boneTrack.getScales();
+        storeResult = Maud.getModel().misc.interpolate(time, times, duration,
+                translations, rotations, scales, storeResult);
+
+        return storeResult;
     }
 
     /**
