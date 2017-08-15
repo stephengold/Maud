@@ -132,7 +132,7 @@ public class EditableMap extends LoadedMap {
      * Replace the map with an identity map for the source model.
      */
     public void loadIdentityForSource() {
-        Skeleton skeleton = Maud.model.getSource().bones.findSkeleton();
+        Skeleton skeleton = Maud.getModel().getSource().bones.findSkeleton();
         loadIdentity(skeleton);
     }
 
@@ -140,7 +140,7 @@ public class EditableMap extends LoadedMap {
      * Replace the map with an identity map for the target model.
      */
     public void loadIdentityForTarget() {
-        Skeleton skeleton = Maud.model.target.bones.findSkeleton();
+        Skeleton skeleton = Maud.getModel().target.bones.findSkeleton();
         loadIdentity(skeleton);
     }
 
@@ -148,10 +148,11 @@ public class EditableMap extends LoadedMap {
      * Add a bone mapping for the selected source and target bones.
      */
     public void mapBones() {
-        if (!isBoneMappingSelected() && Maud.model.getSource().bone.isSelected()
-                && Maud.model.target.bone.isSelected()) {
-            String sourceBoneName = Maud.model.getSource().bone.getName();
-            String targetBoneName = Maud.model.target.bone.getName();
+        if (!isBoneMappingSelected()
+                && Maud.getModel().getSource().bone.isSelected()
+                && Maud.getModel().target.bone.isSelected()) {
+            String sourceBoneName = Maud.getModel().getSource().bone.getName();
+            String targetBoneName = Maud.getModel().target.bone.getName();
             /*
              * Remove any prior mappings involving those bones.
              */
@@ -368,8 +369,9 @@ public class EditableMap extends LoadedMap {
      */
     private Quaternion estimateTwist() {
         Quaternion sourceMo;
-        sourceMo = Maud.model.getSource().bone.modelOrientation(null);
-        Quaternion targetMo = Maud.model.target.bone.modelOrientation(null);
+        sourceMo = Maud.getModel().getSource().bone.modelOrientation(null);
+        Quaternion targetMo;
+        targetMo = Maud.getModel().target.bone.modelOrientation(null);
         Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
         Quaternion twist = invSourceMo.mult(targetMo, null);
         Util.cardinalizeLocal(twist);
@@ -414,7 +416,7 @@ public class EditableMap extends LoadedMap {
      * edit history.
      */
     private void setEditedTwist() {
-        String newName = Maud.model.target.bone.getName();
+        String newName = Maud.getModel().target.bone.getName();
         if (!newName.equals(editedTwist)) {
             ++editCount;
             editedTwist = newName;

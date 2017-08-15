@@ -107,7 +107,7 @@ class SpatialTranslationTool extends WindowController {
 
         float masterScale = readScale();
         offsets.multLocal(masterScale);
-        Maud.model.target.setSpatialTranslation(offsets);
+        Maud.getModel().target.setSpatialTranslation(offsets);
     }
     // *************************************************************************
     // AppState methods
@@ -163,7 +163,7 @@ class SpatialTranslationTool extends WindowController {
      * translation of the selected spatial.
      */
     private void setSlidersToTransform() {
-        Vector3f vector = Maud.model.target.spatial.localTranslation(null);
+        Vector3f vector = Maud.getModel().target.spatial.localTranslation(null);
         float[] offsets = vector.toArray(null);
 
         float scale = readScale();

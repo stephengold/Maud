@@ -508,7 +508,8 @@ public class LoadedCgm implements Cloneable {
     public List<String> listAnimationNames() {
         List<String> names = listAnimationsSorted();
         names.add(LoadedAnimation.bindPoseName);
-        if (this == Maud.model.target && Maud.model.getSource().isLoaded()) {
+        if (this == Maud.getModel().target
+                && Maud.getModel().getSource().isLoaded()) {
             names.add(LoadedAnimation.retargetedPoseName);
         }
 
@@ -815,7 +816,8 @@ public class LoadedCgm implements Cloneable {
      * Unload the CG model.
      */
     public void unload() {
-        assert this != Maud.model.target; // not allowed to unload target
+        LoadedCgm target = Maud.getModel().target;
+        assert this != target; // not allowed to unload target
 
         assetFolder = null;
         baseAssetPath = null;
@@ -828,8 +830,8 @@ public class LoadedCgm implements Cloneable {
          */
         bone.deselect();
 
-        if (Maud.model.target.animation.isRetargetedPose()) {
-            Maud.model.target.animation.loadBindPose();
+        if (target.animation.isRetargetedPose()) {
+            target.animation.loadBindPose();
         }
     }
     // *************************************************************************
@@ -1062,7 +1064,8 @@ public class LoadedCgm implements Cloneable {
                 assetManager.deleteFromCache(key);
             }
             Locators.registerDefault();
-            List<String> assetFolders = Maud.model.getLocations().listAll();
+            List<String> assetFolders;
+            assetFolders = Maud.getModel().getLocations().listAll();
             Locators.register(assetFolders);
 
             loaded = Util.loadCgmAsset(assetManager, assetPath);

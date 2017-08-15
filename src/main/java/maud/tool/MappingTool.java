@@ -83,14 +83,14 @@ public class MappingTool extends WindowController {
         /*
          * the "use inverse" checkbox
          */
-        boolean invertFlag = Maud.model.getMap().isInvertingMap();
+        boolean invertFlag = Maud.getModel().getMap().isInvertingMap();
         Maud.gui.setChecked("invertRma2", invertFlag);
         /*
          * the "retargeted pose" button
          */
         String mButton;
-        if (Maud.model.target.animation.isRetargetedPose()
-                || !Maud.model.getSource().isLoaded()) {
+        if (Maud.getModel().target.animation.isRetargetedPose()
+                || !Maud.getModel().getSource().isLoaded()) {
             mButton = "";
         } else {
             mButton = "Show retargeted pose";
@@ -107,7 +107,7 @@ public class MappingTool extends WindowController {
         /*
          * asset-path status
          */
-        String assetPath = Maud.model.getMap().getAssetPath();
+        String assetPath = Maud.getModel().getMap().getAssetPath();
         String assetDesc;
         if (assetPath.isEmpty()) {
             assetDesc = "unknown";
@@ -119,7 +119,7 @@ public class MappingTool extends WindowController {
          * pristine/edited status
          */
         String pristineDesc;
-        int editCount = Maud.model.getMap().countUnsavedEdits();
+        int editCount = Maud.getModel().getMap().countUnsavedEdits();
         if (editCount == 0) {
             pristineDesc = "pristine";
         } else if (editCount == 1) {
@@ -136,9 +136,9 @@ public class MappingTool extends WindowController {
     private void updateFeedback() {
         String feedback;
 
-        LoadedMap map = Maud.model.getMap();
-        LoadedCgm source = Maud.model.getSource();
-        LoadedCgm target = Maud.model.target;
+        LoadedMap map = Maud.getModel().getMap();
+        LoadedCgm source = Maud.getModel().getSource();
+        LoadedCgm target = Maud.getModel().target;
         if (!target.bones.isSelected()) {
             feedback = "select the target skeleton";
         } else if (!source.isLoaded()) {
@@ -184,9 +184,10 @@ public class MappingTool extends WindowController {
         String indexText;
         String nButton, pButton;
 
-        int numBoneMappings = Maud.model.getMap().countMappings();
-        if (Maud.model.getMap().isBoneMappingSelected()) {
-            int index = Maud.model.getMap().findIndex();
+        LoadedMap map = Maud.getModel().getMap();
+        int numBoneMappings = map.countMappings();
+        if (map.isBoneMappingSelected()) {
+            int index = map.findIndex();
             indexText = String.format("#%d of %d", index + 1, numBoneMappings);
             nButton = "+";
             pButton = "-";
@@ -214,11 +215,11 @@ public class MappingTool extends WindowController {
     private void updateSelected() {
         String mButton = "";
         String uButton = "";
-        if (Maud.model.getMap().isBoneMappingSelected()) {
+        if (Maud.getModel().getMap().isBoneMappingSelected()) {
             uButton = "Unmap";
         } else {
-            if (Maud.model.getSource().bone.isSelected()
-                    && Maud.model.target.bone.isSelected()) {
+            if (Maud.getModel().getSource().bone.isSelected()
+                    && Maud.getModel().target.bone.isSelected()) {
                 mButton = "Map";
             }
         }
@@ -233,15 +234,16 @@ public class MappingTool extends WindowController {
         /*
          * description
          */
+        LoadedCgm source = Maud.getModel().getSource();
         String sourceBoneDesc;
-        if (Maud.model.getSource().bone.isSelected()) {
-            String sourceName = Maud.model.getSource().bone.getName();
+        if (source.bone.isSelected()) {
+            String sourceName = source.bone.getName();
             sourceBoneDesc = MyString.quote(sourceName);
-            String target = Maud.model.getMap().targetBoneName(sourceName);
+            String target = Maud.getModel().getMap().targetBoneName(sourceName);
             if (target != null) {
                 sourceBoneDesc += String.format("  -> %s", target);
             }
-        } else if (Maud.model.getSource().isLoaded()) {
+        } else if (source.isLoaded()) {
             sourceBoneDesc = SelectedSkeleton.noBone;
         } else {
             sourceBoneDesc = "( no model )";
@@ -251,7 +253,7 @@ public class MappingTool extends WindowController {
          * select button
          */
         String sButton;
-        if (Maud.model.getSource().isLoaded()) {
+        if (source.isLoaded()) {
             sButton = "Select";
         } else {
             sButton = "";
@@ -264,10 +266,10 @@ public class MappingTool extends WindowController {
      */
     private void updateTarget() {
         String targetBoneDesc;
-        if (Maud.model.target.bone.isSelected()) {
-            String targetName = Maud.model.target.bone.getName();
+        if (Maud.getModel().target.bone.isSelected()) {
+            String targetName = Maud.getModel().target.bone.getName();
             targetBoneDesc = MyString.quote(targetName);
-            String source = Maud.model.getMap().sourceBoneName(targetName);
+            String source = Maud.getModel().getMap().sourceBoneName(targetName);
             if (source != null) {
                 targetBoneDesc += String.format("  <- %s", source);
             }

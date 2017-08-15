@@ -161,7 +161,7 @@ public class SpatialNameDialog implements DialogController {
     }
 
     /**
-     * Test whether the specified name is used in the target model.
+     * Test whether the specified name is used in the target CG model.
      *
      * @param name which name to test (not null)
      * @return true if used, otherwise false
@@ -169,7 +169,7 @@ public class SpatialNameDialog implements DialogController {
     private static boolean isUsed(String name) {
         assert name != null;
 
-        if (Maud.model.target.hasSpatial(name)) {
+        if (Maud.getModel().target.hasSpatial(name)) {
             return true;
         } else {
             return false;

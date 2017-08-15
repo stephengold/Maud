@@ -109,6 +109,8 @@ public class EditorMenus {
 
     /**
      * Handle a "load (source)animation" action without arguments.
+     *
+     * @param cgm (not null)
      */
     public void loadAnimation(LoadedCgm cgm) {
         if (cgm.isLoaded()) {
@@ -167,15 +169,16 @@ public class EditorMenus {
      * &rarr; include geometries only
      */
     public void selectSpatial(String argument, boolean includeNodes) {
-        if (Maud.model.target.hasSpatial(argument)) {
-            Maud.model.target.spatial.select(argument);
+        LoadedCgm target = Maud.getModel().target;
+        if (target.hasSpatial(argument)) {
+            target.spatial.select(argument);
 
         } else {
             /*
              * Treat the argument as a spatial-name prefix.
              */
             List<String> names;
-            names = Maud.model.target.listSpatialNames(argument, includeNodes);
+            names = target.listSpatialNames(argument, includeNodes);
             Maud.gui.buildMenus.showSpatialSubmenu(names, includeNodes);
         }
     }
@@ -252,7 +255,7 @@ public class EditorMenus {
 
         } else {
             handled = true;
-            EditableCgm target = Maud.model.target;
+            EditableCgm target = Maud.getModel().target;
             switch (remainder) {
                 case "Add new":
                     Maud.gui.buildMenus.addNewAnimation();
@@ -276,7 +279,7 @@ public class EditorMenus {
                     loadAnimation(target);
                     break;
                 case "Load source":
-                    loadAnimation(Maud.model.getSource());
+                    loadAnimation(Maud.getModel().getSource());
                     break;
                 case "Reduce":
                     Maud.gui.dialogs.reduceAnimation();
@@ -443,13 +446,14 @@ public class EditorMenus {
             handled = menuKeyframeSelect(arg);
 
         } else {
+            EditableCgm target = Maud.getModel().target;
             handled = true;
             switch (remainder) {
                 case "Delete":
-                    Maud.model.target.track.deleteSingleKeyframe();
+                    target.track.deleteSingleKeyframe();
                     break;
                 case "Insert from pose":
-                    Maud.model.target.track.insertSingleKeyframe();
+                    target.track.insertSingleKeyframe();
                     break;
                 case "Reduce track":
                     Maud.gui.dialogs.reduceTrack();
@@ -461,7 +465,7 @@ public class EditorMenus {
                     Maud.gui.tools.select("keyframe");
                     break;
                 case "Wrap track":
-                    Maud.model.target.track.wrap();
+                    target.track.wrap();
                     break;
                 default:
                     handled = false;
@@ -479,19 +483,20 @@ public class EditorMenus {
     private boolean menuKeyframeSelect(String remainder) {
         assert remainder != null;
 
+        LoadedCgm target = Maud.getModel().target;
         boolean handled = true;
         switch (remainder) {
             case "First":
-                Maud.model.target.track.selectFirstKeyframe();
+                target.track.selectFirstKeyframe();
                 break;
             case "Last":
-                Maud.model.target.track.selectLastKeyframe();
+                target.track.selectLastKeyframe();
                 break;
             case "Next":
-                Maud.model.target.track.selectNextKeyframe();
+                target.track.selectNextKeyframe();
                 break;
             case "Previous":
-                Maud.model.target.track.selectPreviousKeyframe();
+                target.track.selectPreviousKeyframe();
                 break;
             default:
                 handled = false;
@@ -512,7 +517,7 @@ public class EditorMenus {
         boolean handled = false;
         switch (remainder) {
             case "Invert":
-                Maud.model.getMap().invert();
+                Maud.getModel().getMap().invert();
                 handled = true;
                 break;
             case "Load":
@@ -532,7 +537,7 @@ public class EditorMenus {
                 handled = true;
                 break;
             case "Unload":
-                Maud.model.getMap().unload();
+                Maud.getModel().getMap().unload();
                 handled = true;
         }
 
@@ -551,7 +556,7 @@ public class EditorMenus {
         boolean handled = true;
         switch (remainder) {
             case "Add":
-                Maud.model.target.spatial.addRigidBodyControl();
+                Maud.getModel().target.spatial.addRigidBodyControl();
                 break;
             case "Mass": // TODO
             case "Tool": // TODO
@@ -724,7 +729,7 @@ public class EditorMenus {
                 break;
 
             case "Unload":
-                Maud.model.getSource().unload();
+                Maud.getModel().getSource().unload();
                 handled = true;
         }
 
@@ -763,7 +768,7 @@ public class EditorMenus {
                     Maud.gui.dialogs.deleteSgc();
                     break;
                 case "Delete":
-                    Maud.model.target.spatial.delete();
+                    Maud.getModel().target.spatial.delete();
                     break;
                 case "Rotate":
                     Maud.gui.tools.select("spatialRotation");
@@ -806,17 +811,17 @@ public class EditorMenus {
         boolean handled = false;
         switch (remainder) {
             case "Anim":
-                Maud.model.target.spatial.addAnimControl();
+                Maud.getModel().target.spatial.addAnimControl();
                 handled = true;
                 break;
 
             case "RigidBody":
-                Maud.model.target.spatial.addRigidBodyControl();
+                Maud.getModel().target.spatial.addRigidBodyControl();
                 handled = true;
                 break;
 
             case "Skeleton":
-                Maud.model.target.spatial.addSkeletonControl();
+                Maud.getModel().target.spatial.addSkeletonControl();
                 handled = true;
         }
 
@@ -844,10 +849,10 @@ public class EditorMenus {
                 selectSpatial("", false);
                 break;
             case "Parent":
-                Maud.model.target.spatial.selectParent();
+                Maud.getModel().target.spatial.selectParent();
                 break;
             case "Root":
-                Maud.model.target.spatial.selectCgmRoot();
+                Maud.getModel().target.spatial.selectCgmRoot();
                 break;
             default:
                 handled = false;
@@ -911,6 +916,6 @@ public class EditorMenus {
         assert remainder != null;
 
         ViewMode viewMode = ViewMode.valueOf(remainder);
-        Maud.model.misc.setViewMode(viewMode);
+        Maud.getModel().misc.setViewMode(viewMode);
     }
 }

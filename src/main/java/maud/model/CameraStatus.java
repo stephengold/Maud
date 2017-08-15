@@ -176,8 +176,8 @@ public class CameraStatus implements Cloneable {
         }
 
         if (orbitMode) {
-            Maud.model.getSource().scenePov.aim();
-            Maud.model.target.scenePov.aim();
+            Maud.getModel().getSource().scenePov.aim();
+            Maud.getModel().target.scenePov.aim();
         }
     }
 

@@ -136,8 +136,8 @@ public class AnimationNameDialog implements DialogController {
     private String getName(Element dialogElement) {
         assert dialogElement != null;
 
-        TextField textField = dialogElement.findNiftyControl("#textfield",
-                TextField.class);
+        TextField textField = dialogElement.findNiftyControl(
+                "#textfield", TextField.class);
         String text = textField.getRealText();
 
         assert text != null;
@@ -153,7 +153,7 @@ public class AnimationNameDialog implements DialogController {
     private static boolean isUsed(String name) {
         assert name != null;
 
-        if (Maud.model.target.hasAnimation(name)) {
+        if (Maud.getModel().target.hasAnimation(name)) {
             return true;
         } else {
             return false;

@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import jme3_ext_xbuf.XbufLoader;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import jme3utilities.debug.Dumper;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
@@ -108,13 +109,13 @@ public class Maud extends GuiApplication {
      */
     final private static Dumper dumper = new Dumper();
     /**
-     * GUI portion of the editor screen, with links to tools
+     * controller for the editor screen, with links to menus, tools, etc.
      */
     final public static EditorScreen gui = new EditorScreen();
     /**
-     * MVC model for the editor screen
+     * MVC model for the editor screen (live copy)
      */
-    public static EditorModel model = new EditorModel();
+    private static EditorModel editorModel = new EditorModel();
     /**
      * application instance, set by {@link #main(java.lang.String[])}
      */
@@ -184,6 +185,16 @@ public class Maud extends GuiApplication {
     }
 
     /**
+     * Access the MVC model for the editor screen (live copy).
+     *
+     * @return the pre-existing instance
+     */
+    public static EditorModel getModel() {
+        assert editorModel != null;
+        return editorModel;
+    }
+
+    /**
      * Main entry point for Maud.
      *
      * @param arguments array of command-line arguments (not null)
@@ -218,6 +229,17 @@ public class Maud extends GuiApplication {
     }
 
     /**
+     * Alter the MVC model for the editor screen (live copy). Used only when
+     * restoring a checkpoint.
+     *
+     * @param savedState saved model state to make live (not null)
+     */
+    public static void setModel(EditorModel savedState) {
+        Validate.nonNull(savedState, "saved state");
+        editorModel = savedState;
+    }
+
+    /**
      * Initialization performed the 1st time the editor screen is displayed.
      */
     void startup2() {
@@ -240,16 +262,16 @@ public class Maud extends GuiApplication {
          * Add a locator for browsing "Written Assets".
          */
         String wadp = getWrittenAssetDirPath();
-        Maud.model.getLocations().add(wadp);
+        editorModel.getLocations().add(wadp);
     }
 
     /**
      * Update the configuration of view ports to reflect the MVC model.
      */
     void updateViewPorts() {
-        boolean splitScreen = Maud.model.getSource().isLoaded();
+        boolean splitScreen = editorModel.getSource().isLoaded();
 
-        ViewMode viewMode = Maud.model.misc.getViewMode();
+        ViewMode viewMode = editorModel.misc.getViewMode();
         switch (viewMode) {
             case Hybrid:
                 sourceSceneViewPort.setEnabled(false);
@@ -558,8 +580,8 @@ public class Maud extends GuiApplication {
      * If confirmed, terminate the application.
      */
     private void quit() {
-        int cgmEdits = Maud.model.target.countUnsavedEdits();
-        int mapEdits = Maud.model.getMap().countUnsavedEdits();
+        int cgmEdits = editorModel.target.countUnsavedEdits();
+        int mapEdits = editorModel.getMap().countUnsavedEdits();
 
         String message;
         if (cgmEdits + mapEdits == 0) {
@@ -617,9 +639,9 @@ public class Maud extends GuiApplication {
         /*
          * Create 2 scene views, each with its own bulletAppState.
          */
-        SceneView sourceSceneView = new SceneView(Maud.model.getSource(),
+        SceneView sourceSceneView = new SceneView(editorModel.getSource(),
                 sourceSceneParent, null, sourceSceneViewPort);
-        SceneView targetSceneView = new SceneView(Maud.model.target,
+        SceneView targetSceneView = new SceneView(editorModel.target,
                 targetSceneParent, viewPort, targetSceneRightViewPort);
         /*
          * Create 2 score views.
@@ -631,8 +653,8 @@ public class Maud extends GuiApplication {
         /*
          * Attach views to CG model slots.
          */
-        Maud.model.getSource().setViews(sourceSceneView, sourceScoreView);
-        Maud.model.target.setViews(targetSceneView, targetScoreView);
+        editorModel.getSource().setViews(sourceSceneView, sourceScoreView);
+        editorModel.target.setViews(targetSceneView, targetScoreView);
         /*
          * Attach screen controllers for the editor screen and the bind screen.
          */

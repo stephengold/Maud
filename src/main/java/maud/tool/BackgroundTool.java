@@ -65,7 +65,7 @@ class BackgroundTool extends WindowController {
      */
     void onSliderChanged() {
         ColorRGBA color = Maud.gui.readColorBank("bg");
-        Maud.model.getScore().setBackgroundColor(color);
+        Maud.getModel().getScore().setBackgroundColor(color);
     }
     // *************************************************************************
     // AppState methods
@@ -82,7 +82,7 @@ class BackgroundTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        ColorRGBA color = Maud.model.getScore().backgroundColor(null);
+        ColorRGBA color = Maud.getModel().getScore().backgroundColor(null);
         Maud.gui.setColorBank("bg", color);
 
         Maud.gui.setIgnoreGuiChanges(false);

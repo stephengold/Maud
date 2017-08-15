@@ -67,14 +67,15 @@ class SkeletonColorTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
+        SkeletonStatus status = Maud.getModel().skeleton;
         ColorRGBA color = Maud.gui.readColorBank("ske");
-        Maud.model.skeleton.setLinkColor(color);
+        status.setLinkColor(color);
 
         color = Maud.gui.readColorBank("bt");
-        Maud.model.skeleton.setTrackedColor(color);
+        status.setTrackedColor(color);
 
         color = Maud.gui.readColorBank("bnt");
-        Maud.model.skeleton.setTracklessColor(color);
+        status.setTracklessColor(color);
     }
 
     /**
@@ -88,20 +89,20 @@ class SkeletonColorTool extends WindowController {
         if (visualizer == null) {
             return;
         }
-        SkeletonStatus model = Maud.model.skeleton;
 
-        ColorRGBA color = model.copyLinkColor(null);
+        SkeletonStatus status = Maud.getModel().skeleton;
+        ColorRGBA color = status.copyLinkColor(null);
         visualizer.setLineColor(color);
 
-        color = model.copyTracklessColor(null); // TODO avoid extra garbage
+        color = status.copyTracklessColor(null); // TODO avoid extra garbage
         visualizer.setPointColor(color);
 
-        model.copyTrackedColor(color);
+        status.copyTrackedColor(color);
         int numBones = modelCgm.bones.countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             if (modelCgm.animation.isRetargetedPose()) {
                 String name = modelCgm.bones.getBoneName(boneIndex);
-                if (Maud.model.getMap().isBoneMapped(name)) {
+                if (Maud.getModel().getMap().isBoneMapped(name)) {
                     visualizer.setPointColor(boneIndex, color);
                 }
             } else if (modelCgm.animation.hasTrackForBone(boneIndex)) {
@@ -122,16 +123,16 @@ class SkeletonColorTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
-        SkeletonStatus model = Maud.model.skeleton;
+        SkeletonStatus status = Maud.getModel().skeleton;
         Maud.gui.setIgnoreGuiChanges(true);
 
-        ColorRGBA color = model.copyLinkColor(null);
+        ColorRGBA color = status.copyLinkColor(null);
         Maud.gui.setColorBank("ske", color);
 
-        color = model.copyTrackedColor(null);
+        color = status.copyTrackedColor(null);
         Maud.gui.setColorBank("bt", color);
 
-        model.copyTracklessColor(color);
+        status.copyTracklessColor(color);
         Maud.gui.setColorBank("bnt", color);
 
         Maud.gui.setIgnoreGuiChanges(false);

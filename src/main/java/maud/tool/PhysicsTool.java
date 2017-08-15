@@ -70,7 +70,7 @@ class PhysicsTool extends WindowController {
     void updateVisualizer(LoadedCgm cgm) {
         SceneView sceneView = cgm.getSceneView();
         BulletAppState bulletAppState = sceneView.getBulletAppState();
-        boolean enable = Maud.model.scene.isPhysicsRendered();
+        boolean enable = Maud.getModel().scene.isPhysicsRendered();
         bulletAppState.setDebugEnabled(enable);
     }
     // *************************************************************************
@@ -87,7 +87,7 @@ class PhysicsTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        boolean renderFlag = Maud.model.scene.isPhysicsRendered();
+        boolean renderFlag = Maud.getModel().scene.isPhysicsRendered();
         Maud.gui.setChecked("physics", renderFlag);
     }
 }

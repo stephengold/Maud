@@ -164,7 +164,7 @@ public class LoadedAnimation implements Cloneable {
         Animation animation = getAnimation();
         if (animation == null) {
             if (isRetargetedPose()) {
-                Maud.model.getMap().boneTransform(boneIndex, storeResult);
+                Maud.getModel().getMap().boneTransform(boneIndex, storeResult);
             } else {
                 storeResult.loadIdentity();
             }
@@ -701,7 +701,7 @@ public class LoadedAnimation implements Cloneable {
      * Load retargeted pose.
      */
     public void loadRetargetedPose() {
-        if (Maud.model.getSource().isLoaded()) {
+        if (Maud.getModel().getSource().isLoaded()) {
             loadedName = retargetedPoseName;
             speed = 0f;
             currentTime = 0f;
@@ -981,7 +981,7 @@ public class LoadedAnimation implements Cloneable {
             float[] storeYs, float[] storeZs) {
         Validate.nonNegative(boneIndex, "bone index");
 
-        TweenRotations technique = Maud.model.misc.getTweenRotations();
+        TweenRotations technique = Maud.getModel().misc.getTweenRotations();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();
@@ -1038,7 +1038,7 @@ public class LoadedAnimation implements Cloneable {
             float[] storeXs, float[] storeYs, float[] storeZs) {
         Validate.nonNegative(boneIndex, "bone index");
 
-        TweenVectors technique = Maud.model.misc.getTweenScales();
+        TweenVectors technique = Maud.getModel().misc.getTweenScales();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();
@@ -1110,7 +1110,7 @@ public class LoadedAnimation implements Cloneable {
             float[] storeXs, float[] storeYs, float[] storeZs) {
         Validate.nonNegative(boneIndex, "bone index");
 
-        TweenVectors technique = Maud.model.misc.getTweenTranslations();
+        TweenVectors technique = Maud.getModel().misc.getTweenTranslations();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();

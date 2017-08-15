@@ -35,6 +35,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.LoadedCgm;
 
 /**
  * The controller for the "Bone-Rotation Tool" window in Maud's editor screen.
@@ -85,7 +86,8 @@ class BoneRotationTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (Maud.model.target.bone.shouldEnableControls()) {
+        LoadedCgm target = Maud.getModel().target;
+        if (target.bone.shouldEnableControls()) {
             float[] angles = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 float value = sliders[iAxis].getValue();
@@ -93,8 +95,8 @@ class BoneRotationTool extends WindowController {
             }
             Quaternion rot = new Quaternion();
             rot.fromAngles(angles);
-            int boneIndex = Maud.model.target.bone.getIndex();
-            Maud.model.target.pose.getPose().setRotation(boneIndex, rot);
+            int boneIndex = target.bone.getIndex();
+            target.pose.getPose().setRotation(boneIndex, rot);
         }
     }
     // *************************************************************************
@@ -132,9 +134,9 @@ class BoneRotationTool extends WindowController {
 
         String aButton = "";
         String bButton = "";
-        if (Maud.model.target.bone.isSelected()) {
+        if (Maud.getModel().target.bone.isSelected()) {
             setSlidersToPose();
-            if (Maud.model.target.bone.shouldEnableControls()) {
+            if (Maud.getModel().target.bone.shouldEnableControls()) {
                 aButton = "Animation";
                 bButton = "Bind pose";
                 enableSliders();
@@ -150,7 +152,7 @@ class BoneRotationTool extends WindowController {
         Maud.gui.setButtonLabel("resetAngBindButton", bButton);
 
         String dButton;
-        if (Maud.model.misc.getAnglesInDegrees()) {
+        if (Maud.getModel().misc.getAnglesInDegrees()) {
             dButton = "radians";
         } else {
             dButton = "degrees";
@@ -196,9 +198,9 @@ class BoneRotationTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        Quaternion rotation = Maud.model.target.bone.userRotation(null);
+        Quaternion rotation = Maud.getModel().target.bone.userRotation(null);
         float[] angles = rotation.toAngles(null);
-        boolean degrees = Maud.model.misc.getAnglesInDegrees();
+        boolean degrees = Maud.getModel().misc.getAnglesInDegrees();
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float angle = angles[iAxis];

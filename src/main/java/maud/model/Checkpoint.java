@@ -72,9 +72,11 @@ public class Checkpoint {
      */
     Checkpoint(List<String> descriptions) {
         timestamp = new Date();
-        Maud.model.getMap().onCheckpoint();
-        Maud.model.target.onCheckpoint();
-        model = new EditorModel(Maud.model);
+        EditorModel m = Maud.getModel();
+        m.getMap().onCheckpoint();
+        m.target.onCheckpoint();
+        model = new EditorModel(m);
+
         eventDescriptions.addAll(descriptions);
     }
     // *************************************************************************
@@ -104,11 +106,12 @@ public class Checkpoint {
     }
 
     /**
-     * Copy this checkpoint to the application's live state.
+     * Copy this checkpoint to the editor's live state.
      */
     void restore() {
-        Maud.model = new EditorModel(model);
-        Maud.model.getSource().getSceneView().reinstall();
-        Maud.model.target.getSceneView().reinstall();
+        EditorModel liveState = new EditorModel(model);
+        Maud.setModel(liveState);
+        liveState.getSource().getSceneView().reinstall();
+        liveState.target.getSceneView().reinstall();
     }
 }

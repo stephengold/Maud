@@ -35,6 +35,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.EditableMap;
 
 /**
  * The controller for the "Twist Tool" window in Maud's editor screen.
@@ -84,7 +85,8 @@ public class TwistTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (Maud.model.getMap().isBoneMappingSelected()) {
+        EditableMap map = Maud.getModel().getMap();
+        if (map.isBoneMappingSelected()) {
             float[] angles = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 float value = sliders[iAxis].getValue();
@@ -92,7 +94,7 @@ public class TwistTool extends WindowController {
             }
             Quaternion twist = new Quaternion();
             twist.fromAngles(angles);
-            Maud.model.getMap().setTwist(twist);
+            map.setTwist(twist);
         }
     }
     // *************************************************************************
@@ -134,7 +136,7 @@ public class TwistTool extends WindowController {
          * the degrees/radians button
          */
         String dButton;
-        if (Maud.model.misc.getAnglesInDegrees()) {
+        if (Maud.getModel().misc.getAnglesInDegrees()) {
             dButton = "radians";
         } else {
             dButton = "degrees";
@@ -181,9 +183,9 @@ public class TwistTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the mapping twist.
      */
     private void setSlidersToTwist() {
-        Quaternion effTwist = Maud.model.getMap().copyTwist(null);
+        Quaternion effTwist = Maud.getModel().getMap().copyTwist(null);
         float[] angles = effTwist.toAngles(null);
-        boolean degrees = Maud.model.misc.getAnglesInDegrees();
+        boolean degrees = Maud.getModel().misc.getAnglesInDegrees();
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float angle = angles[iAxis];
@@ -207,7 +209,8 @@ public class TwistTool extends WindowController {
      */
     private void updateSelected() {
         String rButton, sButton;
-        if (Maud.model.getMap().isBoneMappingSelected()) {
+
+        if (Maud.getModel().getMap().isBoneMappingSelected()) {
             setSlidersToTwist();
             rButton = "Reset";
             sButton = "Snap";
@@ -218,6 +221,7 @@ public class TwistTool extends WindowController {
             sButton = "";
             disableSliders();
         }
+
         Maud.gui.setButtonLabel("resetTwistButton", rButton);
         Maud.gui.setButtonLabel("snapTwistButton", sButton);
         Maud.gui.setButtonLabel("snapXTwistButton", sButton);
