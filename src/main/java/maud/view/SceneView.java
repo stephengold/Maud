@@ -85,6 +85,10 @@ public class SceneView implements EditorView, JmeCloneable {
     // constants and loggers
 
     /**
+     * number of coordinate axes
+     */
+    final private static int numAxes = 3;
+    /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
@@ -595,15 +599,13 @@ public class SceneView implements EditorView, JmeCloneable {
     @Override
     public void considerAll(Selection selection) {
         Camera camera = getCamera();
-        boolean isSelected = cgm.bone.isSelected();
-        String mode = Maud.getModel().axes.getMode();
-        if (isSelected && mode.equals("bone")) {
-            for (int axisIndex = 0; axisIndex < 3; axisIndex++) {
-                Vector3f tipWorld;
-                tipWorld = Maud.gui.tools.axes.tipLocation(cgm, axisIndex);
+
+        for (int axisIndex = 0; axisIndex < numAxes; axisIndex++) {
+            Vector3f tipWorld = Maud.gui.tools.axes.tipLocation(cgm, axisIndex);
+            if (tipWorld != null) {
                 Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);
                 Vector2f tipXY = new Vector2f(tipScreen.x, tipScreen.y);
-                selection.considerPoseAxis(cgm, axisIndex, false, tipXY);
+                selection.considerAxis(cgm, axisIndex, false, tipXY);
             }
         }
 
