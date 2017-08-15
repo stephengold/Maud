@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.action.ActionPrefix;
+import maud.model.LoadedCgm;
 
 /**
  * Bone menus in Maud's editor screen.
@@ -106,15 +107,15 @@ public class BoneMenus {
      * @param argument action argument (not null)
      */
     public void selectBone(String argument) {
-        if (Maud.model.target.bones.hasBone(argument)) {
-            Maud.model.target.bone.select(argument);
+        LoadedCgm target = Maud.getModel().target;
+        if (target.bones.hasBone(argument)) {
+            target.bone.select(argument);
 
         } else {
             /*
              * Treat the argument as a bone-name prefix.
              */
-            List<String> boneNames;
-            boneNames = Maud.model.target.bones.listBoneNames(argument);
+            List<String> boneNames = target.bones.listBoneNames(argument);
             Maud.gui.buildMenus.showBoneSubmenu(boneNames);
         }
     }
@@ -123,13 +124,13 @@ public class BoneMenus {
      * Handle a "select boneChild" action without arguments.
      */
     public void selectBoneChild() {
-        if (Maud.model.target.bone.isSelected()) {
-            int numChildren = Maud.model.target.bone.countChildren();
+        LoadedCgm target = Maud.getModel().target;
+        if (target.bone.isSelected()) {
+            int numChildren = target.bone.countChildren();
             if (numChildren == 1) {
-                Maud.model.target.bone.selectFirstChild();
+                target.bone.selectFirstChild();
             } else if (numChildren > 1) {
-                List<String> boneNames;
-                boneNames = Maud.model.target.bone.listChildNames();
+                List<String> boneNames = target.bone.listChildNames();
                 Maud.gui.buildMenus.showBoneSubmenu(boneNames);
             }
         }
@@ -140,10 +141,10 @@ public class BoneMenus {
      */
     void selectBoneWithTrack() {
         List<String> boneNames;
-        boneNames = Maud.model.target.animation.listBonesWithTrack();
+        boneNames = Maud.getModel().target.animation.listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
-            Maud.model.target.bone.select(boneNames.get(0));
+            Maud.getModel().target.bone.select(boneNames.get(0));
         } else if (numBoneTracks > 1) {
             Maud.gui.buildMenus.showBoneSubmenu(boneNames);
         }
@@ -155,14 +156,14 @@ public class BoneMenus {
      * @param argument action argument (not null)
      */
     public void selectSourceBone(String argument) {
-        if (Maud.model.getSource().bones.hasBone(argument)) {
-            Maud.model.getSource().bone.select(argument);
+        LoadedCgm source = Maud.getModel().getSource();
+        if (source.bones.hasBone(argument)) {
+            source.bone.select(argument);
         } else {
             /*
              * Treat the argument as a bone-name prefix.
              */
-            List<String> boneNames;
-            boneNames = Maud.model.getSource().bones.listBoneNames(argument);
+            List<String> boneNames = source.bones.listBoneNames(argument);
             Maud.gui.buildMenus.showBoneSubmenu(boneNames);
         }
     }
@@ -190,16 +191,16 @@ public class BoneMenus {
                 selectBoneChild();
                 break;
             case "Mapped":
-                Maud.model.getMap().selectFromSource();
+                Maud.getModel().getMap().selectFromSource();
                 break;
             case "Next":
-                Maud.model.target.bone.selectNext();
+                Maud.getModel().target.bone.selectNext();
                 break;
             case "Parent":
-                Maud.model.target.bone.selectParent();
+                Maud.getModel().target.bone.selectParent();
                 break;
             case "Previous":
-                Maud.model.target.bone.selectPrevious();
+                Maud.getModel().target.bone.selectPrevious();
                 break;
             case "Root":
                 selectRootBone();
@@ -226,7 +227,7 @@ public class BoneMenus {
         boolean handled = false;
         switch (remainder) {
             case "Mapped":
-                Maud.model.getMap().selectFromTarget();
+                Maud.getModel().getMap().selectFromTarget();
                 handled = true;
                 break;
             case "Root":
@@ -241,7 +242,7 @@ public class BoneMenus {
      * Select a bone by name, using submenus.
      */
     private void selectBoneByName() {
-        List<String> nameList = Maud.model.target.bones.listBoneNames();
+        List<String> nameList = Maud.getModel().target.bones.listBoneNames();
         Maud.gui.buildMenus.showBoneSubmenu(nameList);
     }
 
@@ -249,7 +250,8 @@ public class BoneMenus {
      * Select a bone by parent, using submenus.
      */
     private void selectBoneByParent() {
-        List<String> boneNames = Maud.model.target.bones.listRootBoneNames();
+        List<String> boneNames;
+        boneNames = Maud.getModel().target.bones.listRootBoneNames();
         Maud.gui.showPopupMenu(ActionPrefix.selectBoneChild, boneNames);
     }
 
@@ -257,12 +259,12 @@ public class BoneMenus {
      * Handle a "select rootBone" action.
      */
     private void selectRootBone() {
-        int numRoots = Maud.model.target.bones.countRootBones();
+        LoadedCgm target = Maud.getModel().target;
+        int numRoots = target.bones.countRootBones();
         if (numRoots == 1) {
-            Maud.model.target.bone.selectFirstRoot();
+            target.bone.selectFirstRoot();
         } else if (numRoots > 1) {
-            List<String> boneNames;
-            boneNames = Maud.model.target.bones.listRootBoneNames();
+            List<String> boneNames = target.bones.listRootBoneNames();
             Maud.gui.buildMenus.showBoneSubmenu(boneNames);
         }
     }
@@ -271,12 +273,12 @@ public class BoneMenus {
      * Handle a "select sourceRootBone" action.
      */
     private void selectSourceRootBone() {
-        int numRoots = Maud.model.getSource().bones.countRootBones();
+        LoadedCgm source = Maud.getModel().getSource();
+        int numRoots = source.bones.countRootBones();
         if (numRoots == 1) {
-            Maud.model.getSource().bone.selectFirstRoot();
+            source.bone.selectFirstRoot();
         } else if (numRoots > 1) {
-            List<String> names;
-            names = Maud.model.getSource().bones.listRootBoneNames();
+            List<String> names = source.bones.listRootBoneNames();
             Maud.gui.buildMenus.showSourceBoneSubmenu(names);
         }
     }

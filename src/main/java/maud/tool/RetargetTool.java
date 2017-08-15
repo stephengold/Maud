@@ -73,19 +73,20 @@ class RetargetTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        String targetName = Maud.model.target.getName();
+        String targetName = Maud.getModel().target.getName();
         String targetDesc = MyString.quote(targetName);
         Maud.gui.setStatusText("targetName", " " + targetDesc);
 
+        LoadedCgm source = Maud.getModel().getSource();
         String sButton, sourceDesc;
-        if (!Maud.model.getSource().isLoaded()) {
+        if (!source.isLoaded()) {
             sourceDesc = "( none loaded )";
             sButton = "";
 
         } else {
-            String sourceName = Maud.model.getSource().getName();
+            String sourceName = source.getName();
             sourceDesc = MyString.quote(sourceName);
-            if (Maud.model.getSource().countAnimations() > 0) {
+            if (source.countAnimations() > 0) {
                 sButton = "Load";
             } else {
                 sButton = "";
@@ -94,7 +95,7 @@ class RetargetTool extends WindowController {
         Maud.gui.setStatusText("sourceName", " " + sourceDesc);
         Maud.gui.setButtonLabel("selectSourceAnimationButton", sButton);
 
-        int numBoneMappings = Maud.model.getMap().countMappings();
+        int numBoneMappings = Maud.getModel().getMap().countMappings();
         String mappingDesc = Integer.toString(numBoneMappings);
         Maud.gui.setStatusText("mappingCount", mappingDesc);
 
@@ -109,12 +110,14 @@ class RetargetTool extends WindowController {
      */
     private void updateBottom() {
         String sourceAnimDesc = "";
-        LoadedCgm source = Maud.model.getSource();
+
+        LoadedCgm source = Maud.getModel().getSource();
         boolean real = source.animation.isReal();
         if (real) {
             String name = source.animation.getName();
             sourceAnimDesc = MyString.quote(name);
         }
+
         Maud.gui.setStatusText("sourceAnimation", " " + sourceAnimDesc);
     }
 
@@ -125,9 +128,9 @@ class RetargetTool extends WindowController {
         String feedback;
         String rButton = "";
 
-        LoadedMap map = Maud.model.getMap();
-        LoadedCgm source = Maud.model.getSource();
-        LoadedCgm target = Maud.model.target;
+        LoadedMap map = Maud.getModel().getMap();
+        LoadedCgm source = Maud.getModel().getSource();
+        LoadedCgm target = Maud.getModel().target;
         if (!target.isAnimControlSelected()) {
             feedback = "select the target anim control";
         } else if (!source.isLoaded()) {

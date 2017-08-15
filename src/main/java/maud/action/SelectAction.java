@@ -29,6 +29,7 @@ package maud.action;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.model.LoadedCgm;
 
 /**
  * Process an action string that begins with "select".
@@ -63,9 +64,10 @@ class SelectAction {
      */
     static boolean process(String actionString) {
         boolean handled = true;
+        LoadedCgm target = Maud.getModel().target;
         switch (actionString) {
             case "select animControl":
-                Maud.gui.buildMenus.selectAnimControl(Maud.model.target);
+                Maud.gui.buildMenus.selectAnimControl(target);
                 break;
             case "select bone":
                 Maud.gui.buildMenus.selectBone();
@@ -74,25 +76,25 @@ class SelectAction {
                 Maud.gui.boneMenus.selectBoneChild();
                 break;
             case "select boneParent":
-                Maud.model.target.bone.selectParent();
+                target.bone.selectParent();
                 break;
             case "select keyframeFirst":
-                Maud.model.target.track.selectFirstKeyframe();
+                target.track.selectFirstKeyframe();
                 break;
             case "select keyframeLast":
-                Maud.model.target.track.selectLastKeyframe();
+                target.track.selectLastKeyframe();
                 break;
             case "select keyframeNext":
-                Maud.model.target.track.selectNextKeyframe();
+                target.track.selectNextKeyframe();
                 break;
             case "select keyframePrevious":
-                Maud.model.target.track.selectPreviousKeyframe();
+                target.track.selectPreviousKeyframe();
                 break;
             case "select mapSourceBone":
-                Maud.model.getMap().selectFromSource();
+                Maud.getModel().getMap().selectFromSource();
                 break;
             case "select mapTargetBone":
-                Maud.model.getMap().selectFromTarget();
+                Maud.getModel().getMap().selectFromTarget();
                 break;
             case "select screenXY":
                 Maud.gui.selectXY();
@@ -101,7 +103,8 @@ class SelectAction {
                 Maud.gui.buildMenus.selectSgc();
                 break;
             case "select sourceAnimControl":
-                Maud.gui.buildMenus.selectAnimControl(Maud.model.getSource());
+                Maud.gui.buildMenus.selectAnimControl(
+                        Maud.getModel().getSource());
                 break;
             case "select sourceBone":
                 Maud.gui.buildMenus.selectSourceBone();
@@ -110,7 +113,7 @@ class SelectAction {
                 Maud.gui.buildMenus.selectSpatialChild("");
                 break;
             case "select spatialParent":
-                Maud.model.target.spatial.selectParent();
+                target.spatial.selectParent();
                 break;
             case "select userKey":
                 Maud.gui.buildMenus.selectUserKey();
@@ -135,7 +138,7 @@ class SelectAction {
         String arg;
         if (actionString.startsWith(ActionPrefix.selectAnimControl)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectAnimControl);
-            Maud.model.target.selectAnimControl(arg);
+            Maud.getModel().target.selectAnimControl(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectBone)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectBone);
@@ -148,7 +151,7 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectControl)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectControl);
-            Maud.model.target.sgc.select(arg);
+            Maud.getModel().target.sgc.select(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
@@ -158,7 +161,7 @@ class SelectAction {
                 ActionPrefix.selectSourceAnimControl)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectSourceAnimControl);
-            Maud.model.getSource().selectAnimControl(arg);
+            Maud.getModel().getSource().selectAnimControl(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectSourceBone)) {
             arg = MyString.remainder(actionString,
@@ -176,7 +179,7 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectUserKey)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectUserKey);
-            Maud.model.misc.selectUserKey(arg);
+            Maud.getModel().misc.selectUserKey(arg);
 
         } else {
             handled = false;

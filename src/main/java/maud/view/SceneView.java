@@ -596,7 +596,7 @@ public class SceneView implements EditorView, JmeCloneable {
     public void considerAll(Selection selection) {
         Camera camera = getCamera();
         boolean isSelected = cgm.bone.isSelected();
-        String mode = Maud.model.axes.getMode();
+        String mode = Maud.getModel().axes.getMode();
         if (isSelected && mode.equals("bone")) {
             for (int axisIndex = 0; axisIndex < 3; axisIndex++) {
                 Vector3f tipWorld;
@@ -662,8 +662,8 @@ public class SceneView implements EditorView, JmeCloneable {
     @Override
     public ViewPort getViewPort() {
         ViewPort result;
-        ViewMode viewMode = Maud.model.misc.getViewMode();
-        if (Maud.model.getSource().isLoaded()
+        ViewMode viewMode = Maud.getModel().misc.getViewMode();
+        if (Maud.getModel().getSource().isLoaded()
                 || viewMode.equals(ViewMode.Hybrid)) {
             result = viewPort2; // split-screen view port
         } else {
@@ -999,7 +999,7 @@ public class SceneView implements EditorView, JmeCloneable {
          */
         Vector3f baseLocation = new Vector3f(0f, 0f, 0f);
         cgm.scenePov.setCursorLocation(baseLocation);
-        Maud.model.scene.setPlatformDiameter(2f);
+        Maud.getModel().scene.setPlatformDiameter(2f);
 
         Vector3f cameraLocation = new Vector3f(-2.4f, 1f, 1.6f);
         cgm.scenePov.setCameraLocation(cameraLocation);
@@ -1033,7 +1033,7 @@ public class SceneView implements EditorView, JmeCloneable {
      */
     private void updateShadowMode() {
         RenderQueue.ShadowMode mode;
-        boolean enableShadows = Maud.model.scene.areShadowsRendered();
+        boolean enableShadows = Maud.getModel().scene.areShadowsRendered();
         if (enableShadows) {
             mode = RenderQueue.ShadowMode.CastAndReceive;
         } else {

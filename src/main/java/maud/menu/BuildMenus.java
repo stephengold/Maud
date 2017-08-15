@@ -107,7 +107,7 @@ public class BuildMenus {
     void assetFolders() {
         builder.reset();
         builder.add("Add");
-        if (Maud.model.getLocations().hasRemovable()) {
+        if (Maud.getModel().getLocations().hasRemovable()) {
             builder.add("Remove");
         }
         builder.show("select menuItem Settings -> Asset folders -> ");
@@ -129,16 +129,17 @@ public class BuildMenus {
      */
     public void loadCgmAsset(String args, LoadedCgm cgm) {
         String menuPrefix = null;
-        if (cgm == Maud.model.getSource()) {
+        if (cgm == Maud.getModel().getSource()) {
             menuPrefix = ActionPrefix.loadSourceCgmAsset;
-        } else if (cgm == Maud.model.target) {
+        } else if (cgm == Maud.getModel().target) {
             menuPrefix = ActionPrefix.loadCgmAsset;
         } else {
             throw new IllegalArgumentException();
         }
 
         String indexString = args.split(" ")[0];
-        String rootPath = Maud.model.getLocations().pathForIndex(indexString);
+        String rootPath;
+        rootPath = Maud.getModel().getLocations().pathForIndex(indexString);
         String assetPath = MyString.remainder(args, indexString + " ");
 
         if (rootPath.endsWith(".jar") || rootPath.endsWith(".zip")) {
@@ -199,9 +200,9 @@ public class BuildMenus {
         if (path.equals("From classpath")) {
             buildTestDataMenu();
             String menuPrefix = null;
-            if (cgm == Maud.model.getSource()) {
+            if (cgm == Maud.getModel().getSource()) {
                 menuPrefix = ActionPrefix.loadSourceCgmNamed;
-            } else if (cgm == Maud.model.target) {
+            } else if (cgm == Maud.getModel().target) {
                 menuPrefix = ActionPrefix.loadCgmNamed;
             } else {
                 assert false;
@@ -209,7 +210,8 @@ public class BuildMenus {
             builder.show(menuPrefix);
 
         } else {
-            String indexString = Maud.model.getLocations().indexForPath(path);
+            String indexString;
+            indexString = Maud.getModel().getLocations().indexForPath(path);
             String args = indexString + " /";
             loadCgmAsset(args, cgm);
         }
@@ -220,10 +222,10 @@ public class BuildMenus {
      */
     public void loadMapAsset() {
         buildLocatorMenu();
-        if (Maud.model.getSource().bones.isSelected()) {
+        if (Maud.getModel().getSource().bones.isSelected()) {
             builder.add("Identity for source");
         }
-        if (Maud.model.target.bones.isSelected()) {
+        if (Maud.getModel().target.bones.isSelected()) {
             builder.add("Identity for target");
         }
         builder.show(ActionPrefix.loadMapLocator);
@@ -236,7 +238,8 @@ public class BuildMenus {
      */
     public void loadMapAsset(String args) {
         String indexString = args.split(" ")[0];
-        String rootPath = Maud.model.getLocations().pathForIndex(indexString);
+        String rootPath;
+        rootPath = Maud.getModel().getLocations().pathForIndex(indexString);
         String assetPath = MyString.remainder(args, indexString + " ");
 
         File file = new File(rootPath, assetPath);
@@ -251,7 +254,7 @@ public class BuildMenus {
             builder.show(menuPrefix);
 
         } else if (file.canRead()) {
-            Maud.model.getMap().loadAsset(rootPath, assetPath);
+            Maud.getModel().getMap().loadAsset(rootPath, assetPath);
 
         } else {
             /*
@@ -281,15 +284,16 @@ public class BuildMenus {
                 break;
 
             case "Identity for source":
-                Maud.model.getMap().loadIdentityForSource();
+                Maud.getModel().getMap().loadIdentityForSource();
                 break;
 
             case "Identity for target":
-                Maud.model.getMap().loadIdentityForTarget();
+                Maud.getModel().getMap().loadIdentityForTarget();
                 break;
 
             default:
-                String indexString = Maud.model.getLocations().indexForPath(path);
+                String indexString;
+                indexString = Maud.getModel().getLocations().indexForPath(path);
                 String args = indexString + " /";
                 loadMapAsset(args);
         }
@@ -321,7 +325,8 @@ public class BuildMenus {
                 break;
             case "Remove":
                 builder.reset();
-                List<String> pathList = Maud.model.getLocations().listAll();
+                List<String> pathList;
+                pathList = Maud.getModel().getLocations().listAll();
                 for (String path : pathList) {
                     builder.addFolder(path);
                 }
@@ -405,10 +410,10 @@ public class BuildMenus {
     public void newAssetFolder(String argument) {
         if (argument.endsWith(EditorMenus.addThis)) {
             String path = MyString.removeSuffix(argument, EditorMenus.addThis);
-            Maud.model.getLocations().add(path);
+            Maud.getModel().getLocations().add(path);
 
         } else if (argument.endsWith(".jar") || argument.endsWith(".zip")) {
-            Maud.model.getLocations().add(argument);
+            Maud.getModel().getLocations().add(argument);
 
         } else {
             Map<String, File> folderMap = EditorMenus.folderMap(argument);
@@ -464,9 +469,9 @@ public class BuildMenus {
             for (String name : names) {
                 builder.add(name);
             }
-            if (cgm == Maud.model.target) {
+            if (cgm == Maud.getModel().target) {
                 builder.show("select animControl ");
-            } else if (cgm == Maud.model.getSource()) {
+            } else if (cgm == Maud.getModel().getSource()) {
                 builder.show("select sourceAnimControl ");
             } else {
                 throw new IllegalArgumentException();
@@ -489,17 +494,18 @@ public class BuildMenus {
      * @param argument action argument (not null)
      */
     public void selectBoneChild(String argument) {
+        LoadedCgm target = Maud.getModel().target;
         if (argument.startsWith("!")) {
             String name = argument.substring(1);
-            Maud.model.target.bone.select(name);
+            target.bone.select(name);
         } else {
             List<String> names;
-            names = Maud.model.target.bones.listChildBoneNames(argument);
+            names = target.bones.listChildBoneNames(argument);
 
             builder.reset();
             builder.addBone("!" + argument);
             for (String name : names) {
-                if (Maud.model.target.bones.isLeafBone(name)) {
+                if (target.bones.isLeafBone(name)) {
                     builder.addBone("!" + name);
                 } else {
                     builder.add(name);
@@ -513,11 +519,11 @@ public class BuildMenus {
      * Handle a "select boneWithTrack" action.
      */
     void selectBoneWithTrack() {
-        List<String> boneNames;
-        boneNames = Maud.model.target.animation.listBonesWithTrack();
+        LoadedCgm target = Maud.getModel().target;
+        List<String> boneNames = target.animation.listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
-            Maud.model.target.bone.select(boneNames.get(0));
+            target.bone.select(boneNames.get(0));
         } else if (numBoneTracks > 1) {
             showBoneSubmenu(boneNames);
         }
@@ -540,7 +546,7 @@ public class BuildMenus {
      */
     public void selectSgc() {
         builder.reset();
-        for (String name : Maud.model.target.spatial.listSgcNames()) {
+        for (String name : Maud.getModel().target.spatial.listSgcNames()) {
             builder.add(name);
         }
         builder.add(LoadedCgm.noControl);
@@ -551,7 +557,7 @@ public class BuildMenus {
      * Display a "Bone -> Select source" menu.
      */
     public void selectSourceBone() {
-        if (Maud.model.getSource().isLoaded()) {
+        if (Maud.getModel().getSource().isLoaded()) {
             builder.reset();
             buildSourceBoneSelectMenu();
             builder.show("select menuItem Bone -> Select source -> ");
@@ -564,14 +570,15 @@ public class BuildMenus {
      * @param argument action argument (not null)
      */
     void selectSourceBone(String argument) {
-        if (Maud.model.getSource().bones.hasBone(argument)) {
-            Maud.model.getSource().bone.select(argument);
+        LoadedCgm source = Maud.getModel().getSource();
+        if (source.bones.hasBone(argument)) {
+            source.bone.select(argument);
         } else {
             /*
              * Treat the argument as a bone-name prefix.
              */
             List<String> boneNames;
-            boneNames = Maud.model.getSource().bones.listBoneNames(argument);
+            boneNames = source.bones.listBoneNames(argument);
             showBoneSubmenu(boneNames);
         }
     }
@@ -581,27 +588,28 @@ public class BuildMenus {
      */
     void selectSpatial() {
         builder.reset();
+        LoadedCgm target = Maud.getModel().target;
 
-        List<String> names = Maud.model.target.listSpatialNames("", true);
+        List<String> names = target.listSpatialNames("", true);
         if (!names.isEmpty()) {
             builder.add("By name");
         }
 
-        boolean isRootANode = Maud.model.target.isRootANode();
+        boolean isRootANode = target.isRootANode();
         if (isRootANode) {
             builder.addNode("Root");
         } else {
             builder.addGeometry("Root");
         }
 
-        names = Maud.model.target.listSpatialNames("", false);
+        names = target.listSpatialNames("", false);
         if (!names.isEmpty()) {
             builder.add("Geometry");
         }
 
-        int numChildren = Maud.model.target.spatial.countChildren();
+        int numChildren = target.spatial.countChildren();
         if (numChildren == 1) {
-            boolean isChildANode = Maud.model.target.spatial.isChildANode(0);
+            boolean isChildANode = target.spatial.isChildANode(0);
             if (isChildANode) {
                 builder.addNode("Child");
             } else {
@@ -611,7 +619,7 @@ public class BuildMenus {
             builder.add("Child");
         }
 
-        boolean isRoot = Maud.model.target.spatial.isCgmRoot();
+        boolean isRoot = target.spatial.isCgmRoot();
         if (!isRoot) {
             builder.addNode("Parent");
         }
@@ -625,13 +633,13 @@ public class BuildMenus {
      * @param itemPrefix prefix for filtering menu items (not null)
      */
     public void selectSpatialChild(String itemPrefix) {
-        int numChildren = Maud.model.target.spatial.countChildren();
+        LoadedCgm target = Maud.getModel().target;
+        int numChildren = target.spatial.countChildren();
         if (numChildren == 1) {
-            Maud.model.target.spatial.selectChild(0);
+            target.spatial.selectChild(0);
 
         } else if (numChildren > 1) {
-            List<String> children;
-            children = Maud.model.target.spatial.listNumberedChildren();
+            List<String> children = target.spatial.listNumberedChildren();
 
             List<String> choices;
             choices = MyString.addMatchPrefix(children, itemPrefix, null);
@@ -642,8 +650,7 @@ public class BuildMenus {
             for (String choice : choices) {
                 int childIndex = children.indexOf(choice);
                 if (childIndex >= 0) {
-                    boolean isANode = Maud.model.target.spatial.isChildANode(
-                            childIndex);
+                    boolean isANode = target.spatial.isChildANode(childIndex);
                     if (isANode) {
                         builder.addNode(choice);
                     } else {
@@ -678,8 +685,8 @@ public class BuildMenus {
      */
     public void selectUserKey() {
         builder.reset();
-        List<String> keyList = Maud.model.target.spatial.listUserKeys();
-        String selectedKey = Maud.model.misc.getSelectedUserKey();
+        List<String> keyList = Maud.getModel().target.spatial.listUserKeys();
+        String selectedKey = Maud.getModel().misc.getSelectedUserKey();
         for (String key : keyList) {
             if (!key.equals(selectedKey)) {
                 builder.add(key);
@@ -693,7 +700,7 @@ public class BuildMenus {
      */
     void selectViewMode() {
         builder.reset();
-        ViewMode viewMode = Maud.model.misc.getViewMode();
+        ViewMode viewMode = Maud.getModel().misc.getViewMode();
         for (ViewMode mode : ViewMode.values()) {
             if (!mode.equals(viewMode)) {
                 builder.add(mode.toString());
@@ -709,7 +716,7 @@ public class BuildMenus {
     public void setBatchHint() {
         builder.reset();
         Spatial.BatchHint selectedHint;
-        selectedHint = Maud.model.target.spatial.getLocalBatchHint();
+        selectedHint = Maud.getModel().target.spatial.getLocalBatchHint();
         for (Spatial.BatchHint hint : Spatial.BatchHint.values()) {
             if (!hint.equals(selectedHint)) {
                 String name = hint.toString();
@@ -726,7 +733,7 @@ public class BuildMenus {
     public void setCullHint() {
         builder.reset();
         Spatial.CullHint selectedHint;
-        selectedHint = Maud.model.target.spatial.getLocalCullHint();
+        selectedHint = Maud.getModel().target.spatial.getLocalCullHint();
         for (Spatial.CullHint hint : Spatial.CullHint.values()) {
             if (!hint.equals(selectedHint)) {
                 String name = hint.toString();
@@ -743,7 +750,7 @@ public class BuildMenus {
     public void setQueueBucket() {
         builder.reset();
         RenderQueue.Bucket selectedBucket;
-        selectedBucket = Maud.model.target.spatial.getLocalQueueBucket();
+        selectedBucket = Maud.getModel().target.spatial.getLocalQueueBucket();
         for (RenderQueue.Bucket bucket : RenderQueue.Bucket.values()) {
             if (!bucket.equals(selectedBucket)) {
                 String name = bucket.toString();
@@ -760,7 +767,7 @@ public class BuildMenus {
     public void setShadowMode() {
         builder.reset();
         RenderQueue.ShadowMode selectedMode;
-        selectedMode = Maud.model.target.spatial.getLocalShadowMode();
+        selectedMode = Maud.getModel().target.spatial.getLocalShadowMode();
         for (RenderQueue.ShadowMode mode : RenderQueue.ShadowMode.values()) {
             if (!mode.equals(selectedMode)) {
                 String name = mode.toString();
@@ -776,7 +783,7 @@ public class BuildMenus {
      */
     public void setTweenRotations() {
         builder.reset();
-        TweenRotations selected = Maud.model.misc.getTweenRotations();
+        TweenRotations selected = Maud.getModel().misc.getTweenRotations();
         for (TweenRotations t : TweenRotations.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
@@ -792,7 +799,7 @@ public class BuildMenus {
      */
     public void setTweenScales() {
         builder.reset();
-        TweenVectors selected = Maud.model.misc.getTweenScales();
+        TweenVectors selected = Maud.getModel().misc.getTweenScales();
         for (TweenVectors t : TweenVectors.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
@@ -808,7 +815,7 @@ public class BuildMenus {
      */
     public void setTweenTranslations() {
         builder.reset();
-        TweenVectors selected = Maud.model.misc.getTweenTranslations();
+        TweenVectors selected = Maud.getModel().misc.getTweenTranslations();
         for (TweenVectors t : TweenVectors.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
@@ -849,9 +856,9 @@ public class BuildMenus {
             }
         }
 
-        if (cgm == Maud.model.target) {
+        if (cgm == Maud.getModel().target) {
             builder.show(ActionPrefix.loadAnimation);
-        } else if (cgm == Maud.model.getSource()) {
+        } else if (cgm == Maud.getModel().getSource()) {
             builder.show(ActionPrefix.loadSourceAnimation);
         } else {
             assert false;
@@ -872,7 +879,7 @@ public class BuildMenus {
 
         builder.reset();
         for (String name : nameList) {
-            if (Maud.model.target.bones.hasBone(name)) {
+            if (Maud.getModel().target.bones.hasBone(name)) {
                 builder.addBone(name);
             } else {
                 builder.addEllipsis(name);
@@ -895,7 +902,7 @@ public class BuildMenus {
 
         builder.reset();
         for (String name : nameList) {
-            if (Maud.model.getSource().bones.hasBone(name)) {
+            if (Maud.getModel().getSource().bones.hasBone(name)) {
                 builder.addBone(name);
             } else {
                 builder.addEllipsis(name);
@@ -921,9 +928,9 @@ public class BuildMenus {
 
         builder.reset();
         for (String name : nameList) {
-            if (Maud.model.target.hasGeometry(name)) {
+            if (Maud.getModel().target.hasGeometry(name)) {
                 builder.addGeometry(name);
-            } else if (includeNodes && Maud.model.target.hasNode(name)) {
+            } else if (includeNodes && Maud.getModel().target.hasNode(name)) {
                 builder.addNode(name);
             }
         }
@@ -940,7 +947,7 @@ public class BuildMenus {
     void sourceCgm() {
         builder.reset();
         builder.add("Load");
-        if (Maud.model.getSource().isLoaded()) {
+        if (Maud.getModel().getSource().isLoaded()) {
             builder.add("Unload");
         }
         builder.show("select menuItem CGM -> Source model -> ");
@@ -970,13 +977,13 @@ public class BuildMenus {
      */
     private void buildAnimationMenu() {
         builder.addTool("Tool");
-        if (Maud.model.target.bones.countBones() > 0) {
+        if (Maud.getModel().target.bones.countBones() > 0) {
             builder.add("Load");
             builder.add("Add new");
             //builder.add("Unload");
         }
         builder.addTool("Tweening");
-        if (Maud.model.target.animation.isReal()) {
+        if (Maud.getModel().target.animation.isReal()) {
             builder.add("Behead");
             builder.addDialog("Change duration");
             builder.addDialog("Delete");
@@ -988,8 +995,8 @@ public class BuildMenus {
             builder.add("Wrap all tracks");
         }
         builder.addTool("Source tool"); // TODO submenu
-        if (Maud.model.getSource().isLoaded()
-                && Maud.model.getSource().bones.countBones() > 0) {
+        if (Maud.getModel().getSource().isLoaded()
+                && Maud.getModel().getSource().bones.countBones() > 0) {
             builder.add("Load source");
         }
     }
@@ -1004,11 +1011,11 @@ public class BuildMenus {
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
-        if (Maud.model.target.bone.isSelected()) {
+        if (Maud.getModel().target.bone.isSelected()) {
             //builder.add("Attach prop"); TODO
             builder.addDialog("Rename");
         }
-        if (Maud.model.getSource().isLoaded()) {
+        if (Maud.getModel().getSource().isLoaded()) {
             builder.add("Select source"); // TODO submenu
         }
     }
@@ -1017,40 +1024,41 @@ public class BuildMenus {
      * Build a "Bone -> Select" menu.
      */
     private void buildBoneSelectMenu() {
+        LoadedCgm target = Maud.getModel().target;
         builder.add("By name");
-
-        int numBones = Maud.model.target.bones.countBones();
+        int numBones = target.bones.countBones();
         if (numBones > 0) {
             builder.add("By parent");
         }
 
-        int numRoots = Maud.model.target.bones.countRootBones();
+        int numRoots = target.bones.countRootBones();
         if (numRoots == 1) {
             builder.addBone("Root");
         } else if (numRoots > 1) {
             builder.add("Root");
         }
 
-        int numTracks = Maud.model.target.animation.countBoneTracks();
+        int numTracks = target.animation.countBoneTracks();
         if (numTracks > 0) {
             builder.add("With track");
         }
 
-        String sourceBoneName = Maud.model.getSource().bone.getName();
-        String boneName = Maud.model.getMap().targetBoneName(sourceBoneName);
-        if (boneName != null && Maud.model.target.bones.hasBone(boneName)) {
+        String sourceBoneName = Maud.getModel().getSource().bone.getName();
+        String boneName;
+        boneName = Maud.getModel().getMap().targetBoneName(sourceBoneName);
+        if (boneName != null && target.bones.hasBone(boneName)) {
             builder.addBone("Mapped");
         }
 
-        int numChildren = Maud.model.target.bone.countChildren();
+        int numChildren = target.bone.countChildren();
         if (numChildren == 1) {
             builder.addBone("Child");
         } else if (numChildren > 1) {
             builder.add("Child");
         }
 
-        boolean isSelected = Maud.model.target.bone.isSelected();
-        boolean isRoot = Maud.model.target.bone.isRootBone();
+        boolean isSelected = target.bone.isSelected();
+        boolean isRoot = target.bone.isRootBone();
         if (isSelected && !isRoot) {
             builder.addBone("Parent");
         }
@@ -1182,11 +1190,12 @@ public class BuildMenus {
      * Build a Keyframe menu.
      */
     private void buildKeyframeMenu() {
+        LoadedCgm target = Maud.getModel().target;
         builder.addTool("Tool");
-        if (Maud.model.target.bone.hasTrack()) {
-            if (!Maud.model.target.animation.isMoving()) {
+        if (target.bone.hasTrack()) {
+            if (!target.animation.isMoving()) {
                 builder.add("Select");
-                int frameIndex = Maud.model.target.track.findKeyframeIndex();
+                int frameIndex = target.track.findKeyframeIndex();
                 if (frameIndex == -1) {
                     builder.add("Insert from pose");
                 }
@@ -1206,7 +1215,7 @@ public class BuildMenus {
      */
     private void buildLocatorMenu() {
         builder.reset();
-        List<String> pathList = Maud.model.getLocations().listAll();
+        List<String> pathList = Maud.getModel().getLocations().listAll();
         for (String path : pathList) {
             if (path.endsWith(".jar")) {
                 builder.addJar(path);
@@ -1226,7 +1235,7 @@ public class BuildMenus {
         builder.reset();
         builder.addTool("Tool");
         builder.addDialog("Load");
-        if (Maud.model.getMap().countMappings() > 0) {
+        if (Maud.getModel().getMap().countMappings() > 0) {
             builder.add("Invert");
             builder.add("Unload");
         }
@@ -1261,7 +1270,7 @@ public class BuildMenus {
         builder.addTool("Tool");
         builder.add("Select");
         builder.add("Add");
-        if (Maud.model.target.sgc.isSelected()) {
+        if (Maud.getModel().target.sgc.isSelected()) {
             //builder.add("Deselect"); TODO
             builder.add("Delete");
         }
@@ -1271,17 +1280,18 @@ public class BuildMenus {
      * Build a "Bone -> Select source" menu.
      */
     private void buildSourceBoneSelectMenu() {
-        int numRoots = Maud.model.getSource().bones.countRootBones();
+        int numRoots = Maud.getModel().getSource().bones.countRootBones();
         if (numRoots == 1) {
             builder.addBone("Root");
         } else if (numRoots > 1) {
             builder.add("Root");
         }
 
-        String targetBoneName = Maud.model.target.bone.getName();
-        String boneName = Maud.model.getMap().sourceBoneName(targetBoneName);
+        String targetBoneName = Maud.getModel().target.bone.getName();
+        String boneName;
+        boneName = Maud.getModel().getMap().sourceBoneName(targetBoneName);
         if (boneName != null
-                && Maud.model.getSource().bones.hasBone(boneName)) {
+                && Maud.getModel().getSource().bones.hasBone(boneName)) {
             builder.addBone("Mapped");
         }
     }
@@ -1295,7 +1305,7 @@ public class BuildMenus {
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
-        if (!Maud.model.target.spatial.isCgmRoot()) {
+        if (!Maud.getModel().target.spatial.isCgmRoot()) {
             builder.addTool("Delete");
         }
         builder.addTool("User data tool");
@@ -1348,7 +1358,7 @@ public class BuildMenus {
      */
     private void buildViewMenu() {
         builder.add("Mode");
-        ViewMode viewMode = Maud.model.misc.getViewMode();
+        ViewMode viewMode = Maud.getModel().misc.getViewMode();
         if (viewMode.equals(ViewMode.Scene)
                 || viewMode.equals(ViewMode.Hybrid)) {
             builder.add("Scene options");

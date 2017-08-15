@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.EditableCgm;
 
 /**
  * The controller for the "Bone-Scale Tool" window in Maud's editor screen.
@@ -84,7 +85,8 @@ class BoneScaleTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (Maud.model.target.bone.shouldEnableControls()) {
+        EditableCgm target = Maud.getModel().target;
+        if (target.bone.shouldEnableControls()) {
             Vector3f scales = Maud.gui.readVectorBank("Sca");
             /*
              * Avoid scale factors near zero.
@@ -93,8 +95,8 @@ class BoneScaleTool extends WindowController {
             scales.y = Math.max(scales.y, 0.001f);
             scales.z = Math.max(scales.z, 0.001f);
 
-            int boneIndex = Maud.model.target.bone.getIndex();
-            Maud.model.target.pose.getPose().setScale(boneIndex, scales);
+            int boneIndex = target.bone.getIndex();
+            target.pose.getPose().setScale(boneIndex, scales);
         }
     }
     // *************************************************************************
@@ -129,9 +131,9 @@ class BoneScaleTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (Maud.model.target.bone.isSelected()) {
+        if (Maud.getModel().target.bone.isSelected()) {
             setSlidersToPose();
-            if (Maud.model.target.bone.shouldEnableControls()) {
+            if (Maud.getModel().target.bone.shouldEnableControls()) {
                 Maud.gui.setButtonLabel("resetScaAnimButton", "Animation");
                 Maud.gui.setButtonLabel("resetScaBindButton", "Bind pose");
                 enableSliders();
@@ -186,7 +188,7 @@ class BoneScaleTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        Vector3f vector = Maud.model.target.bone.userScale(null);
+        Vector3f vector = Maud.getModel().target.bone.userScale(null);
         float[] scales = vector.toArray(null);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {

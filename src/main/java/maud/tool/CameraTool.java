@@ -196,14 +196,14 @@ public class CameraTool
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        boolean parallel = Maud.model.camera.isParallelProjection();
+        boolean parallel = Maud.getModel().camera.isParallelProjection();
         if (parallel) {
             Maud.gui.setRadioButton("parallelRadioButton");
         } else {
             Maud.gui.setRadioButton("perspectiveRadioButton");
         }
 
-        boolean orbit = Maud.model.camera.isOrbitMode();
+        boolean orbit = Maud.getModel().camera.isOrbitMode();
         if (orbit) {
             Maud.gui.setRadioButton("orbitRadioButton");
         } else {

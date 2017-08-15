@@ -80,7 +80,7 @@ class CursorTool extends WindowController {
      */
     void onSliderChanged() {
         ColorRGBA color = Maud.gui.readColorBank("cursor");
-        Maud.model.cursor.setColor(color);
+        Maud.getModel().cursor.setColor(color);
     }
 
     /**
@@ -95,7 +95,7 @@ class CursorTool extends WindowController {
          * visibility
          */
         boolean wasVisible = (cursor != null);
-        boolean visible = Maud.model.cursor.isVisible();
+        boolean visible = Maud.getModel().cursor.isVisible();
         if (wasVisible && !visible) {
             sceneView.setCursor(null);
             cursor = null;
@@ -108,7 +108,7 @@ class CursorTool extends WindowController {
             /*
              * color
              */
-            ColorRGBA newColor = Maud.model.cursor.copyColor(null);
+            ColorRGBA newColor = Maud.getModel().cursor.copyColor(null);
             Material material = cursor.getMaterial();
             material.setColor("Color", newColor); // note: creates alias
             /*
@@ -138,10 +138,10 @@ class CursorTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        boolean visible = Maud.model.cursor.isVisible();
+        boolean visible = Maud.getModel().cursor.isVisible();
         Maud.gui.setChecked("3DCursor", visible);
 
-        ColorRGBA color = Maud.model.cursor.copyColor(null);
+        ColorRGBA color = Maud.getModel().cursor.copyColor(null);
         Maud.gui.setColorBank("cursor", color);
     }
     // *************************************************************************

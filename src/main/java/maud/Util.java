@@ -124,7 +124,7 @@ public class Util {
         }
         float[] times = new float[newCount];
 
-        Transform user = Maud.model.misc.interpolate(neckTime, oldTimes,
+        Transform user = Maud.getModel().misc.interpolate(neckTime, oldTimes,
                 oldDuration, oldTranslations, oldRotations, oldScales, null);
         translations[0] = user.getTranslation();
         rotations[0] = user.getRotation();
@@ -188,8 +188,8 @@ public class Util {
             /*
              * Interpolate between frames.
              */
-            Maud.model.misc.interpolate(time, times, duration, translations,
-                    rotations, scales, storeResult);
+            Maud.getModel().misc.interpolate(time, times, duration,
+                    translations, rotations, scales, storeResult);
         }
 
         return storeResult;

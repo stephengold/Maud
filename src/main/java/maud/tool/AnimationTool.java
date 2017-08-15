@@ -66,20 +66,21 @@ class AnimationTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        float duration = Maud.model.target.animation.getDuration();
+        LoadedCgm target = Maud.getModel().target;
+        float duration = target.animation.getDuration();
         float speed;
         if (duration > 0f) {
             Slider slider = Maud.gui.getSlider("speed");
             speed = slider.getValue();
-            Maud.model.target.animation.setSpeed(speed);
+            target.animation.setSpeed(speed);
         }
 
-        boolean moving = Maud.model.target.animation.isMoving();
+        boolean moving = target.animation.isMoving();
         if (!moving) {
             Slider slider = Maud.gui.getSlider("time");
             float fraction = slider.getValue();
             float time = fraction * duration;
-            Maud.model.target.animation.setTime(time);
+            target.animation.setTime(time);
         }
     }
     // *************************************************************************
@@ -97,13 +98,14 @@ class AnimationTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
+        LoadedCgm target = Maud.getModel().target;
         String hasTrackText;
-        if (!Maud.model.target.bone.isSelected()) {
+        if (!target.bone.isSelected()) {
             hasTrackText = "no bone";
-        } else if (!Maud.model.target.animation.isReal()) {
+        } else if (!target.animation.isReal()) {
             hasTrackText = "";
         } else {
-            if (Maud.model.target.bone.hasTrack()) {
+            if (target.bone.hasTrack()) {
                 hasTrackText = "has track";
             } else {
                 hasTrackText = "no track";
@@ -133,12 +135,12 @@ class AnimationTool extends WindowController {
         String nButton = "";
         String pButton = "";
 
-        LoadedCgm model = Maud.model.target;
-        if (model.countAnimControls() > 0) {
+        LoadedCgm target = Maud.getModel().target;
+        if (target.countAnimControls() > 0) {
             sButton = "Select AnimControl";
-            int numAnimControls = model.countAnimControls();
-            if (model.isAnimControlSelected()) {
-                int selectedIndex = model.findAnimControlIndex();
+            int numAnimControls = target.countAnimControls();
+            if (target.isAnimControlSelected()) {
+                int selectedIndex = target.findAnimControlIndex();
                 indexText = String.format("#%d of %d", selectedIndex + 1,
                         numAnimControls);
                 nButton = "+";
@@ -173,12 +175,12 @@ class AnimationTool extends WindowController {
         String nButton = "";
         String pButton = "";
 
-        LoadedCgm model = Maud.model.target;
-        if (model.isAnimControlSelected()) {
+        LoadedCgm target = Maud.getModel().target;
+        if (target.isAnimControlSelected()) {
             lButton = "Load";
-            int numAnimations = model.countAnimations();
-            if (model.animation.isReal()) {
-                int selectedIndex = model.animation.findIndex();
+            int numAnimations = target.countAnimations();
+            if (target.animation.isReal()) {
+                int selectedIndex = target.animation.findIndex();
                 indexText = String.format("#%d of %d", selectedIndex + 1,
                         numAnimations);
                 nButton = "+";
@@ -207,20 +209,20 @@ class AnimationTool extends WindowController {
      * Update the freeze/loop/pin/pong check boxes and the pause button label.
      */
     private void updateLooping() {
-        LoadedCgm model = Maud.model.target;
-        boolean frozen = model.pose.isFrozen();
+        LoadedCgm target = Maud.getModel().target;
+        boolean frozen = target.pose.isFrozen();
         Maud.gui.setChecked("freeze", frozen);
-        boolean looping = model.animation.willContinue();
+        boolean looping = target.animation.willContinue();
         Maud.gui.setChecked("loop", looping);
-        boolean pinned = model.animation.isPinned();
+        boolean pinned = target.animation.isPinned();
         Maud.gui.setChecked("pin", pinned);
-        boolean ponging = model.animation.willReverse();
+        boolean ponging = target.animation.willReverse();
         Maud.gui.setChecked("pong", ponging);
 
         String pButton = "";
-        float duration = model.animation.getDuration();
+        float duration = target.animation.getDuration();
         if (duration > 0f) {
-            boolean paused = model.animation.isPaused();
+            boolean paused = target.animation.isPaused();
             if (paused) {
                 pButton = "Resume";
             } else {
@@ -235,8 +237,8 @@ class AnimationTool extends WindowController {
      */
     private void updateName() {
         String nameText, rButton;
-        String name = Maud.model.target.animation.getName();
-        if (Maud.model.target.animation.isReal()) {
+        String name = Maud.getModel().target.animation.getName();
+        if (Maud.getModel().target.animation.isReal()) {
             nameText = MyString.quote(name);
             rButton = "Rename";
         } else {
@@ -251,7 +253,7 @@ class AnimationTool extends WindowController {
      * Update the speed slider and its status label.
      */
     private void updateSpeed() {
-        float duration = Maud.model.target.animation.getDuration();
+        float duration = Maud.getModel().target.animation.getDuration();
         Slider slider = Maud.gui.getSlider("speed");
         if (duration > 0f) {
             slider.enable();
@@ -259,7 +261,7 @@ class AnimationTool extends WindowController {
             slider.disable();
         }
 
-        float speed = Maud.model.target.animation.getSpeed();
+        float speed = Maud.getModel().target.animation.getSpeed();
         slider.setValue(speed);
         Maud.gui.updateSliderStatus("speed", speed, "x");
     }
@@ -268,11 +270,11 @@ class AnimationTool extends WindowController {
      * Update the track counts.
      */
     private void updateTrackCounts() {
-        int numBoneTracks = Maud.model.target.animation.countBoneTracks();
+        int numBoneTracks = Maud.getModel().target.animation.countBoneTracks();
         String boneTracksText = String.format("%d", numBoneTracks);
         Maud.gui.setStatusText("boneTracks", " " + boneTracksText);
 
-        int numTracks = Maud.model.target.animation.countTracks();
+        int numTracks = Maud.getModel().target.animation.countTracks();
         int numOtherTracks = numTracks - numBoneTracks;
         String otherTracksText = String.format("%d", numOtherTracks);
         Maud.gui.setStatusText("otherTracks", " " + otherTracksText);
@@ -282,12 +284,12 @@ class AnimationTool extends WindowController {
      * Update the track-time slider and its status label.
      */
     private void updateTrackTime() {
-        LoadedCgm model = Maud.model.target;
+        LoadedCgm target = Maud.getModel().target;
         /*
          * slider
          */
-        boolean moving = model.animation.isMoving();
-        float duration = model.animation.getDuration();
+        boolean moving = target.animation.isMoving();
+        float duration = target.animation.getDuration();
         Slider slider = Maud.gui.getSlider("time");
         if (duration == 0f || moving) {
             slider.disable();
@@ -300,7 +302,7 @@ class AnimationTool extends WindowController {
             trackTime = 0f;
             slider.setValue(0f);
         } else {
-            trackTime = model.animation.getTime();
+            trackTime = target.animation.getTime();
             float fraction = trackTime / duration;
             slider.setValue(fraction);
         }
@@ -308,7 +310,7 @@ class AnimationTool extends WindowController {
          * status label
          */
         String statusText;
-        if (model.animation.isReal()) {
+        if (target.animation.isReal()) {
             statusText = String.format("time = %.3f / %.3f sec",
                     trackTime, duration);
         } else {

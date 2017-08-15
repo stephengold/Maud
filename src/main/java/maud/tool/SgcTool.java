@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.LoadedCgm;
 
 /**
  * The controller for the "Control Tool" window in Maud's editor screen.
@@ -73,9 +74,9 @@ class SgcTool extends WindowController {
         updateIndex();
 
         String deleteLabel, typeText;
-        if (Maud.model.target.sgc.isSelected()) {
+        if (Maud.getModel().target.sgc.isSelected()) {
             deleteLabel = "Delete";
-            typeText = Maud.model.target.sgc.getType();
+            typeText = Maud.getModel().target.sgc.getType();
         } else {
             deleteLabel = "";
             typeText = "(none selected)";
@@ -93,9 +94,10 @@ class SgcTool extends WindowController {
         String indexText;
         String nButton, pButton;
 
-        int numSgcs = Maud.model.target.spatial.countSgcs();
-        if (Maud.model.target.sgc.isSelected()) {
-            int selectedIndex = Maud.model.target.sgc.getIndex();
+        LoadedCgm target = Maud.getModel().target;
+        int numSgcs = target.spatial.countSgcs();
+        if (target.sgc.isSelected()) {
+            int selectedIndex = target.sgc.getIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1, numSgcs);
             nButton = "+";
             pButton = "-";

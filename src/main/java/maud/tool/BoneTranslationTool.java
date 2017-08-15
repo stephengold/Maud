@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.EditableCgm;
 
 /**
  * The controller for the "Bone-Translation Tool" window in Maud's editor
@@ -103,14 +104,15 @@ class BoneTranslationTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        if (Maud.model.target.bone.shouldEnableControls()) {
+        EditableCgm target = Maud.getModel().target;
+        if (target.bone.shouldEnableControls()) {
             Vector3f offsets = Maud.gui.readVectorBank("Off");
 
             float masterScale = readScale();
             offsets.multLocal(masterScale);
 
-            int boneIndex = Maud.model.target.bone.getIndex();
-            Maud.model.target.pose.getPose().setTranslation(boneIndex, offsets);
+            int boneIndex = target.bone.getIndex();
+            target.pose.getPose().setTranslation(boneIndex, offsets);
         }
     }
     // *************************************************************************
@@ -146,9 +148,9 @@ class BoneTranslationTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (Maud.model.target.bone.isSelected()) {
+        if (Maud.getModel().target.bone.isSelected()) {
             setSlidersToPose();
-            if (Maud.model.target.bone.shouldEnableControls()) {
+            if (Maud.getModel().target.bone.shouldEnableControls()) {
                 Maud.gui.setButtonLabel("resetOffAnimButton", "Animation");
                 Maud.gui.setButtonLabel("resetOffBindButton", "Bind pose");
                 enableSliders();
@@ -215,7 +217,7 @@ class BoneTranslationTool extends WindowController {
      * Set all 4 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        Vector3f vector = Maud.model.target.bone.userTranslation(null);
+        Vector3f vector = Maud.getModel().target.bone.userTranslation(null);
         float[] offsets = vector.toArray(null);
 
         float scale = readScale();

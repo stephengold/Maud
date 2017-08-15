@@ -68,10 +68,10 @@ class SkeletonTool extends WindowController {
      */
     void onSliderChanged() {
         float lineWidth = Maud.gui.readSlider("skeletonLineWidth");
-        Maud.model.skeleton.setLineWidth(lineWidth);
+        Maud.getModel().skeleton.setLineWidth(lineWidth);
 
         float pointSize = Maud.gui.readSlider("skeletonPointSize");
-        Maud.model.skeleton.setPointSize(pointSize);
+        Maud.getModel().skeleton.setPointSize(pointSize);
     }
 
     /**
@@ -85,16 +85,16 @@ class SkeletonTool extends WindowController {
         if (visualizer == null) {
             return;
         }
-        SkeletonStatus model = Maud.model.skeleton;
+        SkeletonStatus status = Maud.getModel().skeleton;
 
-        boolean visible = model.isVisible();
+        boolean visible = status.isVisible();
         visualizer.setEnabled(visible);
 
-        float lineWidth = model.getLineWidth();
+        float lineWidth = status.getLineWidth();
         visualizer.setLineWidth(lineWidth);
 
         if (visualizer.supportsPointSize()) {
-            float pointSize = model.getPointSize();
+            float pointSize = status.getPointSize();
             visualizer.setPointSize(pointSize);
         }
     }
@@ -112,18 +112,18 @@ class SkeletonTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
-        SkeletonStatus model = Maud.model.skeleton;
+        SkeletonStatus status = Maud.getModel().skeleton;
 
-        boolean visible = model.isVisible();
+        boolean visible = status.isVisible();
         Maud.gui.setChecked("skeleton", visible);
 
-        float lineWidth = model.getLineWidth();
+        float lineWidth = status.getLineWidth();
         Slider slider = Maud.gui.getSlider("skeletonLineWidth");
         slider.setValue(lineWidth);
         lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("skeletonLineWidth", lineWidth, " pixels");
 
-        float pointSize = model.getPointSize();
+        float pointSize = status.getPointSize();
         slider = Maud.gui.getSlider("skeletonPointSize");
         slider.setValue(pointSize);
         pointSize = Math.round(pointSize);

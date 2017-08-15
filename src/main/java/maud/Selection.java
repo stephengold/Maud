@@ -256,15 +256,15 @@ public class Selection {
         assert bestBoneIndex >= 0 : bestBoneIndex;
 
         bestCgm.bone.select(bestBoneIndex);
-        if (Maud.model.target.animation.isRetargetedPose()) {
+        if (Maud.getModel().target.animation.isRetargetedPose()) {
             /*
              * Also select the mapped bone (if any).
              */
-            LoadedMap map = Maud.model.getMap();
-            if (bestCgm == Maud.model.getSource()
+            LoadedMap map = Maud.getModel().getMap();
+            if (bestCgm == Maud.getModel().getSource()
                     && map.isSourceBoneMapped(bestBoneIndex)) {
                 map.selectFromSource();
-            } else if (bestCgm == Maud.model.target
+            } else if (bestCgm == Maud.getModel().target
                     && map.isTargetBoneMapped(bestBoneIndex)) {
                 map.selectFromTarget();
             }

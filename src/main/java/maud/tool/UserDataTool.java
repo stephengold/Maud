@@ -88,8 +88,8 @@ class UserDataTool extends WindowController {
         String indexText;
         String nButton = "", pButton = "", sButton = "";
 
-        int numKeys = Maud.model.target.spatial.countUserKeys();
-        int selectedIndex = Maud.model.misc.findUserKeyIndex();
+        int numKeys = Maud.getModel().target.spatial.countUserKeys();
+        int selectedIndex = Maud.getModel().misc.findUserKeyIndex();
         if (selectedIndex >= 0) {
             indexText = String.format("#%d of %d", selectedIndex + 1, numKeys);
             if (numKeys > 1) {
@@ -120,7 +120,7 @@ class UserDataTool extends WindowController {
      */
     private void updateKey() {
         String dButton, keyText, rButton;
-        String key = Maud.model.misc.getSelectedUserKey();
+        String key = Maud.getModel().misc.getSelectedUserKey();
         if (key == null) {
             dButton = "";
             keyText = "(none selected)";
@@ -140,13 +140,14 @@ class UserDataTool extends WindowController {
      */
     private void updateValue() {
         String eButton, valueText;
-        String key = Maud.model.misc.getSelectedUserKey();
+
+        String key = Maud.getModel().misc.getSelectedUserKey();
         if (key == null) {
             eButton = "";
             valueText = "";
         } else {
             eButton = "Alter";
-            Object data = Maud.model.target.spatial.getUserData(key);
+            Object data = Maud.getModel().target.spatial.getUserData(key);
             if (data instanceof String) {
                 String string = (String) data;
                 valueText = MyString.quote(string);
@@ -154,6 +155,7 @@ class UserDataTool extends WindowController {
                 valueText = data.toString();
             }
         }
+
         Maud.gui.setStatusText("userValue", " " + valueText);
         Maud.gui.setButtonLabel("userDataEditButton", eButton);
     }

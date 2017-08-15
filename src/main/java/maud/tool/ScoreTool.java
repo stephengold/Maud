@@ -70,20 +70,20 @@ class ScoreTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
-        ScoreOptions model = Maud.model.getScore();
+        ScoreOptions scoreOptions = Maud.getModel().getScore();
         Maud.gui.setIgnoreGuiChanges(true);
 
-        boolean translations = model.showsTranslations();
+        boolean translations = scoreOptions.showsTranslations();
         Maud.gui.setChecked("scoreTranslations", translations);
 
-        boolean rotations = model.showsRotations();
+        boolean rotations = scoreOptions.showsRotations();
         Maud.gui.setChecked("scoreRotations", rotations);
 
-        boolean scales = model.showsScales();
+        boolean scales = scoreOptions.showsScales();
         Maud.gui.setChecked("scoreScales", scales);
 
         String niftyId;
-        String showWhenSelected = model.getShowWhenSelected();
+        String showWhenSelected = scoreOptions.getShowWhenSelected();
         switch (showWhenSelected) {
             case "all":
                 niftyId = "scoreWhenAllRadioButton";
@@ -102,7 +102,7 @@ class ScoreTool extends WindowController {
         }
         Maud.gui.setRadioButton(niftyId);
 
-        String showNoneSelected = model.getShowNoneSelected();
+        String showNoneSelected = scoreOptions.getShowNoneSelected();
         switch (showNoneSelected) {
             case "all":
                 niftyId = "scoreNoneAllRadioButton";

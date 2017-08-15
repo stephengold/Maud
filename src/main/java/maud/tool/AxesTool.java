@@ -150,7 +150,7 @@ public class AxesTool extends WindowController {
      */
     void onSliderChanged() {
         float lineWidth = Maud.gui.readSlider("axesLineWidth");
-        Maud.model.axes.setLineWidth(lineWidth);
+        Maud.getModel().axes.setLineWidth(lineWidth);
     }
 
     /**
@@ -198,8 +198,8 @@ public class AxesTool extends WindowController {
             assert maxScale > 0f : maxScale;
             float length = 0.2f * distance / maxScale;
 
-            boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
-            float lineWidth = Maud.model.axes.getLineWidth();
+            boolean depthTestFlag = Maud.getModel().axes.getDepthTestFlag();
+            float lineWidth = Maud.getModel().axes.getLineWidth();
 
             axesControl.setAxisLength(length);
             axesControl.setDepthTest(depthTestFlag);
@@ -221,10 +221,10 @@ public class AxesTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        boolean depthTestFlag = Maud.model.axes.getDepthTestFlag();
+        boolean depthTestFlag = Maud.getModel().axes.getDepthTestFlag();
         Maud.gui.setChecked("axesDepthTest", depthTestFlag);
 
-        float lineWidth = Maud.model.axes.getLineWidth();
+        float lineWidth = Maud.getModel().axes.getLineWidth();
         Slider slider = Maud.gui.getSlider("axesLineWidth");
         slider.setValue(lineWidth);
 
@@ -254,9 +254,9 @@ public class AxesTool extends WindowController {
             newUserRotation.normalizeLocal();
             pose.setRotation(boneIndex, newUserRotation);
 
-        } else if (cgm == Maud.model.target
+        } else if (cgm == Maud.getModel().target
                 && cgm.animation.isRetargetedPose()
-                && Maud.model.getMap().isBoneMappingSelected()) {
+                && Maud.getModel().getMap().isBoneMappingSelected()) {
             /*
              * Apply the rotation to the target bone in the displayed pose.
              */
@@ -265,17 +265,18 @@ public class AxesTool extends WindowController {
         }
 
         if (newUserRotation != null && !cgm.bone.shouldEnableControls()) {
-            assert Maud.model.target.animation.isRetargetedPose();
-            assert Maud.model.getMap().isBoneMappingSelected();
+            assert Maud.getModel().target.animation.isRetargetedPose();
+            assert Maud.getModel().getMap().isBoneMappingSelected();
             /*
              * Infer a new effective twist for the selected bone mapping.
              */
             Quaternion sourceMo;
-            sourceMo = Maud.model.getSource().bone.modelOrientation(null);
-            Quaternion targetMo = Maud.model.target.bone.modelOrientation(null);
+            sourceMo = Maud.getModel().getSource().bone.modelOrientation(null);
+            Quaternion targetMo;
+            targetMo = Maud.getModel().target.bone.modelOrientation(null);
             Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
             Quaternion newEffectiveTwist = invSourceMo.mult(targetMo);
-            Maud.model.getMap().setTwist(newEffectiveTwist);
+            Maud.getModel().getMap().setTwist(newEffectiveTwist);
         }
     }
 
@@ -300,7 +301,7 @@ public class AxesTool extends WindowController {
          * Determine which MVC-model object the control is visualizing,
          * and apply the rotation to that object.
          */
-        String mode = Maud.model.axes.getMode();
+        String mode = Maud.getModel().axes.getMode();
         switch (mode) {
             case "bone":
                 rotateBone(rotation, cgm);
@@ -340,7 +341,7 @@ public class AxesTool extends WindowController {
      * Update the status labels based on the MVC model.
      */
     private void updateLabels() {
-        float lineWidth = Maud.model.axes.getLineWidth();
+        float lineWidth = Maud.getModel().axes.getLineWidth();
         lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
     }
@@ -353,7 +354,7 @@ public class AxesTool extends WindowController {
      */
     private Transform worldTransform(LoadedCgm loadedCgm) {
         Transform transform = null;
-        String mode = Maud.model.axes.getMode();
+        String mode = Maud.getModel().axes.getMode();
         switch (mode) {
             case "bone":
                 if (loadedCgm.bone.isSelected()) {
@@ -382,7 +383,7 @@ public class AxesTool extends WindowController {
                 break;
 
             case "world":
-                if (loadedCgm == Maud.model.target) {
+                if (loadedCgm == Maud.getModel().target) {
                     transform = new Transform(); // identity
                 }
                 break;

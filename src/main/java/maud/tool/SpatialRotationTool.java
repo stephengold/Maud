@@ -93,7 +93,7 @@ class SpatialRotationTool extends WindowController {
         }
         Quaternion rot = new Quaternion();
         rot.fromAngles(angles);
-        Maud.model.target.setSpatialRotation(rot);
+        Maud.getModel().target.setSpatialRotation(rot);
     }
     // *************************************************************************
     // AppState methods
@@ -130,7 +130,7 @@ class SpatialRotationTool extends WindowController {
 
         setSlidersToTransform();
         String dButton;
-        if (Maud.model.misc.getAnglesInDegrees()) {
+        if (Maud.getModel().misc.getAnglesInDegrees()) {
             dButton = "radians";
         } else {
             dButton = "degrees";
@@ -147,9 +147,10 @@ class SpatialRotationTool extends WindowController {
      * of the selected spatial.
      */
     private void setSlidersToTransform() {
-        Quaternion rotation = Maud.model.target.spatial.localRotation(null);
+        Quaternion rotation;
+        rotation = Maud.getModel().target.spatial.localRotation(null);
         float[] angles = rotation.toAngles(null);
-        boolean degrees = Maud.model.misc.getAnglesInDegrees();
+        boolean degrees = Maud.getModel().misc.getAnglesInDegrees();
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float angle = angles[iAxis];

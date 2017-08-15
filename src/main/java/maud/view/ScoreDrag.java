@@ -75,10 +75,10 @@ public class ScoreDrag {
                 result = null;
                 break;
             case "source":
-                result = Maud.model.getSource();
+                result = Maud.getModel().getSource();
                 break;
             case "target":
-                result = Maud.model.target;
+                result = Maud.getModel().target;
                 break;
             default:
                 throw new IllegalStateException();
@@ -92,9 +92,9 @@ public class ScoreDrag {
      * @param cgm a loaded CG model, or null
      */
     public static void setDraggingGnomon(LoadedCgm cgm) {
-        if (cgm == Maud.model.target) {
+        if (cgm == Maud.getModel().target) {
             dragGnomon = "target";
-        } else if (cgm == Maud.model.getSource()) {
+        } else if (cgm == Maud.getModel().getSource()) {
             dragGnomon = "source";
         } else if (cgm == null) {
             dragGnomon = "none";

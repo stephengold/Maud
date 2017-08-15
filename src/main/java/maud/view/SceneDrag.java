@@ -114,9 +114,9 @@ public class SceneDrag {
     public static LoadedCgm getDragCgm() {
         assert isDraggingAxis();
         if (dragSourceCgm) {
-            return Maud.model.getSource();
+            return Maud.getModel().getSource();
         } else {
-            return Maud.model.target;
+            return Maud.getModel().target;
         }
     }
 
@@ -158,7 +158,7 @@ public class SceneDrag {
 
         dragAxisIndex = axisIndex;
         dragFarSide = farSideFlag;
-        if (cgm == Maud.model.getSource()) {
+        if (cgm == Maud.getModel().getSource()) {
             dragSourceCgm = true;
         } else {
             dragSourceCgm = false;

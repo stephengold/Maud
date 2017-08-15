@@ -31,6 +31,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.EditableCgm;
 
 /**
  * The controller for the "Model Tool" window in Maud's editor screen.
@@ -73,33 +74,34 @@ public class CgmTool extends WindowController {
         /*
          * name
          */
-        String name = Maud.model.target.getName();
+        EditableCgm target = Maud.getModel().target;
+        String name = target.getName();
         String nameDesc = MyString.quote(name);
         Maud.gui.setStatusText("cgmName", " " + nameDesc);
         /*
          * asset base path
          */
-        String assetPath = Maud.model.target.getAssetPath();
+        String assetPath = target.getAssetPath();
         String abpDesc = assetPath.isEmpty() ? "unknown"
                 : MyString.quote(assetPath);
         Maud.gui.setStatusText("cgmAbp", " " + abpDesc);
         /*
          * asset-folder path
          */
-        String assetFolder = Maud.model.target.getAssetFolder();
+        String assetFolder = target.getAssetFolder();
         String afDesc = assetFolder.isEmpty() ? "unknown"
                 : MyString.quote(assetFolder);
         Maud.gui.setStatusText("cgmAf", " " + afDesc);
         /*
          * asset/file extension
          */
-        String extDesc = Maud.model.target.getExtension();
+        String extDesc = target.getExtension();
         Maud.gui.setStatusText("cgmExt", extDesc);
         /*
          * pristine/edited status
          */
         String pristineDesc;
-        int editCount = Maud.model.target.countUnsavedEdits();
+        int editCount = target.countUnsavedEdits();
         if (editCount == 0) {
             pristineDesc = "pristine";
         } else if (editCount == 1) {
