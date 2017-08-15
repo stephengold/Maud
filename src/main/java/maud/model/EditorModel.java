@@ -98,13 +98,13 @@ public class EditorModel {
      */
     EditorModel(EditorModel other) {
         try {
-            assetLocations = other.assetLocations.clone();
-            targetCgmLoadSlot = other.targetCgmLoadSlot.clone();
-            mapLoadSlot = other.mapLoadSlot.clone();
-            sourceCgmLoadSlot = other.sourceCgmLoadSlot.clone();
-            misc = other.misc.clone();
-            sceneOptions = other.sceneOptions.clone();
-            scoreOptions = other.scoreOptions.clone();
+            assetLocations = other.getLocations().clone();
+            targetCgmLoadSlot = other.getTarget().clone();
+            mapLoadSlot = other.getMap().clone();
+            sourceCgmLoadSlot = other.getSource().clone();
+            misc = other.getMisc().clone();
+            sceneOptions = other.getScene().clone();
+            scoreOptions = other.getScore().clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException();
         }
