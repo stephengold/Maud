@@ -35,6 +35,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.EditableCgm;
+import maud.model.SelectedBone;
 
 /**
  * The controller for the "Bone-Scale Tool" window in Maud's editor screen.
@@ -85,7 +86,7 @@ class BoneScaleTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        EditableCgm target = Maud.getModel().target;
+        EditableCgm target = Maud.getModel().getTarget();
         if (target.bone.shouldEnableControls()) {
             Vector3f scales = Maud.gui.readVectorBank("Sca");
             /*
@@ -131,9 +132,10 @@ class BoneScaleTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (Maud.getModel().target.bone.isSelected()) {
+        SelectedBone bone = Maud.getModel().getTarget().bone;
+        if (bone.isSelected()) {
             setSlidersToPose();
-            if (Maud.getModel().target.bone.shouldEnableControls()) {
+            if (bone.shouldEnableControls()) {
                 Maud.gui.setButtonLabel("resetScaAnimButton", "Animation");
                 Maud.gui.setButtonLabel("resetScaBindButton", "Bind pose");
                 enableSliders();
@@ -188,7 +190,7 @@ class BoneScaleTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        Vector3f vector = Maud.getModel().target.bone.userScale(null);
+        Vector3f vector = Maud.getModel().getTarget().bone.userScale(null);
         float[] scales = vector.toArray(null);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {

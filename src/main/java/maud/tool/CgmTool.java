@@ -74,7 +74,7 @@ public class CgmTool extends WindowController {
         /*
          * name
          */
-        EditableCgm target = Maud.getModel().target;
+        EditableCgm target = Maud.getModel().getTarget();
         String name = target.getName();
         String nameDesc = MyString.quote(name);
         Maud.gui.setStatusText("cgmName", " " + nameDesc);

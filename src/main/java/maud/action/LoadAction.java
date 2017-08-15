@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.model.EditableCgm;
+import maud.model.EditorModel;
 import maud.model.LoadedCgm;
 
 /**
@@ -67,7 +68,7 @@ class LoadAction {
         boolean handled = true;
         switch (actionString) {
             case "load animation":
-                Maud.gui.menus.loadAnimation(Maud.getModel().target);
+                Maud.gui.menus.loadAnimation(Maud.getModel().getTarget());
                 break;
             case "load cgm":
                 Maud.gui.buildMenus.loadCgm();
@@ -76,7 +77,7 @@ class LoadAction {
                 Maud.gui.buildMenus.loadMapAsset();
                 break;
             case "load retargetedPose":
-                Maud.getModel().target.animation.loadRetargetedPose();
+                Maud.getModel().getTarget().animation.loadRetargetedPose();
                 break;
             case "load sourceAnimation":
                 Maud.gui.menus.loadAnimation(Maud.getModel().getSource());
@@ -101,8 +102,10 @@ class LoadAction {
      */
     private static boolean processPrefixes(String actionString) {
         boolean handled = true;
-        LoadedCgm source = Maud.getModel().getSource();
-        EditableCgm target = Maud.getModel().target;
+
+        EditorModel model = Maud.getModel();
+        LoadedCgm source = model.getSource();
+        EditableCgm target = model.getTarget();
         String args, name, path;
         if (actionString.startsWith(ActionPrefix.loadAnimation)) {
             args = MyString.remainder(actionString, ActionPrefix.loadAnimation);
@@ -122,8 +125,7 @@ class LoadAction {
             target.loadNamed(name);
 
         } else if (actionString.startsWith(ActionPrefix.loadMapAsset)) {
-            path = MyString.remainder(actionString,
-                    ActionPrefix.loadMapAsset);
+            path = MyString.remainder(actionString, ActionPrefix.loadMapAsset);
             Maud.gui.buildMenus.loadMapAsset(path);
 
         } else if (actionString.startsWith(ActionPrefix.loadMapLocator)) {
@@ -134,7 +136,7 @@ class LoadAction {
         } else if (actionString.startsWith(ActionPrefix.loadMapNamed)) {
             name = MyString.remainder(actionString,
                     ActionPrefix.loadMapNamed);
-            Maud.getModel().getMap().loadNamed(name);
+            model.getMap().loadNamed(name);
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceAnimation)) {
             args = MyString.remainder(actionString,

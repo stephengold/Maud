@@ -36,6 +36,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.EditableCgm;
+import maud.model.SelectedBone;
 
 /**
  * The controller for the "Bone-Translation Tool" window in Maud's editor
@@ -104,7 +105,7 @@ class BoneTranslationTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        EditableCgm target = Maud.getModel().target;
+        EditableCgm target = Maud.getModel().getTarget();
         if (target.bone.shouldEnableControls()) {
             Vector3f offsets = Maud.gui.readVectorBank("Off");
 
@@ -148,9 +149,10 @@ class BoneTranslationTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (Maud.getModel().target.bone.isSelected()) {
+        SelectedBone bone = Maud.getModel().getTarget().bone;
+        if (bone.isSelected()) {
             setSlidersToPose();
-            if (Maud.getModel().target.bone.shouldEnableControls()) {
+            if (bone.shouldEnableControls()) {
                 Maud.gui.setButtonLabel("resetOffAnimButton", "Animation");
                 Maud.gui.setButtonLabel("resetOffBindButton", "Bind pose");
                 enableSliders();
@@ -217,7 +219,8 @@ class BoneTranslationTool extends WindowController {
      * Set all 4 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        Vector3f vector = Maud.getModel().target.bone.userTranslation(null);
+        EditableCgm target = Maud.getModel().getTarget();
+        Vector3f vector = target.bone.userTranslation(null);
         float[] offsets = vector.toArray(null);
 
         float scale = readScale();

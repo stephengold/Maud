@@ -153,7 +153,7 @@ public class AnimationNameDialog implements DialogController {
     private static boolean isUsed(String name) {
         assert name != null;
 
-        if (Maud.getModel().target.hasAnimation(name)) {
+        if (Maud.getModel().getTarget().hasAnimation(name)) {
             return true;
         } else {
             return false;

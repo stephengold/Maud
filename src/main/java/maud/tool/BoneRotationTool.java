@@ -36,6 +36,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.LoadedCgm;
+import maud.model.SelectedBone;
 
 /**
  * The controller for the "Bone-Rotation Tool" window in Maud's editor screen.
@@ -86,7 +87,7 @@ class BoneRotationTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         if (target.bone.shouldEnableControls()) {
             float[] angles = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
@@ -134,9 +135,10 @@ class BoneRotationTool extends WindowController {
 
         String aButton = "";
         String bButton = "";
-        if (Maud.getModel().target.bone.isSelected()) {
+        SelectedBone bone = Maud.getModel().getTarget().bone;
+        if (bone.isSelected()) {
             setSlidersToPose();
-            if (Maud.getModel().target.bone.shouldEnableControls()) {
+            if (bone.shouldEnableControls()) {
                 aButton = "Animation";
                 bButton = "Bind pose";
                 enableSliders();
@@ -198,7 +200,8 @@ class BoneRotationTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        Quaternion rotation = Maud.getModel().target.bone.userRotation(null);
+        SelectedBone bone = Maud.getModel().getTarget().bone;
+        Quaternion rotation = bone.userRotation(null);
         float[] angles = rotation.toAngles(null);
         boolean degrees = Maud.getModel().misc.getAnglesInDegrees();
 

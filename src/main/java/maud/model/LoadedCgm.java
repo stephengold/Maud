@@ -508,7 +508,7 @@ public class LoadedCgm implements Cloneable {
     public List<String> listAnimationNames() {
         List<String> names = listAnimationsSorted();
         names.add(LoadedAnimation.bindPoseName);
-        if (this == Maud.getModel().target
+        if (this == Maud.getModel().getTarget()
                 && Maud.getModel().getSource().isLoaded()) {
             names.add(LoadedAnimation.retargetedPoseName);
         }
@@ -816,7 +816,7 @@ public class LoadedCgm implements Cloneable {
      * Unload the CG model.
      */
     public void unload() {
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         assert this != target; // not allowed to unload target
 
         assetFolder = null;

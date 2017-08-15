@@ -32,6 +32,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.EditableCgm;
 import maud.model.LoadedCgm;
+import maud.model.SelectedTrack;
 
 /**
  * The controller for the "Keyframe Tool" window in Maud's editor screen.
@@ -72,7 +73,7 @@ class KeyframeTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        EditableCgm target = Maud.getModel().target;
+        EditableCgm target = Maud.getModel().getTarget();
         String indexText, timeText;
         int numKeyframes = target.track.countKeyframes();
         if (numKeyframes == 0) {
@@ -122,8 +123,9 @@ class KeyframeTool extends WindowController {
         String sButton = "";
         String wButton = "";
 
-        if (Maud.getModel().target.track.isTrackSelected()) {
-            int index = Maud.getModel().target.track.findKeyframeIndex();
+        SelectedTrack track = Maud.getModel().getTarget().track;
+        if (track.isTrackSelected()) {
+            int index = track.findKeyframeIndex();
             if (index == -1) {
                 iButton = "Insert";
             } else if (index > 0) {
@@ -150,7 +152,7 @@ class KeyframeTool extends WindowController {
         String nextButton = "";
         String lastButton = "";
 
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         int numKeyframes = target.track.countKeyframes();
         if (numKeyframes > 0) {
             float time = target.animation.getTime();
@@ -180,7 +182,8 @@ class KeyframeTool extends WindowController {
      */
     private void updateTrackDescription() {
         String trackDescription;
-        LoadedCgm target = Maud.getModel().target;
+
+        LoadedCgm target = Maud.getModel().getTarget();
         if (!target.animation.isReal()) {
             trackDescription = "(load an animation)";
         } else if (target.bone.hasTrack()) {
@@ -193,6 +196,7 @@ class KeyframeTool extends WindowController {
         } else {
             trackDescription = "(select a bone)";
         }
+
         Maud.gui.setStatusText("trackDescription", " " + trackDescription);
     }
 
@@ -204,7 +208,7 @@ class KeyframeTool extends WindowController {
         String rotationCount = "";
         String scaleCount = "";
 
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         if (target.bone.hasTrack()) {
             int numOffsets = target.track.countTranslations();
             translationCount = String.format("%d", numOffsets);

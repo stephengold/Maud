@@ -74,7 +74,7 @@ class NewAction {
                 Maud.getModel().getMap().mapBones();
                 break;
             case "new singleKeyframe":
-                Maud.getModel().target.track.insertSingleKeyframe();
+                Maud.getModel().getTarget().track.insertSingleKeyframe();
                 break;
             case "new userKey":
                 Maud.gui.buildMenus.selectUserDataType();
@@ -105,7 +105,7 @@ class NewAction {
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromPose)) {
             String name = MyString.remainder(actionString,
                     ActionPrefix.newAnimationFromPose);
-            Maud.getModel().target.animation.poseAndLoad(name);
+            Maud.getModel().getTarget().animation.poseAndLoad(name);
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.newUserKey)) {
@@ -114,7 +114,7 @@ class NewAction {
             if (args.contains(" ")) {
                 String type = args.split(" ")[0];
                 String key = MyString.remainder(args, type + " ");
-                Maud.getModel().target.addUserKey(type, key);
+                Maud.getModel().getTarget().addUserKey(type, key);
             } else {
                 Maud.gui.dialogs.newUserKey(actionString + " ");
             }

@@ -47,6 +47,8 @@ import maud.Maud;
 import maud.Pose;
 import maud.model.AxesMode;
 import maud.model.EditableCgm;
+import maud.model.EditableMap;
+import maud.model.EditorModel;
 import maud.model.LoadedCgm;
 import maud.view.SceneDrag;
 
@@ -243,6 +245,9 @@ public class AxesTool extends WindowController {
     private void rotateBone(Quaternion rotation, LoadedCgm cgm) {
         int boneIndex = cgm.bone.getIndex();
         assert boneIndex != -1;
+        EditorModel model = Maud.getModel();
+        EditableMap map = model.getMap();
+        EditableCgm target = model.getTarget();
         Pose pose = cgm.pose.getPose();
         Quaternion oldUserRotation = pose.userRotation(boneIndex, null);
 
@@ -255,9 +260,9 @@ public class AxesTool extends WindowController {
             newUserRotation.normalizeLocal();
             pose.setRotation(boneIndex, newUserRotation);
 
-        } else if (cgm == Maud.getModel().target
+        } else if (cgm == target
                 && cgm.animation.isRetargetedPose()
-                && Maud.getModel().getMap().isBoneMappingSelected()) {
+                && map.isBoneMappingSelected()) {
             /*
              * Apply the rotation to the target bone in the displayed pose.
              */
@@ -266,18 +271,18 @@ public class AxesTool extends WindowController {
         }
 
         if (newUserRotation != null && !cgm.bone.shouldEnableControls()) {
-            assert Maud.getModel().target.animation.isRetargetedPose();
-            assert Maud.getModel().getMap().isBoneMappingSelected();
+            assert target.animation.isRetargetedPose();
+            assert map.isBoneMappingSelected();
             /*
              * Infer a new effective twist for the selected bone mapping.
              */
             Quaternion sourceMo;
-            sourceMo = Maud.getModel().getSource().bone.modelOrientation(null);
+            sourceMo = model.getSource().bone.modelOrientation(null);
             Quaternion targetMo;
-            targetMo = Maud.getModel().target.bone.modelOrientation(null);
+            targetMo = target.bone.modelOrientation(null);
             Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
             Quaternion newEffectiveTwist = invSourceMo.mult(targetMo);
-            Maud.getModel().getMap().setTwist(newEffectiveTwist);
+            map.setTwist(newEffectiveTwist);
         }
     }
 
@@ -380,7 +385,7 @@ public class AxesTool extends WindowController {
                 break;
 
             case World:
-                if (loadedCgm == Maud.getModel().target) {
+                if (loadedCgm == Maud.getModel().getTarget()) {
                     transform = new Transform(); // identity
                 }
                 break;

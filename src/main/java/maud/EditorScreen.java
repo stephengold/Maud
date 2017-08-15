@@ -59,9 +59,12 @@ import maud.menu.BuildMenus;
 import maud.menu.EditorMenus;
 import maud.model.AxesMode;
 import maud.model.Checkpoint;
+import maud.model.EditableCgm;
+import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedCgm;
 import maud.model.Pov;
+import maud.model.SelectedSpatial;
 import maud.tool.EditorTools;
 import maud.view.EditorView;
 import maud.view.SceneDrag;
@@ -180,7 +183,7 @@ public class EditorScreen extends GuiScreenController {
      */
     public LoadedCgm mouseCgm() {
         LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         ViewPort sScene = source.getSceneView().getViewPort();
         ViewPort sScore = source.getScoreView().getViewPort();
         ViewPort tScene = target.getSceneView().getViewPort();
@@ -212,7 +215,7 @@ public class EditorScreen extends GuiScreenController {
      */
     public Pov mousePov() {
         LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         EditorView sScene = source.getSceneView();
         EditorView sScore = source.getScoreView();
         EditorView tScene = target.getSceneView();
@@ -250,7 +253,7 @@ public class EditorScreen extends GuiScreenController {
      */
     public EditorView mouseView() {
         LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         EditorView sScene = source.getSceneView();
         EditorView sScore = source.getScoreView();
         EditorView tScene = target.getSceneView();
@@ -313,63 +316,65 @@ public class EditorScreen extends GuiScreenController {
             return;
         }
 
+        EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
         boolean isChecked = event.isChecked();
         String prefix = MyString.removeSuffix(boxId, "CheckBox");
         switch (prefix) {
             case "3DCursor":
-                Maud.getModel().cursor.setVisible(isChecked);
+                model.cursor.setVisible(isChecked);
                 break;
             case "axesDepthTest":
-                Maud.getModel().axes.setDepthTestFlag(isChecked);
+                model.axes.setDepthTestFlag(isChecked);
                 break;
             case "boundsDepthTest":
-                Maud.getModel().bounds.setDepthTestFlag(isChecked);
+                model.bounds.setDepthTestFlag(isChecked);
                 break;
             case "freeze":
-                Maud.getModel().target.pose.setFrozen(isChecked);
+                target.pose.setFrozen(isChecked);
                 break;
             case "invertRma":
             case "invertRma2":
-                Maud.getModel().getMap().setInvertMap(isChecked);
+                model.getMap().setInvertMap(isChecked);
                 break;
             case "loop":
-                Maud.getModel().target.animation.setContinue(isChecked);
+                target.animation.setContinue(isChecked);
                 break;
             case "loopSource":
                 Maud.getModel().getSource().animation.setContinue(isChecked);
                 break;
             case "physics":
-                Maud.getModel().scene.setPhysicsRendered(isChecked);
+                model.scene.setPhysicsRendered(isChecked);
                 break;
             case "pin":
-                Maud.getModel().target.animation.setPinned(isChecked);
+                target.animation.setPinned(isChecked);
                 break;
             case "pinSource":
                 Maud.getModel().getSource().animation.setPinned(isChecked);
                 break;
             case "pong":
-                Maud.getModel().target.animation.setReverse(isChecked);
+                target.animation.setReverse(isChecked);
                 break;
             case "pongSource":
                 Maud.getModel().getSource().animation.setReverse(isChecked);
                 break;
             case "scoreRotations":
-                Maud.getModel().getScore().setShowRotations(isChecked);
+                model.getScore().setShowRotations(isChecked);
                 break;
             case "scoreScales":
-                Maud.getModel().getScore().setShowScales(isChecked);
+                model.getScore().setShowScales(isChecked);
                 break;
             case "scoreTranslations":
-                Maud.getModel().getScore().setShowTranslations(isChecked);
+                model.getScore().setShowTranslations(isChecked);
                 break;
             case "shadows":
-                Maud.getModel().scene.setShadowsRendered(isChecked);
+                model.scene.setShadowsRendered(isChecked);
                 break;
             case "skeleton":
-                Maud.getModel().skeleton.setVisible(isChecked);
+                model.skeleton.setVisible(isChecked);
                 break;
             case "sky":
-                Maud.getModel().scene.setSkyRendered(isChecked);
+                model.scene.setSkyRendered(isChecked);
                 break;
             default:
                 logger.log(Level.WARNING, "check box with unknown id={0}",
@@ -521,11 +526,11 @@ public class EditorScreen extends GuiScreenController {
      * @param argument action argument (not null)
      */
     public void selectSpatialChild(String argument) {
-        List<String> children;
-        children = Maud.getModel().target.spatial.listNumberedChildren();
+        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        List<String> children = spatial.listNumberedChildren();
         int childIndex = children.indexOf(argument);
         if (childIndex >= 0) {
-            Maud.getModel().target.spatial.selectChild(childIndex);
+            spatial.selectChild(childIndex);
         } else {
             Maud.gui.buildMenus.selectSpatialChild(argument);
         }
@@ -653,7 +658,7 @@ public class EditorScreen extends GuiScreenController {
 
         super.initialize(stateManager, application);
 
-        Maud.getModel().target.loadNamed("Jaime");
+        Maud.getModel().getTarget().loadNamed("Jaime");
     }
 
     /**
@@ -670,7 +675,7 @@ public class EditorScreen extends GuiScreenController {
             return;
         }
         LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().target;
+        LoadedCgm target = Maud.getModel().getTarget();
         /*
          * Update animations even when the animation tool is disabled.
          */
