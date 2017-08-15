@@ -57,6 +57,7 @@ import maud.action.EditorInputMode;
 import maud.menu.BoneMenus;
 import maud.menu.BuildMenus;
 import maud.menu.EditorMenus;
+import maud.model.AxesMode;
 import maud.model.Checkpoint;
 import maud.model.History;
 import maud.model.LoadedCgm;
@@ -394,19 +395,19 @@ public class EditorScreen extends GuiScreenController {
 
         switch (buttonId) {
             case "boneAxesRadioButton":
-                Maud.getModel().axes.setMode("bone");
+                Maud.getModel().axes.setMode(AxesMode.Bone);
                 break;
             case "modelAxesRadioButton":
-                Maud.getModel().axes.setMode("model");
+                Maud.getModel().axes.setMode(AxesMode.Cgm);
                 break;
             case "spatialAxesRadioButton":
-                Maud.getModel().axes.setMode("spatial");
+                Maud.getModel().axes.setMode(AxesMode.Spatial);
                 break;
             case "worldAxesRadioButton":
-                Maud.getModel().axes.setMode("world");
+                Maud.getModel().axes.setMode(AxesMode.World);
                 break;
             case "hideAxesRadioButton":
-                Maud.getModel().axes.setMode("none");
+                Maud.getModel().axes.setMode(AxesMode.None);
                 break;
 
             case "flyRadioButton":

@@ -45,6 +45,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.Pose;
+import maud.model.AxesMode;
 import maud.model.EditableCgm;
 import maud.model.LoadedCgm;
 import maud.view.SceneDrag;
@@ -301,13 +302,13 @@ public class AxesTool extends WindowController {
          * Determine which MVC-model object the control is visualizing,
          * and apply the rotation to that object.
          */
-        String mode = Maud.getModel().axes.getMode();
+        AxesMode mode = Maud.getModel().axes.getMode();
         switch (mode) {
-            case "bone":
+            case Bone:
                 rotateBone(rotation, cgm);
                 break;
 
-            case "model":
+            case Cgm:
                 /*
                  * Apply the Y-axis rotation to the transform status.
                  */
@@ -315,7 +316,7 @@ public class AxesTool extends WindowController {
                 cgm.transform.rotateY(yRotation);
                 break;
 
-            case "spatial":
+            case Spatial:
                 if (cgm instanceof EditableCgm) {
                     EditableCgm ecgm = (EditableCgm) cgm;
                     /*
@@ -328,12 +329,8 @@ public class AxesTool extends WindowController {
                 }
                 break;
 
-            case "world":
-                // ignore attempts to drag the world axes
-                break;
-
-            default:
-                throw new IllegalStateException();
+            case World:
+            // ignore attempts to drag the world axes
         }
     }
 
@@ -354,9 +351,9 @@ public class AxesTool extends WindowController {
      */
     private Transform worldTransform(LoadedCgm loadedCgm) {
         Transform transform = null;
-        String mode = Maud.getModel().axes.getMode();
+        AxesMode mode = Maud.getModel().axes.getMode();
         switch (mode) {
-            case "bone":
+            case Bone:
                 if (loadedCgm.bone.isSelected()) {
                     transform = loadedCgm.bone.modelTransform(null);
                     // TODO use animated geometry
@@ -366,23 +363,23 @@ public class AxesTool extends WindowController {
                 }
                 break;
 
-            case "model":
+            case Cgm:
                 if (loadedCgm.isLoaded()) {
                     transform = loadedCgm.transform.worldTransform();
                 }
                 break;
 
-            case "none":
+            case None:
                 break;
 
-            case "spatial":
+            case Spatial:
                 if (loadedCgm.isLoaded()) {
                     Spatial spatial = loadedCgm.getSceneView().selectedSpatial();
                     transform = spatial.getWorldTransform();
                 }
                 break;
 
-            case "world":
+            case World:
                 if (loadedCgm == Maud.getModel().target) {
                     transform = new Transform(); // identity
                 }
