@@ -49,7 +49,6 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import maud.Maud;
 import maud.Util;
 import maud.view.SceneView;
 
@@ -907,6 +906,6 @@ public class SelectedSpatial implements Cloneable {
             loadedCgm.animation.loadBindPose();
         }
 
-        Maud.getModel().getMisc().selectUserKey(null);
+        loadedCgm.getUserData().selectKey(null);
     }
 }

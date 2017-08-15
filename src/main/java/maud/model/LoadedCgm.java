@@ -111,11 +111,11 @@ public class LoadedCgm implements Cloneable {
      */
     private ScoreView scoreView = null;
     /**
-     * which bone in selected in the CG model
+     * which bone is selected in the CGM's selected skeleton
      */
     public SelectedBone bone = new SelectedBone();
     /**
-     * which SG control is selected in the CG model
+     * which SG control is selected in the CGM's selected spatial
      */
     public SelectedSgc sgc = new SelectedSgc();
     /**
@@ -127,7 +127,7 @@ public class LoadedCgm implements Cloneable {
      */
     public SelectedSpatial spatial = new SelectedSpatial();
     /**
-     * which track is selected in the CG model
+     * which track is selected in the CGM's anim control
      */
     public SelectedTrack track = new SelectedTrack();
     /**
@@ -153,6 +153,10 @@ public class LoadedCgm implements Cloneable {
      * name of the CG model, or null if no CG model loaded
      */
     protected String name = null;
+    /**
+     * which user data is selected in the CGM's selected spatial
+     */
+    private UserData userData = new UserData();
     // *************************************************************************
     // constructors
 
@@ -169,6 +173,7 @@ public class LoadedCgm implements Cloneable {
         scorePov.setCgm(this);
         spatial.setCgm(this);
         track.setCgm(this);
+        userData.setCgm(this);
     }
     // *************************************************************************
     // new methods exposed
@@ -399,6 +404,16 @@ public class LoadedCgm implements Cloneable {
     public ScoreView getScoreView() {
         assert scoreView != null;
         return scoreView;
+    }
+
+    /**
+     * Access the selected user data.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public UserData getUserData() {
+        assert userData != null;
+        return userData;
     }
 
     /**
@@ -888,6 +903,7 @@ public class LoadedCgm implements Cloneable {
         clone.spatial = spatial.clone();
         clone.track = track.clone();
         clone.transform = transform.clone();
+        clone.userData = userData.clone();
         /*
          * Direct the back pointers to the clone.
          */
@@ -903,6 +919,7 @@ public class LoadedCgm implements Cloneable {
         clone.sgc.setCgm(clone);
         clone.spatial.setCgm(clone);
         clone.track.setCgm(clone);
+        clone.userData.setCgm(clone);
 
         return clone;
     }
