@@ -81,7 +81,7 @@ class CursorTool extends WindowController {
      */
     void onSliderChanged() {
         ColorRGBA color = Maud.gui.readColorBank("cursor");
-        Maud.getModel().scene.getCursor().setColor(color);
+        Maud.getModel().getScene().getCursor().setColor(color);
     }
 
     /**
@@ -96,7 +96,7 @@ class CursorTool extends WindowController {
          * visibility
          */
         boolean wasVisible = (cursor != null);
-        CursorStatus status = Maud.getModel().scene.getCursor();
+        CursorStatus status = Maud.getModel().getScene().getCursor();
         boolean visible = status.isVisible();
         if (wasVisible && !visible) {
             sceneView.setCursor(null);
@@ -140,7 +140,7 @@ class CursorTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        CursorStatus status = Maud.getModel().scene.getCursor();
+        CursorStatus status = Maud.getModel().getScene().getCursor();
         boolean visible = status.isVisible();
         Maud.gui.setChecked("3DCursor", visible);
 

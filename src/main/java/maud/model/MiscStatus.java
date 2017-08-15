@@ -187,8 +187,8 @@ public class MiscStatus implements Cloneable {
         Vector3f[] translations = boneTrack.getTranslations();
         Quaternion[] rotations = boneTrack.getRotations();
         Vector3f[] scales = boneTrack.getScales();
-        storeResult = Maud.getModel().misc.interpolate(time, times, duration,
-                translations, rotations, scales, storeResult);
+        storeResult = interpolate(time, times, duration, translations,
+                rotations, scales, storeResult);
 
         return storeResult;
     }

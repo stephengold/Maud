@@ -189,7 +189,7 @@ public class Util {
             /*
              * Interpolate between frames.
              */
-            Maud.getModel().misc.interpolate(time, times, duration,
+            Maud.getModel().getMisc().interpolate(time, times, duration,
                     translations, rotations, scales, storeResult);
         }
 

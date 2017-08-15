@@ -136,7 +136,7 @@ public class TwistTool extends WindowController {
          * the degrees/radians button
          */
         String dButton;
-        if (Maud.getModel().misc.getAnglesInDegrees()) {
+        if (Maud.getModel().getMisc().getAnglesInDegrees()) {
             dButton = "radians";
         } else {
             dButton = "degrees";
@@ -185,7 +185,7 @@ public class TwistTool extends WindowController {
     private void setSlidersToTwist() {
         Quaternion effTwist = Maud.getModel().getMap().copyTwist(null);
         float[] angles = effTwist.toAngles(null);
-        boolean degrees = Maud.getModel().misc.getAnglesInDegrees();
+        boolean degrees = Maud.getModel().getMisc().getAnglesInDegrees();
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float angle = angles[iAxis];

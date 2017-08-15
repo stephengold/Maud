@@ -154,7 +154,7 @@ public class AxesTool extends WindowController {
      */
     void onSliderChanged() {
         float lineWidth = Maud.gui.readSlider("axesLineWidth");
-        Maud.getModel().scene.getAxes().setLineWidth(lineWidth);
+        Maud.getModel().getScene().getAxes().setLineWidth(lineWidth);
     }
 
     /**
@@ -202,7 +202,7 @@ public class AxesTool extends WindowController {
             assert maxScale > 0f : maxScale;
             float length = 0.2f * distance / maxScale;
 
-            AxesStatus status = Maud.getModel().scene.getAxes();
+            AxesStatus status = Maud.getModel().getScene().getAxes();
             boolean depthTestFlag = status.getDepthTestFlag();
             float lineWidth = status.getLineWidth();
 
@@ -226,7 +226,7 @@ public class AxesTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        AxesStatus status = Maud.getModel().scene.getAxes();
+        AxesStatus status = Maud.getModel().getScene().getAxes();
         boolean depthTestFlag = status.getDepthTestFlag();
         Maud.gui.setChecked("axesDepthTest", depthTestFlag);
 
@@ -310,7 +310,7 @@ public class AxesTool extends WindowController {
          * Determine which MVC-model object the control is visualizing,
          * and apply the rotation to that object.
          */
-        AxesMode mode = Maud.getModel().scene.getAxes().getMode();
+        AxesMode mode = Maud.getModel().getScene().getAxes().getMode();
         switch (mode) {
             case Bone:
                 rotateBone(rotation, cgm);
@@ -346,7 +346,7 @@ public class AxesTool extends WindowController {
      * Update the status labels based on the MVC model.
      */
     private void updateLabels() {
-        float lineWidth = Maud.getModel().scene.getAxes().getLineWidth();
+        float lineWidth = Maud.getModel().getScene().getAxes().getLineWidth();
         lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
     }
@@ -359,7 +359,7 @@ public class AxesTool extends WindowController {
      */
     private Transform worldTransform(LoadedCgm loadedCgm) {
         Transform transform = null;
-        AxesMode mode = Maud.getModel().scene.getAxes().getMode();
+        AxesMode mode = Maud.getModel().getScene().getAxes().getMode();
         switch (mode) {
             case Bone:
                 if (loadedCgm.bone.isSelected()) {

@@ -164,7 +164,7 @@ public class EditableCgm extends LoadedCgm {
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         selectedSpatial.setUserData(key, data);
         setEdited("add user key");
-        Maud.getModel().misc.selectUserKey(key);
+        Maud.getModel().getMisc().selectUserKey(key);
     }
 
     /**
@@ -241,7 +241,7 @@ public class EditableCgm extends LoadedCgm {
      */
     void deleteUserKey() {
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
-        String key = Maud.getModel().misc.getSelectedUserKey();
+        String key = Maud.getModel().getMisc().getSelectedUserKey();
         selectedSpatial.setUserData(key, null);
         setEdited("delete user-data key");
     }
@@ -337,12 +337,12 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(newKey, "new key");
 
         Spatial sp = spatial.modelSpatial();
-        String oldKey = Maud.getModel().misc.getSelectedUserKey();
+        String oldKey = Maud.getModel().getMisc().getSelectedUserKey();
         Object data = sp.getUserData(oldKey);
         sp.setUserData(oldKey, null);
         sp.setUserData(newKey, data);
         setEdited("rename user key");
-        Maud.getModel().misc.selectUserKey(newKey);
+        Maud.getModel().getMisc().selectUserKey(newKey);
     }
 
     /**
@@ -508,7 +508,7 @@ public class EditableCgm extends LoadedCgm {
     public void setUserData(String valueString) {
         Validate.nonNull(valueString, "value string");
 
-        String key = Maud.getModel().misc.getSelectedUserKey();
+        String key = Maud.getModel().getMisc().getSelectedUserKey();
         Spatial sp = spatial.modelSpatial();
         Object data = spatial.getUserData(key);
         if (data instanceof Boolean) {

@@ -168,19 +168,19 @@ class SetAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenRotations);
             TweenRotations value = TweenRotations.valueOf(arg);
-            model.misc.setTweenRotations(value);
+            model.getMisc().setTweenRotations(value);
 
         } else if (actionString.startsWith(ActionPrefix.setTweenScales)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenScales);
             TweenVectors value = TweenVectors.valueOf(arg);
-            model.misc.setTweenScales(value);
+            model.getMisc().setTweenScales(value);
 
         } else if (actionString.startsWith(ActionPrefix.setTweenTranslations)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenTranslations);
             TweenVectors value = TweenVectors.valueOf(arg);
-            model.misc.setTweenTranslations(value);
+            model.getMisc().setTweenTranslations(value);
 
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);

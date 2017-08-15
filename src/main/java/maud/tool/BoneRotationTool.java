@@ -154,7 +154,7 @@ class BoneRotationTool extends WindowController {
         Maud.gui.setButtonLabel("resetAngBindButton", bButton);
 
         String dButton;
-        if (Maud.getModel().misc.getAnglesInDegrees()) {
+        if (Maud.getModel().getMisc().getAnglesInDegrees()) {
             dButton = "radians";
         } else {
             dButton = "degrees";
@@ -203,7 +203,7 @@ class BoneRotationTool extends WindowController {
         SelectedBone bone = Maud.getModel().getTarget().bone;
         Quaternion rotation = bone.userRotation(null);
         float[] angles = rotation.toAngles(null);
-        boolean degrees = Maud.getModel().misc.getAnglesInDegrees();
+        boolean degrees = Maud.getModel().getMisc().getAnglesInDegrees();
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float angle = angles[iAxis];

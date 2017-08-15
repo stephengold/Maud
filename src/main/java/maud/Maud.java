@@ -271,7 +271,7 @@ public class Maud extends GuiApplication {
     void updateViewPorts() {
         boolean splitScreen = editorModel.getSource().isLoaded();
 
-        ViewMode viewMode = editorModel.misc.getViewMode();
+        ViewMode viewMode = editorModel.getMisc().getViewMode();
         switch (viewMode) {
             case Hybrid:
                 sourceSceneViewPort.setEnabled(false);

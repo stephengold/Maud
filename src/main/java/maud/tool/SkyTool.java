@@ -77,7 +77,7 @@ class SkyTool extends WindowController {
      */
     void updateSkyControl(LoadedCgm cgm) {
         SkyControl sky = cgm.getSceneView().getSkyControl();
-        boolean enable = Maud.getModel().scene.isSkyRendered();
+        boolean enable = Maud.getModel().getScene().isSkyRendered();
         sky.setEnabled(enable);
         sky.setCloudiness(0.5f);
         sky.getSunAndStars().setHour(11f);
@@ -100,7 +100,7 @@ class SkyTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        boolean renderFlag = Maud.getModel().scene.isSkyRendered();
+        boolean renderFlag = Maud.getModel().getScene().isSkyRendered();
         Maud.gui.setChecked("sky", renderFlag);
     }
 }

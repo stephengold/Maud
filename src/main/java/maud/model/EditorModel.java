@@ -49,7 +49,7 @@ public class EditorModel {
     /**
      * list of known asset locations
      */
-    final private AssetLocations locations;
+    final private AssetLocations assetLocations;
     /**
      * load slot for the (editable) target (main) CG model
      */
@@ -63,17 +63,17 @@ public class EditorModel {
      */
     final private LoadedCgm sourceCgmLoadSlot;
     /**
-     * miscellaneous status
+     * miscellaneous options
      */
-    final public MiscStatus misc;
+    final private MiscStatus misc;
     /**
      * options for "scene" views
      */
-    final public SceneOptions scene;
+    final private SceneOptions sceneOptions;
     /**
      * options for "score" views
      */
-    final private ScoreOptions score;
+    final private ScoreOptions scoreOptions;
     // *************************************************************************
     // constructors
 
@@ -81,13 +81,13 @@ public class EditorModel {
      * Instantiate an MVC model with the default settings.
      */
     public EditorModel() {
-        locations = new AssetLocations();
+        assetLocations = new AssetLocations();
         targetCgmLoadSlot = new EditableCgm();
         mapLoadSlot = new EditableMap();
         sourceCgmLoadSlot = new LoadedCgm();
         misc = new MiscStatus();
-        scene = new SceneOptions();
-        score = new ScoreOptions();
+        sceneOptions = new SceneOptions();
+        scoreOptions = new ScoreOptions();
     }
 
     /**
@@ -98,13 +98,13 @@ public class EditorModel {
      */
     EditorModel(EditorModel other) {
         try {
-            locations = other.locations.clone();
+            assetLocations = other.assetLocations.clone();
             targetCgmLoadSlot = other.targetCgmLoadSlot.clone();
             mapLoadSlot = other.mapLoadSlot.clone();
             sourceCgmLoadSlot = other.sourceCgmLoadSlot.clone();
             misc = other.misc.clone();
-            scene = other.scene.clone();
-            score = other.score.clone();
+            sceneOptions = other.sceneOptions.clone();
+            scoreOptions = other.scoreOptions.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException();
         }
@@ -118,8 +118,8 @@ public class EditorModel {
      * @return the pre-existing instance (not null)
      */
     public AssetLocations getLocations() {
-        assert locations != null;
-        return locations;
+        assert assetLocations != null;
+        return assetLocations;
     }
 
     /**
@@ -133,13 +133,33 @@ public class EditorModel {
     }
 
     /**
+     * Access the load slot for the skeleton map.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public MiscStatus getMisc() {
+        assert misc != null;
+        return misc;
+    }
+
+    /**
+     * Access the options for "scene" views.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SceneOptions getScene() {
+        assert sceneOptions != null;
+        return sceneOptions;
+    }
+
+    /**
      * Access the options for "score" views.
      *
      * @return the pre-existing instance (not null)
      */
     public ScoreOptions getScore() {
-        assert score != null;
-        return score;
+        assert scoreOptions != null;
+        return scoreOptions;
     }
 
     /**

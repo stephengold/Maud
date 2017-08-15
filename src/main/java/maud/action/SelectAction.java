@@ -183,7 +183,7 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectUserKey)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectUserKey);
-            model.misc.selectUserKey(arg);
+            model.getMisc().selectUserKey(arg);
 
         } else {
             handled = false;
