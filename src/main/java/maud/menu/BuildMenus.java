@@ -44,7 +44,6 @@ import maud.TweenRotations;
 import maud.TweenVectors;
 import maud.action.ActionPrefix;
 import maud.model.EditableCgm;
-import maud.model.EditorModel;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.MiscStatus;

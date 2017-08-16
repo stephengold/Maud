@@ -477,7 +477,7 @@ public class EditorTools {
      * Scene updates performed even when all tools are disabled. (Invoked once
      * per render pass for each CG model that's rendered to a scene view.)
      *
-     * @param loadedCgm which CG model is being rendered (not null)
+     * @param loadedCgm which CG model occupies the scene to update (not null)
      */
     public void updateScene(LoadedCgm loadedCgm) {
         Validate.nonNull(loadedCgm, "loaded model");
