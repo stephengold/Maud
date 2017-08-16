@@ -233,6 +233,7 @@ public class SelectedSgc implements Cloneable {
      */
     public void select(String newName) {
         Validate.nonNull(newName, "name");
+
         if (newName.equals(LoadedCgm.noControl)) {
             selectNone();
         } else {

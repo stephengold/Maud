@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * Properties of 3D cursors in scene views.  TODO rename DddCursor
+ * Properties of 3D cursors in scene views. TODO rename DddCursor
  *
  * @author Stephen Gold sgold@sonic.net
  */
