@@ -597,7 +597,7 @@ public class EditableCgm extends LoadedCgm {
     protected void postLoad(Spatial cgmRoot) {
         assert cgmRoot != null;
 
-        String eventDescription = "load model " + name;
+        String eventDescription = "load model named " + MyString.quote(name);
         setPristine(eventDescription);
 
         repair(cgmRoot);
