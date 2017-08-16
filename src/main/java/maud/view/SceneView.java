@@ -745,21 +745,21 @@ public class SceneView implements EditorView, JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        ambientLight = cloner.clone(ambientLight);
+        // ambientLight not cloned: shared
         animControl = cloner.clone(animControl);
-        axesVisualizer = cloner.clone(axesVisualizer);
-        boundsVisualizer = cloner.clone(boundsVisualizer);
+        // axesVisualizernot cloned: shared
+        // boundsVisualizer not cloned: shared
         // bulletAppState not cloned: shared
         // cgm not cloned: set later
         cgmRoot = cloner.clone(cgmRoot);
-        cursor = cloner.clone(cursor);
-        mainLight = cloner.clone(mainLight);
+        // cursor not cloned: shared
+        // mainLight not cloned: shared
         // parent not cloned: shared
-        platform = cloner.clone(platform);
+        // platform not cloned: shared
         skeleton = cloner.clone(skeleton);
         skeletonControl = cloner.clone(skeletonControl);
         skeletonVisualizer = cloner.clone(skeletonVisualizer);
-        skyControl = cloner.clone(skyControl);
+        // skyControl not cloned: shared
         // viewPort1, viewPort2 not cloned: shared
     }
 
