@@ -135,8 +135,8 @@ public class LoadedCgm implements Cloneable {
      */
     protected Spatial rootSpatial = null;
     /**
-     * absolute filesystem path to asset folder, or "" if unknown, or null if no
-     * CG model loaded
+     * absolute filesystem path to asset location, or "" if unknown, or null if
+     * no CG model loaded
      */
     protected String assetFolder = null;
     /**
@@ -912,14 +912,14 @@ public class LoadedCgm implements Cloneable {
         clone.bones.setCgm(clone);
         clone.pose.setCgm(clone);
         clone.scenePov.setCgm(clone);
-        if (clone.sceneView != null) {
-            clone.sceneView.setCgm(clone);
+        if (clone.getSceneView() != null) {
+            clone.getSceneView().setCgm(clone);
         }
         clone.scorePov.setCgm(clone);
         clone.sgc.setCgm(clone);
         clone.spatial.setCgm(clone);
         clone.track.setCgm(clone);
-        clone.userData.setCgm(clone);
+        clone.getUserData().setCgm(clone);
 
         return clone;
     }
