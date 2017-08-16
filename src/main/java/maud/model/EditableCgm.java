@@ -94,6 +94,7 @@ public class EditableCgm extends LoadedCgm {
         assert newAnimation != null;
         assert !hasAnimation(newAnimation.getName());
 
+        History.autoAdd();
         AnimControl control = getAnimControl();
         if (control == null) {
             Boolean selectedSpatialFlag = false;
@@ -119,6 +120,7 @@ public class EditableCgm extends LoadedCgm {
     void addSgc(Control newSgc) {
         assert newSgc != null;
 
+        History.autoAdd();
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         if (newSgc instanceof PhysicsControl) {
             PhysicsControl physicsControl = (PhysicsControl) newSgc;
@@ -162,8 +164,12 @@ public class EditableCgm extends LoadedCgm {
         byte objectType = UserData.getObjectType(object);
         UserData data = new UserData(objectType, object);
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
+
+        History.autoAdd();
         selectedSpatial.setUserData(key, data);
-        setEdited("add user key");
+        String description;
+        description = String.format("add user key %s", MyString.quote(key));
+        setEdited(description);
         getUserData().selectKey(key);
     }
 
@@ -197,21 +203,27 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete the loaded animation.
+     * Delete the loaded animation. The invoker is responsible for loading a
+     * different animation.
      */
     void deleteAnimation() {
         Animation loadedAnimation = animation.getAnimation();
         AnimControl animControl = getAnimControl();
+
+        History.autoAdd();
         animControl.removeAnim(loadedAnimation);
         setEdited("delete animation");
     }
 
     /**
-     * Delete the selected control.
+     * Delete the selected control. The invoker is responsible for deselecting
+     * the SGC.
      */
     void deleteSgc() {
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         Control selectedSgc = sgc.findSgc(rootSpatial);
+
+        History.autoAdd();
         if (selectedSgc instanceof PhysicsControl) {
             PhysicsControl pc = (PhysicsControl) selectedSgc;
             int position = Util.pcToPosition(selectedSpatial, pc);
@@ -224,11 +236,14 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete the selected spatial.
+     * Delete the selected spatial. The invoker is responsible for deselecting
+     * the spatial.
      */
     void deleteSpatial() {
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         Node parent = selectedSpatial.getParent();
+
+        History.autoAdd();
         int position = parent.detachChild(selectedSpatial);
         assert position != -1;
         SceneView sceneView = getSceneView();
@@ -237,13 +252,18 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete the selected user-data key from the selected spatial.
+     * Delete the selected user data from the selected spatial. The invoker is
+     * responsible for deselecting the user data. TODO rename deleteUserData
      */
     void deleteUserKey() {
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         String key = getUserData().getKey();
+
+        History.autoAdd();
         selectedSpatial.setUserData(key, null);
-        setEdited("delete user-data key");
+        String description;
+        description = String.format("delete user data %s", MyString.quote(key));
+        setEdited(description);
     }
 
     /**
@@ -286,6 +306,7 @@ public class EditableCgm extends LoadedCgm {
 
         } else {
             Bone selectedBone = bone.getBone();
+            History.autoAdd();
             success = MySkeleton.setName(selectedBone, newName);
         }
 
@@ -320,6 +341,8 @@ public class EditableCgm extends LoadedCgm {
 
         } else {
             Spatial selectedSpatial = spatial.modelSpatial();
+
+            History.autoAdd();
             selectedSpatial.setName(newName);
             success = true;
             setEdited("rename spatial");
@@ -329,9 +352,9 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Rename the selected user key.
+     * Rename the selected user-data key.
      *
-     * @param newKey name for the new key (not null)
+     * @param newKey new key name (not null)
      */
     public void renameUserKey(String newKey) {
         Validate.nonNull(newKey, "new key");
@@ -339,9 +362,12 @@ public class EditableCgm extends LoadedCgm {
         Spatial sp = spatial.modelSpatial();
         String oldKey = getUserData().getKey();
         Object data = sp.getUserData(oldKey);
+
+        History.autoAdd();
         sp.setUserData(oldKey, null);
         sp.setUserData(newKey, data);
-        setEdited("rename user key");
+        setEdited("rename user-data key");
+
         getUserData().selectKey(newKey);
     }
 
@@ -359,6 +385,8 @@ public class EditableCgm extends LoadedCgm {
         assert eventDescription != null;
 
         AnimControl animControl = getAnimControl();
+
+        History.autoAdd();
         animControl.removeAnim(oldAnimation);
         animControl.addAnim(newAnimation);
         setEdited(eventDescription);
@@ -375,7 +403,9 @@ public class EditableCgm extends LoadedCgm {
         Spatial modelSpatial = spatial.underRoot(rootSpatial);
         Spatial.BatchHint oldHint = modelSpatial.getLocalBatchHint();
         if (oldHint != newHint) {
+            History.autoAdd();
             modelSpatial.setBatchHint(newHint);
+            // scene view not updated
             setEdited("change batch hint");
         }
     }
@@ -391,9 +421,10 @@ public class EditableCgm extends LoadedCgm {
         Spatial modelSpatial = spatial.underRoot(rootSpatial);
         Spatial.CullHint oldHint = modelSpatial.getLocalCullHint();
         if (oldHint != newHint) {
+            History.autoAdd();
             modelSpatial.setCullHint(newHint);
-            setEdited("change cull hint");
             getSceneView().setCullHint(newHint);
+            setEdited("change cull hint");
         }
     }
 
@@ -413,6 +444,8 @@ public class EditableCgm extends LoadedCgm {
         assert rotations != null;
 
         BoneTrack boneTrack = track.findTrack();
+
+        History.autoAdd();
         if (scales == null) {
             boneTrack.setKeyframes(times, translations, rotations);
         } else {
@@ -422,19 +455,20 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Alter the queue bucket of the selected spatial.
+     * Alter the render-queue bucket of the selected spatial.
      *
      * @param newBucket new value for queue bucket (not null)
      */
     public void setQueueBucket(RenderQueue.Bucket newBucket) {
-        Validate.nonNull(newBucket, "queue bucket");
+        Validate.nonNull(newBucket, "new bucket");
 
         Spatial modelSpatial = spatial.underRoot(rootSpatial);
         RenderQueue.Bucket oldBucket = modelSpatial.getLocalQueueBucket();
         if (oldBucket != newBucket) {
+            History.autoAdd();
             modelSpatial.setQueueBucket(newBucket);
             getSceneView().setQueueBucket(newBucket);
-            setEdited("change queue bucket");
+            setEdited("change render-queue bucket");
         }
     }
 
@@ -444,11 +478,12 @@ public class EditableCgm extends LoadedCgm {
      * @param newMode new value for shadow mode (not null)
      */
     public void setShadowMode(RenderQueue.ShadowMode newMode) {
-        Validate.nonNull(newMode, "shadow mode");
+        Validate.nonNull(newMode, "new mode");
 
         Spatial modelSpatial = spatial.underRoot(rootSpatial);
         RenderQueue.ShadowMode oldMode = modelSpatial.getLocalShadowMode();
         if (oldMode != newMode) {
+            History.autoAdd();
             modelSpatial.setShadowMode(newMode);
             getSceneView().setMode(newMode);
             setEdited("change shadow mode");
@@ -511,6 +546,8 @@ public class EditableCgm extends LoadedCgm {
         String key = getUserData().getKey();
         Spatial sp = spatial.modelSpatial();
         Object data = spatial.getUserData(key);
+
+        History.autoAdd();
         if (data instanceof Boolean) {
             boolean valueBoolean = Boolean.parseBoolean(valueString);
             sp.setUserData(key, valueBoolean);
@@ -530,6 +567,7 @@ public class EditableCgm extends LoadedCgm {
         } else if (data instanceof String) {
             sp.setUserData(key, valueString);
         }
+        setEdited("alter user data");
     }
 
     /**
@@ -698,6 +736,7 @@ public class EditableCgm extends LoadedCgm {
     private void setEditedSpatialTransform() {
         String newString = spatial.toString();
         if (!newString.equals(editedSpatialTransform)) {
+            History.autoAdd();
             ++editCount;
             editedSpatialTransform = newString;
             History.addEvent("transform spatial");

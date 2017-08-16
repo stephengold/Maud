@@ -30,7 +30,6 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetKey;
-import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
@@ -38,7 +37,9 @@ import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.ui.Locators;
@@ -73,7 +74,7 @@ public class LoadedMap implements Cloneable {
      */
     protected SkeletonMapping map = new SkeletonMapping();
     /**
-     * absolute filesystem path to asset folder, or "" if unknown
+     * absolute filesystem path to asset location, or "" if unknown
      */
     protected String assetFolder = "";
     /**
@@ -297,28 +298,28 @@ public class LoadedMap implements Cloneable {
     /**
      * Unload the current map and load from the specified asset.
      *
-     * @param assetFolder file path to the asset root (not null, not empty)
-     * @param assetPath path to the asset to load (not null, not empty)
+     * @param location file path to the asset root (not null, not empty)
+     * @param path path to the asset to load (not null, not empty)
      * @return true if successful, otherwise false
      */
-    public boolean loadAsset(String assetFolder, String assetPath) {
-        Validate.nonEmpty(assetFolder, "asset folder");
-        Validate.nonEmpty(assetPath, "asset path");
+    public boolean loadAsset(String location, String path) {
+        Validate.nonEmpty(location, "location");
+        Validate.nonEmpty(path, "path");
 
-        AssetManager assetManager = Locators.getAssetManager();
-        AssetKey<SkeletonMapping> key = new AssetKey<>(assetPath);
+        Locators.save();
+        Locators.useFilesystem(location);
+        SkeletonMapping loaded = loadFromAsset(path, false);
+        Locators.restore();
 
         boolean success;
-        Locators.useFilesystem(assetFolder);
-        try {
-            map = assetManager.loadAsset(key);
-            this.assetFolder = assetFolder;
-            this.assetPath = assetPath;
-            success = true;
-        } catch (AssetLoadException exception) {
+        if (loaded == null) {
             success = false;
+        } else {
+            success = true;
+            map = loaded;
+            assetFolder = location;
+            assetPath = path;
         }
-        Locators.useDefault();
 
         return success;
     }
@@ -333,16 +334,20 @@ public class LoadedMap implements Cloneable {
         Validate.nonEmpty(mapName, "map name");
 
         String path = String.format("SkeletonMaps/%s.j3o", mapName);
-        AssetManager assetManager = Locators.getAssetManager();
-        AssetKey<SkeletonMapping> key = new AssetKey<>(path);
+
+        Locators.save();
+        Locators.useDefault();
+        SkeletonMapping loaded = loadFromAsset(path, false);
+        Locators.restore();
+
         boolean success;
-        try {
-            map = assetManager.loadAsset(key);
+        if (loaded == null) {
+            success = false;
+        } else {
+            success = true;
+            map = loaded;
             assetFolder = "";
             assetPath = path;
-            success = true;
-        } catch (AssetLoadException exception) {
-            success = false;
         }
 
         return success;
@@ -617,6 +622,40 @@ public class LoadedMap implements Cloneable {
         Collections.sort(result);
 
         return result;
+    }
+
+    /**
+     * Quietly load a skeleton map asset from persistent storage without
+     * installing it.
+     *
+     * @param assetPath (not null)
+     * @return a skeleton map, or null if the asset had errors
+     */
+    private SkeletonMapping loadFromAsset(String assetPath, boolean useCache) {
+        AssetManager assetManager = Locators.getAssetManager();
+        /*
+         * Load the skeleton map quietly.
+         */
+        AssetKey<SkeletonMapping> key = new AssetKey<>(assetPath);
+        if (!useCache) {
+            /*
+                 * Delete the key from the asset manager's cache in order
+                 * to force a fresh load from persistent storage.
+             */
+            assetManager.deleteFromCache(key);
+        }
+
+        SkeletonMapping loaded = Util.loadMapAsset(assetManager, assetPath);
+        if (loaded == null) {
+            logger.log(Level.SEVERE, "Failed to load map from asset {0}",
+                    MyString.quote(assetPath));
+        } else {
+            logger.log(Level.INFO, "Loaded map from asset {0}",
+                    MyString.quote(assetPath));
+            History.autoAdd();
+        }
+
+        return loaded;
     }
 
     /**

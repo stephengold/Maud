@@ -52,6 +52,11 @@ public class History {
     // fields
 
     /**
+     * true&rarr;add a checkpoint before each edit/unload, false&rarr; add a
+     * checkpoint only when the user manually requests one
+     */
+    private static boolean autoAddFlag = true;
+    /**
      * index of the next checkpoint slot to use
      */
     private static int nextIndex = 0;
@@ -113,6 +118,15 @@ public class History {
     }
 
     /**
+     * Create a checkpoint if auto-add is enabled.
+     */
+    public static void autoAdd() {
+        if (autoAddFlag) {
+            addCheckpoint();
+        }
+    }
+
+    /**
      * Count the available checkpoints.
      *
      * @return count (&ge;0)
@@ -146,7 +160,7 @@ public class History {
      * Test whether any checkpoints would be discarded by
      * {@link #addCheckpoint()}.
      *
-     * @return true if some checkpoints are vulnerable, otherwise false
+     * @return true if any checkpoint is vulnerable, otherwise false
      */
     public static boolean hasVulnerable() {
         int numVulnerable = checkpoints.size() - nextIndex;
@@ -156,6 +170,15 @@ public class History {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Test whether to add checkpoints automatically.
+     *
+     * @return true to add automatically, otherwise false
+     */
+    public static boolean isAutoAdd() {
+        return autoAddFlag;
     }
 
     /**
@@ -186,6 +209,16 @@ public class History {
             logger.log(Level.INFO, "nothing to redo", nextIndex);
         }
         Maud.gui.tools.history.setAutoScroll();
+    }
+
+    /**
+     * Alter whether to add checkpoints automatically.
+     *
+     * @param newSetting true &rarr; add automatically, false &rarr; add
+     * manually only
+     */
+    public static void setAutoAdd(boolean newSetting) {
+        autoAddFlag = newSetting;
     }
 
     /**

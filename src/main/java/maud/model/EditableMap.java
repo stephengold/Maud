@@ -107,11 +107,12 @@ public class EditableMap extends LoadedMap {
     }
 
     /**
-     * Delete the selected bone mapping.
+     * Delete the selected bone mapping. TODO rename deleteBoneMapping
      */
     public void deleteBone() {
         BoneMapping boneMapping = selectedMapping();
         if (boneMapping != null) {
+            History.autoAdd();
             map.removeMapping(boneMapping);
             setEdited("delete bone mapping");
         }
@@ -122,6 +123,7 @@ public class EditableMap extends LoadedMap {
      */
     public void invert() {
         if (map.countMappings() > 0) {
+            History.autoAdd();
             map = map.inverse();
             assetPath = null;
             setEdited("invert the skeleton map");
@@ -151,6 +153,7 @@ public class EditableMap extends LoadedMap {
         if (!isBoneMappingSelected()
                 && Maud.getModel().getSource().bone.isSelected()
                 && Maud.getModel().getTarget().bone.isSelected()) {
+            History.autoAdd();
             String sourceBoneName = Maud.getModel().getSource().bone.getName();
             String targetBoneName = Maud.getModel().getTarget().bone.getName();
             /*
@@ -216,7 +219,7 @@ public class EditableMap extends LoadedMap {
     /**
      * Snap the one axis angle of the effective twist.
      *
-     * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;3
+     * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      */
     public void snapTwist(int axisIndex) {
         Validate.inRange(axisIndex, "axis index", 0, 2);
@@ -231,6 +234,7 @@ public class EditableMap extends LoadedMap {
      * Unload the map.
      */
     public void unload() {
+        History.autoAdd();
         map.clear();
         assetFolder = "";
         assetPath = "";
@@ -385,6 +389,7 @@ public class EditableMap extends LoadedMap {
      * @param skeleton which skeleton to use (not null)
      */
     private void loadIdentity(Skeleton skeleton) {
+        History.autoAdd();
         map.clear();
         int numBones = skeleton.getBoneCount();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
@@ -418,6 +423,7 @@ public class EditableMap extends LoadedMap {
     private void setEditedTwist() {
         String newName = Maud.getModel().getTarget().bone.getName();
         if (!newName.equals(editedTwist)) {
+            History.autoAdd();
             ++editCount;
             editedTwist = newName;
             String event;

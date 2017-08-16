@@ -658,9 +658,7 @@ public class LoadedCgm implements Cloneable {
 
         Locators.save();
         Locators.useFilesystem(rootPath);
-
         Spatial loaded = loadFromAsset(assetPath, false);
-
         Locators.restore();
 
         if (loaded == null) {
@@ -1048,7 +1046,7 @@ public class LoadedCgm implements Cloneable {
      * @param assetPath (not null)
      * @param useCache true to look in the asset manager's cache, false to force
      * a fresh load from persistent storage
-     * @return an orphaned spatial, or null if the asset was not found
+     * @return an orphaned spatial, or null if the asset had errors
      */
     private Spatial loadFromAsset(String assetPath, boolean useCache) {
         AssetManager assetManager = Locators.getAssetManager();
@@ -1094,6 +1092,9 @@ public class LoadedCgm implements Cloneable {
             logger.log(Level.INFO, "Loaded model from asset {0}",
                     MyString.quote(assetPath));
 
+            if (this == Maud.getModel().getTarget() && isLoaded()) {
+                History.autoAdd();
+            }
             extension = ext;
             int extLength = extension.length();
             if (extLength == 0) {
