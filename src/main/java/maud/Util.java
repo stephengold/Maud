@@ -33,6 +33,7 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.Track;
+import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.bounding.BoundingBox;
@@ -370,9 +371,12 @@ public class Util {
         compoundCollisionShapeLevel = compoundCollisionShapeLogger.getLevel();
         compoundCollisionShapeLogger.setLevel(Level.SEVERE);
 
-        org.slf4j.Logger logger = LoggerFactory.getLogger("jme3_ext_xbuf.XbufLoader");
-        ch.qos.logback.classic.Logger xbufLoaderLogger = (ch.qos.logback.classic.Logger) logger;
-        ch.qos.logback.classic.Level xbufLoaderLevel = xbufLoaderLogger.getLevel();
+        org.slf4j.Logger slfLogger;
+        slfLogger = LoggerFactory.getLogger("jme3_ext_xbuf.XbufLoader");
+        ch.qos.logback.classic.Logger xbufLoaderLogger;
+        xbufLoaderLogger = (ch.qos.logback.classic.Logger) slfLogger;
+        ch.qos.logback.classic.Level xbufLoaderLevel;
+        xbufLoaderLevel = xbufLoaderLogger.getLevel();
         xbufLoaderLogger.setLevel(ch.qos.logback.classic.Level.ERROR);
         /*
          * Load the model.
@@ -391,6 +395,32 @@ public class Util {
         materialLoaderLogger.setLevel(materialLoaderLevel);
         compoundCollisionShapeLogger.setLevel(compoundCollisionShapeLevel);
         xbufLoaderLogger.setLevel(xbufLoaderLevel);
+
+        return loaded;
+    }
+
+    /**
+     * Load a J3O asset as a skeleton map without logging any warning/error
+     * messages.
+     *
+     * @param assetManager asset manager
+     * @param assetPath path to J3O asset
+     * @return a skeleton map, or null if unsuccessful
+     */
+    public static SkeletonMapping loadMapAsset(AssetManager assetManager,
+            String assetPath) {
+        if (assetManager == null || assetPath == null) {
+            return null;
+        }
+
+        AssetKey<SkeletonMapping> key = new AssetKey<>(assetPath);
+
+        SkeletonMapping loaded;
+        try {
+            loaded = assetManager.loadAsset(key);
+        } catch (RuntimeException exception) {
+            loaded = null;
+        }
 
         return loaded;
     }
