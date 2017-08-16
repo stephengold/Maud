@@ -291,19 +291,19 @@ public class EditableMap extends LoadedMap {
     /**
      * Unload the current map and load the specified asset.
      *
-     * @param assetFolder file path to the asset root (not null, not empty)
+     * @param location file path to the asset root (not null, not empty)
      * @param assetPath path to the asset to load (not null, not empty)
      * @return true if successful, otherwise false
      */
     @Override
-    public boolean loadAsset(String assetFolder, String assetPath) {
-        Validate.nonEmpty(assetFolder, "asset folder");
+    public boolean loadAsset(String location, String assetPath) {
+        Validate.nonEmpty(location, "location");
         Validate.nonEmpty(assetPath, "asset path");
 
-        boolean success = super.loadAsset(assetFolder, assetPath);
+        boolean success = super.loadAsset(location, assetPath);
         if (success) {
             String eventDescription = String.format("load map %s %s",
-                    MyString.quote(assetFolder), MyString.quote(assetPath));
+                    MyString.quote(location), MyString.quote(assetPath));
             setPristine(eventDescription);
         }
 
@@ -420,7 +420,8 @@ public class EditableMap extends LoadedMap {
         if (!newName.equals(editedTwist)) {
             ++editCount;
             editedTwist = newName;
-            String event = String.format("set twist for %s", newName);
+            String event;
+            event = String.format("set twist for %s", MyString.quote(newName));
             History.addEvent(event);
         }
     }
