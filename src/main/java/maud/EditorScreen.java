@@ -328,6 +328,9 @@ public class EditorScreen extends GuiScreenController {
             case "3DCursor":
                 scene.getCursor().setVisible(isChecked);
                 break;
+            case "autoCheckpoint":
+                History.setAutoAdd(isChecked);
+                break;
             case "axesDepthTest":
                 scene.getAxes().setDepthTestFlag(isChecked);
                 break;
