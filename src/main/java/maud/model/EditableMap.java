@@ -107,9 +107,9 @@ public class EditableMap extends LoadedMap {
     }
 
     /**
-     * Delete the selected bone mapping. TODO rename deleteBoneMapping
+     * Delete the selected bone mapping.
      */
-    public void deleteBone() {
+    public void deleteBoneMapping() {
         BoneMapping boneMapping = selectedMapping();
         if (boneMapping != null) {
             History.autoAdd();

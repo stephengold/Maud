@@ -304,15 +304,15 @@ public class EditorScreen extends GuiScreenController {
     /**
      * Callback handler that Nifty invokes after a check box changes.
      *
-     * @param boxId Nifty element id of the check box (not null)
+     * @param checkBoxId Nifty element id of the check box (not null)
      * @param event details of the event (not null)
      */
     @NiftyEventSubscriber(pattern = ".*CheckBox")
-    public void onCheckBoxChanged(final String boxId,
+    public void onCheckBoxChanged(final String checkBoxId,
             final CheckBoxStateChangedEvent event) {
-        Validate.nonNull(boxId, "check box id");
+        Validate.nonNull(checkBoxId, "check box id");
         Validate.nonNull(event, "event");
-        assert boxId.endsWith("CheckBox");
+        assert checkBoxId.endsWith("CheckBox");
 
         if (ignoreGuiChanges || !hasStarted()) {
             return;
@@ -323,7 +323,8 @@ public class EditorScreen extends GuiScreenController {
         EditableCgm target = model.getTarget();
         SceneOptions scene = model.getScene();
         boolean isChecked = event.isChecked();
-        String prefix = MyString.removeSuffix(boxId, "CheckBox");
+        
+        String prefix = MyString.removeSuffix(checkBoxId, "CheckBox");
         switch (prefix) {
             case "3DCursor":
                 scene.getCursor().setVisible(isChecked);
@@ -385,7 +386,7 @@ public class EditorScreen extends GuiScreenController {
                 break;
             default:
                 logger.log(Level.WARNING, "check box with unknown id={0}",
-                        MyString.quote(boxId));
+                        MyString.quote(checkBoxId));
         }
     }
 

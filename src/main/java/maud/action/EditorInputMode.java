@@ -253,7 +253,7 @@ public class EditorInputMode extends InputMode {
                 target.sgc.delete();
                 break;
             case "delete mapping":
-                Maud.getModel().getMap().deleteBone();
+                Maud.getModel().getMap().deleteBoneMapping();
                 break;
             case "delete singleKeyframe":
                 target.track.deleteSingleKeyframe();

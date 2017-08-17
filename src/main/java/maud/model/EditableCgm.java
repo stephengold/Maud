@@ -253,9 +253,9 @@ public class EditableCgm extends LoadedCgm {
 
     /**
      * Delete the selected user data from the selected spatial. The invoker is
-     * responsible for deselecting the user data. TODO rename deleteUserData
+     * responsible for deselecting the user data.
      */
-    void deleteUserKey() {
+    void deleteUserData() {
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         String key = getUserData().getKey();
 

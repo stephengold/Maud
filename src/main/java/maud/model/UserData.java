@@ -69,7 +69,7 @@ public class UserData implements Cloneable {
      */
     public void delete() {
         if (selectedKey != null) {
-            editableCgm.deleteUserKey();
+            editableCgm.deleteUserData();
             selectedKey = null;
         }
     }
