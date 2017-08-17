@@ -134,6 +134,11 @@ public class HistoryTool extends WindowController {
 
         Element windowElement = getElement();
         windowElement.layoutElements();
+        /*
+         * the "automatic checkpoints" checkbox
+         */
+        boolean autoAddFlag = History.isAutoAdd();
+        Maud.gui.setChecked("autoCheckpoint", autoAddFlag);
 
         if (autoScrollFlag) {
             autoScrollFlag = false;
