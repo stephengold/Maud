@@ -44,6 +44,7 @@ import maud.TweenRotations;
 import maud.TweenVectors;
 import maud.action.ActionPrefix;
 import maud.model.EditableCgm;
+import maud.model.EditorModel;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.MiscStatus;
@@ -1313,18 +1314,18 @@ public class BuildMenus {
      * Build a "Bone -> Select source" menu.
      */
     private void buildSourceBoneSelectMenu() {
-        int numRoots = Maud.getModel().getSource().bones.countRootBones();
+        EditorModel model = Maud.getModel();
+        int numRoots = model.getSource().bones.countRootBones();
         if (numRoots == 1) {
             builder.addBone("Root");
         } else if (numRoots > 1) {
             builder.add("Root");
         }
 
-        String targetBoneName = Maud.getModel().getTarget().bone.getName();
-        String boneName;
-        boneName = Maud.getModel().getMap().sourceBoneName(targetBoneName);
+        String targetBoneName = model.getTarget().bone.getName();
+        String boneName = model.getMap().sourceBoneName(targetBoneName);
         if (boneName != null
-                && Maud.getModel().getSource().bones.hasBone(boneName)) {
+                && model.getSource().bones.hasBone(boneName)) {
             builder.addBone("Mapped");
         }
     }
@@ -1341,10 +1342,14 @@ public class BuildMenus {
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
-        if (!Maud.getModel().getTarget().spatial.isCgmRoot()) {
+        //builder.addTool("User data tool");
+        LoadedCgm target = Maud.getModel().getTarget();
+        if (!target.spatial.isCgmRoot()) {
             builder.addEdit("Delete");
         }
-        //builder.addTool("User data tool");
+        if (target.hasExtraSpatials()) {
+            builder.addEdit("Delete extras");
+        }
     }
 
     /**

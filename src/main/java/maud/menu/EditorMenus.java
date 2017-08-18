@@ -747,29 +747,18 @@ public class EditorMenus {
         assert remainder != null;
 
         boolean handled = true;
-        String addControlPrefix = "Add control" + menuPathSeparator;
         String selectPrefix = "Select" + menuPathSeparator;
-        if (remainder.startsWith(addControlPrefix)) {
-            String arg = MyString.remainder(remainder, addControlPrefix);
-            handled = menuSgcAdd(arg);
-
-        } else if (remainder.startsWith(selectPrefix)) {
+        if (remainder.startsWith(selectPrefix)) {
             String arg = MyString.remainder(remainder, selectPrefix);
             handled = menuSpatialSelect(arg);
 
         } else {
             switch (remainder) {
-                case "Add control":
-                    Maud.gui.buildMenus.addSgc();
-                    break;
-                case "Control tool":
-                    Maud.gui.tools.select("sgc");
-                    break;
                 case "Delete":
                     Maud.getModel().getTarget().spatial.delete();
                     break;
-                case "Delete control":
-                    Maud.gui.dialogs.deleteSgc();
+                case "Delete extras":
+                    Maud.getModel().getTarget().deleteExtraSpatials();
                     break;
                 case "Details":
                     Maud.gui.tools.select("spatialDetails");
@@ -782,9 +771,6 @@ public class EditorMenus {
                     break;
                 case "Select":
                     Maud.gui.buildMenus.selectSpatial();
-                    break;
-                case "Select control":
-                    Maud.gui.buildMenus.selectSgc();
                     break;
                 case "Tool":
                     Maud.gui.tools.select("spatial");

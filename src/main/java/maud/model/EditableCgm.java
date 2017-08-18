@@ -216,6 +216,23 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Delete all "extra" spatials, but not the root.
+     */
+    public void deleteExtraSpatials() {
+        if (rootSpatial instanceof Node) {
+            int oldNumSpatials = Util.countSpatials(rootSpatial);
+            Node rootNode = (Node) rootSpatial;
+            History.autoAdd();
+            deleteExtraSpatials(rootNode);
+            spatial.selectCgmRoot();
+            int numDeleted = oldNumSpatials - Util.countSpatials(rootSpatial);
+            String description = String.format("delete %d extra spatial%s",
+                    numDeleted, numDeleted == 1 ? "" : "s");
+            setEdited(description);
+        }
+    }
+
+    /**
      * Delete the selected control. The invoker is responsible for deselecting
      * the SGC.
      */
@@ -236,10 +253,10 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete the selected spatial. The invoker is responsible for deselecting
-     * the spatial.
+     * Delete the selected spatial and its children, if any. The invoker is
+     * responsible for deselecting the spatial.
      */
-    void deleteSpatial() {
+    void deleteSubtree() {
         Spatial selectedSpatial = spatial.underRoot(rootSpatial);
         Node parent = selectedSpatial.getParent();
 
@@ -247,7 +264,7 @@ public class EditableCgm extends LoadedCgm {
         int position = parent.detachChild(selectedSpatial);
         assert position != -1;
         SceneView sceneView = getSceneView();
-        sceneView.deleteSpatial();
+        sceneView.deleteSubtree();
         setEdited("delete spatial");
     }
 
@@ -674,6 +691,33 @@ public class EditableCgm extends LoadedCgm {
         }
 
         return result;
+    }
+
+    /**
+     * Delete all "extra" spatials among a node's descendents. Note: recursive!
+     *
+     * @param subtree subtree to traverse (not null)
+     */
+    private void deleteExtraSpatials(Node subtree) {
+        assert subtree != null;
+
+        List<Spatial> childList = subtree.getChildren();
+        Spatial[] children = (Spatial[]) childList.toArray();
+        for (Spatial child : children) {
+            if (Util.countSgcs(child) == 0 && Util.countUserData(child) == 0
+                    && Util.countVertices(child) == 0) {
+                List<Integer> position = findSpatial(child);
+                int index = subtree.detachChild(child);
+                assert index != -1;
+                getSceneView().deleteSubtree(position);
+            }
+        }
+
+        for (Spatial child : subtree.getChildren()) {
+            if (child instanceof Node) {
+                deleteExtraSpatials((Node) child);
+            }
+        }
     }
 
     /**

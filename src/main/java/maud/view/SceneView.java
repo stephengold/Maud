@@ -222,10 +222,29 @@ public class SceneView implements EditorView, JmeCloneable {
     }
 
     /**
-     * Delete the selected spatial.
+     * Delete the selected spatial and its children, if any.
      */
-    public void deleteSpatial() {
+    public void deleteSubtree() {
         Spatial spatial = selectedSpatial();
+
+        MySpatial.disablePhysicsControls(spatial);
+        spatial.removeFromParent();
+    }
+
+    /**
+     * Delete the specified spatial and its children, if any.
+     *
+     * @param treePosition tree position of spatial to delete (not null)
+     */
+    public void deleteSubtree(List<Integer> treePosition) {
+        Validate.nonNull(treePosition, "tree position");
+
+        Spatial spatial = cgmRoot;
+        for (int childPosition : treePosition) {
+            Node node = (Node) spatial;
+            spatial = node.getChild(childPosition);
+        }
+
         MySpatial.disablePhysicsControls(spatial);
         spatial.removeFromParent();
     }

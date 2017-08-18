@@ -307,7 +307,7 @@ public class SelectedSpatial implements Cloneable {
             AnimControl oldAnimControl = loadedCgm.getAnimControl();
             Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
 
-            editableCgm.deleteSpatial();
+            editableCgm.deleteSubtree();
             int last = treePosition.size() - 1;
             treePosition.remove(last);
             assert modelSpatial() == parent;
