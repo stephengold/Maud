@@ -91,7 +91,7 @@ class UserDataTool extends WindowController {
         String nButton = "", pButton = "", sButton = "";
 
         EditableCgm target = Maud.getModel().getTarget();
-        int numKeys = target.spatial.countUserKeys();
+        int numKeys = target.spatial.countUserData();
         int selectedIndex = target.getUserData().findKeyIndex();
         if (selectedIndex >= 0) {
             indexText = String.format("#%d of %d", selectedIndex + 1, numKeys);

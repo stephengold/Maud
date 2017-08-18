@@ -28,7 +28,6 @@ package maud.tool;
 
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Mesh;
-import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
@@ -76,43 +75,17 @@ class SpatialTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        updateTreePosition();
-
-        updateBatchHint();
-        updateBucket();
         updateChildren();
-        updateSgcs();
-        updateHint();
-        updateKeys();
         updateMaterial();
         updateMesh();
         updateName();
         updateParent();
         updateShadows();
+        updateTreePosition();
         updateType();
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Update the display of the spatial's batch hint.
-     */
-    private void updateBatchHint() {
-        Spatial.BatchHint hint;
-        hint = Maud.getModel().getTarget().spatial.getLocalBatchHint();
-        String text = hint.toString();
-        Maud.gui.setStatusText("spatialBatchHint", " " + text);
-    }
-
-    /**
-     * Update the display of the spatial's render-queue bucket.
-     */
-    private void updateBucket() {
-        RenderQueue.Bucket bucket;
-        bucket = Maud.getModel().getTarget().spatial.getLocalQueueBucket();
-        String bucketText = bucket.toString();
-        Maud.gui.setStatusText("spatialBucket", " " + bucketText);
-    }
 
     /**
      * Update the display of the spatial's children.
@@ -145,25 +118,6 @@ class SpatialTool extends WindowController {
 
         Maud.gui.setStatusText("spatialChildren", " " + childrenText);
         Maud.gui.setButtonLabel("spatialSelectChildButton", scButton);
-    }
-
-    /**
-     * Update the display of the spatial's cull hint.
-     */
-    private void updateHint() {
-        Spatial.CullHint hint;
-        hint = Maud.getModel().getTarget().spatial.getLocalCullHint();
-        String hintText = hint.toString();
-        Maud.gui.setStatusText("spatialHint", " " + hintText);
-    }
-
-    /**
-     * Update the display of the spatial's user-data keys.
-     */
-    private void updateKeys() {
-        int numKeys = Maud.getModel().getTarget().spatial.countUserKeys();
-        String keysText = String.format("%d", numKeys);
-        Maud.gui.setStatusText("spatialKeys", " " + keysText);
     }
 
     /**
@@ -261,15 +215,6 @@ class SpatialTool extends WindowController {
 
         Maud.gui.setStatusText("spatialParent", " " + parentText);
         Maud.gui.setButtonLabel("spatialSelectParentButton", spButton);
-    }
-
-    /**
-     * Update the display of the spatial's SG controls.
-     */
-    private void updateSgcs() {
-        int numControls = Maud.getModel().getTarget().spatial.countSgcs();
-        String controlsText = String.format("%d", numControls);
-        Maud.gui.setStatusText("spatialControls", " " + controlsText);
     }
 
     /**
