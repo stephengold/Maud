@@ -28,11 +28,15 @@ package maud.tool;
 
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.Util;
+import maud.model.SelectedSpatial;
 
 /**
  * The controller for the "Spatial Details Tool" window in Maud's editor screen.
@@ -76,6 +80,7 @@ class SpatialDetailsTool extends WindowController {
         updateBatchHint();
         updateBucket();
         updateHint();
+        updateInfluence();
         updateLights();
         updateName();
         updateOverrides();
@@ -114,6 +119,50 @@ class SpatialDetailsTool extends WindowController {
         hint = Maud.getModel().getTarget().spatial.getLocalCullHint();
         String description = hint.toString();
         Maud.gui.setStatusText("spatialHint", " " + description);
+    }
+
+    /**
+     * Update the count of mesh vertices influenced.
+     */
+    private void updateInfluence() {
+        List<String> list = new ArrayList<>(3);
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        int sgcCount = spatial.countSubtreeSgcs();
+        if (sgcCount == 1) {
+            String item = String.format(" one control");
+            list.add(item);
+        } else if (sgcCount > 1) {
+            String item = String.format(" %d controls", sgcCount);
+            list.add(item);
+        }
+
+        int dataCount = spatial.countSubtreeUserData();
+        if (dataCount == 1) {
+            String item = String.format(" one datum");
+            list.add(item);
+        } else if (dataCount > 1) {
+            String item = String.format(" %d data", dataCount);
+            list.add(item);
+        }
+
+        int vertexCount = spatial.countSubtreeVertices();
+        if (vertexCount == 1) {
+            String item = String.format(" one vertex");
+            list.add(item);
+        } else if (vertexCount > 1) {
+            String item = String.format(" %d vertices", vertexCount);
+            list.add(item);
+        }
+
+        String description;
+        if (list.isEmpty()) {
+            description = "none";
+        } else {
+            description = Util.join(", ", list);
+        }
+
+        Maud.gui.setStatusText("spatialInfluence", " " + description);
     }
 
     /**

@@ -211,13 +211,54 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Count how many scene-graph controls are added to the selected spatial.
+     * Count how many scene-graph controls are added directly to the selected
+     * spatial.
      *
      * @return count (&ge;0)
      */
     public int countSgcs() {
         Spatial spatial = modelSpatial();
         int result = spatial.getNumControls();
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Count how many scene-graph controls are contained in the selected
+     * spatial's subtree.
+     *
+     * @return count (&ge;0)
+     */
+    public int countSubtreeSgcs() {
+        Spatial spatial = modelSpatial();
+        int result = Util.countSgcs(spatial);
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Count how many user data are contained in the selected spatial's subtree.
+     *
+     * @return count (&ge;0)
+     */
+    public int countSubtreeUserData() {
+        Spatial spatial = modelSpatial();
+        int result = Util.countUserData(spatial);
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Count how many vertices are influenced by the selected spatial.
+     *
+     * @return count (&ge;0)
+     */
+    public int countSubtreeVertices() {
+        Spatial spatial = modelSpatial();
+        int result = Util.countVertices(spatial);
 
         assert result >= 0 : result;
         return result;

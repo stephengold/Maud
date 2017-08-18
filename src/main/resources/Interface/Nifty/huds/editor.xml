@@ -1603,12 +1603,18 @@ the menu bar, status bar, and tool windows.
                      title="Spatial Details Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="224px" width="255px" x="15" y="85">
+                     height="252px" width="255px" x="15" y="85">
                 <panel childLayout="vertical">
                     <panel height="5px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Name:  "/>
                         <control name="label" id="spatialName2"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Influence:  "/>
+                        <control name="label" id="spatialInfluence"
                                  backgroundColor="#ffff"
                                  width="*"/>
                     </panel>

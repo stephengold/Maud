@@ -62,6 +62,7 @@ import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -198,7 +199,7 @@ public class Util {
             Geometry geometry = (Geometry) subtree;
             Mesh mesh = geometry.getMesh();
             if (mesh.isAnimated()) {
-                Util.addDirectInfluencers(mesh, storeResult);
+                addDirectInfluencers(mesh, storeResult);
             }
 
         } else if (subtree instanceof Node) {
@@ -330,6 +331,81 @@ public class Util {
     }
 
     /**
+     * Count how many scene-graph controls are contained in the specified
+     * subtree. Note: recursive!
+     *
+     * @param subtree subtree to traverse (may be null)
+     * @return count of vertices (&ge;0)
+     */
+    public static int countSgcs(Spatial subtree) {
+        int result = 0;
+        if (subtree != null) {
+            result += subtree.getNumControls();
+        }
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result += countSgcs(child);
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Count how many user data are contained in the specified subtree. Note:
+     * recursive!
+     *
+     * @param subtree subtree to traverse (may be null)
+     * @return count of vertices (&ge;0)
+     */
+    public static int countUserData(Spatial subtree) {
+        int result = 0;
+        if (subtree != null) {
+            Collection<String> keys = subtree.getUserDataKeys();
+            result += keys.size();
+        }
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result += countUserData(child);
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Count how many mesh vertices are contained in the specified subtree.
+     * Note: recursive!
+     *
+     * @param subtree subtree to traverse (may be null)
+     * @return count of vertices (&ge;0)
+     */
+    public static int countVertices(Spatial subtree) {
+        int result = 0;
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            Mesh mesh = geometry.getMesh();
+            result = mesh.getVertexCount();
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            Collection<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result += countVertices(child);
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
      * Count how many vertices in the specified subtree of the scene graph are
      * directly influenced by the indexed bone. Note: recursive!
      *
@@ -378,7 +454,7 @@ public class Util {
             for (Bone rootBone : roots) {
                 int boneIndex = skeleton.getBoneIndex(rootBone);
                 int numInfluenced;
-                numInfluenced = Util.influence(subtree, skeleton, boneIndex);
+                numInfluenced = influence(subtree, skeleton, boneIndex);
                 if (numInfluenced > maxInfluenced) {
                     maxInfluenced = numInfluenced;
                     result = rootBone;
@@ -413,6 +489,35 @@ public class Util {
         }
 
         return result;
+    }
+
+    /**
+     * Join a list of texts using separators, ignoring any nulls. Note that Java
+     * 8 provides
+     * {@link java.lang.String#join(java.lang.CharSequence, java.lang.Iterable)}.
+     *
+     * @param list texts to join (not null, unaffected, may contain nulls)
+     * @param separator string (not null)
+     * @return joined string
+     */
+    public static String join(CharSequence separator, Iterable<String> list) {
+        Validate.nonNull(separator, "separator");
+        Validate.nonNull(list, "list");
+
+        StringBuilder result = new StringBuilder(80);
+        for (String item : list) {
+            if (item != null) {
+                if (result.length() > 0) {
+                    /*
+                     * Append a separator.
+                     */
+                    result.append(separator);
+                }
+                result.append(item);
+            }
+        }
+
+        return result.toString();
     }
 
     /**
