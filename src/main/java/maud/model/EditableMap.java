@@ -125,7 +125,7 @@ public class EditableMap extends LoadedMap {
         if (map.countMappings() > 0) {
             History.autoAdd();
             map = map.inverse();
-            assetPath = null;
+            assetPath = "";
             setEdited("invert the skeleton map");
         }
     }
