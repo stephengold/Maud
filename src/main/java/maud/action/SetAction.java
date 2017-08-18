@@ -35,6 +35,7 @@ import maud.TweenRotations;
 import maud.TweenVectors;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
+import maud.model.SceneBones;
 
 /**
  * Process an action string that begins with "set".
@@ -81,6 +82,9 @@ class SetAction {
                 break;
             case "set queueBucket":
                 Maud.gui.buildMenus.setQueueBucket();
+                break;
+            case "set sceneBones":
+                Maud.gui.buildMenus.setSceneBones();
                 break;
             case "set shadowMode":
                 Maud.gui.buildMenus.setShadowMode();
@@ -158,6 +162,11 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
             RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
             target.setQueueBucket(value);
+
+        } else if (actionString.startsWith(ActionPrefix.setSceneBones)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setSceneBones);
+            SceneBones value = SceneBones.valueOf(arg);
+            model.getScene().getSkeleton().setBones(value);
 
         } else if (actionString.startsWith(ActionPrefix.setShadowMode)) {
             arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);

@@ -47,7 +47,9 @@ import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.MiscStatus;
+import maud.model.SceneBones;
 import maud.model.SelectedSpatial;
+import maud.model.SkeletonStatus;
 import maud.model.ViewMode;
 
 /**
@@ -767,6 +769,25 @@ public class BuildMenus {
             }
         }
         builder.show(ActionPrefix.setQueueBucket);
+    }
+
+    /**
+     * Display a menu to set the bone-inclusion option for scene views using the
+     * "set sceneBones " action prefix.
+     */
+    public void setSceneBones() {
+        builder.reset();
+
+        SkeletonStatus status = Maud.getModel().getScene().getSkeleton();
+        SceneBones showBones = status.bones();
+
+        for (SceneBones option : SceneBones.values()) {
+            if (!option.equals(showBones)) {
+                String name = option.toString();
+                builder.add(name);
+            }
+        }
+        builder.show(ActionPrefix.setSceneBones);
     }
 
     /**

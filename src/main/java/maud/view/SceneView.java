@@ -56,6 +56,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
+import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
@@ -73,6 +74,8 @@ import maud.Pose;
 import maud.Selection;
 import maud.Util;
 import maud.model.LoadedCgm;
+import maud.model.SceneBones;
+import maud.model.SkeletonStatus;
 import maud.model.ViewMode;
 
 /**
@@ -103,7 +106,7 @@ public class SceneView implements EditorView, JmeCloneable {
     /*
      * ambient light added to the scene (not null)
      */
-    private AmbientLight ambientLight = new AmbientLight();
+    final private AmbientLight ambientLight = new AmbientLight();
     /**
      * animation control with the selected skeleton
      */
@@ -123,7 +126,7 @@ public class SceneView implements EditorView, JmeCloneable {
     /*
      * directional added to the scene (not null)
      */
-    private DirectionalLight mainLight = new DirectionalLight();
+    final private DirectionalLight mainLight = new DirectionalLight();
     /**
      * indicator for the 3D cursor, or null if none
      */
@@ -608,19 +611,40 @@ public class SceneView implements EditorView, JmeCloneable {
                 selection.considerAxis(cgm, axisIndex, false, tipXY);
             }
         }
-
+        /*
+         * Determine which bones should be considered.
+         */
         Pose pose = cgm.pose.getPose();
-        int selectedBone = cgm.bone.getIndex();
-        Vector2f inputXY = selection.copyInputXY();
-
         int numBones = pose.countBones();
+        BitSet boneIndexSet = new BitSet(numBones);
+        SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
+        SceneBones sceneBones = options.bones();
+        switch (sceneBones) {
+            case All:
+                boneIndexSet.set(0, numBones - 1);
+                break;
+            case InfluencersOnly:
+                cgm.bones.listInfluencers(boneIndexSet);
+                break;
+            case None:
+                boneIndexSet.clear(0, numBones - 1);
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        int selectedBone = cgm.bone.getIndex();
+        if (selectedBone != -1) {
+            boneIndexSet.clear(selectedBone);
+        }
+
+        Vector2f inputXY = selection.copyInputXY();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            if (boneIndex != selectedBone) {
+            if (boneIndexSet.get(boneIndex)) {
                 Vector3f modelLocation;
                 modelLocation = pose.modelLocation(boneIndex, null);
                 Transform worldTransform = worldTransform();
-                Vector3f boneWorld = worldTransform.transformVector(
-                        modelLocation, null);
+                Vector3f boneWorld;
+                boneWorld = worldTransform.transformVector(modelLocation, null);
                 Vector3f boneScreen;
                 boneScreen = camera.getScreenCoordinates(boneWorld);
                 Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
