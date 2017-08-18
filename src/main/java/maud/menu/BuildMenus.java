@@ -100,9 +100,9 @@ public class BuildMenus {
      */
     void addSgc() {
         builder.reset();
-        builder.add("Anim");
-        builder.add("RigidBody");
-        builder.add("Skeleton");
+        builder.addEdit("Anim");
+        builder.addEdit("RigidBody");
+        builder.addEdit("Skeleton");
         builder.show("select menuItem Spatial -> Add control -> ");
     }
 
@@ -1281,9 +1281,9 @@ public class BuildMenus {
      */
     private void buildPhysicsMenu() {
         builder.addTool("Tool");
-        builder.add("Add");
-        builder.add("Mass");
-        builder.add("Remove");
+        builder.addEdit("Add");
+        //builder.add("Mass"); TODO
+        //builder.add("Remove"); TODO
     }
 
     /**
@@ -1342,7 +1342,7 @@ public class BuildMenus {
         builder.addTool("Scale");
         builder.addTool("Translate");
         if (!Maud.getModel().getTarget().spatial.isCgmRoot()) {
-            builder.addTool("Delete");
+            builder.addEdit("Delete");
         }
         //builder.addTool("User data tool");
     }

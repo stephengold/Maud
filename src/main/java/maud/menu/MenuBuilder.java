@@ -130,6 +130,16 @@ class MenuBuilder {
     }
 
     /**
+     * Add an item with the edit icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addEdit(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/edit.png");
+    }
+
+    /**
      * Add an item with the ellipsis icon to the menu.
      *
      * @param item (not null, not empty)
