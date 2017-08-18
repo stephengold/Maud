@@ -33,11 +33,13 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import maud.Util;
 
 /**
  * The MVC model of a selected skeleton in the Maud application.
@@ -329,6 +331,29 @@ public class SelectedSkeleton implements Cloneable {
         boneNames.remove("");
 
         return boneNames;
+    }
+
+    /**
+     * Enumerate which bones influence mesh vertices.
+     *
+     * @param storeResult (modified if not null)
+     * @return set of bones with influence (either storeResult or a new
+     * instance)
+     */
+    public BitSet listInfluencers(BitSet storeResult) {
+        Boolean selectedSpatialFlag = false;
+        Skeleton skeleton = findSkeleton(selectedSpatialFlag);
+        assert skeleton != null;
+
+        Spatial subtree;
+        if (selectedSpatialFlag) {
+            subtree = cgm.spatial.modelSpatial();
+        } else {
+            subtree = cgm.getRootSpatial();
+        }
+        storeResult = Util.addAllInfluencers(subtree, skeleton, storeResult);
+
+        return storeResult;
     }
 
     /**

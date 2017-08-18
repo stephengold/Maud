@@ -211,6 +211,10 @@ public class ActionPrefix {
      */
     final public static String setQueueBucket = "set queueBucket ";
     /**
+     * argument is the name of a SceneBones value
+     */
+    final public static String setSceneBones = "set sceneBones ";
+    /**
      * argument is the name of a shadow mode
      */
     final public static String setShadowMode = "set shadowMode ";

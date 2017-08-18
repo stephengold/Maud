@@ -27,12 +27,14 @@
 package maud.tool;
 
 import com.jme3.math.ColorRGBA;
+import java.util.BitSet;
 import java.util.logging.Logger;
 import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.LoadedCgm;
+import maud.model.SceneBones;
 import maud.model.SkeletonStatus;
 
 /**
@@ -67,15 +69,15 @@ class SkeletonColorTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        SkeletonStatus status = Maud.getModel().getScene().getSkeleton();
+        SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
         ColorRGBA color = Maud.gui.readColorBank("ske");
-        status.setLinkColor(color);
+        options.setLinkColor(color);
 
         color = Maud.gui.readColorBank("bt");
-        status.setTrackedColor(color);
+        options.setTrackedColor(color);
 
         color = Maud.gui.readColorBank("bnt");
-        status.setTracklessColor(color);
+        options.setTracklessColor(color);
     }
 
     /**
@@ -90,24 +92,34 @@ class SkeletonColorTool extends WindowController {
             return;
         }
 
-        SkeletonStatus status = Maud.getModel().getScene().getSkeleton();
-        ColorRGBA color = status.copyLinkColor(null);
+        SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
+        ColorRGBA color = options.copyLinkColor(null);
         visualizer.setLineColor(color);
 
-        color = status.copyTracklessColor(null); // TODO avoid extra garbage
+        color = options.copyTracklessColor(null); // TODO avoid extra garbage
         visualizer.setPointColor(color);
 
-        status.copyTrackedColor(color);
+        BitSet influencers = null;
+        SceneBones sceneBones = options.bones();
+        if (sceneBones == SceneBones.InfluencersOnly) {
+            influencers = modelCgm.bones.listInfluencers(null);
+        }
+
+        options.copyTrackedColor(color);
         int numBones = modelCgm.bones.countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            if (modelCgm.animation.isRetargetedPose()) {
+            if (sceneBones == SceneBones.InfluencersOnly
+                    && !influencers.get(boneIndex)) {
+                ColorRGBA invisible = new ColorRGBA(0f, 0f, 0f, 0f);
+                visualizer.setPointColor(boneIndex, invisible);
+            } else if (modelCgm.animation.isRetargetedPose()) {
                 String name = modelCgm.bones.getBoneName(boneIndex);
                 if (Maud.getModel().getMap().isBoneMapped(name)) {
                     visualizer.setPointColor(boneIndex, color);
                 }
             } else if (modelCgm.animation.hasTrackForBone(boneIndex)) {
                 visualizer.setPointColor(boneIndex, color);
-            }
+            } // else defaults to trackless/unmapped color
         }
     }
     // *************************************************************************
@@ -125,14 +137,14 @@ class SkeletonColorTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        SkeletonStatus status = Maud.getModel().getScene().getSkeleton();
-        ColorRGBA color = status.copyLinkColor(null);
+        SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
+        ColorRGBA color = options.copyLinkColor(null);
         Maud.gui.setColorBank("ske", color);
 
-        color = status.copyTrackedColor(null);
+        color = options.copyTrackedColor(null);
         Maud.gui.setColorBank("bt", color);
 
-        status.copyTracklessColor(color);
+        options.copyTracklessColor(color);
         Maud.gui.setColorBank("bnt", color);
 
         Maud.gui.setIgnoreGuiChanges(false);

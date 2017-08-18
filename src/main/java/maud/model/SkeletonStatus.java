@@ -31,7 +31,8 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * The status of the skeleton visualization in the Maud application.
+ * Options for skeleton visualizations in scene views. TODO rename
+ * SkeletonOptions
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -48,10 +49,6 @@ public class SkeletonStatus implements Cloneable {
     // fields
 
     /**
-     * visibility of the skeleton (true &rarr; visible, false &rarr; hidden)
-     */
-    private boolean visibleFlag = true;
-    /**
      * color for skeleton links
      */
     private ColorRGBA linkColor = new ColorRGBA(1f, 1f, 1f, 1f);
@@ -64,15 +61,28 @@ public class SkeletonStatus implements Cloneable {
      */
     private ColorRGBA tracklessColor = new ColorRGBA(1f, 0f, 0f, 1f);
     /**
-     * line width for skeleton links (in pixels, &ge;0)
+     * line width for skeleton links (in pixels, &ge;0, 0&rarr;hidden)
      */
     private float lineWidth = 1f;
     /**
-     * point size (in pixels, &ge;0)
+     * point size for bone heads (in pixels, &ge;0, 0&rarr;hidden)
      */
     private float pointSize = 5f;
+    /**
+     * which kinds of bones to visualize (not null)
+     */
+    private SceneBones bones = SceneBones.InfluencersOnly;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Which kinds of bones to visualize.
+     *
+     * @return enum (not null)
+     */
+    public SceneBones bones() {
+        return bones;
+    }
 
     /**
      * Copy the color for the skeleton links.
@@ -140,12 +150,23 @@ public class SkeletonStatus implements Cloneable {
     }
 
     /**
-     * Test whether the skeleton is visible.
+     * Alter which kinds of bones are visualized.
      *
-     * @return true if visible, otherwise false
+     * @param newSetting enum (not null)
      */
-    public boolean isVisible() {
-        return visibleFlag;
+    public void setBones(SceneBones newSetting) {
+        Validate.nonNull(newSetting, "new setting");
+        bones = newSetting;
+    }
+
+    /**
+     * Alter the line width of skeleton links.
+     *
+     * @param width line width (in pixels, &ge;0, 0&rarr;hidden)
+     */
+    public void setLineWidth(float width) {
+        Validate.inRange(width, "line width", 0f, Float.MAX_VALUE);
+        lineWidth = width;
     }
 
     /**
@@ -159,19 +180,9 @@ public class SkeletonStatus implements Cloneable {
     }
 
     /**
-     * Alter the line width of the skeleton links.
-     *
-     * @param width line width (in pixels, &ge;0)
-     */
-    public void setLineWidth(float width) {
-        Validate.inRange(width, "line width", 0f, Float.MAX_VALUE);
-        lineWidth = width;
-    }
-
-    /**
      * Alter the point size of the bone heads.
      *
-     * @param size point size (in pixels, &ge;0)
+     * @param size point size (in pixels, &ge;0, 0&rarr;hidden)
      */
     public void setPointSize(float size) {
         Validate.inRange(size, "point size", 0f, Float.MAX_VALUE);
@@ -196,15 +207,6 @@ public class SkeletonStatus implements Cloneable {
     public void setTracklessColor(ColorRGBA newColor) {
         Validate.nonNull(newColor, "color");
         tracklessColor.set(newColor);
-    }
-
-    /**
-     * Alter the visibility.
-     *
-     * @param newSetting true &rarr; visible, false &rarr; hidden
-     */
-    public void setVisible(boolean newSetting) {
-        visibleFlag = newSetting;
     }
     // *************************************************************************
     // Object methods

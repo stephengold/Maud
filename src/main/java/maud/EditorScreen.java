@@ -323,7 +323,7 @@ public class EditorScreen extends GuiScreenController {
         EditableCgm target = model.getTarget();
         SceneOptions scene = model.getScene();
         boolean isChecked = event.isChecked();
-        
+
         String prefix = MyString.removeSuffix(checkBoxId, "CheckBox");
         switch (prefix) {
             case "3DCursor":
@@ -377,9 +377,6 @@ public class EditorScreen extends GuiScreenController {
                 break;
             case "shadows":
                 scene.setShadowsRendered(isChecked);
-                break;
-            case "skeleton":
-                scene.getSkeleton().setVisible(isChecked);
                 break;
             case "sky":
                 scene.setSkyRendered(isChecked);

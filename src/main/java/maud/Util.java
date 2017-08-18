@@ -51,6 +51,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.bvh.BVHAnimData;
@@ -58,11 +59,14 @@ import com.jme3.scene.plugins.bvh.BoneMapping;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
-import jme3utilities.MySkeleton;
+import jme3utilities.MyMesh;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import org.slf4j.LoggerFactory;
@@ -94,6 +98,119 @@ public class Util {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Add indices to the result for bones that influence (directly or
+     * indirectly) vertices in the specified subtree of the scene graph. Note:
+     * recursive!
+     *
+     * @param subtree subtree to traverse (may be null, unaffected)
+     * @param skeleton skeleton (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return the set of bones with influence (either storeResult or a new
+     * instance)
+     */
+    public static BitSet addAllInfluencers(Spatial subtree, Skeleton skeleton,
+            BitSet storeResult) {
+        int numBones = skeleton.getBoneCount();
+        if (storeResult == null) {
+            storeResult = new BitSet(numBones);
+        }
+
+        addDirectInfluencers(subtree, storeResult);
+
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            if (storeResult.get(boneIndex)) {
+                Bone bone = skeleton.getBone(boneIndex);
+                for (Bone parent = bone.getParent();
+                        parent != null;
+                        parent = parent.getParent()) {
+                    int parentIndex = skeleton.getBoneIndex(parent);
+                    storeResult.set(parentIndex);
+                }
+            }
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Add indices to the result for bones that directly influence vertices in
+     * the specified mesh.
+     *
+     * @param mesh animated mesh to analyze (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return the set of bones with influence (either storeResult or a new
+     * instance)
+     */
+    public static BitSet addDirectInfluencers(Mesh mesh, BitSet storeResult) {
+        if (storeResult == null) {
+            storeResult = new BitSet(120);
+        }
+
+        int maxWeightsPerVert = mesh.getMaxNumWeights();
+        assert maxWeightsPerVert > 0 : maxWeightsPerVert;
+        assert maxWeightsPerVert <= 4 : maxWeightsPerVert;
+
+        VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
+        ByteBuffer boneIndexBuffer = (ByteBuffer) biBuf.getData();
+        boneIndexBuffer.rewind();
+        int numBoneIndices = boneIndexBuffer.remaining();
+        assert numBoneIndices % 4 == 0 : numBoneIndices;
+        int numVertices = boneIndexBuffer.remaining() / 4;
+
+        VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
+        FloatBuffer weightBuffer = (FloatBuffer) wBuf.getData();
+        weightBuffer.rewind();
+        int numWeights = weightBuffer.remaining();
+        assert numWeights == numVertices * 4 : numWeights;
+
+        for (int vIndex = 0; vIndex < numVertices; vIndex++) {
+            for (int wIndex = 0; wIndex < 4; wIndex++) {
+                float weight = weightBuffer.get();
+                byte bIndex = boneIndexBuffer.get();
+                if (wIndex < maxWeightsPerVert && weight > 0f) {
+                    int boneIndex = 0xff & bIndex;
+                    storeResult.set(boneIndex);
+                }
+            }
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Add indices to the result for bones that directly influence vertices in
+     * the specified subtree of the scene graph. Note: recursive!
+     *
+     * @param subtree subtree to traverse (may be null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return the set of bones with influence (either storeResult or a new
+     * instance)
+     */
+    public static BitSet addDirectInfluencers(Spatial subtree,
+            BitSet storeResult) {
+        if (storeResult == null) {
+            storeResult = new BitSet(120);
+        }
+
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            Mesh mesh = geometry.getMesh();
+            if (mesh.isAnimated()) {
+                Util.addDirectInfluencers(mesh, storeResult);
+            }
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                addDirectInfluencers(child, storeResult);
+            }
+        }
+
+        return storeResult;
+    }
 
     /**
      * Copy a bone track, deleting everything before the specified time, and
@@ -228,7 +345,7 @@ public class Util {
             Geometry geometry = (Geometry) subtree;
             Mesh mesh = geometry.getMesh();
             if (mesh.isAnimated()) {
-                result = MySkeleton.numInfluenced(mesh, boneIndex);
+                result = MyMesh.numInfluenced(mesh, boneIndex);
             }
 
         } else if (subtree instanceof Node) {
@@ -274,7 +391,7 @@ public class Util {
 
     /**
      * Count how many vertices in the specified subtree of the scene graph are
-     * influenced by the indexed bone and its descendents. Note: recursive!
+     * influenced by the indexed bone or its descendents. Note: recursive!
      *
      * @param subtree subtree to traverse (may be null)
      * @param skeleton skeleton (not null)
