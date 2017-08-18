@@ -1017,15 +1017,15 @@ public class BuildMenus {
         }
         builder.addTool("Tweening");
         if (Maud.getModel().getTarget().animation.isReal()) {
-            builder.add("Behead");
+            builder.addEdit("Behead");
             builder.addDialog("Change duration");
             builder.addDialog("Delete");
-            builder.add("Delete keyframes");
-            builder.add("Insert keyframes");
+            builder.addEdit("Delete keyframes");
+            builder.addEdit("Insert keyframes");
             builder.addDialog("Reduce");
             builder.addDialog("Rename");
-            builder.add("Truncate");
-            builder.add("Wrap all tracks");
+            builder.addEdit("Truncate");
+            builder.addEdit("Wrap all tracks");
         }
         builder.addTool("Source tool"); // TODO submenu
         if (Maud.getModel().getSource().isLoaded()
@@ -1230,15 +1230,15 @@ public class BuildMenus {
                 builder.add("Select");
                 int frameIndex = target.track.findKeyframeIndex();
                 if (frameIndex == -1) {
-                    builder.add("Insert from pose");
+                    builder.addEdit("Insert from pose");
                 }
                 if (frameIndex > 0) {
-                    builder.add("Delete");
+                    builder.addEdit("Delete");
                     //builder.add("Move"); TODO
                 }
             }
             builder.addDialog("Reduce track");
-            builder.add("Wrap track");
+            builder.addEdit("Wrap track");
         }
     }
 
@@ -1269,8 +1269,8 @@ public class BuildMenus {
         builder.addTool("Tool");
         builder.addDialog("Load");
         if (Maud.getModel().getMap().countMappings() > 0) {
-            builder.add("Invert");
-            builder.add("Unload");
+            builder.addEdit("Invert");
+            builder.addEdit("Unload");
         }
         builder.addDialog("Save");
         builder.addTool("Twist tool");
@@ -1305,7 +1305,7 @@ public class BuildMenus {
         builder.add("Add");
         if (Maud.getModel().getTarget().sgc.isSelected()) {
             //builder.add("Deselect"); TODO
-            builder.add("Delete");
+            builder.addEdit("Delete");
         }
     }
 
