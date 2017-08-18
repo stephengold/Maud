@@ -1335,14 +1335,16 @@ public class BuildMenus {
     private void buildSpatialMenu() {
         builder.addTool("Tool");
         builder.add("Select");
+        builder.addTool("Details");
+        //builder.addTool("Material"); TODO
+        //builder.addTool("Mesh"); TODO
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
         if (!Maud.getModel().getTarget().spatial.isCgmRoot()) {
             builder.addTool("Delete");
         }
-        builder.addTool("User data tool");
-        //builder.addTool("Material"); TODO
+        //builder.addTool("User data tool");
     }
 
     /**

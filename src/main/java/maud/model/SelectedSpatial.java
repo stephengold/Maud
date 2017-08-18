@@ -32,6 +32,8 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.light.LightList;
+import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -160,6 +162,21 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Count how many local lights the selected spatial has.
+     *
+     * @return count (&ge;0)
+     */
+    public int countLights() {
+        Spatial spatial = modelSpatial();
+
+        LightList list = spatial.getLocalLightList();
+        int result = list.size();
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
      * Count how many levels of detail are in the selected spatial's mesh.
      *
      * @return count (&ge;0)
@@ -178,7 +195,23 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Count how many controls are added to the selected spatial.
+     * Count how many local material-parameter overrides the selected spatial
+     * has.
+     *
+     * @return count (&ge;0)
+     */
+    public int countOverrides() {
+        Spatial spatial = modelSpatial();
+
+        List<MatParamOverride> list = spatial.getLocalMatParamOverrides();
+        int result = list.size();
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Count how many scene-graph controls are added to the selected spatial.
      *
      * @return count (&ge;0)
      */
@@ -191,11 +224,11 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Count the user keys of the selected spatial.
+     * Count the user data of the selected spatial.
      *
      * @return count (&ge;0)
      */
-    public int countUserKeys() {
+    public int countUserData() {
         Spatial spatial = modelSpatial();
         Collection<String> keys = spatial.getUserDataKeys();
         int result = keys.size();

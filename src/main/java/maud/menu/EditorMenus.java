@@ -765,11 +765,14 @@ public class EditorMenus {
                 case "Control tool":
                     Maud.gui.tools.select("sgc");
                     break;
+                case "Delete":
+                    Maud.getModel().getTarget().spatial.delete();
+                    break;
                 case "Delete control":
                     Maud.gui.dialogs.deleteSgc();
                     break;
-                case "Delete":
-                    Maud.getModel().getTarget().spatial.delete();
+                case "Details":
+                    Maud.gui.tools.select("spatialDetails");
                     break;
                 case "Rotate":
                     Maud.gui.tools.select("spatialRotation");

@@ -150,6 +150,10 @@ public class EditorTools {
      */
     final SourceAnimationTool sourceAnimation;
     /**
+     * controller for the "Spatial Details Tool" window
+     */
+    final SpatialDetailsTool spatialDetails;
+    /**
      * controller for the "Spatial Rotation Tool" window
      */
     final SpatialRotationTool spatialRotation;
@@ -211,6 +215,7 @@ public class EditorTools {
         skeletonColor = new SkeletonColorTool(screen);
         skeleton = new SkeletonTool(screen);
         sourceAnimation = new SourceAnimationTool(screen);
+        spatialDetails = new SpatialDetailsTool(screen);
         spatialRotation = new SpatialRotationTool(screen);
         spatialScale = new SpatialScaleTool(screen);
         spatial = new SpatialTool(screen);
@@ -234,8 +239,8 @@ public class EditorTools {
                 boneScale, boneTranslation, bounds, camera, history,
                 keyframe, mapping, cgm, physics, platform, render, retarget,
                 score, sgc, skeleton, skeletonColor, sky, sourceAnimation,
-                spatial, spatialRotation, spatialScale, spatialTranslation,
-                tweening, twist, userData);
+                spatial, spatialDetails, spatialRotation, spatialScale,
+                spatialTranslation, tweening, twist, userData);
     }
 
     /**
@@ -320,6 +325,9 @@ public class EditorTools {
                 break;
             case "spatial":
                 controller = spatial;
+                break;
+            case "spatialDetails":
+                controller = spatialDetails;
                 break;
             case "spatialRotation":
                 controller = spatialRotation;
