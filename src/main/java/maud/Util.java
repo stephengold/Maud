@@ -355,6 +355,30 @@ public class Util {
     }
 
     /**
+     * Count how many spatials are contained in the specified subtree. Note:
+     * recursive!
+     *
+     * @param subtree subtree to traverse (may be null)
+     * @return count of spatials (&ge;0)
+     */
+    public static int countSpatials(Spatial subtree) {
+        int result = 0;
+        if (subtree != null) {
+            ++result;
+        }
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result += countSpatials(child);
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
      * Count how many user data are contained in the specified subtree. Note:
      * recursive!
      *
@@ -463,6 +487,34 @@ public class Util {
         }
 
         return result;
+    }
+
+    /**
+     * Test whether there are any "extra" spatials in the specified subtree.
+     * Note: recursive!
+     *
+     * @param subtree subtree to traverse (may be null)
+     * @return true if any found, otherwise false
+     */
+    public static boolean hasExtraSpatials(Spatial subtree) {
+        if (countSgcs(subtree) == 0
+                && countUserData(subtree) == 0
+                && countVertices(subtree) == 0) {
+            return true;
+        }
+
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                boolean hasExtras = hasExtraSpatials(child);
+                if (hasExtras) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

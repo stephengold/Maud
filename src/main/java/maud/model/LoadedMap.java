@@ -190,9 +190,10 @@ public class LoadedMap implements Cloneable {
     /**
      * Read the asset path to the loaded map.
      *
-     * @return path (or "" if unknown)
+     * @return path, or "" if unknown (not null)
      */
     public String getAssetPath() {
+        assert assetPath != null;
         return assetPath;
     }
 
@@ -628,15 +629,15 @@ public class LoadedMap implements Cloneable {
      * Quietly load a skeleton map asset from persistent storage without
      * installing it.
      *
-     * @param assetPath (not null)
+     * @param path (not null)
      * @return a skeleton map, or null if the asset had errors
      */
-    private SkeletonMapping loadFromAsset(String assetPath, boolean useCache) {
+    private SkeletonMapping loadFromAsset(String path, boolean useCache) {
         AssetManager assetManager = Locators.getAssetManager();
         /*
          * Load the skeleton map quietly.
          */
-        AssetKey<SkeletonMapping> key = new AssetKey<>(assetPath);
+        AssetKey<SkeletonMapping> key = new AssetKey<>(path);
         if (!useCache) {
             /*
                  * Delete the key from the asset manager's cache in order
@@ -645,13 +646,13 @@ public class LoadedMap implements Cloneable {
             assetManager.deleteFromCache(key);
         }
 
-        SkeletonMapping loaded = Util.loadMapAsset(assetManager, assetPath);
+        SkeletonMapping loaded = Util.loadMapAsset(assetManager, path);
         if (loaded == null) {
             logger.log(Level.SEVERE, "Failed to load map from asset {0}",
-                    MyString.quote(assetPath));
+                    MyString.quote(path));
         } else {
             logger.log(Level.INFO, "Loaded map from asset {0}",
-                    MyString.quote(assetPath));
+                    MyString.quote(path));
             History.autoAdd();
         }
 

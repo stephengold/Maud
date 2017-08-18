@@ -434,6 +434,21 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
+     * Test whether there are any "extra" spatials in the C-G model.
+     *
+     * @return true if any found, otherwise false
+     */
+    public boolean hasExtraSpatials() {
+        boolean result = false;
+        if (isLoaded()) {
+            Spatial root = getRootSpatial();
+            result = Util.hasExtraSpatials(root);
+        }
+
+        return result;
+    }
+
+    /**
      * Test whether the CG model contains the named geometry.
      *
      * @param name (not null)
