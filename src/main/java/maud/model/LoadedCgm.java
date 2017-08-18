@@ -873,6 +873,9 @@ public class LoadedCgm implements Cloneable {
             String name = names.get(0);
             animation.load(name);
         }
+        if (Util.countVertices(cgmRoot) == 0) {
+            Maud.getModel().getScene().getSkeleton().setBones(SceneBones.All);
+        }
     }
     // *************************************************************************
     // Object methods
