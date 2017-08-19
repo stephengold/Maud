@@ -31,6 +31,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.EditorModel;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
 import maud.model.SelectedBone;
@@ -84,14 +85,16 @@ public class MappingTool extends WindowController {
         /*
          * the "use inverse" checkbox
          */
-        boolean invertFlag = Maud.getModel().getMap().isInvertingMap();
+        EditorModel model = Maud.getModel();
+        boolean invertFlag = model.getMap().isInvertingMap();
         Maud.gui.setChecked("invertRma2", invertFlag);
         /*
-         * the "retargeted pose" button
+         * the "Show retargeted pose" button
          */
         String mButton;
-        if (Maud.getModel().getTarget().animation.isRetargetedPose()
-                || !Maud.getModel().getSource().isLoaded()) {
+        if (model.getTarget().animation.isRetargetedPose()
+                || !model.getSource().isLoaded()
+                || !model.getTarget().bones.isSelected()) {
             mButton = "";
         } else {
             mButton = "Show retargeted pose";
