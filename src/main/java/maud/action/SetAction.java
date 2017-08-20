@@ -90,13 +90,13 @@ class SetAction {
                 Maud.gui.buildMenus.setShadowMode();
                 break;
             case "set track rotation all":
-                target.track.setTrackRotationAll();
+                target.track.setRotationAll();
                 break;
             case "set track scale all":
-                target.track.setTrackScaleAll();
+                target.track.setScaleAll();
                 break;
             case "set track translation all":
-                target.track.setTrackTranslationAll();
+                target.track.setTranslationAll();
                 break;
             case "set tweenRotations":
                 Maud.gui.buildMenus.setTweenRotations();
