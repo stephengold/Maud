@@ -87,7 +87,7 @@ public class BuildMenus {
     // new methods exposed
 
     /**
-     * Display a "Animation -> Add new" menu.
+     * Display an "Animation -> Add new" menu.
      */
     void addNewAnimation() {
         builder.reset();
@@ -118,6 +118,23 @@ public class BuildMenus {
             builder.add("Remove");
         }
         builder.show("select menuItem Settings -> Asset folders -> ");
+    }
+
+    /**
+     * Display an "Animation -> Edit" menu.
+     */
+    void editAnimation() {
+        builder.reset();
+        builder.addEdit("Behead");
+        builder.addDialog("Change duration");
+        builder.addEdit("Delete keyframes");
+        builder.addEdit("Insert keyframes");
+        builder.addDialog("Reduce all tracks");
+        builder.addDialog("Resample all tracks");
+        builder.addEdit("Truncate");
+        builder.addEdit("Wrap all tracks");
+
+        builder.show("select menuItem Animation -> Edit -> ");
     }
 
     /**
@@ -1018,19 +1035,11 @@ public class BuildMenus {
             builder.add("Add new");
             //builder.add("Unload");
         }
-        builder.addTool("Tweening");
 
         if (target.animation.isReal()) {
-            builder.addEdit("Behead");
-            builder.addDialog("Change duration");
-            builder.addDialog("Delete");
-            builder.addEdit("Delete keyframes");
-            builder.addEdit("Insert keyframes");
-            builder.addDialog("Reduce all tracks");
+            builder.add("Edit");
             builder.addDialog("Rename");
-            builder.addDialog("Resample all tracks");
-            builder.addEdit("Truncate");
-            builder.addEdit("Wrap all tracks");
+            builder.addDialog("Delete");
         }
 
         builder.addTool("Source tool"); // TODO submenu
@@ -1038,6 +1047,7 @@ public class BuildMenus {
         if (source.isLoaded() && source.bones.countBones() > 0) {
             builder.add("Load source");
         }
+        builder.addTool("Tweening");
     }
 
     /**
