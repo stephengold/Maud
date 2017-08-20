@@ -119,6 +119,52 @@ public class EditableMap extends LoadedMap {
     }
 
     /**
+     * Delete all invalid bone mappings.
+     */
+    public void deleteInvalidMappings() {
+        if (hasInvalidMappings()) {
+            LoadedCgm source = Maud.getModel().getSource();
+            LoadedCgm target = Maud.getModel().getTarget();
+            SelectedSkeleton skeleton;
+            if (isInvertingMap()) {
+                skeleton = source.bones;
+            } else {
+                skeleton = target.bones;
+            }
+            int numDeleted = 0;
+
+            History.autoAdd();
+            if (skeleton.isSelected()) {
+                for (String targetBoneName : map.listTargetBones()) {
+                    if (!skeleton.hasBone(targetBoneName)) {
+                        BoneMapping mapping = map.get(targetBoneName);
+                        map.removeMapping(mapping);
+                        ++numDeleted;
+                    }
+                }
+            }
+            if (isInvertingMap()) {
+                skeleton = target.bones;
+            } else {
+                skeleton = source.bones;
+            }
+            if (skeleton.isSelected()) {
+                for (String sourceBoneName : map.listSourceBones()) {
+                    if (!skeleton.hasBone(sourceBoneName)) {
+                        BoneMapping mapping = map.getForSource(sourceBoneName);
+                        map.removeMapping(mapping);
+                        ++numDeleted;
+                    }
+                }
+            }
+            String description = String.format(
+                    "delete %d invalid bone mapping%s", numDeleted,
+                    numDeleted == 1 ? "" : "s");
+            setEdited(description);
+        }
+    }
+
+    /**
      * Replace the map with its own inverse.
      */
     public void invert() {
@@ -150,12 +196,14 @@ public class EditableMap extends LoadedMap {
      * Add a bone mapping for the selected source and target bones.
      */
     public void mapBones() {
+        LoadedCgm source = Maud.getModel().getSource();
+        LoadedCgm target = Maud.getModel().getTarget();
         if (!isBoneMappingSelected()
-                && Maud.getModel().getSource().bone.isSelected()
-                && Maud.getModel().getTarget().bone.isSelected()) {
+                && source.bone.isSelected()
+                && target.bone.isSelected()) {
             History.autoAdd();
-            String sourceBoneName = Maud.getModel().getSource().bone.getName();
-            String targetBoneName = Maud.getModel().getTarget().bone.getName();
+            String sourceBoneName = source.bone.getName();
+            String targetBoneName = target.bone.getName();
             /*
              * Remove any prior mappings involving those bones.
              */

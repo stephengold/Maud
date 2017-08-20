@@ -47,6 +47,7 @@ import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.LoadedMap;
 import maud.model.MiscStatus;
 import maud.model.SceneBones;
 import maud.model.SelectedSpatial;
@@ -1269,7 +1270,11 @@ public class BuildMenus {
         builder.reset();
         builder.addTool("Tool");
         builder.addDialog("Load");
-        if (Maud.getModel().getMap().countMappings() > 0) {
+        LoadedMap map = Maud.getModel().getMap();
+        if (!map.isEmpty()) {
+            if (map.hasInvalidMappings()) {
+                builder.addEdit("Delete invalid mappings");
+            }
             builder.addEdit("Invert");
             builder.addEdit("Unload");
         }

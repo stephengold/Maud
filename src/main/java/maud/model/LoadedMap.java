@@ -198,6 +198,35 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
+     * Test whether any of the bone mappings are invalid.
+     *
+     * @return true if invalid mappings found, otherwise false
+     */
+    public boolean hasInvalidMappings() {
+        if (isEmpty()) {
+            return false;
+        }
+
+        EditorModel model = Maud.getModel();
+        SelectedSkeleton sSkeleton = model.getSource().bones;
+        if (sSkeleton.isSelected()) {
+            float matchesSource = matchesSource();
+            if (matchesSource < 0.9995f) {
+                return true;
+            }
+        }
+        SelectedSkeleton tSkeleton = model.getTarget().bones;
+        if (tSkeleton.isSelected()) {
+            float matchesTarget = matchesTarget();
+            if (matchesTarget < 0.9995f) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Test whether the named bone in the target CG model is mapped.
      *
      * @param targetBoneName name of bone to find (not null)
