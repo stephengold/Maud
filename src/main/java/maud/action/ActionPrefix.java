@@ -137,6 +137,10 @@ public class ActionPrefix {
     /**
      * argument is the new sample rate
      */
+    final public static String resampleAnimation = "resample animation ";
+    /**
+     * argument is the new sample rate
+     */
     final public static String resampleTrack = "resample track ";
     /**
      * argument is the name for the new animation

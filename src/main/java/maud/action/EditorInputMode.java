@@ -379,6 +379,8 @@ public class EditorInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean reduceAction(String actionString) {
+        EditableCgm target = Maud.getModel().getTarget();
+
         boolean handled = false;
         if (actionString.equals("reduce animation")) {
             Maud.gui.dialogs.reduceAnimation();
@@ -392,14 +394,14 @@ public class EditorInputMode extends InputMode {
             String f;
             f = MyString.remainder(actionString, ActionPrefix.reduceAnimation);
             int factor = Integer.parseInt(f);
-            Maud.getModel().getTarget().animation.reduce(factor);
+            target.animation.reduce(factor);
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.reduceTrack)) {
             String f;
             f = MyString.remainder(actionString, ActionPrefix.reduceTrack);
             int factor = Integer.parseInt(f);
-            Maud.getModel().getTarget().track.reduce(factor);
+            target.track.reduce(factor);
             handled = true;
         }
 
@@ -471,12 +473,20 @@ public class EditorInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean resampleAction(String actionString) {
+        EditableCgm target = Maud.getModel().getTarget();
+
         boolean handled = false;
-        if (actionString.startsWith(ActionPrefix.resampleTrack)) {
+        if (actionString.startsWith(ActionPrefix.resampleAnimation)) {
+            String rateString = MyString.remainder(actionString,
+                    ActionPrefix.resampleAnimation);
+            float rate = Float.parseFloat(rateString);
+            target.animation.resample(rate);
+            handled = true;
+
+        } else if (actionString.startsWith(ActionPrefix.resampleTrack)) {
             String rateString = MyString.remainder(actionString,
                     ActionPrefix.resampleTrack);
             float rate = Float.parseFloat(rateString);
-            EditableCgm target = Maud.getModel().getTarget();
             target.track.resample(rate);
             handled = true;
         }

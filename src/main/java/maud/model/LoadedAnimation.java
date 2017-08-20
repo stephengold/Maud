@@ -798,7 +798,7 @@ public class LoadedAnimation implements Cloneable {
                 BoneTrack boneTrack = (BoneTrack) track;
                 clone = MyAnimation.reduce(boneTrack, factor);
             } else {
-                clone = track.clone();
+                clone = track.clone(); // TODO
             }
             newAnimation.addTrack(clone);
         }
@@ -831,6 +831,35 @@ public class LoadedAnimation implements Cloneable {
         loadedName = newName;
         editableCgm.replaceAnimation(loaded, newAnimation,
                 "rename an animation");
+    }
+
+    /**
+     * Resample all bone tracks in the loaded animation at the specified rate.
+     *
+     * @param sampleRate sample rate (in frames per second, &gt;0)
+     */
+    public void resample(float sampleRate) {
+        Validate.positive(sampleRate, "sample rate");
+        assert isReal();
+
+        float duration = getDuration();
+        Animation newAnimation = new Animation(loadedName, duration);
+
+        Animation loaded = getAnimation();
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track clone;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                clone = Util.resample(boneTrack, sampleRate, duration);
+            } else {
+                clone = track.clone(); // TODO
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        editableCgm.replaceAnimation(loaded, newAnimation,
+                "resample an animation");
     }
 
     /**

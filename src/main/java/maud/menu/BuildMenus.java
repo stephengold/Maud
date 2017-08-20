@@ -1012,13 +1012,15 @@ public class BuildMenus {
      */
     private void buildAnimationMenu() {
         builder.addTool("Tool");
-        if (Maud.getModel().getTarget().bones.countBones() > 0) {
+        LoadedCgm target = Maud.getModel().getTarget();
+        if (target.bones.countBones() > 0) {
             builder.add("Load");
             builder.add("Add new");
             //builder.add("Unload");
         }
         builder.addTool("Tweening");
-        if (Maud.getModel().getTarget().animation.isReal()) {
+
+        if (target.animation.isReal()) {
             builder.addEdit("Behead");
             builder.addDialog("Change duration");
             builder.addDialog("Delete");
@@ -1026,12 +1028,14 @@ public class BuildMenus {
             builder.addEdit("Insert keyframes");
             builder.addDialog("Reduce all tracks");
             builder.addDialog("Rename");
+            builder.addDialog("Resample all tracks");
             builder.addEdit("Truncate");
             builder.addEdit("Wrap all tracks");
         }
+
         builder.addTool("Source tool"); // TODO submenu
-        if (Maud.getModel().getSource().isLoaded()
-                && Maud.getModel().getSource().bones.countBones() > 0) {
+        LoadedCgm source = Maud.getModel().getSource();
+        if (source.isLoaded() && source.bones.countBones() > 0) {
             builder.add("Load source");
         }
     }
