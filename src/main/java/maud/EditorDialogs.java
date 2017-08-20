@@ -271,6 +271,19 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "resample track" dialog.
+     */
+    public void resampleTrack() {
+        if (Maud.getModel().getTarget().bone.hasTrack()) {
+            FloatDialog controller = new FloatDialog("Resample", 0.1f, 1000f);
+
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog("Enter sample rate:", "20",
+                    ActionPrefix.resampleTrack, controller);
+        }
+    }
+
+    /**
      * Display a "save cgm" dialog.
      */
     public void saveCgm() {

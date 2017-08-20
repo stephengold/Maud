@@ -43,6 +43,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import maud.Pose;
+import maud.Util;
 
 /**
  * The MVC model of the selected bone track in the Maud application.
@@ -361,6 +362,35 @@ public class SelectedTrack implements Cloneable {
         String description = String.format(
                 "thin the keyframes in a single bone track by %dx", factor);
         editableCgm.replaceAnimation(oldAnimation, newAnimation, description);
+    }
+
+    /**
+     * Resample the track at the specified rate.
+     *
+     * @param sampleRate sample rate (in frames per second, &gt;0)
+     */
+    public void resample(float sampleRate) {
+        Validate.positive(sampleRate, "sample rate");
+        assert loadedCgm.bone.hasTrack();
+
+        Animation newAnimation = newAnimation();
+        BoneTrack selectedTrack = findTrack();
+        Animation oldAnimation = loadedCgm.animation.getAnimation();
+        float duration = oldAnimation.getLength();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
+            Track clone;
+            if (track == selectedTrack) {
+                clone = Util.resample(selectedTrack, sampleRate, duration);
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+                "resample a single bone track");
+
     }
 
     /**
