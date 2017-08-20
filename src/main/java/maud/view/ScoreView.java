@@ -1409,6 +1409,7 @@ public class ScoreView implements EditorView {
 
         poseMaterial = new Material(assetManager,
                 "MatDefs/wireframe/multicolor2.j3md");
+        poseMaterial.setBoolean("UseVertexColor", true);
         poseMaterial.setFloat("PointSize", 2f * pointSize);
         Texture poseShape = MyAsset.loadTexture(assetManager,
                 "Textures/shapes/saltire.png");
