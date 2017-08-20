@@ -283,7 +283,7 @@ public class EditorMenus {
                 case "Load source":
                     loadAnimation(Maud.getModel().getSource());
                     break;
-                case "Reduce":
+                case "Reduce all tracks":
                     Maud.gui.dialogs.reduceAnimation();
                     break;
                 case "Rename":

@@ -1024,7 +1024,7 @@ public class BuildMenus {
             builder.addDialog("Delete");
             builder.addEdit("Delete keyframes");
             builder.addEdit("Insert keyframes");
-            builder.addDialog("Reduce");
+            builder.addDialog("Reduce all tracks");
             builder.addDialog("Rename");
             builder.addEdit("Truncate");
             builder.addEdit("Wrap all tracks");
