@@ -143,12 +143,7 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         String arg;
-        if (actionString.startsWith(ActionPrefix.setDuration)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setDuration);
-            float value = Float.parseFloat(arg);
-            target.animation.setDuration(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
+        if (actionString.startsWith(ActionPrefix.setBatchHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
             Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
             target.setBatchHint(value);
@@ -157,6 +152,19 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setCullHint);
             Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
             target.setCullHint(value);
+
+        } else if (actionString.startsWith(
+                ActionPrefix.setDurationProportional)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setDurationProportional);
+            float value = Float.parseFloat(arg);
+            target.animation.setDurationProportional(value);
+
+        } else if (actionString.startsWith(ActionPrefix.setDurationSame)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setDurationSame);
+            float value = Float.parseFloat(arg);
+            target.animation.setDurationSame(value);
 
         } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
             arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);

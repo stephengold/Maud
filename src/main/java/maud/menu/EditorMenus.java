@@ -327,6 +327,31 @@ public class EditorMenus {
     }
 
     /**
+     * Handle a "select menuItem" action from the "Animation -> Edit -> Change
+     * duration" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuAnimationChangeDuration(String remainder) {
+        assert remainder != null;
+
+        boolean handled = true;
+        switch (remainder) {
+            case "Proportional times":
+                Maud.gui.dialogs.setDurationProportional();
+                break;
+            case "Same times":
+                Maud.gui.dialogs.setDurationSame();
+                break;
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
+
+    /**
      * Handle a "select menuItem" action from the "Animation -> Edit" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -336,34 +361,42 @@ public class EditorMenus {
         assert remainder != null;
 
         EditableCgm target = Maud.getModel().getTarget();
-        boolean handled = true;
-        switch (remainder) {
-            case "Behead":
-                target.animation.behead();
-                break;
-            case "Change duration":
-                Maud.gui.dialogs.setDuration();
-                break;
-            case "Delete keyframes":
-                target.animation.deleteKeyframes();
-                break;
-            case "Insert keyframes":
-                target.animation.insertKeyframes();
-                break;
-            case "Reduce all tracks":
-                Maud.gui.dialogs.reduceAnimation();
-                break;
-            case "Resample all tracks":
-                Maud.gui.dialogs.resampleAnimation();
-                break;
-            case "Truncate":
-                target.animation.truncate();
-                break;
-            case "Wrap all tracks":
-                target.animation.wrapAllTracks();
-                break;
-            default:
-                handled = false;
+        boolean handled;
+        String changeDurationPrefix = "Change duration" + menuPathSeparator;
+        if (remainder.startsWith(changeDurationPrefix)) {
+            String arg = MyString.remainder(remainder, changeDurationPrefix);
+            handled = menuAnimationChangeDuration(arg);
+
+        } else {
+            handled = true;
+            switch (remainder) {
+                case "Behead":
+                    target.animation.behead();
+                    break;
+                case "Change duration":
+                    Maud.gui.buildMenus.changeDuration();
+                    break;
+                case "Delete keyframes":
+                    target.animation.deleteKeyframes();
+                    break;
+                case "Insert keyframes":
+                    target.animation.insertKeyframes();
+                    break;
+                case "Reduce all tracks":
+                    Maud.gui.dialogs.reduceAnimation();
+                    break;
+                case "Resample all tracks":
+                    Maud.gui.dialogs.resampleAnimation();
+                    break;
+                case "Truncate":
+                    target.animation.truncate();
+                    break;
+                case "Wrap all tracks":
+                    target.animation.wrapAllTracks();
+                    break;
+                default:
+                    handled = false;
+            }
         }
 
         return handled;

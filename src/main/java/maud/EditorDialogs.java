@@ -330,15 +330,15 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "set duration" dialog.
+     * Display a "set duration proportional" dialog.
      */
-    public void setDuration() {
+    public void setDurationProportional() {
         LoadedAnimation animation = Maud.getModel().getTarget().animation;
         float oldDuration = animation.getDuration();
         String defaultText = Float.toString(oldDuration);
 
-        float finalTime = animation.findLatestKeyframe();
         float min;
+        float finalTime = animation.findLatestKeyframe();
         if (finalTime > 0f) {
             min = 0.01f;
         } else {
@@ -349,7 +349,24 @@ public class EditorDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
-                defaultText, ActionPrefix.setDuration, controller);
+                defaultText, ActionPrefix.setDurationProportional, controller);
+    }
+
+    /**
+     * Display a "set duration same" dialog.
+     */
+    public void setDurationSame() {
+        LoadedAnimation animation = Maud.getModel().getTarget().animation;
+        float oldDuration = animation.getDuration();
+        String defaultText = Float.toString(oldDuration);
+
+        float finalTime = animation.findLatestKeyframe();
+        DialogController controller;
+        controller = new FloatDialog("Set", finalTime, Float.MAX_VALUE);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
+                defaultText, ActionPrefix.setDurationSame, controller);
     }
 
     /**

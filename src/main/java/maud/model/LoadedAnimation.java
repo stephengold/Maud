@@ -908,31 +908,69 @@ public class LoadedAnimation implements Cloneable {
      *
      * @param newDuration (in seconds, &ge;0)
      */
-    public void setDuration(float newDuration) {
+    public void setDurationProportional(float newDuration) {
         Validate.nonNegative(newDuration, "new duration");
 
-        Animation newAnimation = new Animation(loadedName, newDuration);
         Animation loaded = getAnimation();
         float oldDuration = loaded.getLength();
-        Track[] loadedTracks = loaded.getTracks();
-        for (Track track : loadedTracks) {
-            Track newTrack;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                newTrack = MyAnimation.setDuration(boneTrack, newDuration);
-            } else {
-                newTrack = track.clone(); // TODO other track types
+        if (oldDuration != newDuration) {
+            Animation newAnimation = new Animation(loadedName, newDuration);
+            Track[] loadedTracks = loaded.getTracks();
+            for (Track track : loadedTracks) {
+                Track newTrack;
+                if (track instanceof BoneTrack) {
+                    BoneTrack boneTrack = (BoneTrack) track;
+                    newTrack = MyAnimation.setDuration(boneTrack, newDuration);
+                } else {
+                    newTrack = track.clone(); // TODO other track types
+                }
+                newAnimation.addTrack(newTrack);
             }
-            newAnimation.addTrack(newTrack);
-        }
 
-        String eventDescription;
-        if (newDuration > oldDuration) {
-            eventDescription = "slow down an animation";
-        } else {
-            eventDescription = "speed up an animation";
+            String eventDescription;
+            if (newDuration > oldDuration) {
+                eventDescription = "slow down an animation";
+            } else {
+                eventDescription = "speed up an animation";
+            }
+            editableCgm.replaceAnimation(loaded, newAnimation,
+                    eventDescription);
         }
-        editableCgm.replaceAnimation(loaded, newAnimation, eventDescription);
+    }
+
+    /**
+     * Truncate or extend the loaded animation to give it the specified
+     * duration.
+     *
+     * @param newDuration (in seconds, &ge;0)
+     */
+    public void setDurationSame(float newDuration) {
+        Validate.nonNegative(newDuration, "new duration");
+
+        Animation loaded = getAnimation();
+        float oldDuration = loaded.getLength();
+        if (oldDuration != newDuration) {
+            Animation newAnimation = new Animation(loadedName, newDuration);
+            Track[] loadedTracks = loaded.getTracks();
+            for (Track track : loadedTracks) {
+                Track newTrack;
+                if (track instanceof BoneTrack) {
+                    BoneTrack boneTrack = (BoneTrack) track;
+                    newTrack = MyAnimation.truncate(boneTrack, newDuration);
+                } else {
+                    newTrack = track.clone(); // TODO other track types
+                }
+                newAnimation.addTrack(newTrack);
+            }
+
+            String description;
+            if (newDuration < oldDuration) {
+                description = "truncate an animation";
+            } else {
+                description = "extend an animation";
+            }
+            editableCgm.replaceAnimation(loaded, newAnimation, description);
+        }
     }
 
     /**

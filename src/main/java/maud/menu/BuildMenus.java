@@ -121,12 +121,23 @@ public class BuildMenus {
     }
 
     /**
+     * Display an "Animation -> Edit -> Change duration" menu.
+     */
+    void changeDuration() {
+        builder.reset();
+        builder.addDialog("Proportional times");
+        builder.addDialog("Same times");
+        builder.show(
+                "select menuItem Animation -> Edit -> Change duration -> ");
+    }
+
+    /**
      * Display an "Animation -> Edit" menu.
      */
     void editAnimation() {
         builder.reset();
         builder.addEdit("Behead");
-        builder.addDialog("Change duration");
+        builder.add("Change duration");
         builder.addEdit("Delete keyframes");
         builder.addEdit("Insert keyframes");
         builder.addDialog("Reduce all tracks");
