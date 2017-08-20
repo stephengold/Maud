@@ -211,9 +211,13 @@ public class ActionPrefix {
      */
     final public static String setCullHint = "set cullHint ";
     /**
-     * argument is a duration in seconds
+     * argument is a new duration in seconds
      */
-    final public static String setDuration = "set duration ";
+    final public static String setDurationProportional = "set duration proportional ";
+    /**
+     * argument is a new duration in seconds
+     */
+    final public static String setDurationSame = "set duration same ";
     /**
      * argument is the name of a queue bucket
      */
