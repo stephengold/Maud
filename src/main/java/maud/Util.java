@@ -787,6 +787,50 @@ public class Util {
     }
 
     /**
+     * Copy a bone track, resampling it at the specified rate.
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param sampleRate sample rate (in frames per second, &gt;0)
+     * @param duration animation duration (in seconds, &ge;0)
+     * @return a new instance
+     */
+    public static Track resample(BoneTrack oldTrack, float sampleRate,
+            float duration) {
+        Validate.positive(sampleRate, "sample rate");
+        Validate.nonNegative(duration, "duration");
+
+        int boneIndex = oldTrack.getTargetBoneIndex();
+        Vector3f[] oldScales = oldTrack.getScales();
+        int newCount = 1 + (int) Math.floor(duration * sampleRate);
+        Vector3f[] newTranslations = new Vector3f[newCount];
+        Quaternion[] newRotations = new Quaternion[newCount];
+        Vector3f[] newScales = null;
+        if (oldScales != null) {
+            newScales = new Vector3f[newCount];
+        }
+        float[] newTimes = new float[newCount];
+
+        for (int frameIndex = 0; frameIndex < newCount; frameIndex++) {
+            float time = frameIndex / sampleRate;
+
+            Transform boneTransform;
+            boneTransform = boneTransform(oldTrack, time, duration, null);
+            newTranslations[frameIndex] = boneTransform.getTranslation();
+            newRotations[frameIndex] = boneTransform.getRotation();
+            if (oldScales != null) {
+                newScales[frameIndex] = boneTransform.getScale();
+            }
+            newTimes[frameIndex] = time;
+        }
+
+        BoneTrack result = MyAnimation.newBoneTrack(boneIndex, newTimes,
+                newTranslations, newRotations, newScales);
+
+        return result;
+
+    }
+
+    /**
      * Re-target the specified animation from the specified source skeleton to
      * the specified target skeleton using the specified map.
      *

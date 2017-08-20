@@ -460,6 +460,9 @@ public class EditorMenus {
                 case "Reduce track":
                     Maud.gui.dialogs.reduceTrack();
                     break;
+                case "Resample track":
+                    Maud.gui.dialogs.resampleTrack();
+                    break;
                 case "Select":
                     Maud.gui.buildMenus.selectKeyframe();
                     break;

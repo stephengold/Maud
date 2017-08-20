@@ -1240,6 +1240,7 @@ public class BuildMenus {
                 }
             }
             builder.addDialog("Reduce track");
+            builder.addDialog("Resample track");
             builder.addEdit("Wrap track");
         }
     }

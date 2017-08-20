@@ -135,6 +135,10 @@ public class ActionPrefix {
      */
     final public static String renameUserKey = "rename userKey ";
     /**
+     * argument is the new sample rate
+     */
+    final public static String resampleTrack = "resample track ";
+    /**
      * argument is the name for the new animation
      */
     final public static String retargetAnimation = "retarget animation ";

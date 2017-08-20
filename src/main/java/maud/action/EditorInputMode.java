@@ -130,6 +130,9 @@ public class EditorInputMode extends InputMode {
                 case "rename":
                     handled = renameAction(actionString);
                     break;
+                case "resample":
+                    handled = resampleAction(actionString);
+                    break;
                 case "reset":
                     handled = resetAction(actionString);
                     break;
@@ -462,61 +465,73 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
+     * Process an action that starts with "resample".
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean resampleAction(String actionString) {
+        boolean handled = false;
+        if (actionString.startsWith(ActionPrefix.resampleTrack)) {
+            String rateString = MyString.remainder(actionString,
+                    ActionPrefix.resampleTrack);
+            float rate = Float.parseFloat(rateString);
+            EditableCgm target = Maud.getModel().getTarget();
+            target.track.resample(rate);
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
      * Process an action that starts with "reset".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean resetAction(String actionString) {
-        boolean handled = false;
+        boolean handled = true;
         EditableCgm target = Maud.getModel().getTarget();
         switch (actionString) {
             case "reset bone ang anim":
                 target.bone.setRotationToAnimation();
-                handled = true;
                 break;
             case "reset bone ang bind":
                 target.bone.resetRotation();
-                handled = true;
                 break;
             case "reset bone off anim":
                 target.bone.setTranslationToAnimation();
-                handled = true;
                 break;
             case "reset bone off bind":
                 target.bone.resetTranslation();
-                handled = true;
                 break;
             case "reset bone sca anim":
                 target.bone.setScaleToAnimation();
-                handled = true;
                 break;
             case "reset bone sca bind":
                 target.bone.resetScale();
-                handled = true;
                 break;
             case "reset bone selection":
                 LoadedCgm cgm = Maud.gui.mouseCgm();
                 cgm.bone.deselect();
-                handled = true;
                 break;
 
             case "reset spatial rotation":
                 target.setSpatialRotation(rotationIdentity);
-                handled = true;
                 break;
             case "reset spatial scale":
                 target.setSpatialScale(scaleIdentity);
-                handled = true;
                 break;
             case "reset spatial translation":
                 target.setSpatialTranslation(translateIdentity);
-                handled = true;
                 break;
 
             case "reset twist":
                 Maud.getModel().getMap().setTwist(rotationIdentity);
-                handled = true;
+                break;
+            default:
+                handled = false;
         }
 
         return handled;
