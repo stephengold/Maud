@@ -45,7 +45,7 @@ import jme3utilities.math.MyVector3f;
 import maud.Pose;
 
 /**
- * The MVC model of the selected track in the Maud application.
+ * The MVC model of the selected bone track in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -94,8 +94,7 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Count the number of distinct rotations in the selected track, without
-     * distinguishing 0 from -0.
+     * Count the number of distinct rotations, without distinguishing 0 from -0.
      *
      * @return count (&ge;0)
      */
@@ -118,8 +117,7 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Count the number of distinct scales in the selected track, without
-     * distinguishing 0 from -0.
+     * Count the number of distinct scales, without distinguishing 0 from -0.
      *
      * @return count (&ge;0)
      */
@@ -141,8 +139,8 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Count the number of distinct translations in the selected track, without
-     * distinguishing 0 from -0.
+     * Count the number of distinct translations, without distinguishing 0 from
+     * -0.
      *
      * @return count (&ge;0)
      */
@@ -191,8 +189,7 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Find the index of the keyframe (if any) in the selected track at the
-     * current track time.
+     * Find the index of the keyframe (if any) at the current track time.
      *
      * @return keyframe index, or -1 if no keyframe
      */
@@ -339,11 +336,11 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Reduce the selected bone track by the specified factor.
+     * Reduce the keyframes by the specified factor.
      *
      * @param factor reduction factor (&ge;2)
      */
-    public void reduceTrack(int factor) {
+    public void reduce(int factor) {
         Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
         assert loadedCgm.bone.hasTrack();
 
@@ -361,8 +358,9 @@ public class SelectedTrack implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(oldAnimation, newAnimation,
-                "thin keyframes in a single bone track");
+        String description = String.format(
+                "thin the keyframes in a single bone track by %dx", factor);
+        editableCgm.replaceAnimation(oldAnimation, newAnimation, description);
     }
 
     /**
@@ -441,9 +439,9 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Alter all rotations in the selected track to match the displayed pose.
+     * Alter all rotations to match the displayed pose.
      */
-    public void setTrackRotationAll() {
+    public void setRotationAll() {
         BoneTrack track = findTrack();
         if (track != null) {
             Quaternion poseRotation = loadedCgm.bone.userRotation(null);
@@ -461,9 +459,9 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Alter all scales in the selected track to match the displayed pose.
+     * Alter all scales to match the displayed pose.
      */
-    public void setTrackScaleAll() {
+    public void setScaleAll() {
         BoneTrack track = findTrack();
         if (track != null) {
             Vector3f poseScale = loadedCgm.bone.userScale(null);
@@ -485,9 +483,9 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Alter all translations in the selected track to match the displayed pose.
+     * Alter all translations to match the displayed pose.
      */
-    public void setTrackTranslationAll() {
+    public void setTranslationAll() {
         BoneTrack track = findTrack();
         if (track != null) {
             Vector3f poseTranslation = loadedCgm.bone.userTranslation(null);

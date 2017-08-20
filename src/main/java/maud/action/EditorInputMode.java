@@ -396,7 +396,7 @@ public class EditorInputMode extends InputMode {
             String f;
             f = MyString.remainder(actionString, ActionPrefix.reduceTrack);
             int factor = Integer.parseInt(f);
-            Maud.getModel().getTarget().track.reduceTrack(factor);
+            Maud.getModel().getTarget().track.reduce(factor);
             handled = true;
         }
 
