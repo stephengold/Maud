@@ -251,9 +251,14 @@ public class EditorMenus {
 
         boolean handled;
         String addNewPrefix = "Add new" + menuPathSeparator;
+        String editPrefix = "Edit" + menuPathSeparator;
         if (remainder.startsWith(addNewPrefix)) {
             String arg = MyString.remainder(remainder, addNewPrefix);
             handled = menuAnimationAddNew(arg);
+
+        } else if (remainder.startsWith(editPrefix)) {
+            String arg = MyString.remainder(remainder, editPrefix);
+            handled = menuAnimationEdit(arg);
 
         } else {
             handled = true;
@@ -262,20 +267,11 @@ public class EditorMenus {
                 case "Add new":
                     Maud.gui.buildMenus.addNewAnimation();
                     break;
-                case "Behead":
-                    target.animation.behead();
-                    break;
-                case "Change duration":
-                    Maud.gui.dialogs.setDuration();
-                    break;
                 case "Delete":
                     Maud.gui.dialogs.deleteAnimation();
                     break;
-                case "Delete keyframes":
-                    target.animation.deleteKeyframes();
-                    break;
-                case "Insert keyframes":
-                    target.animation.insertKeyframes();
+                case "Edit":
+                    Maud.gui.buildMenus.editAnimation();
                     break;
                 case "Load":
                     loadAnimation(target);
@@ -283,14 +279,8 @@ public class EditorMenus {
                 case "Load source":
                     loadAnimation(Maud.getModel().getSource());
                     break;
-                case "Reduce all tracks":
-                    Maud.gui.dialogs.reduceAnimation();
-                    break;
                 case "Rename":
                     Maud.gui.dialogs.renameAnimation();
-                    break;
-                case "Resample all tracks":
-                    Maud.gui.dialogs.resampleAnimation();
                     break;
                 case "Source tool":
                     Maud.gui.tools.select("sourceAnimation");
@@ -298,14 +288,8 @@ public class EditorMenus {
                 case "Tool":
                     Maud.gui.tools.select("animation");
                     break;
-                case "Truncate":
-                    target.animation.truncate();
-                    break;
                 case "Tweening":
                     Maud.gui.tools.select("tweening");
-                    break;
-                case "Wrap all tracks":
-                    target.animation.wrapAllTracks();
                     break;
                 default:
                     handled = false;
@@ -334,6 +318,49 @@ public class EditorMenus {
                 break;
             case "Retarget":
                 Maud.gui.tools.select("retarget");
+                break;
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "Animation -> Edit" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuAnimationEdit(String remainder) {
+        assert remainder != null;
+
+        EditableCgm target = Maud.getModel().getTarget();
+        boolean handled = true;
+        switch (remainder) {
+            case "Behead":
+                target.animation.behead();
+                break;
+            case "Change duration":
+                Maud.gui.dialogs.setDuration();
+                break;
+            case "Delete keyframes":
+                target.animation.deleteKeyframes();
+                break;
+            case "Insert keyframes":
+                target.animation.insertKeyframes();
+                break;
+            case "Reduce all tracks":
+                Maud.gui.dialogs.reduceAnimation();
+                break;
+            case "Resample all tracks":
+                Maud.gui.dialogs.resampleAnimation();
+                break;
+            case "Truncate":
+                target.animation.truncate();
+                break;
+            case "Wrap all tracks":
+                target.animation.wrapAllTracks();
                 break;
             default:
                 handled = false;
