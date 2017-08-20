@@ -35,6 +35,7 @@ import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.model.EditableCgm;
+import maud.model.EditableMap;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.SelectedSpatial;
@@ -515,31 +516,32 @@ public class EditorMenus {
     private boolean menuMap(String remainder) {
         assert remainder != null;
 
-        boolean handled = false;
+        boolean handled = true;
+        EditableMap map = Maud.getModel().getMap();
         switch (remainder) {
+            case "Delete invalid mappings":
+                map.deleteInvalidMappings();
+                break;
             case "Invert":
-                Maud.getModel().getMap().invert();
-                handled = true;
+                map.invert();
                 break;
             case "Load":
                 Maud.gui.buildMenus.loadMapAsset();
-                handled = true;
                 break;
             case "Save":
                 Maud.gui.dialogs.saveMap();
-                handled = true;
                 break;
             case "Tool":
                 Maud.gui.tools.select("map");
-                handled = true;
                 break;
             case "Twist tool":
                 Maud.gui.tools.select("twist");
-                handled = true;
                 break;
             case "Unload":
-                Maud.getModel().getMap().unload();
-                handled = true;
+                map.unload();
+                break;
+            default:
+                handled = false;
         }
 
         return handled;
