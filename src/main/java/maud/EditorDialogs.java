@@ -271,6 +271,19 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "resample animation" dialog.
+     */
+    public void resampleAnimation() {
+        if (Maud.getModel().getTarget().animation.isReal()) {
+            FloatDialog controller = new FloatDialog("Resample", 0.1f, 1000f);
+
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog("Enter sample rate:", "20",
+                    ActionPrefix.resampleAnimation, controller);
+        }
+    }
+
+    /**
      * Display a "resample track" dialog.
      */
     public void resampleTrack() {

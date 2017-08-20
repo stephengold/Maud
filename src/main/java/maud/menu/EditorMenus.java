@@ -289,6 +289,9 @@ public class EditorMenus {
                 case "Rename":
                     Maud.gui.dialogs.renameAnimation();
                     break;
+                case "Resample all tracks":
+                    Maud.gui.dialogs.resampleAnimation();
+                    break;
                 case "Source tool":
                     Maud.gui.tools.select("sourceAnimation");
                     break;
