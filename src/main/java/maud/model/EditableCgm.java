@@ -702,7 +702,8 @@ public class EditableCgm extends LoadedCgm {
         assert subtree != null;
 
         List<Spatial> childList = subtree.getChildren();
-        Spatial[] children = (Spatial[]) childList.toArray();
+        int numChildren = childList.size();
+        Spatial[] children = childList.toArray(new Spatial[numChildren]);
         for (Spatial child : children) {
             if (Util.countSgcs(child) == 0 && Util.countUserData(child) == 0
                     && Util.countVertices(child) == 0) {
