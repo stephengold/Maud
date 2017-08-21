@@ -70,7 +70,7 @@ class SelectAction {
         LoadedCgm target = model.getTarget();
         switch (actionString) {
             case "select animControl":
-                Maud.gui.buildMenus.selectAnimControl(target);
+                Maud.gui.showMenus.selectAnimControl(target);
                 break;
             case "select bone":
                 Maud.gui.buildMenus.selectBone();
@@ -103,22 +103,22 @@ class SelectAction {
                 Maud.gui.selectXY();
                 break;
             case "select sgc":
-                Maud.gui.buildMenus.selectSgc();
+                Maud.gui.showMenus.selectSgc();
                 break;
             case "select sourceAnimControl":
-                Maud.gui.buildMenus.selectAnimControl(model.getSource());
+                Maud.gui.showMenus.selectAnimControl(model.getSource());
                 break;
             case "select sourceBone":
                 Maud.gui.buildMenus.selectSourceBone();
                 break;
             case "select spatialChild":
-                Maud.gui.buildMenus.selectSpatialChild("");
+                Maud.gui.showMenus.selectSpatialChild("");
                 break;
             case "select spatialParent":
                 target.spatial.selectParent();
                 break;
             case "select userKey":
-                Maud.gui.buildMenus.selectUserKey();
+                Maud.gui.showMenus.selectUserKey();
                 break;
             default:
                 handled = processPrefixes(actionString);
@@ -151,7 +151,7 @@ class SelectAction {
         } else if (actionString.startsWith(ActionPrefix.selectBoneChild)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectBoneChild);
-            Maud.gui.buildMenus.selectBoneChild(arg);
+            Maud.gui.showMenus.selectBoneChild(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectControl)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectControl);

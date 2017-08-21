@@ -57,6 +57,7 @@ import maud.action.EditorInputMode;
 import maud.menu.BoneMenus;
 import maud.menu.BuildMenus;
 import maud.menu.EditorMenus;
+import maud.menu.ShowMenus;
 import maud.model.AxesMode;
 import maud.model.Checkpoint;
 import maud.model.EditableCgm;
@@ -136,6 +137,10 @@ public class EditorScreen extends GuiScreenController {
      * controllers for tool windows
      */
     final public EditorTools tools = new EditorTools(this);
+    /**
+     * simple menus for this screen
+     */
+    final public ShowMenus showMenus = new ShowMenus();
     // *************************************************************************
     // constructors
 
@@ -545,7 +550,7 @@ public class EditorScreen extends GuiScreenController {
         if (childIndex >= 0) {
             spatial.selectChild(childIndex);
         } else {
-            Maud.gui.buildMenus.selectSpatialChild(argument);
+            Maud.gui.showMenus.selectSpatialChild(argument);
         }
     }
 

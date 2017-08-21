@@ -117,7 +117,7 @@ public class EditorMenus {
     public void loadAnimation(LoadedCgm cgm) {
         if (cgm.isLoaded()) {
             List<String> animationNames = cgm.listAnimationNames();
-            Maud.gui.buildMenus.showAnimationSubmenu(animationNames, cgm);
+            Maud.gui.showMenus.showAnimationSubmenu(animationNames, cgm);
         }
     }
 
@@ -138,7 +138,7 @@ public class EditorMenus {
              */
             List<String> animationNames;
             animationNames = cgm.listAnimationNames(argument);
-            Maud.gui.buildMenus.showAnimationSubmenu(animationNames, cgm);
+            Maud.gui.showMenus.showAnimationSubmenu(animationNames, cgm);
         }
     }
 
@@ -181,7 +181,7 @@ public class EditorMenus {
              */
             List<String> names;
             names = target.listSpatialNames(argument, includeNodes);
-            Maud.gui.buildMenus.showSpatialSubmenu(names, includeNodes);
+            Maud.gui.showMenus.showSpatialSubmenu(names, includeNodes);
         }
     }
     // *************************************************************************
@@ -265,13 +265,13 @@ public class EditorMenus {
             EditableCgm target = Maud.getModel().getTarget();
             switch (remainder) {
                 case "Add new":
-                    Maud.gui.buildMenus.addNewAnimation();
+                    Maud.gui.showMenus.addNewAnimation();
                     break;
                 case "Delete":
                     Maud.gui.dialogs.deleteAnimation();
                     break;
                 case "Edit":
-                    Maud.gui.buildMenus.editAnimation();
+                    Maud.gui.showMenus.editAnimation();
                     break;
                 case "Load":
                     loadAnimation(target);
@@ -374,7 +374,7 @@ public class EditorMenus {
                     target.animation.behead();
                     break;
                 case "Change duration":
-                    Maud.gui.buildMenus.changeDuration();
+                    Maud.gui.showMenus.changeDuration();
                     break;
                 case "Delete keyframes":
                     target.animation.deleteKeyframes();
@@ -430,7 +430,7 @@ public class EditorMenus {
                     Maud.gui.dialogs.saveCgm();
                     break;
                 case "Source model":
-                    Maud.gui.buildMenus.sourceCgm();
+                    Maud.gui.showMenus.sourceCgm();
                     break;
                 case "Tool":
                     Maud.gui.tools.select("cgm");
@@ -527,7 +527,7 @@ public class EditorMenus {
                     Maud.gui.dialogs.resampleTrack();
                     break;
                 case "Select":
-                    Maud.gui.buildMenus.selectKeyframe();
+                    Maud.gui.showMenus.selectKeyframe();
                     break;
                 case "Tool":
                     Maud.gui.tools.select("keyframe");
@@ -661,7 +661,7 @@ public class EditorMenus {
                 Maud.gui.tools.select("cursor");
                 break;
             case "Mode":
-                Maud.gui.buildMenus.selectViewMode();
+                Maud.gui.showMenus.selectViewMode();
                 break;
             case "Physics":
                 Maud.gui.tools.select("physics");
@@ -731,7 +731,7 @@ public class EditorMenus {
             handled = true;
             switch (remainder) {
                 case "Asset folders":
-                    Maud.gui.buildMenus.assetFolders();
+                    Maud.gui.showMenus.assetFolders();
                     break;
                 case "Hotkeys":
                     Maud.gui.goBindScreen();
@@ -762,13 +762,13 @@ public class EditorMenus {
         } else {
             switch (remainder) {
                 case "Add":
-                    Maud.gui.buildMenus.addSgc();
+                    Maud.gui.showMenus.addSgc();
                     break;
                 case "Delete":
                     Maud.gui.dialogs.deleteSgc();
                     break;
                 case "Select":
-                    Maud.gui.buildMenus.selectSgc();
+                    Maud.gui.showMenus.selectSgc();
                     break;
                 case "Tool":
                     Maud.gui.tools.select("sgc");
@@ -838,7 +838,7 @@ public class EditorMenus {
                     Maud.gui.tools.select("spatialScale");
                     break;
                 case "Select":
-                    Maud.gui.buildMenus.selectSpatial();
+                    Maud.gui.showMenus.selectSpatial();
                     break;
                 case "Tool":
                     Maud.gui.tools.select("spatial");
@@ -901,7 +901,7 @@ public class EditorMenus {
                 selectSpatial("", true);
                 break;
             case "Child":
-                Maud.gui.buildMenus.selectSpatialChild("");
+                Maud.gui.showMenus.selectSpatialChild("");
                 break;
             case "Geometry":
                 selectSpatial("", false);
@@ -948,13 +948,13 @@ public class EditorMenus {
         } else {
             switch (remainder) {
                 case "Mode":
-                    Maud.gui.buildMenus.selectViewMode();
+                    Maud.gui.showMenus.selectViewMode();
                     break;
                 case "Scene options":
-                    Maud.gui.buildMenus.sceneViewOptions();
+                    Maud.gui.showMenus.sceneViewOptions();
                     break;
                 case "Score options":
-                    Maud.gui.buildMenus.scoreViewOptions();
+                    Maud.gui.showMenus.scoreViewOptions();
                     break;
                 default:
                     handled = false;

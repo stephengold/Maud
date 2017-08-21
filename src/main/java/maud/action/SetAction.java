@@ -75,19 +75,19 @@ class SetAction {
         EditableCgm target = model.getTarget();
         switch (actionString) {
             case "set batchHint":
-                Maud.gui.buildMenus.setBatchHint();
+                Maud.gui.showMenus.setBatchHint();
                 break;
             case "set cullHint":
-                Maud.gui.buildMenus.setCullHint();
+                Maud.gui.showMenus.setCullHint();
                 break;
             case "set queueBucket":
-                Maud.gui.buildMenus.setQueueBucket();
+                Maud.gui.showMenus.setQueueBucket();
                 break;
             case "set sceneBones":
-                Maud.gui.buildMenus.setSceneBones();
+                Maud.gui.showMenus.setSceneBones();
                 break;
             case "set shadowMode":
-                Maud.gui.buildMenus.setShadowMode();
+                Maud.gui.showMenus.setShadowMode();
                 break;
             case "set track rotation all":
                 target.track.setRotationAll();
@@ -99,13 +99,13 @@ class SetAction {
                 target.track.setTranslationAll();
                 break;
             case "set tweenRotations":
-                Maud.gui.buildMenus.setTweenRotations();
+                Maud.gui.showMenus.setTweenRotations();
                 break;
             case "set tweenScales":
-                Maud.gui.buildMenus.setTweenScales();
+                Maud.gui.showMenus.setTweenScales();
                 break;
             case "set tweenTranslations":
-                Maud.gui.buildMenus.setTweenTranslations();
+                Maud.gui.showMenus.setTweenTranslations();
                 break;
             case "set twist cardinal":
                 model.getMap().cardinalizeTwist();
