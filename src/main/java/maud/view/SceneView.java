@@ -83,7 +83,8 @@ import maud.model.ViewMode;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SceneView implements EditorView, JmeCloneable {
+public class SceneView
+        implements EditorView, JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -758,8 +759,8 @@ public class SceneView implements EditorView, JmeCloneable {
         /*
          * Trace the ray to the CG model's visualization.
          */
-        Spatial cgmRoot = getCgmRoot();
-        Vector3f targetContactPoint = findContact(cgmRoot, ray);
+        Spatial root = getCgmRoot();
+        Vector3f targetContactPoint = findContact(root, ray);
 
         if (targetContactPoint != null) {
             cgm.scenePov.setCursorLocation(targetContactPoint);
@@ -767,9 +768,9 @@ public class SceneView implements EditorView, JmeCloneable {
             /*
              * The ray missed the CG model; try to trace it to the platform.
              */
-            Spatial platform = getPlatform();
-            if (platform != null) {
-                Vector3f platformContactPoint = findContact(platform, ray);
+            Spatial plat = getPlatform();
+            if (plat != null) {
+                Vector3f platformContactPoint = findContact(plat, ray);
                 if (platformContactPoint != null) {
                     cgm.scenePov.setCursorLocation(platformContactPoint);
                 }
@@ -1015,7 +1016,7 @@ public class SceneView implements EditorView, JmeCloneable {
         skeleton = MySkeleton.findSkeleton(cgmRoot);
         /*
          * Remove all scene-graph controls except those concerned with physics.
-         * Enabled those SGCs and configure their physics spaces so that the
+         * Enable those SGCs and configure their physics spaces so that the
          * BulletDebugAppState can render their collision shapes.
          */
         MySpatial.removeNonPhysicsControls(cgmRoot);
