@@ -338,7 +338,8 @@ public class LoadedMap implements Cloneable {
 
         Locators.save();
         Locators.useFilesystem(location);
-        SkeletonMapping loaded = loadFromAsset(path, false);
+        boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
+        SkeletonMapping loaded = loadFromAsset(path, false, diagnose);
         Locators.restore();
 
         boolean success;
@@ -367,7 +368,8 @@ public class LoadedMap implements Cloneable {
 
         Locators.save();
         Locators.useDefault();
-        SkeletonMapping loaded = loadFromAsset(path, false);
+        boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
+        SkeletonMapping loaded = loadFromAsset(path, false, diagnose);
         Locators.restore();
 
         boolean success;
@@ -659,9 +661,11 @@ public class LoadedMap implements Cloneable {
      * installing it.
      *
      * @param path (not null)
+     * @param diagnose true&rarr;messages to console, false&rarr;no messages
      * @return a skeleton map, or null if the asset had errors
      */
-    private SkeletonMapping loadFromAsset(String path, boolean useCache) {
+    private SkeletonMapping loadFromAsset(String path, boolean useCache,
+            boolean diagnose) {
         AssetManager assetManager = Locators.getAssetManager();
         /*
          * Load the skeleton map quietly.
@@ -675,7 +679,7 @@ public class LoadedMap implements Cloneable {
             assetManager.deleteFromCache(key);
         }
 
-        SkeletonMapping loaded = Util.loadMapAsset(assetManager, path);
+        SkeletonMapping loaded = Util.loadMapAsset(assetManager, key, diagnose);
         if (loaded == null) {
             logger.log(Level.SEVERE, "Failed to load map from asset {0}",
                     MyString.quote(path));
