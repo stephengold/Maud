@@ -521,19 +521,23 @@ public class Util {
      * messages.
      *
      * @param assetManager asset manager
-     * @param assetPath path to BVH asset
+     * @param key key for BVH asset
+     * @param diagnose true&rarr;messages to console, false&rarr;no messages
      * @return a new orphan spatial, or null if unsuccessful
      */
     public static Spatial loadBvhAsset(AssetManager assetManager,
-            String assetPath) {
-        if (assetManager == null || assetPath == null) {
+            AssetKey<BVHAnimData> key, boolean diagnose) {
+        if (assetManager == null || key == null) {
             return null;
         }
 
         BVHAnimData loadedData;
         try {
-            loadedData = (BVHAnimData) assetManager.loadAsset(assetPath);
-        } catch (RuntimeException e) {
+            loadedData = assetManager.loadAsset(key);
+        } catch (RuntimeException exception) {
+            if (diagnose) {
+                exception.printStackTrace();
+            }
             return null;
         }
 
@@ -544,7 +548,8 @@ public class Util {
         Animation anim = loadedData.getAnimation();
         animControl.addAnim(anim);
 
-        Spatial result = new Node(assetPath);
+        String name = key.getName();
+        Spatial result = new Node(name);
         result.addControl(animControl);
         result.addControl(skeletonControl);
 
@@ -555,39 +560,30 @@ public class Util {
      * Load a CG model asset without logging any warning/error messages.
      *
      * @param assetManager asset manager
-     * @param assetPath path to CG model asset
+     * @param key key for CG model asset
+     * @param diagnose true&rarr;messages to console, false&rarr;no messages
      * @return a new orphan spatial, or null if unsuccessful
      */
     public static Spatial loadCgmAsset(AssetManager assetManager,
-            String assetPath) {
-        if (assetManager == null || assetPath == null) {
+            ModelKey key, boolean diagnose) {
+        if (assetManager == null || key == null) {
             return null;
         }
 
-        ModelKey key = new ModelKey(assetPath);
-        /*
-         * Temporarily hush warnings about failures to triangulate,
-         * vertices with >4 weights, shapes that can't be scaled, and
-         * unsupported pass directives.
-         */
         Logger faceLogger = Logger.getLogger(Face.class.getName());
         Level faceLevel = faceLogger.getLevel();
-        faceLogger.setLevel(Level.SEVERE);
 
         Logger meshLoaderLogger = Logger.getLogger(MeshLoader.class.getName());
         Level meshLoaderLevel = meshLoaderLogger.getLevel();
-        meshLoaderLogger.setLevel(Level.SEVERE);
 
         Logger materialLoaderLogger = Logger.getLogger(
                 MaterialLoader.class.getName());
         Level materialLoaderLevel = materialLoaderLogger.getLevel();
-        materialLoaderLogger.setLevel(Level.SEVERE);
 
         Logger compoundCollisionShapeLogger = Logger.getLogger(
                 CompoundCollisionShape.class.getName());
         Level compoundCollisionShapeLevel;
         compoundCollisionShapeLevel = compoundCollisionShapeLogger.getLevel();
-        compoundCollisionShapeLogger.setLevel(Level.SEVERE);
 
         org.slf4j.Logger slfLogger;
         slfLogger = LoggerFactory.getLogger("jme3_ext_xbuf.XbufLoader");
@@ -595,7 +591,19 @@ public class Util {
         xbufLoaderLogger = (ch.qos.logback.classic.Logger) slfLogger;
         ch.qos.logback.classic.Level xbufLoaderLevel;
         xbufLoaderLevel = xbufLoaderLogger.getLevel();
-        xbufLoaderLogger.setLevel(ch.qos.logback.classic.Level.ERROR);
+
+        if (!diagnose) {
+            /*
+             * Temporarily hush warnings about failures to triangulate,
+             * vertices with >4 weights, shapes that can't be scaled, and
+             * unsupported pass directives.
+             */
+            faceLogger.setLevel(Level.SEVERE);
+            meshLoaderLogger.setLevel(Level.SEVERE);
+            materialLoaderLogger.setLevel(Level.SEVERE);
+            compoundCollisionShapeLogger.setLevel(Level.SEVERE);
+            xbufLoaderLogger.setLevel(ch.qos.logback.classic.Level.ERROR);
+        }
         /*
          * Load the model.
          */
@@ -603,16 +611,21 @@ public class Util {
         try {
             loaded = assetManager.loadModel(key);
         } catch (RuntimeException exception) {
+            if (diagnose) {
+                exception.printStackTrace();
+            }
             loaded = null;
         }
-        /*
-         * Restore logging levels.
-         */
-        faceLogger.setLevel(faceLevel);
-        meshLoaderLogger.setLevel(meshLoaderLevel);
-        materialLoaderLogger.setLevel(materialLoaderLevel);
-        compoundCollisionShapeLogger.setLevel(compoundCollisionShapeLevel);
-        xbufLoaderLogger.setLevel(xbufLoaderLevel);
+        if (!diagnose) {
+            /*
+             * Restore logging levels.
+             */
+            faceLogger.setLevel(faceLevel);
+            meshLoaderLogger.setLevel(meshLoaderLevel);
+            materialLoaderLogger.setLevel(materialLoaderLevel);
+            compoundCollisionShapeLogger.setLevel(compoundCollisionShapeLevel);
+            xbufLoaderLogger.setLevel(xbufLoaderLevel);
+        }
 
         return loaded;
     }
@@ -622,21 +635,23 @@ public class Util {
      * messages.
      *
      * @param assetManager asset manager
-     * @param assetPath path to J3O asset
+     * @param key key for skeleton map asset
+     * @param diagnose true&rarr;messages to console, false&rarr;no messages
      * @return a skeleton map, or null if unsuccessful
      */
     public static SkeletonMapping loadMapAsset(AssetManager assetManager,
-            String assetPath) {
-        if (assetManager == null || assetPath == null) {
+            AssetKey<SkeletonMapping> key, boolean diagnose) {
+        if (assetManager == null || key == null) {
             return null;
         }
-
-        AssetKey<SkeletonMapping> key = new AssetKey<>(assetPath);
 
         SkeletonMapping loaded;
         try {
             loaded = assetManager.loadAsset(key);
         } catch (RuntimeException exception) {
+            if (diagnose) {
+                exception.printStackTrace();
+            }
             loaded = null;
         }
 

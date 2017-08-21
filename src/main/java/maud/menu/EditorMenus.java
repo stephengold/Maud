@@ -733,8 +733,14 @@ public class EditorMenus {
                 case "Asset folders":
                     Maud.gui.showMenus.assetFolders();
                     break;
+                case "Diagnose loads":
+                    Maud.getModel().getMisc().setDiagnoseLoads(true);
+                    break;
                 case "Hotkeys":
                     Maud.gui.goBindScreen();
+                    break;
+                case "Stop diagnosing loads":
+                    Maud.getModel().getMisc().setDiagnoseLoads(false);
                     break;
                 default:
                     handled = false;

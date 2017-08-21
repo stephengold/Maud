@@ -37,7 +37,7 @@ import maud.TweenRotations;
 import maud.TweenVectors;
 
 /**
- * The MVC model of miscellaneous details in Maud's editor screen.
+ * The MVC model of miscellaneous options in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -62,9 +62,9 @@ public class MiscStatus implements Cloneable {
      */
     private boolean anglesInDegrees = true;
     /**
-     * view mode
+     * console messages during loads (true &rarr; print, false &rarr; suppress)
      */
-    private ViewMode viewMode = ViewMode.Scene;
+    private boolean diagnoseLoads = false;
     /**
      * tweening technique for rotations
      */
@@ -77,6 +77,10 @@ public class MiscStatus implements Cloneable {
      * tweening technique for translations
      */
     private TweenVectors tweenTranslations = TweenVectors.Lerp;
+    /**
+     * view mode
+     */
+    private ViewMode viewMode = ViewMode.Scene;
     // *************************************************************************
     // new methods exposed
 
@@ -87,6 +91,15 @@ public class MiscStatus implements Cloneable {
      */
     public boolean getAnglesInDegrees() {
         return anglesInDegrees;
+    }
+
+    /**
+     * Test whether to print diagnostic messages to the console during loads.
+     *
+     * @return true to print diagnostics, otherwise false
+     */
+    public boolean getDiagnoseLoads() {
+        return diagnoseLoads;
     }
 
     /**
@@ -211,10 +224,19 @@ public class MiscStatus implements Cloneable {
     /**
      * Alter the angle display units.
      *
-     * @param newState true &rarr; degrees, false &rarr; radians
+     * @param newSetting true &rarr; degrees, false &rarr; radians
      */
-    public void setAnglesInDegrees(boolean newState) {
-        anglesInDegrees = newState;
+    public void setAnglesInDegrees(boolean newSetting) {
+        anglesInDegrees = newSetting;
+    }
+
+    /**
+     * Alter whether to print diagnostic messages to the console during loads.
+     *
+     * @param newSetting (true &rarr; print, false &rarr; suppress)
+     */
+    public void setDiagnoseLoads(boolean newSetting) {
+        diagnoseLoads = newSetting;
     }
 
     /**

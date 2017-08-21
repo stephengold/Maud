@@ -673,7 +673,8 @@ public class LoadedCgm implements Cloneable {
 
         Locators.save();
         Locators.useFilesystem(rootPath);
-        Spatial loaded = loadFromAsset(assetPath, false);
+        boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
+        Spatial loaded = loadFromAsset(assetPath, false, diagnose);
         Locators.restore();
 
         if (loaded == null) {
@@ -755,7 +756,8 @@ public class LoadedCgm implements Cloneable {
         }
 
         String assetPath = String.format("Models/%s/%s", folderName, fileName);
-        Spatial loaded = loadFromAsset(assetPath, false);
+        boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
+        Spatial loaded = loadFromAsset(assetPath, false, diagnose);
         if (loaded == null) {
             return false;
         } else {
@@ -1064,13 +1066,15 @@ public class LoadedCgm implements Cloneable {
      * @param assetPath (not null)
      * @param useCache true to look in the asset manager's cache, false to force
      * a fresh load from persistent storage
+     * @param diagnose true&rarr;messages to console, false&rarr;no messages
      * @return an orphaned spatial, or null if the asset had errors
      */
-    private Spatial loadFromAsset(String assetPath, boolean useCache) {
+    private Spatial loadFromAsset(String assetPath, boolean useCache,
+            boolean diagnose) {
         AssetManager assetManager = Locators.getAssetManager();
         Locators.save();
         /*
-         * Load the CG model quietly.
+         * Load the CG model.
          */
         String ext;
         Spatial loaded;
@@ -1084,7 +1088,7 @@ public class LoadedCgm implements Cloneable {
                  */
                 assetManager.deleteFromCache(key);
             }
-            loaded = Util.loadBvhAsset(assetManager, assetPath);
+            loaded = Util.loadBvhAsset(assetManager, key, diagnose);
 
         } else {
             ModelKey key = new ModelKey(assetPath);
@@ -1101,7 +1105,7 @@ public class LoadedCgm implements Cloneable {
             assetFolders = Maud.getModel().getLocations().listAll();
             Locators.register(assetFolders);
 
-            loaded = Util.loadCgmAsset(assetManager, assetPath);
+            loaded = Util.loadCgmAsset(assetManager, key, diagnose);
         }
         if (loaded == null) {
             logger.log(Level.SEVERE, "Failed to load model from asset {0}",

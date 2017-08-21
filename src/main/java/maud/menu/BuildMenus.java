@@ -752,9 +752,16 @@ public class BuildMenus {
      */
     private void buildSettingsMenu() {
         builder.add("Asset folders");
+        boolean diagnoseLoads = Maud.getModel().getMisc().getDiagnoseLoads();
+        if (!diagnoseLoads) {
+            builder.add("Diagnose loads");
+        }
         //builder.add("Initial model"); TODO
         builder.add("Hotkeys");
         //builder.add("Locale"); TODO
+        if (diagnoseLoads) {
+            builder.add("Stop diagnosing loads");
+        }
     }
 
     /**
