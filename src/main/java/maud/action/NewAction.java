@@ -77,7 +77,7 @@ class NewAction {
                 Maud.getModel().getTarget().track.insertSingleKeyframe();
                 break;
             case "new userKey":
-                Maud.gui.buildMenus.selectUserDataType();
+                Maud.gui.showMenus.selectUserDataType();
                 break;
             default:
                 handled = processPrefixes(actionString);
