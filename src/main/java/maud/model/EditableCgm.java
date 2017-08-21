@@ -736,7 +736,7 @@ public class EditableCgm extends LoadedCgm {
             Collection<String> names = animControl.getAnimationNames();
             for (String animationName : names) {
                 Animation anim = animControl.getAnim(animationName);
-                numTracksZfed += Util.zeroFirst(anim);
+                numTracksZfed += MyAnimation.zeroFirst(anim);
                 numTracksRred += MyAnimation.removeRepeats(anim);
             }
         }

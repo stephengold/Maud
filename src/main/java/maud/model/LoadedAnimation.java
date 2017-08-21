@@ -140,7 +140,7 @@ public class LoadedAnimation implements Cloneable {
                 BoneTrack boneTrack = (BoneTrack) track;
                 Transform neck = Maud.getModel().getMisc().interpolate(
                         currentTime, boneTrack, oldDuration, null);
-                newTrack = Util.behead(boneTrack, currentTime, neck,
+                newTrack = MyAnimation.behead(boneTrack, currentTime, neck,
                         oldDuration);
             } else {
                 newTrack = track.clone(); // TODO other track types
