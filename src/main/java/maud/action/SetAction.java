@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
@@ -111,13 +112,13 @@ class SetAction {
                 model.getMap().cardinalizeTwist();
                 break;
             case "set twist snapX":
-                model.getMap().snapTwist(0); // TODO use named constant
+                model.getMap().snapTwist(PhysicsSpace.AXIS_X);
                 break;
             case "set twist snapY":
-                model.getMap().snapTwist(1);
+                model.getMap().snapTwist(PhysicsSpace.AXIS_Y);
                 break;
             case "set twist snapZ":
-                model.getMap().snapTwist(2);
+                model.getMap().snapTwist(PhysicsSpace.AXIS_Z);
                 break;
             case "set userData":
                 Maud.gui.dialogs.setUserData();
