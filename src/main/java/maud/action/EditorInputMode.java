@@ -627,7 +627,11 @@ public class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "toggle pause target":
-                model.getTarget().animation.togglePaused();
+                if (model.getTarget().animation.isRetargetedPose()) {
+                    model.getSource().animation.togglePaused();
+                } else {
+                    model.getTarget().animation.togglePaused();
+                }
                 handled = true;
                 break;
             case "toggle projection":

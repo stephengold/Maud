@@ -319,9 +319,15 @@ public class EditorScreen extends GuiScreenController {
         }
 
         EditorModel model = Maud.getModel();
+        SceneOptions scene = model.getScene();
         LoadedCgm source = model.getSource();
         EditableCgm target = model.getTarget();
-        SceneOptions scene = model.getScene();
+        LoadedCgm animationCgm;
+        if (target.animation.isRetargetedPose()) {
+            animationCgm = source;
+        } else {
+            animationCgm = target;
+        }
         boolean isChecked = event.isChecked();
 
         String prefix = MyString.removeSuffix(checkBoxId, "CheckBox");
@@ -339,14 +345,14 @@ public class EditorScreen extends GuiScreenController {
                 scene.getBounds().setDepthTestFlag(isChecked);
                 break;
             case "freeze":
-                target.pose.setFrozen(isChecked);
+                animationCgm.pose.setFrozen(isChecked);
                 break;
             case "invertRma":
             case "invertRma2":
                 model.getMap().setInvertMap(isChecked);
                 break;
             case "loop":
-                target.animation.setContinue(isChecked);
+                animationCgm.animation.setContinue(isChecked);
                 break;
             case "loopSource":
                 source.animation.setContinue(isChecked);
@@ -361,7 +367,7 @@ public class EditorScreen extends GuiScreenController {
                 source.animation.setPinned(isChecked);
                 break;
             case "pong":
-                target.animation.setReverse(isChecked);
+                animationCgm.animation.setReverse(isChecked);
                 break;
             case "pongSource":
                 source.animation.setReverse(isChecked);
