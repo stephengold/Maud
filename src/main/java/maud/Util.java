@@ -214,62 +214,6 @@ public class Util {
     }
 
     /**
-     * Copy a bone track, deleting everything before the specified time, and
-     * making that the start of the animation.
-     *
-     * @param oldTrack (not null, unaffected)
-     * @param neckTime cutoff time (in seconds, &gt;0)
-     * @param neckTransform user transform of bone at the neck time (not null,
-     * unaffected)
-     * @param oldDuration (in seconds, &ge;neckTime)
-     * @return a new instance
-     */
-    public static BoneTrack behead(BoneTrack oldTrack, float neckTime,
-            Transform neckTransform, float oldDuration) {
-        Validate.positive(neckTime, "neck time");
-
-        float[] oldTimes = oldTrack.getKeyFrameTimes();
-        Vector3f[] oldTranslations = oldTrack.getTranslations();
-        Quaternion[] oldRotations = oldTrack.getRotations();
-        Vector3f[] oldScales = oldTrack.getScales();
-        int oldCount = oldTimes.length;
-
-        int neckIndex;
-        neckIndex = MyAnimation.findPreviousKeyframeIndex(oldTrack, neckTime);
-        int newCount = oldCount - neckIndex;
-        Vector3f[] translations = new Vector3f[newCount];
-        Quaternion[] rotations = new Quaternion[newCount];
-        Vector3f[] scales = null;
-        if (oldScales != null) {
-            scales = new Vector3f[newCount];
-        }
-        float[] times = new float[newCount];
-
-        Transform user = neckTransform.clone();
-        translations[0] = user.getTranslation();
-        rotations[0] = user.getRotation();
-        if (scales != null) {
-            scales[0] = user.getScale();
-        }
-        times[0] = 0f;
-        for (int newIndex = 1; newIndex < newCount; newIndex++) {
-            int oldIndex = newIndex + neckIndex;
-            translations[newIndex] = oldTranslations[oldIndex].clone();
-            rotations[newIndex] = oldRotations[oldIndex].clone();
-            if (scales != null) {
-                scales[newIndex] = oldScales[oldIndex].clone();
-            }
-            times[newIndex] = oldTimes[oldIndex] - neckTime;
-        }
-
-        int boneIndex = oldTrack.getTargetBoneIndex();
-        BoneTrack result = new BoneTrack(boneIndex, times, translations,
-                rotations, scales);
-
-        return result;
-    }
-
-    /**
      * Calculate the bone transform for the specified track and time, using the
      * current techniques.
      *
@@ -930,25 +874,5 @@ public class Util {
                 rotations, scales);
 
         return result;
-    }
-
-    /**
-     * Repair all tracks in which the 1st keyframe's time isn't 0.
-     *
-     * @param animation (not null)
-     * @return number of tracks edited
-     */
-    public static int zeroFirst(Animation animation) {
-        int numTracksEdited = 0;
-        Track[] tracks = animation.getTracks();
-        for (Track track : tracks) {
-            float[] times = track.getKeyFrameTimes();
-            if (times[0] != 0f) {
-                times[0] = 0f;
-                ++numTracksEdited;
-            }
-        }
-
-        return numTracksEdited;
     }
 }
