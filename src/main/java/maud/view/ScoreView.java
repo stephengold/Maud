@@ -526,7 +526,7 @@ public class ScoreView implements EditorView {
                 case "none":
                     break;
                 case "roots":
-                    indices = cgm.bones.listRootIndices();
+                    indices = cgm.getSkeleton().listRootIndices();
                     attachStaves(indices);
                     break;
                 case "selected":
@@ -568,7 +568,7 @@ public class ScoreView implements EditorView {
      * Attach staves for all bones, in index order.
      */
     private void attachAllBones() {
-        int numBones = cgm.bones.countBones();
+        int numBones = cgm.getSkeleton().countBones();
         for (currentBone = 0; currentBone < numBones; currentBone++) {
             if (currentBone > 0) {
                 height += yGap;
@@ -601,7 +601,7 @@ public class ScoreView implements EditorView {
             bgMaterial = bgNotSelected;
         }
 
-        String boneName = cgm.bones.getBoneName(currentBone);
+        String boneName = cgm.getSkeleton().getBoneName(currentBone);
         float boneNameSize = 4f + labelFont.getLineWidth(boneName);
         /*
          * Calculate the effective width and height for the label and the size

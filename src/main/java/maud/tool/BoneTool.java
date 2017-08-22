@@ -148,7 +148,7 @@ class BoneTool extends WindowController {
         String nButton, pButton;
 
         LoadedCgm target = Maud.getModel().getTarget();
-        int numBones = target.bones.countBones();
+        int numBones = target.getSkeleton().countBones();
         if (target.getBone().isSelected()) {
             int selectedIndex = target.getBone().getIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
@@ -217,7 +217,7 @@ class BoneTool extends WindowController {
         SelectedBone selectedBone = target.getBone();
         if (selectedBone.isSelected()) {
             if (selectedBone.isRootBone()) {
-                int numRoots = target.bones.countRootBones();
+                int numRoots = target.getSkeleton().countRootBones();
                 if (numRoots == 1) {
                     parentText = "none (the root)";
                 } else {

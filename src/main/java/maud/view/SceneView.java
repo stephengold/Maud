@@ -648,7 +648,7 @@ public class SceneView
                 boneIndexSet.set(0, numBones - 1);
                 break;
             case InfluencersOnly:
-                cgm.bones.listInfluencers(boneIndexSet);
+                cgm.getSkeleton().listInfluencers(boneIndexSet);
                 break;
             case None:
                 boneIndexSet.clear(0, numBones - 1);
@@ -1070,7 +1070,7 @@ public class SceneView
      * Update the pose based on the MVC model.
      */
     private void updatePose() {
-        int boneCount = cgm.bones.countBones();
+        int boneCount = cgm.getSkeleton().countBones();
         Pose pose = cgm.getPose().getPose();
         int numTransforms = pose.countBones();
         assert numTransforms == boneCount : numTransforms;

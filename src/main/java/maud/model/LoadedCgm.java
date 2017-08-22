@@ -117,7 +117,7 @@ public class LoadedCgm implements Cloneable {
     /**
      * which skeleton is selected in the CG model
      */
-    public SelectedSkeleton bones = new SelectedSkeleton();
+    private SelectedSkeleton selectedSkeleton = new SelectedSkeleton();
     /**
      * which spatial is selected in the CG model
      */
@@ -160,16 +160,17 @@ public class LoadedCgm implements Cloneable {
      * Instantiate with no CG model loaded.
      */
     public LoadedCgm() {
-        loadedAnimation.setCgm(this);
-        selectedBone.setCgm(this);
-        bones.setCgm(this);
-        displayedPose.setCgm(this);
-        selectedSgc.setCgm(this);
-        scenePov.setCgm(this);
-        scorePov.setCgm(this);
-        selectedSpatial.setCgm(this);
-        selectedTrack.setCgm(this);
-        userData.setCgm(this);
+        LoadedCgm cgm = this;
+        displayedPose.setCgm(cgm);
+        loadedAnimation.setCgm(cgm);
+        scenePov.setCgm(cgm);
+        scorePov.setCgm(cgm);
+        selectedBone.setCgm(cgm);
+        selectedSgc.setCgm(cgm);
+        selectedSkeleton.setCgm(cgm);
+        selectedSpatial.setCgm(cgm);
+        selectedTrack.setCgm(cgm);
+        userData.setCgm(cgm);
     }
     // *************************************************************************
     // new methods exposed
@@ -440,6 +441,16 @@ public class LoadedCgm implements Cloneable {
     public SelectedSgc getSgc() {
         assert selectedSgc != null;
         return selectedSgc;
+    }
+
+    /**
+     * Access the selected skeleton.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedSkeleton getSkeleton() {
+        assert selectedSkeleton != null;
+        return selectedSkeleton;
     }
 
     /**
@@ -967,7 +978,7 @@ public class LoadedCgm implements Cloneable {
 
         clone.loadedAnimation = loadedAnimation.clone();
         clone.selectedBone = selectedBone.clone();
-        clone.bones = bones.clone();
+        clone.selectedSkeleton = selectedSkeleton.clone();
         clone.displayedPose = cloner.clone(displayedPose);
         clone.rootSpatial = cloner.clone(rootSpatial);
         clone.scenePov = cloner.clone(scenePov);
@@ -982,7 +993,7 @@ public class LoadedCgm implements Cloneable {
          */
         clone.loadedAnimation.setCgm(clone);
         clone.selectedBone.setCgm(clone);
-        clone.bones.setCgm(clone);
+        clone.selectedSkeleton.setCgm(clone);
         clone.displayedPose.setCgm(clone);
         clone.scenePov.setCgm(clone);
         if (clone.getSceneView() != null) {

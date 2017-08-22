@@ -111,7 +111,7 @@ public class SelectedBone implements Cloneable {
         if (selectedIndex == -1) {
             bone = null;
         } else {
-            bone = loadedCgm.bones.getBone(selectedIndex);
+            bone = loadedCgm.getSkeleton().getBone(selectedIndex);
         }
 
         return bone;
@@ -214,8 +214,8 @@ public class SelectedBone implements Cloneable {
         int count = 0;
         if (isSelected()) {
             Boolean selectedSpatialFlag = false;
-            Skeleton skeleton;
-            skeleton = loadedCgm.bones.findSkeleton(selectedSpatialFlag);
+            Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton(
+                    selectedSpatialFlag);
             Spatial spatial;
             if (selectedSpatialFlag) {
                 spatial = loadedCgm.getSpatial().modelSpatial();
@@ -266,7 +266,7 @@ public class SelectedBone implements Cloneable {
      */
     public List<Integer> listAncestorIndices() {
         List<Integer> result = new ArrayList<>(6);
-        Skeleton skeleton = loadedCgm.bones.findSkeleton();
+        Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
         Bone bone = getBone();
         while (bone != null) {
             int index = skeleton.getBoneIndex(bone);
@@ -288,7 +288,7 @@ public class SelectedBone implements Cloneable {
         if (bone == null) {
             result = new ArrayList<>(0);
         } else {
-            Skeleton skeleton = loadedCgm.bones.findSkeleton();
+            Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
 
             List<Bone> children = bone.getChildren();
             int numChildren = children.size();
@@ -362,7 +362,7 @@ public class SelectedBone implements Cloneable {
         int index = -1;
         Bone bone = getBone();
         if (bone != null) {
-            Skeleton skeleton = loadedCgm.bones.findSkeleton();
+            Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
             Bone parent = bone.getParent();
             index = skeleton.getBoneIndex(parent);
         }
@@ -408,7 +408,7 @@ public class SelectedBone implements Cloneable {
     void select(Bone bone) {
         assert bone != null;
 
-        Skeleton skeleton = loadedCgm.bones.findSkeleton();
+        Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
         int index = skeleton.getBoneIndex(bone);
         if (index != -1) {
             select(index);
@@ -434,7 +434,7 @@ public class SelectedBone implements Cloneable {
             deselect();
 
         } else {
-            Skeleton skeleton = loadedCgm.bones.findSkeleton();
+            Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
             int index = skeleton.getBoneIndex(name);
             if (index == -1) {
                 logger.log(Level.WARNING, "Select failed: no bone named {0}.",
@@ -463,7 +463,7 @@ public class SelectedBone implements Cloneable {
      * Select the first root bone of the loaded CG model.
      */
     public void selectFirstRoot() {
-        Skeleton skeleton = loadedCgm.bones.findSkeleton();
+        Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
         Bone[] roots = skeleton.getRoots();
         Bone firstRoot = roots[0];
         select(firstRoot);
@@ -475,7 +475,7 @@ public class SelectedBone implements Cloneable {
     public void selectNext() {
         if (selectedIndex != -1) {
             ++selectedIndex;
-            int numBones = loadedCgm.bones.countBones();
+            int numBones = loadedCgm.getSkeleton().countBones();
             if (selectedIndex >= numBones) {
                 selectedIndex = 0;
             }
@@ -502,7 +502,7 @@ public class SelectedBone implements Cloneable {
         if (selectedIndex != -1) {
             --selectedIndex;
             if (selectedIndex < 0) {
-                int numBones = loadedCgm.bones.countBones();
+                int numBones = loadedCgm.getSkeleton().countBones();
                 selectedIndex = numBones - 1;
             }
         }
