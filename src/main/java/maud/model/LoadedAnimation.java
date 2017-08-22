@@ -452,7 +452,7 @@ public class LoadedAnimation implements Cloneable {
     public void insertKeyframes() {
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
-        Pose pose = loadedCgm.pose.getPose();
+        Pose pose = loadedCgm.getPose().getPose();
 
         Animation loaded = getAnimation();
         Track[] loadedTracks = loaded.getTracks();
@@ -684,8 +684,8 @@ public class LoadedAnimation implements Cloneable {
         speed = newSpeed;
         currentTime = 0f;
 
-        loadedCgm.pose.setToAnimation();
-        loadedCgm.pose.setFrozen(false);
+        loadedCgm.getPose().setToAnimation();
+        loadedCgm.getPose().setFrozen(false);
     }
 
     /**
@@ -697,7 +697,7 @@ public class LoadedAnimation implements Cloneable {
         currentTime = 0f;
 
         Skeleton skeleton = loadedCgm.bones.findSkeleton();
-        loadedCgm.pose.resetToBind(skeleton);
+        loadedCgm.getPose().resetToBind(skeleton);
     }
 
     /**
@@ -709,8 +709,8 @@ public class LoadedAnimation implements Cloneable {
             loadedName = retargetedPoseName;
             speed = 0f;
             currentTime = 0f;
-            loadedCgm.pose.setToAnimation();
-            loadedCgm.pose.setFrozen(false);
+            loadedCgm.getPose().setToAnimation();
+            loadedCgm.getPose().setFrozen(false);
         }
     }
 
@@ -1022,9 +1022,9 @@ public class LoadedAnimation implements Cloneable {
 
         if (duration > 0f) {
             currentTime = newTime;
-            boolean frozen = loadedCgm.pose.isFrozen();
+            boolean frozen = loadedCgm.getPose().isFrozen();
             if (!frozen) {
-                loadedCgm.pose.setToAnimation();
+                loadedCgm.getPose().setToAnimation();
             }
         }
     }
@@ -1317,7 +1317,8 @@ public class LoadedAnimation implements Cloneable {
         assert !isReserved(animationName) : animationName;
         assert !loadedCgm.hasAnimation(animationName) : animationName;
 
-        Animation poseAnim = loadedCgm.pose.getPose().capture(animationName);
+        Pose pose = loadedCgm.getPose().getPose();
+        Animation poseAnim = pose.capture(animationName);
         editableCgm.addAnimation(poseAnim);
     }
 }

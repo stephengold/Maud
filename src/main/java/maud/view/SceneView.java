@@ -638,7 +638,7 @@ public class SceneView
         /*
          * Determine which bones should be considered.
          */
-        Pose pose = cgm.pose.getPose();
+        Pose pose = cgm.getPose().getPose();
         int numBones = pose.countBones();
         BitSet boneIndexSet = new BitSet(numBones);
         SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
@@ -1071,12 +1071,12 @@ public class SceneView
      */
     private void updatePose() {
         int boneCount = cgm.bones.countBones();
-        int numTransforms = cgm.pose.getPose().countBones();
+        Pose pose = cgm.getPose().getPose();
+        int numTransforms = pose.countBones();
         assert numTransforms == boneCount : numTransforms;
         assert skeleton == null
                 || skeleton.getBoneCount() == boneCount : boneCount;
 
-        Pose pose = cgm.pose.getPose();
         Transform transform = new Transform();
         Vector3f translation = transform.getTranslation();
         Quaternion rotation = transform.getRotation();

@@ -245,7 +245,7 @@ public class SelectedTrack implements Cloneable {
         for (Track track : oldTracks) {
             Track clone;
             if (track == selectedTrack) {
-                Pose pose = loadedCgm.pose.getPose();
+                Pose pose = loadedCgm.getPose().getPose();
                 int boneIndex = selectedTrack.getTargetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
                 clone = MyAnimation.insertKeyframe(selectedTrack, time, user);

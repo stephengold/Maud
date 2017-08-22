@@ -351,7 +351,7 @@ public class EditorScreen extends GuiScreenController {
                 scene.getBounds().setDepthTestFlag(isChecked);
                 break;
             case "freeze":
-                animationCgm.pose.setFrozen(isChecked);
+                animationCgm.getPose().setFrozen(isChecked);
                 break;
             case "invertRma":
             case "invertRma2":
@@ -693,18 +693,18 @@ public class EditorScreen extends GuiScreenController {
         if (!tools.getTool("camera").isInitialized()) {
             return;
         }
-        LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().getTarget();
         /*
-         * Update animations even when the animation tool is disabled.
+         * Update animations.
          */
+        LoadedCgm source = Maud.getModel().getSource();
         if (source.animation.isMoving()) {
             updateTrackTime(source, tpf);
         }
+        LoadedCgm target = Maud.getModel().getTarget();
         if (target.animation.isMoving()) {
             updateTrackTime(target, tpf);
         } else if (target.animation.isRetargetedPose()) {
-            target.pose.setToAnimation();
+            target.getPose().setToAnimation();
         }
         /*
          * Configure view ports based on the MVC model.

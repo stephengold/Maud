@@ -118,7 +118,7 @@ public class DisplayedPose implements JmeCloneable {
      */
     public void setFrozen(boolean newSetting) {
         if (frozenFlag && !newSetting) {
-            cgm.pose.setToAnimation();
+            setToAnimation();
         }
         frozenFlag = newSetting;
     }

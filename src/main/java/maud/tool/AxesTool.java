@@ -252,7 +252,7 @@ public class AxesTool extends WindowController {
         EditorModel model = Maud.getModel();
         EditableMap map = model.getMap();
         EditableCgm target = model.getTarget();
-        Pose pose = cgm.pose.getPose();
+        Pose pose = cgm.getPose().getPose();
         Quaternion oldUserRotation = pose.userRotation(boneIndex, null);
 
         Quaternion newUserRotation = null;
