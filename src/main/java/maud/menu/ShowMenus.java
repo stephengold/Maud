@@ -41,6 +41,7 @@ import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.MiscStatus;
 import maud.model.SceneBones;
+import maud.model.SelectedSkeleton;
 import maud.model.SelectedSpatial;
 import maud.model.SkeletonStatus;
 import maud.model.ViewMode;
@@ -193,13 +194,13 @@ public class ShowMenus {
             String name = argument.substring(1);
             target.getBone().select(name);
         } else {
-            List<String> names;
-            names = target.bones.listChildBoneNames(argument);
+            SelectedSkeleton skeleton = target.getSkeleton();
+            List<String> names = skeleton.listChildBoneNames(argument);
 
             MenuBuilder builder = new MenuBuilder();
             builder.addBone("!" + argument);
             for (String name : names) {
-                if (target.bones.isLeafBone(name)) {
+                if (target.getSkeleton().isLeafBone(name)) {
                     builder.addBone("!" + name);
                 } else {
                     builder.add(name);
@@ -584,7 +585,7 @@ public class ShowMenus {
 
         MenuBuilder builder = new MenuBuilder();
         for (String name : nameList) {
-            if (Maud.getModel().getTarget().bones.hasBone(name)) {
+            if (Maud.getModel().getTarget().getSkeleton().hasBone(name)) {
                 builder.addBone(name);
             } else {
                 builder.addEllipsis(name);
@@ -607,7 +608,7 @@ public class ShowMenus {
 
         MenuBuilder builder = new MenuBuilder();
         for (String name : nameList) {
-            if (Maud.getModel().getSource().bones.hasBone(name)) {
+            if (Maud.getModel().getSource().getSkeleton().hasBone(name)) {
                 builder.addBone(name);
             } else {
                 builder.addEllipsis(name);

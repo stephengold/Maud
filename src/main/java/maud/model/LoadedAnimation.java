@@ -698,7 +698,7 @@ public class LoadedAnimation implements Cloneable {
         speed = 0f;
         currentTime = 0f;
 
-        Skeleton skeleton = loadedCgm.bones.findSkeleton();
+        Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
         loadedCgm.getPose().resetToBind(skeleton);
     }
 
@@ -707,7 +707,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void loadRetargetedPose() {
         if (Maud.getModel().getSource().isLoaded()
-                && loadedCgm.bones.isSelected()) {
+                && loadedCgm.getSkeleton().isSelected()) {
             loadedName = retargetedPoseName;
             speed = 0f;
             currentTime = 0f;

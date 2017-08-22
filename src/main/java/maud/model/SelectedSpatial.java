@@ -92,7 +92,7 @@ public class SelectedSpatial implements Cloneable {
      * Add an AnimControl to the selected spatial and select the new control.
      */
     public void addAnimControl() {
-        Skeleton skeleton = loadedCgm.bones.findSkeleton();
+        Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
         AnimControl newSgc = new AnimControl(skeleton);
 
         editableCgm.addSgc(newSgc);
@@ -133,7 +133,7 @@ public class SelectedSpatial implements Cloneable {
      * Add a SkeletonControl to the selected spatial and select the new control.
      */
     public void addSkeletonControl() {
-        Skeleton skeleton = loadedCgm.bones.findSkeleton();
+        Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
         SkeletonControl newSgc = new SkeletonControl(skeleton);
 
         editableCgm.addSgc(newSgc);
@@ -305,7 +305,7 @@ public class SelectedSpatial implements Cloneable {
         if (parent != null) {
             loadedCgm.getSgc().selectNone();
             AnimControl oldAnimControl = loadedCgm.getAnimControl();
-            Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+            Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
 
             editableCgm.deleteSubtree();
             int last = treePosition.size() - 1;
@@ -755,7 +755,7 @@ public class SelectedSpatial implements Cloneable {
 
         loadedCgm.getSgc().selectNone();
         AnimControl oldAnimControl = loadedCgm.getAnimControl();
-        Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+        Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
 
         List<Integer> position = loadedCgm.findSpatial(newSpatial);
         assert position != null;
@@ -775,7 +775,7 @@ public class SelectedSpatial implements Cloneable {
 
         loadedCgm.getSgc().selectNone();
         AnimControl oldAnimControl = loadedCgm.getAnimControl();
-        Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+        Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
 
         List<Integer> position = loadedCgm.findSpatialNamed(name);
         assert position != null;
@@ -797,7 +797,7 @@ public class SelectedSpatial implements Cloneable {
         if (child != null) {
             loadedCgm.getSgc().selectNone();
             AnimControl oldAnimControl = loadedCgm.getAnimControl();
-            Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+            Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
 
             treePosition.add(childIndex);
             assert modelSpatial() == child;
@@ -812,7 +812,7 @@ public class SelectedSpatial implements Cloneable {
     public void selectCgmRoot() {
         loadedCgm.getSgc().selectNone();
         AnimControl oldAnimControl = loadedCgm.getAnimControl();
-        Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+        Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
 
         treePosition.clear();
         assert modelSpatial() == loadedCgm.getRootSpatial();
@@ -829,7 +829,7 @@ public class SelectedSpatial implements Cloneable {
         if (parent != null) {
             loadedCgm.getSgc().selectNone();
             AnimControl oldAnimControl = loadedCgm.getAnimControl();
-            Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+            Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
 
             int last = treePosition.size() - 1;
             treePosition.remove(last);
@@ -970,9 +970,9 @@ public class SelectedSpatial implements Cloneable {
     private void postSelect(AnimControl oldAnimControl, Skeleton oldSkeleton) {
         Boolean selectedSpatialFlag = false;
         Skeleton newSkeleton;
-        newSkeleton = loadedCgm.bones.findSkeleton(selectedSpatialFlag);
+        newSkeleton = loadedCgm.getSkeleton().findSkeleton(selectedSpatialFlag);
         if (oldSkeleton != newSkeleton) {
-            loadedCgm.bones.set(newSkeleton, selectedSpatialFlag);
+            loadedCgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
         }
 
         AnimControl newAnimControl = loadedCgm.getAnimControl();

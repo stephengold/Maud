@@ -72,7 +72,7 @@ public class SelectedSgc implements Cloneable {
      */
     public void delete() {
         if (isSelected()) {
-            Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+            Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
             AnimControl oldAnimControl = loadedCgm.getAnimControl();
 
             EditableCgm editableCgm = (EditableCgm) loadedCgm;
@@ -80,10 +80,10 @@ public class SelectedSgc implements Cloneable {
             selectedIndex = -1;
 
             Boolean selectedSpatialFlag = false;
-            Skeleton newSkeleton;
-            newSkeleton = loadedCgm.bones.findSkeleton(selectedSpatialFlag);
+            Skeleton newSkeleton = loadedCgm.getSkeleton().findSkeleton(
+                    selectedSpatialFlag);
             if (oldSkeleton != newSkeleton) {
-                loadedCgm.bones.set(newSkeleton, selectedSpatialFlag);
+                loadedCgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
             }
 
             AnimControl newAnimControl = loadedCgm.getAnimControl();
@@ -207,16 +207,16 @@ public class SelectedSgc implements Cloneable {
      * @param newIndex which SG control to select, or -1 to deselect
      */
     public void select(int newIndex) {
-        Skeleton oldSkeleton = loadedCgm.bones.findSkeleton();
+        Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
         AnimControl oldAnimControl = loadedCgm.getAnimControl();
 
         selectedIndex = newIndex;
 
         Boolean selectedSpatialFlag = false;
         Skeleton newSkeleton;
-        newSkeleton = loadedCgm.bones.findSkeleton(selectedSpatialFlag);
+        newSkeleton = loadedCgm.getSkeleton().findSkeleton(selectedSpatialFlag);
         if (oldSkeleton != newSkeleton) {
-            loadedCgm.bones.set(newSkeleton, selectedSpatialFlag);
+            loadedCgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
         }
 
         AnimControl newAnimControl = loadedCgm.getAnimControl();

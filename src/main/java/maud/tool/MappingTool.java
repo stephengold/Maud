@@ -94,7 +94,7 @@ public class MappingTool extends WindowController {
         String mButton;
         if (model.getTarget().getAnimation().isRetargetedPose()
                 || !model.getSource().isLoaded()
-                || !model.getTarget().bones.isSelected()) {
+                || !model.getTarget().getSkeleton().isSelected()) {
             mButton = "";
         } else {
             mButton = "Show retargeted pose";
@@ -143,11 +143,11 @@ public class MappingTool extends WindowController {
         LoadedMap map = Maud.getModel().getMap();
         LoadedCgm source = Maud.getModel().getSource();
         LoadedCgm target = Maud.getModel().getTarget();
-        if (!target.bones.isSelected()) {
+        if (!target.getSkeleton().isSelected()) {
             feedback = "select the target skeleton";
         } else if (!source.isLoaded()) {
             feedback = "load the source model";
-        } else if (!source.bones.isSelected()) {
+        } else if (!source.getSkeleton().isSelected()) {
             feedback = "select the source skeleton";
         } else if (map.isEmpty()) {
             feedback = "no bone mappings - load map or add";

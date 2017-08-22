@@ -98,7 +98,7 @@ public class EditableCgm extends LoadedCgm {
         AnimControl control = getAnimControl();
         if (control == null) {
             Boolean selectedSpatialFlag = false;
-            Skeleton skeleton = bones.findSkeleton(selectedSpatialFlag);
+            Skeleton skeleton = getSkeleton().findSkeleton(selectedSpatialFlag);
             assert skeleton != null;
             control = new AnimControl(skeleton);
             if (selectedSpatialFlag) {
@@ -315,7 +315,7 @@ public class EditableCgm extends LoadedCgm {
                     MyString.quote(newName));
             success = false;
 
-        } else if (bones.hasBone(newName)) {
+        } else if (getSkeleton().hasBone(newName)) {
             logger.log(Level.WARNING,
                     "Rename failed: a bone named {0} already exists.",
                     MyString.quote(newName));

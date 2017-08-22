@@ -35,6 +35,7 @@ import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
+import maud.model.SelectedSkeleton;
 
 /**
  * Bone menus in Maud's editor screen.
@@ -111,14 +112,15 @@ public class BoneMenus {
      */
     public void selectBone(String argument) {
         LoadedCgm target = Maud.getModel().getTarget();
-        if (target.bones.hasBone(argument)) {
+        SelectedSkeleton skeleton = target.getSkeleton();
+        if (skeleton.hasBone(argument)) {
             target.getBone().select(argument);
 
         } else {
             /*
              * Treat the argument as a bone-name prefix.
              */
-            List<String> boneNames = target.bones.listBoneNames(argument);
+            List<String> boneNames = skeleton.listBoneNames(argument);
             Maud.gui.showMenus.showBoneSubmenu(boneNames);
         }
     }
@@ -160,13 +162,14 @@ public class BoneMenus {
      */
     public void selectSourceBone(String argument) {
         LoadedCgm source = Maud.getModel().getSource();
-        if (source.bones.hasBone(argument)) {
+        SelectedSkeleton skeleton = source.getSkeleton();
+        if (skeleton.hasBone(argument)) {
             source.getBone().select(argument);
         } else {
             /*
              * Treat the argument as a bone-name prefix.
              */
-            List<String> boneNames = source.bones.listBoneNames(argument);
+            List<String> boneNames = skeleton.listBoneNames(argument);
             Maud.gui.showMenus.showBoneSubmenu(boneNames);
         }
     }
@@ -247,7 +250,7 @@ public class BoneMenus {
      */
     private void selectBoneByName() {
         LoadedCgm target = Maud.getModel().getTarget();
-        List<String> nameList = target.bones.listBoneNames();
+        List<String> nameList = target.getSkeleton().listBoneNames();
         Maud.gui.showMenus.showBoneSubmenu(nameList);
     }
 
@@ -256,7 +259,7 @@ public class BoneMenus {
      */
     private void selectBoneByParent() {
         LoadedCgm target = Maud.getModel().getTarget();
-        List<String> boneNames = target.bones.listRootBoneNames();
+        List<String> boneNames = target.getSkeleton().listRootBoneNames();
         Maud.gui.showPopupMenu(ActionPrefix.selectBoneChild, boneNames);
     }
 
@@ -265,11 +268,11 @@ public class BoneMenus {
      */
     private void selectRootBone() {
         LoadedCgm target = Maud.getModel().getTarget();
-        int numRoots = target.bones.countRootBones();
+        int numRoots = target.getSkeleton().countRootBones();
         if (numRoots == 1) {
             target.getBone().selectFirstRoot();
         } else if (numRoots > 1) {
-            List<String> boneNames = target.bones.listRootBoneNames();
+            List<String> boneNames = target.getSkeleton().listRootBoneNames();
             Maud.gui.showMenus.showBoneSubmenu(boneNames);
         }
     }
@@ -279,11 +282,11 @@ public class BoneMenus {
      */
     private void selectSourceRootBone() {
         LoadedCgm source = Maud.getModel().getSource();
-        int numRoots = source.bones.countRootBones();
+        int numRoots = source.getSkeleton().countRootBones();
         if (numRoots == 1) {
             source.getBone().selectFirstRoot();
         } else if (numRoots > 1) {
-            List<String> names = source.bones.listRootBoneNames();
+            List<String> names = source.getSkeleton().listRootBoneNames();
             Maud.gui.showMenus.showSourceBoneSubmenu(names);
         }
     }

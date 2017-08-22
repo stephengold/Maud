@@ -101,11 +101,11 @@ public class LoadedMap implements Cloneable {
 
         LoadedCgm source = Maud.getModel().getSource();
         LoadedCgm target = Maud.getModel().getTarget();
-        Skeleton targetSkeleton = target.bones.findSkeleton();
+        Skeleton targetSkeleton = target.getSkeleton().findSkeleton();
         Bone targetBone = targetSkeleton.getBone(boneIndex);
         String targetName = targetBone.getName();
         BoneMapping boneMapping = effectiveMapping(targetName);
-        Skeleton sourceSkeleton = source.bones.findSkeleton();
+        Skeleton sourceSkeleton = source.getSkeleton().findSkeleton();
         if (boneMapping != null && sourceSkeleton != null) {
             String sourceName = boneMapping.getSourceName();
             int sourceIndex = sourceSkeleton.getBoneIndex(sourceName);
@@ -209,14 +209,14 @@ public class LoadedMap implements Cloneable {
         }
 
         EditorModel model = Maud.getModel();
-        SelectedSkeleton sSkeleton = model.getSource().bones;
+        SelectedSkeleton sSkeleton = model.getSource().getSkeleton();
         if (sSkeleton.isSelected()) {
             float matchesSource = matchesSource();
             if (matchesSource < 0.9995f) {
                 return true;
             }
         }
-        SelectedSkeleton tSkeleton = model.getTarget().bones;
+        SelectedSkeleton tSkeleton = model.getTarget().getSkeleton();
         if (tSkeleton.isSelected()) {
             float matchesTarget = matchesTarget();
             if (matchesTarget < 0.9995f) {
@@ -295,8 +295,8 @@ public class LoadedMap implements Cloneable {
     public boolean isSourceBoneMapped(int boneIndex) {
         Validate.nonNegative(boneIndex, "bone index");
 
-        String boneName;
-        boneName = Maud.getModel().getSource().bones.getBoneName(boneIndex);
+        SelectedSkeleton skeleton = Maud.getModel().getSource().getSkeleton();
+        String boneName = skeleton.getBoneName(boneIndex);
         BoneMapping boneMapping;
         if (isInvertingMap()) {
             boneMapping = map.get(boneName);
@@ -320,7 +320,7 @@ public class LoadedMap implements Cloneable {
         Validate.nonNegative(boneIndex, "bone index");
 
         LoadedCgm target = Maud.getModel().getTarget();
-        String boneName = target.bones.getBoneName(boneIndex);
+        String boneName = target.getSkeleton().getBoneName(boneIndex);
         boolean result = isBoneMapped(boneName);
 
         return result;
@@ -399,7 +399,8 @@ public class LoadedMap implements Cloneable {
         } else {
             boneNames = map.listSourceBones();
         }
-        SelectedSkeleton sourceSkeleton = Maud.getModel().getSource().bones;
+        SelectedSkeleton sourceSkeleton;
+        sourceSkeleton = Maud.getModel().getSource().getSkeleton();
 
         int numMatches = 0;
         for (String name : boneNames) {
@@ -425,7 +426,8 @@ public class LoadedMap implements Cloneable {
         } else {
             boneNames = map.listTargetBones();
         }
-        SelectedSkeleton targetSkeleton = Maud.getModel().getTarget().bones;
+        SelectedSkeleton targetSkeleton;
+        targetSkeleton = Maud.getModel().getTarget().getSkeleton();
 
         int numMatches = 0;
         for (String name : boneNames) {
@@ -707,8 +709,8 @@ public class LoadedMap implements Cloneable {
         LoadedCgm source = Maud.getModel().getSource();
         EditableCgm target = Maud.getModel().getTarget();
         Animation sourceAnimation = source.getAnimation().getAnimation();
-        Skeleton sourceSkeleton = source.bones.findSkeleton();
-        Skeleton targetSkeleton = target.bones.findSkeleton();
+        Skeleton sourceSkeleton = source.getSkeleton().findSkeleton();
+        Skeleton targetSkeleton = target.getSkeleton().findSkeleton();
         SkeletonMapping effectiveMap = effectiveMap();
         Animation retargeted = Util.retargetAnimation(sourceAnimation,
                 sourceSkeleton, targetSkeleton, effectiveMap, newAnimationName);

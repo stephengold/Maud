@@ -42,6 +42,7 @@ import maud.action.ActionPrefix;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
+import maud.model.SelectedSkeleton;
 import maud.model.ViewMode;
 
 /**
@@ -186,10 +187,10 @@ public class BuildMenus {
      */
     public void loadMapAsset() {
         buildLocatorMenu();
-        if (Maud.getModel().getSource().bones.isSelected()) {
+        if (Maud.getModel().getSource().getSkeleton().isSelected()) {
             builder.add("Identity for source");
         }
-        if (Maud.getModel().getTarget().bones.isSelected()) {
+        if (Maud.getModel().getTarget().getSkeleton().isSelected()) {
             builder.add("Identity for target");
         }
         builder.show(ActionPrefix.loadMapLocator);
@@ -434,13 +435,14 @@ public class BuildMenus {
      */
     void selectSourceBone(String argument) {
         LoadedCgm source = Maud.getModel().getSource();
-        if (source.bones.hasBone(argument)) {
+        SelectedSkeleton skeleton = source.getSkeleton();
+        if (skeleton.hasBone(argument)) {
             source.getBone().select(argument);
         } else {
             /*
              * Treat the argument as a bone-name prefix.
              */
-            List<String> boneNames = source.bones.listBoneNames(argument);
+            List<String> boneNames = skeleton.listBoneNames(argument);
             Maud.gui.showMenus.showBoneSubmenu(boneNames);
         }
     }
@@ -470,7 +472,7 @@ public class BuildMenus {
     private void buildAnimationMenu() {
         builder.addTool("Tool");
         LoadedCgm target = Maud.getModel().getTarget();
-        if (target.bones.countBones() > 0) {
+        if (target.getSkeleton().countBones() > 0) {
             builder.add("Load");
             builder.add("Add new");
             //builder.add("Unload");
@@ -484,7 +486,7 @@ public class BuildMenus {
 
         builder.addTool("Source tool"); // TODO submenu
         LoadedCgm source = Maud.getModel().getSource();
-        if (source.isLoaded() && source.bones.countBones() > 0) {
+        if (source.isLoaded() && source.getSkeleton().countBones() > 0) {
             builder.add("Load source");
         }
         builder.addTool("Tweening");
@@ -515,12 +517,12 @@ public class BuildMenus {
     private void buildBoneSelectMenu() {
         LoadedCgm target = Maud.getModel().getTarget();
         builder.add("By name");
-        int numBones = target.bones.countBones();
+        int numBones = target.getSkeleton().countBones();
         if (numBones > 0) {
             builder.add("By parent");
         }
 
-        int numRoots = target.bones.countRootBones();
+        int numRoots = target.getSkeleton().countRootBones();
         if (numRoots == 1) {
             builder.addBone("Root");
         } else if (numRoots > 1) {
@@ -535,7 +537,7 @@ public class BuildMenus {
         String sourceBoneName = Maud.getModel().getSource().getBone().getName();
         String boneName;
         boneName = Maud.getModel().getMap().targetBoneName(sourceBoneName);
-        if (boneName != null && target.bones.hasBone(boneName)) {
+        if (boneName != null && target.getSkeleton().hasBone(boneName)) {
             builder.addBone("Mapped");
         }
 
@@ -782,7 +784,7 @@ public class BuildMenus {
      */
     private void buildSourceBoneSelectMenu() {
         EditorModel model = Maud.getModel();
-        int numRoots = model.getSource().bones.countRootBones();
+        int numRoots = model.getSource().getSkeleton().countRootBones();
         if (numRoots == 1) {
             builder.addBone("Root");
         } else if (numRoots > 1) {
@@ -792,7 +794,7 @@ public class BuildMenus {
         String targetBoneName = model.getTarget().getBone().getName();
         String boneName = model.getMap().sourceBoneName(targetBoneName);
         if (boneName != null
-                && model.getSource().bones.hasBone(boneName)) {
+                && model.getSource().getSkeleton().hasBone(boneName)) {
             builder.addBone("Mapped");
         }
     }
