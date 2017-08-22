@@ -331,7 +331,7 @@ public class AxesTool extends WindowController {
                     /*
                      * Apply the full rotation to the selected spatial.
                      */
-                    Quaternion oldQ = ecgm.spatial.localRotation(null);
+                    Quaternion oldQ = ecgm.getSpatial().localRotation(null);
                     Quaternion newQ = oldQ.mult(rotation);
                     newQ.normalizeLocal();
                     ecgm.setSpatialRotation(newQ);

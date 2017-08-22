@@ -218,7 +218,7 @@ public class SelectedBone implements Cloneable {
             skeleton = loadedCgm.bones.findSkeleton(selectedSpatialFlag);
             Spatial spatial;
             if (selectedSpatialFlag) {
-                spatial = loadedCgm.spatial.modelSpatial();
+                spatial = loadedCgm.getSpatial().modelSpatial();
             } else {
                 spatial = loadedCgm.getRootSpatial();
             }

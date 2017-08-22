@@ -242,7 +242,7 @@ public class EditorDialogs {
      * Display a "rename spatial" dialog.
      */
     public void renameSpatial() {
-        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         String oldName = spatial.getName();
         DialogController controller = new SpatialNameDialog("Rename");
         String prompt;
@@ -377,7 +377,7 @@ public class EditorDialogs {
     public void setUserData() {
         EditableCgm target = Maud.getModel().getTarget();
         String key = target.getUserData().getKey();
-        Object data = target.spatial.getUserData(key);
+        Object data = target.getSpatial().getUserData(key);
         if (data instanceof Boolean) {
             boolean oldValue = (boolean) data;
             String newValue = Boolean.toString(!oldValue); // toggle value

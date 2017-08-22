@@ -164,7 +164,7 @@ class SpatialTranslationTool extends WindowController {
      * translation of the selected spatial.
      */
     private void setSlidersToTransform() {
-        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         Vector3f vector = spatial.localTranslation(null);
         float[] offsets = vector.toArray(null);
 

@@ -230,10 +230,12 @@ public class ShowMenus {
      */
     void selectKeyframe() {
         MenuBuilder builder = new MenuBuilder();
+
         builder.addTool("First");
         builder.addTool("Previous");
         builder.addTool("Next");
         builder.addTool("Last");
+
         builder.show("select menuItem Keyframe -> Select -> ");
     }
 
@@ -242,10 +244,13 @@ public class ShowMenus {
      */
     public void selectSgc() {
         MenuBuilder builder = new MenuBuilder();
-        for (String name : Maud.getModel().getTarget().spatial.listSgcNames()) {
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        for (String name : spatial.listSgcNames()) {
             builder.add(name);
         }
         builder.add(LoadedCgm.noControl);
+
         builder.show(ActionPrefix.selectControl);
     }
 
@@ -273,9 +278,9 @@ public class ShowMenus {
             builder.add("Geometry");
         }
 
-        int numChildren = target.spatial.countChildren();
+        int numChildren = target.getSpatial().countChildren();
         if (numChildren == 1) {
-            boolean isChildANode = target.spatial.isChildANode(0);
+            boolean isChildANode = target.getSpatial().isChildANode(0);
             if (isChildANode) {
                 builder.addNode("Child");
             } else {
@@ -285,7 +290,7 @@ public class ShowMenus {
             builder.add("Child");
         }
 
-        boolean isRoot = target.spatial.isCgmRoot();
+        boolean isRoot = target.getSpatial().isCgmRoot();
         if (!isRoot) {
             builder.addNode("Parent");
         }
@@ -299,13 +304,13 @@ public class ShowMenus {
      * @param itemPrefix prefix for filtering menu items (not null)
      */
     public void selectSpatialChild(String itemPrefix) {
-        LoadedCgm target = Maud.getModel().getTarget();
-        int numChildren = target.spatial.countChildren();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        int numChildren = spatial.countChildren();
         if (numChildren == 1) {
-            target.spatial.selectChild(0);
+            spatial.selectChild(0);
 
         } else if (numChildren > 1) {
-            List<String> children = target.spatial.listNumberedChildren();
+            List<String> children = spatial.listNumberedChildren();
 
             List<String> choices;
             choices = MyString.addMatchPrefix(children, itemPrefix, null);
@@ -316,7 +321,7 @@ public class ShowMenus {
             for (String choice : choices) {
                 int childIndex = children.indexOf(choice);
                 if (childIndex >= 0) {
-                    boolean isANode = target.spatial.isChildANode(childIndex);
+                    boolean isANode = spatial.isChildANode(childIndex);
                     if (isANode) {
                         builder.addNode(choice);
                     } else {
@@ -353,13 +358,14 @@ public class ShowMenus {
         MenuBuilder builder = new MenuBuilder();
 
         EditableCgm target = Maud.getModel().getTarget();
-        List<String> keyList = target.spatial.listUserKeys();
+        List<String> keyList = target.getSpatial().listUserKeys();
         String selectedKey = target.getUserData().getKey();
         for (String key : keyList) {
             if (!key.equals(selectedKey)) {
                 builder.add(key);
             }
         }
+
         builder.show(ActionPrefix.selectUserKey);
     }
 
@@ -375,6 +381,7 @@ public class ShowMenus {
                 builder.add(mode.toString());
             }
         }
+
         builder.show("select menuItem View -> Mode -> ");
     }
 
@@ -385,7 +392,7 @@ public class ShowMenus {
     public void setBatchHint() {
         MenuBuilder builder = new MenuBuilder();
 
-        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         Spatial.BatchHint selectedHint = spatial.getLocalBatchHint();
         for (Spatial.BatchHint hint : Spatial.BatchHint.values()) {
             if (!hint.equals(selectedHint)) {
@@ -393,6 +400,7 @@ public class ShowMenus {
                 builder.add(name);
             }
         }
+
         builder.show(ActionPrefix.setBatchHint);
     }
 
@@ -403,7 +411,7 @@ public class ShowMenus {
     public void setCullHint() {
         MenuBuilder builder = new MenuBuilder();
 
-        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         Spatial.CullHint selectedHint = spatial.getLocalCullHint();
         for (Spatial.CullHint hint : Spatial.CullHint.values()) {
             if (!hint.equals(selectedHint)) {
@@ -411,6 +419,7 @@ public class ShowMenus {
                 builder.add(name);
             }
         }
+
         builder.show(ActionPrefix.setCullHint);
     }
 
@@ -421,7 +430,7 @@ public class ShowMenus {
     public void setQueueBucket() {
         MenuBuilder builder = new MenuBuilder();
 
-        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         RenderQueue.Bucket selectedBucket = spatial.getLocalQueueBucket();
         for (RenderQueue.Bucket bucket : RenderQueue.Bucket.values()) {
             if (!bucket.equals(selectedBucket)) {
@@ -429,6 +438,7 @@ public class ShowMenus {
                 builder.add(name);
             }
         }
+
         builder.show(ActionPrefix.setQueueBucket);
     }
 
@@ -448,6 +458,7 @@ public class ShowMenus {
                 builder.add(name);
             }
         }
+
         builder.show(ActionPrefix.setSceneBones);
     }
 
@@ -458,7 +469,7 @@ public class ShowMenus {
     public void setShadowMode() {
         MenuBuilder builder = new MenuBuilder();
 
-        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         RenderQueue.ShadowMode selectedMode = spatial.getLocalShadowMode();
         for (RenderQueue.ShadowMode mode : RenderQueue.ShadowMode.values()) {
             if (!mode.equals(selectedMode)) {
@@ -466,6 +477,7 @@ public class ShowMenus {
                 builder.add(name);
             }
         }
+
         builder.show(ActionPrefix.setShadowMode);
     }
 

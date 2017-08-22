@@ -173,7 +173,7 @@ public class EditorMenus {
     public void selectSpatial(String argument, boolean includeNodes) {
         LoadedCgm target = Maud.getModel().getTarget();
         if (target.hasSpatial(argument)) {
-            target.spatial.select(argument);
+            target.getSpatial().select(argument);
 
         } else {
             /*
@@ -626,7 +626,7 @@ public class EditorMenus {
         boolean handled = true;
         switch (remainder) {
             case "Add":
-                Maud.getModel().getTarget().spatial.addRigidBodyControl();
+                Maud.getModel().getTarget().getSpatial().addRigidBodyControl();
                 break;
             case "Mass": // TODO
             case "Tool": // TODO
@@ -830,7 +830,7 @@ public class EditorMenus {
         } else {
             switch (remainder) {
                 case "Delete":
-                    Maud.getModel().getTarget().spatial.delete();
+                    Maud.getModel().getTarget().getSpatial().delete();
                     break;
                 case "Delete extras":
                     Maud.getModel().getTarget().deleteExtraSpatials();
@@ -873,7 +873,7 @@ public class EditorMenus {
     private boolean menuSgcAdd(String remainder) {
         boolean handled = false;
 
-        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         switch (remainder) {
             case "Anim":
                 spatial.addAnimControl();
@@ -914,10 +914,10 @@ public class EditorMenus {
                 selectSpatial("", false);
                 break;
             case "Parent":
-                Maud.getModel().getTarget().spatial.selectParent();
+                Maud.getModel().getTarget().getSpatial().selectParent();
                 break;
             case "Root":
-                Maud.getModel().getTarget().spatial.selectCgmRoot();
+                Maud.getModel().getTarget().getSpatial().selectCgmRoot();
                 break;
             default:
                 handled = false;

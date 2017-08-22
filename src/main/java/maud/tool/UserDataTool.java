@@ -33,6 +33,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.EditableCgm;
 import maud.model.LoadedCgm;
+import maud.model.SelectedSpatial;
 
 /**
  * The controller for the "User Data Tool" window in Maud's editor screen.
@@ -91,7 +92,7 @@ class UserDataTool extends WindowController {
         String nButton = "", pButton = "", sButton = "";
 
         EditableCgm target = Maud.getModel().getTarget();
-        int numKeys = target.spatial.countUserData();
+        int numKeys = target.getSpatial().countUserData();
         int selectedIndex = target.getUserData().findKeyIndex();
         if (selectedIndex >= 0) {
             indexText = String.format("#%d of %d", selectedIndex + 1, numKeys);
@@ -154,7 +155,8 @@ class UserDataTool extends WindowController {
             valueText = "";
         } else {
             eButton = "Alter";
-            Object data = Maud.getModel().getTarget().spatial.getUserData(key);
+            SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+            Object data = spatial.getUserData(key);
             if (data instanceof String) {
                 String string = (String) data;
                 valueText = MyString.quote(string);
