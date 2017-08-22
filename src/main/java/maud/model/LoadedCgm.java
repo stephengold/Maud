@@ -81,10 +81,6 @@ public class LoadedCgm implements Cloneable {
     // fields
 
     /**
-     * world transform of the visualization
-     */
-    public CgmTransform transform = new CgmTransform();
-    /**
      * bone transforms of the displayed pose
      */
     public DisplayedPose pose = new DisplayedPose();
@@ -920,7 +916,6 @@ public class LoadedCgm implements Cloneable {
         clone.sgc = sgc.clone();
         clone.spatial = spatial.clone();
         clone.track = track.clone();
-        clone.transform = transform.clone();
         clone.userData = userData.clone();
         /*
          * Direct the back pointers to the clone.

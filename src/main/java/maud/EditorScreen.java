@@ -69,6 +69,7 @@ import maud.model.SceneOptions;
 import maud.model.ScoreOptions;
 import maud.model.SelectedSpatial;
 import maud.tool.EditorTools;
+import maud.view.CgmTransform;
 import maud.view.EditorView;
 import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
@@ -719,11 +720,13 @@ public class EditorScreen extends GuiScreenController {
              */
             LoadedCgm cgmToRotate = mouseCgm();
             if (cgmToRotate != null) {
+                CgmTransform cgmTransform;
+                cgmTransform = cgmToRotate.getSceneView().getTransform();
                 if (signals.test(modelCCWSignalName)) {
-                    cgmToRotate.transform.rotateY(tpf);
+                    cgmTransform.rotateY(tpf);
                 }
                 if (signals.test(modelCWSignalName)) {
-                    cgmToRotate.transform.rotateY(-tpf);
+                    cgmTransform.rotateY(-tpf);
                 }
             }
 

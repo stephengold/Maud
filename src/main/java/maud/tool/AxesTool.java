@@ -52,6 +52,7 @@ import maud.model.EditableMap;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
 import maud.view.SceneDrag;
+import maud.view.SceneView;
 
 /**
  * The controller for the "Axes Tool" window in Maud's editor screen.
@@ -321,7 +322,7 @@ public class AxesTool extends WindowController {
                  * Apply the Y-axis rotation to the transform status.
                  */
                 float yRotation = FastMath.asin(cross.y * crossNorm);
-                cgm.transform.rotateY(yRotation);
+                cgm.getSceneView().getTransform().rotateY(yRotation);
                 break;
 
             case Spatial:
@@ -373,7 +374,8 @@ public class AxesTool extends WindowController {
 
             case Cgm:
                 if (loadedCgm.isLoaded()) {
-                    transform = loadedCgm.transform.worldTransform();
+                    SceneView sceneView = loadedCgm.getSceneView();
+                    transform = sceneView.getTransform().worldTransform();
                 }
                 break;
 

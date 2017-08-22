@@ -124,6 +124,10 @@ public class SceneView
      * app state for Bullet physics
      */
     final private BulletAppState bulletAppState;
+    /**
+     * world transform for the CG model visualization
+     */
+    private CgmTransform cgmTransform = new CgmTransform();
     /*
      * directional added to the scene (not null)
      */
@@ -691,6 +695,16 @@ public class SceneView
     }
 
     /**
+     * Access the world transform for the CG model in this visualization.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public CgmTransform getTransform() {
+        assert cgmTransform != null;
+        return cgmTransform;
+    }
+
+    /**
      * Read what type of view this is.
      *
      * @return Scene
@@ -796,6 +810,7 @@ public class SceneView
         // bulletAppState not cloned: shared
         // cgm not cloned: set later
         cgmRoot = cloner.clone(cgmRoot);
+        cgmTransform = cloner.clone(cgmTransform);
         // cursor not cloned: shared
         // mainLight not cloned: shared
         // parent not cloned: shared
@@ -1039,7 +1054,7 @@ public class SceneView
         maxExtent = 2f * MyMath.max(halfExtent.x, halfExtent.y, halfExtent.z);
         Vector3f min = box.getMin(null);
         float minY = min.y;
-        cgm.transform.loadCgm(center, minY, maxExtent);
+        cgmTransform.loadCgm(center, minY, maxExtent);
         /*
          * reset the camera, cursor, and platform
          */
@@ -1089,10 +1104,10 @@ public class SceneView
     }
 
     /**
-     * Update the transform of the CG model's parent based on the MVC model.
+     * Update the transform of the CG model's parent.
      */
     private void updateTransform() {
-        Transform transform = cgm.transform.worldTransform();
+        Transform transform = cgmTransform.worldTransform();
         parent.setLocalTransform(transform);
     }
 }
