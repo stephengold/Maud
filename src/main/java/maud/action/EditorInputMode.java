@@ -254,7 +254,7 @@ public class EditorInputMode extends InputMode {
                 target.getAnimation().delete();
                 break;
             case "delete control":
-                target.sgc.delete();
+                target.getSgc().delete();
                 break;
             case "delete mapping":
                 Maud.getModel().getMap().deleteBoneMapping();
@@ -303,7 +303,7 @@ public class EditorInputMode extends InputMode {
                 History.redo();
                 break;
             case "next control":
-                target.sgc.selectNext();
+                target.getSgc().selectNext();
                 break;
             case "next mapping":
                 model.getMap().selectNext();
@@ -352,7 +352,7 @@ public class EditorInputMode extends InputMode {
                 History.undo();
                 break;
             case "previous control":
-                target.sgc.selectPrevious();
+                target.getSgc().selectPrevious();
                 break;
             case "previous mapping":
                 model.getMap().selectPrevious();

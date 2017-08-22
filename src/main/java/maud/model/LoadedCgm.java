@@ -113,7 +113,7 @@ public class LoadedCgm implements Cloneable {
     /**
      * which SG control is selected in the selected spatial
      */
-    public SelectedSgc sgc = new SelectedSgc();
+    private SelectedSgc selectedSgc = new SelectedSgc();
     /**
      * which skeleton is selected in the CG model
      */
@@ -164,7 +164,7 @@ public class LoadedCgm implements Cloneable {
         selectedBone.setCgm(this);
         bones.setCgm(this);
         displayedPose.setCgm(this);
-        sgc.setCgm(this);
+        selectedSgc.setCgm(this);
         scenePov.setCgm(this);
         scorePov.setCgm(this);
         selectedSpatial.setCgm(this);
@@ -300,9 +300,9 @@ public class LoadedCgm implements Cloneable {
     AnimControl getAnimControl() {
         AnimControl animControl;
         if (isLoaded()) {
-            Control selectedSgc = sgc.findSgc();
-            if (selectedSgc instanceof AnimControl) {
-                animControl = (AnimControl) selectedSgc;
+            Control sgc = selectedSgc.findSgc();
+            if (sgc instanceof AnimControl) {
+                animControl = (AnimControl) sgc;
             } else {
                 animControl = rootSpatial.getControl(AnimControl.class);
             }
@@ -430,6 +430,16 @@ public class LoadedCgm implements Cloneable {
     public ScoreView getScoreView() {
         assert scoreView != null;
         return scoreView;
+    }
+
+    /**
+     * Access the selected scene-graph control.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedSgc getSgc() {
+        assert selectedSgc != null;
+        return selectedSgc;
     }
 
     /**
@@ -861,7 +871,7 @@ public class LoadedCgm implements Cloneable {
             Spatial sp = newSgc.getSpatial();
             selectedSpatial.select(sp);
         }
-        sgc.select(newSgc);
+        selectedSgc.select(newSgc);
     }
 
     /**
@@ -953,7 +963,7 @@ public class LoadedCgm implements Cloneable {
         clone.scenePov = cloner.clone(scenePov);
         clone.sceneView = cloner.clone(sceneView);
         clone.scorePov = cloner.clone(scorePov);
-        clone.sgc = sgc.clone();
+        clone.selectedSgc = selectedSgc.clone();
         clone.selectedSpatial = selectedSpatial.clone();
         clone.track = track.clone();
         clone.userData = userData.clone();
@@ -969,7 +979,7 @@ public class LoadedCgm implements Cloneable {
             clone.getSceneView().setCgm(clone);
         }
         clone.scorePov.setCgm(clone);
-        clone.sgc.setCgm(clone);
+        clone.selectedSgc.setCgm(clone);
         clone.selectedSpatial.setCgm(clone);
         clone.track.setCgm(clone);
         clone.getUserData().setCgm(clone);
