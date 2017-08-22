@@ -143,7 +143,7 @@ public class BoneMenus {
      */
     void selectBoneWithTrack() {
         EditableCgm target = Maud.getModel().getTarget();
-        List<String> boneNames = target.animation.listBonesWithTrack();
+        List<String> boneNames = target.getAnimation().listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
             target.bone.select(boneNames.get(0));

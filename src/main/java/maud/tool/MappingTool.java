@@ -92,7 +92,7 @@ public class MappingTool extends WindowController {
          * the "Show retargeted pose" button
          */
         String mButton;
-        if (model.getTarget().animation.isRetargetedPose()
+        if (model.getTarget().getAnimation().isRetargetedPose()
                 || !model.getSource().isLoaded()
                 || !model.getTarget().bones.isSelected()) {
             mButton = "";

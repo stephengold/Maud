@@ -487,7 +487,7 @@ public class ScoreView implements EditorView {
             /*
              * Determine the number of interpolated samples for each sparkline.
              */
-            float duration = cgm.animation.getDuration();
+            float duration = cgm.getAnimation().getDuration();
             if (duration > 0f) {
                 ScoreView view = cgm.getScoreView();
                 Camera camera = view.getCamera();
@@ -534,7 +534,7 @@ public class ScoreView implements EditorView {
                     attachStaff();
                     break;
                 case "tracked":
-                    indices = cgm.animation.listBoneIndicesWithTracks();
+                    indices = cgm.getAnimation().listBoneIndicesWithTracks();
                     Collections.sort(indices);
                     attachStaves(indices);
                     break;
@@ -793,7 +793,7 @@ public class ScoreView implements EditorView {
         }
 
         boolean scales = options.showsScales();
-        boolean hasScales = cgm.animation.hasScales(currentBone);
+        boolean hasScales = cgm.getAnimation().hasScales(currentBone);
         if (scales && hasScales) {
             float maxHeight = 2 * (float) Finial.hpf;
             attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "sca",
@@ -962,10 +962,10 @@ public class ScoreView implements EditorView {
      */
     private void attachRotationPlots() {
         if (numSamples > 0) {
-            cgm.animation.trackInterpolateRotations(its, currentBone,
+            cgm.getAnimation().trackInterpolateRotations(its, currentBone,
                     iws, ixs, iys, izs);
         }
-        cgm.animation.trackRotations(currentBone, ws, xs, ys, zs);
+        cgm.getAnimation().trackRotations(currentBone, ws, xs, ys, zs);
         Pose pose = cgm.getPose().getPose();
         Quaternion user = pose.userRotation(currentBone, null);
         int poseFrame = ts.length;
@@ -1021,10 +1021,10 @@ public class ScoreView implements EditorView {
      */
     private void attachScalePlots() {
         if (numSamples > 0) {
-            cgm.animation.trackInterpolateScales(its, currentBone,
+            cgm.getAnimation().trackInterpolateScales(its, currentBone,
                     ixs, iys, izs);
         }
-        cgm.animation.trackScales(currentBone, xs, ys, zs);
+        cgm.getAnimation().trackScales(currentBone, xs, ys, zs);
         Vector3f user = cgm.getPose().getPose().userScale(currentBone, null);
         int poseFrame = ts.length;
         xs[poseFrame] = user.x;
@@ -1103,8 +1103,8 @@ public class ScoreView implements EditorView {
      * Attach the sparklines for the current bone.
      */
     private void attachSparklines() {
-        ts = cgm.animation.trackTimes(currentBone);
-        float duration = cgm.animation.getDuration();
+        ts = cgm.getAnimation().trackTimes(currentBone);
+        float duration = cgm.getAnimation().getDuration();
         if (duration > 0f) {
             MyArray.normalize(ts, 0f, duration);
         }
@@ -1164,7 +1164,7 @@ public class ScoreView implements EditorView {
         }
 
         boolean showScales = options.showsScales();
-        boolean hasScales = cgm.animation.hasScales(currentBone);
+        boolean hasScales = cgm.getAnimation().hasScales(currentBone);
         if (showScales && hasScales) {
             attachScalePlots();
         }
@@ -1176,10 +1176,10 @@ public class ScoreView implements EditorView {
     private void attachStaff() {
         float staffHeight;
         Finial finial;
-        boolean trackedBone = cgm.animation.hasTrackForBone(currentBone);
+        boolean trackedBone = cgm.getAnimation().hasTrackForBone(currentBone);
         if (trackedBone) {
             finial = finialNoScales;
-            boolean hasScales = cgm.animation.hasScales(currentBone);
+            boolean hasScales = cgm.getAnimation().hasScales(currentBone);
             if (hasScales) {
                 finial = finialComplete;
             }
@@ -1311,10 +1311,10 @@ public class ScoreView implements EditorView {
      */
     private void attachTranslationPlots() {
         if (numSamples > 0) {
-            cgm.animation.trackInterpolateTranslations(its, currentBone,
+            cgm.getAnimation().trackInterpolateTranslations(its, currentBone,
                     ixs, iys, izs);
         }
-        cgm.animation.trackTranslations(currentBone, xs, ys, zs);
+        cgm.getAnimation().trackTranslations(currentBone, xs, ys, zs);
         Pose pose = cgm.getPose().getPose();
         Vector3f user = pose.userTranslation(currentBone, null);
         int poseFrame = ts.length;
@@ -1363,9 +1363,9 @@ public class ScoreView implements EditorView {
      */
     private float gnomonX() {
         float result;
-        float duration = cgm.animation.getDuration();
+        float duration = cgm.getAnimation().getDuration();
         if (duration > 0f) {
-            float time = cgm.animation.getTime();
+            float time = cgm.getAnimation().getTime();
             result = time / duration;
         } else {
             result = 0f;

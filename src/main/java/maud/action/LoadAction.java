@@ -66,9 +66,11 @@ class LoadAction {
      */
     static boolean process(String actionString) {
         boolean handled = true;
+        LoadedCgm source = Maud.getModel().getSource();
+        LoadedCgm target = Maud.getModel().getTarget();
         switch (actionString) {
             case "load animation":
-                Maud.gui.menus.loadAnimation(Maud.getModel().getTarget());
+                Maud.gui.menus.loadAnimation(target);
                 break;
             case "load cgm":
                 Maud.gui.buildMenus.loadCgm();
@@ -77,10 +79,10 @@ class LoadAction {
                 Maud.gui.buildMenus.loadMapAsset();
                 break;
             case "load retargetedPose":
-                Maud.getModel().getTarget().animation.loadRetargetedPose();
+                target.getAnimation().loadRetargetedPose();
                 break;
             case "load sourceAnimation":
-                Maud.gui.menus.loadAnimation(Maud.getModel().getSource());
+                Maud.gui.menus.loadAnimation(source);
                 break;
             case "load sourceCgm":
                 Maud.gui.buildMenus.loadSourceCgm();

@@ -255,7 +255,7 @@ public class Selection {
         assert bestBoneIndex >= 0 : bestBoneIndex;
 
         bestCgm.bone.select(bestBoneIndex);
-        if (Maud.getModel().getTarget().animation.isRetargetedPose()) {
+        if (Maud.getModel().getTarget().getAnimation().isRetargetedPose()) {
             /*
              * Also select the mapped bone (if any).
              */
@@ -284,7 +284,7 @@ public class Selection {
         assert bestFrameIndex >= 0 : bestFrameIndex;
 
         float keyframeTime = bestCgm.track.keyframeTime(bestFrameIndex);
-        bestCgm.animation.setTime(keyframeTime);
+        bestCgm.getAnimation().setTime(keyframeTime);
         // TODO drag
     }
 
@@ -296,8 +296,8 @@ public class Selection {
         assert bestAxisIndex >= 0 : bestAxisIndex;
         assert bestAxisIndex < 3 : bestAxisIndex;
 
-        boolean farSide = Maud.gui.tools.axes.isAxisReceding(bestCgm,
-                bestAxisIndex);
+        boolean farSide;
+        farSide = Maud.gui.tools.axes.isAxisReceding(bestCgm, bestAxisIndex);
         SceneDrag.setDraggingAxis(bestAxisIndex, bestCgm, farSide);
     }
 

@@ -112,9 +112,9 @@ class RetargetTool extends WindowController {
         String sourceAnimDesc = "";
 
         LoadedCgm source = Maud.getModel().getSource();
-        boolean real = source.animation.isReal();
+        boolean real = source.getAnimation().isReal();
         if (real) {
-            String name = source.animation.getName();
+            String name = source.getAnimation().getName();
             sourceAnimDesc = MyString.quote(name);
         }
 
@@ -135,7 +135,7 @@ class RetargetTool extends WindowController {
             feedback = "select the target anim control";
         } else if (!source.isLoaded()) {
             feedback = "load the source model";
-        } else if (!source.animation.isReal()) {
+        } else if (!source.getAnimation().isReal()) {
             feedback = "load the source animation";
         } else if (map.isEmpty()) {
             feedback = "no bone mappings";

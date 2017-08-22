@@ -232,7 +232,7 @@ public class EditorInputMode extends InputMode {
         if (actionString.startsWith(ActionPrefix.copyAnimation)) {
             String destName = MyString.remainder(actionString,
                     ActionPrefix.copyAnimation);
-            Maud.getModel().getTarget().animation.copyAndLoad(destName);
+            Maud.getModel().getTarget().getAnimation().copyAndLoad(destName);
             handled = true;
         }
 
@@ -250,7 +250,7 @@ public class EditorInputMode extends InputMode {
         EditableCgm target = Maud.getModel().getTarget();
         switch (actionString) {
             case "delete animation":
-                target.animation.delete();
+                target.getAnimation().delete();
                 break;
             case "delete control":
                 target.sgc.delete();
@@ -290,7 +290,7 @@ public class EditorInputMode extends InputMode {
         boolean handled = true;
         switch (actionString) {
             case "next animation":
-                target.animation.loadNext();
+                target.getAnimation().loadNext();
                 break;
             case "next animControl":
                 target.nextAnimControl();
@@ -308,7 +308,7 @@ public class EditorInputMode extends InputMode {
                 model.getMap().selectNext();
                 break;
             case "next sourceAnimation":
-                model.getSource().animation.loadNext();
+                model.getSource().getAnimation().loadNext();
                 break;
             case "next sourceAnimControl":
                 model.getSource().nextAnimControl();
@@ -339,7 +339,7 @@ public class EditorInputMode extends InputMode {
         boolean handled = true;
         switch (actionString) {
             case "previous animation":
-                target.animation.loadPrevious();
+                target.getAnimation().loadPrevious();
                 break;
             case "previous animControl":
                 target.previousAnimControl();
@@ -357,7 +357,7 @@ public class EditorInputMode extends InputMode {
                 model.getMap().selectPrevious();
                 break;
             case "previous sourceAnimation":
-                model.getSource().animation.loadPrevious();
+                model.getSource().getAnimation().loadPrevious();
                 break;
             case "previous sourceAnimControl":
                 model.getSource().previousAnimControl();
@@ -394,7 +394,7 @@ public class EditorInputMode extends InputMode {
             String f;
             f = MyString.remainder(actionString, ActionPrefix.reduceAnimation);
             int factor = Integer.parseInt(f);
-            target.animation.reduce(factor);
+            target.getAnimation().reduce(factor);
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.reduceTrack)) {
@@ -440,7 +440,7 @@ public class EditorInputMode extends InputMode {
             if (actionString.startsWith(ActionPrefix.renameAnimation)) {
                 newName = MyString.remainder(actionString,
                         ActionPrefix.renameAnimation);
-                target.animation.rename(newName);
+                target.getAnimation().rename(newName);
                 handled = true;
 
             } else if (actionString.startsWith(ActionPrefix.renameBone)) {
@@ -480,7 +480,7 @@ public class EditorInputMode extends InputMode {
             String rateString = MyString.remainder(actionString,
                     ActionPrefix.resampleAnimation);
             float rate = Float.parseFloat(rateString);
-            target.animation.resample(rate);
+            target.getAnimation().resample(rate);
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.resampleTrack)) {
@@ -618,19 +618,19 @@ public class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "toggle pause":
-                model.getSource().animation.togglePaused();
-                model.getTarget().animation.togglePaused();
+                model.getSource().getAnimation().togglePaused();
+                model.getTarget().getAnimation().togglePaused();
                 handled = true;
                 break;
             case "toggle pause source":
-                model.getSource().animation.togglePaused();
+                model.getSource().getAnimation().togglePaused();
                 handled = true;
                 break;
             case "toggle pause target":
-                if (model.getTarget().animation.isRetargetedPose()) {
-                    model.getSource().animation.togglePaused();
+                if (model.getTarget().getAnimation().isRetargetedPose()) {
+                    model.getSource().getAnimation().togglePaused();
                 } else {
-                    model.getTarget().animation.togglePaused();
+                    model.getTarget().getAnimation().togglePaused();
                 }
                 handled = true;
                 break;

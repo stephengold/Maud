@@ -159,13 +159,13 @@ class SetAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setDurationProportional);
             float value = Float.parseFloat(arg);
-            target.animation.setDurationProportional(value);
+            target.getAnimation().setDurationProportional(value);
 
         } else if (actionString.startsWith(ActionPrefix.setDurationSame)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setDurationSame);
             float value = Float.parseFloat(arg);
-            target.animation.setDurationSame(value);
+            target.getAnimation().setDurationSame(value);
 
         } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
             arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);

@@ -112,12 +112,12 @@ class SkeletonColorTool extends WindowController {
                     && !influencers.get(boneIndex)) {
                 ColorRGBA invisible = new ColorRGBA(0f, 0f, 0f, 0f);
                 visualizer.setPointColor(boneIndex, invisible);
-            } else if (modelCgm.animation.isRetargetedPose()) {
+            } else if (modelCgm.getAnimation().isRetargetedPose()) {
                 String name = modelCgm.bones.getBoneName(boneIndex);
                 if (Maud.getModel().getMap().isBoneMapped(name)) {
                     visualizer.setPointColor(boneIndex, color);
                 }
-            } else if (modelCgm.animation.hasTrackForBone(boneIndex)) {
+            } else if (modelCgm.getAnimation().hasTrackForBone(boneIndex)) {
                 visualizer.setPointColor(boneIndex, color);
             } // else defaults to trackless/unmapped color
         }

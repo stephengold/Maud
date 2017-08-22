@@ -87,7 +87,7 @@ public class LoadedCgm implements Cloneable {
     /**
      * loaded animation for the CG model
      */
-    public LoadedAnimation animation = new LoadedAnimation();
+    private LoadedAnimation loadedAnimation = new LoadedAnimation();
     /**
      * POV for viewing the scene
      */
@@ -160,7 +160,7 @@ public class LoadedCgm implements Cloneable {
      * Instantiate with no CG model loaded.
      */
     public LoadedCgm() {
-        animation.setCgm(this);
+        loadedAnimation.setCgm(this);
         bone.setCgm(this);
         bones.setCgm(this);
         displayedPose.setCgm(this);
@@ -260,6 +260,16 @@ public class LoadedCgm implements Cloneable {
         }
 
         return treePosition;
+    }
+
+    /**
+     * Access the loaded animation.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public LoadedAnimation getAnimation() {
+        assert loadedAnimation != null;
+        return loadedAnimation;
     }
 
     /**
@@ -866,8 +876,8 @@ public class LoadedCgm implements Cloneable {
          */
         bone.deselect();
 
-        if (target.animation.isRetargetedPose()) {
-            target.animation.loadBindPose();
+        if (target.loadedAnimation.isRetargetedPose()) {
+            target.loadedAnimation.loadBindPose();
         }
     }
     // *************************************************************************
@@ -889,12 +899,12 @@ public class LoadedCgm implements Cloneable {
          */
         bone.deselect();
         spatial.postLoad();
-        animation.loadBindPose();
+        loadedAnimation.loadBindPose();
 
         if (extension.equals("bvh") && countAnimations() == 1) {
             List<String> names = listAnimationsSorted();
             String name = names.get(0);
-            animation.load(name);
+            loadedAnimation.load(name);
         }
         if (Util.countVertices(cgmRoot) == 0) {
             Maud.getModel().getScene().getSkeleton().setBones(SceneBones.All);
@@ -915,7 +925,7 @@ public class LoadedCgm implements Cloneable {
 
         Cloner cloner = new Cloner();
 
-        clone.animation = animation.clone();
+        clone.loadedAnimation = loadedAnimation.clone();
         clone.bone = bone.clone();
         clone.bones = bones.clone();
         clone.displayedPose = cloner.clone(displayedPose);
@@ -930,7 +940,7 @@ public class LoadedCgm implements Cloneable {
         /*
          * Direct the back pointers to the clone.
          */
-        clone.animation.setCgm(clone);
+        clone.loadedAnimation.setCgm(clone);
         clone.bone.setCgm(clone);
         clone.bones.setCgm(clone);
         clone.displayedPose.setCgm(clone);

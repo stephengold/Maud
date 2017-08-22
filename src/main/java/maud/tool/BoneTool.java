@@ -123,7 +123,7 @@ class BoneTool extends WindowController {
 
         SelectedBone selectedBone = Maud.getModel().getTarget().bone;
         if (selectedBone.isSelected()) {
-            if (Maud.getModel().getTarget().animation.isRetargetedPose()) {
+            if (Maud.getModel().getTarget().getAnimation().isRetargetedPose()) {
                 String name = selectedBone.getName();
                 if (Maud.getModel().getMap().isBoneMapped(name)) {
                     hasTrackText = "mapped";

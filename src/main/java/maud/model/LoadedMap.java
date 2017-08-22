@@ -447,7 +447,7 @@ public class LoadedMap implements Cloneable {
         Validate.nonEmpty(newName, "new name");
 
         retargetAndAdd(newName);
-        Maud.getModel().getTarget().animation.load(newName);
+        Maud.getModel().getTarget().getAnimation().load(newName);
     }
 
     /**
@@ -702,7 +702,7 @@ public class LoadedMap implements Cloneable {
 
         LoadedCgm source = Maud.getModel().getSource();
         EditableCgm target = Maud.getModel().getTarget();
-        Animation sourceAnimation = source.animation.getAnimation();
+        Animation sourceAnimation = source.getAnimation().getAnimation();
         Skeleton sourceSkeleton = source.bones.findSkeleton();
         Skeleton targetSkeleton = target.bones.findSkeleton();
         SkeletonMapping effectiveMap = effectiveMap();

@@ -565,9 +565,9 @@ public class SelectedBone implements Cloneable {
     public boolean shouldEnableControls() {
         if (!isSelected()) {
             return false;
-        } else if (loadedCgm.animation.isMoving()) {
+        } else if (loadedCgm.getAnimation().isMoving()) {
             return false;
-        } else if (loadedCgm.animation.isRetargetedPose()) {
+        } else if (loadedCgm.getAnimation().isRetargetedPose()) {
             return false;
         } else {
             return true;

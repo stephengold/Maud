@@ -79,7 +79,7 @@ class KeyframeTool extends WindowController {
         if (numKeyframes == 0) {
             if (target.bone.hasTrack()) {
                 indexText = "no keyframes";
-                float time = target.animation.getTime();
+                float time = target.getAnimation().getTime();
                 timeText = String.format("%.3f", time);
             } else {
                 indexText = "no track";
@@ -99,7 +99,7 @@ class KeyframeTool extends WindowController {
                         numKeyframes);
             }
 
-            float time = target.animation.getTime();
+            float time = target.getAnimation().getTime();
             timeText = String.format("%.3f", time);
         }
 
@@ -155,7 +155,7 @@ class KeyframeTool extends WindowController {
         LoadedCgm target = Maud.getModel().getTarget();
         int numKeyframes = target.track.countKeyframes();
         if (numKeyframes > 0) {
-            float time = target.animation.getTime();
+            float time = target.getAnimation().getTime();
             if (time != 0f) {
                 firstButton = "First";
             }
@@ -184,11 +184,11 @@ class KeyframeTool extends WindowController {
         String trackDescription;
 
         LoadedCgm target = Maud.getModel().getTarget();
-        if (!target.animation.isReal()) {
+        if (!target.getAnimation().isReal()) {
             trackDescription = "(load an animation)";
         } else if (target.bone.hasTrack()) {
             String boneName = target.bone.getName();
-            String animName = target.animation.getName();
+            String animName = target.getAnimation().getName();
             trackDescription = String.format("%s in %s", boneName, animName);
         } else if (target.bone.isSelected()) {
             String boneName = target.bone.getName();

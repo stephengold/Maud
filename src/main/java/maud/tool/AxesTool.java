@@ -265,7 +265,7 @@ public class AxesTool extends WindowController {
             pose.setRotation(boneIndex, newUserRotation);
 
         } else if (cgm == target
-                && cgm.animation.isRetargetedPose()
+                && cgm.getAnimation().isRetargetedPose()
                 && map.isBoneMappingSelected()) {
             /*
              * Apply the rotation to the target bone in the displayed pose.
@@ -275,7 +275,7 @@ public class AxesTool extends WindowController {
         }
 
         if (newUserRotation != null && !cgm.bone.shouldEnableControls()) {
-            assert target.animation.isRetargetedPose();
+            assert target.getAnimation().isRetargetedPose();
             assert map.isBoneMappingSelected();
             /*
              * Infer a new effective twist for the selected bone mapping.
