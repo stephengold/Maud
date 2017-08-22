@@ -614,7 +614,7 @@ public class EditorInputMode extends InputMode {
                 handled = true;
                 break;
             case "toggle freeze target":
-                model.getTarget().pose.toggleFrozen();
+                model.getTarget().getPose().toggleFrozen();
                 handled = true;
                 break;
             case "toggle pause":

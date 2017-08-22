@@ -332,7 +332,7 @@ public class SelectedBone implements Cloneable {
      * @return orientation in model space (either storeResult or a new instance)
      */
     public Quaternion modelOrientation(Quaternion storeResult) {
-        Pose pose = loadedCgm.pose.getPose();
+        Pose pose = loadedCgm.getPose().getPose();
         int boneIndex = getIndex();
         storeResult = pose.modelOrientation(boneIndex, storeResult);
 
@@ -346,7 +346,7 @@ public class SelectedBone implements Cloneable {
      * @return transform (either storeResult or a new instance)
      */
     public Transform modelTransform(Transform storeResult) {
-        Pose pose = loadedCgm.pose.getPose();
+        Pose pose = loadedCgm.getPose().getPose();
         int boneIndex = getIndex();
         storeResult = pose.modelTransform(boneIndex, storeResult);
 
@@ -376,7 +376,7 @@ public class SelectedBone implements Cloneable {
     public void resetRotation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            editableCgm.pose.getPose().resetRotation(boneIndex);
+            editableCgm.getPose().getPose().resetRotation(boneIndex);
         }
     }
 
@@ -386,7 +386,7 @@ public class SelectedBone implements Cloneable {
     public void resetScale() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            editableCgm.pose.getPose().resetScale(boneIndex);
+            editableCgm.getPose().getPose().resetScale(boneIndex);
         }
     }
 
@@ -396,7 +396,7 @@ public class SelectedBone implements Cloneable {
     public void resetTranslation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            editableCgm.pose.getPose().resetTranslation(boneIndex);
+            editableCgm.getPose().getPose().resetTranslation(boneIndex);
         }
     }
 
@@ -531,7 +531,7 @@ public class SelectedBone implements Cloneable {
     public void setRotationToAnimation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            editableCgm.pose.setRotationToAnimation(boneIndex);
+            editableCgm.getPose().setRotationToAnimation(boneIndex);
         }
     }
 
@@ -542,7 +542,7 @@ public class SelectedBone implements Cloneable {
     public void setScaleToAnimation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            editableCgm.pose.setScaleToAnimation(boneIndex);
+            editableCgm.getPose().setScaleToAnimation(boneIndex);
         }
     }
 
@@ -553,7 +553,7 @@ public class SelectedBone implements Cloneable {
     public void setTranslationToAnimation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            editableCgm.pose.setTranslationToAnimation(boneIndex);
+            editableCgm.getPose().setTranslationToAnimation(boneIndex);
         }
     }
 
@@ -581,7 +581,7 @@ public class SelectedBone implements Cloneable {
      * @return user rotation (either storeResult or a new instance)
      */
     public Quaternion userRotation(Quaternion storeResult) {
-        Pose pose = loadedCgm.pose.getPose();
+        Pose pose = loadedCgm.getPose().getPose();
         int boneIndex = getIndex();
         storeResult = pose.userRotation(boneIndex, storeResult);
 
@@ -595,7 +595,7 @@ public class SelectedBone implements Cloneable {
      * @return user scale (either storeResult or a new instance)
      */
     public Vector3f userScale(Vector3f storeResult) {
-        Pose pose = loadedCgm.pose.getPose();
+        Pose pose = loadedCgm.getPose().getPose();
         int boneIndex = getIndex();
         storeResult = pose.userScale(boneIndex, storeResult);
 
@@ -609,7 +609,7 @@ public class SelectedBone implements Cloneable {
      * @return user translation (either storeResult or a new instance)
      */
     public Vector3f userTranslation(Vector3f storeResult) {
-        Pose pose = loadedCgm.pose.getPose();
+        Pose pose = loadedCgm.getPose().getPose();
         int boneIndex = getIndex();
         storeResult = pose.userTranslation(boneIndex, storeResult);
 

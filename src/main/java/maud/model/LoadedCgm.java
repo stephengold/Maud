@@ -83,7 +83,7 @@ public class LoadedCgm implements Cloneable {
     /**
      * bone transforms of the displayed pose
      */
-    public DisplayedPose pose = new DisplayedPose();
+    private DisplayedPose displayedPose = new DisplayedPose();
     /**
      * loaded animation for the CG model
      */
@@ -163,7 +163,7 @@ public class LoadedCgm implements Cloneable {
         animation.setCgm(this);
         bone.setCgm(this);
         bones.setCgm(this);
-        pose.setCgm(this);
+        displayedPose.setCgm(this);
         sgc.setCgm(this);
         scenePov.setCgm(this);
         scorePov.setCgm(this);
@@ -370,6 +370,16 @@ public class LoadedCgm implements Cloneable {
     public String getName() {
         assert name != null;
         return name;
+    }
+
+    /**
+     * Read the displayed pose of the loaded CG model.
+     *
+     * @return pose (not null)
+     */
+    public DisplayedPose getPose() {
+        assert displayedPose != null;
+        return displayedPose;
     }
 
     /**
@@ -908,7 +918,7 @@ public class LoadedCgm implements Cloneable {
         clone.animation = animation.clone();
         clone.bone = bone.clone();
         clone.bones = bones.clone();
-        clone.pose = cloner.clone(pose);
+        clone.displayedPose = cloner.clone(displayedPose);
         clone.rootSpatial = cloner.clone(rootSpatial);
         clone.scenePov = cloner.clone(scenePov);
         clone.sceneView = cloner.clone(sceneView);
@@ -923,7 +933,7 @@ public class LoadedCgm implements Cloneable {
         clone.animation.setCgm(clone);
         clone.bone.setCgm(clone);
         clone.bones.setCgm(clone);
-        clone.pose.setCgm(clone);
+        clone.displayedPose.setCgm(clone);
         clone.scenePov.setCgm(clone);
         if (clone.getSceneView() != null) {
             clone.getSceneView().setCgm(clone);

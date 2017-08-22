@@ -63,6 +63,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.mesh.RectangleMesh;
 import jme3utilities.mesh.RectangleOutlineMesh;
 import maud.Maud;
+import maud.Pose;
 import maud.Selection;
 import maud.mesh.Finial;
 import maud.mesh.RoundedRectangle;
@@ -965,7 +966,8 @@ public class ScoreView implements EditorView {
                     iws, ixs, iys, izs);
         }
         cgm.animation.trackRotations(currentBone, ws, xs, ys, zs);
-        Quaternion user = cgm.pose.getPose().userRotation(currentBone, null);
+        Pose pose = cgm.getPose().getPose();
+        Quaternion user = pose.userRotation(currentBone, null);
         int poseFrame = ts.length;
         ws[poseFrame] = user.getW();
         xs[poseFrame] = user.getX();
@@ -1023,7 +1025,7 @@ public class ScoreView implements EditorView {
                     ixs, iys, izs);
         }
         cgm.animation.trackScales(currentBone, xs, ys, zs);
-        Vector3f user = cgm.pose.getPose().userScale(currentBone, null);
+        Vector3f user = cgm.getPose().getPose().userScale(currentBone, null);
         int poseFrame = ts.length;
         xs[poseFrame] = user.x;
         ys[poseFrame] = user.y;
@@ -1313,7 +1315,8 @@ public class ScoreView implements EditorView {
                     ixs, iys, izs);
         }
         cgm.animation.trackTranslations(currentBone, xs, ys, zs);
-        Vector3f user = cgm.pose.getPose().userTranslation(currentBone, null);
+        Pose pose = cgm.getPose().getPose();
+        Vector3f user = pose.userTranslation(currentBone, null);
         int poseFrame = ts.length;
         xs[poseFrame] = user.x;
         ys[poseFrame] = user.y;

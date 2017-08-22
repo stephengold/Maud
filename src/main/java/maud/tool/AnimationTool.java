@@ -237,7 +237,7 @@ class AnimationTool extends WindowController {
         } else {
             cgm = target;
         }
-        boolean frozen = cgm.pose.isFrozen();
+        boolean frozen = cgm.getPose().isFrozen();
         Maud.gui.setChecked("freeze", frozen);
         boolean looping = cgm.animation.willContinue();
         Maud.gui.setChecked("loop", looping);
