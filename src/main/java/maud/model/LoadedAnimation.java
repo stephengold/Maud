@@ -684,8 +684,10 @@ public class LoadedAnimation implements Cloneable {
         speed = newSpeed;
         currentTime = 0f;
 
-        loadedCgm.getPose().setToAnimation();
-        loadedCgm.getPose().setFrozen(false);
+        boolean frozen = loadedCgm.getPose().isFrozen();
+        if (!frozen) {
+            loadedCgm.getPose().setToAnimation();
+        }
     }
 
     /**
