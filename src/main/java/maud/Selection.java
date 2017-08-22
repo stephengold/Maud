@@ -283,7 +283,7 @@ public class Selection {
     private void selectKeyframe() {
         assert bestFrameIndex >= 0 : bestFrameIndex;
 
-        float keyframeTime = bestCgm.track.keyframeTime(bestFrameIndex);
+        float keyframeTime = bestCgm.getTrack().keyframeTime(bestFrameIndex);
         bestCgm.getAnimation().setTime(keyframeTime);
         // TODO drag
     }

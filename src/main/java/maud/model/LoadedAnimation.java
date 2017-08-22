@@ -871,7 +871,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void selectKeyframe(String name) {
         Validate.nonNull(name, "keyframe name");
-        assert loadedCgm.track.isTrackSelected();
+        assert loadedCgm.getTrack().isTrackSelected();
 
         float newTime = Float.valueOf(name);
         // TODO validate

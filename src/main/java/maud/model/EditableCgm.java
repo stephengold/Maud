@@ -460,7 +460,7 @@ public class EditableCgm extends LoadedCgm {
         assert translations != null;
         assert rotations != null;
 
-        BoneTrack boneTrack = track.findTrack();
+        BoneTrack boneTrack = getTrack().findTrack();
 
         History.autoAdd();
         if (scales == null) {
