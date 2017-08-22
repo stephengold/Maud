@@ -684,7 +684,7 @@ public class BuildMenus {
         if (target.getBone().hasTrack()) {
             if (!target.getAnimation().isMoving()) {
                 builder.add("Select");
-                int frameIndex = target.track.findKeyframeIndex();
+                int frameIndex = target.getTrack().findKeyframeIndex();
                 if (frameIndex == -1) {
                     builder.addEdit("Insert from pose");
                 }

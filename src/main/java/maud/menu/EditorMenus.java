@@ -516,10 +516,10 @@ public class EditorMenus {
             handled = true;
             switch (remainder) {
                 case "Delete":
-                    target.track.deleteSingleKeyframe();
+                    target.getTrack().deleteSingleKeyframe();
                     break;
                 case "Insert from pose":
-                    target.track.insertSingleKeyframe();
+                    target.getTrack().insertSingleKeyframe();
                     break;
                 case "Reduce track":
                     Maud.gui.dialogs.reduceTrack();
@@ -534,7 +534,7 @@ public class EditorMenus {
                     Maud.gui.tools.select("keyframe");
                     break;
                 case "Wrap track":
-                    target.track.wrap();
+                    target.getTrack().wrap();
                     break;
                 default:
                     handled = false;
@@ -556,16 +556,16 @@ public class EditorMenus {
         boolean handled = true;
         switch (remainder) {
             case "First":
-                target.track.selectFirstKeyframe();
+                target.getTrack().selectFirstKeyframe();
                 break;
             case "Last":
-                target.track.selectLastKeyframe();
+                target.getTrack().selectLastKeyframe();
                 break;
             case "Next":
-                target.track.selectNextKeyframe();
+                target.getTrack().selectNextKeyframe();
                 break;
             case "Previous":
-                target.track.selectPreviousKeyframe();
+                target.getTrack().selectPreviousKeyframe();
                 break;
             default:
                 handled = false;

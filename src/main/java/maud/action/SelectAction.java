@@ -82,16 +82,16 @@ class SelectAction {
                 target.getBone().selectParent();
                 break;
             case "select keyframeFirst":
-                target.track.selectFirstKeyframe();
+                target.getTrack().selectFirstKeyframe();
                 break;
             case "select keyframeLast":
-                target.track.selectLastKeyframe();
+                target.getTrack().selectLastKeyframe();
                 break;
             case "select keyframeNext":
-                target.track.selectNextKeyframe();
+                target.getTrack().selectNextKeyframe();
                 break;
             case "select keyframePrevious":
-                target.track.selectPreviousKeyframe();
+                target.getTrack().selectPreviousKeyframe();
                 break;
             case "select mapSourceBone":
                 model.getMap().selectFromSource();

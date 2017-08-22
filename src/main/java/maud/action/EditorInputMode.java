@@ -260,7 +260,7 @@ public class EditorInputMode extends InputMode {
                 Maud.getModel().getMap().deleteBoneMapping();
                 break;
             case "delete singleKeyframe":
-                target.track.deleteSingleKeyframe();
+                target.getTrack().deleteSingleKeyframe();
                 break;
             case "delete userKey":
                 target.getUserData().delete();
@@ -402,7 +402,7 @@ public class EditorInputMode extends InputMode {
             String f;
             f = MyString.remainder(actionString, ActionPrefix.reduceTrack);
             int factor = Integer.parseInt(f);
-            target.track.reduce(factor);
+            target.getTrack().reduce(factor);
             handled = true;
         }
 
@@ -488,7 +488,7 @@ public class EditorInputMode extends InputMode {
             String rateString = MyString.remainder(actionString,
                     ActionPrefix.resampleTrack);
             float rate = Float.parseFloat(rateString);
-            target.track.resample(rate);
+            target.getTrack().resample(rate);
             handled = true;
         }
 
@@ -693,7 +693,7 @@ public class EditorInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "wrap track":
-                Maud.getModel().getTarget().track.wrap();
+                Maud.getModel().getTarget().getTrack().wrap();
                 handled = true;
         }
 

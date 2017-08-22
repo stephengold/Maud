@@ -74,7 +74,7 @@ class NewAction {
                 Maud.getModel().getMap().mapBones();
                 break;
             case "new singleKeyframe":
-                Maud.getModel().getTarget().track.insertSingleKeyframe();
+                Maud.getModel().getTarget().getTrack().insertSingleKeyframe();
                 break;
             case "new userKey":
                 Maud.gui.showMenus.selectUserDataType();

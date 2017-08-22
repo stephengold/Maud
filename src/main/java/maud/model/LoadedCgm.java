@@ -123,9 +123,9 @@ public class LoadedCgm implements Cloneable {
      */
     private SelectedSpatial selectedSpatial = new SelectedSpatial();
     /**
-     * which track is selected in the CGM's anim control
+     * which bone track is selected in the CGM's anim control
      */
-    public SelectedTrack track = new SelectedTrack();
+    private SelectedTrack selectedTrack = new SelectedTrack();
     /**
      * root spatial in the MVC model's copy of the CG model
      */
@@ -168,7 +168,7 @@ public class LoadedCgm implements Cloneable {
         scenePov.setCgm(this);
         scorePov.setCgm(this);
         selectedSpatial.setCgm(this);
-        track.setCgm(this);
+        selectedTrack.setCgm(this);
         userData.setCgm(this);
     }
     // *************************************************************************
@@ -450,6 +450,16 @@ public class LoadedCgm implements Cloneable {
     public SelectedSpatial getSpatial() {
         assert selectedSpatial != null;
         return selectedSpatial;
+    }
+
+    /**
+     * Access the selected track.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedTrack getTrack() {
+        assert selectedTrack != null;
+        return selectedTrack;
     }
 
     /**
@@ -965,7 +975,7 @@ public class LoadedCgm implements Cloneable {
         clone.scorePov = cloner.clone(scorePov);
         clone.selectedSgc = selectedSgc.clone();
         clone.selectedSpatial = selectedSpatial.clone();
-        clone.track = track.clone();
+        clone.selectedTrack = selectedTrack.clone();
         clone.userData = userData.clone();
         /*
          * Direct the back pointers to the clone.
@@ -981,7 +991,7 @@ public class LoadedCgm implements Cloneable {
         clone.scorePov.setCgm(clone);
         clone.selectedSgc.setCgm(clone);
         clone.selectedSpatial.setCgm(clone);
-        clone.track.setCgm(clone);
+        clone.selectedTrack.setCgm(clone);
         clone.getUserData().setCgm(clone);
 
         return clone;
