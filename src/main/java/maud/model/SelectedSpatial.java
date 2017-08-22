@@ -43,7 +43,6 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-import com.jme3.terrain.geomipmap.TerrainQuad;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -323,17 +322,7 @@ public class SelectedSpatial implements Cloneable {
      */
     public String describeType() {
         Spatial spatial = modelSpatial();
-
-        String typeText;
-        if (spatial instanceof Geometry) {
-            typeText = "Geometry";
-        } else if (spatial instanceof TerrainQuad) {
-            typeText = "TerQuad";
-        } else if (spatial instanceof Node) {
-            typeText = "Node";
-        } else {
-            typeText = "unknown";
-        }
+        String typeText = spatial.getClass().getSimpleName();
 
         return typeText;
     }
