@@ -219,14 +219,14 @@ public class MappingTool extends WindowController {
     private void updateSelected() {
         String mButton = "";
         String uButton = "";
+
         if (Maud.getModel().getMap().isBoneMappingSelected()) {
             uButton = "Unmap";
-        } else {
-            if (Maud.getModel().getSource().bone.isSelected()
-                    && Maud.getModel().getTarget().bone.isSelected()) {
-                mButton = "Map";
-            }
+        } else if (Maud.getModel().getSource().getBone().isSelected()
+                && Maud.getModel().getTarget().getBone().isSelected()) {
+            mButton = "Map";
         }
+
         Maud.gui.setButtonLabel("addMappingButton", mButton);
         Maud.gui.setButtonLabel("deleteMappingButton", uButton);
     }
@@ -240,8 +240,8 @@ public class MappingTool extends WindowController {
          */
         LoadedCgm source = Maud.getModel().getSource();
         String sourceBoneDesc;
-        if (source.bone.isSelected()) {
-            String sourceName = source.bone.getName();
+        if (source.getBone().isSelected()) {
+            String sourceName = source.getBone().getName();
             sourceBoneDesc = MyString.quote(sourceName);
             String target = Maud.getModel().getMap().targetBoneName(sourceName);
             if (target != null) {
@@ -271,7 +271,7 @@ public class MappingTool extends WindowController {
     private void updateTarget() {
         String targetBoneDesc;
 
-        SelectedBone bone = Maud.getModel().getTarget().bone;
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             String targetName = bone.getName();
             targetBoneDesc = MyString.quote(targetName);

@@ -199,11 +199,11 @@ public class EditableMap extends LoadedMap {
         LoadedCgm source = Maud.getModel().getSource();
         LoadedCgm target = Maud.getModel().getTarget();
         if (!isBoneMappingSelected()
-                && source.bone.isSelected()
-                && target.bone.isSelected()) {
+                && source.getBone().isSelected()
+                && target.getBone().isSelected()) {
             History.autoAdd();
-            String sourceBoneName = source.bone.getName();
-            String targetBoneName = target.bone.getName();
+            String sourceBoneName = source.getBone().getName();
+            String targetBoneName = target.getBone().getName();
             /*
              * Remove any prior mappings involving those bones.
              */
@@ -421,9 +421,9 @@ public class EditableMap extends LoadedMap {
      */
     private Quaternion estimateTwist() {
         Quaternion sourceMo;
-        sourceMo = Maud.getModel().getSource().bone.modelOrientation(null);
+        sourceMo = Maud.getModel().getSource().getBone().modelOrientation(null);
         Quaternion targetMo;
-        targetMo = Maud.getModel().getTarget().bone.modelOrientation(null);
+        targetMo = Maud.getModel().getTarget().getBone().modelOrientation(null);
         Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
         Quaternion twist = invSourceMo.mult(targetMo, null);
         Util.cardinalizeLocal(twist);
@@ -469,7 +469,7 @@ public class EditableMap extends LoadedMap {
      * edit history.
      */
     private void setEditedTwist() {
-        String newName = Maud.getModel().getTarget().bone.getName();
+        String newName = Maud.getModel().getTarget().getBone().getName();
         if (!newName.equals(editedTwist)) {
             History.autoAdd();
             ++editCount;

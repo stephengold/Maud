@@ -170,7 +170,8 @@ public class LoadedMap implements Cloneable {
             index = -1;
         } else {
             List<String> nameList = listSorted();
-            String targetBoneName = Maud.getModel().getTarget().bone.getName();
+            LoadedCgm target = Maud.getModel().getTarget();
+            String targetBoneName = target.getBone().getName();
             index = nameList.indexOf(targetBoneName);
         }
 
@@ -454,16 +455,16 @@ public class LoadedMap implements Cloneable {
      * Select the bone mapping of the selected source bone.
      */
     public void selectFromSource() {
-        String sourceBoneName = Maud.getModel().getSource().bone.getName();
+        String sourceBoneName = Maud.getModel().getSource().getBone().getName();
         String targetBoneName = targetBoneName(sourceBoneName);
-        Maud.getModel().getTarget().bone.select(targetBoneName);
+        Maud.getModel().getTarget().getBone().select(targetBoneName);
     }
 
     /**
      * Select the bone mapping of the selected target bone.
      */
     public void selectFromTarget() {
-        String targetBoneName = Maud.getModel().getTarget().bone.getName();
+        String targetBoneName = Maud.getModel().getTarget().getBone().getName();
         selectFromTarget(targetBoneName);
     }
 
@@ -473,7 +474,8 @@ public class LoadedMap implements Cloneable {
     public void selectNext() {
         if (isBoneMappingSelected()) {
             List<String> nameList = listSorted();
-            String targetBoneName = Maud.getModel().getTarget().bone.getName();
+            LoadedCgm target = Maud.getModel().getTarget();
+            String targetBoneName = target.getBone().getName();
             int index = nameList.indexOf(targetBoneName);
             int numMappings = nameList.size();
             int nextIndex = MyMath.modulo(index + 1, numMappings);
@@ -488,7 +490,8 @@ public class LoadedMap implements Cloneable {
     public void selectPrevious() {
         if (isBoneMappingSelected()) {
             List<String> nameList = listSorted();
-            String targetBoneName = Maud.getModel().getTarget().bone.getName();
+            LoadedCgm target = Maud.getModel().getTarget();
+            String targetBoneName = target.getBone().getName();
             int index = nameList.indexOf(targetBoneName);
             int numMappings = nameList.size();
             int previousIndex = MyMath.modulo(index - 1, numMappings);
@@ -564,9 +567,10 @@ public class LoadedMap implements Cloneable {
      */
     protected BoneMapping selectedMapping() {
         BoneMapping result = null;
-        if (Maud.getModel().getSource().isLoaded()) {
-            String sourceBoneName = Maud.getModel().getSource().bone.getName();
-            String targetBoneName = Maud.getModel().getTarget().bone.getName();
+        EditorModel model = Maud.getModel();
+        if (model.getSource().isLoaded()) {
+            String sourceBoneName = model.getSource().getBone().getName();
+            String targetBoneName = model.getTarget().getBone().getName();
             if (invertMapFlag) {
                 String swap = sourceBoneName;
                 sourceBoneName = targetBoneName;
@@ -725,8 +729,8 @@ public class LoadedMap implements Cloneable {
 
         String sourceBoneName = sourceBoneName(targetBoneName);
         if (sourceBoneName != null) {
-            Maud.getModel().getSource().bone.select(sourceBoneName);
-            Maud.getModel().getTarget().bone.select(targetBoneName);
+            Maud.getModel().getSource().getBone().select(sourceBoneName);
+            Maud.getModel().getTarget().getBone().select(targetBoneName);
         }
     }
 }

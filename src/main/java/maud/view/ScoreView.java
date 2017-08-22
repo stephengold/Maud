@@ -328,10 +328,10 @@ public class ScoreView implements EditorView {
     @Override
     public void considerAll(Selection selection) {
         Camera camera = getCamera();
-        int selectedBone = cgm.bone.getIndex();
+        int selectedBone = cgm.getBone().getIndex();
         Vector2f inputXY = selection.copyInputXY();
 
-        boolean isSelected = cgm.bone.isSelected();
+        boolean isSelected = cgm.getBone().isSelected();
         if (isSelected) {
             Vector2f minMax = boneYs.get(selectedBone);
             Vector3f world1 = new Vector3f(xRightMargin, minMax.x, zLines);
@@ -435,8 +435,8 @@ public class ScoreView implements EditorView {
      */
     public Vector2f selectedMinMaxY() {
         Vector2f result = null;
-        if (cgm.bone.isSelected()) {
-            int selectedBoneIndex = cgm.bone.getIndex();
+        if (cgm.getBone().isSelected()) {
+            int selectedBoneIndex = cgm.getBone().getIndex();
             result = boneYs.get(selectedBoneIndex);
         }
 
@@ -516,7 +516,7 @@ public class ScoreView implements EditorView {
                     attachAllBones();
                     break;
                 case "ancestors":
-                    List<Integer> indices = cgm.bone.listAncestorIndices();
+                    List<Integer> indices = cgm.getBone().listAncestorIndices();
                     Collections.reverse(indices);
                     attachStaves(indices);
                     break;
@@ -530,7 +530,7 @@ public class ScoreView implements EditorView {
                     attachStaves(indices);
                     break;
                 case "selected":
-                    currentBone = cgm.bone.getIndex();
+                    currentBone = cgm.getBone().getIndex();
                     attachStaff();
                     break;
                 case "tracked":
@@ -594,7 +594,7 @@ public class ScoreView implements EditorView {
         assert maxHeight > 0f : maxHeight;
 
         Material bgMaterial;
-        int selectedBoneIndex = cgm.bone.getIndex();
+        int selectedBoneIndex = cgm.getBone().getIndex();
         if (currentBone == selectedBoneIndex) {
             bgMaterial = bgSelected;
         } else {
@@ -715,9 +715,9 @@ public class ScoreView implements EditorView {
      * children (if any), in tree order.
      */
     private void attachFamilyBones() {
-        List<Integer> boneIndices = cgm.bone.listAncestorIndices();
+        List<Integer> boneIndices = cgm.getBone().listAncestorIndices();
         Collections.reverse(boneIndices);
-        List<Integer> childIndices = cgm.bone.listChildIndices();
+        List<Integer> childIndices = cgm.getBone().listChildIndices();
         boneIndices.addAll(childIndices);
 
         attachStaves(boneIndices);
@@ -732,7 +732,7 @@ public class ScoreView implements EditorView {
         assert finial != null;
 
         Material wireMaterial = wireNotSelected;
-        int selectedBoneIndex = cgm.bone.getIndex();
+        int selectedBoneIndex = cgm.getBone().getIndex();
         if (currentBone == selectedBoneIndex) {
             wireMaterial = wireSelected;
         }
@@ -837,7 +837,7 @@ public class ScoreView implements EditorView {
         float y = -height - staffHeight / 2;
 
         Material material = wireNotSelected;
-        int selectedBoneIndex = cgm.bone.getIndex();
+        int selectedBoneIndex = cgm.getBone().getIndex();
         if (currentBone == selectedBoneIndex) {
             material = wireSelected;
         }
@@ -921,7 +921,7 @@ public class ScoreView implements EditorView {
         assert staffHeight >= 0f : staffHeight;
 
         Material wireMaterial;
-        int selectedBoneIndex = cgm.bone.getIndex();
+        int selectedBoneIndex = cgm.getBone().getIndex();
         if (currentBone == selectedBoneIndex) {
             wireMaterial = wireSelected;
         } else {
@@ -1109,7 +1109,7 @@ public class ScoreView implements EditorView {
             MyArray.normalize(ts, 0f, duration);
         }
 
-        int selectedBone = cgm.bone.getIndex();
+        int selectedBone = cgm.getBone().getIndex();
         if (currentBone == selectedBone) {
             /*
              * Record the X-coordinates of all keyframes in the selected track.

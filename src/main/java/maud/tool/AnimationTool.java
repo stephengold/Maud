@@ -34,6 +34,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.SelectedBone;
 
 /**
  * The controller for the "Animation Tool" window in Maud's editor screen.
@@ -162,17 +163,18 @@ class AnimationTool extends WindowController {
      */
     private void updateHasTrack() {
         LoadedCgm target = Maud.getModel().getTarget();
+        SelectedBone bone = target.getBone();
         String hasTrackText;
-        if (!target.bone.isSelected()) {
+        if (!bone.isSelected()) {
             hasTrackText = "no bone";
         } else if (target.getAnimation().isReal()) {
-            if (target.bone.hasTrack()) {
+            if (bone.hasTrack()) {
                 hasTrackText = "has track";
             } else {
                 hasTrackText = "no track";
             }
         } else if (target.getAnimation().isRetargetedPose()) {
-            String boneName = target.bone.getName();
+            String boneName = bone.getName();
             if (Maud.getModel().getMap().isBoneMapped(boneName)) {
                 hasTrackText = "is mapped";
             } else {

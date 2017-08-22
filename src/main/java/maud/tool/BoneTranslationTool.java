@@ -106,13 +106,13 @@ class BoneTranslationTool extends WindowController {
      */
     void onSliderChanged() {
         EditableCgm target = Maud.getModel().getTarget();
-        if (target.bone.shouldEnableControls()) {
+        if (target.getBone().shouldEnableControls()) {
             Vector3f offsets = Maud.gui.readVectorBank("Off");
 
             float masterScale = readScale();
             offsets.multLocal(masterScale);
 
-            int boneIndex = target.bone.getIndex();
+            int boneIndex = target.getBone().getIndex();
             target.getPose().getPose().setTranslation(boneIndex, offsets);
         }
     }
@@ -149,7 +149,7 @@ class BoneTranslationTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        SelectedBone bone = Maud.getModel().getTarget().bone;
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             setSlidersToPose();
             if (bone.shouldEnableControls()) {
@@ -220,7 +220,7 @@ class BoneTranslationTool extends WindowController {
      */
     private void setSlidersToPose() {
         EditableCgm target = Maud.getModel().getTarget();
-        Vector3f vector = target.bone.userTranslation(null);
+        Vector3f vector = target.getBone().userTranslation(null);
         float[] offsets = vector.toArray(null);
 
         float scale = readScale();

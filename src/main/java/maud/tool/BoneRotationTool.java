@@ -88,7 +88,7 @@ class BoneRotationTool extends WindowController {
      */
     void onSliderChanged() {
         LoadedCgm target = Maud.getModel().getTarget();
-        if (target.bone.shouldEnableControls()) {
+        if (target.getBone().shouldEnableControls()) {
             float[] angles = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 float value = sliders[iAxis].getValue();
@@ -96,7 +96,7 @@ class BoneRotationTool extends WindowController {
             }
             Quaternion rot = new Quaternion();
             rot.fromAngles(angles);
-            int boneIndex = target.bone.getIndex();
+            int boneIndex = target.getBone().getIndex();
             target.getPose().getPose().setRotation(boneIndex, rot);
         }
     }
@@ -135,7 +135,7 @@ class BoneRotationTool extends WindowController {
 
         String aButton = "";
         String bButton = "";
-        SelectedBone bone = Maud.getModel().getTarget().bone;
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             setSlidersToPose();
             if (bone.shouldEnableControls()) {
@@ -200,7 +200,7 @@ class BoneRotationTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        SelectedBone bone = Maud.getModel().getTarget().bone;
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
         Quaternion rotation = bone.userRotation(null);
         float[] angles = rotation.toAngles(null);
         boolean degrees = Maud.getModel().getMisc().getAnglesInDegrees();

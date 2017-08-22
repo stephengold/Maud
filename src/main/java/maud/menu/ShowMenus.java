@@ -191,7 +191,7 @@ public class ShowMenus {
         LoadedCgm target = Maud.getModel().getTarget();
         if (argument.startsWith("!")) {
             String name = argument.substring(1);
-            target.bone.select(name);
+            target.getBone().select(name);
         } else {
             List<String> names;
             names = target.bones.listChildBoneNames(argument);

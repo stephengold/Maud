@@ -247,7 +247,7 @@ public class AxesTool extends WindowController {
      * @param cgm which CG model (not null, unaffected)
      */
     private void rotateBone(Quaternion rotation, LoadedCgm cgm) {
-        int boneIndex = cgm.bone.getIndex();
+        int boneIndex = cgm.getBone().getIndex();
         assert boneIndex != -1;
         EditorModel model = Maud.getModel();
         EditableMap map = model.getMap();
@@ -256,7 +256,7 @@ public class AxesTool extends WindowController {
         Quaternion oldUserRotation = pose.userRotation(boneIndex, null);
 
         Quaternion newUserRotation = null;
-        if (cgm.bone.shouldEnableControls()) {
+        if (cgm.getBone().shouldEnableControls()) {
             /*
              * Apply the rotation to the selected bone in the displayed pose.
              */
@@ -274,16 +274,16 @@ public class AxesTool extends WindowController {
             pose.setRotation(boneIndex, newUserRotation);
         }
 
-        if (newUserRotation != null && !cgm.bone.shouldEnableControls()) {
+        if (newUserRotation != null && !cgm.getBone().shouldEnableControls()) {
             assert target.getAnimation().isRetargetedPose();
             assert map.isBoneMappingSelected();
             /*
              * Infer a new effective twist for the selected bone mapping.
              */
             Quaternion sourceMo;
-            sourceMo = model.getSource().bone.modelOrientation(null);
+            sourceMo = model.getSource().getBone().modelOrientation(null);
             Quaternion targetMo;
-            targetMo = target.bone.modelOrientation(null);
+            targetMo = target.getBone().modelOrientation(null);
             Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
             Quaternion newEffectiveTwist = invSourceMo.mult(targetMo);
             map.setTwist(newEffectiveTwist);
@@ -363,8 +363,8 @@ public class AxesTool extends WindowController {
         AxesMode mode = Maud.getModel().getScene().getAxes().getMode();
         switch (mode) {
             case Bone:
-                if (loadedCgm.bone.isSelected()) {
-                    transform = loadedCgm.bone.modelTransform(null);
+                if (loadedCgm.getBone().isSelected()) {
+                    transform = loadedCgm.getBone().modelTransform(null);
                     // TODO use animated geometry
                     Transform worldTransform;
                     worldTransform = loadedCgm.getSceneView().worldTransform();

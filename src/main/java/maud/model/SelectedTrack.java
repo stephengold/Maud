@@ -168,7 +168,7 @@ public class SelectedTrack implements Cloneable {
         if (frameIndex < 1) {
             return;
         }
-        int boneIndex = loadedCgm.bone.getIndex();
+        int boneIndex = loadedCgm.getBone().getIndex();
         assert boneIndex >= 0 : boneIndex;
 
         Animation newAnimation = newAnimation();
@@ -208,14 +208,14 @@ public class SelectedTrack implements Cloneable {
      * @return the pre-existing instance, or null if none
      */
     BoneTrack findTrack() {
-        if (!loadedCgm.bone.isSelected()) {
+        if (!loadedCgm.getBone().isSelected()) {
             return null;
         } else if (!loadedCgm.getAnimation().isReal()) {
             return null;
         }
 
         Animation anim = loadedCgm.getAnimation().getAnimation();
-        int boneIndex = loadedCgm.bone.getIndex();
+        int boneIndex = loadedCgm.getBone().getIndex();
         BoneTrack track = MyAnimation.findTrack(anim, boneIndex);
 
         return track;
@@ -265,7 +265,7 @@ public class SelectedTrack implements Cloneable {
      * @return true if one is selected, false if none is selected
      */
     public boolean isTrackSelected() {
-        if (loadedCgm.bone.isSelected()) {
+        if (loadedCgm.getBone().isSelected()) {
             if (!loadedCgm.getAnimation().isReal()) {
                 return false;
             }
@@ -318,7 +318,7 @@ public class SelectedTrack implements Cloneable {
         List<String> result = null;
         if (!loadedCgm.getAnimation().isReal()) {
             logger.log(Level.INFO, "No animation is selected.");
-        } else if (!loadedCgm.bone.isSelected()) {
+        } else if (!loadedCgm.getBone().isSelected()) {
             logger.log(Level.INFO, "No bone is selected.");
         } else if (!isTrackSelected()) {
             logger.log(Level.INFO, "No track is selected.");
@@ -343,7 +343,7 @@ public class SelectedTrack implements Cloneable {
      */
     public void reduce(int factor) {
         Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
-        assert loadedCgm.bone.hasTrack();
+        assert loadedCgm.getBone().hasTrack();
 
         Animation newAnimation = newAnimation();
         BoneTrack selectedTrack = findTrack();
@@ -371,7 +371,7 @@ public class SelectedTrack implements Cloneable {
      */
     public void resample(float sampleRate) {
         Validate.positive(sampleRate, "sample rate");
-        assert loadedCgm.bone.hasTrack();
+        assert loadedCgm.getBone().hasTrack();
 
         Animation newAnimation = newAnimation();
         BoneTrack selectedTrack = findTrack();
@@ -474,7 +474,7 @@ public class SelectedTrack implements Cloneable {
     public void setRotationAll() {
         BoneTrack track = findTrack();
         if (track != null) {
-            Quaternion poseRotation = loadedCgm.bone.userRotation(null);
+            Quaternion poseRotation = loadedCgm.getBone().userRotation(null);
 
             float[] times = track.getTimes();
             Vector3f[] translations = track.getTranslations();
@@ -494,7 +494,7 @@ public class SelectedTrack implements Cloneable {
     public void setScaleAll() {
         BoneTrack track = findTrack();
         if (track != null) {
-            Vector3f poseScale = loadedCgm.bone.userScale(null);
+            Vector3f poseScale = loadedCgm.getBone().userScale(null);
 
             float[] times = track.getTimes();
             Vector3f[] translations = track.getTranslations();
@@ -518,7 +518,8 @@ public class SelectedTrack implements Cloneable {
     public void setTranslationAll() {
         BoneTrack track = findTrack();
         if (track != null) {
-            Vector3f poseTranslation = loadedCgm.bone.userTranslation(null);
+            SelectedBone bone = loadedCgm.getBone();
+            Vector3f poseTranslation = bone.userTranslation(null);
 
             float[] times = track.getTimes();
             Vector3f[] translations = track.getTranslations();

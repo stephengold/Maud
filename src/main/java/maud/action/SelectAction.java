@@ -79,7 +79,7 @@ class SelectAction {
                 Maud.gui.boneMenus.selectBoneChild();
                 break;
             case "select boneParent":
-                target.bone.selectParent();
+                target.getBone().selectParent();
                 break;
             case "select keyframeFirst":
                 target.track.selectFirstKeyframe();

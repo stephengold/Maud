@@ -104,12 +104,12 @@ class SourceAnimationTool extends WindowController {
         String hasTrackText;
         if (!source.isLoaded()) {
             hasTrackText = "no model";
-        } else if (!source.bone.isSelected()) {
+        } else if (!source.getBone().isSelected()) {
             hasTrackText = "no bone";
         } else if (!source.getAnimation().isReal()) {
             hasTrackText = "";
         } else {
-            if (source.bone.hasTrack()) {
+            if (source.getBone().hasTrack()) {
                 hasTrackText = "has track";
             } else {
                 hasTrackText = "no track";

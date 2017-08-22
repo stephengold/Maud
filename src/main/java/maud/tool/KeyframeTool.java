@@ -32,6 +32,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.EditableCgm;
 import maud.model.LoadedCgm;
+import maud.model.SelectedBone;
 import maud.model.SelectedTrack;
 
 /**
@@ -77,7 +78,7 @@ class KeyframeTool extends WindowController {
         String indexText, timeText;
         int numKeyframes = target.track.countKeyframes();
         if (numKeyframes == 0) {
-            if (target.bone.hasTrack()) {
+            if (target.getBone().hasTrack()) {
                 indexText = "no keyframes";
                 float time = target.getAnimation().getTime();
                 timeText = String.format("%.3f", time);
@@ -184,14 +185,15 @@ class KeyframeTool extends WindowController {
         String trackDescription;
 
         LoadedCgm target = Maud.getModel().getTarget();
+        SelectedBone bone = target.getBone();
         if (!target.getAnimation().isReal()) {
             trackDescription = "(load an animation)";
-        } else if (target.bone.hasTrack()) {
-            String boneName = target.bone.getName();
+        } else if (bone.hasTrack()) {
+            String boneName = bone.getName();
             String animName = target.getAnimation().getName();
             trackDescription = String.format("%s in %s", boneName, animName);
-        } else if (target.bone.isSelected()) {
-            String boneName = target.bone.getName();
+        } else if (bone.isSelected()) {
+            String boneName = bone.getName();
             trackDescription = String.format("none for %s", boneName);
         } else {
             trackDescription = "(select a bone)";
@@ -209,7 +211,7 @@ class KeyframeTool extends WindowController {
         String scaleCount = "";
 
         LoadedCgm target = Maud.getModel().getTarget();
-        if (target.bone.hasTrack()) {
+        if (target.getBone().hasTrack()) {
             int numOffsets = target.track.countTranslations();
             translationCount = String.format("%d", numOffsets);
 

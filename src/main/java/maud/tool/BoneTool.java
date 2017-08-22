@@ -91,7 +91,7 @@ class BoneTool extends WindowController {
     private void updateChildren() {
         String childText, scButton;
 
-        SelectedBone selectedBone = Maud.getModel().getTarget().bone;
+        SelectedBone selectedBone = Maud.getModel().getTarget().getBone();
         if (selectedBone.isSelected()) {
             int numChildren = selectedBone.countChildren();
             if (numChildren > 1) {
@@ -121,7 +121,7 @@ class BoneTool extends WindowController {
     private void updateHasTrack() {
         String hasTrackText = "";
 
-        SelectedBone selectedBone = Maud.getModel().getTarget().bone;
+        SelectedBone selectedBone = Maud.getModel().getTarget().getBone();
         if (selectedBone.isSelected()) {
             if (Maud.getModel().getTarget().getAnimation().isRetargetedPose()) {
                 String name = selectedBone.getName();
@@ -149,8 +149,8 @@ class BoneTool extends WindowController {
 
         LoadedCgm target = Maud.getModel().getTarget();
         int numBones = target.bones.countBones();
-        if (target.bone.isSelected()) {
-            int selectedIndex = target.bone.getIndex();
+        if (target.getBone().isSelected()) {
+            int selectedIndex = target.getBone().getIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
             nButton = "+";
             pButton = "-";
@@ -178,7 +178,7 @@ class BoneTool extends WindowController {
     private void updateInfluence() {
         String desc = "";
 
-        SelectedBone bone = Maud.getModel().getTarget().bone;
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             int influence = bone.influence();
             desc = String.format("influences %d vertices", influence);
@@ -192,7 +192,7 @@ class BoneTool extends WindowController {
     private void updateName() {
         String nameText, rButton;
 
-        SelectedBone bone = Maud.getModel().getTarget().bone;
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             String name = bone.getName();
             nameText = MyString.quote(name);
@@ -214,7 +214,7 @@ class BoneTool extends WindowController {
         String parentText, spButton;
 
         EditableCgm target = Maud.getModel().getTarget();
-        SelectedBone selectedBone = target.bone;
+        SelectedBone selectedBone = target.getBone();
         if (selectedBone.isSelected()) {
             if (selectedBone.isRootBone()) {
                 int numRoots = target.bones.countRootBones();
@@ -246,7 +246,7 @@ class BoneTool extends WindowController {
     private void updateTransformButtons() {
         String rButton, sButton, tButton;
 
-        if (Maud.getModel().getTarget().bone.isSelected()) {
+        if (Maud.getModel().getTarget().getBone().isSelected()) {
             rButton = "Rotate";
             sButton = "Scale";
             tButton = "Translate";

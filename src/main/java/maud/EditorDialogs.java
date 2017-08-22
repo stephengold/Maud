@@ -197,7 +197,8 @@ public class EditorDialogs {
      * Display a "reduce track" dialog.
      */
     public void reduceTrack() {
-        if (Maud.getModel().getTarget().bone.hasTrack()) {
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
+        if (bone.hasTrack()) {
             IntegerDialog controller;
             controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
 
@@ -226,7 +227,7 @@ public class EditorDialogs {
      * Display a "rename bone" dialog.
      */
     public void renameBone() {
-        SelectedBone bone = Maud.getModel().getTarget().bone;
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             String oldName = bone.getName();
             DialogController controller = new BoneRenameDialog("Rename");
@@ -287,7 +288,8 @@ public class EditorDialogs {
      * Display a "resample track" dialog.
      */
     public void resampleTrack() {
-        if (Maud.getModel().getTarget().bone.hasTrack()) {
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
+        if (bone.hasTrack()) {
             FloatDialog controller = new FloatDialog("Resample", 0.1f, 1000f);
 
             Maud.gui.closeAllPopups();

@@ -404,7 +404,7 @@ public class SelectedSkeleton implements Cloneable {
      */
     void set(Skeleton newSkeleton, boolean selectedSpatialFlag) {
         cgm.getSceneView().setSkeleton(newSkeleton, selectedSpatialFlag);
-        cgm.bone.deselect();
+        cgm.getBone().deselect();
         cgm.getPose().resetToBind(newSkeleton);
     }
 
