@@ -33,7 +33,6 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCgm;
 import maud.model.SelectedSpatial;
 
 /**
@@ -93,14 +92,14 @@ class SpatialTool extends WindowController {
     private void updateChildren() {
         String childrenText, scButton;
 
-        LoadedCgm target = Maud.getModel().getTarget();
-        if (target.spatial.isNode()) {
-            int numChildren = target.spatial.countChildren();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        if (spatial.isNode()) {
+            int numChildren = spatial.countChildren();
             if (numChildren == 0) {
                 childrenText = "none";
                 scButton = "";
             } else if (numChildren == 1) {
-                String childName = target.spatial.getChildName(0);
+                String childName = spatial.getChildName(0);
                 if (childName == null) {
                     childrenText = "null";
                 } else {
@@ -126,10 +125,10 @@ class SpatialTool extends WindowController {
     private void updateMaterial() {
         String materialText;
 
-        LoadedCgm target = Maud.getModel().getTarget();
-        if (target.spatial.isGeometry()) {
-            if (target.spatial.hasMaterial()) {
-                String materialName = target.spatial.getMaterialName();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        if (spatial.isGeometry()) {
+            if (spatial.hasMaterial()) {
+                String materialName = spatial.getMaterialName();
                 if (materialName == null) {
                     materialText = "nameless";
                 } else {
@@ -151,19 +150,19 @@ class SpatialTool extends WindowController {
     private void updateMesh() {
         String meshText;
 
-        LoadedCgm target = Maud.getModel().getTarget();
-        if (target.spatial.isGeometry()) {
-            if (target.spatial.hasMesh()) {
-                if (target.spatial.hasAnimatedMesh()) {
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        if (spatial.isGeometry()) {
+            if (spatial.hasMesh()) {
+                if (spatial.hasAnimatedMesh()) {
                     meshText = "animated";
                 } else {
                     meshText = "non-animated";
                 }
-                Mesh.Mode mode = target.spatial.getMeshMode();
+                Mesh.Mode mode = spatial.getMeshMode();
                 meshText += String.format(" %s", mode.toString());
-                int numVertices = target.spatial.countVertices();
+                int numVertices = spatial.countVertices();
                 meshText += String.format(", %d verts, ", numVertices);
-                int numLevels = target.spatial.countLoDLevels();
+                int numLevels = spatial.countLoDLevels();
                 if (numLevels == 1) {
                     meshText += "one LoD";
                 } else {
@@ -183,13 +182,15 @@ class SpatialTool extends WindowController {
      * Update the display of the spatial's name.
      */
     private void updateName() {
-        String name = Maud.getModel().getTarget().spatial.getName();
         String nameText;
+
+        String name = Maud.getModel().getTarget().getSpatial().getName();
         if (name == null) {
             nameText = "null";
         } else {
             nameText = MyString.quote(name);
         }
+
         Maud.gui.setStatusText("spatialName", " " + nameText);
     }
 
@@ -199,7 +200,7 @@ class SpatialTool extends WindowController {
     private void updateParent() {
         String parentText, spButton;
 
-        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.isCgmRoot()) {
             parentText = "none (the model root)";
             spButton = "";
@@ -221,8 +222,8 @@ class SpatialTool extends WindowController {
      * Update the display of the spatial's shadow mode.
      */
     private void updateShadows() {
-        RenderQueue.ShadowMode mode;
-        mode = Maud.getModel().getTarget().spatial.getLocalShadowMode();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        RenderQueue.ShadowMode mode = spatial.getLocalShadowMode();
         String shadowsText = mode.toString();
         Maud.gui.setStatusText("spatialShadows", " " + shadowsText);
     }
@@ -233,7 +234,7 @@ class SpatialTool extends WindowController {
     private void updateTreePosition() {
         String positionText;
 
-        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.isCgmRoot()) {
             positionText = "model root";
         } else {
@@ -247,7 +248,8 @@ class SpatialTool extends WindowController {
      * Update the display of the spatial's type.
      */
     private void updateType() {
-        String typeText = Maud.getModel().getTarget().spatial.describeType();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        String typeText = spatial.describeType();
         Maud.gui.setStatusText("spatialType", typeText);
     }
 }

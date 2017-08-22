@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.SelectedSpatial;
 
 /**
  * The controller for the "Spatial-Scale Tool" window in Maud's editor screen.
@@ -138,7 +139,8 @@ class SpatialScaleTool extends WindowController {
      * the selected spatial.
      */
     private void setSlidersToTransform() {
-        Vector3f vector = Maud.getModel().getTarget().spatial.localScale(null);
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        Vector3f vector = spatial.localScale(null);
         float[] scales = vector.toArray(null);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {

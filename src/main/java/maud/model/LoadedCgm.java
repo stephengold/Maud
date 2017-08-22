@@ -121,7 +121,7 @@ public class LoadedCgm implements Cloneable {
     /**
      * which spatial is selected in the CG model
      */
-    public SelectedSpatial spatial = new SelectedSpatial();
+    private SelectedSpatial selectedSpatial = new SelectedSpatial();
     /**
      * which track is selected in the CGM's anim control
      */
@@ -150,7 +150,7 @@ public class LoadedCgm implements Cloneable {
      */
     protected String name = null;
     /**
-     * which user data is selected in the CGM's selected spatial
+     * which user data is selected in the selected spatial
      */
     private UserData userData = new UserData();
     // *************************************************************************
@@ -167,7 +167,7 @@ public class LoadedCgm implements Cloneable {
         sgc.setCgm(this);
         scenePov.setCgm(this);
         scorePov.setCgm(this);
-        spatial.setCgm(this);
+        selectedSpatial.setCgm(this);
         track.setCgm(this);
         userData.setCgm(this);
     }
@@ -430,6 +430,16 @@ public class LoadedCgm implements Cloneable {
     public ScoreView getScoreView() {
         assert scoreView != null;
         return scoreView;
+    }
+
+    /**
+     * Access the selected spatial.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedSpatial getSpatial() {
+        assert selectedSpatial != null;
+        return selectedSpatial;
     }
 
     /**
@@ -849,7 +859,7 @@ public class LoadedCgm implements Cloneable {
     void selectSgc(AbstractControl newSgc) {
         if (newSgc != null) {
             Spatial sp = newSgc.getSpatial();
-            spatial.select(sp);
+            selectedSpatial.select(sp);
         }
         sgc.select(newSgc);
     }
@@ -908,7 +918,7 @@ public class LoadedCgm implements Cloneable {
          * Reset the selected bone/spatial and also the loaded animation.
          */
         selectedBone.deselect();
-        spatial.postLoad();
+        selectedSpatial.postLoad();
         loadedAnimation.loadBindPose();
 
         if (extension.equals("bvh") && countAnimations() == 1) {
@@ -944,7 +954,7 @@ public class LoadedCgm implements Cloneable {
         clone.sceneView = cloner.clone(sceneView);
         clone.scorePov = cloner.clone(scorePov);
         clone.sgc = sgc.clone();
-        clone.spatial = spatial.clone();
+        clone.selectedSpatial = selectedSpatial.clone();
         clone.track = track.clone();
         clone.userData = userData.clone();
         /*
@@ -960,7 +970,7 @@ public class LoadedCgm implements Cloneable {
         }
         clone.scorePov.setCgm(clone);
         clone.sgc.setCgm(clone);
-        clone.spatial.setCgm(clone);
+        clone.selectedSpatial.setCgm(clone);
         clone.track.setCgm(clone);
         clone.getUserData().setCgm(clone);
 

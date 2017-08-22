@@ -95,8 +95,8 @@ class SpatialDetailsTool extends WindowController {
      * Update the display of the spatial's batch hint.
      */
     private void updateBatchHint() {
-        Spatial.BatchHint hint;
-        hint = Maud.getModel().getTarget().spatial.getLocalBatchHint();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        Spatial.BatchHint hint = spatial.getLocalBatchHint();
         String description = hint.toString();
         Maud.gui.setStatusText("spatialBatchHint", " " + description);
     }
@@ -105,8 +105,8 @@ class SpatialDetailsTool extends WindowController {
      * Update the display of the spatial's render-queue bucket.
      */
     private void updateBucket() {
-        RenderQueue.Bucket bucket;
-        bucket = Maud.getModel().getTarget().spatial.getLocalQueueBucket();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        RenderQueue.Bucket bucket = spatial.getLocalQueueBucket();
         String description = bucket.toString();
         Maud.gui.setStatusText("spatialBucket", " " + description);
     }
@@ -115,8 +115,8 @@ class SpatialDetailsTool extends WindowController {
      * Update the display of the spatial's cull hint.
      */
     private void updateHint() {
-        Spatial.CullHint hint;
-        hint = Maud.getModel().getTarget().spatial.getLocalCullHint();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        Spatial.CullHint hint = spatial.getLocalCullHint();
         String description = hint.toString();
         Maud.gui.setStatusText("spatialHint", " " + description);
     }
@@ -127,7 +127,7 @@ class SpatialDetailsTool extends WindowController {
     private void updateInfluence() {
         List<String> list = new ArrayList<>(3);
 
-        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         int sgcCount = spatial.countSubtreeSgcs();
         if (sgcCount == 1) {
             String item = String.format(" one control");
@@ -169,7 +169,8 @@ class SpatialDetailsTool extends WindowController {
      * Update the count of local lights.
      */
     private void updateLights() {
-        int numLights = Maud.getModel().getTarget().spatial.countLights();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        int numLights = spatial.countLights();
         String statusText = String.format(" %d", numLights);
         Maud.gui.setStatusText("spatialLights", statusText);
     }
@@ -178,7 +179,8 @@ class SpatialDetailsTool extends WindowController {
      * Update the display of the spatial's name.
      */
     private void updateName() {
-        String name = Maud.getModel().getTarget().spatial.getName();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        String name = spatial.getName();
         String description = MyString.quote(name);
         Maud.gui.setStatusText("spatialName2", " " + description);
     }
@@ -187,7 +189,8 @@ class SpatialDetailsTool extends WindowController {
      * Update the count of material-parameter overrides.
      */
     private void updateOverrides() {
-        int numOverrides = Maud.getModel().getTarget().spatial.countOverrides();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        int numOverrides = spatial.countOverrides();
         String statusText = String.format(" %d", numOverrides);
         Maud.gui.setStatusText("spatialOverrides", statusText);
     }
@@ -196,7 +199,8 @@ class SpatialDetailsTool extends WindowController {
      * Update the count of scene-graph controls.
      */
     private void updateSgcs() {
-        int numSgcs = Maud.getModel().getTarget().spatial.countSgcs();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        int numSgcs = spatial.countSgcs();
         String statusText = String.format(" %d", numSgcs);
         Maud.gui.setStatusText("spatialControls", statusText);
     }
@@ -205,8 +209,8 @@ class SpatialDetailsTool extends WindowController {
      * Update the display of the spatial's shadow mode.
      */
     private void updateShadows() {
-        RenderQueue.ShadowMode mode;
-        mode = Maud.getModel().getTarget().spatial.getLocalShadowMode();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        RenderQueue.ShadowMode mode = spatial.getLocalShadowMode();
         String description = mode.toString();
         Maud.gui.setStatusText("spatialShadows", " " + description);
     }
@@ -215,7 +219,8 @@ class SpatialDetailsTool extends WindowController {
      * Update the count of user data.
      */
     private void updateUserData() {
-        int numKeys = Maud.getModel().getTarget().spatial.countUserData();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        int numKeys = spatial.countUserData();
         String statusText = String.format(" %d", numKeys);
         Maud.gui.setStatusText("spatialUserData", statusText);
     }

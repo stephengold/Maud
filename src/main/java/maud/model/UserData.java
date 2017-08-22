@@ -85,7 +85,7 @@ public class UserData implements Cloneable {
             index = -1;
         } else {
             List<String> keyList;
-            keyList = cgm.spatial.listUserKeys();
+            keyList = cgm.getSpatial().listUserKeys();
             index = keyList.indexOf(selectedKey);
         }
 
@@ -114,7 +114,7 @@ public class UserData implements Cloneable {
      * Select the next user data (in key lexical order).
      */
     public void selectNextKey() {
-        List<String> keyList = cgm.spatial.listUserKeys();
+        List<String> keyList = cgm.getSpatial().listUserKeys();
         int numKeys = keyList.size();
         int index = keyList.indexOf(selectedKey);
         int nextIndex = MyMath.modulo(index + 1, numKeys);
@@ -126,7 +126,7 @@ public class UserData implements Cloneable {
      * Select the previous user data (in key lexical order).
      */
     public void selectPreviousKey() {
-        List<String> keyList = cgm.spatial.listUserKeys();
+        List<String> keyList = cgm.getSpatial().listUserKeys();
         int numKeys = keyList.size();
         int index = keyList.indexOf(selectedKey);
         int nextIndex = MyMath.modulo(index - 1, numKeys);

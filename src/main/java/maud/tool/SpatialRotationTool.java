@@ -35,6 +35,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.SelectedSpatial;
 
 /**
  * The controller for the "Spatial-Rotation Tool" window in Maud's editor
@@ -147,8 +148,8 @@ class SpatialRotationTool extends WindowController {
      * of the selected spatial.
      */
     private void setSlidersToTransform() {
-        Quaternion rotation;
-        rotation = Maud.getModel().getTarget().spatial.localRotation(null);
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        Quaternion rotation = spatial.localRotation(null);
         float[] angles = rotation.toAngles(null);
         boolean degrees = Maud.getModel().getMisc().getAnglesInDegrees();
 

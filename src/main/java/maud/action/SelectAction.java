@@ -115,7 +115,7 @@ class SelectAction {
                 Maud.gui.showMenus.selectSpatialChild("");
                 break;
             case "select spatialParent":
-                target.spatial.selectParent();
+                target.getSpatial().selectParent();
                 break;
             case "select userKey":
                 Maud.gui.showMenus.selectUserKey();

@@ -135,7 +135,7 @@ public class UserKeyDialog implements DialogController {
     private static boolean existsInSpatial(String key) {
         assert key != null;
 
-        if (Maud.getModel().getTarget().spatial.hasUserKey(key)) {
+        if (Maud.getModel().getTarget().getSpatial().hasUserKey(key)) {
             return true;
         } else {
             return false;

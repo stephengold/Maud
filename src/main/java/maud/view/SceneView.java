@@ -408,7 +408,7 @@ public class SceneView
      * @return the pre-existing spatial (not null)
      */
     public Spatial selectedSpatial() {
-        Spatial result = cgm.spatial.underRoot(cgmRoot);
+        Spatial result = cgm.getSpatial().underRoot(cgmRoot);
         assert result != null;
         return result;
     }

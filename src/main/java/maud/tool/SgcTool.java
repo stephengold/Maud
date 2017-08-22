@@ -97,7 +97,7 @@ class SgcTool extends WindowController {
         String nButton, pButton;
 
         LoadedCgm target = Maud.getModel().getTarget();
-        int numSgcs = target.spatial.countSgcs();
+        int numSgcs = target.getSpatial().countSgcs();
         if (target.sgc.isSelected()) {
             int selectedIndex = target.sgc.getIndex();
             indexText = String.format("#%d of %d", selectedIndex + 1, numSgcs);

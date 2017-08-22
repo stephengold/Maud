@@ -811,7 +811,7 @@ public class BuildMenus {
         builder.addTool("Translate");
         //builder.addTool("User data tool");
         LoadedCgm target = Maud.getModel().getTarget();
-        if (!target.spatial.isCgmRoot()) {
+        if (!target.getSpatial().isCgmRoot()) {
             builder.addEdit("Delete");
         }
         if (target.hasExtraSpatials()) {

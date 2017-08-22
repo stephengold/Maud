@@ -347,7 +347,7 @@ public class SelectedSkeleton implements Cloneable {
 
         Spatial subtree;
         if (selectedSpatialFlag) {
-            subtree = cgm.spatial.modelSpatial();
+            subtree = cgm.getSpatial().modelSpatial();
         } else {
             subtree = cgm.getRootSpatial();
         }

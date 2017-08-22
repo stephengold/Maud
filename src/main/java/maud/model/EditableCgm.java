@@ -102,7 +102,7 @@ public class EditableCgm extends LoadedCgm {
             assert skeleton != null;
             control = new AnimControl(skeleton);
             if (selectedSpatialFlag) {
-                Spatial modelSpatial = spatial.modelSpatial();
+                Spatial modelSpatial = getSpatial().modelSpatial();
                 modelSpatial.addControl(control);
             } else {
                 rootSpatial.addControl(control);
@@ -121,7 +121,7 @@ public class EditableCgm extends LoadedCgm {
         assert newSgc != null;
 
         History.autoAdd();
-        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
         if (newSgc instanceof PhysicsControl) {
             PhysicsControl physicsControl = (PhysicsControl) newSgc;
             SceneView sceneView = getSceneView();
@@ -163,7 +163,7 @@ public class EditableCgm extends LoadedCgm {
         }
         byte objectType = UserData.getObjectType(object);
         UserData data = new UserData(objectType, object);
-        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
 
         History.autoAdd();
         selectedSpatial.setUserData(key, data);
@@ -224,7 +224,7 @@ public class EditableCgm extends LoadedCgm {
             Node rootNode = (Node) rootSpatial;
             History.autoAdd();
             deleteExtraSpatials(rootNode);
-            spatial.selectCgmRoot();
+            getSpatial().selectCgmRoot();
             int numDeleted = oldNumSpatials - Util.countSpatials(rootSpatial);
             String description = String.format("delete %d extra spatial%s",
                     numDeleted, numDeleted == 1 ? "" : "s");
@@ -237,7 +237,7 @@ public class EditableCgm extends LoadedCgm {
      * the SGC.
      */
     void deleteSgc() {
-        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
         Control selectedSgc = sgc.findSgc(rootSpatial);
 
         History.autoAdd();
@@ -257,7 +257,7 @@ public class EditableCgm extends LoadedCgm {
      * responsible for deselecting the spatial.
      */
     void deleteSubtree() {
-        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
         Node parent = selectedSpatial.getParent();
 
         History.autoAdd();
@@ -273,7 +273,7 @@ public class EditableCgm extends LoadedCgm {
      * responsible for deselecting the user data.
      */
     void deleteUserData() {
-        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
         String key = getUserData().getKey();
 
         History.autoAdd();
@@ -357,7 +357,7 @@ public class EditableCgm extends LoadedCgm {
             success = false;
 
         } else {
-            Spatial selectedSpatial = spatial.modelSpatial();
+            Spatial selectedSpatial = getSpatial().modelSpatial();
 
             History.autoAdd();
             selectedSpatial.setName(newName);
@@ -376,7 +376,7 @@ public class EditableCgm extends LoadedCgm {
     public void renameUserKey(String newKey) {
         Validate.nonNull(newKey, "new key");
 
-        Spatial sp = spatial.modelSpatial();
+        Spatial sp = getSpatial().modelSpatial();
         String oldKey = getUserData().getKey();
         Object data = sp.getUserData(oldKey);
 
@@ -417,7 +417,7 @@ public class EditableCgm extends LoadedCgm {
     public void setBatchHint(Spatial.BatchHint newHint) {
         Validate.nonNull(newHint, "batch hint");
 
-        Spatial modelSpatial = spatial.underRoot(rootSpatial);
+        Spatial modelSpatial = getSpatial().underRoot(rootSpatial);
         Spatial.BatchHint oldHint = modelSpatial.getLocalBatchHint();
         if (oldHint != newHint) {
             History.autoAdd();
@@ -435,7 +435,7 @@ public class EditableCgm extends LoadedCgm {
     public void setCullHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial modelSpatial = spatial.underRoot(rootSpatial);
+        Spatial modelSpatial = getSpatial().underRoot(rootSpatial);
         Spatial.CullHint oldHint = modelSpatial.getLocalCullHint();
         if (oldHint != newHint) {
             History.autoAdd();
@@ -479,7 +479,7 @@ public class EditableCgm extends LoadedCgm {
     public void setQueueBucket(RenderQueue.Bucket newBucket) {
         Validate.nonNull(newBucket, "new bucket");
 
-        Spatial modelSpatial = spatial.underRoot(rootSpatial);
+        Spatial modelSpatial = getSpatial().underRoot(rootSpatial);
         RenderQueue.Bucket oldBucket = modelSpatial.getLocalQueueBucket();
         if (oldBucket != newBucket) {
             History.autoAdd();
@@ -497,7 +497,7 @@ public class EditableCgm extends LoadedCgm {
     public void setShadowMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "new mode");
 
-        Spatial modelSpatial = spatial.underRoot(rootSpatial);
+        Spatial modelSpatial = getSpatial().underRoot(rootSpatial);
         RenderQueue.ShadowMode oldMode = modelSpatial.getLocalShadowMode();
         if (oldMode != newMode) {
             History.autoAdd();
@@ -515,7 +515,7 @@ public class EditableCgm extends LoadedCgm {
     public void setSpatialRotation(Quaternion rotation) {
         Validate.nonNull(rotation, "rotation");
 
-        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
         selectedSpatial.setLocalRotation(rotation);
         getSceneView().setSpatialRotation(rotation);
         setEditedSpatialTransform();
@@ -532,7 +532,7 @@ public class EditableCgm extends LoadedCgm {
         Validate.positive(scale.y, "y scale");
         Validate.positive(scale.z, "z scale");
 
-        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
         selectedSpatial.setLocalScale(scale);
         getSceneView().setSpatialScale(scale);
         setEditedSpatialTransform();
@@ -546,7 +546,7 @@ public class EditableCgm extends LoadedCgm {
     public void setSpatialTranslation(Vector3f translation) {
         Validate.nonNull(translation, "translation");
 
-        Spatial selectedSpatial = spatial.underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
         selectedSpatial.setLocalTranslation(translation);
         getSceneView().setSpatialTranslation(translation);
         setEditedSpatialTransform();
@@ -561,8 +561,8 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(valueString, "value string");
 
         String key = getUserData().getKey();
-        Spatial sp = spatial.modelSpatial();
-        Object data = spatial.getUserData(key);
+        Spatial sp = getSpatial().modelSpatial();
+        Object data = getSpatial().getUserData(key);
 
         History.autoAdd();
         if (data instanceof Boolean) {
@@ -779,7 +779,7 @@ public class EditableCgm extends LoadedCgm {
      * If not a continuation of the previous edit, update the edit count.
      */
     private void setEditedSpatialTransform() {
-        String newString = spatial.toString();
+        String newString = getSpatial().toString();
         if (!newString.equals(editedSpatialTransform)) {
             History.autoAdd();
             ++editCount;

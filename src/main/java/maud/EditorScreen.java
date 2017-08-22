@@ -546,7 +546,7 @@ public class EditorScreen extends GuiScreenController {
      * @param argument action argument (not null)
      */
     public void selectSpatialChild(String argument) {
-        SelectedSpatial spatial = Maud.getModel().getTarget().spatial;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         List<String> children = spatial.listNumberedChildren();
         int childIndex = children.indexOf(argument);
         if (childIndex >= 0) {
