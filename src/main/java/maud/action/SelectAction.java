@@ -155,7 +155,7 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectControl)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectControl);
-            model.getTarget().sgc.select(arg);
+            model.getTarget().getSgc().select(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);

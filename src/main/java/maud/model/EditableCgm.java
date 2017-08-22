@@ -238,7 +238,7 @@ public class EditableCgm extends LoadedCgm {
      */
     void deleteSgc() {
         Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
-        Control selectedSgc = sgc.findSgc(rootSpatial);
+        Control selectedSgc = getSgc().findSgc(rootSpatial);
 
         History.autoAdd();
         if (selectedSgc instanceof PhysicsControl) {

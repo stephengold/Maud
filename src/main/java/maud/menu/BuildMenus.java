@@ -771,7 +771,7 @@ public class BuildMenus {
         builder.addTool("Tool");
         builder.add("Select");
         builder.add("Add");
-        if (Maud.getModel().getTarget().sgc.isSelected()) {
+        if (Maud.getModel().getTarget().getSgc().isSelected()) {
             //builder.add("Deselect"); TODO
             builder.addEdit("Delete");
         }

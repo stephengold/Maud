@@ -126,7 +126,7 @@ public class EditorDialogs {
      * Display a "delete control" dialog.
      */
     public void deleteSgc() {
-        String name = Maud.getModel().getTarget().sgc.getName();
+        String name = Maud.getModel().getTarget().getSgc().getName();
         String message;
         message = String.format("Delete the %s control?", MyString.quote(name));
         Maud.gui.closeAllPopups();
