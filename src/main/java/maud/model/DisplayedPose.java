@@ -131,7 +131,7 @@ public class DisplayedPose implements JmeCloneable {
     void setRotationToAnimation(int boneIndex) {
         assert boneIndex >= 0 : boneIndex;
 
-        Transform animT = cgm.animation.boneTransform(boneIndex, null);
+        Transform animT = cgm.getAnimation().boneTransform(boneIndex, null);
         Quaternion animQ = animT.getRotation();
         pose.setRotation(boneIndex, animQ);
     }
@@ -144,7 +144,7 @@ public class DisplayedPose implements JmeCloneable {
     void setScaleToAnimation(int boneIndex) {
         assert boneIndex >= 0 : boneIndex;
 
-        Transform animT = cgm.animation.boneTransform(boneIndex, null);
+        Transform animT = cgm.getAnimation().boneTransform(boneIndex, null);
         Vector3f animV = animT.getScale();
         pose.setScale(boneIndex, animV);
     }
@@ -155,11 +155,11 @@ public class DisplayedPose implements JmeCloneable {
     public void setToAnimation() {
         Transform transform = new Transform();
         for (int boneIndex : pose.preOrderIndices()) {
-            cgm.animation.boneTransform(boneIndex, transform);
+            cgm.getAnimation().boneTransform(boneIndex, transform);
             pose.set(boneIndex, transform);
         }
 
-        if (cgm.animation.isPinned()) {
+        if (cgm.getAnimation().isPinned()) {
             int[] rootBones = pose.rootBoneIndices();
             for (int boneIndex : rootBones) {
                 pose.resetTranslation(boneIndex);
@@ -175,7 +175,7 @@ public class DisplayedPose implements JmeCloneable {
     void setTranslationToAnimation(int boneIndex) {
         assert boneIndex >= 0 : boneIndex;
 
-        Transform animT = cgm.animation.boneTransform(boneIndex, null);
+        Transform animT = cgm.getAnimation().boneTransform(boneIndex, null);
         Vector3f animV = animT.getTranslation();
         pose.setTranslation(boneIndex, animV);
     }

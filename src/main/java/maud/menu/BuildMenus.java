@@ -407,7 +407,7 @@ public class BuildMenus {
      */
     void selectBoneWithTrack() {
         LoadedCgm target = Maud.getModel().getTarget();
-        List<String> boneNames = target.animation.listBonesWithTrack();
+        List<String> boneNames = target.getAnimation().listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
             target.bone.select(boneNames.get(0));
@@ -476,7 +476,7 @@ public class BuildMenus {
             //builder.add("Unload");
         }
 
-        if (target.animation.isReal()) {
+        if (target.getAnimation().isReal()) {
             builder.add("Edit");
             builder.addDialog("Rename");
             builder.addDialog("Delete");
@@ -527,7 +527,7 @@ public class BuildMenus {
             builder.add("Root");
         }
 
-        int numTracks = target.animation.countBoneTracks();
+        int numTracks = target.getAnimation().countBoneTracks();
         if (numTracks > 0) {
             builder.add("With track");
         }
@@ -682,7 +682,7 @@ public class BuildMenus {
         builder.addTool("Tool");
         LoadedCgm target = Maud.getModel().getTarget();
         if (target.bone.hasTrack()) {
-            if (!target.animation.isMoving()) {
+            if (!target.getAnimation().isMoving()) {
                 builder.add("Select");
                 int frameIndex = target.track.findKeyframeIndex();
                 if (frameIndex == -1) {

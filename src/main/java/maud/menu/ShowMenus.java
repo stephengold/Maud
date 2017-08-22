@@ -519,8 +519,8 @@ public class ShowMenus {
     }
 
     /**
-     * Display a submenu for selecting a target animation by name using the
-     * "select (source)animation" action prefix.
+     * Display a submenu for selecting an animation by name using the "select
+     * (source)animation" action prefix.
      *
      * @param nameList list of names from which to select (not null, modified)
      * @param cgm which load slot (not null)
@@ -529,7 +529,7 @@ public class ShowMenus {
         assert nameList != null;
         assert cgm != null;
 
-        String loadedAnimation = cgm.animation.getName();
+        String loadedAnimation = cgm.getAnimation().getName();
         boolean success = nameList.remove(loadedAnimation);
         assert success;
 

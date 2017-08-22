@@ -131,7 +131,7 @@ public class EditorMenus {
         if (cgm.hasAnimation(argument)
                 || argument.equals(LoadedAnimation.bindPoseName)
                 || argument.equals(LoadedAnimation.retargetedPoseName)) {
-            cgm.animation.load(argument);
+            cgm.getAnimation().load(argument);
         } else {
             /*
              * Treat the argument as an animation-name prefix.
@@ -361,6 +361,7 @@ public class EditorMenus {
         assert remainder != null;
 
         EditableCgm target = Maud.getModel().getTarget();
+        LoadedAnimation animation = target.getAnimation();
         boolean handled;
         String changeDurationPrefix = "Change duration" + menuPathSeparator;
         if (remainder.startsWith(changeDurationPrefix)) {
@@ -371,16 +372,16 @@ public class EditorMenus {
             handled = true;
             switch (remainder) {
                 case "Behead":
-                    target.animation.behead();
+                    animation.behead();
                     break;
                 case "Change duration":
                     Maud.gui.showMenus.changeDuration();
                     break;
                 case "Delete keyframes":
-                    target.animation.deleteKeyframes();
+                    animation.deleteKeyframes();
                     break;
                 case "Insert keyframes":
-                    target.animation.insertKeyframes();
+                    animation.insertKeyframes();
                     break;
                 case "Reduce all tracks":
                     Maud.gui.dialogs.reduceAnimation();
@@ -389,10 +390,10 @@ public class EditorMenus {
                     Maud.gui.dialogs.resampleAnimation();
                     break;
                 case "Truncate":
-                    target.animation.truncate();
+                    animation.truncate();
                     break;
                 case "Wrap all tracks":
-                    target.animation.wrapAllTracks();
+                    animation.wrapAllTracks();
                     break;
                 default:
                     handled = false;

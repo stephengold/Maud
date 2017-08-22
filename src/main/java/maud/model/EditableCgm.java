@@ -207,11 +207,11 @@ public class EditableCgm extends LoadedCgm {
      * different animation.
      */
     void deleteAnimation() {
-        Animation loadedAnimation = animation.getAnimation();
+        Animation anim = getAnimation().getAnimation();
         AnimControl animControl = getAnimControl();
 
         History.autoAdd();
-        animControl.removeAnim(loadedAnimation);
+        animControl.removeAnim(anim);
         setEdited("delete animation");
     }
 

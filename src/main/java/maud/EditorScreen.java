@@ -63,6 +63,7 @@ import maud.model.Checkpoint;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
+import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.Pov;
 import maud.model.SceneOptions;
@@ -329,7 +330,7 @@ public class EditorScreen extends GuiScreenController {
         LoadedCgm source = model.getSource();
         EditableCgm target = model.getTarget();
         LoadedCgm animationCgm;
-        if (target.animation.isRetargetedPose()) {
+        if (target.getAnimation().isRetargetedPose()) {
             animationCgm = source;
         } else {
             animationCgm = target;
@@ -358,25 +359,25 @@ public class EditorScreen extends GuiScreenController {
                 model.getMap().setInvertMap(isChecked);
                 break;
             case "loop":
-                animationCgm.animation.setContinue(isChecked);
+                animationCgm.getAnimation().setContinue(isChecked);
                 break;
             case "loopSource":
-                source.animation.setContinue(isChecked);
+                source.getAnimation().setContinue(isChecked);
                 break;
             case "physics":
                 scene.setPhysicsRendered(isChecked);
                 break;
             case "pin":
-                target.animation.setPinned(isChecked);
+                target.getAnimation().setPinned(isChecked);
                 break;
             case "pinSource":
-                source.animation.setPinned(isChecked);
+                source.getAnimation().setPinned(isChecked);
                 break;
             case "pong":
-                animationCgm.animation.setReverse(isChecked);
+                animationCgm.getAnimation().setReverse(isChecked);
                 break;
             case "pongSource":
-                source.animation.setReverse(isChecked);
+                source.getAnimation().setReverse(isChecked);
                 break;
             case "scoreRotations":
                 model.getScore().setShowRotations(isChecked);
@@ -697,13 +698,13 @@ public class EditorScreen extends GuiScreenController {
          * Update animations.
          */
         LoadedCgm source = Maud.getModel().getSource();
-        if (source.animation.isMoving()) {
+        if (source.getAnimation().isMoving()) {
             updateTrackTime(source, tpf);
         }
         LoadedCgm target = Maud.getModel().getTarget();
-        if (target.animation.isMoving()) {
+        if (target.getAnimation().isMoving()) {
             updateTrackTime(target, tpf);
-        } else if (target.animation.isRetargetedPose()) {
+        } else if (target.getAnimation().isRetargetedPose()) {
             target.getPose().setToAnimation();
         }
         /*
@@ -741,9 +742,9 @@ public class EditorScreen extends GuiScreenController {
                 Vector2f mouseXY = inputManager.getCursorPosition();
                 Vector3f world = camera.getWorldCoordinates(mouseXY, 0f);
                 float worldX = FastMath.clamp(world.x, 0f, 1f);
-                float duration = cgm.animation.getDuration();
+                float duration = cgm.getAnimation().getDuration();
                 float newTime = worldX * duration;
-                cgm.animation.setTime(newTime);
+                cgm.getAnimation().setTime(newTime);
             }
         }
         tools.camera.updatePov();
@@ -781,15 +782,16 @@ public class EditorScreen extends GuiScreenController {
      * @param tpf time interval between render passes (in seconds, &ge;0)
      */
     private void updateTrackTime(LoadedCgm loadedCgm, float tpf) {
-        assert loadedCgm.animation.isMoving();
+        LoadedAnimation animation = loadedCgm.getAnimation();
+        assert animation.isMoving();
 
-        float speed = loadedCgm.animation.getSpeed();
-        float time = loadedCgm.animation.getTime();
+        float speed = animation.getSpeed();
+        float time = animation.getTime();
         time += speed * tpf;
 
-        boolean cont = loadedCgm.animation.willContinue();
-        boolean reverse = loadedCgm.animation.willReverse();
-        float duration = loadedCgm.animation.getDuration();
+        boolean cont = animation.willContinue();
+        boolean reverse = animation.willReverse();
+        float duration = animation.getDuration();
         if (duration == 0f) {
             time = 0f;
         } else if (cont && !reverse) {
@@ -799,13 +801,13 @@ public class EditorScreen extends GuiScreenController {
             time = FastMath.clamp(time, 0f, duration);
             if (time != freeTime) { // reached a limit
                 if (reverse) {
-                    loadedCgm.animation.setSpeed(-speed); // pong
+                    animation.setSpeed(-speed); // pong
                 } else {
                     time = duration - time; // wrap
                 }
-                loadedCgm.animation.setPaused(!cont);
+                animation.setPaused(!cont);
             }
         }
-        loadedCgm.animation.setTime(time);
+        animation.setTime(time);
     }
 }

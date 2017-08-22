@@ -88,7 +88,7 @@ public class SelectedSgc implements Cloneable {
 
             AnimControl newAnimControl = loadedCgm.getAnimControl();
             if (oldAnimControl != newAnimControl) {
-                loadedCgm.animation.loadBindPose();
+                loadedCgm.getAnimation().loadBindPose();
             }
 
         } else {
@@ -221,7 +221,7 @@ public class SelectedSgc implements Cloneable {
 
         AnimControl newAnimControl = loadedCgm.getAnimControl();
         if (oldAnimControl != newAnimControl) {
-            loadedCgm.animation.loadBindPose();
+            loadedCgm.getAnimation().loadBindPose();
         }
     }
 

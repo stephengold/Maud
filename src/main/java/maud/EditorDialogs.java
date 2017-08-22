@@ -103,7 +103,7 @@ public class EditorDialogs {
      * Display a "copy animation" dialog.
      */
     public void copyAnimation() {
-        String fromName = Maud.getModel().getTarget().animation.getName();
+        String fromName = Maud.getModel().getTarget().getAnimation().getName();
         DialogController controller = new AnimationNameDialog("Copy");
 
         Maud.gui.closeAllPopups();
@@ -115,7 +115,7 @@ public class EditorDialogs {
      * Display a "delete animation" dialog.
      */
     public void deleteAnimation() {
-        String name = Maud.getModel().getTarget().animation.getName();
+        String name = Maud.getModel().getTarget().getAnimation().getName();
         String message = String.format("Delete the %s animation?",
                 MyString.quote(name));
         Maud.gui.closeAllPopups();
@@ -183,7 +183,7 @@ public class EditorDialogs {
      * Display a "reduce animation" dialog.
      */
     public void reduceAnimation() {
-        if (Maud.getModel().getTarget().animation.isReal()) {
+        if (Maud.getModel().getTarget().getAnimation().isReal()) {
             IntegerDialog controller;
             controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
 
@@ -211,7 +211,7 @@ public class EditorDialogs {
      * Display a "rename animation" dialog.
      */
     public void renameAnimation() {
-        LoadedAnimation animation = Maud.getModel().getTarget().animation;
+        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         if (animation.isReal()) {
             String oldName = animation.getName();
             DialogController controller = new AnimationNameDialog("Rename");
@@ -274,7 +274,7 @@ public class EditorDialogs {
      * Display a "resample animation" dialog.
      */
     public void resampleAnimation() {
-        if (Maud.getModel().getTarget().animation.isReal()) {
+        if (Maud.getModel().getTarget().getAnimation().isReal()) {
             FloatDialog controller = new FloatDialog("Resample", 0.1f, 1000f);
 
             Maud.gui.closeAllPopups();
@@ -321,7 +321,7 @@ public class EditorDialogs {
      * Display a "retarget animation" dialog.
      */
     public void retargetAnimation() {
-        String oldName = Maud.getModel().getSource().animation.getName();
+        String oldName = Maud.getModel().getSource().getAnimation().getName();
         DialogController controller = new AnimationNameDialog("Retarget");
 
         Maud.gui.closeAllPopups();
@@ -333,7 +333,7 @@ public class EditorDialogs {
      * Display a "set duration proportional" dialog.
      */
     public void setDurationProportional() {
-        LoadedAnimation animation = Maud.getModel().getTarget().animation;
+        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         float oldDuration = animation.getDuration();
         String defaultText = Float.toString(oldDuration);
 
@@ -356,7 +356,7 @@ public class EditorDialogs {
      * Display a "set duration same" dialog.
      */
     public void setDurationSame() {
-        LoadedAnimation animation = Maud.getModel().getTarget().animation;
+        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         float oldDuration = animation.getDuration();
         String defaultText = Float.toString(oldDuration);
 

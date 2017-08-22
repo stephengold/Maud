@@ -105,7 +105,7 @@ class NewAction {
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromPose)) {
             String name = MyString.remainder(actionString,
                     ActionPrefix.newAnimationFromPose);
-            Maud.getModel().getTarget().animation.poseAndLoad(name);
+            Maud.getModel().getTarget().getAnimation().poseAndLoad(name);
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.newUserKey)) {

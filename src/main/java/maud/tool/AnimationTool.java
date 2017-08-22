@@ -67,9 +67,9 @@ class AnimationTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        LoadedAnimation animation = Maud.getModel().getTarget().animation;
+        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         if (animation.isRetargetedPose()) {
-            animation = Maud.getModel().getSource().animation;
+            animation = Maud.getModel().getSource().getAnimation();
         }
 
         float duration = animation.getDuration();
@@ -165,13 +165,13 @@ class AnimationTool extends WindowController {
         String hasTrackText;
         if (!target.bone.isSelected()) {
             hasTrackText = "no bone";
-        } else if (target.animation.isReal()) {
+        } else if (target.getAnimation().isReal()) {
             if (target.bone.hasTrack()) {
                 hasTrackText = "has track";
             } else {
                 hasTrackText = "no track";
             }
-        } else if (target.animation.isRetargetedPose()) {
+        } else if (target.getAnimation().isRetargetedPose()) {
             String boneName = target.bone.getName();
             if (Maud.getModel().getMap().isBoneMapped(boneName)) {
                 hasTrackText = "is mapped";
@@ -197,8 +197,8 @@ class AnimationTool extends WindowController {
         if (target.isAnimControlSelected()) {
             lButton = "Load";
             int numAnimations = target.countAnimations();
-            if (target.animation.isReal()) {
-                int selectedIndex = target.animation.findIndex();
+            if (target.getAnimation().isReal()) {
+                int selectedIndex = target.getAnimation().findIndex();
                 indexText = String.format("#%d of %d", selectedIndex + 1,
                         numAnimations);
                 nButton = "+";
@@ -228,26 +228,27 @@ class AnimationTool extends WindowController {
      */
     private void updateLooping() {
         LoadedCgm target = Maud.getModel().getTarget();
-        boolean pinned = target.animation.isPinned();
+        boolean pinned = target.getAnimation().isPinned();
         Maud.gui.setChecked("pin", pinned);
 
         LoadedCgm cgm;
-        if (target.animation.isRetargetedPose()) {
+        if (target.getAnimation().isRetargetedPose()) {
             cgm = Maud.getModel().getSource();
         } else {
             cgm = target;
         }
+        LoadedAnimation animation = cgm.getAnimation();
         boolean frozen = cgm.getPose().isFrozen();
         Maud.gui.setChecked("freeze", frozen);
-        boolean looping = cgm.animation.willContinue();
+        boolean looping = animation.willContinue();
         Maud.gui.setChecked("loop", looping);
-        boolean ponging = cgm.animation.willReverse();
+        boolean ponging = animation.willReverse();
         Maud.gui.setChecked("pong", ponging);
 
         String pButton = "";
-        float duration = cgm.animation.getDuration();
+        float duration = animation.getDuration();
         if (duration > 0f) {
-            boolean paused = cgm.animation.isPaused();
+            boolean paused = animation.isPaused();
             if (paused) {
                 pButton = "Resume";
             } else {
@@ -263,7 +264,7 @@ class AnimationTool extends WindowController {
     private void updateName() {
         String nameText, rButton;
 
-        LoadedAnimation animation = Maud.getModel().getTarget().animation;
+        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         String name = animation.getName();
         if (animation.isReal()) {
             nameText = MyString.quote(name);
@@ -281,9 +282,9 @@ class AnimationTool extends WindowController {
      * Update the speed slider and its status label.
      */
     private void updateSpeed() {
-        LoadedAnimation animation = Maud.getModel().getTarget().animation;
+        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         if (animation.isRetargetedPose()) {
-            animation = Maud.getModel().getSource().animation;
+            animation = Maud.getModel().getSource().getAnimation();
         }
 
         float duration = animation.getDuration();
@@ -303,7 +304,7 @@ class AnimationTool extends WindowController {
      * Update the track counts.
      */
     private void updateTrackCounts() {
-        LoadedAnimation animation = Maud.getModel().getTarget().animation;
+        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         int numBoneTracks = animation.countBoneTracks();
         String boneTracksText = String.format("%d", numBoneTracks);
         Maud.gui.setStatusText("boneTracks", " " + boneTracksText);
@@ -318,9 +319,9 @@ class AnimationTool extends WindowController {
      * Update the track-time slider and its status label.
      */
     private void updateTrackTime() {
-        LoadedAnimation animation = Maud.getModel().getTarget().animation;
+        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         if (animation.isRetargetedPose()) {
-            animation = Maud.getModel().getSource().animation;
+            animation = Maud.getModel().getSource().getAnimation();
         }
         /*
          * slider
