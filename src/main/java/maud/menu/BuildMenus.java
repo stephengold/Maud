@@ -410,7 +410,7 @@ public class BuildMenus {
         List<String> boneNames = target.getAnimation().listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
-            target.bone.select(boneNames.get(0));
+            target.getBone().select(boneNames.get(0));
         } else if (numBoneTracks > 1) {
             Maud.gui.showMenus.showBoneSubmenu(boneNames);
         }
@@ -435,7 +435,7 @@ public class BuildMenus {
     void selectSourceBone(String argument) {
         LoadedCgm source = Maud.getModel().getSource();
         if (source.bones.hasBone(argument)) {
-            source.bone.select(argument);
+            source.getBone().select(argument);
         } else {
             /*
              * Treat the argument as a bone-name prefix.
@@ -500,7 +500,7 @@ public class BuildMenus {
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
-        if (Maud.getModel().getTarget().bone.isSelected()) {
+        if (Maud.getModel().getTarget().getBone().isSelected()) {
             //builder.add("Attach prop"); TODO
             builder.addDialog("Rename");
         }
@@ -532,22 +532,22 @@ public class BuildMenus {
             builder.add("With track");
         }
 
-        String sourceBoneName = Maud.getModel().getSource().bone.getName();
+        String sourceBoneName = Maud.getModel().getSource().getBone().getName();
         String boneName;
         boneName = Maud.getModel().getMap().targetBoneName(sourceBoneName);
         if (boneName != null && target.bones.hasBone(boneName)) {
             builder.addBone("Mapped");
         }
 
-        int numChildren = target.bone.countChildren();
+        int numChildren = target.getBone().countChildren();
         if (numChildren == 1) {
             builder.addBone("Child");
         } else if (numChildren > 1) {
             builder.add("Child");
         }
 
-        boolean isSelected = target.bone.isSelected();
-        boolean isRoot = target.bone.isRootBone();
+        boolean isSelected = target.getBone().isSelected();
+        boolean isRoot = target.getBone().isRootBone();
         if (isSelected && !isRoot) {
             builder.addBone("Parent");
         }
@@ -681,7 +681,7 @@ public class BuildMenus {
     private void buildKeyframeMenu() {
         builder.addTool("Tool");
         LoadedCgm target = Maud.getModel().getTarget();
-        if (target.bone.hasTrack()) {
+        if (target.getBone().hasTrack()) {
             if (!target.getAnimation().isMoving()) {
                 builder.add("Select");
                 int frameIndex = target.track.findKeyframeIndex();
@@ -789,7 +789,7 @@ public class BuildMenus {
             builder.add("Root");
         }
 
-        String targetBoneName = model.getTarget().bone.getName();
+        String targetBoneName = model.getTarget().getBone().getName();
         String boneName = model.getMap().sourceBoneName(targetBoneName);
         if (boneName != null
                 && model.getSource().bones.hasBone(boneName)) {

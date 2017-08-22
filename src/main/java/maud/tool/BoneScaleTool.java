@@ -87,7 +87,7 @@ class BoneScaleTool extends WindowController {
      */
     void onSliderChanged() {
         EditableCgm target = Maud.getModel().getTarget();
-        if (target.bone.shouldEnableControls()) {
+        if (target.getBone().shouldEnableControls()) {
             Vector3f scales = Maud.gui.readVectorBank("Sca");
             /*
              * Avoid scale factors near zero.
@@ -96,7 +96,7 @@ class BoneScaleTool extends WindowController {
             scales.y = Math.max(scales.y, 0.001f);
             scales.z = Math.max(scales.z, 0.001f);
 
-            int boneIndex = target.bone.getIndex();
+            int boneIndex = target.getBone().getIndex();
             target.getPose().getPose().setScale(boneIndex, scales);
         }
     }
@@ -132,7 +132,7 @@ class BoneScaleTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
-        SelectedBone bone = Maud.getModel().getTarget().bone;
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             setSlidersToPose();
             if (bone.shouldEnableControls()) {
@@ -190,7 +190,7 @@ class BoneScaleTool extends WindowController {
      * Set all 3 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
-        Vector3f vector = Maud.getModel().getTarget().bone.userScale(null);
+        Vector3f vector = Maud.getModel().getTarget().getBone().userScale(null);
         float[] scales = vector.toArray(null);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {

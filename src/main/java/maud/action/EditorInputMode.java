@@ -41,6 +41,7 @@ import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedCgm;
+import maud.model.SelectedBone;
 import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
 import maud.view.ViewType;
@@ -296,7 +297,7 @@ public class EditorInputMode extends InputMode {
                 target.nextAnimControl();
                 break;
             case "next bone":
-                target.bone.selectNext();
+                target.getBone().selectNext();
                 break;
             case "next checkpoint":
                 History.redo();
@@ -345,7 +346,7 @@ public class EditorInputMode extends InputMode {
                 target.previousAnimControl();
                 break;
             case "previous bone":
-                target.bone.selectPrevious();
+                target.getBone().selectPrevious();
                 break;
             case "previous checkpoint":
                 History.undo();
@@ -503,28 +504,29 @@ public class EditorInputMode extends InputMode {
     private boolean resetAction(String actionString) {
         boolean handled = true;
         EditableCgm target = Maud.getModel().getTarget();
+        SelectedBone bone = target.getBone();
         switch (actionString) {
             case "reset bone ang anim":
-                target.bone.setRotationToAnimation();
+                bone.setRotationToAnimation();
                 break;
             case "reset bone ang bind":
-                target.bone.resetRotation();
+                bone.resetRotation();
                 break;
             case "reset bone off anim":
-                target.bone.setTranslationToAnimation();
+                bone.setTranslationToAnimation();
                 break;
             case "reset bone off bind":
-                target.bone.resetTranslation();
+                bone.resetTranslation();
                 break;
             case "reset bone sca anim":
-                target.bone.setScaleToAnimation();
+                bone.setScaleToAnimation();
                 break;
             case "reset bone sca bind":
-                target.bone.resetScale();
+                bone.resetScale();
                 break;
             case "reset bone selection":
                 LoadedCgm cgm = Maud.gui.mouseCgm();
-                cgm.bone.deselect();
+                bone.deselect();
                 break;
 
             case "reset spatial rotation":

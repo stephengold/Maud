@@ -302,9 +302,9 @@ public class EditableCgm extends LoadedCgm {
     public boolean renameBone(String newName) {
         Validate.nonNull(newName, "bone name");
 
-        String oldName = bone.getName();
+        String oldName = getBone().getName();
         boolean success;
-        if (!bone.isSelected()) {
+        if (!getBone().isSelected()) {
             logger.log(Level.WARNING, "Rename failed: no bone selected.",
                     MyString.quote(newName));
             success = false;
@@ -322,7 +322,7 @@ public class EditableCgm extends LoadedCgm {
             success = false;
 
         } else {
-            Bone selectedBone = bone.getBone();
+            Bone selectedBone = getBone().getBone();
             History.autoAdd();
             success = MySkeleton.setName(selectedBone, newName);
         }

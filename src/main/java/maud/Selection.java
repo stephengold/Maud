@@ -168,7 +168,7 @@ public class Selection {
         if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
             bestAxisIndex = -1;
-            bestBoneIndex = cgm.bone.getIndex();
+            bestBoneIndex = cgm.getBone().getIndex();
             bestFrameIndex = frameIndex;
             bestCgm = cgm;
             bestType = Type.Keyframe;
@@ -254,7 +254,7 @@ public class Selection {
     private void selectBone() {
         assert bestBoneIndex >= 0 : bestBoneIndex;
 
-        bestCgm.bone.select(bestBoneIndex);
+        bestCgm.getBone().select(bestBoneIndex);
         if (Maud.getModel().getTarget().getAnimation().isRetargetedPose()) {
             /*
              * Also select the mapped bone (if any).

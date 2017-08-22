@@ -107,11 +107,11 @@ public class LoadedCgm implements Cloneable {
      */
     private ScoreView scoreView = null;
     /**
-     * which bone is selected in the CGM's selected skeleton
+     * which bone is selected in the selected skeleton
      */
-    public SelectedBone bone = new SelectedBone();
+    private SelectedBone selectedBone = new SelectedBone();
     /**
-     * which SG control is selected in the CGM's selected spatial
+     * which SG control is selected in the selected spatial
      */
     public SelectedSgc sgc = new SelectedSgc();
     /**
@@ -161,7 +161,7 @@ public class LoadedCgm implements Cloneable {
      */
     public LoadedCgm() {
         loadedAnimation.setCgm(this);
-        bone.setCgm(this);
+        selectedBone.setCgm(this);
         bones.setCgm(this);
         displayedPose.setCgm(this);
         sgc.setCgm(this);
@@ -331,6 +331,16 @@ public class LoadedCgm implements Cloneable {
     public String getAssetPath() {
         assert baseAssetPath != null;
         return baseAssetPath;
+    }
+
+    /**
+     * Access the selected bone.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedBone getBone() {
+        assert selectedBone != null;
+        return selectedBone;
     }
 
     /**
@@ -874,7 +884,7 @@ public class LoadedCgm implements Cloneable {
         /*
          * Reset the selected bone.
          */
-        bone.deselect();
+        selectedBone.deselect();
 
         if (target.loadedAnimation.isRetargetedPose()) {
             target.loadedAnimation.loadBindPose();
@@ -897,7 +907,7 @@ public class LoadedCgm implements Cloneable {
         /*
          * Reset the selected bone/spatial and also the loaded animation.
          */
-        bone.deselect();
+        selectedBone.deselect();
         spatial.postLoad();
         loadedAnimation.loadBindPose();
 
@@ -926,7 +936,7 @@ public class LoadedCgm implements Cloneable {
         Cloner cloner = new Cloner();
 
         clone.loadedAnimation = loadedAnimation.clone();
-        clone.bone = bone.clone();
+        clone.selectedBone = selectedBone.clone();
         clone.bones = bones.clone();
         clone.displayedPose = cloner.clone(displayedPose);
         clone.rootSpatial = cloner.clone(rootSpatial);
@@ -941,7 +951,7 @@ public class LoadedCgm implements Cloneable {
          * Direct the back pointers to the clone.
          */
         clone.loadedAnimation.setCgm(clone);
-        clone.bone.setCgm(clone);
+        clone.selectedBone.setCgm(clone);
         clone.bones.setCgm(clone);
         clone.displayedPose.setCgm(clone);
         clone.scenePov.setCgm(clone);

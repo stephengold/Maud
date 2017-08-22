@@ -656,7 +656,7 @@ public class SceneView
             default:
                 throw new IllegalStateException();
         }
-        int selectedBone = cgm.bone.getIndex();
+        int selectedBone = cgm.getBone().getIndex();
         if (selectedBone != -1) {
             boneIndexSet.clear(selectedBone);
         }

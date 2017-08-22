@@ -34,6 +34,7 @@ import maud.action.ActionPrefix;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
+import maud.model.SelectedBone;
 
 /**
  * Bone menus in Maud's editor screen.
@@ -111,7 +112,7 @@ public class BoneMenus {
     public void selectBone(String argument) {
         LoadedCgm target = Maud.getModel().getTarget();
         if (target.bones.hasBone(argument)) {
-            target.bone.select(argument);
+            target.getBone().select(argument);
 
         } else {
             /*
@@ -126,13 +127,13 @@ public class BoneMenus {
      * Handle a "select boneChild" action without arguments.
      */
     public void selectBoneChild() {
-        LoadedCgm target = Maud.getModel().getTarget();
-        if (target.bone.isSelected()) {
-            int numChildren = target.bone.countChildren();
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
+        if (bone.isSelected()) {
+            int numChildren = bone.countChildren();
             if (numChildren == 1) {
-                target.bone.selectFirstChild();
+                bone.selectFirstChild();
             } else if (numChildren > 1) {
-                List<String> boneNames = target.bone.listChildNames();
+                List<String> boneNames = bone.listChildNames();
                 Maud.gui.showMenus.showBoneSubmenu(boneNames);
             }
         }
@@ -146,7 +147,7 @@ public class BoneMenus {
         List<String> boneNames = target.getAnimation().listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
-            target.bone.select(boneNames.get(0));
+            target.getBone().select(boneNames.get(0));
         } else if (numBoneTracks > 1) {
             Maud.gui.showMenus.showBoneSubmenu(boneNames);
         }
@@ -160,7 +161,7 @@ public class BoneMenus {
     public void selectSourceBone(String argument) {
         LoadedCgm source = Maud.getModel().getSource();
         if (source.bones.hasBone(argument)) {
-            source.bone.select(argument);
+            source.getBone().select(argument);
         } else {
             /*
              * Treat the argument as a bone-name prefix.
@@ -197,13 +198,13 @@ public class BoneMenus {
                 model.getMap().selectFromSource();
                 break;
             case "Next":
-                target.bone.selectNext();
+                target.getBone().selectNext();
                 break;
             case "Parent":
-                target.bone.selectParent();
+                target.getBone().selectParent();
                 break;
             case "Previous":
-                target.bone.selectPrevious();
+                target.getBone().selectPrevious();
                 break;
             case "Root":
                 selectRootBone();
@@ -266,7 +267,7 @@ public class BoneMenus {
         LoadedCgm target = Maud.getModel().getTarget();
         int numRoots = target.bones.countRootBones();
         if (numRoots == 1) {
-            target.bone.selectFirstRoot();
+            target.getBone().selectFirstRoot();
         } else if (numRoots > 1) {
             List<String> boneNames = target.bones.listRootBoneNames();
             Maud.gui.showMenus.showBoneSubmenu(boneNames);
@@ -280,7 +281,7 @@ public class BoneMenus {
         LoadedCgm source = Maud.getModel().getSource();
         int numRoots = source.bones.countRootBones();
         if (numRoots == 1) {
-            source.bone.selectFirstRoot();
+            source.getBone().selectFirstRoot();
         } else if (numRoots > 1) {
             List<String> names = source.bones.listRootBoneNames();
             Maud.gui.showMenus.showSourceBoneSubmenu(names);
