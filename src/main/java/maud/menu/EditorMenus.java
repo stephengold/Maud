@@ -36,6 +36,7 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.model.EditableCgm;
 import maud.model.EditableMap;
+import maud.model.History;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.SelectedSpatial;
@@ -486,6 +487,9 @@ public class EditorMenus {
 
         boolean handled = true;
         switch (remainder) {
+            case "Clear":
+                History.clear();
+                break;
             case "Tool":
                 Maud.gui.tools.select("history");
                 break;

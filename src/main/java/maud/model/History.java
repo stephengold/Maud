@@ -127,6 +127,15 @@ public class History {
     }
 
     /**
+     * Clear the history.
+     */
+    public static void clear() {
+        nextIndex = 0;
+        checkpoints.clear();
+        eventDescriptions.clear();
+    }
+
+    /**
      * Count the available checkpoints.
      *
      * @return count (&ge;0)
