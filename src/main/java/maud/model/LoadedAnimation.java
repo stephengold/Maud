@@ -113,7 +113,7 @@ public class LoadedAnimation implements Cloneable {
      * loaded CG model containing the animation (set by
      * {@link #setCgm(LoadedCGModel)})
      */
-    private LoadedCgm loadedCgm = null;
+    private LoadedCgm cgm = null;
     /**
      * name of the loaded animation, bindPoseName, or retargetedPoseName
      */
@@ -310,10 +310,10 @@ public class LoadedAnimation implements Cloneable {
      */
     Animation getAnimation() {
         Animation result;
-        if (!loadedCgm.isLoaded() || !isReal()) {
+        if (!cgm.isLoaded() || !isReal()) {
             result = null;
         } else {
-            result = loadedCgm.getAnimation(loadedName);
+            result = cgm.getAnimation(loadedName);
         }
 
         return result;
@@ -345,7 +345,7 @@ public class LoadedAnimation implements Cloneable {
     public int findIndex() {
         int index;
         if (isReal()) {
-            List<String> nameList = loadedCgm.listAnimationsSorted();
+            List<String> nameList = cgm.listAnimationsSorted();
             index = nameList.indexOf(loadedName);
         } else {
             index = -1;
@@ -452,7 +452,7 @@ public class LoadedAnimation implements Cloneable {
     public void insertKeyframes() {
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
-        Pose pose = loadedCgm.getPose().getPose();
+        Pose pose = cgm.getPose().getPose();
 
         Animation loaded = getAnimation();
         Track[] loadedTracks = loaded.getTracks();
@@ -509,7 +509,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public boolean isMoving() {
         boolean running;
-        if (!loadedCgm.isLoaded()) {
+        if (!cgm.isLoaded()) {
             running = false;
         } else if (pausedFlag) {
             running = false;
@@ -547,7 +547,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public boolean isReal() {
         boolean result;
-        if (loadedCgm.isLoaded()) {
+        if (cgm.isLoaded()) {
             if (loadedName.equals(bindPoseName)) {
                 result = false;
             } else if (loadedName.equals(retargetedPoseName)) {
@@ -616,7 +616,7 @@ public class LoadedAnimation implements Cloneable {
         List<String> result = new ArrayList<>(numTracks);
         Animation animation = getAnimation();
         if (animation != null) {
-            AnimControl animControl = loadedCgm.getAnimControl();
+            AnimControl animControl = cgm.getAnimControl();
             Track[] tracks = animation.getTracks();
             for (Track track : tracks) {
                 if (track instanceof BoneTrack) {
@@ -652,7 +652,7 @@ public class LoadedAnimation implements Cloneable {
             loadRetargetedPose();
 
         } else {
-            float duration = loadedCgm.getDuration(name);
+            float duration = cgm.getDuration(name);
             float playSpeed;
             if (duration == 0f) {
                 /*
@@ -684,9 +684,9 @@ public class LoadedAnimation implements Cloneable {
         speed = newSpeed;
         currentTime = 0f;
 
-        boolean frozen = loadedCgm.getPose().isFrozen();
+        boolean frozen = cgm.getPose().isFrozen();
         if (!frozen) {
-            loadedCgm.getPose().setToAnimation();
+            cgm.getPose().setToAnimation();
         }
     }
 
@@ -698,8 +698,8 @@ public class LoadedAnimation implements Cloneable {
         speed = 0f;
         currentTime = 0f;
 
-        Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
-        loadedCgm.getPose().resetToBind(skeleton);
+        Skeleton skeleton = cgm.getSkeleton().findSkeleton();
+        cgm.getPose().resetToBind(skeleton);
     }
 
     /**
@@ -707,12 +707,12 @@ public class LoadedAnimation implements Cloneable {
      */
     public void loadRetargetedPose() {
         if (Maud.getModel().getSource().isLoaded()
-                && loadedCgm.getSkeleton().isSelected()) {
+                && cgm.getSkeleton().isSelected()) {
             loadedName = retargetedPoseName;
             speed = 0f;
             currentTime = 0f;
-            loadedCgm.getPose().setToAnimation();
-            loadedCgm.getPose().setFrozen(false);
+            cgm.getPose().setToAnimation();
+            cgm.getPose().setFrozen(false);
         }
     }
 
@@ -720,8 +720,8 @@ public class LoadedAnimation implements Cloneable {
      * Load the next animation in name-sorted order.
      */
     public void loadNext() {
-        if (loadedCgm.isLoaded() && isReal()) {
-            List<String> nameList = loadedCgm.listAnimationsSorted();
+        if (cgm.isLoaded() && isReal()) {
+            List<String> nameList = cgm.listAnimationsSorted();
             int index = nameList.indexOf(loadedName);
             int numAnimations = nameList.size();
             int nextIndex = MyMath.modulo(index + 1, numAnimations);
@@ -734,8 +734,8 @@ public class LoadedAnimation implements Cloneable {
      * Load the next animation in name-sorted order.
      */
     public void loadPrevious() {
-        if (loadedCgm.isLoaded() && isReal()) {
-            List<String> nameList = loadedCgm.listAnimationsSorted();
+        if (cgm.isLoaded() && isReal()) {
+            List<String> nameList = cgm.listAnimationsSorted();
             int index = nameList.indexOf(loadedName);
             int numAnimations = nameList.size();
             int prevIndex = MyMath.modulo(index - 1, numAnimations);
@@ -753,7 +753,7 @@ public class LoadedAnimation implements Cloneable {
     public void newCopy(String animationName) {
         Validate.nonEmpty(animationName, "animation name");
         assert !isReserved(animationName) : animationName;
-        assert !loadedCgm.hasAnimation(animationName) : animationName;
+        assert !cgm.hasAnimation(animationName) : animationName;
 
         Animation loaded = getAnimation();
         float duration = getDuration();
@@ -817,7 +817,7 @@ public class LoadedAnimation implements Cloneable {
     public void rename(String newName) {
         Validate.nonEmpty(newName, "new name");
         assert !isReserved(newName) : newName;
-        assert !loadedCgm.hasAnimation(newName) : newName;
+        assert !cgm.hasAnimation(newName) : newName;
         assert isReal();
 
         float duration = getDuration();
@@ -871,7 +871,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void selectKeyframe(String name) {
         Validate.nonNull(name, "keyframe name");
-        assert loadedCgm.getTrack().isTrackSelected();
+        assert cgm.getTrack().isTrackSelected();
 
         float newTime = Float.valueOf(name);
         // TODO validate
@@ -886,7 +886,7 @@ public class LoadedAnimation implements Cloneable {
     void setCgm(LoadedCgm newLoaded) {
         assert newLoaded != null;
 
-        loadedCgm = newLoaded;
+        cgm = newLoaded;
         if (newLoaded instanceof EditableCgm) {
             editableCgm = (EditableCgm) newLoaded;
         } else {
@@ -1024,9 +1024,9 @@ public class LoadedAnimation implements Cloneable {
 
         if (duration > 0f) {
             currentTime = newTime;
-            boolean frozen = loadedCgm.getPose().isFrozen();
+            boolean frozen = cgm.getPose().isFrozen();
             if (!frozen) {
-                loadedCgm.getPose().setToAnimation();
+                cgm.getPose().setToAnimation();
             }
         }
     }
@@ -1317,9 +1317,9 @@ public class LoadedAnimation implements Cloneable {
     private void newPose(String animationName) {
         assert animationName != null;
         assert !isReserved(animationName) : animationName;
-        assert !loadedCgm.hasAnimation(animationName) : animationName;
+        assert !cgm.hasAnimation(animationName) : animationName;
 
-        Pose pose = loadedCgm.getPose().getPose();
+        Pose pose = cgm.getPose().getPose();
         Animation poseAnim = pose.capture(animationName);
         editableCgm.addAnimation(poseAnim);
     }
