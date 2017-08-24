@@ -796,6 +796,35 @@ public class EditorMenus {
     }
 
     /**
+     * Handle a "select menuItem" action from the "Spatial -> Add control" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuSgcAdd(String remainder) {
+        boolean handled = false;
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        switch (remainder) {
+            case "Anim":
+                spatial.addAnimControl();
+                handled = true;
+                break;
+
+            case "RigidBody":
+                spatial.addRigidBodyControl();
+                handled = true;
+                break;
+
+            case "Skeleton":
+                spatial.addSkeletonControl();
+                handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
      * Handle a "select menuItem" action from the "CGM -> Source model" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -866,36 +895,6 @@ public class EditorMenus {
                 default:
                     handled = false;
             }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "Spatial -> Add control" menu.
-     * TODO sort methods
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuSgcAdd(String remainder) {
-        boolean handled = false;
-
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        switch (remainder) {
-            case "Anim":
-                spatial.addAnimControl();
-                handled = true;
-                break;
-
-            case "RigidBody":
-                spatial.addRigidBodyControl();
-                handled = true;
-                break;
-
-            case "Skeleton":
-                spatial.addSkeletonControl();
-                handled = true;
         }
 
         return handled;
