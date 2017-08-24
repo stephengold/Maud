@@ -120,6 +120,9 @@ class SelectAction {
             case "select userKey":
                 Maud.gui.showMenus.selectUserKey();
                 break;
+            case "select vertex":
+                Maud.gui.showMenus.selectVertex();
+                break;
             default:
                 handled = processPrefixes(actionString);
         }
@@ -141,7 +144,8 @@ class SelectAction {
         EditorModel model = Maud.getModel();
         String arg;
         if (actionString.startsWith(ActionPrefix.selectAnimControl)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectAnimControl);
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectAnimControl);
             model.getTarget().selectAnimControl(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectBone)) {
@@ -184,6 +188,11 @@ class SelectAction {
         } else if (actionString.startsWith(ActionPrefix.selectUserKey)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectUserKey);
             model.getTarget().getUserData().selectKey(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectVertex)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectVertex);
+            int index = Integer.parseInt(arg);
+            model.getTarget().getVertex().select(index);
 
         } else {
             handled = false;

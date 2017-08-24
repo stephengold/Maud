@@ -54,23 +54,27 @@ the menu bar, status bar, and tool windows.
                              width="75px">
                         <interact onRelease="perform(select menuItem Spatial)"/>
                     </control>
-                    <control name="button" id="ControlButton" label="5] Control"
+                    <control name="button" id="VertexButton" label="5] Vertex"
+                             width="75px">
+                        <interact onRelease="perform(select menuItem Vertex)"/>
+                    </control>
+                    <control name="button" id="ControlButton" label="6] Control"
                              width="75px">
                         <interact onRelease="perform(select menuItem SGC)"/>
                     </control>
-                    <control name="button" id="AnimationButton" label="6] Animations"
+                    <control name="button" id="AnimationButton" label="7] Animations"
                              width="88px">
                         <interact onRelease="perform(select menuItem Animation)"/>
                     </control>
-                    <control name="button" id="BoneButton" label="7] Bone"
+                    <control name="button" id="BoneButton" label="8] Bone"
                              width="60px">
                         <interact onRelease="perform(select menuItem Bone)"/>
                     </control>
-                    <control name="button" id="KeyframeButton" label="8] Keyframe"
+                    <control name="button" id="KeyframeButton" label="9] Keyframe"
                              width="80px">
                         <interact onRelease="perform(select menuItem Keyframe)"/>
                     </control>
-                    <control name="button" id="PhysicsButton" label="9] Physics"
+                    <control name="button" id="PhysicsButton" label="0] Physics"
                              width="70px">
                         <interact onRelease="perform(select menuItem Physics)"/>
                     </control>
@@ -78,11 +82,11 @@ the menu bar, status bar, and tool windows.
                 <panel id="menu bar bottom row"
                        childLayout="horizontal"
                        height="20px">
-                    <control name="button" id="HistoryButton" label="0] History"
+                    <control name="button" id="HistoryButton" label="-] History"
                              width="70px">
                         <interact onRelease="perform(select menuItem History)"/>
                     </control>
-                    <control name="button" id="SettingsButton" label="-] Settings"
+                    <control name="button" id="SettingsButton" label="Settings"
                              width="70px">
                         <interact onRelease="perform(select menuItem Settings)"/>
                     </control>
@@ -2027,6 +2031,103 @@ the menu bar, status bar, and tool windows.
                                  width="60px">
                             <interact onRelease="perform(set userData)"/>
                         </control>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="vertexTool" title="Vertex Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="245px" width="210px" x="35" y="65">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="button" id="vertexPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous vertex)"/>
+                        </control>
+                        <control name="label" id="vertexIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="100px"/>
+                        <control name="button" id="vertexNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next vertex)"/>
+                        </control>
+                        <panel width="5px"/>
+                        <control name="button" id="vertexSelect"
+                                 width="50px">
+                            <interact onRelease="perform(select vertex)"/>
+                        </control>
+                        <panel/>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" text="Bind x ="/>
+                        <control name="label" id="vertexBindLocX"
+                                 backgroundColor="#ffff"
+                                 textHAlign="left"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" text="Bind y ="/>
+                        <control name="label" id="vertexBindLocY"
+                                 backgroundColor="#ffff"
+                                 textHAlign="left"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" text="Bind z ="/>
+                        <control name="label" id="vertexBindLocZ"
+                                 backgroundColor="#ffff"
+                                 textHAlign="left"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" id="vertexBone0Name"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="90px"/>
+                        <control name="label" text="  weight = "/>
+                        <control name="label" id="vertexBone0Weight"
+                                 backgroundColor="#ffff"
+                                 textHAlign="left"
+                                 width="50px"/>
+                        <panel/>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" id="vertexBone1Name"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="90px"/>
+                        <control name="label" text="  weight = "/>
+                        <control name="label" id="vertexBone1Weight"
+                                 backgroundColor="#ffff"
+                                 textHAlign="left"
+                                 width="50px"/>
+                        <panel/>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" id="vertexBone2Name"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="90px"/>
+                        <control name="label" text="  weight = "/>
+                        <control name="label" id="vertexBone2Weight"
+                                 backgroundColor="#ffff"
+                                 textHAlign="left"
+                                 width="50px"/>
+                        <panel/>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" id="vertexBone3Name"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="90px"/>
+                        <control name="label" text="  weight = "/>
+                        <control name="label" id="vertexBone3Weight"
+                                 backgroundColor="#ffff"
+                                 textHAlign="left"
+                                 width="50px"/>
+                        <panel/>
                     </panel>
                 </panel>
             </control>

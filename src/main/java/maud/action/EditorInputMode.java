@@ -317,6 +317,9 @@ public class EditorInputMode extends InputMode {
             case "next userData":
                 target.getUserData().selectNextKey();
                 break;
+            case "next vertex":
+                target.getVertex().selectNext();
+                break;
             case "next viewMode":
                 model.getMisc().selectNextViewMode();
                 break;
@@ -365,6 +368,9 @@ public class EditorInputMode extends InputMode {
                 break;
             case "previous userData":
                 target.getUserData().selectPreviousKey();
+                break;
+            case "previous vertex":
+                target.getVertex().selectPrevious();
                 break;
             default:
                 handled = false;

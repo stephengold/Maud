@@ -191,7 +191,7 @@ public class EditorMenus {
     /**
      * Handle a "select menuItem" action for a submenu.
      *
-     * @param menuName name of the menu (not null)
+     * @param menuName name of the top-level menu (not null)
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
@@ -233,6 +233,9 @@ public class EditorMenus {
                 break;
             case "Spatial":
                 handled = menuSpatial(remainder);
+                break;
+            case "Vertex":
+                handled = menuVertex(remainder);
                 break;
             case "View":
                 handled = menuView(remainder);
@@ -870,6 +873,7 @@ public class EditorMenus {
 
     /**
      * Handle a "select menuItem" action from the "Spatial -> Add control" menu.
+     * TODO sort methods
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -922,6 +926,67 @@ public class EditorMenus {
                 break;
             case "Root":
                 Maud.getModel().getTarget().getSpatial().selectCgmRoot();
+                break;
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the Vertex menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuVertex(String remainder) {
+        assert remainder != null;
+
+        boolean handled;
+        String selectPrefix = "Select" + menuPathSeparator;
+        if (remainder.startsWith(selectPrefix)) {
+            String arg = MyString.remainder(remainder, selectPrefix);
+            handled = menuVertexSelect(arg);
+
+        } else {
+            handled = true;
+            switch (remainder) {
+                case "Select":
+                    Maud.gui.showMenus.selectVertex();
+                    break;
+                case "Tool":
+                    Maud.gui.tools.select("vertex");
+                    break;
+                default:
+                    handled = false;
+            }
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "Vertex -> Select" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuVertexSelect(String remainder) {
+        assert remainder != null;
+
+        boolean handled = true;
+        switch (remainder) {
+            case "By index":
+                Maud.gui.dialogs.selectVertex();
+                break;
+            //case "Extreme": TODO
+            //case "Neighbor": TODO
+            case "Next":
+                Maud.getModel().getTarget().getVertex().selectNext();
+                break;
+            case "Previous":
+                Maud.getModel().getTarget().getVertex().selectPrevious();
                 break;
             default:
                 handled = false;

@@ -50,6 +50,7 @@ import maud.dialog.TextEntryDialog;
 import maud.dialog.UserKeyDialog;
 import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
+import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
 import maud.model.SelectedSpatial;
 
@@ -320,7 +321,7 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "retarget animation" dialog.
+     * Display a "retarget animation" dialog. TODO reorder methods
      */
     public void retargetAnimation() {
         String oldName = Maud.getModel().getSource().getAnimation().getName();
@@ -329,6 +330,28 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
                 oldName, ActionPrefix.retargetAnimation, controller);
+    }
+
+    /**
+     * Display a "select vertex " dialog.
+     */
+    public void selectVertex() {
+        LoadedCgm target = Maud.getModel().getTarget();
+        int numVertices = target.getSpatial().countVertices();
+        DialogController controller;
+        controller = new IntegerDialog("Select", 0, numVertices - 1);
+
+        int oldIndex = target.getVertex().getIndex();
+        String defaultText;
+        if (oldIndex == -1) {
+            defaultText = "0";
+        } else {
+            defaultText = Integer.toString(oldIndex);
+        }
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter the index of the vertex:",
+                defaultText, ActionPrefix.selectVertex, controller);
     }
 
     /**

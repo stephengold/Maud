@@ -349,6 +349,9 @@ public class BuildMenus {
             case "Spatial":
                 buildSpatialMenu();
                 break;
+            case "Vertex":
+                buildVertexMenu();
+                break;
             case "View":
                 buildViewMenu();
                 break;
@@ -859,6 +862,16 @@ public class BuildMenus {
         if (haveTestdata) {
             builder.addGeometry("Teapot");
             builder.addOgre("Tree");
+        }
+    }
+
+    /**
+     * Build a Vertex menu.
+     */
+    private void buildVertexMenu() {
+        builder.addTool("Tool");
+        if (Maud.getModel().getTarget().getSpatial().countVertices() > 0) {
+            builder.add("Select");
         }
     }
 

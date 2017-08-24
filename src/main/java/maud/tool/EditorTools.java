@@ -181,6 +181,10 @@ public class EditorTools {
      * controller for the "User Data Tool" window
      */
     final UserDataTool userData;
+    /**
+     * controller for the "Vertex Tool" window
+     */
+    final VertexTool vertex;
     // *************************************************************************
     // constructors
 
@@ -224,6 +228,7 @@ public class EditorTools {
         tweening = new TweeningTool(screen);
         twist = new TwistTool(screen);
         userData = new UserDataTool(screen);
+        vertex = new VertexTool(screen);
     }
     // *************************************************************************
     // new methods exposed
@@ -240,7 +245,7 @@ public class EditorTools {
                 keyframe, mapping, cgm, physics, platform, render, retarget,
                 score, sgc, skeleton, skeletonColor, sky, sourceAnimation,
                 spatial, spatialDetails, spatialRotation, spatialScale,
-                spatialTranslation, tweening, twist, userData);
+                spatialTranslation, tweening, twist, userData, vertex);
     }
 
     /**
@@ -349,6 +354,9 @@ public class EditorTools {
                 break;
             case "userData":
                 controller = userData;
+                break;
+            case "vertex":
+                controller = vertex;
         }
 
         return controller;
