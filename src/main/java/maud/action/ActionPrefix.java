@@ -203,6 +203,10 @@ public class ActionPrefix {
      */
     final public static String selectUserKey = "select userKey ";
     /**
+     * argument is a vertex index
+     */
+    final public static String selectVertex = "select vertex ";
+    /**
      * argument is the name of a batch hint
      */
     final public static String setBatchHint = "set batchHint ";

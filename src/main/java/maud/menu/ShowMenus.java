@@ -43,6 +43,7 @@ import maud.model.MiscStatus;
 import maud.model.SceneBones;
 import maud.model.SelectedSkeleton;
 import maud.model.SelectedSpatial;
+import maud.model.SelectedVertex;
 import maud.model.SkeletonStatus;
 import maud.model.ViewMode;
 
@@ -368,6 +369,28 @@ public class ShowMenus {
         }
 
         builder.show(ActionPrefix.selectUserKey);
+    }
+
+    /**
+     * Display a "Vertex -> Select" menu.
+     */
+    public void selectVertex() {
+        LoadedCgm target = Maud.getModel().getTarget();
+        int numVertices = target.getSpatial().countVertices();
+        if (numVertices > 0) {
+            MenuBuilder builder = new MenuBuilder();
+
+            builder.addDialog("By index");
+            //builder.add("Extreme"); TODO
+            SelectedVertex vertex = target.getVertex();
+            if (vertex.isSelected()) {
+                //builder.add("Neighbor"); TODO
+                builder.add("Next");
+                builder.add("Previous");
+            }
+
+            builder.show("select menuItem Vertex -> Select -> ");
+        }
     }
 
     /**
