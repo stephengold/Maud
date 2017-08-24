@@ -215,12 +215,16 @@ class SourceAnimationTool extends WindowController {
     }
 
     /**
-     * Update the loop check box and the pause button label.
+     * Update the loop/pin/pong check boxes and the pause button label.
      */
     private void updateLooping() {
         LoadedAnimation animation = Maud.getModel().getSource().getAnimation();
+        boolean pinned = animation.isPinned();
+        Maud.gui.setChecked("pinSource", pinned);
         boolean looping = animation.willContinue();
         Maud.gui.setChecked("loopSource", looping);
+        boolean ponging = animation.willReverse();
+        Maud.gui.setChecked("pongSource", ponging);
 
         String pButton = "";
         float duration = animation.getDuration();
