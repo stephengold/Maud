@@ -54,7 +54,7 @@ import maud.Util;
 import maud.view.SceneView;
 
 /**
- * The MVC model of the selected spatial in the Maud application.
+ * The MVC model of the selected spatial in a loaded CG model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -970,5 +970,6 @@ public class SelectedSpatial implements Cloneable {
         }
 
         loadedCgm.getUserData().selectKey(null);
+        loadedCgm.getVertex().deselect();
     }
 }
