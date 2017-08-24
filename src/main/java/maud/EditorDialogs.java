@@ -300,6 +300,18 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "retarget animation" dialog.
+     */
+    public void retargetAnimation() {
+        String oldName = Maud.getModel().getSource().getAnimation().getName();
+        DialogController controller = new AnimationNameDialog("Retarget");
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
+                oldName, ActionPrefix.retargetAnimation, controller);
+    }
+
+    /**
      * Display a "save cgm" dialog.
      */
     public void saveCgm() {
@@ -318,18 +330,6 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for map:",
                 baseFilePath, "Save", ActionPrefix.saveMap, null);
-    }
-
-    /**
-     * Display a "retarget animation" dialog. TODO reorder methods
-     */
-    public void retargetAnimation() {
-        String oldName = Maud.getModel().getSource().getAnimation().getName();
-        DialogController controller = new AnimationNameDialog("Retarget");
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                oldName, ActionPrefix.retargetAnimation, controller);
     }
 
     /**
