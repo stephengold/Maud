@@ -181,7 +181,7 @@ public class SelectedSpatial implements Cloneable {
      * @return count (&ge;0)
      */
     public int countLoDLevels() {
-        Mesh mesh = mesh();
+        Mesh mesh = getMesh();
         int result;
         if (mesh == null) {
             result = 0;
@@ -282,7 +282,7 @@ public class SelectedSpatial implements Cloneable {
      * @return count (&ge;0)
      */
     public int countVertices() {
-        Mesh mesh = mesh();
+        Mesh mesh = getMesh();
         int result;
         if (mesh == null) {
             result = 0;
@@ -417,12 +417,30 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Access the mesh of the selected spatial.
+     *
+     * @return the pre-existing instance, or null if none
+     */
+    Mesh getMesh() {
+        Mesh result;
+        Spatial spatial = modelSpatial();
+        if (spatial instanceof Geometry) {
+            Geometry geometry = (Geometry) spatial;
+            result = geometry.getMesh();
+        } else {
+            result = null;
+        }
+
+        return result;
+    }
+
+    /**
      * Read the mode of the selected spatial's mesh.
      *
      * @return the mode of the mesh, or null if none
      */
     public Mesh.Mode getMeshMode() {
-        Mesh mesh = mesh();
+        Mesh mesh = getMesh();
         Mesh.Mode result;
         if (mesh == null) {
             result = null;
@@ -484,7 +502,7 @@ public class SelectedSpatial implements Cloneable {
      * @return true if it has an animated mesh, otherwise false
      */
     public boolean hasAnimatedMesh() {
-        Mesh mesh = mesh();
+        Mesh mesh = getMesh();
         if (mesh == null) {
             return false;
         } else {
@@ -512,7 +530,7 @@ public class SelectedSpatial implements Cloneable {
      * @return true if it has a mesh, otherwise false
      */
     public boolean hasMesh() {
-        Mesh mesh = mesh();
+        Mesh mesh = getMesh();
         if (mesh == null) {
             return false;
         } else {
@@ -907,24 +925,6 @@ public class SelectedSpatial implements Cloneable {
         if (spatial instanceof Geometry) {
             Geometry geometry = (Geometry) spatial;
             result = geometry.getMaterial();
-        } else {
-            result = null;
-        }
-
-        return result;
-    }
-
-    /**
-     * Access the mesh of the selected spatial.
-     *
-     * @return the pre-existing instance, or null if none
-     */
-    private Mesh mesh() {
-        Mesh result;
-        Spatial spatial = modelSpatial();
-        if (spatial instanceof Geometry) {
-            Geometry geometry = (Geometry) spatial;
-            result = geometry.getMesh();
         } else {
             result = null;
         }
