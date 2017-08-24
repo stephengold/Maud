@@ -127,6 +127,10 @@ public class LoadedCgm implements Cloneable {
      */
     private SelectedTrack selectedTrack = new SelectedTrack();
     /**
+     * which vertex is selected in the selected spatial's mesh
+     */
+    private SelectedVertex selectedVertex = new SelectedVertex();
+    /**
      * root spatial in the MVC model's copy of the CG model
      */
     protected Spatial rootSpatial = null;
@@ -170,6 +174,7 @@ public class LoadedCgm implements Cloneable {
         selectedSkeleton.setCgm(cgm);
         selectedSpatial.setCgm(cgm);
         selectedTrack.setCgm(cgm);
+        selectedVertex.setCgm(cgm);
         userData.setCgm(cgm);
     }
     // *************************************************************************
@@ -481,6 +486,16 @@ public class LoadedCgm implements Cloneable {
     public UserData getUserData() {
         assert userData != null;
         return userData;
+    }
+
+    /**
+     * Access the selected vertex.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedVertex getVertex() {
+        assert selectedVertex != null;
+        return selectedVertex;
     }
 
     /**
@@ -988,22 +1003,24 @@ public class LoadedCgm implements Cloneable {
         clone.selectedSpatial = selectedSpatial.clone();
         clone.selectedTrack = selectedTrack.clone();
         clone.userData = userData.clone();
+        clone.selectedVertex = selectedVertex.clone();
         /*
          * Direct the back pointers to the clone.
          */
-        clone.loadedAnimation.setCgm(clone);
-        clone.selectedBone.setCgm(clone);
-        clone.selectedSkeleton.setCgm(clone);
-        clone.displayedPose.setCgm(clone);
+        clone.getAnimation().setCgm(clone);
+        clone.getBone().setCgm(clone);
+        clone.getSkeleton().setCgm(clone);
+        clone.getPose().setCgm(clone);
         clone.scenePov.setCgm(clone);
         if (clone.getSceneView() != null) {
             clone.getSceneView().setCgm(clone);
         }
         clone.scorePov.setCgm(clone);
-        clone.selectedSgc.setCgm(clone);
-        clone.selectedSpatial.setCgm(clone);
-        clone.selectedTrack.setCgm(clone);
+        clone.getSgc().setCgm(clone);
+        clone.getSpatial().setCgm(clone);
+        clone.getTrack().setCgm(clone);
         clone.getUserData().setCgm(clone);
+        clone.getVertex().setCgm(clone);
 
         return clone;
     }
