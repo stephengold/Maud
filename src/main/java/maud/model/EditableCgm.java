@@ -97,16 +97,13 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         AnimControl control = getAnimControl();
         if (control == null) {
-            Boolean selectedSpatialFlag = false;
-            Skeleton skeleton = getSkeleton().findSkeleton(selectedSpatialFlag);
+            SelectedSkeleton ss = getSkeleton();
+            Skeleton skeleton = ss.findSkeleton();
             assert skeleton != null;
             control = new AnimControl(skeleton);
-            if (selectedSpatialFlag) {
-                Spatial modelSpatial = getSpatial().modelSpatial();
-                modelSpatial.addControl(control);
-            } else {
-                rootSpatial.addControl(control);
-            }
+
+            Spatial skeletonSpatial = ss.findSkeletonSpatial();
+            skeletonSpatial.addControl(control);
         }
         control.addAnim(newAnimation);
         setEdited("add animation");
@@ -222,7 +219,7 @@ public class EditableCgm extends LoadedCgm {
         if (rootSpatial instanceof Node) {
             int oldNumSpatials = Util.countSpatials(rootSpatial);
             Node rootNode = (Node) rootSpatial;
-            
+
             History.autoAdd();
             deleteExtraSpatials(rootNode);
             getSpatial().selectCgmRoot();

@@ -176,6 +176,24 @@ public class SelectedSkeleton implements Cloneable {
     }
 
     /**
+     * Find the spatial associated with the selected skeleton.
+     *
+     * @return the pre-existing instance, or null if none
+     */
+    Spatial findSkeletonSpatial() {
+        Boolean selectedSpatialFlag = false;
+        findSkeleton(selectedSpatialFlag);
+        Spatial spatial;
+        if (selectedSpatialFlag) {
+            spatial = cgm.getSpatial().modelSpatial();
+        } else {
+            spatial = cgm.getRootSpatial();
+        }
+
+        return spatial;
+    }
+
+    /**
      * Access the indexed bone in the selected skeleton.
      *
      * @param boneIndex which bone (&ge;0)
@@ -341,16 +359,9 @@ public class SelectedSkeleton implements Cloneable {
      * instance)
      */
     public BitSet listInfluencers(BitSet storeResult) {
-        Boolean selectedSpatialFlag = false;
-        Skeleton skeleton = findSkeleton(selectedSpatialFlag);
+        Skeleton skeleton = findSkeleton();
         assert skeleton != null;
-
-        Spatial subtree;
-        if (selectedSpatialFlag) {
-            subtree = cgm.getSpatial().modelSpatial();
-        } else {
-            subtree = cgm.getRootSpatial();
-        }
+        Spatial subtree = findSkeletonSpatial();
         storeResult = Util.addAllInfluencers(subtree, skeleton, storeResult);
 
         return storeResult;
