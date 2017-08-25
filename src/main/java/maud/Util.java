@@ -44,6 +44,10 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -89,6 +93,18 @@ public class Util {
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
      */
     final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#UNIT_X}
+     */
+    final private static Vector3f xAxis = new Vector3f(1f, 0f, 0f);
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#UNIT_Y}
+     */
+    final private static Vector3f yAxis = new Vector3f(0f, 1f, 0f);
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#UNIT_Z}
+     */
+    final private static Vector3f zAxis = new Vector3f(0f, 0f, 1f);
     // *************************************************************************
     // constructors
 
@@ -154,14 +170,14 @@ public class Util {
         assert maxWeightsPerVert <= 4 : maxWeightsPerVert;
 
         VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
-        ByteBuffer boneIndexBuffer = (ByteBuffer) biBuf.getData();
+        ByteBuffer boneIndexBuffer = (ByteBuffer) biBuf.getDataReadOnly();
         boneIndexBuffer.rewind();
         int numBoneIndices = boneIndexBuffer.remaining();
         assert numBoneIndices % 4 == 0 : numBoneIndices;
         int numVertices = boneIndexBuffer.remaining() / 4;
 
         VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
-        FloatBuffer weightBuffer = (FloatBuffer) wBuf.getData();
+        FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
         weightBuffer.rewind();
         int numWeights = weightBuffer.remaining();
         assert numWeights == numVertices * 4 : numWeights;
@@ -431,6 +447,128 @@ public class Util {
         }
 
         return result;
+    }
+
+    /**
+     * Find the point of vertical support (minimum Y coordinate) for the
+     * specified geometry transformed by the specified skinning matrices.
+     *
+     * @param geometry (not null)
+     * @param skinningMatrices (not null, unaffected)
+     * @param storeLocation point in world coordinates (not null, modified)
+     * @return index of vertex in the geometry's mesh (&ge;0) or -1 if none
+     * found
+     */
+    public static int findSupport(Geometry geometry,
+            Matrix4f[] skinningMatrices, Vector3f storeLocation) {
+        Validate.nonNull(geometry, "geometry");
+        Validate.nonNull(skinningMatrices, "skinning matrices");
+        Validate.nonNull(storeLocation, "store location");
+
+        int bestIndex = -1;
+        float bestY = Float.POSITIVE_INFINITY;
+
+        Vector3f meshLoc = new Vector3f();
+        Vector3f worldLoc = new Vector3f();
+
+        Mesh mesh = geometry.getMesh();
+        int maxWeightsPerVertex = mesh.getMaxNumWeights();
+        VertexBuffer posBuf;
+        posBuf = mesh.getBuffer(VertexBuffer.Type.BindPosePosition);
+        FloatBuffer posBuffer = (FloatBuffer) posBuf.getDataReadOnly();
+        posBuffer.rewind();
+        VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
+        FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
+        weightBuffer.rewind();
+        VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
+        ByteBuffer boneIndexBuffer = (ByteBuffer) biBuf.getData();
+        boneIndexBuffer.rewind();
+
+        int numVertices = posBuffer.remaining() / 3;
+        for (int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++) {
+            float bx = posBuffer.get(); // bind position
+            float by = posBuffer.get();
+            float bz = posBuffer.get();
+
+            meshLoc.zero();
+            for (int wIndex = 0; wIndex < maxWeightsPerVertex; wIndex++) {
+                float weight = weightBuffer.get();
+                int boneIndex = 0xff & boneIndexBuffer.get();
+                if (weight != 0f) {
+                    Matrix4f s = skinningMatrices[boneIndex];
+                    meshLoc.x += weight
+                            * (s.m00 * bx + s.m01 * by + s.m02 * bz + s.m03);
+                    meshLoc.y += weight
+                            * (s.m10 * bx + s.m11 * by + s.m12 * bz + s.m13);
+                    meshLoc.z += weight
+                            * (s.m20 * bx + s.m21 * by + s.m22 * bz + s.m23);
+                }
+            }
+
+            geometry.localToWorld(meshLoc, worldLoc);
+            if (worldLoc.y < bestY) {
+                storeLocation.set(worldLoc);
+                bestIndex = vertexIndex;
+            }
+
+            for (int wIndex = maxWeightsPerVertex; wIndex < 4; wIndex++) {
+                weightBuffer.get();
+                boneIndexBuffer.get();
+            }
+        }
+
+        return bestIndex;
+    }
+
+    /**
+     * Find the point of vertical support (minimum Y coordinate) for the meshes
+     * in the specified subtree, each transformed by the specified skinning
+     * matrices.
+     *
+     * @param subtree (may be null)
+     * @param skinningMatrices (not null, unaffected)
+     * @param storeLocation point in world coordinates (not null, modified)
+     * @param storeGeometry (not null, modified)
+     * @return index of vertex in storeGeometry's mesh (&ge;0) or -1 if none
+     * found
+     */
+    public static int findSupport(Spatial subtree, Matrix4f[] skinningMatrices,
+            Vector3f storeLocation, Geometry[] storeGeometry) {
+        Validate.nonNull(skinningMatrices, "skinning matrices");
+        Validate.nonNull(storeLocation, "store location");
+        Validate.nonNull(storeGeometry, "store geometry");
+        assert storeGeometry.length == 1 : storeGeometry.length;
+
+        int bestIndex = -1;
+        storeGeometry[0] = null;
+        float bestY = Float.POSITIVE_INFINITY;
+        Vector3f tmpLocation = new Vector3f();
+
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            int index = findSupport(geometry, skinningMatrices, tmpLocation);
+            if (tmpLocation.y < bestY) {
+                storeLocation.set(tmpLocation);
+                storeGeometry[0] = geometry;
+                bestIndex = index;
+            }
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            Geometry[] tmpGeometry = new Geometry[1];
+            for (Spatial child : children) {
+                int index = findSupport(child, skinningMatrices, tmpLocation,
+                        tmpGeometry);
+                if (tmpLocation.y < bestY) {
+                    storeLocation.set(tmpLocation);
+                    storeGeometry[0] = tmpGeometry[0];
+                    bestIndex = index;
+                }
+            }
+        }
+
+        return bestIndex;
     }
 
     /**
@@ -889,5 +1027,189 @@ public class Util {
                 rotations, scales);
 
         return result;
+    }
+
+    /**
+     * Calculate the sensitivity of the indexed vertex to translations of the
+     * indexed bone in the specified pose.
+     *
+     * @param boneIndex which bone to translate (&ge;0)
+     * @param geometry (not null)
+     * @param vertexIndex index into the geometry's vertices (&ge;0)
+     * @param pose (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return sensitivity matrix (either storeResult or a new instance)
+     */
+    public static Matrix3f sensitivity(int boneIndex, Geometry geometry,
+            int vertexIndex, Pose pose, Matrix3f storeResult) {
+        if (storeResult == null) {
+            storeResult = new Matrix3f();
+        }
+
+        Vector3f testWorld = new Vector3f();
+        Vector3f baseWorld = new Vector3f();
+        int numBones = pose.countBones();
+        Matrix4f[] matrices = new Matrix4f[numBones];
+        Pose testPose = pose.clone();
+
+        pose.userTranslation(boneIndex, testWorld);
+        testPose.skin(matrices);
+        vertexWorldLocation(geometry, vertexIndex, matrices, baseWorld);
+
+        pose.userTranslation(boneIndex, testWorld);
+        testWorld.addLocal(xAxis);
+        testPose.setTranslation(boneIndex, testWorld);
+        testPose.skin(matrices);
+        vertexWorldLocation(geometry, vertexIndex, matrices, testWorld);
+        testWorld.subtractLocal(baseWorld);
+        storeResult.setColumn(0, testWorld);
+
+        pose.userTranslation(boneIndex, testWorld);
+        testWorld.addLocal(yAxis);
+        testPose.setTranslation(boneIndex, testWorld);
+        testPose.skin(matrices);
+        vertexWorldLocation(geometry, vertexIndex, matrices, testWorld);
+        testWorld.subtractLocal(baseWorld);
+        storeResult.setColumn(1, testWorld);
+
+        pose.userTranslation(boneIndex, testWorld);
+        testWorld.addLocal(zAxis);
+        testPose.setTranslation(boneIndex, testWorld);
+        testPose.skin(matrices);
+        vertexWorldLocation(geometry, vertexIndex, matrices, testWorld);
+        testWorld.subtractLocal(baseWorld);
+        storeResult.setColumn(2, testWorld);
+
+        return storeResult;
+    }
+
+    /**
+     * Alter the wireframe render setting on all materials in the specified
+     * subtree. Note: recursive!
+     *
+     * @param subtree (may be null)
+     * @param newSetting true&rarr;enable wireframe mode, false&rarr;disable it
+     */
+    public static void setWireframe(Spatial subtree, boolean newSetting) {
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            Material material = geometry.getMaterial();
+            RenderState rs = material.getAdditionalRenderState();
+            rs.setWireframe(newSetting);
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                setWireframe(child, newSetting);
+            }
+        }
+    }
+
+    /**
+     * Read the location of the indexed vertex in mesh space.
+     *
+     * @param mesh subject mesh (not null)
+     * @param vertexIndex index into the mesh's vertices (&ge;0)
+     * @param storeResult (modified if not null)
+     * @return mesh coordinates (either storeResult or a new instance)
+     */
+    public static Vector3f vertexMeshLocation(Mesh mesh, int vertexIndex,
+            Vector3f storeResult) {
+        Validate.nonNull(mesh, "mesh");
+        Validate.nonNegative(vertexIndex, "vertex index");
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        VertexBuffer posBuf;
+        posBuf = mesh.getBuffer(VertexBuffer.Type.Position);
+        FloatBuffer posBuffer = (FloatBuffer) posBuf.getDataReadOnly();
+        posBuffer.position(3 * vertexIndex);
+        storeResult.x = posBuffer.get();
+        storeResult.y = posBuffer.get();
+        storeResult.z = posBuffer.get();
+
+        return storeResult;
+    }
+
+    /**
+     * Calculate the location of the indexed vertex in mesh space using the
+     * skinning matrices provided.
+     *
+     * @param mesh subject mesh (not null)
+     * @param vertexIndex index into the mesh's vertices (&ge;0)
+     * @param skinningMatrices (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return mesh coordinates (either storeResult or a new instance)
+     */
+    public static Vector3f vertexMeshLocation(Mesh mesh, int vertexIndex,
+            Matrix4f[] skinningMatrices, Vector3f storeResult) {
+        Validate.nonNull(mesh, "mesh");
+        Validate.nonNegative(vertexIndex, "vertex index");
+        Validate.nonNull(skinningMatrices, "skinning matrices");
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        VertexBuffer posBuf;
+        posBuf = mesh.getBuffer(VertexBuffer.Type.BindPosePosition);
+        FloatBuffer posBuffer = (FloatBuffer) posBuf.getDataReadOnly();
+        posBuffer.position(3 * vertexIndex);
+        float bx = posBuffer.get(); // bind position
+        float by = posBuffer.get();
+        float bz = posBuffer.get();
+
+        VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
+        FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
+        weightBuffer.position(4 * vertexIndex);
+
+        VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
+        ByteBuffer boneIndexBuffer = (ByteBuffer) biBuf.getDataReadOnly();
+        boneIndexBuffer.position(4 * vertexIndex);
+
+        storeResult.zero();
+        int maxWeightsPerVertex = mesh.getMaxNumWeights();
+        for (int wIndex = 0; wIndex < maxWeightsPerVertex; wIndex++) {
+            float weight = weightBuffer.get();
+            int boneIndex = 0xff & boneIndexBuffer.get();
+            if (weight != 0f) {
+                Matrix4f s = skinningMatrices[boneIndex];
+                storeResult.x += weight
+                        * (s.m00 * bx + s.m01 * by + s.m02 * bz + s.m03);
+                storeResult.y += weight
+                        * (s.m10 * bx + s.m11 * by + s.m12 * bz + s.m13);
+                storeResult.z += weight
+                        * (s.m20 * bx + s.m21 * by + s.m22 * bz + s.m23);
+            }
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Calculate the location of the indexed vertex in world space using the
+     * skinning matrices provided.
+     *
+     * @param geometry an animated geometry (not null)
+     * @param vertexIndex index into the geometry's vertices (&ge;0)
+     * @param skinningMatrices (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return world coordinates (either storeResult or a new instance)
+     */
+    public static Vector3f vertexWorldLocation(Geometry geometry,
+            int vertexIndex, Matrix4f[] skinningMatrices,
+            Vector3f storeResult) {
+        Validate.nonNull(geometry, "geometry");
+        Validate.nonNegative(vertexIndex, "vertex index");
+        Validate.nonNull(skinningMatrices, "skinning matrices");
+
+        Mesh mesh = geometry.getMesh();
+
+        Vector3f meshLocation = new Vector3f();
+        vertexMeshLocation(mesh, vertexIndex, skinningMatrices, meshLocation);
+        storeResult = geometry.localToWorld(meshLocation, storeResult);
+
+        return storeResult;
     }
 }
