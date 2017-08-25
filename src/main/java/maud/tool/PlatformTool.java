@@ -40,6 +40,7 @@ import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 import maud.Maud;
 import maud.model.LoadedCgm;
+import maud.model.PlatformType;
 import maud.view.SceneView;
 
 /**
@@ -96,16 +97,16 @@ class PlatformTool extends WindowController {
         SceneView sceneView = cgm.getSceneView();
         Spatial platform = sceneView.getPlatform();
 
-        String mode = Maud.getModel().getScene().getPlatformMode();
+        PlatformType mode = Maud.getModel().getScene().getPlatformType();
         switch (mode) {
-            case "none":
+            case None:
                 if (platform != null) {
                     sceneView.setPlatform(null);
                     platform = null;
                 }
                 break;
 
-            case "square":
+            case Square:
                 if (platform == null) {
                     platform = createSquare();
                     sceneView.setPlatform(platform);
@@ -128,7 +129,7 @@ class PlatformTool extends WindowController {
     // private methods
 
     /**
-     * Create a square platform.
+     * Create a square slab platform.
      *
      * @return a new, orphaned spatial
      */
