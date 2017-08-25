@@ -35,7 +35,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.LoadedCgm;
 import maud.model.SceneBones;
-import maud.model.SkeletonStatus;
+import maud.model.SkeletonOptions;
 
 /**
  * The controller for the "Skeleton Color Tool" window in Maud's editor screen.
@@ -69,7 +69,7 @@ class SkeletonColorTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
+        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ColorRGBA color = Maud.gui.readColorBank("ske");
         options.setLinkColor(color);
 
@@ -92,7 +92,7 @@ class SkeletonColorTool extends WindowController {
             return;
         }
 
-        SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
+        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ColorRGBA color = options.copyLinkColor(null);
         visualizer.setLineColor(color);
 
@@ -137,7 +137,7 @@ class SkeletonColorTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
+        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ColorRGBA color = options.copyLinkColor(null);
         Maud.gui.setColorBank("ske", color);
 

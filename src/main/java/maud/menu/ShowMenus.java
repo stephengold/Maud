@@ -44,7 +44,7 @@ import maud.model.SceneBones;
 import maud.model.SelectedSkeleton;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedVertex;
-import maud.model.SkeletonStatus;
+import maud.model.SkeletonOptions;
 import maud.model.ViewMode;
 
 /**
@@ -474,7 +474,7 @@ public class ShowMenus {
     public void setSceneBones() {
         MenuBuilder builder = new MenuBuilder();
 
-        SkeletonStatus status = Maud.getModel().getScene().getSkeleton();
+        SkeletonOptions status = Maud.getModel().getScene().getSkeleton();
         SceneBones showBones = status.bones();
 
         for (SceneBones option : SceneBones.values()) {
