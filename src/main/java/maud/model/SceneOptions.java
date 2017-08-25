@@ -82,7 +82,7 @@ public class SceneOptions implements Cloneable {
     /**
      * configuration of the skeleton visualization(s)
      */
-    private SkeletonStatus skeleton = new SkeletonStatus();
+    private SkeletonOptions skeleton = new SkeletonOptions();
     /**
      * type of platform in scene views (either "none" or "square")
      */
@@ -176,7 +176,7 @@ public class SceneOptions implements Cloneable {
      *
      * @return the pre-existing instance
      */
-    public SkeletonStatus getSkeleton() {
+    public SkeletonOptions getSkeleton() {
         assert skeleton != null;
         return skeleton;
     }

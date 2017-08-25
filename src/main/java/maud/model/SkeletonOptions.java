@@ -31,12 +31,11 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * Options for skeleton visualizations in scene views. TODO rename
- * SkeletonOptions
+ * Options for skeleton visualizations in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SkeletonStatus implements Cloneable {
+public class SkeletonOptions implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -44,7 +43,7 @@ public class SkeletonStatus implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            SkeletonStatus.class.getName());
+            SkeletonOptions.class.getName());
     // *************************************************************************
     // fields
 
@@ -218,8 +217,8 @@ public class SkeletonStatus implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public SkeletonStatus clone() throws CloneNotSupportedException {
-        SkeletonStatus clone = (SkeletonStatus) super.clone();
+    public SkeletonOptions clone() throws CloneNotSupportedException {
+        SkeletonOptions clone = (SkeletonOptions) super.clone();
         clone.linkColor = linkColor.clone();
         clone.trackedColor = trackedColor.clone();
         clone.tracklessColor = tracklessColor.clone();

@@ -83,7 +83,7 @@ import maud.Util;
 import maud.mesh.PointMesh;
 import maud.model.LoadedCgm;
 import maud.model.SceneBones;
-import maud.model.SkeletonStatus;
+import maud.model.SkeletonOptions;
 import maud.model.ViewMode;
 
 /**
@@ -662,7 +662,7 @@ public class SceneView
         Pose pose = cgm.getPose().getPose();
         int numBones = pose.countBones();
         BitSet boneIndexSet = new BitSet(numBones);
-        SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
+        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         SceneBones sceneBones = options.bones();
         switch (sceneBones) {
             case All:

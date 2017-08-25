@@ -34,7 +34,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.LoadedCgm;
 import maud.model.SceneBones;
-import maud.model.SkeletonStatus;
+import maud.model.SkeletonOptions;
 
 /**
  * The controller for the "Skeleton Tool" window in Maud's editor screen.
@@ -68,7 +68,7 @@ class SkeletonTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
+        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         float lineWidth = Maud.gui.readSlider("skeletonLineWidth");
         options.setLineWidth(lineWidth);
 
@@ -87,7 +87,7 @@ class SkeletonTool extends WindowController {
         if (visualizer == null) {
             return;
         }
-        SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
+        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         SceneBones showBones = options.bones();
         visualizer.setEnabled(showBones != SceneBones.None);
 
@@ -114,7 +114,7 @@ class SkeletonTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        SkeletonStatus options = Maud.getModel().getScene().getSkeleton();
+        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         SceneBones showBones = options.bones();
         Maud.gui.setStatusText("skeletonBones", " " + showBones.toString());
 
