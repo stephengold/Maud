@@ -26,7 +26,6 @@
  */
 package maud.model;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 
@@ -80,13 +79,13 @@ public class SceneOptions implements Cloneable {
      */
     private float platformDiameter = 1f;
     /**
+     * type of platform in scene views (not null)
+     */
+    private PlatformType platformType = PlatformType.Square;
+    /**
      * configuration of the skeleton visualization(s)
      */
     private SkeletonOptions skeleton = new SkeletonOptions();
-    /**
-     * type of platform in scene views (either "none" or "square")
-     */
-    private String platformMode = "square";
     /**
      * configuration of the vertex visualization(s)
      */
@@ -154,12 +153,13 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Read the type of platform in scene views.
+     * Read the type of platform included in scene views.
      *
-     * @return either "none" or "square"
+     * @return enum (not null)
      */
-    public String getPlatformMode() {
-        return platformMode;
+    public PlatformType getPlatformType() {
+        assert platformType != null;
+        return platformType;
     }
 
     /**
@@ -220,22 +220,13 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Alter the type of platform in scene views. TODO enum for modes
+     * Alter the type of platform included in scene views.
      *
-     * @param modeName either "none" or "square"
+     * @param newType enum
      */
-    public void setPlatformMode(String modeName) {
-        Validate.nonNull(modeName, "mode name");
-
-        switch (modeName) {
-            case "none":
-            case "square":
-                platformMode = modeName;
-                break;
-            default:
-                logger.log(Level.SEVERE, "mode name={0}", modeName);
-                throw new IllegalArgumentException("invalid mode name");
-        }
+    public void setPlatformType(PlatformType newType) {
+        Validate.nonNull(newType, "new type");
+        platformType = newType;
     }
 
     /**

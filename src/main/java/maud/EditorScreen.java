@@ -65,6 +65,7 @@ import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.PlatformType;
 import maud.model.Pov;
 import maud.model.SceneOptions;
 import maud.model.ScoreOptions;
@@ -475,10 +476,10 @@ public class EditorScreen extends GuiScreenController {
                 break;
 
             case "noPlatformRadioButton":
-                scene.setPlatformMode("none");
+                scene.setPlatformType(PlatformType.None);
                 break;
             case "squarePlatformRadioButton":
-                scene.setPlatformMode("square");
+                scene.setPlatformType(PlatformType.Square);
                 break;
 
             default:
