@@ -34,7 +34,7 @@ import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.BoundsStatus;
+import maud.model.BoundsOptions;
 import maud.model.LoadedCgm;
 import maud.view.SceneView;
 
@@ -70,12 +70,12 @@ class BoundsTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        BoundsStatus status = Maud.getModel().getScene().getBounds();
+        BoundsOptions options = Maud.getModel().getScene().getBounds();
         float lineWidth = Maud.gui.readSlider("boundsLineWidth");
-        status.setLineWidth(lineWidth);
+        options.setLineWidth(lineWidth);
 
         ColorRGBA color = Maud.gui.readColorBank("bounds");
-        status.setColor(color);
+        options.setColor(color);
     }
 
     /**
@@ -88,14 +88,14 @@ class BoundsTool extends WindowController {
         BoundsVisualizer visualizer = sceneView.getBoundsVisualizer();
         visualizer.setEnabled(true);
 
-        BoundsStatus status = Maud.getModel().getScene().getBounds();
-        ColorRGBA color = status.copyColor(null);
+        BoundsOptions options = Maud.getModel().getScene().getBounds();
+        ColorRGBA color = options.copyColor(null);
         visualizer.setColor(color);
 
-        boolean depthTestFlag = status.getDepthTestFlag();
+        boolean depthTestFlag = options.getDepthTestFlag();
         visualizer.setDepthTest(depthTestFlag);
 
-        float lineWidth = status.getLineWidth();
+        float lineWidth = options.getLineWidth();
         visualizer.setLineWidth(lineWidth);
 
         Spatial selectedSpatial = sceneView.selectedSpatial();
@@ -114,17 +114,17 @@ class BoundsTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
-        BoundsStatus status = Maud.getModel().getScene().getBounds();
+        BoundsOptions options = Maud.getModel().getScene().getBounds();
         Maud.gui.setIgnoreGuiChanges(true);
 
-        ColorRGBA color = status.copyColor(null);
+        ColorRGBA color = options.copyColor(null);
         Maud.gui.setColorBank("bounds", color);
 
-        boolean depthTestFlag = status.getDepthTestFlag();
+        boolean depthTestFlag = options.getDepthTestFlag();
         Maud.gui.setChecked("boundsDepthTest", depthTestFlag);
 
         Slider slider = Maud.gui.getSlider("boundsLineWidth");
-        float lineWidth = status.getLineWidth();
+        float lineWidth = options.getLineWidth();
         slider.setValue(lineWidth);
         lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("boundsLineWidth", lineWidth, " pixels");

@@ -31,11 +31,11 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * The status of the bounds visualization in the Maud application.
+ * Options for bounds visualizations in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class BoundsStatus implements Cloneable {
+public class BoundsOptions implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -43,7 +43,7 @@ public class BoundsStatus implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            BoundsStatus.class.getName());
+            BoundsOptions.class.getName());
     // *************************************************************************
     // fields
 
@@ -134,8 +134,8 @@ public class BoundsStatus implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public BoundsStatus clone() throws CloneNotSupportedException {
-        BoundsStatus clone = (BoundsStatus) super.clone();
+    public BoundsOptions clone() throws CloneNotSupportedException {
+        BoundsOptions clone = (BoundsOptions) super.clone();
         clone.color = color.clone();
 
         return clone;
