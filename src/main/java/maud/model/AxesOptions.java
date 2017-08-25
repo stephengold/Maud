@@ -30,11 +30,11 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * The status of the visible coordinate axes in scene views.
+ * Options for visible coordinate axes in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class AxesStatus implements Cloneable {
+public class AxesOptions implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -42,7 +42,7 @@ public class AxesStatus implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            AxesStatus.class.getName());
+            AxesOptions.class.getName());
     // *************************************************************************
     // fields
 
@@ -128,8 +128,8 @@ public class AxesStatus implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public AxesStatus clone() throws CloneNotSupportedException {
-        AxesStatus clone = (AxesStatus) super.clone();
+    public AxesOptions clone() throws CloneNotSupportedException {
+        AxesOptions clone = (AxesOptions) super.clone();
         return clone;
     }
 }

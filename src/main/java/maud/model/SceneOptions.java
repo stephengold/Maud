@@ -49,7 +49,7 @@ public class SceneOptions implements Cloneable {
     /**
      * configuration of coordinate axes visualization(s)
      */
-    private AxesStatus axes = new AxesStatus();
+    private AxesOptions axes = new AxesOptions();
     /**
      * true if physics objects are visualized, otherwise false
      */
@@ -107,7 +107,7 @@ public class SceneOptions implements Cloneable {
      *
      * @return the pre-existing instance
      */
-    public AxesStatus getAxes() {
+    public AxesOptions getAxes() {
         assert axes != null;
         return axes;
     }
