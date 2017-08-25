@@ -65,7 +65,7 @@ public class SceneOptions implements Cloneable {
     /**
      * configuration of the bounds visualization(s)
      */
-    private BoundsStatus bounds = new BoundsStatus();
+    private BoundsOptions bounds = new BoundsOptions();
     /**
      * configuration of the camera(s)
      */
@@ -117,7 +117,7 @@ public class SceneOptions implements Cloneable {
      *
      * @return the pre-existing instance
      */
-    public BoundsStatus getBounds() {
+    public BoundsOptions getBounds() {
         assert bounds != null;
         return bounds;
     }
