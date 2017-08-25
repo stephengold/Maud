@@ -163,15 +163,6 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Test whether physics objects are visualized. TODO sort methods
-     *
-     * @return true if visualized, otherwise false
-     */
-    public boolean isPhysicsRendered() {
-        return physicsRendered;
-    }
-
-    /**
      * Access the configuration of the skeleton visualization(s).
      *
      * @return the pre-existing instance
@@ -189,6 +180,15 @@ public class SceneOptions implements Cloneable {
     public VertexOptions getVertex() {
         assert vertex != null;
         return vertex;
+    }
+
+    /**
+     * Test whether physics objects are visualized.
+     *
+     * @return true if visualized, otherwise false
+     */
+    public boolean isPhysicsRendered() {
+        return physicsRendered;
     }
 
     /**
