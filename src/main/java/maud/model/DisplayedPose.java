@@ -27,6 +27,7 @@
 package maud.model;
 
 import com.jme3.animation.Skeleton;
+import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -181,13 +182,24 @@ public class DisplayedPose implements JmeCloneable {
     }
 
     /**
+     * Calculate skinning matrices for the pose.
+     *
+     * @param storeResult (modified if not null)
+     * @return skinning matrices (either storeResult or a new instance)
+     */
+    public Matrix4f[] skin(Matrix4f[] storeResult) {
+        storeResult = pose.skin(storeResult);
+        return storeResult;
+    }
+
+    /**
      * Toggle whether the pose is frozen.
      */
     public void toggleFrozen() {
         setFrozen(!frozenFlag);
     }
     // *************************************************************************
-    // JmeCloner methods
+    // JmeCloneable methods
 
     /**
      * Convert this shallow-cloned instance into a deep-cloned one, using the
