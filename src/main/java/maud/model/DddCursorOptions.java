@@ -31,11 +31,11 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * Properties of 3D cursors in scene views. TODO rename DddCursor
+ * Options for 3-D cursors in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class CursorStatus implements Cloneable {
+public class DddCursorOptions implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -43,7 +43,7 @@ public class CursorStatus implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            CursorStatus.class.getName());
+            DddCursorOptions.class.getName());
     // *************************************************************************
     // fields
 
@@ -134,9 +134,10 @@ public class CursorStatus implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public CursorStatus clone() throws CloneNotSupportedException {
-        CursorStatus clone = (CursorStatus) super.clone();
+    public DddCursorOptions clone() throws CloneNotSupportedException {
+        DddCursorOptions clone = (DddCursorOptions) super.clone();
         clone.color = color.clone();
+
         return clone;
     }
 }

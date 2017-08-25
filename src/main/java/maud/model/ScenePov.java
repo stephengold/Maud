@@ -194,7 +194,7 @@ public class ScenePov implements Cloneable, Pov {
      */
     public float worldScaleForCursor() {
         float range = range();
-        CursorStatus cursor = Maud.getModel().getScene().getCursor();
+        DddCursorOptions cursor = Maud.getModel().getScene().getCursor();
         float worldScale = cursor.getSize() * range;
 
         assert worldScale >= 0f : worldScale;
