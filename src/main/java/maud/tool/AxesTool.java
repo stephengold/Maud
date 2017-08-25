@@ -46,7 +46,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.Pose;
 import maud.model.AxesMode;
-import maud.model.AxesStatus;
+import maud.model.AxesOptions;
 import maud.model.EditableCgm;
 import maud.model.EditableMap;
 import maud.model.EditorModel;
@@ -203,9 +203,9 @@ public class AxesTool extends WindowController {
             assert maxScale > 0f : maxScale;
             float length = 0.2f * distance / maxScale;
 
-            AxesStatus status = Maud.getModel().getScene().getAxes();
-            boolean depthTestFlag = status.getDepthTestFlag();
-            float lineWidth = status.getLineWidth();
+            AxesOptions options = Maud.getModel().getScene().getAxes();
+            boolean depthTestFlag = options.getDepthTestFlag();
+            float lineWidth = options.getLineWidth();
 
             axesControl.setAxisLength(length);
             axesControl.setDepthTest(depthTestFlag);
@@ -227,11 +227,11 @@ public class AxesTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        AxesStatus status = Maud.getModel().getScene().getAxes();
-        boolean depthTestFlag = status.getDepthTestFlag();
+        AxesOptions options = Maud.getModel().getScene().getAxes();
+        boolean depthTestFlag = options.getDepthTestFlag();
         Maud.gui.setChecked("axesDepthTest", depthTestFlag);
 
-        float lineWidth = status.getLineWidth();
+        float lineWidth = options.getLineWidth();
         Slider slider = Maud.gui.getSlider("axesLineWidth");
         slider.setValue(lineWidth);
 
