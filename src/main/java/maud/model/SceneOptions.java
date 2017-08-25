@@ -87,6 +87,10 @@ public class SceneOptions implements Cloneable {
      * type of platform in scene views (either "none" or "square")
      */
     private String platformMode = "square";
+    /**
+     * configuration of the vertex visualization(s)
+     */
+    private VertexOptions vertex = new VertexOptions();
     // *************************************************************************
     // new methods exposed
 
@@ -159,7 +163,7 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Test whether physics objects are visualized.
+     * Test whether physics objects are visualized. TODO sort methods
      *
      * @return true if visualized, otherwise false
      */
@@ -175,6 +179,16 @@ public class SceneOptions implements Cloneable {
     public SkeletonStatus getSkeleton() {
         assert skeleton != null;
         return skeleton;
+    }
+
+    /**
+     * Access the configuration of the vertex visualization(s).
+     *
+     * @return the pre-existing instance
+     */
+    public VertexOptions getVertex() {
+        assert vertex != null;
+        return vertex;
     }
 
     /**
@@ -206,7 +220,7 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Alter the type of platform in scene views.
+     * Alter the type of platform in scene views. TODO enum for modes
      *
      * @param modeName either "none" or "square"
      */
@@ -258,6 +272,7 @@ public class SceneOptions implements Cloneable {
         camera = camera.clone();
         cursor = cursor.clone();
         skeleton = skeleton.clone();
+        vertex = vertex.clone();
 
         return clone;
     }
