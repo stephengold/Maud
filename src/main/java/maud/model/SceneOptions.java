@@ -73,7 +73,7 @@ public class SceneOptions implements Cloneable {
     /**
      * configuration of the 3D cursor(s)
      */
-    private CursorStatus cursor = new CursorStatus();
+    private DddCursorOptions cursor = new DddCursorOptions();
     /**
      * diameter of the platform in scene views (in world units, &gt;0)
      */
@@ -137,7 +137,7 @@ public class SceneOptions implements Cloneable {
      *
      * @return the pre-existing instance
      */
-    public CursorStatus getCursor() {
+    public DddCursorOptions getCursor() {
         assert cursor != null;
         return cursor;
     }
