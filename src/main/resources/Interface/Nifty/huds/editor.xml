@@ -1137,6 +1137,54 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="sceneVertexTool" title="Scene Vertex Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="250px" width="160px" x="25" y="75">
+                <panel childLayout="vertical">
+                    <panel height="4px"/>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" id="svPointSizeSliderStatus"
+                                 width="*"
+                                 textHAlign="right"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="30px">
+                        <control name="horizontalSlider" id="svPointSizeSlider"
+                                 buttonStepSize="1"
+                                 max="32" min="0" stepSize="1"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" text="Color:" textHAlign="left"/>
+                    </panel>
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="svRSlider"
+                                 buttonStepSize="1"
+                                 height="130px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="svGSlider"
+                                 buttonStepSize="1"
+                                 height="130px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="svBSlider"
+                                 buttonStepSize="1"
+                                 height="130px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="130px" width="90px">
+                            <control name="label" id="svRSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="svGSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="svBSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="scoreTool" title="Score Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"

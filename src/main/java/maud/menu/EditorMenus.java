@@ -689,6 +689,9 @@ public class EditorMenus {
             case "Sky":
                 Maud.gui.tools.select("sky");
                 break;
+            case "Vertex":
+                Maud.gui.tools.select("sceneVertex");
+                break;
             default:
                 handled = false;
         }

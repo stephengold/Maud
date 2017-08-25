@@ -43,6 +43,8 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Transform;
@@ -51,14 +53,18 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.texture.Texture;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
@@ -69,10 +75,12 @@ import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.math.MyMath;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
+import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.Pose;
 import maud.Selection;
 import maud.Util;
+import maud.mesh.PointMesh;
 import maud.model.LoadedCgm;
 import maud.model.SceneBones;
 import maud.model.SkeletonStatus;
@@ -168,6 +176,10 @@ public class SceneView
      * horizontal platform added to the scene, or null if none
      */
     private Spatial platform = null;
+    /**
+     * spatial to visualize the selected vertex
+     */
+    private Spatial vertexSpatial;
     /**
      * view port used when the screen is not split, or null for none
      */
@@ -353,6 +365,16 @@ public class SceneView
     }
 
     /**
+     * Access the spatial that visualizes the selected vertex.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public Spatial getVertexSpatial() {
+        assert vertexSpatial != null;
+        return vertexSpatial;
+    }
+
+    /**
      * Replace the CG model with a newly loaded one.
      *
      * @param cgmRoot (not null)
@@ -459,7 +481,7 @@ public class SceneView
             cursor.removeFromParent();
         }
         if (cursorSpatial != null) {
-            Node scene = (Node) getScene();
+            Node scene = getScene();
             scene.attachChild(cursorSpatial);
         }
         cursor = cursorSpatial;
@@ -487,7 +509,7 @@ public class SceneView
             platform.removeFromParent();
         }
         if (platformSpatial != null) {
-            Node scene = (Node) getScene();
+            Node scene = getScene();
             scene.attachChild(platformSpatial);
         }
         platform = platformSpatial;
@@ -533,8 +555,7 @@ public class SceneView
             controlled.addControl(skeletonControl);
             skeletonControl.setHardwareSkinningPreferred(false);
 
-            Maud application = Maud.getApplication();
-            AssetManager assetManager = application.getAssetManager();
+            AssetManager assetManager = Locators.getAssetManager();
             skeletonVisualizer = new SkeletonVisualizer(assetManager);
             controlled.addControl(skeletonVisualizer);
             skeletonVisualizer.setSkeleton(skeleton);
@@ -749,6 +770,7 @@ public class SceneView
             createBounds();
             createLights();
             createSky();
+            createVertex();
         }
 
         Camera camera = getCamera();
@@ -819,6 +841,7 @@ public class SceneView
         skeletonControl = cloner.clone(skeletonControl);
         skeletonVisualizer = cloner.clone(skeletonVisualizer);
         // skyControl not cloned: shared
+        // vertexSpatial not cloned: shared
         // viewPort1, viewPort2 not cloned: shared
     }
 
@@ -867,14 +890,13 @@ public class SceneView
      * Add an axes visualizer to the root node of this view.
      */
     private void createAxes() {
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
+        AssetManager assetManager = Locators.getAssetManager();
         axesVisualizer = new AxesVisualizer(assetManager, 1f, 1f);
 
         Node axesNode = new Node("axes node");
         axesNode.addControl(axesVisualizer);
 
-        Node scene = (Node) getScene();
+        Node scene = getScene();
         scene.attachChild(axesNode);
     }
 
@@ -882,8 +904,7 @@ public class SceneView
      * Add a bounds visualizer to root node of this view.
      */
     private void createBounds() {
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
+        AssetManager assetManager = Locators.getAssetManager();
         boundsVisualizer = new BoundsVisualizer(assetManager);
         Spatial scene = getScene();
         scene.addControl(boundsVisualizer);
@@ -910,8 +931,7 @@ public class SceneView
      * Add a sky to this view.
      */
     private void createSky() {
-        Maud application = Maud.getApplication();
-        AssetManager assetManager = application.getAssetManager();
+        AssetManager assetManager = Locators.getAssetManager();
         Camera camera = viewPort2.getCamera();
         skyControl = new SkyControl(assetManager, camera, 0.9f, false, true);
         Spatial scene = getScene();
@@ -921,6 +941,30 @@ public class SceneView
         updater.setAmbientLight(ambientLight);
         updater.setMainLight(mainLight);
         //updater.addShadowFilter(dlsf);
+    }
+
+    /**
+     * Add vertex visualization to this view.
+     */
+    private void createVertex() {
+        AssetManager assetManager = Locators.getAssetManager();
+        Material material = new Material(assetManager,
+                "MatDefs/wireframe/multicolor2.j3md");
+        material.setFloat("PointSize", 12f);
+        Texture poseShape = MyAsset.loadTexture(assetManager,
+                "Textures/shapes/saltire.png");
+        material.setTexture("PointShape", poseShape);
+        RenderState rs = material.getAdditionalRenderState();
+        rs.setBlendMode(RenderState.BlendMode.Alpha);
+        rs.setDepthTest(false);
+
+        Mesh mesh = new PointMesh();
+        vertexSpatial = new Geometry("vertex", mesh);
+        vertexSpatial.setMaterial(material);
+        vertexSpatial.setQueueBucket(Bucket.Transparent);
+
+        Node scene = getScene();
+        scene.attachChild(vertexSpatial);
     }
 
     /**
@@ -966,13 +1010,14 @@ public class SceneView
      *
      * @return the pre-existing instance (not null)
      */
-    private Spatial getScene() {
+    private Node getScene() {
         List<Spatial> scenes = viewPort2.getScenes();
         assert scenes.size() == 2 : scenes.size();
-        Spatial result = scenes.get(0);
+        Spatial spatial = scenes.get(0);
+        Node node = (Node) spatial;
 
-        assert result != null;
-        return result;
+        assert node != null;
+        return node;
     }
 
     /**

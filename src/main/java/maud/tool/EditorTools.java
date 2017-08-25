@@ -126,6 +126,10 @@ public class EditorTools {
      */
     final RetargetTool retarget;
     /**
+     * controller for the "Scene Vertex Tool" window
+     */
+    final SceneVertexTool sceneVertex;
+    /**
      * controller for the "Score Tool" window
      */
     final ScoreTool score;
@@ -214,6 +218,7 @@ public class EditorTools {
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
         retarget = new RetargetTool(screen);
+        sceneVertex = new SceneVertexTool(screen);
         score = new ScoreTool(screen);
         sgc = new SgcTool(screen);
         skeletonColor = new SkeletonColorTool(screen);
@@ -243,9 +248,10 @@ public class EditorTools {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, history,
                 keyframe, mapping, cgm, physics, platform, render, retarget,
-                score, sgc, skeleton, skeletonColor, sky, sourceAnimation,
-                spatial, spatialDetails, spatialRotation, spatialScale,
-                spatialTranslation, tweening, twist, userData, vertex);
+                sceneVertex, score, sgc, skeleton, skeletonColor, sky,
+                sourceAnimation, spatial, spatialDetails, spatialRotation,
+                spatialScale, spatialTranslation, tweening, twist, userData,
+                vertex);
     }
 
     /**
@@ -312,6 +318,9 @@ public class EditorTools {
                 break;
             case "retarget":
                 controller = retarget;
+                break;
+            case "sceneVertex":
+                controller = sceneVertex;
                 break;
             case "score":
                 controller = score;
@@ -420,6 +429,13 @@ public class EditorTools {
                 cursor.onSliderChanged();
                 break;
 
+            case "svRSlider":
+            case "svGSlider":
+            case "svBSlider":
+            case "svPointSizeSlider":
+                sceneVertex.onSliderChanged();
+                break;
+
             case "skeletonLineWidthSlider":
             case "skeletonPointSizeSlider":
                 skeleton.onSliderChanged();
@@ -507,6 +523,7 @@ public class EditorTools {
         physics.updateVisualizer(loadedCgm);
         platform.updateScene(loadedCgm);
         render.updateShadowFilter(loadedCgm);
+        sceneVertex.updateVisualizer(loadedCgm);
         skeleton.updateVisualizer(loadedCgm);
         skeletonColor.updateVisualizer(loadedCgm);
         sky.updateSkyControl(loadedCgm);

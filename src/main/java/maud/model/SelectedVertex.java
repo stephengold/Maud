@@ -26,12 +26,16 @@
  */
 package maud.model;
 
+import com.jme3.math.Matrix4f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.logging.Logger;
+import maud.Util;
 
 /**
  * The MVC model of the selected vertex in a loaded CG model.
@@ -78,7 +82,7 @@ public class SelectedVertex implements Cloneable {
         }
         assert selectedIndex >= 0 : selectedIndex;
 
-        FloatBuffer posBuffer = positionBuffer();
+        FloatBuffer posBuffer = bindPosePositionBuffer();
         float bx = posBuffer.get(); // bind position
         float by = posBuffer.get();
         float bz = posBuffer.get();
@@ -100,7 +104,7 @@ public class SelectedVertex implements Cloneable {
         }
 
         ByteBuffer biBuffer = boneIndexBuffer();
-        int maxNumWeights = getMaxNumWeights();
+        int maxNumWeights = cgm.getSpatial().getMaxNumWeights();
         for (int i = 0; i < maxNumWeights; i++) {
             int boneIndex = 0xff & biBuffer.get();
             storeResult[i] = boneIndex;
@@ -125,7 +129,7 @@ public class SelectedVertex implements Cloneable {
         }
 
         FloatBuffer wBuffer = weightBuffer();
-        int maxNumWeights = getMaxNumWeights();
+        int maxNumWeights = cgm.getSpatial().getMaxNumWeights();
         for (int i = 0; i < maxNumWeights; i++) {
             float weight = wBuffer.get();
             storeResult[i] = weight;
@@ -154,7 +158,7 @@ public class SelectedVertex implements Cloneable {
     }
 
     /**
-     * Count how many bones influence the selected vertex.
+     * Count how many bones directly influence the selected vertex.
      *
      * @return count (&ge;0, &le;maxBones)
      */
@@ -162,8 +166,8 @@ public class SelectedVertex implements Cloneable {
         int result = 0;
         if (selectedIndex != -1) {
             FloatBuffer weightBuffer = weightBuffer();
-            int maxWeightsPerVertex = getMaxNumWeights();
-            for (int wIndex = 0; wIndex < maxWeightsPerVertex; wIndex++) {
+            int maxNumWeights = cgm.getSpatial().getMaxNumWeights();
+            for (int wIndex = 0; wIndex < maxNumWeights; wIndex++) {
                 float weight = weightBuffer.get();
                 if (weight != 0f) {
                     ++result;
@@ -233,6 +237,23 @@ public class SelectedVertex implements Cloneable {
         assert newLoaded != null;
         cgm = newLoaded;
     }
+
+    /**
+     * Calculate the world location of the selected vertex.
+     *
+     * @param storeResult (modified if not null)
+     * @return world coordinates (either storeResult or a new instance)
+     */
+    public Vector3f worldLocation(Vector3f storeResult) {
+        Spatial selectedSpatial = cgm.getSceneView().selectedSpatial();
+        Geometry selectedGeometry = (Geometry) selectedSpatial;
+        DisplayedPose pose = cgm.getPose();
+        Matrix4f[] matrices = pose.skin(null);
+        storeResult = Util.vertexWorldLocation(selectedGeometry,
+                selectedIndex, matrices, storeResult);
+
+        return storeResult;
+    }
     // *************************************************************************
     // Object methods
 
@@ -267,25 +288,16 @@ public class SelectedVertex implements Cloneable {
     }
 
     /**
+     * Access the bind-pose position data for the selected vertex.
      *
-     * @return
+     * @return a read-only buffer instance (not null)
      */
-    private int getMaxNumWeights() {
-        Mesh mesh = cgm.getSpatial().getMesh();
-        int maxNumWeights = mesh.getMaxNumWeights();
-        return maxNumWeights;
-    }
-
-    /**
-     * Access the position data for the selected vertex.
-     *
-     * @return a read-only buffer instance
-     */
-    private FloatBuffer positionBuffer() {
+    private FloatBuffer bindPosePositionBuffer() {
         assert selectedIndex >= 0 : selectedIndex;
 
         Mesh mesh = cgm.getSpatial().getMesh();
-        VertexBuffer posBuf = mesh.getBuffer(VertexBuffer.Type.Position);
+        VertexBuffer posBuf;
+        posBuf = mesh.getBuffer(VertexBuffer.Type.BindPosePosition);
         FloatBuffer posBuffer = (FloatBuffer) posBuf.getDataReadOnly();
         posBuffer.position(3 * selectedIndex);
 

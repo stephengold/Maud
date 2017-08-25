@@ -417,6 +417,20 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Read the maximum number of weights per vertex in the selected mesh.
+     *
+     * @return count (&ge;0, &le;4)
+     */
+    public int getMaxNumWeights() {
+        Mesh mesh = getMesh();
+        int maxNumWeights = mesh.getMaxNumWeights();
+
+        assert maxNumWeights >= 0 : maxNumWeights;
+        assert maxNumWeights <= 4 : maxNumWeights;
+        return maxNumWeights;
+    }
+
+    /**
      * Access the mesh of the selected spatial.
      *
      * @return the pre-existing instance, or null if none

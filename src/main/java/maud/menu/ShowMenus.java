@@ -149,6 +149,7 @@ public class ShowMenus {
         builder.addTool("Skeleton");
         builder.addTool("Skeleton color");
         builder.addTool("Sky");
+        builder.addTool("Vertex");
         builder.show("select menuItem View -> Scene options -> ");
     }
 
