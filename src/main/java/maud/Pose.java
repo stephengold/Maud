@@ -30,6 +30,8 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -485,6 +487,17 @@ public class Pose implements JmeCloneable {
     }
 
     /**
+     * Configure to represent bind pose.
+     */
+    public void setToBind() {
+        int numBones = transforms.size();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            Transform transform = transforms.get(boneIndex);
+            transform.loadIdentity();
+        }
+    }
+
+    /**
      * Configure this pose by re-targeting the specified source pose.
      *
      * @param sourcePose which source pose to re-target (not null, unaffected)
@@ -498,6 +511,62 @@ public class Pose implements JmeCloneable {
         for (Bone rootBone : rootBones) {
             retargetBones(rootBone, sourcePose, map);
         }
+    }
+
+    /**
+     * Calculate skinning matrices for this pose.
+     *
+     * @param storeResult (modified if not null)
+     * @return skinning matrices (either storeResult or a new instance)
+     */
+    public Matrix4f[] skin(Matrix4f[] storeResult) {
+        int numBones = transforms.size();
+        if (storeResult == null) {
+            storeResult = new Matrix4f[numBones];
+        } else {
+            assert storeResult.length >= numBones : numBones;
+        }
+        /*
+         * Allocate temporary storage.
+         */
+        Vector3f skTranslation = new Vector3f();
+        Quaternion skRotation = new Quaternion();
+        Matrix3f skRotMatrix = new Matrix3f();
+        Vector3f skScale = new Vector3f();
+        Transform msTransform = new Transform();
+
+        Vector3f msTranslation = msTransform.getTranslation();
+        Quaternion msRotation = msTransform.getRotation();
+        Vector3f msScale = msTransform.getScale();
+
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            Bone bone = skeleton.getBone(boneIndex);
+            modelTransform(boneIndex, msTransform);
+            /*
+             * Calculate the skinning transform for the bone.
+             * (Compare with Bone.getOffsetTransform().)
+             */
+            Vector3f mbiScale = bone.getModelBindInverseScale();
+            msScale.mult(mbiScale, skScale);
+
+            Quaternion mbiRotation = bone.getModelBindInverseRotation();
+            msRotation.mult(mbiRotation, skRotation);
+            skRotation.toRotationMatrix(skRotMatrix);
+
+            Vector3f mbiTranslation = bone.getModelBindInversePosition();
+            skScale.mult(mbiTranslation, skTranslation);
+            skRotation.mult(skTranslation, skTranslation);
+            skTranslation.addLocal(msTranslation);
+
+            Matrix4f matrix4f = storeResult[boneIndex];
+            if (matrix4f == null) {
+                matrix4f = new Matrix4f();
+                storeResult[boneIndex] = matrix4f;
+            }
+            matrix4f.setTransform(skTranslation, skScale, skRotMatrix);
+        }
+
+        return storeResult;
     }
 
     /**
@@ -590,7 +659,34 @@ public class Pose implements JmeCloneable {
         return storeResult;
     }
     // *************************************************************************
-    // JmeCloner methods
+    // Cloneable methods
+
+    /**
+     * Create a deep copy of this pose.
+     *
+     * @return a new pose, equivalent to this one
+     */
+    @Override
+    public Pose clone() {
+        Pose clone;
+        try {
+            clone = (Pose) super.clone();
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
+
+        int numTransforms = transforms.size();
+        List<Transform> originalTransforms = transforms;
+        transforms = new ArrayList<>(numTransforms);
+        for (Transform t : originalTransforms) {
+            Transform tClone = t.clone();
+            transforms.add(tClone);
+        }
+
+        return clone;
+    }
+    // *************************************************************************
+    // JmeCloneable methods
 
     /**
      * Convert this shallow-cloned instance into a deep-cloned one, using the
