@@ -161,7 +161,9 @@ public class Maud extends GuiApplication {
      * Process a "dump renderer" action.
      */
     public void dumpRenderer() {
+        dumper.setDumpBucket(true);
         dumper.setDumpCull(true);
+        dumper.setDumpShadow(true);
         dumper.setDumpTransform(true);
         dumper.dump(renderManager);
     }
@@ -170,7 +172,9 @@ public class Maud extends GuiApplication {
      * Process a "dump scene" action.
      */
     public void dumpScene() {
+        dumper.setDumpBucket(true);
         dumper.setDumpCull(true);
+        dumper.setDumpShadow(true);
         dumper.setDumpTransform(true);
         dumper.dump(rootNode);
     }
