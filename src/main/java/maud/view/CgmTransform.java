@@ -77,7 +77,7 @@ public class CgmTransform implements Cloneable {
      * Automatically configure the transform for a newly loaded CG model.
      *
      * @param center the location of the CG model's center in bind pose (in
-     * model space, not null, unaffected)
+     * CG-model space, not null, unaffected)
      * @param minY Y-offset of the CG model's base (in CG-model units)
      * @param maxExtent the greatest extent of the CG model over its 3 principal
      * axes in bind pose (in model units, &gt;0)

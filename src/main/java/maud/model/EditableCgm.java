@@ -222,6 +222,7 @@ public class EditableCgm extends LoadedCgm {
         if (rootSpatial instanceof Node) {
             int oldNumSpatials = Util.countSpatials(rootSpatial);
             Node rootNode = (Node) rootSpatial;
+            
             History.autoAdd();
             deleteExtraSpatials(rootNode);
             getSpatial().selectCgmRoot();
