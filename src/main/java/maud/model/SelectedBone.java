@@ -34,6 +34,7 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -206,26 +207,21 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Count how many mesh vertices are influenced by this bone.
+     * Test whether any mesh vertices are influenced by this bone.
      *
      * @return count (&ge;0)
      */
-    public int influence() {
-        int count = 0;
+    public boolean influence() {
+        boolean result = false;
         if (isSelected()) {
-            Boolean selectedSpatialFlag = false;
-            Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton(
-                    selectedSpatialFlag);
-            Spatial spatial;
-            if (selectedSpatialFlag) {
-                spatial = loadedCgm.getSpatial().modelSpatial();
-            } else {
-                spatial = loadedCgm.getRootSpatial();
-            }
-            count = Util.influence(spatial, skeleton, selectedIndex);
+            SelectedSkeleton ss = loadedCgm.getSkeleton();
+            Spatial subtree = ss.findSkeletonSpatial();
+            Skeleton skeleton = ss.findSkeleton();
+            BitSet bones = Util.addAllInfluencers(subtree, skeleton, null);
+            result = bones.get(selectedIndex);
         }
 
-        return count;
+        return result;
     }
 
     /**

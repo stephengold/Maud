@@ -180,9 +180,14 @@ class BoneTool extends WindowController {
 
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
-            int influence = bone.influence();
-            desc = String.format("influences %d vertices", influence);
+            boolean influence = bone.influence();
+            if (influence) {
+                desc = "one or more mesh vertices";
+            } else {
+                desc = "no mesh vertices";
+            }
         }
+
         Maud.gui.setStatusText("boneInfluence", desc);
     }
 

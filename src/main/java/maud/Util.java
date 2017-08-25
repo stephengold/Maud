@@ -71,7 +71,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
-import jme3utilities.MyMesh;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import org.slf4j.LoggerFactory;
@@ -390,66 +389,6 @@ public class Util {
     }
 
     /**
-     * Count how many vertices in the specified subtree of the scene graph are
-     * directly influenced by the indexed bone. Note: recursive!
-     *
-     * @param subtree subtree to traverse (may be null)
-     * @param boneIndex which bone (&ge;0)
-     * @return count of vertices (&ge;0)
-     */
-    public static int directInfluence(Spatial subtree, int boneIndex) {
-        Validate.nonNegative(boneIndex, "bone index");
-
-        int result = 0;
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            Mesh mesh = geometry.getMesh();
-            if (mesh.isAnimated()) {
-                result = MyMesh.numInfluenced(mesh, boneIndex);
-            }
-
-        } else if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                result += directInfluence(child, boneIndex);
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Find the root bone in the specified skeleton that has the greatest
-     * influence on the meshes in the specified subtree.
-     *
-     * @param subtree subtree to traverse (may be null)
-     * @param skeleton skeleton (not null)
-     * @return the pre-existing instance, or null if no root bone found
-     */
-    public static Bone dominantRootBone(Spatial subtree, Skeleton skeleton) {
-        Bone result = null;
-        Bone[] roots = skeleton.getRoots();
-        if (roots.length == 1) {
-            result = roots[0];
-
-        } else if (subtree != null) {
-            int maxInfluenced = -1;
-            for (Bone rootBone : roots) {
-                int boneIndex = skeleton.getBoneIndex(rootBone);
-                int numInfluenced;
-                numInfluenced = influence(subtree, skeleton, boneIndex);
-                if (numInfluenced > maxInfluenced) {
-                    maxInfluenced = numInfluenced;
-                    result = rootBone;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Find the point of vertical support (minimum Y coordinate) for the
      * specified geometry transformed by the specified skinning matrices.
      *
@@ -597,32 +536,6 @@ public class Util {
         }
 
         return false;
-    }
-
-    /**
-     * Count how many vertices in the specified subtree of the scene graph are
-     * influenced by the indexed bone or its descendents. Note: recursive!
-     *
-     * @param subtree subtree to traverse (may be null)
-     * @param skeleton skeleton (not null)
-     * @param boneIndex which bone in the skeleton (&ge;0)
-     * @return count of vertices (&ge;0)
-     */
-    public static int influence(Spatial subtree, Skeleton skeleton,
-            int boneIndex) {
-        Validate.nonNull(skeleton, "skeleton");
-        Validate.nonNegative(boneIndex, "bone index");
-
-        int result = directInfluence(subtree, boneIndex);
-
-        Bone bone = skeleton.getBone(boneIndex);
-        List<Bone> children = bone.getChildren();
-        for (Bone child : children) {
-            int childIndex = skeleton.getBoneIndex(child);
-            result += influence(subtree, skeleton, childIndex);
-        }
-
-        return result;
     }
 
     /**
