@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
 
 /**
- * The MVC model of the selected user data in Maud's editor screen.
+ * The MVC model of the selected user data a loaded C-G model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -102,7 +102,8 @@ public class UserData implements Cloneable {
     }
 
     /**
-     * Select the user data with the specified key.
+     * Select the user data with the specified key. TODO add deselectKey()
+     * method
      *
      * @param key a key, or null to deselect
      */

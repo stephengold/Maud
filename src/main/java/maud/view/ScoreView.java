@@ -770,7 +770,7 @@ public class ScoreView implements EditorView {
          */
         leftX = xRightMargin + hashSize * 2f / 3;
         rightX = cgm.scorePov.rightX() - xGap;
-        assert rightX > leftX : rightX; // TODO scorePov not updated?
+        assert rightX > leftX : rightX;
         maxWidth = (rightX - leftX) / compression;
         middleY = -height - sparklineHeight / 2 - (float) Finial.hpf;
 

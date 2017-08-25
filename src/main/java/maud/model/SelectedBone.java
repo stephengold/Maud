@@ -42,7 +42,7 @@ import maud.Pose;
 import maud.Util;
 
 /**
- * The MVC model of the selected bone in the Maud application.
+ * The MVC model of the selected bone in a loaded C-G model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
