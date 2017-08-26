@@ -873,6 +873,7 @@ public class BuildMenus {
             builder.addDialog("Reduce");
             builder.addDialog("Resample");
             builder.addEdit("Translate for support");
+            builder.addEdit("Translate for traction");
             builder.addEdit("Wrap");
         }
     }

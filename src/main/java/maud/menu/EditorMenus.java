@@ -954,6 +954,9 @@ public class EditorMenus {
             case "Translate for support":
                 target.getTrack().translateForSupport();
                 break;
+            case "Translate for traction":
+                target.getTrack().translateForTraction();
+                break;
             case "Wrap":
                 target.getTrack().wrap();
                 break;
