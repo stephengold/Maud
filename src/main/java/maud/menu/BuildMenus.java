@@ -700,6 +700,7 @@ public class BuildMenus {
             }
             builder.addDialog("Reduce track");
             builder.addDialog("Resample track");
+            builder.addEdit("Translate track for support");
             builder.addEdit("Wrap track");
         }
     }

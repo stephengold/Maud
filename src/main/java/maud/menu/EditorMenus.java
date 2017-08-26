@@ -540,6 +540,9 @@ public class EditorMenus {
                 case "Tool":
                     Maud.gui.tools.select("keyframe");
                     break;
+                case "Translate track for support":
+                    target.getTrack().translateForSupport();
+                    break;
                 case "Wrap track":
                     target.getTrack().wrap();
                     break;
