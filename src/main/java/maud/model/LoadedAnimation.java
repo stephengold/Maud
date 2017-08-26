@@ -89,7 +89,7 @@ public class LoadedAnimation implements Cloneable {
      * true &rarr; root bones pinned to bindPos, false &rarr; free to translate
      * TODO move to DisplayedPose
      */
-    private boolean pinnedFlag = true;
+    private boolean pinnedFlag = false;
     /**
      * true &rarr; reverse playback direction ("pong") at limits, false &rarr;
      * wrap time at limits
