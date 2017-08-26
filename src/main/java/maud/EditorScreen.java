@@ -625,8 +625,8 @@ public class EditorScreen extends GuiScreenController {
      *
      * @param message what to display (not null)
      */
-    void setStatus(String message) {
-        assert message != null;
+    public void setStatus(String message) {
+        Validate.nonNull(message, "message");
         setStatusText("messageLabel", message);
     }
 
