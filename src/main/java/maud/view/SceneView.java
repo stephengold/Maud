@@ -799,7 +799,7 @@ public class SceneView
         Vector3f targetContactPoint = findContact(root, ray);
 
         if (targetContactPoint != null) {
-            cgm.scenePov.setCursorLocation(targetContactPoint);
+            cgm.getScenePov().setCursorLocation(targetContactPoint);
         } else {
             /*
              * The ray missed the CG model; try to trace it to the platform.
@@ -808,7 +808,7 @@ public class SceneView
             if (plat != null) {
                 Vector3f platformContactPoint = findContact(plat, ray);
                 if (platformContactPoint != null) {
-                    cgm.scenePov.setCursorLocation(platformContactPoint);
+                    cgm.getScenePov().setCursorLocation(platformContactPoint);
                 }
             }
         }
@@ -1104,11 +1104,11 @@ public class SceneView
          * reset the camera, cursor, and platform
          */
         Vector3f baseLocation = new Vector3f(0f, 0f, 0f);
-        cgm.scenePov.setCursorLocation(baseLocation);
+        cgm.getScenePov().setCursorLocation(baseLocation);
         Maud.getModel().getScene().setPlatformDiameter(2f);
 
         Vector3f cameraLocation = new Vector3f(-2.4f, 1f, 1.6f);
-        cgm.scenePov.setCameraLocation(cameraLocation);
+        cgm.getScenePov().setCameraLocation(cameraLocation);
     }
 
     /**

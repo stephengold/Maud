@@ -515,7 +515,7 @@ public class EditorTools {
         Validate.nonNull(loadedCgm, "loaded model");
         assert loadedCgm.getSceneView().getCamera() != null;
 
-        loadedCgm.scenePov.updateCamera();
+        loadedCgm.getScenePov().updateCamera();
 
         axes.updateVisualizer(loadedCgm);
         bounds.updateVisualizer(loadedCgm);

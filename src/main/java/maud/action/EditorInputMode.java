@@ -663,7 +663,7 @@ public class EditorInputMode extends InputMode {
                 ViewType viewType = Maud.gui.mouseViewType();
                 if (viewType == ViewType.Scene) {
                     LoadedCgm loadedCgm = Maud.gui.mouseCgm();
-                    loadedCgm.scenePov.goHorizontal();
+                    loadedCgm.getScenePov().goHorizontal();
                 }
                 handled = true;
                 break;

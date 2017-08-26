@@ -238,13 +238,13 @@ public class EditorScreen extends GuiScreenController {
         for (ViewPort vp : viewPorts) {
             if (vp.isEnabled()) {
                 if (vp == sScene.getViewPort()) {
-                    result = source.scenePov;
+                    result = source.getScenePov();
                     break;
                 } else if (vp == sScore.getViewPort()) {
                     result = source.scorePov;
                     break;
                 } else if (vp == tScene.getViewPort()) {
-                    result = target.scenePov;
+                    result = target.getScenePov();
                     break;
                 } else if (vp == tScore.getViewPort()) {
                     result = target.scorePov;
