@@ -976,6 +976,7 @@ public class SceneView
      * @return a new vector in world coordinates, or null if none found
      */
     private Vector3f findContact(Spatial spatial, Ray ray) {
+        Util.prepareForCollide(spatial);
         CollisionResults results = new CollisionResults();
         spatial.collideWith(ray, results);
         /*
