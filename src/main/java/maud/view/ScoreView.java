@@ -483,7 +483,7 @@ public class ScoreView implements EditorView {
             finialNoScales = new Finial(translations, rotations, false,
                     sparklineHeight);
 
-            cgm.scorePov.updatePartial();
+            cgm.getScorePov().updatePartial();
             /*
              * Determine the number of interpolated samples for each sparkline.
              */
@@ -544,7 +544,7 @@ public class ScoreView implements EditorView {
 
             attachGnomon();
 
-            cgm.scorePov.updateCamera();
+            cgm.getScorePov().updateCamera();
         }
     }
 
@@ -559,7 +559,7 @@ public class ScoreView implements EditorView {
         Ray ray = MyCamera.mouseRay(camera, inputManager);
         Vector3f origin = ray.getOrigin();
         float newY = origin.y;
-        cgm.scorePov.setCameraY(newY);
+        cgm.getScorePov().setCameraY(newY);
     }
     // *************************************************************************
     // private methods
@@ -671,7 +671,7 @@ public class ScoreView implements EditorView {
         Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
                 xWidth, yHeight);
         visuals.attachChild(label);
-        float compression = cgm.scorePov.compression();
+        float compression = cgm.getScorePov().compression();
         label.setLocalScale(compression, 1f, 1f);
         float x = rightX - xWidth * compression;
         float y = centerY + yHeight / 2;
@@ -703,7 +703,7 @@ public class ScoreView implements EditorView {
                 yWidth, xHeight);
         visuals.attachChild(label);
         label.setLocalRotation(quarterZ);
-        float compression = cgm.scorePov.compression();
+        float compression = cgm.getScorePov().compression();
         label.setLocalScale(1f, compression, 1f);
         float x = bottomX - xHeight * compression;
         float y = centerY - yWidth / 2;
@@ -747,12 +747,12 @@ public class ScoreView implements EditorView {
         /*
          * Attach a bone label to the left of the left-hand finial.
          */
-        float leftX = cgm.scorePov.leftX() + xGap;
+        float leftX = cgm.getScorePov().leftX() + xGap;
         float rightX = xLeftMargin - hashSize;
         assert leftX < rightX : leftX;
         float staffHeight = finial.getHeight();
         float middleY = -(height + staffHeight / 2);
-        float compression = cgm.scorePov.compression();
+        float compression = cgm.getScorePov().compression();
         float maxWidth = (rightX - leftX) / compression;
         float minWidth = hashSize / compression;
         attachBoneLabel(rightX, middleY, minWidth, maxWidth, staffHeight);
@@ -769,7 +769,7 @@ public class ScoreView implements EditorView {
          * Attach transform icons to the right of the right-hand finial.
          */
         leftX = xRightMargin + hashSize * 2f / 3;
-        rightX = cgm.scorePov.rightX() - xGap;
+        rightX = cgm.getScorePov().rightX() - xGap;
         assert rightX > leftX : rightX;
         maxWidth = (rightX - leftX) / compression;
         middleY = -height - sparklineHeight / 2 - (float) Finial.hpf;
@@ -806,7 +806,7 @@ public class ScoreView implements EditorView {
      */
     private void attachGnomon() {
         float gnomonX = gnomonX();
-        float handleSize = 0.1f * cgm.scorePov.getHalfHeight(); // world units
+        float handleSize = 0.1f * cgm.getScorePov().getHalfHeight(); // world units
         Vector3f start = new Vector3f(gnomonX, handleSize, zLines);
         Vector3f end = new Vector3f(gnomonX, -height - handleSize, zLines);
         Line line = new Line(start, end);
@@ -892,7 +892,7 @@ public class ScoreView implements EditorView {
         if (MyArray.distinct(pyy, pxx.length)) {
             attachSparkline(numPoints, pxx, pyy, Mesh.Mode.Points,
                     suffix + "p", yIndex, material);
-            float zoom = cgm.scorePov.getHalfHeight();
+            float zoom = cgm.getScorePov().getHalfHeight();
             if (zoom < 10f) {
                 /*
                  * Draw connecting lines only when zoomed in.
@@ -939,10 +939,10 @@ public class ScoreView implements EditorView {
         /*
          * Attach a bone label overlapping the left-hand rectangle.
          */
-        float leftX = cgm.scorePov.leftX() + xGap;
+        float leftX = cgm.getScorePov().leftX() + xGap;
         float rightX = -0.2f * hashSize;
         float middleY = -(height + staffHeight / 2);
-        float compression = cgm.scorePov.compression();
+        float compression = cgm.getScorePov().compression();
         float maxWidth = (rightX - leftX) / compression;
         float minWidth = hashSize / compression;
         attachBoneLabel(rightX, middleY, minWidth, maxWidth, staffHeight);
@@ -1199,8 +1199,8 @@ public class ScoreView implements EditorView {
         /*
          * Determine whether the staff is visible.
          */
-        float cameraY = cgm.scorePov.getCameraY();
-        float halfHeight = cgm.scorePov.getHalfHeight();
+        float cameraY = cgm.getScorePov().getCameraY();
+        float halfHeight = cgm.getScorePov().getHalfHeight();
         assert halfHeight > 0f : halfHeight;
         float bottomY = cameraY - halfHeight;
         float topY = cameraY + halfHeight;
@@ -1241,15 +1241,15 @@ public class ScoreView implements EditorView {
      */
     private void attachTracklessStaff() {
         attachHashes(0f);
-        float zoom = cgm.scorePov.getHalfHeight();
+        float zoom = cgm.getScorePov().getHalfHeight();
         if (zoom < 4f) {
             /*
              * Attach a bone label overlapping the left-hand hash mark.
              */
-            float leftX = cgm.scorePov.leftX() + xGap;
+            float leftX = cgm.getScorePov().leftX() + xGap;
             float rightX = -0.2f * hashSize;
             float middleY = -height;
-            float compression = cgm.scorePov.compression();
+            float compression = cgm.getScorePov().compression();
             float maxWidth = (rightX - leftX) / compression;
             float minWidth = hashSize / compression;
             attachBoneLabel(rightX, middleY, minWidth, maxWidth, 0.09f);
@@ -1262,7 +1262,7 @@ public class ScoreView implements EditorView {
      * @param finial (not null)
      */
     private void attachTrackedStaff(Finial finial) {
-        float zoom = cgm.scorePov.getHalfHeight();
+        float zoom = cgm.getScorePov().getHalfHeight();
         if (zoom > 4f) {
             /*
              * zoomed out too far to render detailed finials
@@ -1299,7 +1299,7 @@ public class ScoreView implements EditorView {
         String name = String.format("%s%d", prefix, currentBone);
         Geometry geometry = new Geometry(name, iconMesh);
         visuals.attachChild(geometry);
-        float compression = cgm.scorePov.compression();
+        float compression = cgm.getScorePov().compression();
         geometry.setLocalScale(compression * size, size, 1f);
         geometry.setLocalTranslation(leftX, middleY, zLabels);
         geometry.setMaterial(material);
