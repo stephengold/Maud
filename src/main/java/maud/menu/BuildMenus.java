@@ -349,6 +349,9 @@ public class BuildMenus {
             case "Spatial":
                 buildSpatialMenu();
                 break;
+            case "Track":
+                buildTrackMenu();
+                break;
             case "Vertex":
                 buildVertexMenu();
                 break;
@@ -686,22 +689,16 @@ public class BuildMenus {
     private void buildKeyframeMenu() {
         builder.addTool("Tool");
         LoadedCgm target = Maud.getModel().getTarget();
-        if (target.getBone().hasTrack()) {
-            if (!target.getAnimation().isMoving()) {
-                builder.add("Select");
-                int frameIndex = target.getTrack().findKeyframeIndex();
-                if (frameIndex == -1) {
-                    builder.addEdit("Insert from pose");
-                }
-                if (frameIndex > 0) {
-                    builder.addEdit("Delete");
-                    //builder.add("Move"); TODO
-                }
+        if (target.getBone().hasTrack() && !target.getAnimation().isMoving()) {
+            builder.add("Select");
+            int frameIndex = target.getTrack().findKeyframeIndex();
+            if (frameIndex == -1) {
+                builder.addEdit("Insert from pose");
             }
-            builder.addDialog("Reduce track");
-            builder.addDialog("Resample track");
-            builder.addEdit("Translate track for support");
-            builder.addEdit("Wrap track");
+            if (frameIndex > 0) {
+                builder.addEdit("Delete");
+                //builder.add("Move"); TODO
+            }
         }
     }
 
@@ -863,6 +860,20 @@ public class BuildMenus {
         if (haveTestdata) {
             builder.addGeometry("Teapot");
             builder.addOgre("Tree");
+        }
+    }
+
+    /**
+     * Build a Track menu.
+     */
+    private void buildTrackMenu() {
+        builder.addTool("Tool");
+        LoadedCgm target = Maud.getModel().getTarget();
+        if (target.getBone().hasTrack()) {
+            builder.addDialog("Reduce");
+            builder.addDialog("Resample");
+            builder.addEdit("Translate for support");
+            builder.addEdit("Wrap");
         }
     }
 

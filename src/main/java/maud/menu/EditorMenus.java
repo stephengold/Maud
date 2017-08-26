@@ -234,6 +234,9 @@ public class EditorMenus {
             case "Spatial":
                 handled = menuSpatial(remainder);
                 break;
+            case "Track":
+                handled = menuTrack(remainder);
+                break;
             case "Vertex":
                 handled = menuVertex(remainder);
                 break;
@@ -528,23 +531,11 @@ public class EditorMenus {
                 case "Insert from pose":
                     target.getTrack().insertSingleKeyframe();
                     break;
-                case "Reduce track":
-                    Maud.gui.dialogs.reduceTrack();
-                    break;
-                case "Resample track":
-                    Maud.gui.dialogs.resampleTrack();
-                    break;
                 case "Select":
                     Maud.gui.showMenus.selectKeyframe();
                     break;
                 case "Tool":
                     Maud.gui.tools.select("keyframe");
-                    break;
-                case "Translate track for support":
-                    target.getTrack().translateForSupport();
-                    break;
-                case "Wrap track":
-                    target.getTrack().wrap();
                     break;
                 default:
                     handled = false;
@@ -931,6 +922,40 @@ public class EditorMenus {
                 break;
             case "Root":
                 Maud.getModel().getTarget().getSpatial().selectCgmRoot();
+                break;
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the Track menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuTrack(String remainder) {
+        assert remainder != null;
+
+        boolean handled = true;
+        EditableCgm target = Maud.getModel().getTarget();
+        switch (remainder) {
+            case "Reduce":
+                Maud.gui.dialogs.reduceTrack();
+                break;
+            case "Resample":
+                Maud.gui.dialogs.resampleTrack();
+                break;
+            case "Tool":
+                Maud.gui.tools.select("keyframe"); // shared with Keyframe menu
+                break;
+            case "Translate for support":
+                target.getTrack().translateForSupport();
+                break;
+            case "Wrap":
+                target.getTrack().wrap();
                 break;
             default:
                 handled = false;
