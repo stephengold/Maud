@@ -91,10 +91,10 @@ public class LoadedCgm implements Cloneable {
     /**
      * POV for viewing the scene
      */
-    public ScenePov scenePov = new ScenePov();
+    private ScenePov scenePov = new ScenePov();
     /**
      * rendered 3D visualization the CG model (set by
-     * {@link #setView(maud.CgmView)} or {@link #clone()})
+     * {@link #setViews(maud.SceneView, maud.ScoreView} or {@link #clone()})
      */
     private SceneView sceneView = null;
     /**
@@ -416,6 +416,16 @@ public class LoadedCgm implements Cloneable {
     Spatial getRootSpatial() {
         assert rootSpatial != null;
         return rootSpatial;
+    }
+
+    /**
+     * Access the corresponding scene POV.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public ScenePov getScenePov() {
+        assert scenePov != null;
+        return scenePov;
     }
 
     /**
@@ -999,6 +1009,7 @@ public class LoadedCgm implements Cloneable {
         clone.scenePov = cloner.clone(scenePov);
         clone.sceneView = cloner.clone(sceneView);
         clone.scorePov = cloner.clone(scorePov);
+        //scoreView not cloned
         clone.selectedSgc = selectedSgc.clone();
         clone.selectedSpatial = selectedSpatial.clone();
         clone.selectedTrack = selectedTrack.clone();
@@ -1011,7 +1022,7 @@ public class LoadedCgm implements Cloneable {
         clone.getBone().setCgm(clone);
         clone.getSkeleton().setCgm(clone);
         clone.getPose().setCgm(clone);
-        clone.scenePov.setCgm(clone);
+        clone.getScenePov().setCgm(clone);
         if (clone.getSceneView() != null) {
             clone.getSceneView().setCgm(clone);
         }

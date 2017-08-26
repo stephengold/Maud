@@ -116,12 +116,12 @@ class CursorTool extends WindowController {
             /*
              * location
              */
-            Vector3f newLocation = cgm.scenePov.cursorLocation(null);
+            Vector3f newLocation = cgm.getScenePov().cursorLocation(null);
             MySpatial.setWorldLocation(cursor, newLocation);
             /*
              * scale
              */
-            float newScale = cgm.scenePov.worldScaleForCursor();
+            float newScale = cgm.getScenePov().worldScaleForCursor();
             if (newScale != 0f) {
                 MySpatial.setWorldScale(cursor, newScale);
             }

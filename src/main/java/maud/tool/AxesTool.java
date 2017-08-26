@@ -140,7 +140,7 @@ public class AxesTool extends WindowController {
          */
         Vector3f tailLocation = axesSpatial.getWorldTranslation();
         Vector3f tipLocation = visualizer.tipLocation(axisIndex);
-        Vector3f cameraLocation = cgm.scenePov.cameraLocation(null);
+        Vector3f cameraLocation = cgm.getScenePov().cameraLocation(null);
         float tailDS = cameraLocation.distanceSquared(tailLocation);
         float tipDS = cameraLocation.distanceSquared(tipLocation);
         if (tipDS > tailDS) {
@@ -196,7 +196,7 @@ public class AxesTool extends WindowController {
             axesControl.setEnabled(true);
 
             Vector3f axesOrigin = transform.getTranslation();
-            Vector3f cameraLocation = cgm.scenePov.cameraLocation(null);
+            Vector3f cameraLocation = cgm.getScenePov().cameraLocation(null);
             float distance = axesOrigin.distance(cameraLocation);
             Vector3f scale = transform.getScale();
             float maxScale = MyMath.max(scale.x, scale.y, scale.z);
