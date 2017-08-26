@@ -93,14 +93,14 @@ public class LoadedCgm implements Cloneable {
      */
     private ScenePov scenePov = new ScenePov();
     /**
-     * rendered 3D visualization the CG model (set by
+     * rendered 3-D visualization of the CG model (set by
      * {@link #setViews(maud.SceneView, maud.ScoreView} or {@link #clone()})
      */
     private SceneView sceneView = null;
     /**
      * POV for viewing the score
      */
-    public ScorePov scorePov = new ScorePov();
+    private ScorePov scorePov = new ScorePov();
     /**
      * 2D visualization of the loaded animation (set by
      * {@link #setViews(maud.SceneView, maud.ScoreView)}
@@ -111,7 +111,7 @@ public class LoadedCgm implements Cloneable {
      */
     private SelectedBone selectedBone = new SelectedBone();
     /**
-     * which SG control is selected in the selected spatial
+     * which scene-graph control is selected in the selected spatial
      */
     private SelectedSgc selectedSgc = new SelectedSgc();
     /**
@@ -436,6 +436,16 @@ public class LoadedCgm implements Cloneable {
     public SceneView getSceneView() {
         assert sceneView != null;
         return sceneView;
+    }
+
+    /**
+     * Access the corresponding score POV.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public ScorePov getScorePov() {
+        assert scorePov != null;
+        return scorePov;
     }
 
     /**
