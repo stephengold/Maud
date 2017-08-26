@@ -979,8 +979,8 @@ public class LoadedCgm implements Cloneable {
 
         if (extension.equals("bvh") && countAnimations() == 1) {
             List<String> names = listAnimationsSorted();
-            String name = names.get(0);
-            loadedAnimation.load(name);
+            String animationName = names.get(0);
+            loadedAnimation.load(animationName);
         }
         if (Util.countVertices(cgmRoot) == 0) {
             Maud.getModel().getScene().getSkeleton().setBones(SceneBones.All);
@@ -1023,9 +1023,7 @@ public class LoadedCgm implements Cloneable {
         clone.getSkeleton().setCgm(clone);
         clone.getPose().setCgm(clone);
         clone.getScenePov().setCgm(clone);
-        if (clone.getSceneView() != null) {
-            clone.getSceneView().setCgm(clone);
-        }
+        clone.getSceneView().setCgm(clone);
         clone.scorePov.setCgm(clone);
         clone.getSgc().setCgm(clone);
         clone.getSpatial().setCgm(clone);
@@ -1132,10 +1130,11 @@ public class LoadedCgm implements Cloneable {
             boolean includeNodes) {
         List<String> names = new ArrayList<>(5);
         if (subtree != null) {
-            String name = subtree.getName();
-            if (name != null && !name.isEmpty() && name.startsWith(prefix)) {
+            String spatialName = subtree.getName();
+            if (spatialName != null && !spatialName.isEmpty()
+                    && spatialName.startsWith(prefix)) {
                 if (includeNodes || subtree instanceof Geometry) {
-                    names.add(name);
+                    names.add(spatialName);
                 }
             }
 
