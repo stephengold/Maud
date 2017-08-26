@@ -412,13 +412,16 @@ public class Util {
 
         Mesh mesh = geometry.getMesh();
         int maxWeightsPerVertex = mesh.getMaxNumWeights();
+
         VertexBuffer posBuf;
         posBuf = mesh.getBuffer(VertexBuffer.Type.BindPosePosition);
         FloatBuffer posBuffer = (FloatBuffer) posBuf.getDataReadOnly();
         posBuffer.rewind();
+
         VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
         FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
         weightBuffer.rewind();
+
         VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
         ByteBuffer boneIndexBuffer = (ByteBuffer) biBuf.getData();
         boneIndexBuffer.rewind();
@@ -446,8 +449,9 @@ public class Util {
 
             geometry.localToWorld(meshLoc, worldLoc);
             if (worldLoc.y < bestY) {
-                storeLocation.set(worldLoc);
                 bestIndex = vertexIndex;
+                bestY = worldLoc.y;
+                storeLocation.set(worldLoc);
             }
 
             for (int wIndex = maxWeightsPerVertex; wIndex < 4; wIndex++) {
@@ -487,9 +491,9 @@ public class Util {
             Geometry geometry = (Geometry) subtree;
             int index = findSupport(geometry, skinningMatrices, tmpLocation);
             if (tmpLocation.y < bestY) {
-                storeLocation.set(tmpLocation);
-                storeGeometry[0] = geometry;
                 bestIndex = index;
+                storeGeometry[0] = geometry;
+                storeLocation.set(tmpLocation);
             }
 
         } else if (subtree instanceof Node) {
@@ -500,9 +504,10 @@ public class Util {
                 int index = findSupport(child, skinningMatrices, tmpLocation,
                         tmpGeometry);
                 if (tmpLocation.y < bestY) {
-                    storeLocation.set(tmpLocation);
-                    storeGeometry[0] = tmpGeometry[0];
                     bestIndex = index;
+                    bestY = tmpLocation.y;
+                    storeGeometry[0] = tmpGeometry[0];
+                    storeLocation.set(tmpLocation);
                 }
             }
         }
