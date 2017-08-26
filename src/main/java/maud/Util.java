@@ -983,6 +983,8 @@ public class Util {
      */
     public static Matrix3f sensitivity(int boneIndex, Geometry geometry,
             int vertexIndex, Pose pose, Matrix3f storeResult) {
+        Validate.nonNull(geometry, "geometry");
+        Validate.nonNull(pose, "pose");
         if (storeResult == null) {
             storeResult = new Matrix3f();
         }
