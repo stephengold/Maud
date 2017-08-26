@@ -28,10 +28,16 @@ package maud.model;
 
 import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
+import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
+import com.jme3.math.FastMath;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,11 +48,12 @@ import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
+import maud.Maud;
 import maud.Pose;
 import maud.Util;
 
 /**
- * The MVC model of the selected bone track in the Maud application.
+ * The MVC model of the selected bone track in a loaded C-G model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -534,6 +541,37 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
+     * Translate the track to put the point of support at the same world
+     * Y-coordinate as it is for bind pose.
+     */
+    public void translateForSupport() {
+        SelectedSkeleton selectedSkeleton = loadedCgm.getSkeleton();
+        Skeleton skeleton = selectedSkeleton.findSkeleton();
+        assert skeleton != null;
+        Spatial subtree = selectedSkeleton.findSkeletonSpatial();
+
+        int numBones = skeleton.getBoneCount();
+        Matrix4f[] skinningMatrices = new Matrix4f[numBones];
+        Matrix4f identity = new Matrix4f();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            skinningMatrices[boneIndex] = identity;
+        }
+
+        Vector3f vertexLocation = new Vector3f();
+        Geometry[] geometryRef = new Geometry[1];
+        int vertexIndex = Util.findSupport(subtree, skinningMatrices,
+                vertexLocation, geometryRef);
+        assert vertexIndex != -1;
+
+        float bindSupportY = vertexLocation.y;
+        boolean success = translateForSupport(bindSupportY);
+        if (!success) {
+            String message = String.format("animation translation failed");
+            Maud.gui.setStatus(message);
+        }
+    }
+
+    /**
      * Alter the track's end-time keyframe to match the 1st keyframe. If the
      * track doesn't end with a keyframe, append one.
      */
@@ -588,5 +626,85 @@ public class SelectedTrack implements Cloneable {
         Animation result = new Animation(name, duration);
 
         return result;
+    }
+
+    /**
+     * Translate the track to put the point of support at the specified
+     * Y-coordinate.
+     *
+     * @param cgmY world Y-coordinate for support
+     * @return true if successful, otherwise false
+     */
+    private boolean translateForSupport(float cgmY) {
+        SelectedSkeleton selectedSkeleton = loadedCgm.getSkeleton();
+        Skeleton skeleton = selectedSkeleton.findSkeleton();
+        assert skeleton != null;
+        Spatial subtree = selectedSkeleton.findSkeletonSpatial();
+        int boneIndex = loadedCgm.getBone().getIndex();
+        Pose tempPose = new Pose(skeleton);
+        int numBones = tempPose.countBones();
+
+        Matrix4f[] skinningMatrices = new Matrix4f[numBones];
+        Animation animation = loadedCgm.getAnimation().getAnimation();
+        Geometry[] geometryRef = new Geometry[1];
+        Vector3f world = new Vector3f();
+        Matrix3f sensMat = new Matrix3f();
+        /*
+         * Calculate a new bone translation for each keyframe.
+         */
+        BoneTrack track = findTrack();
+        float[] times = track.getKeyFrameTimes();
+        Vector3f[] translations = track.getTranslations();
+        int numKeyframes = times.length;
+        for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
+            float trackTime = times[frameIndex];
+            tempPose.setToAnimation(animation, trackTime);
+            tempPose.skin(skinningMatrices);
+            int vertexIndex = Util.findSupport(subtree, skinningMatrices, world,
+                    geometryRef);
+            assert vertexIndex != -1;
+            world.x = 0f;
+            world.y = cgmY - world.y;
+            world.z = 0f;
+            /*
+             * Convert the world offset to a bone offset.
+             */
+            Geometry geometry = geometryRef[0];
+            Util.sensitivity(boneIndex, geometry, vertexIndex, tempPose,
+                    sensMat);
+            float det = sensMat.determinant();
+            if (FastMath.abs(det) <= FastMath.FLT_EPSILON) {
+                return false;
+            }
+            sensMat.invertLocal();
+            Vector3f boneOffset = sensMat.mult(world, null);
+            /*
+             * Modify the keyframe's translation.
+             */
+            Vector3f translation = translations[frameIndex];
+            translations[frameIndex] = translation.add(boneOffset);
+        }
+        /*
+         * Construct a new animation using the modified translations.
+         */
+        Animation newAnimation = newAnimation();
+        Animation oldAnimation = loadedCgm.getAnimation().getAnimation();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track oldTrack : oldTracks) {
+            Track clone;
+            if (oldTrack == track) {
+                Quaternion[] rotations = track.getRotations();
+                Vector3f[] scales = track.getScales();
+                clone = MyAnimation.newBoneTrack(boneIndex, times, translations,
+                        rotations, scales);
+            } else {
+                clone = oldTrack.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+                "translate track for support");
+
+        return true;
     }
 }
