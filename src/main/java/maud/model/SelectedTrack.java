@@ -572,6 +572,97 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
+     * Translate the track to simulate traction at the point of support.
+     *
+     * @return true if successful, otherwise false
+     */
+    public boolean translateForTraction() {
+        SelectedSkeleton selectedSkeleton = loadedCgm.getSkeleton();
+        Skeleton skeleton = selectedSkeleton.findSkeleton();
+        assert skeleton != null;
+        Spatial subtree = selectedSkeleton.findSkeletonSpatial();
+        int boneIndex = loadedCgm.getBone().getIndex();
+        Pose tempPose = new Pose(skeleton);
+        int numBones = tempPose.countBones();
+
+        Matrix4f[] skinningMatrices = new Matrix4f[numBones];
+        Animation animation = loadedCgm.getAnimation().getAnimation();
+        Geometry[] previousGeometryRef = new Geometry[1];
+        Vector3f previousWorld = new Vector3f();
+        Vector3f world = new Vector3f();
+        Vector3f w = new Vector3f();
+        Matrix3f sensMat = new Matrix3f();
+        /*
+         * Calculate a new bone translation for each keyframe.
+         */
+        BoneTrack track = findTrack();
+        float[] times = track.getKeyFrameTimes();
+        Vector3f[] translations = track.getTranslations();
+        int numKeyframes = times.length;
+        int previousVertexIndex = -1;
+        for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
+            float trackTime = times[frameIndex];
+            tempPose.setToAnimation(animation, trackTime);
+            tempPose.skin(skinningMatrices);
+
+            if (previousVertexIndex == -1) {
+                world.zero(); // no offset for 1st keyframe
+            } else {
+                Util.vertexWorldLocation(previousGeometryRef[0],
+                        previousVertexIndex, skinningMatrices, w);
+                previousWorld.subtractLocal(w);
+                world.addLocal(previousWorld);
+                /*
+                 * Convert the world offset to a bone offset.
+                 */
+                Util.sensitivity(boneIndex, previousGeometryRef[0],
+                        previousVertexIndex, tempPose, sensMat);
+                float determinant = sensMat.determinant();
+                if (FastMath.abs(determinant) <= FastMath.FLT_EPSILON) {
+                    return false;
+                }
+                sensMat.invertLocal();
+                Vector3f boneOffset = sensMat.mult(world, null);
+                /*
+                 * Modify the keyframe's translation.
+                 */
+                Vector3f translation = translations[frameIndex];
+                translations[frameIndex] = translation.add(boneOffset);
+            }
+            /*
+             * Using the original skinning matrices, pick a vertex to serve as
+             * a reference for the next frame.
+             */
+            previousVertexIndex = Util.findSupport(subtree, skinningMatrices,
+                    previousWorld, previousGeometryRef);
+            assert previousVertexIndex != -1;
+            assert previousGeometryRef[0] != null;
+        }
+        /*
+         * Construct a new animation using the modified translations.
+         */
+        Animation newAnimation = newAnimation();
+        Animation oldAnimation = loadedCgm.getAnimation().getAnimation();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track oldTrack : oldTracks) {
+            Track clone;
+            if (oldTrack == track) {
+                Quaternion[] rotations = track.getRotations();
+                Vector3f[] scales = track.getScales();
+                clone = MyAnimation.newBoneTrack(boneIndex, times, translations,
+                        rotations, scales);
+            } else {
+                clone = oldTrack.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+                "translate track for traction");
+
+        return true;
+    }
+
+    /**
      * Alter the track's end-time keyframe to match the 1st keyframe. If the
      * track doesn't end with a keyframe, append one.
      */
