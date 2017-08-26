@@ -802,6 +802,29 @@ public class Util {
     }
 
     /**
+     * Clear all cached collision data from the specified subtree of the scene
+     * graph and force a bound refresh. Note: recursive!
+     *
+     * @param subtree where to search (may be null)
+     */
+    public static void prepareForCollide(Spatial subtree) {
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            Mesh mesh = geometry.getMesh();
+            mesh.clearCollisionData();
+            mesh.updateBound();
+            geometry.setBoundRefresh();
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                prepareForCollide(child);
+            }
+        }
+    }
+
+    /**
      * Copy a bone track, resampling it at the specified rate.
      *
      * @param oldTrack (not null, unaffected)
