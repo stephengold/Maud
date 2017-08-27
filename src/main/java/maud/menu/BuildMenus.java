@@ -492,7 +492,7 @@ public class BuildMenus {
         }
 
         builder.add("Select AnimControl");
-        
+
         builder.addTool("Source tool"); // TODO submenu
         LoadedCgm source = Maud.getModel().getSource();
         if (source.isLoaded() && source.getSkeleton().countBones() > 0) {
@@ -878,6 +878,8 @@ public class BuildMenus {
      */
     private void buildTrackMenu() {
         builder.addTool("Tool");
+        builder.add("Load animation");
+        builder.add("Select bone");
         LoadedCgm target = Maud.getModel().getTarget();
         if (target.getBone().hasTrack()) {
             builder.addDialog("Reduce");

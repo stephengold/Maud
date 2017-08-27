@@ -956,11 +956,17 @@ public class EditorMenus {
         boolean handled = true;
         EditableCgm target = Maud.getModel().getTarget();
         switch (remainder) {
+            case "Load animation":
+                loadAnimation(target);
+                break;
             case "Reduce":
                 Maud.gui.dialogs.reduceTrack();
                 break;
             case "Resample":
                 Maud.gui.dialogs.resampleTrack();
+                break;
+            case "Select bone":
+                Maud.gui.buildMenus.selectBone();
                 break;
             case "Tool":
                 Maud.gui.tools.select("keyframe"); // shared with Keyframe menu
