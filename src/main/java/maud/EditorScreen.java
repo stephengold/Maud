@@ -70,6 +70,7 @@ import maud.model.Pov;
 import maud.model.SceneOptions;
 import maud.model.ScoreOptions;
 import maud.model.SelectedSpatial;
+import maud.model.Wireframe;
 import maud.tool.EditorTools;
 import maud.view.CgmTransform;
 import maud.view.EditorView;
@@ -480,6 +481,15 @@ public class EditorScreen extends GuiScreenController {
                 break;
             case "squarePlatformRadioButton":
                 scene.setPlatformType(PlatformType.Square);
+                break;
+            case "wireframeMaterialRadioButton":
+                scene.setWireframe(Wireframe.Material);
+                break;
+            case "wireframeSolidRadioButton":
+                scene.setWireframe(Wireframe.Solid);
+                break;
+            case "wireframeWireRadioButton":
+                scene.setWireframe(Wireframe.Wire);
                 break;
 
             default:
