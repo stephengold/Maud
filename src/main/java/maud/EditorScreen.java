@@ -26,6 +26,7 @@
  */
 package maud;
 
+import maud.dialog.EditorDialogs;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
