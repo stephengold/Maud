@@ -175,7 +175,7 @@ is split into overlapping sub-windows called "tools".
 
 #### Tools
 
-At last count, Maud had 30 tools.
+At last count, Maud had 34 tools.
 Each tool can be independently hidden or made visible.
 
 Selecting a tool makes it visible and moves it to the top layer for convenient
@@ -370,10 +370,11 @@ To be recognized, such models must have filenames ending in ".j3o".
 
 Maud can also import models in other formats:
 
- + Blender 3D (filename must end in ".blend")
- + Ogre DotScene (filename must end in ".scene")
- + Ogre XML (filename must end in ".mesh.xml")
- + Wavefront OBJ (filename must end in ".obj")
+ + [Blender 3D][blender] (filename must end in ".blend")
+ + [Ogre][] DotScene (filename must end in ".scene")
+ + [Ogre][] XML (filename must end in ".mesh.xml")
+ + [Wavefront OBJ][obj] (filename must end in ".obj")
+ + [Xbuf][] (filename must end in ".xbuf")
 
 In addition, Biovision Hierarchy animations can be imported as models.
 To be recognized, the the filename name must end in ".bvh".
