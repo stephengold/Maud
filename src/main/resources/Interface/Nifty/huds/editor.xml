@@ -1066,11 +1066,33 @@ the menu bar, status bar, and tool windows.
                      hideOnClose="true"
                      height="160px" width="160px" x="30" y="70">
                 <panel childLayout="vertical">
-                    <panel style="indentPanel">
+                    <panel childLayout="horizontal" height="30px">
                         <control name="checkbox" id="shadowsCheckBox"
                                  width="20px"/>
                         <control name="label" width="12px"/>
                         <control name="label" text="shadows"/>
+                    </panel>
+                    <control name="label" text="Wireframe options:"
+                             textHAlign="left"
+                             width="*"/>
+                    <control name="radioButtonGroup" id="wireframeGroup"/>
+                    <panel childLayout="horizontal">
+                        <control name="radioButton" id="wireframeMaterialRadioButton"
+                                 group="wireframeGroup"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="per material"/>
+                    </panel>
+                    <panel childLayout="horizontal">
+                        <control name="radioButton" id="wireframeWireRadioButton"
+                                 group="wireframeGroup"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="force wireframe"/>
+                    </panel>
+                    <panel childLayout="horizontal">
+                        <control name="radioButton" id="wireframeSolidRadioButton"
+                                 group="wireframeGroup"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="force solid"/>
                     </panel>
                 </panel>
             </control>

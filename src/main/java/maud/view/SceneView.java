@@ -604,6 +604,26 @@ public class SceneView
     }
 
     /**
+     * Alter the wireframe setting for the specified tree position.
+     *
+     * @param treePosition (not null)
+     * @param newSetting true&rarr;edges only, false&rarr;solid triangles
+     */
+    public void setWireframe(List<Integer> treePosition, boolean newSetting) {
+        Validate.nonNull(treePosition, "tree position");
+
+        Spatial spatial = cgmRoot;
+        for (int childPosition : treePosition) {
+            Node node = (Node) spatial;
+            spatial = node.getChild(childPosition);
+        }
+        Geometry geometry = (Geometry) spatial;
+        Material material = geometry.getMaterial();
+        RenderState renderState = material.getAdditionalRenderState();
+        renderState.setWireframe(newSetting);
+    }
+
+    /**
      * Update the scene when unloading the CG model.
      */
     public void unloadCgm() {
@@ -1089,7 +1109,7 @@ public class SceneView
         setSkeleton(skeleton, false);
         /*
          * Configure the world transform based on the bounding box of
-         * the CG model.
+         * the CG model. TODO use mesh vertices instead
          */
         parent.setLocalTransform(transformIdentity);
         BoundingVolume volume = cgmRoot.getWorldBound();

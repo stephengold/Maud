@@ -26,8 +26,10 @@
  */
 package maud.model;
 
+import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
 
 /**
  * Display options applicable to "scene" views in Maud's editor screen.
@@ -90,6 +92,10 @@ public class SceneOptions implements Cloneable {
      * configuration of the vertex visualization(s)
      */
     private VertexOptions vertex = new VertexOptions();
+    /**
+     * CG-model triangle rendering option
+     */
+    private Wireframe wireframe = Wireframe.Material;
     // *************************************************************************
     // new methods exposed
 
@@ -105,7 +111,7 @@ public class SceneOptions implements Cloneable {
     /**
      * Access the configuration of coordinate axes visualization(s).
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     public AxesOptions getAxes() {
         assert axes != null;
@@ -115,7 +121,7 @@ public class SceneOptions implements Cloneable {
     /**
      * Access the configuration of bounds visualization(s).
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     public BoundsOptions getBounds() {
         assert bounds != null;
@@ -125,7 +131,7 @@ public class SceneOptions implements Cloneable {
     /**
      * Access the configuration of the camera(s).
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     public CameraStatus getCamera() {
         assert camera != null;
@@ -135,7 +141,7 @@ public class SceneOptions implements Cloneable {
     /**
      * Access the configuration of the 3D cursor(s).
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     public DddCursorOptions getCursor() {
         assert cursor != null;
@@ -165,7 +171,7 @@ public class SceneOptions implements Cloneable {
     /**
      * Access the configuration of the skeleton visualization(s).
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     public SkeletonOptions getSkeleton() {
         assert skeleton != null;
@@ -175,11 +181,21 @@ public class SceneOptions implements Cloneable {
     /**
      * Access the configuration of the vertex visualization(s).
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     public VertexOptions getVertex() {
         assert vertex != null;
         return vertex;
+    }
+
+    /**
+     * Read the CG-model triangle rendering option.
+     *
+     * @return enum (not null)
+     */
+    public Wireframe getWireframe() {
+        assert wireframe != null;
+        return wireframe;
     }
 
     /**
@@ -245,6 +261,27 @@ public class SceneOptions implements Cloneable {
      */
     public void setSkyRendered(boolean newState) {
         skyRendered = newState;
+    }
+
+    /**
+     * Alter how CG-model triangles are rendered.
+     *
+     * @param newSetting enum (not null)
+     */
+    public void setWireframe(Wireframe newSetting) {
+        Validate.nonNull(newSetting, "new setting");
+
+        wireframe = newSetting;
+
+        LoadedCgm target = Maud.getModel().getTarget();
+        Spatial subtree = target.getRootSpatial();
+        target.updateSceneWireframe(subtree);
+
+        LoadedCgm source = Maud.getModel().getSource();
+        if (source.isLoaded()) {
+            subtree = source.getRootSpatial();
+            source.updateSceneWireframe(subtree);
+        }
     }
     // *************************************************************************
     // Object methods

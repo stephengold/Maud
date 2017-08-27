@@ -31,6 +31,8 @@ import com.jme3.animation.Animation;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -966,6 +968,45 @@ public class LoadedCgm implements Cloneable {
             target.loadedAnimation.loadBindPose();
         }
     }
+
+    /**
+     * Update the scene's wireframe settings based on the MVC model. Note:
+     * recursive!
+     *
+     * @param subtree subtree in the MVC model's copy of the CG model (may be
+     * null)
+     */
+    void updateSceneWireframe(Spatial subtree) {
+        if (subtree instanceof Geometry) {
+            boolean setting;
+            Wireframe wireframe = Maud.getModel().getScene().getWireframe();
+            switch (wireframe) {
+                case Material:
+                    Geometry geometry = (Geometry) subtree;
+                    Material material = geometry.getMaterial();
+                    RenderState rs = material.getAdditionalRenderState();
+                    setting = rs.isWireframe();
+                    break;
+                case Solid:
+                    setting = false;
+                    break;
+                case Wire:
+                    setting = true;
+                    break;
+                default:
+                    throw new RuntimeException();
+            }
+            List<Integer> treePosition = findSpatial(subtree);
+            sceneView.setWireframe(treePosition, setting);
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                updateSceneWireframe(child);
+            }
+        }
+    }
     // *************************************************************************
     // protected methods
 
@@ -980,6 +1021,7 @@ public class LoadedCgm implements Cloneable {
         CheckLoaded.cgm(cgmRoot);
         rootSpatial = cgmRoot.clone();
         sceneView.loadCgm(cgmRoot);
+        updateSceneWireframe(rootSpatial);
         /*
          * Reset the selected bone/spatial and also the loaded animation.
          */

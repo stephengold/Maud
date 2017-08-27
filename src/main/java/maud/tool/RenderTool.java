@@ -38,6 +38,8 @@ import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 import maud.Maud;
 import maud.model.LoadedCgm;
+import maud.model.SceneOptions;
+import maud.model.Wireframe;
 import maud.view.SceneView;
 
 /**
@@ -106,7 +108,23 @@ class RenderTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        boolean shadowsFlag = Maud.getModel().getScene().areShadowsRendered();
+        SceneOptions options = Maud.getModel().getScene();
+        boolean shadowsFlag = options.areShadowsRendered();
         Maud.gui.setChecked("shadows", shadowsFlag);
+
+        Wireframe wireframe = options.getWireframe();
+        switch (wireframe) {
+            case Material:
+                Maud.gui.setRadioButton("wireframeMaterialRadioButton");
+                break;
+            case Solid:
+                Maud.gui.setRadioButton("wireframeSolidRadioButton");
+                break;
+            case Wire:
+                Maud.gui.setRadioButton("wireframeWireRadioButton");
+                break;
+            default:
+                throw new RuntimeException();
+        }
     }
 }
