@@ -338,12 +338,8 @@ public class EditorDialogs {
                 numVertices + indexBase - 1);
 
         int oldIndex = target.getVertex().getIndex();
-        String defaultText;
-        if (oldIndex == -1) {
-            defaultText = "0";
-        } else {
-            defaultText = Integer.toString(oldIndex);
-        }
+        int defaultIndex = (oldIndex == -1) ? indexBase : oldIndex;
+        String defaultText = Integer.toString(defaultIndex);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter the index of the vertex:",
