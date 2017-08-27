@@ -491,6 +491,8 @@ public class BuildMenus {
             builder.addDialog("Delete");
         }
 
+        builder.add("Select AnimControl");
+        
         builder.addTool("Source tool"); // TODO submenu
         LoadedCgm source = Maud.getModel().getSource();
         if (source.isLoaded() && source.getSkeleton().countBones() > 0) {
