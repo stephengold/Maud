@@ -589,6 +589,29 @@ BVH resources:
   + motion capture data from Motcap.com (registration required):
     http://motcap.com/
 
+[blender]: https://docs.blender.org "Blender Project"
+[bsd3]: https://opensource.org/licenses/BSD-3-Clause "3-Clause BSD License"
+[chrome]: https://www.google.com/chrome "Chrome"
+[elements]: http://www.adobe.com/products/photoshop-elements.html "Photoshop Elements"
+[findbugs]: http://findbugs.sourceforge.net "FindBugs Project"
+[git]: https://git-scm.com "Git"
+[github]: https://github.com "GitHub"
+[gradle]: https://gradle.org "Gradle Project"
+[jfrog]: https://www.jfrog.com "JFrog"
+[jme]: http://jmonkeyengine.org  "jMonkeyEngine Project"
+[markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
+[netbeans]: https://netbeans.org "NetBeans Project"
+[nifty]: http://nifty-gui.github.io/nifty-gui "Nifty GUI Project"
+[obj]: http://www.fileformat.info/format/wavefrontobj/egff.htm "Wavefront OBJ File Format"
+[obs]: https://obsproject.com "Open Broadcaster Software Project"
+[ogre]: http://www.ogre3d.org "Ogre Project"
+[retarget]: https://github.com/Nehon/bvhretarget "BVH Retarget Project"
+[rwce]: http://www.rw-designer.com/cursor-maker "RealWorld Cursor Editor"
+[utilities]: https://github.com/stephengold/jme3-utilities "jME3 Utilities Project"
+[vegdahl]: http://www.cessen.com "Nathan Vegdahl"
+[winmerge]: http://winmerge.org "WinMerge Project"
+[xbuf]: http://www.xbuf.org "Xbuf Project"
+
 ## Wishlist
 
 Maud is incomplete.
