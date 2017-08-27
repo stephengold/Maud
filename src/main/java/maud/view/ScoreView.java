@@ -1420,7 +1420,6 @@ public class ScoreView implements EditorView {
         RenderState rs = poseMaterial.getAdditionalRenderState();
         rs.setBlendMode(RenderState.BlendMode.Alpha);
         rs.setDepthTest(false);
-        rs.setWireframe(true);
     }
 
     /**
