@@ -168,7 +168,8 @@ class VertexTool extends WindowController {
         int numVertices = target.getSpatial().countVertices();
         if (target.getVertex().isSelected()) {
             int selectedIndex = target.getVertex().getIndex();
-            indexText = String.format("#%d of %d", selectedIndex,
+            int indexBase = Maud.getModel().getMisc().getIndexBase();
+            indexText = String.format("#%d of %d", selectedIndex + indexBase,
                     numVertices);
             nButton = "+";
             pButton = "-";

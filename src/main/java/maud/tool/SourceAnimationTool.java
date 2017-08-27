@@ -145,8 +145,9 @@ class SourceAnimationTool extends WindowController {
             int numAnimControls = source.countAnimControls();
             if (source.isAnimControlSelected()) {
                 int selectedIndex = source.findAnimControlIndex();
-                indexText = String.format("#%d of %d", selectedIndex + 1,
-                        numAnimControls);
+                int indexBase = Maud.getModel().getMisc().getIndexBase();
+                indexText = String.format("#%d of %d",
+                        selectedIndex + indexBase, numAnimControls);
                 nButton = "+";
                 pButton = "-";
             } else {
@@ -188,8 +189,9 @@ class SourceAnimationTool extends WindowController {
             int numAnimations = source.countAnimations();
             if (source.getAnimation().isReal()) {
                 int selectedIndex = source.getAnimation().findIndex();
-                indexText = String.format("#%d of %d", selectedIndex + 1,
-                        numAnimations);
+                int indexBase = Maud.getModel().getMisc().getIndexBase();
+                indexText = String.format("#%d of %d",
+                        selectedIndex + indexBase, numAnimations);
                 nButton = "+";
                 pButton = "-";
 
