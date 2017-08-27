@@ -999,6 +999,9 @@ public class EditorMenus {
                 case "Select":
                     Maud.gui.showMenus.selectVertex();
                     break;
+                case "Select geometry":
+                    selectSpatial("", false);
+                    break;
                 case "Tool":
                     Maud.gui.tools.select("vertex");
                     break;
