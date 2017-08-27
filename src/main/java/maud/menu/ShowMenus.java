@@ -84,14 +84,14 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "Spatial -> Add control" menu.
+     * Display a "SGC -> Add" menu.
      */
     void addSgc() {
         MenuBuilder builder = new MenuBuilder();
         builder.addEdit("Anim");
         builder.addEdit("RigidBody");
         builder.addEdit("Skeleton");
-        builder.show("select menuItem Spatial -> Add control -> ");
+        builder.show("select menuItem SGC -> Add -> ");
     }
 
     /**
