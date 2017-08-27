@@ -236,6 +236,7 @@ public class ShowMenus {
 
         builder.addTool("First");
         builder.addTool("Previous");
+        builder.addTool("Nearest");
         builder.addTool("Next");
         builder.addTool("Last");
 

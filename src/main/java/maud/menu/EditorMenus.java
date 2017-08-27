@@ -562,6 +562,9 @@ public class EditorMenus {
             case "Last":
                 target.getTrack().selectLastKeyframe();
                 break;
+            case "Nearest":
+                target.getTrack().selectNearestKeyframe();
+                break;
             case "Next":
                 target.getTrack().selectNextKeyframe();
                 break;
