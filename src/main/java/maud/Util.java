@@ -1050,28 +1050,35 @@ public class Util {
     }
 
     /**
-     * Read the location of the indexed vertex in mesh space.
+     * Read a data vector for the indexed vertex in a mesh.
      *
      * @param mesh subject mesh (not null)
+     * @param bufferType which buffer to read (6 legal values)
      * @param vertexIndex index into the mesh's vertices (&ge;0)
      * @param storeResult (modified if not null)
      * @return mesh coordinates (either storeResult or a new instance)
      */
-    public static Vector3f vertexMeshLocation(Mesh mesh, int vertexIndex,
+    public static Vector3f vertexMeshVector3f(Mesh mesh,
+            VertexBuffer.Type bufferType, int vertexIndex,
             Vector3f storeResult) {
         Validate.nonNull(mesh, "mesh");
+        assert bufferType == VertexBuffer.Type.BindPoseNormal
+                || bufferType == VertexBuffer.Type.BindPosePosition
+                || bufferType == VertexBuffer.Type.BindPoseTangent
+                || bufferType == VertexBuffer.Type.Normal
+                || bufferType == VertexBuffer.Type.Position
+                || bufferType == VertexBuffer.Type.Tangent : bufferType;
         Validate.nonNegative(vertexIndex, "vertex index");
         if (storeResult == null) {
             storeResult = new Vector3f();
         }
 
-        VertexBuffer posBuf;
-        posBuf = mesh.getBuffer(VertexBuffer.Type.Position);
-        FloatBuffer posBuffer = (FloatBuffer) posBuf.getDataReadOnly();
-        posBuffer.position(3 * vertexIndex);
-        storeResult.x = posBuffer.get();
-        storeResult.y = posBuffer.get();
-        storeResult.z = posBuffer.get();
+        VertexBuffer vertexBuffer = mesh.getBuffer(bufferType);
+        FloatBuffer floatBuffer = (FloatBuffer) vertexBuffer.getDataReadOnly();
+        floatBuffer.position(3 * vertexIndex);
+        storeResult.x = floatBuffer.get();
+        storeResult.y = floatBuffer.get();
+        storeResult.z = floatBuffer.get();
 
         return storeResult;
     }
@@ -1095,13 +1102,8 @@ public class Util {
             storeResult = new Vector3f();
         }
 
-        VertexBuffer posBuf;
-        posBuf = mesh.getBuffer(VertexBuffer.Type.BindPosePosition);
-        FloatBuffer posBuffer = (FloatBuffer) posBuf.getDataReadOnly();
-        posBuffer.position(3 * vertexIndex);
-        float bx = posBuffer.get(); // bind position
-        float by = posBuffer.get();
-        float bz = posBuffer.get();
+        Vector3f b = vertexMeshVector3f(mesh,
+                VertexBuffer.Type.BindPosePosition, vertexIndex, null);
 
         VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
         FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
@@ -1119,11 +1121,11 @@ public class Util {
             if (weight != 0f) {
                 Matrix4f s = skinningMatrices[boneIndex];
                 storeResult.x += weight
-                        * (s.m00 * bx + s.m01 * by + s.m02 * bz + s.m03);
+                        * (s.m00 * b.x + s.m01 * b.y + s.m02 * b.z + s.m03);
                 storeResult.y += weight
-                        * (s.m10 * bx + s.m11 * by + s.m12 * bz + s.m13);
+                        * (s.m10 * b.x + s.m11 * b.y + s.m12 * b.z + s.m13);
                 storeResult.z += weight
-                        * (s.m20 * bx + s.m21 * by + s.m22 * bz + s.m23);
+                        * (s.m20 * b.x + s.m21 * b.y + s.m22 * b.z + s.m23);
             }
         }
 
