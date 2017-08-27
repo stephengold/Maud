@@ -810,10 +810,9 @@ public class Util {
     public static void prepareForCollide(Spatial subtree) {
         if (subtree instanceof Geometry) {
             Geometry geometry = (Geometry) subtree;
+            geometry.updateModelBound();
             Mesh mesh = geometry.getMesh();
             mesh.clearCollisionData();
-            mesh.updateBound();
-            geometry.setBoundRefresh();
 
         } else if (subtree instanceof Node) {
             Node node = (Node) subtree;
