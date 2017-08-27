@@ -290,6 +290,9 @@ public class EditorMenus {
                 case "Rename":
                     Maud.gui.dialogs.renameAnimation();
                     break;
+                case "Select AnimControl":
+                    Maud.gui.showMenus.selectAnimControl(target);
+                    break;
                 case "Source tool":
                     Maud.gui.tools.select("sourceAnimation");
                     break;
