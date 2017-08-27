@@ -711,31 +711,33 @@ https://github.com/Nehon/bvhretarget
 Like most projects, Maud builds on the work of those who went before.
 I therefore acknowledge the following artists and software developers:
 
-+ Rémy Bouquet (aka "nehon") for creating the Jaime model and the BVH Retarget
-  Project and also for many helpful insights
++ Rémy Bouquet (aka "nehon") for creating the Jaime model and the [BVH Retarget
+  Project][retarget] and also for many helpful insights
 + Paul Speed (aka "pspeed") for many helpful insights
++ David Bernard (aka "david_bernard_31") for creating [Xbuf][xbuf]
++ [Nathan Vegdahl][vegdahl], for creating the Puppet model
 + Zi Ye, for creating the Sinbad model
 + the brave souls who volunteered to be alpha testers for Maud, including:
   + "Jesterrrrrr"
-+ the creators of (and contributors to) the following software:
-  + Adobe Photoshop Elements
-  + the Blender 3D animation suite
-  + the FindBugs source-code analyzer
-  + the Git revision-control system
-  + the GitK commit viewer
-  + the Google Chrome web browser
-  + the Gradle build tool
++ plus the creators of (and contributors to) the following software:
+  + [Adobe Photoshop Elements][elements]
+  + the [Blender][] 3-D animation suite
+  + the [FindBugs][] source-code analyzer
+  + the [Git][] revision-control system and GitK commit viewer
+  + the [Google Chrome web browser][chrome]
+  + the [Gradle][] build tool
   + the Java compiler, standard doclet, and runtime environment
-  + jMonkeyEngine and the jME3 Software Development Kit (SDK)
+  + [jMonkeyEngine][jme] and the jME3 Software Development Kit
   + LWJGL, the Lightweight Java Game Library
+  + the [Markdown][] document conversion tool
   + Microsoft Windows
-  + the NetBeans integrated development environment
-  + the Nifty graphical user interface
-  + Open Broadcaster Software
-  + the RealWorld Cursor Editor
-  + the WinMerge differencing and merging tool
+  + the [NetBeans][] integrated development environment
+  + the [Nifty][] graphical user interface library
+  + [Open Broadcaster Software Studio][obs]
+  + the [RealWorld Cursor Editor](rwce)
+  + the [WinMerge][] differencing and merging tool
 
-I am grateful to JFrog and Github, for providing free hosting for the
+I am grateful to [JFrog][] and [Github][], for providing free hosting for the
 Maud Project and many other open-source projects.
 
 I'm also grateful to my dear Holly, for keeping me sane.
