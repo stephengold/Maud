@@ -42,6 +42,7 @@ import maud.action.ActionPrefix;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
+import maud.model.MiscStatus;
 import maud.model.SelectedSkeleton;
 import maud.model.ViewMode;
 
@@ -755,13 +756,20 @@ public class BuildMenus {
      */
     private void buildSettingsMenu() {
         builder.add("Asset folders");
-        boolean diagnoseLoads = Maud.getModel().getMisc().getDiagnoseLoads();
+        MiscStatus status = Maud.getModel().getMisc();
+        boolean diagnoseLoads = status.getDiagnoseLoads();
         if (!diagnoseLoads) {
             builder.add("Diagnose loads");
         }
         //builder.add("Initial model"); TODO
         builder.add("Hotkeys");
         //builder.add("Locale"); TODO
+        int indexBase = status.getIndexBase();
+        if (indexBase == 0) {
+            builder.add("Start indices at 1");
+        } else {
+            builder.add("Start indices at 0");
+        }
         if (diagnoseLoads) {
             builder.add("Stop diagnosing loads");
         }
