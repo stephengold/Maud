@@ -39,6 +39,7 @@ import maud.model.EditableMap;
 import maud.model.History;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.MiscStatus;
 import maud.model.SelectedSpatial;
 import maud.model.ViewMode;
 
@@ -737,18 +738,25 @@ public class EditorMenus {
 
         } else {
             handled = true;
+            MiscStatus status = Maud.getModel().getMisc();
             switch (remainder) {
                 case "Asset folders":
                     Maud.gui.showMenus.assetFolders();
                     break;
                 case "Diagnose loads":
-                    Maud.getModel().getMisc().setDiagnoseLoads(true);
+                    status.setDiagnoseLoads(true);
                     break;
                 case "Hotkeys":
                     Maud.gui.goBindScreen();
                     break;
+                case "Start indices at 0":
+                    status.setIndexBase(0);
+                    break;
+                case "Start indices at 1":
+                    status.setIndexBase(1);
+                    break;
                 case "Stop diagnosing loads":
-                    Maud.getModel().getMisc().setDiagnoseLoads(false);
+                    status.setDiagnoseLoads(false);
                     break;
                 default:
                     handled = false;
