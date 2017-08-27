@@ -2,6 +2,12 @@
 
 Maud is an editor for the animated 3-D models used by jMonkeyEngine (jME).
 
+Anticipated uses:
+ + develop jME animations from motion capture data
+ + copy/retarget animations between models
+ + convert models in other formats to native J3O format
+ + troubleshoot issues with models (or with your model-asset pipeline)
+
 Summary of features:
  + import models from Blender/Ogre/Wavefront and save to native J3O format
  + import animations from Biovision Hierarchy (BVH) assets
@@ -29,9 +35,15 @@ Maud was designed for a desktop environment with:
 
 Status as of August 2017: seeking alpha testers.
 
-## How to download and install a pre-compiled release of Maud
+## How to download and install a pre-built release of Maud
 
-(To be determined.)
+1. Find the release you want in the webpage at
+   https://github.com/stephengold/Maud/releases
+2. Download the appropriate ZIP file for your platform.
+   (For a 64-bit Windows platform, download "Maud-Windows-x64.zip".)
+3. Extract the contents of the ZIP file.
+4. Open/run the Maud executable/application in the extracted folder/directory.
+   (In Windows, open "Maud.exe" in the "Maud" subfolder.)
 
 ## How to build Maud from source
 
@@ -41,6 +53,8 @@ Maud currently targets Version 3.1 of jME.  You are welcome to
 use jME without installing its Integrated Development Environment
 (IDE), but I use the IDE, and the following
 installation instructions assume you will too.
+
+If you already have the IDE installed, skip to step 6.
 
 The hardware and software requirements of the SDK are documented at
 https://jmonkeyengine.github.io/wiki/jme3/requirements.html
@@ -83,7 +97,7 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
 
 Clone the Maud repository using Git:
  1. Open the "Clone Repository" wizard in the IDE:
-   + Menu bar -> "Team" -> "Git" -> "Clone..."
+    Menu bar -> "Team" -> "Git" -> "Clone..."
  2. For "Repository URL:" specify
     "https://github.com/stephengold/Maud.git" (without the quotes).
  3. Clear the "User:" and "Password:" text boxes.
@@ -580,14 +594,18 @@ BVH resources:
 Maud is incomplete.
 The following features are on my "to do" list, in no particular order:
  + advance/delay keyframe(s)
+ + better support for physics controls/objects
  + smooth camera motion
- + tools for Lights/Materials
+ + tools for Lights/Materials/Meshes
  + select the keyframe closest to the current animation time
  + automatically create a checkpoint before every edit/unload
  + tweening options for animations
  + select bone mappings that don't correspond to the loaded models
  + export a model to OBJ format
  + export an animation to BVH format
+ + identify useless bones/nodes
+ + import a model from Xbuf format
+ + import/load assets from JAR/ZIP archives
  + localization
  + more scene-view options for platform/sky
  + blend/concatenate animations
@@ -623,7 +641,8 @@ I therefore acknowledge the following artists and software developers:
   Project and also for many helpful insights
 + Paul Speed (aka "pspeed") for many helpful insights
 + Zi Ye, for creating the Sinbad model
-+ Nathan Vegdahl, for creating the Puppet model
++ the brave souls who volunteered to be alpha testers for Maud, including:
+  + "Jesterrrrrr"
 + the creators of (and contributors to) the following software:
   + Adobe Photoshop Elements
   + the Blender 3D animation suite
