@@ -60,7 +60,7 @@ Status as of August 2017: seeking alpha testers.
 <a name="prebuilt">
 ## How to download and run a pre-built release of Maud
 
-1. Find the release you want in the webpage at
+1. Find the latest release in the webpage at
    https://github.com/stephengold/Maud/releases
 2. Download the appropriate ZIP file for your platform.
    (For a 64-bit Windows platform, download "Maud-Windows-x64.zip".)
@@ -71,24 +71,25 @@ Status as of August 2017: seeking alpha testers.
 <a name="build">
 ## How to build Maud from source
 
-### jME Software Development Kit (SDK)
-
 Maud currently targets Version 3.1 of jME.  You are welcome to
-use jME without installing its Integrated Development Environment
-(IDE), but I use the IDE, and the following
-installation instructions assume you will too.
+use jME without installing its Integrated Development Environment (IDE),
+but I use the IDE, so I tend to assume you will too.
+
+### In the IDE
+
+#### IDE setup
 
 If you already have the IDE installed, skip to step 6.
 
-The hardware and software requirements of the SDK are documented at
+The hardware and software requirements of the IDE are documented at
 https://jmonkeyengine.github.io/wiki/jme3/requirements.html
 
- 1. Download a jMonkeyEngine 3.1.0 Stable SDK installer from https://github.com/jMonkeyEngine/sdk/releases
- 2. Install the SDK, which includes:
+ 1. Download a jMonkeyEngine 3.1.0 Stable installer from https://github.com/jMonkeyEngine/sdk/releases
+ 2. Install the Software Development Kit (SDK), which includes:
    + the engine,
-   + the IDE, which is based on NetBeans,
+   + the IDE, which is based on [NetBeans][netbeans],
    + various IDE plugins, and
-   + the Blender 3D application.
+   + the [Blender 3D][blender] application.
  3. When you execute the installer, it prompts you to
     specify a folder for storing projects:
    + Fill in the "Folder name" text box.
@@ -117,7 +118,7 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
    + Click on the "Finish" button.
    + The IDE will restart.
 
-### Source files
+#### Source files
 
 Clone the Maud repository using Git:
 
@@ -137,11 +138,20 @@ Clone the Maud repository using Git:
 11. When the "Clone Completed" dialog appears, click on the "Open Project..."
     button.
 
-### Build the project
+#### Build the project
 
  1. In the "Projects" window of the IDE,
     right-click on the "Maud" project to select it.
- 2. Select "Build" or "Run".
+ 2. Select "Build".
+
+### In a command-line environment
+
+ 1. Set your JAVA_HOME environment variable.
+ 2. Set your working directory to a writable directory (on a local filesystem)
+    that doesn't already contain "Maud".
+ 3. git clone https://github.com/stephengold/Maud.git
+ 4. cd Maud
+ 5. ./gradlew build
 
 <a name="use">
 ## Using Maud
