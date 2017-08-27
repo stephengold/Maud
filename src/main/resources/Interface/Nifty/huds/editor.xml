@@ -460,6 +460,59 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="boneScaleTool" title="Bone-Scale Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="200px" width="165px" x="50" y="50">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="xScaSlider"
+                                 buttonStepSize="1"
+                                 height="160px"
+                                 max="3" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="yScaSlider"
+                                 buttonStepSize="1"
+                                 height="160px"
+                                 max="3" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zScaSlider"
+                                 buttonStepSize="1"
+                                 height="160px"
+                                 max="3" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="160px" width="80px">
+                            <control name="label" id="xScaSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="yScaSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="zScaSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" text="Reset to:"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
+                                <control name="button" id="resetScaAnimButton"
+                                         width="70px">
+                                    <interact onRelease="perform(reset bone sca anim)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
+                                <control name="button" id="resetScaBindButton"
+                                         width="70px">
+                                    <interact onRelease="perform(reset bone sca bind)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="boneTranslationTool" title="Bone-Translation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
@@ -510,59 +563,6 @@ the menu bar, status bar, and tool windows.
                                 <control name="button" id="resetOffBindButton"
                                          width="70px">
                                     <interact onRelease="perform(reset bone off bind)"/>
-                                </control>
-                                <panel/>
-                            </panel>
-                        </panel>
-                    </panel>
-                </panel>
-            </control>
-
-            <control name="window" id="boneScaleTool" title="Bone-Scale Tool"
-                     backgroundColor="#ffcf"
-                     hideOnClose="true"
-                     height="200px" width="165px" x="50" y="50">
-                <panel childLayout="vertical">
-                    <panel childLayout="horizontal">
-                        <control name="verticalSlider" id="xScaSlider"
-                                 buttonStepSize="1"
-                                 height="160px"
-                                 max="3" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="yScaSlider"
-                                 buttonStepSize="1"
-                                 height="160px"
-                                 max="3" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="zScaSlider"
-                                 buttonStepSize="1"
-                                 height="160px"
-                                 max="3" min="0" stepSize="0.001"/>
-                        <panel childLayout="vertical"
-                               height="160px" width="80px">
-                            <control name="label" id="xScaSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="yScaSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="zScaSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" text="Reset to:"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <panel childLayout="horizontal" height="30px">
-                                <panel/>
-                                <control name="button" id="resetScaAnimButton"
-                                         width="70px">
-                                    <interact onRelease="perform(reset bone sca anim)"/>
-                                </control>
-                                <panel/>
-                            </panel>
-                            <panel childLayout="horizontal" height="30px">
-                                <panel/>
-                                <control name="button" id="resetScaBindButton"
-                                         width="70px">
-                                    <interact onRelease="perform(reset bone sca bind)"/>
                                 </control>
                                 <panel/>
                             </panel>
@@ -1445,6 +1445,20 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="skyTool" title="Sky Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="160px" width="160px" x="20" y="80">
+                <panel childLayout="vertical">
+                    <panel style="indentPanel">
+                        <control name="checkbox" id="skyCheckBox"
+                                 width="20px"/>
+                        <control name="label" width="12px"/>
+                        <control name="label" text="show sky"/>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="sourceAnimationTool" title="Source Animation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
@@ -1542,20 +1556,6 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="*"/>
-                    </panel>
-                </panel>
-            </control>
-
-            <control name="window" id="skyTool" title="Sky Tool"
-                     backgroundColor="#ffcf"
-                     hideOnClose="true"
-                     height="160px" width="160px" x="20" y="80">
-                <panel childLayout="vertical">
-                    <panel style="indentPanel">
-                        <control name="checkbox" id="skyCheckBox"
-                                 width="20px"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="show sky"/>
                     </panel>
                 </panel>
             </control>
