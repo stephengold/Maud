@@ -96,7 +96,8 @@ class KeyframeTool extends WindowController {
                     indexText = String.format("%d keyframes", numKeyframes);
                 }
             } else {
-                indexText = String.format("#%d of %d", index + 1,
+                int indexBase = Maud.getModel().getMisc().getIndexBase();
+                indexText = String.format("#%d of %d", index + indexBase,
                         numKeyframes);
             }
 

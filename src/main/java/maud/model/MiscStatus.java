@@ -66,6 +66,10 @@ public class MiscStatus implements Cloneable {
      */
     private boolean diagnoseLoads = false;
     /**
+     * starting point for displayed indices (0 or 1)
+     */
+    private int indexBase = 1;
+    /**
      * tweening technique for rotations
      */
     private TweenRotations tweenRotations = TweenRotations.Nlerp;
@@ -100,6 +104,15 @@ public class MiscStatus implements Cloneable {
      */
     public boolean getDiagnoseLoads() {
         return diagnoseLoads;
+    }
+
+    /**
+     * Read starting point for displayed indices.
+     *
+     * @return base index (0 or 1)
+     */
+    public int getIndexBase() {
+        return indexBase;
     }
 
     /**
@@ -237,6 +250,16 @@ public class MiscStatus implements Cloneable {
      */
     public void setDiagnoseLoads(boolean newSetting) {
         diagnoseLoads = newSetting;
+    }
+
+    /**
+     * Alter the starting point for displayed indices.
+     *
+     * @param newSetting new setting (0 or 1)
+     */
+    public void setIndexBase(int newSetting) {
+        Validate.inRange(newSetting, "new setting", 0, 1);
+        indexBase = newSetting;
     }
 
     /**

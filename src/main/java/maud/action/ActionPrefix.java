@@ -203,7 +203,7 @@ public class ActionPrefix {
      */
     final public static String selectUserKey = "select userKey ";
     /**
-     * argument is a vertex index
+     * argument is indexBase plus a vertex index
      */
     final public static String selectVertex = "select vertex ";
     /**

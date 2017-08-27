@@ -192,7 +192,9 @@ public class MappingTool extends WindowController {
         int numBoneMappings = map.countMappings();
         if (map.isBoneMappingSelected()) {
             int index = map.findIndex();
-            indexText = String.format("#%d of %d", index + 1, numBoneMappings);
+            int indexBase = Maud.getModel().getMisc().getIndexBase();
+            indexText = String.format("#%d of %d", index + indexBase,
+                    numBoneMappings);
             nButton = "+";
             pButton = "-";
 

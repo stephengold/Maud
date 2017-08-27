@@ -338,8 +338,9 @@ public class EditorDialogs {
     public void selectVertex() {
         LoadedCgm target = Maud.getModel().getTarget();
         int numVertices = target.getSpatial().countVertices();
-        DialogController controller;
-        controller = new IntegerDialog("Select", 0, numVertices - 1);
+        int indexBase = Maud.getModel().getMisc().getIndexBase();
+        DialogController controller = new IntegerDialog("Select", indexBase,
+                numVertices + indexBase - 1);
 
         int oldIndex = target.getVertex().getIndex();
         String defaultText;

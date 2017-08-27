@@ -95,7 +95,9 @@ class UserDataTool extends WindowController {
         int numKeys = target.getSpatial().countUserData();
         int selectedIndex = target.getUserData().findKeyIndex();
         if (selectedIndex >= 0) {
-            indexText = String.format("#%d of %d", selectedIndex + 1, numKeys);
+            int indexBase = Maud.getModel().getMisc().getIndexBase();
+            indexText = String.format("#%d of %d", selectedIndex + indexBase,
+                    numKeys);
             if (numKeys > 1) {
                 nButton = "+";
                 pButton = "-";

@@ -192,7 +192,8 @@ class SelectAction {
         } else if (actionString.startsWith(ActionPrefix.selectVertex)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectVertex);
             int index = Integer.parseInt(arg);
-            model.getTarget().getVertex().select(index);
+            int indexBase = Maud.getModel().getMisc().getIndexBase();
+            model.getTarget().getVertex().select(index - indexBase);
 
         } else {
             handled = false;

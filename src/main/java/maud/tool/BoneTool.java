@@ -151,7 +151,9 @@ class BoneTool extends WindowController {
         int numBones = target.getSkeleton().countBones();
         if (target.getBone().isSelected()) {
             int selectedIndex = target.getBone().getIndex();
-            indexText = String.format("#%d of %d", selectedIndex + 1, numBones);
+            int indexBase = Maud.getModel().getMisc().getIndexBase();
+            indexText = String.format("#%d of %d", selectedIndex + indexBase,
+                    numBones);
             nButton = "+";
             pButton = "-";
 
