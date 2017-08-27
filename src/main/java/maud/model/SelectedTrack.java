@@ -418,10 +418,33 @@ public class SelectedTrack implements Cloneable {
     public void selectLastKeyframe() {
         BoneTrack track = findTrack();
         if (track != null) {
-            float[] times = track.getTimes();
-            int lastIndex = times.length - 1;
-            float t = times[lastIndex];
+            float t = lastKeyframeTime();
             loadedCgm.getAnimation().setTime(t);
+        }
+    }
+
+    /**
+     * Select the nearest keyframe in the track.
+     */
+    public void selectNearestKeyframe() {
+        BoneTrack track = findTrack();
+        if (track != null) {
+            LoadedAnimation animation = loadedCgm.getAnimation();
+            float time = animation.getTime();
+            int frameIndex = MyAnimation.findKeyframeIndex(track, time);
+            if (frameIndex == -1) {
+                float next = nextKeyframeTime();
+                float toNext = next - time;
+                assert toNext >= 0f : toNext;
+                float previous = previousKeyframeTime();
+                float toPrevious = time - previous;
+                assert toPrevious >= 0f : toPrevious;
+                if (toPrevious < toNext) {
+                    animation.setTime(previous);
+                } else {
+                    animation.setTime(next);
+                }
+            }
         }
     }
 
@@ -431,13 +454,9 @@ public class SelectedTrack implements Cloneable {
     public void selectNextKeyframe() {
         BoneTrack track = findTrack();
         if (track != null) {
-            float time = loadedCgm.getAnimation().getTime();
-            float[] times = track.getTimes();
-            for (int iFrame = 0; iFrame < times.length; iFrame++) {
-                if (times[iFrame] > time) {
-                    loadedCgm.getAnimation().setTime(times[iFrame]);
-                    break;
-                }
+            float time = nextKeyframeTime();
+            if (time < Float.POSITIVE_INFINITY) {
+                loadedCgm.getAnimation().setTime(time);
             }
         }
     }
@@ -448,13 +467,9 @@ public class SelectedTrack implements Cloneable {
     public void selectPreviousKeyframe() {
         BoneTrack track = findTrack();
         if (track != null) {
-            float time = loadedCgm.getAnimation().getTime();
-            float[] times = track.getTimes();
-            for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
-                if (times[iFrame] < time) {
-                    loadedCgm.getAnimation().setTime(times[iFrame]);
-                    break;
-                }
+            float time = previousKeyframeTime();
+            if (time >= 0f) {
+                loadedCgm.getAnimation().setTime(time);
             }
         }
     }
@@ -715,6 +730,46 @@ public class SelectedTrack implements Cloneable {
         float duration = loadedCgm.getAnimation().getDuration();
         String name = loadedCgm.getAnimation().getName();
         Animation result = new Animation(name, duration);
+
+        return result;
+    }
+
+    /**
+     * Find the time of the next keyframe in the selected track.
+     *
+     * @return animation time (&ge;0) or +Infinity if none found
+     */
+    private float nextKeyframeTime() {
+        float result = Float.POSITIVE_INFINITY;
+        float time = loadedCgm.getAnimation().getTime();
+        BoneTrack track = findTrack();
+        float[] times = track.getTimes();
+        for (int iFrame = 0; iFrame < times.length; iFrame++) {
+            if (times[iFrame] > time) {
+                result = times[iFrame];
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Find the time of the previous keyframe in the selected track.
+     *
+     * @return animation time (&ge;0) or -Infinity if none found
+     */
+    private float previousKeyframeTime() {
+        float result = Float.NEGATIVE_INFINITY;
+        float time = loadedCgm.getAnimation().getTime();
+        BoneTrack track = findTrack();
+        float[] times = track.getTimes();
+        for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
+            if (times[iFrame] < time) {
+                result = times[iFrame];
+                break;
+            }
+        }
 
         return result;
     }
