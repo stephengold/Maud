@@ -3,12 +3,14 @@
 Maud is an editor for the animated 3-D models used by jMonkeyEngine (jME).
 
 Anticipated uses:
+
  + develop jME animations from motion capture data
  + copy/retarget animations between models
  + convert models in other formats to native J3O format
  + troubleshoot issues with models (or with your model-asset pipeline)
 
 Summary of features:
+
  + import models from Blender/Ogre/Wavefront and save to native J3O format
  + import animations from Biovision Hierarchy (BVH) assets
  + visualize animations, axes, bones, bounding boxes, skeletons, and physics objects
@@ -30,6 +32,7 @@ Summary of features:
  + complete Java source code provided under a BSD 3-Clause License
 
 Maud was designed for a desktop environment with:
+
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
@@ -96,6 +99,7 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
 ### Source files
 
 Clone the Maud repository using Git:
+
  1. Open the "Clone Repository" wizard in the IDE:
     Menu bar -> "Team" -> "Git" -> "Clone..."
  2. For "Repository URL:" specify
@@ -157,6 +161,7 @@ You can then select a menu item by clicking on it with the LMB or RMB.
 
 Some menu items activate submenus.  Others display icons to help describe
 what they do:
+
  + a wrench icon to select a tool
  + a dialog box icon to open a modal dialog box
  + a bone icon to select a bone
@@ -178,6 +183,7 @@ the "1" key on the main keyboard (NOT the "1" key on the numeric keypad).
 #### Keyboard shortcuts
 
 Keyboard shortcuts for the Editor Screen include:
+
  + "E" to deselect the selected bone in a model
  + "." to pause/restart the loaded animation(s)
  + "Esc" to exit from the active menu (or from the Maud application)
@@ -326,6 +332,7 @@ Maud can of course load models in jME's native binary format.
 To be recognized, such models must have filenames ending in ".j3o".
 
 Maud can also import models in other formats:
+
  + Blender 3D (filename must end in ".blend")
  + Ogre DotScene (filename must end in ".scene")
  + Ogre XML (filename must end in ".mesh.xml")
@@ -389,10 +396,12 @@ Maud offers many ways to select a bone.
 
 The "Bone -> Select" submenu enables you to select bones in the
 target model by name:
+
  + from among all bones in the selected skeleton, or
  + from among the root bones in that skeleton, or
  + from among all bones with tracks in the loaded animation, or
  + from among the children of the selected bone.
+
 It also enables you to navigate the bone hierarchy "by parent"
 or step through bones in numerical order ("Previous" and "Next").
 
@@ -543,6 +552,7 @@ its effect on the target model in real time.
 To do this, click LMB on the "Show retargeted pose" button in the Mapping Tool or
 select "Animations -> Load -> (retargeted pose)".
 With this pseudo-animation loaded:
+
  + changing the source pose automatically updates the target pose,
  + changing the skeleton map automatically updates the target pose,
  + selecting a mapped source bone also selects the corresponding target bone, and
@@ -576,12 +586,14 @@ Maud provides a "History Tool" ("History -> Tool").
 ## External links
 
 YouTube videos about Maud:
+
   + May 2017 demo video (out-of-date!):
     https://www.youtube.com/watch?v=fSjsbyBWlPk
   + June 2017 retargeted animation video:
     https://www.youtube.com/watch?v=yRjh1rAsipI
 
 BVH resources:
+
   + BVH format description:
     http://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html
   + free motion capture data from Ohio State University's ACCAD:
@@ -616,6 +628,7 @@ BVH resources:
 
 Maud is incomplete.
 The following features are on my "to do" list, in no particular order:
+
  + advance/delay keyframe(s)
  + better support for physics controls/objects
  + smooth camera motion
@@ -660,6 +673,7 @@ https://github.com/Nehon/bvhretarget
 
 Like most projects, Maud builds on the work of those who went before.
 I therefore acknowledge the following artists and software developers:
+
 + Rémy Bouquet (aka "nehon") for creating the Jaime model and the BVH Retarget
   Project and also for many helpful insights
 + Paul Speed (aka "pspeed") for many helpful insights
