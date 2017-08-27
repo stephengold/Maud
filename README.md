@@ -38,7 +38,25 @@ Maud was designed for a desktop environment with:
 
 Status as of August 2017: seeking alpha testers.
 
-## How to download and install a pre-built release of Maud
+## Contents of this document
+
+ + [How to download and run a pre-built release of Maud](#prebuilt)
+ + [How to build Maud from source](#build)
+ + [Using Maud](#use)
+ + [3-D Models](#cgms)
+ + [Bones](#bones)
+ + [Animations](#animations)
+ + [The displayed pose](#pose)
+ + [The skeleton map](#map)
+ + [The edit history](#history)
+ + [Web links](#links)
+ + [Wish list](#wishlist)
+ + [Conventions](#conventions)
+ + [History](#history)
+ + [Acknowledgments](#acks)
+
+<a name="prebuilt">
+## How to download and run a pre-built release of Maud
 
 1. Find the release you want in the webpage at
    https://github.com/stephengold/Maud/releases
@@ -48,6 +66,7 @@ Status as of August 2017: seeking alpha testers.
 4. Open/run the Maud executable/application in the extracted folder/directory.
    (In Windows, open "Maud.exe" in the "Maud" subfolder.)
 
+<a name="build">
 ## How to build Maud from source
 
 ### jME Software Development Kit (SDK)
@@ -122,6 +141,7 @@ Clone the Maud repository using Git:
     right-click on the "Maud" project to select it.
  2. Select "Build" or "Run".
 
+<a name="use">
 ## Using Maud
 
 ### Overview of the user interface
@@ -303,6 +323,7 @@ Standard keyboard shortcuts affecting the scene-view cameras:
 Score views don't have anything analogous to the 3D cursor, but you can
 move the score-view camera up/down by clicking LMB where you want it to look.
 
+<a name="cgms">
 ## 3-D models
 
 As mentioned above, Maud always has a (target) model loaded,
@@ -353,6 +374,7 @@ By default, models loaded from the classpath will be written to a
 "Written assets" folder under the application's working folder.
 Maud treats this asset folder as if it were part of the classpath.
 
+<a name="bones">
 ## Bones
 
 In jME, "bones" are named parts of a 3D model that can influence the positions
@@ -416,6 +438,7 @@ However, since bones can appear very close together in scene views,
 and since the RMB is also used to select objects other than bones,
 use caution with this technique.
 
+<a name="animations">
 ## Animations
 
 In jME, "animations" are named parts of a 3D model, each with its own duration.
@@ -465,7 +488,8 @@ Using the animation tools, you can also "pin" a loaded animation.
 Pinning an animation keeps its root bone(s) at the model origin
 for display (scene view) purposes.
 
-## The pose
+<a name="pose">
+## The displayed pose
 
 While an animation is playing on the target model, Maud typically refreshes
 the displayed bone transforms on every frame.
@@ -513,7 +537,8 @@ Then go to the animation time when you want to paste and select
 or "Animations -> Insert keyframes" (to paste multiple keyframes).
 Remember to unfreeze the pose after you finish!
 
-## Skeleton maps
+<a name="map">
+## The skeleton map
 
 Once an animation is created for one model, it's a simple matter to
 copy it to another model, provided both models use the exact same
@@ -561,6 +586,7 @@ With this pseudo-animation loaded:
 When you're ready to retarget animations between models,
 use the "Retarget Tool" ("Animations -> Add new -> Retarget").
 
+<a name="history">
 ## The edit history
 
 Like any serious editor, Maud provides an "undo" capability.
@@ -583,7 +609,8 @@ Maud places no limit on the number of checkpoints you can create/undo/redo.
 To help you visualize and navigate your edit history,
 Maud provides a "History Tool" ("History -> Tool").
 
-## External links
+<a name="links">
+## Web links
 
 YouTube videos about Maud:
 
@@ -592,6 +619,7 @@ YouTube videos about Maud:
   + June 2017 retargeted animation video:
     https://www.youtube.com/watch?v=yRjh1rAsipI
 
+<a name="bvh">
 BVH resources:
 
   + BVH format description:
@@ -624,7 +652,8 @@ BVH resources:
 [winmerge]: http://winmerge.org "WinMerge Project"
 [xbuf]: http://www.xbuf.org "Xbuf Project"
 
-## Wishlist
+<a name="wishlist">
+## Wish list
 
 Maud is incomplete.
 The following features are on my "to do" list, in no particular order:
@@ -651,12 +680,14 @@ The following features are on my "to do" list, in no particular order:
  + confirm before overwriting a file
  + preserve a frozen pose when loading an animation
 
+<a name="conventions">
 ## Conventions
 
 Maud's source code is compatible with both JDK 7 and JDK 8.
 
 World coordinate system: the Y axis points upward (toward the zenith).
 
+<a name="history">
 ## History
 
 Since April 2017, the Maud project has been hosted at
@@ -669,6 +700,7 @@ https://github.com/stephengold/jme3-utilities
 Maud includes code from the the BVH Retarget Project at
 https://github.com/Nehon/bvhretarget
 
+<a name="acks">
 ## Acknowledgments
 
 Like most projects, Maud builds on the work of those who went before.
