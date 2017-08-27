@@ -894,6 +894,7 @@ public class BuildMenus {
         if (Maud.getModel().getTarget().getSpatial().countVertices() > 0) {
             builder.add("Select");
         }
+        builder.add("Select geometry");
     }
 
     /**
