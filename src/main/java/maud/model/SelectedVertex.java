@@ -82,11 +82,9 @@ public class SelectedVertex implements Cloneable {
         }
         assert selectedIndex >= 0 : selectedIndex;
 
-        FloatBuffer posBuffer = bindPosePositionBuffer();
-        float bx = posBuffer.get(); // bind position
-        float by = posBuffer.get();
-        float bz = posBuffer.get();
-        storeResult.set(bx, by, bz);
+        Mesh mesh = cgm.getSpatial().getMesh();
+        storeResult = Util.vertexMeshVector3f(mesh,
+            VertexBuffer.Type.BindPosePosition, selectedIndex, storeResult);
 
         return storeResult;
     }
@@ -285,23 +283,6 @@ public class SelectedVertex implements Cloneable {
         boneIndexBuffer.position(maxBones * selectedIndex);
 
         return boneIndexBuffer;
-    }
-
-    /**
-     * Access the bind-pose position data for the selected vertex.
-     *
-     * @return a read-only buffer instance (not null)
-     */
-    private FloatBuffer bindPosePositionBuffer() {
-        assert selectedIndex >= 0 : selectedIndex;
-
-        Mesh mesh = cgm.getSpatial().getMesh();
-        VertexBuffer posBuf;
-        posBuf = mesh.getBuffer(VertexBuffer.Type.BindPosePosition);
-        FloatBuffer posBuffer = (FloatBuffer) posBuf.getDataReadOnly();
-        posBuffer.position(3 * selectedIndex);
-
-        return posBuffer;
     }
 
     /**
