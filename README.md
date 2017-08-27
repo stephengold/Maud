@@ -11,25 +11,27 @@ Anticipated uses:
 
 Summary of features:
 
- + import models from Blender/Ogre/Wavefront and save to native J3O format
- + import animations from Biovision Hierarchy (BVH) assets
- + visualize animations, axes, bones, bounding boxes, skeletons, and physics objects
+ + load models from JAR/ZIP archives or any local filesystem
+ + import models from [Blender][]/[Ogre][]/[Wavefront][obj]/[Xbuf][] and save to native J3O format
+ + import animations from [Biovision Hierarchy (BVH)](#bvh) assets
+ + visualize animations, axes, bones, bounding boxes, mesh vertices, physics objects, and skeletons
+ + browse animations, bones, keyframes, mesh vertices, scene-graph controls, spatials, tracks, and user data
  + play animations forward/backward at various speeds and pause them
- + add new animations from poses or by altering existing animations
+ + create new animations from poses or by altering existing animations
  + retarget animations from one model to another using skeleton maps
  + insert keyframes in animations and bone tracks
  + rename animations, bones, spatials, and user data
- + change animation durations
+ + change animation speeds/durations
  + behead/truncate animations
- + reduce/wrap animations and bone tracks
- + delete animations, bone tracks, and keyframes
- + add scene-graph controls and user data to spatials
- + modify spatial transforms (translation, rotation, and scale)
- + modify spatial batch modes, cull hints, render queues, shadow modes, and user data
+ + reduce/resample/wrap animations and bone tracks
+ + delete animations, keyframes, spatials, and tracks
+ + create new scene-graph controls and user data
+ + modify bone/spatial transforms (translation, rotation, and scale)
+ + modify batch hints, cull hints, render-queue buckets, shadow modes, and user data
  + delete scene-graph controls and user data
  + review an unlimited edit history and undo/redo edits
  + customize mouse-button assignments and keyboard shortcuts
- + complete Java source code provided under a BSD 3-Clause License
+ + complete Java source code provided under a [BSD 3-Clause License][bsd3]
 
 Maud was designed for a desktop environment with:
 
@@ -662,23 +664,16 @@ The following features are on my "to do" list, in no particular order:
  + better support for physics controls/objects
  + smooth camera motion
  + tools for Lights/Materials/Meshes
- + select the keyframe closest to the current animation time
- + automatically create a checkpoint before every edit/unload
- + tweening options for animations
  + select bone mappings that don't correspond to the loaded models
- + export a model to OBJ format
- + export an animation to BVH format
- + identify useless bones/nodes
- + import a model from Xbuf format
- + import/load assets from JAR/ZIP archives
+ + export a model to [OBJ][] format
+ + export an animation to [BVH][] format
  + localization
  + more scene-view options for platform/sky
  + blend/concatenate animations
  + tool tips
  + mirror an animation/pose
- + remember asset folders and tool positions from the previous invocation of Maud
+ + remember settings and tool positions from the previous invocation of Maud
  + confirm before overwriting a file
- + preserve a frozen pose when loading an animation
 
 <a name="conventions">
 ## Conventions
