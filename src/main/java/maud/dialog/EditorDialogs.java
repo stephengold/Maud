@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.dialog;
 
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.Nifty;
@@ -41,13 +41,8 @@ import jme3utilities.nifty.IntegerDialog;
 import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
+import maud.Maud;
 import maud.action.ActionPrefix;
-import maud.dialog.AnimationNameDialog;
-import maud.dialog.BoneRenameDialog;
-import maud.dialog.LongDialog;
-import maud.dialog.SpatialNameDialog;
-import maud.dialog.TextEntryDialog;
-import maud.dialog.UserKeyDialog;
 import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
