@@ -58,6 +58,7 @@ Status as of August 2017: seeking alpha testers.
  + [Acknowledgments](#acks)
 
 <a name="prebuilt">
+
 ## How to download and run a pre-built release of Maud
 
 1. Find the latest release in the webpage at
@@ -69,6 +70,7 @@ Status as of August 2017: seeking alpha testers.
    (In Windows, open "Maud.exe" in the "Maud" subfolder.)
 
 <a name="build">
+
 ## How to build Maud from source
 
 Maud currently targets Version 3.1 of jME.  You are welcome to
@@ -154,6 +156,7 @@ Clone the Maud repository using Git:
  5. ./gradlew build
 
 <a name="use">
+
 ## Using Maud
 
 ### Overview of the user interface
@@ -336,6 +339,7 @@ Score views don't have anything analogous to the 3D cursor, but you can
 move the score-view camera up/down by clicking LMB where you want it to look.
 
 <a name="cgms">
+
 ## 3-D models
 
 As mentioned above, Maud always has a (target) model loaded,
@@ -387,6 +391,7 @@ By default, models loaded from the classpath will be written to a
 Maud treats this asset folder as if it were part of the classpath.
 
 <a name="bones">
+
 ## Bones
 
 In jME, "bones" are named parts of a 3D model that can influence the positions
@@ -451,6 +456,7 @@ and since the RMB is also used to select objects other than bones,
 use caution with this technique.
 
 <a name="animations">
+
 ## Animations
 
 In jME, "animations" are named parts of a 3D model, each with its own duration.
@@ -501,6 +507,7 @@ Pinning an animation keeps its root bone(s) at the model origin
 for display (scene view) purposes.
 
 <a name="pose">
+
 ## The displayed pose
 
 While an animation is playing on the target model, Maud typically refreshes
@@ -550,6 +557,7 @@ or "Animations -> Insert keyframes" (to paste multiple keyframes).
 Remember to unfreeze the pose after you finish!
 
 <a name="map">
+
 ## The skeleton map
 
 Once an animation is created for one model, it's a simple matter to
@@ -599,6 +607,7 @@ When you're ready to retarget animations between models,
 use the "Retarget Tool" ("Animations -> Add new -> Retarget").
 
 <a name="history">
+
 ## The edit history
 
 Like any serious editor, Maud provides an "undo" capability.
@@ -622,6 +631,7 @@ To help you visualize and navigate your edit history,
 Maud provides a "History Tool" ("History -> Tool").
 
 <a name="links">
+
 ## Web links
 
 YouTube videos about Maud:
@@ -632,6 +642,7 @@ YouTube videos about Maud:
     https://www.youtube.com/watch?v=yRjh1rAsipI
 
 <a name="bvh">
+
 BVH resources:
 
   + BVH format description:
@@ -665,6 +676,7 @@ BVH resources:
 [xbuf]: http://www.xbuf.org "Xbuf Project"
 
 <a name="wishlist">
+
 ## Wish list
 
 Maud is incomplete.
@@ -686,6 +698,7 @@ The following features are on my "to do" list, in no particular order:
  + confirm before overwriting a file
 
 <a name="conventions">
+
 ## Conventions
 
 Maud's source code is compatible with both JDK 7 and JDK 8.
@@ -693,6 +706,7 @@ Maud's source code is compatible with both JDK 7 and JDK 8.
 World coordinate system: the Y axis points upward (toward the zenith).
 
 <a name="history">
+
 ## History
 
 Since April 2017, the Maud project has been hosted at
@@ -706,6 +720,7 @@ Maud includes code from the the BVH Retarget Project at
 https://github.com/Nehon/bvhretarget
 
 <a name="acks">
+
 ## Acknowledgments
 
 Like most projects, Maud builds on the work of those who went before.
