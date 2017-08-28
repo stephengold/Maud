@@ -274,19 +274,19 @@ public class BuildMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the "Settings -> Asset folders"
+     * Handle a "select menuItem" action from the "Settings -> Asset locations"
      * menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    boolean menuAssetFolders(String remainder) {
+    boolean menuAssetLocations(String remainder) {
         assert remainder != null;
 
         boolean handled = false;
         switch (remainder) {
             case "Add":
-                addAssetFolder();
+                addAssetLocation();
                 handled = true;
                 break;
             case "Remove":
@@ -294,9 +294,9 @@ public class BuildMenus {
                 List<String> pathList;
                 pathList = Maud.getModel().getLocations().listAll();
                 for (String path : pathList) {
-                    builder.addFolder(path);
+                    builder.addFile(path);
                 }
-                builder.show(ActionPrefix.deleteAssetFolder);
+                builder.show(ActionPrefix.deleteAssetLocation);
                 handled = true;
         }
 
@@ -375,11 +375,11 @@ public class BuildMenus {
     }
 
     /**
-     * Handle a "new locator" action with an argument.
+     * Handle a "new assetLocation" action with an argument.
      *
      * @param argument action argument (not null)
      */
-    public void newAssetFolder(String argument) {
+    public void newAssetLocation(String argument) {
         if (argument.endsWith(EditorMenus.addThis)) {
             String path = MyString.removeSuffix(argument, EditorMenus.addThis);
             Maud.getModel().getLocations().add(path);
@@ -387,7 +387,7 @@ public class BuildMenus {
         } else if (argument.endsWith(".jar") || argument.endsWith(".zip")) {
             Maud.getModel().getLocations().add(argument);
 
-        } else {
+        } else { // open folder
             Map<String, File> folderMap = EditorMenus.folderMap(argument);
             buildFolderMenu(folderMap);
 
@@ -396,8 +396,8 @@ public class BuildMenus {
                 file = file.getParentFile();
             }
             String folderPath = file.getAbsolutePath();
-            String menuPrefix = ActionPrefix.newAssetFolder + folderPath + "/";
-            builder.show(menuPrefix);
+            String prefix = ActionPrefix.newAssetLocation + folderPath + "/";
+            builder.show(prefix);
         }
     }
 
@@ -457,9 +457,9 @@ public class BuildMenus {
     // private methods
 
     /**
-     * Display an "Settings -> Asset folders -> Add" menu.
+     * Display an "Settings -> Asset locations -> Add" menu.
      */
-    private void addAssetFolder() {
+    private void addAssetLocation() {
         Map<String, File> fileMap = Misc.driveMap();
         String workPath = System.getProperty("user.dir");
         File work = new File(workPath);
@@ -470,7 +470,7 @@ public class BuildMenus {
             assert oldFile == null : oldFile;
         }
         buildFolderMenu(fileMap);
-        builder.show(ActionPrefix.newAssetFolder);
+        builder.show(ActionPrefix.newAssetLocation);
     }
 
     /**
@@ -757,7 +757,7 @@ public class BuildMenus {
      * Build a Settings menu.
      */
     private void buildSettingsMenu() {
-        builder.add("Asset folders");
+        builder.add("Asset locations");
         MiscStatus status = Maud.getModel().getMisc();
         boolean diagnoseLoads = status.getDiagnoseLoads();
         if (!diagnoseLoads) {

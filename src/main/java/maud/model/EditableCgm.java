@@ -51,6 +51,7 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.ui.ActionApplication;
 import maud.Maud;
 import maud.Util;
 import maud.view.SceneView;
@@ -611,14 +612,14 @@ public class EditableCgm extends LoadedCgm {
         if (success) {
             String af = assetFolderForWrite();
             if (baseFilePath.startsWith(af)) {
-                assetFolder = af;
+                assetLocation = af;
                 baseAssetPath = MyString.remainder(baseFilePath, af);
             } else if (baseFilePath.endsWith(baseAssetPath)
                     && !baseAssetPath.isEmpty()) {
-                assetFolder = MyString.removeSuffix(baseFilePath,
+                assetLocation = MyString.removeSuffix(baseFilePath,
                         baseAssetPath);
             } else {
-                assetFolder = "";
+                assetLocation = "";
                 baseAssetPath = "";
             }
             if (baseAssetPath.startsWith("/")) {
@@ -681,11 +682,10 @@ public class EditableCgm extends LoadedCgm {
      * @return absolute filesystem path (not null, not empty)
      */
     private String assetFolderForWrite() {
-        String result = assetFolder;
-        if (result.isEmpty()) {
-            File wa = new File("Written Assets");
-            result = wa.getAbsolutePath();
-            result = result.replaceAll("\\\\", "/");
+        String result = assetLocation;
+        if (result.isEmpty() || result.endsWith(".jar")
+                || result.endsWith(".zip")) {
+            result = ActionApplication.getWrittenAssetDirPath();
         }
 
         return result;

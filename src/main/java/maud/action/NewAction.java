@@ -96,10 +96,10 @@ class NewAction {
      */
     private static boolean processPrefixes(String actionString) {
         boolean handled = false;
-        if (actionString.startsWith(ActionPrefix.newAssetFolder)) {
+        if (actionString.startsWith(ActionPrefix.newAssetLocation)) {
             String path = MyString.remainder(actionString,
-                    ActionPrefix.newAssetFolder);
-            Maud.gui.buildMenus.newAssetFolder(path);
+                    ActionPrefix.newAssetLocation);
+            Maud.gui.buildMenus.newAssetLocation(path);
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromPose)) {

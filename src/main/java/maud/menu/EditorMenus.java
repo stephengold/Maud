@@ -734,17 +734,17 @@ public class EditorMenus {
         assert remainder != null;
 
         boolean handled;
-        String folderPrefix = "Asset folders" + menuPathSeparator;
+        String folderPrefix = "Asset locations" + menuPathSeparator;
         if (remainder.startsWith(folderPrefix)) {
             String selectArg = MyString.remainder(remainder, folderPrefix);
-            handled = Maud.gui.buildMenus.menuAssetFolders(selectArg);
+            handled = Maud.gui.buildMenus.menuAssetLocations(selectArg);
 
         } else {
             handled = true;
             MiscStatus status = Maud.getModel().getMisc();
             switch (remainder) {
-                case "Asset folders":
-                    Maud.gui.showMenus.assetFolders();
+                case "Asset locations":
+                    Maud.gui.showMenus.assetLocations();
                     break;
                 case "Diagnose loads":
                     status.setDiagnoseLoads(true);

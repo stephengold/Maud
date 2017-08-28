@@ -140,7 +140,7 @@ public class LoadedCgm implements Cloneable {
      * absolute filesystem path to asset location, or "" if unknown, or null if
      * no CG model loaded
      */
-    protected String assetFolder = null;
+    protected String assetLocation = null;
     /**
      * asset path less extension, or "" if unknown, or null if no CG model
      * loaded
@@ -322,13 +322,13 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Read the asset folder of the loaded CG model.
+     * Read the asset location of the loaded CG model.
      *
      * @return absolute filesystem path, or "" if not known (not null)
      */
-    public String getAssetFolder() {
-        assert assetFolder != null;
-        return assetFolder;
+    public String getAssetLocation() {
+        assert assetLocation != null;
+        return assetLocation;
     }
 
     /**
@@ -953,7 +953,7 @@ public class LoadedCgm implements Cloneable {
         LoadedCgm target = Maud.getModel().getTarget();
         assert this != target; // not allowed to unload target
 
-        assetFolder = null;
+        assetLocation = null;
         baseAssetPath = null;
         extension = null;
         name = null;
@@ -1270,7 +1270,7 @@ public class LoadedCgm implements Cloneable {
                 int pathLength = assetPath.length() - extLength - 1;
                 baseAssetPath = assetPath.substring(0, pathLength);
             }
-            assetFolder = Locators.getRootPath();
+            assetLocation = Locators.getRootPath();
             name = loaded.getName();
         }
 

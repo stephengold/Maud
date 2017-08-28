@@ -51,7 +51,7 @@ public class ActionPrefix {
     /**
      * argument is a filesystem path to an asset directory/folder/JAR/ZIP
      */
-    final public static String deleteAssetFolder = "delete assetFolder ";
+    final public static String deleteAssetLocation = "delete assetLocation ";
     /**
      * argument is the name of an animation in the target CG model
      */
@@ -88,7 +88,7 @@ public class ActionPrefix {
     /**
      * argument is a location index followed by an asset path to a CG model
      */
-    final public static String loadSourceCgmAsset = "load sourceCgm assetFolder ";
+    final public static String loadSourceCgmAsset = "load sourceCgm asset ";
     /**
      * argument is a directory/folder/JAR/ZIP or else "From classpath"
      */
@@ -102,10 +102,9 @@ public class ActionPrefix {
      */
     final public static String newAnimationFromPose = "new animation fromPose ";
     /**
-     * argument is a filesystem path to a folder/directory optionally with a
-     * magic filename
+     * argument is a filesystem path to a directory/folder/JAR/ZIP
      */
-    final public static String newAssetFolder = "new assetFolder ";
+    final public static String newAssetLocation = "new assetLocation ";
     /**
      * arguments are the new type, key, and value
      */
