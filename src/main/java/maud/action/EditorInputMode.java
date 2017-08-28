@@ -267,9 +267,9 @@ public class EditorInputMode extends InputMode {
                 break;
             default:
                 handled = false;
-                if (actionString.startsWith(ActionPrefix.deleteAssetFolder)) {
+                if (actionString.startsWith(ActionPrefix.deleteAssetLocation)) {
                     String arg = MyString.remainder(actionString,
-                            ActionPrefix.deleteAssetFolder);
+                            ActionPrefix.deleteAssetLocation);
                     Maud.getModel().getLocations().remove(arg);
                     handled = true;
                 }

@@ -86,11 +86,11 @@ public class CgmTool extends WindowController {
                 : MyString.quote(assetPath);
         Maud.gui.setStatusText("cgmAbp", " " + abpDesc);
         /*
-         * asset-folder path
+         * asset-location path
          */
-        String assetFolder = target.getAssetFolder();
-        String afDesc = assetFolder.isEmpty() ? "unknown"
-                : MyString.quote(assetFolder);
+        String location = target.getAssetLocation();
+        String afDesc = location.isEmpty() ? "unknown"
+                : MyString.quote(location);
         Maud.gui.setStatusText("cgmAf", " " + afDesc);
         /*
          * asset/file extension

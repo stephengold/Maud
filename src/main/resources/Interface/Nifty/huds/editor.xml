@@ -682,7 +682,7 @@ the menu bar, status bar, and tool windows.
                     </panel>
                     <panel/>
                     <panel childLayout="horizontal">
-                        <control name="label" text="Asset folder:  "
+                        <control name="label" text="Asset location:  "
                                  textHAlign="right"
                                  width="100px"/>
                         <control name="label" id="cgmAf"

@@ -76,7 +76,7 @@ public class LoadedMap implements Cloneable {
     /**
      * absolute filesystem path to asset location, or "" if unknown
      */
-    protected String assetFolder = "";
+    protected String assetLocation = "";
     /**
      * asset path, or "" if unknown
      */
@@ -179,13 +179,13 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Read the asset folder of the loaded map.
+     * Read the asset location of the loaded map.
      *
      * @return filesystem path, or "" if unknown (not null)
      */
-    public String getAssetFolder() {
-        assert assetFolder != null;
-        return assetFolder;
+    public String getAssetLocation() {
+        assert assetLocation != null;
+        return assetLocation;
     }
 
     /**
@@ -349,7 +349,7 @@ public class LoadedMap implements Cloneable {
         } else {
             success = true;
             map = loaded;
-            assetFolder = location;
+            assetLocation = location;
             assetPath = path;
         }
 
@@ -379,7 +379,7 @@ public class LoadedMap implements Cloneable {
         } else {
             success = true;
             map = loaded;
-            assetFolder = "";
+            assetLocation = "";
             assetPath = path;
         }
 

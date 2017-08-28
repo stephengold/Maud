@@ -95,15 +95,15 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "Settings -> Asset folders" menu.
+     * Display a "Settings -> Asset locations" menu.
      */
-    void assetFolders() {
+    void assetLocations() {
         MenuBuilder builder = new MenuBuilder();
         builder.add("Add");
         if (Maud.getModel().getLocations().hasRemovable()) {
             builder.add("Remove");
         }
-        builder.show("select menuItem Settings -> Asset folders -> ");
+        builder.show("select menuItem Settings -> Asset locations -> ");
     }
 
     /**

@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
+import jme3utilities.ui.ActionApplication;
 import maud.Maud;
 import maud.Util;
 
@@ -286,7 +287,7 @@ public class EditableMap extends LoadedMap {
     public void unload() {
         History.autoAdd();
         map.clear();
-        assetFolder = "";
+        assetLocation = "";
         assetPath = "";
         setEdited("unload map");
     }
@@ -316,12 +317,12 @@ public class EditableMap extends LoadedMap {
         if (success) {
             String af = assetFolderForWrite();
             if (filePath.startsWith(af)) {
-                assetFolder = af;
+                assetLocation = af;
                 assetPath = MyString.remainder(filePath, af);
             } else if (filePath.endsWith(assetPath) && !assetPath.isEmpty()) {
-                assetFolder = MyString.removeSuffix(filePath, assetPath);
+                assetLocation = MyString.removeSuffix(filePath, assetPath);
             } else {
-                assetFolder = "";
+                assetLocation = "";
                 assetPath = "";
             }
             if (assetPath.startsWith("/")) {
@@ -406,11 +407,10 @@ public class EditableMap extends LoadedMap {
      * @return absolute filesystem path (not null, not empty)
      */
     private String assetFolderForWrite() {
-        String result = assetFolder;
-        if (result.isEmpty()) {
-            File wa = new File("Written Assets");
-            result = wa.getAbsolutePath();
-            result = result.replaceAll("\\\\", "/");
+        String result = assetLocation;
+        if (result.isEmpty() || result.endsWith(".jar")
+                || result.endsWith(".zip")) {
+            result = ActionApplication.getWrittenAssetDirPath();
         }
 
         return result;
@@ -448,7 +448,7 @@ public class EditableMap extends LoadedMap {
             map.map(name, name);
         }
 
-        assetFolder = "";
+        assetLocation = "";
         assetPath = "";
         String event = String.format("load an identity map with %d bone%s",
                 numBones, numBones == 1 ? "" : "s");
