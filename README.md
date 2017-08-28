@@ -1,10 +1,11 @@
 <img height="150" src="https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/Maud.png" alt="Maud logo"/>
 
-Maud is an editor for the animated 3-D models used by jMonkeyEngine (jME).
+Maud is an editor for the animated 3-D models used with the
+[jMonkeyEngine (jME)][jme] game engine.
 
 Anticipated uses:
 
- + develop jME animations from motion capture data
+ + develop animations from motion-capture data
  + copy/retarget animations between models
  + convert models in other formats to native J3O format
  + troubleshoot issues with models (or with your model-asset pipeline)
@@ -25,7 +26,7 @@ Summary of features:
  + behead/truncate animations
  + reduce/resample/wrap animations and bone tracks
  + delete animations, keyframes, spatials, and tracks
- + create new scene-graph controls and user data
+ + add new scene-graph controls and user data
  + modify bone/spatial transforms (translation, rotation, and scale)
  + modify batch hints, cull hints, render-queue buckets, shadow modes, and user data
  + delete scene-graph controls and user data
@@ -166,7 +167,7 @@ The Start Screen loads first. It merely displays the Maud logo while
 initialization completes.  It should automatically transition to the Editor
 Screen after a few seconds.
 
-The Editor Screen is Maud's main screen, where 3-D models are viewed
+The Editor Screen is Maud's main screen, where 3-D models are visualized, browsed,
 and edited.  There's a menu bar across the top and a message bar at the bottom.
 The rest of the user interface
 is split into overlapping sub-windows called "tools".
@@ -175,12 +176,12 @@ is split into overlapping sub-windows called "tools".
 
 #### Tools
 
-At last count, Maud had 34 tools.
+At last count, Maud had 35 tools.
 Each tool can be independently hidden or made visible.
 
 Selecting a tool makes it visible and moves it to the top layer for convenient
 use, but you can use a tool without it being on top.
-The controls in a tool will work even when partly obscured.
+The controls in a tool work even when partly obscured.
 You can move a tool by dragging its title bar with the left mouse button (LMB).
 
 If a tool gets in your way, you can hide it by clicking on
@@ -200,20 +201,22 @@ what they do:
  + a wrench icon to select a tool
  + a dialog box icon to open a modal dialog box
  + a bone icon to select a bone
+ + a pencil icon to immediately alter the map/model
  + and so forth.
 
 ![wrench icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/tool.png)
 ![dialog icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/dialog.png)
 ![bone icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/bone.png)
+![pencil icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/edit.png)
 
 Menus are context-sensitive, so for instance you'll see many more options
-in the Animation menu when an animation is loaded than when the model is
+in the Animation menu when a real animation is loaded than when the model is
 in bind pose.
 
-Many menu items are numbered.  For instance, the first item in the menu bar is
+Most menu items are numbered.  For instance, the first item in the menu bar is
 labeled "1] View".  The numbers indicate keyboard shortcuts for
 navigating menus.  In other words, you can select the View Menu by pressing
-the "1" key on the main keyboard (NOT the "1" key on the numeric keypad).
+the "1" key on the main keyboard (but NOT the "1" key on the numeric keypad).
 
 #### Keyboard shortcuts
 
@@ -221,7 +224,7 @@ Keyboard shortcuts for the Editor Screen include:
 
  + "E" to deselect the selected bone in a model
  + "." to pause/restart the loaded animation(s)
- + "Esc" to exit from the active menu (or from the Maud application)
+ + "Esc" to exit from the active menu (or if there's no active menu, to exit from Maud)
  + "X" to create a checkpoint
  + "Z" to undo to the previous checkpoint
  + "Y" to redo to the next checkpoint
@@ -234,34 +237,34 @@ in which case shortcuts described in this document might not work.
 
 ### Views and models in the Editor Screen
 
-At startup, the Editor Screen displays a "scene" view of a single model:
+At startup, the Editor Screen displays a "scene" view of a single 3-D model:
 Jaime, from the jme3-testdata library.
 
 ![screenshot](figures/fig01.png "Editor Screen at startup")
 
 A scene view consists of a 3-D render of a loaded model, possibly with a
-background, a 3D cursor, a supporting platform, and/or overlaid visualizations.
-Visualization can include axes, a bounding box, physics objects, and/or a
+background, a 3-D cursor, a supporting platform, and/or overlaid visualizations.
+Visualization can include axes, a bounding box, a mesh vertex, physics objects, and/or a
 skeleton.  If you load and play an animation in a scene view, you'll see the
-model's bones move, rather like it would in a game.
+model's bones move, rather like they would in a game.
 
 When the mouse cursor is in a scene view, you can use the "A" and "D" keys
 to rotate the model left and right.  (This won't alter the model itself,
-only its orientation in scene views.)
+only its orientation in the view.)
 
 The Editor Screen can also display "score" views of loaded animations.
 A score view is a schematic, like a musical score, with bones arranged
 vertically and time (indicated by a gnomon) progressing from left to right.
 
 While Maud can only edit one model at a time, the Editor Screen can split
-in half to display two different models.
+in half to display 2 different models.
 (This is useful when retargeting animations from one model to another.)
 The model being edited is called the "target" model.
 The other model is called the "source" model.
 
 ### Views modes of the Editor Screen
 
-The Editor Screen operates in three "view modes", namely:
+The Editor Screen operates in 3 "view modes", namely:
 "Scene Mode", "Score Mode", and "Hybrid Mode".
 You can select a view mode using the "View -> Mode" submenu or
 use the backtick ("`") keyboard shortcut to cycle through these modes.
@@ -295,7 +298,7 @@ use the backtick ("`") keyboard shortcut to cycle through these modes.
 
 Each view has its own camera.
 The mouse wheel and middle mouse button (MMB) control Maud's cameras.
-Turn the mouse wheel to move a camera forward or backward.
+Rotate the mouse wheel to move a camera forward or backward.
 In scene views, drag with MMB to turn the camera.
 In score views, drag up/down with MMB to scroll the view down/up.
 
@@ -307,35 +310,35 @@ The "Camera Tool" (selected using "View -> Scene options -> Camera")
 can be used to select these modes.
 
 "Orbit Mode" is a scene-view camera's default movement mode.
-In orbit mode, the camera orbits the "3D cursor" -- typically visible
+In orbit mode, the camera orbits the "3-D cursor" -- typically visible
 as a small, white, 6-pointed star at the center of the view.
 In orbit mode, turning the camera also changes its location, making it easy to
 view models from many directions.
 
-Move the 3D cursor to a new location by clicking LMB on an object in the view:
+Move the 3-D cursor to a new location by clicking LMB on an object in the view:
 either the model or its platform.
-The 3D cursor doesn't attach to any object, so moving or altering objects
-in the scene won't affect the 3D cursor.
+The 3-D cursor doesn't attach to other objects, so moving or altering objects
+in the scene won't move the 3-D cursor.
 The "Cursor Tool" (selected using "View -> Scene options -> Cursor")
-can alter the appearance of the 3D cursor.
+can alter the appearance of the 3-D cursor.
 
 "Fly Mode" is a scene-view camera's alternative movement mode.
-In fly mode, the camera disregards the 3D cursor, enabling closeups of
-locations the 3D cursor can't easily reach, such as the interior
+In fly mode, the camera disregards the 3-D cursor, enabling closeups of
+locations the 3-D cursor can't easily reach, such as the interior
 of a model.
 
 "Perspective Mode" is a scene-view camera's default projection mode,
 and "Parallel Mode" is the alternative.
 In Parallel Mode, the mouse wheel
-affects the scale of the projection without actually moving the camera.
+alters the scale of the projection without actually moving the camera.
 
 Standard keyboard shortcuts affecting the scene-view cameras:
- + "Numpad-1" to move (or rotate) to a horizontal view
- + "Numpad-5" to toggle between perspective and parallel projection modes
+ + "Numpad-1" to move (or rotate) one camera to a horizontal view
+ + "Numpad-5" to toggle between projection modes
 
 #### Score-view cameras
 
-Score views don't have anything analogous to the 3D cursor, but you can
+Score views don't have anything analogous to the 3-D cursor, but you can
 move the score-view camera up/down by clicking LMB where you want it to look.
 
 <a name="cgms">
@@ -347,21 +350,22 @@ and an additional model (the source model) can also be loaded.
 The source model can't be edited; only the target can be edited.
 
 The "Model Tool" (selected using "Models -> Tool") displays basic
-information about the loaded target model.
+information about the target model.
 
 ### Loading (or importing) models from assets
 
 Models are loaded from assets, which can be located either in the
-Java classpath or in the filesystem.
+Java classpath (built into Maud) or in the local filesystem.
 
-Before loading an asset from the filesystem, you must specify
-a folder (aka directory) where Maud assets are located:
-select "Settings -> Asset folders -> Add",
-then navigate to the asset folder (it typically contains a "Model" subfolder),
+Before loading an model from the local filesystem, you must specify
+a where the model's assets are located:
+select "Settings -> Asset locations -> Add",
+then navigate to the asset folder (typically it contains a "Model" subfolder),
 and select "! add this folder".
+Or if the assets are in a JAR/ZIP file, simply select the file.
 
 To load a new target model, select the "Models -> Load" menu item,
-then select an asset folder, then navigate to the model file.
+then select an asset location, then navigate to the model file.
 To load a new source model, select "Models -> Source model -> Load",
 then select an asset folder, then navigate to the model file.
 
@@ -387,15 +391,15 @@ open the save dialog: "Models -> Save".
 Modify the base file path as desired, and click on the "Save" button.
 The suffix ".j3o" is automatically appended to the base file path.
 
-By default, models loaded from the classpath will be written to a
-"Written assets" folder under the application's working folder.
-Maud treats this asset folder as if it were part of the classpath.
+By default, models loaded from the classpath or from an archive will be written to a
+"Written assets" folder under Maud's working folder.
+When loading, Maud treats this folder as if it were at the start of the classpath.
 
 <a name="bones">
 
 ## Bones
 
-In jME, "bones" are named parts of a 3D model that can influence the positions
+In jME, "bones" are named parts of a 3-D model that can influence the positions
 of vertices in that model's meshes.
 A vertex can be influenced by up to 4 bones.
 A bone can also influence other bones, called its "children".
@@ -404,7 +408,7 @@ A bone with no parent is a "root" bone.
 
 Each bone has a "head" around which it pivots.
 However a jME bone need not have a well-defined "tail", a length,
-or even a direction.
+nor even a direction.
 
 In a scene view, Maud visualizes each bone as a round dot
 (red or green by default)
@@ -416,16 +420,16 @@ In a score view, each bone is represented by horizontal "staff".
 If space permits, the staff includes a rectangular name label on the left.
 If the bone is tracked (more about that later) the staff also includes
 up to 10 stacked "sparklines" bracketed by a pair of "finials".
-The sparklines, rendered in four colors, represent animation data,
-and the finials help distinguish which sparkline is which.
+The sparklines, rendered in 4 colors, represent animation data,
+and the finials help identify the sparklines.
 
 ![screenshot](figures/fig03.png "a detailed staff in a score view")
 
 Before editing a bone in Maud, you must "select" it.
 In a scene view, the selected bone (if any) is typically indicated by
-three arrows, denoting the axes of its local coordinate space.
-In a score view, the selected bone is indicated by dark finials and a
-dark background for its name label.
+3 arrows, denoting the axes of its local coordinate space.
+In a score view, the selected bone is indicated by darker finials and a
+darker background for its name label.
 
 The "Bone Tool" (selected using "Bone -> Tool") controls the target model's
 selected bone.
@@ -438,11 +442,11 @@ The "Bone -> Select" submenu enables you to select bones in the
 target model by name:
 
  + from among all bones in the selected skeleton, or
- + from among the root bones in that skeleton, or
+ + from among the root bones in the selected skeleton, or
  + from among all bones with tracks in the loaded animation, or
  + from among the children of the selected bone.
 
-It also enables you to navigate the bone hierarchy "by parent"
+It also enables you to navigate the bone hierarchy "By parent"
 or step through bones in numerical order ("Previous" and "Next").
 
 The Bone Tool provides more convenient interfaces to these same
@@ -460,12 +464,12 @@ use caution with this technique.
 
 ## Animations
 
-In jME, "animations" are named parts of a 3D model, each with its own duration.
-In addition, Maud treats the model's bind pose as a zero-duration
-animation for most purposes.
+In jME, "animations" are named parts of a 3-D model, each with its own duration.
+Maud treats the model's bind pose as a zero-duration
+animation for many purposes.
 
-Real jME animations are made up of "tracks", usally bone tracks.
-Each bone track controls the local transform of a single bone.
+A real animation is stored in an AnimControl and composed of "tracks", usually bone tracks.
+Each bone track transforms a single bone.
 An animation need not include a track for every bone.
 Maud refers to bones that have tracks in the loaded animation
 as "tracked bones".
@@ -512,17 +516,17 @@ for display (scene view) purposes.
 ## The displayed pose
 
 While an animation is playing on the target model, Maud typically refreshes
-the displayed bone transforms on every frame.
+the model's bone transforms on every frame.
 Once the animation is paused, however, the target model's bone transforms
-become a new object (called the "pose") that can be modified independent
+(called the "displayed pose") can be modified independent
 of the loaded animation.
 
 Use the "Bone-Translation Tool" ("Bone -> Translate") to modify the local
-translation of the selected bone in the pose.
+translation of the selected bone in the displayed pose.
 Use the "Bone-Scale Tool" ("Bone -> Scale") to scale
-the selected bone in the pose.
+the selected bone in the displayed pose.
 And use the "Bone-Rotation Tool" ("Bone -> Rotate") to rotate
-the selected bone in the pose.
+the selected bone in the displayed pose.
 
 In a scene view, you can also rotate the selected bone by grabbing
 any of the bone's 3 axis arrows with the RMB and dragging with the mouse.
@@ -533,20 +537,20 @@ While you're dragging a bone axis, Maud remembers whether the axis
 inclines toward the camera or away from it.
 You can toggle this inclination using the "S" shortcut key.
 
-The pose has many uses.  For instance:
+The displayed pose has many uses.  For instance:
 To create a new, zero-length animation from the pose,
 select "Animations -> Add new -> Pose".
 To insert keyframes (and replace any pre-existing keyframes)
 at the current time in the loaded animation,
-select "Animations -> Insert keyframes".
+select "Animations -> Edit -> Insert keyframes".
 To insert a keyframe (or replace the pre-existing keyframe)
 at the current time in the selected bone track,
 select "Keyframe -> Insert from pose".
-To replace all keyframes in the selected bone
+To alter all keyframes in the selected bone
 track, use the "Set all to pose" buttons in the "Keyframe Tool"
 ("Keyframe -> Tool").
 
-You can use the pose like a paste buffer, to copy bone transforms
+You can use the displayed pose like a paste buffer, to copy bone transforms
 from one time to another.
 For this to work, you must "freeze" the pose so Maud won't
 overwrite it as soon as you change the animation time.
@@ -554,15 +558,15 @@ To freeze the pose, either tick the "freeze" check box in the Animation Tool
 or use the "F" keyboard shortcut.
 Then go to the animation time when you want to paste and select
 "Keyframe -> Insert from pose" (to paste a single keyframe)
-or "Animations -> Insert keyframes" (to paste multiple keyframes).
-Remember to unfreeze the pose after you finish!
+or "Animations -> Edit -> Insert keyframes" (to paste multiple keyframes).
+Remember to unfreeze the pose afterward!
 
 <a name="map">
 
 ## The skeleton map
 
 Once an animation is created for one model, it's a simple matter to
-copy it to another model, provided both models use the exact same
+copy it to another model, provided both models have the exact same
 skeleton.
 
 To retarget animations between models with different skeletons, Maud
@@ -578,7 +582,7 @@ map includes a "twist" value.
 
 Maud has the capability to load skeleton maps from assets, edit
 them, save them, and use them to retarget animations.
-Sample skeleton maps are provided, such as "SinbadToJaime" which
+Sample skeleton maps are build into Maud, such as "SinbadToJaime" which
 maps Sinbad's skeleton to that of Jaime.
 
 The "Mapping Tool" ("Map -> Tool") is useful for loading and
@@ -591,12 +595,12 @@ the "Map" button in the lower left or use the equals ("=") keyboard shortcut.
 As long as the 2 selected bones map to each other in the loaded map,
 Maud considers that the corresponding bone mapping is selected.
 You can unmap the selected bone mapping (with the "Unmap" button) or
-adjust its twist value with the "Twist Tool" ("Map -> Twist Tool").
+adjust its twist value with the "Twist Tool" ("Map -> Twist tool").
 
-When editing a skeleton map, it's helpful to see
+When editing a skeleton map, it's helpful to watch
 its effect on the target model in real time.
 To do this, click LMB on the "Show retargeted pose" button in the Mapping Tool or
-select "Animations -> Load -> (retargeted pose)".
+select "Animations -> Load -> ( retargeted pose )".
 With this pseudo-animation loaded:
 
  + changing the source pose automatically updates the target pose,
@@ -615,17 +619,18 @@ Like any serious editor, Maud provides an "undo" capability.
 
 Maud's undo capability is based on checkpointing the editor's state.
 Tool visibility and positioning are not checkpointed, nor are shortcut
-key bindings, but nearly everything else is, including the view mode,
-view options, loaded models, maps, and animations, and selections.
+key bindings, but nearly everything else is, including selections, the view mode,
+view options, and loaded models, maps, and animations.
 
-You can create a checkpoint at any time using the "X" keyboard shortcut
+By default, Maud creates a checkpoint before editing/unloaded a map/model.
+You can also create a checkpoint manually using the "X" keyboard shortcut
 or the "New checkpoint" button in the "History Tool" ("History -> Tool").
 To undo changes since the most recent checkpoint, use the "Z" keyboard shortcut.
 
 To safeguard your work since the last checkpoint,
 the "Z" key usually creates a new checkpoint as well.
-That allows you to to redo any changes you've undone
-by using the "Y" keyboard shortcut.
+That allows you to to redo any changes you've undone:
+use the "Y" keyboard shortcut.
 
 Maud places no limit on the number of checkpoints you can create/undo/redo.
 To help you visualize and navigate your edit history,
@@ -660,6 +665,7 @@ BVH resources:
 [findbugs]: http://findbugs.sourceforge.net "FindBugs Project"
 [git]: https://git-scm.com "Git"
 [github]: https://github.com "GitHub"
+[gltf]: https://www.khronos.org/gltf "glTF Project"
 [gradle]: https://gradle.org "Gradle Project"
 [jfrog]: https://www.jfrog.com "JFrog"
 [jme]: http://jmonkeyengine.org  "jMonkeyEngine Project"
@@ -685,11 +691,13 @@ The following features are on my "to do" list, in no particular order:
 
  + advance/delay keyframe(s)
  + better support for physics controls/objects
- + smooth camera motion
+ + support for spatial animation tracks
+ + smoother camera motion
  + tools for Lights/Materials/Meshes
  + select bone mappings that don't correspond to the loaded models
  + export a model to [OBJ][] format
  + export an animation to [BVH][] format
+ + import models from [glTF][] files
  + localization
  + more scene-view options for platform/sky
  + blend/concatenate animations
@@ -706,6 +714,8 @@ Maud's source code is compatible with both JDK 7 and JDK 8.
 
 World coordinate system: the Y axis points upward (toward the zenith).
 
+The first keyframe in each track must be at time=0.
+
 <a name="history">
 
 ## History
@@ -717,7 +727,7 @@ Maud began as a demo application for the jme3-utilities-debug library,
 part of the jme3-utilities project at
 https://github.com/stephengold/jme3-utilities
 
-Maud includes code from the the BVH Retarget Project at
+Maud incorporates code from the the BVH Retarget Project at
 https://github.com/Nehon/bvhretarget
 
 <a name="acks">
@@ -730,7 +740,7 @@ I therefore acknowledge the following artists and software developers:
 + Rémy Bouquet (aka "nehon") for creating the Jaime model and the [BVH Retarget
   Project][retarget] and also for many helpful insights
 + Paul Speed (aka "pspeed") for many helpful insights
-+ David Bernard (aka "david_bernard_31") for creating [Xbuf][xbuf]
++ David Bernard (aka "david_bernard_31") for creating [Xbuf][]
 + [Nathan Vegdahl][vegdahl], for creating the Puppet model
 + Zi Ye, for creating the Sinbad model
 + the brave souls who volunteered to be alpha testers for Maud, including:
