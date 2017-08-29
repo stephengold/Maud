@@ -78,9 +78,9 @@ public class LoadedMap implements Cloneable {
      */
     protected String assetLocation = "";
     /**
-     * asset path, or "" if unknown
+     * asset path less extension, or "" if unknown
      */
-    protected String assetPath = "";
+    protected String baseAssetPath = "";
     // *************************************************************************
     // new methods exposed
 
@@ -181,7 +181,7 @@ public class LoadedMap implements Cloneable {
     /**
      * Read the asset location of the loaded map.
      *
-     * @return filesystem path, or "" if unknown (not null)
+     * @return absolute filesystem path, or "" if not known (not null)
      */
     public String getAssetLocation() {
         assert assetLocation != null;
@@ -189,13 +189,13 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Read the asset path to the loaded map.
+     * Read the asset path of the loaded map, less extension.
      *
-     * @return path, or "" if unknown (not null)
+     * @return base path, or "" if unknown (not null)
      */
     public String getAssetPath() {
-        assert assetPath != null;
-        return assetPath;
+        assert baseAssetPath != null;
+        return baseAssetPath;
     }
 
     /**
@@ -350,7 +350,7 @@ public class LoadedMap implements Cloneable {
             success = true;
             map = loaded;
             assetLocation = location;
-            assetPath = path;
+            baseAssetPath = MyString.removeSuffix(path, ".j3o");
         }
 
         return success;
@@ -380,7 +380,7 @@ public class LoadedMap implements Cloneable {
             success = true;
             map = loaded;
             assetLocation = "";
-            assetPath = path;
+            baseAssetPath = MyString.removeSuffix(path, ".j3o");
         }
 
         return success;

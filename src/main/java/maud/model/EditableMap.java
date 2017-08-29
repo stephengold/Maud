@@ -73,17 +73,17 @@ public class EditableMap extends LoadedMap {
     /**
      * Determine the default base path for writing the map to the filesystem.
      *
-     * @return base filesystem path, or "" if unknown (not null)
+     * @return absolute filesystem path less extension (not null, not empty)
      */
     public String baseFilePathForWrite() {
-        String result = "";
-        String aPath = getAssetPath();
-        if (!aPath.isEmpty()) {
-            String folder = assetFolderForWrite();
-            File file = new File(folder, aPath);
-            result = file.getAbsolutePath();
-            result = result.replaceAll("\\\\", "/");
+        String folder = assetFolderForWrite();
+        String assetPath = getAssetPath();
+        if (assetPath.isEmpty()) {
+            assetPath = "SkeletonMaps/Untitled";
         }
+        File file = new File(folder, assetPath);
+        String result = file.getAbsolutePath();
+        result = result.replaceAll("\\\\", "/");
 
         return result;
     }
@@ -172,7 +172,7 @@ public class EditableMap extends LoadedMap {
         if (map.countMappings() > 0) {
             History.autoAdd();
             map = map.inverse();
-            assetPath = "";
+            baseAssetPath = "";
             setEdited("invert the skeleton map");
         }
     }
@@ -288,20 +288,21 @@ public class EditableMap extends LoadedMap {
         History.autoAdd();
         map.clear();
         assetLocation = "";
-        assetPath = "";
+        baseAssetPath = "";
         setEdited("unload map");
     }
 
     /**
-     * Write the map to a file. TODO append J3O extension
+     * Write the map to the specified file.
      *
-     * @param path file path (not null, not empty)
+     * @param baseFilePath file path without any extension (not null, not empty)
      * @return true if successful, otherwise false
      */
-    public boolean writeToFile(String path) {
-        Validate.nonEmpty(path, "path");
+    public boolean writeToFile(String baseFilePath) {
+        Validate.nonEmpty(baseFilePath, "base file path");
 
-        File file = new File(path);
+        String filePath = baseFilePath + ".j3o";
+        File file = new File(filePath);
         BinaryExporter exporter = BinaryExporter.getInstance();
 
         boolean success = true;
@@ -311,23 +312,26 @@ public class EditableMap extends LoadedMap {
             success = false;
         }
 
-        String filePath = file.getAbsolutePath();
+        filePath = file.getAbsolutePath();
         filePath = filePath.replaceAll("\\\\", "/");
 
         if (success) {
             String af = assetFolderForWrite();
-            if (filePath.startsWith(af)) {
+            if (baseFilePath.startsWith(af)) {
                 assetLocation = af;
-                assetPath = MyString.remainder(filePath, af);
-            } else if (filePath.endsWith(assetPath) && !assetPath.isEmpty()) {
-                assetLocation = MyString.removeSuffix(filePath, assetPath);
+                baseAssetPath = MyString.remainder(baseFilePath, af);
+            } else if (filePath.endsWith(baseAssetPath)
+                    && !baseAssetPath.isEmpty()) {
+                assetLocation = MyString.removeSuffix(baseFilePath,
+                        baseAssetPath);
             } else {
                 assetLocation = "";
-                assetPath = "";
+                baseAssetPath = "";
             }
-            if (assetPath.startsWith("/")) {
-                assetPath = MyString.remainder(assetPath, "/");
+            if (baseAssetPath.startsWith("/")) {
+                baseAssetPath = MyString.remainder(baseAssetPath, "/");
             }
+
             String eventDescription = "write map to " + filePath;
             setPristine(eventDescription);
             logger.log(Level.INFO, "Wrote map to file {0}",
@@ -449,7 +453,7 @@ public class EditableMap extends LoadedMap {
         }
 
         assetLocation = "";
-        assetPath = "";
+        baseAssetPath = "";
         String event = String.format("load an identity map with %d bone%s",
                 numBones, numBones == 1 ? "" : "s");
         setEdited(event);

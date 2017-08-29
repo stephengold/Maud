@@ -175,18 +175,17 @@ public class EditableCgm extends LoadedCgm {
      * Determine the default base path for writing the CG model to the
      * filesystem.
      *
-     * @return absolute filesystem path less extension, or "" if unknown (not
-     * null)
+     * @return absolute filesystem path less extension (not null, not empty)
      */
     public String baseFilePathForWrite() {
-        String result = "";
+        String folder = assetFolderForWrite();
         String assetPath = getAssetPath();
-        if (!assetPath.isEmpty()) {
-            String folder = assetFolderForWrite();
-            File file = new File(folder, assetPath);
-            result = file.getAbsolutePath();
-            result = result.replaceAll("\\\\", "/");
+        if (assetPath.isEmpty()) {
+            assetPath = "Models/Untitled/Untitled";
         }
+        File file = new File(folder, assetPath);
+        String result = file.getAbsolutePath();
+        result = result.replaceAll("\\\\", "/");
 
         return result;
     }

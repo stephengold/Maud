@@ -921,7 +921,7 @@ the menu bar, status bar, and tool windows.
                      height="225px" width="360px" x="35" y="65">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="25px">
-                        <control name="label" text="Asset path:  "/>
+                        <control name="label" text="Asset base path:  "/>
                         <control name="label" id="mapAssetPath"
                                  backgroundColor="#ffff"
                                  width="*"/>
