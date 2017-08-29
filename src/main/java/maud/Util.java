@@ -389,6 +389,48 @@ public class Util {
     }
 
     /**
+     * Find the specified spatial in the specified subtree and optionally store
+     * its tree position. Note: recursive!
+     *
+     * @param spatial spatial to find (not null)
+     * @param subtree which subtree to search (may be null, unaffected)
+     * @param storePosition tree position of the spatial (modified if found and
+     * not null)
+     * @return true if found, otherwise false
+     */
+    public static boolean findPosition(Spatial spatial, Spatial subtree,
+            List<Integer> storePosition) {
+        Validate.nonNull(spatial, "spatial");
+
+        boolean success = false;
+        if (subtree != null) {
+            if (subtree.equals(spatial)) {
+                success = true;
+                if (storePosition != null) {
+                    storePosition.clear();
+                }
+
+            } else if (subtree instanceof Node) {
+                Node node = (Node) subtree;
+                List<Spatial> children = node.getChildren();
+                int numChildren = children.size();
+                for (int childI = 0; childI < numChildren; childI++) {
+                    Spatial child = children.get(childI);
+                    success = findPosition(spatial, child, storePosition);
+                    if (success) {
+                        if (storePosition != null) {
+                            storePosition.add(0, childI);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        return success;
+    }
+
+    /**
      * Find the point of vertical support (minimum Y coordinate) for the
      * specified geometry transformed by the specified skinning matrices.
      *
