@@ -28,7 +28,6 @@ package maud.view;
 
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
-import maud.Selection;
 import maud.model.LoadedCgm;
 
 /**
@@ -38,11 +37,39 @@ import maud.model.LoadedCgm;
  */
 public interface EditorView {
     /**
-     * Consider selecting each axis, bone, gnomon, and keyframe in this view.
+     * Consider selecting each axis in this view.
      *
      * @param bestSelection best selection found so far (not null, modified)
      */
-    void considerAll(Selection bestSelection);
+    void considerAxes(Selection bestSelection);
+
+    /**
+     * Consider selecting each bone in this view.
+     *
+     * @param bestSelection best selection found so far (not null, modified)
+     */
+    void considerBones(Selection bestSelection);
+
+    /**
+     * Consider selecting each gnomon in this view.
+     *
+     * @param bestSelection best selection found so far (not null, modified)
+     */
+    void considerGnomons(Selection bestSelection);
+
+    /**
+     * Consider selecting each keyframe in this view.
+     *
+     * @param bestSelection best selection found so far (not null, modified)
+     */
+    void considerKeyframes(Selection bestSelection);
+
+    /**
+     * Consider selecting each vertex in this view.
+     *
+     * @param bestSelection best selection found so far (not null, modified)
+     */
+    void considerVertices(Selection bestSelection);
 
     /**
      * Access the camera used to render this view.

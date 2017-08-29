@@ -26,7 +26,6 @@
  */
 package maud;
 
-import maud.dialog.EditorDialogs;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
@@ -55,6 +54,7 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
+import maud.dialog.EditorDialogs;
 import maud.menu.BoneMenus;
 import maud.menu.BuildMenus;
 import maud.menu.EditorMenus;
@@ -77,6 +77,7 @@ import maud.view.CgmTransform;
 import maud.view.EditorView;
 import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
+import maud.view.Selection;
 import maud.view.ViewType;
 
 /**
@@ -106,10 +107,6 @@ public class EditorScreen extends GuiScreenController {
      * name of the signal that rotates the model clockwise around +Y
      */
     final private static String modelCWSignalName = "modelRight";
-    /**
-     * name of the signal that diverts rotation from target to source
-     */
-    final public static String sourceModelSignalName = "sourceModel";
     // *************************************************************************
     // fields
 
@@ -553,6 +550,48 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
+     * Select a bone based on the screen coordinates of the mouse pointer.
+     */
+    public void selectBone() {
+        LoadedCgm mouseCgm = Maud.gui.mouseCgm();
+        EditorView mouseView = Maud.gui.mouseView();
+        if (mouseCgm != null && mouseView != null) {
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            Selection selection = new Selection(mouseXY, dSquaredThreshold);
+            mouseView.considerBones(selection);
+            selection.select();
+        }
+    }
+
+    /**
+     * Select a gnomon based on the screen coordinates of the mouse pointer.
+     */
+    public void selectGnomon() {
+        LoadedCgm mouseCgm = Maud.gui.mouseCgm();
+        EditorView mouseView = Maud.gui.mouseView();
+        if (mouseCgm != null && mouseView != null) {
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            Selection selection = new Selection(mouseXY, dSquaredThreshold);
+            mouseView.considerGnomons(selection);
+            selection.select();
+        }
+    }
+
+    /**
+     * Select a keyframe based on the screen coordinates of the mouse pointer.
+     */
+    public void selectKeyframe() {
+        LoadedCgm mouseCgm = Maud.gui.mouseCgm();
+        EditorView mouseView = Maud.gui.mouseView();
+        if (mouseCgm != null && mouseView != null) {
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            Selection selection = new Selection(mouseXY, dSquaredThreshold);
+            mouseView.considerKeyframes(selection);
+            selection.select();
+        }
+    }
+
+    /**
      * Handle a "select spatialChild" action with an argument.
      *
      * @param argument action argument (not null)
@@ -585,6 +624,20 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
+     * Select a vertex based on the screen coordinates of the mouse pointer.
+     */
+    public void selectVertex() {
+        LoadedCgm mouseCgm = Maud.gui.mouseCgm();
+        EditorView mouseView = Maud.gui.mouseView();
+        if (mouseCgm != null && mouseView != null) {
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            Selection selection = new Selection(mouseXY, dSquaredThreshold);
+            mouseView.considerVertices(selection);
+            selection.select();
+        }
+    }
+
+    /**
      * Select an axis, bone, gnomon, or keyframe based on the screen coordinates
      * of the mouse pointer.
      */
@@ -594,7 +647,10 @@ public class EditorScreen extends GuiScreenController {
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
             Selection selection = new Selection(mouseXY, dSquaredThreshold);
-            mouseView.considerAll(selection);
+            mouseView.considerAxes(selection);
+            mouseView.considerBones(selection);
+            mouseView.considerGnomons(selection);
+            mouseView.considerKeyframes(selection);
             selection.select();
         }
     }

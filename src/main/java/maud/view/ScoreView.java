@@ -64,7 +64,6 @@ import jme3utilities.mesh.RectangleMesh;
 import jme3utilities.mesh.RectangleOutlineMesh;
 import maud.Maud;
 import maud.Pose;
-import maud.Selection;
 import maud.mesh.Finial;
 import maud.mesh.RoundedRectangle;
 import maud.mesh.Sparkline;
@@ -321,12 +320,79 @@ public class ScoreView implements EditorView {
     // EditorView methods
 
     /**
-     * Consider selecting each bone, gnomon, and keyframe in this view.
+     * Consider selecting each axis in this view.
      *
      * @param selection best selection found so far (not null, modified)
      */
     @Override
-    public void considerAll(Selection selection) {
+    public void considerAxes(Selection selection) {
+        Validate.nonNull(selection, "selection");
+        // TODO
+    }
+
+    /**
+     * Consider selecting each visualized bone in this view. The selected bone
+     * is excluded from consideration.
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    @Override
+    public void considerBones(Selection selection) {
+        Validate.nonNull(selection, "selection");
+
+        Camera camera = getCamera();
+        int selectedBone = cgm.getBone().getIndex();
+        Vector2f inputXY = selection.copyInputXY();
+        for (Entry<Integer, Vector2f> entry : boneYs.entrySet()) {
+            int boneIndex = entry.getKey();
+            if (boneIndex != selectedBone) {
+                Vector2f minMax = entry.getValue();
+
+                Vector3f world1 = new Vector3f(xRightMargin, minMax.x, zLines);
+                Vector3f world2 = new Vector3f(xRightMargin, minMax.y, zLines);
+                Vector3f screen1 = camera.getScreenCoordinates(world1);
+                Vector3f screen2 = camera.getScreenCoordinates(world2);
+
+                float dSquared;
+                if (MyMath.isBetween(screen1.y, inputXY.y, screen2.y)) {
+                    dSquared = 0f;
+                } else {
+                    float dSquared1 = FastMath.sqr(inputXY.y - screen1.y);
+                    float dSquared2 = FastMath.sqr(inputXY.y - screen2.y);
+                    dSquared = Math.min(dSquared1, dSquared2);
+                }
+                selection.considerBone(cgm, boneIndex, dSquared);
+            }
+        }
+    }
+
+    /**
+     * Consider selecting each gnomon in this view.
+     *
+     * @param selection best selection found so far
+     */
+    @Override
+    public void considerGnomons(Selection selection) {
+        Validate.nonNull(selection, "selection");
+
+        Camera camera = getCamera();
+        Vector2f inputXY = selection.copyInputXY();
+        float gnomonX = gnomonX();
+        Vector3f world = new Vector3f(gnomonX, 0f, zLines);
+        Vector3f screen = camera.getScreenCoordinates(world);
+        float dSquared = FastMath.sqr(inputXY.x - screen.x);
+        selection.considerGnomon(cgm, dSquared);
+    }
+
+    /**
+     * Consider selecting each keyframe in this view.
+     *
+     * @param selection best selection found so far
+     */
+    @Override
+    public void considerKeyframes(Selection selection) {
+        Validate.nonNull(selection, "selection");
+
         Camera camera = getCamera();
         int selectedBone = cgm.getBone().getIndex();
         Vector2f inputXY = selection.copyInputXY();
@@ -349,34 +415,16 @@ public class ScoreView implements EditorView {
                 }
             }
         }
+    }
 
-        for (Entry<Integer, Vector2f> entry : boneYs.entrySet()) {
-            int boneIndex = entry.getKey();
-            if (boneIndex != selectedBone) {
-                Vector2f minMax = entry.getValue();
-
-                Vector3f world1 = new Vector3f(xRightMargin, minMax.x, zLines);
-                Vector3f world2 = new Vector3f(xRightMargin, minMax.y, zLines);
-                Vector3f screen1 = camera.getScreenCoordinates(world1);
-                Vector3f screen2 = camera.getScreenCoordinates(world2);
-
-                float dSquared;
-                if (MyMath.isBetween(screen1.y, inputXY.y, screen2.y)) {
-                    dSquared = 0f;
-                } else {
-                    float dSquared1 = FastMath.sqr(inputXY.y - screen1.y);
-                    float dSquared2 = FastMath.sqr(inputXY.y - screen2.y);
-                    dSquared = Math.min(dSquared1, dSquared2);
-                }
-                selection.considerBone(cgm, boneIndex, dSquared);
-            }
-        }
-
-        float gnomonX = gnomonX();
-        Vector3f world = new Vector3f(gnomonX, 0f, zLines);
-        Vector3f screen = camera.getScreenCoordinates(world);
-        float dSquared = FastMath.sqr(inputXY.x - screen.x);
-        selection.considerGnomon(cgm, dSquared);
+    /**
+     * Consider selecting each mesh vertex in this view.
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    @Override
+    public void considerVertices(Selection selection) {
+        // no mesh vertices in scene view
     }
 
     /**

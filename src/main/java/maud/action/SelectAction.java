@@ -31,6 +31,8 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
+import maud.view.SceneDrag;
+import maud.view.ScoreDrag;
 
 /**
  * Process an action string that begins with "select".
@@ -58,14 +60,13 @@ class SelectAction {
     // new methods exposed
 
     /**
-     * Process an action string that begin with "select".
+     * Process an ongoing action string that begin with "select".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
     static boolean process(String actionString) {
         boolean handled = true;
-
         EditorModel model = Maud.getModel();
         LoadedCgm target = model.getTarget();
         switch (actionString) {
@@ -99,6 +100,18 @@ class SelectAction {
             case "select mapTargetBone":
                 model.getMap().selectFromTarget();
                 break;
+            case "select screenBone":
+                Maud.gui.selectBone();
+                break;
+            case "select screenGnomon":
+                Maud.gui.selectGnomon();
+                break;
+            case "select screenKeyframe":
+                Maud.gui.selectKeyframe();
+                break;
+            case "select screenVertex":
+                Maud.gui.selectVertex();
+                break;
             case "select screenXY":
                 Maud.gui.selectXY();
                 break;
@@ -125,6 +138,35 @@ class SelectAction {
                 break;
             default:
                 handled = processPrefixes(actionString);
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a non-ongoing action string that begin with "select".
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    static boolean processNotOngoing(String actionString) {
+        boolean handled = true;
+        switch (actionString) {
+            case "select screenBone":
+            case "select screenKeyframe":
+            case "select screenVertex":
+                break;
+
+            case "select screenGnomon":
+                ScoreDrag.setDraggingGnomon(null);
+                break;
+
+            case "select screenXY":
+                SceneDrag.clearDragAxis();
+                ScoreDrag.setDraggingGnomon(null);
+                break;
+            default:
+                handled = false;
         }
 
         return handled;

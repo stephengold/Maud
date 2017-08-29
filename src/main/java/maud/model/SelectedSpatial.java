@@ -767,6 +767,24 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Select the specified tree position.
+     *
+     * @param pos which position (not null, unaffected)
+     */
+    public void select(List<Integer> pos) {
+        Validate.nonNull(pos, "pos");
+
+        loadedCgm.getSgc().selectNone();
+        AnimControl oldAnimControl = loadedCgm.getAnimControl();
+        Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
+
+        treePosition.clear();
+        treePosition.addAll(pos);
+
+        postSelect(oldAnimControl, oldSkeleton);
+    }
+
+    /**
      * Select the specified spatial.
      *
      * @param newSpatial (not null)

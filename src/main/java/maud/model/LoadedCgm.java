@@ -241,13 +241,16 @@ public class LoadedCgm implements Cloneable {
     /**
      * Find the specified spatial.
      *
-     * @param newSpatial spatial to search for (not null)
+     * @param input spatial to search for (not null)
      * @return a new tree-position instance, or null if not found
      */
-    List<Integer> findSpatial(Spatial newSpatial) {
+    List<Integer> findSpatial(Spatial input) {
+        Validate.nonNull(input, "input");
+
         List<Integer> treePosition = new ArrayList<>(4);
-        Spatial sp = findSpatial(newSpatial, rootSpatial, treePosition);
-        if (sp == null) {
+        boolean success;
+        success = Util.findPosition(input, rootSpatial, treePosition);
+        if (!success) {
             treePosition = null;
         }
 
@@ -1087,45 +1090,6 @@ public class LoadedCgm implements Cloneable {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Find the specified spatial in the specified subtree. Note: recursive!
-     *
-     * @param newSpatial spatial to search for (not null)
-     * @param subtree which subtree to search (may be null, unaffected)
-     * @param storePosition tree position of the spatial (modified if found and
-     * not null)
-     * @return the pre-existing spatial, or null if not found
-     */
-    private Spatial findSpatial(Spatial newSpatial, Spatial subtree,
-            List<Integer> storePosition) {
-        Spatial result = null;
-        if (subtree != null) {
-            if (subtree.equals(newSpatial)) {
-                result = subtree;
-                if (storePosition != null) {
-                    storePosition.clear();
-                }
-
-            } else if (subtree instanceof Node) {
-                Node node = (Node) subtree;
-                List<Spatial> children = node.getChildren();
-                int numChildren = children.size();
-                for (int childI = 0; childI < numChildren; childI++) {
-                    Spatial child = children.get(childI);
-                    result = findSpatial(newSpatial, child, storePosition);
-                    if (result != null) {
-                        if (storePosition != null) {
-                            storePosition.add(0, childI);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
 
     /**
      * Find a spatial with the specified name in the specified subtree. Note:

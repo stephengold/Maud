@@ -45,6 +45,7 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Transform;
@@ -61,6 +62,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Logger;
@@ -78,7 +80,6 @@ import jme3utilities.sky.Updater;
 import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.Pose;
-import maud.Selection;
 import maud.Util;
 import maud.mesh.PointMesh;
 import maud.model.LoadedCgm;
@@ -264,6 +265,25 @@ public class SceneView
 
         MySpatial.disablePhysicsControls(spatial);
         spatial.removeFromParent();
+    }
+
+    /**
+     * Find the specified spatial in the CG model.
+     *
+     * @param input spatial to search for (not null)
+     * @return a new tree-position instance, or null if not found
+     */
+    List<Integer> findSpatial(Spatial input) {
+        Validate.nonNull(input, "input");
+
+        List<Integer> treePosition = new ArrayList<>(4);
+        boolean success;
+        success = Util.findPosition(input, cgmRoot, treePosition);
+        if (!success) {
+            treePosition = null;
+        }
+
+        return treePosition;
     }
 
     /**
@@ -660,14 +680,15 @@ public class SceneView
     // EditorView methods
 
     /**
-     * Consider selecting each axis tip and bone in this view.
+     * Consider selecting each axis tip in this view.
      *
      * @param selection best selection found so far (not null, modified)
      */
     @Override
-    public void considerAll(Selection selection) {
-        Camera camera = getCamera();
+    public void considerAxes(Selection selection) {
+        Validate.nonNull(selection, "selection");
 
+        Camera camera = getCamera();
         for (int axisIndex = 0; axisIndex < numAxes; axisIndex++) {
             Vector3f tipWorld = Maud.gui.tools.axes.tipLocation(cgm, axisIndex);
             if (tipWorld != null) {
@@ -676,8 +697,19 @@ public class SceneView
                 selection.considerAxis(cgm, axisIndex, false, tipXY);
             }
         }
+    }
+
+    /**
+     * Consider selecting each visualized bone in this view. The selected bone
+     * is excluded from consideration.
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    @Override
+    public void considerBones(Selection selection) {
+        Validate.nonNull(selection, "selection");
         /*
-         * Determine which bones should be considered.
+         * Determine which bones to consider.
          */
         Pose pose = cgm.getPose().getPose();
         int numBones = pose.countBones();
@@ -702,19 +734,80 @@ public class SceneView
             boneIndexSet.clear(selectedBone);
         }
 
+        Camera camera = getCamera();
         Vector2f inputXY = selection.copyInputXY();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             if (boneIndexSet.get(boneIndex)) {
-                Vector3f modelLocation;
-                modelLocation = pose.modelLocation(boneIndex, null);
+                Vector3f modelLocation = pose.modelLocation(boneIndex, null);
                 Transform worldTransform = worldTransform();
                 Vector3f boneWorld;
                 boneWorld = worldTransform.transformVector(modelLocation, null);
-                Vector3f boneScreen;
-                boneScreen = camera.getScreenCoordinates(boneWorld);
+                Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
                 Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
                 float dSquared = boneXY.distanceSquared(inputXY);
                 selection.considerBone(cgm, boneIndex, dSquared);
+            }
+        }
+    }
+
+    /**
+     * Consider selecting each gnomon in this view.
+     *
+     * @param selection best selection found so far
+     */
+    @Override
+    public void considerGnomons(Selection selection) {
+        // no gnomons in scene view
+    }
+
+    /**
+     * Consider selecting each keyframe in this view.
+     *
+     * @param selection best selection found so far
+     */
+    @Override
+    public void considerKeyframes(Selection selection) {
+        // no keyframes in scene view
+    }
+
+    /**
+     * Consider selecting each mesh vertex in this view.
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    @Override
+    public void considerVertices(Selection selection) {
+        Validate.nonNull(selection, "selection");
+
+        Maud application = Maud.getApplication();
+        InputManager inputManager = application.getInputManager();
+        Camera camera = getCamera();
+        Ray ray = MyCamera.mouseRay(camera, inputManager);
+        /*
+         * Trace the ray to the CG model's visualization.
+         */
+        Spatial root = getCgmRoot();
+        CollisionResult collision = findCollision(root, ray);
+        if (collision != null) {
+            Geometry geometry = collision.getGeometry();
+            Mesh mesh = geometry.getMesh();
+
+            int triangleIndex = collision.getTriangleIndex();
+            int[] vertexIndices = new int[3];
+            mesh.getTriangle(triangleIndex, vertexIndices);
+
+            LoadedCgm cgModel = Maud.gui.mouseCgm();
+            Pose pose = cgModel.getPose().getPose();
+            Matrix4f[] matrices = pose.skin(null);
+            Vector3f worldPosition = new Vector3f();
+
+            for (int vertexIndex : vertexIndices) {
+                Util.vertexWorldLocation(geometry, vertexIndex, matrices,
+                        worldPosition);
+                Vector3f screen = camera.getScreenCoordinates(worldPosition);
+                Vector2f screenXY = new Vector2f(screen.x, screen.y);
+                selection.considerVertex(cgModel, geometry, vertexIndex,
+                        screenXY);
             }
         }
     }
@@ -816,19 +909,20 @@ public class SceneView
          * Trace the ray to the CG model's visualization.
          */
         Spatial root = getCgmRoot();
-        Vector3f targetContactPoint = findContact(root, ray);
-
-        if (targetContactPoint != null) {
-            cgm.getScenePov().setCursorLocation(targetContactPoint);
+        CollisionResult collision = findCollision(root, ray);
+        if (collision != null) {
+            Vector3f contactPoint = collision.getContactPoint();
+            cgm.getScenePov().setCursorLocation(contactPoint);
         } else {
             /*
              * The ray missed the CG model; try to trace it to the platform.
              */
-            Spatial plat = getPlatform();
-            if (plat != null) {
-                Vector3f platformContactPoint = findContact(plat, ray);
-                if (platformContactPoint != null) {
-                    cgm.getScenePov().setCursorLocation(platformContactPoint);
+            Spatial platformSpatial = getPlatform();
+            if (platformSpatial != null) {
+                collision = findCollision(platformSpatial, ray);
+                if (collision != null) {
+                    Vector3f contactPoint = collision.getContactPoint();
+                    cgm.getScenePov().setCursorLocation(contactPoint);
                 }
             }
         }
@@ -988,19 +1082,21 @@ public class SceneView
     }
 
     /**
-     * For the specified camera ray, find the 1st point of contact on a triangle
-     * facing the camera.
+     * For the specified camera ray, find the nearest collision involving a
+     * triangle facing the camera.
      *
      * @param spatial (not null, unaffected)
      * @param ray (not null, unaffected)
-     * @return a new vector in world coordinates, or null if none found
+     * @return collision result, or null of no collision with a triangle facing
+     * the camera
      */
-    private Vector3f findContact(Spatial spatial, Ray ray) {
+    private CollisionResult findCollision(Spatial spatial, Ray ray) {
+        assert ray != null;
         Util.prepareForCollide(spatial);
         CollisionResults results = new CollisionResults();
         spatial.collideWith(ray, results);
         /*
-         * Collision results are sorted by increaing distance from the camera,
+         * Collision results are sorted by increasing distance from the camera,
          * so the first result is also the nearest one.
          */
         Camera cam = getCamera();
@@ -1010,16 +1106,24 @@ public class SceneView
              * Calculate the offset from the camera to the point of contact.
              */
             CollisionResult result = results.getCollision(resultIndex);
-            Vector3f contactPoint = result.getContactPoint();
-            Vector3f offset = contactPoint.subtract(cameraLocation);
-            /*
-             * If the dot product of the normal with the offset is negative,
-             * then the triangle faces the camera.  Return the point of contact.
-             */
-            Vector3f normal = result.getContactNormal();
-            float dotProduct = offset.dot(normal);
-            if (dotProduct < 0f) {
-                return contactPoint;
+            Geometry geometry = result.getGeometry();
+            Mesh mesh = geometry.getMesh();
+            Mesh.Mode mode = mesh.getMode();
+
+            if (mode == Mesh.Mode.Triangles // work around JME issue #710
+                    || mode == Mesh.Mode.TriangleStrip
+                    || mode == Mesh.Mode.TriangleFan) {
+                Vector3f contactPoint = result.getContactPoint();
+                Vector3f offset = contactPoint.subtract(cameraLocation);
+                /*
+                 * If the dot product of the normal with the offset is negative,
+                 * then the triangle faces the camera.
+                 */
+                Vector3f normal = result.getContactNormal();
+                float dotProduct = offset.dot(normal);
+                if (dotProduct < 0f) {
+                    return result;
+                }
             }
         }
 

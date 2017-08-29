@@ -24,18 +24,20 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud;
+package maud.view;
 
 import com.jme3.math.Vector2f;
+import com.jme3.scene.Geometry;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
-import maud.view.SceneDrag;
-import maud.view.ScoreDrag;
 
 /**
- * Encapsulate a bone/keyframe/axis/gnomon selection from the user interface.
+ * Encapsulate an axis/bone/gnomon/keyframe/vertex selection from the user
+ * interface. This data is not checkpointed.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -44,7 +46,7 @@ public class Selection {
     // *************************************************************************
     // enums
     private enum Type {
-        None, Bone, Gnomon, Keyframe, PoseTransformAxis, SceneAxis;
+        None, Bone, Gnomon, Keyframe, PoseTransformAxis, SceneAxis, Vertex;
     }
     // *************************************************************************
     // constants and loggers
@@ -63,6 +65,10 @@ public class Selection {
      */
     private float bestDSquared;
     /**
+     * the best geometry to be selected, or null for none
+     */
+    private Geometry bestGeometry = null;
+    /**
      * the index of the axis to be selected, or -1 for none
      */
     private int bestAxisIndex = -1;
@@ -74,6 +80,10 @@ public class Selection {
      * the index of the keyframe to be selected, or -1 for none
      */
     private int bestFrameIndex = -1;
+    /**
+     * the index of the vertex to be selected, or -1 for none
+     */
+    private int bestVertexIndex = -1;
     /**
      * the CG model to be selected, or null for none
      */
@@ -101,79 +111,10 @@ public class Selection {
         Validate.positive(dSquaredThreshold, "D-squared threshold");
 
         bestDSquared = dSquaredThreshold;
-        bestCgm = null;
         inputXY = screenXY.clone();
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Consider selecting the indexed bone.
-     *
-     * @param cgm CG model that contains the bone (not null)
-     * @param boneIndex which bone to consider (&ge;0)
-     * @param dSquared squared distance between the bone's screen location and
-     * {@link #inputXY} (in pixels squared, &ge;0)
-     */
-    public void considerBone(LoadedCgm cgm, int boneIndex, float dSquared) {
-        Validate.nonNull(cgm, "model");
-        Validate.nonNegative(boneIndex, "bone index");
-        Validate.nonNegative(dSquared, "distance squared");
-
-        if (dSquared < bestDSquared) {
-            bestDSquared = dSquared;
-            bestAxisIndex = -1;
-            bestBoneIndex = boneIndex;
-            bestFrameIndex = -1;
-            bestCgm = cgm;
-            bestType = Type.Bone;
-        }
-    }
-
-    /**
-     * Consider selecting the gnomon.
-     *
-     * @param cgm CG model that contains the bone (not null)
-     * @param dSquared squared distance between the gnomon's screen location and
-     * {@link #inputXY} (in pixels squared, &ge;0)
-     */
-    public void considerGnomon(LoadedCgm cgm, float dSquared) {
-        Validate.nonNull(cgm, "model");
-        Validate.nonNegative(dSquared, "distance squared");
-
-        if (dSquared < bestDSquared) {
-            bestDSquared = dSquared;
-            bestAxisIndex = -1;
-            bestBoneIndex = -1;
-            bestFrameIndex = -1;
-            bestCgm = cgm;
-            bestType = Type.Gnomon;
-        }
-    }
-
-    /**
-     * Consider selecting the indexed keyframe of the currently selected bone
-     * track.
-     *
-     * @param cgm CG model that contains the bone track (not null)
-     * @param frameIndex which keyframe to select (&ge;0)
-     * @param dSquared squared distance between the keyframe's screen location
-     * and {@link #inputXY} (in pixels squared, &ge;0)
-     */
-    public void considerKeyframe(LoadedCgm cgm, int frameIndex,
-            float dSquared) {
-        Validate.nonNull(cgm, "model");
-        Validate.nonNegative(frameIndex, "frame index");
-
-        if (dSquared < bestDSquared) {
-            bestDSquared = dSquared;
-            bestAxisIndex = -1;
-            bestBoneIndex = cgm.getBone().getIndex();
-            bestFrameIndex = frameIndex;
-            bestCgm = cgm;
-            bestType = Type.Keyframe;
-        }
-    }
 
     /**
      * Consider selecting the indexed axis in the view.
@@ -197,15 +138,120 @@ public class Selection {
         float dSquared = screenXY.distanceSquared(inputXY);
         if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
+            bestGeometry = null;
             bestAxisIndex = axisIndex;
             bestBoneIndex = -1;
             bestFrameIndex = -1;
+            bestVertexIndex = -1;
             bestCgm = cgm;
             if (scoreView) {
                 bestType = Type.PoseTransformAxis;
             } else {
                 bestType = Type.SceneAxis;
             }
+        }
+    }
+
+    /**
+     * Consider selecting the indexed bone.
+     *
+     * @param cgm CG model that contains the bone (not null)
+     * @param boneIndex which bone to consider (&ge;0)
+     * @param dSquared squared distance between the bone's screen location and
+     * {@link #inputXY} (in pixels squared, &ge;0)
+     */
+    public void considerBone(LoadedCgm cgm, int boneIndex, float dSquared) {
+        Validate.nonNull(cgm, "model");
+        Validate.nonNegative(boneIndex, "bone index");
+        Validate.nonNegative(dSquared, "distance squared");
+
+        if (dSquared < bestDSquared) {
+            bestDSquared = dSquared;
+            bestGeometry = null;
+            bestAxisIndex = -1;
+            bestBoneIndex = boneIndex;
+            bestFrameIndex = -1;
+            bestVertexIndex = -1;
+            bestCgm = cgm;
+            bestType = Type.Bone;
+        }
+    }
+
+    /**
+     * Consider selecting the gnomon.
+     *
+     * @param cgm CG model that contains the bone (not null)
+     * @param dSquared squared distance between the gnomon's screen location and
+     * {@link #inputXY} (in pixels squared, &ge;0)
+     */
+    public void considerGnomon(LoadedCgm cgm, float dSquared) {
+        Validate.nonNull(cgm, "model");
+        Validate.nonNegative(dSquared, "distance squared");
+
+        if (dSquared < bestDSquared) {
+            bestDSquared = dSquared;
+            bestGeometry = null;
+            bestAxisIndex = -1;
+            bestBoneIndex = -1;
+            bestFrameIndex = -1;
+            bestVertexIndex = -1;
+            bestCgm = cgm;
+            bestType = Type.Gnomon;
+        }
+    }
+
+    /**
+     * Consider selecting the indexed keyframe of the currently selected bone
+     * track.
+     *
+     * @param cgm CG model that contains the bone track (not null)
+     * @param frameIndex which keyframe to select (&ge;0)
+     * @param dSquared squared distance between the keyframe's screen location
+     * and {@link #inputXY} (in pixels squared, &ge;0)
+     */
+    public void considerKeyframe(LoadedCgm cgm, int frameIndex,
+            float dSquared) {
+        Validate.nonNull(cgm, "model");
+        Validate.nonNegative(frameIndex, "frame index");
+
+        if (dSquared < bestDSquared) {
+            bestDSquared = dSquared;
+            bestGeometry = null;
+            bestAxisIndex = -1;
+            bestBoneIndex = cgm.getBone().getIndex();
+            bestFrameIndex = frameIndex;
+            bestVertexIndex = -1;
+            bestCgm = cgm;
+            bestType = Type.Keyframe;
+        }
+    }
+
+    /**
+     * Consider selecting the indexed vertex in the specified geometry in the
+     * specified CG model.
+     *
+     * @param cgm CG model that contains the geometry (not null)
+     * @param geometry which geometry to select (not null)
+     * @param vertexIndex which vertex to select (&ge;0)
+     * @param screenXY screen coordinates of the axis (in pixels, not null,
+     * unaffected)
+     */
+    public void considerVertex(LoadedCgm cgm, Geometry geometry,
+            int vertexIndex, Vector2f screenXY) {
+        Validate.nonNull(cgm, "model");
+        Validate.nonNull(geometry, "geometry");
+        Validate.nonNegative(vertexIndex, "vertex index");
+
+        float dSquared = screenXY.distanceSquared(inputXY);
+        if (dSquared < bestDSquared) {
+            bestDSquared = dSquared;
+            bestGeometry = geometry;
+            bestAxisIndex = -1;
+            bestBoneIndex = -1;
+            bestFrameIndex = -1;
+            bestVertexIndex = vertexIndex;
+            bestCgm = cgm;
+            bestType = Type.Vertex;
         }
     }
 
@@ -240,6 +286,9 @@ public class Selection {
                 break;
             case SceneAxis:
                 selectSceneAxis();
+                break;
+            case Vertex:
+                selectVertex();
                 break;
             default:
                 throw new IllegalStateException();
@@ -289,7 +338,14 @@ public class Selection {
     }
 
     /**
-     * Select an axis of the scene's axis visualizer.
+     * Select the transform axis of the selected bone in the the current pose.
+     */
+    private void selectPoseTransformAxis() {
+        // TODO drag transform axis
+    }
+
+    /**
+     * Select the axis of the scene's axis visualizer.
      */
     private void selectSceneAxis() {
         assert bestCgm != null;
@@ -302,9 +358,17 @@ public class Selection {
     }
 
     /**
-     * Select the transform axis of the selected bone in the the current pose.
+     * Select the vertex of the loaded CG model.
      */
-    private void selectPoseTransformAxis() {
-        // TODO drag transform axis
+    private void selectVertex() {
+        assert bestCgm != null;
+        assert bestGeometry != null;
+        assert bestVertexIndex != -1;
+
+        List<Integer> treePosition;
+        treePosition = bestCgm.getSceneView().findSpatial(bestGeometry);
+        assert treePosition != null;
+        bestCgm.getSpatial().select(treePosition);
+        bestCgm.getVertex().select(bestVertexIndex);
     }
 }
