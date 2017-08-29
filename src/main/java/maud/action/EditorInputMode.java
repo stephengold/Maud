@@ -43,7 +43,6 @@ import maud.model.History;
 import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
 import maud.view.SceneDrag;
-import maud.view.ScoreDrag;
 import maud.view.ViewType;
 
 /**
@@ -104,8 +103,8 @@ public class EditorInputMode extends InputMode {
          * Parse the action string and attempt to handle the action.
          */
         boolean handled = false;
+        String firstWord = actionString.split(" ")[0];
         if (ongoing) {
-            String firstWord = actionString.split(" ")[0];
             switch (firstWord) {
                 case "copy":
                     handled = copyAction(actionString);
@@ -162,10 +161,10 @@ public class EditorInputMode extends InputMode {
                     handled = wrapAction(actionString);
             }
 
-        } else if ("select screenXY".equals(actionString)) {
-            SceneDrag.clearDragAxis();
-            ScoreDrag.setDraggingGnomon(null);
-            handled = true;
+        } else { // action not ongoing
+            if ("select".equals(firstWord)) {
+                handled = SelectAction.processNotOngoing(actionString);
+            }
         }
 
         if (!handled) {
@@ -531,7 +530,6 @@ public class EditorInputMode extends InputMode {
                 bone.resetScale();
                 break;
             case "reset bone selection":
-                LoadedCgm cgm = Maud.gui.mouseCgm();
                 bone.deselect();
                 break;
 
