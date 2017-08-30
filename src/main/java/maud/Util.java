@@ -667,6 +667,39 @@ public class Util {
     }
 
     /**
+     * Create a BoneTrack where all keyframes have the same transform.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @param frameTimes (not null, unaffected)
+     * @param transform (not null, unaffected)
+     * @return a new instance
+     */
+    public static BoneTrack newBoneTrack(int boneIndex, float[] frameTimes,
+            Transform transform) {
+        Validate.nonNegative(boneIndex, "bone index");
+        Validate.nonNull(frameTimes, "frame times");
+        Validate.nonNull(transform, "transform");
+
+        int numFrames = frameTimes.length;
+        float[] times = new float[numFrames];
+        Vector3f[] translations = new Vector3f[numFrames];
+        Quaternion[] rotations = new Quaternion[numFrames];
+        Vector3f[] scales = new Vector3f[numFrames];
+        transform = transform.clone();
+
+        for (int frameIndex = 0; frameIndex < numFrames; frameIndex++) {
+            times[frameIndex] = frameTimes[frameIndex];
+            translations[frameIndex] = transform.getTranslation();
+            rotations[frameIndex] = transform.getRotation();
+            scales[frameIndex] = transform.getScale();
+        }
+        BoneTrack result = MyAnimation.newBoneTrack(boneIndex, times,
+                translations, rotations, scales);
+
+        return result;
+    }
+
+    /**
      * Find the SGC in the specified position among physics controls in the
      * specified spatial.
      *
