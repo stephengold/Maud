@@ -718,13 +718,13 @@ public class SceneView
         SceneBones sceneBones = options.bones();
         switch (sceneBones) {
             case All:
-                boneIndexSet.set(0, numBones - 1);
+                boneIndexSet.set(0, numBones);
                 break;
             case InfluencersOnly:
                 cgm.getSkeleton().listInfluencers(boneIndexSet);
                 break;
             case None:
-                boneIndexSet.clear(0, numBones - 1);
+                boneIndexSet.clear(0, numBones);
                 break;
             default:
                 throw new IllegalStateException();
