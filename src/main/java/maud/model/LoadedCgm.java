@@ -771,7 +771,8 @@ public class LoadedCgm implements Cloneable {
      * Unload the current CG model, if any, and load from the specified asset in
      * the specified location.
      *
-     * @param rootPath filesystem path to the asset root (not null, not empty)
+     * @param rootPath absolute filesystem path to the asset
+     * directory/folder/JAR/ZIP (not null, not empty)
      * @param assetPath path to the asset to load (not null, not empty)
      * @return true if successful, otherwise false
      */
@@ -788,6 +789,7 @@ public class LoadedCgm implements Cloneable {
         if (loaded == null) {
             return false;
         } else {
+            assetLocation = rootPath;
             postLoad(loaded);
             return true;
         }
