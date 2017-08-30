@@ -956,6 +956,9 @@ public class EditorMenus {
         boolean handled = true;
         EditableCgm target = Maud.getModel().getTarget();
         switch (remainder) {
+            case "Create track":
+                target.getAnimation().createTrack();
+                break;
             case "Load animation":
                 loadAnimation(target);
                 break;

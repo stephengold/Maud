@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.Maud;
@@ -234,6 +235,34 @@ public class LoadedAnimation implements Cloneable {
 
         assert count >= 0 : count;
         return count;
+    }
+
+    /**
+     * Add an identity track for the selected bone.
+     */
+    public void createTrack() {
+        Animation loaded = getAnimation();
+        Track[] loadedTracks = loaded.getTracks();
+        Track baseTrack = loadedTracks[0]; // arbitrary choice
+        float[] baseTimes = baseTrack.getKeyFrameTimes();
+        int numFrames = baseTimes.length;
+        float[] times = new float[numFrames];
+        Vector3f[] translations = new Vector3f[numFrames];
+        Quaternion[] rotations = new Quaternion[numFrames];
+        for (int frameIndex = 0; frameIndex < numFrames; frameIndex++) {
+            times[frameIndex] = baseTimes[frameIndex];
+            translations[frameIndex] = new Vector3f();
+            rotations[frameIndex] = new Quaternion();
+        }
+
+        int boneIndex = cgm.getBone().getIndex();
+        Track newTrack = MyAnimation.newBoneTrack(boneIndex, times,
+                translations, rotations, null);
+
+        String boneName = cgm.getBone().getName();
+        String eventDescription = String.format("add a track for %s",
+                MyString.quote(boneName));
+        editableCgm.addTrack(newTrack, eventDescription);
     }
 
     /**

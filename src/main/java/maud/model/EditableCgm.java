@@ -31,6 +31,7 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.animation.Track;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
@@ -127,6 +128,23 @@ public class EditableCgm extends LoadedCgm {
         }
         selectedSpatial.addControl(newSgc);
         setEdited("add control");
+    }
+
+    /**
+     * Add a track to the loaded animation.
+     *
+     * @param newTrack (not null, alias created)
+     * @param eventDescription description of causative event (not null)
+     */
+    void addTrack(Track newTrack, String eventDescription) {
+        assert newTrack != null;
+        assert eventDescription != null;
+
+        Animation animation = getAnimation().getAnimation();
+
+        History.autoAdd();
+        animation.addTrack(newTrack);
+        setEdited(eventDescription);
     }
 
     /**
