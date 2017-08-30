@@ -425,6 +425,11 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         animControl.removeAnim(oldAnimation);
         animControl.addAnim(newAnimation);
+        LoadedAnimation loaded = getAnimation();
+        float duration = loaded.getDuration();
+        if (loaded.getTime() > duration) {
+            loaded.setTime(duration); // keep track time in range
+        }
         setEdited(eventDescription);
     }
 
