@@ -887,6 +887,8 @@ public class BuildMenus {
             builder.addEdit("Translate for support");
             builder.addEdit("Translate for traction");
             builder.addEdit("Wrap");
+        } else if (target.getBone().isSelected()) {
+            builder.addEdit("Create track");
         }
     }
 
