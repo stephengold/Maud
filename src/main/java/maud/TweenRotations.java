@@ -554,12 +554,15 @@ public enum TweenRotations {
         if (storeResult == null) {
             storeResult = new Quaternion();
         }
-
         float cycleTime = curve.getCycleTime();
         Validate.inRange(time, "time", 0f, cycleTime);
+
+        int lastIndex = curve.getLastIndex();
         float[] times = curve.getTimes();
         int index1 = MyArray.findPreviousIndex(time, times);
-        Quaternion q1 = curve.getStartValue(index1);
+        if (index1 > lastIndex) {
+            index1 = lastIndex;
+        }
         /*
          * Interpolate using the Squad function.
          */
@@ -567,6 +570,7 @@ public enum TweenRotations {
         float t = (time - times[index1]) / intervalDuration;
         Quaternion a1 = curve.getControlPoint1(index1);
         Quaternion a2 = curve.getControlPoint2(index1);
+        Quaternion q1 = curve.getStartValue(index1);
         Quaternion q2 = curve.getEndValue(index1);
         MyQuaternion.squad(t, q1, a1, a2, q2, storeResult);
 

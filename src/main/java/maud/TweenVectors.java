@@ -1006,11 +1006,16 @@ public enum TweenVectors {
         if (storeResult == null) {
             storeResult = new Vector3f();
         }
-
         float cycleTime = curve.getCycleTime();
-        Validate.inRange(time, "time", 0f, cycleTime);
+        assert time <= cycleTime : time;
+
+        int lastIndex = curve.getLastIndex();
         float[] times = curve.getTimes();
         int index1 = MyArray.findPreviousIndex(time, times);
+        if (index1 > lastIndex) {
+            index1 = lastIndex;
+        }
+
         float intervalDuration = curve.getIntervalDuration(index1);
         float t = (time - times[index1]) / intervalDuration;
         Vector3f v1 = curve.getStartValue(index1);
