@@ -467,8 +467,8 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Insert a keyframe in each bone track at the current animation time, based
-     * on the displayed pose.
+     * Insert a keyframe (or replace the existing keyframe) in each bone track
+     * at the current animation time, to match the displayed pose.
      */
     public void insertKeyframes() {
         float duration = getDuration();
@@ -477,14 +477,21 @@ public class LoadedAnimation implements Cloneable {
 
         Animation loaded = getAnimation();
         Track[] loadedTracks = loaded.getTracks();
-        for (Track track : loadedTracks) { // TODO add more tracks
+        for (Track track : loadedTracks) { // TODO add more tracks?
             Track newTrack;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
                 int boneIndex = boneTrack.getTargetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
-                newTrack = MyAnimation.insertKeyframe(boneTrack, currentTime,
-                        user);
+                int frameIndex = MyAnimation.findKeyframeIndex(boneTrack,
+                        currentTime);
+                if (frameIndex == -1) {
+                    newTrack = MyAnimation.insertKeyframe(boneTrack,
+                            currentTime, user);
+                } else {
+                    newTrack = Util.replaceKeyframe(boneTrack, frameIndex,
+                            user);
+                }
             } else {
                 newTrack = track.clone(); // TODO
             }
