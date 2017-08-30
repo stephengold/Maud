@@ -1103,27 +1103,34 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Copy the keyframe rotations from the track for the indexed bone to the
+     * Interpolate translations from the track for the indexed bone to the
      * parallel arrays provided.
      *
+     * @param ts sample times (not null, unaffected)
      * @param boneIndex which bone (&ge;0)
-     * @param storeWs (not null, modified)
      * @param storeXs (not null, modified)
      * @param storeYs (not null, modified)
      * @param storeZs (not null, modified)
      */
-    public void trackRotations(int boneIndex, float[] storeWs, float[] storeXs,
-            float[] storeYs, float[] storeZs) {
+    public void trackInterpolateTranslations(float[] ts, int boneIndex,
+            float[] storeXs, float[] storeYs, float[] storeZs) {
         Validate.nonNegative(boneIndex, "bone index");
 
+        TweenVectors technique;
+        technique = Maud.getModel().getMisc().getTweenTranslations();
         BoneTrack track = findTrackForBone(boneIndex);
-        Quaternion[] rotations = track.getRotations();
-        int numFrames = rotations.length;
-        for (int i = 0; i < numFrames; i++) {
-            storeWs[i] = rotations[i].getW();
-            storeXs[i] = rotations[i].getX();
-            storeYs[i] = rotations[i].getY();
-            storeZs[i] = rotations[i].getZ();
+        float[] times = track.getKeyFrameTimes();
+        float duration = getDuration();
+        Vector3f[] translations = track.getTranslations();
+        VectorCurve parms = technique.precompute(times, duration, translations);
+        Vector3f tempV = new Vector3f();
+
+        for (int iSample = 0; iSample < ts.length; iSample++) {
+            float time = ts[iSample];
+            technique.interpolate(time, parms, tempV);
+            storeXs[iSample] = tempV.x;
+            storeYs[iSample] = tempV.y;
+            storeZs[iSample] = tempV.z;
         }
     }
 
@@ -1155,6 +1162,31 @@ public class LoadedAnimation implements Cloneable {
             storeXs[iSample] = tempV.x;
             storeYs[iSample] = tempV.y;
             storeZs[iSample] = tempV.z;
+        }
+    }
+
+    /**
+     * Copy the keyframe rotations from the track for the indexed bone to the
+     * parallel arrays provided.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @param storeWs (not null, modified)
+     * @param storeXs (not null, modified)
+     * @param storeYs (not null, modified)
+     * @param storeZs (not null, modified)
+     */
+    public void trackRotations(int boneIndex, float[] storeWs, float[] storeXs,
+            float[] storeYs, float[] storeZs) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        BoneTrack track = findTrackForBone(boneIndex);
+        Quaternion[] rotations = track.getRotations();
+        int numFrames = rotations.length;
+        for (int i = 0; i < numFrames; i++) {
+            storeWs[i] = rotations[i].getW();
+            storeXs[i] = rotations[i].getX();
+            storeYs[i] = rotations[i].getY();
+            storeZs[i] = rotations[i].getZ();
         }
     }
 
@@ -1197,38 +1229,6 @@ public class LoadedAnimation implements Cloneable {
         System.arraycopy(times, 0, result, 0, numFrames);
 
         return result;
-    }
-
-    /**
-     * Interpolate translations from the track for the indexed bone to the
-     * parallel arrays provided.
-     *
-     * @param ts sample times (not null, unaffected)
-     * @param boneIndex which bone (&ge;0)
-     * @param storeXs (not null, modified)
-     * @param storeYs (not null, modified)
-     * @param storeZs (not null, modified)
-     */
-    public void trackInterpolateTranslations(float[] ts, int boneIndex,
-            float[] storeXs, float[] storeYs, float[] storeZs) {
-        Validate.nonNegative(boneIndex, "bone index");
-
-        TweenVectors technique;
-        technique = Maud.getModel().getMisc().getTweenTranslations();
-        BoneTrack track = findTrackForBone(boneIndex);
-        float[] times = track.getKeyFrameTimes();
-        float duration = getDuration();
-        Vector3f[] translations = track.getTranslations();
-        VectorCurve parms = technique.precompute(times, duration, translations);
-        Vector3f tempV = new Vector3f();
-
-        for (int iSample = 0; iSample < ts.length; iSample++) {
-            float time = ts[iSample];
-            technique.interpolate(time, parms, tempV);
-            storeXs[iSample] = tempV.x;
-            storeYs[iSample] = tempV.y;
-            storeZs[iSample] = tempV.z;
-        }
     }
 
     /**
