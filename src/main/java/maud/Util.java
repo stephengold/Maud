@@ -44,8 +44,6 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
@@ -1065,29 +1063,6 @@ public class Util {
         storeResult.setColumn(2, testWorld);
 
         return storeResult;
-    }
-
-    /**
-     * Alter the wireframe render setting on all materials in the specified
-     * subtree. Note: recursive!
-     *
-     * @param subtree (may be null)
-     * @param newSetting true&rarr;enable wireframe mode, false&rarr;disable it
-     */
-    public static void setWireframe(Spatial subtree, boolean newSetting) {
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            Material material = geometry.getMaterial();
-            RenderState rs = material.getAdditionalRenderState();
-            rs.setWireframe(newSetting);
-
-        } else if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                setWireframe(child, newSetting);
-            }
-        }
     }
 
     /**
