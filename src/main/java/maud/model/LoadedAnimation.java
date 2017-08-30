@@ -245,23 +245,15 @@ public class LoadedAnimation implements Cloneable {
         Track[] loadedTracks = loaded.getTracks();
         Track baseTrack = loadedTracks[0]; // arbitrary choice
         float[] baseTimes = baseTrack.getKeyFrameTimes();
-        int numFrames = baseTimes.length;
-        float[] times = new float[numFrames];
-        Vector3f[] translations = new Vector3f[numFrames];
-        Quaternion[] rotations = new Quaternion[numFrames];
-        for (int frameIndex = 0; frameIndex < numFrames; frameIndex++) {
-            times[frameIndex] = baseTimes[frameIndex];
-            translations[frameIndex] = new Vector3f();
-            rotations[frameIndex] = new Quaternion();
-        }
-
         int boneIndex = cgm.getBone().getIndex();
-        Track newTrack = MyAnimation.newBoneTrack(boneIndex, times,
-                translations, rotations, null);
+        Transform identity = new Transform();
+        Track newTrack = Util.newBoneTrack(boneIndex, baseTimes, identity);
 
+        String animationName = loaded.getName();
         String boneName = cgm.getBone().getName();
-        String eventDescription = String.format("add a track for %s",
-                MyString.quote(boneName));
+        String eventDescription = String.format(
+                "add an identity track to %s for %s",
+                MyString.quote(animationName), MyString.quote(boneName));
         editableCgm.addTrack(newTrack, eventDescription);
     }
 
