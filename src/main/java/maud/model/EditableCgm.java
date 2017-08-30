@@ -235,13 +235,16 @@ public class EditableCgm extends LoadedCgm {
      */
     public void deleteExtraSpatials() {
         if (rootSpatial instanceof Node) {
-            int oldNumSpatials = Util.countSpatials(rootSpatial);
+            int oldNumSpatials = MySpatial.countSpatials(rootSpatial,
+                    Spatial.class);
             Node rootNode = (Node) rootSpatial;
 
             History.autoAdd();
             deleteExtraSpatials(rootNode);
             getSpatial().selectCgmRoot();
-            int numDeleted = oldNumSpatials - Util.countSpatials(rootSpatial);
+            int newNumSpatials = MySpatial.countSpatials(rootSpatial,
+                    Spatial.class);
+            int numDeleted = oldNumSpatials - newNumSpatials;
             String description = String.format("delete %d extra spatial%s",
                     numDeleted, numDeleted == 1 ? "" : "s");
             setEdited(description);
@@ -720,8 +723,10 @@ public class EditableCgm extends LoadedCgm {
         int numChildren = childList.size();
         Spatial[] children = childList.toArray(new Spatial[numChildren]);
         for (Spatial child : children) {
-            if (Util.countSgcs(child) == 0 && Util.countUserData(child) == 0
-                    && Util.countVertices(child) == 0) {
+            int numSgcs = MySpatial.countControls(child, Control.class);
+            int numUserData = MySpatial.countUserData(child);
+            int numVertices = MySpatial.countVertices(child);
+            if (numSgcs == 0 && numUserData == 0 && numVertices == 0) {
                 List<Integer> position = findSpatial(child);
                 int index = subtree.detachChild(child);
                 assert index != -1;

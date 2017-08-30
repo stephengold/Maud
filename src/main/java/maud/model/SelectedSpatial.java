@@ -48,6 +48,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Util;
@@ -231,7 +232,7 @@ public class SelectedSpatial implements Cloneable {
      */
     public int countSubtreeSgcs() {
         Spatial spatial = modelSpatial();
-        int result = Util.countSgcs(spatial);
+        int result = MySpatial.countControls(spatial, Control.class);
 
         assert result >= 0 : result;
         return result;
@@ -244,7 +245,7 @@ public class SelectedSpatial implements Cloneable {
      */
     public int countSubtreeUserData() {
         Spatial spatial = modelSpatial();
-        int result = Util.countUserData(spatial);
+        int result = MySpatial.countUserData(spatial);
 
         assert result >= 0 : result;
         return result;
@@ -257,7 +258,7 @@ public class SelectedSpatial implements Cloneable {
      */
     public int countSubtreeVertices() {
         Spatial spatial = modelSpatial();
-        int result = Util.countVertices(spatial);
+        int result = MySpatial.countVertices(spatial);
 
         assert result >= 0 : result;
         return result;

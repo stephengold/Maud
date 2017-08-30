@@ -35,7 +35,6 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.Util;
 import maud.model.SelectedSpatial;
 
 /**
@@ -159,7 +158,7 @@ class SpatialDetailsTool extends WindowController {
         if (list.isEmpty()) {
             description = "none";
         } else {
-            description = Util.join(", ", list);
+            description = MyString.join(", ", list);
         }
 
         Maud.gui.setStatusText("spatialInfluence", " " + description);

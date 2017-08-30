@@ -68,6 +68,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
+import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
@@ -802,7 +803,7 @@ public class SceneView
             Vector3f worldPosition = new Vector3f();
 
             for (int vertexIndex : vertexIndices) {
-                Util.vertexWorldLocation(geometry, vertexIndex, matrices,
+                MyMesh.vertexWorldLocation(geometry, vertexIndex, matrices,
                         worldPosition);
                 Vector3f screen = camera.getScreenCoordinates(worldPosition);
                 Vector2f screenXY = new Vector2f(screen.x, screen.y);
@@ -1092,7 +1093,7 @@ public class SceneView
      */
     private CollisionResult findCollision(Spatial spatial, Ray ray) {
         assert ray != null;
-        Util.prepareForCollide(spatial);
+        MySpatial.prepareForCollide(spatial);
         CollisionResults results = new CollisionResults();
         spatial.collideWith(ray, results);
         /*
