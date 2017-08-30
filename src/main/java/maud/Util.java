@@ -748,6 +748,55 @@ public class Util {
     }
 
     /**
+     * Copy a bone track, setting the indexed keyframe to the specified
+     * transform.
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param frameIndex which keyframe (&ge;0, &lt;numFrames)
+     * @param transform user transform (not null, unaffected?)
+     * @return a new instance
+     */
+    public static BoneTrack replaceKeyframe(BoneTrack oldTrack, int frameIndex,
+            Transform transform) {
+        float[] oldTimes = oldTrack.getKeyFrameTimes();
+        int frameCount = oldTimes.length;
+        Validate.inRange(frameIndex, "keyframe index", 0, frameCount - 1);
+        Validate.nonNull(transform, "transform");
+
+        Vector3f[] oldTranslations = oldTrack.getTranslations();
+        Quaternion[] oldRotations = oldTrack.getRotations();
+        Vector3f[] oldScales = oldTrack.getScales();
+
+        Vector3f[] newTranslations = new Vector3f[frameCount];
+        Quaternion[] newRotations = new Quaternion[frameCount];
+        Vector3f[] newScales = new Vector3f[frameCount];
+        float[] newTimes = new float[frameCount];
+
+        for (int frameI = 0; frameI < frameCount; frameI++) {
+            newTimes[frameI] = oldTimes[frameI];
+            if (frameI == frameIndex) {
+                newTranslations[frameI] = transform.getTranslation();
+                newRotations[frameI] = transform.getRotation();
+                newScales[frameI] = transform.getScale();
+            } else {
+                newTranslations[frameI] = oldTranslations[frameI].clone();
+                newRotations[frameI] = oldRotations[frameI].clone();
+                if (oldScales == null) {
+                    newScales[frameI] = new Vector3f(1f, 1f, 1f);
+                } else {
+                    newScales[frameI] = oldScales[frameI].clone();
+                }
+            }
+        }
+
+        int boneIndex = oldTrack.getTargetBoneIndex();
+        BoneTrack result = MyAnimation.newBoneTrack(boneIndex, newTimes,
+                newTranslations, newRotations, newScales);
+
+        return result;
+    }
+
+    /**
      * Copy a bone track, resampling it at the specified rate.
      *
      * @param oldTrack (not null, unaffected)
