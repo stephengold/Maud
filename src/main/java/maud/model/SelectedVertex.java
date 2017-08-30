@@ -35,7 +35,7 @@ import com.jme3.scene.VertexBuffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.logging.Logger;
-import maud.Util;
+import jme3utilities.MyMesh;
 
 /**
  * The MVC model of the selected vertex in a loaded CG model.
@@ -83,8 +83,8 @@ public class SelectedVertex implements Cloneable {
         assert selectedIndex >= 0 : selectedIndex;
 
         Mesh mesh = cgm.getSpatial().getMesh();
-        storeResult = Util.vertexMeshVector3f(mesh,
-            VertexBuffer.Type.BindPosePosition, selectedIndex, storeResult);
+        storeResult = MyMesh.vertexVector3f(mesh,
+                VertexBuffer.Type.BindPosePosition, selectedIndex, storeResult);
 
         return storeResult;
     }
@@ -247,7 +247,7 @@ public class SelectedVertex implements Cloneable {
         Geometry selectedGeometry = (Geometry) selectedSpatial;
         DisplayedPose pose = cgm.getPose();
         Matrix4f[] matrices = pose.skin(null);
-        storeResult = Util.vertexWorldLocation(selectedGeometry,
+        storeResult = MyMesh.vertexWorldLocation(selectedGeometry,
                 selectedIndex, matrices, storeResult);
 
         return storeResult;

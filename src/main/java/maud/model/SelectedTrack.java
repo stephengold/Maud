@@ -45,6 +45,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
+import jme3utilities.MyMesh;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
@@ -623,7 +624,7 @@ public class SelectedTrack implements Cloneable {
             if (previousVertexIndex == -1) {
                 world.zero(); // no offset for 1st keyframe
             } else {
-                Util.vertexWorldLocation(previousGeometryRef[0],
+                MyMesh.vertexWorldLocation(previousGeometryRef[0],
                         previousVertexIndex, skinningMatrices, w);
                 previousWorld.subtractLocal(w);
                 world.addLocal(previousWorld);
