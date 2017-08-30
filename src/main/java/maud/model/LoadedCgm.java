@@ -678,7 +678,8 @@ public class LoadedCgm implements Cloneable {
 
     /**
      * Generate a sorted name list of the real animations in the selected anim
-     * control. Bind pose and mapped pose are not included.
+     * control. Bind pose and mapped pose are not included. TODO rename
+     * listRealAnimationsSorted
      *
      * @return a new list
      */
@@ -1032,14 +1033,19 @@ public class LoadedCgm implements Cloneable {
         selectedSpatial.postLoad();
         loadedAnimation.loadBindPose();
 
-        if (extension.equals("bvh") && countAnimations() == 1) {
+        if (countAnimations() == 1) {
             List<String> names = listAnimationsSorted();
             String animationName = names.get(0);
             loadedAnimation.load(animationName);
         }
-        if (Util.countVertices(cgmRoot) == 0) {
-            Maud.getModel().getScene().getSkeleton().setBones(SceneBones.All);
+
+        SceneBones sceneBones;
+        if (MySpatial.countVertices(cgmRoot) == 0) {
+            sceneBones = SceneBones.All;
+        } else {
+            sceneBones = SceneBones.InfluencersOnly;
         }
+        Maud.getModel().getScene().getSkeleton().setBones(sceneBones);
     }
     // *************************************************************************
     // Object methods
