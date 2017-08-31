@@ -237,10 +237,10 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Using the current pose, add a keyframe to the track at the current
+     * Using the displayed pose, add a keyframe to the track at the current
      * animation time.
      */
-    public void insertSingleKeyframe() {
+    public void insertKeyframe() {
         if (!isTrackSelected()) {
             return;
         }
@@ -377,6 +377,43 @@ public class SelectedTrack implements Cloneable {
         String description = String.format(
                 "thin the keyframes in a single bone track by %dx", factor);
         editableCgm.replaceAnimation(oldAnimation, newAnimation, description);
+    }
+
+    /**
+     * Replace the keyframe at the current animation time.
+     */
+    public void replaceKeyframe() {
+        if (!isTrackSelected()) {
+            return;
+        }
+        int frameIndex = findKeyframeIndex();
+        if (frameIndex == -1) {
+            return;
+        }
+
+        Animation newAnimation = newAnimation();
+        BoneTrack selectedTrack = findTrack();
+        Animation oldAnimation = loadedCgm.getAnimation().getAnimation();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
+            Track clone;
+            if (track == selectedTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                Pose pose = loadedCgm.getPose().getPose();
+                int boneIndex = selectedTrack.getTargetBoneIndex();
+                Transform user = pose.userTransform(boneIndex, null);
+                clone = Util.replaceKeyframe(boneTrack, frameIndex, user);
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        String boneName = loadedCgm.getBone().getName();
+        float time = loadedCgm.getAnimation().getTime();
+        String desc = String.format("replace keyframe for %s at t=%f", boneName,
+                time);
+        editableCgm.replaceAnimation(oldAnimation, newAnimation, desc);
     }
 
     /**

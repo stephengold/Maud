@@ -539,7 +539,10 @@ public class EditorMenus {
                     target.getTrack().deleteSelectedKeyframe();
                     break;
                 case "Insert from pose":
-                    target.getTrack().insertSingleKeyframe();
+                    target.getTrack().insertKeyframe();
+                    break;
+                case "Replace with pose":
+                    target.getTrack().replaceKeyframe();
                     break;
                 case "Select":
                     Maud.gui.showMenus.selectKeyframe();
