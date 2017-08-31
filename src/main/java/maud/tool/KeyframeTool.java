@@ -123,7 +123,6 @@ class KeyframeTool extends WindowController {
         String dButton = "";
         String iButton = "";
         String sButton = "";
-        String wButton = "";
 
         SelectedTrack track = Maud.getModel().getTarget().getTrack();
         if (track.isTrackSelected()) {
@@ -137,7 +136,6 @@ class KeyframeTool extends WindowController {
                 dButton = "Delete";
             }
             sButton = "Set all to pose";
-            wButton = "Wrap track";
         }
 
         Maud.gui.setButtonLabel("deleteSingleKeyframeButton", dButton);
@@ -145,7 +143,6 @@ class KeyframeTool extends WindowController {
         Maud.gui.setButtonLabel("rotationsToPoseKeyframeButton", sButton);
         Maud.gui.setButtonLabel("scalesToPoseKeyframeButton", sButton);
         Maud.gui.setButtonLabel("translationsToPoseKeyframeButton", sButton);
-        Maud.gui.setButtonLabel("wrapTrackButton", wButton);
     }
 
     /**
@@ -154,6 +151,7 @@ class KeyframeTool extends WindowController {
     private void updateNavigationButtons() {
         String firstButton = "";
         String previousButton = "";
+        String nearestButton = "";
         String nextButton = "";
         String lastButton = "";
 
@@ -167,6 +165,10 @@ class KeyframeTool extends WindowController {
             if (time > 0f) {
                 previousButton = "Previous";
             }
+            int frameIndex = target.getTrack().findKeyframeIndex();
+            if (frameIndex == -1) {
+                nearestButton = "Nearest";
+            }
             float lastKeyframeTime = target.getTrack().lastKeyframeTime();
             if (time < lastKeyframeTime) {
                 nextButton = "Next";
@@ -178,6 +180,7 @@ class KeyframeTool extends WindowController {
 
         Maud.gui.setButtonLabel("firstKeyframeButton", firstButton);
         Maud.gui.setButtonLabel("previousKeyframeButton", previousButton);
+        Maud.gui.setButtonLabel("nearestKeyframeButton", nearestButton);
         Maud.gui.setButtonLabel("nextKeyframeButton", nextButton);
         Maud.gui.setButtonLabel("lastKeyframeButton", lastButton);
     }

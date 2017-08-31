@@ -88,6 +88,9 @@ class SelectAction {
             case "select keyframeLast":
                 target.getTrack().selectLastKeyframe();
                 break;
+            case "select keyframeNearest":
+                target.getTrack().selectNearestKeyframe();
+                break;
             case "select keyframeNext":
                 target.getTrack().selectNextKeyframe();
                 break;
