@@ -699,7 +699,7 @@ public class BuildMenus {
             if (frameIndex == -1) {
                 builder.addEdit("Insert from pose");
             } else {
-                //builder.addEdit("Set from pose"); TODO
+                builder.addEdit("Replace with pose");
             }
             if (frameIndex > 0) {
                 builder.addEdit("Delete selected");
