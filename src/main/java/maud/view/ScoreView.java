@@ -227,6 +227,10 @@ public class ScoreView implements EditorView {
      */
     private static Material bgSelected = null;
     /**
+     * material for the gnomon when the pose is frozen
+     */
+    private static Material gnomonFrozen = null;
+    /**
      * material for pose markers
      */
     private static Material poseMaterial;
@@ -367,7 +371,7 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Consider selecting each gnomon in this view.
+     * Consider selecting the gnomon in this view.
      *
      * @param selection best selection found so far
      */
@@ -850,7 +854,7 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attach the time indicator to the visuals.
+     * Attach the gnomon (time/pose indicator) to the visuals.
      */
     private void attachGnomon() {
         float gnomonX = gnomonX();
@@ -858,10 +862,13 @@ public class ScoreView implements EditorView {
         Vector3f start = new Vector3f(gnomonX, handleSize, zLines);
         Vector3f end = new Vector3f(gnomonX, -height - handleSize, zLines);
         Line line = new Line(start, end);
-
         Geometry geometry = new Geometry("gnomon", line);
         visuals.attachChild(geometry);
-        geometry.setMaterial(wireNotSelected);
+        if (cgm.getPose().isFrozen()) {
+            geometry.setMaterial(gnomonFrozen);
+        } else {
+            geometry.setMaterial(wireNotSelected);
+        }
 
         boolean isEmpty = poseMesh.isEmpty();
         poseMesh.flip();
@@ -1434,10 +1441,11 @@ public class ScoreView implements EditorView {
 
         ColorRGBA black = new ColorRGBA(0f, 0f, 0f, 1f);
         ColorRGBA grey = new ColorRGBA(0.5f, 0.5f, 0.5f, 1f);
+        ColorRGBA yellow = new ColorRGBA(1f, 1f, 0f, 1f);
 
         bgNotSelected = MyAsset.createUnshadedMaterial(assetManager, grey);
         bgSelected = MyAsset.createUnshadedMaterial(assetManager, black);
-
+        gnomonFrozen = MyAsset.createUnshadedMaterial(assetManager, yellow);
         wireNotSelected = MyAsset.createWireframeMaterial(assetManager, grey);
         wireSelected = MyAsset.createWireframeMaterial(assetManager, black);
 
