@@ -65,6 +65,8 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
@@ -919,6 +921,8 @@ public class Util {
          */
         float duration = sourceAnimation.getLength();
         Animation result = new Animation(animationName, duration);
+
+        Map<Float, Pose> cache = new TreeMap<>();
         /*
          * Add a bone track for each target bone that's mapped.
          */
@@ -933,7 +937,7 @@ public class Util {
                 BoneTrack sourceTrack;
                 sourceTrack = MyAnimation.findTrack(sourceAnimation, iSource);
                 BoneTrack track = retargetTrack(sourceAnimation, sourceTrack,
-                        sourceSkeleton, targetSkeleton, map, iTarget);
+                        sourceSkeleton, targetSkeleton, map, iTarget, cache);
                 result.addTrack(track);
             }
         }
@@ -951,12 +955,13 @@ public class Util {
      * @param targetSkeleton (not null, unaffected)
      * @param map which skeleton map to use (not null, unaffected)
      * @param targetBoneIndex index of the target bone (&ge;0)
+     * @param cache previously calculated poses (not null, added to)
      * @return a new bone track
      */
     public static BoneTrack retargetTrack(Animation sourceAnimation,
             BoneTrack sourceTrack, Skeleton sourceSkeleton,
             Skeleton targetSkeleton, SkeletonMapping map,
-            int targetBoneIndex) {
+            int targetBoneIndex, Map<Float, Pose> cache) {
         Validate.nonNull(sourceSkeleton, "source skeleton");
         Validate.nonNull(targetSkeleton, "target skeleton");
         Validate.nonNull(map, "map");
@@ -976,13 +981,16 @@ public class Util {
         Quaternion[] rotations = new Quaternion[numKeyframes];
         Vector3f[] scales = new Vector3f[numKeyframes];
         Pose sourcePose = new Pose(sourceSkeleton);
-        Pose targetPose = new Pose(targetSkeleton);
 
         for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
             float trackTime = times[frameIndex];
-            sourcePose.setToAnimation(sourceAnimation, trackTime);
-            targetPose.setToRetarget(sourcePose, map);
-
+            Pose targetPose = cache.get(trackTime);
+            if (targetPose == null) {
+                targetPose = new Pose(targetSkeleton);
+                sourcePose.setToAnimation(sourceAnimation, trackTime);
+                targetPose.setToRetarget(sourcePose, map);
+                cache.put(trackTime, targetPose);
+            }
             Transform userTransform;
             userTransform = targetPose.userTransform(targetBoneIndex, null);
             translations[frameIndex] = userTransform.getTranslation();
