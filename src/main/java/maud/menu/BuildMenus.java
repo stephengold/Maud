@@ -895,7 +895,8 @@ public class BuildMenus {
         if (bone.hasTrack()) {
             builder.addEdit("Delete");
             builder.addDialog("Reduce");
-            builder.addDialog("Resample");
+            builder.addDialog("Resample at rate");
+            builder.addDialog("Resample to number");
             builder.addEdit("Translate for support");
             builder.addEdit("Translate for traction");
             builder.addEdit("Wrap");

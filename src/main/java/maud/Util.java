@@ -853,32 +853,29 @@ public class Util {
     }
 
     /**
-     * Copy a bone track, resampling it at the specified rate.
+     * Copy a bone track, resampling at the specified times.
      *
      * @param oldTrack (not null, unaffected)
-     * @param sampleRate sample rate (in frames per second, &gt;0)
+     * @param newTimes sample times (not null, alias created)
      * @param duration animation duration (in seconds, &ge;0)
      * @return a new instance
      */
-    public static Track resample(BoneTrack oldTrack, float sampleRate,
+    public static Track resample(BoneTrack oldTrack, float[] newTimes,
             float duration) {
-        Validate.positive(sampleRate, "sample rate");
         Validate.nonNegative(duration, "duration");
 
         int boneIndex = oldTrack.getTargetBoneIndex();
-        Vector3f[] oldScales = oldTrack.getScales();
-        int newCount = 1 + (int) Math.floor(duration * sampleRate);
-        Vector3f[] newTranslations = new Vector3f[newCount];
-        Quaternion[] newRotations = new Quaternion[newCount];
+        int numSamples = newTimes.length;
+        Vector3f[] newTranslations = new Vector3f[numSamples];
+        Quaternion[] newRotations = new Quaternion[numSamples];
         Vector3f[] newScales = null;
+        Vector3f[] oldScales = oldTrack.getScales();
         if (oldScales != null) {
-            newScales = new Vector3f[newCount];
+            newScales = new Vector3f[numSamples];
         }
-        float[] newTimes = new float[newCount];
 
-        for (int frameIndex = 0; frameIndex < newCount; frameIndex++) {
-            float time = frameIndex / sampleRate;
-
+        for (int frameIndex = 0; frameIndex < numSamples; frameIndex++) {
+            float time = newTimes[frameIndex];
             Transform boneTransform;
             boneTransform = boneTransform(oldTrack, time, duration, null);
             newTranslations[frameIndex] = boneTransform.getTranslation();
@@ -886,14 +883,67 @@ public class Util {
             if (oldScales != null) {
                 newScales[frameIndex] = boneTransform.getScale();
             }
-            newTimes[frameIndex] = time;
         }
 
         BoneTrack result = MyAnimation.newBoneTrack(boneIndex, newTimes,
                 newTranslations, newRotations, newScales);
 
         return result;
+    }
 
+    /**
+     * Copy a bone track, resampling it at the specified rate.
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param sampleRate sample rate (in frames per second, &gt;0)
+     * @param duration animation duration (in seconds, &ge;0)
+     * @return a new instance
+     */
+    public static Track resampleAtRate(BoneTrack oldTrack, float sampleRate,
+            float duration) {
+        Validate.positive(sampleRate, "sample rate");
+        Validate.nonNegative(duration, "duration");
+
+        int numSamples = 1 + (int) Math.floor(duration * sampleRate);
+        float[] newTimes = new float[numSamples];
+        for (int frameIndex = 0; frameIndex < numSamples; frameIndex++) {
+            float time = frameIndex / sampleRate;
+            if (time > duration) {
+                time = duration;
+            }
+            newTimes[frameIndex] = time;
+        }
+        Track result = resample(oldTrack, newTimes, duration);
+
+        return result;
+    }
+
+    /**
+     * Copy a bone track, resampling to the specified number of samples.
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param numSamples number of samples (&ge;2)
+     * @param duration animation duration (in seconds, &gt;0)
+     * @return a new instance
+     */
+    public static Track resampleToNumber(BoneTrack oldTrack, int numSamples,
+            float duration) {
+        Validate.inRange(numSamples, "number of samples", 2, Integer.MAX_VALUE);
+        Validate.positive(duration, "duration");
+
+        float[] newTimes = new float[numSamples];
+        for (int frameIndex = 0; frameIndex < numSamples; frameIndex++) {
+            float time;
+            if (frameIndex == numSamples - 1) {
+                time = duration;
+            } else {
+                time = (frameIndex * duration) / (numSamples - 1);
+            }
+            newTimes[frameIndex] = time;
+        }
+        Track result = resample(oldTrack, newTimes, duration);
+
+        return result;
     }
 
     /**

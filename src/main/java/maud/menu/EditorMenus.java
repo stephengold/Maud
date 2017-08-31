@@ -397,8 +397,11 @@ public class EditorMenus {
                 case "Reduce all tracks":
                     Maud.gui.dialogs.reduceAnimation();
                     break;
-                case "Resample all tracks":
-                    Maud.gui.dialogs.resampleAnimation();
+                case "Resample all tracks to number":
+                    Maud.gui.dialogs.resampleAnimation(false);
+                    break;
+                case "Resample all tracks at rate":
+                    Maud.gui.dialogs.resampleAnimation(true);
                     break;
                 case "Truncate":
                     animation.truncate();
@@ -978,8 +981,11 @@ public class EditorMenus {
             case "Reduce":
                 Maud.gui.dialogs.reduceTrack();
                 break;
-            case "Resample":
-                Maud.gui.dialogs.resampleTrack();
+            case "Resample at rate":
+                Maud.gui.dialogs.resampleTrack(true);
+                break;
+            case "Resample to number":
+                Maud.gui.dialogs.resampleTrack(false);
                 break;
             case "Select bone":
                 Maud.gui.buildMenus.selectBone();

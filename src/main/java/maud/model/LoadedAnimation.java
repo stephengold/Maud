@@ -889,7 +889,7 @@ public class LoadedAnimation implements Cloneable {
      *
      * @param sampleRate sample rate (in frames per second, &gt;0)
      */
-    public void resample(float sampleRate) {
+    public void resampleAtRate(float sampleRate) {
         Validate.positive(sampleRate, "sample rate");
         assert isReal();
 
@@ -902,9 +902,40 @@ public class LoadedAnimation implements Cloneable {
             Track clone;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                clone = Util.resample(boneTrack, sampleRate, duration);
+                clone = Util.resampleAtRate(boneTrack, sampleRate, duration);
             } else {
-                clone = track.clone(); // TODO
+                clone = track.clone(); // TODO spatial tracks
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        editableCgm.replaceAnimation(loaded, newAnimation,
+                "resample an animation");
+    }
+
+    /**
+     * Resample all bone tracks in the loaded animation to the specified number
+     * of samples.
+     *
+     * @param numSamples number of samples (&ge;2)
+     */
+    public void resampleToNumber(int numSamples) {
+        Validate.inRange(numSamples, "number of samples", 2, Integer.MAX_VALUE);
+        assert isReal();
+
+        float duration = getDuration();
+        assert duration > 0f : duration;
+        Animation newAnimation = new Animation(loadedName, duration);
+
+        Animation loaded = getAnimation();
+        Track[] loadedTracks = loaded.getTracks();
+        for (Track track : loadedTracks) {
+            Track clone;
+            if (track instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) track;
+                clone = Util.resampleToNumber(boneTrack, numSamples, duration);
+            } else {
+                clone = track.clone(); // TODO spatial tracks
             }
             newAnimation.addTrack(clone);
         }

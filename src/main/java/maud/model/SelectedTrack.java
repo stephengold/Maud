@@ -46,6 +46,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MyMesh;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
@@ -415,8 +416,8 @@ public class SelectedTrack implements Cloneable {
 
         String boneName = loadedCgm.getBone().getName();
         float time = loadedCgm.getAnimation().getTime();
-        String desc = String.format("replace keyframe for %s at t=%f", boneName,
-                time);
+        String desc = String.format("replace keyframe for %s at t=%f",
+                MyString.quote(boneName), time);
         editableCgm.replaceAnimation(oldAnimation, newAnimation, desc);
     }
 
@@ -425,7 +426,7 @@ public class SelectedTrack implements Cloneable {
      *
      * @param sampleRate sample rate (in frames per second, &gt;0)
      */
-    public void resample(float sampleRate) {
+    public void resampleAtRate(float sampleRate) {
         Validate.positive(sampleRate, "sample rate");
         assert loadedCgm.getBone().hasTrack();
 
@@ -433,11 +434,13 @@ public class SelectedTrack implements Cloneable {
         BoneTrack selectedTrack = findTrack();
         Animation oldAnimation = loadedCgm.getAnimation().getAnimation();
         float duration = oldAnimation.getLength();
+
         Track[] oldTracks = oldAnimation.getTracks();
         for (Track track : oldTracks) {
             Track clone;
             if (track == selectedTrack) {
-                clone = Util.resample(selectedTrack, sampleRate, duration);
+                clone = Util.resampleAtRate(selectedTrack, sampleRate,
+                        duration);
             } else {
                 clone = track.clone();
             }
@@ -445,8 +448,38 @@ public class SelectedTrack implements Cloneable {
         }
 
         editableCgm.replaceAnimation(oldAnimation, newAnimation,
-                "resample a single bone track");
+                "resample a single track");
+    }
 
+    /**
+     * Resample the track to the specified number of samples.
+     *
+     * @param numSamples number of samples (&ge;2)
+     */
+    public void resampleToNumber(int numSamples) {
+        Validate.inRange(numSamples, "number of samples", 2, Integer.MAX_VALUE);
+        assert loadedCgm.getBone().hasTrack();
+
+        Animation newAnimation = newAnimation();
+        BoneTrack selectedTrack = findTrack();
+        Animation oldAnimation = loadedCgm.getAnimation().getAnimation();
+        float duration = oldAnimation.getLength();
+        assert duration > 0f : duration;
+
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
+            Track clone;
+            if (track == selectedTrack) {
+                clone = Util.resampleToNumber(selectedTrack, numSamples,
+                        duration);
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+                "resample a single track");
     }
 
     /**

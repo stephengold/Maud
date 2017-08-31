@@ -297,28 +297,33 @@ public class EditorDialogs {
 
     /**
      * Display a "resample animation" dialog.
+     *
+     * @param rateFlag true&rarr;per second, false&rarr;number of samples
      */
-    public void resampleAnimation() {
-        if (Maud.getModel().getTarget().getAnimation().isReal()) {
-            FloatDialog controller = new FloatDialog("Resample", 0.1f, 1000f);
-
-            Maud.gui.closeAllPopups();
-            Maud.gui.showTextEntryDialog("Enter sample rate:", "20",
-                    ActionPrefix.resampleAnimation, controller);
+    public void resampleAnimation(boolean rateFlag) {
+        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
+        if (animation.isReal()) {
+            if (rateFlag) {
+                resampleRate(ActionPrefix.resampleAnimationAtRate);
+            } else {
+                resampleCount(ActionPrefix.resampleAnimationToNumber);
+            }
         }
     }
 
     /**
      * Display a "resample track" dialog.
+     *
+     * @param rateFlag true&rarr;per second, false&rarr;number of samples
      */
-    public void resampleTrack() {
+    public void resampleTrack(boolean rateFlag) {
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.hasTrack()) {
-            FloatDialog controller = new FloatDialog("Resample", 0.1f, 1000f);
-
-            Maud.gui.closeAllPopups();
-            Maud.gui.showTextEntryDialog("Enter sample rate:", "20",
-                    ActionPrefix.resampleTrack, controller);
+            if (rateFlag) {
+                resampleRate(ActionPrefix.resampleTrackAtRate);
+            } else {
+                resampleCount(ActionPrefix.resampleTrackToNumber);
+            }
         }
     }
 
@@ -457,5 +462,34 @@ public class EditorDialogs {
             Maud.gui.showTextEntryDialog("Enter new string value:", oldValue,
                     "Set", ActionPrefix.setUserData, controller);
         }
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Display a "resample animation/track count" dialog.
+     *
+     * @param actionPrefix action prefix (not null)
+     */
+    private void resampleCount(String actionPrefix) {
+        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
+        if (animation.getDuration() > 0f) {
+            IntegerDialog controller = new IntegerDialog("Resample", 2, 1000);
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog("Enter number of samples:", "17",
+                    actionPrefix, controller);
+        }
+    }
+
+    /**
+     * Display a "resample animation/track rate" dialog.
+     *
+     * @param actionPrefix action prefix (not null)
+     */
+    private void resampleRate(String actionPrefix) {
+        FloatDialog controller = new FloatDialog("Resample", 0.1f, 1000f);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter samples per second:", "10",
+                actionPrefix, controller);
     }
 }
