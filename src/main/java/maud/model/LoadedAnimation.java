@@ -45,9 +45,9 @@ import jme3utilities.math.MyMath;
 import maud.Maud;
 import maud.Pose;
 import maud.RotationCurve;
+import maud.TrackEdit;
 import maud.TweenRotations;
 import maud.TweenVectors;
-import maud.Util;
 import maud.VectorCurve;
 
 /**
@@ -178,7 +178,8 @@ public class LoadedAnimation implements Cloneable {
                 storeResult.loadIdentity();
             } else {
                 float duration = getDuration();
-                Util.boneTransform(track, currentTime, duration, storeResult);
+                TrackEdit.boneTransform(track, currentTime, duration,
+                        storeResult);
             }
         }
 
@@ -247,7 +248,7 @@ public class LoadedAnimation implements Cloneable {
         float[] baseTimes = baseTrack.getKeyFrameTimes();
         int boneIndex = cgm.getBone().getIndex();
         Transform identity = new Transform();
-        Track newTrack = Util.newBoneTrack(boneIndex, baseTimes, identity);
+        Track newTrack = TrackEdit.newBoneTrack(boneIndex, baseTimes, identity);
 
         String animationName = loaded.getName();
         String boneName = cgm.getBone().getName();
@@ -510,7 +511,7 @@ public class LoadedAnimation implements Cloneable {
                     newTrack = MyAnimation.insertKeyframe(boneTrack,
                             currentTime, user);
                 } else {
-                    newTrack = Util.replaceKeyframe(boneTrack, frameIndex,
+                    newTrack = TrackEdit.replaceKeyframe(boneTrack, frameIndex,
                             user);
                 }
             } else {
@@ -902,7 +903,8 @@ public class LoadedAnimation implements Cloneable {
             Track clone;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                clone = Util.resampleAtRate(boneTrack, sampleRate, duration);
+                clone = TrackEdit.resampleAtRate(boneTrack, sampleRate,
+                        duration);
             } else {
                 clone = track.clone(); // TODO spatial tracks
             }
@@ -933,7 +935,8 @@ public class LoadedAnimation implements Cloneable {
             Track clone;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                clone = Util.resampleToNumber(boneTrack, numSamples, duration);
+                clone = TrackEdit.resampleToNumber(boneTrack, numSamples,
+                        duration);
             } else {
                 clone = track.clone(); // TODO spatial tracks
             }

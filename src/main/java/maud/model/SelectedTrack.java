@@ -52,6 +52,7 @@ import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
 import maud.Pose;
+import maud.TrackEdit;
 import maud.Util;
 
 /**
@@ -407,7 +408,7 @@ public class SelectedTrack implements Cloneable {
                 Pose pose = loadedCgm.getPose().getPose();
                 int boneIndex = selectedTrack.getTargetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
-                clone = Util.replaceKeyframe(boneTrack, frameIndex, user);
+                clone = TrackEdit.replaceKeyframe(boneTrack, frameIndex, user);
             } else {
                 clone = track.clone();
             }
@@ -439,7 +440,7 @@ public class SelectedTrack implements Cloneable {
         for (Track track : oldTracks) {
             Track clone;
             if (track == selectedTrack) {
-                clone = Util.resampleAtRate(selectedTrack, sampleRate,
+                clone = TrackEdit.resampleAtRate(selectedTrack, sampleRate,
                         duration);
             } else {
                 clone = track.clone();
@@ -470,7 +471,7 @@ public class SelectedTrack implements Cloneable {
         for (Track track : oldTracks) {
             Track clone;
             if (track == selectedTrack) {
-                clone = Util.resampleToNumber(selectedTrack, numSamples,
+                clone = TrackEdit.resampleToNumber(selectedTrack, numSamples,
                         duration);
             } else {
                 clone = track.clone();
@@ -819,7 +820,8 @@ public class SelectedTrack implements Cloneable {
         for (Track track : oldTracks) {
             Track clone;
             if (track == selectedTrack) {
-                clone = Util.deleteRange(selectedTrack, startIndex, number);
+                clone = TrackEdit.deleteRange(selectedTrack, startIndex,
+                        number);
             } else {
                 clone = track.clone();
             }
