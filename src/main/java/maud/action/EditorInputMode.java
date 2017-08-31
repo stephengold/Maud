@@ -494,21 +494,36 @@ public class EditorInputMode extends InputMode {
      */
     private boolean resampleAction(String actionString) {
         EditableCgm target = Maud.getModel().getTarget();
+        String arg;
+        boolean handled = true;
+        if (actionString.startsWith(ActionPrefix.resampleAnimationToNumber)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.resampleAnimationToNumber);
+            int numSamples = Integer.parseInt(arg);
+            target.getAnimation().resampleToNumber(numSamples);
 
-        boolean handled = false;
-        if (actionString.startsWith(ActionPrefix.resampleAnimation)) {
-            String rateString = MyString.remainder(actionString,
-                    ActionPrefix.resampleAnimation);
-            float rate = Float.parseFloat(rateString);
-            target.getAnimation().resample(rate);
-            handled = true;
+        } else if (actionString.startsWith(
+                ActionPrefix.resampleAnimationAtRate)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.resampleAnimationAtRate);
+            float sampleRate = Float.parseFloat(arg);
+            target.getAnimation().resampleAtRate(sampleRate);
 
-        } else if (actionString.startsWith(ActionPrefix.resampleTrack)) {
+        } else if (actionString.startsWith(
+                ActionPrefix.resampleTrackToNumber)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.resampleTrackToNumber);
+            int numSamples = Integer.parseInt(arg);
+            target.getTrack().resampleToNumber(numSamples);
+
+        } else if (actionString.startsWith(ActionPrefix.resampleTrackAtRate)) {
             String rateString = MyString.remainder(actionString,
-                    ActionPrefix.resampleTrack);
-            float rate = Float.parseFloat(rateString);
-            target.getTrack().resample(rate);
-            handled = true;
+                    ActionPrefix.resampleTrackAtRate);
+            float sampleRate = Float.parseFloat(rateString);
+            target.getTrack().resampleAtRate(sampleRate);
+
+        } else {
+            handled = false;
         }
 
         return handled;

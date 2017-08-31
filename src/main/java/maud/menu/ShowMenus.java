@@ -118,18 +118,26 @@ public class ShowMenus {
     }
 
     /**
-     * Display an "Animation -> Edit" menu.
+     * Display an "Animation -> Edit" menu (for a real animations only).
      */
     void editAnimation() {
         MenuBuilder builder = new MenuBuilder();
-        builder.addEdit("Behead");
+
+        LoadedCgm target = Maud.getModel().getTarget();
+        float duration = target.getAnimation().getDuration();
+        if (duration > 0f) {
+            builder.addEdit("Behead");
+        }
         builder.add("Change duration");
-        builder.addEdit("Delete keyframes");
-        builder.addEdit("Insert keyframes");
-        builder.addDialog("Reduce all tracks");
-        builder.addDialog("Resample all tracks");
-        builder.addEdit("Truncate");
-        builder.addEdit("Wrap all tracks");
+        if (duration > 0f) {
+            builder.addEdit("Delete keyframes");
+            builder.addEdit("Insert keyframes");
+            builder.addDialog("Reduce all tracks");
+            builder.addDialog("Resample all tracks at rate");
+            builder.addDialog("Resample all tracks to number");
+            builder.addEdit("Truncate");
+            builder.addEdit("Wrap all tracks");
+        }
 
         builder.show("select menuItem Animation -> Edit -> ");
     }

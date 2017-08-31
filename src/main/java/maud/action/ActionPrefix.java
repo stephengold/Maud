@@ -144,11 +144,19 @@ public class ActionPrefix {
     /**
      * argument is the new sample rate
      */
-    final public static String resampleAnimation = "resample animation ";
+    final public static String resampleAnimationAtRate = "resample animation atRate ";
+    /**
+     * argument is the new sample count
+     */
+    final public static String resampleAnimationToNumber = "resample animation toNumber ";
     /**
      * argument is the new sample rate
      */
-    final public static String resampleTrack = "resample track ";
+    final public static String resampleTrackAtRate = "resample track atRate ";
+    /**
+     * argument is the new sample count
+     */
+    final public static String resampleTrackToNumber = "resample track toNumber ";
     /**
      * argument is the name for the new animation
      */
