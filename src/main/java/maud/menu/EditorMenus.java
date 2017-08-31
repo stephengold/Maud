@@ -529,8 +529,14 @@ public class EditorMenus {
             EditableCgm target = Maud.getModel().getTarget();
             handled = true;
             switch (remainder) {
-                case "Delete":
-                    target.getTrack().deleteSingleKeyframe();
+                case "Delete next":
+                    Maud.gui.dialogs.deleteNextKeyframes();
+                    break;
+                case "Delete previous":
+                    Maud.gui.dialogs.deletePreviousKeyframes();
+                    break;
+                case "Delete selected":
+                    target.getTrack().deleteSelectedKeyframe();
                     break;
                 case "Insert from pose":
                     target.getTrack().insertSingleKeyframe();
@@ -545,6 +551,7 @@ public class EditorMenus {
                     handled = false;
             }
         }
+
         return handled;
     }
 

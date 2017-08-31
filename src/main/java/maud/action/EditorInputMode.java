@@ -259,7 +259,7 @@ public class EditorInputMode extends InputMode {
                 Maud.getModel().getMap().deleteBoneMapping();
                 break;
             case "delete singleKeyframe":
-                target.getTrack().deleteSingleKeyframe();
+                target.getTrack().deleteSelectedKeyframe();
                 break;
             case "delete userKey":
                 target.getUserData().delete();
@@ -271,6 +271,20 @@ public class EditorInputMode extends InputMode {
                             ActionPrefix.deleteAssetLocation);
                     Maud.getModel().getLocations().remove(arg);
                     handled = true;
+
+                } else if (actionString.startsWith(
+                        ActionPrefix.deleteNextKeyframes)) {
+                    String arg = MyString.remainder(actionString,
+                            ActionPrefix.deleteNextKeyframes);
+                    int number = Integer.parseInt(arg);
+                    target.getTrack().deleteNextKeyframes(number);
+
+                } else if (actionString.startsWith(
+                        ActionPrefix.deletePreviousKeyframes)) {
+                    String arg = MyString.remainder(actionString,
+                            ActionPrefix.deletePreviousKeyframes);
+                    int number = Integer.parseInt(arg);
+                    target.getTrack().deletePreviousKeyframes(number);
                 }
         }
 

@@ -48,6 +48,7 @@ import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
 import maud.model.SelectedSpatial;
+import maud.model.SelectedTrack;
 
 /**
  * Dialog boxes created by Maud's "editor" screen.
@@ -127,6 +128,33 @@ public class EditorDialogs {
         message = String.format("Delete the %s control?", MyString.quote(name));
         Maud.gui.closeAllPopups();
         Maud.gui.showConfirmDialog(message, "Delete", "delete control", null);
+    }
+
+    /**
+     * Display a "delete nextKeyframes" dialog.
+     */
+    public void deleteNextKeyframes() {
+        SelectedTrack track = Maud.getModel().getTarget().getTrack();
+        int numFrames = track.countKeyframes();
+        int frameIndex = track.findKeyframeIndex();
+        int max = numFrames - frameIndex - 2;
+        IntegerDialog controller = new IntegerDialog("Delete", 1, max);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter number of keyframes:", "1",
+                ActionPrefix.deleteNextKeyframes, controller);
+    }
+
+    /**
+     * Display a "delete previousKeyframes" dialog.
+     */
+    public void deletePreviousKeyframes() {
+        SelectedTrack track = Maud.getModel().getTarget().getTrack();
+        int frameIndex = track.findKeyframeIndex();
+        int max = frameIndex - 1;
+        IntegerDialog controller = new IntegerDialog("Delete", 1, max);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter number of keyframes:", "1",
+                ActionPrefix.deletePreviousKeyframes, controller);
     }
 
     /**

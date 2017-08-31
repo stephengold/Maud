@@ -165,10 +165,34 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
+     * Delete the specified number of keyframes following the selected one.
+     */
+    public void deleteNextKeyframes(int number) {
+        Validate.positive(number, "number");
+        assert isTrackSelected();
+        int frameIndex = findKeyframeIndex();
+        assert frameIndex != -1;
+
+        deleteRange(frameIndex + 1, number);
+    }
+
+    /**
+     * Delete the specified number of keyframes preceding the selected one.
+     */
+    public void deletePreviousKeyframes(int number) {
+        Validate.positive(number, "number");
+        assert isTrackSelected();
+        int frameIndex = findKeyframeIndex();
+        assert frameIndex != -1;
+
+        deleteRange(frameIndex - number, number);
+    }
+
+    /**
      * Delete the selected keyframe, which mustn't be the 1st keyframe in the
      * track.
      */
-    public void deleteSingleKeyframe() {
+    public void deleteSelectedKeyframe() {
         if (!isTrackSelected()) {
             return;
         }
@@ -176,25 +200,8 @@ public class SelectedTrack implements Cloneable {
         if (frameIndex < 1) {
             return;
         }
-        int boneIndex = loadedCgm.getBone().getIndex();
-        assert boneIndex >= 0 : boneIndex;
 
-        Animation newAnimation = newAnimation();
-        BoneTrack selectedTrack = findTrack();
-        Animation oldAnimation = loadedCgm.getAnimation().getAnimation();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selectedTrack) {
-                clone = MyAnimation.deleteKeyframe(selectedTrack, frameIndex);
-            } else {
-                clone = track.clone();
-            }
-            newAnimation.addTrack(clone);
-        }
-
-        editableCgm.replaceAnimation(oldAnimation, newAnimation,
-                "delete single keyframe");
+        deleteRange(frameIndex, 1);
     }
 
     /**
@@ -720,6 +727,42 @@ public class SelectedTrack implements Cloneable {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Delete a range of keyframes in the selected track.
+     *
+     * @param startIndex index of 1st keyframe to delete (&gt;0)
+     * @param number number of keyframes to delete (&gt;0)
+     */
+    private void deleteRange(int startIndex, int number) {
+        assert startIndex > 0 : startIndex;
+        assert number > 0 : number;
+
+        Animation newAnimation = newAnimation();
+        BoneTrack selectedTrack = findTrack();
+        Animation oldAnimation = loadedCgm.getAnimation().getAnimation();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
+            Track clone;
+            if (track == selectedTrack) {
+                clone = Util.deleteRange(selectedTrack, startIndex, number);
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        String eventDescription;
+        if (number == 1) {
+            float[] times = selectedTrack.getTimes();
+            float time = times[startIndex];
+            eventDescription = String.format("delete keyframe at t=%f", time);
+        } else {
+            eventDescription = String.format("delete %d keyframes", number);
+        }
+        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+                eventDescription);
+    }
 
     /**
      * Create an empty animation with the same name and duration as the selected
