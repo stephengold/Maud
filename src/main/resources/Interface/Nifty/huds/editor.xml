@@ -901,9 +901,9 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(new singleKeyframe)"/>
                         </control>
                         <panel/>
-                        <control name="button" id="wrapTrackButton"
+                        <control name="button" id="nearestKeyframeButton"
                                  width="70px">
-                            <interact onRelease="perform(wrap track)"/>
+                            <interact onRelease="perform(select keyframeNearest)"/>
                         </control>
                         <panel/>
                         <control name="button" id="deleteSingleKeyframeButton"
