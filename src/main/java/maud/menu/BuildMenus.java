@@ -893,13 +893,14 @@ public class BuildMenus {
         LoadedCgm target = Maud.getModel().getTarget();
         SelectedBone bone = target.getBone();
         if (bone.hasTrack()) {
+            builder.addEdit("Delete");
             builder.addDialog("Reduce");
             builder.addDialog("Resample");
             builder.addEdit("Translate for support");
             builder.addEdit("Translate for traction");
             builder.addEdit("Wrap");
         } else if (bone.isSelected() && target.getAnimation().isReal()) {
-            builder.addEdit("Create track");
+            builder.addEdit("Create");
         }
     }
 
