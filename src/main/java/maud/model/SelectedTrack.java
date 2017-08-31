@@ -166,6 +166,8 @@ public class SelectedTrack implements Cloneable {
 
     /**
      * Delete the specified number of keyframes following the selected one.
+     *
+     * @param number number of keyframes to delete (&ge;1)
      */
     public void deleteNextKeyframes(int number) {
         Validate.positive(number, "number");
@@ -178,6 +180,8 @@ public class SelectedTrack implements Cloneable {
 
     /**
      * Delete the specified number of keyframes preceding the selected one.
+     *
+     * @param number number of keyframes to delete (&ge;1)
      */
     public void deletePreviousKeyframes(int number) {
         Validate.positive(number, "number");
