@@ -289,6 +289,60 @@ public class Util {
     }
 
     /**
+     * Copy a bone track, deleting the indexed range of keyframes (which mustn't
+     * include the 1st keyframe).
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param startIndex 1st keyframe to delete (&gt;0, &le;lastIndex)
+     * @param deleteCount number of keyframes to delete (&gt;0, &lt;lastIndex)
+     * @return a new instance
+     */
+    public static BoneTrack deleteRange(BoneTrack oldTrack, int startIndex,
+            int deleteCount) {
+        float[] oldTimes = oldTrack.getKeyFrameTimes();
+        int oldCount = oldTimes.length;
+        int lastIndex = oldCount - 1;
+        Validate.inRange(startIndex, "start index", 1, lastIndex);
+        Validate.inRange(deleteCount, "delete count", 1, lastIndex);
+        float endIndex = startIndex + deleteCount - 1;
+        Validate.inRange(endIndex, "end index", 1, lastIndex);
+
+        Vector3f[] oldTranslations = oldTrack.getTranslations();
+        Quaternion[] oldRotations = oldTrack.getRotations();
+        Vector3f[] oldScales = oldTrack.getScales();
+
+        int newCount = oldCount - deleteCount;
+        Vector3f[] newTranslations = new Vector3f[newCount];
+        Quaternion[] newRotations = new Quaternion[newCount];
+        Vector3f[] newScales = null;
+        if (oldScales != null) {
+            newScales = new Vector3f[newCount];
+        }
+        float[] newTimes = new float[newCount];
+
+        for (int newIndex = 0; newIndex < newCount; newIndex++) {
+            int oldIndex;
+            if (newIndex < startIndex) {
+                oldIndex = newIndex;
+            } else {
+                oldIndex = newIndex + deleteCount;
+            }
+            newTranslations[newIndex] = oldTranslations[oldIndex].clone();
+            newRotations[newIndex] = oldRotations[oldIndex].clone();
+            if (oldScales != null) {
+                newScales[newIndex] = oldScales[oldIndex].clone();
+            }
+            newTimes[newIndex] = oldTimes[oldIndex];
+        }
+
+        int boneIndex = oldTrack.getTargetBoneIndex();
+        BoneTrack result = MyAnimation.newBoneTrack(boneIndex, newTimes,
+                newTranslations, newRotations, newScales);
+
+        return result;
+    }
+
+    /**
      * Find the specified spatial in the specified subtree and optionally store
      * its tree position. Note: recursive!
      *
