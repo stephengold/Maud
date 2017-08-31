@@ -53,6 +53,14 @@ public class ActionPrefix {
      */
     final public static String deleteAssetLocation = "delete assetLocation ";
     /**
+     * argument is a number of keyframes
+     */
+    final public static String deleteNextKeyframes = "delete nextKeyframes ";
+    /**
+     * argument is a number of keyframes
+     */
+    final public static String deletePreviousKeyframes = "delete previousKeyframes ";
+    /**
      * argument is the name of an animation in the target CG model
      */
     final public static String loadAnimation = "load animation ";

@@ -697,10 +697,19 @@ public class BuildMenus {
             int frameIndex = target.getTrack().findKeyframeIndex();
             if (frameIndex == -1) {
                 builder.addEdit("Insert from pose");
+            } else {
+                //builder.addEdit("Set from pose"); TODO
             }
             if (frameIndex > 0) {
-                builder.addEdit("Delete");
+                builder.addEdit("Delete selected");
                 //builder.add("Move"); TODO
+            }
+            if (frameIndex > 1) {
+                builder.addDialog("Delete previous");
+            }
+            int lastFrame = target.getTrack().countKeyframes() - 1;
+            if (frameIndex != -1 && frameIndex < lastFrame) {
+                builder.addDialog("Delete next");
             }
         }
     }
