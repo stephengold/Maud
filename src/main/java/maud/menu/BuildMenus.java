@@ -43,6 +43,7 @@ import maud.model.EditorModel;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
 import maud.model.MiscStatus;
+import maud.model.SelectedBone;
 import maud.model.SelectedSkeleton;
 import maud.model.ViewMode;
 
@@ -890,13 +891,14 @@ public class BuildMenus {
         builder.add("Load animation");
         builder.add("Select bone");
         LoadedCgm target = Maud.getModel().getTarget();
-        if (target.getBone().hasTrack()) {
+        SelectedBone bone = target.getBone();
+        if (bone.hasTrack()) {
             builder.addDialog("Reduce");
             builder.addDialog("Resample");
             builder.addEdit("Translate for support");
             builder.addEdit("Translate for traction");
             builder.addEdit("Wrap");
-        } else if (target.getBone().isSelected()) {
+        } else if (bone.isSelected() && target.getAnimation().isReal()) {
             builder.addEdit("Create track");
         }
     }
