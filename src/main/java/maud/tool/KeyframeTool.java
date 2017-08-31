@@ -130,7 +130,10 @@ class KeyframeTool extends WindowController {
             int index = track.findKeyframeIndex();
             if (index == -1) {
                 iButton = "Insert";
-            } else if (index > 0) {
+            } else {
+                iButton = "Replace";
+            }
+            if (index > 0) {
                 dButton = "Delete";
             }
             sButton = "Set all to pose";
