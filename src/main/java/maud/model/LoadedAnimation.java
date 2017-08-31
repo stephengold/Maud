@@ -288,8 +288,7 @@ public class LoadedAnimation implements Cloneable {
             Track newTrack;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                int keyframeIndex;
-                keyframeIndex = MyAnimation.findKeyframeIndex(boneTrack,
+                int keyframeIndex = MyAnimation.findKeyframeIndex(boneTrack,
                         currentTime);
                 if (keyframeIndex >= 1) {
                     newTrack = MyAnimation.deleteKeyframe(boneTrack,
@@ -308,6 +307,28 @@ public class LoadedAnimation implements Cloneable {
             editableCgm.replaceAnimation(loaded, newAnimation,
                     "delete keyframes from an animation");
         }
+    }
+
+    /**
+     * Delete the selected bone track from the animation.
+     */
+    public void deleteTrack() {
+        float duration = getDuration();
+        Animation newAnimation = new Animation(loadedName, duration);
+
+        Track selectedTrack = cgm.getTrack().findTrack();
+        Animation oldAnimation = getAnimation();
+        Track[] loadedTracks = oldAnimation.getTracks();
+        for (Track track : loadedTracks) {
+            Track newTrack;
+            if (track != selectedTrack) {
+                newTrack = track.clone();
+                newAnimation.addTrack(newTrack);
+            }
+        }
+
+        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+                "delete a track from an animation");
     }
 
     /**
