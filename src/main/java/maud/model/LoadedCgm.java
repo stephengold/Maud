@@ -1087,7 +1087,7 @@ public class LoadedCgm implements Cloneable {
         clone.getPose().setCgm(clone);
         clone.getScenePov().setCgm(clone);
         clone.getSceneView().setCgm(clone);
-        clone.scorePov.setCgm(clone);
+        clone.getScorePov().setCgm(clone);
         clone.getSgc().setCgm(clone);
         clone.getSpatial().setCgm(clone);
         clone.getTrack().setCgm(clone);
