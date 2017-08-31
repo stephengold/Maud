@@ -29,6 +29,7 @@ package maud.action;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.model.SelectedTrack;
 
 /**
  * Process an action string that begins with "new".
@@ -73,8 +74,16 @@ class NewAction {
             case "new mapping":
                 Maud.getModel().getMap().mapBones();
                 break;
-            case "new singleKeyframe":
-                Maud.getModel().getTarget().getTrack().insertKeyframe();
+            case "new singleKeyframe": // insert OR replace
+                SelectedTrack track = Maud.getModel().getTarget().getTrack();
+                if (track.isTrackSelected()) {
+                    int frameIndex = track.findKeyframeIndex();
+                    if (frameIndex == -1) {
+                        track.insertKeyframe();
+                    } else {
+                        track.replaceKeyframe();
+                    }
+                }
                 break;
             case "new userKey":
                 Maud.gui.showMenus.selectUserDataType();
