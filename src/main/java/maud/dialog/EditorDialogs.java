@@ -407,7 +407,7 @@ public class EditorDialogs {
 
         float finalTime = animation.findLatestKeyframe();
         DialogController controller;
-        controller = new FloatDialog("Set", finalTime, Float.MAX_VALUE);
+        controller = new FloatDialog("Extend", finalTime, Float.MAX_VALUE);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
