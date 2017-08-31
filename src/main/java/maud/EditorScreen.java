@@ -571,7 +571,7 @@ public class EditorScreen extends GuiScreenController {
         EditorView mouseView = Maud.gui.mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
-            Selection selection = new Selection(mouseXY, dSquaredThreshold);
+            Selection selection = new Selection(mouseXY, Float.MAX_VALUE);
             mouseView.considerGnomons(selection);
             selection.select();
         }
