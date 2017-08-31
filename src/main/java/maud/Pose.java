@@ -481,7 +481,7 @@ public class Pose implements JmeCloneable {
                 transform.loadIdentity();
             } else {
                 float duration = animation.getLength();
-                Util.boneTransform(track, time, duration, transform);
+                TrackEdit.boneTransform(track, time, duration, transform);
             }
         }
     }

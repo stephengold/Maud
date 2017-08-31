@@ -45,6 +45,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.Pose;
+import maud.TrackEdit;
 import maud.Util;
 
 /**
@@ -712,7 +713,7 @@ public class LoadedMap implements Cloneable {
         Skeleton sourceSkeleton = source.getSkeleton().findSkeleton();
         Skeleton targetSkeleton = target.getSkeleton().findSkeleton();
         SkeletonMapping effectiveMap = effectiveMap();
-        Animation retargeted = Util.retargetAnimation(sourceAnimation,
+        Animation retargeted = TrackEdit.retargetAnimation(sourceAnimation,
                 sourceSkeleton, targetSkeleton, effectiveMap, newAnimationName);
 
         float duration = retargeted.getLength();
