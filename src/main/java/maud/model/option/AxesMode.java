@@ -24,27 +24,35 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model;
+package maud.model.option;
 
 /**
- * Enumerate wireframe options for scene views.
+ * Enumerate the display modes for axes in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum Wireframe {
+public enum AxesMode {
     // *************************************************************************
     // values
 
     /**
-     * render CG-model triangles as specified by their materials
+     * hide the coordinate axes
      */
-    Material,
+    None,
     /**
-     * force non-wireframe rendering for all CG-model triangles
+     * display local axes of the selected bone, if any
      */
-    Solid,
+    Bone,
     /**
-     * force wireframe rendering for all CG-model triangles
+     * display axes of the loaded CG model
      */
-    Wire;
+    Cgm,
+    /**
+     * display local axes of the selected spatial
+     */
+    Spatial,
+    /**
+     * display global/world coordinate axes
+     */
+    World;
 }

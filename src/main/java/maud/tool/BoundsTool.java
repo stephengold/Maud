@@ -34,8 +34,8 @@ import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.BoundsOptions;
 import maud.model.LoadedCgm;
+import maud.model.option.BoundsOptions;
 import maud.view.SceneView;
 
 /**

@@ -24,12 +24,13 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model;
+package maud.model.option;
 
-import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
+import maud.model.CameraStatus;
+import maud.model.LoadedCgm;
 
 /**
  * Display options applicable to "scene" views in Maud's editor screen.
@@ -274,13 +275,11 @@ public class SceneOptions implements Cloneable {
         wireframe = newSetting;
 
         LoadedCgm target = Maud.getModel().getTarget();
-        Spatial subtree = target.getRootSpatial();
-        target.updateSceneWireframe(subtree);
+        target.updateSceneWireframe();
 
         LoadedCgm source = Maud.getModel().getSource();
         if (source.isLoaded()) {
-            subtree = source.getRootSpatial();
-            source.updateSceneWireframe(subtree);
+            source.updateSceneWireframe();
         }
     }
     // *************************************************************************

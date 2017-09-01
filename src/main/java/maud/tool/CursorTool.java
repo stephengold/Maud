@@ -37,13 +37,14 @@ import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.DddCursorOptions;
 import maud.model.LoadedCgm;
+import maud.model.option.DddCursorOptions;
 import maud.view.SceneView;
 
 /**
  * The controller for the "Cursor Tool" window in Maud's editor screen. The
- * cursor tool controls the appearance of 3D cursors displayed in "scene" views.
+ * cursor tool controls the appearance of 3-D cursors displayed in "scene"
+ * views.
  * <p>
  * In scene views, the left mouse button (LMB) repositions the 3D cursor.
  *
@@ -151,7 +152,7 @@ class CursorTool extends WindowController {
     // private methods
 
     /**
-     * Create a star-shaped 3D cursor.
+     * Create a star-shaped 3-D cursor.
      *
      * @return a new, orphaned spatial
      */

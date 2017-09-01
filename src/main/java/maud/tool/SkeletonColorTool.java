@@ -34,8 +34,8 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.LoadedCgm;
-import maud.model.SceneBones;
-import maud.model.SkeletonOptions;
+import maud.model.option.SceneBones;
+import maud.model.option.SkeletonOptions;
 
 /**
  * The controller for the "Skeleton Color Tool" window in Maud's editor screen.

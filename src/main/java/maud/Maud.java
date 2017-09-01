@@ -55,7 +55,7 @@ import maud.dialog.QuitDialog;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedCgm;
-import maud.model.ViewMode;
+import maud.model.option.ViewMode;
 import maud.view.SceneView;
 import maud.view.ScoreView;
 

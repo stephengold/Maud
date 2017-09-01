@@ -84,9 +84,9 @@ import maud.Pose;
 import maud.Util;
 import maud.mesh.PointMesh;
 import maud.model.LoadedCgm;
-import maud.model.SceneBones;
-import maud.model.SkeletonOptions;
-import maud.model.ViewMode;
+import maud.model.option.SceneBones;
+import maud.model.option.SkeletonOptions;
+import maud.model.option.ViewMode;
 
 /**
  * A 3D visualization of a loaded CG model in a scene-mode viewport.

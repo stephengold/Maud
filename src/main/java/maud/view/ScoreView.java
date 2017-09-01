@@ -69,8 +69,8 @@ import maud.mesh.RoundedRectangle;
 import maud.mesh.Sparkline;
 import maud.mesh.YSwarm;
 import maud.model.LoadedCgm;
-import maud.model.ScoreOptions;
-import maud.model.ViewMode;
+import maud.model.option.ScoreOptions;
+import maud.model.option.ViewMode;
 
 /**
  * A 2D visualization of a loaded animation in a score-mode viewport.

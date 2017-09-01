@@ -38,7 +38,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.LoadedCgm;
 import maud.model.SelectedVertex;
-import maud.model.VertexOptions;
+import maud.model.option.VertexOptions;
 
 /**
  * The controller for the "Scene Vertex Tool" window in Maud's editor screen.
