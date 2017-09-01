@@ -30,6 +30,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.math.MyQuaternion;
 
 /**
  * Enumerate and implement some smoothing techniques on time sequences of
@@ -145,7 +146,8 @@ public enum SmoothRotations {
                 dt = FastMath.abs(dt);
                 if (dt < halfWidth) {
                     float weight = 1f - dt / halfWidth;
-                    Util.accumulateScaled(sumQuaternion, samples[j], weight);
+                    MyQuaternion.accumulateScaled(sumQuaternion, samples[j],
+                            weight);
                     sumWeight += weight;
                 }
             }
@@ -203,7 +205,8 @@ public enum SmoothRotations {
                 dt = FastMath.abs(dt);
                 if (dt < halfWidth) {
                     float weight = 1f - dt / halfWidth;
-                    Util.accumulateScaled(sumQuaternion, samples[j], weight);
+                    MyQuaternion.accumulateScaled(sumQuaternion, samples[j],
+                            weight);
                     sumWeight += weight;
                 }
             }

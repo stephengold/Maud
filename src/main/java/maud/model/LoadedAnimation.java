@@ -141,7 +141,7 @@ public class LoadedAnimation implements Cloneable {
                 BoneTrack boneTrack = (BoneTrack) track;
                 Transform neck = Maud.getModel().getMisc().interpolate(
                         currentTime, boneTrack, oldDuration, null);
-                newTrack = MyAnimation.behead(boneTrack, currentTime, neck,
+                newTrack = TrackEdit.behead(boneTrack, currentTime, neck,
                         oldDuration);
             } else {
                 newTrack = track.clone(); // TODO other track types
@@ -248,7 +248,8 @@ public class LoadedAnimation implements Cloneable {
         float[] baseTimes = baseTrack.getKeyFrameTimes();
         int boneIndex = cgm.getBone().getIndex();
         Transform identity = new Transform();
-        Track newTrack = TrackEdit.newBoneTrack(boneIndex, baseTimes, identity);
+        Track newTrack = MyAnimation.newBoneTrack(boneIndex, baseTimes,
+                identity);
 
         String animationName = loaded.getName();
         String boneName = cgm.getBone().getName();
@@ -292,8 +293,8 @@ public class LoadedAnimation implements Cloneable {
                 int keyframeIndex = MyAnimation.findKeyframeIndex(boneTrack,
                         currentTime);
                 if (keyframeIndex >= 1) {
-                    newTrack = MyAnimation.deleteKeyframe(boneTrack,
-                            keyframeIndex);
+                    newTrack = TrackEdit.deleteRange(boneTrack, keyframeIndex,
+                            1);
                     ++numDeletions;
                 } else {
                     newTrack = track.clone();
@@ -508,8 +509,8 @@ public class LoadedAnimation implements Cloneable {
                 int frameIndex = MyAnimation.findKeyframeIndex(boneTrack,
                         currentTime);
                 if (frameIndex == -1) {
-                    newTrack = MyAnimation.insertKeyframe(boneTrack,
-                            currentTime, user);
+                    newTrack = TrackEdit.insertKeyframe(boneTrack, currentTime,
+                            user);
                 } else {
                     newTrack = TrackEdit.replaceKeyframe(boneTrack, frameIndex,
                             user);
@@ -848,7 +849,7 @@ public class LoadedAnimation implements Cloneable {
             Track clone;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                clone = MyAnimation.reduce(boneTrack, factor);
+                clone = TrackEdit.reduce(boneTrack, factor);
             } else {
                 clone = track.clone(); // TODO
             }
@@ -1005,7 +1006,7 @@ public class LoadedAnimation implements Cloneable {
                 Track newTrack;
                 if (track instanceof BoneTrack) {
                     BoneTrack boneTrack = (BoneTrack) track;
-                    newTrack = MyAnimation.setDuration(boneTrack, newDuration);
+                    newTrack = TrackEdit.setDuration(boneTrack, newDuration);
                 } else {
                     newTrack = track.clone(); // TODO other track types
                 }
@@ -1041,7 +1042,7 @@ public class LoadedAnimation implements Cloneable {
                 Track newTrack;
                 if (track instanceof BoneTrack) {
                     BoneTrack boneTrack = (BoneTrack) track;
-                    newTrack = MyAnimation.truncate(boneTrack, newDuration);
+                    newTrack = TrackEdit.truncate(boneTrack, newDuration);
                 } else {
                     newTrack = track.clone(); // TODO other track types
                 }
@@ -1320,7 +1321,7 @@ public class LoadedAnimation implements Cloneable {
             Track newTrack;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                newTrack = MyAnimation.truncate(boneTrack, currentTime);
+                newTrack = TrackEdit.truncate(boneTrack, currentTime);
             } else {
                 newTrack = track.clone(); // TODO other track types
             }
@@ -1362,7 +1363,7 @@ public class LoadedAnimation implements Cloneable {
             Track newTrack;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                newTrack = MyAnimation.wrap(boneTrack, duration);
+                newTrack = TrackEdit.wrap(boneTrack, duration);
             } else {
                 newTrack = track.clone(); // TODO other track types
             }
