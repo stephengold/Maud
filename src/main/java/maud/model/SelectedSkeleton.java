@@ -359,10 +359,15 @@ public class SelectedSkeleton implements Cloneable {
      * instance)
      */
     public BitSet listInfluencers(BitSet storeResult) {
+        if (storeResult == null) {
+            storeResult = new BitSet(120);
+        }
+
         Skeleton skeleton = findSkeleton();
-        assert skeleton != null;
-        Spatial subtree = findSkeletonSpatial();
-        storeResult = Util.addAllInfluencers(subtree, skeleton, storeResult);
+        if (skeleton != null) {
+            Spatial subtree = findSkeletonSpatial();
+            Util.addAllInfluencers(subtree, skeleton, storeResult);
+        }
 
         return storeResult;
     }
