@@ -642,10 +642,12 @@ Maud provides a "History Tool" ("History -> Tool").
 
 YouTube videos about Maud:
 
-  + May 2017 demo video (out-of-date!):
-    https://www.youtube.com/watch?v=fSjsbyBWlPk
+  + September 2017 update:
+    https://www.youtube.com/watch?v=4UwxbsOewow
   + June 2017 retargeted animation video:
     https://www.youtube.com/watch?v=yRjh1rAsipI
+  + May 2017 demo video (out-of-date!):
+    https://www.youtube.com/watch?v=fSjsbyBWlPk
 
 <a name="bvh">
 
