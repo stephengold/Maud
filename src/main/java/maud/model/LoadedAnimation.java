@@ -1126,6 +1126,7 @@ public class LoadedAnimation implements Cloneable {
      * Interpolate rotations from the track for the indexed bone to the parallel
      * arrays provided.
      *
+     * @param numSamples number of samples to calculate (&ge;0)
      * @param ts sample times (not null, unaffected)
      * @param boneIndex which bone (&ge;0)
      * @param storeWs (not null, modified)
@@ -1133,9 +1134,10 @@ public class LoadedAnimation implements Cloneable {
      * @param storeYs (not null, modified)
      * @param storeZs (not null, modified)
      */
-    public void trackInterpolateRotations(float[] ts, int boneIndex,
-            float[] storeWs, float[] storeXs,
+    public void trackInterpolateRotations(int numSamples, float[] ts,
+            int boneIndex, float[] storeWs, float[] storeXs,
             float[] storeYs, float[] storeZs) {
+        Validate.nonNegative(numSamples, "number of samples");
         Validate.nonNegative(boneIndex, "bone index");
 
         TweenRotations technique;
@@ -1147,7 +1149,7 @@ public class LoadedAnimation implements Cloneable {
         RotationCurve parms = technique.precompute(times, duration, rotations);
         Quaternion tempQ = new Quaternion();
 
-        for (int iSample = 0; iSample < ts.length; iSample++) {
+        for (int iSample = 0; iSample < numSamples; iSample++) {
             float time = ts[iSample];
             technique.interpolate(time, parms, tempQ);
             storeWs[iSample] = tempQ.getW();
@@ -1159,16 +1161,18 @@ public class LoadedAnimation implements Cloneable {
 
     /**
      * Interpolate translations from the track for the indexed bone to the
-     * parallel arrays provided.
+     * parallel arrays provided. TODO reorder methods
      *
+     * @param numSamples number of samples to calculate (&ge;0)
      * @param ts sample times (not null, unaffected)
      * @param boneIndex which bone (&ge;0)
      * @param storeXs (not null, modified)
      * @param storeYs (not null, modified)
      * @param storeZs (not null, modified)
      */
-    public void trackInterpolateTranslations(float[] ts, int boneIndex,
-            float[] storeXs, float[] storeYs, float[] storeZs) {
+    public void trackInterpolateTranslations(int numSamples, float[] ts,
+            int boneIndex, float[] storeXs, float[] storeYs, float[] storeZs) {
+        Validate.nonNegative(numSamples, "number of samples");
         Validate.nonNegative(boneIndex, "bone index");
 
         TweenVectors technique;
@@ -1180,7 +1184,7 @@ public class LoadedAnimation implements Cloneable {
         VectorCurve parms = technique.precompute(times, duration, translations);
         Vector3f tempV = new Vector3f();
 
-        for (int iSample = 0; iSample < ts.length; iSample++) {
+        for (int iSample = 0; iSample < numSamples; iSample++) {
             float time = ts[iSample];
             technique.interpolate(time, parms, tempV);
             storeXs[iSample] = tempV.x;
@@ -1193,14 +1197,16 @@ public class LoadedAnimation implements Cloneable {
      * Interpolate scales from the track for the indexed bone to the parallel
      * arrays provided.
      *
+     * @param numSamples number of samples to calculate (&ge;0)
      * @param ts sample times (not null, unaffected)
      * @param boneIndex which bone (&ge;0)
      * @param storeXs (not null, modified)
      * @param storeYs (not null, modified)
      * @param storeZs (not null, modified)
      */
-    public void trackInterpolateScales(float[] ts, int boneIndex,
-            float[] storeXs, float[] storeYs, float[] storeZs) {
+    public void trackInterpolateScales(int numSamples, float[] ts,
+            int boneIndex, float[] storeXs, float[] storeYs, float[] storeZs) {
+        Validate.nonNegative(numSamples, "number of samples");
         Validate.nonNegative(boneIndex, "bone index");
 
         TweenVectors technique = Maud.getModel().getMisc().getTweenScales();
@@ -1211,7 +1217,7 @@ public class LoadedAnimation implements Cloneable {
         VectorCurve parms = technique.precompute(times, duration, scales);
         Vector3f tempV = new Vector3f();
 
-        for (int iSample = 0; iSample < ts.length; iSample++) {
+        for (int iSample = 0; iSample < numSamples; iSample++) {
             float time = ts[iSample];
             technique.interpolate(time, parms, tempV);
             storeXs[iSample] = tempV.x;

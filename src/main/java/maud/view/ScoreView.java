@@ -1017,8 +1017,8 @@ public class ScoreView implements EditorView {
      */
     private void attachRotationPlots() {
         if (numSamples > 0) {
-            cgm.getAnimation().trackInterpolateRotations(its, currentBone,
-                    iws, ixs, iys, izs);
+            cgm.getAnimation().trackInterpolateRotations(numSamples, its,
+                    currentBone, iws, ixs, iys, izs);
         }
         cgm.getAnimation().trackRotations(currentBone, ws, xs, ys, zs);
         Pose pose = cgm.getPose().getPose();
@@ -1076,8 +1076,8 @@ public class ScoreView implements EditorView {
      */
     private void attachScalePlots() {
         if (numSamples > 0) {
-            cgm.getAnimation().trackInterpolateScales(its, currentBone,
-                    ixs, iys, izs);
+            cgm.getAnimation().trackInterpolateScales(numSamples, its,
+                    currentBone, ixs, iys, izs);
         }
         cgm.getAnimation().trackScales(currentBone, xs, ys, zs);
         Vector3f user = cgm.getPose().getPose().userScale(currentBone, null);
@@ -1366,8 +1366,8 @@ public class ScoreView implements EditorView {
      */
     private void attachTranslationPlots() {
         if (numSamples > 0) {
-            cgm.getAnimation().trackInterpolateTranslations(its, currentBone,
-                    ixs, iys, izs);
+            cgm.getAnimation().trackInterpolateTranslations(numSamples, its,
+                    currentBone, ixs, iys, izs);
         }
         cgm.getAnimation().trackTranslations(currentBone, xs, ys, zs);
         Pose pose = cgm.getPose().getPose();
