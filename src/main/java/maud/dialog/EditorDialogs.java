@@ -474,7 +474,7 @@ public class EditorDialogs {
     private void resampleCount(String actionPrefix) {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         if (animation.getDuration() > 0f) {
-            IntegerDialog controller = new IntegerDialog("Resample", 2, 1000);
+            IntegerDialog controller = new IntegerDialog("Resample", 2, 999);
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter number of samples:", "17",
                     actionPrefix, controller);
