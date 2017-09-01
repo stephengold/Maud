@@ -449,4 +449,54 @@ public class TrackEdit {
 
         return result;
     }
+
+    /**
+     * Copy a bone track, smoothing it using the specified techniques.
+     *
+     * @param oldTrack (not null, unaffected)
+     * @param width width of time window (&ge;0, &le;duration)
+     * @param smoothTranslations technique for translations (not null)
+     * @param smoothRotations technique for translations (not null)
+     * @param smoothScales technique for scales (not null)
+     * @param duration animation duration (in seconds, &ge;0)
+     * @return a new instance
+     */
+    public static BoneTrack smooth(BoneTrack oldTrack, float width,
+            SmoothVectors smoothTranslations, SmoothRotations smoothRotations,
+            SmoothVectors smoothScales, float duration) {
+        Validate.inRange(width, "width", 0f, duration);
+        Validate.nonNegative(duration, "duration");
+
+        float[] oldTimes = oldTrack.getKeyFrameTimes();
+        Vector3f[] oldTranslations = oldTrack.getTranslations();
+        Quaternion[] oldRotations = oldTrack.getRotations();
+        Vector3f[] oldScales = oldTrack.getScales();
+
+        int numFrames = oldTimes.length;
+        float[] newTimes = new float[numFrames];
+        for (int i = 0; i < numFrames; i++) {
+            newTimes[i] = oldTimes[i];
+        }
+
+        Vector3f[] newTranslations = new Vector3f[numFrames];
+        smoothTranslations.smooth(oldTimes, duration, oldTranslations, width,
+                newTranslations);
+
+        Quaternion[] newRotations = new Quaternion[numFrames];
+        smoothRotations.smooth(oldTimes, duration, oldRotations, width,
+                newRotations);
+
+        Vector3f[] newScales = null;
+        if (oldScales != null) {
+            newScales = new Vector3f[numFrames];
+            smoothScales.smooth(oldTimes, duration, oldScales, width,
+                    newScales);
+        }
+
+        int boneIndex = oldTrack.getTargetBoneIndex();
+        BoneTrack result = MyAnimation.newBoneTrack(boneIndex, newTimes,
+                newTranslations, newRotations, newScales);
+
+        return result;
+    }
 }

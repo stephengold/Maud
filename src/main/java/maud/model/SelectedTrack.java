@@ -52,6 +52,8 @@ import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
 import maud.Pose;
+import maud.SmoothRotations;
+import maud.SmoothVectors;
 import maud.TrackEdit;
 import maud.Util;
 
@@ -636,6 +638,34 @@ public class SelectedTrack implements Cloneable {
             }
             editableCgm.setKeyframes(times, translations, rotations, scales);
         }
+    }
+
+    /**
+     * Smooth the track.
+     */
+    public void smooth() {
+        if (!isTrackSelected()) {
+            return;
+        }
+
+        Animation newAnimation = newAnimation();
+        BoneTrack selectedTrack = findTrack();
+        Animation oldAnimation = loadedCgm.getAnimation().getAnimation();
+        float duration = oldAnimation.getLength();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
+            Track clone;
+            if (track == selectedTrack) {
+                clone = TrackEdit.smooth(selectedTrack, 0.2f,
+                        SmoothVectors.LoopLerp, SmoothRotations.LoopNlerp,
+                        SmoothVectors.LoopLerp, duration);
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        editableCgm.replaceAnimation(oldAnimation, newAnimation, "smooth track");
     }
 
     /**
