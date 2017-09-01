@@ -801,7 +801,7 @@ public enum TweenVectors {
             float inter12;
             if (index1 == lastIndex) {
                 index2 = lastIndex;
-                inter12 = 1f;
+                inter12 = curve.getCycleTime() - times[index1] + 0.001f;
             } else {
                 index2 = index1 + 1;
                 inter12 = times[index2] - times[index1];
@@ -1018,6 +1018,7 @@ public enum TweenVectors {
 
         float intervalDuration = curve.getIntervalDuration(index1);
         float t = (time - times[index1]) / intervalDuration;
+        assert t <= 1f : t;
         Vector3f v1 = curve.getStartValue(index1);
         Vector3f v2 = curve.getEndValue(index1);
         switch (this) {
