@@ -1100,52 +1100,49 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="retargetTool" title="Retarget Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="175px" width="320px" x="30" y="70">
+                     height="170px" width="320px" x="30" y="70">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Target model:  "/>
                         <control name="label" id="targetName"
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Load"
                                  id="id16ToAvoidNiftyWarning"
-                                 width="60px">
+                                 width="35px">
                             <interact onRelease="perform(load cgm)"/>
                         </control>
                     </panel>
-                    <panel height="8px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Source model:  "/>
                         <control name="label" id="sourceName"
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Load"
                                  id="id17ToAvoidNiftyWarning"
-                                 width="60px">
+                                 width="35px">
                             <interact onRelease="perform(load sourceCgm)"/>
                         </control>
                     </panel>
-                    <panel height="8px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Source animation:  "/>
                         <control name="label" id="sourceAnimation"
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" id="selectSourceAnimationButton"
-                                 width="60px">
+                                 width="35px">
                             <interact onRelease="perform(load sourceAnimation)"/>
                         </control>
                     </panel>
-                    <panel height="8px"/>
-                    <panel childLayout="horizontal" height="25px">
-                        <control name="label" text="Number of bone mappings:  "/>
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" id="mappingCount"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
-                                 width="40px"/>
-                        <control name="button" label="Tool"
+                                 width="30px"/>
+                        <control name="label" text="  bone mapping(s)  "/>
+                        <control name="button" label="Mapping Tool"
                                  id="id19ToAvoidNiftyWarning"
-                                 width="40px">
+                                 width="90px">
                             <interact onRelease="perform(select tool map)"/>
                         </control>
                         <panel/>
@@ -1154,7 +1151,7 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(retarget animation)"/>
                         </control>
                     </panel>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" id="retargetFeedback"
                                  color="#800f"
                                  textHAlign="center"
