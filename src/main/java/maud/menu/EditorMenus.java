@@ -990,6 +990,9 @@ public class EditorMenus {
             case "Select bone":
                 Maud.gui.buildMenus.selectBone();
                 break;
+            case "Smooth":
+                target.getTrack().smooth();
+                break;
             case "Tool":
                 Maud.gui.tools.select("keyframe"); // shared with Keyframe menu
                 break;
