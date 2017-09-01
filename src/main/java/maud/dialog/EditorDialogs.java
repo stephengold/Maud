@@ -75,7 +75,8 @@ public class EditorDialogs {
         String niftyVersion = nifty.getVersion();
         String text = "Maud, by Stephen Gold\n\nYou are c"
                 + "urrently using Maud, a jMonkeyEngine application for edit"
-                + "ing animated models.\n\nThe version you are using includes "
+                + "ing animated models.\n\nThe version you are using "
+                + "is designated ALPHA+2.\n\nIt includes "
                 + "the following libraries:";
         text += String.format("%n   jme3-core version %s",
                 MyString.quote(JmeVersion.FULL_NAME));
@@ -89,8 +90,16 @@ public class EditorDialogs {
                 MyString.quote(DebugVersion.getVersionShort()));
         text += String.format("%n   jme3-utilities-ui version %s",
                 MyString.quote(UiVersion.getVersionShort()));
-        text += String.format("%n   jme3-utilities-nifty version %s%n%n",
+        text += String.format("%n   jme3-utilities-nifty version %s",
                 MyString.quote(LibraryVersion.getVersionShort()));
+        text += String.format("%n   jme3-blender");
+        text += String.format("%n   jme3-bullet");
+        text += String.format("%n   jme3-bullet-native");
+        text += String.format("%n   jme3-desktop");
+        text += String.format("%n   jme3-lwjgl");
+
+        text += String.format("%n   jme3_xbuf_loader");
+        text += String.format("%n   logback-classic%n%n");
 
         Maud.gui.closeAllPopups();
         Maud.gui.showInfoDialog("About Maud", text);
