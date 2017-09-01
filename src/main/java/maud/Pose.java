@@ -145,7 +145,7 @@ public class Pose implements JmeCloneable {
                 Vector3f translation = transform.getTranslation();
                 Quaternion rotation = transform.getRotation();
                 Vector3f scale = transform.getScale();
-                BoneTrack track = MyAnimation.createTrack(boneIndex,
+                BoneTrack track = MyAnimation.newBoneTrack(boneIndex,
                         translation, rotation, scale);
                 result.addTrack(track);
             }

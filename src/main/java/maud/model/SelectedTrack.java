@@ -271,12 +271,12 @@ public class SelectedTrack implements Cloneable {
                 Pose pose = loadedCgm.getPose().getPose();
                 int boneIndex = selectedTrack.getTargetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
-                clone = MyAnimation.insertKeyframe(selectedTrack, time, user);
+                clone = TrackEdit.insertKeyframe(selectedTrack, time, user);
             } else {
                 clone = track.clone();
             }
             newAnimation.addTrack(clone);
-        }
+        } // TODO new bone tracks?
 
         editableCgm.replaceAnimation(oldAnimation, newAnimation,
                 "insert single keyframe");
@@ -375,7 +375,7 @@ public class SelectedTrack implements Cloneable {
         for (Track track : oldTracks) {
             Track clone;
             if (track == selectedTrack) {
-                clone = MyAnimation.reduce(selectedTrack, factor);
+                clone = TrackEdit.reduce(selectedTrack, factor);
             } else {
                 clone = track.clone();
             }
@@ -807,7 +807,7 @@ public class SelectedTrack implements Cloneable {
             Track clone;
             if (track == selectedTrack) {
                 float endTime = loadedCgm.getAnimation().getDuration();
-                clone = MyAnimation.wrap(selectedTrack, endTime);
+                clone = TrackEdit.wrap(selectedTrack, endTime);
             } else {
                 clone = track.clone();
             }

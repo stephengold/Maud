@@ -47,13 +47,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyAnimation;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
 import maud.Maud;
+import maud.TrackEdit;
 import maud.Util;
 import maud.view.SceneView;
 
@@ -761,8 +761,8 @@ public class EditableCgm extends LoadedCgm {
             Collection<String> names = animControl.getAnimationNames();
             for (String animationName : names) {
                 Animation anim = animControl.getAnim(animationName);
-                numTracksZfed += MyAnimation.zeroFirst(anim);
-                numTracksRred += MyAnimation.removeRepeats(anim);
+                numTracksZfed += TrackEdit.zeroFirst(anim);
+                numTracksRred += TrackEdit.removeRepeats(anim);
             }
         }
 
