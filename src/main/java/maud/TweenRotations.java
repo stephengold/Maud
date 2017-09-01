@@ -671,7 +671,7 @@ public enum TweenRotations {
             int index2;
             if (index1 == lastIndex) {
                 index2 = lastIndex;
-                inter12 = 1f;
+                inter12 = curve.getCycleTime() - times[index1] + 0.001f;
             } else {
                 index2 = index1 + 1;
                 inter12 = times[index2] - times[index1];
