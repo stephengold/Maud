@@ -42,10 +42,10 @@ import maud.action.ActionPrefix;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
-import maud.model.MiscStatus;
 import maud.model.SelectedBone;
 import maud.model.SelectedSkeleton;
-import maud.model.ViewMode;
+import maud.model.option.MiscStatus;
+import maud.model.option.ViewMode;
 
 /**
  * Build menus in Maud's editor screen.

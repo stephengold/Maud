@@ -39,9 +39,9 @@ import maud.model.EditableMap;
 import maud.model.History;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
-import maud.model.MiscStatus;
 import maud.model.SelectedSpatial;
-import maud.model.ViewMode;
+import maud.model.option.MiscStatus;
+import maud.model.option.ViewMode;
 
 /**
  * Menus in Maud's editor screen.

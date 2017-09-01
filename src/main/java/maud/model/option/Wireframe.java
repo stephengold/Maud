@@ -24,27 +24,27 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model;
+package maud.model.option;
 
 /**
- * Enumerate bone options for skeleton visualizers.
+ * Enumerate wireframe options for scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum SceneBones {
+public enum Wireframe {
     // *************************************************************************
     // values
 
     /**
-     * visualize all bones
+     * render CG-model triangles as specified by their materials
      */
-    All,
+    Material,
     /**
-     * visualize only the bones that influence mesh vertices
+     * force non-wireframe rendering for all CG-model triangles
      */
-    InfluencersOnly,
+    Solid,
     /**
-     * visualize no bones
+     * force wireframe rendering for all CG-model triangles
      */
-    None;
+    Wire;
 }

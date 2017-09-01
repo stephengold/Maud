@@ -24,18 +24,18 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model;
+package maud.model.option;
 
 import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * Options for vertex visualizations in scene views.
+ * Options for 3-D cursors in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class VertexOptions implements Cloneable {
+public class DddCursorOptions implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -43,23 +43,27 @@ public class VertexOptions implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            VertexOptions.class.getName());
+            DddCursorOptions.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * color for selected vertices (default: yellow)
+     * visibility of the cursor (true &rarr; visible, false &rarr; hidden)
      */
-    private ColorRGBA color = new ColorRGBA(1f, 1f, 0f, 1f);
+    private boolean visible = true;
     /**
-     * point size for selected vertices (in pixels, &ge;0, 0&rarr;hidden)
+     * color of the cursor
      */
-    private float pointSize = 20f;
+    private ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 1f);
+    /**
+     * angular size of the cursor (in arbitrary units, &gt;0)
+     */
+    private float size = 0.2f;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Copy the color for selected vertices.
+     * Copy the color of the cursor.
      *
      * @param storeResult (modified if not null)
      * @return color (either storeResult or a new instance)
@@ -74,17 +78,26 @@ public class VertexOptions implements Cloneable {
     }
 
     /**
-     * Read the size for selected vertices.
+     * Read the size of the cursor.
      *
-     * @return size (in pixels, &ge;0)
+     * @return size (in arbitrary units, &gt;0)
      */
-    public float getPointSize() {
-        assert pointSize >= 0f : pointSize;
-        return pointSize;
+    public float getSize() {
+        assert size > 0f : size;
+        return size;
     }
 
     /**
-     * Alter the color for selected vertices.
+     * Test whether the cursor is visible.
+     *
+     * @return true if visible, otherwise false
+     */
+    public boolean isVisible() {
+        return visible;
+    }
+
+    /**
+     * Alter the color of the 3D cursor.
      *
      * @param newColor (not null, unaffected)
      */
@@ -94,13 +107,22 @@ public class VertexOptions implements Cloneable {
     }
 
     /**
-     * Alter the point size of the bone heads.
+     * Alter the size of the cursor.
      *
-     * @param size point size (in pixels, &ge;0, 0&rarr;hidden)
+     * @param newSize (in arbitrary units, &ge;0)
      */
-    public void setPointSize(float size) {
-        Validate.nonNegative(size, "size");
-        pointSize = size;
+    public void setSize(float newSize) {
+        Validate.nonNegative(newSize, "size");
+        size = newSize;
+    }
+
+    /**
+     * Alter the visibility of the cursor.
+     *
+     * @param newState true &rarr; visible, false &rarr; hidden
+     */
+    public void setVisible(boolean newState) {
+        visible = newState;
     }
     // *************************************************************************
     // Object methods
@@ -112,8 +134,8 @@ public class VertexOptions implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public VertexOptions clone() throws CloneNotSupportedException {
-        VertexOptions clone = (VertexOptions) super.clone();
+    public DddCursorOptions clone() throws CloneNotSupportedException {
+        DddCursorOptions clone = (DddCursorOptions) super.clone();
         clone.color = color.clone();
 
         return clone;

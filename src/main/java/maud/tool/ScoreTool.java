@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.ScoreOptions;
+import maud.model.option.ScoreOptions;
 
 /**
  * The controller for the "Score Tool" window in Maud's editor screen.

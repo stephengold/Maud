@@ -24,17 +24,18 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model;
+package maud.model.option;
 
+import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * Options for visible coordinate axes in scene views.
+ * Options for bounds visualizations in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class AxesOptions implements Cloneable {
+public class BoundsOptions implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -42,27 +43,42 @@ public class AxesOptions implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            AxesOptions.class.getName());
+            BoundsOptions.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * flag to enable depth test for visibility of the axes
+     * flag to enable/disable depth test for the visualization
      */
-    private boolean depthTestFlag = false;
+    private boolean depthTestFlag = true;
     /**
-     * line width for the axes (in pixels, &ge;1)
+     * color of the visualization
      */
-    private float lineWidth = 4f;
+    private ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 1f);
     /**
-     * which set of axes is displayed
+     * line width for the visualization (in pixels, &ge;0)
      */
-    private AxesMode mode = AxesMode.Bone;
+    private float lineWidth = 0f;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Read the depth test flag.
+     * Copy the color of the visualization.
+     *
+     * @param storeResult (modified if not null)
+     * @return color (either storeResult or a new instance)
+     */
+    public ColorRGBA copyColor(ColorRGBA storeResult) {
+        if (storeResult == null) {
+            storeResult = new ColorRGBA();
+        }
+        storeResult.set(color);
+
+        return storeResult;
+    }
+
+    /**
+     * Read the depth-test flag.
      *
      * @return true to enable test, otherwise false
      */
@@ -73,21 +89,21 @@ public class AxesOptions implements Cloneable {
     /**
      * Read the width of each line.
      *
-     * @return width (in pixels, &ge;1)
+     * @return width (in pixels, &ge;0)
      */
     public float getLineWidth() {
-        assert lineWidth >= 1f : lineWidth;
+        assert lineWidth >= 0f : lineWidth;
         return lineWidth;
     }
 
     /**
-     * Read the current mode.
+     * Alter the color of the visualization.
      *
-     * @return mode enum (not null)
+     * @param newColor (not null, unaffected)
      */
-    public AxesMode getMode() {
-        assert mode != null;
-        return mode;
+    public void setColor(ColorRGBA newColor) {
+        Validate.nonNull(newColor, "color");
+        color.set(newColor);
     }
 
     /**
@@ -96,27 +112,17 @@ public class AxesOptions implements Cloneable {
      * @param newState true &rarr; enable depth test, false &rarr; no depth test
      */
     public void setDepthTestFlag(boolean newState) {
-        this.depthTestFlag = newState;
+        depthTestFlag = newState;
     }
 
     /**
      * Alter the width.
      *
-     * @param width line width for axes (in pixels, &ge;1)
+     * @param newWidth line width for axes (in pixels, &ge;0)
      */
-    public void setLineWidth(float width) {
-        Validate.inRange(width, "width", 1f, Float.MAX_VALUE);
-        this.lineWidth = width;
-    }
-
-    /**
-     * Alter the display mode.
-     *
-     * @param newMode enum of new display mode (not null)
-     */
-    public void setMode(AxesMode newMode) {
-        Validate.nonNull(newMode, "new mode");
-        mode = newMode;
+    public void setLineWidth(float newWidth) {
+        Validate.inRange(newWidth, "new width", 0f, Float.MAX_VALUE);
+        lineWidth = newWidth;
     }
     // *************************************************************************
     // Object methods
@@ -128,8 +134,10 @@ public class AxesOptions implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public AxesOptions clone() throws CloneNotSupportedException {
-        AxesOptions clone = (AxesOptions) super.clone();
+    public BoundsOptions clone() throws CloneNotSupportedException {
+        BoundsOptions clone = (BoundsOptions) super.clone();
+        clone.color = color.clone();
+
         return clone;
     }
 }

@@ -32,7 +32,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.TweenRotations;
 import maud.TweenVectors;
-import maud.model.MiscStatus;
+import maud.model.option.MiscStatus;
 
 /**
  * The controller for the "Tweening Tool" window in Maud's editor screen.

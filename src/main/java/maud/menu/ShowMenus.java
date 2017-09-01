@@ -39,13 +39,13 @@ import maud.action.ActionPrefix;
 import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
-import maud.model.MiscStatus;
-import maud.model.SceneBones;
 import maud.model.SelectedSkeleton;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedVertex;
-import maud.model.SkeletonOptions;
-import maud.model.ViewMode;
+import maud.model.option.MiscStatus;
+import maud.model.option.SceneBones;
+import maud.model.option.SkeletonOptions;
+import maud.model.option.ViewMode;
 
 /**
  * Display simple menus in Maud's editor screen.

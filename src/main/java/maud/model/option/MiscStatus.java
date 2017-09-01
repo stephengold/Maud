@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model;
+package maud.model.option;
 
 import com.jme3.animation.BoneTrack;
 import com.jme3.math.Quaternion;

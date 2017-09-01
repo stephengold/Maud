@@ -45,12 +45,12 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.Pose;
-import maud.model.AxesMode;
-import maud.model.AxesOptions;
 import maud.model.EditableCgm;
 import maud.model.EditableMap;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
+import maud.model.option.AxesMode;
+import maud.model.option.AxesOptions;
 import maud.view.SceneDrag;
 import maud.view.SceneView;
 

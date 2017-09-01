@@ -27,6 +27,10 @@
 package maud.model;
 
 import java.util.logging.Logger;
+import maud.model.option.AssetLocations;
+import maud.model.option.MiscStatus;
+import maud.model.option.SceneOptions;
+import maud.model.option.ScoreOptions;
 
 /**
  * An MVC-model state of the editor screen in the Maud application. Includes all

@@ -55,6 +55,8 @@ import jme3utilities.ui.Locators;
 import maud.CheckLoaded;
 import maud.Maud;
 import maud.Util;
+import maud.model.option.SceneBones;
+import maud.model.option.Wireframe;
 import maud.view.SceneView;
 import maud.view.ScoreView;
 
@@ -976,42 +978,10 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Update the scene's wireframe settings based on the MVC model. Note:
-     * recursive!
-     *
-     * @param subtree subtree in the MVC model's copy of the CG model (may be
-     * null)
+     * Update the scene's wireframe settings based on the MVC model.
      */
-    void updateSceneWireframe(Spatial subtree) {
-        if (subtree instanceof Geometry) {
-            boolean setting;
-            Wireframe wireframe = Maud.getModel().getScene().getWireframe();
-            switch (wireframe) {
-                case Material:
-                    Geometry geometry = (Geometry) subtree;
-                    Material material = geometry.getMaterial();
-                    RenderState rs = material.getAdditionalRenderState();
-                    setting = rs.isWireframe();
-                    break;
-                case Solid:
-                    setting = false;
-                    break;
-                case Wire:
-                    setting = true;
-                    break;
-                default:
-                    throw new RuntimeException();
-            }
-            List<Integer> treePosition = findSpatial(subtree);
-            sceneView.setWireframe(treePosition, setting);
-
-        } else if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                updateSceneWireframe(child);
-            }
-        }
+    public void updateSceneWireframe() {
+        updateSceneWireframe(rootSpatial);
     }
     // *************************************************************************
     // protected methods
@@ -1248,5 +1218,44 @@ public class LoadedCgm implements Cloneable {
 
         Locators.restore();
         return loaded;
+    }
+
+    /**
+     * Update the scene's wireframe settings based on the MVC model. Note:
+     * recursive!
+     *
+     * @param subtree subtree in the MVC model's copy of the CG model (may be
+     * null)
+     */
+    private void updateSceneWireframe(Spatial subtree) {
+        if (subtree instanceof Geometry) {
+            boolean setting;
+            Wireframe wireframe = Maud.getModel().getScene().getWireframe();
+            switch (wireframe) {
+                case Material:
+                    Geometry geometry = (Geometry) subtree;
+                    Material material = geometry.getMaterial();
+                    RenderState rs = material.getAdditionalRenderState();
+                    setting = rs.isWireframe();
+                    break;
+                case Solid:
+                    setting = false;
+                    break;
+                case Wire:
+                    setting = true;
+                    break;
+                default:
+                    throw new RuntimeException();
+            }
+            List<Integer> treePosition = findSpatial(subtree);
+            sceneView.setWireframe(treePosition, setting);
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                updateSceneWireframe(child);
+            }
+        }
     }
 }

@@ -36,7 +36,7 @@ import maud.TweenRotations;
 import maud.TweenVectors;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
-import maud.model.SceneBones;
+import maud.model.option.SceneBones;
 
 /**
  * Process an action string that begins with "set".
