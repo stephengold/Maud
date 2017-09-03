@@ -39,6 +39,8 @@ import jme3utilities.nifty.DialogController;
 import jme3utilities.nifty.FloatDialog;
 import jme3utilities.nifty.IntegerDialog;
 import jme3utilities.nifty.LibraryVersion;
+import jme3utilities.nifty.LongDialog;
+import jme3utilities.nifty.TextEntryDialog;
 import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
 import maud.Maud;
