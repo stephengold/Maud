@@ -12,6 +12,7 @@ gradle.projectsEvaluated {
 }
 
 ext.jmonkeyengineVersion = '3.1.0-stable'
+//ext.jmonkeyengineVersion = '[3.2,)'
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'maud.Maud'
@@ -26,6 +27,7 @@ repositories {
     //maven { url 'https://dl.bintray.com/jmonkeyengine/contrib' }
     maven { url 'https://jcenter.bintray.com' }
     maven { url 'https://jitpack.io' }
+    //mavenLocal()
 }
 
 dependencies {
@@ -38,6 +40,7 @@ dependencies {
     compile "org.jmonkeyengine:jme3-effects:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-jogg:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-lwjgl:${jmonkeyengineVersion}"
+    compile "org.jmonkeyengine:jme3-niftygui:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-plugins:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-terrain:${jmonkeyengineVersion}"
     compile 'ch.qos.logback:logback-classic:1.2.3'
