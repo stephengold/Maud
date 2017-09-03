@@ -250,11 +250,18 @@ model's bones move, rather like they would in a game.
 
 When the mouse cursor is in a scene view, you can use the "A" and "D" keys
 to rotate the model left and right.  (This won't alter the model itself,
-only its orientation in the view.)
+only its orientation in the view.)  You can also use the "V" key to select
+the vertex closest to the mouse pointer.
 
 The Editor Screen can also display "score" views of loaded animations.
 A score view is a schematic, like a musical score, with bones arranged
 vertically and time (indicated by a gnomon) progressing from left to right.
+When the mouse cursor is in a score view, the following keyboard
+shortcuts my prove helpful:
+
+ + "B" to select the bone track closest to the mouse pointer
+ + "G" to grab the gnomon and drag it with the mouse pointer
+ + "K" to select the keyframe closest to the mouse pointer
 
 While Maud can only edit one model at a time, the Editor Screen can split
 in half to display 2 different models.
