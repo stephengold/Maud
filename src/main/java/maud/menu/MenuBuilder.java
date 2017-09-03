@@ -161,6 +161,8 @@ class MenuBuilder {
             addBlend(name);
         } else if (name.endsWith(".bvh")) {
             addBvh(name);
+        //} else if (name.endsWith(".gltf")) {
+        //    addXbuf(name);
         } else if (name.endsWith(".j3o")) {
             addJme(name);
         } else if (name.endsWith(".jar")) {
@@ -342,6 +344,8 @@ class MenuBuilder {
             result = true;
         } else if (name.endsWith(".bvh")) {
             result = true;
+        //} else if (name.endsWith(".gltf")) {
+        //    result = true;
         } else if (name.endsWith(".j3o")) {
             result = true;
         } else if (name.endsWith(".obj")) {
