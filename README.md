@@ -698,7 +698,7 @@ The following features are on my "to do" list, in no particular order:
  + tools for Lights/Materials/Meshes
  + select bone mappings that don't correspond to the loaded models
  + export a model to [OBJ][] format
- + export an animation to [BVH][] format
+ + export an animation to [BVH][#bvh] format
  + import models from [glTF][] files
  + localization
  + more scene-view options for platform/sky
