@@ -35,6 +35,7 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.Track;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import java.util.Collection;
 import java.util.List;
@@ -321,6 +322,16 @@ public class CheckLoaded {
                 return false;
             }
         }
+
+        List<Mesh> animatedMeshes = Util.listAnimatedMeshes(cgmRoot, null);
+        for (Mesh mesh : animatedMeshes) {
+            int maxWeightsPerVert = mesh.getMaxNumWeights();
+            if (maxWeightsPerVert < 1) {
+                logger.warning("model has animated mesh without bone weights");
+                return false;
+            }
+        }
+
         return true;
     }
 

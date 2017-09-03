@@ -59,6 +59,7 @@ import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -155,6 +156,9 @@ public class Util {
         }
 
         int maxWeightsPerVert = mesh.getMaxNumWeights();
+        if (maxWeightsPerVert <= 0) {
+            maxWeightsPerVert = 1;
+        }
         assert maxWeightsPerVert > 0 : maxWeightsPerVert;
         assert maxWeightsPerVert <= 4 : maxWeightsPerVert;
 
@@ -428,6 +432,39 @@ public class Util {
         }
 
         return false;
+    }
+
+    /**
+     * Enumerate all animated meshes in the specified subtree of a scene graph.
+     * Note: recursive!
+     *
+     * @param subtree (not null)
+     * @param storeResult (added to if not null)
+     * @return an expanded list (either storeResult or a new instance)
+     */
+    public static List<Mesh> listAnimatedMeshes(Spatial subtree,
+            List<Mesh> storeResult) {
+        Validate.nonNull(subtree, "subtree");
+        if (storeResult == null) {
+            storeResult = new ArrayList<>(10);
+        }
+
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            Mesh mesh = geometry.getMesh();
+            if (mesh.isAnimated()) {
+                storeResult.add(mesh);
+            }
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                listAnimatedMeshes(child, storeResult);
+            }
+        }
+
+        return storeResult;
     }
 
     /**
