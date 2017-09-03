@@ -76,8 +76,7 @@ public class EditorDialogs {
         String text = "Maud, by Stephen Gold\n\nYou are c"
                 + "urrently using Maud, a jMonkeyEngine application for edit"
                 + "ing animated models.\n\nThe version you are using "
-                + "is designated ALPHA+2.\n\nIt includes "
-                + "the following libraries:";
+                + "includes the following libraries:";
         text += String.format("%n   jme3-core version %s",
                 MyString.quote(JmeVersion.FULL_NAME));
         text += String.format("%n   nifty version %s",
