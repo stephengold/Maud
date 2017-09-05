@@ -43,9 +43,10 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.ui.Locators;
+import jme3utilities.wes.Pose;
+import jme3utilities.wes.TrackEdit;
+import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
-import maud.Pose;
-import maud.TrackEdit;
 import maud.Util;
 
 /**
@@ -619,7 +620,11 @@ public class LoadedMap implements Cloneable {
         if (invertMapFlag) {
             result = map.inverse();
         } else {
-            result = map.clone();
+            try {
+                result = map.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException();
+            }
         }
 
         return result;
@@ -713,8 +718,10 @@ public class LoadedMap implements Cloneable {
         Skeleton sourceSkeleton = source.getSkeleton().findSkeleton();
         Skeleton targetSkeleton = target.getSkeleton().findSkeleton();
         SkeletonMapping effectiveMap = effectiveMap();
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
         Animation retargeted = TrackEdit.retargetAnimation(sourceAnimation,
-                sourceSkeleton, targetSkeleton, effectiveMap, newAnimationName);
+                sourceSkeleton, targetSkeleton, effectiveMap, techniques,
+                newAnimationName);
 
         float duration = retargeted.getLength();
         assert duration >= 0f : duration;

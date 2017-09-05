@@ -27,6 +27,7 @@
 package maud.model;
 
 import java.util.logging.Logger;
+import jme3utilities.wes.TweenTransforms;
 import maud.model.option.AssetLocations;
 import maud.model.option.MiscStatus;
 import maud.model.option.SceneOptions;
@@ -78,6 +79,10 @@ public class EditorModel {
      * options for "score" views
      */
     final private ScoreOptions scoreOptions;
+    /**
+     * tweening techniques
+     */
+    final private TweenTransforms techniques;
     // *************************************************************************
     // constructors
 
@@ -92,6 +97,7 @@ public class EditorModel {
         misc = new MiscStatus();
         sceneOptions = new SceneOptions();
         scoreOptions = new ScoreOptions();
+        techniques = new TweenTransforms();
     }
 
     /**
@@ -109,6 +115,7 @@ public class EditorModel {
             misc = other.getMisc().clone();
             sceneOptions = other.getScene().clone();
             scoreOptions = other.getScore().clone();
+            techniques = other.getTweenTransforms().clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException();
         }
@@ -184,5 +191,15 @@ public class EditorModel {
     public EditableCgm getTarget() {
         assert targetCgmLoadSlot != null;
         return targetCgmLoadSlot;
+    }
+
+    /**
+     * Access the tweening techniques.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public TweenTransforms getTweenTransforms() {
+        assert techniques != null;
+        return techniques;
     }
 }

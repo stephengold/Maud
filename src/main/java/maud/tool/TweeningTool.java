@@ -29,10 +29,10 @@ package maud.tool;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import jme3utilities.wes.TweenRotations;
+import jme3utilities.wes.TweenTransforms;
+import jme3utilities.wes.TweenVectors;
 import maud.Maud;
-import maud.TweenRotations;
-import maud.TweenVectors;
-import maud.model.option.MiscStatus;
 
 /**
  * The controller for the "Tweening Tool" window in Maud's editor screen.
@@ -74,16 +74,16 @@ class TweeningTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        MiscStatus misc = Maud.getModel().getMisc();
-        TweenVectors tweenTranslations = misc.getTweenTranslations();
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        TweenVectors tweenTranslations = techniques.getTweenTranslations();
         String desc = tweenTranslations.toString();
         Maud.gui.setStatusText("tweenTranslations", " " + desc);
 
-        TweenRotations tweenRotations = misc.getTweenRotations();
+        TweenRotations tweenRotations = techniques.getTweenRotations();
         desc = tweenRotations.toString();
         Maud.gui.setStatusText("tweenRotations", " " + desc);
 
-        TweenVectors tweenScales = misc.getTweenScales();
+        TweenVectors tweenScales = techniques.getTweenScales();
         desc = tweenScales.toString();
         Maud.gui.setStatusText("tweenScales", " " + desc);
 

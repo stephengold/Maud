@@ -32,9 +32,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.wes.TweenRotations;
+import jme3utilities.wes.TweenTransforms;
+import jme3utilities.wes.TweenVectors;
 import maud.Maud;
-import maud.TweenRotations;
-import maud.TweenVectors;
 import maud.action.ActionPrefix;
 import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
@@ -42,7 +43,6 @@ import maud.model.LoadedCgm;
 import maud.model.SelectedSkeleton;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedVertex;
-import maud.model.option.MiscStatus;
 import maud.model.option.SceneBones;
 import maud.model.option.SkeletonOptions;
 import maud.model.option.ViewMode;
@@ -521,7 +521,8 @@ public class ShowMenus {
      */
     public void setTweenRotations() {
         MenuBuilder builder = new MenuBuilder();
-        TweenRotations selected = Maud.getModel().getMisc().getTweenRotations();
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        TweenVectors selected = techniques.getTweenTranslations();
         for (TweenRotations t : TweenRotations.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
@@ -537,7 +538,8 @@ public class ShowMenus {
      */
     public void setTweenScales() {
         MenuBuilder builder = new MenuBuilder();
-        TweenVectors selected = Maud.getModel().getMisc().getTweenScales();
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        TweenVectors selected = techniques.getTweenScales();
         for (TweenVectors t : TweenVectors.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
@@ -553,8 +555,8 @@ public class ShowMenus {
      */
     public void setTweenTranslations() {
         MenuBuilder builder = new MenuBuilder();
-        MiscStatus misc = Maud.getModel().getMisc();
-        TweenVectors selected = misc.getTweenTranslations();
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        TweenVectors selected = techniques.getTweenTranslations();
         for (TweenVectors t : TweenVectors.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
