@@ -42,13 +42,14 @@ import jme3utilities.MyAnimation;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.wes.Pose;
+import jme3utilities.wes.RotationCurve;
+import jme3utilities.wes.TrackEdit;
+import jme3utilities.wes.TweenRotations;
+import jme3utilities.wes.TweenTransforms;
+import jme3utilities.wes.TweenVectors;
+import jme3utilities.wes.VectorCurve;
 import maud.Maud;
-import maud.Pose;
-import maud.RotationCurve;
-import maud.TrackEdit;
-import maud.TweenRotations;
-import maud.TweenVectors;
-import maud.VectorCurve;
 
 /**
  * The MVC model of the loaded animation in the Maud application. For loading
@@ -134,13 +135,14 @@ public class LoadedAnimation implements Cloneable {
         float oldDuration = loaded.getLength();
         float newDuration = oldDuration - currentTime;
         Animation newAnimation = new Animation(loadedName, newDuration);
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track newTrack;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                Transform neck = Maud.getModel().getMisc().interpolate(
-                        currentTime, boneTrack, oldDuration, null);
+                Transform neck = techniques.interpolate(currentTime, boneTrack,
+                        oldDuration, null);
                 newTrack = TrackEdit.behead(boneTrack, currentTime, neck,
                         oldDuration);
             } else {
@@ -165,10 +167,12 @@ public class LoadedAnimation implements Cloneable {
             storeResult = new Transform();
         }
 
+        EditorModel model = Maud.getModel();
         Animation animation = getAnimation();
         if (animation == null) {
             if (isRetargetedPose()) {
-                Maud.getModel().getMap().boneTransform(boneIndex, storeResult);
+                EditableMap map = model.getMap();
+                map.boneTransform(boneIndex, storeResult);
             } else {
                 storeResult.loadIdentity();
             }
@@ -177,8 +181,9 @@ public class LoadedAnimation implements Cloneable {
             if (track == null) {
                 storeResult.loadIdentity();
             } else {
+                TweenTransforms techniques = model.getTweenTransforms();
                 float duration = getDuration();
-                TrackEdit.boneTransform(track, currentTime, duration,
+                techniques.boneTransform(track, currentTime, duration,
                         storeResult);
             }
         }
@@ -897,6 +902,7 @@ public class LoadedAnimation implements Cloneable {
 
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
 
         Animation loaded = getAnimation();
         Track[] loadedTracks = loaded.getTracks();
@@ -904,7 +910,7 @@ public class LoadedAnimation implements Cloneable {
             Track clone;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                clone = TrackEdit.resampleAtRate(boneTrack, sampleRate,
+                clone = techniques.resampleAtRate(boneTrack, sampleRate,
                         duration);
             } else {
                 clone = track.clone(); // TODO spatial tracks
@@ -929,6 +935,7 @@ public class LoadedAnimation implements Cloneable {
         float duration = getDuration();
         assert duration > 0f : duration;
         Animation newAnimation = new Animation(loadedName, duration);
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
 
         Animation loaded = getAnimation();
         Track[] loadedTracks = loaded.getTracks();
@@ -936,7 +943,7 @@ public class LoadedAnimation implements Cloneable {
             Track clone;
             if (track instanceof BoneTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                clone = TrackEdit.resampleToNumber(boneTrack, numSamples,
+                clone = techniques.resampleToNumber(boneTrack, numSamples,
                         duration);
             } else {
                 clone = track.clone(); // TODO spatial tracks
@@ -1135,13 +1142,13 @@ public class LoadedAnimation implements Cloneable {
      * @param storeZs (not null, modified)
      */
     public void trackInterpolateRotations(int numSamples, float[] ts,
-            int boneIndex, float[] storeWs, float[] storeXs,
-            float[] storeYs, float[] storeZs) {
+            int boneIndex, float[] storeWs, float[] storeXs, float[] storeYs,
+            float[] storeZs) {
         Validate.nonNegative(numSamples, "number of samples");
         Validate.nonNegative(boneIndex, "bone index");
 
         TweenRotations technique;
-        technique = Maud.getModel().getMisc().getTweenRotations();
+        technique = Maud.getModel().getTweenTransforms().getTweenRotations();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();
@@ -1176,7 +1183,7 @@ public class LoadedAnimation implements Cloneable {
         Validate.nonNegative(boneIndex, "bone index");
 
         TweenVectors technique;
-        technique = Maud.getModel().getMisc().getTweenTranslations();
+        technique = Maud.getModel().getTweenTransforms().getTweenTranslations();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();
@@ -1209,7 +1216,7 @@ public class LoadedAnimation implements Cloneable {
         Validate.nonNegative(numSamples, "number of samples");
         Validate.nonNegative(boneIndex, "bone index");
 
-        TweenVectors technique = Maud.getModel().getMisc().getTweenScales();
+        TweenVectors technique = Maud.getModel().getTweenTransforms().getTweenScales();
         BoneTrack track = findTrackForBone(boneIndex);
         float[] times = track.getKeyFrameTimes();
         float duration = getDuration();

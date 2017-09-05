@@ -43,6 +43,7 @@ import jme3utilities.nifty.LongDialog;
 import jme3utilities.nifty.TextEntryDialog;
 import jme3utilities.sky.Constants;
 import jme3utilities.ui.UiVersion;
+import jme3utilities.wes.WesVersion;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.model.EditableCgm;
@@ -87,6 +88,8 @@ public class EditorDialogs {
                 MyString.quote(Misc.getVersionShort()));
         text += String.format("%n   SkyControl version %s",
                 MyString.quote(Constants.getVersionShort()));
+        text += String.format("%n   Wes version %s",
+                MyString.quote(WesVersion.getVersionShort()));
         text += String.format("%n   jme3-utilities-debug version %s",
                 MyString.quote(DebugVersion.getVersionShort()));
         text += String.format("%n   jme3-utilities-ui version %s",

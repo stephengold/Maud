@@ -34,7 +34,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.logging.Logger;
-import maud.Pose;
+import jme3utilities.wes.Pose;
 
 /**
  * The displayed pose of a particular CG model in the Maud application.

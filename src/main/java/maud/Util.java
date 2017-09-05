@@ -68,6 +68,7 @@ import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
+import jme3utilities.wes.Pose;
 import org.slf4j.LoggerFactory;
 
 /**

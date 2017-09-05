@@ -50,11 +50,12 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
+import jme3utilities.wes.Pose;
+import jme3utilities.wes.SmoothRotations;
+import jme3utilities.wes.SmoothVectors;
+import jme3utilities.wes.TrackEdit;
+import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
-import maud.Pose;
-import maud.SmoothRotations;
-import maud.SmoothVectors;
-import maud.TrackEdit;
 import maud.Util;
 
 /**
@@ -436,13 +437,14 @@ public class SelectedTrack implements Cloneable {
         Animation newAnimation = newAnimation();
         BoneTrack selectedTrack = findTrack();
         Animation oldAnimation = loadedCgm.getAnimation().getAnimation();
-        float duration = oldAnimation.getLength();
 
         Track[] oldTracks = oldAnimation.getTracks();
         for (Track track : oldTracks) {
             Track clone;
             if (track == selectedTrack) {
-                clone = TrackEdit.resampleAtRate(selectedTrack, sampleRate,
+                TweenTransforms technique = Maud.getModel().getTweenTransforms();
+                float duration = oldAnimation.getLength();
+                clone = technique.resampleAtRate(selectedTrack, sampleRate,
                         duration);
             } else {
                 clone = track.clone();
@@ -466,14 +468,15 @@ public class SelectedTrack implements Cloneable {
         Animation newAnimation = newAnimation();
         BoneTrack selectedTrack = findTrack();
         Animation oldAnimation = loadedCgm.getAnimation().getAnimation();
-        float duration = oldAnimation.getLength();
-        assert duration > 0f : duration;
 
         Track[] oldTracks = oldAnimation.getTracks();
         for (Track track : oldTracks) {
             Track clone;
             if (track == selectedTrack) {
-                clone = TrackEdit.resampleToNumber(selectedTrack, numSamples,
+                TweenTransforms technique = Maud.getModel().getTweenTransforms();
+                float duration = oldAnimation.getLength();
+                assert duration > 0f : duration;
+                clone = technique.resampleToNumber(selectedTrack, numSamples,
                         duration);
             } else {
                 clone = track.clone();
@@ -726,11 +729,12 @@ public class SelectedTrack implements Cloneable {
         BoneTrack track = findTrack();
         float[] times = track.getKeyFrameTimes();
         Vector3f[] translations = track.getTranslations();
+        TweenTransforms technique = Maud.getModel().getTweenTransforms();
         int numKeyframes = times.length;
         int previousVertexIndex = -1;
         for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
             float trackTime = times[frameIndex];
-            tempPose.setToAnimation(animation, trackTime);
+            tempPose.setToAnimation(animation, trackTime, technique);
             tempPose.skin(skinningMatrices);
 
             if (previousVertexIndex == -1) {
@@ -951,10 +955,11 @@ public class SelectedTrack implements Cloneable {
         BoneTrack track = findTrack();
         float[] times = track.getKeyFrameTimes();
         Vector3f[] translations = track.getTranslations();
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
         int numKeyframes = times.length;
         for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
             float trackTime = times[frameIndex];
-            tempPose.setToAnimation(animation, trackTime);
+            tempPose.setToAnimation(animation, trackTime, techniques);
             tempPose.skin(skinningMatrices);
             int vertexIndex = Util.findSupport(subtree, skinningMatrices, world,
                     geometryRef);

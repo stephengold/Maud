@@ -31,9 +31,9 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.wes.TweenRotations;
+import jme3utilities.wes.TweenVectors;
 import maud.Maud;
-import maud.TweenRotations;
-import maud.TweenVectors;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.option.SceneBones;
@@ -186,19 +186,19 @@ class SetAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenRotations);
             TweenRotations value = TweenRotations.valueOf(arg);
-            model.getMisc().setTweenRotations(value);
+            model.getTweenTransforms().setTweenRotations(value);
 
         } else if (actionString.startsWith(ActionPrefix.setTweenScales)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenScales);
             TweenVectors value = TweenVectors.valueOf(arg);
-            model.getMisc().setTweenScales(value);
+            model.getTweenTransforms().setTweenScales(value);
 
         } else if (actionString.startsWith(ActionPrefix.setTweenTranslations)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenTranslations);
             TweenVectors value = TweenVectors.valueOf(arg);
-            model.getMisc().setTweenTranslations(value);
+            model.getTweenTransforms().setTweenTranslations(value);
 
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);

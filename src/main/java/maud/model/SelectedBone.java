@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import maud.Pose;
+import jme3utilities.wes.Pose;
 import maud.Util;
 
 /**

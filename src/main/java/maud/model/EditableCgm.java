@@ -52,8 +52,8 @@ import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
+import jme3utilities.wes.TrackEdit;
 import maud.Maud;
-import maud.TrackEdit;
 import maud.Util;
 import maud.view.SceneView;
 
