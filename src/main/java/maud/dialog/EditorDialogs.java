@@ -26,14 +26,14 @@
  */
 package maud.dialog;
 
+import com.jme3.asset.AssetKey;
+import com.jme3.asset.AssetManager;
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.Nifty;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import jme3utilities.debug.DebugVersion;
 import jme3utilities.nifty.DialogController;
 import jme3utilities.nifty.FloatDialog;
@@ -42,6 +42,7 @@ import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.nifty.LongDialog;
 import jme3utilities.nifty.TextEntryDialog;
 import jme3utilities.sky.Constants;
+import jme3utilities.ui.Locators;
 import jme3utilities.ui.UiVersion;
 import jme3utilities.wes.WesVersion;
 import maud.Maud;
@@ -172,26 +173,33 @@ public class EditorDialogs {
 
     /**
      * Display a License infobox.
+     *
+     * @param licenseType which license to display (not null)
      */
-    public void license() {
-        File licenseFile = new File("LICENSE");
-        Scanner scanner = null;
-        try {
-            scanner = new Scanner(licenseFile).useDelimiter("\\Z");
-        } catch (FileNotFoundException e) {
-        }
-        String text2;
-        if (scanner == null) {
-            text2 = "Your software license is missing!";
+    public void license(LicenseType licenseType) {
+        Validate.nonNull(licenseType, "license");
+
+        String licenseName = licenseType.name();
+        String assetPath = String.format("Licenses/%s.txt", licenseName);
+        AssetKey<String> key = new AssetKey<>(assetPath);
+        AssetManager assetManager = Locators.getAssetManager();
+
+        Locators.save();
+        Locators.useDefault();
+        String licenseText = assetManager.loadAsset(key);
+        Locators.restore();
+
+        String bodyText;
+        if (licenseText == null) {
+            bodyText = String.format("Your %s license is missing!",
+                    licenseName);
         } else {
-            String contents = scanner.next();
-            scanner.close();
-            text2 = String.format(
-                    "Here's your software license for Maud:%n%s%n",
-                    contents);
+            bodyText = String.format(
+                    "Here's your %s license:%n%n%s%n", licenseName, licenseText);
         }
+
         Maud.gui.closeAllPopups();
-        Maud.gui.showInfoDialog("License information", text2);
+        Maud.gui.showInfoDialog("License information", bodyText);
     }
 
     /**

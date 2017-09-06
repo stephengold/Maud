@@ -37,6 +37,7 @@ import jme3utilities.wes.TweenTransforms;
 import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.action.ActionPrefix;
+import maud.dialog.LicenseType;
 import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
@@ -692,5 +693,20 @@ public class ShowMenus {
             builder.add("Unload");
         }
         builder.show("select menuItem CGM -> Source model -> ");
+    }
+
+    /**
+     * Display a submenu for selecting a license using the "view license" action
+     * prefix.
+     */
+    void viewLicense() {
+        MenuBuilder builder = new MenuBuilder();
+
+        for (LicenseType type : LicenseType.values()) {
+            String name = type.name();
+            builder.add(name);
+        }
+
+        builder.show(ActionPrefix.viewLicense);
     }
 }
