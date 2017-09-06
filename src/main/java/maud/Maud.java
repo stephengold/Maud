@@ -224,6 +224,8 @@ public class Maud extends GuiApplication {
          */
         AppSettings settings = new AppSettings(true);
         settings.setTitle(windowTitle);
+        
+        settings.setVSync(true);
         application.setSettings(settings);
 
         application.start();
