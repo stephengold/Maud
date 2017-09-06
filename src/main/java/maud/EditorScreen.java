@@ -54,7 +54,6 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
-import maud.dialog.EditorDialogs;
 import maud.menu.BoneMenus;
 import maud.menu.BuildMenus;
 import maud.menu.EditorMenus;
@@ -65,10 +64,10 @@ import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.Pov;
 import maud.model.SelectedSpatial;
 import maud.model.option.AxesMode;
 import maud.model.option.PlatformType;
-import maud.model.Pov;
 import maud.model.option.SceneOptions;
 import maud.model.option.ScoreOptions;
 import maud.model.option.Wireframe;
@@ -123,10 +122,6 @@ public class EditorScreen extends GuiScreenController {
      * build menus for this screen
      */
     final public BuildMenus buildMenus = new BuildMenus();
-    /**
-     * dialog boxes created by this screen
-     */
-    final public EditorDialogs dialogs = new EditorDialogs();
     /**
      * input mode for this screen
      */

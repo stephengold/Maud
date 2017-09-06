@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
 import maud.Maud;
+import maud.dialog.EditorDialogs;
 import maud.dialog.LicenseType;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
@@ -404,11 +405,11 @@ public class EditorInputMode extends InputMode {
 
         boolean handled = false;
         if (actionString.equals("reduce animation")) {
-            Maud.gui.dialogs.reduceAnimation();
+            EditorDialogs.reduceAnimation();
             handled = true;
 
         } else if (actionString.equals("reduce track")) {
-            Maud.gui.dialogs.reduceTrack();
+            EditorDialogs.reduceTrack();
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.reduceAnimation)) {
@@ -439,19 +440,19 @@ public class EditorInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case "rename animation":
-                Maud.gui.dialogs.renameAnimation();
+                EditorDialogs.renameAnimation();
                 handled = true;
                 break;
             case "rename bone":
-                Maud.gui.dialogs.renameBone();
+                EditorDialogs.renameBone();
                 handled = true;
                 break;
             case "rename spatial":
-                Maud.gui.dialogs.renameSpatial();
+                EditorDialogs.renameSpatial();
                 handled = true;
                 break;
             case "rename userKey":
-                Maud.gui.dialogs.renameUserKey();
+                EditorDialogs.renameUserKey();
                 handled = true;
         }
 
@@ -599,7 +600,7 @@ public class EditorInputMode extends InputMode {
             handled = true;
 
         } else if (actionString.equals("retarget animation")) {
-            Maud.gui.dialogs.retargetAnimation();
+            EditorDialogs.retargetAnimation();
             handled = true;
         }
 
@@ -701,7 +702,7 @@ public class EditorInputMode extends InputMode {
             String name;
             name = MyString.remainder(actionString, ActionPrefix.viewLicense);
             LicenseType licenseType = LicenseType.valueOf(name);
-            Maud.gui.dialogs.license(licenseType);
+            EditorDialogs.license(licenseType);
             handled = true;
         }
 

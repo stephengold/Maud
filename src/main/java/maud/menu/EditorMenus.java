@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.dialog.EditorDialogs;
 import maud.model.EditableCgm;
 import maud.model.EditableMap;
 import maud.model.History;
@@ -276,7 +277,7 @@ public class EditorMenus {
                     Maud.gui.showMenus.addNewAnimation();
                     break;
                 case "Delete":
-                    Maud.gui.dialogs.deleteAnimation();
+                    EditorDialogs.deleteAnimation();
                     break;
                 case "Edit":
                     Maud.gui.showMenus.editAnimation();
@@ -288,7 +289,7 @@ public class EditorMenus {
                     loadAnimation(Maud.getModel().getSource());
                     break;
                 case "Rename":
-                    Maud.gui.dialogs.renameAnimation();
+                    EditorDialogs.renameAnimation();
                     break;
                 case "Select AnimControl":
                     Maud.gui.showMenus.selectAnimControl(target);
@@ -322,10 +323,10 @@ public class EditorMenus {
         boolean handled = true;
         switch (remainder) {
             case "Copy":
-                Maud.gui.dialogs.copyAnimation();
+                EditorDialogs.copyAnimation();
                 break;
             case "Pose":
-                Maud.gui.dialogs.newAnimationFromPose();
+                EditorDialogs.newAnimationFromPose();
                 break;
             case "Retarget":
                 Maud.gui.tools.select("retarget");
@@ -350,10 +351,10 @@ public class EditorMenus {
         boolean handled = true;
         switch (remainder) {
             case "Proportional times":
-                Maud.gui.dialogs.setDurationProportional();
+                EditorDialogs.setDurationProportional();
                 break;
             case "Same times":
-                Maud.gui.dialogs.setDurationSame();
+                EditorDialogs.setDurationSame();
                 break;
             default:
                 handled = false;
@@ -395,13 +396,13 @@ public class EditorMenus {
                     animation.insertKeyframes();
                     break;
                 case "Reduce all tracks":
-                    Maud.gui.dialogs.reduceAnimation();
+                    EditorDialogs.reduceAnimation();
                     break;
                 case "Resample all tracks to number":
-                    Maud.gui.dialogs.resampleAnimation(false);
+                    EditorDialogs.resampleAnimation(false);
                     break;
                 case "Resample all tracks at rate":
-                    Maud.gui.dialogs.resampleAnimation(true);
+                    EditorDialogs.resampleAnimation(true);
                     break;
                 case "Truncate":
                     animation.truncate();
@@ -442,7 +443,7 @@ public class EditorMenus {
                     Maud.gui.buildMenus.loadCgm();
                     break;
                 case "Save":
-                    Maud.gui.dialogs.saveCgm();
+                    EditorDialogs.saveCgm();
                     break;
                 case "Source model":
                     Maud.gui.showMenus.sourceCgm();
@@ -470,7 +471,7 @@ public class EditorMenus {
         boolean handled = false;
         switch (remainder) {
             case "About Maud":
-                Maud.gui.dialogs.aboutMaud();
+                EditorDialogs.aboutMaud();
                 handled = true;
                 break;
             case "JME3 homepage":
@@ -533,10 +534,10 @@ public class EditorMenus {
             handled = true;
             switch (remainder) {
                 case "Delete next":
-                    Maud.gui.dialogs.deleteNextKeyframes();
+                    EditorDialogs.deleteNextKeyframes();
                     break;
                 case "Delete previous":
-                    Maud.gui.dialogs.deletePreviousKeyframes();
+                    EditorDialogs.deletePreviousKeyframes();
                     break;
                 case "Delete selected":
                     target.getTrack().deleteSelectedKeyframe();
@@ -617,7 +618,7 @@ public class EditorMenus {
                 Maud.gui.buildMenus.loadMapAsset();
                 break;
             case "Save":
-                Maud.gui.dialogs.saveMap();
+                EditorDialogs.saveMap();
                 break;
             case "Tool":
                 Maud.gui.tools.select("map");
@@ -803,7 +804,7 @@ public class EditorMenus {
                     Maud.gui.showMenus.addSgc();
                     break;
                 case "Delete":
-                    Maud.gui.dialogs.deleteSgc();
+                    EditorDialogs.deleteSgc();
                     break;
                 case "Select":
                     Maud.gui.showMenus.selectSgc();
@@ -979,13 +980,13 @@ public class EditorMenus {
                 loadAnimation(target);
                 break;
             case "Reduce":
-                Maud.gui.dialogs.reduceTrack();
+                EditorDialogs.reduceTrack();
                 break;
             case "Resample at rate":
-                Maud.gui.dialogs.resampleTrack(true);
+                EditorDialogs.resampleTrack(true);
                 break;
             case "Resample to number":
-                Maud.gui.dialogs.resampleTrack(false);
+                EditorDialogs.resampleTrack(false);
                 break;
             case "Select bone":
                 Maud.gui.buildMenus.selectBone();
@@ -1059,7 +1060,7 @@ public class EditorMenus {
         boolean handled = true;
         switch (remainder) {
             case "By index":
-                Maud.gui.dialogs.selectVertex();
+                EditorDialogs.selectVertex();
                 break;
             //case "Extreme": TODO
             //case "Neighbor": TODO

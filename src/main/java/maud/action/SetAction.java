@@ -34,6 +34,7 @@ import jme3utilities.MyString;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenVectors;
 import maud.Maud;
+import maud.dialog.EditorDialogs;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.option.SceneBones;
@@ -121,7 +122,7 @@ class SetAction {
                 model.getMap().snapTwist(PhysicsSpace.AXIS_Z);
                 break;
             case "set userData":
-                Maud.gui.dialogs.setUserData();
+                EditorDialogs.setUserData();
                 break;
             default:
                 handled = processPrefixes(actionString);
