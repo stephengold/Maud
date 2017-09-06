@@ -29,6 +29,7 @@ package maud.action;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.dialog.EditorDialogs;
 import maud.model.SelectedTrack;
 
 /**
@@ -66,7 +67,7 @@ class NewAction {
         boolean handled = true;
         switch (actionString) {
             case "new animation fromPose":
-                Maud.gui.dialogs.newAnimationFromPose();
+                EditorDialogs.newAnimationFromPose();
                 break;
             case "new checkpoint":
                 Maud.gui.addCheckpoint("user interface");
@@ -125,7 +126,7 @@ class NewAction {
                 String key = MyString.remainder(args, type + " ");
                 Maud.getModel().getTarget().addUserKey(type, key);
             } else {
-                Maud.gui.dialogs.newUserKey(actionString + " ");
+                EditorDialogs.newUserKey(actionString + " ");
             }
             handled = true;
         }

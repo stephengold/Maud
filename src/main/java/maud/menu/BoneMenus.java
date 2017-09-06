@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.action.ActionPrefix;
+import maud.dialog.EditorDialogs;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
@@ -77,7 +78,7 @@ public class BoneMenus {
         } else {
             switch (remainder) {
                 case "Rename":
-                    Maud.gui.dialogs.renameBone();
+                    EditorDialogs.renameBone();
                     break;
                 case "Rotate":
                     Maud.gui.tools.select("boneRotation");

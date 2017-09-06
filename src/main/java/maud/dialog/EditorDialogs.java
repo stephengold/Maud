@@ -69,12 +69,20 @@ public class EditorDialogs {
     final private static Logger logger = Logger.getLogger(
             EditorDialogs.class.getName());
     // *************************************************************************
+    // constructors
+
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
+    private EditorDialogs() {
+    }
+    // *************************************************************************
     // new methods exposed
 
     /**
      * Display an "About Maud" dialog.
      */
-    public void aboutMaud() {
+    public static void aboutMaud() {
         Nifty nifty = Maud.gui.getNifty();
         String niftyVersion = nifty.getVersion();
         String text = "Maud, by Stephen Gold\n\nYou are c"
@@ -113,7 +121,7 @@ public class EditorDialogs {
     /**
      * Display a "copy animation" dialog.
      */
-    public void copyAnimation() {
+    public static void copyAnimation() {
         String fromName = Maud.getModel().getTarget().getAnimation().getName();
         DialogController controller = new AnimationNameDialog("Copy");
 
@@ -125,7 +133,7 @@ public class EditorDialogs {
     /**
      * Display a "delete animation" dialog.
      */
-    public void deleteAnimation() {
+    public static void deleteAnimation() {
         String name = Maud.getModel().getTarget().getAnimation().getName();
         String message = String.format("Delete the %s animation?",
                 MyString.quote(name));
@@ -136,7 +144,7 @@ public class EditorDialogs {
     /**
      * Display a "delete control" dialog.
      */
-    public void deleteSgc() {
+    public static void deleteSgc() {
         String name = Maud.getModel().getTarget().getSgc().getName();
         String message;
         message = String.format("Delete the %s control?", MyString.quote(name));
@@ -147,7 +155,7 @@ public class EditorDialogs {
     /**
      * Display a "delete nextKeyframes" dialog.
      */
-    public void deleteNextKeyframes() {
+    public static void deleteNextKeyframes() {
         SelectedTrack track = Maud.getModel().getTarget().getTrack();
         int numFrames = track.countKeyframes();
         int frameIndex = track.findKeyframeIndex();
@@ -161,7 +169,7 @@ public class EditorDialogs {
     /**
      * Display a "delete previousKeyframes" dialog.
      */
-    public void deletePreviousKeyframes() {
+    public static void deletePreviousKeyframes() {
         SelectedTrack track = Maud.getModel().getTarget().getTrack();
         int frameIndex = track.findKeyframeIndex();
         int max = frameIndex - 1;
@@ -176,7 +184,7 @@ public class EditorDialogs {
      *
      * @param licenseType which license to display (not null)
      */
-    public void license(LicenseType licenseType) {
+    public static void license(LicenseType licenseType) {
         Validate.nonNull(licenseType, "license");
 
         String licenseName = licenseType.name();
@@ -205,7 +213,7 @@ public class EditorDialogs {
     /**
      * Display a "new animation fromPose" dialog.
      */
-    public void newAnimationFromPose() {
+    public static void newAnimationFromPose() {
         DialogController controller = new AnimationNameDialog("Create");
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
@@ -217,7 +225,7 @@ public class EditorDialogs {
      *
      * @param actionString (not null)
      */
-    public void newUserKey(String actionString) {
+    public static void newUserKey(String actionString) {
         DialogController controller = new UserKeyDialog("Create");
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a key for the new user data:",
@@ -227,7 +235,7 @@ public class EditorDialogs {
     /**
      * Display a "reduce animation" dialog.
      */
-    public void reduceAnimation() {
+    public static void reduceAnimation() {
         if (Maud.getModel().getTarget().getAnimation().isReal()) {
             IntegerDialog controller;
             controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
@@ -241,7 +249,7 @@ public class EditorDialogs {
     /**
      * Display a "reduce track" dialog.
      */
-    public void reduceTrack() {
+    public static void reduceTrack() {
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.hasTrack()) {
             IntegerDialog controller;
@@ -256,7 +264,7 @@ public class EditorDialogs {
     /**
      * Display a "rename animation" dialog.
      */
-    public void renameAnimation() {
+    public static void renameAnimation() {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         if (animation.isReal()) {
             String oldName = animation.getName();
@@ -271,7 +279,7 @@ public class EditorDialogs {
     /**
      * Display a "rename bone" dialog.
      */
-    public void renameBone() {
+    public static void renameBone() {
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             String oldName = bone.getName();
@@ -286,7 +294,7 @@ public class EditorDialogs {
     /**
      * Display a "rename spatial" dialog.
      */
-    public void renameSpatial() {
+    public static void renameSpatial() {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         String oldName = spatial.getName();
         DialogController controller = new SpatialNameDialog("Rename");
@@ -305,7 +313,7 @@ public class EditorDialogs {
     /**
      * Display a "rename userKey" dialog.
      */
-    public void renameUserKey() {
+    public static void renameUserKey() {
         EditableCgm target = Maud.getModel().getTarget();
         String oldName = target.getUserData().getKey();
         if (oldName != null) {
@@ -321,7 +329,7 @@ public class EditorDialogs {
      *
      * @param rateFlag true&rarr;per second, false&rarr;number of samples
      */
-    public void resampleAnimation(boolean rateFlag) {
+    public static void resampleAnimation(boolean rateFlag) {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         if (animation.isReal()) {
             if (rateFlag) {
@@ -337,7 +345,7 @@ public class EditorDialogs {
      *
      * @param rateFlag true&rarr;per second, false&rarr;number of samples
      */
-    public void resampleTrack(boolean rateFlag) {
+    public static void resampleTrack(boolean rateFlag) {
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.hasTrack()) {
             if (rateFlag) {
@@ -351,7 +359,7 @@ public class EditorDialogs {
     /**
      * Display a "retarget animation" dialog.
      */
-    public void retargetAnimation() {
+    public static void retargetAnimation() {
         String oldName = Maud.getModel().getSource().getAnimation().getName();
         DialogController controller = new AnimationNameDialog("Retarget");
 
@@ -363,7 +371,7 @@ public class EditorDialogs {
     /**
      * Display a "save cgm" dialog.
      */
-    public void saveCgm() {
+    public static void saveCgm() {
         EditableCgm target = Maud.getModel().getTarget();
         String baseFilePath = target.baseFilePathForWrite();
         Maud.gui.closeAllPopups();
@@ -374,7 +382,7 @@ public class EditorDialogs {
     /**
      * Display a "save map" dialog.
      */
-    public void saveMap() {
+    public static void saveMap() {
         String baseFilePath = Maud.getModel().getMap().baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for map:",
@@ -384,7 +392,7 @@ public class EditorDialogs {
     /**
      * Display a "select vertex " dialog.
      */
-    public void selectVertex() {
+    public static void selectVertex() {
         LoadedCgm target = Maud.getModel().getTarget();
         int numVertices = target.getSpatial().countVertices();
         int indexBase = Maud.getModel().getMisc().getIndexBase();
@@ -403,7 +411,7 @@ public class EditorDialogs {
     /**
      * Display a "set duration proportional" dialog.
      */
-    public void setDurationProportional() {
+    public static void setDurationProportional() {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         float oldDuration = animation.getDuration();
         String defaultText = Float.toString(oldDuration);
@@ -426,7 +434,7 @@ public class EditorDialogs {
     /**
      * Display a "set duration same" dialog.
      */
-    public void setDurationSame() {
+    public static void setDurationSame() {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         float oldDuration = animation.getDuration();
         String defaultText = Float.toString(oldDuration);
@@ -443,7 +451,7 @@ public class EditorDialogs {
     /**
      * Display a "set userData" dialog.
      */
-    public void setUserData() {
+    public static void setUserData() {
         EditableCgm target = Maud.getModel().getTarget();
         String key = target.getUserData().getKey();
         Object data = target.getSpatial().getUserData(key);
@@ -492,7 +500,7 @@ public class EditorDialogs {
      *
      * @param actionPrefix action prefix (not null)
      */
-    private void resampleCount(String actionPrefix) {
+    private static void resampleCount(String actionPrefix) {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         if (animation.getDuration() > 0f) {
             IntegerDialog controller = new IntegerDialog("Resample", 2, 999);
@@ -507,7 +515,7 @@ public class EditorDialogs {
      *
      * @param actionPrefix action prefix (not null)
      */
-    private void resampleRate(String actionPrefix) {
+    private static void resampleRate(String actionPrefix) {
         FloatDialog controller = new FloatDialog("Resample", 0.1f, 1000f);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter samples per second:", "10",
