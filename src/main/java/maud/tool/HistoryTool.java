@@ -99,12 +99,15 @@ public class HistoryTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
+        String aButton = "";
         String rButton = "";
         int nextIndex = History.getNextIndex();
         int numCheckpoints = History.countCheckpoints();
         if (numCheckpoints > nextIndex) {
+            aButton = "Redo all";
             rButton = "Redo";
         }
+        Maud.gui.setButtonLabel("historyRedoAllButton", aButton);
         Maud.gui.setButtonLabel("historyRedoButton", rButton);
 
         String uButton = "";
