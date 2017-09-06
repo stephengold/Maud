@@ -721,6 +721,10 @@ public class EditorInputMode extends InputMode {
             case "warp cursor":
                 Maud.gui.warpCursor();
                 handled = true;
+                break;
+            case "warp lastCheckpoint":
+                History.redoAll();
+                handled = true;
         }
 
         return handled;

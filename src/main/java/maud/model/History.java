@@ -221,6 +221,23 @@ public class History {
     }
 
     /**
+     * Restore the final checkpoint and update the index.
+     */
+    public static void redoAll() {
+        if (checkpoints.size() > nextIndex) {
+            int lastIndex = checkpoints.size() - 1;
+            Checkpoint last = checkpoints.get(lastIndex);
+            last.restore();
+            eventDescriptions.clear();
+            logger.log(Level.INFO, "redo to [{0}]", lastIndex);
+            nextIndex = checkpoints.size();
+        } else {
+            logger.log(Level.INFO, "nothing to redo", nextIndex);
+        }
+        Maud.gui.tools.history.setAutoScroll();
+    }
+
+    /**
      * Alter whether to add checkpoints automatically.
      *
      * @param newSetting true &rarr; add automatically, false &rarr; add
