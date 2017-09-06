@@ -69,22 +69,22 @@ class LoadAction {
         LoadedCgm source = Maud.getModel().getSource();
         LoadedCgm target = Maud.getModel().getTarget();
         switch (actionString) {
-            case "load animation":
+            case Action.loadAnimation:
                 Maud.gui.menus.loadAnimation(target);
                 break;
-            case "load cgm":
+            case Action.loadCgm:
                 Maud.gui.buildMenus.loadCgm();
                 break;
-            case "load map asset":
+            case Action.loadMapAsset:
                 Maud.gui.buildMenus.loadMapAsset();
                 break;
-            case "load retargetedPose":
+            case Action.loadRetargetedPose:
                 target.getAnimation().loadRetargetedPose();
                 break;
-            case "load sourceAnimation":
+            case Action.loadSourceAnimation:
                 Maud.gui.menus.loadAnimation(source);
                 break;
-            case "load sourceCgm":
+            case Action.loadSourceCgm:
                 Maud.gui.buildMenus.loadSourceCgm();
                 break;
             default:

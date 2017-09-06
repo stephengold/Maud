@@ -66,16 +66,16 @@ class NewAction {
     static boolean process(String actionString) {
         boolean handled = true;
         switch (actionString) {
-            case "new animation fromPose":
+            case Action.newAnimationFromPose:
                 EditorDialogs.newAnimationFromPose();
                 break;
-            case "new checkpoint":
+            case Action.newCheckpoint:
                 Maud.gui.addCheckpoint("user interface");
                 break;
-            case "new mapping":
+            case Action.newMapping:
                 Maud.getModel().getMap().mapBones();
                 break;
-            case "new singleKeyframe": // insert OR replace
+            case Action.newSingleKeyframe: // insert OR replace
                 SelectedTrack track = Maud.getModel().getTarget().getTrack();
                 if (track.isTrackSelected()) {
                     int frameIndex = track.findKeyframeIndex();
@@ -86,7 +86,7 @@ class NewAction {
                     }
                 }
                 break;
-            case "new userKey":
+            case Action.newUserKey:
                 Maud.gui.showMenus.selectUserDataType();
                 break;
             default:

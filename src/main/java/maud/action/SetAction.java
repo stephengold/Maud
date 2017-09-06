@@ -76,52 +76,52 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         switch (actionString) {
-            case "set batchHint":
+            case Action.setBatchHint:
                 Maud.gui.showMenus.setBatchHint();
                 break;
-            case "set cullHint":
+            case Action.setCullHint:
                 Maud.gui.showMenus.setCullHint();
                 break;
-            case "set queueBucket":
+            case Action.setQueueBucket:
                 Maud.gui.showMenus.setQueueBucket();
                 break;
-            case "set sceneBones":
+            case Action.setSceneBones:
                 Maud.gui.showMenus.setSceneBones();
                 break;
-            case "set shadowMode":
+            case Action.setShadowMode:
                 Maud.gui.showMenus.setShadowMode();
                 break;
-            case "set track rotation all":
+            case Action.setTrackRotationAll:
                 target.getTrack().setRotationAll();
                 break;
-            case "set track scale all":
+            case Action.setTrackScaleAll:
                 target.getTrack().setScaleAll();
                 break;
-            case "set track translation all":
+            case Action.setTrackTranslationAll:
                 target.getTrack().setTranslationAll();
                 break;
-            case "set tweenRotations":
+            case Action.setTweenRotations:
                 Maud.gui.showMenus.setTweenRotations();
                 break;
-            case "set tweenScales":
+            case Action.setTweenScales:
                 Maud.gui.showMenus.setTweenScales();
                 break;
-            case "set tweenTranslations":
+            case Action.setTweenTranslations:
                 Maud.gui.showMenus.setTweenTranslations();
                 break;
-            case "set twist cardinal":
+            case Action.setTwistCardinal:
                 model.getMap().cardinalizeTwist();
                 break;
-            case "set twist snapX":
+            case Action.setTwistSnapX:
                 model.getMap().snapTwist(PhysicsSpace.AXIS_X);
                 break;
-            case "set twist snapY":
+            case Action.setTwistSnapY:
                 model.getMap().snapTwist(PhysicsSpace.AXIS_Y);
                 break;
-            case "set twist snapZ":
+            case Action.setTwistSnapZ:
                 model.getMap().snapTwist(PhysicsSpace.AXIS_Z);
                 break;
-            case "set userData":
+            case Action.setUserData:
                 EditorDialogs.setUserData();
                 break;
             default:
