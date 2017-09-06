@@ -522,7 +522,7 @@ public class ShowMenus {
     public void setTweenRotations() {
         MenuBuilder builder = new MenuBuilder();
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        TweenVectors selected = techniques.getTweenTranslations();
+        TweenRotations selected = techniques.getTweenRotations();
         for (TweenRotations t : TweenRotations.values()) {
             if (!t.equals(selected)) {
                 String name = t.toString();
