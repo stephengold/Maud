@@ -70,73 +70,73 @@ class SelectAction {
         EditorModel model = Maud.getModel();
         LoadedCgm target = model.getTarget();
         switch (actionString) {
-            case "select animControl":
+            case Action.selectAnimControl:
                 Maud.gui.showMenus.selectAnimControl(target);
                 break;
-            case "select bone":
+            case Action.selectBone:
                 Maud.gui.buildMenus.selectBone();
                 break;
-            case "select boneChild":
+            case Action.selectBoneChild:
                 Maud.gui.boneMenus.selectBoneChild();
                 break;
-            case "select boneParent":
+            case Action.selectBoneParent:
                 target.getBone().selectParent();
                 break;
-            case "select keyframeFirst":
+            case Action.selectKeyframeFirst:
                 target.getTrack().selectFirstKeyframe();
                 break;
-            case "select keyframeLast":
+            case Action.selectKeyframeLast:
                 target.getTrack().selectLastKeyframe();
                 break;
-            case "select keyframeNearest":
+            case Action.selectKeyframeNearest:
                 target.getTrack().selectNearestKeyframe();
                 break;
-            case "select keyframeNext":
+            case Action.selectKeyframeNext:
                 target.getTrack().selectNextKeyframe();
                 break;
-            case "select keyframePrevious":
+            case Action.selectKeyframePrevious:
                 target.getTrack().selectPreviousKeyframe();
                 break;
-            case "select mapSourceBone":
+            case Action.selectMapSourceBone:
                 model.getMap().selectFromSource();
                 break;
-            case "select mapTargetBone":
+            case Action.selectMapTargetBone:
                 model.getMap().selectFromTarget();
                 break;
-            case "select screenBone":
+            case Action.selectScreenBone:
                 Maud.gui.selectBone();
                 break;
-            case "select screenGnomon":
+            case Action.selectScreenGnomon:
                 Maud.gui.selectGnomon();
                 break;
-            case "select screenKeyframe":
+            case Action.selectScreenKeyframe:
                 Maud.gui.selectKeyframe();
                 break;
-            case "select screenVertex":
+            case Action.selectScreenVertex:
                 Maud.gui.selectVertex();
                 break;
-            case "select screenXY":
+            case Action.selectScreenXY:
                 Maud.gui.selectXY();
                 break;
-            case "select sgc":
+            case Action.selectSgc:
                 Maud.gui.showMenus.selectSgc();
                 break;
-            case "select sourceAnimControl":
+            case Action.selectSourceAnimControl:
                 Maud.gui.showMenus.selectAnimControl(model.getSource());
                 break;
-            case "select sourceBone":
+            case Action.selectSourceBone:
                 Maud.gui.buildMenus.selectSourceBone();
                 break;
-            case "select spatialChild":
+            case Action.selectSpatialChild:
                 Maud.gui.showMenus.selectSpatialChild("");
                 break;
-            case "select spatialParent":
+            case Action.selectSpatialParent:
                 target.getSpatial().selectParent();
                 break;
-            case "select userKey":
+            case Action.selectUserKey:
                 Maud.gui.showMenus.selectUserKey();
                 break;
-            case "select vertex":
+            case Action.selectVertex:
                 Maud.gui.showMenus.selectVertex();
                 break;
             default:
@@ -155,16 +155,16 @@ class SelectAction {
     static boolean processNotOngoing(String actionString) {
         boolean handled = true;
         switch (actionString) {
-            case "select screenBone":
-            case "select screenKeyframe":
-            case "select screenVertex":
+            case Action.selectScreenBone:
+            case Action.selectScreenKeyframe:
+            case Action.selectScreenVertex:
                 break;
 
-            case "select screenGnomon":
+            case Action.selectScreenGnomon:
                 ScoreDrag.setDraggingGnomon(null);
                 break;
 
-            case "select screenXY":
+            case Action.selectScreenXY:
                 SceneDrag.clearDragAxis();
                 ScoreDrag.setDraggingGnomon(null);
                 break;
