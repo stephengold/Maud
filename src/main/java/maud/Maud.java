@@ -622,6 +622,7 @@ public class Maud extends GuiApplication {
          * Register loaders for BVH and Xbuf assets.
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
+        assetManager.registerLoader(StringLoader.class, "txt");
         assetManager.registerLoader(XbufLoader.class, "xbuf");
         /*
          * Configure the default view port for the target scene wide view.

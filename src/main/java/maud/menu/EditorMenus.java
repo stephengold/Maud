@@ -478,7 +478,7 @@ public class EditorMenus {
                 handled = true;
                 break;
             case "License":
-                Maud.gui.dialogs.license();
+                Maud.gui.showMenus.viewLicense();
                 handled = true;
                 break;
             case "Source":

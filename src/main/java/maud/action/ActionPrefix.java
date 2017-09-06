@@ -265,6 +265,10 @@ public class ActionPrefix {
      * argument is the new value
      */
     final public static String setUserData = "set userData ";
+    /**
+     * argument is the name of a license type
+     */
+    final public static String viewLicense = "view license ";
     // *************************************************************************
     // constructors
 

@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.InputMode;
 import maud.Maud;
+import maud.dialog.LicenseType;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
@@ -694,6 +695,14 @@ public class EditorInputMode extends InputMode {
                 }
                 handled = true;
                 break;
+        }
+
+        if (!handled && actionString.startsWith(ActionPrefix.viewLicense)) {
+            String name;
+            name = MyString.remainder(actionString, ActionPrefix.viewLicense);
+            LicenseType licenseType = LicenseType.valueOf(name);
+            Maud.gui.dialogs.license(licenseType);
+            handled = true;
         }
 
         return handled;
