@@ -310,13 +310,17 @@ class AnimationTool extends WindowController {
     private void updateTrackCounts() {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         int numBoneTracks = animation.countBoneTracks();
-        String boneTracksText = String.format("%d", numBoneTracks);
-        Maud.gui.setStatusText("boneTracks", " " + boneTracksText);
+        String boneTracksText = Integer.toString(numBoneTracks);
+        Maud.gui.setStatusText("boneTracks", boneTracksText);
+
+        int numSpatialTracks = animation.countSpatialTracks();
+        String spatialTracksText = Integer.toString(numSpatialTracks);
+        Maud.gui.setStatusText("spatialTracks", spatialTracksText);
 
         int numTracks = animation.countTracks();
-        int numOtherTracks = numTracks - numBoneTracks;
+        int numOtherTracks = numTracks - numBoneTracks - numSpatialTracks;
         String otherTracksText = String.format("%d", numOtherTracks);
-        Maud.gui.setStatusText("otherTracks", " " + otherTracksText);
+        Maud.gui.setStatusText("otherTracks", otherTracksText);
     }
 
     /**

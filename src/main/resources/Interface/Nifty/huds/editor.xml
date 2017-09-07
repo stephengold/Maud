@@ -207,16 +207,22 @@ the menu bar, status bar, and tool windows.
                                  max="1" min="0" stepSize="0.001"/>
                     </panel>
                     <panel childLayout="horizontal">
-                        <control name="label" text="Bone tracks:  "/>
+                        <control name="label" text="Tracks:  "/>
                         <control name="label" id="boneTracks"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="*"/>
-                        <control name="label" text="  Other tracks:  "/>
+                        <control name="label" text=" bone,  "/>
+                        <control name="label" id="spatialTracks"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="*"/>
+                        <control name="label" text=" spatial, and  "/>
                         <control name="label" id="otherTracks"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="*"/>
+                        <control name="label" text=" other"/>
                     </panel>
                 </panel>
             </control>
