@@ -30,6 +30,7 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
@@ -139,11 +140,10 @@ public class LoadedAnimation implements Cloneable {
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track newTrack;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                Transform neck = techniques.interpolate(currentTime, boneTrack,
+            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
+                Transform neck = techniques.interpolate(currentTime, track,
                         oldDuration, null);
-                newTrack = TrackEdit.behead(boneTrack, currentTime, neck,
+                newTrack = TrackEdit.behead(track, currentTime, neck,
                         oldDuration);
             } else {
                 newTrack = track.clone(); // TODO other track types
@@ -177,14 +177,13 @@ public class LoadedAnimation implements Cloneable {
                 storeResult.loadIdentity();
             }
         } else {
-            BoneTrack track = MyAnimation.findTrack(animation, boneIndex);
+            BoneTrack track = MyAnimation.findBoneTrack(animation, boneIndex);
             if (track == null) {
                 storeResult.loadIdentity();
             } else {
                 TweenTransforms techniques = model.getTweenTransforms();
                 float duration = getDuration();
-                techniques.boneTransform(track, currentTime, duration,
-                        storeResult);
+                techniques.transform(track, currentTime, duration, storeResult);
             }
         }
 
@@ -209,16 +208,21 @@ public class LoadedAnimation implements Cloneable {
      * @return count (&ge;0)
      */
     public int countBoneTracks() {
-        int count = 0;
         Animation animation = getAnimation();
-        if (animation != null) {
-            Track[] tracks = animation.getTracks();
-            for (Track track : tracks) {
-                if (track instanceof BoneTrack) {
-                    count++;
-                }
-            }
-        }
+        int count = MyAnimation.countTracks(animation, BoneTrack.class);
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Count the number of spatial tracks in the loaded animation.
+     *
+     * @return count (&ge;0)
+     */
+    public int countSpatialTracks() {
+        Animation animation = getAnimation();
+        int count = MyAnimation.countTracks(animation, SpatialTrack.class);
 
         assert count >= 0 : count;
         return count;
@@ -246,7 +250,7 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Add an identity track for the selected bone.
      */
-    public void createTrack() {
+    public void createBoneTrack() {
         Animation loaded = getAnimation();
         Track[] loadedTracks = loaded.getTracks();
         Track baseTrack = loadedTracks[0]; // arbitrary choice
@@ -259,7 +263,7 @@ public class LoadedAnimation implements Cloneable {
         String animationName = loaded.getName();
         String boneName = cgm.getBone().getName();
         String eventDescription = String.format(
-                "add an identity track to %s for %s",
+                "add an identity track to %s for bone %s",
                 MyString.quote(animationName), MyString.quote(boneName));
         editableCgm.addTrack(newTrack, eventDescription);
     }
@@ -293,13 +297,11 @@ public class LoadedAnimation implements Cloneable {
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track newTrack;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                int keyframeIndex = MyAnimation.findKeyframeIndex(boneTrack,
+            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
+                int keyframeIndex = MyAnimation.findKeyframeIndex(track,
                         currentTime);
                 if (keyframeIndex >= 1) {
-                    newTrack = TrackEdit.deleteRange(boneTrack, keyframeIndex,
-                            1);
+                    newTrack = TrackEdit.deleteRange(track, keyframeIndex, 1);
                     ++numDeletions;
                 } else {
                     newTrack = track.clone();
@@ -415,7 +417,7 @@ public class LoadedAnimation implements Cloneable {
         BoneTrack result = null;
         Animation animation = getAnimation();
         if (animation != null) {
-            result = MyAnimation.findTrack(animation, boneIndex);
+            result = MyAnimation.findBoneTrack(animation, boneIndex);
         }
 
         return result;
@@ -463,7 +465,8 @@ public class LoadedAnimation implements Cloneable {
         boolean result = false;
         Animation animation = getAnimation();
         if (animation != null) {
-            BoneTrack boneTrack = MyAnimation.findTrack(animation, boneIndex);
+            BoneTrack boneTrack;
+            boneTrack = MyAnimation.findBoneTrack(animation, boneIndex);
             if (boneTrack != null) {
                 Vector3f[] scales = boneTrack.getScales();
                 if (scales != null) {
@@ -837,7 +840,8 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Reduce all bone tracks in the loaded animation by the specified factor.
+     * Reduce all bone/spatial tracks in the loaded animation by the specified
+     * factor.
      *
      * @param factor reduction factor (&ge;2)
      */
@@ -852,11 +856,10 @@ public class LoadedAnimation implements Cloneable {
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track clone;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                clone = TrackEdit.reduce(boneTrack, factor);
+            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
+                clone = TrackEdit.reduce(track, factor);
             } else {
-                clone = track.clone(); // TODO
+                clone = track.clone(); // TODO other track types
             }
             newAnimation.addTrack(clone);
         }
@@ -892,7 +895,8 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Resample all bone tracks in the loaded animation at the specified rate.
+     * Resample all bone/spatial tracks in the loaded animation at the specified
+     * rate.
      *
      * @param sampleRate sample rate (in frames per second, &gt;0)
      */
@@ -908,12 +912,10 @@ public class LoadedAnimation implements Cloneable {
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track clone;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                clone = techniques.resampleAtRate(boneTrack, sampleRate,
-                        duration);
+            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
+                clone = techniques.resampleAtRate(track, sampleRate, duration);
             } else {
-                clone = track.clone(); // TODO spatial tracks
+                clone = track.clone(); // TODO other track types
             }
             newAnimation.addTrack(clone);
         }
@@ -923,8 +925,8 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Resample all bone tracks in the loaded animation to the specified number
-     * of samples.
+     * Resample all bone/spatial tracks in the loaded animation to the specified
+     * number of samples.
      *
      * @param numSamples number of samples (&ge;2)
      */
@@ -941,12 +943,11 @@ public class LoadedAnimation implements Cloneable {
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track clone;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                clone = techniques.resampleToNumber(boneTrack, numSamples,
+            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
+                clone = techniques.resampleToNumber(track, numSamples,
                         duration);
             } else {
-                clone = track.clone(); // TODO spatial tracks
+                clone = track.clone(); // TODO other track types
             }
             newAnimation.addTrack(clone);
         }
@@ -1010,13 +1011,7 @@ public class LoadedAnimation implements Cloneable {
             Animation newAnimation = new Animation(loadedName, newDuration);
             Track[] loadedTracks = loaded.getTracks();
             for (Track track : loadedTracks) {
-                Track newTrack;
-                if (track instanceof BoneTrack) {
-                    BoneTrack boneTrack = (BoneTrack) track;
-                    newTrack = TrackEdit.setDuration(boneTrack, newDuration);
-                } else {
-                    newTrack = track.clone(); // TODO other track types
-                }
+                Track newTrack = TrackEdit.setDuration(track, newDuration);
                 newAnimation.addTrack(newTrack);
             }
 
@@ -1047,9 +1042,9 @@ public class LoadedAnimation implements Cloneable {
             Track[] loadedTracks = loaded.getTracks();
             for (Track track : loadedTracks) {
                 Track newTrack;
-                if (track instanceof BoneTrack) {
-                    BoneTrack boneTrack = (BoneTrack) track;
-                    newTrack = TrackEdit.truncate(boneTrack, newDuration);
+                if (track instanceof BoneTrack
+                        || track instanceof SpatialTrack) {
+                    newTrack = TrackEdit.truncate(track, newDuration);
                 } else {
                     newTrack = track.clone(); // TODO other track types
                 }
@@ -1332,9 +1327,8 @@ public class LoadedAnimation implements Cloneable {
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track newTrack;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                newTrack = TrackEdit.truncate(boneTrack, currentTime);
+            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
+                newTrack = TrackEdit.truncate(track, currentTime);
             } else {
                 newTrack = track.clone(); // TODO other track types
             }
@@ -1364,7 +1358,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Set the final bone transform of each track to match its initial bone
+     * Set the final transform of each bone/spatial track to match its initial
      * transform.
      */
     public void wrapAllTracks() {
@@ -1374,9 +1368,8 @@ public class LoadedAnimation implements Cloneable {
         Track[] loadedTracks = loaded.getTracks();
         for (Track track : loadedTracks) {
             Track newTrack;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                newTrack = TrackEdit.wrap(boneTrack, duration);
+            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
+                newTrack = TrackEdit.wrap(track, duration);
             } else {
                 newTrack = track.clone(); // TODO other track types
             }

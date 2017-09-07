@@ -240,7 +240,7 @@ public class SelectedTrack implements Cloneable {
 
         Animation anim = loadedCgm.getAnimation().getAnimation();
         int boneIndex = loadedCgm.getBone().getIndex();
-        BoneTrack track = MyAnimation.findTrack(anim, boneIndex);
+        BoneTrack track = MyAnimation.findBoneTrack(anim, boneIndex);
 
         return track;
     }
