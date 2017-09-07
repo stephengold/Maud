@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import jme3_ext_xbuf.XbufLoader;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
+import jme3utilities.StringLoader;
 import jme3utilities.Validate;
 import jme3utilities.debug.Dumper;
 import jme3utilities.nifty.GuiApplication;
@@ -224,7 +225,7 @@ public class Maud extends GuiApplication {
          */
         AppSettings settings = new AppSettings(true);
         settings.setTitle(windowTitle);
-        
+
         settings.setVSync(true);
         application.setSettings(settings);
 
