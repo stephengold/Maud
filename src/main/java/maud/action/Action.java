@@ -48,7 +48,7 @@ class Action {
 
     final static String deleteAnimation = "delete animation";
     final static String deleteMapping = "delete mapping";
-    final static String deleteSgc = "delete control";
+    final static String deleteSgc = "delete control"; // TODO
     final static String deleteSingleKeyframe = "delete singleKeyframe";
     final static String deleteUserKey = "delete userKey";
 
@@ -64,7 +64,7 @@ class Action {
     final static String nextBone = "next bone";
     final static String nextCheckpoint = "next checkpoint";
     final static String nextMapping = "next mapping";
-    final static String nextSgc = "next control";
+    final static String nextSgc = "next control"; // TODO
     final static String nextSourceAnimation = "next sourceAnimation";
     final static String nextSourceAnimControl = "next sourceAnimControl";
     final static String nextUserData = "next userData";
@@ -82,7 +82,7 @@ class Action {
     final static String previousBone = "previous bone";
     final static String previousCheckpoint = "previous checkpoint";
     final static String previousMapping = "previous mapping";
-    final static String previousSgc = "previous control";
+    final static String previousSgc = "previous control"; // TODO
     final static String previousSourceAnimation = "previous sourceAnimation";
     final static String previousSourceAnimControl = "previous sourceAnimControl";
     final static String previousUserData = "previous userData";
@@ -154,10 +154,10 @@ class Action {
 
     final static String toggleDegrees = "toggle degrees";
     final static String toggleDragSide = "toggle dragSide";
-    final static String toggleFreezeTarget = "toggle freezeTarget";
+    final static String toggleFreezeTarget = "toggle freeze target";
     final static String togglePause = "toggle pause";
-    final static String togglePauseSource = "toggle pauseSource";
-    final static String togglePauseTarget = "toggle pauseTarget";
+    final static String togglePauseSource = "toggle pause source";
+    final static String togglePauseTarget = "toggle pause target";
     final static String toggleProjection = "toggle projection";
 
     final static String viewHorizontal = "view horizontal";
