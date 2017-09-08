@@ -46,12 +46,12 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.2.3'
 
     // from stephengold's bintray repositories:
-    compile 'jme3utilities:jme3-utilities-heart:0.9.20'
+    compile 'jme3utilities:jme3-utilities-heart:0.9.21'
     compile 'jme3utilities:jme3-utilities-debug:0.7.4'
     compile 'jme3utilities:jme3-utilities-ui:0.5.8'
     compile 'jme3utilities:jme3-utilities-nifty:0.6.10'
     compile 'jme3utilities:SkyControl:0.9.5'
-    compile 'jme3utilities:Wes:0.2.2'
+    compile 'jme3utilities:Wes:0.2.3'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jmonkeyengine's bintray repositories:
