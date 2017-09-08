@@ -589,42 +589,6 @@ public class SceneView
     }
 
     /**
-     * Alter the local rotation of the selected spatial.
-     *
-     * @param rotation (not null, unaffected)
-     */
-    public void setSpatialRotation(Quaternion rotation) {
-        Validate.nonNull(rotation, "rotation");
-
-        Spatial spatial = selectedSpatial();
-        spatial.setLocalRotation(rotation);
-    }
-
-    /**
-     * Alter the local scale of the selected spatial.
-     *
-     * @param scale (not null, unaffected)
-     */
-    public void setSpatialScale(Vector3f scale) {
-        Validate.nonNull(scale, "scale");
-
-        Spatial spatial = selectedSpatial();
-        spatial.setLocalScale(scale);
-    }
-
-    /**
-     * Alter the local translation of the selected spatial.
-     *
-     * @param translation (not null, unaffected)
-     */
-    public void setSpatialTranslation(Vector3f translation) {
-        Validate.nonNull(translation, "translation");
-
-        Spatial spatial = selectedSpatial();
-        spatial.setLocalTranslation(translation);
-    }
-
-    /**
      * Alter the wireframe setting for the specified tree position.
      *
      * @param treePosition (not null)
@@ -889,9 +853,11 @@ public class SceneView
 
         Camera camera = getCamera();
         if (camera != null) {
+            updateLocalTransforms(cgmRoot, new ArrayList<>(0));
+
+            updateParentShadowMode();
+            updateParentTransform();
             updatePose();
-            updateShadowMode();
-            updateTransform();
             Maud.gui.tools.updateScene(cgm);
             skyControl.setCamera(camera);
         }
@@ -1233,12 +1199,62 @@ public class SceneView
         cgm.getScenePov().setCursorLocation(baseLocation);
         Maud.getModel().getScene().setPlatformDiameter(2f);
 
-        Vector3f cameraLocation = new Vector3f(-2.4f, 1f, 1.6f);
+        Vector3f cameraLocation;
+        cameraLocation = new Vector3f(-2.4f, 1f, 1.6f); // TODO constants
         cgm.getScenePov().setCameraLocation(cameraLocation);
     }
 
     /**
-     * Update the pose based on the MVC model.
+     * Update the local transform of each spatial in the specified subtree based
+     * on the MVC model. Note: recursive!
+     *
+     * @param spatial spatial in the scene (not null)
+     * @param position tree position (not null, unaffected)
+     */
+    private void updateLocalTransforms(Spatial spatial,
+            List<Integer> position) {
+        Transform transform = cgm.getLocalTransform(position);
+        spatial.setLocalTransform(transform);
+
+        int numChildren = cgm.countChildren(position);
+        if (numChildren > 0) {
+            Node node = (Node) spatial;
+            int depth = position.size();
+            List<Integer> childPosition = new ArrayList<>(depth + 1);
+            childPosition.addAll(position);
+            childPosition.add(-1);
+            for (int childIndex = 0; childIndex < numChildren; childIndex++) {
+                Spatial childSpatial = node.getChild(childIndex);
+                childPosition.set(depth, childIndex);
+                updateLocalTransforms(childSpatial, childPosition);
+            }
+        }
+    }
+
+    /**
+     * Update the shadow mode of the CG model's parent based on the MVC model.
+     */
+    private void updateParentShadowMode() {
+        RenderQueue.ShadowMode mode;
+        boolean enableShadows = Maud.getModel().getScene().areShadowsRendered();
+        if (enableShadows) {
+            mode = RenderQueue.ShadowMode.CastAndReceive;
+        } else {
+            mode = RenderQueue.ShadowMode.Off;
+        }
+        parent.setShadowMode(mode);
+    }
+
+    /**
+     * Update the transform of the CG model's parent.
+     */
+    private void updateParentTransform() {
+        Transform transform = cgmTransform.worldTransform();
+        parent.setLocalTransform(transform);
+    }
+
+    /**
+     * Update bone transforms based on the pose in the MVC model.
      */
     private void updatePose() {
         int boneCount = cgm.getSkeleton().countBones();
@@ -1258,27 +1274,5 @@ public class SceneView
             Bone bone = skeleton.getBone(boneIndex);
             bone.setUserTransforms(translation, rotation, scale);
         }
-    }
-
-    /**
-     * Update the shadow mode of the CG model's parent based on the MVC model.
-     */
-    private void updateShadowMode() {
-        RenderQueue.ShadowMode mode;
-        boolean enableShadows = Maud.getModel().getScene().areShadowsRendered();
-        if (enableShadows) {
-            mode = RenderQueue.ShadowMode.CastAndReceive;
-        } else {
-            mode = RenderQueue.ShadowMode.Off;
-        }
-        parent.setShadowMode(mode);
-    }
-
-    /**
-     * Update the transform of the CG model's parent.
-     */
-    private void updateTransform() {
-        Transform transform = cgmTransform.worldTransform();
-        parent.setLocalTransform(transform);
     }
 }

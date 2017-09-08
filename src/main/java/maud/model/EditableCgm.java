@@ -541,7 +541,6 @@ public class EditableCgm extends LoadedCgm {
 
         Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
         selectedSpatial.setLocalRotation(rotation);
-        getSceneView().setSpatialRotation(rotation);
         setEditedSpatialTransform();
     }
 
@@ -558,7 +557,6 @@ public class EditableCgm extends LoadedCgm {
 
         Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
         selectedSpatial.setLocalScale(scale);
-        getSceneView().setSpatialScale(scale);
         setEditedSpatialTransform();
     }
 
@@ -572,7 +570,6 @@ public class EditableCgm extends LoadedCgm {
 
         Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
         selectedSpatial.setLocalTranslation(translation);
-        getSceneView().setSpatialTranslation(translation);
         setEditedSpatialTransform();
     }
 
