@@ -31,7 +31,6 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
-import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.Track;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -85,13 +84,12 @@ public class CheckLoaded {
     public static boolean animControl(AnimControl animControl) {
         Validate.nonNull(animControl, "anim Control");
 
+        int numBones = 0;
         Skeleton skeleton = animControl.getSkeleton();
-        if (skeleton == null) {
-            logger.warning("anim control has no skeleton");
-            return false;
+        if (skeleton != null) {
+            numBones = skeleton.getBoneCount();
         }
 
-        int numBones = skeleton.getBoneCount();
         Collection<String> animNames = animControl.getAnimationNames();
         if (animNames.isEmpty()) {
             logger.warning("anim control has no animations");
@@ -129,7 +127,7 @@ public class CheckLoaded {
             }
             Track[] tracks = anim.getTracks();
             if (tracks == null) {
-                logger.warning("animation has no track data");
+                logger.warning("animation has no track list");
                 return false;
             }
             int numTracks = tracks.length;
@@ -231,7 +229,7 @@ public class CheckLoaded {
     public static boolean boneTrack(BoneTrack boneTrack, int numBones,
             int numFrames, Set<Integer> targetBoneIndexSet) {
         assert numBones > 0 : numBones;
-        assert numBones <= 255 : numBones;
+        assert numBones <= 255 : numBones; // TODO JME 3.2
         assert numFrames > 0 : numFrames;
 
         int targetBoneIndex = boneTrack.getTargetBoneIndex();
@@ -293,18 +291,7 @@ public class CheckLoaded {
     public static boolean cgm(Spatial cgmRoot) {
         Validate.nonNull(cgmRoot, "model root");
 
-        List<SkeletonControl> skeletonControls = MySpatial.listControls(cgmRoot,
-                SkeletonControl.class, null);
-        if (skeletonControls.isEmpty()) {
-            logger.warning("lacks a skeleton control");
-            return false;
-        }
-
         List<Skeleton> skeletons = MySkeleton.listSkeletons(cgmRoot, null);
-        if (skeletons.isEmpty()) {
-            logger.warning("lacks a skeleton");
-            return false;
-        }
         for (Skeleton skeleton : skeletons) {
             if (!skeleton(skeleton)) {
                 return false;
@@ -313,10 +300,6 @@ public class CheckLoaded {
 
         List<AnimControl> animControls;
         animControls = MySpatial.listControls(cgmRoot, AnimControl.class, null);
-        if (animControls.isEmpty()) {
-            logger.warning("model lacks an animation control");
-            return false;
-        }
         for (AnimControl animControl : animControls) {
             if (!animControl(animControl)) {
                 return false;
@@ -343,7 +326,7 @@ public class CheckLoaded {
      */
     public static boolean skeleton(Skeleton skeleton) {
         int numBones = skeleton.getBoneCount();
-        if (numBones > 255) {
+        if (numBones > 255) { // TODO JME 3.2
             logger.warning("too many bones");
             return false;
         }
