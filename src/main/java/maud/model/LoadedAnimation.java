@@ -343,54 +343,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Find the keyframe with the latest time in the loaded animation.
-     *
-     * @return track time (in seconds, &ge;0)
-     */
-    public float findLatestKeyframe() {
-        Animation loaded = getAnimation();
-        float latest = MyAnimation.findLastKeyframe(loaded);
-
-        assert latest >= 0f : latest;
-        return latest;
-    }
-
-    /**
-     * Access the loaded animation. TODO sort methods
-     *
-     * @return the pre-existing instance, or null if none or in bind/retargeted
-     * pose
-     */
-    Animation getAnimation() {
-        Animation result;
-        if (!cgm.isLoaded() || !isReal()) {
-            result = null;
-        } else {
-            result = cgm.getAnimation(loadedName);
-        }
-
-        return result;
-    }
-
-    /**
-     * Read the duration of the loaded animation. TODO sort methods
-     *
-     * @return time (in seconds, &ge;0)
-     */
-    public float getDuration() {
-        float result;
-        Animation animation = getAnimation();
-        if (animation == null) {
-            result = 0f;
-        } else {
-            result = animation.getLength();
-        }
-
-        assert result >= 0f : result;
-        return result;
-    }
-
-    /**
      * Find the index of the loaded animation.
      *
      * @return index, or -1 if bind pose/retargeted pose/not found
@@ -408,6 +360,19 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Find the keyframe with the latest time in the loaded animation.
+     *
+     * @return track time (in seconds, &ge;0)
+     */
+    public float findLatestKeyframe() {
+        Animation loaded = getAnimation();
+        float latest = MyAnimation.findLastKeyframe(loaded);
+
+        assert latest >= 0f : latest;
+        return latest;
+    }
+
+    /**
      * Find the track for the indexed bone.
      *
      * @param boneIndex which bone (&ge;0)
@@ -422,6 +387,41 @@ public class LoadedAnimation implements Cloneable {
             result = MyAnimation.findBoneTrack(animation, boneIndex);
         }
 
+        return result;
+    }
+
+    /**
+     * Access the loaded animation.
+     *
+     * @return the pre-existing instance, or null if none or in bind/retargeted
+     * pose
+     */
+    Animation getAnimation() {
+        Animation result;
+        if (!cgm.isLoaded() || !isReal()) {
+            result = null;
+        } else {
+            result = cgm.getAnimation(loadedName);
+        }
+
+        return result;
+    }
+
+    /**
+     * Read the duration of the loaded animation.
+     *
+     * @return time (in seconds, &ge;0)
+     */
+    public float getDuration() {
+        float result;
+        Animation animation = getAnimation();
+        if (animation == null) {
+            result = 0f;
+        } else {
+            result = animation.getLength();
+        }
+
+        assert result >= 0f : result;
         return result;
     }
 
@@ -500,7 +500,8 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Access the spatial track (if any) for the specified spatial.
+     * Access the spatial track (if any) for the specified spatial. TODO package
+     * protect
      *
      * @param spatial which spatial to find (unaffected)
      * @return the pre-existing instance, or null if none found
@@ -544,7 +545,7 @@ public class LoadedAnimation implements Cloneable {
                             user);
                 }
             } else {
-                newTrack = track.clone(); // TODO
+                newTrack = track.clone();
             }
             newAnimation.addTrack(newTrack);
         }
@@ -1182,40 +1183,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Interpolate translations from the track for the indexed bone to the
-     * parallel arrays provided. TODO reorder methods
-     *
-     * @param numSamples number of samples to calculate (&ge;0)
-     * @param ts sample times (not null, unaffected)
-     * @param boneIndex which bone (&ge;0)
-     * @param storeXs (not null, modified)
-     * @param storeYs (not null, modified)
-     * @param storeZs (not null, modified)
-     */
-    public void trackInterpolateTranslations(int numSamples, float[] ts,
-            int boneIndex, float[] storeXs, float[] storeYs, float[] storeZs) {
-        Validate.nonNegative(numSamples, "number of samples");
-        Validate.nonNegative(boneIndex, "bone index");
-
-        TweenVectors technique;
-        technique = Maud.getModel().getTweenTransforms().getTweenTranslations();
-        BoneTrack track = findTrackForBone(boneIndex);
-        float[] times = track.getKeyFrameTimes();
-        float duration = getDuration();
-        Vector3f[] translations = track.getTranslations();
-        VectorCurve parms = technique.precompute(times, duration, translations);
-        Vector3f tempV = new Vector3f();
-
-        for (int iSample = 0; iSample < numSamples; iSample++) {
-            float time = ts[iSample];
-            technique.interpolate(time, parms, tempV);
-            storeXs[iSample] = tempV.x;
-            storeYs[iSample] = tempV.y;
-            storeZs[iSample] = tempV.z;
-        }
-    }
-
-    /**
      * Interpolate scales from the track for the indexed bone to the parallel
      * arrays provided.
      *
@@ -1237,6 +1204,40 @@ public class LoadedAnimation implements Cloneable {
         float duration = getDuration();
         Vector3f[] scales = track.getScales();
         VectorCurve parms = technique.precompute(times, duration, scales);
+        Vector3f tempV = new Vector3f();
+
+        for (int iSample = 0; iSample < numSamples; iSample++) {
+            float time = ts[iSample];
+            technique.interpolate(time, parms, tempV);
+            storeXs[iSample] = tempV.x;
+            storeYs[iSample] = tempV.y;
+            storeZs[iSample] = tempV.z;
+        }
+    }
+
+    /**
+     * Interpolate translations from the track for the indexed bone to the
+     * parallel arrays provided.
+     *
+     * @param numSamples number of samples to calculate (&ge;0)
+     * @param ts sample times (not null, unaffected)
+     * @param boneIndex which bone (&ge;0)
+     * @param storeXs (not null, modified)
+     * @param storeYs (not null, modified)
+     * @param storeZs (not null, modified)
+     */
+    public void trackInterpolateTranslations(int numSamples, float[] ts,
+            int boneIndex, float[] storeXs, float[] storeYs, float[] storeZs) {
+        Validate.nonNegative(numSamples, "number of samples");
+        Validate.nonNegative(boneIndex, "bone index");
+
+        TweenVectors technique;
+        technique = Maud.getModel().getTweenTransforms().getTweenTranslations();
+        BoneTrack track = findTrackForBone(boneIndex);
+        float[] times = track.getKeyFrameTimes();
+        float duration = getDuration();
+        Vector3f[] translations = track.getTranslations();
+        VectorCurve parms = technique.precompute(times, duration, translations);
         Vector3f tempV = new Vector3f();
 
         for (int iSample = 0; iSample < numSamples; iSample++) {
