@@ -72,6 +72,10 @@ public class SelectedSpatial implements Cloneable {
     // fields
 
     /**
+     * the selected anim control prior to selecting a spatial (not checkpointed)
+     */
+    private AnimControl oldAnimControl = new AnimControl();
+    /**
      * editable CG model containing the spatial, if any (set by
      * {@link #setCgm(LoadedCGModel)})
      */
@@ -85,6 +89,10 @@ public class SelectedSpatial implements Cloneable {
      * {@link #setCgm(LoadedCGModel)})
      */
     private LoadedCgm loadedCgm = null;
+    /**
+     * the selected skeleton prior to selecting a spatial (not checkpointed)
+     */
+    private Skeleton oldSkeleton = new Skeleton();
     // *************************************************************************
     // new methods exposed
 
@@ -303,16 +311,12 @@ public class SelectedSpatial implements Cloneable {
         Spatial selectedSpatial = modelSpatial();
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
-            loadedCgm.getSgc().selectNone();
-            AnimControl oldAnimControl = loadedCgm.getAnimControl();
-            Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
-
+            preSelect();
             editableCgm.deleteSubtree();
             int last = treePosition.size() - 1;
             treePosition.remove(last);
             assert modelSpatial() == parent;
-
-            postSelect(oldAnimControl, oldSkeleton);
+            postSelect();
         }
     }
 
@@ -763,8 +767,10 @@ public class SelectedSpatial implements Cloneable {
      */
     void postLoad() {
         loadedCgm.getSgc().postLoad();
+        oldAnimControl = new AnimControl();
+        oldSkeleton = new Skeleton();
         treePosition.clear();
-        postSelect(new AnimControl(), new Skeleton());
+        postSelect();
     }
 
     /**
@@ -775,14 +781,10 @@ public class SelectedSpatial implements Cloneable {
     public void select(List<Integer> pos) {
         Validate.nonNull(pos, "pos");
 
-        loadedCgm.getSgc().selectNone();
-        AnimControl oldAnimControl = loadedCgm.getAnimControl();
-        Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
-
+        preSelect();
         treePosition.clear();
         treePosition.addAll(pos);
-
-        postSelect(oldAnimControl, oldSkeleton);
+        postSelect();
     }
 
     /**
@@ -793,16 +795,12 @@ public class SelectedSpatial implements Cloneable {
     void select(Spatial newSpatial) {
         Validate.nonNull(newSpatial, "spatial");
 
-        loadedCgm.getSgc().selectNone();
-        AnimControl oldAnimControl = loadedCgm.getAnimControl();
-        Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
-
+        preSelect();
         List<Integer> position = loadedCgm.findSpatial(newSpatial);
         assert position != null;
         treePosition = position;
         assert modelSpatial() == newSpatial;
-
-        postSelect(oldAnimControl, oldSkeleton);
+        postSelect();
     }
 
     /**
@@ -813,16 +811,12 @@ public class SelectedSpatial implements Cloneable {
     public void select(String name) {
         Validate.nonEmpty(name, "spatial name");
 
-        loadedCgm.getSgc().selectNone();
-        AnimControl oldAnimControl = loadedCgm.getAnimControl();
-        Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
-
+        preSelect();
         List<Integer> position = loadedCgm.findSpatialNamed(name);
         assert position != null;
         treePosition = position;
         assert modelSpatial().getName().equals(name);
-
-        postSelect(oldAnimControl, oldSkeleton);
+        postSelect();
     }
 
     /**
@@ -835,14 +829,10 @@ public class SelectedSpatial implements Cloneable {
 
         Spatial child = modelChild(childIndex);
         if (child != null) {
-            loadedCgm.getSgc().selectNone();
-            AnimControl oldAnimControl = loadedCgm.getAnimControl();
-            Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
-
+            preSelect();
             treePosition.add(childIndex);
             assert modelSpatial() == child;
-
-            postSelect(oldAnimControl, oldSkeleton);
+            postSelect();
         }
     }
 
@@ -850,14 +840,10 @@ public class SelectedSpatial implements Cloneable {
      * Select the CG model's root spatial.
      */
     public void selectCgmRoot() {
-        loadedCgm.getSgc().selectNone();
-        AnimControl oldAnimControl = loadedCgm.getAnimControl();
-        Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
-
+        preSelect();
         treePosition.clear();
         assert modelSpatial() == loadedCgm.getRootSpatial();
-
-        postSelect(oldAnimControl, oldSkeleton);
+        postSelect();
     }
 
     /**
@@ -867,15 +853,11 @@ public class SelectedSpatial implements Cloneable {
         Spatial selectedSpatial = modelSpatial();
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
-            loadedCgm.getSgc().selectNone();
-            AnimControl oldAnimControl = loadedCgm.getAnimControl();
-            Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
-
+            preSelect();
             int last = treePosition.size() - 1;
             treePosition.remove(last);
             assert modelSpatial() == parent;
-
-            postSelect(oldAnimControl, oldSkeleton);
+            postSelect();
         }
     }
 
@@ -987,9 +969,18 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Invoked before selecting a spatial.
+     */
+    private void preSelect() {
+        loadedCgm.getSgc().selectNone();
+        oldAnimControl = loadedCgm.getAnimControl();
+        oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
+    }
+
+    /**
      * Invoked after selecting a spatial.
      */
-    private void postSelect(AnimControl oldAnimControl, Skeleton oldSkeleton) {
+    private void postSelect() {
         Boolean selectedSpatialFlag = false;
         Skeleton newSkeleton;
         newSkeleton = loadedCgm.getSkeleton().findSkeleton(selectedSpatialFlag);
