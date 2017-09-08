@@ -32,7 +32,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
-import java.nio.ByteBuffer;
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
@@ -90,9 +90,10 @@ public class SelectedVertex implements Cloneable {
     }
 
     /**
+     * Read the bone indices of the vertex.
      *
-     * @param storeResult
-     * @return
+     * @param storeResult (modified if not null)
+     * @return array of indices (either storeResult or a new instance)
      */
     public int[] boneIndices(int[] storeResult) {
         if (storeResult == null) {
@@ -101,10 +102,10 @@ public class SelectedVertex implements Cloneable {
             assert storeResult.length >= maxBones : storeResult.length;
         }
 
-        ByteBuffer biBuffer = boneIndexBuffer();
+        Buffer boneIndexBuffer = boneIndexBuffer();
         int maxNumWeights = cgm.getSpatial().getMaxNumWeights();
         for (int i = 0; i < maxNumWeights; i++) {
-            int boneIndex = 0xff & biBuffer.get();
+            int boneIndex = MyMesh.readIndex(boneIndexBuffer);
             storeResult[i] = boneIndex;
         }
         for (int i = maxNumWeights; i < maxBones; i++) {
@@ -274,12 +275,12 @@ public class SelectedVertex implements Cloneable {
      *
      * @return a read-only buffer instance
      */
-    private ByteBuffer boneIndexBuffer() {
+    private Buffer boneIndexBuffer() {
         assert selectedIndex >= 0 : selectedIndex;
 
         Mesh mesh = cgm.getSpatial().getMesh();
         VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
-        ByteBuffer boneIndexBuffer = (ByteBuffer) biBuf.getDataReadOnly();
+        Buffer boneIndexBuffer = biBuf.getDataReadOnly();
         boneIndexBuffer.position(maxBones * selectedIndex);
 
         return boneIndexBuffer;

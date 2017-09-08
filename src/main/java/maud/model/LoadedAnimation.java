@@ -35,6 +35,7 @@ import com.jme3.animation.Track;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -55,7 +56,7 @@ import maud.Maud;
 /**
  * The MVC model of the loaded animation in the Maud application. For loading
  * purposes, the bind pose is treated as an animation. TODO rename
- * SelectedAnimation
+ * SelectedAnimation?
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -142,7 +143,7 @@ public class LoadedAnimation implements Cloneable {
             Track newTrack;
             if (track instanceof BoneTrack || track instanceof SpatialTrack) {
                 Transform neck = techniques.interpolate(currentTime, track,
-                        oldDuration, null);
+                        oldDuration, null, null);
                 newTrack = TrackEdit.behead(track, currentTime, neck,
                         oldDuration);
             } else {
@@ -183,7 +184,8 @@ public class LoadedAnimation implements Cloneable {
             } else {
                 TweenTransforms techniques = model.getTweenTransforms();
                 float duration = getDuration();
-                techniques.transform(track, currentTime, duration, storeResult);
+                techniques.transform(track, currentTime, duration, null,
+                        storeResult);
             }
         }
 
@@ -354,7 +356,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Access the loaded animation.
+     * Access the loaded animation. TODO sort methods
      *
      * @return the pre-existing instance, or null if none or in bind/retargeted
      * pose
@@ -371,7 +373,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Read the duration of the loaded animation.
+     * Read the duration of the loaded animation. TODO sort methods
      *
      * @return time (in seconds, &ge;0)
      */
@@ -492,6 +494,24 @@ public class LoadedAnimation implements Cloneable {
         Animation animation = getAnimation();
         if (animation != null) {
             result = MyAnimation.hasTrackForBone(animation, boneIndex);
+        }
+
+        return result;
+    }
+
+    /**
+     * Access the spatial track (if any) for the specified spatial.
+     *
+     * @param spatial which spatial to find (unaffected)
+     * @return the pre-existing instance, or null if none found
+     */
+    public SpatialTrack findTrackForSpatial(Spatial spatial) {
+        SpatialTrack result = null;
+        AnimControl animControl = cgm.getAnimControl();
+        Animation animation = getAnimation();
+        if (animControl != null && animation != null) {
+            result = MyAnimation.findSpatialTrack(animControl, animation,
+                    spatial);
         }
 
         return result;
@@ -1106,7 +1126,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void setTime(float newTime) {
         float duration = getDuration();
-        Validate.inRange(newTime, "animation time", 0f, duration);
+        Validate.inRange(newTime, "new time", 0f, duration);
 
         if (duration > 0f) {
             currentTime = newTime;

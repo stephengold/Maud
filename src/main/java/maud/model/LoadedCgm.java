@@ -28,11 +28,13 @@ package maud.model;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
+import com.jme3.animation.SpatialTrack;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.Transform;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -52,6 +54,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.ui.Locators;
+import jme3utilities.wes.TweenTransforms;
 import maud.CheckLoaded;
 import maud.Maud;
 import maud.Util;
@@ -217,6 +220,29 @@ public class LoadedCgm implements Cloneable {
 
         assert count >= 0 : count;
         return count;
+    }
+
+    /**
+     * Count the children of the specified spatial.
+     *
+     * @param treePosition tree position (not null, unaffected)
+     * @return count (&ge;0)
+     */
+    public int countChildren(List<Integer> treePosition) {
+        Spatial spatial = rootSpatial;
+        for (int childPosition : treePosition) {
+            Node node = (Node) spatial;
+            spatial = node.getChild(childPosition);
+        }
+
+        int result = 0;
+        if (spatial instanceof Node) {
+            Node node = (Node) spatial;
+            List<Spatial> children = node.getChildren();
+            result = children.size();
+        }
+
+        return result;
     }
 
     /**
@@ -393,6 +419,31 @@ public class LoadedCgm implements Cloneable {
     public String getExtension() {
         assert extension != null;
         return extension;
+    }
+
+    /**
+     * Access the local transform of the spatial in the specified position.
+     *
+     * @param treePosition position in the CG model (not null, unaffected)
+     * @return the pre-existing instance
+     */
+    public Transform getLocalTransform(List<Integer> treePosition) {
+        Spatial spatial = rootSpatial;
+        for (int childPosition : treePosition) {
+            Node node = (Node) spatial;
+            spatial = node.getChild(childPosition);
+        }
+        Transform result = spatial.getLocalTransform();
+
+        SpatialTrack track = loadedAnimation.findTrackForSpatial(spatial);
+        if (track != null) {
+            TweenTransforms technique = Maud.getModel().getTweenTransforms();
+            float time = loadedAnimation.getTime();
+            float duration = loadedAnimation.getDuration();
+            result = technique.interpolate(time, track, duration, result, null);
+        }
+
+        return result;
     }
 
     /**
@@ -616,7 +667,7 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Test whether a CG model is loaded here.
+     * Test whether a CG model is loaded into this slot.
      *
      * @return true if loaded, otherwise false
      */
@@ -934,8 +985,8 @@ public class LoadedCgm implements Cloneable {
      */
     void selectSgc(AbstractControl newSgc) {
         if (newSgc != null) {
-            Spatial sp = newSgc.getSpatial();
-            selectedSpatial.select(sp);
+            Spatial newSpatial = newSgc.getSpatial();
+            selectedSpatial.select(newSpatial);
         }
         selectedSgc.select(newSgc);
     }

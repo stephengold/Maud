@@ -57,7 +57,7 @@ import com.jme3.scene.plugins.bvh.BVHAnimData;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
-import java.nio.ByteBuffer;
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -164,7 +164,7 @@ public class Util {
         assert maxWeightsPerVert <= 4 : maxWeightsPerVert;
 
         VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
-        ByteBuffer boneIndexBuffer = (ByteBuffer) biBuf.getDataReadOnly();
+        Buffer boneIndexBuffer = biBuf.getDataReadOnly();
         boneIndexBuffer.rewind();
         int numBoneIndices = boneIndexBuffer.remaining();
         assert numBoneIndices % 4 == 0 : numBoneIndices;
@@ -179,9 +179,8 @@ public class Util {
         for (int vIndex = 0; vIndex < numVertices; vIndex++) {
             for (int wIndex = 0; wIndex < 4; wIndex++) {
                 float weight = weightBuffer.get();
-                byte bIndex = boneIndexBuffer.get();
+                int boneIndex = MyMesh.readIndex(boneIndexBuffer);
                 if (wIndex < maxWeightsPerVert && weight > 0f) {
-                    int boneIndex = 0xff & bIndex;
                     storeResult.set(boneIndex);
                 }
             }
@@ -315,7 +314,7 @@ public class Util {
         weightBuffer.rewind();
 
         VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
-        ByteBuffer boneIndexBuffer = (ByteBuffer) biBuf.getData();
+        Buffer boneIndexBuffer = biBuf.getData();
         boneIndexBuffer.rewind();
 
         int numVertices = posBuffer.remaining() / 3;
@@ -327,7 +326,7 @@ public class Util {
             meshLoc.zero();
             for (int wIndex = 0; wIndex < maxWeightsPerVertex; wIndex++) {
                 float weight = weightBuffer.get();
-                int boneIndex = 0xff & boneIndexBuffer.get();
+                int boneIndex = MyMesh.readIndex(boneIndexBuffer);
                 if (weight != 0f) {
                     Matrix4f s = skinningMatrices[boneIndex];
                     meshLoc.x += weight
@@ -348,7 +347,7 @@ public class Util {
 
             for (int wIndex = maxWeightsPerVertex; wIndex < 4; wIndex++) {
                 weightBuffer.get();
-                boneIndexBuffer.get();
+                MyMesh.readIndex(boneIndexBuffer);
             }
         }
 
