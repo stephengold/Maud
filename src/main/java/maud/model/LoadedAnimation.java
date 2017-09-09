@@ -100,8 +100,8 @@ public class LoadedAnimation implements Cloneable {
      */
     private boolean reverseFlag = false;
     /**
-     * editable CG model containing the animation, if any (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * editable CG model, if any, containing the animation (set by
+     * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm;
     /**
@@ -114,10 +114,9 @@ public class LoadedAnimation implements Cloneable {
      */
     private float speed = 1f;
     /**
-     * loaded CG model containing the animation (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * CG model containing the animation (set by {@link #setCgm(Cgm)})
      */
-    private LoadedCgm cgm = null;
+    private Cgm cgm = null;
     /**
      * name of the loaded animation, bindPoseName, or retargetedPoseName
      */
@@ -994,14 +993,14 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Alter which CG model contains the animation.
      *
-     * @param newLoaded (not null)
+     * @param newCmg (not null)
      */
-    void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
+    void setCgm(Cgm newCmg) {
+        assert newCmg != null;
 
-        cgm = newLoaded;
-        if (newLoaded instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newLoaded;
+        cgm = newCmg;
+        if (newCmg instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newCmg;
         } else {
             editableCgm = null;
         }

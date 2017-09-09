@@ -76,19 +76,18 @@ public class SelectedSpatial implements Cloneable {
      */
     private AnimControl oldAnimControl = new AnimControl();
     /**
-     * editable CG model containing the spatial, if any (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * editable CG model, if any, containing the spatial (set by
+     * {@link #setCgm(Cgm)})
      */
-    private EditableCgm editableCgm;
+    private EditableCgm editableCgm = null;
     /**
      * tree position of the selected spatial (not null)
      */
     private List<Integer> treePosition = new ArrayList<>(3);
     /**
-     * loaded CG model containing the spatial (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * CG model containing the spatial (set by {@link #setCgm(Cgm)})
      */
-    private LoadedCgm loadedCgm = null;
+    private Cgm loadedCgm = null;
     /**
      * the selected skeleton prior to selecting a spatial (not checkpointed)
      */
@@ -864,14 +863,14 @@ public class SelectedSpatial implements Cloneable {
     /**
      * Alter which CG model contains the spatial.
      *
-     * @param newLoaded (not null)
+     * @param newCgm (not null)
      */
-    void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
 
-        loadedCgm = newLoaded;
-        if (newLoaded instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newLoaded;
+        loadedCgm = newCgm;
+        if (newCgm instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newCgm;
         } else {
             editableCgm = null;
         }

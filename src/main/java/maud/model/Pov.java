@@ -55,12 +55,12 @@ public interface Pov {
     void moveUp(float amount);
 
     /**
-     * Alter which loaded CG model corresponds to this POV. (Invoked only during
-     * initialization and cloning.)
+     * Alter which CG model uses this POV. (Invoked only during initialization
+     * and cloning.)
      *
-     * @param newLoaded (not null)
+     * @param newCgm (not null)
      */
-    void setCgm(LoadedCgm newLoaded);
+    void setCgm(Cgm newCgm);
 
     /**
      * Update the camera used to render this POV.

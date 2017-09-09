@@ -60,19 +60,18 @@ public class SelectedBone implements Cloneable {
     // fields
 
     /**
-     * editable CG model containing the bone, if any (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * editable CG model, if any, containing the bone (set by
+     * {@link #setCgm(Cgm)})
      */
-    private EditableCgm editableCgm;
+    private EditableCgm editableCgm = null;
     /**
      * index of the selected bone, or -1 for none selected
      */
     private int selectedIndex = -1;
     /**
-     * loaded CG model containing the bone (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * CG model containing the bone (set by {@link #setCgm(Cgm)})
      */
-    private LoadedCgm loadedCgm = null;
+    private Cgm loadedCgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -505,16 +504,16 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Alter which CG model contains the bone.
+     * Alter which CG model contains the selected bone.
      *
-     * @param newLoaded (not null)
+     * @param newCgm (not null)
      */
-    void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
 
-        loadedCgm = newLoaded;
-        if (newLoaded instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newLoaded;
+        loadedCgm = newCgm;
+        if (newCgm instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newCgm;
         } else {
             editableCgm = null;
         }

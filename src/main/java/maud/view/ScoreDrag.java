@@ -28,7 +28,7 @@ package maud.view;
 
 import java.util.logging.Logger;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 
 /**
  * Drag state for score views. Currently the only score objects that can be
@@ -64,12 +64,12 @@ public class ScoreDrag {
     // new methods exposed
 
     /**
-     * Access the loaded CG model whose gnomon is being dragged.
+     * Access the CG model whose gnomon is being dragged.
      *
-     * @return a loaded CG model, or null
+     * @return a CG model, or null
      */
-    public static LoadedCgm getDraggingGnomonCgm() {
-        LoadedCgm result;
+    public static Cgm getDraggingGnomonCgm() {
+        Cgm result;
         switch (dragGnomon) {
             case "none":
                 result = null;
@@ -89,9 +89,9 @@ public class ScoreDrag {
     /**
      * Alter which gnomon is being dragged.
      *
-     * @param cgm a loaded CG model, or null
+     * @param cgm a CG model, or null
      */
-    public static void setDraggingGnomon(LoadedCgm cgm) {
+    public static void setDraggingGnomon(Cgm cgm) {
         if (cgm == Maud.getModel().getTarget()) {
             dragGnomon = "target";
         } else if (cgm == Maud.getModel().getSource()) {

@@ -32,7 +32,7 @@ import jme3utilities.nifty.WindowController;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 
 /**
  * The controller for the "Sky Tool" window in Maud's editor screen.
@@ -75,7 +75,7 @@ class SkyTool extends WindowController {
      *
      * @param cgm which CG model (not null)
      */
-    void updateSkyControl(LoadedCgm cgm) {
+    void updateSkyControl(Cgm cgm) {
         SkyControl sky = cgm.getSceneView().getSkyControl();
         boolean enable = Maud.getModel().getScene().isSkyRendered();
         sky.setEnabled(enable);

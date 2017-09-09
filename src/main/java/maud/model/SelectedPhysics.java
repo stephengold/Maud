@@ -53,10 +53,9 @@ public class SelectedPhysics implements Cloneable {
     // fields
 
     /**
-     * CG-model load slot containing the physics object (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * CG model containing the selected object (set by {@link #setCgm(Cgm)})
      */
-    private LoadedCgm cgm = null;
+    private Cgm cgm = null;
     /**
      * constructed name for the selected object (not null)
      */
@@ -155,8 +154,8 @@ public class SelectedPhysics implements Cloneable {
         if (index != -1) {
             int numObjects = names.size();
             int newIndex = MyMath.modulo(index + 1, numObjects);
-            String name = names.get(newIndex);
-            select(name);
+            String nextName = names.get(newIndex);
+            select(nextName);
         }
     }
 
@@ -179,19 +178,19 @@ public class SelectedPhysics implements Cloneable {
         if (index != -1) {
             int numObjects = names.size();
             int newIndex = MyMath.modulo(index - 1, numObjects);
-            String name = names.get(newIndex);
-            select(name);
+            String previousName = names.get(newIndex);
+            select(previousName);
         }
     }
 
     /**
      * Alter which CG model contains the selected object.
      *
-     * @param newLoaded (not null)
+     * @param newCgm (not null)
      */
-    void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
-        cgm = newLoaded;
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
+        cgm = newCgm;
     }
     // *************************************************************************
     // Object methods

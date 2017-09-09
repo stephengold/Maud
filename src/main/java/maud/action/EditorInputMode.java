@@ -39,10 +39,10 @@ import jme3utilities.ui.InputMode;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
 import maud.dialog.LicenseType;
+import maud.model.Cgm;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
-import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
 import maud.view.SceneDrag;
 import maud.view.ViewType;
@@ -697,7 +697,7 @@ public class EditorInputMode extends InputMode {
             case Action.viewHorizontal:
                 ViewType viewType = Maud.gui.mouseViewType();
                 if (viewType == ViewType.Scene) {
-                    LoadedCgm loadedCgm = Maud.gui.mouseCgm();
+                    Cgm loadedCgm = Maud.gui.mouseCgm();
                     loadedCgm.getScenePov().goHorizontal();
                 }
                 handled = true;

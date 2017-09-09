@@ -76,15 +76,14 @@ public class SelectedTrack implements Cloneable {
     // fields
 
     /**
-     * editable CG model containing the track, if any (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * editable CG model, if any, containing the track (set by
+     * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm;
     /**
-     * loaded CG model containing the track (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * CG model containing the track (set by {@link #setCgm(Cgm)})
      */
-    private LoadedCgm loadedCgm;
+    private Cgm loadedCgm;
     // *************************************************************************
     // new methods exposed
 
@@ -565,14 +564,14 @@ public class SelectedTrack implements Cloneable {
     /**
      * Alter which CG model contains the track.
      *
-     * @param newLoaded (not null)
+     * @param newCgm (not null)
      */
-    void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
 
-        loadedCgm = newLoaded;
-        if (newLoaded instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newLoaded;
+        loadedCgm = newCgm;
+        if (newCgm instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newCgm;
         } else {
             editableCgm = null;
         }

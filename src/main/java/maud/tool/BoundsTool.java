@@ -34,7 +34,7 @@ import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.option.BoundsOptions;
 import maud.view.SceneView;
 
@@ -83,7 +83,7 @@ class BoundsTool extends WindowController {
      *
      * @param cgm which CG model (not null)
      */
-    void updateVisualizer(LoadedCgm cgm) {
+    void updateVisualizer(Cgm cgm) {
         SceneView sceneView = cgm.getSceneView();
         BoundsVisualizer visualizer = sceneView.getBoundsVisualizer();
         visualizer.setEnabled(true);

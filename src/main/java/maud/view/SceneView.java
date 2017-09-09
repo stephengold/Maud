@@ -83,7 +83,7 @@ import jme3utilities.wes.Pose;
 import maud.Maud;
 import maud.Util;
 import maud.mesh.PointMesh;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.option.SceneBones;
 import maud.model.option.SkeletonOptions;
 import maud.model.option.ViewMode;
@@ -149,7 +149,7 @@ public class SceneView
     /**
      * CG model that owns this view (not null)
      */
-    private LoadedCgm cgm;
+    private Cgm cgm;
     /**
      * attachment point for CG models (applies shadowMode and transforms)
      */
@@ -196,7 +196,7 @@ public class SceneView
     /**
      * Instantiate a new visualization.
      *
-     * @param loadedCgm loaded CG model that will own this view (not null, alias
+     * @param loadedCgm CG model that will own this view (not null, alias
      * created)
      * @param parentNode attachment point in the scene graph (not null, alias
      * created)
@@ -204,7 +204,7 @@ public class SceneView
      * @param port2 view port to use after the screen is split (not null, alias
      * created)
      */
-    public SceneView(LoadedCgm loadedCgm, Node parentNode, ViewPort port1,
+    public SceneView(Cgm loadedCgm, Node parentNode, ViewPort port1,
             ViewPort port2) {
         Validate.nonNull(loadedCgm, "loaded model");
         Validate.nonNull(parentNode, "parent node");
@@ -460,11 +460,11 @@ public class SceneView
      * Alter which loaded CG model corresponds with this view. Invoked after
      * cloning.
      *
-     * @param loadedCgm (not null)
+     * @param cgm (not null)
      */
-    public void setCgm(LoadedCgm loadedCgm) {
-        Validate.nonNull(loadedCgm, "loaded model");
-        cgm = loadedCgm;
+    public void setCgm(Cgm cgm) {
+        Validate.nonNull(cgm, "model");
+        this.cgm = cgm;
     }
 
     /**
@@ -761,7 +761,7 @@ public class SceneView
             int[] vertexIndices = new int[3];
             mesh.getTriangle(triangleIndex, vertexIndices);
 
-            LoadedCgm cgModel = Maud.gui.mouseCgm();
+            Cgm cgModel = Maud.gui.mouseCgm();
             Pose pose = cgModel.getPose().getPose();
             Matrix4f[] matrices = pose.skin(null);
             Vector3f worldPosition = new Vector3f();
@@ -839,7 +839,7 @@ public class SceneView
      * @param ignored not used
      */
     @Override
-    public void update(LoadedCgm ignored) {
+    public void update(Cgm ignored) {
         if (skyControl == null) {  // TODO add an init method
             /*
              * Initialize scene on first update.

@@ -38,7 +38,7 @@ import jme3utilities.Misc;
 import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.option.SceneOptions;
 import maud.model.option.Wireframe;
 import maud.view.SceneView;
@@ -76,7 +76,7 @@ class RenderTool extends WindowController {
      *
      * @param cgm which CG model (not null)
      */
-    void updateShadowFilter(LoadedCgm cgm) {
+    void updateShadowFilter(Cgm cgm) {
         SceneView view = cgm.getSceneView();
         ViewPort vp = view.getViewPort();
         if (vp != null && vp.isEnabled()) {
@@ -101,7 +101,7 @@ class RenderTool extends WindowController {
      *
      * @param cgm which CG model (not null)
      */
-    void updateVisualizer(LoadedCgm cgm) {
+    void updateVisualizer(Cgm cgm) {
         SceneView sceneView = cgm.getSceneView();
         BulletAppState bulletAppState = sceneView.getBulletAppState();
         boolean enable = Maud.getModel().getScene().isPhysicsRendered();

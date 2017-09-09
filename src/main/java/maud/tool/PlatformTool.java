@@ -39,7 +39,7 @@ import jme3utilities.MyAsset;
 import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.option.PlatformType;
 import maud.view.SceneView;
 
@@ -93,7 +93,7 @@ class PlatformTool extends WindowController {
      *
      * @param cgm which CG model (not null)
      */
-    void updateScene(LoadedCgm cgm) {
+    void updateScene(Cgm cgm) {
         SceneView sceneView = cgm.getSceneView();
         Spatial platform = sceneView.getPlatform();
 

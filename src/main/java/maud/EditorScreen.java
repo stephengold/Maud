@@ -58,12 +58,11 @@ import maud.menu.BoneMenus;
 import maud.menu.BuildMenus;
 import maud.menu.EditorMenus;
 import maud.menu.ShowMenus;
+import maud.model.Cgm;
 import maud.model.Checkpoint;
-import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedAnimation;
-import maud.model.LoadedCgm;
 import maud.model.Pov;
 import maud.model.SelectedSpatial;
 import maud.model.option.AxesMode;
@@ -185,9 +184,9 @@ public class EditorScreen extends GuiScreenController {
      *
      * @return a pre-existing instance, or null if none applies
      */
-    public LoadedCgm mouseCgm() {
-        LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().getTarget();
+    public Cgm mouseCgm() {
+        Cgm source = Maud.getModel().getSource();
+        Cgm target = Maud.getModel().getTarget();
         ViewPort sScene = source.getSceneView().getViewPort();
         ViewPort sScore = source.getScoreView().getViewPort();
         ViewPort tScene = target.getSceneView().getViewPort();
@@ -196,7 +195,7 @@ public class EditorScreen extends GuiScreenController {
         Vector2f screenXY = inputManager.getCursorPosition();
         List<ViewPort> viewPorts;
         viewPorts = MyCamera.listViewPorts(renderManager, screenXY);
-        LoadedCgm cgm = null;
+        Cgm cgm = null;
         for (ViewPort vp : viewPorts) {
             if (vp.isEnabled()) {
                 if (vp == sScene || vp == sScore) {
@@ -218,8 +217,8 @@ public class EditorScreen extends GuiScreenController {
      * @return the pre-existing instance, or null if none applies
      */
     public Pov mousePov() {
-        LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm source = Maud.getModel().getSource();
+        Cgm target = Maud.getModel().getTarget();
         EditorView sScene = source.getSceneView();
         EditorView sScore = source.getScoreView();
         EditorView tScene = target.getSceneView();
@@ -256,8 +255,8 @@ public class EditorScreen extends GuiScreenController {
      * @return the pre-existing instance, or null if none applies
      */
     public EditorView mouseView() {
-        LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm source = Maud.getModel().getSource();
+        Cgm target = Maud.getModel().getTarget();
         EditorView sScene = source.getSceneView();
         EditorView sScore = source.getScoreView();
         EditorView tScene = target.getSceneView();
@@ -322,9 +321,9 @@ public class EditorScreen extends GuiScreenController {
 
         EditorModel model = Maud.getModel();
         SceneOptions scene = model.getScene();
-        LoadedCgm source = model.getSource();
-        EditableCgm target = model.getTarget();
-        LoadedCgm animationCgm;
+        Cgm source = model.getSource();
+        Cgm target = model.getTarget();
+        Cgm animationCgm;
         if (target.getAnimation().isRetargetedPose()) {
             animationCgm = source;
         } else {
@@ -548,7 +547,7 @@ public class EditorScreen extends GuiScreenController {
      * Select a bone based on the screen coordinates of the mouse pointer.
      */
     public void selectBone() {
-        LoadedCgm mouseCgm = Maud.gui.mouseCgm();
+        Cgm mouseCgm = Maud.gui.mouseCgm();
         EditorView mouseView = Maud.gui.mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
@@ -562,7 +561,7 @@ public class EditorScreen extends GuiScreenController {
      * Select a gnomon based on the screen coordinates of the mouse pointer.
      */
     public void selectGnomon() {
-        LoadedCgm mouseCgm = Maud.gui.mouseCgm();
+        Cgm mouseCgm = Maud.gui.mouseCgm();
         EditorView mouseView = Maud.gui.mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
@@ -576,7 +575,7 @@ public class EditorScreen extends GuiScreenController {
      * Select a keyframe based on the screen coordinates of the mouse pointer.
      */
     public void selectKeyframe() {
-        LoadedCgm mouseCgm = Maud.gui.mouseCgm();
+        Cgm mouseCgm = Maud.gui.mouseCgm();
         EditorView mouseView = Maud.gui.mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
@@ -622,7 +621,7 @@ public class EditorScreen extends GuiScreenController {
      * Select a vertex based on the screen coordinates of the mouse pointer.
      */
     public void selectVertex() {
-        LoadedCgm mouseCgm = Maud.gui.mouseCgm();
+        Cgm mouseCgm = Maud.gui.mouseCgm();
         EditorView mouseView = Maud.gui.mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
@@ -637,7 +636,7 @@ public class EditorScreen extends GuiScreenController {
      * of the mouse pointer.
      */
     public void selectXY() {
-        LoadedCgm mouseCgm = Maud.gui.mouseCgm();
+        Cgm mouseCgm = Maud.gui.mouseCgm();
         EditorView mouseView = Maud.gui.mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
@@ -760,11 +759,11 @@ public class EditorScreen extends GuiScreenController {
         /*
          * Update animations.
          */
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         if (source.getAnimation().isMoving()) {
             updateTrackTime(source, tpf);
         }
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         if (target.getAnimation().isMoving()) {
             updateTrackTime(target, tpf);
         } else if (target.getAnimation().isRetargetedPose()) {
@@ -782,7 +781,7 @@ public class EditorScreen extends GuiScreenController {
              * Based on mouse pointer position, select a loaded CG model
              * to rotate around its Y-axis.
              */
-            LoadedCgm cgmToRotate = mouseCgm();
+            Cgm cgmToRotate = mouseCgm();
             if (cgmToRotate != null) {
                 CgmTransform cgmTransform;
                 cgmTransform = cgmToRotate.getSceneView().getTransform();
@@ -799,7 +798,7 @@ public class EditorScreen extends GuiScreenController {
             }
 
         } else if (viewType == ViewType.Score) {
-            LoadedCgm cgm = ScoreDrag.getDraggingGnomonCgm();
+            Cgm cgm = ScoreDrag.getDraggingGnomonCgm();
             if (cgm != null) {
                 Camera camera = cgm.getScoreView().getCamera();
                 Vector2f mouseXY = inputManager.getCursorPosition();
@@ -844,7 +843,7 @@ public class EditorScreen extends GuiScreenController {
      * @param loadedCgm (not null)
      * @param tpf time interval between render passes (in seconds, &ge;0)
      */
-    private void updateTrackTime(LoadedCgm loadedCgm, float tpf) {
+    private void updateTrackTime(Cgm loadedCgm, float tpf) {
         LoadedAnimation animation = loadedCgm.getAnimation();
         assert animation.isMoving();
 

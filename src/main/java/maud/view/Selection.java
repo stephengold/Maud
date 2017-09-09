@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.LoadedMap;
 
 /**
@@ -87,7 +87,7 @@ public class Selection {
     /**
      * the CG model to be selected, or null for none
      */
-    private LoadedCgm bestCgm = null;
+    private Cgm bestCgm = null;
     /**
      * type of object selected (not null)
      */
@@ -126,7 +126,7 @@ public class Selection {
      * @param screenXY screen coordinates of the axis (in pixels, not null,
      * unaffected)
      */
-    public void considerAxis(LoadedCgm cgm, int axisIndex,
+    public void considerAxis(Cgm cgm, int axisIndex,
             boolean scoreView, Vector2f screenXY) {
         Validate.nonNull(cgm, "model");
         if (scoreView) {
@@ -160,7 +160,7 @@ public class Selection {
      * @param dSquared squared distance between the bone's screen location and
      * {@link #inputXY} (in pixels squared, &ge;0)
      */
-    public void considerBone(LoadedCgm cgm, int boneIndex, float dSquared) {
+    public void considerBone(Cgm cgm, int boneIndex, float dSquared) {
         Validate.nonNull(cgm, "model");
         Validate.nonNegative(boneIndex, "bone index");
         Validate.nonNegative(dSquared, "distance squared");
@@ -184,7 +184,7 @@ public class Selection {
      * @param dSquared squared distance between the gnomon's screen location and
      * {@link #inputXY} (in pixels squared, &ge;0)
      */
-    public void considerGnomon(LoadedCgm cgm, float dSquared) {
+    public void considerGnomon(Cgm cgm, float dSquared) {
         Validate.nonNull(cgm, "model");
         Validate.nonNegative(dSquared, "distance squared");
 
@@ -209,7 +209,7 @@ public class Selection {
      * @param dSquared squared distance between the keyframe's screen location
      * and {@link #inputXY} (in pixels squared, &ge;0)
      */
-    public void considerKeyframe(LoadedCgm cgm, int frameIndex,
+    public void considerKeyframe(Cgm cgm, int frameIndex,
             float dSquared) {
         Validate.nonNull(cgm, "model");
         Validate.nonNegative(frameIndex, "frame index");
@@ -236,7 +236,7 @@ public class Selection {
      * @param screenXY screen coordinates of the axis (in pixels, not null,
      * unaffected)
      */
-    public void considerVertex(LoadedCgm cgm, Geometry geometry,
+    public void considerVertex(Cgm cgm, Geometry geometry,
             int vertexIndex, Vector2f screenXY) {
         Validate.nonNull(cgm, "model");
         Validate.nonNull(geometry, "geometry");

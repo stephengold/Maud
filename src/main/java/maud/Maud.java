@@ -50,9 +50,9 @@ import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
 import maud.dialog.QuitDialog;
+import maud.model.Cgm;
 import maud.model.EditorModel;
 import maud.model.History;
-import maud.model.LoadedCgm;
 import maud.model.option.ViewMode;
 import maud.view.SceneView;
 import maud.view.ScoreView;
@@ -145,7 +145,7 @@ public class Maud extends GuiApplication {
      * Process a "dump physicsSpace" action.
      */
     public void dumpPhysicsSpace() {
-        LoadedCgm cgm = gui.mouseCgm();
+        Cgm cgm = gui.mouseCgm();
         SceneView sceneView = cgm.getSceneView();
         PhysicsSpace space = sceneView.getPhysicsSpace();
         dumper.dump(space);
@@ -207,7 +207,6 @@ public class Maud extends GuiApplication {
         /*
          * Lower logging thresholds for classes of interest.
          */
-        Logger.getLogger(LoadedCgm.class.getName()).setLevel(Level.INFO);
         History.logger.setLevel(Level.INFO);
         /*
          * Instantiate the application.

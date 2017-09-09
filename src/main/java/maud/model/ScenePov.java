@@ -64,10 +64,9 @@ public class ScenePov implements Cloneable, Pov {
     // fields
 
     /**
-     * loaded CG model containing this POV (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * CG model using this POV (set by {@link #setCgm(Cgm)})
      */
-    private LoadedCgm loadedCgm = null;
+    private Cgm loadedCgm = null;
     /**
      * direction the scene camera points (unit vector in world coordinates)
      */
@@ -296,15 +295,15 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
-     * Alter which loaded CG model corresponds to this POV. (Invoked only during
-     * initialization and cloning.)
+     * Alter which CG model uses this POV. (Invoked only during initialization
+     * and cloning.)
      *
-     * @param newLoaded (not null)
+     * @param newCgm (not null)
      */
     @Override
-    public void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
-        loadedCgm = newLoaded;
+    public void setCgm(Cgm newCgm) {
+        assert newCgm != null;
+        loadedCgm = newCgm;
     }
 
     /**
