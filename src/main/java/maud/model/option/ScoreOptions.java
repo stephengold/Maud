@@ -30,7 +30,7 @@ import com.jme3.math.ColorRGBA;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 
 /**
  * Options for "score" views in Maud's editor screen.
@@ -99,7 +99,7 @@ public class ScoreOptions implements Cloneable {
      * @return "all", "ancestors", "family", "none", "roots", "selected", or
      * "tracked"
      */
-    public String bonesShown(LoadedCgm cgm) {
+    public String bonesShown(Cgm cgm) {
         Validate.nonNull(cgm, "model");
 
         String result;

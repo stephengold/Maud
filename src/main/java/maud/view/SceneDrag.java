@@ -29,7 +29,7 @@ package maud.view;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 
 /**
  * Drag state for scene views. Currently the only scene objects that can be
@@ -111,7 +111,7 @@ public class SceneDrag {
      *
      * @return the pre-existing instance
      */
-    public static LoadedCgm getDragCgm() {
+    public static Cgm getDragCgm() {
         assert isDraggingAxis();
         if (dragSourceCgm) {
             return Maud.getModel().getSource();
@@ -151,7 +151,7 @@ public class SceneDrag {
      * @param farSideFlag true &rarr; drag on the far side of the axis origin,
      * false to drag on near side
      */
-    public static void setDraggingAxis(int axisIndex, LoadedCgm cgm,
+    public static void setDraggingAxis(int axisIndex, Cgm cgm,
             boolean farSideFlag) {
         Validate.inRange(axisIndex, "axis index", 0, lastAxis);
         Validate.nonNull(cgm, "model");

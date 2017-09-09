@@ -28,7 +28,7 @@ package maud.view;
 
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 
 /**
  * Interface to an MVC view in Maud's edit screen.
@@ -98,7 +98,7 @@ public interface EditorView {
      *
      * @param renderCgm which CG model to render
      */
-    void update(LoadedCgm renderCgm);
+    void update(Cgm renderCgm);
 
     /**
      * Attempt to warp a cursor to the screen coordinates of the mouse pointer.

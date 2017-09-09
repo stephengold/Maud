@@ -64,10 +64,9 @@ public class DisplayedPose implements JmeCloneable {
      */
     private Pose pose = new Pose(null);
     /**
-     * CG-model load slot holding the pose (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * CG-model holding the pose (set by {@link #setCgm(Cgm)})
      */
-    private LoadedCgm cgm = null;
+    private Cgm cgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -103,11 +102,11 @@ public class DisplayedPose implements JmeCloneable {
      * Alter which CG model displays the pose. (Invoked only during
      * initialization and cloning.)
      *
-     * @param newLoaded (not null)
+     * @param newCgm (not null)
      */
-    void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
-        cgm = newLoaded;
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
+        cgm = newCgm;
     }
 
     /**

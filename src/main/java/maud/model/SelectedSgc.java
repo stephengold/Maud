@@ -61,10 +61,9 @@ public class SelectedSgc implements Cloneable {
      */
     private int selectedIndex = -1;
     /**
-     * loaded CG model containing the control (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * CG model containing the SG control (set by {@link #setCgm(Cgm)})
      */
-    private LoadedCgm loadedCgm = null;
+    private Cgm loadedCgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -129,7 +128,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Read the position of the selected SG control in the MVC model.
+     * Read the position of the selected SG control in the selected spatial.
      *
      * @return the SG control index, or -1 if none selected
      */
@@ -157,7 +156,7 @@ public class SelectedSgc implements Cloneable {
     /**
      * Read the type of the selected SG control.
      *
-     * @return shortened name for the class
+     * @return abbreviated name for the class
      */
     public String getType() {
         Control sgc = findSgc();
@@ -283,13 +282,13 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Alter which CG model contains the SG control.
+     * Alter which CG model contains the selected SG control.
      *
-     * @param newLoaded (not null)
+     * @param newCgm (not null)
      */
-    void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
-        loadedCgm = newLoaded;
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
+        loadedCgm = newCgm;
     }
     // *************************************************************************
     // Object methods

@@ -67,10 +67,9 @@ public class SelectedSkeleton implements Cloneable {
     // fields
 
     /**
-     * CG-model load slot containing the skeleton (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * CG model containing the skeleton (set by {@link #setCgm(Cgm)})
      */
-    private LoadedCgm cgm = null;
+    private Cgm cgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -425,13 +424,13 @@ public class SelectedSkeleton implements Cloneable {
     }
 
     /**
-     * Alter which CG model contains the skeleton.
+     * Alter which CG model contains the selected skeleton.
      *
-     * @param newLoaded (not null)
+     * @param newCgm (not null)
      */
-    void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
-        cgm = newLoaded;
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
+        cgm = newCgm;
     }
     // *************************************************************************
     // Object methods

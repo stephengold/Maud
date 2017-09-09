@@ -37,7 +37,7 @@ import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.option.DddCursorOptions;
 import maud.view.SceneView;
 
@@ -90,7 +90,7 @@ class CursorTool extends WindowController {
      *
      * @param cgm which CG model (not null)
      */
-    void updateScene(LoadedCgm cgm) {
+    void updateScene(Cgm cgm) {
         SceneView sceneView = cgm.getSceneView();
         Geometry cursor = sceneView.getCursor();
         /*

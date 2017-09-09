@@ -34,7 +34,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 
 /**
  * Tool windows in Maud's editor screen.
@@ -509,23 +509,23 @@ public class EditorTools {
      * Scene updates performed even when all tools are disabled. (Invoked once
      * per render pass for each CG model that's rendered to a scene view.)
      *
-     * @param loadedCgm which CG model occupies the scene to update (not null)
+     * @param cgm which CG model occupies the scene to update (not null)
      */
-    public void updateScene(LoadedCgm loadedCgm) {
-        Validate.nonNull(loadedCgm, "loaded model");
-        assert loadedCgm.getSceneView().getCamera() != null;
+    public void updateScene(Cgm cgm) {
+        Validate.nonNull(cgm, "loaded model");
+        assert cgm.getSceneView().getCamera() != null;
 
-        loadedCgm.getScenePov().updateCamera();
+        cgm.getScenePov().updateCamera();
 
-        axes.updateVisualizer(loadedCgm);
-        bounds.updateVisualizer(loadedCgm);
-        cursor.updateScene(loadedCgm);
-        platform.updateScene(loadedCgm);
-        render.updateShadowFilter(loadedCgm);
-        render.updateVisualizer(loadedCgm);
-        sceneVertex.updateVisualizer(loadedCgm);
-        skeleton.updateVisualizer(loadedCgm);
-        skeletonColor.updateVisualizer(loadedCgm);
-        sky.updateSkyControl(loadedCgm);
+        axes.updateVisualizer(cgm);
+        bounds.updateVisualizer(cgm);
+        cursor.updateScene(cgm);
+        platform.updateScene(cgm);
+        render.updateShadowFilter(cgm);
+        render.updateVisualizer(cgm);
+        sceneVertex.updateVisualizer(cgm);
+        skeleton.updateVisualizer(cgm);
+        skeletonColor.updateVisualizer(cgm);
+        sky.updateSkyControl(cgm);
     }
 }

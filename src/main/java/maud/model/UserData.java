@@ -48,15 +48,14 @@ public class UserData implements Cloneable {
     // fields
 
     /**
-     * editable CG model containing the spatial, if any (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * editable CG model, if any, containing the user data (set by
+     * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm;
     /**
-     * loaded CG model containing the spatial (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * CG model containing the user data (set by {@link #setCgm(Cgm)})
      */
-    private LoadedCgm cgm = null;
+    private Cgm cgm = null;
     /**
      * key of the selected user data, or null if none selected
      */
@@ -138,14 +137,14 @@ public class UserData implements Cloneable {
     /**
      * Alter which CG model contains the data.
      *
-     * @param newLoaded (not null)
+     * @param newCgm (not null)
      */
-    void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
 
-        cgm = newLoaded;
-        if (newLoaded instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newLoaded;
+        cgm = newCgm;
+        if (newCgm instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newCgm;
         } else {
             editableCgm = null;
         }

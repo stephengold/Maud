@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.SelectedVertex;
 import maud.model.option.VertexOptions;
 
@@ -86,7 +86,7 @@ class SceneVertexTool extends WindowController {
      *
      * @param cgm which CG model's view to update (not null)
      */
-    void updateVisualizer(LoadedCgm cgm) {
+    void updateVisualizer(Cgm cgm) {
         Spatial spatial = cgm.getSceneView().getVertexSpatial();
 
         SelectedVertex vertex = cgm.getVertex();

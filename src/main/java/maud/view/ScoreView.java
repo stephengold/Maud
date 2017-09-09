@@ -68,7 +68,7 @@ import maud.mesh.Finial;
 import maud.mesh.RoundedRectangle;
 import maud.mesh.Sparkline;
 import maud.mesh.YSwarm;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.option.ScoreOptions;
 import maud.model.option.ViewMode;
 
@@ -165,6 +165,10 @@ public class ScoreView implements EditorView {
      */
     private static BitmapFont labelFont = null;
     /**
+     * CG model being rendered
+     */
+    private Cgm cgm;
+    /**
      * end-cap mesh for a bone track that includes scales
      */
     private static Finial finialComplete;
@@ -206,10 +210,6 @@ public class ScoreView implements EditorView {
      * count of plots added to the current staff (&ge;0)
      */
     private int numPlots = 0;
-    /**
-     * the CG model being rendered
-     */
-    private LoadedCgm cgm;
     /**
      * world X-coordinates of each keyframe in the selected track
      */
@@ -502,7 +502,7 @@ public class ScoreView implements EditorView {
      * @param renderCgm which CG model to render (not null)
      */
     @Override
-    public void update(LoadedCgm renderCgm) {
+    public void update(Cgm renderCgm) {
         Validate.nonNull(renderCgm, "render model");
 
         if (wireNotSelected == null) { // TODO add an init method

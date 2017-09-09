@@ -63,10 +63,9 @@ public class SelectedVertex implements Cloneable {
      */
     private int selectedIndex = -1;
     /**
-     * loaded CG model containing the vertex (set by
-     * {@link #setCgm(LoadedCGModel)})
+     * CG model containing the vertex (set by {@link #setCgm(Cgm)})
      */
-    private LoadedCgm cgm = null;
+    private Cgm cgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -228,13 +227,13 @@ public class SelectedVertex implements Cloneable {
     }
 
     /**
-     * Alter which CG model contains the bone.
+     * Alter which CG model contains the vertex.
      *
-     * @param newLoaded (not null)
+     * @param newCgm (not null)
      */
-    void setCgm(LoadedCgm newLoaded) {
-        assert newLoaded != null;
-        cgm = newLoaded;
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
+        cgm = newCgm;
     }
 
     /**

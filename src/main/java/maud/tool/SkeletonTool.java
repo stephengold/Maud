@@ -32,7 +32,7 @@ import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.option.SceneBones;
 import maud.model.option.SkeletonOptions;
 
@@ -81,7 +81,7 @@ class SkeletonTool extends WindowController {
      *
      * @param modelCgm which CG model's view to update (not null)
      */
-    void updateVisualizer(LoadedCgm modelCgm) {
+    void updateVisualizer(Cgm modelCgm) {
         SkeletonVisualizer visualizer;
         visualizer = modelCgm.getSceneView().getSkeletonVisualizer();
         if (visualizer == null) {
