@@ -34,11 +34,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 
 /**
  * The MVC model of the selected scene-graph (SG) control in the Maud
- * application.
+ * application. TODO rename Sgc?
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -156,11 +157,14 @@ public class SelectedSgc implements Cloneable {
     /**
      * Read the type of the selected SG control.
      *
-     * @return the full name of the class
+     * @return shortened name for the class
      */
     public String getType() {
         Control sgc = findSgc();
-        String name = sgc.getClass().getName();
+        String name = sgc.getClass().getSimpleName();
+        if (name.endsWith("Control")) {
+            name = MyString.removeSuffix(name, "Control");
+        }
 
         return name;
     }
