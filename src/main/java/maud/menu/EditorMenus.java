@@ -651,8 +651,12 @@ public class EditorMenus {
                 Maud.getModel().getTarget().getSpatial().addRigidBodyControl();
                 break;
             case "Mass": // TODO
-            case "Tool": // TODO
             case "Remove": // TODO
+                handled = false;
+                break;
+            case "Tool":
+                Maud.gui.tools.select("physics");
+                break;
             default:
                 handled = false;
         }
@@ -685,9 +689,6 @@ public class EditorMenus {
                 break;
             case "Mode":
                 Maud.gui.showMenus.selectViewMode();
-                break;
-            case "Physics":
-                Maud.gui.tools.select("physics");
                 break;
             case "Platform":
                 Maud.gui.tools.select("platform");
