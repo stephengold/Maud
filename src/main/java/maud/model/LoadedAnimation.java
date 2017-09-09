@@ -350,7 +350,7 @@ public class LoadedAnimation implements Cloneable {
     public int findIndex() {
         int index;
         if (isReal()) {
-            List<String> nameList = cgm.listAnimationsSorted();
+            List<String> nameList = cgm.listRealAnimationsSorted();
             index = nameList.indexOf(loadedName);
         } else {
             index = -1;
@@ -801,7 +801,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void loadNext() {
         if (cgm.isLoaded() && isReal()) {
-            List<String> nameList = cgm.listAnimationsSorted();
+            List<String> nameList = cgm.listRealAnimationsSorted();
             int index = nameList.indexOf(loadedName);
             int numAnimations = nameList.size();
             int nextIndex = MyMath.modulo(index + 1, numAnimations);
@@ -815,7 +815,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void loadPrevious() {
         if (cgm.isLoaded() && isReal()) {
-            List<String> nameList = cgm.listAnimationsSorted();
+            List<String> nameList = cgm.listRealAnimationsSorted();
             int index = nameList.indexOf(loadedName);
             int numAnimations = nameList.size();
             int prevIndex = MyMath.modulo(index - 1, numAnimations);

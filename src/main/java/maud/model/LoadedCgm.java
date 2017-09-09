@@ -724,7 +724,7 @@ public class LoadedCgm implements Cloneable {
      * retargeted pose
      */
     public List<String> listAnimationNames() {
-        List<String> names = listAnimationsSorted();
+        List<String> names = listRealAnimationsSorted();
         names.add(LoadedAnimation.bindPoseName);
         if (this == Maud.getModel().getTarget()
                 && Maud.getModel().getSource().isLoaded()) {
@@ -759,12 +759,11 @@ public class LoadedCgm implements Cloneable {
 
     /**
      * Generate a sorted name list of the real animations in the selected anim
-     * control. Bind pose and mapped pose are not included. TODO rename
-     * listRealAnimationsSorted
+     * control. Bind pose and mapped pose are not included.
      *
      * @return a new list
      */
-    List<String> listAnimationsSorted() {
+    List<String> listRealAnimationsSorted() {
         List<String> result;
         AnimControl animControl = getAnimControl();
         if (animControl == null) {
@@ -1080,7 +1079,7 @@ public class LoadedCgm implements Cloneable {
         loadedAnimation.loadBindPose();
 
         if (countAnimations() == 1) {
-            List<String> names = listAnimationsSorted();
+            List<String> names = listRealAnimationsSorted();
             String animationName = names.get(0);
             loadedAnimation.load(animationName);
         }
