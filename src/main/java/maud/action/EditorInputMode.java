@@ -320,6 +320,9 @@ public class EditorInputMode extends InputMode {
             case Action.nextMapping:
                 model.getMap().selectNext();
                 break;
+            case Action.nextPhysics:
+                target.getPhysics().selectNext();
+                break;
             case Action.nextSgc:
                 target.getSgc().selectNext();
                 break;
@@ -371,6 +374,9 @@ public class EditorInputMode extends InputMode {
                 break;
             case Action.previousMapping:
                 model.getMap().selectPrevious();
+                break;
+            case Action.previousPhysics:
+                target.getPhysics().selectPrevious();
                 break;
             case Action.previousSgc:
                 target.getSgc().selectPrevious();

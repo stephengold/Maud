@@ -29,6 +29,9 @@ package maud.tool;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
+import maud.Maud;
+import maud.model.LoadedCgm;
+import maud.model.SelectedPhysics;
 
 /**
  * The controller for the "Physics Tool" window in Maud's editor screen.
@@ -69,5 +72,53 @@ class PhysicsTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
+        updateIndex();
+
+        String name;
+        SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
+        if (physics.isSelected()) {
+            name = physics.getName();
+        } else {
+            name = "(none selected)";
+        }
+        Maud.gui.setStatusText("physicsName", " " + name);
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Update the index status and previous/next buttons.
+     */
+    private void updateIndex() {
+        String indexText;
+        String nButton = "", pButton = "";
+
+        LoadedCgm target = Maud.getModel().getTarget();
+        int numObjects = target.countPhysics();
+        SelectedPhysics physics = target.getPhysics();
+
+        if (physics.isSelected()) {
+            int selectedIndex = physics.index();
+            int indexBase = Maud.getModel().getMisc().getIndexBase();
+            indexText = String.format("#%d of %d", selectedIndex + indexBase,
+                    numObjects);
+            if (numObjects > 1) {
+                nButton = "+";
+                pButton = "-";
+            }
+
+        } else {
+            if (numObjects == 0) {
+                indexText = "no objects";
+            } else if (numObjects == 1) {
+                indexText = "one object";
+            } else {
+                indexText = String.format("%d objects", numObjects);
+            }
+        }
+
+        Maud.gui.setStatusText("physicsIndex", indexText);
+        Maud.gui.setButtonLabel("physicsNextButton", nButton);
+        Maud.gui.setButtonLabel("physicsPreviousButton", pButton);
     }
 }

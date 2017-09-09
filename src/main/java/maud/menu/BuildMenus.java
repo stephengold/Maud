@@ -758,9 +758,7 @@ public class BuildMenus {
      */
     private void buildPhysicsMenu() {
         builder.addTool("Tool");
-        builder.addEdit("Add");
         //builder.add("Mass"); TODO
-        //builder.add("Remove"); TODO
     }
 
     /**
@@ -793,7 +791,7 @@ public class BuildMenus {
     private void buildSgcMenu() {
         builder.addTool("Tool");
         builder.add("Select");
-        builder.add("Add");
+        builder.add("Add new");
         if (Maud.getModel().getTarget().getSgc().isSelected()) {
             //builder.add("Deselect"); TODO
             builder.addEdit("Delete");
