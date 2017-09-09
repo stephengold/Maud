@@ -75,6 +75,9 @@ class NewAction {
             case Action.newMapping:
                 Maud.getModel().getMap().mapBones();
                 break;
+            case Action.newPhysics:
+                Maud.getModel().getTarget().getSpatial().addRigidBodyControl();
+                break;
             case Action.newSingleKeyframe: // insert OR replace
                 SelectedTrack track = Maud.getModel().getTarget().getTrack();
                 if (track.isTrackSelected()) {

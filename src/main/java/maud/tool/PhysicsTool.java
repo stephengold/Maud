@@ -26,13 +26,9 @@
  */
 package maud.tool;
 
-import com.jme3.bullet.BulletAppState;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
-import maud.Maud;
-import maud.model.LoadedCgm;
-import maud.view.SceneView;
 
 /**
  * The controller for the "Physics Tool" window in Maud's editor screen.
@@ -60,20 +56,6 @@ class PhysicsTool extends WindowController {
         super(screenController, "physicsTool", false);
     }
     // *************************************************************************
-    // new methods exposed
-
-    /**
-     * Update a CG model's added sky based on the MVC model.
-     *
-     * @param cgm which CG model (not null)
-     */
-    void updateVisualizer(LoadedCgm cgm) {
-        SceneView sceneView = cgm.getSceneView();
-        BulletAppState bulletAppState = sceneView.getBulletAppState();
-        boolean enable = Maud.getModel().getScene().isPhysicsRendered();
-        bulletAppState.setDebugEnabled(enable);
-    }
-    // *************************************************************************
     // AppState methods
 
     /**
@@ -87,7 +69,5 @@ class PhysicsTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
-        boolean renderFlag = Maud.getModel().getScene().isPhysicsRendered();
-        Maud.gui.setChecked("physics", renderFlag);
     }
 }

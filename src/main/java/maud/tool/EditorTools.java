@@ -520,9 +520,9 @@ public class EditorTools {
         axes.updateVisualizer(loadedCgm);
         bounds.updateVisualizer(loadedCgm);
         cursor.updateScene(loadedCgm);
-        physics.updateVisualizer(loadedCgm);
         platform.updateScene(loadedCgm);
         render.updateShadowFilter(loadedCgm);
+        render.updateVisualizer(loadedCgm);
         sceneVertex.updateVisualizer(loadedCgm);
         skeleton.updateVisualizer(loadedCgm);
         skeletonColor.updateVisualizer(loadedCgm);

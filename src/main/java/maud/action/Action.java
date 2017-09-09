@@ -74,6 +74,7 @@ class Action {
     final static String newAnimationFromPose = "new animation fromPose";
     final static String newCheckpoint = "new checkpoint";
     final static String newMapping = "new mapping";
+    final static String newPhysics = "new physics";
     final static String newSingleKeyframe = "new singleKeyframe";
     final static String newUserKey = "new userKey";
 

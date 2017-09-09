@@ -26,6 +26,7 @@
  */
 package maud.tool;
 
+import com.jme3.bullet.BulletAppState;
 import com.jme3.light.DirectionalLight;
 import com.jme3.post.Filter;
 import com.jme3.post.FilterPostProcessor;
@@ -94,6 +95,18 @@ class RenderTool extends WindowController {
             dlsf.setEnabled(enable);
         }
     }
+
+    /**
+     * Update a CG model's physics visualizer based on the MVC model.
+     *
+     * @param cgm which CG model (not null)
+     */
+    void updateVisualizer(LoadedCgm cgm) {
+        SceneView sceneView = cgm.getSceneView();
+        BulletAppState bulletAppState = sceneView.getBulletAppState();
+        boolean enable = Maud.getModel().getScene().isPhysicsRendered();
+        bulletAppState.setDebugEnabled(enable);
+    }
     // *************************************************************************
     // AppState methods
 
@@ -111,6 +124,8 @@ class RenderTool extends WindowController {
         SceneOptions options = Maud.getModel().getScene();
         boolean shadowsFlag = options.areShadowsRendered();
         Maud.gui.setChecked("shadows", shadowsFlag);
+        boolean renderFlag = options.isPhysicsRendered();
+        Maud.gui.setChecked("physics", renderFlag);
 
         Wireframe wireframe = options.getWireframe();
         switch (wireframe) {
