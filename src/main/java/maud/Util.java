@@ -37,11 +37,18 @@ import com.jme3.asset.ModelKey;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.bounding.BoundingVolume;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.bullet.joints.PhysicsJoint;
+import com.jme3.bullet.objects.PhysicsCharacter;
+import com.jme3.bullet.objects.PhysicsGhostObject;
+import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.PhysicsVehicle;
+import com.jme3.export.Savable;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
@@ -61,6 +68,7 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -235,6 +243,96 @@ public class Util {
         MyQuaternion.snapLocal(input, 0);
         MyQuaternion.snapLocal(input, 1);
         MyQuaternion.snapLocal(input, 2);
+    }
+
+    /**
+     * Count the objects in the specified physics space.
+     *
+     * @param space which physics space (not null, unaffected)
+     * @return count (&ge;0)
+     */
+    public static int countObjects(PhysicsSpace space) {
+        Collection<PhysicsCharacter> charas = space.getCharacterList();
+        Collection<PhysicsGhostObject> ghosts = space.getGhostObjectList();
+        Collection<PhysicsJoint> joints = space.getJointList();
+        Collection<PhysicsRigidBody> rigids = space.getRigidBodyList();
+        Collection<PhysicsVehicle> vehics = space.getVehicleList();
+
+        int result = charas.size() + ghosts.size() + joints.size()
+                + rigids.size() + vehics.size();
+
+        return result;
+    }
+
+    /**
+     * Find the named object in the specified physics space.
+     *
+     * @param name generated name (not null)
+     * @param space which physics space (not null, unaffected)
+     * @return the pre-existing object, or null if not found
+     */
+    public static Savable findObject(String name, PhysicsSpace space) {
+        Validate.nonNull(name, "name");
+
+        if (name.length() < 6) {
+            return null;
+        }
+        String idString = name.substring(5);
+        long findId = Long.parseLong(idString);
+
+        String typePrefix = name.substring(0, 5);
+        switch (typePrefix) {
+            case "chara":
+                Collection<PhysicsCharacter> charas = space.getCharacterList();
+                for (PhysicsCharacter chara : charas) {
+                    long id = chara.getObjectId();
+                    if (id == findId) {
+                        return chara;
+                    }
+                }
+                break;
+
+            case "ghost":
+                Collection<PhysicsGhostObject> gs = space.getGhostObjectList();
+                for (PhysicsGhostObject ghost : gs) {
+                    long id = ghost.getObjectId();
+                    if (id == findId) {
+                        return ghost;
+                    }
+                }
+                break;
+
+            case "joint":
+                Collection<PhysicsJoint> joints = space.getJointList();
+                for (PhysicsJoint joint : joints) {
+                    long id = joint.getObjectId();
+                    if (id == findId) {
+                        return joint;
+                    }
+                }
+                break;
+
+            case "rigid":
+                Collection<PhysicsRigidBody> rigids = space.getRigidBodyList();
+                for (PhysicsRigidBody rigid : rigids) {
+                    long id = rigid.getObjectId();
+                    if (id == findId) {
+                        return rigid;
+                    }
+                }
+                break;
+
+            case "vehic":
+                Collection<PhysicsVehicle> vehics = space.getVehicleList();
+                for (PhysicsVehicle vehic : vehics) {
+                    long id = vehic.getObjectId();
+                    if (id == findId) {
+                        return vehic;
+                    }
+                }
+        }
+
+        return null;
     }
 
     /**
@@ -465,6 +563,53 @@ public class Util {
         }
 
         return storeResult;
+    }
+
+    /**
+     * Enumerate all objects in the specified physics space.
+     *
+     * @param space which physics space (not null, unaffected)
+     * @return a new list of generated names
+     */
+    public static List<String> listNames(PhysicsSpace space) {
+        List<String> result = new ArrayList<>(30);
+
+        Collection<PhysicsCharacter> charas = space.getCharacterList();
+        for (PhysicsCharacter chara : charas) {
+            long id = chara.getObjectId();
+            String name = String.format("chara%d", id);
+            result.add(name);
+        }
+
+        Collection<PhysicsGhostObject> ghosts = space.getGhostObjectList();
+        for (PhysicsGhostObject ghost : ghosts) {
+            long id = ghost.getObjectId();
+            String name = String.format("ghost%d", id);
+            result.add(name);
+        }
+
+        Collection<PhysicsJoint> joints = space.getJointList();
+        for (PhysicsJoint joint : joints) {
+            long id = joint.getObjectId();
+            String name = String.format("joint%d", id);
+            result.add(name);
+        }
+
+        Collection<PhysicsRigidBody> rigids = space.getRigidBodyList();
+        for (PhysicsRigidBody rigid : rigids) {
+            long id = rigid.getObjectId();
+            String name = String.format("rigid%d", id);
+            result.add(name);
+        }
+
+        Collection<PhysicsVehicle> vehics = space.getVehicleList();
+        for (PhysicsVehicle vehic : vehics) {
+            long id = vehic.getObjectId();
+            String name = String.format("vehic%d", id);
+            result.add(name);
+        }
+
+        return result;
     }
 
     /**
