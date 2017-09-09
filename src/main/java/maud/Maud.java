@@ -34,13 +34,10 @@ import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3_ext_xbuf.XbufLoader;
@@ -78,10 +75,6 @@ public class Maud extends GuiApplication {
      * number of shadow map splits in shadow filters (&gt;0)
      */
     final private static int shadowMapSplits = 3;
-    /**
-     * additional scenes (besides rootNode and guiRoot) for rendering
-     */
-    final private static List<Spatial> addedScenes = new ArrayList<>(3);
     /**
      * message logger for this class
      */
@@ -259,11 +252,17 @@ public class Maud extends GuiApplication {
          * Disable flyCam.
          */
         flyCam.setEnabled(false);
+        /**
+         * Manage view port updating.
+         */
+        ViewPortAppState viewPortState = new ViewPortAppState();
+        boolean success = stateManager.attach(viewPortState);
+        assert success;
         /*
          * Capture a screenshot each time the SYSRQ hotkey is pressed.
          */
         ScreenshotAppState screenShotState = new ScreenshotAppState();
-        boolean success = stateManager.attach(screenShotState);
+        success = stateManager.attach(screenShotState);
         assert success;
         /*
          * Add a locator for browsing "Written Assets".
@@ -411,14 +410,6 @@ public class Maud extends GuiApplication {
             startup1();
             didStartup1 = true;
         }
-        /*
-         * Update the logical/geometric state of all scenes other than
-         * rootNode and guiNode. TODO: an app state for each view port
-         */
-        for (Spatial scene : addedScenes) {
-            scene.updateLogicalState(tpf);
-            scene.updateGeometricState();
-        }
     }
     // *************************************************************************
     // private methods
@@ -470,7 +461,6 @@ public class Maud extends GuiApplication {
          */
         Node scene = new Node("Root for source scene");
         sourceSceneViewPort.attachScene(scene);
-        addedScenes.add(scene);
         /*
          * Add an attachment point to the scene.
          */
@@ -497,7 +487,6 @@ public class Maud extends GuiApplication {
          */
         Node root = new Node("Root for source score");
         sourceScoreViewPort.attachScene(root);
-        addedScenes.add(root);
     }
 
     /**
@@ -542,7 +531,6 @@ public class Maud extends GuiApplication {
          */
         Node root = new Node("Root for " + name);
         targetScoreLeftViewPort.attachScene(root);
-        addedScenes.add(root);
     }
 
     /**
@@ -561,7 +549,6 @@ public class Maud extends GuiApplication {
          */
         Node root = new Node("Root for " + name);
         targetScoreRightViewPort.attachScene(root);
-        addedScenes.add(root);
     }
 
     /**
@@ -580,7 +567,6 @@ public class Maud extends GuiApplication {
          */
         Node root = new Node("Root for " + name);
         targetScoreWideViewPort.attachScene(root);
-        addedScenes.add(root);
     }
 
     /**
@@ -622,7 +608,7 @@ public class Maud extends GuiApplication {
     private void startup1() {
         logger.info("");
         /*
-         * Register loaders for BVH and Xbuf assets.
+         * Register loaders for BVH, txt, and Xbuf assets.
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
         assetManager.registerLoader(StringLoader.class, "txt");
