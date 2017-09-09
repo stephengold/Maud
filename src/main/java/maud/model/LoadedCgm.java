@@ -32,11 +32,11 @@ import com.jme3.animation.SpatialTrack;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.Transform;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
@@ -67,7 +67,8 @@ import maud.view.ScoreView;
  * MVC model for a loaded computer-graphics (CG) model in the Maud application:
  * encapsulates the CG model's tree of spatials, keeps track of where it was
  * loaded from, and provides access to related MVC model state including the
- * loaded animation and the selected spatial/control/skeleton/pose/bone/etc.
+ * loaded animation and the selected spatial/sgc/skeleton/pose/bone/etc. TODO
+ * split off Cgm superclass
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -117,6 +118,10 @@ public class LoadedCgm implements Cloneable {
      * which bone is selected in the selected skeleton
      */
     private SelectedBone selectedBone = new SelectedBone();
+    /**
+     * which physics object is selected
+     */
+    private SelectedPhysics selectedPhysics = new SelectedPhysics();
     /**
      * which scene-graph control is selected in the selected spatial
      */
@@ -177,6 +182,7 @@ public class LoadedCgm implements Cloneable {
         scenePov.setCgm(cgm);
         scorePov.setCgm(cgm);
         selectedBone.setCgm(cgm);
+        selectedPhysics.setCgm(cgm);
         selectedSgc.setCgm(cgm);
         selectedSkeleton.setCgm(cgm);
         selectedSpatial.setCgm(cgm);
@@ -241,6 +247,18 @@ public class LoadedCgm implements Cloneable {
             List<Spatial> children = node.getChildren();
             result = children.size();
         }
+
+        return result;
+    }
+
+    /**
+     * Count the physics objects in the CG model.
+     *
+     * @return count (&ge;0)
+     */
+    public int countPhysics() {
+        PhysicsSpace space = getSceneView().getPhysicsSpace();
+        int result = Util.countObjects(space);
 
         return result;
     }
@@ -457,7 +475,17 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Read the displayed pose of the loaded CG model.
+     * Access the selected physics object.
+     *
+     * @return object (not null)
+     */
+    public SelectedPhysics getPhysics() {
+        assert selectedPhysics != null;
+        return selectedPhysics;
+    }
+
+    /**
+     * Access the displayed pose.
      *
      * @return pose (not null)
      */
@@ -758,7 +786,7 @@ public class LoadedCgm implements Cloneable {
      * @return a new list of names
      */
     public List<String> listAnimControlNames() {
-        List<AnimControl> animControlList = listAnimControls();
+        List<AnimControl> animControlList = listSgcs(AnimControl.class);
         int numAnimControls = animControlList.size();
 
         List<String> nameList = new ArrayList<>(numAnimControls);
@@ -775,36 +803,29 @@ public class LoadedCgm implements Cloneable {
     }
 
     /**
-     * Enumerate all anim controls.
+     * Enumerate all physics objects in the CG model.
      *
-     * @return a new list of pre-existing SGCs
+     * @return a new list of names
      */
-    public List<AnimControl> listAnimControls() {
-        Spatial root = getRootSpatial();
-        List<AnimControl> animControlList;
-        animControlList = MySpatial.listControls(root, AnimControl.class, null);
+    public List<String> listPhysicsNames() {
+        PhysicsSpace space = getSceneView().getPhysicsSpace();
+        List<String> result = Util.listNames(space);
 
-        return animControlList;
+        return result;
     }
 
     /**
-     * Enumerate all meshes in the loaded CG model.
+     * Enumerate all scene-graph controls of the specified type in the CG model.
      *
-     * @return a new list
+     * @param <T> superclass of Control
+     * @param sgcType superclass of Control to search for
+     * @return a new list of pre-existing SGCs
      */
-    List<Mesh> listMeshes() {
-        List<Mesh> result = new ArrayList<>(8);
+    <T extends Control> List<T> listSgcs(Class<T> sgcType) {
+        Spatial root = getRootSpatial();
+        List<T> sgcList = MySpatial.listControls(root, sgcType, null);
 
-        Node node = (Node) rootSpatial;
-        for (Spatial child : node.getChildren()) {
-            if (child instanceof Geometry) {
-                Geometry geometry = (Geometry) child;
-                Mesh mesh = geometry.getMesh();
-                result.add(mesh);
-            }
-        }
-
-        return result;
+        return sgcList;
     }
 
     /**
@@ -935,7 +956,7 @@ public class LoadedCgm implements Cloneable {
      */
     public void nextAnimControl() {
         if (isAnimControlSelected()) {
-            List<AnimControl> list = listAnimControls();
+            List<AnimControl> list = listSgcs(AnimControl.class);
             AnimControl animControl = getAnimControl();
             int index = list.indexOf(animControl);
             assert index != -1;
@@ -951,7 +972,7 @@ public class LoadedCgm implements Cloneable {
      */
     public void previousAnimControl() {
         if (isAnimControlSelected()) {
-            List<AnimControl> list = listAnimControls();
+            List<AnimControl> list = listSgcs(AnimControl.class);
             AnimControl animControl = getAnimControl();
             int index = list.indexOf(animControl);
             assert index != -1;
@@ -973,7 +994,7 @@ public class LoadedCgm implements Cloneable {
         List<String> names = listAnimControlNames();
         int index = names.indexOf(name);
         assert index != -1;
-        List<AnimControl> animControls = listAnimControls();
+        List<AnimControl> animControls = listSgcs(AnimControl.class);
         AnimControl animControl = animControls.get(index);
         selectSgc(animControl);
     }
@@ -1019,9 +1040,11 @@ public class LoadedCgm implements Cloneable {
         rootSpatial = null;
         sceneView.unloadCgm();
         /*
-         * Reset the selected bone.
+         * Reset the selected bone/physics/vertex.
          */
         selectedBone.deselect();
+        selectedPhysics.selectNone();
+        selectedVertex.deselect();
 
         if (target.loadedAnimation.isRetargetedPose()) {
             target.loadedAnimation.loadBindPose();
@@ -1085,31 +1108,33 @@ public class LoadedCgm implements Cloneable {
 
         Cloner cloner = new Cloner();
 
-        clone.loadedAnimation = loadedAnimation.clone();
-        clone.selectedBone = selectedBone.clone();
-        clone.selectedSkeleton = selectedSkeleton.clone();
         clone.displayedPose = cloner.clone(displayedPose);
-        clone.rootSpatial = cloner.clone(rootSpatial);
+        clone.loadedAnimation = loadedAnimation.clone();
         clone.scenePov = cloner.clone(scenePov);
         clone.sceneView = cloner.clone(sceneView);
         clone.scorePov = cloner.clone(scorePov);
         //scoreView not cloned
+        clone.selectedBone = selectedBone.clone();
+        clone.selectedPhysics = selectedPhysics.clone();
         clone.selectedSgc = selectedSgc.clone();
+        clone.selectedSkeleton = selectedSkeleton.clone();
         clone.selectedSpatial = selectedSpatial.clone();
         clone.selectedTrack = selectedTrack.clone();
-        clone.userData = userData.clone();
         clone.selectedVertex = selectedVertex.clone();
+        clone.rootSpatial = cloner.clone(rootSpatial);
+        clone.userData = userData.clone();
         /*
          * Direct the back pointers to the clone.
          */
         clone.getAnimation().setCgm(clone);
         clone.getBone().setCgm(clone);
-        clone.getSkeleton().setCgm(clone);
         clone.getPose().setCgm(clone);
+        clone.getPhysics().setCgm(clone);
         clone.getScenePov().setCgm(clone);
         clone.getSceneView().setCgm(clone);
         clone.getScorePov().setCgm(clone);
         clone.getSgc().setCgm(clone);
+        clone.getSkeleton().setCgm(clone);
         clone.getSpatial().setCgm(clone);
         clone.getTrack().setCgm(clone);
         clone.getUserData().setCgm(clone);
