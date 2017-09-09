@@ -103,6 +103,9 @@ class SelectAction {
             case Action.selectMapTargetBone:
                 model.getMap().selectFromTarget();
                 break;
+            case Action.selectPhysics:
+                Maud.gui.showMenus.selectPhysics(target);
+                break;
             case Action.selectScreenBone:
                 Maud.gui.selectBone();
                 break;
@@ -187,11 +190,12 @@ class SelectAction {
         boolean handled = true;
 
         EditorModel model = Maud.getModel();
+        LoadedCgm target = model.getTarget();
         String arg;
         if (actionString.startsWith(ActionPrefix.selectAnimControl)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectAnimControl);
-            model.getTarget().selectAnimControl(arg);
+            target.selectAnimControl(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectBone)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectBone);
@@ -202,13 +206,17 @@ class SelectAction {
                     ActionPrefix.selectBoneChild);
             Maud.gui.showMenus.selectBoneChild(arg);
 
-        } else if (actionString.startsWith(ActionPrefix.selectControl)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectControl);
-            model.getTarget().getSgc().select(arg);
-
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
             Maud.gui.menus.selectSpatial(arg, false);
+
+        } else if (actionString.startsWith(ActionPrefix.selectPhysics)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectPhysics);
+            target.getPhysics().select(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectSgc)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectSgc);
+            target.getSgc().select(arg);
 
         } else if (actionString.startsWith(
                 ActionPrefix.selectSourceAnimControl)) {
@@ -232,13 +240,13 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectUserKey)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectUserKey);
-            model.getTarget().getUserData().selectKey(arg);
+            target.getUserData().selectKey(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectVertex)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectVertex);
             int index = Integer.parseInt(arg);
             int indexBase = Maud.getModel().getMisc().getIndexBase();
-            model.getTarget().getVertex().select(index - indexBase);
+            target.getVertex().select(index - indexBase);
 
         } else {
             handled = false;

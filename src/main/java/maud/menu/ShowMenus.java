@@ -85,14 +85,15 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "SGC -> Add" menu.
+     * Display a "SGC -> Add new" menu.
      */
-    void addSgc() {
+    public void addNewSgc() {
         MenuBuilder builder = new MenuBuilder();
         builder.addEdit("Anim");
+        builder.addEdit("Ghost");
         builder.addEdit("RigidBody");
         builder.addEdit("Skeleton");
-        builder.show("select menuItem SGC -> Add -> ");
+        builder.show("select menuItem SGC -> Add new -> ");
     }
 
     /**
@@ -252,7 +253,25 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "Spatial -&gt; Select control" menu.
+     * Display a "select physics" menu.
+     *
+     * @param cgm which load slot (not null)
+     */
+    public void selectPhysics(LoadedCgm cgm) {
+        if (cgm.isLoaded()) {
+            List<String> names = cgm.listPhysicsNames();
+            if (!names.isEmpty()) {
+                MenuBuilder builder = new MenuBuilder();
+                for (String name : cgm.listPhysicsNames()) {
+                    builder.add(name);
+                }
+                builder.show(ActionPrefix.selectPhysics);
+            }
+        }
+    }
+
+    /**
+     * Display a "select sgc" menu.
      */
     public void selectSgc() {
         MenuBuilder builder = new MenuBuilder();
@@ -263,7 +282,7 @@ public class ShowMenus {
         }
         builder.add(LoadedCgm.noControl);
 
-        builder.show(ActionPrefix.selectControl);
+        builder.show(ActionPrefix.selectSgc);
     }
 
     /**

@@ -1051,16 +1051,10 @@ the menu bar, status bar, and tool windows.
                         <control name="label" id="physicsIndex"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
-                                 width="65px"/>
+                                 width="75px"/>
                         <control name="button" id="physicsNextButton"
                                  width="20px">
                             <interact onRelease="perform(next physics)"/>
-                        </control>
-                        <panel width="*"/>
-                        <control name="button" label="Add"
-                                 id="id14ToAvoidNiftyWarning"
-                                 width="60px">
-                            <interact onRelease="perform(new physics)"/>
                         </control>
                         <panel width="10px"/>
                         <control name="button" label="Select"
@@ -1071,15 +1065,9 @@ the menu bar, status bar, and tool windows.
                     </panel>
                     <panel height="10px"/>
                     <panel childLayout="horizontal">
-                        <control name="label" text="Type:  "/>
-                        <control name="label" id="physicsType"
+                        <control name="label" id="physicsName"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <panel width="10px"/>
-                        <control name="button" id="physicsDeleteButton"
-                                 width="60px">
-                            <interact onRelease="perform(delete physics)"/>
-                        </control>
                     </panel>
                 </panel>
             </control>
@@ -1344,26 +1332,26 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="sgcTool" title="Control Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="110px" width="350px" x="65" y="35">
+                     height="110px" width="300px" x="65" y="35">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
                         <control name="button" id="controlPreviousButton"
                                  width="20px">
-                            <interact onRelease="perform(previous control)"/>
+                            <interact onRelease="perform(previous sgc)"/>
                         </control>
                         <control name="label" id="controlIndex"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
-                                 width="65px"/>
+                                 width="75px"/>
                         <control name="button" id="controlNextButton"
                                  width="20px">
-                            <interact onRelease="perform(next control)"/>
+                            <interact onRelease="perform(next sgc)"/>
                         </control>
                         <panel width="*"/>
-                        <control name="button" label="Add"
+                        <control name="button" label="Add new"
                                  id="id20ToAvoidNiftyWarning"
                                  width="60px">
-                            <interact onRelease="perform(add sgc)"/>
+                            <interact onRelease="perform(new sgc)"/>
                         </control>
                         <panel width="10px"/>
                         <control name="button" label="Select"
@@ -1381,7 +1369,7 @@ the menu bar, status bar, and tool windows.
                         <panel width="10px"/>
                         <control name="button" id="controlDeleteButton"
                                  width="60px">
-                            <interact onRelease="perform(delete control)"/>
+                            <interact onRelease="perform(delete sgc)"/>
                         </control>
                     </panel>
                 </panel>

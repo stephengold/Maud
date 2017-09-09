@@ -184,7 +184,7 @@ public class ActionPrefix {
     /**
      * argument is an index or noControl
      */
-    final public static String selectControl = "select control ";
+    final public static String selectSgc = "select sgc ";
     /**
      * argument is the name of a geometry or a prefix thereof
      */
@@ -193,6 +193,10 @@ public class ActionPrefix {
      * argument is the menu path of a menu item
      */
     final public static String selectMenuItem = "select menuItem ";
+    /**
+     * argument is the name of a physics object
+     */
+    final public static String selectPhysics = "select physics ";
     /**
      * arguments are a spatial name and a deduplication index
      */

@@ -256,9 +256,7 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuAnimation(String remainder) {
-        assert remainder != null;
-
-        boolean handled;
+        boolean handled = true;
         String addNewPrefix = "Add new" + menuPathSeparator;
         String editPrefix = "Edit" + menuPathSeparator;
         if (remainder.startsWith(addNewPrefix)) {
@@ -270,7 +268,6 @@ public class EditorMenus {
             handled = menuAnimationEdit(arg);
 
         } else {
-            handled = true;
             EditableCgm target = Maud.getModel().getTarget();
             switch (remainder) {
                 case "Add new":
@@ -318,8 +315,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuAnimationAddNew(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
         switch (remainder) {
             case "Copy":
@@ -346,8 +341,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuAnimationChangeDuration(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
         switch (remainder) {
             case "Proportional times":
@@ -370,18 +363,16 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuAnimationEdit(String remainder) {
-        assert remainder != null;
-
-        EditableCgm target = Maud.getModel().getTarget();
-        LoadedAnimation animation = target.getAnimation();
-        boolean handled;
+        boolean handled = true;
         String changeDurationPrefix = "Change duration" + menuPathSeparator;
+
         if (remainder.startsWith(changeDurationPrefix)) {
             String arg = MyString.remainder(remainder, changeDurationPrefix);
             handled = menuAnimationChangeDuration(arg);
 
         } else {
-            handled = true;
+            EditableCgm target = Maud.getModel().getTarget();
+            LoadedAnimation animation = target.getAnimation();
             switch (remainder) {
                 case "Behead":
                     animation.behead();
@@ -425,16 +416,13 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuCgm(String remainder) {
-        assert remainder != null;
-
-        boolean handled;
+        boolean handled = true;
         String sourcePrefix = "Source model" + EditorMenus.menuPathSeparator;
         if (remainder.startsWith(sourcePrefix)) {
             String selectArg = MyString.remainder(remainder, sourcePrefix);
             handled = menuSourceCgm(selectArg);
 
         } else {
-            handled = true;
             switch (remainder) {
                 case "History":
                     Maud.gui.tools.select("history");
@@ -466,25 +454,22 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuHelp(String remainder) {
-        assert remainder != null;
-
-        boolean handled = false;
+        boolean handled = true;
         switch (remainder) {
             case "About Maud":
                 EditorDialogs.aboutMaud();
-                handled = true;
                 break;
             case "JME3 homepage":
                 Misc.browseWeb("http://jmonkeyengine.org/");
-                handled = true;
                 break;
             case "License":
                 Maud.gui.showMenus.viewLicense();
-                handled = true;
                 break;
             case "Source":
                 Misc.browseWeb("https://github.com/stephengold/Maud");
-                handled = true;
+                break;
+            default:
+                handled = false;
         }
 
         return handled;
@@ -497,8 +482,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuHistory(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
         switch (remainder) {
             case "Clear":
@@ -521,9 +504,7 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuKeyframe(String remainder) {
-        assert remainder != null;
-
-        boolean handled;
+        boolean handled = true;
         String selectPrefix = "Select" + menuPathSeparator;
         if (remainder.startsWith(selectPrefix)) {
             String arg = MyString.remainder(remainder, selectPrefix);
@@ -531,7 +512,6 @@ public class EditorMenus {
 
         } else {
             EditableCgm target = Maud.getModel().getTarget();
-            handled = true;
             switch (remainder) {
                 case "Delete next":
                     EditorDialogs.deleteNextKeyframes();
@@ -569,10 +549,8 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuKeyframeSelect(String remainder) {
-        assert remainder != null;
-
-        LoadedCgm target = Maud.getModel().getTarget();
         boolean handled = true;
+        LoadedCgm target = Maud.getModel().getTarget();
         switch (remainder) {
             case "First":
                 target.getTrack().selectFirstKeyframe();
@@ -603,8 +581,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuMap(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
         EditableMap map = Maud.getModel().getMap();
         switch (remainder) {
@@ -643,19 +619,44 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuPhysics(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
+        String addPrefix = "Add new" + menuPathSeparator;
+        if (remainder.startsWith(addPrefix)) {
+            String arg = MyString.remainder(remainder, addPrefix);
+            handled = menuPhysicsAdd(arg);
+
+        } else {
+            switch (remainder) {
+                case "Mass": // TODO
+                case "Remove": // TODO
+                    handled = false;
+                    break;
+                case "Tool":
+                    Maud.gui.tools.select("physics");
+                    break;
+                default:
+                    handled = false;
+            }
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "Physics -> Add new" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean menuPhysicsAdd(String remainder) {
+        boolean handled = true;
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         switch (remainder) {
-            case "Add":
-                Maud.getModel().getTarget().getSpatial().addRigidBodyControl();
+            case "Ghost":
+                spatial.addGhostControl();
                 break;
-            case "Mass": // TODO
-            case "Remove": // TODO
-                handled = false;
-                break;
-            case "Tool":
-                Maud.gui.tools.select("physics");
+            case "RigidBody":
+                spatial.addRigidBodyControl();
                 break;
             default:
                 handled = false;
@@ -671,8 +672,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSceneView(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
         switch (remainder) {
             case "Axes":
@@ -722,8 +721,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuScoreView(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
         switch (remainder) {
             case "Background":
@@ -746,16 +743,13 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSettings(String remainder) {
-        assert remainder != null;
-
-        boolean handled;
+        boolean handled = true;
         String folderPrefix = "Asset locations" + menuPathSeparator;
         if (remainder.startsWith(folderPrefix)) {
             String selectArg = MyString.remainder(remainder, folderPrefix);
             handled = Maud.gui.buildMenus.menuAssetLocations(selectArg);
 
         } else {
-            handled = true;
             MiscStatus status = Maud.getModel().getMisc();
             switch (remainder) {
                 case "Asset locations":
@@ -791,18 +785,16 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSgc(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
-        String addPrefix = "Add" + menuPathSeparator;
+        String addPrefix = "Add new" + menuPathSeparator;
         if (remainder.startsWith(addPrefix)) {
             String arg = MyString.remainder(remainder, addPrefix);
             handled = menuSgcAdd(arg);
 
         } else {
             switch (remainder) {
-                case "Add":
-                    Maud.gui.showMenus.addSgc();
+                case "Add new":
+                    Maud.gui.showMenus.addNewSgc();
                     break;
                 case "Delete":
                     EditorDialogs.deleteSgc();
@@ -822,29 +814,29 @@ public class EditorMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the "Spatial -> Add control" menu.
+     * Handle a "select menuItem" action from the "SGC -> Add new" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSgcAdd(String remainder) {
-        boolean handled = false;
-
+        boolean handled = true;
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         switch (remainder) {
             case "Anim":
                 spatial.addAnimControl();
-                handled = true;
                 break;
-
+            case "Ghost":
+                spatial.addGhostControl();
+                break;
             case "RigidBody":
                 spatial.addRigidBodyControl();
-                handled = true;
                 break;
-
             case "Skeleton":
                 spatial.addSkeletonControl();
-                handled = true;
+                break;
+            default:
+                handled = false;
         }
 
         return handled;
@@ -857,8 +849,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSourceCgm(String remainder) {
-        assert remainder != null;
-
         boolean handled = false;
         switch (remainder) {
             case "Load":
@@ -881,8 +871,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSpatial(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
         String selectPrefix = "Select" + menuPathSeparator;
         if (remainder.startsWith(selectPrefix)) {
@@ -933,8 +921,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuSpatialSelect(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
         switch (remainder) {
             case "By name":
@@ -966,8 +952,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuTrack(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
         EditableCgm target = Maud.getModel().getTarget();
         switch (remainder) {
@@ -1021,16 +1005,13 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuVertex(String remainder) {
-        assert remainder != null;
-
-        boolean handled;
+        boolean handled = true;
         String selectPrefix = "Select" + menuPathSeparator;
         if (remainder.startsWith(selectPrefix)) {
             String arg = MyString.remainder(remainder, selectPrefix);
             handled = menuVertexSelect(arg);
 
         } else {
-            handled = true;
             switch (remainder) {
                 case "Select":
                     Maud.gui.showMenus.selectVertex();
@@ -1056,8 +1037,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuVertexSelect(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
         switch (remainder) {
             case "By index":
@@ -1085,8 +1064,6 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private boolean menuView(String remainder) {
-        assert remainder != null;
-
         boolean handled = true;
         String modePrefix = "Mode" + menuPathSeparator;
         String scenesPrefix = "Scene options" + menuPathSeparator;
