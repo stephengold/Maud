@@ -45,6 +45,8 @@ import maud.model.LoadedCgm;
 import maud.model.SelectedSkeleton;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedVertex;
+import maud.model.option.CameraStatus;
+import maud.model.option.OrbitCenter;
 import maud.model.option.SceneBones;
 import maud.model.option.SkeletonOptions;
 import maud.model.option.ViewMode;
@@ -251,6 +253,24 @@ public class ShowMenus {
         builder.addTool("Last");
 
         builder.show("select menuItem Keyframe -> Select -> ");
+    }
+
+    /**
+     * Display a "select orbitCenter" menu.
+     */
+    public void selectOrbitCenter() {
+        MenuBuilder builder = new MenuBuilder();
+
+        CameraStatus status = Maud.getModel().getScene().getCamera();
+        OrbitCenter selectedCenter = status.getOrbitCenter();
+        for (OrbitCenter center : OrbitCenter.values()) {
+            if (!center.equals(selectedCenter)) {
+                String name = center.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectOrbitCenter);
     }
 
     /**
@@ -479,7 +499,7 @@ public class ShowMenus {
 
     /**
      * Display a menu to set the render bucket of the current spatial using the
-     * "set renderBucket " action prefix.
+     * "set queueBucket " action prefix.
      */
     public void setQueueBucket() {
         MenuBuilder builder = new MenuBuilder();

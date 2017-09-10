@@ -194,11 +194,15 @@ public class ActionPrefix {
      */
     final public static String selectMenuItem = "select menuItem ";
     /**
+     * argument is the name of an orbit-center enum value
+     */
+    final public static String selectOrbitCenter = "select orbitCenter ";
+    /**
      * argument is the name of a physics object
      */
     final public static String selectPhysics = "select physics ";
     /**
-     * arguments are a spatial name and a deduplication index
+     * arguments are a spatial name and a de-duplication index
      */
     final static String selectSourceAnimControl = "select sourceAnimControl ";
     /**

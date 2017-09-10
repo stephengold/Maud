@@ -31,6 +31,7 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
+import maud.model.option.OrbitCenter;
 import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
 
@@ -102,6 +103,9 @@ class SelectAction {
                 break;
             case Action.selectMapTargetBone:
                 model.getMap().selectFromTarget();
+                break;
+            case Action.selectOrbitCenter:
+                Maud.gui.showMenus.selectOrbitCenter();
                 break;
             case Action.selectPhysics:
                 Maud.gui.showMenus.selectPhysics(target);
@@ -209,6 +213,12 @@ class SelectAction {
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
             Maud.gui.menus.selectSpatial(arg, false);
+
+        } else if (actionString.startsWith(ActionPrefix.selectOrbitCenter)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectOrbitCenter);
+            OrbitCenter oc = OrbitCenter.parse(arg);
+            model.getScene().getCamera().setMode(oc);
 
         } else if (actionString.startsWith(ActionPrefix.selectPhysics)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectPhysics);
