@@ -101,11 +101,11 @@ public class EditableCgm extends LoadedCgm {
         AnimControl control = sac.find();
         if (control == null) {
             SelectedSkeleton ss = getSkeleton();
-            Skeleton skeleton = ss.findSkeleton();
+            Skeleton skeleton = ss.find();
             assert skeleton != null;
             control = new AnimControl(skeleton);
 
-            Spatial skeletonSpatial = ss.findSkeletonSpatial();
+            Spatial skeletonSpatial = ss.findSpatial();
             skeletonSpatial.addControl(control);
         }
         control.addAnim(newAnimation);

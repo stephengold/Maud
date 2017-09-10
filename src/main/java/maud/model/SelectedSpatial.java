@@ -99,7 +99,7 @@ public class SelectedSpatial implements Cloneable {
      * Add an AnimControl to the selected spatial and select the new control.
      */
     public void addAnimControl() {
-        Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
+        Skeleton skeleton = loadedCgm.getSkeleton().find();
         AnimControl newSgc = new AnimControl(skeleton);
 
         editableCgm.addSgc(newSgc);
@@ -140,7 +140,7 @@ public class SelectedSpatial implements Cloneable {
      * Add a SkeletonControl to the selected spatial and select the new control.
      */
     public void addSkeletonControl() {
-        Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
+        Skeleton skeleton = loadedCgm.getSkeleton().find();
         SkeletonControl newSgc = new SkeletonControl(skeleton);
 
         editableCgm.addSgc(newSgc);
@@ -973,7 +973,7 @@ public class SelectedSpatial implements Cloneable {
     private void preSelect() {
         loadedCgm.getSgc().selectNone();
         oldAnimControl = loadedCgm.getAnimControl().find();
-        oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
+        oldSkeleton = loadedCgm.getSkeleton().find();
     }
 
     /**
@@ -982,7 +982,7 @@ public class SelectedSpatial implements Cloneable {
     private void postSelect() {
         Boolean selectedSpatialFlag = false;
         Skeleton newSkeleton;
-        newSkeleton = loadedCgm.getSkeleton().findSkeleton(selectedSpatialFlag);
+        newSkeleton = loadedCgm.getSkeleton().find(selectedSpatialFlag);
         if (oldSkeleton != newSkeleton) {
             loadedCgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
         }

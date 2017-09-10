@@ -182,7 +182,7 @@ public class EditableMap extends LoadedMap {
      */
     public void loadIdentityForSource() {
         LoadedCgm source = Maud.getModel().getSource();
-        Skeleton skeleton = source.getSkeleton().findSkeleton();
+        Skeleton skeleton = source.getSkeleton().find();
         loadIdentity(skeleton);
     }
 
@@ -191,7 +191,7 @@ public class EditableMap extends LoadedMap {
      */
     public void loadIdentityForTarget() {
         LoadedCgm target = Maud.getModel().getTarget();
-        Skeleton skeleton = target.getSkeleton().findSkeleton();
+        Skeleton skeleton = target.getSkeleton().find();
         loadIdentity(skeleton);
     }
 

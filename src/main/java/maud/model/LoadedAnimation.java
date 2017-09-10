@@ -778,7 +778,7 @@ public class LoadedAnimation implements Cloneable {
         speed = 0f;
         currentTime = 0f;
 
-        Skeleton skeleton = cgm.getSkeleton().findSkeleton();
+        Skeleton skeleton = cgm.getSkeleton().find();
         cgm.getPose().resetToBind(skeleton);
     }
 

@@ -103,11 +103,11 @@ public class LoadedMap implements Cloneable {
 
         LoadedCgm source = Maud.getModel().getSource();
         LoadedCgm target = Maud.getModel().getTarget();
-        Skeleton targetSkeleton = target.getSkeleton().findSkeleton();
+        Skeleton targetSkeleton = target.getSkeleton().find();
         Bone targetBone = targetSkeleton.getBone(boneIndex);
         String targetName = targetBone.getName();
         BoneMapping boneMapping = effectiveMapping(targetName);
-        Skeleton sourceSkeleton = source.getSkeleton().findSkeleton();
+        Skeleton sourceSkeleton = source.getSkeleton().find();
         if (boneMapping != null && sourceSkeleton != null) {
             String sourceName = boneMapping.getSourceName();
             int sourceIndex = sourceSkeleton.getBoneIndex(sourceName);
@@ -715,8 +715,8 @@ public class LoadedMap implements Cloneable {
         LoadedCgm source = Maud.getModel().getSource();
         EditableCgm target = Maud.getModel().getTarget();
         Animation sourceAnimation = source.getAnimation().getAnimation();
-        Skeleton sourceSkeleton = source.getSkeleton().findSkeleton();
-        Skeleton targetSkeleton = target.getSkeleton().findSkeleton();
+        Skeleton sourceSkeleton = source.getSkeleton().find();
+        Skeleton targetSkeleton = target.getSkeleton().find();
         SkeletonMapping effectiveMap = effectiveMap();
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
         Animation retargeted = TrackEdit.retargetAnimation(sourceAnimation,
