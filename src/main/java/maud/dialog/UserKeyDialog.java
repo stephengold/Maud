@@ -69,7 +69,7 @@ public class UserKeyDialog implements DialogController {
         assert description != null;
         assert !description.isEmpty();
 
-        this.commitDescription = description;
+        commitDescription = description;
     }
     // *************************************************************************
     // DialogController methods

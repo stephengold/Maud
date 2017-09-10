@@ -96,7 +96,7 @@ public class AxesOptions implements Cloneable {
      * @param newState true &rarr; enable depth test, false &rarr; no depth test
      */
     public void setDepthTestFlag(boolean newState) {
-        this.depthTestFlag = newState;
+        depthTestFlag = newState;
     }
 
     /**
@@ -106,7 +106,7 @@ public class AxesOptions implements Cloneable {
      */
     public void setLineWidth(float width) {
         Validate.inRange(width, "width", 1f, Float.MAX_VALUE);
-        this.lineWidth = width;
+        lineWidth = width;
     }
 
     /**

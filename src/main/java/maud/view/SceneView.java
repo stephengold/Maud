@@ -398,16 +398,16 @@ public class SceneView
     /**
      * Replace the CG model with a newly loaded one.
      *
-     * @param cgmRoot (not null)
+     * @param loadedCgmRoot (not null)
      */
-    public void loadCgm(Spatial cgmRoot) {
-        Validate.nonNull(cgmRoot, "model root");
+    public void loadCgm(Spatial loadedCgmRoot) {
+        Validate.nonNull(loadedCgmRoot, "loaded model root");
 
-        if (this.cgmRoot != null) {
-            MySpatial.disablePhysicsControls(this.cgmRoot);
+        if (cgmRoot != null) {
+            MySpatial.disablePhysicsControls(cgmRoot);
         }
         parent.detachAllChildren();
-        setCgmRoot(cgmRoot);
+        setCgmRoot(loadedCgmRoot);
 
         prepareForViewing();
     }
@@ -460,11 +460,11 @@ public class SceneView
      * Alter which loaded CG model corresponds with this view. Invoked after
      * cloning.
      *
-     * @param cgm (not null)
+     * @param newCgm (not null)
      */
-    public void setCgm(Cgm cgm) {
-        Validate.nonNull(cgm, "model");
-        this.cgm = cgm;
+    public void setCgm(Cgm newCgm) {
+        Validate.nonNull(newCgm, "new model");
+        cgm = newCgm;
     }
 
     /**
