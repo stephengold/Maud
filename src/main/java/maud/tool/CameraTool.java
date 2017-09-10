@@ -37,7 +37,7 @@ import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.CameraStatus;
+import maud.model.option.CameraStatus;
 import maud.model.Pov;
 import org.lwjgl.input.Mouse;
 

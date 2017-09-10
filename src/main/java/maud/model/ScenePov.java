@@ -35,6 +35,7 @@ import jme3utilities.MyCamera;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
+import maud.model.option.CameraStatus;
 import maud.model.option.DddCursorOptions;
 import maud.view.SceneView;
 

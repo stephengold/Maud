@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model;
+package maud.model.option;
 
 import com.jme3.math.FastMath;
 import java.util.logging.Level;
@@ -94,7 +94,7 @@ public class CameraStatus implements Cloneable {
      * @param angle desired elevation angle (in radians)
      * @return clamped angle (in radians)
      */
-    float clampElevation(float angle) {
+    public float clampElevation(float angle) {
         float result;
         result = FastMath.clamp(angle, minElevationAngle, maxElevationAngle);
         return result;
@@ -106,7 +106,7 @@ public class CameraStatus implements Cloneable {
      * @param range desired distance (in world units)
      * @return clamped distance (in world units)
      */
-    float clampRange(float range) {
+    public float clampRange(float range) {
         float result = FastMath.clamp(range, minRange, maxRange);
         return result;
     }
@@ -116,7 +116,7 @@ public class CameraStatus implements Cloneable {
      *
      * @return rate (in world units per scroll wheel notch, &gt;0)
      */
-    float getFlyRate() {
+    public float getFlyRate() {
         assert flyRate > 0f : flyRate;
         return flyRate;
     }
