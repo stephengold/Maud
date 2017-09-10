@@ -84,6 +84,7 @@ import maud.Maud;
 import maud.Util;
 import maud.mesh.PointMesh;
 import maud.model.Cgm;
+import maud.model.DisplayedPose;
 import maud.model.option.SceneBones;
 import maud.model.option.SkeletonOptions;
 import maud.model.option.ViewMode;
@@ -676,7 +677,8 @@ public class SceneView
         /*
          * Determine which bones to consider.
          */
-        Pose pose = cgm.getPose().getPose();
+        DisplayedPose displayedPose = cgm.getPose();
+        Pose pose = displayedPose.getPose();
         int numBones = pose.countBones();
         BitSet boneIndexSet = new BitSet(numBones);
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
@@ -703,11 +705,8 @@ public class SceneView
         Vector2f inputXY = selection.copyInputXY();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             if (boneIndexSet.get(boneIndex)) {
-                Vector3f modelLocation = pose.modelLocation(boneIndex, null);
-                Transform worldTransform = worldTransform();
-                Vector3f boneWorld;
-                boneWorld = worldTransform.transformVector(modelLocation, null);
-                Vector3f boneScreen = camera.getScreenCoordinates(boneWorld);
+                Vector3f world = displayedPose.worldLocation(boneIndex, null);
+                Vector3f boneScreen = camera.getScreenCoordinates(world);
                 Vector2f boneXY = new Vector2f(boneScreen.x, boneScreen.y);
                 float dSquared = boneXY.distanceSquared(inputXY);
                 selection.considerBone(cgm, boneIndex, dSquared);
