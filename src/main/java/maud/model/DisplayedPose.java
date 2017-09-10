@@ -34,6 +34,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 import jme3utilities.wes.Pose;
 
 /**
@@ -71,7 +72,7 @@ public class DisplayedPose implements JmeCloneable {
     // new methods exposed
 
     /**
-     * Access the pose.
+     * Access the pose. TODO rename get()
      *
      * @return the pre-existing instance (not null)
      */
@@ -196,6 +197,23 @@ public class DisplayedPose implements JmeCloneable {
      */
     public void toggleFrozen() {
         setFrozen(!frozenFlag);
+    }
+
+    /**
+     * Calculate the world location of the indexed bone in the scene view.
+     *
+     * @param boneIndex which bone to use (&ge;0)
+     * @param storeResult (modified if not null)
+     * @return world coordinates (either storeResult or a new instance)
+     */
+    public Vector3f worldLocation(int boneIndex, Vector3f storeResult) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        Transform transform = cgm.getSceneView().worldTransform();
+        Vector3f modelLocation = pose.modelLocation(boneIndex, null);
+        storeResult = transform.transformVector(modelLocation, storeResult);
+
+        return storeResult;
     }
     // *************************************************************************
     // JmeCloneable methods
