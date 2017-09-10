@@ -81,7 +81,7 @@ public class SelectedBone implements Cloneable {
      * @return count (&ge;0)
      */
     public int countChildren() {
-        Bone bone = getBone();
+        Bone bone = get();
         int result;
         if (bone == null) {
             result = 0;
@@ -106,7 +106,7 @@ public class SelectedBone implements Cloneable {
      *
      * @return the pre-existing instance, or null if none selected
      */
-    Bone getBone() {
+    Bone get() {
         Bone bone;
         if (selectedIndex == -1) {
             bone = null;
@@ -126,7 +126,7 @@ public class SelectedBone implements Cloneable {
     public String getChildName(int childIndex) {
         assert childIndex >= 0 : childIndex;
 
-        Bone bone = getBone();
+        Bone bone = get();
         String name;
         if (bone == null) {
             name = null;
@@ -162,7 +162,7 @@ public class SelectedBone implements Cloneable {
         if (selectedIndex == -1) {
             name = SelectedSkeleton.noBone;
         } else {
-            Bone bone = getBone();
+            Bone bone = get();
             name = bone.getName();
         }
 
@@ -175,7 +175,7 @@ public class SelectedBone implements Cloneable {
      * @return name, or null if none
      */
     public String getParentName() {
-        Bone bone = getBone();
+        Bone bone = get();
         String name;
         if (bone == null) {
             name = null;
@@ -229,7 +229,7 @@ public class SelectedBone implements Cloneable {
      * @return true if it's a root, otherwise false
      */
     public boolean isRootBone() {
-        Bone bone = getBone();
+        Bone bone = get();
         boolean result;
         if (bone == null) {
             result = false;
@@ -262,7 +262,7 @@ public class SelectedBone implements Cloneable {
     public List<Integer> listAncestorIndices() {
         List<Integer> result = new ArrayList<>(6);
         Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
-        Bone bone = getBone();
+        Bone bone = get();
         while (bone != null) {
             int index = skeleton.getBoneIndex(bone);
             result.add(index);
@@ -279,7 +279,7 @@ public class SelectedBone implements Cloneable {
      */
     public List<Integer> listChildIndices() {
         List<Integer> result;
-        Bone bone = getBone();
+        Bone bone = get();
         if (bone == null) {
             result = new ArrayList<>(0);
         } else {
@@ -303,7 +303,7 @@ public class SelectedBone implements Cloneable {
      * @return a new list
      */
     public List<String> listChildNames() {
-        Bone bone = getBone();
+        Bone bone = get();
         List<String> result;
         if (bone == null) {
             result = new ArrayList<>(0);
@@ -355,7 +355,7 @@ public class SelectedBone implements Cloneable {
      */
     public int parentIndex() {
         int index = -1;
-        Bone bone = getBone();
+        Bone bone = get();
         if (bone != null) {
             Skeleton skeleton = loadedCgm.getSkeleton().findSkeleton();
             Bone parent = bone.getParent();
@@ -444,7 +444,7 @@ public class SelectedBone implements Cloneable {
      * Select the first child of the selected bone.
      */
     public void selectFirstChild() {
-        Bone bone = getBone();
+        Bone bone = get();
         if (bone != null) {
             List<Bone> children = bone.getChildren();
             Bone firstChild = children.get(0);
@@ -481,7 +481,7 @@ public class SelectedBone implements Cloneable {
      * Select the parent of the selected bone, if any.
      */
     public void selectParent() {
-        Bone bone = getBone();
+        Bone bone = get();
         if (bone != null) {
             Bone parent = bone.getParent();
             if (parent != null) {
