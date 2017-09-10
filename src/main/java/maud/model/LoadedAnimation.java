@@ -349,7 +349,8 @@ public class LoadedAnimation implements Cloneable {
     public int findIndex() {
         int index;
         if (isReal()) {
-            List<String> nameList = cgm.listRealAnimationsSorted();
+            List<String> nameList;
+            nameList = cgm.getAnimControl().listRealAnimationsSorted();
             index = nameList.indexOf(loadedName);
         } else {
             index = -1;
@@ -400,7 +401,7 @@ public class LoadedAnimation implements Cloneable {
         if (!cgm.isLoaded() || !isReal()) {
             result = null;
         } else {
-            result = cgm.getAnimation(loadedName);
+            result = cgm.getAnimControl().getAnimation(loadedName);
         }
 
         return result;
@@ -507,7 +508,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public SpatialTrack findTrackForSpatial(Spatial spatial) {
         SpatialTrack result = null;
-        AnimControl animControl = cgm.getAnimControl();
+        AnimControl animControl = cgm.getAnimControl().find();
         Animation animation = getAnimation();
         if (animControl != null && animation != null) {
             result = MyAnimation.findSpatialTrack(animControl, animation,
@@ -695,7 +696,7 @@ public class LoadedAnimation implements Cloneable {
         List<String> result = new ArrayList<>(numTracks);
         Animation animation = getAnimation();
         if (animation != null) {
-            AnimControl animControl = cgm.getAnimControl();
+            AnimControl animControl = cgm.getAnimControl().find();
             Track[] tracks = animation.getTracks();
             for (Track track : tracks) {
                 if (track instanceof BoneTrack) {
@@ -731,7 +732,7 @@ public class LoadedAnimation implements Cloneable {
             loadRetargetedPose();
 
         } else {
-            float duration = cgm.getDuration(name);
+            float duration = cgm.getAnimControl().getDuration(name);
             float playSpeed;
             if (duration == 0f) {
                 /*
@@ -800,7 +801,8 @@ public class LoadedAnimation implements Cloneable {
      */
     public void loadNext() {
         if (cgm.isLoaded() && isReal()) {
-            List<String> nameList = cgm.listRealAnimationsSorted();
+            List<String> nameList;
+            nameList = cgm.getAnimControl().listRealAnimationsSorted();
             int index = nameList.indexOf(loadedName);
             int numAnimations = nameList.size();
             int nextIndex = MyMath.modulo(index + 1, numAnimations);
@@ -814,7 +816,8 @@ public class LoadedAnimation implements Cloneable {
      */
     public void loadPrevious() {
         if (cgm.isLoaded() && isReal()) {
-            List<String> nameList = cgm.listRealAnimationsSorted();
+            List<String> nameList;
+            nameList = cgm.getAnimControl().listRealAnimationsSorted();
             int index = nameList.indexOf(loadedName);
             int numAnimations = nameList.size();
             int prevIndex = MyMath.modulo(index - 1, numAnimations);
@@ -832,7 +835,8 @@ public class LoadedAnimation implements Cloneable {
     public void newCopy(String animationName) {
         Validate.nonEmpty(animationName, "animation name");
         assert !isReserved(animationName) : animationName;
-        assert !cgm.hasAnimation(animationName) : animationName;
+        SelectedAnimControl sac = cgm.getAnimControl();
+        assert !sac.hasRealAnimation(animationName) : animationName;
 
         Animation loaded = getAnimation();
         float duration = getDuration();
@@ -896,7 +900,8 @@ public class LoadedAnimation implements Cloneable {
     public void rename(String newName) {
         Validate.nonEmpty(newName, "new name");
         assert !isReserved(newName) : newName;
-        assert !cgm.hasAnimation(newName) : newName;
+        SelectedAnimControl sac = cgm.getAnimControl();
+        assert !sac.hasRealAnimation(newName) : newName;
         assert isReal();
 
         float duration = getDuration();
@@ -1427,7 +1432,8 @@ public class LoadedAnimation implements Cloneable {
     private void newPose(String animationName) {
         assert animationName != null;
         assert !isReserved(animationName) : animationName;
-        assert !cgm.hasAnimation(animationName) : animationName;
+        SelectedAnimControl sac = cgm.getAnimControl();
+        assert !sac.hasRealAnimation(animationName) : animationName;
 
         Pose pose = cgm.getPose().getPose();
         Animation poseAnim = pose.capture(animationName);

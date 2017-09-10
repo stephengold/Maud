@@ -309,7 +309,7 @@ public class EditorInputMode extends InputMode {
                 target.getAnimation().loadNext();
                 break;
             case Action.nextAnimControl:
-                target.nextAnimControl();
+                target.getAnimControl().selectNext();
                 break;
             case Action.nextBone:
                 target.getBone().selectNext();
@@ -330,7 +330,7 @@ public class EditorInputMode extends InputMode {
                 model.getSource().getAnimation().loadNext();
                 break;
             case Action.nextSourceAnimControl:
-                model.getSource().nextAnimControl();
+                model.getSource().getAnimControl().selectNext();
                 break;
             case Action.nextUserData:
                 target.getUserData().selectNextKey();
@@ -364,7 +364,7 @@ public class EditorInputMode extends InputMode {
                 target.getAnimation().loadPrevious();
                 break;
             case Action.previousAnimControl:
-                target.previousAnimControl();
+                target.getAnimControl().selectPrevious();
                 break;
             case Action.previousBone:
                 target.getBone().selectPrevious();
@@ -385,7 +385,7 @@ public class EditorInputMode extends InputMode {
                 model.getSource().getAnimation().loadPrevious();
                 break;
             case Action.previousSourceAnimControl:
-                model.getSource().previousAnimControl();
+                model.getSource().getAnimControl().selectPrevious();
                 break;
             case Action.previousUserData:
                 target.getUserData().selectPreviousKey();

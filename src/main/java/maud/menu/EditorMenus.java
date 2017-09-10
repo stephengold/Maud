@@ -40,6 +40,7 @@ import maud.model.EditableMap;
 import maud.model.History;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.SelectedAnimControl;
 import maud.model.SelectedSpatial;
 import maud.model.option.MiscStatus;
 import maud.model.option.ViewMode;
@@ -119,8 +120,8 @@ public class EditorMenus {
      */
     public void loadAnimation(LoadedCgm cgm) {
         if (cgm.isLoaded()) {
-            List<String> animationNames = cgm.listAnimationNames();
-            Maud.gui.showMenus.showAnimationSubmenu(animationNames, cgm);
+            List<String> names = cgm.getAnimControl().listAnimationNames();
+            Maud.gui.showMenus.showAnimationSubmenu(names, cgm);
         }
     }
 
@@ -131,7 +132,8 @@ public class EditorMenus {
      * @param cgm which load slot (not null)
      */
     public void loadAnimation(String argument, LoadedCgm cgm) {
-        if (cgm.hasAnimation(argument)
+        SelectedAnimControl sac = cgm.getAnimControl();
+        if (sac.hasRealAnimation(argument)
                 || argument.equals(LoadedAnimation.bindPoseName)
                 || argument.equals(LoadedAnimation.retargetedPoseName)) {
             cgm.getAnimation().load(argument);
@@ -139,8 +141,7 @@ public class EditorMenus {
             /*
              * Treat the argument as an animation-name prefix.
              */
-            List<String> animationNames;
-            animationNames = cgm.listAnimationNames(argument);
+            List<String> animationNames = sac.listAnimationNames(argument);
             Maud.gui.showMenus.showAnimationSubmenu(animationNames, cgm);
         }
     }
@@ -628,7 +629,6 @@ public class EditorMenus {
         } else {
             switch (remainder) {
                 case "Mass": // TODO
-                case "Remove": // TODO
                     handled = false;
                     break;
                 case "Tool":

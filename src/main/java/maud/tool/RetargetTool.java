@@ -86,7 +86,7 @@ class RetargetTool extends WindowController {
         } else {
             String sourceName = source.getName();
             sourceDesc = MyString.quote(sourceName);
-            if (source.countAnimations() > 0) {
+            if (source.getAnimControl().countAnimations() > 0) {
                 sButton = "Load";
             } else {
                 sButton = "";
@@ -131,12 +131,12 @@ class RetargetTool extends WindowController {
         LoadedMap map = Maud.getModel().getMap();
         LoadedCgm source = Maud.getModel().getSource();
         LoadedCgm target = Maud.getModel().getTarget();
-        if (!target.isAnimControlSelected()) {
-            feedback = "select the target anim control";
+        if (!target.getAnimControl().isSelected()) {
+            feedback = "select a target anim control";
         } else if (!source.isLoaded()) {
-            feedback = "load the source model";
+            feedback = "load a source model";
         } else if (!source.getAnimation().isReal()) {
-            feedback = "load the source animation";
+            feedback = "load a source animation";
         } else if (map.isEmpty()) {
             feedback = "no bone mappings";
         } else {
