@@ -676,9 +676,9 @@ public class SelectedTrack implements Cloneable {
      */
     public void translateForSupport() {
         SelectedSkeleton selectedSkeleton = loadedCgm.getSkeleton();
-        Skeleton skeleton = selectedSkeleton.findSkeleton();
+        Skeleton skeleton = selectedSkeleton.find();
         assert skeleton != null;
-        Spatial subtree = selectedSkeleton.findSkeletonSpatial();
+        Spatial subtree = selectedSkeleton.findSpatial();
 
         int numBones = skeleton.getBoneCount();
         Matrix4f[] skinningMatrices = new Matrix4f[numBones];
@@ -708,9 +708,9 @@ public class SelectedTrack implements Cloneable {
      */
     public boolean translateForTraction() {
         SelectedSkeleton selectedSkeleton = loadedCgm.getSkeleton();
-        Skeleton skeleton = selectedSkeleton.findSkeleton();
+        Skeleton skeleton = selectedSkeleton.find();
         assert skeleton != null;
-        Spatial subtree = selectedSkeleton.findSkeletonSpatial();
+        Spatial subtree = selectedSkeleton.findSpatial();
         int boneIndex = loadedCgm.getBone().getIndex();
         Pose tempPose = new Pose(skeleton);
         int numBones = tempPose.countBones();
@@ -936,9 +936,9 @@ public class SelectedTrack implements Cloneable {
      */
     private boolean translateForSupport(float cgmY) {
         SelectedSkeleton selectedSkeleton = loadedCgm.getSkeleton();
-        Skeleton skeleton = selectedSkeleton.findSkeleton();
+        Skeleton skeleton = selectedSkeleton.find();
         assert skeleton != null;
-        Spatial subtree = selectedSkeleton.findSkeletonSpatial();
+        Spatial subtree = selectedSkeleton.findSpatial();
         int boneIndex = loadedCgm.getBone().getIndex();
         Pose tempPose = new Pose(skeleton);
         int numBones = tempPose.countBones();

@@ -60,7 +60,7 @@ public class SelectedSkeleton implements Cloneable {
     final private static Logger logger = Logger.getLogger(
             SelectedSkeleton.class.getName());
     /**
-     * dummy bone name used to indicate that no bone is selected
+     * dummy bone name, used to indicate that no bone is selected
      */
     final public static String noBone = "( no bone )";
     // *************************************************************************
@@ -79,7 +79,7 @@ public class SelectedSkeleton implements Cloneable {
      * @return count (&ge;0)
      */
     public int countBones() {
-        Skeleton skeleton = findSkeleton();
+        Skeleton skeleton = find();
         int count;
         if (skeleton == null) {
             count = 0;
@@ -98,7 +98,7 @@ public class SelectedSkeleton implements Cloneable {
      */
     public int countRootBones() {
         int count;
-        Skeleton skeleton = findSkeleton();
+        Skeleton skeleton = find();
         if (skeleton == null) {
             count = 0;
         } else {
@@ -117,7 +117,7 @@ public class SelectedSkeleton implements Cloneable {
      * came from the selected spatial, false if it came from the CG model root
      * @return the pre-existing instance, or null if none
      */
-    Skeleton findSkeleton(Boolean storeSelectedSpatialFlag) {
+    Skeleton find(Boolean storeSelectedSpatialFlag) {
         AnimControl animControl;
         boolean selectedSpatialFlag;
         SkeletonControl skeletonControl;
@@ -169,8 +169,8 @@ public class SelectedSkeleton implements Cloneable {
      *
      * @return the pre-existing instance, or null if none
      */
-    Skeleton findSkeleton() {
-        Skeleton result = findSkeleton(null);
+    Skeleton find() {
+        Skeleton result = find(null);
         return result;
     }
 
@@ -179,9 +179,9 @@ public class SelectedSkeleton implements Cloneable {
      *
      * @return the pre-existing instance, or null if none
      */
-    Spatial findSkeletonSpatial() {
+    Spatial findSpatial() {
         Boolean selectedSpatialFlag = false;
-        findSkeleton(selectedSpatialFlag);
+        find(selectedSpatialFlag);
         Spatial spatial;
         if (selectedSpatialFlag) {
             spatial = cgm.getSpatial().modelSpatial();
@@ -201,7 +201,7 @@ public class SelectedSkeleton implements Cloneable {
     public Bone getBone(int boneIndex) {
         Validate.nonNegative(boneIndex, "bone index");
 
-        Skeleton skeleton = findSkeleton();
+        Skeleton skeleton = find();
         Bone result = skeleton.getBone(boneIndex);
 
         return result;
@@ -233,7 +233,7 @@ public class SelectedSkeleton implements Cloneable {
         if (name.equals(noBone)) {
             result = true;
         } else {
-            Skeleton skeleton = findSkeleton();
+            Skeleton skeleton = find();
             if (skeleton == null) {
                 result = false;
             } else {
@@ -258,7 +258,7 @@ public class SelectedSkeleton implements Cloneable {
     public boolean isLeafBone(String boneName) {
         boolean result = false;
         if (!boneName.equals(noBone)) {
-            Skeleton skeleton = findSkeleton();
+            Skeleton skeleton = find();
             Bone bone = skeleton.getBone(boneName);
             if (bone != null) {
                 ArrayList<Bone> children = bone.getChildren();
@@ -277,7 +277,7 @@ public class SelectedSkeleton implements Cloneable {
     public boolean isSelected() {
         boolean result = false;
         if (cgm.isLoaded()) {
-            Skeleton skeleton = findSkeleton();
+            Skeleton skeleton = find();
             if (skeleton != null) {
                 result = true;
             }
@@ -293,7 +293,7 @@ public class SelectedSkeleton implements Cloneable {
      */
     public List<String> listBoneNames() {
         List<String> names = new ArrayList<>(80);
-        Skeleton skeleton = findSkeleton();
+        Skeleton skeleton = find();
         if (skeleton != null) {
             int boneCount = skeleton.getBoneCount();
 
@@ -337,7 +337,7 @@ public class SelectedSkeleton implements Cloneable {
      * @return a new list of bone names
      */
     public List<String> listChildBoneNames(String parentName) {
-        Skeleton skeleton = findSkeleton();
+        Skeleton skeleton = find();
         Bone parent = skeleton.getBone(parentName);
         List<Bone> children = parent.getChildren();
         List<String> boneNames = new ArrayList<>(children.size());
@@ -362,9 +362,9 @@ public class SelectedSkeleton implements Cloneable {
             storeResult = new BitSet(120);
         }
 
-        Skeleton skeleton = findSkeleton();
+        Skeleton skeleton = find();
         if (skeleton != null) {
-            Spatial subtree = findSkeletonSpatial();
+            Spatial subtree = findSpatial();
             Util.addAllInfluencers(subtree, skeleton, storeResult);
         }
 
@@ -378,7 +378,7 @@ public class SelectedSkeleton implements Cloneable {
      */
     public List<String> listRootBoneNames() {
         List<String> boneNames = new ArrayList<>(5);
-        Skeleton skeleton = findSkeleton();
+        Skeleton skeleton = find();
         if (skeleton != null) {
             Bone[] roots = skeleton.getRoots();
             for (Bone rootBone : roots) {
@@ -398,7 +398,7 @@ public class SelectedSkeleton implements Cloneable {
      */
     public List<Integer> listRootIndices() {
         List<Integer> result = new ArrayList<>(5);
-        Skeleton skeleton = findSkeleton();
+        Skeleton skeleton = find();
         if (skeleton != null) {
             Bone[] roots = skeleton.getRoots();
             for (Bone rootBone : roots) {
@@ -433,7 +433,7 @@ public class SelectedSkeleton implements Cloneable {
         cgm = newCgm;
     }
     // *************************************************************************
-    // Object methods
+    // Cloneable methods
 
     /**
      * Create a copy of this object.
