@@ -342,7 +342,7 @@ public class EditableCgm extends LoadedCgm {
             success = false;
 
         } else {
-            Bone selectedBone = getBone().getBone();
+            Bone selectedBone = getBone().get();
             History.autoAdd();
             success = MySkeleton.setName(selectedBone, newName);
         }
