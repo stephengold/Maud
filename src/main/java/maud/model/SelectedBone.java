@@ -197,7 +197,7 @@ public class SelectedBone implements Cloneable {
      * @return true if a bone is selected and it has a track, otherwise false
      */
     public boolean hasTrack() {
-        BoneTrack track = loadedCgm.getTrack().findTrack();
+        BoneTrack track = loadedCgm.getTrack().find();
         if (track == null) {
             return false;
         } else {
