@@ -610,6 +610,20 @@ public class SelectedBone implements Cloneable {
 
         return storeResult;
     }
+
+    /**
+     * Calculate the world location of the selected bone in the scene view.
+     *
+     * @param storeResult (modified if not null)
+     * @return world coordinates (either storeResult or a new instance)
+     */
+    public Vector3f worldLocation(Vector3f storeResult) {
+        DisplayedPose displayedPose = loadedCgm.getPose();
+        int boneIndex = getIndex();
+        storeResult = displayedPose.worldLocation(boneIndex, storeResult);
+
+        return storeResult;
+    }
     // *************************************************************************
     // Object methods
 
