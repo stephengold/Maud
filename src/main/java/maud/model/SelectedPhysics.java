@@ -68,7 +68,7 @@ public class SelectedPhysics implements Cloneable {
      *
      * @return the pre-existing instance, or null if not found
      */
-    Savable findObject() {
+    Savable find() {
         PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
         Savable result = Util.findObject(name, space);
 
@@ -93,7 +93,7 @@ public class SelectedPhysics implements Cloneable {
     public String getType() {
         assert isSelected();
 
-        Savable object = findObject();
+        Savable object = find();
         String type = object.getClass().getSimpleName();
         if (type.startsWith("Physics")) {
             type = MyString.remainder(type, "Physics");
