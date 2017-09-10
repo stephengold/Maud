@@ -29,7 +29,6 @@ package maud.model.option;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.model.CameraStatus;
 import maud.model.LoadedCgm;
 
 /**
