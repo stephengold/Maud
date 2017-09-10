@@ -70,7 +70,7 @@ public class BoneRenameDialog implements DialogController {
         assert description != null;
         assert !description.isEmpty();
 
-        this.commitDescription = description;
+        commitDescription = description;
     }
     // *************************************************************************
     // DialogController methods

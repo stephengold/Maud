@@ -93,8 +93,7 @@ class SgcTool extends WindowController {
      * Update the index status and previous/next buttons.
      */
     private void updateIndex() {
-        String indexText;
-        String nButton, pButton;
+        String indexText, nButton, pButton;
 
         LoadedCgm target = Maud.getModel().getTarget();
         int numSgcs = target.getSpatial().countSgcs();
