@@ -629,7 +629,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="cameraTool" title="Camera Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="170px" width="180px" x="45" y="55">
+                     height="170px" width="202px" x="45" y="55">
                 <panel childLayout="vertical">
                     <control name="label" text="Movement modes:"
                              textHAlign="left"
@@ -638,14 +638,16 @@ the menu bar, status bar, and tool windows.
                     <panel childLayout="horizontal">
                         <control name="radioButton" id="orbitRadioButton"
                                  group="povGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="orbit the 3D cursor"/>
+                        <control name="label" text="  orbit the  "/>
+                        <control name="button" id="orbitCenterButton"
+                                 width="100px">
+                            <interact onRelease="perform(select orbitCenter)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal">
                         <control name="radioButton" id="flyRadioButton"
                                  group="povGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="fly freely"/>
+                        <control name="label" text="  fly freely"/>
                     </panel>
                     <control name="label" text="Projection modes:"
                              textHAlign="left"
@@ -654,14 +656,12 @@ the menu bar, status bar, and tool windows.
                     <panel childLayout="horizontal">
                         <control name="radioButton" id="perspectiveRadioButton"
                                  group="projectionGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="perspective"/>
+                        <control name="label" text="  perspective"/>
                     </panel>
                     <panel childLayout="horizontal">
                         <control name="radioButton" id="parallelRadioButton"
                                  group="projectionGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="parallel"/>
+                        <control name="label" text="  parallel"/>
                     </panel>
                 </panel>
             </control>

@@ -37,8 +37,9 @@ import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.option.CameraStatus;
 import maud.model.Pov;
+import maud.model.option.CameraStatus;
+import maud.model.option.OrbitCenter;
 import org.lwjgl.input.Mouse;
 
 /**
@@ -211,6 +212,10 @@ public class CameraTool
         } else {
             Maud.gui.setRadioButton("flyRadioButton");
         }
+
+        OrbitCenter orbitCenter = status.getOrbitCenter();
+        String ocButton = orbitCenter.toString();
+        Maud.gui.setButtonLabel("orbitCenterButton", ocButton);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

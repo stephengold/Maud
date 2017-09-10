@@ -125,6 +125,7 @@ class Action {
     final static String selectKeyframePrevious = "select keyframePrevious";
     final static String selectMapSourceBone = "select mapSourceBone";
     final static String selectMapTargetBone = "select mapTargetBone";
+    final static String selectOrbitCenter = "select orbitCenter";
     final static String selectPhysics = "select physics";
     final static String selectScreenBone = "select screenBone";
     final static String selectScreenGnomon = "select screenGnomon";
