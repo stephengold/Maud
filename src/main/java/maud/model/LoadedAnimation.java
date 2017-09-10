@@ -326,7 +326,7 @@ public class LoadedAnimation implements Cloneable {
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
 
-        Track selectedTrack = cgm.getTrack().findTrack();
+        Track selectedTrack = cgm.getTrack().find();
         Animation oldAnimation = getAnimation();
         Track[] loadedTracks = oldAnimation.getTracks();
         for (Track track : loadedTracks) {
