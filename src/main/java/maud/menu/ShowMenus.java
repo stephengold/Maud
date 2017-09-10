@@ -38,6 +38,7 @@ import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
+import maud.model.Cgm;
 import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
@@ -592,7 +593,7 @@ public class ShowMenus {
      * @param nameList list of names from which to select (not null, modified)
      * @param cgm which load slot (not null)
      */
-    void showAnimationSubmenu(List<String> nameList, LoadedCgm cgm) {
+    void showAnimationSubmenu(List<String> nameList, Cgm cgm) {
         assert nameList != null;
         assert cgm != null;
 
@@ -605,7 +606,7 @@ public class ShowMenus {
 
         MenuBuilder builder = new MenuBuilder();
         for (String name : nameList) {
-            if (cgm.hasAnimation(name)) {
+            if (cgm.getAnimControl().hasRealAnimation(name)) {
                 builder.add(name); // TODO icon
             } else if (name.equals(LoadedAnimation.bindPoseName)) {
                 builder.add(name);

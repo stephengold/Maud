@@ -88,16 +88,17 @@ public class EditableCgm extends LoadedCgm {
     // new methods exposed
 
     /**
-     * Add a new animation to the CG model.
+     * Add a new animation to the selected anim control.
      *
      * @param newAnimation (not null, name not in use)
      */
     void addAnimation(Animation newAnimation) {
         assert newAnimation != null;
-        assert !hasAnimation(newAnimation.getName());
+        SelectedAnimControl sac = getAnimControl();
+        assert !sac.hasRealAnimation(newAnimation.getName());
 
         History.autoAdd();
-        AnimControl control = getAnimControl();
+        AnimControl control = sac.find();
         if (control == null) {
             SelectedSkeleton ss = getSkeleton();
             Skeleton skeleton = ss.findSkeleton();
@@ -223,7 +224,7 @@ public class EditableCgm extends LoadedCgm {
      */
     void deleteAnimation() {
         Animation anim = getAnimation().getAnimation();
-        AnimControl animControl = getAnimControl();
+        AnimControl animControl = getAnimControl().find();
 
         History.autoAdd();
         animControl.removeAnim(anim);
@@ -420,7 +421,7 @@ public class EditableCgm extends LoadedCgm {
         assert newAnimation != null;
         assert eventDescription != null;
 
-        AnimControl animControl = getAnimControl();
+        AnimControl animControl = getAnimControl().find();
 
         History.autoAdd();
         animControl.removeAnim(oldAnimation);

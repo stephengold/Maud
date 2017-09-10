@@ -255,8 +255,9 @@ public class LoadedCgm extends Cgm {
         getSpatial().postLoad();
         getAnimation().loadBindPose();
 
-        if (countAnimations() == 1) {
-            List<String> names = listRealAnimationsSorted();
+        SelectedAnimControl sac = getAnimControl();
+        if (sac.countAnimations() == 1) {
+            List<String> names = sac.listRealAnimationsSorted();
             String animationName = names.get(0);
             getAnimation().load(animationName);
         }
@@ -287,6 +288,7 @@ public class LoadedCgm extends Cgm {
     /**
      * Unload the CG model.
      */
+    @Override
     public void unload() {
         LoadedCgm target = Maud.getModel().getTarget();
         assert this != target; // not allowed to unload target

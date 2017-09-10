@@ -73,7 +73,7 @@ public class SelectedSgc implements Cloneable {
     public void delete() {
         if (isSelected()) {
             Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
-            AnimControl oldAnimControl = loadedCgm.getAnimControl();
+            AnimControl oldAnimControl = loadedCgm.getAnimControl().find();
 
             EditableCgm editableCgm = (EditableCgm) loadedCgm;
             editableCgm.deleteSgc();
@@ -86,7 +86,7 @@ public class SelectedSgc implements Cloneable {
                 loadedCgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
             }
 
-            AnimControl newAnimControl = loadedCgm.getAnimControl();
+            AnimControl newAnimControl = loadedCgm.getAnimControl().find();
             if (oldAnimControl != newAnimControl) {
                 loadedCgm.getAnimation().loadBindPose();
             }
@@ -97,7 +97,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Access the selected SG control.
+     * Access the selected SG control. TODO rename find
      *
      * @return the pre-existing instance, or null if none selected
      */
@@ -211,7 +211,7 @@ public class SelectedSgc implements Cloneable {
      */
     public void select(int newIndex) {
         Skeleton oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
-        AnimControl oldAnimControl = loadedCgm.getAnimControl();
+        AnimControl oldAnimControl = loadedCgm.getAnimControl().find();
 
         selectedIndex = newIndex;
 
@@ -222,7 +222,7 @@ public class SelectedSgc implements Cloneable {
             loadedCgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
         }
 
-        AnimControl newAnimControl = loadedCgm.getAnimControl();
+        AnimControl newAnimControl = loadedCgm.getAnimControl().find();
         if (oldAnimControl != newAnimControl) {
             loadedCgm.getAnimation().loadBindPose();
         }

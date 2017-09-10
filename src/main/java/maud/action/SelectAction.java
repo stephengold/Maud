@@ -195,7 +195,7 @@ class SelectAction {
         if (actionString.startsWith(ActionPrefix.selectAnimControl)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectAnimControl);
-            target.selectAnimControl(arg);
+            target.getAnimControl().select(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectBone)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectBone);
@@ -222,7 +222,7 @@ class SelectAction {
                 ActionPrefix.selectSourceAnimControl)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectSourceAnimControl);
-            model.getSource().selectAnimControl(arg);
+            model.getSource().getAnimControl().select(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectSourceBone)) {
             arg = MyString.remainder(actionString,

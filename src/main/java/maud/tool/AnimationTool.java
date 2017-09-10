@@ -34,6 +34,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.SelectedAnimControl;
 import maud.model.SelectedBone;
 
 /**
@@ -131,8 +132,9 @@ class AnimationTool extends WindowController {
         if (target.countAnimControls() > 0) {
             sButton = "Select AnimControl";
             int numAnimControls = target.countAnimControls();
-            if (target.isAnimControlSelected()) {
-                int selectedIndex = target.findAnimControlIndex();
+            SelectedAnimControl sac = target.getAnimControl();
+            if (sac.isSelected()) {
+                int selectedIndex = sac.findIndex();
                 int indexBase = Maud.getModel().getMisc().getIndexBase();
                 indexText = String.format("#%d of %d",
                         selectedIndex + indexBase, numAnimControls);
@@ -197,9 +199,10 @@ class AnimationTool extends WindowController {
         String pButton = "";
 
         LoadedCgm target = Maud.getModel().getTarget();
-        if (target.isAnimControlSelected()) {
+        SelectedAnimControl sac = target.getAnimControl();
+        if (sac.isSelected()) {
             lButton = "Load";
-            int numAnimations = target.countAnimations();
+            int numAnimations = sac.countAnimations();
             if (target.getAnimation().isReal()) {
                 int selectedIndex = target.getAnimation().findIndex();
                 int indexBase = Maud.getModel().getMisc().getIndexBase();

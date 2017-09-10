@@ -34,6 +34,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
+import maud.model.SelectedAnimControl;
 
 /**
  * The controller for the "Source Animation Tool" window in Maud's editor
@@ -143,8 +144,9 @@ class SourceAnimationTool extends WindowController {
         if (source.countAnimControls() > 0) {
             sButton = "Select AnimControl";
             int numAnimControls = source.countAnimControls();
-            if (source.isAnimControlSelected()) {
-                int selectedIndex = source.findAnimControlIndex();
+            SelectedAnimControl sac = source.getAnimControl();
+            if (sac.isSelected()) {
+                int selectedIndex = sac.findIndex();
                 int indexBase = Maud.getModel().getMisc().getIndexBase();
                 indexText = String.format("#%d of %d",
                         selectedIndex + indexBase, numAnimControls);
@@ -184,9 +186,10 @@ class SourceAnimationTool extends WindowController {
         String pButton = "";
 
         LoadedCgm source = Maud.getModel().getSource();
-        if (source.isAnimControlSelected()) {
+        SelectedAnimControl sac = source.getAnimControl();
+        if (sac.isSelected()) {
             lButton = "Load";
-            int numAnimations = source.countAnimations();
+            int numAnimations = sac.countAnimations();
             if (source.getAnimation().isReal()) {
                 int selectedIndex = source.getAnimation().findIndex();
                 int indexBase = Maud.getModel().getMisc().getIndexBase();

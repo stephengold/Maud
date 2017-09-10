@@ -27,7 +27,6 @@
 package maud.model;
 
 import com.jme3.animation.AnimControl;
-import com.jme3.animation.Animation;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.material.Material;
@@ -40,15 +39,11 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.util.clone.Cloner;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.math.MyMath;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.Util;
@@ -106,6 +101,10 @@ public class Cgm implements Cloneable {
      */
     private ScoreView scoreView = null;
     /**
+     * which anim control is selected
+     */
+    private SelectedAnimControl selectedAnimControl = new SelectedAnimControl();
+    /**
      * which bone is selected in the selected skeleton
      */
     private SelectedBone selectedBone = new SelectedBone();
@@ -155,6 +154,7 @@ public class Cgm implements Cloneable {
         scenePov.setCgm(cgm);
         scorePov.setCgm(cgm);
         // sceneView and scoreView are null
+        selectedAnimControl.setCgm(cgm);
         selectedBone.setCgm(cgm);
         selectedPhysics.setCgm(cgm);
         selectedSgc.setCgm(cgm);
@@ -166,25 +166,6 @@ public class Cgm implements Cloneable {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Count how many real animations there are in the selected anim control.
-     *
-     * @return count (&ge;0)
-     */
-    public int countAnimations() {
-        AnimControl animControl = getAnimControl();
-        int count;
-        if (animControl == null) {
-            count = 0;
-        } else {
-            Collection<String> names = animControl.getAnimationNames();
-            count = names.size();
-        }
-
-        assert count >= 0 : count;
-        return count;
-    }
 
     /**
      * Count anim controls.
@@ -238,27 +219,6 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Find the index of the select anim control, if any.
-     *
-     * @return index, or -1 if no anim control is selected
-     */
-    public int findAnimControlIndex() {
-        int index;
-        AnimControl animControl = getAnimControl();
-        if (animControl == null) {
-            index = -1;
-        } else {
-            Spatial root = getRootSpatial();
-            List<AnimControl> list;
-            list = MySpatial.listControls(root, AnimControl.class, null);
-            index = list.indexOf(animControl);
-            assert index != -1;
-        }
-
-        return index;
-    }
-
-    /**
      * Find the specified spatial.
      *
      * @param input spatial to search for (not null)
@@ -304,44 +264,13 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Access the named animation.
+     * Access the selected anim control.
      *
-     * @param name (not null)
-     * @return the pre-existing instance, or null if not found
+     * @return the pre-existing instance (not null)
      */
-    Animation getAnimation(String name) {
-        Validate.nonNull(name, "animation name");
-
-        Animation result;
-        AnimControl animControl = getAnimControl();
-        if (animControl == null) {
-            result = null;
-        } else {
-            result = animControl.getAnim(name);
-        }
-
-        return result;
-    }
-
-    /**
-     * Access the selected AnimControl.
-     *
-     * @return the pre-existing instance, or null if none
-     */
-    AnimControl getAnimControl() {
-        AnimControl animControl;
-        if (isLoaded()) {
-            Control sgc = selectedSgc.findSgc();
-            if (sgc instanceof AnimControl) {
-                animControl = (AnimControl) sgc;
-            } else {
-                animControl = rootSpatial.getControl(AnimControl.class);
-            }
-        } else {
-            animControl = null;
-        }
-
-        return animControl;
+    public SelectedAnimControl getAnimControl() {
+        assert selectedAnimControl != null;
+        return selectedAnimControl;
     }
 
     /**
@@ -352,35 +281,6 @@ public class Cgm implements Cloneable {
     public SelectedBone getBone() {
         assert selectedBone != null;
         return selectedBone;
-    }
-
-    /**
-     * Read the duration of the named animation.
-     *
-     * @param animationName (not null)
-     * @return duration (in seconds, &ge;0)
-     */
-    public float getDuration(String animationName) {
-        Validate.nonNull(animationName, "animation name");
-
-        float result;
-        if (animationName.equals(LoadedAnimation.bindPoseName)) {
-            result = 0f;
-        } else if (animationName.equals(LoadedAnimation.retargetedPoseName)) {
-            result = 0f;
-        } else {
-            Animation anim = getAnimation(animationName);
-            if (anim == null) {
-                logger.log(Level.WARNING, "no animation named {0}",
-                        MyString.quote(animationName));
-                result = 0f;
-            } else {
-                result = anim.getLength();
-            }
-        }
-
-        assert result >= 0f : result;
-        return result;
     }
 
     /**
@@ -539,23 +439,6 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Test whether the animation controller contains the named animation.
-     *
-     * @param name (not null)
-     * @return true if found or bindPose, otherwise false
-     */
-    public boolean hasAnimation(String name) {
-        Validate.nonNull(name, "name");
-
-        Animation anim = getAnimation(name);
-        if (anim == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
      * Test whether there are any "extra" spatials in the C-G model.
      *
      * @return true if any found, otherwise false
@@ -612,23 +495,6 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Test whether an anim control is selected.
-     *
-     * @return true if one is selected, otherwise false
-     */
-    public boolean isAnimControlSelected() {
-        boolean result;
-        AnimControl animControl = getAnimControl();
-        if (animControl == null) {
-            result = false;
-        } else {
-            result = true;
-        }
-
-        return result;
-    }
-
-    /**
      * Test whether a CG model is loaded into this slot.
      *
      * @return true if loaded, otherwise false
@@ -648,68 +514,6 @@ public class Cgm implements Cloneable {
      */
     public boolean isRootANode() {
         boolean result = rootSpatial instanceof Node;
-        return result;
-    }
-
-    /**
-     * Enumerate all known animations and poses for the loaded CG model.
-     *
-     * @return a new list of names, including bind pose and (if applicable)
-     * retargeted pose
-     */
-    public List<String> listAnimationNames() {
-        List<String> names = listRealAnimationsSorted();
-        names.add(LoadedAnimation.bindPoseName);
-        if (this == Maud.getModel().getTarget()
-                && Maud.getModel().getSource().isLoaded()) {
-            names.add(LoadedAnimation.retargetedPoseName);
-        }
-
-        return names;
-    }
-
-    /**
-     * Enumerate all known animations and poses for the loaded CG model with the
-     * specified prefix.
-     *
-     * @param prefix (not null)
-     * @return a new list of names, including (if applicable) bind pose and
-     * retargeted pose
-     */
-    public List<String> listAnimationNames(String prefix) {
-        Validate.nonNull(prefix, "prefix");
-
-        List<String> names = listAnimationNames();
-        int size = names.size();
-        List<String> result = new ArrayList<>(size);
-        for (String aName : names) {
-            if (aName.startsWith(prefix)) {
-                result.add(aName);
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Generate a sorted name list of the real animations in the selected anim
-     * control. Bind pose and mapped pose are not included.
-     *
-     * @return a new list
-     */
-    List<String> listRealAnimationsSorted() {
-        List<String> result;
-        AnimControl animControl = getAnimControl();
-        if (animControl == null) {
-            result = new ArrayList<>(0);
-        } else {
-            Collection<String> names = animControl.getAnimationNames();
-            int numNames = names.size();
-            result = new ArrayList<>(numNames);
-            result.addAll(names);
-            Collections.sort(result);
-        }
-
         return result;
     }
 
@@ -775,54 +579,6 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Handle a "next (source)animControl" action.
-     */
-    public void nextAnimControl() {
-        if (isAnimControlSelected()) {
-            List<AnimControl> list = listSgcs(AnimControl.class);
-            AnimControl animControl = getAnimControl();
-            int index = list.indexOf(animControl);
-            assert index != -1;
-            int numAnimControls = list.size();
-            int nextIndex = MyMath.modulo(index + 1, numAnimControls);
-            animControl = list.get(nextIndex);
-            selectSgc(animControl);
-        }
-    }
-
-    /**
-     * Handle a "previous (source)animControl" action.
-     */
-    public void previousAnimControl() {
-        if (isAnimControlSelected()) {
-            List<AnimControl> list = listSgcs(AnimControl.class);
-            AnimControl animControl = getAnimControl();
-            int index = list.indexOf(animControl);
-            assert index != -1;
-            int numAnimControls = list.size();
-            int nextIndex = MyMath.modulo(index - 1, numAnimControls);
-            animControl = list.get(nextIndex);
-            selectSgc(animControl);
-        }
-    }
-
-    /**
-     * Handle a "select (source)animControl" action with arguments.
-     *
-     * @param name name of the animControl to select (not null, not empty)
-     */
-    public void selectAnimControl(String name) {
-        Validate.nonEmpty(name, "name");
-
-        List<String> names = listAnimControlNames();
-        int index = names.indexOf(name);
-        assert index != -1;
-        List<AnimControl> animControls = listSgcs(AnimControl.class);
-        AnimControl animControl = animControls.get(index);
-        selectSgc(animControl);
-    }
-
-    /**
      * Alter the selected SG control.
      *
      * @param newSgc an abstract control to select, or null to select none
@@ -865,8 +621,8 @@ public class Cgm implements Cloneable {
         selectedPhysics.selectNone();
         selectedVertex.deselect();
 
-        if (target.loadedAnimation.isRetargetedPose()) {
-            target.loadedAnimation.loadBindPose();
+        if (target.getAnimation().isRetargetedPose()) {
+            target.getAnimation().loadBindPose();
         }
     }
 
@@ -897,6 +653,7 @@ public class Cgm implements Cloneable {
         clone.sceneView = cloner.clone(sceneView);
         clone.scorePov = cloner.clone(scorePov);
         //scoreView not cloned
+        clone.selectedAnimControl = selectedAnimControl.clone();
         clone.selectedBone = selectedBone.clone();
         clone.selectedPhysics = selectedPhysics.clone();
         clone.selectedSgc = selectedSgc.clone();
@@ -907,7 +664,7 @@ public class Cgm implements Cloneable {
         clone.rootSpatial = cloner.clone(rootSpatial);
         clone.userData = userData.clone();
         /*
-         * Direct the back pointers to the clone.
+         * Redirect the back pointers to the clone.
          */
         clone.getAnimation().setCgm(clone);
         clone.getBone().setCgm(clone);

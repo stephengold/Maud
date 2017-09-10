@@ -972,7 +972,7 @@ public class SelectedSpatial implements Cloneable {
      */
     private void preSelect() {
         loadedCgm.getSgc().selectNone();
-        oldAnimControl = loadedCgm.getAnimControl();
+        oldAnimControl = loadedCgm.getAnimControl().find();
         oldSkeleton = loadedCgm.getSkeleton().findSkeleton();
     }
 
@@ -987,7 +987,7 @@ public class SelectedSpatial implements Cloneable {
             loadedCgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
         }
 
-        AnimControl newAnimControl = loadedCgm.getAnimControl();
+        AnimControl newAnimControl = loadedCgm.getAnimControl().find();
         if (oldAnimControl != newAnimControl) {
             loadedCgm.getAnimation().loadBindPose();
         }
