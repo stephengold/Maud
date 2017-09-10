@@ -37,10 +37,11 @@ import jme3utilities.math.MyVector3f;
 import maud.Maud;
 import maud.model.option.CameraStatus;
 import maud.model.option.DddCursorOptions;
+import maud.model.option.OrbitCenter;
 import maud.view.SceneView;
 
 /**
- * The positions of a scene camera and 3D cursor in Maud's edit screen.
+ * The positions of the camera and 3-D cursor in a scene view.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -77,14 +78,14 @@ public class ScenePov implements Cloneable, Pov {
      */
     private Vector3f cameraLocation = new Vector3f();
     /**
-     * the location of the 3D cursor (in world coordinates)
+     * the location of the 3-D cursor (in world coordinates)
      */
     private Vector3f cursorLocation = new Vector3f();
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Aim the camera at the 3D cursor without changing the location of either.
+     * Aim the camera at the center without changing the location of either.
      * (Orbit mode only)
      */
     public void aim() {
@@ -108,7 +109,55 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
-     * Copy the location of the cursor.
+     * Copy the location of the center for orbit mode.
+     *
+     * @param storeResult (modified if not null)
+     * @return world coordinates (either storeResult or a new vector)
+     */
+    public Vector3f centerLocation(Vector3f storeResult) {
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        CameraStatus status = Maud.getModel().getScene().getCamera();
+        OrbitCenter orbitCenter = status.getOrbitCenter();
+        switch (orbitCenter) {
+            case DddCursor:
+                storeResult.set(cursorLocation);
+                break;
+
+            case Origin:
+                storeResult.zero();
+                break;
+
+            case SelectedBone:
+                SelectedBone bone = loadedCgm.getBone();
+                if (bone.isSelected()) {
+                    bone.worldLocation(storeResult);
+                } else {
+                    storeResult.set(cursorLocation);
+                }
+                break;
+
+            case SelectedVertex:
+                SelectedVertex vertex = loadedCgm.getVertex();
+                if (vertex.isSelected()) {
+                    vertex.worldLocation(storeResult);
+                } else {
+                    storeResult.set(cursorLocation);
+                }
+                break;
+
+            default:
+                throw new RuntimeException();
+
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the location of the 3-D cursor.
      *
      * @param storeResult (modified if not null)
      * @return world coordinates (either storeResult or a new vector)
@@ -140,12 +189,13 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
-     * Calculate the camera's distance from the 3D cursor.
+     * Calculate the camera's distance from the center.
      *
      * @return distance (in world units, &ge;0)
      */
     public float range() {
-        float range = cameraLocation.distance(cursorLocation);
+        Vector3f centerLocation = centerLocation(null);
+        float range = cameraLocation.distance(centerLocation);
         assert range >= 0f : range;
         return range;
     }
@@ -160,9 +210,10 @@ public class ScenePov implements Cloneable, Pov {
 
         if (Maud.getModel().getScene().getCamera().isOrbitMode()) {
             /*
-             * Calculate the new offset relative to the 3D cursor.
+             * Calculate the new offset relative to the center.
              */
-            Vector3f offset = newLocation.subtract(cursorLocation);
+            Vector3f centerLocation = centerLocation(null);
+            Vector3f offset = newLocation.subtract(centerLocation);
             if (!MyVector3f.isZero(offset)) {
                 /*
                  * Convert to spherical coordinates.
@@ -179,17 +230,17 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
-     * Alter the location of the cursor.
+     * Alter the location of the 3-D cursor.
      *
      * @param newLocation (in world coordinates, not null, unaffected)
      */
     public void setCursorLocation(Vector3f newLocation) {
-        Validate.nonNull(newLocation, "location");
+        Validate.nonNull(newLocation, "new location");
         cursorLocation.set(newLocation);
     }
 
     /**
-     * Calculate a scale factor for the cursor.
+     * Calculate a scale factor for the 3-D cursor.
      *
      * @return world scale factor (&ge;0)
      */
@@ -314,7 +365,7 @@ public class ScenePov implements Cloneable, Pov {
     public void updateCamera() {
         CameraStatus status = Maud.getModel().getScene().getCamera();
         if (status.isOrbitMode()) {
-            aim(); // in case the 3D cursor moved
+            aim(); // in case the center has moved
         }
 
         SceneView view = loadedCgm.getSceneView();
@@ -349,13 +400,14 @@ public class ScenePov implements Cloneable, Pov {
     // private methods
 
     /**
-     * Calculate the camera's azimuth angle from the 3D cursor.
+     * Calculate the camera's azimuth angle from the center.
      *
      * @return azimuth angle of the camera, measured clockwise from +X around
-     * the 3D cursor's +Y axis (in radians)
+     * the center's +Y axis (in radians)
      */
     private float azimuthAngle() {
-        Vector3f offset = cameraLocation.subtract(cursorLocation);
+        Vector3f centerLocation = centerLocation(null);
+        Vector3f offset = cameraLocation.subtract(centerLocation);
         float azimuthAngle;
         if (MyVector3f.isZero(offset)) {
             azimuthAngle = 0f;
@@ -383,13 +435,14 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
-     * Calculate the camera's elevation angle from the 3D cursor.
+     * Calculate the camera's elevation angle from the center.
      *
-     * @return elevation angle of camera, measured upward from the 3D cursor's
-     * X-Z plane (in radians)
+     * @return elevation angle of camera, measured upward from the center's X-Z
+     * plane (in radians)
      */
     private float elevationAngle() {
-        Vector3f offset = cameraLocation.subtract(cursorLocation);
+        Vector3f centerLocation = centerLocation(null);
+        Vector3f offset = cameraLocation.subtract(centerLocation);
         float elevationAngle;
         if (MyVector3f.isZero(offset)) {
             elevationAngle = 0f;
@@ -418,9 +471,9 @@ public class ScenePov implements Cloneable, Pov {
      * angle, azimuth, and range.
      *
      * @param elevationAngle elevation angle of camera, measured upward from the
-     * 3D cursor's X-Z plane (in radians)
+     * center's X-Z plane (in radians)
      * @param azimuthAngle azimuth angle of the camera, measured clockwise
-     * around the 3D cursor's +Y axis (in radians)
+     * around the center's +Y axis (in radians)
      * @param range (in world units, &ge;0)
      */
     private void setOrbitMode(float elevationAngle, float azimuthAngle,
@@ -437,7 +490,7 @@ public class ScenePov implements Cloneable, Pov {
 
         Vector3f dir = MyVector3f.fromAltAz(clampedElevation, azimuthAngle);
         Vector3f offset = dir.mult(clampedRange);
-        cameraLocation.set(cursorLocation);
+        centerLocation(cameraLocation);
         cameraLocation.addLocal(offset);
 
         dir.negateLocal();
