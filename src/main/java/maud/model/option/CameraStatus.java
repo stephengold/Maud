@@ -30,6 +30,7 @@ import com.jme3.math.FastMath;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import maud.Maud;
 
 /**
@@ -76,15 +77,19 @@ public class CameraStatus implements Cloneable {
      */
     private float flyRate = 0.1f;
     /**
-     * maximum distance of camera from the 3D cursor (orbit mode only, in world
+     * maximum distance of camera from the center (orbit mode only, in world
      * units, &gt;0)
      */
     private float maxRange = 10f;
     /**
-     * minimum distance of camera from the 3D cursor (orbit mode only, in world
+     * minimum distance of camera from the center (orbit mode only, in world
      * units, &gt;0)
      */
     private float minRange = 0.2f;
+    /**
+     * centering option (orbit mode only, not null)
+     */
+    private OrbitCenter orbitCenter = OrbitCenter.DddCursor;
     // *************************************************************************
     // new methods exposed
 
@@ -133,6 +138,16 @@ public class CameraStatus implements Cloneable {
     }
 
     /**
+     * Read the centering option for orbit mode.
+     *
+     * @return enum value (not null)
+     */
+    public OrbitCenter getOrbitCenter() {
+        assert orbitCenter != null;
+        return orbitCenter;
+    }
+
+    /**
      * Test whether the camera is in orbit mode.
      *
      * @return true if in orbit mode, otherwise false
@@ -175,6 +190,21 @@ public class CameraStatus implements Cloneable {
                 throw new IllegalArgumentException();
         }
 
+        if (orbitMode) {
+            Maud.getModel().getSource().getScenePov().aim();
+            Maud.getModel().getTarget().getScenePov().aim();
+        }
+    }
+
+    /**
+     * Alter the center for orbit mode.
+     *
+     * @param newCenter (not null)
+     */
+    public void setMode(OrbitCenter newCenter) {
+        Validate.nonNull(newCenter, "new center");
+
+        orbitCenter = newCenter;
         if (orbitMode) {
             Maud.getModel().getSource().getScenePov().aim();
             Maud.getModel().getTarget().getScenePov().aim();
