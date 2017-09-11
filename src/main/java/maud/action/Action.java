@@ -111,6 +111,7 @@ class Action {
     final static String resetSpatialScale = "reset spatial scale";
     final static String resetSpatialTranslation = "reset spatial translation";
     final static String resetTwist = "reset twist";
+    final static String resetVertexSelection = "reset vertex selection";
 
     final static String retargetAnimation = "retarget animation";
 
