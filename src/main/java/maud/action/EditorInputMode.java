@@ -547,6 +547,7 @@ public class EditorInputMode extends InputMode {
         boolean handled = true;
         EditableCgm target = Maud.getModel().getTarget();
         SelectedBone bone = target.getBone();
+        Cgm mouseCgm = Maud.gui.mouseCgm();
         switch (actionString) {
             case Action.resetBoneAngleToAnimation:
                 bone.setRotationToAnimation();
@@ -567,9 +568,8 @@ public class EditorInputMode extends InputMode {
                 bone.resetScale();
                 break;
             case Action.resetBoneSelection:
-                bone.deselect();
+                mouseCgm.getBone().deselect();
                 break;
-
             case Action.resetSpatialRotation:
                 target.setSpatialRotation(rotationIdentity);
                 break;
@@ -579,10 +579,13 @@ public class EditorInputMode extends InputMode {
             case Action.resetSpatialTranslation:
                 target.setSpatialTranslation(translateIdentity);
                 break;
-
             case Action.resetTwist:
                 Maud.getModel().getMap().setTwist(rotationIdentity);
                 break;
+            case Action.resetVertexSelection:
+                mouseCgm.getVertex().deselect();
+                break;
+
             default:
                 handled = false;
         }
