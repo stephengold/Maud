@@ -268,7 +268,7 @@ public class SelectedTrack implements Cloneable {
         for (Track track : oldTracks) {
             Track clone;
             if (track == selectedTrack) {
-                Pose pose = loadedCgm.getPose().getPose();
+                Pose pose = loadedCgm.getPose().get();
                 int boneIndex = selectedTrack.getTargetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
                 clone = TrackEdit.insertKeyframe(selectedTrack, time, user);
@@ -407,7 +407,7 @@ public class SelectedTrack implements Cloneable {
             Track clone;
             if (track == selectedTrack) {
                 BoneTrack boneTrack = (BoneTrack) track;
-                Pose pose = loadedCgm.getPose().getPose();
+                Pose pose = loadedCgm.getPose().get();
                 int boneIndex = selectedTrack.getTargetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
                 clone = TrackEdit.replaceKeyframe(boneTrack, frameIndex, user);

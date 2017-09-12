@@ -525,7 +525,7 @@ public class LoadedAnimation implements Cloneable {
     public void insertKeyframes() {
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
-        Pose pose = cgm.getPose().getPose();
+        Pose pose = cgm.getPose().get();
 
         Animation loaded = getAnimation();
         Track[] loadedTracks = loaded.getTracks();
@@ -1435,7 +1435,7 @@ public class LoadedAnimation implements Cloneable {
         SelectedAnimControl sac = cgm.getAnimControl();
         assert !sac.hasRealAnimation(animationName) : animationName;
 
-        Pose pose = cgm.getPose().getPose();
+        Pose pose = cgm.getPose().get();
         Animation poseAnim = pose.capture(animationName);
         editableCgm.addAnimation(poseAnim);
     }

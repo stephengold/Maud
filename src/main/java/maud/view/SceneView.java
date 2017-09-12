@@ -724,7 +724,7 @@ public class SceneView
          * Determine which bones to consider.
          */
         DisplayedPose displayedPose = cgm.getPose();
-        Pose pose = displayedPose.getPose();
+        Pose pose = displayedPose.get();
         int numBones = pose.countBones();
         BitSet boneIndexSet = new BitSet(numBones);
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
@@ -807,7 +807,7 @@ public class SceneView
             mesh.getTriangle(triangleIndex, vertexIndices);
 
             Cgm cgModel = Maud.gui.mouseCgm();
-            Pose pose = cgModel.getPose().getPose();
+            Pose pose = cgModel.getPose().get();
             Matrix4f[] matrices = pose.skin(null);
             Vector3f worldPosition = new Vector3f();
 
@@ -1303,7 +1303,7 @@ public class SceneView
      */
     private void updatePose() {
         int boneCount = cgm.getSkeleton().countBones();
-        Pose pose = cgm.getPose().getPose();
+        Pose pose = cgm.getPose().get();
         int numTransforms = pose.countBones();
         assert numTransforms == boneCount : numTransforms;
         assert skeleton == null
