@@ -74,17 +74,38 @@ class SgcTool extends WindowController {
 
         updateIndex();
 
-        String deleteLabel, typeText;
+        String deleteLabel, modeName, physicsName, sButton, typeText;
+
         SelectedSgc sgc = Maud.getModel().getTarget().getSgc();
         if (sgc.isSelected()) {
             deleteLabel = "Delete";
+            modeName = sgc.getModeName();
+            physicsName = sgc.objectName();
+            if (physicsName.isEmpty()) {
+                sButton = "";
+            } else {
+                sButton = "Select";
+            }
             typeText = sgc.getType();
         } else {
             deleteLabel = "";
+            modeName = "";
+            physicsName = "";
+            sButton = "";
             typeText = "(none selected)";
         }
-        Maud.gui.setStatusText("controlType", " " + typeText);
-        Maud.gui.setButtonLabel("controlDeleteButton", deleteLabel);
+
+        Maud.gui.setButtonLabel("sgcDeleteButton", deleteLabel);
+        Maud.gui.setStatusText("sgcMode", " " + modeName);
+        Maud.gui.setStatusText("sgcObject", " " + physicsName);
+        Maud.gui.setButtonLabel("sgcSelectObjectButton", sButton);
+        Maud.gui.setStatusText("sgcType", " " + typeText);
+
+        boolean isEnabled = sgc.isEnabled();
+        Maud.gui.setChecked("sgcEnable", isEnabled);
+
+        boolean isLocalPhysics = sgc.isApplyPhysicsLocal();
+        Maud.gui.setChecked("sgcLocalPhysics", isLocalPhysics);
     }
     // *************************************************************************
     // private methods
@@ -117,8 +138,8 @@ class SgcTool extends WindowController {
             pButton = "";
         }
 
-        Maud.gui.setStatusText("controlIndex", indexText);
-        Maud.gui.setButtonLabel("controlNextButton", nButton);
-        Maud.gui.setButtonLabel("controlPreviousButton", pButton);
+        Maud.gui.setStatusText("sgcIndex", indexText);
+        Maud.gui.setButtonLabel("sgcNextButton", nButton);
+        Maud.gui.setButtonLabel("sgcPreviousButton", pButton);
     }
 }
