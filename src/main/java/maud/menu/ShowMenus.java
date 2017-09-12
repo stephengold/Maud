@@ -41,6 +41,7 @@ import maud.dialog.LicenseType;
 import maud.model.Cgm;
 import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
+import maud.model.SelectedSgc;
 import maud.model.SelectedSkeleton;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedVertex;
@@ -300,7 +301,7 @@ public class ShowMenus {
         for (String name : spatial.listSgcNames()) {
             builder.add(name);
         }
-        builder.add(Cgm.noControl);
+        builder.add(SelectedSgc.noControl);
 
         builder.show(ActionPrefix.selectSgc);
     }
