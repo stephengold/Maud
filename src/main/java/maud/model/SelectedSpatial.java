@@ -332,6 +332,19 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Access the selected spatial in the MVC model.
+     *
+     * @return the pre-existing instance
+     */
+    Spatial find() {
+        Spatial modelRoot = loadedCgm.getRootSpatial();
+        Spatial result = underRoot(modelRoot);
+
+        assert result != null;
+        return result;
+    }
+
+    /**
      * Read the name of an indexed child of the selected spatial.
      *
      * @param childIndex which child (&ge;0)
@@ -746,19 +759,6 @@ public class SelectedSpatial implements Cloneable {
         storeResult.set(translation);
 
         return storeResult;
-    }
-
-    /**
-     * Access the selected spatial in the MVC model. TODO sort methods
-     *
-     * @return the pre-existing instance
-     */
-    Spatial find() {
-        Spatial modelRoot = loadedCgm.getRootSpatial();
-        Spatial result = underRoot(modelRoot);
-
-        assert result != null;
-        return result;
     }
 
     /**
