@@ -60,14 +60,14 @@ public class SelectedSgc implements Cloneable {
     // fields
 
     /**
-     * position of the selected SG control in the MVC model, or -1 for none
-     * selected TODO sort fields
-     */
-    private int selectedIndex = -1;
-    /**
      * CG model containing the SG control (set by {@link #setCgm(Cgm)})
      */
     private Cgm loadedCgm = null;
+    /**
+     * position of the selected SG control in the MVC model, or -1 for none
+     * selected
+     */
+    private int selectedIndex = -1;
     // *************************************************************************
     // new methods exposed
 
@@ -122,23 +122,6 @@ public class SelectedSgc implements Cloneable {
      */
     public int getIndex() {
         return selectedIndex;
-    }
-
-    /**
-     * Determine a name for the selected SG control. TODO sort methods
-     *
-     * @return a descriptive name, or noControl if none selected
-     */
-    public String name() {
-        List<String> names = loadedCgm.getSpatial().listSgcNames();
-        String name;
-        if (isSelected()) {
-            name = names.get(selectedIndex);
-        } else {
-            name = LoadedCgm.noControl;
-        }
-
-        return name;
     }
 
     /**
@@ -255,6 +238,23 @@ public class SelectedSgc implements Cloneable {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Determine a name for the selected SG control.
+     *
+     * @return a descriptive name, or noControl if none selected
+     */
+    public String name() {
+        List<String> names = loadedCgm.getSpatial().listSgcNames();
+        String name;
+        if (isSelected()) {
+            name = names.get(selectedIndex);
+        } else {
+            name = LoadedCgm.noControl;
+        }
+
+        return name;
     }
 
     /**
