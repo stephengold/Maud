@@ -128,6 +128,13 @@ class SelectAction {
             case Action.selectSgc:
                 Maud.gui.showMenus.selectSgc();
                 break;
+            case Action.selectSgcObject:
+                String physicsName = target.getSgc().objectName();
+                if (!physicsName.isEmpty()) {
+                    target.getPhysics().select(physicsName);
+                    Maud.gui.tools.select("physics");
+                }
+                break;
             case Action.selectSourceAnimControl:
                 Maud.gui.showMenus.selectAnimControl(model.getSource());
                 break;

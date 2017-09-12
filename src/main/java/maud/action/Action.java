@@ -134,6 +134,7 @@ class Action {
     final static String selectScreenVertex = "select screenVertex";
     final static String selectScreenXY = "select screenXY";
     final static String selectSgc = "select sgc";
+    final static String selectSgcObject = "select sgcObject";
     final static String selectSourceAnimControl = "select sourceAnimControl";
     final static String selectSourceBone = "select sourceBone";
     final static String selectSpatialChild = "select spatialChild";
