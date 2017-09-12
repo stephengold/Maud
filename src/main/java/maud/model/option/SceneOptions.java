@@ -29,7 +29,7 @@ package maud.model.option;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 
 /**
  * Display options applicable to "scene" views in Maud's editor screen.
@@ -273,10 +273,10 @@ public class SceneOptions implements Cloneable {
 
         wireframe = newSetting;
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         target.updateSceneWireframe();
 
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         if (source.isLoaded()) {
             source.updateSceneWireframe();
         }

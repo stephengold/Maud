@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.SelectedSgc;
 
 /**
@@ -116,7 +116,7 @@ class SgcTool extends WindowController {
     private void updateIndex() {
         String indexText, nButton, pButton;
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         int numSgcs = target.getSpatial().countSgcs();
         if (target.getSgc().isSelected()) {
             int selectedIndex = target.getSgc().getIndex();

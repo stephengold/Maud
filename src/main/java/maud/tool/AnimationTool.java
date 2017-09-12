@@ -32,8 +32,8 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.Cgm;
 import maud.model.LoadedAnimation;
-import maud.model.LoadedCgm;
 import maud.model.SelectedAnimControl;
 import maud.model.SelectedBone;
 
@@ -128,7 +128,7 @@ class AnimationTool extends WindowController {
         String nButton = "";
         String pButton = "";
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         if (target.countAnimControls() > 0) {
             sButton = "Select AnimControl";
             int numAnimControls = target.countAnimControls();
@@ -165,7 +165,7 @@ class AnimationTool extends WindowController {
      * Update the "has track" status of the selected bone.
      */
     private void updateHasTrack() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         SelectedBone bone = target.getBone();
         String hasTrackText;
         if (!bone.isSelected()) {
@@ -198,7 +198,7 @@ class AnimationTool extends WindowController {
         String nButton = "";
         String pButton = "";
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         SelectedAnimControl sac = target.getAnimControl();
         if (sac.isSelected()) {
             lButton = "Load";
@@ -234,11 +234,11 @@ class AnimationTool extends WindowController {
      * Update the freeze/loop/pin/pong check boxes and the pause button label.
      */
     private void updateLooping() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         boolean pinned = target.getAnimation().isPinned();
         Maud.gui.setChecked("pin", pinned);
 
-        LoadedCgm cgm;
+        Cgm cgm;
         if (target.getAnimation().isRetargetedPose()) {
             cgm = Maud.getModel().getSource();
         } else {

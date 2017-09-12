@@ -199,7 +199,7 @@ public class SceneView
     /**
      * Instantiate a new visualization.
      *
-     * @param loadedCgm CG model that will own this view (not null, alias
+     * @param ownerCgm CG model that will own this view (not null, alias
      * created)
      * @param parentNode attachment point in the scene graph (not null, alias
      * created)
@@ -207,13 +207,13 @@ public class SceneView
      * @param port2 view port to use after the screen is split (not null, alias
      * created)
      */
-    public SceneView(Cgm loadedCgm, Node parentNode, ViewPort port1,
+    public SceneView(Cgm ownerCgm, Node parentNode, ViewPort port1,
             ViewPort port2) {
-        Validate.nonNull(loadedCgm, "loaded model");
+        Validate.nonNull(ownerCgm, "loaded model");
         Validate.nonNull(parentNode, "parent node");
         Validate.nonNull(port2, "port2");
 
-        cgm = loadedCgm;
+        cgm = ownerCgm;
         parent = parentNode;
         viewPort1 = port1;
         viewPort2 = port2;

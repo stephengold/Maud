@@ -62,7 +62,7 @@ public class SelectedSgc implements Cloneable {
     /**
      * CG model containing the SG control (set by {@link #setCgm(Cgm)})
      */
-    private Cgm loadedCgm = null;
+    private Cgm cgm = null;
     /**
      * position of the selected SG control in the MVC model, or -1 for none
      * selected
@@ -76,23 +76,23 @@ public class SelectedSgc implements Cloneable {
      */
     public void delete() {
         if (isSelected()) {
-            Skeleton oldSkeleton = loadedCgm.getSkeleton().find();
-            AnimControl oldAnimControl = loadedCgm.getAnimControl().find();
+            Skeleton oldSkeleton = cgm.getSkeleton().find();
+            AnimControl oldAnimControl = cgm.getAnimControl().find();
 
-            EditableCgm editableCgm = (EditableCgm) loadedCgm;
+            EditableCgm editableCgm = (EditableCgm) cgm;
             editableCgm.deleteSgc();
             selectedIndex = -1;
 
             Boolean selectedSpatialFlag = false;
-            Skeleton newSkeleton = loadedCgm.getSkeleton().find(
+            Skeleton newSkeleton = cgm.getSkeleton().find(
                     selectedSpatialFlag);
             if (oldSkeleton != newSkeleton) {
-                loadedCgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
+                cgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
             }
 
-            AnimControl newAnimControl = loadedCgm.getAnimControl().find();
+            AnimControl newAnimControl = cgm.getAnimControl().find();
             if (oldAnimControl != newAnimControl) {
-                loadedCgm.getAnimation().loadBindPose();
+                cgm.getAnimation().loadBindPose();
             }
         }
     }
@@ -105,7 +105,7 @@ public class SelectedSgc implements Cloneable {
     Control find() {
         Control sgc = null;
         if (selectedIndex != -1) {
-            Spatial spatial = loadedCgm.getSpatial().find();
+            Spatial spatial = cgm.getSpatial().find();
             int numControls = spatial.getNumControls();
             if (selectedIndex < numControls) {
                 sgc = spatial.getControl(selectedIndex);
@@ -165,10 +165,10 @@ public class SelectedSgc implements Cloneable {
         String result = "";
         Control modelSgc = find();
         if (modelSgc instanceof PhysicsControl) {
-            Spatial selectedSpatial = loadedCgm.getSpatial().find();
+            Spatial selectedSpatial = cgm.getSpatial().find();
             PhysicsControl pc = (PhysicsControl) modelSgc;
             int position = Util.pcToPosition(selectedSpatial, pc);
-            SceneView sceneView = loadedCgm.getSceneView();
+            SceneView sceneView = cgm.getSceneView();
             result = sceneView.objectName(position);
         }
 
@@ -246,12 +246,12 @@ public class SelectedSgc implements Cloneable {
      * @return a descriptive name, or noControl if none selected
      */
     public String name() {
-        List<String> names = loadedCgm.getSpatial().listSgcNames();
+        List<String> names = cgm.getSpatial().listSgcNames();
         String name;
         if (isSelected()) {
             name = names.get(selectedIndex);
         } else {
-            name = LoadedCgm.noControl;
+            name = Cgm.noControl;
         }
 
         return name;
@@ -274,7 +274,7 @@ public class SelectedSgc implements Cloneable {
         if (newSgc == null) {
             selectNone();
         } else {
-            Spatial spatial = loadedCgm.getSpatial().find();
+            Spatial spatial = cgm.getSpatial().find();
             int newIndex = MyControl.findIndex(newSgc, spatial);
             select(newIndex);
         }
@@ -286,21 +286,21 @@ public class SelectedSgc implements Cloneable {
      * @param newIndex which SG control to select, or -1 to deselect
      */
     public void select(int newIndex) {
-        Skeleton oldSkeleton = loadedCgm.getSkeleton().find();
-        AnimControl oldAnimControl = loadedCgm.getAnimControl().find();
+        Skeleton oldSkeleton = cgm.getSkeleton().find();
+        AnimControl oldAnimControl = cgm.getAnimControl().find();
 
         selectedIndex = newIndex;
 
         Boolean selectedSpatialFlag = false;
         Skeleton newSkeleton;
-        newSkeleton = loadedCgm.getSkeleton().find(selectedSpatialFlag);
+        newSkeleton = cgm.getSkeleton().find(selectedSpatialFlag);
         if (oldSkeleton != newSkeleton) {
-            loadedCgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
+            cgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
         }
 
-        AnimControl newAnimControl = loadedCgm.getAnimControl().find();
+        AnimControl newAnimControl = cgm.getAnimControl().find();
         if (oldAnimControl != newAnimControl) {
-            loadedCgm.getAnimation().loadBindPose();
+            cgm.getAnimation().loadBindPose();
         }
     }
 
@@ -313,10 +313,10 @@ public class SelectedSgc implements Cloneable {
     public void select(String name) {
         Validate.nonNull(name, "name");
 
-        if (name.equals(LoadedCgm.noControl)) {
+        if (name.equals(Cgm.noControl)) {
             selectNone();
         } else {
-            List<String> names = loadedCgm.getSpatial().listSgcNames();
+            List<String> names = cgm.getSpatial().listSgcNames();
             int newIndex = names.indexOf(name);
             select(newIndex);
         }
@@ -328,7 +328,7 @@ public class SelectedSgc implements Cloneable {
     public void selectNext() {
         if (isSelected()) {
             int newIndex = selectedIndex + 1;
-            int numSgcs = loadedCgm.getSpatial().countSgcs();
+            int numSgcs = cgm.getSpatial().countSgcs();
             if (newIndex >= numSgcs) {
                 newIndex = 0;
             }
@@ -350,7 +350,7 @@ public class SelectedSgc implements Cloneable {
         if (isSelected()) {
             int newIndex = selectedIndex - 1;
             if (newIndex < 0) {
-                int numSgcs = loadedCgm.getSpatial().countSgcs();
+                int numSgcs = cgm.getSpatial().countSgcs();
                 newIndex = numSgcs - 1;
             }
             select(newIndex);
@@ -364,7 +364,7 @@ public class SelectedSgc implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
-        loadedCgm = newCgm;
+        cgm = newCgm;
     }
     // *************************************************************************
     // Object methods

@@ -39,6 +39,7 @@ import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.action.ActionPrefix;
+import maud.model.Cgm;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
@@ -91,13 +92,13 @@ public class BuildMenus {
      * Handle a "load (source)cgm asset" action with arguments.
      *
      * @param args action arguments (not null, not empty)
-     * @param cgm (not null)
+     * @param loadedCgm load slot (not null)
      */
-    public void loadCgmAsset(String args, LoadedCgm cgm) {
+    public void loadCgmAsset(String args, LoadedCgm loadedCgm) {
         String menuPrefix = null;
-        if (cgm == Maud.getModel().getSource()) {
+        if (loadedCgm == Maud.getModel().getSource()) {
             menuPrefix = ActionPrefix.loadSourceCgmAsset;
-        } else if (cgm == Maud.getModel().getTarget()) {
+        } else if (loadedCgm == Maud.getModel().getTarget()) {
             menuPrefix = ActionPrefix.loadCgmAsset;
         } else {
             throw new IllegalArgumentException();
@@ -118,7 +119,7 @@ public class BuildMenus {
                 }
             }
             if (cgmEntries.size() == 1 && cgmEntries.contains(assetPath)) {
-                cgm.loadAsset(rootPath, assetPath);
+                loadedCgm.loadAsset(rootPath, assetPath);
             } else if (!cgmEntries.isEmpty()) {
                 Maud.gui.showMenus.selectFile(cgmEntries,
                         menuPrefix + indexString + " ");
@@ -136,7 +137,7 @@ public class BuildMenus {
                 builder.show(menuPrefix);
 
             } else if (file.canRead()) {
-                cgm.loadAsset(rootPath, assetPath);
+                loadedCgm.loadAsset(rootPath, assetPath);
 
             } else {
                 /*
@@ -161,15 +162,15 @@ public class BuildMenus {
      * Handle a "load (source)cgm locator" action with argument.
      *
      * @param path action argument (not null, not empty)
-     * @param cgm (not null)
+     * @param loadedCgm load slot (not null)
      */
-    public void loadCgmLocator(String path, LoadedCgm cgm) {
+    public void loadCgmLocator(String path, LoadedCgm loadedCgm) {
         if (path.equals("From classpath")) {
             buildTestDataMenu();
             String menuPrefix = null;
-            if (cgm == Maud.getModel().getSource()) {
+            if (loadedCgm == Maud.getModel().getSource()) {
                 menuPrefix = ActionPrefix.loadSourceCgmNamed;
-            } else if (cgm == Maud.getModel().getTarget()) {
+            } else if (loadedCgm == Maud.getModel().getTarget()) {
                 menuPrefix = ActionPrefix.loadCgmNamed;
             } else {
                 throw new IllegalArgumentException();
@@ -180,7 +181,7 @@ public class BuildMenus {
             String indexString;
             indexString = Maud.getModel().getLocations().indexForPath(path);
             String args = indexString + " /";
-            loadCgmAsset(args, cgm);
+            loadCgmAsset(args, loadedCgm);
         }
     }
 
@@ -415,7 +416,7 @@ public class BuildMenus {
      * Handle a "select boneWithTrack" action.
      */
     void selectBoneWithTrack() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         List<String> boneNames = target.getAnimation().listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
@@ -442,7 +443,7 @@ public class BuildMenus {
      * @param argument action argument (not null)
      */
     void selectSourceBone(String argument) {
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         SelectedSkeleton skeleton = source.getSkeleton();
         if (skeleton.hasBone(argument)) {
             source.getBone().select(argument);
@@ -479,7 +480,7 @@ public class BuildMenus {
      */
     private void buildAnimationMenu() {
         builder.addTool("Tool");
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         if (target.getSkeleton().countBones() > 0) {
             builder.add("Load");
             builder.add("Add new");
@@ -495,7 +496,7 @@ public class BuildMenus {
         builder.add("Select AnimControl");
 
         builder.addTool("Source tool"); // TODO submenu
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         if (source.isLoaded() && source.getSkeleton().countBones() > 0) {
             builder.add("Load source");
         }
@@ -525,7 +526,7 @@ public class BuildMenus {
      * Build a "Bone -> Select" menu.
      */
     private void buildBoneSelectMenu() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         builder.add("By name");
         int numBones = target.getSkeleton().countBones();
         if (numBones > 0) {
@@ -692,7 +693,7 @@ public class BuildMenus {
      */
     private void buildKeyframeMenu() {
         builder.addTool("Tool");
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         if (target.getBone().hasTrack() && !target.getAnimation().isMoving()) {
             builder.add("Select");
             int frameIndex = target.getTrack().findKeyframeIndex();
@@ -831,7 +832,7 @@ public class BuildMenus {
         builder.addTool("Scale");
         builder.addTool("Translate");
         //builder.addTool("User data tool");
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         if (!target.getSpatial().isCgmRoot()) {
             builder.addEdit("Delete");
         }
@@ -888,7 +889,7 @@ public class BuildMenus {
         builder.addTool("Tool");
         builder.add("Load animation");
         builder.add("Select bone");
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         SelectedBone bone = target.getBone();
         if (bone.hasTrack()) {
             builder.addEdit("Delete");

@@ -124,8 +124,8 @@ public class EditableMap extends LoadedMap {
      */
     public void deleteInvalidMappings() {
         if (hasInvalidMappings()) {
-            LoadedCgm source = Maud.getModel().getSource();
-            LoadedCgm target = Maud.getModel().getTarget();
+            Cgm source = Maud.getModel().getSource();
+            Cgm target = Maud.getModel().getTarget();
             SelectedSkeleton skeleton;
             if (isInvertingMap()) {
                 skeleton = source.getSkeleton();
@@ -181,7 +181,7 @@ public class EditableMap extends LoadedMap {
      * Replace the map with an identity map for the source model.
      */
     public void loadIdentityForSource() {
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         Skeleton skeleton = source.getSkeleton().find();
         loadIdentity(skeleton);
     }
@@ -190,7 +190,7 @@ public class EditableMap extends LoadedMap {
      * Replace the map with an identity map for the target model.
      */
     public void loadIdentityForTarget() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         Skeleton skeleton = target.getSkeleton().find();
         loadIdentity(skeleton);
     }
@@ -199,8 +199,8 @@ public class EditableMap extends LoadedMap {
      * Add a bone mapping for the selected source and target bones.
      */
     public void mapBones() {
-        LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm source = Maud.getModel().getSource();
+        Cgm target = Maud.getModel().getTarget();
         if (!isBoneMappingSelected()
                 && source.getBone().isSelected()
                 && target.getBone().isSelected()) {

@@ -32,8 +32,8 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.Cgm;
 import maud.model.LoadedAnimation;
-import maud.model.LoadedCgm;
 import maud.model.SelectedAnimControl;
 
 /**
@@ -101,7 +101,7 @@ class SourceAnimationTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         String hasTrackText;
         if (!source.isLoaded()) {
             hasTrackText = "no model";
@@ -140,7 +140,7 @@ class SourceAnimationTool extends WindowController {
         String nButton = "";
         String pButton = "";
 
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         if (source.countAnimControls() > 0) {
             sButton = "Select AnimControl";
             int numAnimControls = source.countAnimControls();
@@ -185,7 +185,7 @@ class SourceAnimationTool extends WindowController {
         String nButton = "";
         String pButton = "";
 
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         SelectedAnimControl sac = source.getAnimControl();
         if (sac.isSelected()) {
             lButton = "Load";
@@ -249,7 +249,7 @@ class SourceAnimationTool extends WindowController {
      */
     private void updateName() {
         String nameText;
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         if (source.isLoaded()) {
             String name = source.getAnimation().getName();
             if (source.getAnimation().isReal()) {
@@ -286,7 +286,7 @@ class SourceAnimationTool extends WindowController {
      * Update the track counts.
      */
     private void updateTrackCounts() {
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         String boneTracksText, otherTracksText;
         if (source.isLoaded()) {
             int numBoneTracks = source.getAnimation().countBoneTracks();
@@ -307,7 +307,7 @@ class SourceAnimationTool extends WindowController {
      * Update the track-time slider and its status label.
      */
     private void updateTrackTime() {
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         LoadedAnimation animation = source.getAnimation();
         float duration = animation.getDuration();
         /*

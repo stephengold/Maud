@@ -31,8 +31,8 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.Cgm;
 import maud.model.EditableCgm;
-import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
 
 /**
@@ -147,7 +147,7 @@ class BoneTool extends WindowController {
         String indexText;
         String nButton, pButton;
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         int numBones = target.getSkeleton().countBones();
         if (target.getBone().isSelected()) {
             int selectedIndex = target.getBone().getIndex();

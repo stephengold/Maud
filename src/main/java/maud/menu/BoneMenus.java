@@ -32,9 +32,9 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
+import maud.model.Cgm;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
-import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
 import maud.model.SelectedSkeleton;
 
@@ -112,7 +112,7 @@ public class BoneMenus {
      * @param argument action argument (not null)
      */
     public void selectBone(String argument) {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         SelectedSkeleton skeleton = target.getSkeleton();
         if (skeleton.hasBone(argument)) {
             target.getBone().select(argument);
@@ -162,7 +162,7 @@ public class BoneMenus {
      * @param argument action argument (not null)
      */
     public void selectSourceBone(String argument) {
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         SelectedSkeleton skeleton = source.getSkeleton();
         if (skeleton.hasBone(argument)) {
             source.getBone().select(argument);
@@ -250,7 +250,7 @@ public class BoneMenus {
      * Select a bone by name, using submenus.
      */
     private void selectBoneByName() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         List<String> nameList = target.getSkeleton().listBoneNames();
         Maud.gui.showMenus.showBoneSubmenu(nameList);
     }
@@ -259,7 +259,7 @@ public class BoneMenus {
      * Select a bone by parent, using submenus.
      */
     private void selectBoneByParent() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         List<String> boneNames = target.getSkeleton().listRootBoneNames();
         Maud.gui.showPopupMenu(ActionPrefix.selectBoneChild, boneNames);
     }
@@ -268,7 +268,7 @@ public class BoneMenus {
      * Handle a "select rootBone" action.
      */
     private void selectRootBone() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         int numRoots = target.getSkeleton().countRootBones();
         if (numRoots == 1) {
             target.getBone().selectFirstRoot();
@@ -282,7 +282,7 @@ public class BoneMenus {
      * Handle a "select sourceRootBone" action.
      */
     private void selectSourceRootBone() {
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         int numRoots = source.getSkeleton().countRootBones();
         if (numRoots == 1) {
             source.getBone().selectFirstRoot();

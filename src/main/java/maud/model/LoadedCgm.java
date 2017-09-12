@@ -290,7 +290,7 @@ public class LoadedCgm extends Cgm {
      */
     @Override
     public void unload() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         assert this != target; // not allowed to unload target
 
         assetLocation = null;

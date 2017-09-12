@@ -30,8 +30,8 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.Cgm;
 import maud.model.EditableCgm;
-import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
 import maud.model.SelectedTrack;
 
@@ -155,7 +155,7 @@ class KeyframeTool extends WindowController {
         String nextButton = "";
         String lastButton = "";
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         int numKeyframes = target.getTrack().countKeyframes();
         if (numKeyframes > 0) {
             float time = target.getAnimation().getTime();
@@ -191,7 +191,7 @@ class KeyframeTool extends WindowController {
     private void updateTrackDescription() {
         String trackDescription;
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         SelectedBone bone = target.getBone();
         if (!target.getAnimation().isReal()) {
             trackDescription = "(load an animation)";
@@ -217,7 +217,7 @@ class KeyframeTool extends WindowController {
         String rotationCount = "";
         String scaleCount = "";
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         if (target.getBone().hasTrack()) {
             SelectedTrack track = target.getTrack();
             int numOffsets = track.countTranslations();

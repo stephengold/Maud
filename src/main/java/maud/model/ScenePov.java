@@ -68,7 +68,7 @@ public class ScenePov implements Cloneable, Pov {
     /**
      * CG model using this POV (set by {@link #setCgm(Cgm)})
      */
-    private Cgm loadedCgm = null;
+    private Cgm cgm = null;
     /**
      * direction the scene camera points (unit vector in world coordinates)
      */
@@ -131,7 +131,7 @@ public class ScenePov implements Cloneable, Pov {
                 break;
 
             case SelectedBone:
-                SelectedBone bone = loadedCgm.getBone();
+                SelectedBone bone = cgm.getBone();
                 if (bone.isSelected()) {
                     bone.worldLocation(storeResult);
                 } else {
@@ -140,7 +140,7 @@ public class ScenePov implements Cloneable, Pov {
                 break;
 
             case SelectedVertex:
-                SelectedVertex vertex = loadedCgm.getVertex();
+                SelectedVertex vertex = cgm.getVertex();
                 if (vertex.isSelected()) {
                     vertex.worldLocation(storeResult);
                 } else {
@@ -355,7 +355,7 @@ public class ScenePov implements Cloneable, Pov {
     @Override
     public void setCgm(Cgm newCgm) {
         assert newCgm != null;
-        loadedCgm = newCgm;
+        cgm = newCgm;
     }
 
     /**
@@ -368,7 +368,7 @@ public class ScenePov implements Cloneable, Pov {
             aim(); // in case the center has moved
         }
 
-        SceneView view = loadedCgm.getSceneView();
+        SceneView view = cgm.getSceneView();
         Camera camera = view.getCamera();
         if (camera != null) {
             camera.setLocation(cameraLocation);
