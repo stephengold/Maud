@@ -36,6 +36,7 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.collision.CollisionResult;
@@ -68,6 +69,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
+import jme3utilities.MyControl;
 import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
@@ -414,6 +416,22 @@ public class SceneView
     }
 
     /**
+     * Determine the name of the object associated with the indexed physics
+     * control.
+     *
+     * @param position position among the physics controls added to the selected
+     * spatial (ge;0)
+     */
+    public String objectName(int position) {
+        Spatial spatial = selectedSpatial();
+        PhysicsControl pc = Util.pcFromPosition(spatial, position);
+        PhysicsCollisionObject pco = (PhysicsCollisionObject) pc;
+        String result = MyControl.objectName(pco);
+
+        return result;
+    }
+
+    /**
      * Re-install this visualization in the appropriate scene graph. Invoked
      * when restoring a checkpoint.
      */
@@ -455,6 +473,21 @@ public class SceneView
         Spatial result = cgm.getSpatial().underRoot(cgmRoot);
         assert result != null;
         return result;
+    }
+
+    /**
+     * Alter whether the indexed physics control applies to its spatial's local
+     * translation.
+     *
+     * @param position position among the physics controls added to the selected
+     * spatial (ge;0)
+     * @param newSetting true&rarr;apply to local, false&rarr;apply to world
+     */
+    public void setApplyPhysicsLocal(int position, boolean newSetting) {
+        Spatial spatial = selectedSpatial();
+        PhysicsControl pc = Util.pcFromPosition(spatial, position);
+        assert MyControl.canApplyPhysicsLocal(pc);
+        MyControl.setApplyPhysicsLocal(pc, newSetting);
     }
 
     /**
@@ -519,6 +552,19 @@ public class SceneView
 
         Spatial spatial = selectedSpatial();
         spatial.setShadowMode(newMode);
+    }
+
+    /**
+     * Alter whether the specified physics control is enabled.
+     *
+     * @param position position among the physics controls added to the selected
+     * spatial (ge;0)
+     * @param newSetting true&rarr;enable, false&rarr;disable
+     */
+    public void setPhysicsControlEnabled(int position, boolean newSetting) {
+        Spatial spatial = selectedSpatial();
+        PhysicsControl pc = Util.pcFromPosition(spatial, position);
+        pc.setEnabled(newSetting);
     }
 
     /**
