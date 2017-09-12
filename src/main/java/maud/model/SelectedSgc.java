@@ -28,14 +28,18 @@ package maud.model;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
+import com.jme3.bullet.control.KinematicRagdollControl;
+import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import maud.Util;
+import maud.view.SceneView;
 
 /**
  * The MVC model of the selected scene-graph (SG) control in the Maud
@@ -57,7 +61,7 @@ public class SelectedSgc implements Cloneable {
 
     /**
      * position of the selected SG control in the MVC model, or -1 for none
-     * selected
+     * selected TODO sort fields
      */
     private int selectedIndex = -1;
     /**
@@ -90,34 +94,18 @@ public class SelectedSgc implements Cloneable {
             if (oldAnimControl != newAnimControl) {
                 loadedCgm.getAnimation().loadBindPose();
             }
-
-        } else {
-            logger.log(Level.WARNING, "no control selected");
         }
     }
 
     /**
      * Access the selected SG control. TODO rename find
      *
-     * @return the pre-existing instance, or null if none selected
-     */
-    Control findSgc() {
-        Spatial cgmRoot = loadedCgm.getRootSpatial();
-        Control sgc = findSgc(cgmRoot);
-
-        return sgc;
-    }
-
-    /**
-     * Access the selected SG control in the specified CG model.
-     *
-     * @param cgmRoot root of the CG model (not null)
      * @return the pre-existing instance, or null if none selected/found
      */
-    Control findSgc(Spatial cgmRoot) {
+    Control findSgc() {
         Control sgc = null;
         if (selectedIndex != -1) {
-            Spatial spatial = loadedCgm.getSpatial().underRoot(cgmRoot);
+            Spatial spatial = loadedCgm.getSpatial().modelSpatial();
             int numControls = spatial.getNumControls();
             if (selectedIndex < numControls) {
                 sgc = spatial.getControl(selectedIndex);
@@ -137,7 +125,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Read the name of the selected SG control.
+     * Read the name of the selected SG control. TODO rename name
      *
      * @return a descriptive name, or noControl if none selected
      */
@@ -151,6 +139,57 @@ public class SelectedSgc implements Cloneable {
         }
 
         return name;
+    }
+
+    /**
+     * Read the name of the physics mode of the selected SG control.
+     *
+     * @return mode name, or "" if unknown
+     */
+    public String getModeName() {
+        String result = "";
+        Control sgc = findSgc();
+        if (sgc instanceof RigidBodyControl) {
+            RigidBodyControl rbc = (RigidBodyControl) sgc;
+            boolean kinematic = rbc.isKinematicSpatial();
+            if (kinematic) {
+                result = "Kinematic";
+            } else {
+                float mass = rbc.getMass();
+                if (mass == 0f) {
+                    result = "Static";
+                } else {
+                    result = "Dynamic";
+                }
+            }
+
+        } else if (sgc instanceof KinematicRagdollControl) {
+            KinematicRagdollControl krc = (KinematicRagdollControl) sgc;
+            KinematicRagdollControl.Mode mode = krc.getMode();
+            result = mode.toString();
+        }
+
+        return result;
+    }
+
+    /**
+     * Determine the name of the physics object associated with the selected SG
+     * control.
+     *
+     * @return object name, or "" if unknown
+     */
+    public String objectName() {
+        String result = "";
+        Control modelSgc = findSgc();
+        if (modelSgc instanceof PhysicsControl) {
+            Spatial selectedSpatial = loadedCgm.getSpatial().modelSpatial();
+            PhysicsControl pc = (PhysicsControl) modelSgc;
+            int position = Util.pcToPosition(selectedSpatial, pc);
+            SceneView sceneView = loadedCgm.getSceneView();
+            result = sceneView.objectName(position);
+        }
+
+        return result;
     }
 
     /**
@@ -169,7 +208,44 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Test whether a bone is selected.
+     * Test whether the selected SGC applies physics coordinates to its
+     * spatial's local translation.
+     *
+     * @return true if applied to local translation, otherwise false
+     */
+    public boolean isApplyPhysicsLocal() {
+        boolean result = false;
+        if (isSelected()) {
+            Control sgc = findSgc();
+            if (MyControl.canApplyPhysicsLocal(sgc)) {
+                result = MyControl.isApplyPhysicsLocal(sgc);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether the selected SGC is enabled.
+     *
+     * @return true if enabled or of unknown type, otherwise false
+     */
+    public boolean isEnabled() {
+        boolean result = false;
+        if (isSelected()) {
+            Control sgc = findSgc();
+            if (MyControl.canDisable(sgc)) {
+                result = MyControl.isEnabled(sgc);
+            } else {
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether a scene-graph control is selected.
      *
      * @return true if selected, otherwise false
      */
@@ -232,7 +308,7 @@ public class SelectedSgc implements Cloneable {
      * Select an SG control by its name.
      *
      * @param newName which SG control to select, or noControl to deselect (not
-     * null)
+     * null) TODO rename name
      */
     public void select(String newName) {
         Validate.nonNull(newName, "name");

@@ -47,6 +47,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyControl;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -258,7 +259,7 @@ public class EditableCgm extends LoadedCgm {
      */
     void deleteSgc() {
         Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
-        Control selectedSgc = getSgc().findSgc(rootSpatial);
+        Control selectedSgc = getSgc().findSgc();
 
         History.autoAdd();
         if (selectedSgc instanceof PhysicsControl) {
@@ -435,6 +436,34 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter whether the selected SG control applies to its spatial's local
+     * translation.
+     *
+     * @param newSetting true&rarr;apply to local, false&rarr;apply to world
+     */
+    public void setApplyPhysicsLocal(boolean newSetting) {
+        Control modelSgc = getSgc().findSgc();
+        if (MyControl.canApplyPhysicsLocal(modelSgc)) {
+            boolean oldSetting = MyControl.isApplyPhysicsLocal(modelSgc);
+            if (oldSetting != newSetting) {
+                History.autoAdd();
+                MyControl.setApplyPhysicsLocal(modelSgc, newSetting);
+
+                SceneView sceneView = getSceneView();
+                Spatial ss = getSpatial().underRoot(rootSpatial);
+                int position = Util.pcToPosition(ss, (PhysicsControl) modelSgc);
+                sceneView.setApplyPhysicsLocal(position, newSetting);
+
+                if (newSetting) {
+                    setEdited("enable local physics");
+                } else {
+                    setEdited("disable local physics");
+                }
+            }
+        }
+    }
+
+    /**
      * Alter the batch hint of the selected spatial.
      *
      * @param newHint new value for batch hint (not null)
@@ -511,6 +540,35 @@ public class EditableCgm extends LoadedCgm {
             modelSpatial.setQueueBucket(newBucket);
             getSceneView().setQueueBucket(newBucket);
             setEdited("change render-queue bucket");
+        }
+    }
+
+    /**
+     * Alter whether the selected SGC is enabled.
+     *
+     * @param newSetting true&rarr;enable, false&rarr;disable
+     */
+    public void setSgcEnabled(boolean newSetting) {
+        Control modelSgc = getSgc().findSgc();
+        if (MyControl.canDisable(modelSgc)) {
+            boolean oldSetting = MyControl.isEnabled(modelSgc);
+            if (oldSetting != newSetting) {
+                History.autoAdd();
+                MyControl.setEnabled(modelSgc, newSetting);
+                if (modelSgc instanceof PhysicsControl) {
+                    Spatial ss = getSpatial().underRoot(rootSpatial);
+                    PhysicsControl pc = (PhysicsControl) modelSgc;
+                    int position = Util.pcToPosition(ss, pc);
+
+                    SceneView sceneView = getSceneView();
+                    sceneView.setPhysicsControlEnabled(position, newSetting);
+                }
+                if (newSetting) {
+                    setEdited("enable control");
+                } else {
+                    setEdited("disable control");
+                }
+            }
         }
     }
 
