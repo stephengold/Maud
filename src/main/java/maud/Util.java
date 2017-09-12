@@ -72,6 +72,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyControl;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
@@ -576,15 +577,13 @@ public class Util {
 
         Collection<PhysicsCharacter> charas = space.getCharacterList();
         for (PhysicsCharacter chara : charas) {
-            long id = chara.getObjectId();
-            String name = String.format("chara%d", id);
+            String name = MyControl.objectName(chara);
             result.add(name);
         }
 
         Collection<PhysicsGhostObject> ghosts = space.getGhostObjectList();
         for (PhysicsGhostObject ghost : ghosts) {
-            long id = ghost.getObjectId();
-            String name = String.format("ghost%d", id);
+            String name = MyControl.objectName(ghost);
             result.add(name);
         }
 
@@ -597,15 +596,14 @@ public class Util {
 
         Collection<PhysicsRigidBody> rigids = space.getRigidBodyList();
         for (PhysicsRigidBody rigid : rigids) {
-            long id = rigid.getObjectId();
-            String name = String.format("rigid%d", id);
+            String name = MyControl.objectName(rigid);
             result.add(name);
         }
 
         Collection<PhysicsVehicle> vehics = space.getVehicleList();
         for (PhysicsVehicle vehic : vehics) {
             long id = vehic.getObjectId();
-            String name = String.format("vehic%d", id);
+            String name = MyControl.objectName(vehic);
             result.add(name);
         }
 
