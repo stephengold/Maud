@@ -382,6 +382,12 @@ public class EditorScreen extends GuiScreenController {
             case "scoreTranslations":
                 model.getScore().setShowTranslations(isChecked);
                 break;
+            case "sgcEnable":
+                model.getTarget().setSgcEnabled(isChecked);
+                break;
+            case "sgcLocalPhysics":
+                model.getTarget().setApplyPhysicsLocal(isChecked);
+                break;
             case "shadows":
                 scene.setShadowsRendered(isChecked);
                 break;
