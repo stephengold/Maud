@@ -76,15 +76,14 @@ public class SelectedTrack implements Cloneable {
     // fields
 
     /**
+     * CG model containing the track (set by {@link #setCgm(Cgm)})
+     */
+    private Cgm cgm;
+    /**
      * editable CG model, if any, containing the track (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm;
-    /**
-     * CG model containing the track (set by {@link #setCgm(Cgm)}) TODO sort
-     * fields
-     */
-    private Cgm cgm;
     // *************************************************************************
     // new methods exposed
 

@@ -76,6 +76,10 @@ public class SelectedSpatial implements Cloneable {
      */
     private AnimControl oldAnimControl = new AnimControl();
     /**
+     * CG model containing the spatial (set by {@link #setCgm(Cgm)})
+     */
+    private Cgm cgm = null;
+    /**
      * editable CG model, if any, containing the spatial (set by
      * {@link #setCgm(Cgm)})
      */
@@ -84,11 +88,6 @@ public class SelectedSpatial implements Cloneable {
      * tree position of the selected spatial (not null)
      */
     private List<Integer> treePosition = new ArrayList<>(3);
-    /**
-     * CG model containing the spatial (set by {@link #setCgm(Cgm)}) TODO sort
-     * fields
-     */
-    private Cgm cgm = null;
     /**
      * the selected skeleton prior to selecting a spatial (not checkpointed)
      */

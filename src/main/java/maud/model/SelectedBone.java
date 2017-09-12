@@ -60,6 +60,10 @@ public class SelectedBone implements Cloneable {
     // fields
 
     /**
+     * CG model containing the bone (set by {@link #setCgm(Cgm)})
+     */
+    private Cgm cgm = null;
+    /**
      * editable CG model, if any, containing the bone (set by
      * {@link #setCgm(Cgm)})
      */
@@ -68,11 +72,6 @@ public class SelectedBone implements Cloneable {
      * index of the selected bone, or -1 for none selected
      */
     private int selectedIndex = -1;
-    /**
-     * CG model containing the bone (set by {@link #setCgm(Cgm)}) TODO sort
-     * fields
-     */
-    private Cgm cgm = null;
     // *************************************************************************
     // new methods exposed
 

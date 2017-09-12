@@ -70,13 +70,13 @@ public class ScorePov implements Cloneable, Pov {
     // fields
 
     /**
+     * CG model using this POV (set by {@link #setCgm(Cgm)})
+     */
+    private Cgm cgm = null;
+    /**
      * 1/2 the height of the camera's frustum (in world units, &gt;0)
      */
     private float halfHeight = 5f;
-    /**
-     * CG model using this POV (set by {@link #setCgm(Cgm)}) TODO sort fields
-     */
-    private Cgm cgm = null;
     /**
      * range of world Y coordinates occupied by the most recently selected bone
      */
