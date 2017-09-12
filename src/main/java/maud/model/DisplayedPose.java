@@ -72,11 +72,11 @@ public class DisplayedPose implements JmeCloneable {
     // new methods exposed
 
     /**
-     * Access the pose. TODO rename get()
+     * Access the pose.
      *
      * @return the pre-existing instance (not null)
      */
-    public Pose getPose() {
+    public Pose get() {
         assert pose != null;
         return pose;
     }

@@ -97,7 +97,7 @@ class BoneScaleTool extends WindowController {
             scales.z = Math.max(scales.z, 0.001f);
 
             int boneIndex = target.getBone().getIndex();
-            target.getPose().getPose().setScale(boneIndex, scales);
+            target.getPose().get().setScale(boneIndex, scales);
         }
     }
     // *************************************************************************

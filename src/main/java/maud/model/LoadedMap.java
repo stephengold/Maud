@@ -115,10 +115,10 @@ public class LoadedMap implements Cloneable {
                 /*
                  * Calculate the model orientation of the source bone.
                  */
-                Pose sourcePose = source.getPose().getPose();
+                Pose sourcePose = source.getPose().get();
                 Quaternion mo = sourcePose.modelOrientation(sourceIndex, null);
 
-                Pose targetPose = target.getPose().getPose();
+                Pose targetPose = target.getPose().get();
                 Quaternion userRotation = targetPose.userForModel(boneIndex,
                         mo, null);
                 Quaternion twist = boneMapping.getTwist();

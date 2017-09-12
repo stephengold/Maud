@@ -97,7 +97,7 @@ class BoneRotationTool extends WindowController {
             Quaternion rot = new Quaternion();
             rot.fromAngles(angles);
             int boneIndex = target.getBone().getIndex();
-            target.getPose().getPose().setRotation(boneIndex, rot);
+            target.getPose().get().setRotation(boneIndex, rot);
         }
     }
     // *************************************************************************

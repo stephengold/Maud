@@ -113,7 +113,7 @@ class BoneTranslationTool extends WindowController {
             offsets.multLocal(masterScale);
 
             int boneIndex = target.getBone().getIndex();
-            target.getPose().getPose().setTranslation(boneIndex, offsets);
+            target.getPose().get().setTranslation(boneIndex, offsets);
         }
     }
     // *************************************************************************

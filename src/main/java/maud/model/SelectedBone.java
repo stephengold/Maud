@@ -327,7 +327,7 @@ public class SelectedBone implements Cloneable {
      * @return orientation in model space (either storeResult or a new instance)
      */
     public Quaternion modelOrientation(Quaternion storeResult) {
-        Pose pose = loadedCgm.getPose().getPose();
+        Pose pose = loadedCgm.getPose().get();
         int boneIndex = getIndex();
         storeResult = pose.modelOrientation(boneIndex, storeResult);
 
@@ -341,7 +341,7 @@ public class SelectedBone implements Cloneable {
      * @return transform (either storeResult or a new instance)
      */
     public Transform modelTransform(Transform storeResult) {
-        Pose pose = loadedCgm.getPose().getPose();
+        Pose pose = loadedCgm.getPose().get();
         int boneIndex = getIndex();
         storeResult = pose.modelTransform(boneIndex, storeResult);
 
@@ -371,7 +371,7 @@ public class SelectedBone implements Cloneable {
     public void resetRotation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            editableCgm.getPose().getPose().resetRotation(boneIndex);
+            editableCgm.getPose().get().resetRotation(boneIndex);
         }
     }
 
@@ -381,7 +381,7 @@ public class SelectedBone implements Cloneable {
     public void resetScale() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            editableCgm.getPose().getPose().resetScale(boneIndex);
+            editableCgm.getPose().get().resetScale(boneIndex);
         }
     }
 
@@ -391,7 +391,7 @@ public class SelectedBone implements Cloneable {
     public void resetTranslation() {
         if (shouldEnableControls()) {
             int boneIndex = getIndex();
-            editableCgm.getPose().getPose().resetTranslation(boneIndex);
+            editableCgm.getPose().get().resetTranslation(boneIndex);
         }
     }
 
@@ -576,7 +576,7 @@ public class SelectedBone implements Cloneable {
      * @return user rotation (either storeResult or a new instance)
      */
     public Quaternion userRotation(Quaternion storeResult) {
-        Pose pose = loadedCgm.getPose().getPose();
+        Pose pose = loadedCgm.getPose().get();
         int boneIndex = getIndex();
         storeResult = pose.userRotation(boneIndex, storeResult);
 
@@ -590,7 +590,7 @@ public class SelectedBone implements Cloneable {
      * @return user scale (either storeResult or a new instance)
      */
     public Vector3f userScale(Vector3f storeResult) {
-        Pose pose = loadedCgm.getPose().getPose();
+        Pose pose = loadedCgm.getPose().get();
         int boneIndex = getIndex();
         storeResult = pose.userScale(boneIndex, storeResult);
 
@@ -604,7 +604,7 @@ public class SelectedBone implements Cloneable {
      * @return user translation (either storeResult or a new instance)
      */
     public Vector3f userTranslation(Vector3f storeResult) {
-        Pose pose = loadedCgm.getPose().getPose();
+        Pose pose = loadedCgm.getPose().get();
         int boneIndex = getIndex();
         storeResult = pose.userTranslation(boneIndex, storeResult);
 

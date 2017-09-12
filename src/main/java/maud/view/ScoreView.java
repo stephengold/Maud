@@ -1021,7 +1021,7 @@ public class ScoreView implements EditorView {
                     currentBone, iws, ixs, iys, izs);
         }
         cgm.getAnimation().trackRotations(currentBone, ws, xs, ys, zs);
-        Pose pose = cgm.getPose().getPose();
+        Pose pose = cgm.getPose().get();
         Quaternion user = pose.userRotation(currentBone, null);
         int poseFrame = ts.length;
         ws[poseFrame] = user.getW();
@@ -1080,7 +1080,7 @@ public class ScoreView implements EditorView {
                     currentBone, ixs, iys, izs);
         }
         cgm.getAnimation().trackScales(currentBone, xs, ys, zs);
-        Vector3f user = cgm.getPose().getPose().userScale(currentBone, null);
+        Vector3f user = cgm.getPose().get().userScale(currentBone, null);
         int poseFrame = ts.length;
         xs[poseFrame] = user.x;
         ys[poseFrame] = user.y;
@@ -1370,7 +1370,7 @@ public class ScoreView implements EditorView {
                     currentBone, ixs, iys, izs);
         }
         cgm.getAnimation().trackTranslations(currentBone, xs, ys, zs);
-        Pose pose = cgm.getPose().getPose();
+        Pose pose = cgm.getPose().get();
         Vector3f user = pose.userTranslation(currentBone, null);
         int poseFrame = ts.length;
         xs[poseFrame] = user.x;
