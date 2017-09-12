@@ -46,6 +46,7 @@ import jme3utilities.ui.Locators;
 import jme3utilities.ui.UiVersion;
 import jme3utilities.wes.WesVersion;
 import maud.Maud;
+import maud.action.Action;
 import maud.action.ActionPrefix;
 import maud.model.Cgm;
 import maud.model.EditableCgm;
@@ -138,18 +139,19 @@ public class EditorDialogs {
         String message = String.format("Delete the %s animation?",
                 MyString.quote(name));
         Maud.gui.closeAllPopups();
-        Maud.gui.showConfirmDialog(message, "Delete", "delete animation", null);
+        Maud.gui.showConfirmDialog(message, "Delete", Action.deleteAnimation,
+                null);
     }
 
     /**
-     * Display a "delete control" dialog.
+     * Display a "delete sgc" dialog.
      */
     public static void deleteSgc() {
         String name = Maud.getModel().getTarget().getSgc().name();
         String message;
         message = String.format("Delete the %s control?", MyString.quote(name));
         Maud.gui.closeAllPopups();
-        Maud.gui.showConfirmDialog(message, "Delete", "delete control", null);
+        Maud.gui.showConfirmDialog(message, "Delete", Action.deleteSgc, null);
     }
 
     /**
