@@ -56,6 +56,10 @@ public class SelectedSgc implements Cloneable {
      */
     final private static Logger logger = Logger.getLogger(
             SelectedSgc.class.getName());
+    /**
+     * dummy control name used to indicate that no control is selected
+     */
+    final public static String noControl = "( no control )";
     // *************************************************************************
     // fields
 
@@ -251,7 +255,7 @@ public class SelectedSgc implements Cloneable {
         if (isSelected()) {
             name = names.get(selectedIndex);
         } else {
-            name = Cgm.noControl;
+            name = noControl;
         }
 
         return name;
@@ -313,7 +317,7 @@ public class SelectedSgc implements Cloneable {
     public void select(String name) {
         Validate.nonNull(name, "name");
 
-        if (name.equals(Cgm.noControl)) {
+        if (name.equals(noControl)) {
             selectNone();
         } else {
             List<String> names = cgm.getSpatial().listSgcNames();

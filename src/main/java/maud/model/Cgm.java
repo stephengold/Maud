@@ -67,10 +67,6 @@ public class Cgm implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(Cgm.class.getName());
-    /**
-     * dummy control name used to indicate that no control is selected
-     */
-    final public static String noControl = "( no control )";
     // *************************************************************************
     // fields
 
@@ -606,7 +602,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Unload the CG model.
+     * Unload the (source) CG model.
      */
     public void unload() {
         Cgm target = Maud.getModel().getTarget();
