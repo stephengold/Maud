@@ -355,26 +355,26 @@ public class AxesTool extends WindowController {
     /**
      * Calculate the coordinate transform for the axes.
      *
-     * @param loadedCgm (not null)
+     * @param cgm (not null)
      * @return a new instance (in world coordinates) or null to hide the axes
      */
-    private Transform worldTransform(Cgm loadedCgm) {
+    private Transform worldTransform(Cgm cgm) {
         Transform transform = null;
         AxesMode mode = Maud.getModel().getScene().getAxes().getMode();
         switch (mode) {
             case Bone:
-                if (loadedCgm.getBone().isSelected()) {
-                    transform = loadedCgm.getBone().modelTransform(null);
+                if (cgm.getBone().isSelected()) {
+                    transform = cgm.getBone().modelTransform(null);
                     // TODO use animated geometry
                     Transform worldTransform;
-                    worldTransform = loadedCgm.getSceneView().worldTransform();
+                    worldTransform = cgm.getSceneView().worldTransform();
                     transform.combineWithParent(worldTransform);
                 }
                 break;
 
             case Cgm:
-                if (loadedCgm.isLoaded()) {
-                    SceneView sceneView = loadedCgm.getSceneView();
+                if (cgm.isLoaded()) {
+                    SceneView sceneView = cgm.getSceneView();
                     transform = sceneView.getTransform().worldTransform();
                 }
                 break;
@@ -383,14 +383,14 @@ public class AxesTool extends WindowController {
                 break;
 
             case Spatial:
-                if (loadedCgm.isLoaded()) {
-                    Spatial spatial = loadedCgm.getSceneView().selectedSpatial();
+                if (cgm.isLoaded()) {
+                    Spatial spatial = cgm.getSceneView().selectedSpatial();
                     transform = spatial.getWorldTransform();
                 }
                 break;
 
             case World:
-                if (loadedCgm == Maud.getModel().getTarget()) {
+                if (cgm == Maud.getModel().getTarget()) {
                     transform = new Transform(); // identity
                 }
                 break;

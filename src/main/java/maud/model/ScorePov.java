@@ -74,9 +74,9 @@ public class ScorePov implements Cloneable, Pov {
      */
     private float halfHeight = 5f;
     /**
-     * CG model using this POV (set by {@link #setCgm(Cgm)})
+     * CG model using this POV (set by {@link #setCgm(Cgm)}) TODO sort fields
      */
-    private Cgm loadedCgm = null;
+    private Cgm cgm = null;
     /**
      * range of world Y coordinates occupied by the most recently selected bone
      */
@@ -95,7 +95,7 @@ public class ScorePov implements Cloneable, Pov {
      * @return compression factor (&gt;0)
      */
     public float compression() {
-        ScoreView view = loadedCgm.getScoreView();
+        ScoreView view = cgm.getScoreView();
         Camera camera = view.getCamera();
         float far = MyCamera.frustumAspectRatio(camera);
         float var = MyCamera.viewAspectRatio(camera);
@@ -131,7 +131,7 @@ public class ScorePov implements Cloneable, Pov {
      * @return coordinate value
      */
     public float leftX() {
-        ScoreView view = loadedCgm.getScoreView();
+        ScoreView view = cgm.getScoreView();
         Camera camera = view.getCamera();
         float left = camera.getFrustumLeft();
         assert left < 0f : left;
@@ -148,7 +148,7 @@ public class ScorePov implements Cloneable, Pov {
      * @return coordinate value
      */
     public float rightX() {
-        ScoreView view = loadedCgm.getScoreView();
+        ScoreView view = cgm.getScoreView();
         Camera camera = view.getCamera();
         float right = camera.getFrustumRight();
         assert right > 0f : right;
@@ -164,7 +164,7 @@ public class ScorePov implements Cloneable, Pov {
      * @param yLocation new Y coordinate (in world space)
      */
     public void setCameraY(float yLocation) {
-        ScoreView view = loadedCgm.getScoreView();
+        ScoreView view = cgm.getScoreView();
         float maxY = 0f;
         float minY = -view.getHeight();
         cameraLocation.y = FastMath.clamp(yLocation, minY, maxY);
@@ -184,7 +184,7 @@ public class ScorePov implements Cloneable, Pov {
      * Partially update the camera for this POV.
      */
     public void updatePartial() {
-        ScoreView view = loadedCgm.getScoreView();
+        ScoreView view = cgm.getScoreView();
         Camera camera = view.getCamera();
         camera.setLocation(cameraLocation);
         camera.setFrustumBottom(-halfHeight);
@@ -259,7 +259,7 @@ public class ScorePov implements Cloneable, Pov {
     @Override
     public void setCgm(Cgm newCgm) {
         assert newCgm != null;
-        loadedCgm = newCgm;
+        cgm = newCgm;
     }
 
     /**
@@ -267,7 +267,7 @@ public class ScorePov implements Cloneable, Pov {
      */
     @Override
     public void updateCamera() {
-        ScoreView view = loadedCgm.getScoreView();
+        ScoreView view = cgm.getScoreView();
         Camera camera = view.getCamera();
         if (camera != null) {
             float hh = getHalfHeight();

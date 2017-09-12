@@ -29,8 +29,8 @@ package maud.action;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.model.Cgm;
 import maud.model.EditorModel;
-import maud.model.LoadedCgm;
 import maud.model.option.OrbitCenter;
 import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
@@ -69,7 +69,7 @@ class SelectAction {
     static boolean process(String actionString) {
         boolean handled = true;
         EditorModel model = Maud.getModel();
-        LoadedCgm target = model.getTarget();
+        Cgm target = model.getTarget();
         switch (actionString) {
             case Action.selectAnimControl:
                 Maud.gui.showMenus.selectAnimControl(target);
@@ -201,7 +201,7 @@ class SelectAction {
         boolean handled = true;
 
         EditorModel model = Maud.getModel();
-        LoadedCgm target = model.getTarget();
+        Cgm target = model.getTarget();
         String arg;
         if (actionString.startsWith(ActionPrefix.selectAnimControl)) {
             arg = MyString.remainder(actionString,

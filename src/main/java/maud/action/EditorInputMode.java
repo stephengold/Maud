@@ -700,8 +700,8 @@ public class EditorInputMode extends InputMode {
             case Action.viewHorizontal:
                 ViewType viewType = Maud.gui.mouseViewType();
                 if (viewType == ViewType.Scene) {
-                    Cgm loadedCgm = Maud.gui.mouseCgm();
-                    loadedCgm.getScenePov().goHorizontal();
+                    Cgm cgm = Maud.gui.mouseCgm();
+                    cgm.getScenePov().goHorizontal();
                 }
                 handled = true;
                 break;

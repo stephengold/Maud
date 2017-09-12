@@ -35,11 +35,11 @@ import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
+import maud.model.Cgm;
 import maud.model.EditableCgm;
 import maud.model.EditableMap;
 import maud.model.History;
 import maud.model.LoadedAnimation;
-import maud.model.LoadedCgm;
 import maud.model.SelectedAnimControl;
 import maud.model.SelectedSpatial;
 import maud.model.option.MiscStatus;
@@ -118,7 +118,7 @@ public class EditorMenus {
      *
      * @param cgm (not null)
      */
-    public void loadAnimation(LoadedCgm cgm) {
+    public void loadAnimation(Cgm cgm) {
         if (cgm.isLoaded()) {
             List<String> names = cgm.getAnimControl().listAnimationNames();
             Maud.gui.showMenus.showAnimationSubmenu(names, cgm);
@@ -131,7 +131,7 @@ public class EditorMenus {
      * @param argument action argument (not null)
      * @param cgm which load slot (not null)
      */
-    public void loadAnimation(String argument, LoadedCgm cgm) {
+    public void loadAnimation(String argument, Cgm cgm) {
         SelectedAnimControl sac = cgm.getAnimControl();
         if (sac.hasRealAnimation(argument)
                 || argument.equals(LoadedAnimation.bindPoseName)
@@ -175,7 +175,7 @@ public class EditorMenus {
      * &rarr; include geometries only
      */
     public void selectSpatial(String argument, boolean includeNodes) {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         if (target.hasSpatial(argument)) {
             target.getSpatial().select(argument);
 
@@ -551,7 +551,7 @@ public class EditorMenus {
      */
     private boolean menuKeyframeSelect(String remainder) {
         boolean handled = true;
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         switch (remainder) {
             case "First":
                 target.getTrack().selectFirstKeyframe();

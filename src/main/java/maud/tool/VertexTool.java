@@ -32,7 +32,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.SelectedSkeleton;
 import maud.model.SelectedVertex;
 
@@ -117,7 +117,7 @@ class VertexTool extends WindowController {
         String bone3Name = "";
         String bone3Weight = "";
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         SelectedVertex vertex = target.getVertex();
         SelectedSkeleton skeleton = target.getSkeleton();
         if (vertex.isSelected()) {
@@ -164,7 +164,7 @@ class VertexTool extends WindowController {
         String nButton = "";
         String pButton = "";
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         int numVertices = target.getSpatial().countVertices();
         if (target.getVertex().isSelected()) {
             int selectedIndex = target.getVertex().getIndex();

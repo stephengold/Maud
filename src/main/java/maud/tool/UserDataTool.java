@@ -31,8 +31,8 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.Cgm;
 import maud.model.EditableCgm;
-import maud.model.LoadedCgm;
 import maud.model.SelectedSpatial;
 
 /**
@@ -127,7 +127,7 @@ class UserDataTool extends WindowController {
     private void updateKey() {
         String dButton, keyText, rButton;
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         String key = target.getUserData().getKey();
         if (key == null) {
             dButton = "";
@@ -150,7 +150,7 @@ class UserDataTool extends WindowController {
     private void updateValue() {
         String eButton, valueText;
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         String key = target.getUserData().getKey();
         if (key == null) {
             eButton = "";

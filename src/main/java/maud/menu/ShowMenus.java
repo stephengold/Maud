@@ -41,7 +41,6 @@ import maud.dialog.LicenseType;
 import maud.model.Cgm;
 import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
-import maud.model.LoadedCgm;
 import maud.model.SelectedSkeleton;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedVertex;
@@ -128,7 +127,7 @@ public class ShowMenus {
     void editAnimation() {
         MenuBuilder builder = new MenuBuilder();
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         float duration = target.getAnimation().getDuration();
         if (duration > 0f) {
             builder.addEdit("Behead");
@@ -180,7 +179,7 @@ public class ShowMenus {
      *
      * @param cgm which load slot (not null)
      */
-    public void selectAnimControl(LoadedCgm cgm) {
+    public void selectAnimControl(Cgm cgm) {
         if (cgm.isLoaded()) {
             MenuBuilder builder = new MenuBuilder();
             List<String> names = cgm.listAnimControlNames();
@@ -203,7 +202,7 @@ public class ShowMenus {
      * @param argument action argument (not null)
      */
     public void selectBoneChild(String argument) {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         if (argument.startsWith("!")) {
             String name = argument.substring(1);
             target.getBone().select(name);
@@ -278,7 +277,7 @@ public class ShowMenus {
      *
      * @param cgm which load slot (not null)
      */
-    public void selectPhysics(LoadedCgm cgm) {
+    public void selectPhysics(Cgm cgm) {
         if (cgm.isLoaded()) {
             List<String> names = cgm.listPhysicsNames();
             if (!names.isEmpty()) {
@@ -301,7 +300,7 @@ public class ShowMenus {
         for (String name : spatial.listSgcNames()) {
             builder.add(name);
         }
-        builder.add(LoadedCgm.noControl);
+        builder.add(Cgm.noControl);
 
         builder.show(ActionPrefix.selectSgc);
     }
@@ -312,7 +311,7 @@ public class ShowMenus {
     void selectSpatial() {
         MenuBuilder builder = new MenuBuilder();
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         List<String> names = target.listSpatialNames("", true);
         if (!names.isEmpty()) {
             builder.add("By name");
@@ -425,7 +424,7 @@ public class ShowMenus {
      * Display a "Vertex -> Select" menu.
      */
     public void selectVertex() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         int numVertices = target.getSpatial().countVertices();
         if (numVertices > 0) {
             MenuBuilder builder = new MenuBuilder();
@@ -707,7 +706,7 @@ public class ShowMenus {
         Collections.sort(nameList);
 
         MenuBuilder builder = new MenuBuilder();
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         for (String name : nameList) {
             if (target.hasGeometry(name)) {
                 builder.addGeometry(name);

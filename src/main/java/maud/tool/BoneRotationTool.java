@@ -35,7 +35,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.SelectedBone;
 
 /**
@@ -87,7 +87,7 @@ class BoneRotationTool extends WindowController {
      * If active, update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         if (target.getBone().shouldEnableControls()) {
             float[] angles = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {

@@ -85,9 +85,10 @@ public class SelectedSpatial implements Cloneable {
      */
     private List<Integer> treePosition = new ArrayList<>(3);
     /**
-     * CG model containing the spatial (set by {@link #setCgm(Cgm)})
+     * CG model containing the spatial (set by {@link #setCgm(Cgm)}) TODO sort
+     * fields
      */
-    private Cgm loadedCgm = null;
+    private Cgm cgm = null;
     /**
      * the selected skeleton prior to selecting a spatial (not checkpointed)
      */
@@ -99,7 +100,7 @@ public class SelectedSpatial implements Cloneable {
      * Add an AnimControl to the selected spatial and select the new control.
      */
     public void addAnimControl() {
-        Skeleton skeleton = loadedCgm.getSkeleton().find();
+        Skeleton skeleton = cgm.getSkeleton().find();
         AnimControl newSgc = new AnimControl(skeleton);
 
         editableCgm.addSgc(newSgc);
@@ -111,7 +112,7 @@ public class SelectedSpatial implements Cloneable {
      */
     public void addGhostControl() {
         GhostControl newSgc = new GhostControl();
-        SceneView sceneView = loadedCgm.getSceneView();
+        SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
         CollisionShape shape = Util.makeShape(viewSpatial);
         newSgc.setCollisionShape(shape);
@@ -127,7 +128,7 @@ public class SelectedSpatial implements Cloneable {
     public void addRigidBodyControl() {
         float mass = 1f;
         RigidBodyControl newSgc = new RigidBodyControl(mass);
-        SceneView sceneView = loadedCgm.getSceneView();
+        SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
         CollisionShape shape = Util.makeShape(viewSpatial);
         newSgc.setCollisionShape(shape);
@@ -140,7 +141,7 @@ public class SelectedSpatial implements Cloneable {
      * Add a SkeletonControl to the selected spatial and select the new control.
      */
     public void addSkeletonControl() {
-        Skeleton skeleton = loadedCgm.getSkeleton().find();
+        Skeleton skeleton = cgm.getSkeleton().find();
         SkeletonControl newSgc = new SkeletonControl(skeleton);
 
         editableCgm.addSgc(newSgc);
@@ -337,7 +338,7 @@ public class SelectedSpatial implements Cloneable {
      * @return the pre-existing instance
      */
     Spatial find() {
-        Spatial modelRoot = loadedCgm.getRootSpatial();
+        Spatial modelRoot = cgm.getRootSpatial();
         Spatial result = underRoot(modelRoot);
 
         assert result != null;
@@ -765,7 +766,7 @@ public class SelectedSpatial implements Cloneable {
      * After successfully loading a CG model, select the root of the model.
      */
     void postLoad() {
-        loadedCgm.getSgc().postLoad();
+        cgm.getSgc().postLoad();
         oldAnimControl = new AnimControl();
         oldSkeleton = new Skeleton();
         treePosition.clear();
@@ -795,7 +796,7 @@ public class SelectedSpatial implements Cloneable {
         Validate.nonNull(newSpatial, "spatial");
 
         preSelect();
-        List<Integer> position = loadedCgm.findSpatial(newSpatial);
+        List<Integer> position = cgm.findSpatial(newSpatial);
         assert position != null;
         treePosition = position;
         assert find() == newSpatial;
@@ -811,7 +812,7 @@ public class SelectedSpatial implements Cloneable {
         Validate.nonEmpty(name, "spatial name");
 
         preSelect();
-        List<Integer> position = loadedCgm.findSpatialNamed(name);
+        List<Integer> position = cgm.findSpatialNamed(name);
         assert position != null;
         treePosition = position;
         assert find().getName().equals(name);
@@ -841,7 +842,7 @@ public class SelectedSpatial implements Cloneable {
     public void selectCgmRoot() {
         preSelect();
         treePosition.clear();
-        assert find() == loadedCgm.getRootSpatial();
+        assert find() == cgm.getRootSpatial();
         postSelect();
     }
 
@@ -868,7 +869,7 @@ public class SelectedSpatial implements Cloneable {
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
 
-        loadedCgm = newCgm;
+        cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
             editableCgm = (EditableCgm) newCgm;
         } else {
@@ -971,9 +972,9 @@ public class SelectedSpatial implements Cloneable {
      * Invoked before selecting a spatial.
      */
     private void preSelect() {
-        loadedCgm.getSgc().selectNone();
-        oldAnimControl = loadedCgm.getAnimControl().find();
-        oldSkeleton = loadedCgm.getSkeleton().find();
+        cgm.getSgc().selectNone();
+        oldAnimControl = cgm.getAnimControl().find();
+        oldSkeleton = cgm.getSkeleton().find();
     }
 
     /**
@@ -982,17 +983,17 @@ public class SelectedSpatial implements Cloneable {
     private void postSelect() {
         Boolean selectedSpatialFlag = false;
         Skeleton newSkeleton;
-        newSkeleton = loadedCgm.getSkeleton().find(selectedSpatialFlag);
+        newSkeleton = cgm.getSkeleton().find(selectedSpatialFlag);
         if (oldSkeleton != newSkeleton) {
-            loadedCgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
+            cgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
         }
 
-        AnimControl newAnimControl = loadedCgm.getAnimControl().find();
+        AnimControl newAnimControl = cgm.getAnimControl().find();
         if (oldAnimControl != newAnimControl) {
-            loadedCgm.getAnimation().loadBindPose();
+            cgm.getAnimation().loadBindPose();
         }
 
-        loadedCgm.getUserData().selectKey(null);
-        loadedCgm.getVertex().deselect();
+        cgm.getUserData().selectKey(null);
+        cgm.getVertex().deselect();
     }
 }

@@ -31,8 +31,8 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.Cgm;
 import maud.model.EditorModel;
-import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
 import maud.model.SelectedBone;
 import maud.model.SelectedSkeleton;
@@ -141,8 +141,8 @@ public class MappingTool extends WindowController {
         String feedback;
 
         LoadedMap map = Maud.getModel().getMap();
-        LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm source = Maud.getModel().getSource();
+        Cgm target = Maud.getModel().getTarget();
         if (!target.getSkeleton().isSelected()) {
             feedback = "select the target skeleton";
         } else if (!source.isLoaded()) {
@@ -240,7 +240,7 @@ public class MappingTool extends WindowController {
         /*
          * description
          */
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         String sourceBoneDesc;
         if (source.getBone().isSelected()) {
             String sourceName = source.getBone().getName();

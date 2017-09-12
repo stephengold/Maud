@@ -31,6 +31,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.Cgm;
 import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
 
@@ -111,7 +112,7 @@ class RetargetTool extends WindowController {
     private void updateBottom() {
         String sourceAnimDesc = "";
 
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         boolean real = source.getAnimation().isReal();
         if (real) {
             String name = source.getAnimation().getName();
@@ -129,8 +130,8 @@ class RetargetTool extends WindowController {
         String rButton = "";
 
         LoadedMap map = Maud.getModel().getMap();
-        LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm source = Maud.getModel().getSource();
+        Cgm target = Maud.getModel().getTarget();
         if (!target.getAnimControl().isSelected()) {
             feedback = "select a target anim control";
         } else if (!source.isLoaded()) {

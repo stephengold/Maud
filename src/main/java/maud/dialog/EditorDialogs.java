@@ -47,9 +47,9 @@ import jme3utilities.ui.UiVersion;
 import jme3utilities.wes.WesVersion;
 import maud.Maud;
 import maud.action.ActionPrefix;
+import maud.model.Cgm;
 import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
-import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedTrack;
@@ -393,7 +393,7 @@ public class EditorDialogs {
      * Display a "select vertex " dialog.
      */
     public static void selectVertex() {
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         int numVertices = target.getSpatial().countVertices();
         int indexBase = Maud.getModel().getMisc().getIndexBase();
         DialogController controller = new IntegerDialog("Select", indexBase,

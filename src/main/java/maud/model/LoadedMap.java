@@ -101,8 +101,8 @@ public class LoadedMap implements Cloneable {
         }
         storeResult.loadIdentity();
 
-        LoadedCgm source = Maud.getModel().getSource();
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm source = Maud.getModel().getSource();
+        Cgm target = Maud.getModel().getTarget();
         Skeleton targetSkeleton = target.getSkeleton().find();
         Bone targetBone = targetSkeleton.getBone(boneIndex);
         String targetName = targetBone.getName();
@@ -172,7 +172,7 @@ public class LoadedMap implements Cloneable {
             index = -1;
         } else {
             List<String> nameList = listSorted();
-            LoadedCgm target = Maud.getModel().getTarget();
+            Cgm target = Maud.getModel().getTarget();
             String targetBoneName = target.getBone().getName();
             index = nameList.indexOf(targetBoneName);
         }
@@ -321,7 +321,7 @@ public class LoadedMap implements Cloneable {
     public boolean isTargetBoneMapped(int boneIndex) {
         Validate.nonNegative(boneIndex, "bone index");
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         String boneName = target.getSkeleton().getBoneName(boneIndex);
         boolean result = isBoneMapped(boneName);
 
@@ -478,7 +478,7 @@ public class LoadedMap implements Cloneable {
     public void selectNext() {
         if (isBoneMappingSelected()) {
             List<String> nameList = listSorted();
-            LoadedCgm target = Maud.getModel().getTarget();
+            Cgm target = Maud.getModel().getTarget();
             String targetBoneName = target.getBone().getName();
             int index = nameList.indexOf(targetBoneName);
             int numMappings = nameList.size();
@@ -494,7 +494,7 @@ public class LoadedMap implements Cloneable {
     public void selectPrevious() {
         if (isBoneMappingSelected()) {
             List<String> nameList = listSorted();
-            LoadedCgm target = Maud.getModel().getTarget();
+            Cgm target = Maud.getModel().getTarget();
             String targetBoneName = target.getBone().getName();
             int index = nameList.indexOf(targetBoneName);
             int numMappings = nameList.size();
@@ -712,7 +712,7 @@ public class LoadedMap implements Cloneable {
     private void retargetAndAdd(String newAnimationName) {
         assert newAnimationName != null;
 
-        LoadedCgm source = Maud.getModel().getSource();
+        Cgm source = Maud.getModel().getSource();
         EditableCgm target = Maud.getModel().getTarget();
         Animation sourceAnimation = source.getAnimation().getAnimation();
         Skeleton sourceSkeleton = source.getSkeleton().find();

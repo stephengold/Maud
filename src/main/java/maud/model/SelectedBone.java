@@ -69,9 +69,10 @@ public class SelectedBone implements Cloneable {
      */
     private int selectedIndex = -1;
     /**
-     * CG model containing the bone (set by {@link #setCgm(Cgm)})
+     * CG model containing the bone (set by {@link #setCgm(Cgm)}) TODO sort
+     * fields
      */
-    private Cgm loadedCgm = null;
+    private Cgm cgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -111,7 +112,7 @@ public class SelectedBone implements Cloneable {
         if (selectedIndex == -1) {
             bone = null;
         } else {
-            bone = loadedCgm.getSkeleton().getBone(selectedIndex);
+            bone = cgm.getSkeleton().getBone(selectedIndex);
         }
 
         return bone;
@@ -197,7 +198,7 @@ public class SelectedBone implements Cloneable {
      * @return true if a bone is selected and it has a track, otherwise false
      */
     public boolean hasTrack() {
-        BoneTrack track = loadedCgm.getTrack().find();
+        BoneTrack track = cgm.getTrack().find();
         if (track == null) {
             return false;
         } else {
@@ -213,7 +214,7 @@ public class SelectedBone implements Cloneable {
     public boolean influence() {
         boolean result = false;
         if (isSelected()) {
-            SelectedSkeleton ss = loadedCgm.getSkeleton();
+            SelectedSkeleton ss = cgm.getSkeleton();
             Spatial subtree = ss.findSpatial();
             Skeleton skeleton = ss.find();
             BitSet bones = Util.addAllInfluencers(subtree, skeleton, null);
@@ -261,7 +262,7 @@ public class SelectedBone implements Cloneable {
      */
     public List<Integer> listAncestorIndices() {
         List<Integer> result = new ArrayList<>(6);
-        Skeleton skeleton = loadedCgm.getSkeleton().find();
+        Skeleton skeleton = cgm.getSkeleton().find();
         Bone bone = get();
         while (bone != null) {
             int index = skeleton.getBoneIndex(bone);
@@ -283,7 +284,7 @@ public class SelectedBone implements Cloneable {
         if (bone == null) {
             result = new ArrayList<>(0);
         } else {
-            Skeleton skeleton = loadedCgm.getSkeleton().find();
+            Skeleton skeleton = cgm.getSkeleton().find();
 
             List<Bone> children = bone.getChildren();
             int numChildren = children.size();
@@ -327,7 +328,7 @@ public class SelectedBone implements Cloneable {
      * @return orientation in model space (either storeResult or a new instance)
      */
     public Quaternion modelOrientation(Quaternion storeResult) {
-        Pose pose = loadedCgm.getPose().get();
+        Pose pose = cgm.getPose().get();
         int boneIndex = getIndex();
         storeResult = pose.modelOrientation(boneIndex, storeResult);
 
@@ -341,7 +342,7 @@ public class SelectedBone implements Cloneable {
      * @return transform (either storeResult or a new instance)
      */
     public Transform modelTransform(Transform storeResult) {
-        Pose pose = loadedCgm.getPose().get();
+        Pose pose = cgm.getPose().get();
         int boneIndex = getIndex();
         storeResult = pose.modelTransform(boneIndex, storeResult);
 
@@ -357,7 +358,7 @@ public class SelectedBone implements Cloneable {
         int index = -1;
         Bone bone = get();
         if (bone != null) {
-            Skeleton skeleton = loadedCgm.getSkeleton().find();
+            Skeleton skeleton = cgm.getSkeleton().find();
             Bone parent = bone.getParent();
             index = skeleton.getBoneIndex(parent);
         }
@@ -403,7 +404,7 @@ public class SelectedBone implements Cloneable {
     void select(Bone bone) {
         assert bone != null;
 
-        Skeleton skeleton = loadedCgm.getSkeleton().find();
+        Skeleton skeleton = cgm.getSkeleton().find();
         int index = skeleton.getBoneIndex(bone);
         if (index != -1) {
             select(index);
@@ -429,7 +430,7 @@ public class SelectedBone implements Cloneable {
             deselect();
 
         } else {
-            Skeleton skeleton = loadedCgm.getSkeleton().find();
+            Skeleton skeleton = cgm.getSkeleton().find();
             int index = skeleton.getBoneIndex(name);
             if (index == -1) {
                 logger.log(Level.WARNING, "Select failed: no bone named {0}.",
@@ -458,7 +459,7 @@ public class SelectedBone implements Cloneable {
      * Select the first root bone of the loaded CG model.
      */
     public void selectFirstRoot() {
-        Skeleton skeleton = loadedCgm.getSkeleton().find();
+        Skeleton skeleton = cgm.getSkeleton().find();
         Bone[] roots = skeleton.getRoots();
         Bone firstRoot = roots[0];
         select(firstRoot);
@@ -470,7 +471,7 @@ public class SelectedBone implements Cloneable {
     public void selectNext() {
         if (selectedIndex != -1) {
             ++selectedIndex;
-            int numBones = loadedCgm.getSkeleton().countBones();
+            int numBones = cgm.getSkeleton().countBones();
             if (selectedIndex >= numBones) {
                 selectedIndex = 0;
             }
@@ -497,7 +498,7 @@ public class SelectedBone implements Cloneable {
         if (selectedIndex != -1) {
             --selectedIndex;
             if (selectedIndex < 0) {
-                int numBones = loadedCgm.getSkeleton().countBones();
+                int numBones = cgm.getSkeleton().countBones();
                 selectedIndex = numBones - 1;
             }
         }
@@ -511,7 +512,7 @@ public class SelectedBone implements Cloneable {
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
 
-        loadedCgm = newCgm;
+        cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
             editableCgm = (EditableCgm) newCgm;
         } else {
@@ -560,9 +561,9 @@ public class SelectedBone implements Cloneable {
     public boolean shouldEnableControls() {
         if (!isSelected()) {
             return false;
-        } else if (loadedCgm.getAnimation().isMoving()) {
+        } else if (cgm.getAnimation().isMoving()) {
             return false;
-        } else if (loadedCgm.getAnimation().isRetargetedPose()) {
+        } else if (cgm.getAnimation().isRetargetedPose()) {
             return false;
         } else {
             return true;
@@ -576,7 +577,7 @@ public class SelectedBone implements Cloneable {
      * @return user rotation (either storeResult or a new instance)
      */
     public Quaternion userRotation(Quaternion storeResult) {
-        Pose pose = loadedCgm.getPose().get();
+        Pose pose = cgm.getPose().get();
         int boneIndex = getIndex();
         storeResult = pose.userRotation(boneIndex, storeResult);
 
@@ -590,7 +591,7 @@ public class SelectedBone implements Cloneable {
      * @return user scale (either storeResult or a new instance)
      */
     public Vector3f userScale(Vector3f storeResult) {
-        Pose pose = loadedCgm.getPose().get();
+        Pose pose = cgm.getPose().get();
         int boneIndex = getIndex();
         storeResult = pose.userScale(boneIndex, storeResult);
 
@@ -604,7 +605,7 @@ public class SelectedBone implements Cloneable {
      * @return user translation (either storeResult or a new instance)
      */
     public Vector3f userTranslation(Vector3f storeResult) {
-        Pose pose = loadedCgm.getPose().get();
+        Pose pose = cgm.getPose().get();
         int boneIndex = getIndex();
         storeResult = pose.userTranslation(boneIndex, storeResult);
 
@@ -618,7 +619,7 @@ public class SelectedBone implements Cloneable {
      * @return world coordinates (either storeResult or a new instance)
      */
     public Vector3f worldLocation(Vector3f storeResult) {
-        DisplayedPose displayedPose = loadedCgm.getPose();
+        DisplayedPose displayedPose = cgm.getPose();
         int boneIndex = getIndex();
         storeResult = displayedPose.worldLocation(boneIndex, storeResult);
 

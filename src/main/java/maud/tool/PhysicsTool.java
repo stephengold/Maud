@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.LoadedCgm;
+import maud.model.Cgm;
 import maud.model.SelectedPhysics;
 
 /**
@@ -93,7 +93,7 @@ class PhysicsTool extends WindowController {
         String indexText;
         String nButton = "", pButton = "";
 
-        LoadedCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         int numObjects = target.countPhysics();
         SelectedPhysics physics = target.getPhysics();
 
