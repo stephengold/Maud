@@ -153,7 +153,7 @@ public class SelectedSpatial implements Cloneable {
      * @return count (&ge;0) or 0 if the spatial is not a node
      */
     public int countChildren() {
-        Spatial parent = modelSpatial();
+        Spatial parent = find();
 
         int result;
         if (parent instanceof Node) {
@@ -174,7 +174,7 @@ public class SelectedSpatial implements Cloneable {
      * @return count (&ge;0)
      */
     public int countLights() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
 
         LightList list = spatial.getLocalLightList();
         int result = list.size();
@@ -208,7 +208,7 @@ public class SelectedSpatial implements Cloneable {
      * @return count (&ge;0)
      */
     public int countOverrides() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
 
         List<MatParamOverride> list = spatial.getLocalMatParamOverrides();
         int result = list.size();
@@ -224,7 +224,7 @@ public class SelectedSpatial implements Cloneable {
      * @return count (&ge;0)
      */
     public int countSgcs() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         int result = spatial.getNumControls();
 
         assert result >= 0 : result;
@@ -238,7 +238,7 @@ public class SelectedSpatial implements Cloneable {
      * @return count (&ge;0)
      */
     public int countSubtreeSgcs() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         int result = MySpatial.countControls(spatial, Control.class);
 
         assert result >= 0 : result;
@@ -251,7 +251,7 @@ public class SelectedSpatial implements Cloneable {
      * @return count (&ge;0)
      */
     public int countSubtreeUserData() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         int result = MySpatial.countUserData(spatial);
 
         assert result >= 0 : result;
@@ -264,7 +264,7 @@ public class SelectedSpatial implements Cloneable {
      * @return count (&ge;0)
      */
     public int countSubtreeVertices() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         int result = MySpatial.countVertices(spatial);
 
         assert result >= 0 : result;
@@ -277,7 +277,7 @@ public class SelectedSpatial implements Cloneable {
      * @return count (&ge;0)
      */
     public int countUserData() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         Collection<String> keys = spatial.getUserDataKeys();
         int result = keys.size();
 
@@ -307,14 +307,14 @@ public class SelectedSpatial implements Cloneable {
      * select the parent.
      */
     public void delete() {
-        Spatial selectedSpatial = modelSpatial();
+        Spatial selectedSpatial = find();
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
             preSelect();
             editableCgm.deleteSubtree();
             int last = treePosition.size() - 1;
             treePosition.remove(last);
-            assert modelSpatial() == parent;
+            assert find() == parent;
             postSelect();
         }
     }
@@ -325,7 +325,7 @@ public class SelectedSpatial implements Cloneable {
      * @return textual description (not null)
      */
     public String describeType() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         String typeText = spatial.getClass().getSimpleName();
 
         return typeText;
@@ -357,7 +357,7 @@ public class SelectedSpatial implements Cloneable {
      * @return hint (not null)
      */
     public Spatial.BatchHint getLocalBatchHint() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         Spatial.BatchHint result = spatial.getLocalBatchHint();
 
         assert result != null;
@@ -370,7 +370,7 @@ public class SelectedSpatial implements Cloneable {
      * @return hint (not null)
      */
     public Spatial.CullHint getLocalCullHint() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         Spatial.CullHint result = spatial.getLocalCullHint();
 
         assert result != null;
@@ -383,7 +383,7 @@ public class SelectedSpatial implements Cloneable {
      * @return bucket (not null)
      */
     public RenderQueue.Bucket getLocalQueueBucket() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         RenderQueue.Bucket result = spatial.getLocalQueueBucket();
 
         assert result != null;
@@ -396,7 +396,7 @@ public class SelectedSpatial implements Cloneable {
      * @return mode (not null)
      */
     public RenderQueue.ShadowMode getLocalShadowMode() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         RenderQueue.ShadowMode result = spatial.getLocalShadowMode();
 
         assert result != null;
@@ -441,7 +441,7 @@ public class SelectedSpatial implements Cloneable {
      */
     Mesh getMesh() {
         Mesh result;
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         if (spatial instanceof Geometry) {
             Geometry geometry = (Geometry) spatial;
             result = geometry.getMesh();
@@ -475,7 +475,7 @@ public class SelectedSpatial implements Cloneable {
      * @return name, or null if none
      */
     public String getName() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         String result = spatial.getName();
 
         return result;
@@ -487,7 +487,7 @@ public class SelectedSpatial implements Cloneable {
      * @return name, or null if none
      */
     public String getParentName() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         Spatial parent = spatial.getParent();
         String result;
         if (parent == null) {
@@ -508,7 +508,7 @@ public class SelectedSpatial implements Cloneable {
     public Object getUserData(String key) {
         Validate.nonNull(key, "key");
 
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         Object result = spatial.getUserData(key);
 
         return result;
@@ -565,7 +565,7 @@ public class SelectedSpatial implements Cloneable {
     public boolean hasUserKey(String key) {
         Validate.nonNull(key, "key");
 
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         Collection<String> keys = spatial.getUserDataKeys();
         if (keys.contains(key)) {
             return true;
@@ -584,7 +584,7 @@ public class SelectedSpatial implements Cloneable {
         Validate.nonNegative(childIndex, "child index");
 
         boolean result = false;
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         if (spatial instanceof Node) {
             Node node = (Node) spatial;
             Spatial child = node.getChild(childIndex);
@@ -600,7 +600,7 @@ public class SelectedSpatial implements Cloneable {
      * @return true if it's a geometry, otherwise false
      */
     public boolean isGeometry() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         if (spatial instanceof Geometry) {
             return true;
         } else {
@@ -627,7 +627,7 @@ public class SelectedSpatial implements Cloneable {
      * @return true if it's a node, otherwise false
      */
     public boolean isNode() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         if (spatial instanceof Node) {
             return true;
         } else {
@@ -663,7 +663,7 @@ public class SelectedSpatial implements Cloneable {
         int numControls = countSgcs();
         List<String> nameList = new ArrayList<>(numControls);
 
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         for (int sgcIndex = 0; sgcIndex < numControls; sgcIndex++) {
             Control sgc = spatial.getControl(sgcIndex);
             String name = sgc.getClass().getSimpleName();
@@ -684,7 +684,7 @@ public class SelectedSpatial implements Cloneable {
      * @return a new list, sorted lexicographically
      */
     public List<String> listUserKeys() {
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         Collection<String> keys = spatial.getUserDataKeys();
         int numKeys = keys.size();
         List<String> result = new ArrayList<>(numKeys);
@@ -705,7 +705,7 @@ public class SelectedSpatial implements Cloneable {
             storeResult = new Quaternion();
         }
 
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         Quaternion rotation = spatial.getLocalRotation();
         storeResult.set(rotation);
 
@@ -723,7 +723,7 @@ public class SelectedSpatial implements Cloneable {
             storeResult = new Vector3f();
         }
 
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         Vector3f scale = spatial.getLocalScale();
         storeResult.set(scale);
 
@@ -741,7 +741,7 @@ public class SelectedSpatial implements Cloneable {
             storeResult = new Vector3f();
         }
 
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         Vector3f translation = spatial.getLocalTranslation();
         storeResult.set(translation);
 
@@ -749,11 +749,11 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Access the selected spatial in the MVC model.
+     * Access the selected spatial in the MVC model. TODO sort methods
      *
      * @return the pre-existing instance
      */
-    Spatial modelSpatial() {
+    Spatial find() {
         Spatial modelRoot = loadedCgm.getRootSpatial();
         Spatial result = underRoot(modelRoot);
 
@@ -798,7 +798,7 @@ public class SelectedSpatial implements Cloneable {
         List<Integer> position = loadedCgm.findSpatial(newSpatial);
         assert position != null;
         treePosition = position;
-        assert modelSpatial() == newSpatial;
+        assert find() == newSpatial;
         postSelect();
     }
 
@@ -814,7 +814,7 @@ public class SelectedSpatial implements Cloneable {
         List<Integer> position = loadedCgm.findSpatialNamed(name);
         assert position != null;
         treePosition = position;
-        assert modelSpatial().getName().equals(name);
+        assert find().getName().equals(name);
         postSelect();
     }
 
@@ -830,7 +830,7 @@ public class SelectedSpatial implements Cloneable {
         if (child != null) {
             preSelect();
             treePosition.add(childIndex);
-            assert modelSpatial() == child;
+            assert find() == child;
             postSelect();
         }
     }
@@ -841,7 +841,7 @@ public class SelectedSpatial implements Cloneable {
     public void selectCgmRoot() {
         preSelect();
         treePosition.clear();
-        assert modelSpatial() == loadedCgm.getRootSpatial();
+        assert find() == loadedCgm.getRootSpatial();
         postSelect();
     }
 
@@ -849,13 +849,13 @@ public class SelectedSpatial implements Cloneable {
      * Select the parent of the selected spatial.
      */
     public void selectParent() {
-        Spatial selectedSpatial = modelSpatial();
+        Spatial selectedSpatial = find();
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
             preSelect();
             int last = treePosition.size() - 1;
             treePosition.remove(last);
-            assert modelSpatial() == parent;
+            assert find() == parent;
             postSelect();
         }
     }
@@ -935,7 +935,7 @@ public class SelectedSpatial implements Cloneable {
      */
     private Material material() {
         Material result;
-        Spatial spatial = modelSpatial();
+        Spatial spatial = find();
         if (spatial instanceof Geometry) {
             Geometry geometry = (Geometry) spatial;
             result = geometry.getMaterial();
@@ -955,7 +955,7 @@ public class SelectedSpatial implements Cloneable {
     private Spatial modelChild(int childIndex) {
         assert childIndex >= 0 : childIndex;
 
-        Spatial parent = modelSpatial();
+        Spatial parent = find();
         Spatial child;
         if (parent instanceof Node) {
             Node node = (Node) parent;

@@ -105,7 +105,7 @@ public class SelectedSgc implements Cloneable {
     Control findSgc() {
         Control sgc = null;
         if (selectedIndex != -1) {
-            Spatial spatial = loadedCgm.getSpatial().modelSpatial();
+            Spatial spatial = loadedCgm.getSpatial().find();
             int numControls = spatial.getNumControls();
             if (selectedIndex < numControls) {
                 sgc = spatial.getControl(selectedIndex);
@@ -182,7 +182,7 @@ public class SelectedSgc implements Cloneable {
         String result = "";
         Control modelSgc = findSgc();
         if (modelSgc instanceof PhysicsControl) {
-            Spatial selectedSpatial = loadedCgm.getSpatial().modelSpatial();
+            Spatial selectedSpatial = loadedCgm.getSpatial().find();
             PhysicsControl pc = (PhysicsControl) modelSgc;
             int position = Util.pcToPosition(selectedSpatial, pc);
             SceneView sceneView = loadedCgm.getSceneView();
@@ -274,7 +274,7 @@ public class SelectedSgc implements Cloneable {
         if (newSgc == null) {
             selectNone();
         } else {
-            Spatial spatial = loadedCgm.getSpatial().modelSpatial();
+            Spatial spatial = loadedCgm.getSpatial().find();
             int newIndex = MyControl.findIndex(newSgc, spatial);
             select(newIndex);
         }

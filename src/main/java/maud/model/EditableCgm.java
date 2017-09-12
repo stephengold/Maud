@@ -378,7 +378,7 @@ public class EditableCgm extends LoadedCgm {
             success = false;
 
         } else {
-            Spatial selectedSpatial = getSpatial().modelSpatial();
+            Spatial selectedSpatial = getSpatial().find();
 
             History.autoAdd();
             selectedSpatial.setName(newName);
@@ -397,7 +397,7 @@ public class EditableCgm extends LoadedCgm {
     public void renameUserKey(String newKey) {
         Validate.nonNull(newKey, "new key");
 
-        Spatial sp = getSpatial().modelSpatial();
+        Spatial sp = getSpatial().find();
         String oldKey = getUserData().getKey();
         Object data = sp.getUserData(oldKey);
 
@@ -641,7 +641,7 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(valueString, "value string");
 
         String key = getUserData().getKey();
-        Spatial sp = getSpatial().modelSpatial();
+        Spatial sp = getSpatial().find();
         Object data = getSpatial().getUserData(key);
 
         History.autoAdd();
