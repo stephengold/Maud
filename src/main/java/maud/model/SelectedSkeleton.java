@@ -126,7 +126,7 @@ public class SelectedSkeleton implements Cloneable {
          * If the selected SG control is an AnimControl or SkeletonControl,
          * use its skeleton, if it has one.
          */
-        Control selectedSgc = cgm.getSgc().findSgc();
+        Control selectedSgc = cgm.getSgc().find();
         if (selectedSgc instanceof AnimControl) {
             animControl = (AnimControl) selectedSgc;
             skeleton = animControl.getSkeleton();

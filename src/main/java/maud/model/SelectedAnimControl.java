@@ -95,7 +95,7 @@ public class SelectedAnimControl implements Cloneable {
     AnimControl find() {
         AnimControl animControl;
         if (cgm.isLoaded()) {
-            Control sgc = cgm.getSgc().findSgc();
+            Control sgc = cgm.getSgc().find();
             if (sgc instanceof AnimControl) {
                 animControl = (AnimControl) sgc;
             } else {

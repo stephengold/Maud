@@ -259,7 +259,7 @@ public class EditableCgm extends LoadedCgm {
      */
     void deleteSgc() {
         Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
-        Control selectedSgc = getSgc().findSgc();
+        Control selectedSgc = getSgc().find();
 
         History.autoAdd();
         if (selectedSgc instanceof PhysicsControl) {
@@ -442,7 +442,7 @@ public class EditableCgm extends LoadedCgm {
      * @param newSetting true&rarr;apply to local, false&rarr;apply to world
      */
     public void setApplyPhysicsLocal(boolean newSetting) {
-        Control modelSgc = getSgc().findSgc();
+        Control modelSgc = getSgc().find();
         if (MyControl.canApplyPhysicsLocal(modelSgc)) {
             boolean oldSetting = MyControl.isApplyPhysicsLocal(modelSgc);
             if (oldSetting != newSetting) {
@@ -549,7 +549,7 @@ public class EditableCgm extends LoadedCgm {
      * @param newSetting true&rarr;enable, false&rarr;disable
      */
     public void setSgcEnabled(boolean newSetting) {
-        Control modelSgc = getSgc().findSgc();
+        Control modelSgc = getSgc().find();
         if (MyControl.canDisable(modelSgc)) {
             boolean oldSetting = MyControl.isEnabled(modelSgc);
             if (oldSetting != newSetting) {

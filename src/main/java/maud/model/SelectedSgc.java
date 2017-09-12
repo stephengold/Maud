@@ -98,11 +98,11 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Access the selected SG control. TODO rename find
+     * Access the selected SG control.
      *
      * @return the pre-existing instance, or null if none selected/found
      */
-    Control findSgc() {
+    Control find() {
         Control sgc = null;
         if (selectedIndex != -1) {
             Spatial spatial = loadedCgm.getSpatial().find();
@@ -125,11 +125,11 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Read the name of the selected SG control. TODO rename name
+     * Determine a name for the selected SG control. TODO sort methods
      *
      * @return a descriptive name, or noControl if none selected
      */
-    public String getName() {
+    public String name() {
         List<String> names = loadedCgm.getSpatial().listSgcNames();
         String name;
         if (isSelected()) {
@@ -148,7 +148,7 @@ public class SelectedSgc implements Cloneable {
      */
     public String getModeName() {
         String result = "";
-        Control sgc = findSgc();
+        Control sgc = find();
         if (sgc instanceof RigidBodyControl) {
             RigidBodyControl rbc = (RigidBodyControl) sgc;
             boolean kinematic = rbc.isKinematicSpatial();
@@ -180,7 +180,7 @@ public class SelectedSgc implements Cloneable {
      */
     public String objectName() {
         String result = "";
-        Control modelSgc = findSgc();
+        Control modelSgc = find();
         if (modelSgc instanceof PhysicsControl) {
             Spatial selectedSpatial = loadedCgm.getSpatial().find();
             PhysicsControl pc = (PhysicsControl) modelSgc;
@@ -198,7 +198,7 @@ public class SelectedSgc implements Cloneable {
      * @return abbreviated name for the class
      */
     public String getType() {
-        Control sgc = findSgc();
+        Control sgc = find();
         String name = sgc.getClass().getSimpleName();
         if (name.endsWith("Control")) {
             name = MyString.removeSuffix(name, "Control");
@@ -216,7 +216,7 @@ public class SelectedSgc implements Cloneable {
     public boolean isApplyPhysicsLocal() {
         boolean result = false;
         if (isSelected()) {
-            Control sgc = findSgc();
+            Control sgc = find();
             if (MyControl.canApplyPhysicsLocal(sgc)) {
                 result = MyControl.isApplyPhysicsLocal(sgc);
             }
@@ -233,7 +233,7 @@ public class SelectedSgc implements Cloneable {
     public boolean isEnabled() {
         boolean result = false;
         if (isSelected()) {
-            Control sgc = findSgc();
+            Control sgc = find();
             if (MyControl.canDisable(sgc)) {
                 result = MyControl.isEnabled(sgc);
             } else {
@@ -307,17 +307,17 @@ public class SelectedSgc implements Cloneable {
     /**
      * Select an SG control by its name.
      *
-     * @param newName which SG control to select, or noControl to deselect (not
-     * null) TODO rename name
+     * @param name which SG control to select, or noControl to deselect (not
+     * null)
      */
-    public void select(String newName) {
-        Validate.nonNull(newName, "name");
+    public void select(String name) {
+        Validate.nonNull(name, "name");
 
-        if (newName.equals(LoadedCgm.noControl)) {
+        if (name.equals(LoadedCgm.noControl)) {
             selectNone();
         } else {
             List<String> names = loadedCgm.getSpatial().listSgcNames();
-            int newIndex = names.indexOf(newName);
+            int newIndex = names.indexOf(name);
             select(newIndex);
         }
     }
