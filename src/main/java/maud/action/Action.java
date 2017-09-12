@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class Action {
+public class Action {
     // *************************************************************************
     // constants and loggers
 
@@ -46,9 +46,9 @@ class Action {
     final private static Logger logger = Logger.getLogger(
             Action.class.getName());
 
-    final static String deleteAnimation = "delete animation";
+    final public static String deleteAnimation = "delete animation";
     final static String deleteMapping = "delete mapping";
-    final static String deleteSgc = "delete sgc";
+    final public static String deleteSgc = "delete sgc";
     final static String deleteSingleKeyframe = "delete singleKeyframe";
     final static String deleteUserKey = "delete userKey";
 
