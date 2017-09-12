@@ -184,7 +184,7 @@ public class SelectedSkeleton implements Cloneable {
         find(selectedSpatialFlag);
         Spatial spatial;
         if (selectedSpatialFlag) {
-            spatial = cgm.getSpatial().modelSpatial();
+            spatial = cgm.getSpatial().find();
         } else {
             spatial = cgm.getRootSpatial();
         }
