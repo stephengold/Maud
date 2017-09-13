@@ -38,10 +38,12 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsCharacter;
@@ -69,10 +71,13 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyControl;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
@@ -232,6 +237,45 @@ public class Util {
     }
 
     /**
+     * Add referenced collision shapes to the specified set of physics objects.
+     *
+     * @param storeResult (modified if not null)
+     * @return the list of objects (either storeResult or a new instance)
+     */
+    public static Set<Savable> addCollisionShapes(Set<Savable> storeResult) {
+        if (storeResult == null) {
+            storeResult = new HashSet<>(30);
+        }
+
+        Set<Savable> additions = new HashSet<>(30);
+        for (Savable object : storeResult) {
+            if (object instanceof PhysicsCollisionObject) {
+                PhysicsCollisionObject pco = (PhysicsCollisionObject) object;
+                CollisionShape shape = pco.getCollisionShape();
+                if (!storeResult.contains(shape)) {
+                    additions.add(shape);
+                }
+            }
+        }
+        storeResult.addAll(additions);
+
+        additions.clear();
+        for (Savable object : storeResult) {
+            if (object instanceof CompoundCollisionShape) {
+                CompoundCollisionShape ccs = (CompoundCollisionShape) object;
+                List<ChildCollisionShape> children = ccs.getChildren();
+                for (ChildCollisionShape child : children) {
+                    CollisionShape shape = child.shape;
+                    additions.add(shape);
+                }
+            }
+        }
+        storeResult.addAll(additions);
+
+        return storeResult;
+    }
+
+    /**
      * Find a cardinal quaternion similar to the specified input. A cardinal
      * quaternion is one for which the rotations angles on all 3 axes are
      * integer multiples of Pi/2 radians.
@@ -247,7 +291,21 @@ public class Util {
     }
 
     /**
-     * Count the objects in the specified physics space.
+     * Count the joints in the specified physics space.
+     *
+     * @param space which physics space (not null, unaffected)
+     * @return count (&ge;0)
+     */
+    public static int countJoints(PhysicsSpace space) {
+        Collection<PhysicsJoint> joints = space.getJointList();
+        int count = joints.size();
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Count the collision objects in the specified physics space.
      *
      * @param space which physics space (not null, unaffected)
      * @return count (&ge;0)
@@ -255,24 +313,41 @@ public class Util {
     public static int countObjects(PhysicsSpace space) {
         Collection<PhysicsCharacter> charas = space.getCharacterList();
         Collection<PhysicsGhostObject> ghosts = space.getGhostObjectList();
-        Collection<PhysicsJoint> joints = space.getJointList();
         Collection<PhysicsRigidBody> rigids = space.getRigidBodyList();
         Collection<PhysicsVehicle> vehics = space.getVehicleList();
 
-        int result = charas.size() + ghosts.size() + joints.size()
-                + rigids.size() + vehics.size();
+        int count;
+        count = charas.size() + ghosts.size() + rigids.size() + vehics.size();
 
-        return result;
+        assert count >= 0 : count;
+        return count;
     }
 
     /**
-     * Find the named object in the specified physics space.
+     * Count the collision shapes in the specified physics space.
+     *
+     * @param space which physics space (not null, unaffected)
+     * @return count (&ge;0)
+     */
+    public static int countShapes(PhysicsSpace space) {
+        Validate.nonNull(space, "space");
+
+        Map<Long, CollisionShape> map = shapeMap(space);
+        int count = map.size();
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Find the named collision object in the specified physics space.
      *
      * @param name generated name (not null)
      * @param space which physics space (not null, unaffected)
      * @return the pre-existing object, or null if not found
      */
-    public static Savable findObject(String name, PhysicsSpace space) {
+    public static PhysicsCollisionObject findObject(String name,
+            PhysicsSpace space) {
         Validate.nonNull(name, "name");
 
         if (name.length() < 6) {
@@ -303,16 +378,6 @@ public class Util {
                 }
                 break;
 
-            case "joint":
-                Collection<PhysicsJoint> joints = space.getJointList();
-                for (PhysicsJoint joint : joints) {
-                    long id = joint.getObjectId();
-                    if (id == findId) {
-                        return joint;
-                    }
-                }
-                break;
-
             case "rigid":
                 Collection<PhysicsRigidBody> rigids = space.getRigidBodyList();
                 for (PhysicsRigidBody rigid : rigids) {
@@ -337,10 +402,27 @@ public class Util {
     }
 
     /**
+     * Find the identified collision shape in the specified physics space.
+     *
+     * @param id identifier
+     * @param space which physics space (not null, unaffected)
+     * @return the pre-existing shape, or null if not found
+     */
+    public static CollisionShape findShape(Long id, PhysicsSpace space) {
+        CollisionShape result = null;
+        if (id != -1L) {
+            Map<Long, CollisionShape> map = shapeMap(space);
+            result = map.get(id);
+        }
+
+        return result;
+    }
+
+    /**
      * Find the specified spatial in the specified subtree and optionally store
      * its tree position. Note: recursive!
      *
-     * @param spatial spatial to find (not null)
+     * @param spatial spatial to find (not null, unaffected)
      * @param subtree which subtree to search (may be null, unaffected)
      * @param storePosition tree position of the spatial (modified if found and
      * not null)
@@ -537,7 +619,7 @@ public class Util {
      * Enumerate all animated meshes in the specified subtree of a scene graph.
      * Note: recursive!
      *
-     * @param subtree (not null)
+     * @param subtree (not null, unaffected)
      * @param storeResult (added to if not null)
      * @return an expanded list (either storeResult or a new instance)
      */
@@ -567,45 +649,25 @@ public class Util {
     }
 
     /**
-     * Enumerate all objects in the specified physics space.
+     * Enumerate all collision objects in the specified physics space.
      *
      * @param space which physics space (not null, unaffected)
-     * @return a new list of generated names
+     * @return a new set of objects
      */
-    public static List<String> listNames(PhysicsSpace space) {
-        List<String> result = new ArrayList<>(30);
+    public static Set<PhysicsCollisionObject> listObjects(PhysicsSpace space) {
+        Set<PhysicsCollisionObject> result = new HashSet<>(30);
 
-        Collection<PhysicsCharacter> charas = space.getCharacterList();
-        for (PhysicsCharacter chara : charas) {
-            String name = MyControl.objectName(chara);
-            result.add(name);
-        }
+        Collection<PhysicsCharacter> characters = space.getCharacterList();
+        result.addAll(characters);
 
         Collection<PhysicsGhostObject> ghosts = space.getGhostObjectList();
-        for (PhysicsGhostObject ghost : ghosts) {
-            String name = MyControl.objectName(ghost);
-            result.add(name);
-        }
+        result.addAll(ghosts);
 
-        Collection<PhysicsJoint> joints = space.getJointList();
-        for (PhysicsJoint joint : joints) {
-            long id = joint.getObjectId();
-            String name = String.format("joint%d", id);
-            result.add(name);
-        }
+        Collection<PhysicsRigidBody> rigidBodies = space.getRigidBodyList();
+        result.addAll(rigidBodies);
 
-        Collection<PhysicsRigidBody> rigids = space.getRigidBodyList();
-        for (PhysicsRigidBody rigid : rigids) {
-            String name = MyControl.objectName(rigid);
-            result.add(name);
-        }
-
-        Collection<PhysicsVehicle> vehics = space.getVehicleList();
-        for (PhysicsVehicle vehic : vehics) {
-            long id = vehic.getObjectId();
-            String name = MyControl.objectName(vehic);
-            result.add(name);
-        }
+        Collection<PhysicsVehicle> vehicles = space.getVehicleList();
+        result.addAll(vehicles);
 
         return result;
     }
@@ -893,5 +955,39 @@ public class Util {
         storeResult.setColumn(2, testWorld);
 
         return storeResult;
+    }
+
+    /**
+     * Enumerate all collision shapes in the specified physics space.
+     *
+     * @param space which physics space (not null, unaffected)
+     * @return a new map from ids to shapes
+     */
+    public static Map<Long, CollisionShape> shapeMap(PhysicsSpace space) {
+        Map<Long, CollisionShape> result = new TreeMap<>();
+
+        Set<PhysicsCollisionObject> pcoSet = listObjects(space);
+        for (PhysicsCollisionObject pco : pcoSet) {
+            CollisionShape shape = pco.getCollisionShape();
+            long id = shape.getObjectId();
+            result.put(id, shape);
+        }
+
+        int numShapes = result.size();
+        CollisionShape[] shapes = new CollisionShape[numShapes];
+        result.values().toArray(shapes);
+        for (CollisionShape shape : shapes) {
+            if (shape instanceof CompoundCollisionShape) {
+                CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
+                List<ChildCollisionShape> children = ccs.getChildren();
+                for (ChildCollisionShape child : children) {
+                    CollisionShape childShape = child.shape;
+                    long id = childShape.getObjectId();
+                    result.put(id, childShape);
+                }
+            }
+        }
+
+        return result;
     }
 }

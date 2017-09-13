@@ -817,6 +817,55 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="jointTool" title="Joint Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="140px" width="250px" x="65" y="35">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="jointPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous joint)"/>
+                        </control>
+                        <control name="label" id="jointIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="75px"/>
+                        <control name="button" id="jointNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next joint)"/>
+                        </control>
+                        <panel width="10px"/>
+                        <control name="button" id="jointSelectButton"
+                                 width="60px">
+                            <interact onRelease="perform(select joint)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Selected:  "/>
+                        <control name="label" id="jointName"
+                                 backgroundColor="#ffff"
+                                 width="110px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Type:  "/>
+                        <control name="label" id="jointType"
+                                 backgroundColor="#ffff"
+                                 width="140px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Body A:  "/>
+                        <control name="label" id="jointBodyA"
+                                 backgroundColor="#ffff"
+                                 width="70px"/>
+                        <control name="label" text="  Body B:  "/>
+                        <control name="label" id="jointBodyB"
+                                 backgroundColor="#ffff"
+                                 width="70px"/>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="keyframeTool" title="Keyframe Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
@@ -1041,9 +1090,9 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="physicsTool" title="Physics Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="110px" width="300px" x="65" y="35">
+                     height="140px" width="220px" x="65" y="35">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="button" id="physicsPreviousButton"
                                  width="20px">
                             <interact onRelease="perform(previous physics)"/>
@@ -1057,17 +1106,32 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(next physics)"/>
                         </control>
                         <panel width="10px"/>
-                        <control name="button" label="Select"
-                                 id="id15ToAvoidNiftyWarning"
+                        <control name="button" id="physicsSelectObjectButton"
                                  width="60px">
                             <interact onRelease="perform(select physics)"/>
                         </control>
                     </panel>
-                    <panel height="10px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Selected:  "/>
                         <control name="label" id="physicsName"
                                  backgroundColor="#ffff"
-                                 width="*"/>
+                                 width="110px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Shape:  "/>
+                        <control name="label" id="physicsShape"
+                                 backgroundColor="#ffff"
+                                 width="108px"/>
+                        <control name="button" id="physicsSelectShapeButton"
+                                 width="60px">
+                            <interact onRelease="perform(select physicsShape)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Mass:  "/>
+                        <control name="label" id="physicsMass"
+                                 backgroundColor="#ffff"
+                                 width="70px"/>
                     </panel>
                 </panel>
             </control>
@@ -1332,7 +1396,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="sgcTool" title="Control Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="175px" width="300px" x="65" y="35">
+                     height="175px" width="270px" x="65" y="35">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="sgcPreviousButton"
@@ -1374,25 +1438,75 @@ the menu bar, status bar, and tool windows.
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="sgcEnableCheckBox"
                                  width="20px"/>
-                        <control name="label" text="  enable    "/>
-                        <control name="checkbox" id="sgcLocalPhysicsCheckBox"
-                                 width="20px"/>
-                        <control name="label" text="  local physics"/>
+                        <control name="label" text="  enable"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Mode:  "/>
                         <control name="label" id="sgcMode"
                                  backgroundColor="#ffff"
                                  width="100px"/>
+                        <panel/>
+                        <control name="checkbox" id="sgcLocalPhysicsCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  local physics"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="  Object:  "/>
+                        <control name="label" text="Object:  "/>
                         <control name="label" id="sgcObject"
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" id="sgcSelectObjectButton"
                                  width="60px">
                             <interact onRelease="perform(select sgcObject)"/>
+                        </control>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="shapeTool" title="Shape Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="140px" width="200px" x="65" y="35">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="shapePreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous shape)"/>
+                        </control>
+                        <control name="label" id="shapeIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="75px"/>
+                        <control name="button" id="shapeNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next shape)"/>
+                        </control>
+                        <panel width="10px"/>
+                        <control name="button" id="shapeSelectButton"
+                                 width="60px">
+                            <interact onRelease="perform(select shape)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Selected:  "/>
+                        <control name="label" id="shapeName"
+                                 backgroundColor="#ffff"
+                                 width="110px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Type:  "/>
+                        <control name="label" id="shapeType"
+                                 backgroundColor="#ffff"
+                                 width="140px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Children:  "/>
+                        <control name="label" id="shapeChildren"
+                                 backgroundColor="#ffff"
+                                 width="70px"/>
+                        <control name="button" id="shapeSelectChildButton"
+                                 width="60px">
+                            <interact onRelease="perform(select shapeChild)"/>
                         </control>
                     </panel>
                 </panel>

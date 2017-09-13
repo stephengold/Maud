@@ -26,21 +26,19 @@
  */
 package maud.tool;
 
-import com.jme3.bullet.PhysicsSpace;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.Util;
 import maud.model.Cgm;
-import maud.model.SelectedPhysics;
+import maud.model.SelectedJoint;
 
 /**
- * The controller for the "Physics Tool" window in Maud's editor screen.
+ * The controller for the "Joint Tool" window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class PhysicsTool extends WindowController {
+class JointTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -48,7 +46,7 @@ class PhysicsTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            PhysicsTool.class.getName());
+            JointTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -57,8 +55,8 @@ class PhysicsTool extends WindowController {
      *
      * @param screenController
      */
-    PhysicsTool(BasicScreenController screenController) {
-        super(screenController, "physicsTool", false);
+    JointTool(BasicScreenController screenController) {
+        super(screenController, "jointTool", false);
     }
     // *************************************************************************
     // AppState methods
@@ -74,17 +72,21 @@ class PhysicsTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
+        updateDescription();
         updateIndex();
         updateName();
-        updateShape();
-
-        SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
-
-        String mass = physics.getMass();
-        Maud.gui.setStatusText("physicsMass", " " + mass);
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Update the joint description.
+     */
+    private void updateDescription() {
+        SelectedJoint joint = Maud.getModel().getTarget().getJoint();
+        String type = joint.getType();
+        Maud.gui.setStatusText("jointType", type);
+    }
 
     /**
      * Update the index status and next/previous/select buttons.
@@ -94,34 +96,33 @@ class PhysicsTool extends WindowController {
         String nButton = "", pButton = "", sButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        PhysicsSpace space = target.getSceneView().getPhysicsSpace();
-        int numObjects = Util.countObjects(space);
-        if (numObjects > 0) {
+        int numJoints = target.countJoints();
+        if (numJoints > 0) {
             sButton = "Select";
         }
 
-        SelectedPhysics physics = target.getPhysics();
-        if (physics.isSelected()) {
-            int selectedIndex = physics.index();
+        SelectedJoint joint = target.getJoint();
+        if (joint.isSelected()) {
+            int selectedIndex = joint.index();
             int indexBase = Maud.getModel().getMisc().getIndexBase();
             indexText = String.format("#%d of %d", selectedIndex + indexBase,
-                    numObjects);
-            if (numObjects > 1) {
+                    numJoints);
+            if (numJoints > 1) {
                 nButton = "+";
                 pButton = "-";
             }
-        } else if (numObjects == 0) {
-            indexText = "no objects";
-        } else if (numObjects == 1) {
-            indexText = "one object";
+        } else if (numJoints == 0) {
+            indexText = "no joints";
+        } else if (numJoints == 1) {
+            indexText = "one joint";
         } else {
-            indexText = String.format("%d objects", numObjects);
+            indexText = String.format("%d joints", numJoints);
         }
 
-        Maud.gui.setStatusText("physicsIndex", indexText);
-        Maud.gui.setButtonLabel("physicsNextButton", nButton);
-        Maud.gui.setButtonLabel("physicsPreviousButton", pButton);
-        Maud.gui.setButtonLabel("physicsSelectObjectButton", sButton);
+        Maud.gui.setStatusText("jointIndex", indexText);
+        Maud.gui.setButtonLabel("jointNextButton", nButton);
+        Maud.gui.setButtonLabel("jointPreviousButton", pButton);
+        Maud.gui.setButtonLabel("jointSelectButton", sButton);
     }
 
     /**
@@ -129,32 +130,13 @@ class PhysicsTool extends WindowController {
      */
     private void updateName() {
         String name;
-        SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
-        if (physics.isSelected()) {
-            name = physics.getName();
+        SelectedJoint joint = Maud.getModel().getTarget().getJoint();
+        if (joint.isSelected()) {
+            long id = joint.getId();
+            name = Long.toHexString(id);
         } else {
             name = "(none selected)";
         }
-        Maud.gui.setStatusText("physicsName", " " + name);
-    }
-
-    /**
-     * Update the shape status and select button.
-     */
-    private void updateShape() {
-        String sButton, shape;
-
-        SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
-        long id = physics.getShapeId();
-        if (id == -1L) {
-            shape = "";
-            sButton = "";
-        } else {
-            shape = Long.toHexString(id);
-            sButton = "Select";
-        }
-
-        Maud.gui.setStatusText("physicsShape", " " + shape);
-        Maud.gui.setButtonLabel("physicsSelectShapeButton", sButton);
+        Maud.gui.setStatusText("jointName", " " + name);
     }
 }

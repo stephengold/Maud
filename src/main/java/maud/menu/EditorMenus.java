@@ -41,6 +41,7 @@ import maud.model.EditableMap;
 import maud.model.History;
 import maud.model.LoadedAnimation;
 import maud.model.SelectedAnimControl;
+import maud.model.SelectedShape;
 import maud.model.SelectedSpatial;
 import maud.model.option.MiscStatus;
 import maud.model.option.ViewMode;
@@ -165,6 +166,20 @@ public class EditorMenus {
         }
 
         return handled;
+    }
+
+    /**
+     * Handle a "select shapeChild" action without arguments.
+     */
+    public void selectShapeChild() {
+        Cgm target = Maud.getModel().getTarget();
+        SelectedShape shape = target.getShape();
+        int numChildren = shape.countChildren();
+        if (numChildren == 1) {
+            shape.selectFirstChild();
+        } else if (numChildren > 1) {
+            Maud.gui.showMenus.selectShapeChild();
+        }
     }
 
     /**
@@ -628,11 +643,17 @@ public class EditorMenus {
 
         } else {
             switch (remainder) {
+                case "Joint Tool":
+                    Maud.gui.tools.select("joint");
+                    break;
                 case "Mass": // TODO
                     handled = false;
                     break;
-                case "Tool":
+                case "Object Tool":
                     Maud.gui.tools.select("physics");
+                    break;
+                case "Shape Tool":
+                    Maud.gui.tools.select("shape");
                     break;
                 default:
                     handled = false;

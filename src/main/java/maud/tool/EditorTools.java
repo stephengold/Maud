@@ -102,6 +102,10 @@ public class EditorTools {
      */
     final public HistoryTool history;
     /**
+     * controller for the "Joint Tool" window
+     */
+    final JointTool joint;
+    /**
      * controller for the "Keyframe Tool" window
      */
     final KeyframeTool keyframe;
@@ -137,6 +141,10 @@ public class EditorTools {
      * controller for the "Control Tool" window
      */
     final SgcTool sgc;
+    /**
+     * controller for the "Shape Tool" window
+     */
+    final ShapeTool shape;
     /**
      * controller for the "Skeleton Color Tool" window
      */
@@ -212,6 +220,7 @@ public class EditorTools {
         cgm = new CgmTool(screen);
         cursor = new CursorTool(screen);
         history = new HistoryTool(screen);
+        joint = new JointTool(screen);
         keyframe = new KeyframeTool(screen);
         mapping = new MappingTool(screen);
         physics = new PhysicsTool(screen);
@@ -221,6 +230,7 @@ public class EditorTools {
         sceneVertex = new SceneVertexTool(screen);
         score = new ScoreTool(screen);
         sgc = new SgcTool(screen);
+        shape = new ShapeTool(screen);
         skeletonColor = new SkeletonColorTool(screen);
         skeleton = new SkeletonTool(screen);
         sourceAnimation = new SourceAnimationTool(screen);
@@ -247,11 +257,11 @@ public class EditorTools {
         stateManager.attach(cursor); // cursor before camera
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, history,
-                keyframe, mapping, cgm, physics, platform, render, retarget,
-                sceneVertex, score, sgc, skeleton, skeletonColor, sky,
-                sourceAnimation, spatial, spatialDetails, spatialRotation,
-                spatialScale, spatialTranslation, tweening, twist, userData,
-                vertex);
+                keyframe, joint, mapping, cgm, physics, platform, render,
+                retarget, sceneVertex, score, sgc, shape, skeleton,
+                skeletonColor, sky, sourceAnimation, spatial, spatialDetails,
+                spatialRotation, spatialScale, spatialTranslation, tweening,
+                twist, userData, vertex);
     }
 
     /**
@@ -301,6 +311,9 @@ public class EditorTools {
             case "history":
                 controller = history;
                 break;
+            case "joint":
+                controller = joint;
+                break;
             case "keyframe":
                 controller = keyframe;
                 break;
@@ -327,6 +340,9 @@ public class EditorTools {
                 break;
             case "sgc":
                 controller = sgc;
+                break;
+            case "shape":
+                controller = shape;
                 break;
             case "skeleton":
                 controller = skeleton;

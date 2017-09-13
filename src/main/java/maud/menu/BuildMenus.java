@@ -758,7 +758,9 @@ public class BuildMenus {
      * Build a Physics menu.
      */
     private void buildPhysicsMenu() {
-        builder.addTool("Tool");
+        builder.addTool("Object Tool");
+        builder.addTool("Joint Tool");
+        builder.addTool("Shape Tool");
         //builder.add("Mass"); TODO
     }
 

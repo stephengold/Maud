@@ -241,6 +241,24 @@ public class ShowMenus {
     }
 
     /**
+     * Display a "select joint" menu.
+     *
+     * @param cgm which load slot (not null)
+     */
+    public void selectJoint(Cgm cgm) {
+        if (cgm.isLoaded()) {
+            List<String> names = cgm.listJointNames("");
+            if (!names.isEmpty()) {
+                MenuBuilder builder = new MenuBuilder();
+                for (String name : names) {
+                    builder.add(name);
+                }
+                builder.show(ActionPrefix.selectJoint);
+            }
+        }
+    }
+
+    /**
      * Display a "Keyframe -> Select" menu.
      */
     void selectKeyframe() {
@@ -280,10 +298,10 @@ public class ShowMenus {
      */
     public void selectPhysics(Cgm cgm) {
         if (cgm.isLoaded()) {
-            List<String> names = cgm.listPhysicsNames();
+            List<String> names = cgm.listObjectNames("");
             if (!names.isEmpty()) {
                 MenuBuilder builder = new MenuBuilder();
-                for (String name : cgm.listPhysicsNames()) {
+                for (String name : names) {
                     builder.add(name);
                 }
                 builder.show(ActionPrefix.selectPhysics);
@@ -304,6 +322,39 @@ public class ShowMenus {
         builder.add(SelectedSgc.noControl);
 
         builder.show(ActionPrefix.selectSgc);
+    }
+
+    /**
+     * Display a "select shape" menu.
+     *
+     * @param cgm which load slot (not null)
+     */
+    public void selectShape(Cgm cgm) {
+        if (cgm.isLoaded()) {
+            List<String> names = cgm.listShapeNames("");
+            if (!names.isEmpty()) {
+                MenuBuilder builder = new MenuBuilder();
+                for (String name : names) {
+                    builder.add(name);
+                }
+                builder.show(ActionPrefix.selectShape);
+            }
+        }
+    }
+
+    /**
+     * Display a "select shapeChild" menu.
+     */
+    void selectShapeChild() {
+        Cgm target = Maud.getModel().getTarget();
+        List<String> names = target.getShape().listChildNames("");
+        if (!names.isEmpty()) {
+            MenuBuilder builder = new MenuBuilder();
+            for (String name : names) {
+                builder.add(name);
+            }
+            builder.show(ActionPrefix.selectShape);
+        }
     }
 
     /**

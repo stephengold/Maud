@@ -27,22 +27,22 @@
 package maud.model;
 
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsRigidBody;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import maud.Util;
 
 /**
- * The selected physics collision object in the Maud application.
+ * The selected physics joint in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedPhysics implements Cloneable {
+public class SelectedJoint implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -50,117 +50,121 @@ public class SelectedPhysics implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            SelectedPhysics.class.getName());
+            SelectedJoint.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * CG model containing the selected object (set by {@link #setCgm(Cgm)})
+     * CG model containing the selected joint (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
-     * constructed name for the selected object (not null)
+     * id of the selected joint, or -1L for none
      */
-    private String name = "";
+    private long selectedId = -1L;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Access the selected object.
+     * Access the selected joint.
      *
      * @return the pre-existing instance, or null if not found
      */
-    PhysicsCollisionObject find() {
+    PhysicsJoint find() {
         PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        PhysicsCollisionObject result = Util.findObject(name, space);
-
-        return result;
-    }
-
-    /**
-     * Read the name of the selected object.
-     *
-     * @return name (not null, not empty)
-     */
-    public String getName() {
-        assert isSelected();
-        return name;
-    }
-
-    /**
-     * Read the mass of the selected rigid body.
-     *
-     * @return mass (as a string) or "" if not applicable
-     */
-    public String getMass() {
-        String result = "";
-        PhysicsCollisionObject object = find();
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody prb = (PhysicsRigidBody) object;
-            float mass = prb.getMass();
-            result = Float.toString(mass);
+        Collection<PhysicsJoint> joints = space.getJointList();
+        for (PhysicsJoint joint : joints) {
+            long id = joint.getObjectId();
+            if (id == selectedId) {
+                return joint;
+            }
         }
 
-        assert result != null;
-        return result;
+        return null;
     }
 
     /**
-     * Read the shape of the selected collision object.
+     * Read the id of the selected joint's A body.
      *
-     * @return id of the shape, or -1L if none
+     * @return id, or -1L if none
      */
-    public long getShapeId() {
+    public long getBodyAId() {
         long result = -1L;
-        PhysicsCollisionObject object = find();
-        if (object != null) {
-            CollisionShape shape = object.getCollisionShape();
-            result = shape.getObjectId();
+        PhysicsJoint joint = find();
+        if (joint != null) {
+            PhysicsRigidBody prb = joint.getBodyA();
+            result = prb.getObjectId();
         }
 
         return result;
     }
 
     /**
-     * Read the type of the selected collision object.
+     * Read the id of the selected joint's B body.
      *
-     * @return abbreviated name for the class
+     * @return id, or -1L if none
+     */
+    public long getBodyBId() {
+        long result = -1L;
+        PhysicsJoint joint = find();
+        if (joint != null) {
+            PhysicsRigidBody prb = joint.getBodyB();
+            result = prb.getObjectId();
+        }
+
+        return result;
+    }
+
+    /**
+     * Read the id of the selected joint.
+     *
+     * @return id, or -1L if none selected
+     */
+    public long getId() {
+        return selectedId;
+    }
+
+    /**
+     * Read the type of the selected joint.
+     *
+     * @return abbreviated class name, or "" if none selected
      */
     public String getType() {
-        assert isSelected();
-
-        PhysicsCollisionObject object = find();
-        String type = object.getClass().getSimpleName();
-        if (type.startsWith("Physics")) {
-            type = MyString.remainder(type, "Physics");
+        String type = "";
+        PhysicsJoint joint = find();
+        if (joint != null) {
+            type = joint.getClass().getSimpleName();
+            if (type.endsWith("Joint")) {
+                type = MyString.removeSuffix(type, "Joint");
+            }
         }
 
+        assert type != null;
         return type;
     }
 
     /**
-     * Calculate the index of the selected object.
+     * Calculate the index of the selected joint.
      *
      * @return index (&ge;0)
      */
     public int index() {
-        List<String> names = cgm.listObjectNames("");
-        int index = names.indexOf(name);
+        List<Long> ids = listJointIds();
+        int index = ids.indexOf(selectedId);
 
         assert index >= 0 : index;
         return index;
     }
 
     /**
-     * Test whether an object is selected.
+     * Test whether a joint is selected.
      *
      * @return true if selected, otherwise false
      */
     public boolean isSelected() {
-        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        PhysicsCollisionObject object = Util.findObject(name, space);
+        PhysicsJoint joint = find();
         boolean result;
-        if (object == null) {
+        if (joint == null) {
             result = false;
         } else {
             result = true;
@@ -170,52 +174,49 @@ public class SelectedPhysics implements Cloneable {
     }
 
     /**
-     * Select the named physics object.
+     * Select an identified joint.
      *
-     * @param physicsName (not null, not empty)
+     * @param jointId
      */
-    public void select(String physicsName) {
-        Validate.nonEmpty(physicsName, "physics name");
-
-        List<String> names = cgm.listObjectNames("");
-        if (names.contains(physicsName)) {
-            name = physicsName;
-        }
+    public void select(Long jointId) {
+        List<Long> ids = listJointIds();
+        assert ids.contains(jointId) : jointId;
+        selectedId = jointId;
     }
 
     /**
-     * Select the next object (in cyclical index order).
+     * Select the next joint (in cyclical index order).
      */
     public void selectNext() {
-        List<String> names = cgm.listObjectNames("");
-        int index = names.indexOf(name);
-        if (index != -1) {
-            int numObjects = names.size();
+        List<Long> ids = listJointIds();
+        int index = ids.indexOf(selectedId);
+        if (index != -1L) {
+            int numObjects = ids.size();
             int newIndex = MyMath.modulo(index + 1, numObjects);
-            name = names.get(newIndex);
+            selectedId = ids.get(newIndex);
         }
     }
 
     /**
-     * Deselect the selected object, if any.
+     * Deselect the selected joint, if any.
      */
     public void selectNone() {
-        name = null;
+        selectedId = -1L;
     }
 
     /**
-     * Select the previous object (in cyclical index order).
+     * Select the previous joint (in cyclical index order).
      */
     /**
      * Select the next object (in cyclical index order).
      */
     public void selectPrevious() {
-        List<String> names = cgm.listObjectNames("");
-        int index = names.indexOf(name);
-        if (index != -1) {
-            int numObjects = names.size();
+        List<Long> ids = listJointIds();
+        int index = ids.indexOf(selectedId);
+        if (index != -1L) {
+            int numObjects = ids.size();
             int newIndex = MyMath.modulo(index - 1, numObjects);
-            name = names.get(newIndex);
+            selectedId = ids.get(newIndex);
         }
     }
 
@@ -238,8 +239,29 @@ public class SelectedPhysics implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public SelectedPhysics clone() throws CloneNotSupportedException {
-        SelectedPhysics clone = (SelectedPhysics) super.clone();
+    public SelectedJoint clone() throws CloneNotSupportedException {
+        SelectedJoint clone = (SelectedJoint) super.clone();
         return clone;
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Enumerate all physics joints in numerical order.
+     *
+     * @return a new list of joint identifiers
+     */
+    private List<Long> listJointIds() {
+        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
+        Collection<PhysicsJoint> joints = space.getJointList();
+        int numJoints = joints.size();
+        List<Long> result = new ArrayList<>(numJoints);
+        for (PhysicsJoint joint : joints) {
+            long id = joint.getObjectId();
+            result.add(id);
+        }
+        Collections.sort(result);
+
+        return result;
     }
 }
