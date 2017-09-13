@@ -83,6 +83,9 @@ class SelectAction {
             case Action.selectBoneParent:
                 target.getBone().selectParent();
                 break;
+            case Action.selectJoint:
+                Maud.gui.showMenus.selectJoint(target);
+                break;
             case Action.selectKeyframeFirst:
                 target.getTrack().selectFirstKeyframe();
                 break;
@@ -110,6 +113,13 @@ class SelectAction {
             case Action.selectPhysics:
                 Maud.gui.showMenus.selectPhysics(target);
                 break;
+            case Action.selectPhysicsShape:
+                long shapeId = target.getPhysics().getShapeId();
+                if (shapeId != -1) {
+                    target.getShape().select(shapeId);
+                    Maud.gui.tools.select("shape");
+                }
+                break;
             case Action.selectScreenBone:
                 Maud.gui.selectBone();
                 break;
@@ -134,6 +144,13 @@ class SelectAction {
                     target.getPhysics().select(physicsName);
                     Maud.gui.tools.select("physics");
                 }
+                break;
+            case Action.selectShape:
+                Maud.gui.showMenus.selectShape(target);
+                break;
+            case Action.selectShapeChild:
+                Maud.gui.menus.selectShapeChild();
+
                 break;
             case Action.selectSourceAnimControl:
                 Maud.gui.showMenus.selectAnimControl(model.getSource());
@@ -221,6 +238,11 @@ class SelectAction {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
             Maud.gui.menus.selectSpatial(arg, false);
 
+        } else if (actionString.startsWith(ActionPrefix.selectJoint)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectJoint);
+            long id = Long.parseLong(arg, 16);
+            target.getJoint().select(id);
+
         } else if (actionString.startsWith(ActionPrefix.selectOrbitCenter)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectOrbitCenter);
@@ -234,6 +256,11 @@ class SelectAction {
         } else if (actionString.startsWith(ActionPrefix.selectSgc)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectSgc);
             target.getSgc().select(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectShape)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectShape);
+            long id = Long.parseLong(arg, 16);
+            target.getShape().select(id);
 
         } else if (actionString.startsWith(
                 ActionPrefix.selectSourceAnimControl)) {

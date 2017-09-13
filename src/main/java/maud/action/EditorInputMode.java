@@ -317,6 +317,9 @@ public class EditorInputMode extends InputMode {
             case Action.nextCheckpoint:
                 History.redo();
                 break;
+            case Action.nextJoint:
+                target.getJoint().selectNext();
+                break;
             case Action.nextMapping:
                 model.getMap().selectNext();
                 break;
@@ -325,6 +328,9 @@ public class EditorInputMode extends InputMode {
                 break;
             case Action.nextSgc:
                 target.getSgc().selectNext();
+                break;
+            case Action.nextShape:
+                target.getShape().selectNext();
                 break;
             case Action.nextSourceAnimation:
                 model.getSource().getAnimation().loadNext();
@@ -372,6 +378,9 @@ public class EditorInputMode extends InputMode {
             case Action.previousCheckpoint:
                 History.undo();
                 break;
+            case Action.previousJoint:
+                target.getJoint().selectPrevious();
+                break;
             case Action.previousMapping:
                 model.getMap().selectPrevious();
                 break;
@@ -380,6 +389,9 @@ public class EditorInputMode extends InputMode {
                 break;
             case Action.previousSgc:
                 target.getSgc().selectPrevious();
+                break;
+            case Action.previousShape:
+                target.getShape().selectPrevious();
                 break;
             case Action.previousSourceAnimation:
                 model.getSource().getAnimation().loadPrevious();
