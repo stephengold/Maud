@@ -40,7 +40,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class UserKeyDialog implements DialogController {
+class UserKeyDialog implements DialogController {
     // *************************************************************************
     // constants and loggers
 
@@ -65,7 +65,7 @@ public class UserKeyDialog implements DialogController {
      *
      * @param description (not null, not empty)
      */
-    public UserKeyDialog(String description) {
+    UserKeyDialog(String description) {
         assert description != null;
         assert !description.isEmpty();
 
