@@ -746,7 +746,8 @@ public class EditorScreen extends GuiScreenController {
 
         super.initialize(stateManager, application);
 
-        Maud.getModel().getTarget().loadNamed("Jaime");
+        boolean success = Maud.getModel().getTarget().loadNamed("Jaime");
+        assert success;
     }
 
     /**
