@@ -433,7 +433,7 @@ public class SelectedSkeleton implements Cloneable {
         cgm = newCgm;
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a copy of this object.
