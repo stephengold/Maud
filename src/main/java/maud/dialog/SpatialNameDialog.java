@@ -40,7 +40,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SpatialNameDialog implements DialogController {
+class SpatialNameDialog implements DialogController {
     // *************************************************************************
     // constants and loggers
 
@@ -65,7 +65,7 @@ public class SpatialNameDialog implements DialogController {
      *
      * @param description (not null, not empty)
      */
-    public SpatialNameDialog(String description) {
+    SpatialNameDialog(String description) {
         assert description != null;
         assert !description.isEmpty();
 

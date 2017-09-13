@@ -41,7 +41,7 @@ import maud.model.SelectedSkeleton;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class BoneRenameDialog implements DialogController {
+class BoneRenameDialog implements DialogController {
     // *************************************************************************
     // constants and loggers
 
@@ -66,7 +66,7 @@ public class BoneRenameDialog implements DialogController {
      *
      * @param description (not null)
      */
-    public BoneRenameDialog(String description) {
+    BoneRenameDialog(String description) {
         assert description != null;
         assert !description.isEmpty();
 

@@ -41,7 +41,7 @@ import maud.model.LoadedAnimation;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class AnimationNameDialog implements DialogController {
+class AnimationNameDialog implements DialogController {
     // *************************************************************************
     // constants and loggers
 
@@ -66,7 +66,7 @@ public class AnimationNameDialog implements DialogController {
      *
      * @param description (not null, not empty)
      */
-    public AnimationNameDialog(String description) {
+    AnimationNameDialog(String description) {
         assert description != null;
         assert !description.isEmpty();
 
