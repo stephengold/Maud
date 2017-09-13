@@ -190,6 +190,10 @@ public class ActionPrefix {
      */
     final public static String selectGeometry = "select geometry ";
     /**
+     * argument is the id of a physics joint or a prefix thereof
+     */
+    final public static String selectJoint = "select joint ";
+    /**
      * argument is the menu path of a menu item
      */
     final public static String selectMenuItem = "select menuItem ";
@@ -198,9 +202,13 @@ public class ActionPrefix {
      */
     final public static String selectOrbitCenter = "select orbitCenter ";
     /**
-     * argument is the name of a physics object
+     * argument is the name of a physics object or a prefix thereof
      */
     final public static String selectPhysics = "select physics ";
+    /**
+     * argument is the id of a physics shape or a prefix thereof
+     */
+    final public static String selectShape = "select shape ";
     /**
      * arguments are a spatial name and a de-duplication index
      */
