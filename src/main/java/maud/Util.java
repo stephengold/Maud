@@ -50,7 +50,6 @@ import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.objects.PhysicsVehicle;
-import com.jme3.export.Savable;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
@@ -232,45 +231,6 @@ public class Util {
                 addDirectInfluencers(child, storeResult);
             }
         }
-
-        return storeResult;
-    }
-
-    /**
-     * Add referenced collision shapes to the specified set of physics objects.
-     *
-     * @param storeResult (modified if not null)
-     * @return the list of objects (either storeResult or a new instance)
-     */
-    public static Set<Savable> addCollisionShapes(Set<Savable> storeResult) {
-        if (storeResult == null) {
-            storeResult = new HashSet<>(30);
-        }
-
-        Set<Savable> additions = new HashSet<>(30);
-        for (Savable object : storeResult) {
-            if (object instanceof PhysicsCollisionObject) {
-                PhysicsCollisionObject pco = (PhysicsCollisionObject) object;
-                CollisionShape shape = pco.getCollisionShape();
-                if (!storeResult.contains(shape)) {
-                    additions.add(shape);
-                }
-            }
-        }
-        storeResult.addAll(additions);
-
-        additions.clear();
-        for (Savable object : storeResult) {
-            if (object instanceof CompoundCollisionShape) {
-                CompoundCollisionShape ccs = (CompoundCollisionShape) object;
-                List<ChildCollisionShape> children = ccs.getChildren();
-                for (ChildCollisionShape child : children) {
-                    CollisionShape shape = child.shape;
-                    additions.add(shape);
-                }
-            }
-        }
-        storeResult.addAll(additions);
 
         return storeResult;
     }
