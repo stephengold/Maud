@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
 
@@ -106,14 +105,14 @@ public class History {
     }
 
     /**
-     * Record an event: an edit/load/save of the map or target CG model.
+     * Record an event: an edit/load/save of the map or the target CG model.
      *
-     * @param description (not null)
+     * @param description (not null, not empty)
      */
     public static void addEvent(String description) {
-        Validate.nonNull(description, "description");
+        Validate.nonEmpty(description, "description");
 
-        logger.log(Level.INFO, "add event {0}", MyString.quote(description));
+        logger.log(Level.INFO, "{0}", description);
         eventDescriptions.add(description);
     }
 
