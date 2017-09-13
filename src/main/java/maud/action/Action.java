@@ -63,9 +63,11 @@ public class Action {
     final static String nextAnimControl = "next animControl";
     final static String nextBone = "next bone";
     final static String nextCheckpoint = "next checkpoint";
+    final static String nextJoint = "next joint";
     final static String nextMapping = "next mapping";
     final static String nextPhysics = "next physics";
     final static String nextSgc = "next sgc";
+    final static String nextShape = "next shape";
     final static String nextSourceAnimation = "next sourceAnimation";
     final static String nextSourceAnimControl = "next sourceAnimControl";
     final static String nextUserData = "next userData";
@@ -83,9 +85,11 @@ public class Action {
     final static String previousAnimControl = "previous animControl";
     final static String previousBone = "previous bone";
     final static String previousCheckpoint = "previous checkpoint";
+    final static String previousJoint = "previous joint";
     final static String previousMapping = "previous mapping";
     final static String previousPhysics = "previous physics";
     final static String previousSgc = "previous sgc";
+    final static String previousShape = "previous shape";
     final static String previousSourceAnimation = "previous sourceAnimation";
     final static String previousSourceAnimControl = "previous sourceAnimControl";
     final static String previousUserData = "previous userData";
@@ -119,6 +123,7 @@ public class Action {
     final static String selectBone = "select bone";
     final static String selectBoneChild = "select boneChild";
     final static String selectBoneParent = "select boneParent";
+    final static String selectJoint = "select joint";
     final static String selectKeyframeFirst = "select keyframeFirst";
     final static String selectKeyframeLast = "select keyframeLast";
     final static String selectKeyframeNearest = "select keyframeNearest";
@@ -128,6 +133,7 @@ public class Action {
     final static String selectMapTargetBone = "select mapTargetBone";
     final static String selectOrbitCenter = "select orbitCenter";
     final static String selectPhysics = "select physics";
+    final static String selectPhysicsShape = "select physicsShape";
     final static String selectScreenBone = "select screenBone";
     final static String selectScreenGnomon = "select screenGnomon";
     final static String selectScreenKeyframe = "select screenKeyframe";
@@ -135,6 +141,8 @@ public class Action {
     final static String selectScreenXY = "select screenXY";
     final static String selectSgc = "select sgc";
     final static String selectSgcObject = "select sgcObject";
+    final static String selectShape = "select shape";
+    final static String selectShapeChild = "select shapeChild";
     final static String selectSourceAnimControl = "select sourceAnimControl";
     final static String selectSourceBone = "select sourceBone";
     final static String selectSpatialChild = "select spatialChild";
