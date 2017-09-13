@@ -102,7 +102,7 @@ public class Sparkline extends Mesh {
         updateBound();
     }
     // *************************************************************************
-    // Object methods
+    // Mesh methods
 
     /**
      * Create a copy of this mesh.

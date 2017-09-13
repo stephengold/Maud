@@ -721,10 +721,10 @@ public class EditableCgm extends LoadedCgm {
         return success;
     }
     // *************************************************************************
-    // protected methods
+    // LoadedCgm methods
 
     /**
-     * Invoked after successfully loading a CG model.
+     * Invoked after successfully loading a CG model. TODO sort methods
      *
      * @param cgmRoot (not null)
      */
@@ -739,8 +739,6 @@ public class EditableCgm extends LoadedCgm {
 
         super.postLoad(cgmRoot);
     }
-    // *************************************************************************
-    // Object methods
 
     /**
      * Create a deep copy of this object.
