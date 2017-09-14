@@ -69,11 +69,11 @@ public class ActionPrefix {
      */
     final public static String loadCgmAsset = "load cgm asset ";
     /**
-     * argument is an asset directory/folder/JAR/ZIP or else "From classpath"
+     * argument is a URL spec or defaultLocation
      */
     final public static String loadCgmLocator = "load cgm locator ";
     /**
-     * argument is the name of a CG model on the classpath
+     * argument is the name of a CG model on the classpath or else otherName
      */
     final public static String loadCgmNamed = "load cgm named ";
     /**
@@ -81,8 +81,8 @@ public class ActionPrefix {
      */
     final public static String loadMapAsset = "load map asset ";
     /**
-     * argument is an asset directory/folder/JAR/ZIP or else "From classpath" or
-     * "Identity for source" or "Identity for target"
+     * argument is URL spec or else defaultLocation or identityForSource or
+     * identityForTarget
      */
     final public static String loadMapLocator = "load map locator ";
     /**
@@ -98,7 +98,7 @@ public class ActionPrefix {
      */
     final public static String loadSourceCgmAsset = "load sourceCgm asset ";
     /**
-     * argument is a directory/folder/JAR/ZIP or else "From classpath"
+     * argument is a URL spec or else defaultLocation
      */
     final public static String loadSourceCgmLocator = "load sourceCgm locator ";
     /**

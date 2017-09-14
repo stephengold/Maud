@@ -745,7 +745,10 @@ public class EditorScreen extends GuiScreenController {
         setListener(inputMode);
 
         super.initialize(stateManager, application);
-
+        /*
+         * TODO only do this as a fallback, in case no CGM
+         * was loaded by startup.txt
+         */
         boolean success = Maud.getModel().getTarget().loadNamed("Jaime");
         assert success;
     }
