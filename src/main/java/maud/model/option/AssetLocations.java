@@ -33,8 +33,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * The MVC model of asset locations (directories/folders/JARs/ZIPs) known to
- * Maud.
+ * The MVC model of asset locations known to Maud.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -51,40 +50,50 @@ public class AssetLocations implements Cloneable {
     // fields
 
     /**
-     * absolute filesystem paths to all asset locations (other than "Written
-     * Assets") that are known to Maud
+     * URL specifications of all asset locations (other than the default
+     * location) that are known to Maud
      */
-    private List<String> knownPaths = new ArrayList<>(6);
+    private List<String> knownSpecs = new ArrayList<>(6);
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Add an asset location, if it's not already known to Maud.
+     * Add a filesystem asset location, if it's not already known to Maud.
      *
      * @param path a filesystem path to the directory/folder/JAR/ZIP (not null,
      * not empty)
      */
-    public void add(String path) {
+    public void addFilesystem(String path) {
         Validate.nonEmpty(path, "path");
 
         File file = new File(path);
         String absolutePath = file.getAbsolutePath();
         absolutePath = absolutePath.replaceAll("\\\\", "/");
-        assert absolutePath != null;
-        assert !absolutePath.isEmpty();
 
-        if (!knownPaths.contains(absolutePath)) {
-            knownPaths.add(absolutePath);
+        String spec = "file:///" + absolutePath;
+        addSpec(spec);
+    }
+
+    /**
+     * Add an asset location, if it's not already known to Maud.
+     *
+     * @param spec a URL specification (not null, not empty)
+     */
+    public void addSpec(String spec) {
+        Validate.nonEmpty(spec, "spec");
+
+        if (!knownSpecs.contains(spec)) {
+            knownSpecs.add(spec);
         }
     }
 
     /**
-     * Test whether there are any asset locations that can be removed.
+     * Test whether any asset location can be removed.
      *
      * @return true if there is one or more, otherwise false
      */
     public boolean hasRemovable() {
-        int count = knownPaths.size();
+        int count = knownSpecs.size();
         if (count >= 1) {
             return true;
         } else {
@@ -93,47 +102,51 @@ public class AssetLocations implements Cloneable {
     }
 
     /**
-     * Find the file locator index for the specified asset location.
+     * Find the index of the specified asset location.
      *
-     * @param path absolute path to the directory/folder/JAR/ZIP (not null, not
-     * empty)
-     * @return a decimal string
+     * @param spec a URL specification, or null for the default location
+     * @return index encoded as decimal string
      */
-    public String indexForPath(String path) {
-        Validate.nonEmpty(path, "path");
-
-        int index = knownPaths.indexOf(path);
-        assert index != -1;
-        String result = Integer.toString(index);
+    public String indexForSpec(String spec) {
+        String result;
+        if (spec == null) {
+            result = "-1";
+        } else {
+            int index = knownSpecs.indexOf(spec);
+            assert index != -1;
+            result = Integer.toString(index);
+        }
 
         return result;
     }
 
     /**
-     * Enumerate all asset locations (other than the default locators) that are
+     * Enumerate all asset locations (other than the default location) that are
      * known to Maud.
      *
-     * @return a new list of absolute paths
+     * @return a new list of URL specifications
      */
     public List<String> listAll() {
-        int numPaths = knownPaths.size();
-        List<String> result = new ArrayList<>(numPaths);
-        result.addAll(knownPaths);
-
+        List<String> result = new ArrayList<>(knownSpecs);
         return result;
     }
 
     /**
-     * Read the path of the indexed asset location.
+     * Read the spec of the indexed asset location.
      *
      * @param indexString a decimal string (not null, not empty)
-     * @return absolute path to the directory/folder/JAR/ZIP (not null)
+     * @return URL specification, or null for the default location
      */
-    public String pathForIndex(String indexString) {
+    public String specForIndex(String indexString) {
         Validate.nonEmpty(indexString, "index string");
 
+        String result;
         int index = Integer.parseInt(indexString);
-        String result = knownPaths.get(index);
+        if (index == -1) {
+            result = null;
+        } else {
+            result = knownSpecs.get(index);
+        }
 
         return result;
     }
@@ -141,13 +154,13 @@ public class AssetLocations implements Cloneable {
     /**
      * Remove the specified asset location.
      *
-     * @param path absolute path to the directory/folder/JAR/ZIP (not null)
+     * @param spec a URL specification (not null, not empty)
      */
-    public void remove(String path) {
-        Validate.nonEmpty(path, "path");
+    public void remove(String spec) {
+        Validate.nonEmpty(spec, "spec");
 
-        if (knownPaths.contains(path)) {
-            knownPaths.remove(path);
+        if (knownSpecs.contains(spec)) {
+            knownSpecs.remove(spec);
         } else {
             assert false;
         }
@@ -164,7 +177,7 @@ public class AssetLocations implements Cloneable {
     @Override
     public AssetLocations clone() throws CloneNotSupportedException {
         AssetLocations clone = (AssetLocations) super.clone();
-        clone.knownPaths = new ArrayList<>(knownPaths);
+        clone.knownSpecs = new ArrayList<>(knownSpecs);
 
         return clone;
     }

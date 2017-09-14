@@ -48,6 +48,8 @@ import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.Util;
+import maud.dialog.EditorDialogs;
+import maud.menu.BuildMenus;
 
 /**
  * The loaded skeleton map in the Maud application, without editing features.
@@ -76,7 +78,8 @@ public class LoadedMap implements Cloneable {
      */
     protected SkeletonMapping map = new SkeletonMapping();
     /**
-     * absolute filesystem path to asset location, or "" if unknown
+     * absolute filesystem path to asset location, or "" if unknown/remote TODO
+     * rename assetRootPath
      */
     protected String assetLocation = "";
     /**
@@ -331,18 +334,20 @@ public class LoadedMap implements Cloneable {
     /**
      * Unload the current map and load from the specified asset.
      *
-     * @param location file path to the asset root (not null, not empty)
+     * @param spec URL specification, or null for the default location
      * @param path path to the asset to load (not null, not empty)
      * @return true if successful, otherwise false
      */
-    public boolean loadAsset(String location, String path) {
-        Validate.nonEmpty(location, "location");
+    public boolean loadAsset(String spec, String path) {
         Validate.nonEmpty(path, "path");
 
-        Locators.save();
-        Locators.useFilesystem(location);
+        boolean useCache = false;
         boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
-        SkeletonMapping loaded = loadFromAsset(path, false, diagnose);
+
+        Locators.save();
+        Locators.unregisterAll();
+        Locators.register(spec);
+        SkeletonMapping loaded = loadFromAsset(path, useCache, diagnose);
         Locators.restore();
 
         boolean success;
@@ -351,7 +356,13 @@ public class LoadedMap implements Cloneable {
         } else {
             success = true;
             map = loaded;
-            assetLocation = location;
+            if (spec == null || !spec.startsWith("file:///")) {
+                assetLocation = "";
+            } else {
+                String rootPath = MyString.remainder(spec, "file:///");
+                assert !rootPath.isEmpty();
+                assetLocation = rootPath;
+            }
             baseAssetPath = MyString.removeSuffix(path, ".j3o");
         }
 
@@ -359,7 +370,7 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Unload the current map and load the named one from the classpath.
+     * Unload the current map and load the named one from the default location.
      *
      * @param mapName which map to load (not null, not empty)
      * @return true if successful, otherwise false
@@ -367,12 +378,18 @@ public class LoadedMap implements Cloneable {
     public boolean loadNamed(String mapName) {
         Validate.nonEmpty(mapName, "map name");
 
-        String path = String.format("SkeletonMaps/%s.j3o", mapName);
+        if (mapName.equals(BuildMenus.otherName)) {
+            EditorDialogs.loadMapAsset(null);
+            return true;
+        }
+
+        String assetPath = String.format("SkeletonMaps/%s.j3o", mapName);
+        boolean useCache = false;
+        boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
 
         Locators.save();
         Locators.useDefault();
-        boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
-        SkeletonMapping loaded = loadFromAsset(path, false, diagnose);
+        SkeletonMapping loaded = loadFromAsset(assetPath, useCache, diagnose);
         Locators.restore();
 
         boolean success;
@@ -382,7 +399,7 @@ public class LoadedMap implements Cloneable {
             success = true;
             map = loaded;
             assetLocation = "";
-            baseAssetPath = MyString.removeSuffix(path, ".j3o");
+            baseAssetPath = MyString.removeSuffix(assetPath, ".j3o");
         }
 
         return success;

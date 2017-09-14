@@ -41,6 +41,8 @@ import jme3utilities.ui.Locators;
 import maud.CheckLoaded;
 import maud.Maud;
 import maud.Util;
+import maud.dialog.EditorDialogs;
+import maud.menu.BuildMenus;
 import maud.model.option.SceneBones;
 
 /**
@@ -63,31 +65,30 @@ public class LoadedCgm extends Cgm {
     // fields
 
     /**
-     * absolute filesystem path to asset location, or "" if unknown, or null if
-     * no CG model loaded
+     * absolute filesystem path to asset location, or "" if unknown/remote, or
+     * null if none loaded TODO rename assetRootPath
      */
     protected String assetLocation = null;
     /**
-     * asset path less extension, or "" if unknown, or null if no CG model
-     * loaded
+     * asset path less extension, or "" if unknown, or null if none loaded
      */
     protected String baseAssetPath = null;
     /**
-     * extension of the asset path, or "" if unknown, or null if no CG model
-     * loaded
+     * extension of the asset path, or "" if unknown, or null if none loaded
      */
     protected String extension = null;
     /**
-     * name of the CG model, or null if no CG model loaded
+     * name of the CG model, or null if none model loaded
      */
     protected String name = null;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Read the asset location of the loaded CG model.
+     * Read the asset root path of the loaded CG model. TODO rename
+     * getAssetRootPath
      *
-     * @return absolute filesystem path, or "" if not known (not null)
+     * @return absolute filesystem path, or "" if unknown/remote (not null)
      */
     public String getAssetLocation() {
         assert assetLocation != null;
@@ -97,7 +98,7 @@ public class LoadedCgm extends Cgm {
     /**
      * Read the asset path of the loaded CG model, less extension.
      *
-     * @return base path, or "" if not known (not null)
+     * @return base path, or "" if unknown (not null)
      */
     public String getAssetPath() {
         assert baseAssetPath != null;
@@ -128,41 +129,57 @@ public class LoadedCgm extends Cgm {
      * Unload the loaded CG model, if any, and load from the specified asset in
      * the specified location.
      *
-     * @param rootPath absolute filesystem path to the asset
-     * directory/folder/JAR/ZIP (not null, not empty)
+     * @param spec URL specification, or null for the default location
      * @param assetPath path to the asset to load (not null, not empty)
      * @return true if successful, otherwise false
      */
-    public boolean loadAsset(String rootPath, String assetPath) {
-        Validate.nonEmpty(rootPath, "root path");
+    public boolean loadAsset(String spec, String assetPath) {
         Validate.nonEmpty(assetPath, "asset path");
 
-        Locators.save();
-        Locators.useFilesystem(rootPath);
+        boolean useCache = false;
         boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
-        Spatial loaded = loadFromAsset(assetPath, false, diagnose);
+
+        Locators.save();
+        Locators.unregisterAll();
+        Locators.register(spec);
+        Spatial loaded = loadFromAsset(assetPath, useCache, diagnose);
         Locators.restore();
 
+        boolean success;
         if (loaded == null) {
-            return false;
+            success = false;
         } else {
-            assetLocation = rootPath;
+            if (spec == null || !spec.startsWith("file:///")) {
+                assetLocation = "";
+            } else {
+                String rootPath = MyString.remainder(spec, "file:///");
+                assert !rootPath.isEmpty();
+                assetLocation = rootPath;
+            }
             postLoad(loaded);
-            return true;
+            success = true;
         }
+
+        return success;
     }
 
     /**
-     * Unload the current CG model, if any, and load the named one (typically
-     * from the classpath).
+     * Unload the current CG model, if any, and load the named one from the
+     * default location.
      *
      * @param cgmName which CG model to load (not null, not empty)
      * @return true if successful, otherwise false
      */
     public boolean loadNamed(String cgmName) {
+        Validate.nonEmpty(cgmName, "model name");
+
         String folderName = cgmName;
         String fileName;
         switch (cgmName) {
+            case BuildMenus.otherName:
+                EditorDialogs.loadCgmAsset(null, this);
+                return true;
+
             case "Boat":
                 fileName = "boat.j3o";
                 break;
@@ -217,14 +234,20 @@ public class LoadedCgm extends Cgm {
                 break;
 
             default:
-                String message = String.format("unknown asset name: %s",
+                String message = String.format("unknown model-asset name: %s",
                         MyString.quote(cgmName));
                 throw new IllegalArgumentException(message);
         }
 
         String assetPath = String.format("Models/%s/%s", folderName, fileName);
+        boolean useCache = false;
         boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
-        Spatial loaded = loadFromAsset(assetPath, false, diagnose);
+
+        Locators.save();
+        Locators.useDefault();
+        Spatial loaded = loadFromAsset(assetPath, useCache, diagnose);
+        Locators.restore();
+
         if (loaded == null) {
             return false;
         } else {
@@ -345,9 +368,8 @@ public class LoadedCgm extends Cgm {
                 assetManager.deleteFromCache(key);
             }
             Locators.registerDefault();
-            List<String> assetFolders;
-            assetFolders = Maud.getModel().getLocations().listAll();
-            Locators.register(assetFolders);
+            List<String> specList = Maud.getModel().getLocations().listAll();
+            Locators.register(specList);
 
             loaded = Util.loadCgmAsset(assetManager, key, diagnose);
         }
