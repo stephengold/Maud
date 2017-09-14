@@ -196,9 +196,7 @@ class MenuBuilder {
         /*
          * Generate the list of names and prefixes to add.
          */
-        int numNames = names.size();
-        List<String> menuList = new ArrayList<>(numNames);
-        menuList.addAll(names);
+        List<String> menuList = new ArrayList<>(names);
         MyString.reduce(menuList, maxItems);
         Collections.sort(menuList);
 

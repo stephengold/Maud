@@ -268,9 +268,7 @@ public class SelectedAnimControl implements Cloneable {
             result = new ArrayList<>(0);
         } else {
             Collection<String> names = animControl.getAnimationNames();
-            int numNames = names.size();
-            result = new ArrayList<>(numNames);
-            result.addAll(names);
+            result = new ArrayList<>(names);
             Collections.sort(result);
         }
 

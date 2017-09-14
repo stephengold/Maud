@@ -195,10 +195,7 @@ public class History {
      * @return a new list of descriptions
      */
     public static List<String> listRecentEvents() {
-        int numEvents = eventDescriptions.size();
-        List<String> result = new ArrayList<>(numEvents);
-        result.addAll(eventDescriptions);
-
+        List<String> result = new ArrayList<>(eventDescriptions);
         return result;
     }
 
