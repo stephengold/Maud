@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import maud.Util;
+import maud.PhysicsUtil;
 
 /**
  * The selected physics collision object in the Maud application.
@@ -72,7 +72,7 @@ public class SelectedPhysics implements Cloneable {
      */
     PhysicsCollisionObject find() {
         PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        PhysicsCollisionObject result = Util.findObject(name, space);
+        PhysicsCollisionObject result = PhysicsUtil.findObject(name, space);
 
         return result;
     }
@@ -158,7 +158,7 @@ public class SelectedPhysics implements Cloneable {
      */
     public boolean isSelected() {
         PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        PhysicsCollisionObject object = Util.findObject(name, space);
+        PhysicsCollisionObject object = PhysicsUtil.findObject(name, space);
         boolean result;
         if (object == null) {
             result = false;

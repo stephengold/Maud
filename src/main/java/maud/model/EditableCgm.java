@@ -55,7 +55,7 @@ import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TrackEdit;
 import maud.Maud;
-import maud.Util;
+import maud.PhysicsUtil;
 import maud.view.SceneView;
 
 /**
@@ -264,7 +264,7 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         if (selectedSgc instanceof PhysicsControl) {
             PhysicsControl pc = (PhysicsControl) selectedSgc;
-            int position = Util.pcToPosition(selectedSpatial, pc);
+            int position = PhysicsUtil.pcToPosition(selectedSpatial, pc);
             SceneView sceneView = getSceneView();
             sceneView.removePhysicsControl(position);
         }
@@ -451,7 +451,8 @@ public class EditableCgm extends LoadedCgm {
 
                 SceneView sceneView = getSceneView();
                 Spatial ss = getSpatial().underRoot(rootSpatial);
-                int position = Util.pcToPosition(ss, (PhysicsControl) modelSgc);
+                PhysicsControl pc = (PhysicsControl) modelSgc;
+                int position = PhysicsUtil.pcToPosition(ss, pc);
                 sceneView.setApplyPhysicsLocal(position, newSetting);
 
                 if (newSetting) {
@@ -558,7 +559,7 @@ public class EditableCgm extends LoadedCgm {
                 if (modelSgc instanceof PhysicsControl) {
                     Spatial ss = getSpatial().underRoot(rootSpatial);
                     PhysicsControl pc = (PhysicsControl) modelSgc;
-                    int position = Util.pcToPosition(ss, pc);
+                    int position = PhysicsUtil.pcToPosition(ss, pc);
 
                     SceneView sceneView = getSceneView();
                     sceneView.setPhysicsControlEnabled(position, newSetting);
