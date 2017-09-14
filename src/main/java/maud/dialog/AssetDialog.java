@@ -36,17 +36,21 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import jme3utilities.nifty.DialogController;
+import jme3utilities.ui.Locators;
 
 /**
- * Controller for a text-entry dialog box used to select an asset path.
+ * Controller for a text-entry dialog box used to select an asset.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class AssetDialog implements DialogController {
+class AssetDialog implements DialogController {
     // *************************************************************************
     // constants and loggers
 
@@ -59,10 +63,6 @@ public class AssetDialog implements DialogController {
     // fields
 
     /**
-     * manager for loading assets
-     */
-    final private AssetManager manager;
-    /**
      * list of accepted extensions (not null, no elements null)
      */
     final private List<String> extensions = new ArrayList<>(4);
@@ -71,27 +71,34 @@ public class AssetDialog implements DialogController {
      * button -- about 8 or 9 characters)
      */
     final private String commitDescription;
+    /**
+     * URL specification of asset location, or null for the default location
+     */
+    final private String spec;
+    /**
+     * cache information about which paths exist (avoid HTTP response code 429)
+     */
+    final Map<String, Boolean> pathCache = new TreeMap<>();
     // *************************************************************************
     // constructors
 
     /**
-     * Instantiate a controller with the specified commit description and list
+     * Instantiate a controller with the specified commit description, asset location, and list
      * of extensions.
      *
      * @param description (not null)
-     * @param extList list of accepted extensions (not null)
-     * @param assetManager the asset manager (not null)
+     * @param specification URL specification of asset location, or null for the
+     * default location
+     * @param extList list of accepted extensions (not null, unaffected)
      */
-    public AssetDialog(String description, Collection<String> extList,
-            AssetManager assetManager) {
-        assert description != null;
-        assert !description.isEmpty();
-        assert extList != null;
-        assert assetManager != null;
+    AssetDialog(String description, String specification,
+            Collection<String> extList) {
+        Validate.nonEmpty(description, "description");
+        Validate.nonNull(extList, "ext list");
 
         commitDescription = description;
+        spec = specification;
         extensions.addAll(extList);
-        manager = assetManager;
     }
     // *************************************************************************
     // DialogController methods
@@ -134,7 +141,7 @@ public class AssetDialog implements DialogController {
             }
         } else {
             commitLabel = "";
-            String list = joinExtensions();
+            String list = MyString.join("/", extensions);
             feedbackMessage = String.format("needs extension: %s",
                     MyString.quote(list));
         }
@@ -159,22 +166,36 @@ public class AssetDialog implements DialogController {
     private boolean exists(String assetPath) {
         assert assetPath != null;
 
+        if (pathCache.containsKey(assetPath)) {
+            return pathCache.get(assetPath);
+        }
+        
         AssetKey key = new AssetKey(assetPath);
+        AssetManager manager = Locators.getAssetManager();
+        
+        Locators.save();
+        Locators.unregisterAll();
+        Locators.register(spec);
         /*
          * Temporarily hush asset-manager warnings about missing resources.
          */
-        Logger damLogger = Logger.getLogger(AssetManager.class.getName());
-        Level savedLevel = damLogger.getLevel();
-        damLogger.setLevel(Level.SEVERE);
-
+        Logger amLogger = Logger.getLogger(AssetManager.class.getName());
+        Level savedLevel = amLogger.getLevel();
+        amLogger.setLevel(Level.SEVERE);
         AssetInfo info = manager.locateAsset(key);
-        damLogger.setLevel(savedLevel);
+        amLogger.setLevel(savedLevel);
 
+        Locators.restore();
+        
+        boolean result;
         if (info == null) {
-            return false;
+            result = false;
         } else {
-            return true;
+            result = true;
         }
+        pathCache.put(assetPath, result);
+        
+        return result;
     }
 
     /**
@@ -212,26 +233,5 @@ public class AssetDialog implements DialogController {
         }
 
         return match;
-    }
-
-    /**
-     * Concatenate the extensions together into a single string.
-     *
-     * @return a string containing all legal extensions
-     */
-    private String joinExtensions() {
-        StringBuilder buffer = new StringBuilder(40);
-        boolean first = true;
-        for (String ext : extensions) {
-            if (first) {
-                first = false;
-            } else {
-                buffer.append("/");
-            }
-            buffer.append(ext);
-        }
-        String result = buffer.toString();
-
-        return result;
     }
 }
