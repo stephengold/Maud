@@ -56,7 +56,7 @@ import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.Util;
-import maud.model.option.Wireframe;
+import maud.model.option.scene.Wireframe;
 import maud.view.SceneView;
 import maud.view.ScoreView;
 

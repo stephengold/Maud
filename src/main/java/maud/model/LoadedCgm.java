@@ -43,7 +43,7 @@ import maud.Maud;
 import maud.Util;
 import maud.dialog.EditorDialogs;
 import maud.menu.BuildMenus;
-import maud.model.option.SceneBones;
+import maud.model.option.scene.SceneBones;
 
 /**
  * MVC model for a computer-graphics (CG) model load slot in the Maud

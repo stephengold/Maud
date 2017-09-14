@@ -24,27 +24,35 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model.option;
+package maud.model.option.scene;
 
 /**
- * Enumerate bone options for skeleton visualizers.
+ * Enumerate the display modes for axes in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum SceneBones {
+public enum AxesMode {
     // *************************************************************************
     // values
 
     /**
-     * visualize all bones
+     * hide the coordinate axes
      */
-    All,
+    None,
     /**
-     * visualize only the bones that influence mesh vertices
+     * display local axes of the selected bone, if any
      */
-    InfluencersOnly,
+    Bone,
     /**
-     * visualize no bones
+     * display axes of the loaded CG model
      */
-    None;
+    Cgm,
+    /**
+     * display local axes of the selected spatial
+     */
+    Spatial,
+    /**
+     * display global/world coordinate axes
+     */
+    World;
 }
