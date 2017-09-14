@@ -264,10 +264,11 @@ public class Maud extends GuiApplication {
         success = stateManager.attach(screenShotState);
         assert success;
         /*
-         * Add a locator for browsing "Written Assets".
+         * Add a locator for browsing "Written Assets". TODO read startup.txt
+         * first and only do this as a fallback
          */
         String wadp = getWrittenAssetDirPath();
-        editorModel.getLocations().add(wadp);
+        editorModel.getLocations().addFilesystem(wadp);
     }
 
     /**

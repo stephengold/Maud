@@ -39,6 +39,7 @@ import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.action.ActionPrefix;
+import maud.dialog.EditorDialogs;
 import maud.model.Cgm;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
@@ -70,6 +71,22 @@ public class BuildMenus {
      */
     final private static Logger logger = Logger.getLogger(
             BuildMenus.class.getName());
+    /**
+     * magic specifier for the default location in actions and menus
+     */
+    final private static String defaultLocation = "from classpath";
+    /**
+     * magic specifier for a source-identity map in actions and menus
+     */
+    final private static String identityForSource = "Identity for source";
+    /**
+     * magic specifier for a target-identity map in actions and menus
+     */
+    final private static String identityForTarget = "Identity for target";
+    /**
+     * magic name for an asset whose path is specified in a dialog box
+     */
+    final public static String otherName = "other";
     // *************************************************************************
     // fields
 
@@ -95,19 +112,25 @@ public class BuildMenus {
      * @param loadedCgm load slot (not null)
      */
     public void loadCgmAsset(String args, LoadedCgm loadedCgm) {
+        EditorModel model = Maud.getModel();
         String menuPrefix = null;
-        if (loadedCgm == Maud.getModel().getSource()) {
+        if (loadedCgm == model.getSource()) {
             menuPrefix = ActionPrefix.loadSourceCgmAsset;
-        } else if (loadedCgm == Maud.getModel().getTarget()) {
+        } else if (loadedCgm == model.getTarget()) {
             menuPrefix = ActionPrefix.loadCgmAsset;
         } else {
             throw new IllegalArgumentException();
         }
 
         String indexString = args.split(" ")[0];
-        String rootPath;
-        rootPath = Maud.getModel().getLocations().pathForIndex(indexString);
+        String spec = model.getLocations().specForIndex(indexString);
         String assetPath = MyString.remainder(args, indexString + " ");
+
+        if (spec == null || !spec.startsWith("file:///")) { // won't browse
+            loadedCgm.loadAsset(spec, assetPath);
+            return;
+        }
+        String rootPath = MyString.remainder(spec, "file:///");
 
         if (rootPath.endsWith(".jar") || rootPath.endsWith(".zip")) {
             List<String> entryNames = Misc.listZipEntries(rootPath, assetPath);
@@ -119,7 +142,7 @@ public class BuildMenus {
                 }
             }
             if (cgmEntries.size() == 1 && cgmEntries.contains(assetPath)) {
-                loadedCgm.loadAsset(rootPath, assetPath);
+                loadedCgm.loadAsset(spec, assetPath);
             } else if (!cgmEntries.isEmpty()) {
                 Maud.gui.showMenus.selectFile(cgmEntries,
                         menuPrefix + indexString + " ");
@@ -137,7 +160,7 @@ public class BuildMenus {
                 builder.show(menuPrefix);
 
             } else if (file.canRead()) {
-                loadedCgm.loadAsset(rootPath, assetPath);
+                loadedCgm.loadAsset(spec, assetPath);
 
             } else {
                 /*
@@ -161,27 +184,29 @@ public class BuildMenus {
     /**
      * Handle a "load (source)cgm locator" action with argument.
      *
-     * @param path action argument (not null, not empty)
-     * @param loadedCgm load slot (not null)
+     * @param arg action argument (not null, not empty)
+     * @param slot load slot (not null)
      */
-    public void loadCgmLocator(String path, LoadedCgm loadedCgm) {
-        if (path.equals("From classpath")) {
+    public void loadCgmLocator(String arg, LoadedCgm slot) {
+        if (arg.equals(defaultLocation)) {
             buildTestDataMenu();
-            String menuPrefix = null;
-            if (loadedCgm == Maud.getModel().getSource()) {
-                menuPrefix = ActionPrefix.loadSourceCgmNamed;
-            } else if (loadedCgm == Maud.getModel().getTarget()) {
-                menuPrefix = ActionPrefix.loadCgmNamed;
+            if (slot == Maud.getModel().getSource()) {
+                builder.show(ActionPrefix.loadSourceCgmNamed);
+            } else if (slot == Maud.getModel().getTarget()) {
+                builder.show(ActionPrefix.loadCgmNamed);
             } else {
                 throw new IllegalArgumentException();
             }
-            builder.show(menuPrefix);
+
+        } else if (arg.startsWith("file://") || arg.endsWith(".jar")
+                || arg.endsWith(".zip")) {
+            String indexString;
+            indexString = Maud.getModel().getLocations().indexForSpec(arg);
+            String args = indexString + " /";
+            loadCgmAsset(args, slot);
 
         } else {
-            String indexString;
-            indexString = Maud.getModel().getLocations().indexForPath(path);
-            String args = indexString + " /";
-            loadCgmAsset(args, loadedCgm);
+            EditorDialogs.loadCgmAsset(arg, slot);
         }
     }
 
@@ -191,10 +216,10 @@ public class BuildMenus {
     public void loadMapAsset() {
         buildLocatorMenu();
         if (Maud.getModel().getSource().getSkeleton().isSelected()) {
-            builder.add("Identity for source");
+            builder.add(identityForSource);
         }
         if (Maud.getModel().getTarget().getSkeleton().isSelected()) {
-            builder.add("Identity for target");
+            builder.add(identityForTarget);
         }
         builder.show(ActionPrefix.loadMapLocator);
     }
@@ -205,11 +230,18 @@ public class BuildMenus {
      * @param args action arguments (not null, not empty)
      */
     public void loadMapAsset(String args) {
+        EditorModel model = Maud.getModel();
         String indexString = args.split(" ")[0];
-        String rootPath;
-        rootPath = Maud.getModel().getLocations().pathForIndex(indexString);
+        String spec = model.getLocations().specForIndex(indexString);
         String assetPath = MyString.remainder(args, indexString + " ");
 
+        if (spec == null || !spec.startsWith("file:///")) { // won't browse
+            model.getMap().loadAsset(spec, assetPath);
+            return;
+        }
+        String rootPath = MyString.remainder(spec, "file:///");
+
+        // TODO browse JAR/ZIP files to find maps
         File file = new File(rootPath, assetPath);
         String menuPrefix = ActionPrefix.loadMapAsset;
         if (file.isDirectory()) {
@@ -222,16 +254,19 @@ public class BuildMenus {
             builder.show(menuPrefix);
 
         } else if (file.canRead()) {
-            Maud.getModel().getMap().loadAsset(rootPath, assetPath);
+            model.getMap().loadAsset(spec, assetPath);
 
         } else {
             /*
              * Treat the pathname as a prefix.
              */
-            String folderName = file.getParent();
+            File parent = file.getParentFile();
+            String parentPath = parent.getAbsolutePath();
+            parentPath = parentPath.replaceAll("\\\\", "/");
             String prefix = file.getName();
-            buildFolderMenu(folderName, prefix);
-            menuPrefix += folderName;
+            buildFolderMenu(parentPath, prefix);
+            parentPath = MyString.remainder(parentPath, rootPath);
+            menuPrefix += indexString + " " + parentPath;
             if (!menuPrefix.endsWith("/")) {
                 menuPrefix += "/";
             }
@@ -242,28 +277,34 @@ public class BuildMenus {
     /**
      * Handle a "load map locator" action.
      *
-     * @param path action argument (not null, not empty)
+     * @param arg action argument (not null, not empty)
      */
-    public void loadMapLocator(String path) {
-        switch (path) {
-            case "From classpath":
+    public void loadMapLocator(String arg) {
+        EditorModel model = Maud.getModel();
+        switch (arg) {
+            case defaultLocation:
                 buildClasspathMapMenu();
                 builder.show(ActionPrefix.loadMapNamed);
                 break;
 
-            case "Identity for source":
-                Maud.getModel().getMap().loadIdentityForSource();
+            case identityForSource:
+                model.getMap().loadIdentityForSource();
                 break;
 
-            case "Identity for target":
-                Maud.getModel().getMap().loadIdentityForTarget();
+            case identityForTarget:
+                model.getMap().loadIdentityForTarget();
                 break;
 
             default:
-                String indexString;
-                indexString = Maud.getModel().getLocations().indexForPath(path);
-                String args = indexString + " /";
-                loadMapAsset(args);
+                if (arg.startsWith("file://") || arg.endsWith(".jar")
+                        || arg.endsWith(".zip")) {
+                    String indexString;
+                    indexString = model.getLocations().indexForSpec(arg);
+                    String args = indexString + " /";
+                    loadMapAsset(args);
+                } else {
+                    EditorDialogs.loadMapAsset(arg);
+                }
         }
     }
 
@@ -384,10 +425,10 @@ public class BuildMenus {
     public void newAssetLocation(String argument) {
         if (argument.endsWith(EditorMenus.addThis)) {
             String path = MyString.removeSuffix(argument, EditorMenus.addThis);
-            Maud.getModel().getLocations().add(path);
+            Maud.getModel().getLocations().addFilesystem(path);
 
         } else if (argument.endsWith(".jar") || argument.endsWith(".zip")) {
-            Maud.getModel().getLocations().add(argument);
+            Maud.getModel().getLocations().addFilesystem(argument);
 
         } else { // open folder
             Map<String, File> folderMap = EditorMenus.folderMap(argument);
@@ -582,7 +623,7 @@ public class BuildMenus {
     }
 
     /**
-     * Build a "Map -> Load -> From classpath" menu.
+     * Build a "Map -> Load -> defaultLocation" menu.
      */
     private void buildClasspathMapMenu() {
         builder.reset();
@@ -591,6 +632,8 @@ public class BuildMenus {
         builder.addJme("PuppetToSinbad"); // 50 mappings
         builder.addJme("SinbadToJaime"); // 52 mappings
         builder.addJme("SinbadToMhGame"); // 49 mappings
+
+        builder.addDialog(otherName);
     }
 
     /**
@@ -645,9 +688,7 @@ public class BuildMenus {
          * Generate a list of file names (and prefixes) to display in the menu.
          */
         Set<String> nameSet = fileMap.keySet();
-        int numNames = nameSet.size();
-        List<String> nameList = new ArrayList<>(numNames);
-        nameList.addAll(nameSet);
+        List<String> nameList = new ArrayList<>(nameSet);
         MyString.reduce(nameList, maxItems);
         Collections.sort(nameList);
         /*
@@ -732,7 +773,7 @@ public class BuildMenus {
                 builder.addFolder(path);
             }
         }
-        builder.add("From classpath");
+        builder.add(defaultLocation);
     }
 
     /**
@@ -844,12 +885,12 @@ public class BuildMenus {
     }
 
     /**
-     * Build a "... -> Load -> From classpath" menu.
+     * Build a "... -> Load -> defaultLocation" menu.
      */
     private void buildTestDataMenu() {
         builder.reset();
         /*
-         * Add items for CG models included with Maud.
+         * Add items for CG models included (on the classpath) with Maud.
          * If haveTestdata is true, also for CG models in jme3-testdata.
          *
          * animated models:
@@ -882,6 +923,8 @@ public class BuildMenus {
             builder.addGeometry("Teapot");
             builder.addOgre("Tree");
         }
+
+        builder.addDialog(otherName);
     }
 
     /**

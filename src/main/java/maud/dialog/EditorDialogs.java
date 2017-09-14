@@ -30,6 +30,8 @@ import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.Nifty;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
@@ -50,7 +52,9 @@ import maud.action.Action;
 import maud.action.ActionPrefix;
 import maud.model.Cgm;
 import maud.model.EditableCgm;
+import maud.model.EditorModel;
 import maud.model.LoadedAnimation;
+import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedTrack;
@@ -210,6 +214,58 @@ public class EditorDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showInfoDialog("License information", bodyText);
+    }
+
+    /**
+     * Display a "load (source)cgm asset " dialog for the specified location.
+     *
+     * @param spec URL specification, or null for the default location
+     * @param slot load slot (not null)
+     */
+    public static void loadCgmAsset(String spec, LoadedCgm slot) {
+        EditorModel model = Maud.getModel();
+        String actionPrefix;
+        if (slot == model.getTarget()) {
+            actionPrefix = ActionPrefix.loadCgmAsset;
+        } else if (slot == model.getSource()) {
+            actionPrefix = ActionPrefix.loadSourceCgmAsset;
+        } else {
+            throw new IllegalArgumentException();
+        }
+        String indexString = model.getLocations().indexForSpec(spec);
+        String dialogPrefix = actionPrefix + indexString + " /";
+
+        List<String> extList = new ArrayList<>(6);
+        extList.add(".blend");
+        extList.add(".j3o");
+        extList.add(".mesh.xml");
+        extList.add(".obj");
+        extList.add(".scene");
+        extList.add(".xbuf");
+        AssetDialog controller = new AssetDialog("Select", spec, extList);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter model asset path:", "Models/",
+                "Load", dialogPrefix, controller);
+    }
+
+    /**
+     * Display a "load map asset " dialog for the specified location.
+     *
+     * @param spec URL specification, or null for the default location
+     */
+    public static void loadMapAsset(String spec) {
+        EditorModel model = Maud.getModel();
+        String indexString = model.getLocations().indexForSpec(spec);
+        String dialogPrefix = ActionPrefix.loadMapAsset + indexString + " /";
+
+        List<String> extList = new ArrayList<>(1);
+        extList.add(".j3o");
+        AssetDialog controller = new AssetDialog("Select", spec, extList);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter map asset path:", "SkeletonMaps/",
+                "Load", dialogPrefix, controller);
     }
 
     /**

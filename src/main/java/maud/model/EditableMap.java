@@ -350,19 +350,18 @@ public class EditableMap extends LoadedMap {
     /**
      * Unload the current map and load the specified asset.
      *
-     * @param location file path to the asset root (not null, not empty)
+     * @param spec URL specification, or null for the default location
      * @param assetPath path to the asset to load (not null, not empty)
      * @return true if successful, otherwise false
      */
     @Override
-    public boolean loadAsset(String location, String assetPath) {
-        Validate.nonEmpty(location, "location");
+    public boolean loadAsset(String spec, String assetPath) {
         Validate.nonEmpty(assetPath, "asset path");
 
-        boolean success = super.loadAsset(location, assetPath);
+        boolean success = super.loadAsset(spec, assetPath);
         if (success) {
             String eventDescription = String.format("load map %s %s",
-                    MyString.quote(location), MyString.quote(assetPath));
+                    MyString.quote(spec), MyString.quote(assetPath));
             setPristine(eventDescription);
         }
 
