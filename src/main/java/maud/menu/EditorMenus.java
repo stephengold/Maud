@@ -61,7 +61,7 @@ public class EditorMenus {
     final private static Logger logger = Logger.getLogger(
             EditorMenus.class.getName());
     /**
-     * magic filename used in "add locator" menus
+     * magic filename used in "add locator" actions and menus
      */
     final static String addThis = "! add this folder";
     /**

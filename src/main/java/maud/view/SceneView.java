@@ -421,6 +421,7 @@ public class SceneView
      *
      * @param position position among the physics controls added to the selected
      * spatial (ge;0)
+     * @return name (not null, not empty)
      */
     public String objectName(int position) {
         Spatial spatial = selectedSpatial();
