@@ -61,10 +61,6 @@ public class ShowMenus {
     // constants and loggers
 
     /**
-     * true if jme3-testdata assets are available on the classpath
-     */
-    final private static boolean haveTestdata = false;
-    /**
      * maximum number of items in a menu, determined by minimum screen height
      */
     final private static int maxItems = 19;
