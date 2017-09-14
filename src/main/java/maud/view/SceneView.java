@@ -88,8 +88,8 @@ import maud.Util;
 import maud.mesh.PointMesh;
 import maud.model.Cgm;
 import maud.model.DisplayedPose;
-import maud.model.option.SceneBones;
-import maud.model.option.SkeletonOptions;
+import maud.model.option.scene.SceneBones;
+import maud.model.option.scene.SkeletonOptions;
 import maud.model.option.ViewMode;
 
 /**

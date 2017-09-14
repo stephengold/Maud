@@ -35,7 +35,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.Cgm;
-import maud.model.option.BoundsOptions;
+import maud.model.option.scene.BoundsOptions;
 import maud.view.SceneView;
 
 /**

@@ -37,7 +37,7 @@ import maud.Maud;
 import maud.dialog.EditorDialogs;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
-import maud.model.option.SceneBones;
+import maud.model.option.scene.SceneBones;
 
 /**
  * Process an action string that begins with "set".

@@ -49,8 +49,8 @@ import maud.model.Cgm;
 import maud.model.EditableCgm;
 import maud.model.EditableMap;
 import maud.model.EditorModel;
-import maud.model.option.AxesMode;
-import maud.model.option.AxesOptions;
+import maud.model.option.scene.AxesMode;
+import maud.model.option.scene.AxesOptions;
 import maud.view.SceneDrag;
 import maud.view.SceneView;
 

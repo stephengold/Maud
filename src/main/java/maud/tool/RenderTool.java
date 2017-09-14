@@ -39,8 +39,8 @@ import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 import maud.Maud;
 import maud.model.Cgm;
-import maud.model.option.SceneOptions;
-import maud.model.option.Wireframe;
+import maud.model.option.scene.SceneOptions;
+import maud.model.option.scene.Wireframe;
 import maud.view.SceneView;
 
 /**

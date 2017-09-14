@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.wes.TweenTransforms;
 import maud.model.option.AssetLocations;
 import maud.model.option.MiscStatus;
-import maud.model.option.SceneOptions;
+import maud.model.option.scene.SceneOptions;
 import maud.model.option.ScoreOptions;
 
 /**

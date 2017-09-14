@@ -35,9 +35,9 @@ import jme3utilities.MyCamera;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
-import maud.model.option.CameraStatus;
-import maud.model.option.DddCursorOptions;
-import maud.model.option.OrbitCenter;
+import maud.model.option.scene.CameraStatus;
+import maud.model.option.scene.DddCursorOptions;
+import maud.model.option.scene.OrbitCenter;
 import maud.view.SceneView;
 
 /**

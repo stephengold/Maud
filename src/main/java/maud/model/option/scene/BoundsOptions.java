@@ -24,18 +24,18 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model.option;
+package maud.model.option.scene;
 
 import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * Options for 3-D cursors in scene views.
+ * Options for bounds visualizations in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class DddCursorOptions implements Cloneable {
+public class BoundsOptions implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -43,27 +43,27 @@ public class DddCursorOptions implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            DddCursorOptions.class.getName());
+            BoundsOptions.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * visibility of the cursor (true &rarr; visible, false &rarr; hidden)
+     * flag to enable/disable depth test for the visualization
      */
-    private boolean visible = true;
+    private boolean depthTestFlag = true;
     /**
-     * color of the cursor
+     * color of the visualization
      */
     private ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 1f);
     /**
-     * angular size of the cursor (in arbitrary units, &gt;0)
+     * line width for the visualization (in pixels, &ge;0)
      */
-    private float size = 0.2f;
+    private float lineWidth = 0f;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Copy the color of the cursor.
+     * Copy the color of the visualization.
      *
      * @param storeResult (modified if not null)
      * @return color (either storeResult or a new instance)
@@ -78,26 +78,26 @@ public class DddCursorOptions implements Cloneable {
     }
 
     /**
-     * Read the size of the cursor.
+     * Read the depth-test flag.
      *
-     * @return size (in arbitrary units, &gt;0)
+     * @return true to enable test, otherwise false
      */
-    public float getSize() {
-        assert size > 0f : size;
-        return size;
+    public boolean getDepthTestFlag() {
+        return depthTestFlag;
     }
 
     /**
-     * Test whether the cursor is visible.
+     * Read the width of each line.
      *
-     * @return true if visible, otherwise false
+     * @return width (in pixels, &ge;0)
      */
-    public boolean isVisible() {
-        return visible;
+    public float getLineWidth() {
+        assert lineWidth >= 0f : lineWidth;
+        return lineWidth;
     }
 
     /**
-     * Alter the color of the 3D cursor.
+     * Alter the color of the visualization.
      *
      * @param newColor (not null, unaffected)
      */
@@ -107,22 +107,22 @@ public class DddCursorOptions implements Cloneable {
     }
 
     /**
-     * Alter the size of the cursor.
+     * Alter the depth-test flag.
      *
-     * @param newSize (in arbitrary units, &ge;0)
+     * @param newState true &rarr; enable depth test, false &rarr; no depth test
      */
-    public void setSize(float newSize) {
-        Validate.nonNegative(newSize, "size");
-        size = newSize;
+    public void setDepthTestFlag(boolean newState) {
+        depthTestFlag = newState;
     }
 
     /**
-     * Alter the visibility of the cursor.
+     * Alter the width.
      *
-     * @param newState true &rarr; visible, false &rarr; hidden
+     * @param newWidth line width for axes (in pixels, &ge;0)
      */
-    public void setVisible(boolean newState) {
-        visible = newState;
+    public void setLineWidth(float newWidth) {
+        Validate.inRange(newWidth, "new width", 0f, Float.MAX_VALUE);
+        lineWidth = newWidth;
     }
     // *************************************************************************
     // Object methods
@@ -134,8 +134,8 @@ public class DddCursorOptions implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public DddCursorOptions clone() throws CloneNotSupportedException {
-        DddCursorOptions clone = (DddCursorOptions) super.clone();
+    public BoundsOptions clone() throws CloneNotSupportedException {
+        BoundsOptions clone = (BoundsOptions) super.clone();
         clone.color = color.clone();
 
         return clone;

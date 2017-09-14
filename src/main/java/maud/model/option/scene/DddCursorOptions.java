@@ -24,18 +24,18 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model.option;
+package maud.model.option.scene;
 
 import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * Options for bounds visualizations in scene views.
+ * Options for 3-D cursors in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class BoundsOptions implements Cloneable {
+public class DddCursorOptions implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -43,27 +43,27 @@ public class BoundsOptions implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
-            BoundsOptions.class.getName());
+            DddCursorOptions.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * flag to enable/disable depth test for the visualization
+     * visibility of the cursor (true &rarr; visible, false &rarr; hidden)
      */
-    private boolean depthTestFlag = true;
+    private boolean visible = true;
     /**
-     * color of the visualization
+     * color of the cursor
      */
     private ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 1f);
     /**
-     * line width for the visualization (in pixels, &ge;0)
+     * angular size of the cursor (in arbitrary units, &gt;0)
      */
-    private float lineWidth = 0f;
+    private float size = 0.2f;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Copy the color of the visualization.
+     * Copy the color of the cursor.
      *
      * @param storeResult (modified if not null)
      * @return color (either storeResult or a new instance)
@@ -78,26 +78,26 @@ public class BoundsOptions implements Cloneable {
     }
 
     /**
-     * Read the depth-test flag.
+     * Read the size of the cursor.
      *
-     * @return true to enable test, otherwise false
+     * @return size (in arbitrary units, &gt;0)
      */
-    public boolean getDepthTestFlag() {
-        return depthTestFlag;
+    public float getSize() {
+        assert size > 0f : size;
+        return size;
     }
 
     /**
-     * Read the width of each line.
+     * Test whether the cursor is visible.
      *
-     * @return width (in pixels, &ge;0)
+     * @return true if visible, otherwise false
      */
-    public float getLineWidth() {
-        assert lineWidth >= 0f : lineWidth;
-        return lineWidth;
+    public boolean isVisible() {
+        return visible;
     }
 
     /**
-     * Alter the color of the visualization.
+     * Alter the color of the 3D cursor.
      *
      * @param newColor (not null, unaffected)
      */
@@ -107,22 +107,22 @@ public class BoundsOptions implements Cloneable {
     }
 
     /**
-     * Alter the depth-test flag.
+     * Alter the size of the cursor.
      *
-     * @param newState true &rarr; enable depth test, false &rarr; no depth test
+     * @param newSize (in arbitrary units, &ge;0)
      */
-    public void setDepthTestFlag(boolean newState) {
-        depthTestFlag = newState;
+    public void setSize(float newSize) {
+        Validate.nonNegative(newSize, "size");
+        size = newSize;
     }
 
     /**
-     * Alter the width.
+     * Alter the visibility of the cursor.
      *
-     * @param newWidth line width for axes (in pixels, &ge;0)
+     * @param newState true &rarr; visible, false &rarr; hidden
      */
-    public void setLineWidth(float newWidth) {
-        Validate.inRange(newWidth, "new width", 0f, Float.MAX_VALUE);
-        lineWidth = newWidth;
+    public void setVisible(boolean newState) {
+        visible = newState;
     }
     // *************************************************************************
     // Object methods
@@ -134,8 +134,8 @@ public class BoundsOptions implements Cloneable {
      * @throws CloneNotSupportedException if superclass isn't cloneable
      */
     @Override
-    public BoundsOptions clone() throws CloneNotSupportedException {
-        BoundsOptions clone = (BoundsOptions) super.clone();
+    public DddCursorOptions clone() throws CloneNotSupportedException {
+        DddCursorOptions clone = (DddCursorOptions) super.clone();
         clone.color = color.clone();
 
         return clone;

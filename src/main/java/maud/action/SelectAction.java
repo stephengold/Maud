@@ -31,7 +31,7 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.model.Cgm;
 import maud.model.EditorModel;
-import maud.model.option.OrbitCenter;
+import maud.model.option.scene.OrbitCenter;
 import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
 

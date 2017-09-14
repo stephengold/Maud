@@ -38,8 +38,8 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.Pov;
-import maud.model.option.CameraStatus;
-import maud.model.option.OrbitCenter;
+import maud.model.option.scene.CameraStatus;
+import maud.model.option.scene.OrbitCenter;
 import org.lwjgl.input.Mouse;
 
 /**

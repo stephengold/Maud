@@ -45,10 +45,10 @@ import maud.model.SelectedSgc;
 import maud.model.SelectedSkeleton;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedVertex;
-import maud.model.option.CameraStatus;
-import maud.model.option.OrbitCenter;
-import maud.model.option.SceneBones;
-import maud.model.option.SkeletonOptions;
+import maud.model.option.scene.CameraStatus;
+import maud.model.option.scene.OrbitCenter;
+import maud.model.option.scene.SceneBones;
+import maud.model.option.scene.SkeletonOptions;
 import maud.model.option.ViewMode;
 
 /**
