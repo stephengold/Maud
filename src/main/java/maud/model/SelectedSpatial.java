@@ -699,9 +699,7 @@ public class SelectedSpatial implements Cloneable {
     public List<String> listUserKeys() {
         Spatial spatial = find();
         Collection<String> keys = spatial.getUserDataKeys();
-        int numKeys = keys.size();
-        List<String> result = new ArrayList<>(numKeys);
-        result.addAll(keys);
+        List<String> result = new ArrayList<>(keys);
         Collections.sort(result);
 
         return result;

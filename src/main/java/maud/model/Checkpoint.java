@@ -98,10 +98,7 @@ public class Checkpoint {
      * @return a new list of descriptions
      */
     public List<String> listEvents() {
-        int numEvents = eventDescriptions.size();
-        List<String> result = new ArrayList<>(numEvents);
-        result.addAll(eventDescriptions);
-
+        List<String> result = new ArrayList<>(eventDescriptions);
         return result;
     }
 
