@@ -54,6 +54,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
+import maud.PhysicsUtil;
 import maud.Util;
 import maud.model.option.Wireframe;
 import maud.view.SceneView;
@@ -241,7 +242,7 @@ public class Cgm implements Cloneable {
      */
     public int countShapes() {
         PhysicsSpace space = getSceneView().getPhysicsSpace();
-        int count = Util.countShapes(space);
+        int count = PhysicsUtil.countShapes(space);
 
         assert count >= 0 : count;
         return count;
@@ -624,7 +625,7 @@ public class Cgm implements Cloneable {
         Validate.nonNull(namePrefix, "name prefix");
 
         PhysicsSpace space = getSceneView().getPhysicsSpace();
-        Set<PhysicsCollisionObject> objects = Util.listObjects(space);
+        Set<PhysicsCollisionObject> objects = PhysicsUtil.listObjects(space);
         int numObjects = objects.size();
         List<String> result = new ArrayList<>(numObjects);
 
@@ -649,7 +650,7 @@ public class Cgm implements Cloneable {
         Validate.nonNull(namePrefix, "name prefix");
 
         PhysicsSpace space = getSceneView().getPhysicsSpace();
-        Map<Long, CollisionShape> map = Util.shapeMap(space);
+        Map<Long, CollisionShape> map = PhysicsUtil.shapeMap(space);
         int numShapes = map.size();
         List<String> result = new ArrayList<>(numShapes);
 

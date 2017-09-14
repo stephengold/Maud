@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyControl;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import maud.Util;
+import maud.PhysicsUtil;
 import maud.view.SceneView;
 
 /**
@@ -171,7 +171,7 @@ public class SelectedSgc implements Cloneable {
         if (modelSgc instanceof PhysicsControl) {
             Spatial selectedSpatial = cgm.getSpatial().find();
             PhysicsControl pc = (PhysicsControl) modelSgc;
-            int position = Util.pcToPosition(selectedSpatial, pc);
+            int position = PhysicsUtil.pcToPosition(selectedSpatial, pc);
             SceneView sceneView = cgm.getSceneView();
             result = sceneView.objectName(position);
         }

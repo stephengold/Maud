@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.Util;
+import maud.PhysicsUtil;
 import maud.model.Cgm;
 import maud.model.SelectedPhysics;
 
@@ -95,7 +95,7 @@ class PhysicsTool extends WindowController {
 
         Cgm target = Maud.getModel().getTarget();
         PhysicsSpace space = target.getSceneView().getPhysicsSpace();
-        int numObjects = Util.countObjects(space);
+        int numObjects = PhysicsUtil.countObjects(space);
         if (numObjects > 0) {
             sButton = "Select";
         }

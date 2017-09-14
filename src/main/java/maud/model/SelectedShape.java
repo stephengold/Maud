@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import maud.Util;
+import maud.PhysicsUtil;
 
 /**
  * The selected physics shape in the Maud application.
@@ -93,7 +93,7 @@ public class SelectedShape implements Cloneable {
      */
     CollisionShape find() {
         PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        Map<Long, CollisionShape> map = Util.shapeMap(space);
+        Map<Long, CollisionShape> map = PhysicsUtil.shapeMap(space);
         CollisionShape result = map.get(selectedId);
 
         return result;
@@ -294,13 +294,13 @@ public class SelectedShape implements Cloneable {
     // private methods
 
     /**
-     * Enumerate all physics shapes in numerical order.
+     * Enumerate all physics shapes in ID order.
      *
      * @return a new list of shape identifiers
      */
     private List<Long> listShapeIds() {
         PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        Map<Long, CollisionShape> map = Util.shapeMap(space);
+        Map<Long, CollisionShape> map = PhysicsUtil.shapeMap(space);
         int numShapes = map.size();
         List<Long> result = new ArrayList<>(numShapes);
         for (long id : map.keySet()) {

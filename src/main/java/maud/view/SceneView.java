@@ -83,6 +83,7 @@ import jme3utilities.sky.Updater;
 import jme3utilities.ui.Locators;
 import jme3utilities.wes.Pose;
 import maud.Maud;
+import maud.PhysicsUtil;
 import maud.Util;
 import maud.mesh.PointMesh;
 import maud.model.Cgm;
@@ -425,7 +426,7 @@ public class SceneView
      */
     public String objectName(int position) {
         Spatial spatial = selectedSpatial();
-        PhysicsControl pc = Util.pcFromPosition(spatial, position);
+        PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, position);
         PhysicsCollisionObject pco = (PhysicsCollisionObject) pc;
         String result = MyControl.objectName(pco);
 
@@ -460,7 +461,7 @@ public class SceneView
         Validate.nonNegative(position, "position");
 
         Spatial spatial = selectedSpatial();
-        PhysicsControl pc = Util.pcFromPosition(spatial, position);
+        PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, position);
         pc.setEnabled(false);
         spatial.removeControl(pc);
     }
@@ -486,7 +487,7 @@ public class SceneView
      */
     public void setApplyPhysicsLocal(int position, boolean newSetting) {
         Spatial spatial = selectedSpatial();
-        PhysicsControl pc = Util.pcFromPosition(spatial, position);
+        PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, position);
         assert MyControl.canApplyPhysicsLocal(pc);
         MyControl.setApplyPhysicsLocal(pc, newSetting);
     }
@@ -564,7 +565,7 @@ public class SceneView
      */
     public void setPhysicsControlEnabled(int position, boolean newSetting) {
         Spatial spatial = selectedSpatial();
-        PhysicsControl pc = Util.pcFromPosition(spatial, position);
+        PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, position);
         pc.setEnabled(newSetting);
     }
 

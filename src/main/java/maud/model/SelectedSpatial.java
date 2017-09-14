@@ -51,7 +51,7 @@ import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import maud.Util;
+import maud.PhysicsUtil;
 import maud.view.SceneView;
 
 /**
@@ -113,7 +113,7 @@ public class SelectedSpatial implements Cloneable {
         GhostControl newSgc = new GhostControl();
         SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
-        CollisionShape shape = Util.makeShape(viewSpatial);
+        CollisionShape shape = PhysicsUtil.makeShape(viewSpatial);
         newSgc.setCollisionShape(shape);
 
         editableCgm.addSgc(newSgc);
@@ -129,7 +129,7 @@ public class SelectedSpatial implements Cloneable {
         RigidBodyControl newSgc = new RigidBodyControl(mass);
         SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
-        CollisionShape shape = Util.makeShape(viewSpatial);
+        CollisionShape shape = PhysicsUtil.makeShape(viewSpatial);
         newSgc.setCollisionShape(shape);
 
         editableCgm.addSgc(newSgc);
