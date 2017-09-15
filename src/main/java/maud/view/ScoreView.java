@@ -49,7 +49,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
 import com.jme3.texture.Texture;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,7 @@ import maud.mesh.RoundedRectangle;
 import maud.mesh.Sparkline;
 import maud.mesh.YSwarm;
 import maud.model.Cgm;
+import maud.model.ShowBones;
 import maud.model.option.ScoreOptions;
 import maud.model.option.ViewMode;
 
@@ -562,36 +564,33 @@ public class ScoreView implements EditorView {
             visuals.detachAllChildren();
             height = 0f;
 
-            String bonesShown = options.bonesShown(cgm);
-            switch (bonesShown) {
-                case "all":
-                    attachAllBones();
+            ShowBones showBones = options.bonesShown(cgm);
+            BitSet selectSet;
+            switch (showBones) {
+                case All:
+                case Influencers:
+                case Leaves:
+                case Mapped:
+                case Roots:
+                case Selected:
+                case Tracked:
+                case Unmapped:
+                    selectSet = cgm.getSkeleton().listShown(showBones, null);
+                    attachBonesIndexOrder(selectSet);
                     break;
-                case "ancestors":
-                    List<Integer> indices = cgm.getBone().listAncestorIndices();
-                    Collections.reverse(indices);
-                    attachStaves(indices);
+
+                case Ancestry:
+                case Family:
+                case Subtree:
+                    selectSet = cgm.getSkeleton().listShown(showBones, null);
+                    attachBonesPreOrder(selectSet);
                     break;
-                case "family":
-                    attachFamilyBones();
+
+                case None:
                     break;
-                case "none":
-                    break;
-                case "roots":
-                    indices = cgm.getSkeleton().listRootIndices();
-                    attachStaves(indices);
-                    break;
-                case "selected":
-                    currentBone = cgm.getBone().getIndex();
-                    attachStaff();
-                    break;
-                case "tracked":
-                    indices = cgm.getAnimation().listBoneIndicesWithTracks();
-                    Collections.sort(indices);
-                    attachStaves(indices);
-                    break;
+
                 default:
-                    assert false;
+                    throw new IllegalStateException();
             }
 
             attachGnomon();
@@ -615,19 +614,6 @@ public class ScoreView implements EditorView {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Attach staves for all bones, in index order.
-     */
-    private void attachAllBones() {
-        int numBones = cgm.getSkeleton().countBones();
-        for (currentBone = 0; currentBone < numBones; currentBone++) {
-            if (currentBone > 0) {
-                height += yGap;
-            }
-            attachStaff();
-        }
-    }
 
     /**
      * Attach a right-aligned bone label to the visuals.
@@ -763,14 +749,38 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attach staves for the selected bone, its ancestors (if any), and its
-     * children (if any), in tree order.
+     * Attach staves for the indexed bones in index order.
+     *
+     * @param selectSet which bones (not null)
      */
-    private void attachFamilyBones() {
-        List<Integer> boneIndices = cgm.getBone().listAncestorIndices();
-        Collections.reverse(boneIndices);
-        List<Integer> childIndices = cgm.getBone().listChildIndices();
-        boneIndices.addAll(childIndices);
+    private void attachBonesIndexOrder(BitSet selectSet) {
+        int numShown = selectSet.cardinality();
+        List<Integer> boneIndices = new ArrayList<>(numShown);
+        for (int boneIndex = 0; boneIndex < selectSet.size(); boneIndex++) {
+            if (selectSet.get(boneIndex)) {
+                boneIndices.add(boneIndex);
+            }
+        }
+
+        attachStaves(boneIndices);
+    }
+
+    /**
+     * Attach staves for the indexed bones in depth-first order.
+     *
+     * @param selectSet which bones (not null)
+     */
+    private void attachBonesPreOrder(BitSet selectSet) {
+        int numShown = selectSet.cardinality();
+        List<Integer> boneIndices = new ArrayList<>(numShown);
+
+        Pose pose = cgm.getPose().get();
+        int[] order = pose.preOrderIndices();
+        for (int boneIndex : order) {
+            if (selectSet.get(boneIndex)) {
+                boneIndices.add(boneIndex);
+            }
+        }
 
         attachStaves(boneIndices);
     }
@@ -1274,7 +1284,9 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attach staves for the indexed bones in the order specified.
+     * Attach staves for the indexed bones in the order specified. TODO rename
+     * attachBoneStaves
+     *
      *
      * @param indices list of bone indices (not null)
      */

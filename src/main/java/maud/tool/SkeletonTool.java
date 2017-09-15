@@ -33,7 +33,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.Cgm;
-import maud.model.option.scene.SceneBones;
+import maud.model.ShowBones;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
@@ -88,8 +88,8 @@ class SkeletonTool extends WindowController {
             return;
         }
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
-        SceneBones showBones = options.bones();
-        visualizer.setEnabled(showBones != SceneBones.None);
+        ShowBones showBones = options.getShowBones();
+        visualizer.setEnabled(showBones != ShowBones.None);
 
         float lineWidth = options.getLineWidth();
         visualizer.setLineWidth(lineWidth);
@@ -115,8 +115,9 @@ class SkeletonTool extends WindowController {
         Maud.gui.setIgnoreGuiChanges(true);
 
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
-        SceneBones showBones = options.bones();
-        Maud.gui.setStatusText("skeletonBones", " " + showBones.toString());
+        ShowBones showBones = options.getShowBones();
+        String bLabel = showBones.toString();
+        Maud.gui.setButtonLabel("skeletonShowBonesButton", bLabel);
 
         float lineWidth = options.getLineWidth();
         Slider slider = Maud.gui.getSlider("skeletonLineWidth");

@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.ShowBones;
 import maud.model.option.ScoreOptions;
 
 /**
@@ -82,44 +83,13 @@ class ScoreTool extends WindowController {
         boolean scales = scoreOptions.showsScales();
         Maud.gui.setChecked("scoreScales", scales);
 
-        String niftyId;
-        String showWhenSelected = scoreOptions.getShowWhenSelected();
-        switch (showWhenSelected) {
-            case "all":
-                niftyId = "scoreWhenAllRadioButton";
-                break;
-            case "ancestors":
-                niftyId = "scoreWhenAncestorsRadioButton";
-                break;
-            case "family":
-                niftyId = "scoreWhenFamilyRadioButton";
-                break;
-            case "selected":
-                niftyId = "scoreWhenSelectedRadioButton";
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-        Maud.gui.setRadioButton(niftyId);
+        ShowBones showNoneSelected = scoreOptions.getShowNoneSelected();
+        String noneButton = showNoneSelected.toString();
+        Maud.gui.setButtonLabel("scoreShowNoneSelectedButton", noneButton);
 
-        String showNoneSelected = scoreOptions.getShowNoneSelected();
-        switch (showNoneSelected) {
-            case "all":
-                niftyId = "scoreNoneAllRadioButton";
-                break;
-            case "none":
-                niftyId = "scoreNoneNoneRadioButton";
-                break;
-            case "roots":
-                niftyId = "scoreNoneRootsRadioButton";
-                break;
-            case "tracked":
-                niftyId = "scoreNoneTrackedRadioButton";
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-        Maud.gui.setRadioButton(niftyId);
+        ShowBones showWhenSelected = scoreOptions.getShowWhenSelected();
+        String whenButton = showWhenSelected.toString();
+        Maud.gui.setButtonLabel("scoreShowWhenSelectedButton", whenButton);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

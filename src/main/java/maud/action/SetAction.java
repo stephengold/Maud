@@ -37,7 +37,7 @@ import maud.Maud;
 import maud.dialog.EditorDialogs;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
-import maud.model.option.scene.SceneBones;
+import maud.model.ShowBones;
 
 /**
  * Process an action string that begins with "set".
@@ -75,6 +75,7 @@ class SetAction {
 
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
+        ShowBones currentOption;
         switch (actionString) {
             case Action.setBatchHint:
                 Maud.gui.showMenus.setBatchHint();
@@ -86,7 +87,19 @@ class SetAction {
                 Maud.gui.showMenus.setQueueBucket();
                 break;
             case Action.setSceneBones:
-                Maud.gui.showMenus.setSceneBones();
+                currentOption = model.getScene().getSkeleton().getShowBones();
+                Maud.gui.showMenus.setShowBones(ActionPrefix.setSceneBones,
+                        currentOption);
+                break;
+            case Action.setScoreBonesNone:
+                currentOption = model.getScore().getShowNoneSelected();
+                Maud.gui.showMenus.setShowBones(ActionPrefix.setScoreBonesNone,
+                        currentOption);
+                break;
+            case Action.setScoreBonesWhen:
+                currentOption = model.getScore().getShowWhenSelected();
+                Maud.gui.showMenus.setShowBones(ActionPrefix.setScoreBonesWhen,
+                        currentOption);
                 break;
             case Action.setShadowMode:
                 Maud.gui.showMenus.setShadowMode();
@@ -175,8 +188,20 @@ class SetAction {
 
         } else if (actionString.startsWith(ActionPrefix.setSceneBones)) {
             arg = MyString.remainder(actionString, ActionPrefix.setSceneBones);
-            SceneBones value = SceneBones.valueOf(arg);
-            model.getScene().getSkeleton().setBones(value);
+            ShowBones value = ShowBones.valueOf(arg);
+            model.getScene().getSkeleton().setShowBones(value);
+
+        } else if (actionString.startsWith(ActionPrefix.setScoreBonesNone)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setScoreBonesNone);
+            ShowBones value = ShowBones.valueOf(arg);
+            model.getScore().setShowNoneSelected(value);
+
+        } else if (actionString.startsWith(ActionPrefix.setScoreBonesWhen)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setScoreBonesWhen);
+            ShowBones value = ShowBones.valueOf(arg);
+            model.getScore().setShowWhenSelected(value);
 
         } else if (actionString.startsWith(ActionPrefix.setShadowMode)) {
             arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);

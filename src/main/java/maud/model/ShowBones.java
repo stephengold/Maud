@@ -24,27 +24,64 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model.option.scene;
+package maud.model;
 
 /**
- * Enumerate bone options for skeleton visualizers.
+ * Enumerate bone selection options for visualizers.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum SceneBones {
+public enum ShowBones {
     // *************************************************************************
     // values
 
     /**
-     * visualize all bones
+     * visualize all bones in the selected skeleton
      */
     All,
     /**
-     * visualize only the bones that influence mesh vertices
+     * visualize the selected bone and all its ancestors
      */
-    InfluencersOnly,
+    Ancestry,
+    /**
+     * visualize the selected bone, all its ancestors, plus any immediate
+     * children
+     */
+    Family,
+    /**
+     * visualize only bones that influence mesh vertices
+     */
+    Influencers,
+    /**
+     * visualize only leaf bones
+     */
+    Leaves,
+    /**
+     * visualize only bones with mappings in the loaded skeleton map
+     */
+    Mapped,
     /**
      * visualize no bones
      */
-    None;
+    None,
+    /**
+     * visualize only root bones
+     */
+    Roots,
+    /**
+     * visualize only the selected bone
+     */
+    Selected,
+    /**
+     * visualize the selected bone and all its descendents
+     */
+    Subtree,
+    /**
+     * visualize only bones with tracks in the loaded animation
+     */
+    Tracked,
+    /**
+     * visualize only bones without mappings in the loaded skeleton map
+     */
+    Unmapped;
 }

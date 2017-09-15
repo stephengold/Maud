@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenTransforms;
 import jme3utilities.wes.TweenVectors;
@@ -45,14 +46,13 @@ import maud.model.SelectedSgc;
 import maud.model.SelectedSkeleton;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedVertex;
+import maud.model.ShowBones;
+import maud.model.option.ViewMode;
 import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.OrbitCenter;
-import maud.model.option.scene.SceneBones;
-import maud.model.option.scene.SkeletonOptions;
-import maud.model.option.ViewMode;
 
 /**
- * Display simple menus in Maud's editor screen.
+ * Display simple menus in Maud's editor screen. TODO all members static
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -564,23 +564,24 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu to set the bone-inclusion option for scene views using the
-     * "set sceneBones " action prefix.
+     * Display a menu to set a bone-inclusion option using the specified action
+     * prefix. TODO reorder methods
+     *
+     * @param actionPrefix (not null, not empty)
+     * @param currentOption currently selected option, or null
      */
-    public void setSceneBones() {
+    public void setShowBones(String actionPrefix, ShowBones currentOption) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
         MenuBuilder builder = new MenuBuilder();
-
-        SkeletonOptions status = Maud.getModel().getScene().getSkeleton();
-        SceneBones showBones = status.bones();
-
-        for (SceneBones option : SceneBones.values()) {
-            if (!option.equals(showBones)) {
+        for (ShowBones option : ShowBones.values()) {
+            if (!option.equals(currentOption)) {
                 String name = option.toString();
                 builder.add(name);
             }
         }
 
-        builder.show(ActionPrefix.setSceneBones);
+        builder.show(actionPrefix);
     }
 
     /**
