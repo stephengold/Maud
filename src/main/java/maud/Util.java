@@ -31,6 +31,8 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
+import com.jme3.animation.SpatialTrack;
+import com.jme3.animation.Track;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
@@ -296,6 +298,32 @@ public class Util {
         }
 
         return success;
+    }
+
+    /**
+     * Access the indexed SpatialTrack in the specified animation.
+     *
+     * @param animation which animation to search (not null, unaffected)
+     * @param spatialTrackIndex which spatial track (&ge;0)
+     * @return the pre-existing instance, or null if not found
+     */
+    public static SpatialTrack findSpatialTrack(Animation animation,
+            int spatialTrackIndex) {
+        Validate.nonNegative(spatialTrackIndex, "spatial track index");
+
+        Track[] tracks = animation.getTracks();
+        int spatialTracksSeen = 0;
+        for (Track track : tracks) {
+            if (track instanceof SpatialTrack) {
+                SpatialTrack spatialTrack = (SpatialTrack) track;
+                if (spatialTracksSeen == spatialTrackIndex) {
+                    return spatialTrack;
+                }
+                ++spatialTracksSeen;
+            }
+        }
+
+        return null;
     }
 
     /**
