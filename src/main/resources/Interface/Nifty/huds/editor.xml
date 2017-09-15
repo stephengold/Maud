@@ -1794,7 +1794,7 @@ the menu bar, status bar, and tool windows.
                      title="Spatial Details Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="252px" width="255px" x="15" y="85">
+                     height="224px" width="255px" x="15" y="85">
                 <panel childLayout="vertical">
                     <panel height="5px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -1850,55 +1850,29 @@ the menu bar, status bar, and tool windows.
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Shadow mode:  "
-                                 textHAlign="right"
-                                 width="90px"/>
-                        <control name="label" id="spatialShadows"
-                                 backgroundColor="#ffff"
-                                 width="99px"/>
-                        <control name="button" label="Edit"
-                                 id="id35ToAvoidNiftyWarning"
-                                 width="36px">
-                            <interact onRelease="perform(set shadowMode)"/>
+                        <control name="label" text="Batch:  "/>
+                        <control name="button" id="spatialBatchHintButton"
+                                 width="50px">
+                            <interact onRelease="perform(set batchHint)"/>
                         </control>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Cull hint:  "
-                                 textHAlign="right"
-                                 width="90px"/>
-                        <control name="label" id="spatialHint"
-                                 backgroundColor="#ffff"
-                                 width="99px"/>
-                        <control name="button" label="Edit"
-                                 id="id37ToAvoidNiftyWarning"
-                                 width="36px">
+                        <control name="label" text="    Cull:  "/>
+                        <control name="button" id="spatialCullHintButton"
+                                 width="65px">
                             <interact onRelease="perform(set cullHint)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Queue bucket:  "
-                                 textHAlign="right"
-                                 width="90px"/>
-                        <control name="label" id="spatialBucket"
-                                 backgroundColor="#ffff"
-                                 width="99px"/>
-                        <control name="button" label="Edit"
-                                 id="id38ToAvoidNiftyWarning"
-                                 width="36px">
+                        <control name="label" text="Queue bucket:  "/>
+                        <control name="button" id="spatialBucketButton"
+                                 width="80px">
                             <interact onRelease="perform(set queueBucket)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Batch hint:  "
-                                 textHAlign="right"
-                                 width="90px"/>
-                        <control name="label" id="spatialBatchHint"
-                                 backgroundColor="#ffff"
-                                 width="99px"/>
-                        <control name="button" label="Edit"
-                                 id="id39ToAvoidNiftyWarning"
-                                 width="36px">
-                            <interact onRelease="perform(set batchHint)"/>
+                        <control name="label" text="Shadow mode:  "/>
+                        <control name="button" id="spatialShadowsButton"
+                                 width="105px">
+                            <interact onRelease="perform(set shadowMode)"/>
                         </control>
                     </panel>
                 </panel>
