@@ -26,14 +26,11 @@
  */
 package maud.view;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
 import com.jme3.font.Rectangle;
 import com.jme3.input.InputManager;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -48,7 +45,6 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
-import com.jme3.texture.Texture;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -56,17 +52,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
-import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
 import jme3utilities.Validate;
 import jme3utilities.math.MyArray;
 import jme3utilities.math.MyMath;
 import jme3utilities.mesh.RectangleMesh;
-import jme3utilities.mesh.RectangleOutlineMesh;
 import jme3utilities.wes.Pose;
 import maud.Maud;
 import maud.mesh.Finial;
-import maud.mesh.RoundedRectangle;
 import maud.mesh.Sparkline;
 import maud.mesh.YSwarm;
 import maud.model.Cgm;
@@ -84,88 +77,13 @@ public class ScoreView implements EditorView {
     // constants and loggers
 
     /**
-     * color for the w-axis (white)
-     */
-    final private static ColorRGBA wColor = new ColorRGBA(1f, 1f, 1f, 1f);
-    /**
-     * color for the X-axis (red)
-     */
-    final private static ColorRGBA xColor = new ColorRGBA(1f, 0f, 0f, 1f);
-    /**
-     * color for the Y-axis (green)
-     */
-    final private static ColorRGBA yColor = new ColorRGBA(0f, 1f, 0f, 1f);
-    /**
-     * color for the Z-axis (blue)
-     */
-    final private static ColorRGBA zColor = new ColorRGBA(0f, 0f, 1f, 1f);
-    /**
-     * horizontal size of hash mark (in world units)
-     */
-    final private static float hashSize = 0.05f;
-    /**
-     * height of a spark line (in world units)
-     */
-    final private static float sparklineHeight = 0.08f;
-    /**
-     * horizontal gap between visuals and left/right edges of the viewport (in
-     * world units)
-     */
-    final private static float xGap = 0.01f;
-    /**
-     * world X-coordinate for left edges of sparklines
-     */
-    final private static float xLeftMargin = 0f;
-    /**
-     * world X-coordinate for right edges of sparklines
-     */
-    final private static float xRightMargin = 1f;
-    /**
-     * vertical gap between staves (in world units)
-     */
-    final private static float yGap = 0.1f;
-    /**
-     * world Z-coordinate for lines
-     */
-    final private static float zLines = -10f;
-    /**
-     * world Z-coordinate for labels and icons
-     */
-    final private static float zLabels = zLines + 1f;
-    /**
-     * hash-mark mesh to represent a bone without a track, or any bone when the
-     * POV is zoomed all the way out
-     */
-    final private static Line hashMark = new Line(
-            new Vector3f(-hashSize, 0f, 0f), new Vector3f(0f, 0f, 0f)
-    );
-    /**
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(
             ScoreView.class.getName());
-    /**
-     * square mesh for a transform icon
-     */
-    final private static Mesh iconMesh = new RoundedRectangle(0f, 1f, -0.5f,
-            0.5f, 0.3f, 1f);
-    /**
-     * rectangular outline for an end cap when the POV is zoomed part way out
-     */
-    final private static Mesh outlineMesh = new RectangleOutlineMesh(0f,
-            hashSize, -1f, 0f);
-    /**
-     * rotation of 90 degrees around the Z axis
-     */
-    final private static Quaternion quarterZ = new Quaternion().fromAngles(0f,
-            0f, FastMath.HALF_PI);
     // *************************************************************************
     // fields
 
-    /**
-     * font for labels
-     */
-    private static BitmapFont labelFont = null;
     /**
      * CG model being rendered
      */
@@ -221,61 +139,13 @@ public class ScoreView implements EditorView {
      */
     final private Map<Integer, Vector2f> boneYs = new HashMap<>(120);
     /**
-     * material for label backgrounds of non-selected bones
-     */
-    private static Material bgNotSelected = null;
-    /**
-     * material for label backgrounds of selected bones
-     */
-    private static Material bgSelected = null;
-    /**
-     * material for the gnomon when the pose is frozen
-     */
-    private static Material gnomonFrozen = null;
-    /**
-     * material for pose markers
-     */
-    private static Material poseMaterial;
-    /**
-     * material for rotation icons
-     */
-    private static Material rotMaterial;
-    /**
-     * material for scale icons
-     */
-    private static Material scaMaterial;
-    /**
-     * material for translation icons
-     */
-    private static Material traMaterial;
-    /**
-     * material for finials of non-selected bones
-     */
-    private static Material wireNotSelected = null;
-    /**
-     * material for finials of selected bones
-     */
-    private static Material wireSelected = null;
-    /**
-     * material for sparklines of W components
-     */
-    private static Material wMaterial = null;
-    /**
-     * material for sparklines of X components
-     */
-    private static Material xMaterial = null;
-    /**
-     * material for sparklines of Y components
-     */
-    private static Material yMaterial = null;
-    /**
-     * material for sparklines of Z components
-     */
-    private static Material zMaterial = null;
-    /**
      * visualization subtree: attach geometries here
      */
     private Node visuals = null;
+    /**
+     * reusable resources for visualization
+     */
+    private ScoreResources r = null;
     /**
      * view port used when the screen isn't split, or null for none
      */
@@ -354,8 +224,8 @@ public class ScoreView implements EditorView {
             if (boneIndex != selectedBone) {
                 Vector2f minMax = entry.getValue();
 
-                Vector3f world1 = new Vector3f(xRightMargin, minMax.x, zLines);
-                Vector3f world2 = new Vector3f(xRightMargin, minMax.y, zLines);
+                Vector3f world1 = new Vector3f(r.xRightMargin, minMax.x, r.zLines);
+                Vector3f world2 = new Vector3f(r.xRightMargin, minMax.y, r.zLines);
                 Vector3f screen1 = camera.getScreenCoordinates(world1);
                 Vector3f screen2 = camera.getScreenCoordinates(world2);
 
@@ -384,7 +254,7 @@ public class ScoreView implements EditorView {
         Camera camera = getCamera();
         Vector2f inputXY = selection.copyInputXY();
         float gnomonX = gnomonX();
-        Vector3f world = new Vector3f(gnomonX, 0f, zLines);
+        Vector3f world = new Vector3f(gnomonX, 0f, r.zLines);
         Vector3f screen = camera.getScreenCoordinates(world);
         float dSquared = FastMath.sqr(inputXY.x - screen.x);
         selection.considerGnomon(cgm, dSquared);
@@ -406,14 +276,14 @@ public class ScoreView implements EditorView {
         boolean isSelected = cgm.getBone().isSelected();
         if (isSelected) {
             Vector2f minMax = boneYs.get(selectedBone);
-            Vector3f world1 = new Vector3f(xRightMargin, minMax.x, zLines);
-            Vector3f world2 = new Vector3f(xRightMargin, minMax.y, zLines);
+            Vector3f world1 = new Vector3f(r.xRightMargin, minMax.x, r.zLines);
+            Vector3f world2 = new Vector3f(r.xRightMargin, minMax.y, r.zLines);
             Vector3f screen1 = camera.getScreenCoordinates(world1);
             Vector3f screen2 = camera.getScreenCoordinates(world2);
             if (MyMath.isBetween(screen1.y, inputXY.y, screen2.y)) {
                 for (Entry<Integer, Float> entry : frameXs.entrySet()) {
                     float frameX = entry.getValue();
-                    Vector3f world = new Vector3f(frameX, minMax.y, zLines);
+                    Vector3f world = new Vector3f(frameX, minMax.y, r.zLines);
                     Vector3f screen = camera.getScreenCoordinates(world);
                     float dSquared = FastMath.sqr(inputXY.x - screen.x);
                     int frameIndex = entry.getKey();
@@ -507,11 +377,8 @@ public class ScoreView implements EditorView {
     public void update(Cgm renderCgm) {
         Validate.nonNull(renderCgm, "render model");
 
-        if (wireNotSelected == null) { // TODO add an init method
-            Maud application = Maud.getApplication();
-            AssetManager assetManager = application.getAssetManager();
-            initializeMaterials(assetManager);
-            labelFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        if (r == null) {
+            r = new ScoreResources();
         }
         boneYs.clear();
         frameXs.clear();
@@ -533,9 +400,9 @@ public class ScoreView implements EditorView {
             boolean rotations = options.showsRotations();
             boolean scales = options.showsScales();
             finialComplete = new Finial(translations, rotations, scales,
-                    sparklineHeight);
+                    r.sparklineHeight);
             finialNoScales = new Finial(translations, rotations, false,
-                    sparklineHeight);
+                    r.sparklineHeight);
 
             cgm.getScorePov().updatePartial();
             /*
@@ -545,9 +412,9 @@ public class ScoreView implements EditorView {
             if (duration > 0f) {
                 ScoreView view = cgm.getScoreView();
                 Camera camera = view.getCamera();
-                Vector3f world = new Vector3f(xLeftMargin, 0f, zLines);
+                Vector3f world = new Vector3f(r.xLeftMargin, 0f, r.zLines);
                 Vector3f left = camera.getScreenCoordinates(world);
-                world.x = xRightMargin;
+                world.x = r.xRightMargin;
                 Vector3f right = camera.getScreenCoordinates(world);
                 float dx = right.x - left.x;
                 numSamples = 1 + Math.round(dx);
@@ -634,13 +501,13 @@ public class ScoreView implements EditorView {
         Material bgMaterial;
         int selectedBoneIndex = cgm.getBone().getIndex();
         if (currentBone == selectedBoneIndex) {
-            bgMaterial = bgSelected;
+            bgMaterial = r.bgSelected;
         } else {
-            bgMaterial = bgNotSelected;
+            bgMaterial = r.bgNotSelected;
         }
 
         String boneName = cgm.getSkeleton().getBoneName(currentBone);
-        float boneNameSize = 4f + labelFont.getLineWidth(boneName);
+        float boneNameSize = 4f + r.labelFont.getLineWidth(boneName);
         /*
          * Calculate the effective width and height for the label and the size
          * for the text assuming horizontal (normal) text.
@@ -713,7 +580,7 @@ public class ScoreView implements EditorView {
         label.setLocalScale(compression, 1f, 1f);
         float x = rightX - xWidth * compression;
         float y = centerY + yHeight / 2;
-        label.setLocalTranslation(x, y, zLabels);
+        label.setLocalTranslation(x, y, r.zLabels);
     }
 
     /**
@@ -740,12 +607,12 @@ public class ScoreView implements EditorView {
         Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
                 yWidth, xHeight);
         visuals.attachChild(label);
-        label.setLocalRotation(quarterZ);
+        label.setLocalRotation(r.quarterZ);
         float compression = cgm.getScorePov().compression();
         label.setLocalScale(1f, compression, 1f);
         float x = bottomX - xHeight * compression;
         float y = centerY - yWidth / 2;
-        label.setLocalTranslation(x, y, zLabels);
+        label.setLocalTranslation(x, y, r.zLabels);
     }
 
     /**
@@ -793,10 +660,10 @@ public class ScoreView implements EditorView {
     private void attachFinials(Finial finial) {
         assert finial != null;
 
-        Material wireMaterial = wireNotSelected;
+        Material wireMaterial = r.wireNotSelected;
         int selectedBoneIndex = cgm.getBone().getIndex();
         if (currentBone == selectedBoneIndex) {
-            wireMaterial = wireSelected;
+            wireMaterial = r.wireSelected;
         }
         /*
          * Attach the left-hand finial.
@@ -804,19 +671,19 @@ public class ScoreView implements EditorView {
         String name = String.format("left finial%d", currentBone);
         Geometry geometry = new Geometry(name, finial);
         visuals.attachChild(geometry);
-        geometry.setLocalTranslation(xLeftMargin, -height, zLines);
+        geometry.setLocalTranslation(r.xLeftMargin, -height, r.zLines);
         geometry.setMaterial(wireMaterial);
         /*
          * Attach a bone label to the left of the left-hand finial.
          */
-        float leftX = cgm.getScorePov().leftX() + xGap;
-        float rightX = xLeftMargin - hashSize;
+        float leftX = cgm.getScorePov().leftX() + r.xGap;
+        float rightX = r.xLeftMargin - r.hashSize;
         assert leftX < rightX : leftX;
         float staffHeight = finial.getHeight();
         float middleY = -(height + staffHeight / 2);
         float compression = cgm.getScorePov().compression();
         float maxWidth = (rightX - leftX) / compression;
-        float minWidth = hashSize / compression;
+        float minWidth = r.hashSize / compression;
         attachBoneLabel(rightX, middleY, minWidth, maxWidth, staffHeight);
         /*
          * Attach the right-hand finial.
@@ -824,24 +691,24 @@ public class ScoreView implements EditorView {
         name = String.format("right finial%d", currentBone);
         geometry = new Geometry(name, finial);
         visuals.attachChild(geometry);
-        geometry.setLocalTranslation(xRightMargin, -height, zLines);
+        geometry.setLocalTranslation(r.xRightMargin, -height, r.zLines);
         geometry.setLocalScale(-1f, 1f, 1f);
         geometry.setMaterial(wireMaterial);
         /*
          * Attach transform icons to the right of the right-hand finial.
          */
-        leftX = xRightMargin + hashSize * 2f / 3;
-        rightX = cgm.getScorePov().rightX() - xGap;
+        leftX = r.xRightMargin + r.hashSize * 2f / 3;
+        rightX = cgm.getScorePov().rightX() - r.xGap;
         assert rightX > leftX : rightX;
         maxWidth = (rightX - leftX) / compression;
-        middleY = -height - sparklineHeight / 2 - (float) Finial.hpf;
+        middleY = -height - r.sparklineHeight / 2 - (float) Finial.hpf;
 
         ScoreOptions options = Maud.getModel().getScore();
         boolean translations = options.showsTranslations();
         if (translations) {
             float maxHeight = 2 * (float) Finial.hpf;
             attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "tra",
-                    traMaterial);
+                    r.traMaterial);
             middleY -= 3 * (float) Finial.hpf;
         }
 
@@ -850,7 +717,7 @@ public class ScoreView implements EditorView {
             middleY -= 0.5f * (float) Finial.hpf;
             float maxHeight = 3 * (float) Finial.hpf;
             attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "rot",
-                    rotMaterial);
+                    r.rotMaterial);
             middleY -= 3.5f * (float) Finial.hpf;
         }
 
@@ -859,7 +726,7 @@ public class ScoreView implements EditorView {
         if (scales && hasScales) {
             float maxHeight = 2 * (float) Finial.hpf;
             attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "sca",
-                    scaMaterial);
+                    r.scaMaterial);
         }
     }
 
@@ -869,15 +736,15 @@ public class ScoreView implements EditorView {
     private void attachGnomon() {
         float gnomonX = gnomonX();
         float handleSize = 0.1f * cgm.getScorePov().getHalfHeight(); // world units
-        Vector3f start = new Vector3f(gnomonX, handleSize, zLines);
-        Vector3f end = new Vector3f(gnomonX, -height - handleSize, zLines);
+        Vector3f start = new Vector3f(gnomonX, handleSize, r.zLines);
+        Vector3f end = new Vector3f(gnomonX, -height - handleSize, r.zLines);
         Line line = new Line(start, end);
         Geometry geometry = new Geometry("gnomon", line);
         visuals.attachChild(geometry);
         if (cgm.getPose().isFrozen()) {
-            geometry.setMaterial(gnomonFrozen);
+            geometry.setMaterial(r.gnomonFrozen);
         } else {
-            geometry.setMaterial(wireNotSelected);
+            geometry.setMaterial(r.wireNotSelected);
         }
 
         boolean isEmpty = poseMesh.isEmpty();
@@ -888,8 +755,8 @@ public class ScoreView implements EditorView {
              */
             geometry = new Geometry("pose points", poseMesh);
             visuals.attachChild(geometry);
-            geometry.setLocalTranslation(gnomonX, 0f, zLines);
-            geometry.setMaterial(poseMaterial);
+            geometry.setLocalTranslation(gnomonX, 0f, r.zLines);
+            geometry.setMaterial(r.poseMaterial);
         }
     }
 
@@ -901,21 +768,21 @@ public class ScoreView implements EditorView {
     private void attachHashes(float staffHeight) {
         float y = -height - staffHeight / 2;
 
-        Material material = wireNotSelected;
+        Material material = r.wireNotSelected;
         int selectedBoneIndex = cgm.getBone().getIndex();
         if (currentBone == selectedBoneIndex) {
-            material = wireSelected;
+            material = r.wireSelected;
         }
 
         String name = String.format("left hash%d", currentBone);
-        Geometry geometry = new Geometry(name, hashMark);
-        geometry.setLocalTranslation(xLeftMargin, y, zLines);
+        Geometry geometry = new Geometry(name, r.hashMark);
+        geometry.setLocalTranslation(r.xLeftMargin, y, r.zLines);
         geometry.setMaterial(material);
         visuals.attachChild(geometry);
 
         name = String.format("right hash%d", currentBone);
-        geometry = new Geometry(name, hashMark);
-        geometry.setLocalTranslation(xRightMargin, y, zLines);
+        geometry = new Geometry(name, r.hashMark);
+        geometry.setLocalTranslation(r.xRightMargin, y, r.zLines);
         geometry.setLocalScale(-1f, 1f, 1f); // grows to the right
         geometry.setMaterial(material);
         visuals.attachChild(geometry);
@@ -988,37 +855,37 @@ public class ScoreView implements EditorView {
         Material wireMaterial;
         int selectedBoneIndex = cgm.getBone().getIndex();
         if (currentBone == selectedBoneIndex) {
-            wireMaterial = wireSelected;
+            wireMaterial = r.wireSelected;
         } else {
-            wireMaterial = wireNotSelected;
+            wireMaterial = r.wireNotSelected;
         }
         /*
          * Attach the left-hand rectangle: a narrow outline.
          */
         String rectName = String.format("left rect%d", currentBone);
-        Geometry geometry = new Geometry(rectName, outlineMesh);
+        Geometry geometry = new Geometry(rectName, r.outlineMesh);
         visuals.attachChild(geometry);
         geometry.setLocalScale(-0.2f, staffHeight, 1f);
-        geometry.setLocalTranslation(xLeftMargin, -height, zLines);
+        geometry.setLocalTranslation(r.xLeftMargin, -height, r.zLines);
         geometry.setMaterial(wireMaterial);
         /*
          * Attach a bone label overlapping the left-hand rectangle.
          */
-        float leftX = cgm.getScorePov().leftX() + xGap;
-        float rightX = -0.2f * hashSize;
+        float leftX = cgm.getScorePov().leftX() + r.xGap;
+        float rightX = -0.2f * r.hashSize;
         float middleY = -(height + staffHeight / 2);
         float compression = cgm.getScorePov().compression();
         float maxWidth = (rightX - leftX) / compression;
-        float minWidth = hashSize / compression;
+        float minWidth = r.hashSize / compression;
         attachBoneLabel(rightX, middleY, minWidth, maxWidth, staffHeight);
         /*
          * Attach the right-hand rectangle: an outline.
          */
         rectName = String.format("right rect%d", currentBone);
-        geometry = new Geometry(rectName, outlineMesh);
+        geometry = new Geometry(rectName, r.outlineMesh);
         visuals.attachChild(geometry);
         geometry.setLocalScale(1f, staffHeight, 1f);
-        geometry.setLocalTranslation(xRightMargin, -height, zLines);
+        geometry.setLocalTranslation(r.xRightMargin, -height, r.zLines);
         geometry.setMaterial(wireMaterial);
     }
 
@@ -1048,35 +915,35 @@ public class ScoreView implements EditorView {
 
         if (numSamples > 0) {
             attachPlot(poseFrame, ts, ws, numSamples, nits, iws,
-                    "rw", numPlots, wMaterial);
+                    "rw", numPlots, r.wMaterial);
             attachPlot(poseFrame, ts, xs, numSamples, nits, ixs,
-                    "rx", numPlots + 1, xMaterial);
+                    "rx", numPlots + 1, r.xMaterial);
             attachPlot(poseFrame, ts, ys, numSamples, nits, iys,
-                    "ry", numPlots + 2, yMaterial);
+                    "ry", numPlots + 2, r.yMaterial);
             attachPlot(poseFrame, ts, zs, numSamples, nits, izs,
-                    "rz", numPlots + 3, zMaterial);
+                    "rz", numPlots + 3, r.zMaterial);
         } else {
             attachPlot(poseFrame, ts, ws, poseFrame, ts, ws,
-                    "rw", numPlots, wMaterial);
+                    "rw", numPlots, r.wMaterial);
             attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
-                    "rx", numPlots + 1, xMaterial);
+                    "rx", numPlots + 1, r.xMaterial);
             attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
-                    "ry", numPlots + 2, yMaterial);
+                    "ry", numPlots + 2, r.yMaterial);
             attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
-                    "rz", numPlots + 3, zMaterial);
+                    "rz", numPlots + 3, r.zMaterial);
         }
 
         float scoreY = scoreY(ws[poseFrame], numPlots);
-        poseMesh.add(scoreY, wColor);
+        poseMesh.add(scoreY, r.wColor);
 
         scoreY = scoreY(xs[poseFrame], numPlots + 1);
-        poseMesh.add(scoreY, xColor);
+        poseMesh.add(scoreY, r.xColor);
 
         scoreY = scoreY(ys[poseFrame], numPlots + 2);
-        poseMesh.add(scoreY, yColor);
+        poseMesh.add(scoreY, r.yColor);
 
         scoreY = scoreY(zs[poseFrame], numPlots + 3);
-        poseMesh.add(scoreY, zColor);
+        poseMesh.add(scoreY, r.zColor);
 
         numPlots += 4;
     }
@@ -1104,29 +971,29 @@ public class ScoreView implements EditorView {
 
         if (numSamples > 0) {
             attachPlot(poseFrame, ts, xs, numSamples, nits, ixs,
-                    "sx", numPlots, xMaterial);
+                    "sx", numPlots, r.xMaterial);
             attachPlot(poseFrame, ts, ys, numSamples, nits, iys,
-                    "sy", numPlots + 1, yMaterial);
+                    "sy", numPlots + 1, r.yMaterial);
             attachPlot(poseFrame, ts, zs, numSamples, nits, izs,
-                    "sz", numPlots + 2, zMaterial);
+                    "sz", numPlots + 2, r.zMaterial);
 
         } else {
             attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
-                    "sx", numPlots, xMaterial);
+                    "sx", numPlots, r.xMaterial);
             attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
-                    "sy", numPlots + 1, yMaterial);
+                    "sy", numPlots + 1, r.yMaterial);
             attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
-                    "sz", numPlots + 2, zMaterial);
+                    "sz", numPlots + 2, r.zMaterial);
         }
 
         float scoreY = scoreY(xs[poseFrame], numPlots);
-        poseMesh.add(scoreY, xColor);
+        poseMesh.add(scoreY, r.xColor);
 
         scoreY = scoreY(ys[poseFrame], numPlots + 1);
-        poseMesh.add(scoreY, yColor);
+        poseMesh.add(scoreY, r.yColor);
 
         scoreY = scoreY(zs[poseFrame], numPlots + 2);
-        poseMesh.add(scoreY, zColor);
+        poseMesh.add(scoreY, r.zColor);
 
         numPlots += 3;
     }
@@ -1153,14 +1020,14 @@ public class ScoreView implements EditorView {
         assert material != null;
 
         Sparkline sparkline = new Sparkline(numVertices, xx, yy,
-                sparklineHeight, mode);
+                r.sparklineHeight, mode);
         String name = String.format("%d%s", currentBone, suffix);
         Geometry geometry = new Geometry(name, sparkline);
         visuals.attachChild(geometry);
 
-        float yOffset = sparklineHeight + yIndex * (float) Finial.hpf;
+        float yOffset = r.sparklineHeight + yIndex * (float) Finial.hpf;
         float y = -height - yOffset;
-        geometry.setLocalTranslation(xLeftMargin, y, zLines);
+        geometry.setLocalTranslation(r.xLeftMargin, y, r.zLines);
         geometry.setMaterial(material);
     }
 
@@ -1296,7 +1163,7 @@ public class ScoreView implements EditorView {
         int numShown = indices.size();
         for (int i = 0; i < numShown; i++) {
             if (i > 0) {
-                height += yGap;
+                height += r.yGap;
             }
             currentBone = indices.get(i);
             attachStaff();
@@ -1313,12 +1180,12 @@ public class ScoreView implements EditorView {
             /*
              * Attach a bone label overlapping the left-hand hash mark.
              */
-            float leftX = cgm.getScorePov().leftX() + xGap;
-            float rightX = -0.2f * hashSize;
+            float leftX = cgm.getScorePov().leftX() + r.xGap;
+            float rightX = -0.2f * r.hashSize;
             float middleY = -height;
             float compression = cgm.getScorePov().compression();
             float maxWidth = (rightX - leftX) / compression;
-            float minWidth = hashSize / compression;
+            float minWidth = r.hashSize / compression;
             attachBoneLabel(rightX, middleY, minWidth, maxWidth, 0.09f);
         }
     }
@@ -1364,11 +1231,11 @@ public class ScoreView implements EditorView {
 
         float size = Math.min(maxHeight, maxWidth);
         String name = String.format("%s%d", prefix, currentBone);
-        Geometry geometry = new Geometry(name, iconMesh);
+        Geometry geometry = new Geometry(name, r.iconMesh);
         visuals.attachChild(geometry);
         float compression = cgm.getScorePov().compression();
         geometry.setLocalScale(compression * size, size, 1f);
-        geometry.setLocalTranslation(leftX, middleY, zLabels);
+        geometry.setLocalTranslation(leftX, middleY, r.zLabels);
         geometry.setMaterial(material);
         geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
     }
@@ -1396,29 +1263,29 @@ public class ScoreView implements EditorView {
         normalize(poseFrame + 1, zs, numSamples, izs);
 
         if (numSamples > 0) {
-            attachPlot(poseFrame, ts, xs, numSamples, nits, ixs,
-                    "tx", numPlots, xMaterial);
-            attachPlot(poseFrame, ts, ys, numSamples, nits, iys,
-                    "ty", numPlots + 1, yMaterial);
-            attachPlot(poseFrame, ts, zs, numSamples, nits, izs,
-                    "tz", numPlots + 2, zMaterial);
+            attachPlot(poseFrame, ts, xs, numSamples, nits, ixs, "tx",
+                    numPlots, r.xMaterial);
+            attachPlot(poseFrame, ts, ys, numSamples, nits, iys, "ty",
+                    numPlots + 1, r.yMaterial);
+            attachPlot(poseFrame, ts, zs, numSamples, nits, izs, "tz",
+                    numPlots + 2, r.zMaterial);
         } else {
-            attachPlot(poseFrame, ts, xs, poseFrame, ts, xs,
-                    "tx", numPlots, xMaterial);
-            attachPlot(poseFrame, ts, ys, poseFrame, ts, ys,
-                    "ty", numPlots + 1, yMaterial);
-            attachPlot(poseFrame, ts, zs, poseFrame, ts, zs,
-                    "tz", numPlots + 2, zMaterial);
+            attachPlot(poseFrame, ts, xs, poseFrame, ts, xs, "tx",
+                    numPlots, r.xMaterial);
+            attachPlot(poseFrame, ts, ys, poseFrame, ts, ys, "ty",
+                    numPlots + 1, r.yMaterial);
+            attachPlot(poseFrame, ts, zs, poseFrame, ts, zs, "tz",
+                    numPlots + 2, r.zMaterial);
         }
 
         float scoreY = scoreY(xs[poseFrame], numPlots);
-        poseMesh.add(scoreY, xColor);
+        poseMesh.add(scoreY, r.xColor);
 
         scoreY = scoreY(ys[poseFrame], numPlots + 1);
-        poseMesh.add(scoreY, yColor);
+        poseMesh.add(scoreY, r.yColor);
 
         scoreY = scoreY(zs[poseFrame], numPlots + 2);
-        poseMesh.add(scoreY, zColor);
+        poseMesh.add(scoreY, r.zColor);
 
         numPlots += 3;
     }
@@ -1438,56 +1305,9 @@ public class ScoreView implements EditorView {
             result = 0f;
         }
 
-        assert result >= xLeftMargin : result;
-        assert result <= xRightMargin : result;
+        assert result >= r.xLeftMargin : result;
+        assert result <= r.xRightMargin : result;
         return result;
-    }
-
-    /**
-     * Initialize the materials used in score views.
-     *
-     * @param assetManager (not null)
-     */
-    private void initializeMaterials(AssetManager assetManager) {
-        assert assetManager != null;
-
-        ColorRGBA black = new ColorRGBA(0f, 0f, 0f, 1f);
-        ColorRGBA grey = new ColorRGBA(0.5f, 0.5f, 0.5f, 1f);
-        ColorRGBA yellow = new ColorRGBA(1f, 1f, 0f, 1f);
-
-        bgNotSelected = MyAsset.createUnshadedMaterial(assetManager, grey);
-        bgSelected = MyAsset.createUnshadedMaterial(assetManager, black);
-        gnomonFrozen = MyAsset.createUnshadedMaterial(assetManager, yellow);
-        wireNotSelected = MyAsset.createWireframeMaterial(assetManager, grey);
-        wireSelected = MyAsset.createWireframeMaterial(assetManager, black);
-
-        float pointSize = 3f;
-        wMaterial = MyAsset.createWireframeMaterial(assetManager, wColor,
-                pointSize);
-        xMaterial = MyAsset.createWireframeMaterial(assetManager, xColor,
-                pointSize);
-        yMaterial = MyAsset.createWireframeMaterial(assetManager, yColor,
-                pointSize);
-        zMaterial = MyAsset.createWireframeMaterial(assetManager, zColor,
-                pointSize);
-
-        traMaterial = MyAsset.createUnshadedMaterial(assetManager,
-                "Textures/icons/translate.png");
-        rotMaterial = MyAsset.createUnshadedMaterial(assetManager,
-                "Textures/icons/rotate.png");
-        scaMaterial = MyAsset.createUnshadedMaterial(assetManager,
-                "Textures/icons/scale.png");
-
-        poseMaterial = new Material(assetManager,
-                "MatDefs/wireframe/multicolor2.j3md");
-        poseMaterial.setBoolean("UseVertexColor", true);
-        poseMaterial.setFloat("PointSize", 2f * pointSize);
-        Texture poseShape = MyAsset.loadTexture(assetManager,
-                "Textures/shapes/saltire.png");
-        poseMaterial.setTexture("PointShape", poseShape);
-        RenderState rs = poseMaterial.getAdditionalRenderState();
-        rs.setBlendMode(RenderState.BlendMode.Alpha);
-        rs.setDepthTest(false);
     }
 
     /**
@@ -1552,13 +1372,13 @@ public class ScoreView implements EditorView {
         /*
          * Create a bitmap text node.
          */
-        BitmapText spatial = new BitmapText(labelFont);
+        BitmapText spatial = new BitmapText(r.labelFont);
         spatial.setBox(new Rectangle(0f, 0f, width, height));
         spatial.setLineWrapMode(LineWrapMode.Clip);
         String labelName = "label" + nameSuffix;
         spatial.setName(labelName);
         spatial.setQueueBucket(RenderQueue.Bucket.Transparent);
-        float size = sizeFactor * labelFont.getPreferredSize();
+        float size = sizeFactor * r.labelFont.getPreferredSize();
         spatial.setSize(size);
         spatial.setText(labelText);
         /*
@@ -1584,7 +1404,7 @@ public class ScoreView implements EditorView {
      */
     private float scoreY(float ordinate, int yIndex) {
         float result = -height;
-        result -= sparklineHeight * (1f - ordinate);
+        result -= r.sparklineHeight * (1f - ordinate);
         result -= yIndex * (float) Finial.hpf;
 
         return result;
