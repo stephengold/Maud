@@ -78,7 +78,7 @@ class SpatialDetailsTool extends WindowController {
 
         updateBatchHint();
         updateBucket();
-        updateHint();
+        updateCull();
         updateInfluence();
         updateLights();
         updateName();
@@ -97,7 +97,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         Spatial.BatchHint hint = spatial.getLocalBatchHint();
         String description = hint.toString();
-        Maud.gui.setStatusText("spatialBatchHint", " " + description);
+        Maud.gui.setButtonLabel("spatialBatchHintButton", description);
     }
 
     /**
@@ -107,17 +107,17 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         RenderQueue.Bucket bucket = spatial.getLocalQueueBucket();
         String description = bucket.toString();
-        Maud.gui.setStatusText("spatialBucket", " " + description);
+        Maud.gui.setButtonLabel("spatialBucketButton", description);
     }
 
     /**
      * Update the display of the spatial's cull hint.
      */
-    private void updateHint() {
+    private void updateCull() {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         Spatial.CullHint hint = spatial.getLocalCullHint();
         String description = hint.toString();
-        Maud.gui.setStatusText("spatialHint", " " + description);
+        Maud.gui.setButtonLabel("spatialCullHintButton", description);
     }
 
     /**
@@ -211,7 +211,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         RenderQueue.ShadowMode mode = spatial.getLocalShadowMode();
         String description = mode.toString();
-        Maud.gui.setStatusText("spatialShadows", " " + description);
+        Maud.gui.setButtonLabel("spatialShadowsButton", description);
     }
 
     /**
