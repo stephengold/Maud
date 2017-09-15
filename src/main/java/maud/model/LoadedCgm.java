@@ -43,7 +43,6 @@ import maud.Maud;
 import maud.Util;
 import maud.dialog.EditorDialogs;
 import maud.menu.BuildMenus;
-import maud.model.option.scene.SceneBones;
 
 /**
  * MVC model for a computer-graphics (CG) model load slot in the Maud
@@ -285,13 +284,13 @@ public class LoadedCgm extends Cgm {
             getAnimation().load(animationName);
         }
 
-        SceneBones sceneBones;
+        ShowBones showBonesInScene;
         if (MySpatial.countVertices(cgmRoot) == 0) {
-            sceneBones = SceneBones.All;
+            showBonesInScene = ShowBones.All;
         } else {
-            sceneBones = SceneBones.InfluencersOnly;
+            showBonesInScene = ShowBones.Influencers;
         }
-        Maud.getModel().getScene().getSkeleton().setBones(sceneBones);
+        Maud.getModel().getScene().getSkeleton().setShowBones(showBonesInScene);
     }
     // *************************************************************************
     // Cgm methods

@@ -448,32 +448,6 @@ public class EditorScreen extends GuiScreenController {
                 scene.getCamera().setMode("parallel");
                 break;
 
-            case "scoreNoneAllRadioButton":
-                score.setShowNoneSelected("all");
-                break;
-            case "scoreNoneNoneRadioButton":
-                score.setShowNoneSelected("none");
-                break;
-            case "scoreNoneRootsRadioButton":
-                score.setShowNoneSelected("roots");
-                break;
-            case "scoreNoneTrackedRadioButton":
-                score.setShowNoneSelected("tracked");
-                break;
-
-            case "scoreWhenAllRadioButton":
-                score.setShowWhenSelected("all");
-                break;
-            case "scoreWhenAncestorsRadioButton":
-                score.setShowWhenSelected("ancestors");
-                break;
-            case "scoreWhenFamilyRadioButton":
-                score.setShowWhenSelected("family");
-                break;
-            case "scoreWhenSelectedRadioButton":
-                score.setShowWhenSelected("selected");
-                break;
-
             case "noPlatformRadioButton":
                 scene.setPlatformType(PlatformType.None);
                 break;

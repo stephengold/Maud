@@ -27,10 +27,10 @@
 package maud.model.option;
 
 import com.jme3.math.ColorRGBA;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.model.Cgm;
+import maud.model.ShowBones;
 
 /**
  * Options for "score" views in Maud's editor screen.
@@ -66,14 +66,13 @@ public class ScoreOptions implements Cloneable {
      */
     private ColorRGBA scoreBackground = new ColorRGBA(0.84f, 0.84f, 0.72f, 1f);
     /**
-     * bones shown when none is selected ("all", "none", "roots", or "tracked")
+     * bones shown when none is selected (not null)
      */
-    private String showNoneSelected = "all";
+    private ShowBones showNoneSelected = ShowBones.All;
     /**
-     * bones shown when a one is selected ("all", "ancestors", "family", or
-     * "selected")
+     * bones shown when one is selected (not null)
      */
-    private String showWhenSelected = "family";
+    private ShowBones showWhenSelected = ShowBones.Family;
     // *************************************************************************
     // new methods exposed
 
@@ -93,40 +92,42 @@ public class ScoreOptions implements Cloneable {
     }
 
     /**
-     * Determine which bones to show.
+     * Determine which bones to show in the specified CG model.
      *
      * @param cgm which CG model to use (not null)
-     * @return "all", "ancestors", "family", "none", "roots", "selected", or
-     * "tracked"
+     * @return enum (not null)
      */
-    public String bonesShown(Cgm cgm) {
+    public ShowBones bonesShown(Cgm cgm) {
         Validate.nonNull(cgm, "model");
 
-        String result;
+        ShowBones result;
         if (cgm.getBone().isSelected()) {
             result = showWhenSelected;
         } else {
             result = showNoneSelected;
         }
 
+        assert result != null;
         return result;
     }
 
     /**
      * Determine which bones to show when no bone is selected.
      *
-     * @return "all", "none", "roots", or "tracked"
+     * @return enum (not null)
      */
-    public String getShowNoneSelected() {
+    public ShowBones getShowNoneSelected() {
+        assert showNoneSelected != null;
         return showNoneSelected;
     }
 
     /**
      * Determine which bones to show when a bone is selected.
      *
-     * @return "all", "ancestors", "family", or "selected"
+     * @return enum (not null)
      */
-    public String getShowWhenSelected() {
+    public ShowBones getShowWhenSelected() {
+        assert showWhenSelected != null;
         return showWhenSelected;
     }
 
@@ -142,20 +143,11 @@ public class ScoreOptions implements Cloneable {
     /**
      * Alter which bones to show when no bone is selected
      *
-     * @param newSetting "all", "none", "roots", or "tracked"
+     * @param newSetting enum (not null)
      */
-    public void setShowNoneSelected(String newSetting) {
-        switch (newSetting) {
-            case "all":
-            case "none":
-            case "roots":
-            case "tracked":
-                showNoneSelected = newSetting;
-                break;
-            default:
-                logger.log(Level.SEVERE, "setting={0}", newSetting);
-                throw new IllegalArgumentException("invalid setting");
-        }
+    public void setShowNoneSelected(ShowBones newSetting) {
+        Validate.nonNull(newSetting, "new setting");
+        showNoneSelected = newSetting;
     }
 
     /**
@@ -203,20 +195,11 @@ public class ScoreOptions implements Cloneable {
     /**
      * Alter which bones to show when a bone is selected
      *
-     * @param newSetting ("all", "ancestors", "family", "selected")
+     * @param newSetting enum (not null)
      */
-    public void setShowWhenSelected(String newSetting) {
-        switch (newSetting) {
-            case "all":
-            case "ancestors":
-            case "family":
-            case "selected":
-                showWhenSelected = newSetting;
-                break;
-            default:
-                logger.log(Level.SEVERE, "setting={0}", newSetting);
-                throw new IllegalArgumentException("invalid setting");
-        }
+    public void setShowWhenSelected(ShowBones newSetting) {
+        Validate.nonNull(newSetting, "new setting");
+        showWhenSelected = newSetting;
     }
 
     /**

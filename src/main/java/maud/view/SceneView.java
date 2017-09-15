@@ -88,9 +88,9 @@ import maud.Util;
 import maud.mesh.PointMesh;
 import maud.model.Cgm;
 import maud.model.DisplayedPose;
-import maud.model.option.scene.SceneBones;
-import maud.model.option.scene.SkeletonOptions;
+import maud.model.ShowBones;
 import maud.model.option.ViewMode;
+import maud.model.option.scene.SkeletonOptions;
 
 /**
  * A 3D visualization of a loaded CG model in a scene-mode viewport.
@@ -728,22 +728,9 @@ public class SceneView
         DisplayedPose displayedPose = cgm.getPose();
         Pose pose = displayedPose.get();
         int numBones = pose.countBones();
-        BitSet boneIndexSet = new BitSet(numBones);
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
-        SceneBones sceneBones = options.bones();
-        switch (sceneBones) {
-            case All:
-                boneIndexSet.set(0, numBones);
-                break;
-            case InfluencersOnly:
-                cgm.getSkeleton().listInfluencers(boneIndexSet);
-                break;
-            case None:
-                boneIndexSet.clear(0, numBones);
-                break;
-            default:
-                throw new IllegalStateException();
-        }
+        ShowBones showBones = options.getShowBones();
+        BitSet boneIndexSet = cgm.getSkeleton().listShown(showBones, null);
         int selectedBone = cgm.getBone().getIndex();
         if (selectedBone != -1) {
             boneIndexSet.clear(selectedBone);

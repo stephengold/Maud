@@ -29,6 +29,7 @@ package maud.model.option.scene;
 import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.model.ShowBones;
 
 /**
  * Options for skeleton visualizations in scene views.
@@ -70,17 +71,18 @@ public class SkeletonOptions implements Cloneable {
     /**
      * which kinds of bones to visualize (not null)
      */
-    private SceneBones bones = SceneBones.InfluencersOnly;
+    private ShowBones showBones = ShowBones.Influencers;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Which kinds of bones to visualize.
+     * Which kinds of bones to visualize. TODO sort methods
      *
      * @return enum (not null)
      */
-    public SceneBones bones() {
-        return bones;
+    public ShowBones getShowBones() {
+        assert showBones != null;
+        return showBones;
     }
 
     /**
@@ -149,13 +151,13 @@ public class SkeletonOptions implements Cloneable {
     }
 
     /**
-     * Alter which kinds of bones are visualized.
+     * Alter which bones are visualized. TODO sort methods
      *
      * @param newSetting enum (not null)
      */
-    public void setBones(SceneBones newSetting) {
+    public void setShowBones(ShowBones newSetting) {
         Validate.nonNull(newSetting, "new setting");
-        bones = newSetting;
+        showBones = newSetting;
     }
 
     /**

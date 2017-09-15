@@ -34,7 +34,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.Cgm;
-import maud.model.option.scene.SceneBones;
+import maud.model.ShowBones;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
@@ -99,17 +99,13 @@ class SkeletonColorTool extends WindowController {
         color = options.copyTracklessColor(null); // TODO avoid extra garbage
         visualizer.setPointColor(color);
 
-        BitSet influencers = null;
-        SceneBones sceneBones = options.bones();
-        if (sceneBones == SceneBones.InfluencersOnly) {
-            influencers = modelCgm.getSkeleton().listInfluencers(null);
-        }
+        ShowBones showBones = options.getShowBones();
+        BitSet showSet = modelCgm.getSkeleton().listShown(showBones, null);
 
         options.copyTrackedColor(color);
         int numBones = modelCgm.getSkeleton().countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            if (sceneBones == SceneBones.InfluencersOnly
-                    && !influencers.get(boneIndex)) {
+            if (showSet.get(boneIndex) == false) {
                 ColorRGBA invisible = new ColorRGBA(0f, 0f, 0f, 0f);
                 visualizer.setPointColor(boneIndex, invisible);
             } else if (modelCgm.getAnimation().isRetargetedPose()) {
@@ -119,7 +115,7 @@ class SkeletonColorTool extends WindowController {
                 }
             } else if (modelCgm.getAnimation().hasTrackForBone(boneIndex)) {
                 visualizer.setPointColor(boneIndex, color);
-            } // else defaults to trackless/unmapped color
+            } // else default to trackless/unmapped color
         }
     }
     // *************************************************************************

@@ -154,6 +154,8 @@ public class Action {
     final static String setCullHint = "set cullHint";
     final static String setQueueBucket = "set queueBucket";
     final static String setSceneBones = "set sceneBones";
+    final static String setScoreBonesNone = "set scoreBonesNone";
+    final static String setScoreBonesWhen = "set scoreBonesWhen";
     final static String setShadowMode = "set shadowMode";
     final static String setTrackRotationAll = "set track rotation all";
     final static String setTrackScaleAll = "set track scale all";

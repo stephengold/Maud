@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.Util;
 
 /**
@@ -223,6 +224,23 @@ public class SelectedSkeleton implements Cloneable {
     }
 
     /**
+     * Read the index of the indexed bone's parent in the selected skeleton.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @return bone index (&ge;0) or -1 for a root bone
+     */
+    public int getParentIndex(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        Skeleton skeleton = find();
+        Bone bone = skeleton.getBone(boneIndex);
+        Bone parent = bone.getParent();
+        int result = skeleton.getBoneIndex(parent);
+
+        return result;
+    }
+
+    /**
      * Test whether the selected skeleton contains the named bone.
      *
      * @param name which bone (not null)
@@ -351,21 +369,142 @@ public class SelectedSkeleton implements Cloneable {
     }
 
     /**
-     * Enumerate which bones influence mesh vertices.
+     * Enumerate which bones are included the specified selection option.
      *
+     * @param showBones selection option (not null)
      * @param storeResult (modified if not null)
-     * @return set of bones with influence (either storeResult or a new
-     * instance)
+     * @return set of bone indices (either storeResult or a new instance)
      */
-    public BitSet listInfluencers(BitSet storeResult) {
+    public BitSet listShown(ShowBones showBones, BitSet storeResult) {
+        int numBones = countBones();
         if (storeResult == null) {
-            storeResult = new BitSet(120);
+            storeResult = new BitSet(numBones);
+        } else {
+            assert storeResult.size() == numBones : storeResult.size();
         }
 
-        Skeleton skeleton = find();
-        if (skeleton != null) {
-            Spatial subtree = findSpatial();
-            Util.addAllInfluencers(subtree, skeleton, storeResult);
+        if (numBones > 0) {
+            Skeleton skeleton = find();
+            int boneIndex = cgm.getBone().getIndex();
+            EditorModel model = Maud.getModel();
+            LoadedMap map = model.getMap();
+
+            switch (showBones) {
+                case All:
+                    storeResult.set(0, numBones);
+                    break;
+
+                case Ancestry:
+                    storeResult.clear();
+                    while (boneIndex != -1) {
+                        storeResult.set(boneIndex);
+                        boneIndex = getParentIndex(boneIndex);
+                    }
+                    break;
+
+                case Family:
+                    storeResult.clear();
+                    if (boneIndex != -1) {
+                        Bone bone = skeleton.getBone(boneIndex);
+                        List<Bone> children = bone.getChildren();
+                        for (Bone child : children) {
+                            int childIndex = skeleton.getBoneIndex(child);
+                            storeResult.set(childIndex);
+                        }
+                    }
+                    while (boneIndex != -1) {
+                        storeResult.set(boneIndex);
+                        boneIndex = getParentIndex(boneIndex);
+                    }
+                    break;
+
+                case Influencers:
+                    storeResult.clear();
+                    Spatial subtree = findSpatial();
+                    Util.addAllInfluencers(subtree, skeleton, storeResult);
+                    break;
+
+                case Leaves:
+                    for (boneIndex = 0; boneIndex < numBones; boneIndex++) {
+                        Bone bone = skeleton.getBone(boneIndex);
+                        int numChildren = bone.getChildren().size();
+                        boolean isLeaf = (numChildren == 0);
+                        storeResult.set(boneIndex, isLeaf);
+                    }
+                    break;
+
+                case Mapped:
+                    for (boneIndex = 0; boneIndex < numBones; boneIndex++) {
+                        boolean isMapped;
+                        if (cgm == model.getSource()) {
+                            isMapped = map.isSourceBoneMapped(boneIndex);
+                        } else if (cgm == model.getTarget()) {
+                            isMapped = map.isTargetBoneMapped(boneIndex);
+                        } else {
+                            throw new IllegalStateException();
+                        }
+                        storeResult.set(boneIndex, isMapped);
+                    }
+                    break;
+
+                case None:
+                    storeResult.clear();
+                    break;
+
+                case Roots:
+                    storeResult.clear();
+                    Bone[] roots = skeleton.getRoots();
+                    for (Bone root : roots) {
+                        boneIndex = skeleton.getBoneIndex(root);
+                        storeResult.set(boneIndex);
+                    }
+                    break;
+
+                case Selected:
+                    storeResult.clear();
+                    if (boneIndex != -1) {
+                        storeResult.set(boneIndex);
+                    }
+                    break;
+
+                case Subtree:
+                    storeResult.clear();
+                    if (boneIndex != -1) {
+                        for (int boneI = 0; boneI < numBones; boneI++) {
+                            boolean inSubtree = (boneI == boneIndex)
+                                    || Util.descendsFrom(boneI, boneIndex,
+                                            skeleton);
+                            storeResult.set(boneI, inSubtree);
+                        }
+                    }
+                    break;
+
+                case Tracked:
+                    storeResult.clear();
+                    LoadedAnimation animation = cgm.getAnimation();
+                    for (boneIndex = 0; boneIndex < numBones; boneIndex++) {
+                        boolean tracked = animation.hasTrackForBone(boneIndex);
+                        storeResult.set(boneIndex, tracked);
+                    }
+                    break;
+
+                case Unmapped:
+                    for (boneIndex = 0; boneIndex < numBones; boneIndex++) {
+                        boolean isMapped;
+                        if (cgm == model.getSource()) {
+                            isMapped = map.isSourceBoneMapped(boneIndex);
+                        } else if (cgm == model.getTarget()) {
+                            isMapped = map.isTargetBoneMapped(boneIndex);
+                        } else {
+                            throw new IllegalStateException();
+                        }
+                        storeResult.set(boneIndex, !isMapped);
+                    }
+                    break;
+
+                default:
+                    throw new IllegalStateException();
+            }
         }
 
         return storeResult;
