@@ -95,6 +95,10 @@ public class LoadedAnimation implements Cloneable {
      */
     private boolean reverseFlag = false;
     /**
+     * CG model containing the animation (set by {@link #setCgm(Cgm)})
+     */
+    private Cgm cgm = null;
+    /**
      * editable CG model, if any, containing the animation (set by
      * {@link #setCgm(Cgm)})
      */
@@ -108,10 +112,6 @@ public class LoadedAnimation implements Cloneable {
      * speed)
      */
     private float speed = 1f;
-    /**
-     * CG model containing the animation (set by {@link #setCgm(Cgm)})
-     */
-    private Cgm cgm = null;
     /**
      * name of the loaded animation, bindPoseName, or retargetedPoseName
      */
@@ -771,20 +771,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Load retargeted pose.
-     */
-    public void loadRetargetedPose() {
-        if (Maud.getModel().getSource().isLoaded()
-                && cgm.getSkeleton().isSelected()) {
-            loadedName = retargetedPoseName;
-            speed = 0f;
-            currentTime = 0f;
-            cgm.getPose().setToAnimation();
-            cgm.getPose().setFrozen(false);
-        }
-    }
-
-    /**
      * Load the next animation in name-sorted order.
      */
     public void loadNext() {
@@ -811,6 +797,20 @@ public class LoadedAnimation implements Cloneable {
             int prevIndex = MyMath.modulo(index - 1, numAnimations);
             String prevName = nameList.get(prevIndex);
             load(prevName);
+        }
+    }
+
+    /**
+     * Load retargeted pose.
+     */
+    public void loadRetargetedPose() {
+        if (Maud.getModel().getSource().isLoaded()
+                && cgm.getSkeleton().isSelected()) {
+            loadedName = retargetedPoseName;
+            speed = 0f;
+            currentTime = 0f;
+            cgm.getPose().setToAnimation();
+            cgm.getPose().setFrozen(false);
         }
     }
 
