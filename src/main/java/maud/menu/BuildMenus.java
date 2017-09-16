@@ -522,7 +522,7 @@ public class BuildMenus {
     private void buildAnimationMenu() {
         builder.addTool("Tool");
         Cgm target = Maud.getModel().getTarget();
-        if (target.getSkeleton().countBones() > 0) {
+        if (target.getAnimControl().isSelected()) {
             builder.add("Load");
             builder.add("Add new");
             //builder.add("Unload");
