@@ -769,7 +769,8 @@ public class ScoreView implements EditorView {
 
         ScoreOptions options = Maud.getModel().getScore();
         boolean translations = options.showsTranslations();
-        if (translations) {
+        boolean hasTranslations = StaffTrack.hasTranslations();
+        if (translations && hasTranslations) {
             float maxHeight = 2 * (float) Finial.hpf;
             attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "tra",
                     r.traMaterial);
@@ -777,7 +778,8 @@ public class ScoreView implements EditorView {
         }
 
         boolean rotations = options.showsRotations();
-        if (rotations) {
+        boolean hasRotations = StaffTrack.hasRotations();
+        if (rotations && hasRotations) {
             middleY -= 0.5f * (float) Finial.hpf;
             float maxHeight = 3 * (float) Finial.hpf;
             attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "rot",
