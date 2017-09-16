@@ -146,13 +146,13 @@ public class ScoreView implements EditorView {
      */
     private int currentBone;
     /**
-     * number of interpolated samples per sparkline, or 0 to use keyframes
-     */
-    private int numSamples = 0;
-    /**
      * count plots added to the current staff (&ge;0)
      */
     private int numPlots = 0;
+    /**
+     * number of interpolated samples per sparkline, or 0 to use keyframes
+     */
+    private int numSamples = 0;
     /**
      * index of the staff currently being visualized, used to name geometries
      */
@@ -211,6 +211,107 @@ public class ScoreView implements EditorView {
     // new methods exposed
 
     /**
+     * Add points to the pose mesh to represent a bone rotation in the displayed
+     * pose.
+     *
+     * @param w normalized W component of the rotation
+     * @param x normalized X component of the rotation
+     * @param y normalized Y component of the rotation
+     * @param z normalized Z component of the rotation
+     */
+    public void addPoseRotation(float w, float x, float y, float z) {
+        float scoreY = scoreY(w, numPlots);
+        poseMesh.add(scoreY, ScoreResources.wColor);
+
+        scoreY = scoreY(x, numPlots + 1);
+        poseMesh.add(scoreY, ScoreResources.xColor);
+
+        scoreY = scoreY(y, numPlots + 2);
+        poseMesh.add(scoreY, ScoreResources.yColor);
+
+        scoreY = scoreY(z, numPlots + 3);
+        poseMesh.add(scoreY, ScoreResources.zColor);
+    }
+
+    /**
+     * Add points to the pose mesh to represent a bone scale/translation in the
+     * displayed pose.
+     *
+     * @param x normalized X component of the vector
+     * @param y normalized Y component of the vector
+     * @param z normalized Z component of the vector
+     */
+    public void addPoseVector(float x, float y, float z) {
+        float scoreY = scoreY(x, numPlots);
+        poseMesh.add(scoreY, ScoreResources.xColor);
+
+        scoreY = scoreY(y, numPlots + 1);
+        poseMesh.add(scoreY, ScoreResources.yColor);
+
+        scoreY = scoreY(z, numPlots + 2);
+        poseMesh.add(scoreY, ScoreResources.zColor);
+    }
+
+    /**
+     * Attach sparklines to visualize a single data series in the current track.
+     *
+     * @param numPoints number of points (&ge;0)
+     * @param pxx array of normalized X-values for points (not null, unaffected)
+     * @param pyy array of normalized Y-values for points (not null, unaffected)
+     * @param numLineVertices number of line vertices (&ge;0)
+     * @param lxx array of normalized X-values for lines (not null, unaffected)
+     * @param lyy array of normalized Y-values for lines (not null, unaffected)
+     * @param suffix suffix for the geometry name (not null)
+     * @param plotIndex position in the staff (&ge;0, &lt;10, 0&rarr; top
+     * position)
+     * @param material material for the geometry (not null)
+     */
+    public void attachPlot(int numPoints, float[] pxx, float[] pyy,
+            int numLineVertices, float[] lxx, float[] lyy,
+            String suffix, int plotIndex, Material material) {
+        Validate.nonNegative(numPoints, "number of points");
+        Validate.nonNull(pxx, "point Xs");
+        Validate.nonNull(pyy, "point Ys");
+        Validate.positive(numLineVertices, "number of line vertices");
+        Validate.nonNull(lxx, "line Xs");
+        Validate.nonNull(lyy, "line Ys");
+        Validate.nonNull(suffix, "suffix");
+        Validate.inRange(plotIndex, "plot index", 0, 9);
+        Validate.nonNull(material, "material");
+
+        assert pxx.length >= numPoints : pxx.length;
+        assert pyy.length >= numPoints : pyy.length;
+        assert pxx[0] == 0f : pxx[0];
+        assert lxx.length >= numLineVertices : lxx.length;
+        assert lyy.length >= numLineVertices : lyy.length;
+        assert lxx[0] == 0f : lxx[0];
+
+        if (MyArray.distinct(pyy, pxx.length)) {
+            attachSparkline(numPoints, pxx, pyy, Mesh.Mode.Points,
+                    suffix + "p", plotIndex, material);
+
+            float zoom = cgm.getScorePov().getHalfHeight();
+            if (zoom < 10f) {
+                /*
+                 * Draw connecting lines only when zoomed in.
+                 */
+                attachSparkline(numLineVertices, lxx, lyy, Mesh.Mode.LineStrip,
+                        suffix + "l", plotIndex, material);
+            }
+
+        } else {
+            /*
+             * Series consists entirely of a single value:
+             * draw the 1st keyframe only.
+             */
+            tempX[0] = pxx[0];
+            tempY[0] = pyy[0];
+            attachSparkline(1, tempX, tempY, Mesh.Mode.Points, suffix + "p",
+                    plotIndex, material);
+        }
+    }
+
+    /**
      * Read the height of this score, not including the gnomon.
      *
      * @return height (in world units, &ge;0)
@@ -218,6 +319,22 @@ public class ScoreView implements EditorView {
     public float getHeight() {
         assert height >= 0f : height;
         return height;
+    }
+
+    /**
+     * Calculate the range of Y coordinates occupied by the selected bone.
+     *
+     * @return min/max Y coordinates (in world units), or null if no bone
+     * selected
+     */
+    public Vector2f selectedMinMaxY() {
+        Vector2f result = null;
+        if (cgm.getBone().isSelected()) {
+            int selectedBoneIndex = cgm.getBone().getIndex();
+            result = boneYs.get(selectedBoneIndex);
+        }
+
+        return result;
     }
     // *************************************************************************
     // EditorView methods
@@ -379,22 +496,6 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Calculate the range of Y coordinates occupied by the selected bone.
-     *
-     * @return min/max Y coordinates (in world units), or null if no bone
-     * selected
-     */
-    public Vector2f selectedMinMaxY() {
-        Vector2f result = null;
-        if (cgm.getBone().isSelected()) {
-            int selectedBoneIndex = cgm.getBone().getIndex();
-            result = boneYs.get(selectedBoneIndex);
-        }
-
-        return result;
-    }
-
-    /**
      * Update this view prior to rendering. (Invoked once per render pass on
      * each instance.)
      *
@@ -469,6 +570,22 @@ public class ScoreView implements EditorView {
     }
 
     /**
+     * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
+     */
+    @Override
+    public void warpCursor() {
+        Maud application = Maud.getApplication();
+        InputManager inputManager = application.getInputManager();
+        Camera camera = getCamera();
+        Ray ray = MyCamera.mouseRay(camera, inputManager);
+        Vector3f origin = ray.getOrigin();
+        float newY = origin.y;
+        cgm.getScorePov().setCameraY(newY);
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
      * Attach staves for bones.
      */
     private void attachBones() {
@@ -504,161 +621,6 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
-     */
-    @Override
-    public void warpCursor() {
-        Maud application = Maud.getApplication();
-        InputManager inputManager = application.getInputManager();
-        Camera camera = getCamera();
-        Ray ray = MyCamera.mouseRay(camera, inputManager);
-        Vector3f origin = ray.getOrigin();
-        float newY = origin.y;
-        cgm.getScorePov().setCameraY(newY);
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Attach a right-aligned label to the visuals. TODO sort methods
-     *
-     * @param rightX world X coordinate for the right edge of the label
-     * @param centerY world Y coordinate for the center of the label
-     * @param minWidth minimum width of label (in compressed units, &gt;0)
-     * @param maxWidth maximum width of label (in compressed units,
-     * &ge;minWidth)
-     * @param maxHeight maximum height of label (in world units, &gt;0)
-     */
-    private void attachLabel(float rightX, float centerY, float minWidth,
-            float maxWidth, float maxHeight) {
-        assert minWidth > 0f : minWidth;
-        assert maxWidth >= minWidth : maxWidth;
-        assert maxHeight > 0f : maxHeight;
-
-        Material bgMaterial;
-        int selectedBoneIndex = cgm.getBone().getIndex();
-        boolean isSelected = (currentBone == selectedBoneIndex);
-        if (isSelected) {
-            bgMaterial = r.bgSelected;
-        } else {
-            bgMaterial = r.bgNotSelected;
-        }
-
-        String labelText;
-        if (currentBone == -2) {
-            labelText = "(spatial)"; // TODO
-        } else {
-            labelText = cgm.getSkeleton().getBoneName(currentBone);
-        }
-        float textSize = 4f + r.labelFont.getLineWidth(labelText);
-        /*
-         * Calculate the effective width and height for the label and the size
-         * for the text assuming horizontal (normal) text.
-         */
-        float h1 = maxHeight;
-        float sizeFactor1 = 0.042f * h1; // relative to preferred size
-        float w1 = sizeFactor1 * textSize;
-        if (w1 > maxWidth) {
-            /*
-             * Shrink to avoid clipping.
-             */
-            h1 *= maxWidth / w1;
-            sizeFactor1 *= maxWidth / w1;
-            w1 = sizeFactor1 * textSize;
-        }
-        w1 = FastMath.clamp(w1, minWidth, maxWidth);
-        /*
-         * Calculate the effective width and height for the label and the size
-         * for the text assuming vertical (rotated) text.
-         */
-        float w2 = maxWidth;
-        float sizeFactor2 = 0.042f * w2; // relative to preferred size
-        float h2 = sizeFactor2 * textSize;
-        if (h2 > maxHeight) {
-            /*
-             * Shrink to avoid clipping.
-             */
-            w2 *= maxHeight / h2;
-            sizeFactor2 *= maxHeight / h2;
-            h2 = sizeFactor2 * textSize;
-        }
-        h2 = FastMath.clamp(h2, minWidth, maxHeight);
-        /*
-         * Decide whether to rotate the label.
-         */
-        if (h2 * w2 > h1 * w1) {
-            attachLabelVertical(labelText, sizeFactor2, bgMaterial, rightX,
-                    centerY, w2, h2);
-        } else {
-            attachLabelHorizontal(labelText, sizeFactor1, bgMaterial, rightX,
-                    centerY, w1, h1);
-        }
-    }
-
-    /**
-     * Attach a horizontal label to the visuals.
-     *
-     * @param labelText text of the label (not null)
-     * @param sizeFactor text size relative to preferred size (&gt;0)
-     * @param bgMaterial (not null)
-     * @param rightX world X coordinate for the right edge of the label
-     * @param centerY world Y coordinate for the center of the label
-     * @param xWidth width of label (in compressed units, &gt;0)
-     * @param yHeight height of label (in world units, &gt;0)
-     */
-    private void attachLabelHorizontal(String labelText, float sizeFactor,
-            Material bgMaterial, float rightX, float centerY, float xWidth,
-            float yHeight) {
-        assert labelText != null;
-        assert sizeFactor > 0f : sizeFactor;
-        assert bgMaterial != null;
-        assert xWidth > 0f : xWidth;
-        assert yHeight > 0f : yHeight;
-
-        String nameSuffix = String.format("%d", staffIndex);
-        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
-                xWidth, yHeight);
-        visuals.attachChild(label);
-        float compression = cgm.getScorePov().compression();
-        label.setLocalScale(compression, 1f, 1f);
-        float x = rightX - xWidth * compression;
-        float y = centerY + yHeight / 2;
-        label.setLocalTranslation(x, y, zLabels);
-    }
-
-    /**
-     * Attach a vertical label to the visuals.
-     *
-     * @param labelText text of the label (not null)
-     * @param sizeFactor text size relative to preferred size (&gt;0)
-     * @param bgMaterial (not null)
-     * @param bottomX world X coordinate for the bottom edge of the label
-     * @param centerY world Y coordinate for the center of the label
-     * @param xHeight height of label (in compressed units, &gt;0)
-     * @param yWidth width of label (in world units, &gt;0)
-     */
-    private void attachLabelVertical(String labelText, float sizeFactor,
-            Material bgMaterial, float bottomX, float centerY, float xHeight,
-            float yWidth) {
-        assert labelText != null;
-        assert sizeFactor > 0f : sizeFactor;
-        assert bgMaterial != null;
-        assert xHeight > 0f : xHeight;
-        assert yWidth > 0f : yWidth;
-
-        String nameSuffix = String.format("%d", staffIndex);
-        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
-                yWidth, xHeight);
-        visuals.attachChild(label);
-        label.setLocalRotation(ScoreResources.quarterZ);
-        float compression = cgm.getScorePov().compression();
-        label.setLocalScale(1f, compression, 1f);
-        float x = bottomX - xHeight * compression;
-        float y = centerY - yWidth / 2;
-        label.setLocalTranslation(x, y, zLabels);
-    }
-
-    /**
      * Attach staves for the indexed bones in index order.
      *
      * @param selectSet which bones (not null)
@@ -691,6 +653,67 @@ public class ScoreView implements EditorView {
             }
         }
         attachBoneStaves(boneIndices);
+    }
+
+    /**
+     * Attach a staff to visualize the indexed bone and its track, if any.
+     *
+     * @param boneIndex which bone (&ge;0)
+     */
+    private void attachBoneStaff(int boneIndex) {
+        assert boneIndex >= 0 : boneIndex;
+
+        float staffHeight;
+        Finial finial;
+        boolean trackedBone = cgm.getAnimation().hasTrackForBone(boneIndex);
+        if (trackedBone) {
+            finial = finialNoScales;
+            StaffTrack.loadBoneTrack(boneIndex);
+            boolean hasScales = StaffTrack.hasScales();
+            if (hasScales) {
+                finial = finialComplete;
+            }
+            staffHeight = finial.getHeight();
+            assert staffHeight > 0f : staffHeight;
+        } else {
+            finial = null;
+            staffHeight = 0f;
+        }
+        /*
+         * Calculate the range of (world) Ys that the staff occupies.
+         */
+        float newHeight = height + staffHeight;
+        float minY = -newHeight;
+        float maxY = -height;
+        boneYs.put(boneIndex, new Vector2f(minY, maxY));
+
+        boolean isVisible = isStaffVisible(minY, maxY);
+        if (isVisible) {
+            currentBone = boneIndex;
+            if (finial != null) {
+                attachTrackedStaff(finial);
+            } else {
+                attachTracklessStaff();
+            }
+            ++staffIndex;
+        }
+        height = newHeight;
+    }
+
+    /**
+     * Attach staves for the indexed bones in the order specified.
+     *
+     * @param indices list of bone indices (not null)
+     */
+    private void attachBoneStaves(List<Integer> indices) {
+        int numShown = indices.size();
+        for (int listIndex = 0; listIndex < numShown; listIndex++) {
+            if (listIndex > 0) {
+                height += yGap;
+            }
+            int boneIndex = indices.get(listIndex);
+            attachBoneStaff(boneIndex);
+        }
     }
 
     /**
@@ -830,62 +853,142 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attach sparklines to visualize a single data series in the current track.
+     * Attach a right-aligned label to the visuals.
      *
-     * @param numPoints number of points (&ge;0)
-     * @param pxx array of normalized X-values for points (not null, unaffected)
-     * @param pyy array of normalized Y-values for points (not null, unaffected)
-     * @param numLineVertices number of line vertices (&ge;0)
-     * @param lxx array of normalized X-values for lines (not null, unaffected)
-     * @param lyy array of normalized Y-values for lines (not null, unaffected)
-     * @param suffix suffix for the geometry name (not null)
-     * @param plotIndex position in the staff (&ge;0, &lt;10, 0&rarr; top
-     * position)
-     * @param material material for the geometry (not null)
+     * @param rightX world X coordinate for the right edge of the label
+     * @param centerY world Y coordinate for the center of the label
+     * @param minWidth minimum width of label (in compressed units, &gt;0)
+     * @param maxWidth maximum width of label (in compressed units,
+     * &ge;minWidth)
+     * @param maxHeight maximum height of label (in world units, &gt;0)
      */
-    public void attachPlot(int numPoints, float[] pxx, float[] pyy,
-            int numLineVertices, float[] lxx, float[] lyy,
-            String suffix, int plotIndex, Material material) {
-        Validate.nonNegative(numPoints, "number of points");
-        Validate.nonNull(pxx, "point Xs");
-        Validate.nonNull(pyy, "point Ys");
-        Validate.positive(numLineVertices, "number of line vertices");
-        Validate.nonNull(lxx, "line Xs");
-        Validate.nonNull(lyy, "line Ys");
-        Validate.nonNull(suffix, "suffix");
-        Validate.inRange(plotIndex, "plot index", 0, 9);
-        Validate.nonNull(material, "material");
+    private void attachLabel(float rightX, float centerY, float minWidth,
+            float maxWidth, float maxHeight) {
+        assert minWidth > 0f : minWidth;
+        assert maxWidth >= minWidth : maxWidth;
+        assert maxHeight > 0f : maxHeight;
 
-        assert pxx.length >= numPoints : pxx.length;
-        assert pyy.length >= numPoints : pyy.length;
-        assert pxx[0] == 0f : pxx[0];
-        assert lxx.length >= numLineVertices : lxx.length;
-        assert lyy.length >= numLineVertices : lyy.length;
-        assert lxx[0] == 0f : lxx[0];
-
-        if (MyArray.distinct(pyy, pxx.length)) {
-            attachSparkline(numPoints, pxx, pyy, Mesh.Mode.Points,
-                    suffix + "p", plotIndex, material);
-
-            float zoom = cgm.getScorePov().getHalfHeight();
-            if (zoom < 10f) {
-                /*
-                 * Draw connecting lines only when zoomed in.
-                 */
-                attachSparkline(numLineVertices, lxx, lyy, Mesh.Mode.LineStrip,
-                        suffix + "l", plotIndex, material);
-            }
-
+        Material bgMaterial;
+        int selectedBoneIndex = cgm.getBone().getIndex();
+        boolean isSelected = (currentBone == selectedBoneIndex);
+        if (isSelected) {
+            bgMaterial = r.bgSelected;
         } else {
-            /*
-             * Series consists entirely of a single value:
-             * draw the 1st keyframe only.
-             */
-            tempX[0] = pxx[0];
-            tempY[0] = pyy[0];
-            attachSparkline(1, tempX, tempY, Mesh.Mode.Points, suffix + "p",
-                    plotIndex, material);
+            bgMaterial = r.bgNotSelected;
         }
+
+        String labelText;
+        if (currentBone == -2) {
+            labelText = "(spatial)"; // TODO
+        } else {
+            labelText = cgm.getSkeleton().getBoneName(currentBone);
+        }
+        float textSize = 4f + r.labelFont.getLineWidth(labelText);
+        /*
+         * Calculate the effective width and height for the label and the size
+         * for the text assuming horizontal (normal) text.
+         */
+        float h1 = maxHeight;
+        float sizeFactor1 = 0.042f * h1; // relative to preferred size
+        float w1 = sizeFactor1 * textSize;
+        if (w1 > maxWidth) {
+            /*
+             * Shrink to avoid clipping.
+             */
+            h1 *= maxWidth / w1;
+            sizeFactor1 *= maxWidth / w1;
+            w1 = sizeFactor1 * textSize;
+        }
+        w1 = FastMath.clamp(w1, minWidth, maxWidth);
+        /*
+         * Calculate the effective width and height for the label and the size
+         * for the text assuming vertical (rotated) text.
+         */
+        float w2 = maxWidth;
+        float sizeFactor2 = 0.042f * w2; // relative to preferred size
+        float h2 = sizeFactor2 * textSize;
+        if (h2 > maxHeight) {
+            /*
+             * Shrink to avoid clipping.
+             */
+            w2 *= maxHeight / h2;
+            sizeFactor2 *= maxHeight / h2;
+            h2 = sizeFactor2 * textSize;
+        }
+        h2 = FastMath.clamp(h2, minWidth, maxHeight);
+        /*
+         * Decide whether to rotate the label.
+         */
+        if (h2 * w2 > h1 * w1) {
+            attachLabelVertical(labelText, sizeFactor2, bgMaterial, rightX,
+                    centerY, w2, h2);
+        } else {
+            attachLabelHorizontal(labelText, sizeFactor1, bgMaterial, rightX,
+                    centerY, w1, h1);
+        }
+    }
+
+    /**
+     * Attach a horizontal label to the visuals.
+     *
+     * @param labelText text of the label (not null)
+     * @param sizeFactor text size relative to preferred size (&gt;0)
+     * @param bgMaterial (not null)
+     * @param rightX world X coordinate for the right edge of the label
+     * @param centerY world Y coordinate for the center of the label
+     * @param xWidth width of label (in compressed units, &gt;0)
+     * @param yHeight height of label (in world units, &gt;0)
+     */
+    private void attachLabelHorizontal(String labelText, float sizeFactor,
+            Material bgMaterial, float rightX, float centerY, float xWidth,
+            float yHeight) {
+        assert labelText != null;
+        assert sizeFactor > 0f : sizeFactor;
+        assert bgMaterial != null;
+        assert xWidth > 0f : xWidth;
+        assert yHeight > 0f : yHeight;
+
+        String nameSuffix = String.format("%d", staffIndex);
+        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
+                xWidth, yHeight);
+        visuals.attachChild(label);
+        float compression = cgm.getScorePov().compression();
+        label.setLocalScale(compression, 1f, 1f);
+        float x = rightX - xWidth * compression;
+        float y = centerY + yHeight / 2;
+        label.setLocalTranslation(x, y, zLabels);
+    }
+
+    /**
+     * Attach a vertical label to the visuals.
+     *
+     * @param labelText text of the label (not null)
+     * @param sizeFactor text size relative to preferred size (&gt;0)
+     * @param bgMaterial (not null)
+     * @param bottomX world X coordinate for the bottom edge of the label
+     * @param centerY world Y coordinate for the center of the label
+     * @param xHeight height of label (in compressed units, &gt;0)
+     * @param yWidth width of label (in world units, &gt;0)
+     */
+    private void attachLabelVertical(String labelText, float sizeFactor,
+            Material bgMaterial, float bottomX, float centerY, float xHeight,
+            float yWidth) {
+        assert labelText != null;
+        assert sizeFactor > 0f : sizeFactor;
+        assert bgMaterial != null;
+        assert xHeight > 0f : xHeight;
+        assert yWidth > 0f : yWidth;
+
+        String nameSuffix = String.format("%d", staffIndex);
+        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
+                yWidth, xHeight);
+        visuals.attachChild(label);
+        label.setLocalRotation(ScoreResources.quarterZ);
+        float compression = cgm.getScorePov().compression();
+        label.setLocalScale(1f, compression, 1f);
+        float x = bottomX - xHeight * compression;
+        float y = centerY - yWidth / 2;
+        label.setLocalTranslation(x, y, zLabels);
     }
 
     /**
@@ -932,48 +1035,6 @@ public class ScoreView implements EditorView {
         geometry.setLocalScale(1f, staffHeight, 1f);
         geometry.setLocalTranslation(xRightMargin, -height, zLines);
         geometry.setMaterial(wireMaterial);
-    }
-
-    /**
-     * Add points to the pose mesh to represent a bone rotation in the displayed
-     * pose.
-     *
-     * @param w normalized W component of the rotation
-     * @param x normalized X component of the rotation
-     * @param y normalized Y component of the rotation
-     * @param z normalized Z component of the rotation
-     */
-    public void addPoseRotation(float w, float x, float y, float z) {
-        float scoreY = scoreY(w, numPlots);
-        poseMesh.add(scoreY, ScoreResources.wColor);
-
-        scoreY = scoreY(x, numPlots + 1);
-        poseMesh.add(scoreY, ScoreResources.xColor);
-
-        scoreY = scoreY(y, numPlots + 2);
-        poseMesh.add(scoreY, ScoreResources.yColor);
-
-        scoreY = scoreY(z, numPlots + 3);
-        poseMesh.add(scoreY, ScoreResources.zColor);
-    }
-
-    /**
-     * Add points to the pose mesh to represent a bone scale/translation in the
-     * displayed pose.
-     *
-     * @param x normalized X component of the vector
-     * @param y normalized Y component of the vector
-     * @param z normalized Z component of the vector
-     */
-    public void addPoseVector(float x, float y, float z) {
-        float scoreY = scoreY(x, numPlots);
-        poseMesh.add(scoreY, ScoreResources.xColor);
-
-        scoreY = scoreY(y, numPlots + 1);
-        poseMesh.add(scoreY, ScoreResources.yColor);
-
-        scoreY = scoreY(z, numPlots + 2);
-        poseMesh.add(scoreY, ScoreResources.zColor);
     }
 
     /**
@@ -1052,65 +1113,6 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attach a staff to visualize the indexed bone and its track, if any.
-     *
-     * @param boneIndex which bone (&ge;0)
-     */
-    private void attachBoneStaff(int boneIndex) {
-        assert boneIndex >= 0 : boneIndex;
-
-        float staffHeight;
-        Finial finial;
-        boolean trackedBone = cgm.getAnimation().hasTrackForBone(boneIndex);
-        if (trackedBone) {
-            finial = finialNoScales;
-            StaffTrack.loadBoneTrack(boneIndex);
-            boolean hasScales = StaffTrack.hasScales();
-            if (hasScales) {
-                finial = finialComplete;
-            }
-            staffHeight = finial.getHeight();
-            assert staffHeight > 0f : staffHeight;
-        } else {
-            finial = null;
-            staffHeight = 0f;
-        }
-        /*
-         * Calculate the range of (world) Ys that the staff occupies.
-         */
-        float newHeight = height + staffHeight;
-        float minY = -newHeight;
-        float maxY = -height;
-        boneYs.put(boneIndex, new Vector2f(minY, maxY));
-
-        boolean isVisible = isStaffVisible(minY, maxY);
-        if (isVisible) {
-            currentBone = boneIndex;
-            if (finial != null) {
-                attachTrackedStaff(finial);
-            } else {
-                attachTracklessStaff();
-            }
-            ++staffIndex;
-        }
-        height = newHeight;
-    }
-
-    /**
-     * Attach staves for spatial tracks.
-     */
-    private void attachSpatialTracks() {
-        LoadedAnimation animation = cgm.getAnimation();
-        int numSpatialTracks = animation.countSpatialTracks();
-        for (int trackIndex = 0; trackIndex < numSpatialTracks; trackIndex++) {
-            if (height > 0f) {
-                height += yGap;
-            }
-            attachSpatialStaff(trackIndex);
-        }
-    }
-
-    /**
      * Attach a staff to visualize a spatial track.
      */
     private void attachSpatialStaff(int spatialTrackIndex) {
@@ -1155,43 +1157,21 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attach staves for the indexed bones in the order specified.
-     *
-     * @param indices list of bone indices (not null)
+     * Attach staves for spatial tracks.
      */
-    private void attachBoneStaves(List<Integer> indices) {
-        int numShown = indices.size();
-        for (int listIndex = 0; listIndex < numShown; listIndex++) {
-            if (listIndex > 0) {
+    private void attachSpatialTracks() {
+        LoadedAnimation animation = cgm.getAnimation();
+        int numSpatialTracks = animation.countSpatialTracks();
+        for (int trackIndex = 0; trackIndex < numSpatialTracks; trackIndex++) {
+            if (height > 0f) {
                 height += yGap;
             }
-            int boneIndex = indices.get(listIndex);
-            attachBoneStaff(boneIndex);
+            attachSpatialStaff(trackIndex);
         }
     }
 
     /**
-     * Attach a staff with neither finials nor tracks.
-     */
-    private void attachTracklessStaff() {
-        attachHashes(0f);
-        float zoom = cgm.getScorePov().getHalfHeight();
-        if (zoom < 4f) {
-            /*
-             * Attach a label overlapping the left-hand hash mark.
-             */
-            float leftX = cgm.getScorePov().leftX() + xGap;
-            float rightX = -0.2f * ScoreResources.hashSize;
-            float middleY = -height;
-            float compression = cgm.getScorePov().compression();
-            float maxWidth = (rightX - leftX) / compression;
-            float minWidth = ScoreResources.hashSize / compression;
-            attachLabel(rightX, middleY, minWidth, maxWidth, 0.09f);
-        }
-    }
-
-    /**
-     * Attach a staff to visualize a bone/spatial track. TODO sort methods
+     * Attach a staff to visualize a bone/spatial track.
      *
      * @param finial (not null)
      */
@@ -1212,6 +1192,26 @@ public class ScoreView implements EditorView {
         }
 
         attachSparklines();
+    }
+
+    /**
+     * Attach a staff with neither finials nor tracks.
+     */
+    private void attachTracklessStaff() {
+        attachHashes(0f);
+        float zoom = cgm.getScorePov().getHalfHeight();
+        if (zoom < 4f) {
+            /*
+             * Attach a label overlapping the left-hand hash mark.
+             */
+            float leftX = cgm.getScorePov().leftX() + xGap;
+            float rightX = -0.2f * ScoreResources.hashSize;
+            float middleY = -height;
+            float compression = cgm.getScorePov().compression();
+            float maxWidth = (rightX - leftX) / compression;
+            float minWidth = ScoreResources.hashSize / compression;
+            attachLabel(rightX, middleY, minWidth, maxWidth, 0.09f);
+        }
     }
 
     /**
