@@ -80,12 +80,12 @@ public class ScoreView implements EditorView {
     /**
      * height of a spark line (in world units)
      */
-    final static float sparklineHeight = 0.08f;
+    final private static float sparklineHeight = 0.08f;
     /**
      * horizontal gap between visuals and left/right edges of the viewport (in
      * world units)
      */
-    final static float xGap = 0.01f;
+    final private static float xGap = 0.01f;
     /**
      * world X-coordinate for left edges of sparklines
      */
@@ -97,7 +97,7 @@ public class ScoreView implements EditorView {
     /**
      * vertical gap between staves (in world units)
      */
-    final static float yGap = 0.1f;
+    final private static float yGap = 0.1f;
     /**
      * world Z-coordinate for lines
      */
