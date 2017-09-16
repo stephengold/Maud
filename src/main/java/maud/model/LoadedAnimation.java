@@ -32,9 +32,7 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +43,10 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.wes.Pose;
-import jme3utilities.wes.RotationCurve;
 import jme3utilities.wes.TrackEdit;
-import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenTransforms;
-import jme3utilities.wes.TweenVectors;
-import jme3utilities.wes.VectorCurve;
 import maud.Maud;
+import maud.Util;
 
 /**
  * The MVC model of the loaded animation in the Maud application. For loading
@@ -373,6 +368,24 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Find the indexed spatial track.
+     *
+     * @param spatialTrackIndex which spatial track (&ge;0)
+     * @return the pre-existing instance, or null if not found
+     */
+    SpatialTrack findSpatialTrack(int spatialTrackIndex) {
+        Validate.nonNegative(spatialTrackIndex, "spatial track index");
+
+        SpatialTrack result = null;
+        Animation animation = getAnimation();
+        if (animation != null) {
+            result = Util.findSpatialTrack(animation, spatialTrackIndex);
+        }
+
+        return result;
+    }
+
+    /**
      * Find the track for the indexed bone.
      *
      * @param boneIndex which bone (&ge;0)
@@ -453,31 +466,6 @@ public class LoadedAnimation implements Cloneable {
     public float getTime() {
         assert currentTime >= 0f : currentTime;
         return currentTime;
-    }
-
-    /**
-     * Test whether the animation track for the indexed bone has scales.
-     *
-     * @param boneIndex which bone (&ge;0)
-     * @return true if it has scales, otherwise false
-     */
-    public boolean hasScales(int boneIndex) {
-        Validate.nonNegative(boneIndex, "bone index");
-
-        boolean result = false;
-        Animation animation = getAnimation();
-        if (animation != null) {
-            BoneTrack boneTrack;
-            boneTrack = MyAnimation.findBoneTrack(animation, boneIndex);
-            if (boneTrack != null) {
-                Vector3f[] scales = boneTrack.getScales();
-                if (scales != null) {
-                    return true;
-                }
-            }
-        }
-
-        return result;
     }
 
     /**
@@ -998,14 +986,14 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Alter which CG model contains the animation.
      *
-     * @param newCmg (not null)
+     * @param newCgm (not null)
      */
-    void setCgm(Cgm newCmg) {
-        assert newCmg != null;
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
 
-        cgm = newCmg;
-        if (newCmg instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCmg;
+        cgm = newCgm;
+        if (newCgm instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newCgm;
         } else {
             editableCgm = null;
         }
@@ -1147,199 +1135,6 @@ public class LoadedAnimation implements Cloneable {
      */
     public void togglePaused() {
         setPaused(!pausedFlag);
-    }
-
-    /**
-     * Interpolate rotations from the track for the indexed bone to the parallel
-     * arrays provided.
-     *
-     * @param numSamples number of samples to calculate (&ge;0)
-     * @param ts sample times (not null, unaffected)
-     * @param boneIndex which bone (&ge;0)
-     * @param storeWs (not null, modified)
-     * @param storeXs (not null, modified)
-     * @param storeYs (not null, modified)
-     * @param storeZs (not null, modified)
-     */
-    public void trackInterpolateRotations(int numSamples, float[] ts,
-            int boneIndex, float[] storeWs, float[] storeXs, float[] storeYs,
-            float[] storeZs) {
-        Validate.nonNegative(numSamples, "number of samples");
-        Validate.nonNegative(boneIndex, "bone index");
-
-        TweenRotations technique;
-        technique = Maud.getModel().getTweenTransforms().getTweenRotations();
-        BoneTrack track = findTrackForBone(boneIndex);
-        float[] times = track.getKeyFrameTimes();
-        float duration = getDuration();
-        Quaternion[] rotations = track.getRotations();
-        RotationCurve parms = technique.precompute(times, duration, rotations);
-        Quaternion tempQ = new Quaternion();
-
-        for (int iSample = 0; iSample < numSamples; iSample++) {
-            float time = ts[iSample];
-            technique.interpolate(time, parms, tempQ);
-            storeWs[iSample] = tempQ.getW();
-            storeXs[iSample] = tempQ.getX();
-            storeYs[iSample] = tempQ.getY();
-            storeZs[iSample] = tempQ.getZ();
-        }
-    }
-
-    /**
-     * Interpolate scales from the track for the indexed bone to the parallel
-     * arrays provided.
-     *
-     * @param numSamples number of samples to calculate (&ge;0)
-     * @param ts sample times (not null, unaffected)
-     * @param boneIndex which bone (&ge;0)
-     * @param storeXs (not null, modified)
-     * @param storeYs (not null, modified)
-     * @param storeZs (not null, modified)
-     */
-    public void trackInterpolateScales(int numSamples, float[] ts,
-            int boneIndex, float[] storeXs, float[] storeYs, float[] storeZs) {
-        Validate.nonNegative(numSamples, "number of samples");
-        Validate.nonNegative(boneIndex, "bone index");
-
-        TweenVectors technique = Maud.getModel().getTweenTransforms().getTweenScales();
-        BoneTrack track = findTrackForBone(boneIndex);
-        float[] times = track.getKeyFrameTimes();
-        float duration = getDuration();
-        Vector3f[] scales = track.getScales();
-        VectorCurve parms = technique.precompute(times, duration, scales);
-        Vector3f tempV = new Vector3f();
-
-        for (int iSample = 0; iSample < numSamples; iSample++) {
-            float time = ts[iSample];
-            technique.interpolate(time, parms, tempV);
-            storeXs[iSample] = tempV.x;
-            storeYs[iSample] = tempV.y;
-            storeZs[iSample] = tempV.z;
-        }
-    }
-
-    /**
-     * Interpolate translations from the track for the indexed bone to the
-     * parallel arrays provided.
-     *
-     * @param numSamples number of samples to calculate (&ge;0)
-     * @param ts sample times (not null, unaffected)
-     * @param boneIndex which bone (&ge;0)
-     * @param storeXs (not null, modified)
-     * @param storeYs (not null, modified)
-     * @param storeZs (not null, modified)
-     */
-    public void trackInterpolateTranslations(int numSamples, float[] ts,
-            int boneIndex, float[] storeXs, float[] storeYs, float[] storeZs) {
-        Validate.nonNegative(numSamples, "number of samples");
-        Validate.nonNegative(boneIndex, "bone index");
-
-        TweenVectors technique;
-        technique = Maud.getModel().getTweenTransforms().getTweenTranslations();
-        BoneTrack track = findTrackForBone(boneIndex);
-        float[] times = track.getKeyFrameTimes();
-        float duration = getDuration();
-        Vector3f[] translations = track.getTranslations();
-        VectorCurve parms = technique.precompute(times, duration, translations);
-        Vector3f tempV = new Vector3f();
-
-        for (int iSample = 0; iSample < numSamples; iSample++) {
-            float time = ts[iSample];
-            technique.interpolate(time, parms, tempV);
-            storeXs[iSample] = tempV.x;
-            storeYs[iSample] = tempV.y;
-            storeZs[iSample] = tempV.z;
-        }
-    }
-
-    /**
-     * Copy the keyframe rotations from the track for the indexed bone to the
-     * parallel arrays provided.
-     *
-     * @param boneIndex which bone (&ge;0)
-     * @param storeWs (not null, modified)
-     * @param storeXs (not null, modified)
-     * @param storeYs (not null, modified)
-     * @param storeZs (not null, modified)
-     */
-    public void trackRotations(int boneIndex, float[] storeWs, float[] storeXs,
-            float[] storeYs, float[] storeZs) {
-        Validate.nonNegative(boneIndex, "bone index");
-
-        BoneTrack track = findTrackForBone(boneIndex);
-        Quaternion[] rotations = track.getRotations();
-        int numFrames = rotations.length;
-        for (int i = 0; i < numFrames; i++) {
-            storeWs[i] = rotations[i].getW();
-            storeXs[i] = rotations[i].getX();
-            storeYs[i] = rotations[i].getY();
-            storeZs[i] = rotations[i].getZ();
-        }
-    }
-
-    /**
-     * Copy the keyframe scales from the track for the indexed bone to the
-     * parallel arrays provided.
-     *
-     * @param boneIndex which bone (&ge;0)
-     * @param storeXs (not null, modified)
-     * @param storeYs (not null, modified)
-     * @param storeZs (not null, modified)
-     */
-    public void trackScales(int boneIndex, float[] storeXs, float[] storeYs,
-            float[] storeZs) {
-        Validate.nonNegative(boneIndex, "bone index");
-
-        BoneTrack track = findTrackForBone(boneIndex);
-        Vector3f[] scales = track.getScales();
-        int numFrames = scales.length;
-        for (int i = 0; i < numFrames; i++) {
-            storeXs[i] = scales[i].x;
-            storeYs[i] = scales[i].y;
-            storeZs[i] = scales[i].z;
-        }
-    }
-
-    /**
-     * Copy the keyframe times from the track for the indexed bone.
-     *
-     * @param boneIndex which bone (&ge;0)
-     * @return a new array
-     */
-    public float[] trackTimes(int boneIndex) {
-        Validate.nonNegative(boneIndex, "bone index");
-
-        BoneTrack track = findTrackForBone(boneIndex);
-        float[] times = track.getKeyFrameTimes();
-        int numFrames = times.length;
-        float[] result = new float[numFrames];
-        System.arraycopy(times, 0, result, 0, numFrames);
-
-        return result;
-    }
-
-    /**
-     * Copy the keyframe translations from the track for the indexed bone to the
-     * parallel arrays provided.
-     *
-     * @param boneIndex which bone (&ge;0)
-     * @param storeXs (not null, modified)
-     * @param storeYs (not null, modified)
-     * @param storeZs (not null, modified)
-     */
-    public void trackTranslations(int boneIndex, float[] storeXs,
-            float[] storeYs, float[] storeZs) {
-        Validate.nonNegative(boneIndex, "bone index");
-
-        BoneTrack track = findTrackForBone(boneIndex);
-        Vector3f[] translations = track.getTranslations();
-        int numFrames = translations.length;
-        for (int i = 0; i < numFrames; i++) {
-            storeXs[i] = translations[i].x;
-            storeYs[i] = translations[i].y;
-            storeZs[i] = translations[i].z;
-        }
     }
 
     /**

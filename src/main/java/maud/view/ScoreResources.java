@@ -49,7 +49,7 @@ import maud.mesh.RoundedRectangle;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ScoreResources {
+public class ScoreResources {
     // *************************************************************************
     // constants and loggers
 
@@ -77,35 +77,6 @@ class ScoreResources {
      * horizontal size of hash mark (in world units)
      */
     final static float hashSize = 0.05f;
-    /**
-     * height of a spark line (in world units)
-     */
-    final static float sparklineHeight = 0.08f;
-    /**
-     * horizontal gap between visuals and left/right edges of the viewport (in
-     * world units)
-     */
-    final static float xGap = 0.01f;
-    /**
-     * world X-coordinate for left edges of sparklines
-     */
-    final static float xLeftMargin = 0f;
-    /**
-     * world X-coordinate for right edges of sparklines
-     */
-    final static float xRightMargin = 1f;
-    /**
-     * vertical gap between staves (in world units)
-     */
-    final static float yGap = 0.1f;
-    /**
-     * world Z-coordinate for lines
-     */
-    final static float zLines = -10f;
-    /**
-     * world Z-coordinate for labels and icons
-     */
-    final static float zLabels = zLines + 1f;
     /**
      * hash-mark mesh to represent a bone without a track, or any bone when the
      * POV is zoomed all the way out
@@ -157,19 +128,19 @@ class ScoreResources {
     /**
      * material for sparklines of W components of quaternions
      */
-    final Material wMaterial;
+    final public Material wMaterial;
     /**
      * material for sparklines of X components
      */
-    final Material xMaterial;
+    final public Material xMaterial;
     /**
      * material for sparklines of Y components
      */
-    final Material yMaterial;
+    final public Material yMaterial;
     /**
      * material for sparklines of Z components
      */
-    final Material zMaterial;
+    final public Material zMaterial;
     /**
      * square mesh for a transform icon
      */
