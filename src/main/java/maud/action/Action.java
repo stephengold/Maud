@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  * Action strings for Maud's "editor" screen. Each string describes a
  * user-interface action. Each string defined here should appear somewhere in
  * "editor.xml" and/or "editor.properties". By convention, action strings begin
- * with a verb in all lowercase and never end with a blank (' ').
+ * with a verb in all lowercase and never end with a space (' ').
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -43,8 +43,8 @@ public class Action {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            Action.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(Action.class.getName());
 
     final public static String deleteAnimation = "delete animation";
     final static String deleteMapping = "delete mapping";
@@ -91,7 +91,8 @@ public class Action {
     final static String previousSgc = "previous sgc";
     final static String previousShape = "previous shape";
     final static String previousSourceAnimation = "previous sourceAnimation";
-    final static String previousSourceAnimControl = "previous sourceAnimControl";
+    final static String previousSourceAnimControl
+            = "previous sourceAnimControl";
     final static String previousUserData = "previous userData";
     final static String previousVertex = "previous vertex";
     final static String previousViewMode = "previous viewMode";

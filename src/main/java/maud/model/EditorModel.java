@@ -30,8 +30,8 @@ import java.util.logging.Logger;
 import jme3utilities.wes.TweenTransforms;
 import maud.model.option.AssetLocations;
 import maud.model.option.MiscStatus;
-import maud.model.option.scene.SceneOptions;
 import maud.model.option.ScoreOptions;
+import maud.model.option.scene.SceneOptions;
 
 /**
  * An MVC-model state of the editor screen in the Maud application. Includes all
@@ -46,8 +46,8 @@ public class EditorModel {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            EditorModel.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(EditorModel.class.getName());
     // *************************************************************************
     // fields
 

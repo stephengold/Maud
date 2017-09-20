@@ -51,8 +51,8 @@ class SetAction {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SetAction.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SetAction.class.getName());
     // *************************************************************************
     // constructors
 
@@ -65,7 +65,7 @@ class SetAction {
     // new methods exposed
 
     /**
-     * Process an action string that begin with "select".
+     * Process an action string that begin with "set".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -137,8 +137,9 @@ class SetAction {
             case Action.setUserData:
                 EditorDialogs.setUserData();
                 break;
+
             default:
-                handled = processPrefixes(actionString);
+                handled = testForPrefixes(actionString);
         }
 
         return handled;
@@ -147,12 +148,12 @@ class SetAction {
     // private methods
 
     /**
-     * Process an action that starts with "set" -- 2nd part: test prefixes.
+     * Process an action that starts with "set" -- 2nd part: test for prefixes.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private static boolean processPrefixes(String actionString) {
+    private static boolean testForPrefixes(String actionString) {
         boolean handled = true;
 
         EditorModel model = Maud.getModel();
