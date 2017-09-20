@@ -49,8 +49,8 @@ public class SelectedPhysics implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SelectedPhysics.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SelectedPhysics.class.getName());
     // *************************************************************************
     // fields
 
@@ -226,6 +226,7 @@ public class SelectedPhysics implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getPhysics() == this;
         cgm = newCgm;
     }
     // *************************************************************************

@@ -54,8 +54,8 @@ public class SelectedBone implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SelectedBone.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SelectedBone.class.getName());
     // *************************************************************************
     // fields
 
@@ -510,6 +510,7 @@ public class SelectedBone implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getBone() == this;
 
         cgm = newCgm;
         if (newCgm instanceof EditableCgm) {

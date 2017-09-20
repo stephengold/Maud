@@ -49,8 +49,8 @@ public class DisplayedPose implements JmeCloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            DisplayedPose.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(DisplayedPose.class.getName());
     // *************************************************************************
     // fields
 
@@ -107,6 +107,7 @@ public class DisplayedPose implements JmeCloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getPose() == this;
         cgm = newCgm;
     }
 

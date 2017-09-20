@@ -54,8 +54,8 @@ public class SelectedSgc implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SelectedSgc.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SelectedSgc.class.getName());
     /**
      * dummy control name used to indicate that no control is selected
      */
@@ -368,6 +368,7 @@ public class SelectedSgc implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getSgc() == this;
         cgm = newCgm;
     }
     // *************************************************************************

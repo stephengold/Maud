@@ -109,8 +109,8 @@ public class SceneView
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SceneView.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SceneView.class.getName());
     /**
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
@@ -500,6 +500,7 @@ public class SceneView
      */
     public void setCgm(Cgm newCgm) {
         Validate.nonNull(newCgm, "new model");
+        assert newCgm.getSceneView() == this;
         cgm = newCgm;
     }
 

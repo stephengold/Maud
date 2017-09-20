@@ -53,8 +53,8 @@ public class SelectedVertex implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SelectedVertex.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SelectedVertex.class.getName());
     // *************************************************************************
     // fields
 
@@ -233,6 +233,7 @@ public class SelectedVertex implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getVertex() == this;
         cgm = newCgm;
     }
 

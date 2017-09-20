@@ -570,6 +570,7 @@ public class SelectedSkeleton implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getSkeleton() == this;
         cgm = newCgm;
     }
     // *************************************************************************

@@ -52,8 +52,8 @@ public class SelectedShape implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SelectedShape.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SelectedShape.class.getName());
     // *************************************************************************
     // fields
 
@@ -274,6 +274,7 @@ public class SelectedShape implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getShape() == this;
         cgm = newCgm;
     }
     // *************************************************************************

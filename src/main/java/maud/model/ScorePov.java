@@ -64,8 +64,8 @@ public class ScorePov implements Cloneable, Pov {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            ScorePov.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(ScorePov.class.getName());
     // *************************************************************************
     // fields
 
@@ -259,6 +259,7 @@ public class ScorePov implements Cloneable, Pov {
     @Override
     public void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getScorePov() == this;
         cgm = newCgm;
     }
 

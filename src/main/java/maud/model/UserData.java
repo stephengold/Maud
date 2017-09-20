@@ -42,8 +42,8 @@ public class UserData implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            UserData.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(UserData.class.getName());
     // *************************************************************************
     // fields
 
@@ -141,6 +141,7 @@ public class UserData implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getUserData() == this;
 
         cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
