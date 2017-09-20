@@ -78,6 +78,7 @@ public class ShowMenus {
     void addNewAnimation() {
         MenuBuilder builder = new MenuBuilder();
         builder.addDialog("Copy");
+        builder.addDialog("Mix");
         builder.addDialog("Pose");
         builder.addTool("Retarget");
         builder.show("select menuItem Animation -> Add new -> ");
@@ -119,7 +120,7 @@ public class ShowMenus {
     }
 
     /**
-     * Display an "Animation -> Edit" menu (for a real animations only).
+     * Display an "Animation -> Edit" menu (only for a real animation).
      */
     void editAnimation() {
         MenuBuilder builder = new MenuBuilder();
@@ -225,7 +226,7 @@ public class ShowMenus {
      *
      * @param names the list of names (not null, unaffected)
      * @param actionPrefix common prefix of the menu's action strings (not null,
-     * usually the final character will be a blank)
+     * usually the final character will be a space)
      */
     void selectFile(List<String> names, String actionPrefix) {
         assert names != null;

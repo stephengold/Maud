@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
+import maud.model.EditableCgm;
 import maud.model.SelectedTrack;
 
 /**
@@ -44,8 +45,8 @@ class NewAction {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            NewAction.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(NewAction.class.getName());
     // *************************************************************************
     // constructors
 
@@ -65,19 +66,24 @@ class NewAction {
      */
     static boolean process(String actionString) {
         boolean handled = true;
+
         switch (actionString) {
             case Action.newAnimationFromPose:
                 EditorDialogs.newAnimationFromPose();
                 break;
+
             case Action.newCheckpoint:
                 Maud.gui.addCheckpoint("user interface");
                 break;
+
             case Action.newMapping:
                 Maud.getModel().getMap().mapBones();
                 break;
+
             case Action.newSgc:
                 Maud.gui.showMenus.addNewSgc();
                 break;
+
             case Action.newSingleKeyframe: // insert OR replace
                 SelectedTrack track = Maud.getModel().getTarget().getTrack();
                 if (track.isTrackSelected()) {
@@ -89,11 +95,13 @@ class NewAction {
                     }
                 }
                 break;
+
             case Action.newUserKey:
                 Maud.gui.showMenus.selectUserDataType();
                 break;
+
             default:
-                handled = processPrefixes(actionString);
+                handled = testForPrefixes(actionString);
         }
 
         return handled;
@@ -102,24 +110,35 @@ class NewAction {
     // private methods
 
     /**
-     * Process an action that starts with "new" -- 2nd part: test prefixes.
+     * Process an action that starts with "new" -- 2nd part: test for prefixes.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private static boolean processPrefixes(String actionString) {
-        boolean handled = false;
+    private static boolean testForPrefixes(String actionString) {
+        boolean handled = true;
+
+        EditableCgm target = Maud.getModel().getTarget();
         if (actionString.startsWith(ActionPrefix.newAssetLocation)) {
             String path = MyString.remainder(actionString,
                     ActionPrefix.newAssetLocation);
             Maud.gui.buildMenus.newAssetLocation(path);
-            handled = true;
+
+        } else if (actionString.startsWith(ActionPrefix.newAnimationFromMix)) {
+            String args = MyString.remainder(actionString,
+                    ActionPrefix.newAnimationFromMix);
+            if (args.contains(" ")) {
+                String indices = args.split(" ")[0];
+                String animationName = MyString.remainder(args, indices + " ");
+                target.getAnimControl().mix(indices, animationName);
+            } else {
+                EditorDialogs.newAnimationFromMix(actionString + " ");
+            }
 
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromPose)) {
             String name = MyString.remainder(actionString,
                     ActionPrefix.newAnimationFromPose);
-            Maud.getModel().getTarget().getAnimation().poseAndLoad(name);
-            handled = true;
+            target.getAnimation().poseAndLoad(name);
 
         } else if (actionString.startsWith(ActionPrefix.newUserKey)) {
             String args;
@@ -127,11 +146,13 @@ class NewAction {
             if (args.contains(" ")) {
                 String type = args.split(" ")[0];
                 String key = MyString.remainder(args, type + " ");
-                Maud.getModel().getTarget().addUserKey(type, key);
+                target.addUserKey(type, key);
             } else {
                 EditorDialogs.newUserKey(actionString + " ");
             }
-            handled = true;
+
+        } else {
+            handled = false;
         }
 
         return handled;

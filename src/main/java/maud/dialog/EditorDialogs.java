@@ -58,6 +58,7 @@ import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedTrack;
+import maud.model.TrackItem;
 
 /**
  * Dialog boxes created by Maud's "editor" screen.
@@ -71,8 +72,8 @@ public class EditorDialogs {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            EditorDialogs.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(EditorDialogs.class.getName());
     // *************************************************************************
     // constructors
 
@@ -269,29 +270,75 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "new animation fromPose" dialog.
+     * Display a "new animation fromMix" dialog to select the tracks.
+     */
+    public static void newAnimationFromMix() {
+        Cgm target = Maud.getModel().getTarget();
+        List<TrackItem> items = target.listTrackItems();
+        int numTracks = items.size();
+        List<String> options = new ArrayList<>(numTracks);
+        for (TrackItem item : items) {
+            String description = item.toString();
+            options.add(description);
+        }
+
+        String prompt = "Select tracks to include in the mix:";
+        String commitLabel = "Next";
+        String prefix = ActionPrefix.newAnimationFromMix;
+        MixDialog controller = new MixDialog(items);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showMultiSelectDialog(prompt, options, commitLabel, prefix,
+                controller);
+    }
+
+    /**
+     * Display a "new animation fromMix" dialog to enter the animation name.
+     *
+     * @param actionPrefix (not null, not empty)
+     */
+    public static void newAnimationFromMix(String actionPrefix) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
+        String prompt = "Enter a name for the new animation:";
+        String defaultName = "mix";
+        DialogController controller = new AnimationNameDialog("Create");
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog(prompt, defaultName, actionPrefix,
+                controller);
+    }
+
+    /**
+     * Display a "new animation fromPose" dialog to enter the animation name.
      */
     public static void newAnimationFromPose() {
         DialogController controller = new AnimationNameDialog("Create");
+        String defaultName = "pose";
+
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                "pose", ActionPrefix.newAnimationFromPose, controller);
+                defaultName, ActionPrefix.newAnimationFromPose, controller);
     }
 
     /**
-     * Display a "new userKey" dialog.
+     * Display a "new userKey" dialog to enter the user-data key.
      *
-     * @param actionString (not null)
+     * @param actionPrefix (not null, not empty)
      */
-    public static void newUserKey(String actionString) {
+    public static void newUserKey(String actionPrefix) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
         DialogController controller = new UserKeyDialog("Create");
+        String defaultKey = "key";
+
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a key for the new user data:",
-                "key", actionString, controller);
+                defaultKey, actionPrefix, controller);
     }
 
     /**
-     * Display a "reduce animation" dialog.
+     * Display a "reduce animation" dialog to enter the reduction factor.
      */
     public static void reduceAnimation() {
         if (Maud.getModel().getTarget().getAnimation().isReal()) {
@@ -305,7 +352,7 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "reduce track" dialog.
+     * Display a "reduce track" dialog to enter the reduction factor.
      */
     public static void reduceTrack() {
         SelectedBone bone = Maud.getModel().getTarget().getBone();
@@ -354,7 +401,12 @@ public class EditorDialogs {
      */
     public static void renameSpatial() {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        String oldName = spatial.getName();
+
+        String defaultName = spatial.getName();
+        if (defaultName == null) {
+            defaultName = "new name";
+        }
+
         DialogController controller = new SpatialNameDialog("Rename");
         String prompt;
         if (spatial.isNode()) {
@@ -364,7 +416,7 @@ public class EditorDialogs {
         }
 
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog(prompt, oldName,
+        Maud.gui.showTextEntryDialog(prompt, defaultName,
                 ActionPrefix.renameSpatial, controller);
     }
 

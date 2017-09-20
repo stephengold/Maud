@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 /**
  * Action-string prefixes for Maud's "editor" screen. Each prefix describes a
  * user-interface action requiring one or more (textual) arguments. By
- * convention, action prefixes end with a blank (' ').
+ * convention, action prefixes end with a space (' ').
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -42,8 +42,8 @@ public class ActionPrefix {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            ActionPrefix.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(ActionPrefix.class.getName());
     /**
      * argument is a name for the new animation
      */
@@ -59,7 +59,8 @@ public class ActionPrefix {
     /**
      * argument is a number of keyframes
      */
-    final public static String deletePreviousKeyframes = "delete previousKeyframes ";
+    final public static String deletePreviousKeyframes
+            = "delete previousKeyframes ";
     /**
      * argument is the name of an animation in the target CG model
      */
@@ -106,6 +107,11 @@ public class ActionPrefix {
      */
     final public static String loadSourceCgmNamed = "load sourceCgm named ";
     /**
+     * arguments are a comma-separated list of decimal track indices and an
+     * optional name for the new animation
+     */
+    final public static String newAnimationFromMix = "new animation fromMix ";
+    /**
      * argument is a name for the new animation
      */
     final public static String newAnimationFromPose = "new animation fromPose ";
@@ -114,7 +120,7 @@ public class ActionPrefix {
      */
     final public static String newAssetLocation = "new assetLocation ";
     /**
-     * arguments are the new type, key, and value
+     * arguments are the new type and optional key
      */
     final public static String newUserKey = "new userKey ";
     /**
@@ -144,11 +150,13 @@ public class ActionPrefix {
     /**
      * argument is the new sample rate
      */
-    final public static String resampleAnimationAtRate = "resample animation atRate ";
+    final public static String resampleAnimationAtRate
+            = "resample animation atRate ";
     /**
      * argument is the new sample count
      */
-    final public static String resampleAnimationToNumber = "resample animation toNumber ";
+    final public static String resampleAnimationToNumber
+            = "resample animation toNumber ";
     /**
      * argument is the new sample rate
      */
@@ -156,7 +164,8 @@ public class ActionPrefix {
     /**
      * argument is the new sample count
      */
-    final public static String resampleTrackToNumber = "resample track toNumber ";
+    final public static String resampleTrackToNumber
+            = "resample track toNumber ";
     /**
      * argument is the name for the new animation
      */
@@ -248,7 +257,8 @@ public class ActionPrefix {
     /**
      * argument is a new duration in seconds
      */
-    final public static String setDurationProportional = "set duration proportional ";
+    final public static String setDurationProportional
+            = "set duration proportional ";
     /**
      * argument is a new duration in seconds
      */
