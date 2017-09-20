@@ -385,6 +385,7 @@ public class SelectedAnimControl implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getAnimControl() == this;
         cgm = newCgm;
     }
     // *************************************************************************

@@ -62,8 +62,8 @@ public class LoadedAnimation implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            LoadedAnimation.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(LoadedAnimation.class.getName());
     /**
      * dummy animation name to denote the bind pose (no animation loaded)
      */
@@ -990,6 +990,7 @@ public class LoadedAnimation implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getAnimation() == this;
 
         cgm = newCgm;
         if (newCgm instanceof EditableCgm) {

@@ -66,8 +66,8 @@ public class SelectedSpatial implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SelectedSpatial.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SelectedSpatial.class.getName());
     // *************************************************************************
     // fields
 
@@ -865,6 +865,7 @@ public class SelectedSpatial implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
+        assert newCgm.getSpatial() == this;
 
         cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
