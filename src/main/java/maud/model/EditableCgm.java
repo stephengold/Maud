@@ -71,8 +71,8 @@ public class EditableCgm extends LoadedCgm {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            EditableCgm.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(EditableCgm.class.getName());
     // *************************************************************************
     // fields
 
@@ -96,7 +96,8 @@ public class EditableCgm extends LoadedCgm {
     void addAnimation(Animation newAnimation) {
         assert newAnimation != null;
         SelectedAnimControl sac = getAnimControl();
-        assert !sac.hasRealAnimation(newAnimation.getName());
+        String newAnimationName = newAnimation.getName();
+        assert !sac.hasRealAnimation(newAnimationName);
 
         History.autoAdd();
         AnimControl control = sac.find();
@@ -110,7 +111,9 @@ public class EditableCgm extends LoadedCgm {
             skeletonSpatial.addControl(control);
         }
         control.addAnim(newAnimation);
-        setEdited("add animation");
+        String description;
+        description = "add animation " + MyString.quote(newAnimationName);
+        setEdited(description);
     }
 
     /**
