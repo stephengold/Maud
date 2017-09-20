@@ -65,7 +65,6 @@ import maud.model.History;
 import maud.model.LoadedAnimation;
 import maud.model.Pov;
 import maud.model.SelectedSpatial;
-import maud.model.option.ScoreOptions;
 import maud.model.option.scene.AxesMode;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.SceneOptions;
@@ -95,8 +94,8 @@ public class EditorScreen extends GuiScreenController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            EditorScreen.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(EditorScreen.class.getName());
     /**
      * name of the signal that rotates the model counter-clockwise around +Y
      */
@@ -416,7 +415,6 @@ public class EditorScreen extends GuiScreenController {
             return;
         }
         SceneOptions scene = Maud.getModel().getScene();
-        ScoreOptions score = Maud.getModel().getScore();
 
         switch (buttonId) {
             case "boneAxesRadioButton":

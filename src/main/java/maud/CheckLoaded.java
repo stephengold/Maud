@@ -62,8 +62,8 @@ public class CheckLoaded {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            CheckLoaded.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(CheckLoaded.class.getName());
     // *************************************************************************
     // constructors
 
@@ -78,11 +78,11 @@ public class CheckLoaded {
     /**
      * Check for anomalies in a loaded AnimControl.
      *
-     * @param animControl (not null)
+     * @param animControl (not null, unaffected)
      * @return false if issues found, otherwise true
      */
     public static boolean animControl(AnimControl animControl) {
-        Validate.nonNull(animControl, "anim Control");
+        Validate.nonNull(animControl, "anim control");
 
         int numBones = 0;
         Skeleton skeleton = animControl.getSkeleton();
@@ -102,7 +102,7 @@ public class CheckLoaded {
                 logger.warning("animation name is null");
                 return false;
             }
-            if (name.length() == 0) {
+            if (name.isEmpty()) {
                 logger.warning("animation name is empty");
                 return false;
             }
@@ -183,7 +183,7 @@ public class CheckLoaded {
     /**
      * Check for anomalies in a bone.
      *
-     * @param bone (may be null)
+     * @param bone (may be null, unaffected)
      * @param nameSet (not null, modified)
      * @return false if issues found, otherwise true
      */
@@ -220,7 +220,7 @@ public class CheckLoaded {
     /**
      * Check for anomalies in a loaded BoneTrack.
      *
-     * @param boneTrack (not null)
+     * @param boneTrack (not null, unaffected)
      * @param numBones (&gt;0, &le;255)
      * @param numFrames (&gt;0)
      * @param targetBoneIndexSet (not null, modified)
@@ -285,7 +285,7 @@ public class CheckLoaded {
     /**
      * Check for anomalies in a loaded CG model.
      *
-     * @param cgmRoot (not null)
+     * @param cgmRoot (not null, unaffected)
      * @return false if issues found, otherwise true
      */
     public static boolean cgm(Spatial cgmRoot) {
@@ -321,7 +321,7 @@ public class CheckLoaded {
     /**
      * Check for anomalies in a loaded skeleton.
      *
-     * @param skeleton (not null)
+     * @param skeleton (not null, unaffected)
      * @return false if issues found, otherwise true
      */
     public static boolean skeleton(Skeleton skeleton) {

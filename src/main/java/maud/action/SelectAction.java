@@ -47,8 +47,8 @@ class SelectAction {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SelectAction.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SelectAction.class.getName());
     // *************************************************************************
     // constructors
 
@@ -68,6 +68,7 @@ class SelectAction {
      */
     static boolean process(String actionString) {
         boolean handled = true;
+
         EditorModel model = Maud.getModel();
         Cgm target = model.getTarget();
         switch (actionString) {
@@ -170,8 +171,9 @@ class SelectAction {
             case Action.selectVertex:
                 Maud.gui.showMenus.selectVertex();
                 break;
+
             default:
-                handled = processPrefixes(actionString);
+                handled = testForPrefixes(actionString);
         }
 
         return handled;
@@ -209,12 +211,13 @@ class SelectAction {
     // private methods
 
     /**
-     * Process an action that starts with "select" -- 2nd part: test prefixes.
+     * Process an action that starts with "select" -- 2nd part: test for
+     * prefixes.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private static boolean processPrefixes(String actionString) {
+    private static boolean testForPrefixes(String actionString) {
         boolean handled = true;
 
         EditorModel model = Maud.getModel();

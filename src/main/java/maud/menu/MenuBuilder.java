@@ -47,8 +47,8 @@ class MenuBuilder {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            MenuBuilder.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(MenuBuilder.class.getName());
     // *************************************************************************
     // fields
 
@@ -380,7 +380,7 @@ class MenuBuilder {
      * Display the menu in the editor screen, unless it's empty.
      *
      * @param actionPrefix common prefix of the menu's action strings (not null,
-     * usually the final character will be a blank)
+     * usually the final character will be a space)
      */
     void show(String actionPrefix) {
         Validate.nonNull(actionPrefix, "action prefix");
