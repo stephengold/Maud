@@ -58,8 +58,8 @@ public class EditorMenus {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            EditorMenus.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(EditorMenus.class.getName());
     /**
      * magic filename used in "add locator" actions and menus
      */
@@ -335,6 +335,9 @@ public class EditorMenus {
         switch (remainder) {
             case "Copy":
                 EditorDialogs.copyAnimation();
+                break;
+            case "Mix":
+                EditorDialogs.newAnimationFromMix();
                 break;
             case "Pose":
                 EditorDialogs.newAnimationFromPose();
