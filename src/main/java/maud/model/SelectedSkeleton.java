@@ -37,6 +37,7 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
@@ -58,8 +59,8 @@ public class SelectedSkeleton implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SelectedSkeleton.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SelectedSkeleton.class.getName());
     /**
      * dummy bone name, used to indicate that no bone is selected
      */
@@ -472,7 +473,7 @@ public class SelectedSkeleton implements Cloneable {
                     if (boneIndex != -1) {
                         for (int boneI = 0; boneI < numBones; boneI++) {
                             boolean inSubtree = (boneI == boneIndex)
-                                    || Util.descendsFrom(boneI, boneIndex,
+                                    || MySkeleton.descendsFrom(boneI, boneIndex,
                                             skeleton);
                             storeResult.set(boneI, inSubtree);
                         }
