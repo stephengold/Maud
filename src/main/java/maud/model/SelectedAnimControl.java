@@ -28,6 +28,7 @@ package maud.model;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
+import com.jme3.animation.Track;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.util.ArrayList;
@@ -36,7 +37,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -54,8 +54,8 @@ public class SelectedAnimControl implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SelectedAnimControl.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SelectedAnimControl.class.getName());
     // *************************************************************************
     // fields
 
@@ -120,9 +120,7 @@ public class SelectedAnimControl implements Cloneable {
         if (animControl == null) {
             index = -1;
         } else {
-            Spatial root = cgm.getRootSpatial();
-            List<AnimControl> list;
-            list = MySpatial.listControls(root, AnimControl.class, null);
+            List<AnimControl> list = cgm.listSgcs(AnimControl.class);
             index = list.indexOf(animControl);
             assert index != -1;
         }
@@ -273,6 +271,63 @@ public class SelectedAnimControl implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Mix the specified tracks into a new animation and add it the anim
+     * control.
+     *
+     * @param indices comma-separated list of decimal track indices (not null,
+     * not empty)
+     * @param animationName name for the new animation (not null, not reserved,
+     * not in use)
+     */
+    public void mix(String indices, String animationName) {
+        Validate.nonEmpty(indices, "indices");
+        Validate.nonNull(animationName, "animation name");
+        assert !LoadedAnimation.isReserved(animationName) : animationName;
+        assert !hasRealAnimation(animationName) : animationName;
+
+        List<TrackItem> allTracks = cgm.listTrackItems();
+        String[] argArray = indices.split(",");
+        int numTracks = argArray.length;
+        /*
+         * Enumerate selected tracks and calculate max duration.
+         */
+        float maxDuration = 0f;
+        List<TrackItem> selectedTracks = new ArrayList<>(numTracks);
+        for (String arg : argArray) {
+            int index = Integer.parseInt(arg);
+            TrackItem item = allTracks.get(index);
+            selectedTracks.add(item);
+
+            Animation animation = item.getAnimation();
+            float duration = animation.getLength();
+            if (duration > maxDuration) {
+                maxDuration = duration;
+            }
+        }
+        /*
+         * Mix the selected tracks together into a new animation.
+         */
+        Animation mix = new Animation(animationName, maxDuration);
+        for (TrackItem item : selectedTracks) {
+            Track track = item.getTrack();
+            Track clone = track.clone();
+            //if (track instanceof SpatialTrack) {
+            //SpatialTrack spatialTrack = (SpatialTrack) track;
+            //Spatial spatial = spatialTrack.getTrackSpatial(); //TODO JME 3.2
+            //if (spatial == null) {
+            //spatial = animControl.getSpatial();
+            //}
+            //SpatialTrack cloneSt = (SpatialTrack) clone;
+            //cloneSt.setTrackSpatial(target);
+            //}
+            mix.addTrack(clone);
+        }
+
+        EditableCgm targetCgm = Maud.getModel().getTarget();
+        targetCgm.addAnimation(mix);
     }
 
     /**

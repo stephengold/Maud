@@ -27,7 +27,9 @@
 package maud.model;
 
 import com.jme3.animation.AnimControl;
+import com.jme3.animation.Animation;
 import com.jme3.animation.SpatialTrack;
+import com.jme3.animation.Track;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -690,6 +692,37 @@ public class Cgm implements Cloneable {
     public List<String> listSpatialNames(String prefix, boolean includeNodes) {
         List<String> list = listSpatialNames(rootSpatial, prefix, includeNodes);
         return list;
+    }
+
+    /**
+     * Enumerate all known animation tracks.
+     *
+     * @return a new list of new items
+     */
+    public List<TrackItem> listTrackItems() {
+        List<TrackItem> result = new ArrayList<>(100);
+
+        List<String> animControlNames = listAnimControlNames();
+        List<AnimControl> animControls = listSgcs(AnimControl.class);
+        int numAnimControls = animControls.size();
+        assert animControlNames.size() == numAnimControls;
+        for (int acIndex = 0; acIndex < numAnimControls; acIndex++) {
+            String animControlName = animControlNames.get(acIndex);
+            AnimControl animControl = animControls.get(acIndex);
+
+            Collection<String> animationNames = animControl.getAnimationNames();
+            for (String animationName : animationNames) {
+                Animation animation = animControl.getAnim(animationName);
+                Track[] tracks = animation.getTracks();
+                for (Track track : tracks) {
+                    TrackItem item = new TrackItem(animationName,
+                            animControlName, animControl, track);
+                    result.add(item);
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
