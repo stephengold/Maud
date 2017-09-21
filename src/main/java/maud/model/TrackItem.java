@@ -186,7 +186,7 @@ public class TrackItem {
             }
 
         } else {
-            result = true; // TODO other track types
+            result = false; // TODO other track types
         }
 
         return result;
