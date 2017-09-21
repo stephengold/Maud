@@ -39,8 +39,6 @@ import maud.model.Cgm;
 import maud.model.EditableCgm;
 import maud.model.EditableMap;
 import maud.model.History;
-import maud.model.LoadedAnimation;
-import maud.model.SelectedAnimControl;
 import maud.model.SelectedShape;
 import maud.model.SelectedSpatial;
 import maud.model.option.MiscStatus;
@@ -112,39 +110,6 @@ public class EditorMenus {
         }
 
         return result;
-    }
-
-    /**
-     * Handle a "load (source)animation" action without arguments.
-     *
-     * @param cgm (not null)
-     */
-    public void loadAnimation(Cgm cgm) {
-        if (cgm.isLoaded()) {
-            List<String> names = cgm.getAnimControl().listAnimationNames();
-            Maud.gui.showMenus.showAnimationSubmenu(names, cgm);
-        }
-    }
-
-    /**
-     * Handle a "load (source)animation" action with an argument.
-     *
-     * @param argument action argument (not null)
-     * @param cgm which load slot (not null)
-     */
-    public void loadAnimation(String argument, Cgm cgm) {
-        SelectedAnimControl sac = cgm.getAnimControl();
-        if (sac.hasRealAnimation(argument)
-                || argument.equals(LoadedAnimation.bindPoseName)
-                || argument.equals(LoadedAnimation.retargetedPoseName)) {
-            cgm.getAnimation().load(argument);
-        } else {
-            /*
-             * Treat the argument as an animation-name prefix.
-             */
-            List<String> animationNames = sac.listAnimationNames(argument);
-            Maud.gui.showMenus.showAnimationSubmenu(animationNames, cgm);
-        }
     }
 
     /**
@@ -220,7 +185,7 @@ public class EditorMenus {
         boolean handled = false;
         switch (menuName) {
             case "Animation":
-                handled = menuAnimation(remainder);
+                handled = AnimationMenus.menuAnimation(remainder);
                 break;
             case "Bone":
                 handled = BoneMenus.menuBone(remainder);
@@ -260,169 +225,6 @@ public class EditorMenus {
                 break;
             case "View":
                 handled = menuView(remainder);
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the Animation menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuAnimation(String remainder) {
-        boolean handled = true;
-        String addNewPrefix = "Add new" + menuPathSeparator;
-        String editPrefix = "Edit" + menuPathSeparator;
-        if (remainder.startsWith(addNewPrefix)) {
-            String arg = MyString.remainder(remainder, addNewPrefix);
-            handled = menuAnimationAddNew(arg);
-
-        } else if (remainder.startsWith(editPrefix)) {
-            String arg = MyString.remainder(remainder, editPrefix);
-            handled = menuAnimationEdit(arg);
-
-        } else {
-            EditableCgm target = Maud.getModel().getTarget();
-            switch (remainder) {
-                case "Add new":
-                    Maud.gui.showMenus.addNewAnimation();
-                    break;
-                case "Delete":
-                    EditorDialogs.deleteAnimation();
-                    break;
-                case "Edit":
-                    Maud.gui.showMenus.editAnimation();
-                    break;
-                case "Load":
-                    loadAnimation(target);
-                    break;
-                case "Load source":
-                    loadAnimation(Maud.getModel().getSource());
-                    break;
-                case "Rename":
-                    EditorDialogs.renameAnimation();
-                    break;
-                case "Select AnimControl":
-                    Maud.gui.showMenus.selectAnimControl(target);
-                    break;
-                case "Source tool":
-                    Maud.gui.tools.select("sourceAnimation");
-                    break;
-                case "Tool":
-                    Maud.gui.tools.select("animation");
-                    break;
-                case "Tweening":
-                    Maud.gui.tools.select("tweening");
-                    break;
-                default:
-                    handled = false;
-            }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "Animation -> Add new" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuAnimationAddNew(String remainder) {
-        boolean handled = true;
-        switch (remainder) {
-            case "Copy":
-                EditorDialogs.copyAnimation();
-                break;
-            case "Mix":
-                EditorDialogs.newAnimationFromMix();
-                break;
-            case "Pose":
-                EditorDialogs.newAnimationFromPose();
-                break;
-            case "Retarget":
-                Maud.gui.tools.select("retarget");
-                break;
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "Animation -> Edit -> Change
-     * duration" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuAnimationChangeDuration(String remainder) {
-        boolean handled = true;
-        switch (remainder) {
-            case "Proportional times":
-                EditorDialogs.setDurationProportional();
-                break;
-            case "Same times":
-                EditorDialogs.setDurationSame();
-                break;
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "Animation -> Edit" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuAnimationEdit(String remainder) {
-        boolean handled = true;
-        String changeDurationPrefix = "Change duration" + menuPathSeparator;
-
-        if (remainder.startsWith(changeDurationPrefix)) {
-            String arg = MyString.remainder(remainder, changeDurationPrefix);
-            handled = menuAnimationChangeDuration(arg);
-
-        } else {
-            EditableCgm target = Maud.getModel().getTarget();
-            LoadedAnimation animation = target.getAnimation();
-            switch (remainder) {
-                case "Behead":
-                    animation.behead();
-                    break;
-                case "Change duration":
-                    Maud.gui.showMenus.changeDuration();
-                    break;
-                case "Delete keyframes":
-                    animation.deleteKeyframes();
-                    break;
-                case "Insert keyframes":
-                    animation.insertKeyframes();
-                    break;
-                case "Reduce all tracks":
-                    EditorDialogs.reduceAnimation();
-                    break;
-                case "Resample all tracks to number":
-                    EditorDialogs.resampleAnimation(false);
-                    break;
-                case "Resample all tracks at rate":
-                    EditorDialogs.resampleAnimation(true);
-                    break;
-                case "Truncate":
-                    animation.truncate();
-                    break;
-                case "Wrap all tracks":
-                    animation.wrapAllTracks();
-                    break;
-                default:
-                    handled = false;
-            }
         }
 
         return handled;
@@ -986,7 +788,7 @@ public class EditorMenus {
                 target.getAnimation().deleteTrack();
                 break;
             case "Load animation":
-                loadAnimation(target);
+                AnimationMenus.loadAnimation(target);
                 break;
             case "Reduce":
                 EditorDialogs.reduceTrack();
