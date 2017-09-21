@@ -131,6 +131,7 @@ class NewAction {
                 String indices = args.split(" ")[0];
                 String animationName = MyString.remainder(args, indices + " ");
                 target.getAnimControl().mix(indices, animationName);
+                target.getAnimation().load(animationName);
             } else {
                 EditorDialogs.newAnimationFromMix(actionString + " ");
             }
