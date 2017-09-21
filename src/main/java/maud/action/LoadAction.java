@@ -29,6 +29,7 @@ package maud.action;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.menu.AnimationMenus;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.LoadedCgm;
@@ -71,7 +72,7 @@ class LoadAction {
         LoadedCgm target = Maud.getModel().getTarget();
         switch (actionString) {
             case Action.loadAnimation:
-                Maud.gui.menus.loadAnimation(target);
+                AnimationMenus.loadAnimation(target);
                 break;
             case Action.loadCgm:
                 Maud.gui.buildMenus.loadCgm();
@@ -83,7 +84,7 @@ class LoadAction {
                 target.getAnimation().loadRetargetedPose();
                 break;
             case Action.loadSourceAnimation:
-                Maud.gui.menus.loadAnimation(source);
+                AnimationMenus.loadAnimation(source);
                 break;
             case Action.loadSourceCgm:
                 Maud.gui.buildMenus.loadSourceCgm();
@@ -113,7 +114,7 @@ class LoadAction {
         String args, name, path;
         if (actionString.startsWith(ActionPrefix.loadAnimation)) {
             args = MyString.remainder(actionString, ActionPrefix.loadAnimation);
-            Maud.gui.menus.loadAnimation(args, target);
+            AnimationMenus.loadAnimation(args, target);
 
         } else if (actionString.startsWith(ActionPrefix.loadCgmAsset)) {
             args = MyString.remainder(actionString, ActionPrefix.loadCgmAsset);
@@ -145,7 +146,7 @@ class LoadAction {
         } else if (actionString.startsWith(ActionPrefix.loadSourceAnimation)) {
             args = MyString.remainder(actionString,
                     ActionPrefix.loadSourceAnimation);
-            Maud.gui.menus.loadAnimation(args, source);
+            AnimationMenus.loadAnimation(args, source);
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmAsset)) {
             args = MyString.remainder(actionString,
