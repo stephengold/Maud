@@ -121,10 +121,10 @@ public class EditorInputMode extends InputMode {
                     handled = NewAction.process(actionString);
                     break;
                 case "next":
-                    handled = nextAction(actionString);
+                    handled = NextAction.process(actionString);
                     break;
                 case "previous":
-                    handled = previousAction(actionString);
+                    handled = PreviousAction.process(actionString);
                     break;
                 case "reduce":
                     handled = reduceAction(actionString);
@@ -288,125 +288,6 @@ public class EditorInputMode extends InputMode {
                     int number = Integer.parseInt(arg);
                     target.getTrack().deletePreviousKeyframes(number);
                 }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with "next".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean nextAction(String actionString) {
-        EditorModel model = Maud.getModel();
-        EditableCgm target = model.getTarget();
-
-        boolean handled = true;
-        switch (actionString) {
-            case Action.nextAnimation:
-                target.getAnimation().loadNext();
-                break;
-            case Action.nextAnimControl:
-                target.getAnimControl().selectNext();
-                break;
-            case Action.nextBone:
-                target.getBone().selectNext();
-                break;
-            case Action.nextCheckpoint:
-                History.redo();
-                break;
-            case Action.nextJoint:
-                target.getJoint().selectNext();
-                break;
-            case Action.nextMapping:
-                model.getMap().selectNext();
-                break;
-            case Action.nextPhysics:
-                target.getPhysics().selectNext();
-                break;
-            case Action.nextSgc:
-                target.getSgc().selectNext();
-                break;
-            case Action.nextShape:
-                target.getShape().selectNext();
-                break;
-            case Action.nextSourceAnimation:
-                model.getSource().getAnimation().loadNext();
-                break;
-            case Action.nextSourceAnimControl:
-                model.getSource().getAnimControl().selectNext();
-                break;
-            case Action.nextUserData:
-                target.getUserData().selectNextKey();
-                break;
-            case Action.nextVertex:
-                target.getVertex().selectNext();
-                break;
-            case Action.nextViewMode:
-                model.getMisc().selectNextViewMode();
-                break;
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with "previous".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean previousAction(String actionString) {
-        EditorModel model = Maud.getModel();
-        EditableCgm target = model.getTarget();
-
-        boolean handled = true;
-        switch (actionString) {
-            case Action.previousAnimation:
-                target.getAnimation().loadPrevious();
-                break;
-            case Action.previousAnimControl:
-                target.getAnimControl().selectPrevious();
-                break;
-            case Action.previousBone:
-                target.getBone().selectPrevious();
-                break;
-            case Action.previousCheckpoint:
-                History.undo();
-                break;
-            case Action.previousJoint:
-                target.getJoint().selectPrevious();
-                break;
-            case Action.previousMapping:
-                model.getMap().selectPrevious();
-                break;
-            case Action.previousPhysics:
-                target.getPhysics().selectPrevious();
-                break;
-            case Action.previousSgc:
-                target.getSgc().selectPrevious();
-                break;
-            case Action.previousShape:
-                target.getShape().selectPrevious();
-                break;
-            case Action.previousSourceAnimation:
-                model.getSource().getAnimation().loadPrevious();
-                break;
-            case Action.previousSourceAnimControl:
-                model.getSource().getAnimControl().selectPrevious();
-                break;
-            case Action.previousUserData:
-                target.getUserData().selectPreviousKey();
-                break;
-            case Action.previousVertex:
-                target.getVertex().selectPrevious();
-                break;
-            default:
-                handled = false;
         }
 
         return handled;
