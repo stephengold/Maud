@@ -50,8 +50,16 @@ public class BoneMenus {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            BoneMenus.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(BoneMenus.class.getName());
+    // *************************************************************************
+    // constructors
+
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
+    private BoneMenus() {
+    }
     // *************************************************************************
     // new methods exposed
 
@@ -61,7 +69,7 @@ public class BoneMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    boolean menuBone(String remainder) {
+    static boolean menuBone(String remainder) {
         assert remainder != null;
 
         boolean handled = true;
@@ -111,7 +119,7 @@ public class BoneMenus {
      *
      * @param argument action argument (not null)
      */
-    public void selectBone(String argument) {
+    public static void selectBone(String argument) {
         Cgm target = Maud.getModel().getTarget();
         SelectedSkeleton skeleton = target.getSkeleton();
         if (skeleton.hasBone(argument)) {
@@ -129,7 +137,7 @@ public class BoneMenus {
     /**
      * Handle a "select boneChild" action without arguments.
      */
-    public void selectBoneChild() {
+    public static void selectBoneChild() {
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             int numChildren = bone.countChildren();
@@ -145,7 +153,7 @@ public class BoneMenus {
     /**
      * Handle a "select boneWithTrack" action.
      */
-    void selectBoneWithTrack() {
+    static void selectBoneWithTrack() {
         EditableCgm target = Maud.getModel().getTarget();
         List<String> boneNames = target.getAnimation().listBonesWithTrack();
         int numBoneTracks = boneNames.size();
@@ -161,7 +169,7 @@ public class BoneMenus {
      *
      * @param argument action argument (not null)
      */
-    public void selectSourceBone(String argument) {
+    public static void selectSourceBone(String argument) {
         Cgm source = Maud.getModel().getSource();
         SelectedSkeleton skeleton = source.getSkeleton();
         if (skeleton.hasBone(argument)) {
@@ -183,7 +191,7 @@ public class BoneMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuBoneSelect(String remainder) {
+    private static boolean menuBoneSelect(String remainder) {
         boolean handled = true;
 
         EditorModel model = Maud.getModel();
@@ -229,7 +237,7 @@ public class BoneMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuBoneSelectSource(String remainder) {
+    private static boolean menuBoneSelectSource(String remainder) {
         assert remainder != null;
 
         boolean handled = false;
@@ -249,7 +257,7 @@ public class BoneMenus {
     /**
      * Select a bone by name, using submenus.
      */
-    private void selectBoneByName() {
+    private static void selectBoneByName() {
         Cgm target = Maud.getModel().getTarget();
         List<String> nameList = target.getSkeleton().listBoneNames();
         Maud.gui.showMenus.showBoneSubmenu(nameList);
@@ -258,7 +266,7 @@ public class BoneMenus {
     /**
      * Select a bone by parent, using submenus.
      */
-    private void selectBoneByParent() {
+    private static void selectBoneByParent() {
         Cgm target = Maud.getModel().getTarget();
         List<String> boneNames = target.getSkeleton().listRootBoneNames();
         Maud.gui.showPopupMenu(ActionPrefix.selectBoneChild, boneNames);
@@ -267,7 +275,7 @@ public class BoneMenus {
     /**
      * Handle a "select rootBone" action.
      */
-    private void selectRootBone() {
+    private static void selectRootBone() {
         Cgm target = Maud.getModel().getTarget();
         int numRoots = target.getSkeleton().countRootBones();
         if (numRoots == 1) {
@@ -281,7 +289,7 @@ public class BoneMenus {
     /**
      * Handle a "select sourceRootBone" action.
      */
-    private void selectSourceRootBone() {
+    private static void selectSourceRootBone() {
         Cgm source = Maud.getModel().getSource();
         int numRoots = source.getSkeleton().countRootBones();
         if (numRoots == 1) {

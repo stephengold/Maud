@@ -223,7 +223,7 @@ public class EditorMenus {
                 handled = menuAnimation(remainder);
                 break;
             case "Bone":
-                handled = Maud.gui.boneMenus.menuBone(remainder);
+                handled = BoneMenus.menuBone(remainder);
                 break;
             case "CGM":
                 handled = menuCgm(remainder);
