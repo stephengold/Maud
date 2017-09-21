@@ -26,10 +26,13 @@
  */
 package maud.tool;
 
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Mesh;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
@@ -47,15 +50,15 @@ class SpatialTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SpatialTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SpatialTool.class.getName());
     // *************************************************************************
     // constructors
 
     /**
      * Instantiate an uninitialized controller.
      *
-     * @param screenController
+     * @param screenController (not null)
      */
     SpatialTool(BasicScreenController screenController) {
         super(screenController, "spatialTool", false);
@@ -73,6 +76,7 @@ class SpatialTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
+        Maud.gui.setIgnoreGuiChanges(true);
 
         updateChildren();
         updateMaterial();
@@ -80,8 +84,11 @@ class SpatialTool extends WindowController {
         updateName();
         updateParent();
         updateShadows();
+        updateTransform();
         updateTreePosition();
         updateType();
+
+        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods
@@ -242,6 +249,65 @@ class SpatialTool extends WindowController {
         }
 
         Maud.gui.setStatusText("spatialTreePosition", positionText);
+    }
+
+    /**
+     * Update the display of the spatial's transform.
+     */
+    private void updateTransform() {
+        String transformText;
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        if (spatial.isTransformIgnored()) {
+            transformText = "IGNORED";
+
+        } else {
+            StringBuilder notes = new StringBuilder(20);
+            Vector3f translation = spatial.localTranslation(null);
+            if (!MyVector3f.isZero(translation)) {
+                notes.append("Tra[ ");
+                if (translation.x != 0f) {
+                    notes.append('x');
+                }
+                if (translation.y != 0f) {
+                    notes.append('y');
+                }
+                if (translation.z != 0f) {
+                    notes.append('z');
+                }
+                notes.append(" ]");
+            }
+            Quaternion rotation = spatial.localRotation(null);
+            if (!rotation.isIdentity()) {
+                if (notes.length() > 0) {
+                    notes.append("  ");
+                }
+                notes.append("Rot");
+            }
+            Vector3f scale = spatial.localScale(null);
+            if (scale.x != 1f || scale.y != 1f || scale.z != 1f) {
+                if (notes.length() > 0) {
+                    notes.append("  ");
+                }
+                notes.append("Sca[ ");
+                if (scale.x != 1f) {
+                    notes.append('x');
+                }
+                if (scale.y != 1f) {
+                    notes.append('y');
+                }
+                if (scale.z != 1f) {
+                    notes.append('z');
+                }
+                notes.append(" ]");
+            }
+            if (notes.length() == 0) {
+                notes.append("Identity");
+            }
+            transformText = notes.toString();
+        }
+
+        Maud.gui.setStatusText("spatialTransform", " " + transformText);
     }
 
     /**
