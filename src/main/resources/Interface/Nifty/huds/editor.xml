@@ -27,7 +27,7 @@
 -->
 
 <!--
-Nifty XML to lay out the GUI portion of Maud's "3D View" screen:
+Nifty XML to lay out the GUI portion of Maud's "editor" screen:
 the menu bar, status bar, and tool windows.
 -->
 <nifty xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
@@ -1725,7 +1725,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="spatialTool" title="Spatial Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="230px" width="280px" x="15" y="85">
+                     height="250px" width="280px" x="15" y="85">
                 <panel childLayout="vertical">
                     <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -1753,26 +1753,22 @@ the menu bar, status bar, and tool windows.
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Parent:  "
-                                 textHAlign="right"
-                                 width="55px"/>
+                        <control name="label" text="Parent:  "/>
                         <control name="label" id="spatialParent"
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" id="spatialSelectParentButton"
-                                 width="60px">
+                                 width="50px">
                             <interact onRelease="perform(select spatialParent)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Children:  "
-                                 textHAlign="right"
-                                 width="55px"/>
+                        <control name="label" text="Children:  "/>
                         <control name="label" id="spatialChildren"
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" id="spatialSelectChildButton"
-                                 width="60px">
+                                 width="50px">
                             <interact onRelease="perform(select spatialChild)"/>
                         </control>
                     </panel>
@@ -1785,6 +1781,12 @@ the menu bar, status bar, and tool windows.
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Mesh:  "/>
                         <control name="label" id="spatialMesh"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Local transform:  "/>
+                        <control name="label" id="spatialTransform"
                                  backgroundColor="#ffff"
                                  width="*"/>
                     </panel>

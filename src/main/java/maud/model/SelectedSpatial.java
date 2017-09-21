@@ -588,6 +588,19 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
+     * Test whether the selected spatial is the root of the CG model.
+     *
+     * @return true if it's the root, otherwise false
+     */
+    public boolean isCgmRoot() {
+        if (treePosition.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Test whether the indexed child of the selected spatial is a node.
      *
      * @param childIndex which child (&ge;0)
@@ -622,19 +635,6 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Test whether the selected spatial is the root of the CG model.
-     *
-     * @return true if it's the root, otherwise false
-     */
-    public boolean isCgmRoot() {
-        if (treePosition.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Test whether the selected spatial is a node.
      *
      * @return true if it's a node, otherwise false
@@ -646,6 +646,25 @@ public class SelectedSpatial implements Cloneable {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Test whether the selected spatial is a geometry with ignoreTransform set.
+     *
+     * @return true if ignoring the transform, otherwise false
+     */
+    public boolean isTransformIgnored() {
+        boolean result = false;
+
+        Spatial spatial = find();
+        if (spatial instanceof Geometry) {
+            Geometry geometry = (Geometry) spatial;
+            if (geometry.isIgnoreTransform()) {
+                result = true;
+            }
+        }
+
+        return result;
     }
 
     /**
