@@ -48,8 +48,8 @@ public class EditorTools {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            EditorTools.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(EditorTools.class.getName());
     // *************************************************************************
     // fields
 
@@ -137,6 +137,10 @@ public class EditorTools {
      * controller for the "Score Tool" window
      */
     final ScoreTool score;
+    /**
+     * controller for the "Settings Tool" window
+     */
+    final SettingsTool settings;
     /**
      * controller for the "Control Tool" window
      */
@@ -229,6 +233,7 @@ public class EditorTools {
         retarget = new RetargetTool(screen);
         sceneVertex = new SceneVertexTool(screen);
         score = new ScoreTool(screen);
+        settings = new SettingsTool(screen);
         sgc = new SgcTool(screen);
         shape = new ShapeTool(screen);
         skeletonColor = new SkeletonColorTool(screen);
@@ -258,7 +263,7 @@ public class EditorTools {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, history,
                 keyframe, joint, mapping, cgm, physics, platform, render,
-                retarget, sceneVertex, score, sgc, shape, skeleton,
+                retarget, sceneVertex, score, settings, sgc, shape, skeleton,
                 skeletonColor, sky, sourceAnimation, spatial, spatialDetails,
                 spatialRotation, spatialScale, spatialTranslation, tweening,
                 twist, userData, vertex);
@@ -337,6 +342,9 @@ public class EditorTools {
                 break;
             case "score":
                 controller = score;
+                break;
+            case "settings":
+                controller = settings;
                 break;
             case "sgc":
                 controller = sgc;

@@ -59,8 +59,8 @@ public class EditorInputMode extends InputMode {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            EditorInputMode.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(EditorInputMode.class.getName());
     /**
      * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
      */
@@ -534,48 +534,55 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "toggle".
+     * Process an action that starts with the word "toggle".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean toggleAction(String actionString) {
-        boolean handled = false;
+        boolean handled = true;
 
         EditorModel model = Maud.getModel();
         switch (actionString) {
             case Action.toggleDegrees:
                 model.getMisc().toggleAnglesInDegrees();
-                handled = true;
                 break;
+
             case Action.toggleDragSide:
                 SceneDrag.toggleDragSide();
-                handled = true;
                 break;
+
             case Action.toggleFreezeTarget:
                 model.getTarget().getPose().toggleFrozen();
-                handled = true;
                 break;
+
+            case Action.toggleIndexBase:
+                model.getMisc().toggleIndexBase();
+                break;
+
             case Action.togglePause:
                 model.getSource().getAnimation().togglePaused();
                 model.getTarget().getAnimation().togglePaused();
-                handled = true;
                 break;
+
             case Action.togglePauseSource:
                 model.getSource().getAnimation().togglePaused();
-                handled = true;
                 break;
+
             case Action.togglePauseTarget:
                 if (model.getTarget().getAnimation().isRetargetedPose()) {
                     model.getSource().getAnimation().togglePaused();
                 } else {
                     model.getTarget().getAnimation().togglePaused();
                 }
-                handled = true;
                 break;
+
             case Action.toggleProjection:
                 model.getScene().getCamera().toggleProjection();
-                handled = true;
+                break;
+
+            default:
+                handled = false;
         }
 
         return handled;

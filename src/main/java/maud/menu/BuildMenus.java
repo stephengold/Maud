@@ -46,7 +46,6 @@ import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
 import maud.model.SelectedBone;
 import maud.model.SelectedSkeleton;
-import maud.model.option.MiscStatus;
 import maud.model.option.ViewMode;
 
 /**
@@ -69,8 +68,8 @@ public class BuildMenus {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            BuildMenus.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(BuildMenus.class.getName());
     /**
      * magic specifier for the default location in actions and menus
      */
@@ -809,24 +808,11 @@ public class BuildMenus {
      * Build a Settings menu.
      */
     private void buildSettingsMenu() {
+        builder.add("Tool");
         builder.add("Asset locations");
-        MiscStatus status = Maud.getModel().getMisc();
-        boolean diagnoseLoads = status.getDiagnoseLoads();
-        if (!diagnoseLoads) {
-            builder.add("Diagnose loads");
-        }
         //builder.add("Initial model"); TODO
         builder.add("Hotkeys");
         //builder.add("Locale"); TODO
-        int indexBase = status.getIndexBase();
-        if (indexBase == 0) {
-            builder.add("Start indices at 1");
-        } else {
-            builder.add("Start indices at 0");
-        }
-        if (diagnoseLoads) {
-            builder.add("Stop diagnosing loads");
-        }
     }
 
     /**

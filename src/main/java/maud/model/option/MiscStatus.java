@@ -43,8 +43,8 @@ public class MiscStatus implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            MiscStatus.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(MiscStatus.class.getName());
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
      */
@@ -170,6 +170,13 @@ public class MiscStatus implements Cloneable {
      */
     public void toggleAnglesInDegrees() {
         setAnglesInDegrees(!anglesInDegrees);
+    }
+
+    /**
+     * Toggle the starting point for displayed indices.
+     */
+    public void toggleIndexBase() {
+        setIndexBase(1 - indexBase);
     }
     // *************************************************************************
     // Object methods
