@@ -67,8 +67,8 @@ public class ShowMenus {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            ShowMenus.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(ShowMenus.class.getName());
     // *************************************************************************
     // new methods exposed
 
@@ -519,7 +519,7 @@ public class ShowMenus {
         for (Spatial.BatchHint hint : Spatial.BatchHint.values()) {
             if (!hint.equals(selectedHint)) {
                 String name = hint.toString();
-                builder.add(name);
+                builder.addEdit(name);
             }
         }
 
@@ -538,7 +538,7 @@ public class ShowMenus {
         for (Spatial.CullHint hint : Spatial.CullHint.values()) {
             if (!hint.equals(selectedHint)) {
                 String name = hint.toString();
-                builder.add(name);
+                builder.addEdit(name);
             }
         }
 
@@ -557,7 +557,7 @@ public class ShowMenus {
         for (RenderQueue.Bucket bucket : RenderQueue.Bucket.values()) {
             if (!bucket.equals(selectedBucket)) {
                 String name = bucket.toString();
-                builder.add(name);
+                builder.addEdit(name);
             }
         }
 
@@ -597,7 +597,7 @@ public class ShowMenus {
         for (RenderQueue.ShadowMode mode : RenderQueue.ShadowMode.values()) {
             if (!mode.equals(selectedMode)) {
                 String name = mode.toString();
-                builder.add(name);
+                builder.addEdit(name);
             }
         }
 
