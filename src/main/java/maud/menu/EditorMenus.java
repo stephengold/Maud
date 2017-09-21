@@ -42,7 +42,6 @@ import maud.model.History;
 import maud.model.SelectedShape;
 import maud.model.SelectedSpatial;
 import maud.model.option.MiscStatus;
-import maud.model.option.ViewMode;
 
 /**
  * Menus in Maud's editor screen.
@@ -224,7 +223,7 @@ public class EditorMenus {
                 handled = menuVertex(remainder);
                 break;
             case "View":
-                handled = menuView(remainder);
+                handled = ViewMenus.menuView(remainder);
         }
 
         return handled;
@@ -483,77 +482,6 @@ public class EditorMenus {
                 break;
             case "RigidBody":
                 spatial.addRigidBodyControl();
-                break;
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "View -> Scenes" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuSceneView(String remainder) {
-        boolean handled = true;
-        switch (remainder) {
-            case "Axes":
-                Maud.gui.tools.select("axes");
-                break;
-            case "Bounds":
-                Maud.gui.tools.select("bounds");
-                break;
-            case "Camera":
-                Maud.gui.tools.select("camera");
-                break;
-            case "Cursor":
-                Maud.gui.tools.select("cursor");
-                break;
-            case "Mode":
-                Maud.gui.showMenus.selectViewMode();
-                break;
-            case "Platform":
-                Maud.gui.tools.select("platform");
-                break;
-            case "Render":
-                Maud.gui.tools.select("render");
-                break;
-            case "Skeleton":
-                Maud.gui.tools.select("skeleton");
-                break;
-            case "Skeleton color":
-                Maud.gui.tools.select("skeletonColor");
-                break;
-            case "Sky":
-                Maud.gui.tools.select("sky");
-                break;
-            case "Vertex":
-                Maud.gui.tools.select("sceneVertex");
-                break;
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "View -> Scores" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuScoreView(String remainder) {
-        boolean handled = true;
-        switch (remainder) {
-            case "Background":
-                Maud.gui.tools.select("background");
-                break;
-            case "Tool":
-                Maud.gui.tools.select("score");
                 break;
             default:
                 handled = false;
@@ -881,61 +809,5 @@ public class EditorMenus {
         }
 
         return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the View menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean menuView(String remainder) {
-        boolean handled = true;
-        String modePrefix = "Mode" + menuPathSeparator;
-        String scenesPrefix = "Scene options" + menuPathSeparator;
-        String scoresPrefix = "Score options" + menuPathSeparator;
-        if (remainder.startsWith(modePrefix)) {
-            String arg = MyString.remainder(remainder, modePrefix);
-            menuViewMode(arg);
-            handled = true;
-
-        } else if (remainder.startsWith(scenesPrefix)) {
-            String arg = MyString.remainder(remainder, scenesPrefix);
-            handled = menuSceneView(arg);
-
-        } else if (remainder.startsWith(scoresPrefix)) {
-            String arg = MyString.remainder(remainder, scoresPrefix);
-            handled = menuScoreView(arg);
-
-        } else {
-            switch (remainder) {
-                case "Mode":
-                    Maud.gui.showMenus.selectViewMode();
-                    break;
-                case "Scene options":
-                    Maud.gui.showMenus.sceneViewOptions();
-                    break;
-                case "Score options":
-                    Maud.gui.showMenus.scoreViewOptions();
-                    break;
-                default:
-                    handled = false;
-            }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "View -> Mode" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private void menuViewMode(String remainder) {
-        assert remainder != null;
-
-        ViewMode viewMode = ViewMode.valueOf(remainder);
-        Maud.getModel().getMisc().setViewMode(viewMode);
     }
 }
