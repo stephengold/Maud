@@ -38,8 +38,10 @@ import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
+import com.jme3.system.JmeSystem;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
 import jme3_ext_xbuf.XbufLoader;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
@@ -82,7 +84,8 @@ public class Maud extends GuiApplication {
     /**
      * path to the asset used to configure hotkey bindings
      */
-    final private static String hotkeyBindingsAssetPath = "Interface/bindings/editor.properties";
+    final private static String hotkeyBindingsAssetPath
+            = "Interface/bindings/editor.properties";
     /**
      * application name for the window's title bar
      */
@@ -209,18 +212,38 @@ public class Maud extends GuiApplication {
          */
         History.logger.setLevel(Level.INFO);
         /*
-         * Instantiate the application.
+         * Load app settings from persistent storage.
+         */
+        boolean loadDefaults = true;
+        AppSettings settings = new AppSettings(loadDefaults);
+        String preferencesKey = Maud.class.getName();
+        try {
+            settings.load(preferencesKey);
+        } catch (BackingStoreException e) {
+            logger.log(Level.WARNING, "App settings were not loaded.");
+        }
+        /*
+         * Apply overrides and dialog input.
+         */
+        settings.setGammaCorrection(false);
+        settings.setVSync(true);
+        boolean loadFromRegistry = false;
+        JmeSystem.showSettingsDialog(settings, loadFromRegistry);
+        settings.setTitle(windowTitle);
+        /*
+         * Save app settings to persistent storage.
+         */
+        try {
+            settings.save(preferencesKey);
+        } catch (BackingStoreException e) {
+            logger.log(Level.WARNING, "App settings were not saved.");
+        }
+        /*
+         * Instantiate and start the application.
          */
         application = new Maud();
-        /*
-         * Customize the display's title bar.
-         */
-        AppSettings settings = new AppSettings(true);
-        settings.setTitle(windowTitle);
-
-        settings.setVSync(true);
         application.setSettings(settings);
-
+        application.setShowSettings(false);
         application.start();
         /*
          * ... and onward to Maud.guiInitializeApplication()!
