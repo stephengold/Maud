@@ -29,6 +29,7 @@ package maud.action;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.menu.BoneMenus;
 import maud.model.Cgm;
 import maud.model.EditorModel;
 import maud.model.option.scene.OrbitCenter;
@@ -79,7 +80,7 @@ class SelectAction {
                 Maud.gui.buildMenus.selectBone();
                 break;
             case Action.selectBoneChild:
-                Maud.gui.boneMenus.selectBoneChild();
+                BoneMenus.selectBoneChild();
                 break;
             case Action.selectBoneParent:
                 target.getBone().selectParent();
@@ -230,7 +231,7 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectBone)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectBone);
-            Maud.gui.boneMenus.selectBone(arg);
+            BoneMenus.selectBone(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectBoneChild)) {
             arg = MyString.remainder(actionString,
@@ -274,7 +275,7 @@ class SelectAction {
         } else if (actionString.startsWith(ActionPrefix.selectSourceBone)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectSourceBone);
-            Maud.gui.boneMenus.selectSourceBone(arg);
+            BoneMenus.selectSourceBone(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectSpatialChild)) {
             arg = MyString.remainder(actionString,
