@@ -318,10 +318,11 @@ public class SelectedAnimControl implements Cloneable {
             //SpatialTrack spatialTrack = (SpatialTrack) track;
             //Spatial spatial = spatialTrack.getTrackSpatial(); //TODO JME 3.2
             //if (spatial == null) {
+            //AnimControl animControl = item.getAnimControl();
             //spatial = animControl.getSpatial();
             //}
             //SpatialTrack cloneSt = (SpatialTrack) clone;
-            //cloneSt.setTrackSpatial(target);
+            //cloneSt.setTrackSpatial(spatial);
             //}
             mix.addTrack(clone);
         }
