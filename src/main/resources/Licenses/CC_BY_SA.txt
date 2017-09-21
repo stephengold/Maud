@@ -11,6 +11,7 @@ Attribution-Share Alike 3.0 Unported License.
 The files
 "3d cursor.blend",
 "Maud.png",
+"Maud-settings.png",
 "bvh.png",
 "bone.png",
 "dialog.png",

@@ -226,9 +226,13 @@ public class Maud extends GuiApplication {
          * Apply overrides and dialog input.
          */
         settings.setGammaCorrection(false);
+        settings.setSettingsDialogImage("Textures/icons/Maud-settings.png");
         settings.setVSync(true);
         boolean loadFromRegistry = false;
-        JmeSystem.showSettingsDialog(settings, loadFromRegistry);
+        boolean cont = JmeSystem.showSettingsDialog(settings, loadFromRegistry);
+        if (!cont) {
+            return;
+        }
         settings.setTitle(windowTitle);
         /*
          * Save app settings to persistent storage.
