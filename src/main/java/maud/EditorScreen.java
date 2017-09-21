@@ -376,6 +376,9 @@ public class EditorScreen extends GuiScreenController {
             case "scoreTranslations":
                 model.getScore().setShowTranslations(isChecked);
                 break;
+            case "settingsDiagnose":
+                model.getMisc().setDiagnoseLoads(isChecked);
+                break;
             case "sgcEnable":
                 model.getTarget().setSgcEnabled(isChecked);
                 break;
