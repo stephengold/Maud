@@ -32,6 +32,7 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Mesh;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
@@ -278,14 +279,14 @@ class SpatialTool extends WindowController {
                 notes.append(" ]");
             }
             Quaternion rotation = spatial.localRotation(null);
-            if (!rotation.isIdentity()) {
+            if (!MyQuaternion.isRotationIdentity(rotation)) {
                 if (notes.length() > 0) {
                     notes.append("  ");
                 }
                 notes.append("Rot");
             }
             Vector3f scale = spatial.localScale(null);
-            if (scale.x != 1f || scale.y != 1f || scale.z != 1f) {
+            if (!MyVector3f.isScaleIdentity(scale)) {
                 if (notes.length() > 0) {
                     notes.append("  ");
                 }
