@@ -59,6 +59,7 @@ import maud.menu.EditorMenus;
 import maud.menu.ShowMenus;
 import maud.model.Cgm;
 import maud.model.Checkpoint;
+import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedAnimation;
@@ -316,7 +317,7 @@ public class EditorScreen extends GuiScreenController {
         EditorModel model = Maud.getModel();
         SceneOptions scene = model.getScene();
         Cgm source = model.getSource();
-        Cgm target = model.getTarget();
+        EditableCgm target = model.getTarget();
         Cgm animationCgm;
         if (target.getAnimation().isRetargetedPose()) {
             animationCgm = source;
@@ -380,16 +381,19 @@ public class EditorScreen extends GuiScreenController {
                 model.getMisc().setDiagnoseLoads(isChecked);
                 break;
             case "sgcEnable":
-                model.getTarget().setSgcEnabled(isChecked);
+                target.setSgcEnabled(isChecked);
                 break;
             case "sgcLocalPhysics":
-                model.getTarget().setApplyPhysicsLocal(isChecked);
+                target.setApplyPhysicsLocal(isChecked);
                 break;
             case "shadows":
                 scene.setShadowsRendered(isChecked);
                 break;
             case "sky":
                 scene.setSkyRendered(isChecked);
+                break;
+            case "spatialIgnoreTransform":
+                target.setIgnoreTransform(isChecked);
                 break;
             default:
                 logger.log(Level.WARNING, "check box with unknown id={0}",

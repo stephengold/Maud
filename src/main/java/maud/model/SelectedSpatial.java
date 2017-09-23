@@ -654,15 +654,8 @@ public class SelectedSpatial implements Cloneable {
      * @return true if ignoring the transform, otherwise false
      */
     public boolean isTransformIgnored() {
-        boolean result = false;
-
         Spatial spatial = find();
-        if (spatial instanceof Geometry) {
-            Geometry geometry = (Geometry) spatial;
-            if (geometry.isIgnoreTransform()) {
-                result = true;
-            }
-        }
+        boolean result = MySpatial.isIgnoringTransforms(spatial);
 
         return result;
     }

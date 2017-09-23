@@ -49,15 +49,15 @@ class SpatialDetailsTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SpatialDetailsTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SpatialDetailsTool.class.getName());
     // *************************************************************************
     // constructors
 
     /**
      * Instantiate an uninitialized controller.
      *
-     * @param screenController
+     * @param screenController (not null)
      */
     SpatialDetailsTool(BasicScreenController screenController) {
         super(screenController, "spatialDetailsTool", false);
@@ -75,10 +75,12 @@ class SpatialDetailsTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
+        Maud.gui.setIgnoreGuiChanges(true);
 
         updateBatchHint();
         updateBucket();
         updateCull();
+        updateIgnoreTransform();
         updateInfluence();
         updateLights();
         updateName();
@@ -86,6 +88,8 @@ class SpatialDetailsTool extends WindowController {
         updateSgcs();
         updateShadows();
         updateUserData();
+
+        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods
@@ -118,6 +122,15 @@ class SpatialDetailsTool extends WindowController {
         Spatial.CullHint hint = spatial.getLocalCullHint();
         String description = hint.toString();
         Maud.gui.setButtonLabel("spatialCullHintButton", description);
+    }
+
+    /**
+     * Update the "ignore transform" check box.
+     */
+    private void updateIgnoreTransform() {
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        boolean flag = spatial.isTransformIgnored();
+        Maud.gui.setChecked("spatialIgnoreTransform", flag);
     }
 
     /**
