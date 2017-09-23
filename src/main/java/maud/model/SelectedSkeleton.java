@@ -30,6 +30,7 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MySkeleton;
+import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
@@ -173,6 +175,24 @@ public class SelectedSkeleton implements Cloneable {
      */
     Skeleton find() {
         Skeleton result = find(null);
+        return result;
+    }
+
+    /**
+     * Find a geometry that is animated by the selected skeleton control.
+     *
+     * @return the tree position, or null if none found
+     */
+    public List<Integer> findAnimatedGeometry() {
+        List<Integer> result = null;
+        Spatial spatial = findSpatial();
+        if (spatial != null) {
+            Geometry geometry = MySpatial.findAnimatedGeometry(spatial);
+            if (geometry != null) {
+                result = cgm.findSpatial(geometry);
+            }
+        }
+
         return result;
     }
 

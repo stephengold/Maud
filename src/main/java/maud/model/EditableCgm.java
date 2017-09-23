@@ -37,6 +37,7 @@ import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.UserData;
@@ -500,6 +501,29 @@ public class EditableCgm extends LoadedCgm {
             modelSpatial.setCullHint(newHint);
             getSceneView().setCullHint(newHint);
             setEdited("change cull hint");
+        }
+    }
+
+    /**
+     * Alter whether the selected geometry ignores its transform.
+     *
+     * @param newSetting true&rarr;ignore transform, false&rarr;apply transform
+     */
+    public void setIgnoreTransform(boolean newSetting) {
+        Spatial modelSpatial = getSpatial().underRoot(rootSpatial);
+        if (modelSpatial instanceof Geometry) {
+            Geometry geometry = (Geometry) modelSpatial;
+            boolean oldSetting = geometry.isIgnoreTransform();
+            if (oldSetting != newSetting) {
+                History.autoAdd();
+                geometry.setIgnoreTransform(newSetting);
+                getSceneView().setIgnoreTransform(newSetting);
+                if (newSetting) {
+                    setEdited("ignore transform");
+                } else {
+                    setEdited("stop ignoring transform");
+                }
+            }
         }
     }
 

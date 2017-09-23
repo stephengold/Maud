@@ -139,6 +139,10 @@ public class SceneView
      */
     final private BulletAppState bulletAppState;
     /**
+     * CG model that owns this view (not null)
+     */
+    private Cgm cgm;
+    /**
      * world transform for the CG model visualization
      */
     private CgmTransform cgmTransform = new CgmTransform();
@@ -150,10 +154,6 @@ public class SceneView
      * indicator for the 3D cursor, or null if none
      */
     private Geometry cursor;
-    /**
-     * CG model that owns this view (not null)
-     */
-    private Cgm cgm;
     /**
      * attachment point for CG models (applies shadowMode and transforms)
      */
@@ -332,7 +332,7 @@ public class SceneView
     }
 
     /**
-     * Access the indicator for the 3D cursor.
+     * Access the indicator for the 3-D cursor.
      *
      * @return the pre-existing instance, or null if none
      */
@@ -546,6 +546,16 @@ public class SceneView
     }
 
     /**
+     * Alter whether the selected geometry ignores its transform.
+     *
+     * @param newSetting true&rarr;ignore transform, false&rarr;apply transform
+     */
+    public void setIgnoreTransform(boolean newSetting) {
+        Geometry geometry = (Geometry) selectedSpatial();
+        geometry.setIgnoreTransform(newSetting);
+    }
+
+    /**
      * Alter the shadow mode of the selected spatial.
      *
      * @param newMode new value for shadow mode (not null)
@@ -680,16 +690,22 @@ public class SceneView
      * Copy the world transform of the CG model, based on an animated geometry
      * if possible.
      *
-     * @return a new instance
+     * @param storeResult (modified if not null)
+     * @return world transform (either storeResult or a new instance)
      */
-    public Transform worldTransform() {
-        Spatial basedOn = MySpatial.findAnimatedGeometry(cgmRoot);
+    public Transform worldTransform(Transform storeResult) {
+        if (storeResult == null) {
+            storeResult = new Transform();
+        }
+
+        Spatial basedOn = findAnimatedGeometry();
         if (basedOn == null) {
             basedOn = cgmRoot;
         }
-        Transform transform = basedOn.getWorldTransform();
+        Transform alias = basedOn.getWorldTransform();
+        storeResult.set(alias);
 
-        return transform.clone();
+        return storeResult;
     }
     // *************************************************************************
     // EditorView methods
@@ -810,6 +826,23 @@ public class SceneView
                         screenXY);
             }
         }
+    }
+
+    /**
+     * Find a geometry that is animated by the selected skeleton control.
+     *
+     * @return a pre-existing instance, or null if none found
+     */
+    public Geometry findAnimatedGeometry() {
+        List<Integer> treePosition = cgm.getSkeleton().findAnimatedGeometry();
+        Spatial spatial = cgmRoot;
+        for (int childPosition : treePosition) {
+            Node node = (Node) spatial;
+            spatial = node.getChild(childPosition);
+        }
+        Geometry result = (Geometry) spatial;
+
+        return result;
     }
 
     /**
@@ -1094,6 +1127,7 @@ public class SceneView
      */
     private CollisionResult findCollision(Spatial spatial, Ray ray) {
         assert ray != null;
+
         MySpatial.prepareForCollide(spatial);
         CollisionResults results = new CollisionResults();
         spatial.collideWith(ray, results);
@@ -1161,9 +1195,8 @@ public class SceneView
         float radius = 1000f;
         Vector3f worldMin = new Vector3f(-radius, -radius, -radius);
         Vector3f worldMax = new Vector3f(radius, radius, radius);
-        PhysicsSpace.BroadphaseType sweep3;
-        sweep3 = PhysicsSpace.BroadphaseType.AXIS_SWEEP_3;
-        BulletAppState result = new BulletAppState(worldMin, worldMax, sweep3);
+        BulletAppState result = new BulletAppState(worldMin, worldMax,
+                PhysicsSpace.BroadphaseType.AXIS_SWEEP_3);
 
         ViewPort[] viewPorts;
         if (viewPort1 == null) {

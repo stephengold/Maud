@@ -1823,7 +1823,7 @@ the menu bar, status bar, and tool windows.
                      title="Spatial Details Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="224px" width="255px" x="15" y="85">
+                     height="250px" width="255px" x="15" y="85">
                 <panel childLayout="vertical">
                     <panel height="5px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -1879,12 +1879,12 @@ the menu bar, status bar, and tool windows.
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Batch:  "/>
+                        <control name="label" text="Batch hint:  "/>
                         <control name="button" id="spatialBatchHintButton"
                                  width="50px">
                             <interact onRelease="perform(set batchHint)"/>
                         </control>
-                        <control name="label" text="    Cull:  "/>
+                        <control name="label" text="    Cull hint:  "/>
                         <control name="button" id="spatialCullHintButton"
                                  width="65px">
                             <interact onRelease="perform(set cullHint)"/>
@@ -1903,6 +1903,10 @@ the menu bar, status bar, and tool windows.
                                  width="105px">
                             <interact onRelease="perform(set shadowMode)"/>
                         </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="spatialIgnoreTransformCheckBox"/>
+                        <control name="label" text="  ignore transform"/>
                     </panel>
                 </panel>
             </control>

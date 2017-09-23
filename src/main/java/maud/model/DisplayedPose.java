@@ -60,14 +60,14 @@ public class DisplayedPose implements JmeCloneable {
      */
     private boolean frozenFlag = false;
     /**
+     * CG-model holding the pose (set by {@link #setCgm(Cgm)})
+     */
+    private Cgm cgm = null;
+    /**
      * the pose, including a skeleton and a user/animation transform for each
      * bone
      */
     private Pose pose = new Pose(null);
-    /**
-     * CG-model holding the pose (set by {@link #setCgm(Cgm)})
-     */
-    private Cgm cgm = null;
     // *************************************************************************
     // new methods exposed
 
@@ -210,7 +210,7 @@ public class DisplayedPose implements JmeCloneable {
     public Vector3f worldLocation(int boneIndex, Vector3f storeResult) {
         Validate.nonNegative(boneIndex, "bone index");
 
-        Transform transform = cgm.getSceneView().worldTransform();
+        Transform transform = cgm.getSceneView().worldTransform(null);
         Vector3f modelLocation = pose.modelLocation(boneIndex, null);
         storeResult = transform.transformVector(modelLocation, storeResult);
 

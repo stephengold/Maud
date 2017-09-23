@@ -32,6 +32,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.controls.Slider;
@@ -66,8 +67,8 @@ public class AxesTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            AxesTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(AxesTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -128,9 +129,8 @@ public class AxesTool extends WindowController {
      * @return true if pointing away, otherwise false
      */
     public boolean isAxisReceding(Cgm cgm, int axisIndex) {
-        assert cgm != null;
-        assert axisIndex >= 0 : axisIndex;
-        assert axisIndex < 3 : axisIndex;
+        Validate.nonNull(cgm, "model");
+        Validate.inRange(axisIndex, "axis index", 0, 2);
 
         AxesVisualizer visualizer = cgm.getSceneView().getAxesVisualizer();
         assert visualizer.isEnabled();
@@ -360,21 +360,20 @@ public class AxesTool extends WindowController {
      */
     private Transform worldTransform(Cgm cgm) {
         Transform transform = null;
+        SceneView sceneView = cgm.getSceneView();
         AxesMode mode = Maud.getModel().getScene().getAxes().getMode();
         switch (mode) {
             case Bone:
                 if (cgm.getBone().isSelected()) {
                     transform = cgm.getBone().modelTransform(null);
-                    // TODO use animated geometry
-                    Transform worldTransform;
-                    worldTransform = cgm.getSceneView().worldTransform();
+                    Geometry ag = sceneView.findAnimatedGeometry();
+                    Transform worldTransform = ag.getWorldTransform();
                     transform.combineWithParent(worldTransform);
                 }
                 break;
 
             case Cgm:
                 if (cgm.isLoaded()) {
-                    SceneView sceneView = cgm.getSceneView();
                     transform = sceneView.getTransform().worldTransform();
                 }
                 break;
@@ -384,15 +383,13 @@ public class AxesTool extends WindowController {
 
             case Spatial:
                 if (cgm.isLoaded()) {
-                    Spatial spatial = cgm.getSceneView().selectedSpatial();
+                    Spatial spatial = sceneView.selectedSpatial();
                     transform = spatial.getWorldTransform();
                 }
                 break;
 
             case World:
-                if (cgm == Maud.getModel().getTarget()) {
-                    transform = new Transform(); // identity
-                }
+                transform = new Transform(); // identity
                 break;
 
             default:
