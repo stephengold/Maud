@@ -743,8 +743,7 @@ public class SceneView
          * Determine which bones to consider.
          */
         DisplayedPose displayedPose = cgm.getPose();
-        Pose pose = displayedPose.get();
-        int numBones = pose.countBones();
+        int numBones = displayedPose.get().countBones();
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
         BitSet boneIndexSet = cgm.getSkeleton().listShown(showBones, null);
@@ -807,13 +806,11 @@ public class SceneView
         if (collision != null) {
             Geometry geometry = collision.getGeometry();
             Mesh mesh = geometry.getMesh();
-
             int triangleIndex = collision.getTriangleIndex();
             int[] vertexIndices = new int[3];
             mesh.getTriangle(triangleIndex, vertexIndices);
 
-            Cgm cgModel = Maud.gui.mouseCgm();
-            Pose pose = cgModel.getPose().get();
+            Pose pose = cgm.getPose().get();
             Matrix4f[] matrices = pose.skin(null);
             Vector3f worldPosition = new Vector3f();
 
@@ -822,8 +819,7 @@ public class SceneView
                         worldPosition);
                 Vector3f screen = camera.getScreenCoordinates(worldPosition);
                 Vector2f screenXY = new Vector2f(screen.x, screen.y);
-                selection.considerVertex(cgModel, geometry, vertexIndex,
-                        screenXY);
+                selection.considerVertex(cgm, geometry, vertexIndex, screenXY);
             }
         }
     }
@@ -1012,7 +1008,7 @@ public class SceneView
     // private methods
 
     /**
-     * Visualize no skeleton.
+     * Visualize without any skeleton.
      */
     private void clearSkeleton() {
         Spatial controlled;
