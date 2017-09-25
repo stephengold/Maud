@@ -161,7 +161,7 @@ class MenuBuilder {
             addBlend(name);
         } else if (name.endsWith(".bvh")) {
             addBvh(name);
-        //} else if (name.endsWith(".gltf")) {
+        //} else if (name.endsWith(".gltf")) { // TODO JME 3.2
         //    addXbuf(name);
         } else if (name.endsWith(".j3o")) {
             addJme(name);
@@ -342,7 +342,7 @@ class MenuBuilder {
             result = true;
         } else if (name.endsWith(".bvh")) {
             result = true;
-        //} else if (name.endsWith(".gltf")) {
+        //} else if (name.endsWith(".gltf")) { // TODO JME 3.2
         //    result = true;
         } else if (name.endsWith(".j3o")) {
             result = true;
