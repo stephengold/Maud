@@ -36,6 +36,7 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
+import jme3utilities.wes.Pose;
 
 /**
  * The MVC model of the selected vertex in a loaded CG model.
@@ -246,7 +247,7 @@ public class SelectedVertex implements Cloneable {
     public Vector3f worldLocation(Vector3f storeResult) {
         Spatial selectedSpatial = cgm.getSceneView().selectedSpatial();
         Geometry selectedGeometry = (Geometry) selectedSpatial;
-        DisplayedPose pose = cgm.getPose();
+        Pose pose = cgm.getPose().get();
         Matrix4f[] matrices = pose.skin(null);
         storeResult = MyMesh.vertexWorldLocation(selectedGeometry,
                 selectedIndex, matrices, storeResult);

@@ -27,7 +27,6 @@
 package maud.model;
 
 import com.jme3.animation.Skeleton;
-import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -91,7 +90,7 @@ public class DisplayedPose implements JmeCloneable {
     }
 
     /**
-     * Change skeletons and reset the post to bind pose.
+     * Change skeletons and reset the pose to bind pose.
      *
      * @param skeleton (may be null, alias created)
      */
@@ -180,17 +179,6 @@ public class DisplayedPose implements JmeCloneable {
         Transform animT = cgm.getAnimation().boneTransform(boneIndex, null);
         Vector3f animV = animT.getTranslation();
         pose.setTranslation(boneIndex, animV);
-    }
-
-    /**
-     * Calculate skinning matrices for the pose.
-     *
-     * @param storeResult (modified if not null)
-     * @return skinning matrices (either storeResult or a new instance)
-     */
-    public Matrix4f[] skin(Matrix4f[] storeResult) {
-        storeResult = pose.skin(storeResult);
-        return storeResult;
     }
 
     /**
