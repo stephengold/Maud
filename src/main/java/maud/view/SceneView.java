@@ -32,8 +32,6 @@ import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
-import com.jme3.bounding.BoundingBox;
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -53,6 +51,7 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
@@ -78,6 +77,7 @@ import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.math.MyMath;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 import jme3utilities.ui.Locators;
@@ -112,9 +112,22 @@ public class SceneView
     final private static Logger logger
             = Logger.getLogger(SceneView.class.getName());
     /**
+     * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
+     */
+    final private static Quaternion rotationIdentity = new Quaternion();
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
+     */
+    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
+    /**
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
     final private static Transform transformIdentity = new Transform();
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#ZERO}
+     */
+    final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
+
     // *************************************************************************
     // fields
 
@@ -123,7 +136,8 @@ public class SceneView
      */
     final private AmbientLight ambientLight = new AmbientLight();
     /**
-     * animation control with the selected skeleton
+     * animation control with the selected skeleton - apparently needed for
+     * software skinning, but not sure why
      */
     private AnimControl animControl;
     /*
@@ -609,16 +623,17 @@ public class SceneView
     }
 
     /**
-     * Visualize a different skeleton, or none.
+     * Visualize using a different skeleton, or none.
      *
-     * @param newSkeleton (may be null, unaffected)
+     * @param selectedSkeleton (may be null, unaffected)
      * @param selectedSpatialFlag where to add controls: false&rarr;CG model
      * root, true&rarr;selected spatial
      */
-    public void setSkeleton(Skeleton newSkeleton, boolean selectedSpatialFlag) {
+    public void setSkeleton(Skeleton selectedSkeleton,
+            boolean selectedSpatialFlag) {
         clearSkeleton();
 
-        if (newSkeleton != null) {
+        if (selectedSkeleton != null) {
             Spatial controlled;
             if (selectedSpatialFlag) {
                 controlled = selectedSpatial();
@@ -626,7 +641,7 @@ public class SceneView
                 controlled = cgmRoot;
             }
 
-            skeleton = Cloner.deepClone(newSkeleton);
+            skeleton = Cloner.deepClone(selectedSkeleton);
             MySkeleton.setUserControl(skeleton, true);
 
             animControl = new AnimControl(skeleton);
@@ -1008,27 +1023,43 @@ public class SceneView
     // private methods
 
     /**
-     * Visualize without any skeleton.
+     * Visualize in bind pose, without a skeleton.
      */
     private void clearSkeleton() {
-        Spatial controlled;
+        if (skeleton != null) {
+            int numBones = skeleton.getBoneCount();
+            for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+                Bone bone = skeleton.getBone(boneIndex);
+                bone.setUserTransforms(translateIdentity, rotationIdentity,
+                        scaleIdentity);
+            }
+            skeleton.updateWorldVectors();
+            skeletonControl.update(0f);
+            RenderManager rm = Maud.getApplication().getRenderManager();
+            skeletonControl.render(rm, null);
+            skeleton = null;
+        }
+        /*
+         * Remove any skeleton-dependent S-G controls from the scene.
+         */
         if (animControl != null) {
-            controlled = animControl.getSpatial();
-            controlled.removeControl(animControl);
+            Spatial controlled = animControl.getSpatial();
+            boolean success = controlled.removeControl(animControl);
+            assert success;
+            animControl = null;
         }
         if (skeletonControl != null) {
-            controlled = skeletonControl.getSpatial();
-            controlled.removeControl(skeletonControl);
+            Spatial controlled = skeletonControl.getSpatial();
+            boolean success = controlled.removeControl(skeletonControl);
+            assert success;
+            skeletonControl = null;
         }
         if (skeletonVisualizer != null) {
-            controlled = skeletonVisualizer.getSpatial();
-            controlled.removeControl(skeletonVisualizer);
+            Spatial controlled = skeletonVisualizer.getSpatial();
+            boolean success = controlled.removeControl(skeletonVisualizer);
+            assert success;
+            skeletonVisualizer = null;
         }
-
-        animControl = null;
-        skeleton = null;
-        skeletonControl = null;
-        skeletonVisualizer = null;
     }
 
     /**
@@ -1218,7 +1249,8 @@ public class SceneView
 
     /**
      * Alter a newly loaded CG model to prepare it for visualization. Assumes
-     * the CG model's root node will be the selected spatial.
+     * the CG model's root node will be the selected spatial and no SG control
+     * will be selected.
      */
     private void prepareForViewing() {
         /*
@@ -1229,7 +1261,7 @@ public class SceneView
          * Use the skeleton from the 1st AnimControl or
          * SkeletonControl in the CG model's root spatial.
          */
-        skeleton = MySkeleton.findSkeleton(cgmRoot);
+        Skeleton selectedSkeleton = MySkeleton.findSkeleton(cgmRoot);
         /*
          * Remove all scene-graph controls except those concerned with physics.
          * Enable those SGCs and configure their physics spaces so that the
@@ -1241,20 +1273,17 @@ public class SceneView
         /*
          * Create and add scene-graph controls for the skeleton.
          */
-        setSkeleton(skeleton, false);
+        setSkeleton(selectedSkeleton, false);
         /*
-         * Configure the world transform based on the bounding box of
-         * the CG model. TODO use mesh vertices instead
+         * Configure the world transform based on the ranges of the mesh
+         * coordinates of the loaded CG model.
          */
         parent.setLocalTransform(transformIdentity);
-        BoundingVolume volume = cgmRoot.getWorldBound();
-        Vector3f center = volume.getCenter();
-        BoundingBox box = (BoundingBox) volume; // TODO if BoundingSphere
-        Vector3f halfExtent = box.getExtent(null);
-        float maxExtent;
-        maxExtent = 2f * MyMath.max(halfExtent.x, halfExtent.y, halfExtent.z);
-        Vector3f min = box.getMin(null);
-        float minY = min.y;
+        Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot, true);
+        Vector3f extent = minMax[1].subtract(minMax[0]);
+        Vector3f center = MyVector3f.midpoint(minMax[0], minMax[1]);
+        float maxExtent = MyMath.max(extent.x, extent.y, extent.z);
+        float minY = minMax[0].y;
         cgmTransform.loadCgm(center, minY, maxExtent);
         /*
          * reset the camera, cursor, and platform

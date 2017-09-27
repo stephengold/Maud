@@ -793,26 +793,25 @@ public class Cgm implements Cloneable {
     @Override
     public Cgm clone() throws CloneNotSupportedException {
         Cgm clone = (Cgm) super.clone();
-
         Cloner cloner = new Cloner();
 
         clone.displayedPose = cloner.clone(displayedPose);
         clone.loadedAnimation = loadedAnimation.clone();
+        clone.rootSpatial = cloner.clone(rootSpatial);
         clone.scenePov = cloner.clone(scenePov);
         clone.sceneView = cloner.clone(sceneView);
         clone.scorePov = cloner.clone(scorePov);
         //scoreView not cloned
-        clone.selectedAnimControl = selectedAnimControl.clone();
+        clone.selectedAnimControl = cloner.clone(selectedAnimControl);
         clone.selectedBone = selectedBone.clone();
         clone.selectedJoint = selectedJoint.clone();
         clone.selectedPhysics = selectedPhysics.clone();
         clone.selectedSgc = selectedSgc.clone();
         clone.selectedShape = selectedShape.clone();
-        clone.selectedSkeleton = selectedSkeleton.clone();
-        clone.selectedSpatial = selectedSpatial.clone();
+        clone.selectedSkeleton = cloner.clone(selectedSkeleton);
+        clone.selectedSpatial = cloner.clone(selectedSpatial);
         clone.selectedTrack = selectedTrack.clone();
         clone.selectedVertex = selectedVertex.clone();
-        clone.rootSpatial = cloner.clone(rootSpatial);
         clone.userData = userData.clone();
         /*
          * Redirect the back pointers to the clone.

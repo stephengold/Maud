@@ -33,6 +33,8 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.util.clone.Cloner;
+import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -48,13 +50,13 @@ import maud.Util;
 /**
  * The MVC model of a selected skeleton in the Maud application.
  *
- * If the selected SG control is a SkeletonControl or AnimControl, use that
+ * If the selected S-G control is a SkeletonControl or AnimControl, use that
  * control's skeleton, otherwise use the skeleton of the 1st SkeletonControl or
- * AnimControl in the CG model's root spatial.
+ * AnimControl in the C-G model's root spatial.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedSkeleton implements Cloneable {
+public class SelectedSkeleton implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -74,6 +76,10 @@ public class SelectedSkeleton implements Cloneable {
      * CG model containing the skeleton (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
+    /**
+     * most recent selection
+     */
+    private Skeleton last = null;
     // *************************************************************************
     // new methods exposed
 
@@ -571,16 +577,17 @@ public class SelectedSkeleton implements Cloneable {
     }
 
     /**
-     * Alter the selected skeleton.
-     *
-     * @param newSkeleton (may be null, unaffected)
-     * @param selectedSpatialFlag where to add controls: false&rarr;CG model
-     * root, true&rarr;selected spatial
+     * Update after (for instance) selecting a different spatial or S-G control.
      */
-    void set(Skeleton newSkeleton, boolean selectedSpatialFlag) {
-        cgm.getSceneView().setSkeleton(newSkeleton, selectedSpatialFlag);
-        cgm.getBone().deselect();
-        cgm.getPose().resetToBind(newSkeleton);
+    void postSelect() {
+        Boolean selectedSpatialFlag = false;
+        Skeleton foundSkeleton = find(selectedSpatialFlag);
+        if (foundSkeleton != last) {
+            cgm.getBone().deselect();
+            cgm.getPose().resetToBind(foundSkeleton);
+            cgm.getSceneView().setSkeleton(foundSkeleton, selectedSpatialFlag);
+            last = foundSkeleton;
+        }
     }
 
     /**
@@ -594,17 +601,46 @@ public class SelectedSkeleton implements Cloneable {
         cgm = newCgm;
     }
     // *************************************************************************
+    // JmeCloneable methods
+
+    /**
+     * Convert this shallow-cloned view into a deep-cloned one, using the
+     * specified cloner and original to resolve copied fields.
+     *
+     * @param cloner the cloner currently cloning this control (not null)
+     * @param original the view from which this view was shallow-cloned (unused)
+     */
+    @Override
+    public void cloneFields(Cloner cloner, Object original) {
+        last = cloner.clone(last);
+    }
+
+    /**
+     * Create a shallow clone for the JME cloner.
+     *
+     * @return a new instance
+     */
+    @Override
+    public SelectedSkeleton jmeClone() {
+        try {
+            SelectedSkeleton clone = (SelectedSkeleton) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+    // *************************************************************************
     // Object methods
 
     /**
-     * Create a copy of this object.
+     * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
      *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @return never
+     * @throws CloneNotSupportedException
      */
     @Override
     public SelectedSkeleton clone() throws CloneNotSupportedException {
-        SelectedSkeleton clone = (SelectedSkeleton) super.clone();
-        return clone;
+        super.clone();
+        throw new CloneNotSupportedException("use a cloner");
     }
 }
