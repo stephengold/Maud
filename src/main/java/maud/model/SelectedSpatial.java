@@ -43,6 +43,8 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.util.clone.Cloner;
+import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,7 +61,7 @@ import maud.view.SceneView;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedSpatial implements Cloneable {
+public class SelectedSpatial implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -71,10 +73,6 @@ public class SelectedSpatial implements Cloneable {
     // *************************************************************************
     // fields
 
-    /**
-     * the selected anim control prior to selecting a spatial (not checkpointed)
-     */
-    private AnimControl oldAnimControl = new AnimControl();
     /**
      * CG model containing the spatial (set by {@link #setCgm(Cgm)})
      */
@@ -89,9 +87,9 @@ public class SelectedSpatial implements Cloneable {
      */
     private List<Integer> treePosition = new ArrayList<>(3);
     /**
-     * the selected skeleton prior to selecting a spatial (not checkpointed)
+     * most recent selection
      */
-    private Skeleton oldSkeleton = new Skeleton();
+    private Spatial last = null;
     // *************************************************************************
     // new methods exposed
 
@@ -310,7 +308,6 @@ public class SelectedSpatial implements Cloneable {
         Spatial selectedSpatial = find();
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
-            preSelect();
             editableCgm.deleteSubtree();
             int last = treePosition.size() - 1;
             treePosition.remove(last);
@@ -776,8 +773,6 @@ public class SelectedSpatial implements Cloneable {
      */
     void postLoad() {
         cgm.getSgc().postLoad();
-        oldAnimControl = new AnimControl();
-        oldSkeleton = new Skeleton();
         treePosition.clear();
         postSelect();
     }
@@ -790,7 +785,6 @@ public class SelectedSpatial implements Cloneable {
     public void select(List<Integer> pos) {
         Validate.nonNull(pos, "pos");
 
-        preSelect();
         treePosition.clear();
         treePosition.addAll(pos);
         postSelect();
@@ -804,7 +798,6 @@ public class SelectedSpatial implements Cloneable {
     void select(Spatial newSpatial) {
         Validate.nonNull(newSpatial, "spatial");
 
-        preSelect();
         List<Integer> position = cgm.findSpatial(newSpatial);
         assert position != null;
         treePosition = position;
@@ -820,7 +813,6 @@ public class SelectedSpatial implements Cloneable {
     public void select(String name) {
         Validate.nonEmpty(name, "spatial name");
 
-        preSelect();
         List<Integer> position = cgm.findSpatialNamed(name);
         assert position != null;
         treePosition = position;
@@ -838,7 +830,6 @@ public class SelectedSpatial implements Cloneable {
 
         Spatial child = modelChild(childIndex);
         if (child != null) {
-            preSelect();
             treePosition.add(childIndex);
             assert find() == child;
             postSelect();
@@ -849,7 +840,6 @@ public class SelectedSpatial implements Cloneable {
      * Select the CG model's root spatial.
      */
     public void selectCgmRoot() {
-        preSelect();
         treePosition.clear();
         assert find() == cgm.getRootSpatial();
         postSelect();
@@ -862,7 +852,6 @@ public class SelectedSpatial implements Cloneable {
         Spatial selectedSpatial = find();
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
-            preSelect();
             int last = treePosition.size() - 1;
             treePosition.remove(last);
             assert find() == parent;
@@ -906,29 +895,52 @@ public class SelectedSpatial implements Cloneable {
         return result;
     }
     // *************************************************************************
-    // Object methods
+    // JmeCloneable methods
 
     /**
-     * Create a deep copy of this object.
+     * Convert this shallow-cloned view into a deep-cloned one, using the
+     * specified cloner and original to resolve copied fields.
      *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @param cloner the cloner currently cloning this control (not null)
+     * @param original the view from which this view was shallow-cloned (unused)
      */
     @Override
-    public SelectedSpatial clone() throws CloneNotSupportedException {
-        SelectedSpatial clone = (SelectedSpatial) super.clone();
-
-        int numLevels = treePosition.size();
-        clone.treePosition = new ArrayList<>(numLevels);
-        for (int childIndex : treePosition) {
-            clone.treePosition.add(childIndex);
-        }
-
-        return clone;
+    public void cloneFields(Cloner cloner, Object original) {
+        last = cloner.clone(last);
+        treePosition = new ArrayList<>(treePosition);
     }
 
     /**
-     * Represent the selected spatial as a text string.
+     * Create a shallow clone for the JME cloner.
+     *
+     * @return a new instance
+     */
+    @Override
+    public SelectedSpatial jmeClone() {
+        try {
+            SelectedSpatial clone = (SelectedSpatial) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+    // *************************************************************************
+    // Object methods
+
+    /**
+     * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
+     *
+     * @return never
+     * @throws CloneNotSupportedException
+     */
+    @Override
+    public SelectedSpatial clone() throws CloneNotSupportedException {
+        super.clone();
+        throw new CloneNotSupportedException("use a cloner");
+    }
+
+    /**
+     * Represent the selected spatial as a text string. TODO starting index?
      *
      * @return descriptive string of text (not null)
      */
@@ -979,31 +991,15 @@ public class SelectedSpatial implements Cloneable {
     }
 
     /**
-     * Invoked before selecting a spatial.
-     */
-    private void preSelect() {
-        cgm.getSgc().selectNone();
-        oldAnimControl = cgm.getAnimControl().find();
-        oldSkeleton = cgm.getSkeleton().find();
-    }
-
-    /**
      * Invoked after selecting a spatial.
      */
     private void postSelect() {
-        Boolean selectedSpatialFlag = false;
-        Skeleton newSkeleton;
-        newSkeleton = cgm.getSkeleton().find(selectedSpatialFlag);
-        if (oldSkeleton != newSkeleton) {
-            cgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
+        Spatial found = find();
+        if (found != last) {
+            cgm.getSgc().selectNone();
+            cgm.getUserData().selectKey(null);
+            cgm.getVertex().deselect();
+            last = found;
         }
-
-        AnimControl newAnimControl = cgm.getAnimControl().find();
-        if (oldAnimControl != newAnimControl) {
-            cgm.getAnimation().loadBindPose();
-        }
-
-        cgm.getUserData().selectKey(null);
-        cgm.getVertex().deselect();
     }
 }

@@ -31,6 +31,8 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Track;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.util.clone.Cloner;
+import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,7 +49,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedAnimControl implements Cloneable {
+public class SelectedAnimControl implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -59,6 +61,10 @@ public class SelectedAnimControl implements Cloneable {
     // *************************************************************************
     // fields
 
+    /**
+     * most recent selection
+     */
+    private AnimControl last = null;
     /**
      * CG model containing the anim control (set by {@link #setCgm(Cgm)})
      */
@@ -332,6 +338,17 @@ public class SelectedAnimControl implements Cloneable {
     }
 
     /**
+     * Update after (for instance) selecting a different spatial or S-G control.
+     */
+    void postSelect() {
+        AnimControl found = find();
+        if (found != last) {
+            cgm.getAnimation().loadBindPose();
+            last = found;
+        }
+    }
+
+    /**
      * Select an anim control by name.
      *
      * @param name which animControl to select (not null, not empty)
@@ -390,17 +407,46 @@ public class SelectedAnimControl implements Cloneable {
         cgm = newCgm;
     }
     // *************************************************************************
+    // JmeCloneable methods
+
+    /**
+     * Convert this shallow-cloned view into a deep-cloned one, using the
+     * specified cloner and original to resolve copied fields.
+     *
+     * @param cloner the cloner currently cloning this control (not null)
+     * @param original the view from which this view was shallow-cloned (unused)
+     */
+    @Override
+    public void cloneFields(Cloner cloner, Object original) {
+        last = cloner.clone(last);
+    }
+
+    /**
+     * Create a shallow clone for the JME cloner.
+     *
+     * @return a new instance
+     */
+    @Override
+    public SelectedAnimControl jmeClone() {
+        try {
+            SelectedAnimControl clone = (SelectedAnimControl) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+    // *************************************************************************
     // Object methods
 
     /**
-     * Create a copy of this object.
+     * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
      *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @return never
+     * @throws CloneNotSupportedException
      */
     @Override
     public SelectedAnimControl clone() throws CloneNotSupportedException {
-        SelectedAnimControl clone = (SelectedAnimControl) super.clone();
-        return clone;
+        super.clone();
+        throw new CloneNotSupportedException("use a cloner");
     }
 }

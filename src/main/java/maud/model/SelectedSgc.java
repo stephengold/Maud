@@ -26,8 +26,6 @@
  */
 package maud.model;
 
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.Skeleton;
 import com.jme3.bullet.control.KinematicRagdollControl;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -80,24 +78,9 @@ public class SelectedSgc implements Cloneable {
      */
     public void delete() {
         if (isSelected()) {
-            Skeleton oldSkeleton = cgm.getSkeleton().find();
-            AnimControl oldAnimControl = cgm.getAnimControl().find();
-
             EditableCgm editableCgm = (EditableCgm) cgm;
             editableCgm.deleteSgc();
-            selectedIndex = -1;
-
-            Boolean selectedSpatialFlag = false;
-            Skeleton newSkeleton = cgm.getSkeleton().find(
-                    selectedSpatialFlag);
-            if (oldSkeleton != newSkeleton) {
-                cgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
-            }
-
-            AnimControl newAnimControl = cgm.getAnimControl().find();
-            if (oldAnimControl != newAnimControl) {
-                cgm.getAnimation().loadBindPose();
-            }
+            select(-1);
         }
     }
 
@@ -290,21 +273,10 @@ public class SelectedSgc implements Cloneable {
      * @param newIndex which SG control to select, or -1 to deselect
      */
     public void select(int newIndex) {
-        Skeleton oldSkeleton = cgm.getSkeleton().find();
-        AnimControl oldAnimControl = cgm.getAnimControl().find();
-
-        selectedIndex = newIndex;
-
-        Boolean selectedSpatialFlag = false;
-        Skeleton newSkeleton;
-        newSkeleton = cgm.getSkeleton().find(selectedSpatialFlag);
-        if (oldSkeleton != newSkeleton) {
-            cgm.getSkeleton().set(newSkeleton, selectedSpatialFlag);
-        }
-
-        AnimControl newAnimControl = cgm.getAnimControl().find();
-        if (oldAnimControl != newAnimControl) {
-            cgm.getAnimation().loadBindPose();
+        if (selectedIndex != newIndex) {
+            selectedIndex = newIndex;
+            cgm.getSkeleton().postSelect();
+            cgm.getAnimControl().postSelect();
         }
     }
 
