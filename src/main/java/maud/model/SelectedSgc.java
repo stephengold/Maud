@@ -66,6 +66,11 @@ public class SelectedSgc implements Cloneable {
      */
     private Cgm cgm = null;
     /**
+     * editable CG model, if any, containing the selected object (set by
+     * {@link #setCgm(Cgm)})
+     */
+    private EditableCgm editableCgm = null;
+    /**
      * position of the selected SG control in the MVC model, or -1 for none
      * selected
      */
@@ -77,8 +82,7 @@ public class SelectedSgc implements Cloneable {
      * Delete the selected SG control.
      */
     public void delete() {
-        if (isSelected()) {
-            EditableCgm editableCgm = (EditableCgm) cgm;
+        if (isSelected() && editableCgm != null) {
             editableCgm.deleteSgc();
             select(-1);
         }
@@ -341,7 +345,13 @@ public class SelectedSgc implements Cloneable {
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
         assert newCgm.getSgc() == this;
+
         cgm = newCgm;
+        if (newCgm instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newCgm;
+        } else {
+            editableCgm = null;
+        }
     }
     // *************************************************************************
     // Object methods
