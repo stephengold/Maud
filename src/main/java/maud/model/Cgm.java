@@ -817,13 +817,15 @@ public class Cgm implements Cloneable {
          * Redirect the back pointers to the clone.
          */
         clone.getAnimation().setCgm(clone);
+        clone.getAnimControl().setCgm(clone);
         clone.getBone().setCgm(clone);
         clone.getJoint().setCgm(clone);
-        clone.getPose().setCgm(clone);
         clone.getPhysics().setCgm(clone);
+        clone.getPose().setCgm(clone);
         clone.getScenePov().setCgm(clone);
         clone.getSceneView().setCgm(clone);
         clone.getScorePov().setCgm(clone);
+        //scoreView lacks a persistent back pointer
         clone.getSgc().setCgm(clone);
         clone.getShape().setCgm(clone);
         clone.getSkeleton().setCgm(clone);
