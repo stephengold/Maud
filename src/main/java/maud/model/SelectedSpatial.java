@@ -57,7 +57,7 @@ import maud.PhysicsUtil;
 import maud.view.SceneView;
 
 /**
- * The MVC model of the selected spatial in a loaded CG model.
+ * The MVC model of the selected spatial in a loaded C-G model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -74,11 +74,11 @@ public class SelectedSpatial implements JmeCloneable {
     // fields
 
     /**
-     * CG model containing the spatial (set by {@link #setCgm(Cgm)})
+     * C-G model containing the spatial (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
-     * editable CG model, if any, containing the spatial (set by
+     * editable C-G model, if any, containing the spatial (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm = null;
@@ -586,7 +586,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the selected spatial is the root of the CG model.
+     * Test whether the selected spatial is the root of the C-G model.
      *
      * @return true if it's the root, otherwise false
      */
@@ -678,7 +678,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Enumerate all SG controls in the selected spatial and assign them names.
+     * Enumerate all S-G controls in the selected spatial and assign them names.
      *
      * @return a new list of names ordered by sgc index
      */
@@ -770,7 +770,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * After successfully loading a CG model, select the root of the model.
+     * After successfully loading a C-G model, select the root of the model.
      */
     void postLoad() {
         cgm.getSgc().postLoad();
@@ -838,7 +838,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Select the CG model's root spatial.
+     * Select the C-G model's root spatial.
      */
     public void selectCgmRoot() {
         treePosition.clear();
@@ -861,7 +861,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Alter which CG model contains the spatial.
+     * Alter which C-G model contains the spatial.
      *
      * @param newCgm (not null)
      */
@@ -878,9 +878,9 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Access the selected spatial in the specified CG model.
+     * Access the selected spatial in the specified C-G model.
      *
-     * @param cgmRoot root of the CG model (not null)
+     * @param cgmRoot root of the C-G model (not null)
      * @return the pre-existing instance (not null)
      */
     public Spatial underRoot(Spatial cgmRoot) {
@@ -899,8 +899,9 @@ public class SelectedSpatial implements JmeCloneable {
     // JmeCloneable methods
 
     /**
-     * Convert this shallow-cloned view into a deep-cloned one, using the
-     * specified cloner and original to resolve copied fields.
+     * Callback from {@link com.jme3.util.clone.Cloner} to convert this
+     * shallow-cloned instance into a deep-cloned one, using the specified
+     * cloner and original to resolve copied fields.
      *
      * @param cloner the cloner currently cloning this control (not null)
      * @param original the view from which this view was shallow-cloned (unused)

@@ -44,8 +44,8 @@ public class AssetLocations implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            AssetLocations.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(AssetLocations.class.getName());
     // *************************************************************************
     // fields
 
@@ -172,7 +172,7 @@ public class AssetLocations implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public AssetLocations clone() throws CloneNotSupportedException {

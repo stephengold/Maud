@@ -76,11 +76,11 @@ public class SelectedTrack implements Cloneable {
     // fields
 
     /**
-     * CG model containing the track (set by {@link #setCgm(Cgm)})
+     * C-G model containing the track (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm;
     /**
-     * editable CG model, if any, containing the track (set by
+     * editable C-G model, if any, containing the track (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm;
@@ -562,7 +562,7 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Alter which CG model contains the track.
+     * Alter which C-G model contains the track.
      *
      * @param newCgm (not null)
      */
@@ -827,7 +827,7 @@ public class SelectedTrack implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public SelectedTrack clone() throws CloneNotSupportedException {

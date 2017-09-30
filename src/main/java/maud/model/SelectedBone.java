@@ -60,11 +60,11 @@ public class SelectedBone implements Cloneable {
     // fields
 
     /**
-     * CG model containing the bone (set by {@link #setCgm(Cgm)})
+     * C-G model containing the bone (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
-     * editable CG model, if any, containing the bone (set by
+     * editable C-G model, if any, containing the bone (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm = null;
@@ -455,7 +455,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Select the first root bone of the loaded CG model.
+     * Select the first root bone of the loaded C-G model.
      */
     public void selectFirstRoot() {
         Skeleton skeleton = cgm.getSkeleton().find();
@@ -504,7 +504,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Alter which CG model contains the selected bone.
+     * Alter which C-G model contains the selected bone.
      *
      * @param newCgm (not null)
      */
@@ -632,7 +632,7 @@ public class SelectedBone implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public SelectedBone clone() throws CloneNotSupportedException {

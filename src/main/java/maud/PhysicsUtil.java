@@ -66,8 +66,8 @@ public class PhysicsUtil {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            PhysicsUtil.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(PhysicsUtil.class.getName());
     // *************************************************************************
     // constructors
 
@@ -271,8 +271,8 @@ public class PhysicsUtil {
     }
 
     /**
-     * Find the SGC in the specified position among physics controls in the
-     * specified spatial.
+     * Find the S-G control in the specified position among physics controls in
+     * the specified spatial.
      *
      * @param spatial which spatial to scan (not null)
      * @param position position index (&ge;0)
@@ -296,8 +296,8 @@ public class PhysicsUtil {
     }
 
     /**
-     * Calculate the position of the specified SGC among the physics controls in
-     * the specified spatial.
+     * Calculate the position of the specified S-G control among the physics
+     * controls in the specified spatial.
      *
      * @param spatial which spatial to scan (not null)
      * @param pc (a control added to that spatial)

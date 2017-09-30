@@ -39,7 +39,7 @@ import jme3utilities.MyMesh;
 import jme3utilities.wes.Pose;
 
 /**
- * The MVC model of the selected vertex in a loaded CG model.
+ * The MVC model of the selected vertex in a loaded C-G model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -64,7 +64,8 @@ public class SelectedVertex implements Cloneable {
      */
     private int selectedIndex = -1;
     /**
-     * CG model containing the vertex (set by {@link #setCgm(Cgm)})
+     * C-G model containing the vertex (set by {@link #setCgm(Cgm)}) TODO sort
+     * fields
      */
     private Cgm cgm = null;
     // *************************************************************************
@@ -228,13 +229,14 @@ public class SelectedVertex implements Cloneable {
     }
 
     /**
-     * Alter which CG model contains the vertex.
+     * Alter which C-G model contains the vertex.
      *
      * @param newCgm (not null)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
         assert newCgm.getVertex() == this;
+
         cgm = newCgm;
     }
 
@@ -261,7 +263,7 @@ public class SelectedVertex implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public SelectedVertex clone() throws CloneNotSupportedException {

@@ -42,8 +42,8 @@ public class BoundsOptions implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            BoundsOptions.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(BoundsOptions.class.getName());
     // *************************************************************************
     // fields
 
@@ -131,7 +131,7 @@ public class BoundsOptions implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public BoundsOptions clone() throws CloneNotSupportedException {

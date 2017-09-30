@@ -66,7 +66,7 @@ public class ScenePov implements Cloneable, Pov {
     // fields
 
     /**
-     * CG model using this POV (set by {@link #setCgm(Cgm)})
+     * C-G model using this POV (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
@@ -259,7 +259,7 @@ public class ScenePov implements Cloneable, Pov {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public ScenePov clone() throws CloneNotSupportedException {
@@ -347,7 +347,7 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
-     * Alter which CG model uses this POV. (Invoked only during initialization
+     * Alter which C-G model uses this POV. (Invoked only during initialization
      * and cloning.)
      *
      * @param newCgm (not null)

@@ -34,7 +34,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 
 /**
- * The transform applied to a loaded CG model in "scene" mode.
+ * The world transform applied to a loaded C-G model in its "scene" view.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -45,8 +45,8 @@ public class CgmTransform implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            CgmTransform.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(CgmTransform.class.getName());
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_Y}
      */
@@ -55,32 +55,32 @@ public class CgmTransform implements Cloneable {
     // fields
 
     /**
-     * scale of the CG model on all 3 axes (&gt;0, 1 &rarr; unscaled)
+     * scale of the C-G model on all 3 axes (&gt;0, 1 &rarr; unscaled)
      */
     private float scale = 1f;
     /**
-     * rotation angle of the CG model around the +Y axis (in radians)
+     * rotation angle of the C-G model around the +Y axis (in radians)
      */
     private float yAngle = 0f;
     /**
-     * Y-offset of the CG model's base (in world units)
+     * Y-offset of the C-G model's base (in world units)
      */
     private float yOffset = 0f;
     /**
-     * the location (in model space) of the CG model's dominant root bone
+     * the location (in model space) of the C-G model's dominant root bone
      */
     private Vector3f bindLocation = new Vector3f();
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Automatically configure the transform for a newly loaded CG model.
+     * Automatically configure the transform for a newly loaded C-G model.
      *
-     * @param center the location of the CG model's center in bind pose (in
+     * @param center the location of the C-G model's center in bind pose (in
      * CG-model space, not null, unaffected)
-     * @param minY Y-offset of the CG model's base (in CG-model units)
-     * @param maxExtent the greatest extent of the CG model over its 3 principal
-     * axes in bind pose (in model units, &gt;0)
+     * @param minY Y-offset of the C-G model's base (in CG-model units)
+     * @param maxExtent the greatest extent of the C-G model over its 3
+     * principal axes in bind pose (in model units, &gt;0)
      */
     public void loadCgm(Vector3f center, float minY, float maxExtent) {
         Validate.nonNull(center, "center");
@@ -93,7 +93,7 @@ public class CgmTransform implements Cloneable {
     }
 
     /**
-     * Add to the Y-axis rotation angle of the CG model.
+     * Add to the Y-axis rotation angle of the C-G model.
      *
      * @param angle (in radians)
      */
@@ -102,8 +102,8 @@ public class CgmTransform implements Cloneable {
     }
 
     /**
-     * Calculate the transform to be applied to the CG model. Note that this may
-     * differ from the transform of the CG model's root node.
+     * Calculate the transform to be applied to the C-G model. Note that this
+     * may differ from the transform of the C-G model's root node.
      *
      * @return a new instance (in world coordinates)
      */
@@ -112,7 +112,7 @@ public class CgmTransform implements Cloneable {
         result.getRotation().fromAngleNormalAxis(yAngle, yAxis);
         result.getScale().set(scale, scale, scale);
         /*
-         * Offset the CGM so that (in bind pose) the root bone is
+         * Offset the C-G model so that (in bind pose) the root bone is
          * directly above the origin (center of platform).
          */
         Vector3f modelTranslation;
@@ -131,7 +131,7 @@ public class CgmTransform implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public CgmTransform clone() throws CloneNotSupportedException {

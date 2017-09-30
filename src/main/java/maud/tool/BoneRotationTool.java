@@ -54,8 +54,8 @@ class BoneRotationTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            BoneRotationTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(BoneRotationTool.class.getName());
     /**
      * names of the coordinate axes
      */
@@ -153,7 +153,7 @@ class BoneRotationTool extends WindowController {
         Maud.gui.setButtonLabel("resetAngAnimButton", aButton);
         Maud.gui.setButtonLabel("resetAngBindButton", bButton);
 
-        String dButton;
+        String dButton; // TODO remove
         if (Maud.getModel().getMisc().getAnglesInDegrees()) {
             dButton = "radians";
         } else {

@@ -37,7 +37,7 @@ import jme3utilities.Validate;
 import jme3utilities.wes.Pose;
 
 /**
- * The displayed pose of a particular CG model in the Maud application.
+ * The displayed pose of a loaded C-G model in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -59,7 +59,7 @@ public class DisplayedPose implements JmeCloneable {
      */
     private boolean frozenFlag = false;
     /**
-     * CG-model holding the pose (set by {@link #setCgm(Cgm)})
+     * C-G model holding the pose (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
@@ -99,7 +99,7 @@ public class DisplayedPose implements JmeCloneable {
     }
 
     /**
-     * Alter which CG model displays the pose. (Invoked only during
+     * Alter which C-G model displays the pose. (Invoked only during
      * initialization and cloning.)
      *
      * @param newCgm (not null)
@@ -107,6 +107,7 @@ public class DisplayedPose implements JmeCloneable {
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
         assert newCgm.getPose() == this;
+
         cgm = newCgm;
     }
 
@@ -208,8 +209,9 @@ public class DisplayedPose implements JmeCloneable {
     // JmeCloneable methods
 
     /**
-     * Convert this shallow-cloned instance into a deep-cloned one, using the
-     * specified cloner and original to resolve copied fields.
+     * Callback from {@link com.jme3.util.clone.Cloner} to convert this
+     * shallow-cloned instance into a deep-cloned one, using the specified
+     * cloner and original to resolve copied fields.
      *
      * @param cloner the cloner currently cloning this control
      * @param original the control from which this control was shallow-cloned

@@ -95,11 +95,11 @@ public class LoadedAnimation implements Cloneable {
      */
     private boolean reverseFlag = false;
     /**
-     * CG model containing the animation (set by {@link #setCgm(Cgm)})
+     * C-G model containing the animation (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
-     * editable CG model, if any, containing the animation (set by
+     * editable C-G model, if any, containing the animation (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm;
@@ -815,7 +815,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Add a copy of the loaded animation to the CG model.
+     * Add a copy of the loaded animation to the C-G model.
      *
      * @param animationName name for the new animation (not null, not reserved,
      * not in use)
@@ -984,7 +984,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Alter which CG model contains the animation.
+     * Alter which C-G model contains the animation.
      *
      * @param newCgm (not null)
      */
@@ -1207,7 +1207,7 @@ public class LoadedAnimation implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public LoadedAnimation clone() throws CloneNotSupportedException {
@@ -1218,7 +1218,7 @@ public class LoadedAnimation implements Cloneable {
     // private methods
 
     /**
-     * Add a new pose animation to the CG model. The new animation has zero
+     * Add a new pose animation to the C-G model. The new animation has zero
      * duration, a single keyframe at t=0, and all the tracks are BoneTracks,
      * set to the current pose.
      *

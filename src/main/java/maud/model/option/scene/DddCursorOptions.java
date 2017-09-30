@@ -42,8 +42,8 @@ public class DddCursorOptions implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            DddCursorOptions.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(DddCursorOptions.class.getName());
     // *************************************************************************
     // fields
 
@@ -131,7 +131,7 @@ public class DddCursorOptions implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public DddCursorOptions clone() throws CloneNotSupportedException {
