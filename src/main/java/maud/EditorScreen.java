@@ -55,7 +55,6 @@ import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
-import maud.menu.EditorMenus;
 import maud.menu.ShowMenus;
 import maud.model.Cgm;
 import maud.model.Checkpoint;
@@ -120,10 +119,6 @@ public class EditorScreen extends GuiScreenController {
      * input mode for this screen
      */
     final EditorInputMode inputMode = new EditorInputMode();
-    /**
-     * menus for this screen
-     */
-    final public EditorMenus menus = new EditorMenus();
     /**
      * controllers for tool windows
      */

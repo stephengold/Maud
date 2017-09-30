@@ -65,6 +65,14 @@ public class EditorMenus {
      */
     final static String menuPathSeparator = " -> ";
     // *************************************************************************
+    // constructors
+
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
+    private EditorMenus() {
+    }
+    // *************************************************************************
     // new methods exposed
 
     /**
@@ -116,7 +124,7 @@ public class EditorMenus {
      * @param menuPath path to menu item (not null)
      * @return true if the action is handled, otherwise false
      */
-    public boolean selectMenuItem(String menuPath) {
+    public static boolean selectMenuItem(String menuPath) {
         boolean handled;
         int separatorBegin = menuPath.indexOf(menuPathSeparator);
         if (separatorBegin == -1) {
@@ -134,7 +142,7 @@ public class EditorMenus {
     /**
      * Handle a "select shapeChild" action without arguments.
      */
-    public void selectShapeChild() {
+    public static void selectShapeChild() {
         Cgm target = Maud.getModel().getTarget();
         SelectedShape shape = target.getShape();
         int numChildren = shape.countChildren();
@@ -152,7 +160,7 @@ public class EditorMenus {
      * @param includeNodes true &rarr; include both nodes and geometries, false
      * &rarr; include geometries only
      */
-    public void selectSpatial(String argument, boolean includeNodes) {
+    public static void selectSpatial(String argument, boolean includeNodes) {
         Cgm target = Maud.getModel().getTarget();
         if (target.hasSpatial(argument)) {
             target.getSpatial().select(argument);
@@ -176,7 +184,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menu(String menuName, String remainder) {
+    private static boolean menu(String menuName, String remainder) {
         assert menuName != null;
         assert remainder != null;
 
@@ -234,7 +242,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuCgm(String remainder) {
+    private static boolean menuCgm(String remainder) {
         boolean handled = true;
         String sourcePrefix = "Source model" + EditorMenus.menuPathSeparator;
         if (remainder.startsWith(sourcePrefix)) {
@@ -272,7 +280,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuHelp(String remainder) {
+    private static boolean menuHelp(String remainder) {
         boolean handled = true;
         switch (remainder) {
             case "About Maud":
@@ -300,7 +308,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuHistory(String remainder) {
+    private static boolean menuHistory(String remainder) {
         boolean handled = true;
         switch (remainder) {
             case "Clear":
@@ -322,7 +330,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuKeyframe(String remainder) {
+    private static boolean menuKeyframe(String remainder) {
         boolean handled = true;
         String selectPrefix = "Select" + menuPathSeparator;
         if (remainder.startsWith(selectPrefix)) {
@@ -367,7 +375,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuKeyframeSelect(String remainder) {
+    private static boolean menuKeyframeSelect(String remainder) {
         boolean handled = true;
         Cgm target = Maud.getModel().getTarget();
         switch (remainder) {
@@ -399,7 +407,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuMap(String remainder) {
+    private static boolean menuMap(String remainder) {
         boolean handled = true;
         EditableMap map = Maud.getModel().getMap();
         switch (remainder) {
@@ -437,7 +445,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuPhysics(String remainder) {
+    private static boolean menuPhysics(String remainder) {
         boolean handled = true;
         String addPrefix = "Add new" + menuPathSeparator;
         if (remainder.startsWith(addPrefix)) {
@@ -472,7 +480,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuPhysicsAdd(String remainder) {
+    private static boolean menuPhysicsAdd(String remainder) {
         boolean handled = true;
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         switch (remainder) {
@@ -495,7 +503,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuSettings(String remainder) {
+    private static boolean menuSettings(String remainder) {
         boolean handled = true;
         String folderPrefix = "Asset locations" + menuPathSeparator;
         if (remainder.startsWith(folderPrefix)) {
@@ -527,7 +535,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuSgc(String remainder) {
+    private static boolean menuSgc(String remainder) {
         boolean handled = true;
         String addPrefix = "Add new" + menuPathSeparator;
         if (remainder.startsWith(addPrefix)) {
@@ -565,7 +573,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuSgcAdd(String remainder) {
+    private static boolean menuSgcAdd(String remainder) {
         boolean handled = true;
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         switch (remainder) {
@@ -594,7 +602,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuSourceCgm(String remainder) {
+    private static boolean menuSourceCgm(String remainder) {
         boolean handled = false;
         switch (remainder) {
             case "Load":
@@ -616,7 +624,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuSpatial(String remainder) {
+    private static boolean menuSpatial(String remainder) {
         boolean handled = true;
         String selectPrefix = "Select" + menuPathSeparator;
         if (remainder.startsWith(selectPrefix)) {
@@ -666,7 +674,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuSpatialSelect(String remainder) {
+    private static boolean menuSpatialSelect(String remainder) {
         boolean handled = true;
         switch (remainder) {
             case "By name":
@@ -697,7 +705,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuTrack(String remainder) {
+    private static boolean menuTrack(String remainder) {
         boolean handled = true;
         EditableCgm target = Maud.getModel().getTarget();
         switch (remainder) {
@@ -750,7 +758,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuVertex(String remainder) {
+    private static boolean menuVertex(String remainder) {
         boolean handled = true;
         String selectPrefix = "Select" + menuPathSeparator;
         if (remainder.startsWith(selectPrefix)) {
@@ -782,7 +790,7 @@ public class EditorMenus {
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean menuVertexSelect(String remainder) {
+    private static boolean menuVertexSelect(String remainder) {
         boolean handled = true;
         switch (remainder) {
             case "By index":
