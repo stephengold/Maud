@@ -73,7 +73,7 @@ public class SceneOptions implements Cloneable {
      */
     private CameraStatus camera = new CameraStatus();
     /**
-     * configuration of the 3D cursor(s)
+     * configuration of the 3-D cursor(s)
      */
     private DddCursorOptions cursor = new DddCursorOptions();
     /**
@@ -139,7 +139,7 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Access the configuration of the 3D cursor(s).
+     * Access the configuration of the 3-D cursor(s).
      *
      * @return the pre-existing instance (not null)
      */

@@ -41,7 +41,7 @@ import maud.view.SceneView;
 
 /**
  * The MVC model of the selected scene-graph (S-G) control in the Maud
- * application. TODO rename Sgc?
+ * application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -62,11 +62,12 @@ public class SelectedSgc implements Cloneable {
     // fields
 
     /**
-     * C-G model containing the S-G control (set by {@link #setCgm(Cgm)})
+     * C-G model containing the selected S-G control (set by
+     * {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
-     * editable C-G model, if any, containing the selected object (set by
+     * editable C-G model, if any, containing the selected S-G control (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm = null;

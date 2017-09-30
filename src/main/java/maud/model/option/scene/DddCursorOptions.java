@@ -97,7 +97,7 @@ public class DddCursorOptions implements Cloneable {
     }
 
     /**
-     * Alter the color of the 3D cursor.
+     * Alter the color of the 3-D cursor(s).
      *
      * @param newColor (not null, unaffected)
      */

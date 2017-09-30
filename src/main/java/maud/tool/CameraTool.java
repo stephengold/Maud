@@ -48,8 +48,8 @@ import org.lwjgl.input.Mouse;
  * <p>
  * Maud's cameras are primarily controlled by turning the scroll wheel and
  * dragging with the middle mouse button (MMB). In scene views, there are 2
- * movement modes: "orbit" mode, in which the camera always faces the 3D cursor,
- * and "fly" mode, in which the camera turns freely.
+ * movement modes: "orbit" mode, in which the camera always faces the 3-D
+ * cursor, and "fly" mode, in which the camera turns freely.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -62,8 +62,8 @@ public class CameraTool
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            CameraTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(CameraTool.class.getName());
     /**
      * name of the signal that controls camera movement
      */

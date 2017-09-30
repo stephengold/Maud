@@ -50,8 +50,8 @@ public class YSwarm extends Mesh {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            YSwarm.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(YSwarm.class.getName());
     // *************************************************************************
     // fields
 
@@ -60,7 +60,7 @@ public class YSwarm extends Mesh {
      */
     final private FloatBuffer fColors;
     /**
-     * buffer to hold the 3D position of each point
+     * buffer to hold the mesh location of each point
      */
     final private FloatBuffer fPositions;
     // *************************************************************************

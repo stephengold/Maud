@@ -106,7 +106,7 @@ public class CameraStatus implements Cloneable {
     }
 
     /**
-     * Clamp the distance of the camera from the 3D cursor in orbit mode.
+     * Clamp the distance of the camera from the 3-D cursor in orbit mode.
      *
      * @param range desired distance (in world units)
      * @return clamped distance (in world units)
