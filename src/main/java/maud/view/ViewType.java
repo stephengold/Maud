@@ -37,9 +37,9 @@ public enum ViewType {
 
     /**
      * A scene view consists of a 3-D render of a loaded model, possibly with a
-     * background, a 3D cursor, a supporting platform, and/or overlaid
+     * background, a 3-D cursor, a supporting platform, and/or overlaid
      * visualizations. Visualizations can include axes, a bounding box, physics
-     * objects, and/or a skeleton.
+     * objects, a skeleton, and/or a vertex.
      */
     Scene,
     /**

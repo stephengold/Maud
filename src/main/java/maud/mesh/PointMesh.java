@@ -49,13 +49,13 @@ public class PointMesh extends Mesh {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            PointMesh.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(PointMesh.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * buffer to hold the 3D location of the point
+     * buffer to hold the mesh location of the point
      */
     final private FloatBuffer fPositions;
     // *************************************************************************

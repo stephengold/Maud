@@ -164,7 +164,7 @@ public class SceneView
      */
     final private DirectionalLight mainLight = new DirectionalLight();
     /**
-     * indicator for the 3D cursor, or null if none
+     * indicator for the 3-D cursor, or null if none
      */
     private Geometry cursor;
     /**

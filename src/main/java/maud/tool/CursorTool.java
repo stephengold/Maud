@@ -46,7 +46,7 @@ import maud.view.SceneView;
  * cursor tool controls the appearance of 3-D cursors displayed in "scene"
  * views.
  * <p>
- * In scene views, the left mouse button (LMB) repositions the 3D cursor.
+ * In scene views, the left mouse button (LMB) repositions the 3-D cursor.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -62,7 +62,8 @@ class CursorTool extends WindowController {
     /**
      * asset path of the CG model for the 3-D cursor
      */
-    final private static String assetPath = "Models/indicators/3d cursor/3d cursor.blend";
+    final private static String assetPath
+            = "Models/indicators/3d cursor/3d cursor.blend";
     // *************************************************************************
     // constructors
 
@@ -129,7 +130,7 @@ class CursorTool extends WindowController {
         }
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
