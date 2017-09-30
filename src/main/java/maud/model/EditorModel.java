@@ -56,7 +56,7 @@ public class EditorModel {
      */
     final private AssetLocations assetLocations;
     /**
-     * load slot for the (editable) target (main) CG model
+     * load slot for the (editable) target (main) C-G model
      */
     final private EditableCgm targetCgmLoadSlot;
     /**
@@ -64,11 +64,11 @@ public class EditorModel {
      */
     final private EditableMap mapLoadSlot;
     /**
-     * load slot for the (read-only) source CG model
+     * load slot for the (read-only) source C-G model
      */
     final private LoadedCgm sourceCgmLoadSlot;
     /**
-     * miscellaneous options
+     * miscellaneous options TODO rename miscOptions
      */
     final private MiscStatus misc;
     /**
@@ -174,7 +174,7 @@ public class EditorModel {
     }
 
     /**
-     * Access the load slot for the (read-only) source CG model.
+     * Access the load slot for the (read-only) source C-G model.
      *
      * @return the pre-existing instance (not null)
      */
@@ -184,7 +184,7 @@ public class EditorModel {
     }
 
     /**
-     * Access the load slot for the (editable) target (main) CG model.
+     * Access the load slot for the (editable) target (main) C-G model.
      *
      * @return the pre-existing instance (not null)
      */
@@ -201,5 +201,21 @@ public class EditorModel {
     public TweenTransforms getTweenTransforms() {
         assert techniques != null;
         return techniques;
+    }
+
+    /**
+     * Callback invoked after restoring a checkpoint.
+     */
+    public void postMakeLive() {
+        getSource().getSceneView().reinstall();
+        getTarget().getSceneView().reinstall();
+    }
+
+    /**
+     * Callback invoked before restoring a checkpoint.
+     */
+    public void preMakeLive() {
+        getSource().getSceneView().preMakeLive();
+        getTarget().getSceneView().preMakeLive();
     }
 }

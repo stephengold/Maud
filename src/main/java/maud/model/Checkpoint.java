@@ -107,13 +107,7 @@ public class Checkpoint {
      * Copy the saved MVC model to the editor's live state.
      */
     void restore() {
-        EditorModel oldLiveState = Maud.getModel();
-        oldLiveState.getSource().getSceneView().preMakeLive();
-        oldLiveState.getTarget().getSceneView().preMakeLive();
-
         EditorModel newLiveState = new EditorModel(model);
         Maud.setModel(newLiveState);
-        newLiveState.getSource().getSceneView().reinstall();
-        newLiveState.getTarget().getSceneView().reinstall();
     }
 }

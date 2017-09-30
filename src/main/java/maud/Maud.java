@@ -186,7 +186,7 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Access the MVC model for the editor screen (live copy).
+     * Access the live MVC model for the editor screen.
      *
      * @return the pre-existing instance
      */
@@ -255,14 +255,17 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Alter the MVC model for the editor screen (live copy). Used only when
+     * Alter which MVC model for the editor screen is live. Invoked only when
      * restoring a checkpoint.
      *
-     * @param savedState saved model state to make live (not null)
+     * @param savedState saved MVC model state to make live (not null)
      */
     public static void setModel(EditorModel savedState) {
         Validate.nonNull(savedState, "saved state");
+
+        editorModel.preMakeLive();
         editorModel = savedState;
+        editorModel.postMakeLive();
     }
 
     /**
@@ -442,7 +445,8 @@ public class Maud extends GuiApplication {
     // private methods
 
     /**
-     * Add shadows to the specified view port, without specifying a light.
+     * Add shadows to the specified view port, without specifying a light. TODO
+     * move to SceneView
      */
     private void addShadows(ViewPort vp) {
         DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(
