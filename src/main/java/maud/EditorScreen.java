@@ -689,7 +689,21 @@ public class EditorScreen extends GuiScreenController {
         }
     }
     // *************************************************************************
-    // AppState methods
+    // GuiScreenController methods
+
+    /**
+     * A callback that Nifty invokes the 1st time the screen is displayed.
+     *
+     * @param nifty (not null)
+     * @param screen (not null)
+     */
+    @Override
+    public void bind(Nifty nifty, Screen screen) {
+        super.bind(nifty, screen);
+
+        Maud maud = Maud.getApplication();
+        maud.startup2();
+    }
 
     /**
      * Initialize this controller prior to its 1st update.
@@ -710,12 +724,6 @@ public class EditorScreen extends GuiScreenController {
         setListener(inputMode);
 
         super.initialize(stateManager, application);
-        /*
-         * TODO only do this as a fallback, in case no CGM
-         * was loaded by startup.txt
-         */
-        boolean success = Maud.getModel().getTarget().loadNamed("Jaime");
-        assert success;
     }
 
     /**
@@ -792,22 +800,6 @@ public class EditorScreen extends GuiScreenController {
         target.getSceneView().update(null);
         source.getScoreView().update(source);
         target.getScoreView().update(target);
-    }
-    // *************************************************************************
-    // ScreenController methods
-
-    /**
-     * A callback which Nifty invokes the 1st time the screen is displayed.
-     *
-     * @param nifty (not null)
-     * @param screen (not null)
-     */
-    @Override
-    public void bind(Nifty nifty, Screen screen) {
-        super.bind(nifty, screen);
-
-        Maud maud = Maud.getApplication();
-        maud.startup2();
     }
     // *************************************************************************
     // private methods
