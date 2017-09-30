@@ -35,7 +35,7 @@ import jme3utilities.math.MyMath;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class UserData implements Cloneable {
+public class SelectedUserData implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -43,7 +43,7 @@ public class UserData implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(UserData.class.getName());
+            = Logger.getLogger(SelectedUserData.class.getName());
     // *************************************************************************
     // fields
 
@@ -160,8 +160,8 @@ public class UserData implements Cloneable {
      * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
-    public UserData clone() throws CloneNotSupportedException {
-        UserData clone = (UserData) super.clone();
+    public SelectedUserData clone() throws CloneNotSupportedException {
+        SelectedUserData clone = (SelectedUserData) super.clone();
         return clone;
     }
 }
