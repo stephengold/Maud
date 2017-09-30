@@ -108,11 +108,10 @@ public class SelectedSpatial implements JmeCloneable {
      * Add a GhostControl to the selected spatial and select the new control.
      */
     public void addGhostControl() {
-        GhostControl newSgc = new GhostControl();
         SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
         CollisionShape shape = PhysicsUtil.makeShape(viewSpatial);
-        newSgc.setCollisionShape(shape);
+        GhostControl newSgc = new GhostControl(shape);
 
         editableCgm.addSgc(newSgc);
         editableCgm.getSgc().select(newSgc);
@@ -123,12 +122,13 @@ public class SelectedSpatial implements JmeCloneable {
      * control.
      */
     public void addRigidBodyControl() {
-        float mass = 1f;
-        RigidBodyControl newSgc = new RigidBodyControl(mass);
         SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
         CollisionShape shape = PhysicsUtil.makeShape(viewSpatial);
-        newSgc.setCollisionShape(shape);
+        float mass = 1f;
+        RigidBodyControl newSgc = new RigidBodyControl(shape, mass);
+        newSgc.setKinematic(true);
+        // why is the default kinematic=false but kinematicSpatial=true?
 
         editableCgm.addSgc(newSgc);
         editableCgm.getSgc().select(newSgc);
@@ -182,7 +182,8 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count how many levels of detail are in the selected spatial's mesh.
+     * Count how many levels of detail are in the selected spatial's mesh. TODO
+     * rename countLodLevels
      *
      * @return count (&ge;0)
      */
