@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.menu.BoneMenus;
+import maud.menu.EditorMenus;
 import maud.model.Cgm;
 import maud.model.EditorModel;
 import maud.model.option.scene.OrbitCenter;
@@ -151,8 +152,7 @@ class SelectAction {
                 Maud.gui.showMenus.selectShape(target);
                 break;
             case Action.selectShapeChild:
-                Maud.gui.menus.selectShapeChild();
-
+                EditorMenus.selectShapeChild();
                 break;
             case Action.selectSourceAnimControl:
                 Maud.gui.showMenus.selectAnimControl(model.getSource());
@@ -240,7 +240,7 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
-            Maud.gui.menus.selectSpatial(arg, false);
+            EditorMenus.selectSpatial(arg, false);
 
         } else if (actionString.startsWith(ActionPrefix.selectJoint)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectJoint);
@@ -284,7 +284,7 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectSpatial)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectSpatial);
-            Maud.gui.menus.selectSpatial(arg, true);
+            EditorMenus.selectSpatial(arg, true);
 
         } else if (actionString.startsWith(ActionPrefix.selectUserKey)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectUserKey);
@@ -303,7 +303,7 @@ class SelectAction {
         if (!handled && actionString.startsWith(ActionPrefix.selectMenuItem)) {
             String menuPath = MyString.remainder(actionString,
                     ActionPrefix.selectMenuItem);
-            handled = Maud.gui.menus.selectMenuItem(menuPath);
+            handled = EditorMenus.selectMenuItem(menuPath);
         }
         if (!handled && actionString.startsWith(ActionPrefix.selectTool)) {
             String toolName = MyString.remainder(actionString,
