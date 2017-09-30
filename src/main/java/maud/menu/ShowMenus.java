@@ -573,8 +573,27 @@ public class ShowMenus {
     }
 
     /**
+     * Display a menu to set the shadow mode of the current spatial using the
+     * "set shadowMode " action prefix.
+     */
+    public static void setShadowMode() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        RenderQueue.ShadowMode selectedMode = spatial.getLocalShadowMode();
+        for (RenderQueue.ShadowMode mode : RenderQueue.ShadowMode.values()) {
+            if (!mode.equals(selectedMode)) {
+                String name = mode.toString();
+                builder.addEdit(name);
+            }
+        }
+
+        builder.show(ActionPrefix.setShadowMode);
+    }
+
+    /**
      * Display a menu to set a bone-inclusion option using the specified action
-     * prefix. TODO reorder methods
+     * prefix.
      *
      * @param actionPrefix (not null, not empty)
      * @param currentOption currently selected option, or null
@@ -592,25 +611,6 @@ public class ShowMenus {
         }
 
         builder.show(actionPrefix);
-    }
-
-    /**
-     * Display a menu to set the shadow mode of the current spatial using the
-     * "set shadowMode " action prefix.
-     */
-    public static void setShadowMode() {
-        MenuBuilder builder = new MenuBuilder();
-
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        RenderQueue.ShadowMode selectedMode = spatial.getLocalShadowMode();
-        for (RenderQueue.ShadowMode mode : RenderQueue.ShadowMode.values()) {
-            if (!mode.equals(selectedMode)) {
-                String name = mode.toString();
-                builder.addEdit(name);
-            }
-        }
-
-        builder.show(ActionPrefix.setShadowMode);
     }
 
     /**

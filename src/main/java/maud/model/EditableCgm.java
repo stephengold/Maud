@@ -773,7 +773,19 @@ public class EditableCgm extends LoadedCgm {
     // LoadedCgm methods
 
     /**
-     * Invoked after successfully loading a C-G model. TODO sort methods
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
+     */
+    @Override
+    public EditableCgm clone() throws CloneNotSupportedException {
+        EditableCgm clone = (EditableCgm) super.clone();
+        return clone;
+    }
+
+    /**
+     * Invoked after successfully loading a C-G model.
      *
      * @param cgmRoot (not null)
      */
@@ -787,18 +799,6 @@ public class EditableCgm extends LoadedCgm {
         repair(cgmRoot);
 
         super.postLoad(cgmRoot);
-    }
-
-    /**
-     * Create a deep copy of this object.
-     *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if the superclass isn't cloneable
-     */
-    @Override
-    public EditableCgm clone() throws CloneNotSupportedException {
-        EditableCgm clone = (EditableCgm) super.clone();
-        return clone;
     }
     // *************************************************************************
     // private methods

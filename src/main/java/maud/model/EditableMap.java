@@ -348,6 +348,18 @@ public class EditableMap extends LoadedMap {
     // LoadedMap methods
 
     /**
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
+     */
+    @Override
+    public EditableMap clone() throws CloneNotSupportedException {
+        EditableMap clone = (EditableMap) super.clone();
+        return clone;
+    }
+
+    /**
      * Unload the current map and load the specified asset.
      *
      * @param spec URL specification, or null for the default location
@@ -386,18 +398,6 @@ public class EditableMap extends LoadedMap {
         }
 
         return success;
-    }
-
-    /**
-     * Create a deep copy of this object. TODO sort methods
-     *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if the superclass isn't cloneable
-     */
-    @Override
-    public EditableMap clone() throws CloneNotSupportedException {
-        EditableMap clone = (EditableMap) super.clone();
-        return clone;
     }
     // *************************************************************************
     // private methods

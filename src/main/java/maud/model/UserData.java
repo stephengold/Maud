@@ -48,14 +48,14 @@ public class UserData implements Cloneable {
     // fields
 
     /**
-     * editable C-G model, if any, containing the user data (set by
-     * {@link #setCgm(Cgm)}) TODO sort fields
-     */
-    private EditableCgm editableCgm;
-    /**
      * C-G model containing the user data (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
+    /**
+     * editable C-G model, if any, containing the user data (set by
+     * {@link #setCgm(Cgm)})
+     */
+    private EditableCgm editableCgm;
     /**
      * key of the selected user data, or null if none selected
      */

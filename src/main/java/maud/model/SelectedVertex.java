@@ -60,14 +60,13 @@ public class SelectedVertex implements Cloneable {
     // fields
 
     /**
+     * C-G model containing the vertex (set by {@link #setCgm(Cgm)})
+     */
+    private Cgm cgm = null;
+    /**
      * index of the selected vertex, or -1 for none selected
      */
     private int selectedIndex = -1;
-    /**
-     * C-G model containing the vertex (set by {@link #setCgm(Cgm)}) TODO sort
-     * fields
-     */
-    private Cgm cgm = null;
     // *************************************************************************
     // new methods exposed
 
