@@ -488,13 +488,12 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Access the spatial track (if any) for the specified spatial. TODO package
-     * protect
+     * Access the spatial track (if any) for the specified spatial.
      *
      * @param spatial which spatial to find (unaffected)
      * @return the pre-existing instance, or null if none found
      */
-    public SpatialTrack findTrackForSpatial(Spatial spatial) {
+    SpatialTrack findTrackForSpatial(Spatial spatial) {
         SpatialTrack result = null;
         AnimControl animControl = cgm.getAnimControl().find();
         Animation animation = getAnimation();
