@@ -45,8 +45,8 @@ public class History {
     /**
      * message logger for this class
      */
-    final public static Logger logger = Logger.getLogger(
-            History.class.getName());
+    final public static Logger logger
+            = Logger.getLogger(History.class.getName());
     // *************************************************************************
     // fields
 
@@ -109,7 +109,7 @@ public class History {
      *
      * @param description (not null, not empty)
      */
-    public static void addEvent(String description) {
+    static void addEvent(String description) {
         Validate.nonEmpty(description, "description");
 
         logger.log(Level.INFO, "{0}", description);
@@ -117,9 +117,9 @@ public class History {
     }
 
     /**
-     * Create a checkpoint if auto-add is enabled.
+     * Create a checkpoint if auto-add mode is enabled.
      */
-    public static void autoAdd() {
+    static void autoAdd() {
         if (autoAddFlag) {
             addCheckpoint();
         }
