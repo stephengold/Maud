@@ -47,8 +47,8 @@ class PhysicsTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            PhysicsTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(PhysicsTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -79,9 +79,8 @@ class PhysicsTool extends WindowController {
         updateShape();
 
         SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
-
         String mass = physics.getMass();
-        Maud.gui.setStatusText("physicsMass", " " + mass);
+        Maud.gui.setButtonLabel("physicsMassButton", mass);
     }
     // *************************************************************************
     // private methods

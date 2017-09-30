@@ -32,7 +32,9 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -60,8 +62,8 @@ import maud.PhysicsUtil;
 import maud.view.SceneView;
 
 /**
- * MVC model for an editable computer-graphics (CG) model in the Maud
- * application: keeps track of edits made to the loaded CG model.
+ * MVC model for an editable computer-graphics (C-G) model in the Maud
+ * application: keeps track of edits made to the loaded C-G model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -118,7 +120,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Add a new SG control to the selected spatial.
+     * Add a new S-G control to the selected spatial.
      *
      * @param newSgc (not null)
      */
@@ -196,7 +198,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Determine the default base path for writing the CG model to the
+     * Determine the default base path for writing the C-G model to the
      * filesystem.
      *
      * @return absolute filesystem path less extension (not null, not empty)
@@ -258,8 +260,8 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete the selected control. The invoker is responsible for deselecting
-     * the SGC.
+     * Delete the selected S-G control. The invoker is responsible for
+     * deselecting the S-G control.
      */
     void deleteSgc() {
         Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
@@ -309,7 +311,8 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Callback just before a checkpoint is created.
+     * Callback just before a checkpoint is created. TODO de-publicize and
+     * rename preCheckpoint
      */
     public void onCheckpoint() {
         /*
@@ -440,7 +443,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Alter whether the selected SG control applies to its spatial's local
+     * Alter whether the selected S-G control applies to its spatial's local
      * translation.
      *
      * @param newSetting true&rarr;apply to local, false&rarr;apply to world
@@ -554,6 +557,25 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter the mass of the selected rigid body.
+     *
+     * @param mass (&ge;0)
+     */
+    public void setMass(float mass) {
+        Validate.nonNegative(mass, "mass");
+
+        PhysicsCollisionObject object = getPhysics().find();
+        if (object instanceof PhysicsRigidBody) {
+            PhysicsRigidBody prb = (PhysicsRigidBody) object;
+
+            History.autoAdd();
+            prb.setMass(mass);
+            String eventDescription = String.format("set mass to %f", mass);
+            setEdited(eventDescription);
+        }
+    }
+
+    /**
      * Alter the render-queue bucket of the selected spatial.
      *
      * @param newBucket new value for queue bucket (not null)
@@ -572,7 +594,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Alter whether the selected SGC is enabled.
+     * Alter whether the selected S-G control is enabled.
      *
      * @param newSetting true&rarr;enable, false&rarr;disable
      */
@@ -696,7 +718,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Write the CG model to the specified file.
+     * Write the C-G model to the filesystem at the specified base path.
      *
      * @param baseFilePath file path without any extension (not null, not empty)
      * @return true if successful, otherwise false
@@ -752,7 +774,7 @@ public class EditableCgm extends LoadedCgm {
     // LoadedCgm methods
 
     /**
-     * Invoked after successfully loading a CG model. TODO sort methods
+     * Invoked after successfully loading a C-G model. TODO sort methods
      *
      * @param cgmRoot (not null)
      */
@@ -772,7 +794,7 @@ public class EditableCgm extends LoadedCgm {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public EditableCgm clone() throws CloneNotSupportedException {
@@ -783,7 +805,7 @@ public class EditableCgm extends LoadedCgm {
     // private methods
 
     /**
-     * Determine the default asset folder for writing the CG model to the
+     * Determine the default asset folder for writing the C-G model to the
      * filesystem.
      *
      * @return absolute filesystem path (not null, not empty)
@@ -829,7 +851,8 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Repair minor issues with a CG model, such as repetitious keyframes.
+     * Repair minor issues with a C-G model, such as repetitious keyframes and
+     * tracks without a keyframe at t=0.
      *
      * @param cgmRoot model to correct (not null)
      */
@@ -849,7 +872,7 @@ public class EditableCgm extends LoadedCgm {
         }
 
         if (numTracksZfed > 0) {
-            String message = "zero time of 1st keyframe in ";
+            String message = "zeroed the time of the 1st keyframe in ";
             if (numTracksZfed == 1) {
                 message += "one track";
             } else {
@@ -896,7 +919,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Mark the CG model as pristine.
+     * Mark the C-G model as pristine.
      *
      * @param eventDescription description of causative event (not null)
      */

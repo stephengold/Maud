@@ -56,6 +56,7 @@ import maud.model.EditorModel;
 import maud.model.LoadedAnimation;
 import maud.model.LoadedCgm;
 import maud.model.SelectedBone;
+import maud.model.SelectedPhysics;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedTrack;
 import maud.model.TrackItem;
@@ -556,6 +557,21 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
                 defaultText, ActionPrefix.setDurationSame, controller);
+    }
+
+    /**
+     * Display a "set physicsMass" dialog.
+     */
+    public static void setPhysicsMass() {
+        SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
+        String defaultText = physics.getMass();
+
+        DialogController controller;
+        controller = new FloatDialog("Set mass", 0f, Float.MAX_VALUE);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter new mass:", defaultText,
+                ActionPrefix.setPhysicsMass, controller);
     }
 
     /**
