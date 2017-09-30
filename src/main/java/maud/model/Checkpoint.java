@@ -74,8 +74,7 @@ public class Checkpoint {
         timestamp = new Date();
 
         EditorModel live = Maud.getModel();
-        live.getMap().onCheckpoint();
-        live.getTarget().onCheckpoint();
+        live.preCheckpoint();
         model = new EditorModel(live);
 
         eventDescriptions.addAll(descriptions);

@@ -311,10 +311,9 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Callback just before a checkpoint is created. TODO de-publicize and
-     * rename preCheckpoint
+     * Callback before a checkpoint is created.
      */
-    public void onCheckpoint() {
+    void preCheckpoint() {
         /*
          * Potentially a new spatial transform edit.
          */

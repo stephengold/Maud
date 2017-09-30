@@ -54,8 +54,8 @@ public class EditableMap extends LoadedMap {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            EditableMap.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(EditableMap.class.getName());
     // *************************************************************************
     // fields
 
@@ -230,9 +230,9 @@ public class EditableMap extends LoadedMap {
     }
 
     /**
-     * Callback just before a checkpoint is created.
+     * Callback before a checkpoint is created.
      */
-    public void onCheckpoint() {
+    void preCheckpoint() {
         /*
          * Potentially a new twist edit.
          */
@@ -240,7 +240,7 @@ public class EditableMap extends LoadedMap {
     }
 
     /**
-     * Callback after a bone in the target CG model is renamed.
+     * Callback after a bone in the target C-G model is renamed.
      */
     void renameBone(String oldName, String newName) {
         if (isInvertingMap()) {
@@ -392,7 +392,7 @@ public class EditableMap extends LoadedMap {
      * Create a deep copy of this object. TODO sort methods
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public EditableMap clone() throws CloneNotSupportedException {
