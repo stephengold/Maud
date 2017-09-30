@@ -489,8 +489,7 @@ public class Util {
     }
 
     /**
-     * Load a BVH asset as a CG model without logging any warning/error
-     * messages.
+     * Load a BVH asset as a C-G model.
      *
      * @param assetManager asset manager
      * @param key key for BVH asset
@@ -529,10 +528,10 @@ public class Util {
     }
 
     /**
-     * Load a CG model asset without logging any warning/error messages.
+     * Load a C-G model asset.
      *
      * @param assetManager asset manager
-     * @param key key for CG model asset
+     * @param key asset key for the C-G model
      * @param diagnose true&rarr;messages to console, false&rarr;no messages
      * @return a new orphan spatial, or null if unsuccessful
      */

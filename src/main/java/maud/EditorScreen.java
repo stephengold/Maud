@@ -165,7 +165,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Select a loaded CG model (source or target) based on the screen position
+     * Select a loaded C-G model (source or target) based on the screen position
      * of the mouse pointer.
      *
      * @return a pre-existing instance, or null if none applies
@@ -753,7 +753,7 @@ public class EditorScreen extends GuiScreenController {
         ViewType viewType = mouseViewType();
         if (viewType == ViewType.Scene) {
             /*
-             * Based on mouse pointer position, select a loaded CG model
+             * Based on mouse pointer position, select a loaded C-G model
              * to rotate around its Y-axis.
              */
             Cgm cgmToRotate = mouseCgm();

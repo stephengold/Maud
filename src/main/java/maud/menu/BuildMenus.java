@@ -878,8 +878,8 @@ public class BuildMenus {
     private void buildTestDataMenu() {
         builder.reset();
         /*
-         * Add items for CG models included (on the classpath) with Maud.
-         * If haveTestdata is true, also for CG models in jme3-testdata.
+         * Add items for C-G models included (on the classpath) with Maud.
+         * If haveTestdata is true, also for C-G models in jme3-testdata.
          *
          * animated models:
          */

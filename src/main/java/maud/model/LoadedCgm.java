@@ -63,8 +63,8 @@ public class LoadedCgm extends Cgm {
     // fields
 
     /**
-     * absoluate filesystem path to the asset root used to the C-G model, or ""
-     * if unknown/remote, or null if none loaded
+     * absolute filesystem path to the asset root used to load the C-G model, or
+     * "" if unknown/remote, or null if none loaded
      */
     protected String assetRootPath = null;
     /**
@@ -93,7 +93,8 @@ public class LoadedCgm extends Cgm {
     }
 
     /**
-     * Read the local filesystem path to the asset root used to the C-G model.
+     * Read the local filesystem path to the asset root used to load the C-G
+     * model.
      *
      * @return absolute path, or "" if unknown/remote (not null)
      */
