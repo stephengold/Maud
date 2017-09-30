@@ -85,6 +85,9 @@ public class BoneMenus {
 
         } else {
             switch (remainder) {
+                case "Deselect":
+                    Maud.getModel().getTarget().getBone().deselect();
+                    break;
                 case "Rename":
                     EditorDialogs.renameBone();
                     break;

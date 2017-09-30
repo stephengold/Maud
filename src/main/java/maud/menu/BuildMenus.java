@@ -549,12 +549,12 @@ public class BuildMenus {
     private void buildBoneMenu() {
         builder.addTool("Tool");
         builder.add("Select");
-        //builder.add("Deselect"); TODO
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
         if (Maud.getModel().getTarget().getBone().isSelected()) {
             //builder.add("Attach prop"); TODO
+            builder.add("Deselect");
             builder.addDialog("Rename");
         }
         if (Maud.getModel().getSource().isLoaded()) {
