@@ -78,10 +78,10 @@ public class LoadedMap implements Cloneable {
      */
     protected SkeletonMapping map = new SkeletonMapping();
     /**
-     * absolute filesystem path to asset location, or "" if unknown/remote TODO
-     * rename assetRootPath
+     * absolute filesystem path to the asset root used to load the map, or "" if
+     * unknown/remote
      */
-    protected String assetLocation = "";
+    protected String assetRootPath = "";
     /**
      * asset path less extension, or "" if unknown
      */
@@ -184,16 +184,6 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Read the asset location of the loaded map.
-     *
-     * @return absolute filesystem path, or "" if not known (not null)
-     */
-    public String getAssetLocation() {
-        assert assetLocation != null;
-        return assetLocation;
-    }
-
-    /**
      * Read the asset path of the loaded map, less extension.
      *
      * @return base path, or "" if unknown (not null)
@@ -201,6 +191,16 @@ public class LoadedMap implements Cloneable {
     public String getAssetPath() {
         assert baseAssetPath != null;
         return baseAssetPath;
+    }
+
+    /**
+     * Read the local filesystem path to the asset root used to load the map.
+     *
+     * @return absolute path, or "" if unknown/remote (not null)
+     */
+    public String getAssetRootPath() {
+        assert assetRootPath != null;
+        return assetRootPath;
     }
 
     /**
@@ -357,11 +357,11 @@ public class LoadedMap implements Cloneable {
             success = true;
             map = loaded;
             if (spec == null || !spec.startsWith("file:///")) {
-                assetLocation = "";
+                assetRootPath = "";
             } else {
                 String rootPath = MyString.remainder(spec, "file:///");
                 assert !rootPath.isEmpty();
-                assetLocation = rootPath;
+                assetRootPath = rootPath;
             }
             baseAssetPath = MyString.removeSuffix(path, ".j3o");
         }
@@ -398,7 +398,7 @@ public class LoadedMap implements Cloneable {
         } else {
             success = true;
             map = loaded;
-            assetLocation = "";
+            assetRootPath = "";
             baseAssetPath = MyString.removeSuffix(assetPath, ".j3o");
         }
 
