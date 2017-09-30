@@ -542,6 +542,9 @@ public class EditorMenus {
                 case "Delete":
                     EditorDialogs.deleteSgc();
                     break;
+                case "Deselect":
+                    Maud.getModel().getTarget().getSgc().selectNone();
+                    break;
                 case "Select":
                     Maud.gui.showMenus.selectSgc();
                     break;
