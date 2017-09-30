@@ -66,7 +66,7 @@ import maud.view.ScoreView;
  * MVC model for a computer-graphics (CG) model in the Maud application:
  * encapsulates the CG model's tree of spatials and provides access to related
  * MVC model state including the displayed pose, the loaded animation, and the
- * selected bone/sgc/skeleton/spatial/track/vertex
+ * selected bone/joint/physics/sgc/shape/skeleton/spatial/track/userdata/vertex.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -144,6 +144,10 @@ public class Cgm implements Cloneable {
      */
     private SelectedTrack selectedTrack = new SelectedTrack();
     /**
+     * which user data is selected in the selected spatial
+     */
+    private SelectedUserData selectedUserData = new SelectedUserData();
+    /**
      * which vertex is selected in the selected spatial's mesh
      */
     private SelectedVertex selectedVertex = new SelectedVertex();
@@ -151,10 +155,6 @@ public class Cgm implements Cloneable {
      * root spatial in the MVC model's copy of the CG model
      */
     protected Spatial rootSpatial = null;
-    /**
-     * which user data is selected in the selected spatial
-     */
-    private UserData userData = new UserData();
     // *************************************************************************
     // constructors
 
@@ -178,8 +178,8 @@ public class Cgm implements Cloneable {
         selectedSkeleton.setCgm(cgm);
         selectedSpatial.setCgm(cgm);
         selectedTrack.setCgm(cgm);
+        selectedUserData.setCgm(cgm);
         selectedVertex.setCgm(cgm);
-        userData.setCgm(cgm);
     }
     // *************************************************************************
     // new methods exposed
@@ -475,9 +475,9 @@ public class Cgm implements Cloneable {
      *
      * @return the pre-existing instance (not null)
      */
-    public UserData getUserData() {
-        assert userData != null;
-        return userData;
+    public SelectedUserData getUserData() {
+        assert selectedUserData != null;
+        return selectedUserData;
     }
 
     /**
@@ -811,8 +811,8 @@ public class Cgm implements Cloneable {
         clone.selectedSkeleton = cloner.clone(selectedSkeleton);
         clone.selectedSpatial = cloner.clone(selectedSpatial);
         clone.selectedTrack = selectedTrack.clone();
+        clone.selectedUserData = selectedUserData.clone();
         clone.selectedVertex = selectedVertex.clone();
-        clone.userData = userData.clone();
         /*
          * Redirect the back pointers to the clone.
          */
