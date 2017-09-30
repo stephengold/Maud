@@ -52,7 +52,7 @@ import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.OrbitCenter;
 
 /**
- * Display simple menus in Maud's editor screen. TODO all members static
+ * Display simple menus in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -70,12 +70,20 @@ public class ShowMenus {
     final private static Logger logger
             = Logger.getLogger(ShowMenus.class.getName());
     // *************************************************************************
+    // constructors
+
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
+    private ShowMenus() {
+    }
+    // *************************************************************************
     // new methods exposed
 
     /**
      * Display an "Animation -> Add new" menu.
      */
-    void addNewAnimation() {
+    static void addNewAnimation() {
         MenuBuilder builder = new MenuBuilder();
         builder.addDialog("Copy");
         builder.addDialog("Mix");
@@ -87,7 +95,7 @@ public class ShowMenus {
     /**
      * Display a "SGC -> Add new" menu.
      */
-    public void addNewSgc() {
+    public static void addNewSgc() {
         MenuBuilder builder = new MenuBuilder();
         builder.addEdit("Anim");
         builder.addEdit("Ghost");
@@ -99,7 +107,7 @@ public class ShowMenus {
     /**
      * Display a "Settings -> Asset locations" menu.
      */
-    void assetLocations() {
+    static void assetLocations() {
         MenuBuilder builder = new MenuBuilder();
         builder.add("Add");
         if (Maud.getModel().getLocations().hasRemovable()) {
@@ -111,7 +119,7 @@ public class ShowMenus {
     /**
      * Display an "Animation -> Edit -> Change duration" menu.
      */
-    void changeDuration() {
+    static void changeDuration() {
         MenuBuilder builder = new MenuBuilder();
         builder.addDialog("Proportional times");
         builder.addDialog("Same times");
@@ -122,7 +130,7 @@ public class ShowMenus {
     /**
      * Display an "Animation -> Edit" menu (only for a real animation).
      */
-    void editAnimation() {
+    static void editAnimation() {
         MenuBuilder builder = new MenuBuilder();
 
         Cgm target = Maud.getModel().getTarget();
@@ -147,7 +155,7 @@ public class ShowMenus {
     /**
      * Display a "View -> Scene options" menu.
      */
-    void sceneViewOptions() {
+    static void sceneViewOptions() {
         MenuBuilder builder = new MenuBuilder();
         builder.addTool("Axes");
         builder.addTool("Bounds");
@@ -165,7 +173,7 @@ public class ShowMenus {
     /**
      * Display a "View -> Score options" menu.
      */
-    void scoreViewOptions() {
+    static void scoreViewOptions() {
         MenuBuilder builder = new MenuBuilder();
         builder.addTool("Tool");
         builder.addTool("Background");
@@ -177,7 +185,7 @@ public class ShowMenus {
      *
      * @param cgm which load slot (not null)
      */
-    public void selectAnimControl(Cgm cgm) {
+    public static void selectAnimControl(Cgm cgm) {
         if (cgm.isLoaded()) {
             MenuBuilder builder = new MenuBuilder();
             List<String> names = cgm.listAnimControlNames();
@@ -199,7 +207,7 @@ public class ShowMenus {
      *
      * @param argument action argument (not null)
      */
-    public void selectBoneChild(String argument) {
+    public static void selectBoneChild(String argument) {
         Cgm target = Maud.getModel().getTarget();
         if (argument.startsWith("!")) {
             String name = argument.substring(1);
@@ -228,7 +236,7 @@ public class ShowMenus {
      * @param actionPrefix common prefix of the menu's action strings (not null,
      * usually the final character will be a space)
      */
-    void selectFile(List<String> names, String actionPrefix) {
+    static void selectFile(List<String> names, String actionPrefix) {
         assert names != null;
         assert actionPrefix != null;
 
@@ -242,7 +250,7 @@ public class ShowMenus {
      *
      * @param cgm which load slot (not null)
      */
-    public void selectJoint(Cgm cgm) {
+    public static void selectJoint(Cgm cgm) {
         if (cgm.isLoaded()) {
             List<String> names = cgm.listJointNames("");
             if (!names.isEmpty()) {
@@ -258,7 +266,7 @@ public class ShowMenus {
     /**
      * Display a "Keyframe -> Select" menu.
      */
-    void selectKeyframe() {
+    static void selectKeyframe() {
         MenuBuilder builder = new MenuBuilder();
 
         builder.addTool("First");
@@ -273,7 +281,7 @@ public class ShowMenus {
     /**
      * Display a "select orbitCenter" menu.
      */
-    public void selectOrbitCenter() {
+    public static void selectOrbitCenter() {
         MenuBuilder builder = new MenuBuilder();
 
         CameraStatus status = Maud.getModel().getScene().getCamera();
@@ -293,7 +301,7 @@ public class ShowMenus {
      *
      * @param cgm which load slot (not null)
      */
-    public void selectPhysics(Cgm cgm) {
+    public static void selectPhysics(Cgm cgm) {
         if (cgm.isLoaded()) {
             List<String> names = cgm.listObjectNames("");
             if (!names.isEmpty()) {
@@ -309,7 +317,7 @@ public class ShowMenus {
     /**
      * Display a "select sgc" menu.
      */
-    public void selectSgc() {
+    public static void selectSgc() {
         MenuBuilder builder = new MenuBuilder();
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -326,7 +334,7 @@ public class ShowMenus {
      *
      * @param cgm which load slot (not null)
      */
-    public void selectShape(Cgm cgm) {
+    public static void selectShape(Cgm cgm) {
         if (cgm.isLoaded()) {
             List<String> names = cgm.listShapeNames("");
             if (!names.isEmpty()) {
@@ -342,7 +350,7 @@ public class ShowMenus {
     /**
      * Display a "select shapeChild" menu.
      */
-    void selectShapeChild() {
+    static void selectShapeChild() {
         Cgm target = Maud.getModel().getTarget();
         List<String> names = target.getShape().listChildNames("");
         if (!names.isEmpty()) {
@@ -357,7 +365,7 @@ public class ShowMenus {
     /**
      * Display a "Spatial -> Select" menu.
      */
-    void selectSpatial() {
+    static void selectSpatial() {
         MenuBuilder builder = new MenuBuilder();
 
         Cgm target = Maud.getModel().getTarget();
@@ -403,7 +411,7 @@ public class ShowMenus {
      *
      * @param itemPrefix prefix for filtering menu items (not null)
      */
-    public void selectSpatialChild(String itemPrefix) {
+    public static void selectSpatialChild(String itemPrefix) {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         int numChildren = spatial.countChildren();
         if (numChildren == 1) {
@@ -439,7 +447,7 @@ public class ShowMenus {
      * Display a menu for selecting a user data type using the "new userKey "
      * action prefix.
      */
-    public void selectUserDataType() {
+    public static void selectUserDataType() {
         MenuBuilder builder = new MenuBuilder();
         builder.add("integer");
         builder.add("float");
@@ -454,7 +462,7 @@ public class ShowMenus {
      * Display a menu for selecting a user key using the "select userKey "
      * action prefix.
      */
-    public void selectUserKey() {
+    public static void selectUserKey() {
         MenuBuilder builder = new MenuBuilder();
 
         EditableCgm target = Maud.getModel().getTarget();
@@ -472,7 +480,7 @@ public class ShowMenus {
     /**
      * Display a "Vertex -> Select" menu.
      */
-    public void selectVertex() {
+    public static void selectVertex() {
         Cgm target = Maud.getModel().getTarget();
         int numVertices = target.getSpatial().countVertices();
         if (numVertices > 0) {
@@ -494,7 +502,7 @@ public class ShowMenus {
     /**
      * Handle a "select viewMode" action without an argument.
      */
-    void selectViewMode() {
+    static void selectViewMode() {
         MenuBuilder builder = new MenuBuilder();
 
         ViewMode viewMode = Maud.getModel().getMisc().getViewMode();
@@ -511,7 +519,7 @@ public class ShowMenus {
      * Display a menu to set the batch hint of the current spatial using the
      * "set batchHint " action prefix.
      */
-    public void setBatchHint() {
+    public static void setBatchHint() {
         MenuBuilder builder = new MenuBuilder();
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -530,7 +538,7 @@ public class ShowMenus {
      * Display a menu to set the cull hint of the current spatial using the "set
      * cullHint " action prefix.
      */
-    public void setCullHint() {
+    public static void setCullHint() {
         MenuBuilder builder = new MenuBuilder();
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -549,7 +557,7 @@ public class ShowMenus {
      * Display a menu to set the render bucket of the current spatial using the
      * "set queueBucket " action prefix.
      */
-    public void setQueueBucket() {
+    public static void setQueueBucket() {
         MenuBuilder builder = new MenuBuilder();
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -571,7 +579,8 @@ public class ShowMenus {
      * @param actionPrefix (not null, not empty)
      * @param currentOption currently selected option, or null
      */
-    public void setShowBones(String actionPrefix, ShowBones currentOption) {
+    public static void setShowBones(String actionPrefix,
+            ShowBones currentOption) {
         Validate.nonEmpty(actionPrefix, "action prefix");
 
         MenuBuilder builder = new MenuBuilder();
@@ -589,7 +598,7 @@ public class ShowMenus {
      * Display a menu to set the shadow mode of the current spatial using the
      * "set shadowMode " action prefix.
      */
-    public void setShadowMode() {
+    public static void setShadowMode() {
         MenuBuilder builder = new MenuBuilder();
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -608,7 +617,7 @@ public class ShowMenus {
      * Display a menu to set the rotation tweening mode using the "set
      * tweenRotations " action prefix.
      */
-    public void setTweenRotations() {
+    public static void setTweenRotations() {
         MenuBuilder builder = new MenuBuilder();
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
         TweenRotations selected = techniques.getTweenRotations();
@@ -625,7 +634,7 @@ public class ShowMenus {
      * Display a menu to set the scale tweening mode using the "set tweenScales
      * " action prefix.
      */
-    public void setTweenScales() {
+    public static void setTweenScales() {
         MenuBuilder builder = new MenuBuilder();
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
         TweenVectors selected = techniques.getTweenScales();
@@ -642,7 +651,7 @@ public class ShowMenus {
      * Display a menu to set the translation tweening mode using the "set
      * tweenTranslations " action prefix.
      */
-    public void setTweenTranslations() {
+    public static void setTweenTranslations() {
         MenuBuilder builder = new MenuBuilder();
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
         TweenVectors selected = techniques.getTweenTranslations();
@@ -662,7 +671,7 @@ public class ShowMenus {
      * @param nameList list of names from which to select (not null, modified)
      * @param cgm which load slot (not null)
      */
-    void showAnimationSubmenu(List<String> nameList, Cgm cgm) {
+    static void showAnimationSubmenu(List<String> nameList, Cgm cgm) {
         assert nameList != null;
         assert cgm != null;
 
@@ -701,7 +710,7 @@ public class ShowMenus {
      *
      * @param nameList list of names from which to select (not null)
      */
-    void showBoneSubmenu(List<String> nameList) {
+    static void showBoneSubmenu(List<String> nameList) {
         assert nameList != null;
 
         MyString.reduce(nameList, maxItems);
@@ -724,7 +733,7 @@ public class ShowMenus {
      *
      * @param nameList list of names from which to select (not null)
      */
-    void showSourceBoneSubmenu(List<String> nameList) {
+    static void showSourceBoneSubmenu(List<String> nameList) {
         assert nameList != null;
 
         MyString.reduce(nameList, maxItems);
@@ -749,7 +758,8 @@ public class ShowMenus {
      * @param includeNodes true &rarr; both nodes and geometries, false &rarr;
      * geometries only
      */
-    void showSpatialSubmenu(List<String> nameList, boolean includeNodes) {
+    static void showSpatialSubmenu(List<String> nameList,
+            boolean includeNodes) {
         assert nameList != null;
 
         MyString.reduce(nameList, maxItems);
@@ -774,7 +784,7 @@ public class ShowMenus {
     /**
      * Display a "CGM -> Source model" menu.
      */
-    void sourceCgm() {
+    static void sourceCgm() {
         MenuBuilder builder = new MenuBuilder();
         builder.add("Load");
         if (Maud.getModel().getSource().isLoaded()) {
@@ -787,7 +797,7 @@ public class ShowMenus {
      * Display a submenu for selecting a license using the "view license" action
      * prefix.
      */
-    void viewLicense() {
+    static void viewLicense() {
         MenuBuilder builder = new MenuBuilder();
 
         for (LicenseType type : LicenseType.values()) {

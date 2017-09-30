@@ -69,7 +69,7 @@ public class AnimationMenus {
     public static void loadAnimation(Cgm cgm) {
         if (cgm.isLoaded()) {
             List<String> names = cgm.getAnimControl().listAnimationNames();
-            Maud.gui.showMenus.showAnimationSubmenu(names, cgm);
+            ShowMenus.showAnimationSubmenu(names, cgm);
         }
     }
 
@@ -90,7 +90,7 @@ public class AnimationMenus {
              * Treat the argument as an animation-name prefix.
              */
             List<String> animationNames = sac.listAnimationNames(argument);
-            Maud.gui.showMenus.showAnimationSubmenu(animationNames, cgm);
+            ShowMenus.showAnimationSubmenu(animationNames, cgm);
         }
     }
 
@@ -116,13 +116,13 @@ public class AnimationMenus {
             EditableCgm target = Maud.getModel().getTarget();
             switch (remainder) {
                 case "Add new":
-                    Maud.gui.showMenus.addNewAnimation();
+                    ShowMenus.addNewAnimation();
                     break;
                 case "Delete":
                     EditorDialogs.deleteAnimation();
                     break;
                 case "Edit":
-                    Maud.gui.showMenus.editAnimation();
+                    ShowMenus.editAnimation();
                     break;
                 case "Load":
                     loadAnimation(target);
@@ -134,7 +134,7 @@ public class AnimationMenus {
                     EditorDialogs.renameAnimation();
                     break;
                 case "Select AnimControl":
-                    Maud.gui.showMenus.selectAnimControl(target);
+                    ShowMenus.selectAnimControl(target);
                     break;
                 case "Source tool":
                     Maud.gui.tools.select("sourceAnimation");
@@ -229,7 +229,7 @@ public class AnimationMenus {
                     animation.behead();
                     break;
                 case "Change duration":
-                    Maud.gui.showMenus.changeDuration();
+                    ShowMenus.changeDuration();
                     break;
                 case "Delete keyframes":
                     animation.deleteKeyframes();
