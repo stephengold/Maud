@@ -453,9 +453,9 @@ public class SceneView
 
     /**
      * Re-install the C-G model in the scene graph. Invoked after restoring a
-     * checkpoint. TODO rename postMakeLive
+     * checkpoint.
      */
-    public void reinstall() {
+    public void postMakeLive() {
         /*
          * Detach any old visualization from the scene graph.
          */
