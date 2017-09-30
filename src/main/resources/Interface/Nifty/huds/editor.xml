@@ -1129,9 +1129,10 @@ the menu bar, status bar, and tool windows.
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Mass:  "/>
-                        <control name="label" id="physicsMass"
-                                 backgroundColor="#ffff"
-                                 width="70px"/>
+                        <control name="button" id="physicsMassButton"
+                                 width="80px">
+                            <interact onRelease="perform(set physicsMass)"/>
+                        </control>
                     </panel>
                 </panel>
             </control>

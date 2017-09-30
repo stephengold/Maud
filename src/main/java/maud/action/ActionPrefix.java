@@ -264,6 +264,10 @@ public class ActionPrefix {
      */
     final public static String setDurationSame = "set duration same ";
     /**
+     * argument is the new mass
+     */
+    final public static String setPhysicsMass = "set physicsMass ";
+    /**
      * argument is the name of a queue bucket
      */
     final public static String setQueueBucket = "set queueBucket ";
