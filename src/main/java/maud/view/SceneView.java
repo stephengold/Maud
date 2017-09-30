@@ -116,13 +116,13 @@ public class SceneView
      */
     final private static Quaternion rotationIdentity = new Quaternion();
     /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
-     */
-    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
-    /**
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
     final private static Transform transformIdentity = new Transform();
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
+     */
+    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
     /**
      * local copy of {@link com.jme3.math.Vector3f#ZERO}
      */
@@ -291,6 +291,23 @@ public class SceneView
     }
 
     /**
+     * Find a geometry that is animated by the selected skeleton control.
+     *
+     * @return a pre-existing instance, or null if none found
+     */
+    public Geometry findAnimatedGeometry() {
+        List<Integer> treePosition = cgm.getSkeleton().findAnimatedGeometry();
+        Spatial spatial = cgmRoot;
+        for (int childPosition : treePosition) {
+            Node node = (Node) spatial;
+            spatial = node.getChild(childPosition);
+        }
+        Geometry result = (Geometry) spatial;
+
+        return result;
+    }
+
+    /**
      * Find the specified spatial in this view's copy of the C-G model.
      *
      * @param input spatial to search for (not null)
@@ -405,6 +422,16 @@ public class SceneView
     public SkyControl getSkyControl() {
         assert skyControl != null;
         return skyControl;
+    }
+
+    /**
+     * Access the world transform for the C-G model in this visualization.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public CgmTransform getTransform() {
+        assert cgmTransform != null;
+        return cgmTransform;
     }
 
     /**
@@ -856,24 +883,6 @@ public class SceneView
     }
 
     /**
-     * Find a geometry that is animated by the selected skeleton control. TODO
-     * move to new methods
-     *
-     * @return a pre-existing instance, or null if none found
-     */
-    public Geometry findAnimatedGeometry() {
-        List<Integer> treePosition = cgm.getSkeleton().findAnimatedGeometry();
-        Spatial spatial = cgmRoot;
-        for (int childPosition : treePosition) {
-            Node node = (Node) spatial;
-            spatial = node.getChild(childPosition);
-        }
-        Geometry result = (Geometry) spatial;
-
-        return result;
-    }
-
-    /**
      * Access the camera used to render this view.
      *
      * @return a pre-existing instance, or null if not rendered
@@ -887,17 +896,6 @@ public class SceneView
         }
 
         return result;
-    }
-
-    /**
-     * Access the world transform for the C-G model in this visualization. TODO
-     * move to new methods
-     *
-     * @return the pre-existing instance (not null)
-     */
-    public CgmTransform getTransform() {
-        assert cgmTransform != null;
-        return cgmTransform;
     }
 
     /**

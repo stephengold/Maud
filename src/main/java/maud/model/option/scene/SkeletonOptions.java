@@ -76,16 +76,6 @@ public class SkeletonOptions implements Cloneable {
     // new methods exposed
 
     /**
-     * Which kinds of bones to visualize. TODO sort methods
-     *
-     * @return enum (not null)
-     */
-    public ShowBones getShowBones() {
-        assert showBones != null;
-        return showBones;
-    }
-
-    /**
      * Copy the color for the skeleton links.
      *
      * @param storeResult (modified if not null)
@@ -151,13 +141,13 @@ public class SkeletonOptions implements Cloneable {
     }
 
     /**
-     * Alter which bones are visualized. TODO sort methods
+     * Which kinds of bones to visualize.
      *
-     * @param newSetting enum (not null)
+     * @return enum (not null)
      */
-    public void setShowBones(ShowBones newSetting) {
-        Validate.nonNull(newSetting, "new setting");
-        showBones = newSetting;
+    public ShowBones getShowBones() {
+        assert showBones != null;
+        return showBones;
     }
 
     /**
@@ -188,6 +178,16 @@ public class SkeletonOptions implements Cloneable {
     public void setPointSize(float size) {
         Validate.inRange(size, "point size", 0f, Float.MAX_VALUE);
         pointSize = size;
+    }
+
+    /**
+     * Alter which bones are visualized.
+     *
+     * @param newSetting enum (not null)
+     */
+    public void setShowBones(ShowBones newSetting) {
+        Validate.nonNull(newSetting, "new setting");
+        showBones = newSetting;
     }
 
     /**
