@@ -133,7 +133,7 @@ public class BoneMenus {
              * Treat the argument as a bone-name prefix.
              */
             List<String> boneNames = skeleton.listBoneNames(argument);
-            Maud.gui.showMenus.showBoneSubmenu(boneNames);
+            ShowMenus.showBoneSubmenu(boneNames);
         }
     }
 
@@ -148,7 +148,7 @@ public class BoneMenus {
                 bone.selectFirstChild();
             } else if (numChildren > 1) {
                 List<String> boneNames = bone.listChildNames();
-                Maud.gui.showMenus.showBoneSubmenu(boneNames);
+                ShowMenus.showBoneSubmenu(boneNames);
             }
         }
     }
@@ -163,7 +163,7 @@ public class BoneMenus {
         if (numBoneTracks == 1) {
             target.getBone().select(boneNames.get(0));
         } else if (numBoneTracks > 1) {
-            Maud.gui.showMenus.showBoneSubmenu(boneNames);
+            ShowMenus.showBoneSubmenu(boneNames);
         }
     }
 
@@ -182,7 +182,7 @@ public class BoneMenus {
              * Treat the argument as a bone-name prefix.
              */
             List<String> boneNames = skeleton.listBoneNames(argument);
-            Maud.gui.showMenus.showBoneSubmenu(boneNames);
+            ShowMenus.showBoneSubmenu(boneNames);
         }
     }
     // *************************************************************************
@@ -263,7 +263,7 @@ public class BoneMenus {
     private static void selectBoneByName() {
         Cgm target = Maud.getModel().getTarget();
         List<String> nameList = target.getSkeleton().listBoneNames();
-        Maud.gui.showMenus.showBoneSubmenu(nameList);
+        ShowMenus.showBoneSubmenu(nameList);
     }
 
     /**
@@ -285,7 +285,7 @@ public class BoneMenus {
             target.getBone().selectFirstRoot();
         } else if (numRoots > 1) {
             List<String> boneNames = target.getSkeleton().listRootBoneNames();
-            Maud.gui.showMenus.showBoneSubmenu(boneNames);
+            ShowMenus.showBoneSubmenu(boneNames);
         }
     }
 
@@ -299,7 +299,7 @@ public class BoneMenus {
             source.getBone().selectFirstRoot();
         } else if (numRoots > 1) {
             List<String> names = source.getSkeleton().listRootBoneNames();
-            Maud.gui.showMenus.showSourceBoneSubmenu(names);
+            ShowMenus.showSourceBoneSubmenu(names);
         }
     }
 }

@@ -31,6 +31,7 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.menu.BoneMenus;
 import maud.menu.EditorMenus;
+import maud.menu.ShowMenus;
 import maud.model.Cgm;
 import maud.model.EditorModel;
 import maud.model.option.scene.OrbitCenter;
@@ -75,7 +76,7 @@ class SelectAction {
         Cgm target = model.getTarget();
         switch (actionString) {
             case Action.selectAnimControl:
-                Maud.gui.showMenus.selectAnimControl(target);
+                ShowMenus.selectAnimControl(target);
                 break;
             case Action.selectBone:
                 Maud.gui.buildMenus.selectBone();
@@ -87,7 +88,7 @@ class SelectAction {
                 target.getBone().selectParent();
                 break;
             case Action.selectJoint:
-                Maud.gui.showMenus.selectJoint(target);
+                ShowMenus.selectJoint(target);
                 break;
             case Action.selectKeyframeFirst:
                 target.getTrack().selectFirstKeyframe();
@@ -111,10 +112,10 @@ class SelectAction {
                 model.getMap().selectFromTarget();
                 break;
             case Action.selectOrbitCenter:
-                Maud.gui.showMenus.selectOrbitCenter();
+                ShowMenus.selectOrbitCenter();
                 break;
             case Action.selectPhysics:
-                Maud.gui.showMenus.selectPhysics(target);
+                ShowMenus.selectPhysics(target);
                 break;
             case Action.selectPhysicsShape:
                 long shapeId = target.getPhysics().getShapeId();
@@ -139,7 +140,7 @@ class SelectAction {
                 Maud.gui.selectXY();
                 break;
             case Action.selectSgc:
-                Maud.gui.showMenus.selectSgc();
+                ShowMenus.selectSgc();
                 break;
             case Action.selectSgcObject:
                 String physicsName = target.getSgc().objectName();
@@ -149,28 +150,28 @@ class SelectAction {
                 }
                 break;
             case Action.selectShape:
-                Maud.gui.showMenus.selectShape(target);
+                ShowMenus.selectShape(target);
                 break;
             case Action.selectShapeChild:
                 EditorMenus.selectShapeChild();
                 break;
             case Action.selectSourceAnimControl:
-                Maud.gui.showMenus.selectAnimControl(model.getSource());
+                ShowMenus.selectAnimControl(model.getSource());
                 break;
             case Action.selectSourceBone:
                 Maud.gui.buildMenus.selectSourceBone();
                 break;
             case Action.selectSpatialChild:
-                Maud.gui.showMenus.selectSpatialChild("");
+                ShowMenus.selectSpatialChild("");
                 break;
             case Action.selectSpatialParent:
                 target.getSpatial().selectParent();
                 break;
             case Action.selectUserKey:
-                Maud.gui.showMenus.selectUserKey();
+                ShowMenus.selectUserKey();
                 break;
             case Action.selectVertex:
-                Maud.gui.showMenus.selectVertex();
+                ShowMenus.selectVertex();
                 break;
 
             default:
@@ -236,7 +237,7 @@ class SelectAction {
         } else if (actionString.startsWith(ActionPrefix.selectBoneChild)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectBoneChild);
-            Maud.gui.showMenus.selectBoneChild(arg);
+            ShowMenus.selectBoneChild(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);

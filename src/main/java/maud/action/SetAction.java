@@ -35,6 +35,7 @@ import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
+import maud.menu.ShowMenus;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.ShowBones;
@@ -78,11 +79,11 @@ class SetAction {
         ShowBones currentOption;
         switch (actionString) {
             case Action.setBatchHint:
-                Maud.gui.showMenus.setBatchHint();
+                ShowMenus.setBatchHint();
                 break;
 
             case Action.setCullHint:
-                Maud.gui.showMenus.setCullHint();
+                ShowMenus.setCullHint();
                 break;
 
             case Action.setPhysicsMass:
@@ -90,29 +91,29 @@ class SetAction {
                 break;
 
             case Action.setQueueBucket:
-                Maud.gui.showMenus.setQueueBucket();
+                ShowMenus.setQueueBucket();
                 break;
 
             case Action.setSceneBones:
                 currentOption = model.getScene().getSkeleton().getShowBones();
-                Maud.gui.showMenus.setShowBones(ActionPrefix.setSceneBones,
+                ShowMenus.setShowBones(ActionPrefix.setSceneBones,
                         currentOption);
                 break;
 
             case Action.setScoreBonesNone:
                 currentOption = model.getScore().getShowNoneSelected();
-                Maud.gui.showMenus.setShowBones(ActionPrefix.setScoreBonesNone,
+                ShowMenus.setShowBones(ActionPrefix.setScoreBonesNone,
                         currentOption);
                 break;
 
             case Action.setScoreBonesWhen:
                 currentOption = model.getScore().getShowWhenSelected();
-                Maud.gui.showMenus.setShowBones(ActionPrefix.setScoreBonesWhen,
+                ShowMenus.setShowBones(ActionPrefix.setScoreBonesWhen,
                         currentOption);
                 break;
 
             case Action.setShadowMode:
-                Maud.gui.showMenus.setShadowMode();
+                ShowMenus.setShadowMode();
                 break;
 
             case Action.setTrackRotationAll:
@@ -128,15 +129,15 @@ class SetAction {
                 break;
 
             case Action.setTweenRotations:
-                Maud.gui.showMenus.setTweenRotations();
+                ShowMenus.setTweenRotations();
                 break;
 
             case Action.setTweenScales:
-                Maud.gui.showMenus.setTweenScales();
+                ShowMenus.setTweenScales();
                 break;
 
             case Action.setTweenTranslations:
-                Maud.gui.showMenus.setTweenTranslations();
+                ShowMenus.setTweenTranslations();
                 break;
 
             case Action.setTwistCardinal:

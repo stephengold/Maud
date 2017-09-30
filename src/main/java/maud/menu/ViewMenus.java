@@ -83,13 +83,13 @@ public class ViewMenus {
         } else {
             switch (remainder) {
                 case "Mode":
-                    Maud.gui.showMenus.selectViewMode();
+                    ShowMenus.selectViewMode();
                     break;
                 case "Scene options":
-                    Maud.gui.showMenus.sceneViewOptions();
+                    ShowMenus.sceneViewOptions();
                     break;
                 case "Score options":
-                    Maud.gui.showMenus.scoreViewOptions();
+                    ShowMenus.scoreViewOptions();
                     break;
                 default:
                     handled = false;
@@ -123,7 +123,7 @@ public class ViewMenus {
                 Maud.gui.tools.select("cursor");
                 break;
             case "Mode":
-                Maud.gui.showMenus.selectViewMode();
+                ShowMenus.selectViewMode();
                 break;
             case "Platform":
                 Maud.gui.tools.select("platform");

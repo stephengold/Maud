@@ -123,10 +123,6 @@ public class EditorScreen extends GuiScreenController {
      * controllers for tool windows
      */
     final public EditorTools tools = new EditorTools(this);
-    /**
-     * simple menus for this screen
-     */
-    final public ShowMenus showMenus = new ShowMenus();
     // *************************************************************************
     // constructors
 
@@ -572,7 +568,7 @@ public class EditorScreen extends GuiScreenController {
         if (childIndex >= 0) {
             spatial.selectChild(childIndex);
         } else {
-            Maud.gui.showMenus.selectSpatialChild(argument);
+            ShowMenus.selectSpatialChild(argument);
         }
     }
 

@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
+import maud.menu.ShowMenus;
 import maud.model.EditableCgm;
 import maud.model.SelectedTrack;
 
@@ -81,7 +82,7 @@ class NewAction {
                 break;
 
             case Action.newSgc:
-                Maud.gui.showMenus.addNewSgc();
+                ShowMenus.addNewSgc();
                 break;
 
             case Action.newSingleKeyframe: // insert OR replace
@@ -97,7 +98,7 @@ class NewAction {
                 break;
 
             case Action.newUserKey:
-                Maud.gui.showMenus.selectUserDataType();
+                ShowMenus.selectUserDataType();
                 break;
 
             default:

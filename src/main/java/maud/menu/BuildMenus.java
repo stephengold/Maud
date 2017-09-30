@@ -143,7 +143,7 @@ public class BuildMenus {
             if (cgmEntries.size() == 1 && cgmEntries.contains(assetPath)) {
                 loadedCgm.loadAsset(spec, assetPath);
             } else if (!cgmEntries.isEmpty()) {
-                Maud.gui.showMenus.selectFile(cgmEntries,
+                ShowMenus.selectFile(cgmEntries,
                         menuPrefix + indexString + " ");
             }
 
@@ -462,7 +462,7 @@ public class BuildMenus {
         if (numBoneTracks == 1) {
             target.getBone().select(boneNames.get(0));
         } else if (numBoneTracks > 1) {
-            Maud.gui.showMenus.showBoneSubmenu(boneNames);
+            ShowMenus.showBoneSubmenu(boneNames);
         }
     }
 
@@ -492,7 +492,7 @@ public class BuildMenus {
              * Treat the argument as a bone-name prefix.
              */
             List<String> boneNames = skeleton.listBoneNames(argument);
-            Maud.gui.showMenus.showBoneSubmenu(boneNames);
+            ShowMenus.showBoneSubmenu(boneNames);
         }
     }
     // *************************************************************************

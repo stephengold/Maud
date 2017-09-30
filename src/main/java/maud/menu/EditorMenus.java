@@ -149,7 +149,7 @@ public class EditorMenus {
         if (numChildren == 1) {
             shape.selectFirstChild();
         } else if (numChildren > 1) {
-            Maud.gui.showMenus.selectShapeChild();
+            ShowMenus.selectShapeChild();
         }
     }
 
@@ -171,7 +171,7 @@ public class EditorMenus {
              */
             List<String> names;
             names = target.listSpatialNames(argument, includeNodes);
-            Maud.gui.showMenus.showSpatialSubmenu(names, includeNodes);
+            ShowMenus.showSpatialSubmenu(names, includeNodes);
         }
     }
     // *************************************************************************
@@ -261,7 +261,7 @@ public class EditorMenus {
                     EditorDialogs.saveCgm();
                     break;
                 case "Source model":
-                    Maud.gui.showMenus.sourceCgm();
+                    ShowMenus.sourceCgm();
                     break;
                 case "Tool":
                     Maud.gui.tools.select("cgm");
@@ -290,7 +290,7 @@ public class EditorMenus {
                 Misc.browseWeb("http://jmonkeyengine.org/");
                 break;
             case "License":
-                Maud.gui.showMenus.viewLicense();
+                ShowMenus.viewLicense();
                 break;
             case "Source":
                 Misc.browseWeb("https://github.com/stephengold/Maud");
@@ -356,7 +356,7 @@ public class EditorMenus {
                     target.getTrack().replaceKeyframe();
                     break;
                 case "Select":
-                    Maud.gui.showMenus.selectKeyframe();
+                    ShowMenus.selectKeyframe();
                     break;
                 case "Tool":
                     Maud.gui.tools.select("keyframe");
@@ -513,7 +513,7 @@ public class EditorMenus {
         } else {
             switch (remainder) {
                 case "Asset locations":
-                    Maud.gui.showMenus.assetLocations();
+                    ShowMenus.assetLocations();
                     break;
                 case "Hotkeys":
                     Maud.gui.goBindScreen();
@@ -545,7 +545,7 @@ public class EditorMenus {
         } else {
             switch (remainder) {
                 case "Add new":
-                    Maud.gui.showMenus.addNewSgc();
+                    ShowMenus.addNewSgc();
                     break;
                 case "Delete":
                     EditorDialogs.deleteSgc();
@@ -554,7 +554,7 @@ public class EditorMenus {
                     Maud.getModel().getTarget().getSgc().selectNone();
                     break;
                 case "Select":
-                    Maud.gui.showMenus.selectSgc();
+                    ShowMenus.selectSgc();
                     break;
                 case "Tool":
                     Maud.gui.tools.select("sgc");
@@ -649,7 +649,7 @@ public class EditorMenus {
                     Maud.gui.tools.select("spatialScale");
                     break;
                 case "Select":
-                    Maud.gui.showMenus.selectSpatial();
+                    ShowMenus.selectSpatial();
                     break;
                 case "Tool":
                     Maud.gui.tools.select("spatial");
@@ -681,7 +681,7 @@ public class EditorMenus {
                 selectSpatial("", true);
                 break;
             case "Child":
-                Maud.gui.showMenus.selectSpatialChild("");
+                ShowMenus.selectSpatialChild("");
                 break;
             case "Geometry":
                 selectSpatial("", false);
@@ -768,7 +768,7 @@ public class EditorMenus {
         } else {
             switch (remainder) {
                 case "Select":
-                    Maud.gui.showMenus.selectVertex();
+                    ShowMenus.selectVertex();
                     break;
                 case "Select geometry":
                     selectSpatial("", false);
