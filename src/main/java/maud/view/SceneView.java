@@ -36,7 +36,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
@@ -93,7 +93,7 @@ import maud.model.option.ViewMode;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
- * A 3D visualization of a loaded CG model in a scene-mode viewport.
+ * A 3-D visualization of a loaded C-G model in a scene-mode viewport.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -127,7 +127,6 @@ public class SceneView
      * local copy of {@link com.jme3.math.Vector3f#ZERO}
      */
     final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
-
     // *************************************************************************
     // fields
 
@@ -137,7 +136,7 @@ public class SceneView
     final private AmbientLight ambientLight = new AmbientLight();
     /**
      * animation control with the selected skeleton - apparently needed for
-     * software skinning, but not sure why
+     * software skinning, though it's unclear why
      */
     private AnimControl animControl;
     /*
@@ -153,11 +152,11 @@ public class SceneView
      */
     final private BulletAppState bulletAppState;
     /**
-     * CG model that owns this view (not null)
+     * C-G model that owns this view (not null)
      */
     private Cgm cgm;
     /**
-     * world transform for the CG model visualization
+     * world transform for the C-G model visualization
      */
     private CgmTransform cgmTransform = new CgmTransform();
     /*
@@ -169,11 +168,12 @@ public class SceneView
      */
     private Geometry cursor;
     /**
-     * attachment point for CG models (applies shadowMode and transforms)
+     * attachment point for this view's copy of the C-G model (applies
+     * shadowMode and transforms)
      */
     final private Node parent;
     /**
-     * selected skeleton in this view's copy of its CG model
+     * selected skeleton in this view's copy of the C-G model
      */
     private Skeleton skeleton;
     /**
@@ -189,7 +189,7 @@ public class SceneView
      */
     private SkyControl skyControl;
     /**
-     * root spatial in this view's copy of the CG model
+     * root spatial in this view's copy of the C-G model
      */
     private Spatial cgmRoot;
     /**
@@ -214,7 +214,7 @@ public class SceneView
     /**
      * Instantiate a new visualization.
      *
-     * @param ownerCgm CG model that will own this view (not null, alias
+     * @param ownerCgm C-G model that will own this view (not null, alias
      * created)
      * @param parentNode attachment point in the scene graph (not null, alias
      * created)
@@ -247,9 +247,13 @@ public class SceneView
         Validate.nonNull(physicsControl, "physics control");
 
         PhysicsControl copy = Cloner.deepClone(physicsControl);
-        if (copy instanceof PhysicsRigidBody) {
-            PhysicsRigidBody body = (PhysicsRigidBody) copy;
-            body.setKinematic(true);
+        if (copy instanceof RigidBodyControl) {
+            /*
+             * Force kinematic mode for visualization purposes.
+             */
+            RigidBodyControl rbc = (RigidBodyControl) copy;
+            rbc.setKinematic(true);
+            rbc.setKinematicSpatial(true);
         }
         Spatial spatial = selectedSpatial();
         spatial.addControl(copy);
@@ -287,7 +291,7 @@ public class SceneView
     }
 
     /**
-     * Find the specified spatial in the CG model.
+     * Find the specified spatial in this view's copy of the C-G model.
      *
      * @param input spatial to search for (not null)
      * @return a new tree-position instance, or null if not found
@@ -336,7 +340,7 @@ public class SceneView
     }
 
     /**
-     * Access the CG model's root spatial.
+     * Access the root spatial in this view's copy of the C-G model.
      *
      * @return the pre-existing instance (not null)
      */
@@ -414,9 +418,9 @@ public class SceneView
     }
 
     /**
-     * Replace the CG model with a newly loaded one.
+     * Replace the C-G model with a newly loaded one.
      *
-     * @param loadedCgmRoot (not null)
+     * @param loadedCgmRoot root spatial (not null)
      */
     public void loadCgm(Spatial loadedCgmRoot) {
         Validate.nonNull(loadedCgmRoot, "loaded model root");
@@ -448,8 +452,8 @@ public class SceneView
     }
 
     /**
-     * Re-install this visualization in the appropriate scene graph. Invoked
-     * when restoring a checkpoint.
+     * Re-install the C-G model in the scene graph. Invoked after restoring a
+     * checkpoint. TODO rename postMakeLive
      */
     public void reinstall() {
         /*
@@ -461,6 +465,18 @@ public class SceneView
          */
         if (cgmRoot != null) {
             parent.attachChild(cgmRoot);
+            PhysicsSpace space = getPhysicsSpace();
+            MySpatial.enablePhysicsControls(cgmRoot, space);
+        }
+    }
+
+    /**
+     * Un-install the C-G model from the scene graph. Invoked before restoring a
+     * checkpoint.
+     */
+    public void preMakeLive() {
+        if (cgmRoot != null) {
+            MySpatial.disablePhysicsControls(cgmRoot);
         }
     }
 
@@ -481,7 +497,7 @@ public class SceneView
     }
 
     /**
-     * Access the selected spatial in this view's copy of its CG model.
+     * Access the selected spatial in this view's copy of its C-G model.
      *
      * @return the pre-existing spatial (not null)
      */
@@ -507,7 +523,7 @@ public class SceneView
     }
 
     /**
-     * Alter which loaded CG model corresponds with this view. Invoked after
+     * Alter which loaded C-G model corresponds with this view. Invoked after
      * cloning.
      *
      * @param newCgm (not null)
@@ -519,9 +535,9 @@ public class SceneView
     }
 
     /**
-     * Visualize a different CG model, or none.
+     * Visualize a different C-G model, or none.
      *
-     * @param newCgmRoot CG model's root spatial, or null if none (unaffected)
+     * @param newCgmRoot C-G model's root spatial, or null if none (unaffected)
      */
     void setCgmRoot(Spatial newCgmRoot) {
         if (newCgmRoot == null) {
@@ -626,7 +642,7 @@ public class SceneView
      * Visualize using a different skeleton, or none.
      *
      * @param selectedSkeleton (may be null, unaffected)
-     * @param selectedSpatialFlag where to add controls: false&rarr;CG model
+     * @param selectedSpatialFlag where to add controls: false&rarr;C-G model
      * root, true&rarr;selected spatial
      */
     public void setSkeleton(Skeleton selectedSkeleton,
@@ -684,7 +700,7 @@ public class SceneView
     }
 
     /**
-     * Update the scene when unloading the CG model.
+     * Update the scene when unloading the C-G model.
      */
     public void unloadCgm() {
         /*
@@ -702,7 +718,7 @@ public class SceneView
     }
 
     /**
-     * Copy the world transform of the CG model, based on an animated geometry
+     * Copy the world transform of the C-G model, based on an animated geometry
      * if possible.
      *
      * @param storeResult (modified if not null)
@@ -814,7 +830,7 @@ public class SceneView
         Camera camera = getCamera();
         Ray ray = MyCamera.mouseRay(camera, inputManager);
         /*
-         * Trace the ray to the CG model's visualization.
+         * Trace the ray to the C-G model's visualization.
          */
         Spatial root = getCgmRoot();
         CollisionResult collision = findCollision(root, ray);
@@ -840,7 +856,8 @@ public class SceneView
     }
 
     /**
-     * Find a geometry that is animated by the selected skeleton control.
+     * Find a geometry that is animated by the selected skeleton control. TODO
+     * move to new methods
      *
      * @return a pre-existing instance, or null if none found
      */
@@ -873,7 +890,8 @@ public class SceneView
     }
 
     /**
-     * Access the world transform for the CG model in this visualization.
+     * Access the world transform for the C-G model in this visualization. TODO
+     * move to new methods
      *
      * @return the pre-existing instance (not null)
      */
@@ -952,7 +970,7 @@ public class SceneView
         Camera camera = getCamera();
         Ray ray = MyCamera.mouseRay(camera, inputManager);
         /*
-         * Trace the ray to the CG model's visualization.
+         * Trace the ray to the C-G model's visualization.
          */
         Spatial root = getCgmRoot();
         CollisionResult collision = findCollision(root, ray);
@@ -961,7 +979,7 @@ public class SceneView
             cgm.getScenePov().setCursorLocation(contactPoint);
         } else {
             /*
-             * The ray missed the CG model; try to trace it to the platform.
+             * The ray missed the C-G model; try to trace it to the platform.
              */
             Spatial platformSpatial = getPlatform();
             if (platformSpatial != null) {
@@ -1248,18 +1266,18 @@ public class SceneView
     }
 
     /**
-     * Alter a newly loaded CG model to prepare it for visualization. Assumes
-     * the CG model's root node will be the selected spatial and no SG control
+     * Alter a newly loaded C-G model to prepare it for visualization. Assumes
+     * the C-G model's root node will be the selected spatial and no SG control
      * will be selected.
      */
     private void prepareForViewing() {
         /*
-         * Attach the CG model to the view's scene graph.
+         * Attach the C-G model to the view's scene graph.
          */
         parent.attachChild(cgmRoot);
         /*
          * Use the skeleton from the 1st AnimControl or
-         * SkeletonControl in the CG model's root spatial.
+         * SkeletonControl in the C-G model's root spatial.
          */
         Skeleton selectedSkeleton = MySkeleton.findSkeleton(cgmRoot);
         /*
@@ -1276,7 +1294,7 @@ public class SceneView
         setSkeleton(selectedSkeleton, false);
         /*
          * Configure the world transform based on the ranges of the mesh
-         * coordinates of the loaded CG model.
+         * coordinates of the loaded C-G model.
          */
         parent.setLocalTransform(transformIdentity);
         Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot, true);
@@ -1325,7 +1343,7 @@ public class SceneView
     }
 
     /**
-     * Update the shadow mode of the CG model's parent based on the MVC model.
+     * Update the shadow mode of the C-G model's parent from the MVC model.
      */
     private void updateParentShadowMode() {
         RenderQueue.ShadowMode mode;
@@ -1339,7 +1357,7 @@ public class SceneView
     }
 
     /**
-     * Update the transform of the CG model's parent.
+     * Update the transform of the C-G model's parent from the MVC model.
      */
     private void updateParentTransform() {
         Transform transform = cgmTransform.worldTransform();

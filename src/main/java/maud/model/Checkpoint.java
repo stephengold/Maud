@@ -44,21 +44,21 @@ public class Checkpoint {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            Checkpoint.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(Checkpoint.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * the date and time of creation
+     * date and time of creation
      */
     final private Date timestamp;
     /**
-     * a copy of the MVC model at time of creation
+     * copy of the MVC model at time of creation
      */
     final private EditorModel model;
     /**
-     * list of events since the previous checkpoint
+     * events since the previous checkpoint
      */
     final private List<String> eventDescriptions = new ArrayList<>(20);
     // *************************************************************************
@@ -72,10 +72,11 @@ public class Checkpoint {
      */
     Checkpoint(List<String> descriptions) {
         timestamp = new Date();
-        EditorModel m = Maud.getModel();
-        m.getMap().onCheckpoint();
-        m.getTarget().onCheckpoint();
-        model = new EditorModel(m);
+
+        EditorModel live = Maud.getModel();
+        live.getMap().onCheckpoint();
+        live.getTarget().onCheckpoint();
+        model = new EditorModel(live);
 
         eventDescriptions.addAll(descriptions);
     }
@@ -103,12 +104,16 @@ public class Checkpoint {
     }
 
     /**
-     * Copy this checkpoint to the editor's live state.
+     * Copy the saved MVC model to the editor's live state.
      */
     void restore() {
-        EditorModel liveState = new EditorModel(model);
-        Maud.setModel(liveState);
-        liveState.getSource().getSceneView().reinstall();
-        liveState.getTarget().getSceneView().reinstall();
+        EditorModel oldLiveState = Maud.getModel();
+        oldLiveState.getSource().getSceneView().preMakeLive();
+        oldLiveState.getTarget().getSceneView().preMakeLive();
+
+        EditorModel newLiveState = new EditorModel(model);
+        Maud.setModel(newLiveState);
+        newLiveState.getSource().getSceneView().reinstall();
+        newLiveState.getTarget().getSceneView().reinstall();
     }
 }
