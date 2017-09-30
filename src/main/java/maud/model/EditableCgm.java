@@ -742,14 +742,14 @@ public class EditableCgm extends LoadedCgm {
         if (success) {
             String af = assetFolderForWrite();
             if (baseFilePath.startsWith(af)) {
-                assetLocation = af;
+                assetRootPath = af;
                 baseAssetPath = MyString.remainder(baseFilePath, af);
             } else if (baseFilePath.endsWith(baseAssetPath)
                     && !baseAssetPath.isEmpty()) {
-                assetLocation = MyString.removeSuffix(baseFilePath,
+                assetRootPath = MyString.removeSuffix(baseFilePath,
                         baseAssetPath);
             } else {
-                assetLocation = "";
+                assetRootPath = "";
                 baseAssetPath = "";
             }
             if (baseAssetPath.startsWith("/")) {
@@ -810,7 +810,7 @@ public class EditableCgm extends LoadedCgm {
      * @return absolute filesystem path (not null, not empty)
      */
     private String assetFolderForWrite() {
-        String result = assetLocation;
+        String result = assetRootPath;
         if (result.isEmpty() || result.endsWith(".jar")
                 || result.endsWith(".zip")) {
             result = ActionApplication.getWrittenAssetDirPath();

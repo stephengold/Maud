@@ -45,8 +45,8 @@ public class CgmTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            CgmTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(CgmTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -59,7 +59,7 @@ public class CgmTool extends WindowController {
         super(screenController, "cgmTool", false);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -86,12 +86,12 @@ public class CgmTool extends WindowController {
                 : MyString.quote(assetPath);
         Maud.gui.setStatusText("cgmAbp", " " + abpDesc);
         /*
-         * asset-location path
+         * asset root
          */
-        String location = target.getAssetLocation();
-        String afDesc = location.isEmpty() ? "unknown"
-                : MyString.quote(location);
-        Maud.gui.setStatusText("cgmAf", " " + afDesc);
+        String assetRoot = target.getAssetRootPath();
+        String assetRootDescription = assetRoot.isEmpty() ? "unknown"
+                : MyString.quote(assetRoot);
+        Maud.gui.setStatusText("cgmAf", " " + assetRootDescription);
         /*
          * asset/file extension
          */
