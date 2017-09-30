@@ -287,7 +287,7 @@ public class EditableMap extends LoadedMap {
     public void unload() {
         History.autoAdd();
         map.clear();
-        assetLocation = "";
+        assetRootPath = "";
         baseAssetPath = "";
         setEdited("unload map");
     }
@@ -318,14 +318,14 @@ public class EditableMap extends LoadedMap {
         if (success) {
             String af = assetFolderForWrite();
             if (baseFilePath.startsWith(af)) {
-                assetLocation = af;
+                assetRootPath = af;
                 baseAssetPath = MyString.remainder(baseFilePath, af);
             } else if (filePath.endsWith(baseAssetPath)
                     && !baseAssetPath.isEmpty()) {
-                assetLocation = MyString.removeSuffix(baseFilePath,
+                assetRootPath = MyString.removeSuffix(baseFilePath,
                         baseAssetPath);
             } else {
-                assetLocation = "";
+                assetRootPath = "";
                 baseAssetPath = "";
             }
             if (baseAssetPath.startsWith("/")) {
@@ -408,7 +408,7 @@ public class EditableMap extends LoadedMap {
      * @return absolute filesystem path (not null, not empty)
      */
     private String assetFolderForWrite() {
-        String result = assetLocation;
+        String result = assetRootPath;
         if (result.isEmpty() || result.endsWith(".jar")
                 || result.endsWith(".zip")) {
             result = ActionApplication.getWrittenAssetDirPath();
@@ -449,7 +449,7 @@ public class EditableMap extends LoadedMap {
             map.map(name, name);
         }
 
-        assetLocation = "";
+        assetRootPath = "";
         baseAssetPath = "";
         String event = String.format("load an identity map with %d bone%s",
                 numBones, numBones == 1 ? "" : "s");
