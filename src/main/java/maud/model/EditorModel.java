@@ -207,8 +207,8 @@ public class EditorModel {
      * Callback invoked after restoring a checkpoint.
      */
     public void postMakeLive() {
-        getSource().getSceneView().reinstall();
-        getTarget().getSceneView().reinstall();
+        getSource().getSceneView().postMakeLive();
+        getTarget().getSceneView().postMakeLive();
     }
 
     /**
