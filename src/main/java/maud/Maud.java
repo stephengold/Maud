@@ -53,6 +53,7 @@ import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
 import maud.dialog.QuitDialog;
 import maud.model.Cgm;
+import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.option.ViewMode;
@@ -255,6 +256,16 @@ public class Maud extends GuiApplication {
     }
 
     /**
+     * Perform the action described by the specified action string using the
+     * editor screen's input mode. Invoked via reflection, from scripts.
+     *
+     * @param actionString (not null)
+     */
+    public static void perform(String actionString) {
+        gui.perform(actionString);
+    }
+
+    /**
      * Alter which MVC model for the editor screen is live. Invoked only when
      * restoring a checkpoint.
      *
@@ -294,11 +305,18 @@ public class Maud extends GuiApplication {
         success = stateManager.attach(screenShotState);
         assert success;
         /*
-         * Add a locator for browsing "Written Assets". TODO read startup.txt
-         * first and only do this as a fallback
+         * Evaluate the startup script.
          */
-        String wadp = getWrittenAssetDirPath();
-        editorModel.getLocations().addFilesystem(wadp);
+        UncachedKey key = new UncachedKey("Scripts/startup.js");
+        assetManager.loadAsset(key);
+        /*
+         * If no target model is loaded, load Jaime as a fallback.
+         */
+        EditableCgm target = Maud.getModel().getTarget();
+        if (!target.isLoaded()) {
+            success = target.loadNamed("Jaime");
+            assert success;
+        }
     }
 
     /**
@@ -642,6 +660,7 @@ public class Maud extends GuiApplication {
          * Register loaders for BVH, txt, and Xbuf assets.
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
+        assetManager.registerLoader(ScriptLoader.class, "js");
         assetManager.registerLoader(StringLoader.class, "txt");
         assetManager.registerLoader(XbufLoader.class, "xbuf");
         /*
