@@ -449,8 +449,8 @@ public class EditorMenus {
                 case "Joint Tool":
                     Maud.gui.tools.select("joint");
                     break;
-                case "Mass": // TODO
-                    handled = false;
+                case "Mass":
+                    EditorDialogs.setPhysicsMass();
                     break;
                 case "Object Tool":
                     Maud.gui.tools.select("physics");

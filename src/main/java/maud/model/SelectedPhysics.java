@@ -139,6 +139,23 @@ public class SelectedPhysics implements Cloneable {
     }
 
     /**
+     * Test whether the selected object has mass.
+     *
+     * @return true if the object is a rigid body, otherwise false
+     */
+    public boolean hasMass() {
+        PhysicsCollisionObject object = find();
+        boolean result;
+        if (object instanceof PhysicsRigidBody) {
+            result = true;
+        } else {
+            result = false;
+        }
+
+        return result;
+    }
+
+    /**
      * Calculate the index of the selected object.
      *
      * @return index (&ge;0)
@@ -157,8 +174,7 @@ public class SelectedPhysics implements Cloneable {
      * @return true if selected, otherwise false
      */
     public boolean isSelected() {
-        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        PhysicsCollisionObject object = PhysicsUtil.findObject(name, space);
+        PhysicsCollisionObject object = find();
         boolean result;
         if (object == null) {
             result = false;
