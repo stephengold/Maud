@@ -80,60 +80,81 @@ class SetAction {
             case Action.setBatchHint:
                 Maud.gui.showMenus.setBatchHint();
                 break;
+
             case Action.setCullHint:
                 Maud.gui.showMenus.setCullHint();
                 break;
+
+            case Action.setPhysicsMass:
+                EditorDialogs.setPhysicsMass();
+                break;
+
             case Action.setQueueBucket:
                 Maud.gui.showMenus.setQueueBucket();
                 break;
+
             case Action.setSceneBones:
                 currentOption = model.getScene().getSkeleton().getShowBones();
                 Maud.gui.showMenus.setShowBones(ActionPrefix.setSceneBones,
                         currentOption);
                 break;
+
             case Action.setScoreBonesNone:
                 currentOption = model.getScore().getShowNoneSelected();
                 Maud.gui.showMenus.setShowBones(ActionPrefix.setScoreBonesNone,
                         currentOption);
                 break;
+
             case Action.setScoreBonesWhen:
                 currentOption = model.getScore().getShowWhenSelected();
                 Maud.gui.showMenus.setShowBones(ActionPrefix.setScoreBonesWhen,
                         currentOption);
                 break;
+
             case Action.setShadowMode:
                 Maud.gui.showMenus.setShadowMode();
                 break;
+
             case Action.setTrackRotationAll:
                 target.getTrack().setRotationAll();
                 break;
+
             case Action.setTrackScaleAll:
                 target.getTrack().setScaleAll();
                 break;
+
             case Action.setTrackTranslationAll:
                 target.getTrack().setTranslationAll();
                 break;
+
             case Action.setTweenRotations:
                 Maud.gui.showMenus.setTweenRotations();
                 break;
+
             case Action.setTweenScales:
                 Maud.gui.showMenus.setTweenScales();
                 break;
+
             case Action.setTweenTranslations:
                 Maud.gui.showMenus.setTweenTranslations();
                 break;
+
             case Action.setTwistCardinal:
                 model.getMap().cardinalizeTwist();
                 break;
+
             case Action.setTwistSnapX:
                 model.getMap().snapTwist(PhysicsSpace.AXIS_X);
                 break;
+
             case Action.setTwistSnapY:
                 model.getMap().snapTwist(PhysicsSpace.AXIS_Y);
                 break;
+
             case Action.setTwistSnapZ:
                 model.getMap().snapTwist(PhysicsSpace.AXIS_Z);
                 break;
+
             case Action.setUserData:
                 EditorDialogs.setUserData();
                 break;
@@ -181,6 +202,11 @@ class SetAction {
                     ActionPrefix.setDurationSame);
             float value = Float.parseFloat(arg);
             target.getAnimation().setDurationSame(value);
+
+        } else if (actionString.startsWith(ActionPrefix.setPhysicsMass)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setPhysicsMass);
+            float value = Float.parseFloat(arg);
+            target.setMass(value);
 
         } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
             arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
