@@ -55,7 +55,7 @@ public class SelectedJoint implements Cloneable {
     // fields
 
     /**
-     * CG model containing the selected joint (set by {@link #setCgm(Cgm)})
+     * C-G model containing the selected joint (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
@@ -221,13 +221,14 @@ public class SelectedJoint implements Cloneable {
     }
 
     /**
-     * Alter which CG model contains the selected object.
+     * Alter which C-G model contains the selected joint.
      *
      * @param newCgm (not null)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
         assert newCgm.getJoint() == this;
+
         cgm = newCgm;
     }
     // *************************************************************************
@@ -237,7 +238,7 @@ public class SelectedJoint implements Cloneable {
      * Create a copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public SelectedJoint clone() throws CloneNotSupportedException {

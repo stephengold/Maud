@@ -66,7 +66,7 @@ public class SelectedAnimControl implements JmeCloneable {
      */
     private AnimControl last = null;
     /**
-     * CG model containing the anim control (set by {@link #setCgm(Cgm)})
+     * C-G model containing the anim control (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     // *************************************************************************
@@ -92,9 +92,9 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Access the selected AnimControl: either the selected SGC (if it's an
-     * AnimControl) or else the first AnimControl added to the CGM's root
-     * spatial.
+     * Access the selected AnimControl: either the selected S-G control (if it's
+     * an AnimControl) or else the first AnimControl added to the C-G model's
+     * root spatial.
      *
      * @return the pre-existing instance, or null if none
      */
@@ -397,7 +397,7 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Alter which CG model contains the selected anim control.
+     * Alter which C-G model contains the selected anim control.
      *
      * @param newCgm (not null)
      */
@@ -410,8 +410,9 @@ public class SelectedAnimControl implements JmeCloneable {
     // JmeCloneable methods
 
     /**
-     * Convert this shallow-cloned view into a deep-cloned one, using the
-     * specified cloner and original to resolve copied fields.
+     * Callback from {@link com.jme3.util.clone.Cloner} to convert this
+     * shallow-cloned instance into a deep-cloned one, using the specified
+     * cloner and original to resolve copied fields.
      *
      * @param cloner the cloner currently cloning this control (not null)
      * @param original the view from which this view was shallow-cloned (unused)

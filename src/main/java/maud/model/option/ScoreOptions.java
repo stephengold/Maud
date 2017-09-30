@@ -44,8 +44,8 @@ public class ScoreOptions implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            ScoreOptions.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(ScoreOptions.class.getName());
     // *************************************************************************
     // fields
 
@@ -92,9 +92,9 @@ public class ScoreOptions implements Cloneable {
     }
 
     /**
-     * Determine which bones to show in the specified CG model.
+     * Determine which bones to show in the specified C-G model.
      *
-     * @param cgm which CG model to use (not null)
+     * @param cgm which C-G model to use (not null)
      * @return enum (not null)
      */
     public ShowBones bonesShown(Cgm cgm) {
@@ -235,7 +235,7 @@ public class ScoreOptions implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public ScoreOptions clone() throws CloneNotSupportedException {

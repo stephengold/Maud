@@ -40,7 +40,7 @@ import maud.PhysicsUtil;
 import maud.view.SceneView;
 
 /**
- * The MVC model of the selected scene-graph (SG) control in the Maud
+ * The MVC model of the selected scene-graph (S-G) control in the Maud
  * application. TODO rename Sgc?
  *
  * @author Stephen Gold sgold@sonic.net
@@ -62,16 +62,16 @@ public class SelectedSgc implements Cloneable {
     // fields
 
     /**
-     * CG model containing the SG control (set by {@link #setCgm(Cgm)})
+     * C-G model containing the S-G control (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
-     * editable CG model, if any, containing the selected object (set by
+     * editable C-G model, if any, containing the selected object (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm = null;
     /**
-     * position of the selected SG control in the MVC model, or -1 for none
+     * position of the selected S-G control in the MVC model, or -1 for none
      * selected
      */
     private int selectedIndex = -1;
@@ -79,7 +79,7 @@ public class SelectedSgc implements Cloneable {
     // new methods exposed
 
     /**
-     * Delete the selected SG control.
+     * Delete the selected S-G control.
      */
     public void delete() {
         if (isSelected() && editableCgm != null) {
@@ -89,7 +89,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Access the selected SG control.
+     * Access the selected S-G control.
      *
      * @return the pre-existing instance, or null if none selected/found
      */
@@ -107,16 +107,16 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Read the position of the selected SG control in the selected spatial.
+     * Read the position of the selected S-G control in the selected spatial.
      *
-     * @return the SG control index, or -1 if none selected
+     * @return the S-G control index, or -1 if none selected
      */
     public int getIndex() {
         return selectedIndex;
     }
 
     /**
-     * Read the name of the physics mode of the selected SG control.
+     * Read the name of the physics mode of the selected S-G control.
      *
      * @return mode name, or "" if unknown
      */
@@ -147,7 +147,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Determine the name of the physics object associated with the selected SG
+     * Determine the name of the physics object associated with the selected S-G
      * control.
      *
      * @return object name, or "" if unknown
@@ -167,7 +167,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Read the type of the selected SG control.
+     * Read the type of the selected S-G control.
      *
      * @return abbreviated name for the class
      */
@@ -182,7 +182,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Test whether the selected SGC applies physics coordinates to its
+     * Test whether the selected S-G control applies physics coordinates to its
      * spatial's local translation.
      *
      * @return true if applied to local translation, otherwise false
@@ -200,7 +200,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Test whether the selected SGC is enabled.
+     * Test whether the selected S-G control is enabled.
      *
      * @return true if enabled or of unknown type, otherwise false
      */
@@ -232,7 +232,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Determine a name for the selected SG control.
+     * Determine a name for the selected S-G control.
      *
      * @return a descriptive name, or noControl if none selected
      */
@@ -249,17 +249,17 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * After successfully loading a CG model, deselect the selected SG control,
-     * if any.
+     * After successfully loading a C-G model, deselect the selected S-G
+     * control, if any.
      */
     void postLoad() {
         selectedIndex = -1;
     }
 
     /**
-     * Select the specified SG control in the selected spatial.
+     * Select the specified S-G control in the selected spatial.
      *
-     * @param newSgc which SG control to select, or null to deselect
+     * @param newSgc which S-G control to select, or null to deselect
      */
     public void select(Control newSgc) {
         if (newSgc == null) {
@@ -272,9 +272,9 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Select an SG control by its index.
+     * Select an S-G control by its index.
      *
-     * @param newIndex which SG control to select, or -1 to deselect
+     * @param newIndex which S-G control to select, or -1 to deselect
      */
     public void select(int newIndex) {
         if (selectedIndex != newIndex) {
@@ -285,9 +285,9 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Select an SG control by its name.
+     * Select an S-G control by its name.
      *
-     * @param name which SG control to select, or noControl to deselect (not
+     * @param name which S-G control to select, or noControl to deselect (not
      * null)
      */
     public void select(String name) {
@@ -303,7 +303,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Select the next SG control (in cyclical index order).
+     * Select the next S-G control (in cyclical index order).
      */
     public void selectNext() {
         if (isSelected()) {
@@ -317,14 +317,14 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Deselect the selected SG control, if any.
+     * Deselect the selected S-G control, if any.
      */
     public void selectNone() {
         select(-1);
     }
 
     /**
-     * Select the previous SG control (in cyclical index order).
+     * Select the previous S-G control (in cyclical index order).
      */
     public void selectPrevious() {
         if (isSelected()) {
@@ -338,7 +338,7 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Alter which CG model contains the selected SG control.
+     * Alter which C-G model contains the selected S-G control.
      *
      * @param newCgm (not null)
      */
@@ -360,7 +360,7 @@ public class SelectedSgc implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public SelectedSgc clone() throws CloneNotSupportedException {

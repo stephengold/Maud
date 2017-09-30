@@ -64,8 +64,8 @@ public class LoadedMap implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            LoadedMap.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(LoadedMap.class.getName());
     // *************************************************************************
     // fields
 
@@ -90,7 +90,7 @@ public class LoadedMap implements Cloneable {
     // new methods exposed
 
     /**
-     * Calculate the mapped transform of the indexed bone in the target CG
+     * Calculate the mapped transform of the indexed bone in the target C-G
      * model.
      *
      * @param boneIndex which target bone to calculate (&ge;0)
@@ -233,7 +233,7 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Test whether the named bone in the target CG model is mapped.
+     * Test whether the named bone in the target C-G model is mapped.
      *
      * @param targetBoneName name of bone to find (not null)
      * @return true if mapped, otherwise false
@@ -292,7 +292,7 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Test whether the indexed bone in the source CG model is mapped.
+     * Test whether the indexed bone in the source C-G model is mapped.
      *
      * @param boneIndex which bone (&ge;0)
      * @return true if the mapped, otherwise false
@@ -316,7 +316,7 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Test whether the indexed bone in the target CG model is mapped.
+     * Test whether the indexed bone in the target C-G model is mapped.
      *
      * @param boneIndex which bone (&ge;0)
      * @return true if the mapped, otherwise false
@@ -460,7 +460,7 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Retarget the source animation to the target CG model and load the
+     * Retarget the source animation to the target C-G model and load the
      * resulting animation.
      *
      * @param newName name for the new animation (not null, not empty)
@@ -615,7 +615,7 @@ public class LoadedMap implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public LoadedMap clone() throws CloneNotSupportedException {
@@ -648,7 +648,7 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Calculate an effective bone mapping for the named bone in the target CG
+     * Calculate an effective bone mapping for the named bone in the target C-G
      * model.
      *
      * @param targetBoneName name of bone to find (not null)
@@ -722,7 +722,7 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Add a re-targeted animation to the target CG model.
+     * Add a re-targeted animation to the target C-G model.
      *
      * @param newAnimationName name for the resulting animation (not null)
      */

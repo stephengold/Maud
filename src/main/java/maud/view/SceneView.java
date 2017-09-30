@@ -995,8 +995,9 @@ public class SceneView
     // JmeCloneable methods
 
     /**
-     * Convert this shallow-cloned view into a deep-cloned one, using the
-     * specified cloner and original to resolve copied fields.
+     * Callback from {@link com.jme3.util.clone.Cloner} to convert this
+     * shallow-cloned instance into a deep-cloned one, using the specified
+     * cloner and original to resolve copied fields.
      *
      * @param cloner the cloner currently cloning this control (not null)
      * @param original the view from which this view was shallow-cloned (unused)
@@ -1267,7 +1268,7 @@ public class SceneView
 
     /**
      * Alter a newly loaded C-G model to prepare it for visualization. Assumes
-     * the C-G model's root node will be the selected spatial and no SG control
+     * the C-G model's root node will be the selected spatial and no S-G control
      * will be selected.
      */
     private void prepareForViewing() {
@@ -1282,8 +1283,8 @@ public class SceneView
         Skeleton selectedSkeleton = MySkeleton.findSkeleton(cgmRoot);
         /*
          * Remove all scene-graph controls except those concerned with physics.
-         * Enable those SGCs and configure their physics spaces so that the
-         * BulletDebugAppState can render their collision shapes.
+         * Enable those S-G controls and configure their physics spaces so that
+         * the BulletDebugAppState will render their collision shapes.
          */
         MySpatial.removeNonPhysicsControls(cgmRoot);
         PhysicsSpace space = getPhysicsSpace();

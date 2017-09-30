@@ -73,7 +73,7 @@ public class SelectedSkeleton implements JmeCloneable {
     // fields
 
     /**
-     * CG model containing the skeleton (set by {@link #setCgm(Cgm)})
+     * C-G model containing the skeleton (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
@@ -124,7 +124,7 @@ public class SelectedSkeleton implements JmeCloneable {
      * Find the selected skeleton.
      *
      * @param storeSelectedSpatialFlag if not null, set to true if the skeleton
-     * came from the selected spatial, false if it came from the CG model root
+     * came from the selected spatial, false if it came from the C-G model root
      * @return the pre-existing instance, or null if none
      */
     Skeleton find(Boolean storeSelectedSpatialFlag) {
@@ -133,7 +133,7 @@ public class SelectedSkeleton implements JmeCloneable {
         SkeletonControl skeletonControl;
         Skeleton skeleton = null;
         /*
-         * If the selected SG control is an AnimControl or SkeletonControl,
+         * If the selected S-G control is an AnimControl or SkeletonControl,
          * use its skeleton, if it has one.
          */
         Control selectedSgc = cgm.getSgc().find();
@@ -152,7 +152,7 @@ public class SelectedSkeleton implements JmeCloneable {
         }
         /*
          * If not, use the skeleton from the first AnimControl or
-         * SkeletonControl in the CG model's root spatial.
+         * SkeletonControl in the C-G model's root spatial.
          */
         Spatial cgmRoot = cgm.getRootSpatial();
         if (skeleton == null) {
@@ -591,21 +591,23 @@ public class SelectedSkeleton implements JmeCloneable {
     }
 
     /**
-     * Alter which CG model contains the selected skeleton.
+     * Alter which C-G model contains the selected skeleton.
      *
      * @param newCgm (not null)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
         assert newCgm.getSkeleton() == this;
+
         cgm = newCgm;
     }
     // *************************************************************************
     // JmeCloneable methods
 
     /**
-     * Convert this shallow-cloned view into a deep-cloned one, using the
-     * specified cloner and original to resolve copied fields.
+     * Callback from {@link com.jme3.util.clone.Cloner} to convert this
+     * shallow-cloned instance into a deep-cloned one, using the specified
+     * cloner and original to resolve copied fields.
      *
      * @param cloner the cloner currently cloning this control (not null)
      * @param original the view from which this view was shallow-cloned (unused)

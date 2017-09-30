@@ -43,8 +43,8 @@ public class SceneOptions implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SceneOptions.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SceneOptions.class.getName());
     // *************************************************************************
     // fields
 
@@ -288,7 +288,7 @@ public class SceneOptions implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public SceneOptions clone() throws CloneNotSupportedException {

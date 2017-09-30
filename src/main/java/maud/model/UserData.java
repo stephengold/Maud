@@ -48,12 +48,12 @@ public class UserData implements Cloneable {
     // fields
 
     /**
-     * editable CG model, if any, containing the user data (set by
-     * {@link #setCgm(Cgm)})
+     * editable C-G model, if any, containing the user data (set by
+     * {@link #setCgm(Cgm)}) TODO sort fields
      */
     private EditableCgm editableCgm;
     /**
-     * CG model containing the user data (set by {@link #setCgm(Cgm)})
+     * C-G model containing the user data (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
@@ -135,7 +135,7 @@ public class UserData implements Cloneable {
     }
 
     /**
-     * Alter which CG model contains the data.
+     * Alter which C-G model contains the data.
      *
      * @param newCgm (not null)
      */
@@ -157,7 +157,7 @@ public class UserData implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public UserData clone() throws CloneNotSupportedException {

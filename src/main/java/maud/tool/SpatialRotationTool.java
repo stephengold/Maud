@@ -54,8 +54,8 @@ class SpatialRotationTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SpatialRotationTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SpatialRotationTool.class.getName());
     /**
      * names of the coordinate axes
      */
@@ -130,7 +130,7 @@ class SpatialRotationTool extends WindowController {
         Maud.gui.setIgnoreGuiChanges(true);
 
         setSlidersToTransform();
-        String dButton;
+        String dButton; // TODO remove
         if (Maud.getModel().getMisc().getAnglesInDegrees()) {
             dButton = "radians";
         } else {

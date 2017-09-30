@@ -58,8 +58,8 @@ public class CameraStatus implements Cloneable {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            CameraStatus.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(CameraStatus.class.getName());
     // *************************************************************************
     // fields
 
@@ -224,7 +224,7 @@ public class CameraStatus implements Cloneable {
      * Create a copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
     public CameraStatus clone() throws CloneNotSupportedException {
