@@ -283,7 +283,7 @@ public class CheckLoaded {
     }
 
     /**
-     * Check for anomalies in a loaded CG model.
+     * Check for anomalies in a loaded C-G model.
      *
      * @param cgmRoot (not null, unaffected)
      * @return false if issues found, otherwise true

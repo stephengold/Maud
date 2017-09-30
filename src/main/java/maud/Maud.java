@@ -60,8 +60,8 @@ import maud.view.SceneView;
 import maud.view.ScoreView;
 
 /**
- * GUI application to edit jMonkeyEngine animated 3-D CG models. The
- * application's main entry point is in this class.
+ * GUI application to edit jMonkeyEngine animated C-G models. The application's
+ * main entry point is in this class.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -676,7 +676,7 @@ public class Maud extends GuiApplication {
         ScoreView targetScoreView = new ScoreView(targetScoreWideViewPort,
                 targetScoreRightViewPort, targetScoreLeftViewPort);
         /*
-         * Attach views to CG model slots.
+         * Attach views to C-G model slots.
          */
         editorModel.getSource().setViews(sourceSceneView, sourceScoreView);
         editorModel.getTarget().setViews(targetSceneView, targetScoreView);

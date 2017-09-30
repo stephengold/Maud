@@ -48,8 +48,8 @@ class BoneRenameDialog implements DialogController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            BoneRenameDialog.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(BoneRenameDialog.class.getName());
     // *************************************************************************
     // fields
 
@@ -164,7 +164,7 @@ class BoneRenameDialog implements DialogController {
     }
 
     /**
-     * Test whether the specified name is used in the target CG model.
+     * Test whether the specified name is used in the target C-G model.
      *
      * @param name which name to test (not null)
      * @return true if used, otherwise false

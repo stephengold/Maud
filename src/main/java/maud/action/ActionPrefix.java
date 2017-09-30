@@ -62,11 +62,11 @@ public class ActionPrefix {
     final public static String deletePreviousKeyframes
             = "delete previousKeyframes ";
     /**
-     * argument is the name of an animation in the target CG model
+     * argument is the name of an animation in the target C-G model
      */
     final public static String loadAnimation = "load animation ";
     /**
-     * remainder is a location index followed by an asset path to a CG model
+     * remainder is a location index followed by an asset path to a C-G model
      */
     final public static String loadCgmAsset = "load cgm asset ";
     /**
@@ -74,7 +74,7 @@ public class ActionPrefix {
      */
     final public static String loadCgmLocator = "load cgm locator ";
     /**
-     * argument is the name of a CG model on the classpath or else otherName
+     * argument is the name of a C-G model on the classpath or else otherName
      */
     final public static String loadCgmNamed = "load cgm named ";
     /**
@@ -91,11 +91,11 @@ public class ActionPrefix {
      */
     final public static String loadMapNamed = "load map named ";
     /**
-     * argument is the name of an animation in the source CG model
+     * argument is the name of an animation in the source C-G model
      */
     final public static String loadSourceAnimation = "load sourceAnimation ";
     /**
-     * argument is a location index followed by an asset path to a CG model
+     * argument is a location index followed by an asset path to a C-G model
      */
     final public static String loadSourceCgmAsset = "load sourceCgm asset ";
     /**
@@ -103,7 +103,7 @@ public class ActionPrefix {
      */
     final public static String loadSourceCgmLocator = "load sourceCgm locator ";
     /**
-     * argument is the name of a CG model on the classpath
+     * argument is the name of a C-G model on the classpath
      */
     final public static String loadSourceCgmNamed = "load sourceCgm named ";
     /**
