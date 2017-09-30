@@ -29,7 +29,7 @@ package maud.model;
 import java.util.logging.Logger;
 import jme3utilities.wes.TweenTransforms;
 import maud.model.option.AssetLocations;
-import maud.model.option.MiscStatus;
+import maud.model.option.MiscOptions;
 import maud.model.option.ScoreOptions;
 import maud.model.option.scene.SceneOptions;
 
@@ -68,9 +68,9 @@ public class EditorModel {
      */
     final private LoadedCgm sourceCgmLoadSlot;
     /**
-     * miscellaneous options TODO rename miscOptions
+     * miscellaneous options
      */
-    final private MiscStatus misc;
+    final private MiscOptions miscOptions;
     /**
      * options for "scene" views
      */
@@ -94,7 +94,7 @@ public class EditorModel {
         targetCgmLoadSlot = new EditableCgm();
         mapLoadSlot = new EditableMap();
         sourceCgmLoadSlot = new LoadedCgm();
-        misc = new MiscStatus();
+        miscOptions = new MiscOptions();
         sceneOptions = new SceneOptions();
         scoreOptions = new ScoreOptions();
         techniques = new TweenTransforms();
@@ -112,7 +112,7 @@ public class EditorModel {
             targetCgmLoadSlot = other.getTarget().clone();
             mapLoadSlot = other.getMap().clone();
             sourceCgmLoadSlot = other.getSource().clone();
-            misc = other.getMisc().clone();
+            miscOptions = other.getMisc().clone();
             sceneOptions = other.getScene().clone();
             scoreOptions = other.getScore().clone();
             techniques = other.getTweenTransforms().clone();
@@ -148,9 +148,9 @@ public class EditorModel {
      *
      * @return the pre-existing instance (not null)
      */
-    public MiscStatus getMisc() {
-        assert misc != null;
-        return misc;
+    public MiscOptions getMisc() {
+        assert miscOptions != null;
+        return miscOptions;
     }
 
     /**

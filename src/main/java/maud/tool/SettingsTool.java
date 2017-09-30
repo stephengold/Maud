@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 import maud.Maud;
-import maud.model.option.MiscStatus;
+import maud.model.option.MiscOptions;
 
 /**
  * The controller for the "Settings Tool" window in Maud's editor screen.
@@ -72,17 +72,17 @@ class SettingsTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        MiscStatus status = Maud.getModel().getMisc();
+        MiscOptions options = Maud.getModel().getMisc();
 
-        boolean degreesFlag = status.getAnglesInDegrees();
+        boolean degreesFlag = options.getAnglesInDegrees();
         String description = degreesFlag ? "degrees" : "radians";
         Maud.gui.setButtonLabel("settingsDegreesButton", description);
 
-        int indexBase = status.getIndexBase();
+        int indexBase = options.getIndexBase();
         description = Integer.toString(indexBase);
         Maud.gui.setButtonLabel("settingsIndexBaseButton", description);
 
-        boolean diagnoseFlag = status.getDiagnoseLoads();
+        boolean diagnoseFlag = options.getDiagnoseLoads();
         Maud.gui.setChecked("settingsDiagnose", diagnoseFlag);
 
         Maud.gui.setIgnoreGuiChanges(false);

@@ -26,17 +26,16 @@
  */
 package maud.model.option;
 
-import com.jme3.math.Vector3f;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * The MVC model of miscellaneous options in Maud's editor screen.
+ * The MVC model of miscellaneous global options in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class MiscStatus implements Cloneable {
+public class MiscOptions implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -44,11 +43,7 @@ public class MiscStatus implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(MiscStatus.class.getName());
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
-     */
-    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
+            = Logger.getLogger(MiscOptions.class.getName());
     // *************************************************************************
     // fields
 
@@ -185,11 +180,11 @@ public class MiscStatus implements Cloneable {
      * Create a deep copy of this object.
      *
      * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if superclass isn't cloneable
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
-    public MiscStatus clone() throws CloneNotSupportedException {
-        MiscStatus clone = (MiscStatus) super.clone();
+    public MiscOptions clone() throws CloneNotSupportedException {
+        MiscOptions clone = (MiscOptions) super.clone();
         return clone;
     }
 }
