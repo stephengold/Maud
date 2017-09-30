@@ -45,9 +45,8 @@ import maud.dialog.EditorDialogs;
 import maud.menu.BuildMenus;
 
 /**
- * MVC model for a computer-graphics (CG) model load slot in the Maud
- * application: keeps track of where it was loaded from, and provides access to
- * related MVC model state.
+ * MVC model for a computer-graphics (C-G) model load slot in the Maud
+ * application: keeps track of where it was loaded from.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -58,16 +57,16 @@ public class LoadedCgm extends Cgm {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            LoadedCgm.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(LoadedCgm.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * absolute filesystem path to asset location, or "" if unknown/remote, or
-     * null if none loaded TODO rename assetRootPath
+     * absoluate filesystem path to the asset root used to the C-G model, or ""
+     * if unknown/remote, or null if none loaded
      */
-    protected String assetLocation = null;
+    protected String assetRootPath = null;
     /**
      * asset path less extension, or "" if unknown, or null if none loaded
      */
@@ -77,25 +76,14 @@ public class LoadedCgm extends Cgm {
      */
     protected String extension = null;
     /**
-     * name of the CG model, or null if none model loaded
+     * name of the C-G model, or null if none loaded
      */
     protected String name = null;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Read the asset root path of the loaded CG model. TODO rename
-     * getAssetRootPath
-     *
-     * @return absolute filesystem path, or "" if unknown/remote (not null)
-     */
-    public String getAssetLocation() {
-        assert assetLocation != null;
-        return assetLocation;
-    }
-
-    /**
-     * Read the asset path of the loaded CG model, less extension.
+     * Read the asset path of the loaded C-G model, less extension.
      *
      * @return base path, or "" if unknown (not null)
      */
@@ -105,7 +93,17 @@ public class LoadedCgm extends Cgm {
     }
 
     /**
-     * Read the extension of the loaded CG model.
+     * Read the local filesystem path to the asset root used to the C-G model.
+     *
+     * @return absolute path, or "" if unknown/remote (not null)
+     */
+    public String getAssetRootPath() {
+        assert assetRootPath != null;
+        return assetRootPath;
+    }
+
+    /**
+     * Read the extension of the loaded C-G model.
      *
      * @return extension (not null)
      */
@@ -115,7 +113,7 @@ public class LoadedCgm extends Cgm {
     }
 
     /**
-     * Read the name of the loaded CG model.
+     * Read the name of the loaded C-G model.
      *
      * @return name, or "" if not known (not null)
      */
@@ -125,7 +123,7 @@ public class LoadedCgm extends Cgm {
     }
 
     /**
-     * Unload the loaded CG model, if any, and load from the specified asset in
+     * Unload the loaded C-G model, if any, and load from the specified asset in
      * the specified location.
      *
      * @param spec URL specification, or null for the default location
@@ -149,11 +147,11 @@ public class LoadedCgm extends Cgm {
             success = false;
         } else {
             if (spec == null || !spec.startsWith("file:///")) {
-                assetLocation = "";
+                assetRootPath = "";
             } else {
                 String rootPath = MyString.remainder(spec, "file:///");
                 assert !rootPath.isEmpty();
-                assetLocation = rootPath;
+                assetRootPath = rootPath;
             }
             postLoad(loaded);
             success = true;
@@ -163,10 +161,10 @@ public class LoadedCgm extends Cgm {
     }
 
     /**
-     * Unload the current CG model, if any, and load the named one from the
+     * Unload the current C-G model, if any, and load the named one from the
      * default location.
      *
-     * @param cgmName which CG model to load (not null, not empty)
+     * @param cgmName which C-G model to load (not null, not empty)
      * @return true if successful, otherwise false
      */
     public boolean loadNamed(String cgmName) {
@@ -259,9 +257,9 @@ public class LoadedCgm extends Cgm {
     // protected methods
 
     /**
-     * Invoked after successfully loading a CG model.
+     * Invoked after successfully loading a C-G model.
      *
-     * @param cgmRoot the newly loaded CGM (not null)
+     * @param cgmRoot the newly loaded C-G model (not null)
      */
     protected void postLoad(Spatial cgmRoot) {
         assert cgmRoot != null;
@@ -308,14 +306,14 @@ public class LoadedCgm extends Cgm {
     }
 
     /**
-     * Unload the CG model.
+     * Unload the C-G model.
      */
     @Override
     public void unload() {
         Cgm target = Maud.getModel().getTarget();
         assert this != target; // not allowed to unload target
 
-        assetLocation = null;
+        assetRootPath = null;
         baseAssetPath = null;
         extension = null;
         name = null;
@@ -326,7 +324,7 @@ public class LoadedCgm extends Cgm {
     // private methods
 
     /**
-     * Quietly load a CG model asset from persistent storage without adding it
+     * Quietly load a C-G model asset from persistent storage without adding it
      * to the scene. If successful, set {@link #baseAssetPath}.
      *
      * @param assetPath (not null)
@@ -340,7 +338,7 @@ public class LoadedCgm extends Cgm {
         AssetManager assetManager = Locators.getAssetManager();
         Locators.save();
         /*
-         * Load the CG model.
+         * Load the C-G model.
          */
         String ext;
         Spatial loaded;
@@ -390,7 +388,7 @@ public class LoadedCgm extends Cgm {
                 int pathLength = assetPath.length() - extLength - 1;
                 baseAssetPath = assetPath.substring(0, pathLength);
             }
-            assetLocation = Locators.getRootPath();
+            assetRootPath = Locators.getRootPath();
             name = loaded.getName();
         }
 
