@@ -810,11 +810,11 @@ public class BuildMenus {
      * Build a Settings menu.
      */
     private void buildSettingsMenu() {
-        builder.add("Tool");
         builder.add("Asset locations");
-        //builder.add("Initial model"); TODO
         builder.add("Hotkeys");
         //builder.add("Locale"); TODO
+        builder.add("Tool");
+        builder.add("Update startup script");
     }
 
     /**

@@ -26,8 +26,19 @@
  */
 package maud.model;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
+import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TweenTransforms;
+import maud.Maud;
+import maud.action.ActionPrefix;
 import maud.model.option.AssetLocations;
 import maud.model.option.MiscOptions;
 import maud.model.option.ScoreOptions;
@@ -225,5 +236,94 @@ public class EditorModel {
     public void preMakeLive() {
         sourceCgmLoadSlot.getSceneView().preMakeLive();
         targetCgmLoadSlot.getSceneView().preMakeLive();
+    }
+
+    /**
+     * Update the startup script.
+     */
+    public void updateStartupScript() {
+        try {
+            updateStartupScript(Maud.startupScriptAssetPath);
+        } catch (IOException exception) {
+            logger.log(Level.SEVERE,
+                    "Output exception while writing startup script to {0}!",
+                    MyString.quote(Maud.startupScriptAssetPath));
+            throw new RuntimeException(exception);
+        }
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Update a startup script.
+     *
+     * @param assetPath asset path to startup script (not null)
+     */
+    private void updateStartupScript(String assetPath) throws IOException {
+        assert assetPath != null;
+
+        logger.log(Level.INFO, "Updating startup script in asset {0}.",
+                MyString.quote(assetPath));
+
+        FileOutputStream stream = null;
+        String filePath = ActionApplication.filePath(assetPath);
+        try {
+            File file = new File(filePath);
+            File parentDirectory = file.getParentFile();
+            if (parentDirectory != null && !parentDirectory.exists()) {
+                boolean success = parentDirectory.mkdirs();
+                if (!success) {
+                    String parentPath = parentDirectory.getAbsolutePath();
+                    parentPath = parentPath.replaceAll("\\\\", "/");
+                    String msg = String.format(
+                            "Unable to create folder %s for startup script",
+                            MyString.quote(parentPath));
+                    throw new IOException(msg);
+                }
+            }
+            stream = new FileOutputStream(filePath);
+            OutputStreamWriter writer = new OutputStreamWriter(stream);
+            writeStartupScript(writer);
+
+        } catch (IOException exception) {
+            throw exception;
+
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
+    }
+
+    /**
+     * Write an editor action to the specified writer.
+     *
+     * @param writer (not null)
+     */
+    private void writePerformAction(Writer writer, String actionString)
+            throws IOException {
+        writer.write("Maud.perform('");
+        writer.write(actionString);
+        writer.write("');\n");
+    }
+
+    /**
+     * Write an updated startup script to the specified writer.
+     *
+     * @param writer (not null)
+     */
+    private void writeStartupScript(Writer writer) throws IOException {
+        String declareMaud = "var Maud = Java.type('maud.Maud');\n";
+        writer.write(declareMaud);
+
+        List<String> specs = assetLocations.listAll();
+        for (String spec : specs) {
+            writePerformAction(writer,
+                    ActionPrefix.newAssetLocationSpec + spec);
+        }
+
+        writePerformAction(writer, ActionPrefix.loadCgmNamed + "Jaime");
+
+        writer.close();
     }
 }

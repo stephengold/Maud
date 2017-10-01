@@ -515,12 +515,19 @@ public class EditorMenus {
                 case "Asset locations":
                     ShowMenus.assetLocations();
                     break;
+
                 case "Hotkeys":
                     Maud.gui.goBindScreen();
                     break;
+
                 case "Tool":
                     Maud.gui.tools.select("settings");
                     break;
+
+                case "Update startup script":
+                    Maud.getModel().updateStartupScript();
+                    break;
+
                 default:
                     handled = false;
             }
