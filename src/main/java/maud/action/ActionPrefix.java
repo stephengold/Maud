@@ -49,9 +49,10 @@ public class ActionPrefix {
      */
     final public static String copyAnimation = "copy animation ";
     /**
-     * argument is a filesystem path to an asset directory/folder/JAR/ZIP
+     * argument is a URL specification
      */
-    final public static String deleteAssetLocation = "delete assetLocation ";
+    final public static String deleteAssetLocationSpec
+            = "delete assetLocationSpec ";
     /**
      * argument is a number of keyframes
      */

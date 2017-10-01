@@ -153,6 +153,18 @@ public class ShowMenus {
     }
 
     /**
+     * Display a "Settings -> Asset locations -> Remove" menu.
+     */
+    static void removeAssetLocation() {
+        MenuBuilder builder = new MenuBuilder();
+        List<String> specs = Maud.getModel().getLocations().listAll();
+        for (String spec : specs) {
+            builder.add(spec);
+        }
+        builder.show(ActionPrefix.deleteAssetLocationSpec);
+    }
+
+    /**
      * Display a "View -> Scene options" menu.
      */
     static void sceneViewOptions() {
