@@ -120,6 +120,10 @@ public class ActionPrefix {
      */
     final public static String newAssetLocation = "new assetLocation ";
     /**
+     * argument is a URL specification
+     */
+    final public static String newAssetLocationSpec = "new assetLocationSpec ";
+    /**
      * arguments are the new type and optional key
      */
     final public static String newUserKey = "new userKey ";

@@ -35,7 +35,7 @@ import maud.model.EditableCgm;
 import maud.model.SelectedTrack;
 
 /**
- * Process an action string that begins with "new".
+ * Process an action string that begins with the word "new".
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -124,6 +124,11 @@ class NewAction {
             String path = MyString.remainder(actionString,
                     ActionPrefix.newAssetLocation);
             Maud.gui.buildMenus.newAssetLocation(path);
+
+        } else if (actionString.startsWith(ActionPrefix.newAssetLocationSpec)) {
+            String spec = MyString.remainder(actionString,
+                    ActionPrefix.newAssetLocationSpec);
+            Maud.getModel().getLocations().addSpec(spec);
 
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromMix)) {
             String args = MyString.remainder(actionString,

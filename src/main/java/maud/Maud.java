@@ -83,10 +83,14 @@ public class Maud extends GuiApplication {
      */
     final private static Logger logger = Logger.getLogger(Maud.class.getName());
     /**
-     * path to the asset used to configure hotkey bindings
+     * path to the properties asset used to configure hotkey bindings
      */
     final private static String hotkeyBindingsAssetPath
             = "Interface/bindings/editor.properties";
+    /**
+     * path to the script asset evaluated at startup
+     */
+    final public static String startupScriptAssetPath = "Scripts/startup.js";
     /**
      * application name for the window's title bar
      */
@@ -307,7 +311,7 @@ public class Maud extends GuiApplication {
         /*
          * Evaluate the startup script.
          */
-        UncachedKey key = new UncachedKey("Scripts/startup.js");
+        UncachedKey key = new UncachedKey(startupScriptAssetPath);
         assetManager.loadAsset(key);
         /*
          * If no target model is loaded, load Jaime as a fallback.
