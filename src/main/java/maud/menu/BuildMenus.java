@@ -331,14 +331,9 @@ public class BuildMenus {
                 addAssetLocation();
                 handled = true;
                 break;
+
             case "Remove":
-                builder.reset();
-                List<String> pathList;
-                pathList = Maud.getModel().getLocations().listAll();
-                for (String path : pathList) {
-                    builder.addFile(path);
-                }
-                builder.show(ActionPrefix.deleteAssetLocation);
+                ShowMenus.removeAssetLocation();
                 handled = true;
         }
 
@@ -499,7 +494,7 @@ public class BuildMenus {
     // private methods
 
     /**
-     * Display an "Settings -> Asset locations -> Add" menu.
+     * Display a "Settings -> Asset locations -> Add" menu.
      */
     private void addAssetLocation() {
         Map<String, File> fileMap = Misc.driveMap();
