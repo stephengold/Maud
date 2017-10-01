@@ -94,7 +94,7 @@ public class Maud extends GuiApplication {
     /**
      * application name for the window's title bar
      */
-    final private static String windowTitle = "Maud";
+    final private static String windowTitle = "Maud ALPHA+3";
     // *************************************************************************
     // fields
 
