@@ -58,6 +58,7 @@ import maud.menu.BuildMenus;
 import maud.menu.ShowMenus;
 import maud.model.Cgm;
 import maud.model.Checkpoint;
+import maud.model.DisplaySettings;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
@@ -334,6 +335,14 @@ public class EditorScreen extends GuiScreenController {
             case "freeze":
                 animationCgm.getPose().setFrozen(isChecked);
                 break;
+            case "fullscreen":
+                DisplaySettings.get().setFullscreen(isChecked);
+                DisplaySettings.save();
+                break;
+            case "gamma":
+                DisplaySettings.get().setGammaCorrection(isChecked);
+                DisplaySettings.save();
+                break;
             case "invertRma":
             case "invertRma2":
                 model.getMap().setInvertMap(isChecked);
@@ -385,6 +394,10 @@ public class EditorScreen extends GuiScreenController {
                 break;
             case "spatialIgnoreTransform":
                 target.setIgnoreTransform(isChecked);
+                break;
+            case "vsync":
+                DisplaySettings.get().setVSync(isChecked);
+                DisplaySettings.save();
                 break;
             default:
                 logger.log(Level.WARNING, "check box with unknown id={0}",

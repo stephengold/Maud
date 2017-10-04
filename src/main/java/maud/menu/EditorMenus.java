@@ -516,6 +516,10 @@ public class EditorMenus {
                     ShowMenus.assetLocations();
                     break;
 
+                case "Display-settings tool":
+                    Maud.gui.tools.select("displaySettings");
+                    break;
+
                 case "Hotkeys":
                     Maud.gui.goBindScreen();
                     break;

@@ -256,6 +256,10 @@ public class ActionPrefix {
      */
     final public static String setBatchHint = "set batchHint ";
     /**
+     * argument is the decimal number of bits
+     */
+    final public static String setColorDepth = "set colorDepth ";
+    /**
      * argument is the name of a cull hint
      */
     final public static String setCullHint = "set cullHint ";
@@ -272,6 +276,15 @@ public class ActionPrefix {
      * argument is the new mass
      */
     final public static String setPhysicsMass = "set physicsMass ";
+    /**
+     * argument is the decimal refresh rate in Hertz
+     */
+    final public static String setRefreshRate = "set refreshRate ";
+    /**
+     * arguments are the decimal width in pixels, an "x", and the decimal height
+     * in pixels
+     */
+    final public static String setResolution = "set resolution ";
     /**
      * argument is the name of a queue bucket
      */
