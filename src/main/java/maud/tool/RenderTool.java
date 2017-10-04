@@ -72,9 +72,9 @@ class RenderTool extends WindowController {
     // new methods exposed
 
     /**
-     * Update a CG model's shadow filter based on the MVC model.
+     * Update a C-G model's shadow filter based on the MVC model.
      *
-     * @param cgm which CG model (not null)
+     * @param cgm which C-G model (not null)
      */
     void updateShadowFilter(Cgm cgm) {
         SceneView view = cgm.getSceneView();
@@ -97,9 +97,9 @@ class RenderTool extends WindowController {
     }
 
     /**
-     * Update a CG model's physics visualizer based on the MVC model.
+     * Update a C-G model's physics visualizer based on the MVC model.
      *
-     * @param cgm which CG model (not null)
+     * @param cgm which C-G model (not null)
      */
     void updateVisualizer(Cgm cgm) {
         SceneView sceneView = cgm.getSceneView();
@@ -108,7 +108,7 @@ class RenderTool extends WindowController {
         bulletAppState.setDebugEnabled(enable);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

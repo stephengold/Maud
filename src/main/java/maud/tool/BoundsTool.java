@@ -79,9 +79,9 @@ class BoundsTool extends WindowController {
     }
 
     /**
-     * Update a CG model's visualizer based on the MVC model.
+     * Update a C-G model's visualizer based on the MVC model.
      *
-     * @param cgm which CG model (not null)
+     * @param cgm which C-G model (not null)
      */
     void updateVisualizer(Cgm cgm) {
         SceneView sceneView = cgm.getSceneView();
@@ -102,7 +102,7 @@ class BoundsTool extends WindowController {
         visualizer.setSubject(selectedSpatial);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

@@ -97,7 +97,7 @@ class SpatialRotationTool extends WindowController {
         Maud.getModel().getTarget().setSpatialRotation(rot);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Initialize this controller prior to its 1st update.

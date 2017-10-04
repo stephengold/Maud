@@ -60,7 +60,7 @@ class CursorTool extends WindowController {
     final private static Logger logger = Logger.getLogger(
             CursorTool.class.getName());
     /**
-     * asset path of the CG model for the 3-D cursor
+     * asset path of the C-G model for the 3-D cursor
      */
     final private static String assetPath
             = "Models/indicators/3d cursor/3d cursor.blend";
@@ -87,9 +87,9 @@ class CursorTool extends WindowController {
     }
 
     /**
-     * Update a CG model's scene graph based on the MVC model.
+     * Update a C-G model's scene graph based on the MVC model.
      *
-     * @param cgm which CG model (not null)
+     * @param cgm which C-G model (not null)
      */
     void updateScene(Cgm cgm) {
         SceneView sceneView = cgm.getSceneView();

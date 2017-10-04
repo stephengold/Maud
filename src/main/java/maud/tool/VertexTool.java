@@ -62,7 +62,7 @@ class VertexTool extends WindowController {
         super(screenController, "vertexTool", false);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

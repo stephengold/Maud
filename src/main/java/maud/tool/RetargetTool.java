@@ -61,7 +61,7 @@ class RetargetTool extends WindowController {
         super(screenController, "retargetTool", false);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

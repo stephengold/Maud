@@ -68,7 +68,7 @@ class BackgroundTool extends WindowController {
         Maud.getModel().getScore().setBackgroundColor(color);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

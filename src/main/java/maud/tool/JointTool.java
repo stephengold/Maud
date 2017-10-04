@@ -59,7 +59,7 @@ class JointTool extends WindowController {
         super(screenController, "jointTool", false);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

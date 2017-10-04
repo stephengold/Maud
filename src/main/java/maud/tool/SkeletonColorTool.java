@@ -38,7 +38,7 @@ import maud.model.ShowBones;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
- * The controller for the "Skeleton Color Tool" window in Maud's editor screen.
+ * The controller for the "Skeleton-Color Tool" window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -83,7 +83,7 @@ class SkeletonColorTool extends WindowController {
     /**
      * Update a skeleton visualizer based on the MVC model.
      *
-     * @param modelCgm which CG model's view to update (not null)
+     * @param modelCgm which C-G model's view to update (not null)
      */
     void updateVisualizer(Cgm modelCgm) {
         SkeletonVisualizer visualizer;
@@ -119,7 +119,7 @@ class SkeletonColorTool extends WindowController {
         }
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

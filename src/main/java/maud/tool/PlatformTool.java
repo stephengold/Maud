@@ -89,9 +89,9 @@ class PlatformTool extends WindowController {
     // new methods exposed
 
     /**
-     * Update a CG model's scene graph based on the MVC model.
+     * Update a C-G model's scene graph based on the MVC model.
      *
-     * @param cgm which CG model (not null)
+     * @param cgm which C-G model (not null)
      */
     void updateScene(Cgm cgm) {
         SceneView sceneView = cgm.getSceneView();
