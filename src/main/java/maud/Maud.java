@@ -38,10 +38,8 @@ import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
-import com.jme3.system.JmeSystem;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.BackingStoreException;
 import jme3_ext_xbuf.XbufLoader;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
@@ -53,6 +51,7 @@ import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
 import maud.dialog.QuitDialog;
 import maud.model.Cgm;
+import maud.model.DisplaySettings;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
@@ -91,10 +90,6 @@ public class Maud extends GuiApplication {
      * path to the script asset evaluated at startup
      */
     final public static String startupScriptAssetPath = "Scripts/startup.js";
-    /**
-     * application name for the window's title bar
-     */
-    final private static String windowTitle = "Maud";
     // *************************************************************************
     // fields
 
@@ -216,47 +211,20 @@ public class Maud extends GuiApplication {
          * Lower logging thresholds for classes of interest.
          */
         History.logger.setLevel(Level.INFO);
-        /*
-         * Load app settings from persistent storage.
-         */
-        boolean loadDefaults = true;
-        AppSettings settings = new AppSettings(loadDefaults);
-        String preferencesKey = Maud.class.getName();
-        try {
-            settings.load(preferencesKey);
-        } catch (BackingStoreException e) {
-            logger.log(Level.WARNING, "App settings were not loaded.");
+
+        AppSettings appSettings = DisplaySettings.initialize();
+        if (appSettings != null) {
+            application = new Maud();
+            application.setSettings(appSettings);
+            /*
+             * Start the application without displaying another dialog.
+             */
+            application.setShowSettings(false);
+            application.start();
+            /*
+             * ... and onward to Maud.guiInitializeApplication()!
+             */
         }
-        /*
-         * Apply overrides and dialog input.
-         */
-        settings.setGammaCorrection(false);
-        settings.setSettingsDialogImage("Textures/icons/Maud-settings.png");
-        settings.setVSync(true);
-        boolean loadFromRegistry = false;
-        boolean cont = JmeSystem.showSettingsDialog(settings, loadFromRegistry);
-        if (!cont) {
-            return;
-        }
-        settings.setTitle(windowTitle);
-        /*
-         * Save app settings to persistent storage.
-         */
-        try {
-            settings.save(preferencesKey);
-        } catch (BackingStoreException e) {
-            logger.log(Level.WARNING, "App settings were not saved.");
-        }
-        /*
-         * Instantiate and start the application.
-         */
-        application = new Maud();
-        application.setSettings(settings);
-        application.setShowSettings(false);
-        application.start();
-        /*
-         * ... and onward to Maud.guiInitializeApplication()!
-         */
     }
 
     /**
