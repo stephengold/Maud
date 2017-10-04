@@ -91,7 +91,7 @@ class AnimationTool extends WindowController {
         }
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

@@ -38,7 +38,7 @@ import maud.Maud;
 import maud.model.SelectedSpatial;
 
 /**
- * The controller for the "Spatial Details Tool" window in Maud's editor screen.
+ * The controller for the "Spatial-Details Tool" window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -63,7 +63,7 @@ class SpatialDetailsTool extends WindowController {
         super(screenController, "spatialDetailsTool", false);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

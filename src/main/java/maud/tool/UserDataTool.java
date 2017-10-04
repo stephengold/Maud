@@ -36,7 +36,7 @@ import maud.model.EditableCgm;
 import maud.model.SelectedSpatial;
 
 /**
- * The controller for the "User Data Tool" window in Maud's editor screen.
+ * The controller for the "User-Data Tool" window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -61,7 +61,7 @@ class UserDataTool extends WindowController {
         super(screenController, "userDataTool", false);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

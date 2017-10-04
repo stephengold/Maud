@@ -59,7 +59,7 @@ class ShapeTool extends WindowController {
         super(screenController, "shapeTool", false);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

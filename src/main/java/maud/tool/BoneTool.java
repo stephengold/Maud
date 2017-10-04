@@ -61,7 +61,7 @@ class BoneTool extends WindowController {
         super(screenController, "boneTool", false);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

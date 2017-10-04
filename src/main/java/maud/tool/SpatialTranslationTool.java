@@ -111,7 +111,7 @@ class SpatialTranslationTool extends WindowController {
         Maud.getModel().getTarget().setSpatialTranslation(offsets);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Initialize this controller prior to its 1st update.

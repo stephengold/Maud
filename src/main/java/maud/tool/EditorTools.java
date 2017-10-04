@@ -198,7 +198,7 @@ public class EditorTools {
      */
     final private TwistTool twist;
     /**
-     * controller for the "User Data Tool" window
+     * controller for the "User-Data Tool" window
      */
     final private UserDataTool userData;
     /**
@@ -536,9 +536,9 @@ public class EditorTools {
 
     /**
      * Scene updates performed even when all tools are disabled. (Invoked once
-     * per render pass for each CG model that's rendered to a scene view.)
+     * per render pass for each C-G model that's rendered to a scene view.)
      *
-     * @param cgm which CG model occupies the scene to update (not null)
+     * @param cgm which C-G model occupies the scene to update (not null)
      */
     public void updateScene(Cgm cgm) {
         Validate.nonNull(cgm, "loaded model");

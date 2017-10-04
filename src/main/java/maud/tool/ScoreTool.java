@@ -59,7 +59,7 @@ class ScoreTool extends WindowController {
         super(screenController, "scoreTool", false);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

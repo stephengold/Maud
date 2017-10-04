@@ -84,7 +84,7 @@ class SceneVertexTool extends WindowController {
     /**
      * Update the visualization based on the MVC model.
      *
-     * @param cgm which CG model's view to update (not null)
+     * @param cgm which C-G model's view to update (not null)
      */
     void updateVisualizer(Cgm cgm) {
         Spatial spatial = cgm.getSceneView().getVertexSpatial();
@@ -109,7 +109,7 @@ class SceneVertexTool extends WindowController {
         }
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

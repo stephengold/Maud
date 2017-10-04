@@ -59,7 +59,7 @@ class SgcTool extends WindowController {
         super(screenController, "sgcTool", false);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

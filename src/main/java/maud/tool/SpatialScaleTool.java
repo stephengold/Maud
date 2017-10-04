@@ -96,7 +96,7 @@ class SpatialScaleTool extends WindowController {
         Maud.getModel().getTarget().setSpatialScale(scales);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Initialize this controller prior to its 1st update.

@@ -79,7 +79,7 @@ class SkeletonTool extends WindowController {
     /**
      * Update a skeleton visualizer based on the MVC model.
      *
-     * @param modelCgm which CG model's view to update (not null)
+     * @param modelCgm which C-G model's view to update (not null)
      */
     void updateVisualizer(Cgm modelCgm) {
         SkeletonVisualizer visualizer;
@@ -100,7 +100,7 @@ class SkeletonTool extends WindowController {
         }
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

@@ -71,9 +71,9 @@ class SkyTool extends WindowController {
     // new methods exposed
 
     /**
-     * Update a CG model's added sky based on the MVC model.
+     * Update a C-G model's added sky based on the MVC model.
      *
-     * @param cgm which CG model (not null)
+     * @param cgm which C-G model (not null)
      */
     void updateSkyControl(Cgm cgm) {
         SkyControl sky = cgm.getSceneView().getSkyControl();
@@ -87,7 +87,7 @@ class SkyTool extends WindowController {
         updater.setMainMultiplier(mainMultiplier);
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

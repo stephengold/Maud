@@ -37,7 +37,7 @@ import maud.model.LoadedAnimation;
 import maud.model.SelectedAnimControl;
 
 /**
- * The controller for the "Source Animation Tool" window in Maud's editor
+ * The controller for the "Source-Animation Tool" window in Maud's editor
  * screen.
  *
  * @author Stephen Gold sgold@sonic.net
@@ -87,7 +87,7 @@ class SourceAnimationTool extends WindowController {
         }
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

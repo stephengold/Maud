@@ -86,7 +86,7 @@ public class HistoryTool extends WindowController {
         autoScrollFlag = true;
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

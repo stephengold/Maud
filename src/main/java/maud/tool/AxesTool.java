@@ -124,7 +124,7 @@ public class AxesTool extends WindowController {
     /**
      * Test whether the indexed axis points toward or away from the camera.
      *
-     * @param cgm which CG model (not null, unaffected)
+     * @param cgm which C-G model (not null, unaffected)
      * @param axisIndex which axis (&ge;0, &lt;2)
      * @return true if pointing away, otherwise false
      */
@@ -159,11 +159,11 @@ public class AxesTool extends WindowController {
     }
 
     /**
-     * Calculate the tip location of the indexed axis for the specified CG
+     * Calculate the tip location of the indexed axis for the specified C-G
      * model.
      *
-     * @param cgm which CG model (not null, unaffected)
-     * @param axisIndex which axis in the CG model's AxesControl (&ge;0, &lt;3)
+     * @param cgm which C-G model (not null, unaffected)
+     * @param axisIndex which axis in the C-G model's AxesControl (&ge;0, &lt;3)
      * @return a new vector (in world coordinates) or null if axis not displayed
      */
     public Vector3f tipLocation(Cgm cgm, int axisIndex) {
@@ -181,9 +181,9 @@ public class AxesTool extends WindowController {
     }
 
     /**
-     * Update the CG model's visualizer based on the MVC model.
+     * Update the C-G model's visualizer based on the MVC model.
      *
-     * @param cgm which CG model (not null)
+     * @param cgm which C-G model (not null)
      */
     void updateVisualizer(Cgm cgm) {
         AxesVisualizer axesControl = cgm.getSceneView().getAxesVisualizer();
@@ -214,7 +214,7 @@ public class AxesTool extends WindowController {
         }
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -244,7 +244,7 @@ public class AxesTool extends WindowController {
      * Rotate the visualized bone using the specified quaternion.
      *
      * @param rotation quaternion (not null, norm=1)
-     * @param cgm which CG model (not null, unaffected)
+     * @param cgm which C-G model (not null, unaffected)
      */
     private void rotateBone(Quaternion rotation, Cgm cgm) {
         int boneIndex = cgm.getBone().getIndex();
@@ -294,7 +294,7 @@ public class AxesTool extends WindowController {
      * Rotate the visualized object using the specified cross product.
      *
      * @param cross cross product of two unit vectors (not null, length&gt;0)
-     * @param cgm which CG model (not null, unaffected)
+     * @param cgm which C-G model (not null, unaffected)
      * @return the pre-existing instance
      */
     private void rotateObject(Vector3f cross, Cgm cgm) {

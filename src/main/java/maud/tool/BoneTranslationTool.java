@@ -117,7 +117,7 @@ class BoneTranslationTool extends WindowController {
         }
     }
     // *************************************************************************
-    // AppState methods
+    // WindowController methods
 
     /**
      * Initialize this controller prior to its 1st update.
