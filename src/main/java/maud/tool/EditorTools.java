@@ -51,12 +51,12 @@ public class EditorTools {
     final private static Logger logger
             = Logger.getLogger(EditorTools.class.getName());
     // *************************************************************************
-    // fields TODO privatize all
+    // fields
 
     /**
      * controller for the "Animation Tool" window
      */
-    final AnimationTool animation;
+    final private AnimationTool animation;
     /**
      * controller for the "Axes Tool" window
      */
@@ -64,27 +64,27 @@ public class EditorTools {
     /**
      * controller for the "Background" window
      */
-    final BackgroundTool background;
+    final private BackgroundTool background;
     /**
      * controller for the "Bone Rotation Tool" window
      */
-    final BoneRotationTool boneRotation;
+    final private BoneRotationTool boneRotation;
     /**
      * controller for the "Bone Scale Tool" window
      */
-    final BoneScaleTool boneScale;
+    final private BoneScaleTool boneScale;
     /**
      * controller for the "Bone Tool" window
      */
-    final BoneTool bone;
+    final private BoneTool bone;
     /**
      * controller for the "Bone Translation Tool" window
      */
-    final BoneTranslationTool boneTranslation;
+    final private BoneTranslationTool boneTranslation;
     /**
      * controller for the "Bounds Tool" window
      */
-    final BoundsTool bounds;
+    final private BoundsTool bounds;
     /**
      * controller for the "Camera Tool" window
      */
@@ -92,13 +92,13 @@ public class EditorTools {
     /**
      * controller for the "Model Tool" window
      */
-    final CgmTool cgm;
+    final private CgmTool cgm;
     /**
      * controller for the "Cursor Tool" window
      */
-    final CursorTool cursor;
+    final private CursorTool cursor;
     /**
-     * controller for the "Display Settings Tool" window
+     * controller for the "Display-Settings Tool" window
      */
     final private DisplaySettingsTool displaySettings;
     /**
@@ -108,103 +108,103 @@ public class EditorTools {
     /**
      * controller for the "Joint Tool" window
      */
-    final JointTool joint;
+    final private JointTool joint;
     /**
      * controller for the "Keyframe Tool" window
      */
-    final KeyframeTool keyframe;
+    final private KeyframeTool keyframe;
     /**
      * controller for the "Mapping Tool" window
      */
-    final MappingTool mapping;
+    final private MappingTool mapping;
     /**
      * controller for the "Physics Tool" window
      */
-    final PhysicsTool physics;
+    final private PhysicsTool physics;
     /**
      * controller for the "Platform Tool" window
      */
-    final PlatformTool platform;
+    final private PlatformTool platform;
     /**
      * controller for the "Render Tool" window
      */
-    final RenderTool render;
+    final private RenderTool render;
     /**
      * controller for the "Retarget Tool" window
      */
-    final RetargetTool retarget;
+    final private RetargetTool retarget;
     /**
      * controller for the "Scene Vertex Tool" window
      */
-    final SceneVertexTool sceneVertex;
+    final private SceneVertexTool sceneVertex;
     /**
      * controller for the "Score Tool" window
      */
-    final ScoreTool score;
+    final private ScoreTool score;
     /**
      * controller for the "Settings Tool" window
      */
-    final SettingsTool settings;
+    final private SettingsTool settings;
     /**
      * controller for the "Control Tool" window
      */
-    final SgcTool sgc;
+    final private SgcTool sgc;
     /**
      * controller for the "Shape Tool" window
      */
-    final ShapeTool shape;
+    final private ShapeTool shape;
     /**
      * controller for the "Skeleton Color Tool" window
      */
-    final SkeletonColorTool skeletonColor;
+    final private SkeletonColorTool skeletonColor;
     /**
      * controller for the "Skeleton Tool" window
      */
-    final SkeletonTool skeleton;
+    final private SkeletonTool skeleton;
     /**
      * controller for the "Sky Tool" window
      */
-    final SkyTool sky;
+    final private SkyTool sky;
     /**
      * controller for the "Source Animation Tool" window
      */
-    final SourceAnimationTool sourceAnimation;
+    final private SourceAnimationTool sourceAnimation;
     /**
      * controller for the "Spatial Details Tool" window
      */
-    final SpatialDetailsTool spatialDetails;
+    final private SpatialDetailsTool spatialDetails;
     /**
      * controller for the "Spatial Rotation Tool" window
      */
-    final SpatialRotationTool spatialRotation;
+    final private SpatialRotationTool spatialRotation;
     /**
      * controller for the "Spatial Scale Tool" window
      */
-    final SpatialScaleTool spatialScale;
+    final private SpatialScaleTool spatialScale;
     /**
      * controller for the "Spatial Tool" window
      */
-    final SpatialTool spatial;
+    final private SpatialTool spatial;
     /**
      * controller for the "Spatial Translation Tool" window
      */
-    final SpatialTranslationTool spatialTranslation;
+    final private SpatialTranslationTool spatialTranslation;
     /**
      * controller for the "Tweening Tool" window
      */
-    final TweeningTool tweening;
+    final private TweeningTool tweening;
     /**
      * controller for the "Twist Tool" window
      */
-    final TwistTool twist;
+    final private TwistTool twist;
     /**
      * controller for the "User Data Tool" window
      */
-    final UserDataTool userData;
+    final private UserDataTool userData;
     /**
      * controller for the "Vertex Tool" window
      */
-    final VertexTool vertex;
+    final private VertexTool vertex;
     // *************************************************************************
     // constructors
 
