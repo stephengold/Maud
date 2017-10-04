@@ -161,8 +161,8 @@ class MenuBuilder {
             addBlend(name);
         } else if (name.endsWith(".bvh")) {
             addBvh(name);
-        //} else if (name.endsWith(".gltf")) { // TODO JME 3.2
-        //    addXbuf(name);
+            //} else if (name.endsWith(".gltf")) { // TODO JME 3.2
+            //    addXbuf(name);
         } else if (name.endsWith(".j3o")) {
             addJme(name);
         } else if (name.endsWith(".jar")) {
@@ -342,8 +342,8 @@ class MenuBuilder {
             result = true;
         } else if (name.endsWith(".bvh")) {
             result = true;
-        //} else if (name.endsWith(".gltf")) { // TODO JME 3.2
-        //    result = true;
+            //} else if (name.endsWith(".gltf")) { // TODO JME 3.2
+            //    result = true;
         } else if (name.endsWith(".j3o")) {
             result = true;
         } else if (name.endsWith(".obj")) {
@@ -355,6 +355,18 @@ class MenuBuilder {
             result = true;
         }
 
+        return result;
+    }
+
+    /**
+     * Test whether the menu contains the specified item.
+     *
+     * @param item (not null, not empty)
+     * @return true if found, otherwise false
+     */
+    boolean hasItem(String item) {
+        Validate.nonEmpty(item, "item");
+        boolean result = items.contains(item);
         return result;
     }
 
