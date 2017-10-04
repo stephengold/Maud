@@ -152,9 +152,12 @@ public class Action {
     final static String selectVertex = "select vertex";
 
     final static String setBatchHint = "set batchHint";
+    final static String setColorDepth = "set colorDepth";
     final static String setCullHint = "set cullHint";
     final static String setPhysicsMass = "set physicsMass";
     final static String setQueueBucket = "set queueBucket";
+    final static String setRefreshRate = "set refreshRate";
+    final static String setResolution = "set resolution";
     final static String setSceneBones = "set sceneBones";
     final static String setScoreBonesNone = "set scoreBonesNone";
     final static String setScoreBonesWhen = "set scoreBonesWhen";

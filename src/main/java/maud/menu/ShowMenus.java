@@ -28,6 +28,10 @@ package maud.menu;
 
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
+import com.jme3.system.AppSettings;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
@@ -40,6 +44,7 @@ import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
 import maud.model.Cgm;
+import maud.model.DisplaySettings;
 import maud.model.EditableCgm;
 import maud.model.LoadedAnimation;
 import maud.model.SelectedSgc;
@@ -52,7 +57,7 @@ import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.OrbitCenter;
 
 /**
- * Display simple menus in Maud's editor screen.
+ * Display simple menus in Maud's editor screen. TODO rename methods & split up
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -547,6 +552,48 @@ public class ShowMenus {
     }
 
     /**
+     * Display a menu to set the color depth (bits per pixel) for the display
+     * using the "set colorDepth " action prefix.
+     */
+    public static void setColorDepth() {
+        MenuBuilder builder = new MenuBuilder();
+
+        AppSettings settings = DisplaySettings.get();
+        int depth = settings.getBitsPerPixel();
+
+        if (settings.isFullscreen()) {
+            int height = settings.getHeight();
+            int width = settings.getWidth();
+            GraphicsEnvironment env;
+            env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice device = env.getDefaultScreenDevice();
+            DisplayMode[] modes = device.getDisplayModes();
+            for (DisplayMode mode : modes) {
+                int modeDepth = mode.getBitDepth();
+                int modeHeight = mode.getHeight();
+                int modeWidth = mode.getWidth();
+                if (modeDepth >= 16 && modeDepth != depth
+                        && modeHeight == height && modeWidth == width) {
+                    String modeItem = Integer.toString(modeDepth);
+                    if (!builder.hasItem(modeItem)) {
+                        builder.add(modeItem);
+                    }
+                }
+            }
+
+        } else {
+            if (depth != 16) {
+                builder.add("16");
+            }
+            if (depth != 24) {
+                builder.add("24");
+            }
+        }
+
+        builder.show(ActionPrefix.setColorDepth);
+    }
+
+    /**
      * Display a menu to set the cull hint of the current spatial using the "set
      * cullHint " action prefix.
      */
@@ -563,6 +610,75 @@ public class ShowMenus {
         }
 
         builder.show(ActionPrefix.setCullHint);
+    }
+
+    /**
+     * Display a menu to set the refresh rate for the display using the "set
+     * refreshRate " action prefix.
+     */
+    public static void setRefreshRate() {
+        AppSettings settings = DisplaySettings.get();
+        if (settings.isFullscreen()) {
+            MenuBuilder builder = new MenuBuilder();
+            int refreshRate = settings.getFrequency();
+            int height = settings.getHeight();
+            int width = settings.getWidth();
+            GraphicsEnvironment env;
+            env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice device = env.getDefaultScreenDevice();
+            DisplayMode[] modes = device.getDisplayModes();
+            for (DisplayMode mode : modes) {
+                int modeHeight = mode.getHeight();
+                int modeRate = mode.getRefreshRate();
+                int modeWidth = mode.getWidth();
+                if (modeRate != refreshRate
+                        && modeHeight == height && modeWidth == width) {
+                    String modeItem = Integer.toString(modeRate);
+                    if (!builder.hasItem(modeItem)) {
+                        builder.add(modeItem);
+                    }
+                }
+            }
+            builder.show(ActionPrefix.setRefreshRate);
+        }
+    }
+
+    /**
+     * Display a menu to set the display resolution using the "set resolution "
+     * action prefix.
+     */
+    public static void setResolution() {
+        MenuBuilder builder = new MenuBuilder();
+
+        AppSettings settings = DisplaySettings.get();
+        int height = settings.getHeight();
+        int minHeight = settings.getMinHeight();
+        int minWidth = settings.getMinWidth();
+        int width = settings.getWidth();
+
+        if (settings.isFullscreen()) {
+            GraphicsEnvironment env;
+            env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice device = env.getDefaultScreenDevice();
+            DisplayMode[] modes = device.getDisplayModes();
+            for (DisplayMode mode : modes) {
+                int modeHeight = mode.getHeight();
+                int modeWidth = mode.getWidth();
+                if (modeHeight >= minHeight && modeWidth >= minWidth
+                        && (modeHeight != height || modeWidth != width)) {
+                    String modeItem;
+                    modeItem = String.format("%d x %d", modeWidth, modeHeight);
+                    if (!builder.hasItem(modeItem)) {
+                        builder.add(modeItem);
+                    }
+                }
+            }
+
+        } else {
+
+        }
+
+        builder.show(ActionPrefix.setResolution);
     }
 
     /**

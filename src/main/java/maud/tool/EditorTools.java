@@ -51,7 +51,7 @@ public class EditorTools {
     final private static Logger logger
             = Logger.getLogger(EditorTools.class.getName());
     // *************************************************************************
-    // fields
+    // fields TODO privatize all
 
     /**
      * controller for the "Animation Tool" window
@@ -97,6 +97,10 @@ public class EditorTools {
      * controller for the "Cursor Tool" window
      */
     final CursorTool cursor;
+    /**
+     * controller for the "Display Settings Tool" window
+     */
+    final private DisplaySettingsTool displaySettings;
     /**
      * controller for the "History Tool" window
      */
@@ -223,6 +227,7 @@ public class EditorTools {
         camera = new CameraTool(screen);
         cgm = new CgmTool(screen);
         cursor = new CursorTool(screen);
+        displaySettings = new DisplaySettingsTool(screen);
         history = new HistoryTool(screen);
         joint = new JointTool(screen);
         keyframe = new KeyframeTool(screen);
@@ -259,14 +264,14 @@ public class EditorTools {
      * @param stateManager (not null)
      */
     public void attachAll(AppStateManager stateManager) {
-        stateManager.attach(cursor); // cursor before camera
+        stateManager.attach(cursor); // cursor before camera TODO necessary?
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
-                boneScale, boneTranslation, bounds, camera, history,
-                keyframe, joint, mapping, cgm, physics, platform, render,
-                retarget, sceneVertex, score, settings, sgc, shape, skeleton,
-                skeletonColor, sky, sourceAnimation, spatial, spatialDetails,
-                spatialRotation, spatialScale, spatialTranslation, tweening,
-                twist, userData, vertex);
+                boneScale, boneTranslation, bounds, camera, displaySettings,
+                history, keyframe, joint, mapping, cgm, physics, platform,
+                render, retarget, sceneVertex, score, settings, sgc, shape,
+                skeleton, skeletonColor, sky, sourceAnimation, spatial,
+                spatialDetails, spatialRotation, spatialScale,
+                spatialTranslation, tweening, twist, userData, vertex);
     }
 
     /**
@@ -282,9 +287,6 @@ public class EditorTools {
         switch (toolName) {
             case "animation":
                 controller = animation;
-                break;
-            case "axes":
-                controller = axes;
                 break;
             case "background":
                 controller = background;
@@ -312,6 +314,9 @@ public class EditorTools {
                 break;
             case "cursor":
                 controller = cursor;
+                break;
+            case "displaySettings":
+                controller = displaySettings;
                 break;
             case "history":
                 controller = history;

@@ -805,11 +805,12 @@ public class BuildMenus {
      * Build a Settings menu.
      */
     private void buildSettingsMenu() {
+        builder.add("Tool");
         builder.add("Asset locations");
         builder.add("Hotkeys");
         //builder.add("Locale"); TODO
-        builder.add("Tool");
         builder.add("Update startup script");
+        builder.add("Display-settings tool");
     }
 
     /**

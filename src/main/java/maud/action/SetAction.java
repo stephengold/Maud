@@ -36,6 +36,7 @@ import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
 import maud.menu.ShowMenus;
+import maud.model.DisplaySettings;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.ShowBones;
@@ -82,6 +83,10 @@ class SetAction {
                 ShowMenus.setBatchHint();
                 break;
 
+            case Action.setColorDepth:
+                ShowMenus.setColorDepth();
+                break;
+
             case Action.setCullHint:
                 ShowMenus.setCullHint();
                 break;
@@ -92,6 +97,14 @@ class SetAction {
 
             case Action.setQueueBucket:
                 ShowMenus.setQueueBucket();
+                break;
+
+            case Action.setRefreshRate:
+                ShowMenus.setRefreshRate();
+                break;
+
+            case Action.setResolution:
+                ShowMenus.setResolution();
                 break;
 
             case Action.setSceneBones:
@@ -186,6 +199,13 @@ class SetAction {
             Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
             target.setBatchHint(value);
 
+        } else if (actionString.startsWith(ActionPrefix.setColorDepth)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setColorDepth);
+            int value = Integer.parseInt(arg);
+            DisplaySettings.get().setBitsPerPixel(value);
+            DisplaySettings.save();
+
         } else if (actionString.startsWith(ActionPrefix.setCullHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setCullHint);
             Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
@@ -208,6 +228,24 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setPhysicsMass);
             float value = Float.parseFloat(arg);
             target.setMass(value);
+
+        } else if (actionString.startsWith(ActionPrefix.setRefreshRate)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setRefreshRate);
+            int value = Integer.parseInt(arg);
+            DisplaySettings.get().setFrequency(value);
+            DisplaySettings.save();
+
+        } else if (actionString.startsWith(ActionPrefix.setResolution)) {
+            String argList = MyString.remainder(actionString,
+                    ActionPrefix.setResolution);
+            String[] args = argList.split(" ");
+            assert args.length == 3 : args.length;
+            int width = Integer.parseInt(args[0]);
+            assert "x".equals(args[1]) : args[1];
+            int height = Integer.parseInt(args[2]);
+            DisplaySettings.get().setWidth(width);
+            DisplaySettings.get().setHeight(height);
+            DisplaySettings.save();
 
         } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
             arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
