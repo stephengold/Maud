@@ -50,7 +50,7 @@ public class ScriptLoader implements AssetLoader {
     /**
      * character set used to read scripts
      */
-    final private static Charset utf8 = Charset.forName("UTF-8");
+    final public static Charset charset = Charset.forName("UTF-8");
     /**
      * message logger for this class
      */
@@ -71,7 +71,7 @@ public class ScriptLoader implements AssetLoader {
          * Open the asset as a stream and create a reader.
          */
         InputStream stream = assetInfo.openStream();
-        InputStreamReader reader = new InputStreamReader(stream, utf8);
+        InputStreamReader reader = new InputStreamReader(stream, charset);
 
         ScriptEngine scriptEngine;
         scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
