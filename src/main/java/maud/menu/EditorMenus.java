@@ -27,7 +27,6 @@
 package maud.menu;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -137,28 +136,6 @@ public class EditorMenus {
 
         return handled;
     }
-
-    /**
-     * Handle a "select spatial" action with an argument.
-     *
-     * @param argument action argument (not null)
-     * @param includeNodes true &rarr; include both nodes and geometries, false
-     * &rarr; include geometries only
-     */
-    public static void selectSpatial(String argument, boolean includeNodes) {
-        Cgm target = Maud.getModel().getTarget();
-        if (target.hasSpatial(argument)) {
-            target.getSpatial().select(argument);
-
-        } else {
-            /*
-             * Treat the argument as a spatial-name prefix.
-             */
-            List<String> names;
-            names = target.listSpatialNames(argument, includeNodes);
-            ShowMenus.showSpatialSubmenu(names, includeNodes);
-        }
-    }
     // *************************************************************************
     // private methods
 
@@ -206,7 +183,7 @@ public class EditorMenus {
                 handled = menuSgc(remainder);
                 break;
             case "Spatial":
-                handled = menuSpatial(remainder);
+                handled = SpatialMenus.menuSpatial(remainder);
                 break;
             case "Track":
                 handled = menuTrack(remainder);
@@ -557,87 +534,6 @@ public class EditorMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the Spatial menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuSpatial(String remainder) {
-        boolean handled = true;
-        String selectPrefix = "Select" + menuPathSeparator;
-        if (remainder.startsWith(selectPrefix)) {
-            String arg = MyString.remainder(remainder, selectPrefix);
-            handled = menuSpatialSelect(arg);
-
-        } else {
-            switch (remainder) {
-                case "Delete":
-                    Maud.getModel().getTarget().getSpatial().delete();
-                    break;
-                case "Delete extras":
-                    Maud.getModel().getTarget().deleteExtraSpatials();
-                    break;
-                case "Details":
-                    Maud.gui.tools.select("spatialDetails");
-                    break;
-                case "Rotate":
-                    Maud.gui.tools.select("spatialRotation");
-                    break;
-                case "Scale":
-                    Maud.gui.tools.select("spatialScale");
-                    break;
-                case "Select":
-                    ShowMenus.selectSpatial();
-                    break;
-                case "Tool":
-                    Maud.gui.tools.select("spatial");
-                    break;
-                case "Translate":
-                    Maud.gui.tools.select("spatialTranslation");
-                    break;
-                case "User data tool":
-                    Maud.gui.tools.select("userData");
-                    break;
-                default:
-                    handled = false;
-            }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "Spatial -> Select" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuSpatialSelect(String remainder) {
-        boolean handled = true;
-        switch (remainder) {
-            case "By name":
-                selectSpatial("", true);
-                break;
-            case "Child":
-                ShowMenus.selectSpatialChild("");
-                break;
-            case "Geometry":
-                selectSpatial("", false);
-                break;
-            case "Parent":
-                Maud.getModel().getTarget().getSpatial().selectParent();
-                break;
-            case "Root":
-                Maud.getModel().getTarget().getSpatial().selectCgmRoot();
-                break;
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
      * Handle a "select menuItem" action from the Track menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -709,7 +605,7 @@ public class EditorMenus {
                     ShowMenus.selectVertex();
                     break;
                 case "Select geometry":
-                    selectSpatial("", false);
+                    SpatialMenus.selectSpatial("", false);
                     break;
                 case "Tool":
                     Maud.gui.tools.select("vertex");
