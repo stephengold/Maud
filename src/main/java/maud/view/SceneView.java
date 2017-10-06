@@ -1038,6 +1038,20 @@ public class SceneView
         }
     }
     // *************************************************************************
+    // Object methods
+
+    /**
+     * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
+     *
+     * @return never
+     * @throws CloneNotSupportedException
+     */
+    @Override
+    public SceneView clone() throws CloneNotSupportedException {
+        super.clone();
+        throw new CloneNotSupportedException("use a cloner");
+    }
+    // *************************************************************************
     // private methods
 
     /**
