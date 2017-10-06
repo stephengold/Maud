@@ -31,6 +31,7 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.menu.BoneMenus;
 import maud.menu.EditorMenus;
+import maud.menu.PhysicsMenus;
 import maud.menu.ShowMenus;
 import maud.model.Cgm;
 import maud.model.EditorModel;
@@ -153,7 +154,7 @@ class SelectAction {
                 ShowMenus.selectShape(target);
                 break;
             case Action.selectShapeChild:
-                EditorMenus.selectShapeChild();
+                PhysicsMenus.selectShapeChild();
                 break;
             case Action.selectSourceAnimControl:
                 ShowMenus.selectAnimControl(model.getSource());
