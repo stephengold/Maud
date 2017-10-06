@@ -39,7 +39,6 @@ import maud.model.Cgm;
 import maud.model.EditableCgm;
 import maud.model.EditableMap;
 import maud.model.History;
-import maud.model.SelectedShape;
 import maud.model.SelectedSpatial;
 
 /**
@@ -140,20 +139,6 @@ public class EditorMenus {
     }
 
     /**
-     * Handle a "select shapeChild" action without arguments.
-     */
-    public static void selectShapeChild() {
-        Cgm target = Maud.getModel().getTarget();
-        SelectedShape shape = target.getShape();
-        int numChildren = shape.countChildren();
-        if (numChildren == 1) {
-            shape.selectFirstChild();
-        } else if (numChildren > 1) {
-            ShowMenus.selectShapeChild();
-        }
-    }
-
-    /**
      * Handle a "select spatial" action with an argument.
      *
      * @param argument action argument (not null)
@@ -212,7 +197,7 @@ public class EditorMenus {
                 handled = menuMap(remainder);
                 break;
             case "Physics":
-                handled = menuPhysics(remainder);
+                handled = PhysicsMenus.menuPhysics(remainder);
                 break;
             case "Settings":
                 handled = menuSettings(remainder);
@@ -431,64 +416,6 @@ public class EditorMenus {
                 break;
             case "Unload":
                 map.unload();
-                break;
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the Physics menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuPhysics(String remainder) {
-        boolean handled = true;
-        String addPrefix = "Add new" + menuPathSeparator;
-        if (remainder.startsWith(addPrefix)) {
-            String arg = MyString.remainder(remainder, addPrefix);
-            handled = menuPhysicsAdd(arg);
-
-        } else {
-            switch (remainder) {
-                case "Joint Tool":
-                    Maud.gui.tools.select("joint");
-                    break;
-                case "Mass":
-                    EditorDialogs.setPhysicsMass();
-                    break;
-                case "Object Tool":
-                    Maud.gui.tools.select("physics");
-                    break;
-                case "Shape Tool":
-                    Maud.gui.tools.select("shape");
-                    break;
-                default:
-                    handled = false;
-            }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "Physics -> Add new" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuPhysicsAdd(String remainder) {
-        boolean handled = true;
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        switch (remainder) {
-            case "Ghost":
-                spatial.addGhostControl();
-                break;
-            case "RigidBody":
-                spatial.addRigidBodyControl();
                 break;
             default:
                 handled = false;
