@@ -264,12 +264,11 @@ public class EditorTools {
      * @param stateManager (not null)
      */
     public void attachAll(AppStateManager stateManager) {
-        stateManager.attach(cursor); // cursor before camera TODO necessary?
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
-                boneScale, boneTranslation, bounds, camera, displaySettings,
-                history, keyframe, joint, mapping, cgm, physics, platform,
-                render, retarget, sceneVertex, score, settings, sgc, shape,
-                skeleton, skeletonColor, sky, sourceAnimation, spatial,
+                boneScale, boneTranslation, bounds, camera, cgm, cursor,
+                displaySettings, history, keyframe, joint, mapping, physics,
+                platform, render, retarget, sceneVertex, score, settings, sgc,
+                shape, skeleton, skeletonColor, sky, sourceAnimation, spatial,
                 spatialDetails, spatialRotation, spatialScale,
                 spatialTranslation, tweening, twist, userData, vertex);
     }
