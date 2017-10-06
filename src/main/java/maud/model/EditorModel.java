@@ -38,6 +38,7 @@ import jme3utilities.MyString;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
+import maud.ScriptLoader;
 import maud.action.ActionPrefix;
 import maud.model.option.AssetLocations;
 import maud.model.option.MiscOptions;
@@ -282,7 +283,8 @@ public class EditorModel {
                 }
             }
             stream = new FileOutputStream(filePath);
-            OutputStreamWriter writer = new OutputStreamWriter(stream);
+            OutputStreamWriter writer
+                    = new OutputStreamWriter(stream, ScriptLoader.charset);
             writeStartupScript(writer);
 
         } catch (IOException exception) {
