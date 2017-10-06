@@ -30,6 +30,7 @@ import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptEngine;
@@ -46,6 +47,10 @@ public class ScriptLoader implements AssetLoader {
     // *************************************************************************
     // constants
 
+    /**
+     * character set used to read scripts
+     */
+    final private static Charset utf8 = Charset.forName("UTF-8");
     /**
      * message logger for this class
      */
@@ -66,7 +71,7 @@ public class ScriptLoader implements AssetLoader {
          * Open the asset as a stream and create a reader.
          */
         InputStream stream = assetInfo.openStream();
-        InputStreamReader reader = new InputStreamReader(stream);
+        InputStreamReader reader = new InputStreamReader(stream, utf8);
 
         ScriptEngine scriptEngine;
         scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
