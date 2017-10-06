@@ -948,7 +948,8 @@ public class SceneView
 
         Camera camera = getCamera();
         if (camera != null) {
-            updateLocalTransforms(cgmRoot, new ArrayList<Integer>(0));
+            List<Integer> modelRootPosition = new ArrayList<>(0);
+            updateLocalTransforms(cgmRoot, modelRootPosition);
 
             updateParentShadowMode();
             updateParentTransform();
