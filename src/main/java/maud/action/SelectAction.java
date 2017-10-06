@@ -33,6 +33,7 @@ import maud.menu.BoneMenus;
 import maud.menu.EditorMenus;
 import maud.menu.PhysicsMenus;
 import maud.menu.ShowMenus;
+import maud.menu.SpatialMenus;
 import maud.model.Cgm;
 import maud.model.EditorModel;
 import maud.model.option.scene.OrbitCenter;
@@ -242,7 +243,7 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
-            EditorMenus.selectSpatial(arg, false);
+            SpatialMenus.selectSpatial(arg, false);
 
         } else if (actionString.startsWith(ActionPrefix.selectJoint)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectJoint);
@@ -286,7 +287,7 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectSpatial)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectSpatial);
-            EditorMenus.selectSpatial(arg, true);
+            SpatialMenus.selectSpatial(arg, true);
 
         } else if (actionString.startsWith(ActionPrefix.selectUserKey)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectUserKey);
