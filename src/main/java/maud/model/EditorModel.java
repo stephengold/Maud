@@ -36,13 +36,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.ui.ActionApplication;
+import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenTransforms;
+import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.ScriptLoader;
 import maud.action.ActionPrefix;
 import maud.model.option.AssetLocations;
 import maud.model.option.MiscOptions;
 import maud.model.option.ScoreOptions;
+import maud.model.option.ViewMode;
 import maud.model.option.scene.SceneOptions;
 
 /**
@@ -323,6 +326,46 @@ public class EditorModel {
             writePerformAction(writer,
                     ActionPrefix.newAssetLocationSpec + spec);
         }
+
+        boolean anglesInDegrees = miscOptions.getAnglesInDegrees();
+        String arg = Boolean.toString(anglesInDegrees);
+        writePerformAction(writer, ActionPrefix.setDegrees + arg);
+
+        boolean diagnose = miscOptions.getDiagnoseLoads();
+        arg = Boolean.toString(diagnose);
+        writePerformAction(writer, ActionPrefix.setDiagnose + arg);
+
+        int indexBase = miscOptions.getIndexBase();
+        arg = Integer.toString(indexBase);
+        writePerformAction(writer, ActionPrefix.setIndexBase + arg);
+
+        ViewMode viewMode = miscOptions.getViewMode();
+        arg = viewMode.toString();
+        writePerformAction(writer, ActionPrefix.setViewMode + arg);
+
+        TweenVectors tweenTranslations = techniques.getTweenTranslations();
+        arg = tweenTranslations.toString();
+        writePerformAction(writer, ActionPrefix.setTweenTranslations + arg);
+
+        TweenRotations tweenRotations = techniques.getTweenRotations();
+        arg = tweenRotations.toString();
+        writePerformAction(writer, ActionPrefix.setTweenRotations + arg);
+
+        TweenVectors tweenScales = techniques.getTweenScales();
+        arg = tweenScales.toString();
+        writePerformAction(writer, ActionPrefix.setTweenScales + arg);
+
+        ShowBones sceneBones = sceneOptions.getSkeleton().getShowBones();
+        arg = sceneBones.toString();
+        writePerformAction(writer, ActionPrefix.setSceneBones + arg);
+
+        ShowBones showNoneSelected = scoreOptions.getShowNoneSelected();
+        arg = showNoneSelected.toString();
+        writePerformAction(writer, ActionPrefix.setScoreBonesNone + arg);
+
+        ShowBones showWhenSelected = scoreOptions.getShowWhenSelected();
+        arg = showWhenSelected.toString();
+        writePerformAction(writer, ActionPrefix.setScoreBonesWhen + arg);
 
         writePerformAction(writer, ActionPrefix.loadCgmNamed + "Jaime");
 

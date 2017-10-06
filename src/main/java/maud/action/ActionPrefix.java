@@ -264,6 +264,14 @@ public class ActionPrefix {
      */
     final public static String setCullHint = "set cullHint ";
     /**
+     * argument is "true" or "false"
+     */
+    final public static String setDegrees = "set degrees ";
+    /**
+     * argument is "true" or "false"
+     */
+    final public static String setDiagnose = "set diagnose ";
+    /**
      * argument is a new duration in seconds
      */
     final public static String setDurationProportional
@@ -272,6 +280,10 @@ public class ActionPrefix {
      * argument is a new duration in seconds
      */
     final public static String setDurationSame = "set duration same ";
+    /**
+     * argument is 0 or 1
+     */
+    final public static String setIndexBase = "set indexBase ";
     /**
      * argument is the new mass
      */
@@ -321,6 +333,10 @@ public class ActionPrefix {
      * argument is the new value
      */
     final public static String setUserData = "set userData ";
+    /**
+     * argument is the name of a view mode
+     */
+    final public static String setViewMode = "set viewMode ";
     /**
      * argument is the name of a license type
      */

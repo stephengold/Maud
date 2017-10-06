@@ -40,6 +40,7 @@ import maud.model.DisplaySettings;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.ShowBones;
+import maud.model.option.ViewMode;
 
 /**
  * Process an action string that begins with "set".
@@ -211,6 +212,16 @@ class SetAction {
             Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
             target.setCullHint(value);
 
+        } else if (actionString.startsWith(ActionPrefix.setDegrees)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setDegrees);
+            boolean newSetting = Boolean.parseBoolean(arg);
+            model.getMisc().setAnglesInDegrees(newSetting);
+
+        } else if (actionString.startsWith(ActionPrefix.setDiagnose)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setDiagnose);
+            boolean newSetting = Boolean.parseBoolean(arg);
+            model.getMisc().setDiagnoseLoads(newSetting);
+
         } else if (actionString.startsWith(
                 ActionPrefix.setDurationProportional)) {
             arg = MyString.remainder(actionString,
@@ -223,6 +234,11 @@ class SetAction {
                     ActionPrefix.setDurationSame);
             float value = Float.parseFloat(arg);
             target.getAnimation().setDurationSame(value);
+
+        } else if (actionString.startsWith(ActionPrefix.setIndexBase)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setIndexBase);
+            int newSetting = Integer.parseInt(arg);
+            model.getMisc().setIndexBase(newSetting);
 
         } else if (actionString.startsWith(ActionPrefix.setPhysicsMass)) {
             arg = MyString.remainder(actionString, ActionPrefix.setPhysicsMass);
@@ -295,6 +311,11 @@ class SetAction {
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);
             target.setUserData(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.setViewMode)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setViewMode);
+            ViewMode newSetting = ViewMode.valueOf(arg);
+            model.getMisc().setViewMode(newSetting);
 
         } else {
             handled = false;
