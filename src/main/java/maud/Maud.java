@@ -105,38 +105,6 @@ public class Maud extends GuiApplication {
     // new methods exposed
 
     /**
-     * Process a "dump physicsSpace" action.
-     */
-    public void dumpPhysicsSpace() {
-        Cgm cgm = gui.mouseCgm();
-        SceneView sceneView = cgm.getSceneView();
-        PhysicsSpace space = sceneView.getPhysicsSpace();
-        dumper.dump(space);
-    }
-
-    /**
-     * Process a "dump renderer" action.
-     */
-    public void dumpRenderer() {
-        dumper.setDumpBucket(true);
-        dumper.setDumpCull(true);
-        dumper.setDumpShadow(true);
-        dumper.setDumpTransform(true);
-        dumper.dump(renderManager);
-    }
-
-    /**
-     * Process a "dump scene" action.
-     */
-    public void dumpScene() {
-        dumper.setDumpBucket(true);
-        dumper.setDumpCull(true);
-        dumper.setDumpShadow(true);
-        dumper.setDumpTransform(true);
-        dumper.dump(rootNode);
-    }
-
-    /**
      * Access the application.
      *
      * @return the pre-existing instance
@@ -350,6 +318,38 @@ public class Maud extends GuiApplication {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Process a "dump physicsSpace" action.
+     */
+    private void dumpPhysicsSpace() {
+        Cgm cgm = gui.mouseCgm();
+        SceneView sceneView = cgm.getSceneView();
+        PhysicsSpace space = sceneView.getPhysicsSpace();
+        dumper.dump(space);
+    }
+
+    /**
+     * Process a "dump renderer" action.
+     */
+    private void dumpRenderer() {
+        dumper.setDumpBucket(true);
+        dumper.setDumpCull(true);
+        dumper.setDumpShadow(true);
+        dumper.setDumpTransform(true);
+        dumper.dump(renderManager);
+    }
+
+    /**
+     * Process a "dump scene" action.
+     */
+    private void dumpScene() {
+        dumper.setDumpBucket(true);
+        dumper.setDumpCull(true);
+        dumper.setDumpShadow(true);
+        dumper.setDumpTransform(true);
+        dumper.dump(rootNode);
+    }
 
     /**
      * If confirmed, terminate the application.
