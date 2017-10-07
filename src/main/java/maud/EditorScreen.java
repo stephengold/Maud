@@ -768,8 +768,7 @@ public class EditorScreen extends GuiScreenController {
         /*
          * Configure view ports based on the MVC model.
          */
-        Maud application = Maud.getApplication();
-        application.updateViewPorts();
+        EditorViewPorts.update();
 
         ViewType viewType = mouseViewType();
         if (viewType == ViewType.Scene) {
