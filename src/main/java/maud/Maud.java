@@ -90,7 +90,7 @@ public class Maud extends GuiApplication {
      */
     final private static Dumper dumper = new Dumper();
     /**
-     * controller for the editor screen, with links to menus, tools, etc.
+     * controller for the editor screen
      */
     final public static EditorScreen gui = new EditorScreen();
     /**
@@ -220,7 +220,7 @@ public class Maud extends GuiApplication {
         }
     }
     // *************************************************************************
-    // ActionApplication methods
+    // GuiApplication methods
 
     /**
      * Callback invoked when an ongoing action isn't handled.
@@ -235,8 +235,20 @@ public class Maud extends GuiApplication {
                 MyString.quote(actionString));
         gui.setStatus(message);
     }
-    // *************************************************************************
-    // ActionListener methods
+
+    /**
+     * Initialize this application.
+     */
+    @Override
+    public void guiInitializeApplication() {
+        logger.info("");
+        if (!Misc.areAssertionsEnabled()) {
+            logger.warning("Assertions are disabled.");
+        }
+
+        StartScreen startScreen = new StartScreen();
+        stateManager.attach(startScreen);
+    }
 
     /**
      * Process an action (from the GUI or keyboard) that wasn't handled by the
@@ -283,24 +295,6 @@ public class Maud extends GuiApplication {
             super.onAction(actionString, ongoing, tpf);
         }
     }
-    // *************************************************************************
-    // GuiApplication methods
-
-    /**
-     * Initialize this application.
-     */
-    @Override
-    public void guiInitializeApplication() {
-        logger.info("");
-        if (!Misc.areAssertionsEnabled()) {
-            logger.warning("Assertions are disabled.");
-        }
-
-        StartScreen startScreen = new StartScreen();
-        stateManager.attach(startScreen);
-    }
-    // *************************************************************************
-    // SimpleApplication methods
 
     /**
      * Callback invoked once per render pass.
