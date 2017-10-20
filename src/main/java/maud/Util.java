@@ -103,6 +103,23 @@ public class Util {
     // new methods exposed
 
     /**
+     * Describe a anti-aliasing factor.
+     *
+     * @param numSamples samples per pixel (&ge;0, &le;16)
+     * @return textual description
+     */
+    public static String aaDescription(int numSamples) {
+        String aaDescription;
+        if (numSamples <= 1) {
+            aaDescription = "disabled";
+        } else {
+            aaDescription = String.format("%dx", numSamples);
+        }
+
+        return aaDescription;
+    }
+
+    /**
      * Add indices to the result for bones that influence (directly or
      * indirectly) vertices in the specified subtree of the scene graph. Note:
      * recursive!

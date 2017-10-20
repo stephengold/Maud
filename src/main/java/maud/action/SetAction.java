@@ -34,6 +34,7 @@ import jme3utilities.MyString;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenVectors;
 import maud.Maud;
+import maud.Util;
 import maud.dialog.EditorDialogs;
 import maud.menu.ShowMenus;
 import maud.model.DisplaySettings;
@@ -80,6 +81,10 @@ class SetAction {
         EditableCgm target = model.getTarget();
         ShowBones currentOption;
         switch (actionString) {
+            case Action.setAntiAliasing:
+                ShowMenus.setAntiAliasing();
+                break;
+
             case Action.setBatchHint:
                 ShowMenus.setBatchHint();
                 break;
@@ -195,7 +200,20 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         String arg;
-        if (actionString.startsWith(ActionPrefix.setBatchHint)) {
+        if (actionString.startsWith(ActionPrefix.setAntiAliasing)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setAntiAliasing);
+            int numSamples;
+            for (numSamples = 1; numSamples < 16; numSamples *= 2) {
+                String aaDescription = Util.aaDescription(numSamples);
+                if (arg.equals(aaDescription)) {
+                    break;
+                }
+            }
+            DisplaySettings.get().setSamples(numSamples);
+            DisplaySettings.save();
+
+        } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
             Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
             target.setBatchHint(value);
@@ -245,6 +263,11 @@ class SetAction {
             float value = Float.parseFloat(arg);
             target.setMass(value);
 
+        } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
+            RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
+            target.setQueueBucket(value);
+
         } else if (actionString.startsWith(ActionPrefix.setRefreshRate)) {
             arg = MyString.remainder(actionString, ActionPrefix.setRefreshRate);
             int value = Integer.parseInt(arg);
@@ -262,11 +285,6 @@ class SetAction {
             DisplaySettings.get().setWidth(width);
             DisplaySettings.get().setHeight(height);
             DisplaySettings.save();
-
-        } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
-            RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
-            target.setQueueBucket(value);
 
         } else if (actionString.startsWith(ActionPrefix.setSceneBones)) {
             arg = MyString.remainder(actionString, ActionPrefix.setSceneBones);

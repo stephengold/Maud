@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.Util;
 import maud.model.DisplaySettings;
 
 /**
@@ -86,6 +87,10 @@ class DisplaySettingsTool extends WindowController {
         int height = settings.getHeight();
         String resolution = String.format("%d x %d", width, height);
         Maud.gui.setButtonLabel("displayResolutionButton", resolution);
+
+        int numSamples = settings.getSamples();
+        String aaDescription = Util.aaDescription(numSamples);
+        Maud.gui.setButtonLabel("displayAntiAliasingButton", aaDescription);
 
         int colorDepth = settings.getBitsPerPixel();
         String cdDescription = String.format("%d bits", colorDepth);
