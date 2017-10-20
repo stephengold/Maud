@@ -41,6 +41,7 @@ import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenTransforms;
 import jme3utilities.wes.TweenVectors;
 import maud.Maud;
+import maud.Util;
 import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
 import maud.model.Cgm;
@@ -530,6 +531,24 @@ public class ShowMenus {
         }
 
         builder.show("select menuItem View -> Mode -> ");
+    }
+
+    /**
+     * Display a menu to configure anti-aliasing using the "set antiAliasing "
+     * action prefix.
+     */
+    public static void setAntiAliasing() {
+        MenuBuilder builder = new MenuBuilder();
+
+        int selectedSamples = DisplaySettings.get().getSamples();
+        for (int numSamples = 1; numSamples <= 16; numSamples *= 2) {
+            if (numSamples != selectedSamples) {
+                String aaDescription = Util.aaDescription(numSamples);
+                builder.add(aaDescription);
+            }
+        }
+
+        builder.show(ActionPrefix.setAntiAliasing);
     }
 
     /**

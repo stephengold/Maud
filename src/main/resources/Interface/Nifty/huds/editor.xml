@@ -777,7 +777,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="displaySettingsTool" title="Display-Settings Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="240px" width="200px" x="70" y="30">
+                     height="220px" width="200px" x="70" y="30">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="fullscreenCheckBox"/>
@@ -801,6 +801,13 @@ the menu bar, status bar, and tool windows.
                         <control name="button" id="displayResolutionButton"
                                  width="80px">
                             <interact onRelease="perform(set resolution)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="anti-aliasing:  "/>
+                        <control name="button" id="displayAntiAliasingButton"
+                                 width="70px">
+                            <interact onRelease="perform(set antiAliasing)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
