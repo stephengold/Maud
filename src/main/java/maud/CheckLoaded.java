@@ -82,8 +82,6 @@ public class CheckLoaded {
      * @return false if issues found, otherwise true
      */
     public static boolean animControl(AnimControl animControl) {
-        Validate.nonNull(animControl, "anim control");
-
         int numBones = 0;
         Skeleton skeleton = animControl.getSkeleton();
         if (skeleton != null) {

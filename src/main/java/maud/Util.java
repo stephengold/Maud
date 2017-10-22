@@ -367,12 +367,12 @@ public class Util {
                 int boneIndex = MyMesh.readIndex(boneIndexBuffer);
                 if (weight != 0f) {
                     Matrix4f s = skinningMatrices[boneIndex];
-                    meshLoc.x += weight
-                            * (s.m00 * bx + s.m01 * by + s.m02 * bz + s.m03);
-                    meshLoc.y += weight
-                            * (s.m10 * bx + s.m11 * by + s.m12 * bz + s.m13);
-                    meshLoc.z += weight
-                            * (s.m20 * bx + s.m21 * by + s.m22 * bz + s.m23);
+                    float xOff = s.m00 * bx + s.m01 * by + s.m02 * bz + s.m03;
+                    float yOff = s.m10 * bx + s.m11 * by + s.m12 * bz + s.m13;
+                    float zOff = s.m20 * bx + s.m21 * by + s.m22 * bz + s.m23;
+                    meshLoc.x += weight * xOff;
+                    meshLoc.y += weight * yOff;
+                    meshLoc.z += weight * zOff;
                 }
             }
 
