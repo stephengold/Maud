@@ -282,7 +282,7 @@ public class EditorTools {
     public WindowController getTool(String toolName) {
         Validate.nonEmpty(toolName, "tool name");
 
-        WindowController controller = null;
+        WindowController controller;
         switch (toolName) {
             case "animation":
                 controller = animation;
@@ -394,6 +394,9 @@ public class EditorTools {
                 break;
             case "vertex":
                 controller = vertex;
+                break;
+            default:
+                controller = null;
         }
 
         return controller;
