@@ -46,8 +46,8 @@ public class ViewPortAppState extends SimpleAppState {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            ViewPortAppState.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(ViewPortAppState.class.getName());
     // *************************************************************************
     // fields
 

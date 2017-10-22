@@ -45,9 +45,14 @@ public class Action {
      */
     final private static Logger logger
             = Logger.getLogger(Action.class.getName());
-
+    /**
+     * delete the currently selected animation
+     */
     final public static String deleteAnimation = "delete animation";
     final static String deleteMapping = "delete mapping";
+    /**
+     * delete the currently selected S-G contol
+     */
     final public static String deleteSgc = "delete sgc";
     final static String deleteSingleKeyframe = "delete singleKeyframe";
     final static String deleteUserKey = "delete userKey";

@@ -109,8 +109,8 @@ public class ScoreView implements EditorView {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            ScoreView.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(ScoreView.class.getName());
     // *************************************************************************
     // fields
 
