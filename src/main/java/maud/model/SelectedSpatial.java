@@ -53,6 +53,7 @@ import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.PhysicsUtil;
 import maud.view.SceneView;
 
@@ -146,9 +147,26 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Attach a clone of the source C-G model to the selected scene-graph node.
+     */
+    public void attachClone() {
+        assert cgm == Maud.getModel().getTarget();
+        LoadedCgm sourceCgm = Maud.getModel().getSource();
+        Node parentNode = (Node) find();
+        assert sourceCgm.isLoaded();
+        Spatial cgmRoot = sourceCgm.getRootSpatial();
+        String name = sourceCgm.getName();
+
+        Spatial clone = cgmRoot.clone();
+        String description;
+        description = String.format("merge model %s", MyString.quote(name));
+        editableCgm.attachSpatial(parentNode, clone, description);
+    }
+
+    /**
      * Count how many children are attached to the selected spatial.
      *
-     * @return count (&ge;0) or 0 if the spatial is not a node
+     * @return count (&ge;0) or 0 if the spatial is not a scene-graph node
      */
     public int countChildren() {
         Spatial parent = find();

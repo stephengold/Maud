@@ -263,6 +263,45 @@ public class SceneView
     }
 
     /**
+     * Attach a clone of the specified child to the specified parent node in the
+     * scene.
+     *
+     * @param parentPosition tree position of parent node (not null, unaffected)
+     * @param child (not null, unaffected)
+     */
+    public void attachSpatial(List<Integer> parentPosition, Spatial child) {
+        Validate.nonNull(parentPosition, "parent position");
+
+        Spatial clone = child.clone();
+        /*
+         * Remove all scene-graph controls except those concerned with physics.
+         * Enable those S-G controls and configure their physics spaces so that
+         * the BulletDebugAppState will render their collision shapes.
+         */
+        MySpatial.removeNonPhysicsControls(clone);
+        PhysicsSpace space = getPhysicsSpace();
+        MySpatial.enablePhysicsControls(clone, space);
+        /*
+         * Temporarily detach the skeleton visualizer from the scene.
+         */
+        Spatial controlled = skeletonVisualizer.getSpatial();
+        controlled.removeControl(skeletonVisualizer);
+        /*
+         * Attach the child to the scene.
+         */
+        Node parent = (Node) cgmRoot;
+        for (int childIndex : parentPosition) {
+            Spatial parentSpatial = parent.getChild(childIndex);
+            parent = (Node) parentSpatial;
+        }
+        parent.attachChild(clone);
+        /*
+         * Re-attach the skeleton visualizer.
+         */
+        controlled.addControl(skeletonVisualizer);
+    }
+
+    /**
      * Delete the selected spatial and its children, if any.
      */
     public void deleteSubtree() {
@@ -1333,11 +1372,14 @@ public class SceneView
      * Update the local transform of each spatial in the specified subtree based
      * on the MVC model. Note: recursive!
      *
-     * @param spatial spatial in the scene (not null)
+     * @param spatial subtree in the scene (not null)
      * @param position tree position (not null, unaffected)
      */
     private void updateLocalTransforms(Spatial spatial,
             List<Integer> position) {
+        /*
+         * Copy local transform from the MVC model.
+         */
         Transform transform = cgm.getLocalTransform(position);
         spatial.setLocalTransform(transform);
 

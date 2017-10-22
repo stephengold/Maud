@@ -198,6 +198,27 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Attach a child subtree to the specified parent node.
+     *
+     * @param parent (not null)
+     * @param child (not null)
+     * @param eventDescription description of causative event (not null)
+     */
+    void attachSpatial(Node parent, Spatial child, String eventDescription) {
+        assert parent != null;
+        assert child != null;
+        assert eventDescription != null;
+
+        SceneView sceneView = getSceneView();
+        List<Integer> parentPosition = findSpatial(parent);
+
+        History.autoAdd();
+        sceneView.attachSpatial(parentPosition, child);
+        parent.attachChild(child);
+        setEdited(eventDescription);
+    }
+
+    /**
      * Determine the default base path for writing the C-G model to the
      * filesystem.
      *
