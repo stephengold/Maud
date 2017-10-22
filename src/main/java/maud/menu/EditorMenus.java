@@ -518,16 +518,22 @@ public class EditorMenus {
      * @return true if the action is handled, otherwise false
      */
     private static boolean menuSourceCgm(String remainder) {
-        boolean handled = false;
+        boolean handled = true;
         switch (remainder) {
             case "Load":
                 Maud.gui.buildMenus.loadSourceCgm();
-                handled = true;
+                break;
+
+            case "Merge":
+                Maud.getModel().getTarget().getSpatial().attachClone();
                 break;
 
             case "Unload":
                 Maud.getModel().getSource().unload();
-                handled = true;
+                break;
+
+            default:
+                handled = false;
         }
 
         return handled;
