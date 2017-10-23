@@ -1772,7 +1772,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="spatialTool" title="Spatial Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="250px" width="280px" x="15" y="85">
+                     height="250px" width="315px" x="15" y="85">
                 <panel childLayout="vertical">
                     <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
