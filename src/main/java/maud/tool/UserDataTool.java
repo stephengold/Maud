@@ -26,6 +26,7 @@
  */
 package maud.tool;
 
+import com.jme3.animation.Bone;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
@@ -47,8 +48,8 @@ class UserDataTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            UserDataTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(UserDataTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -162,6 +163,9 @@ class UserDataTool extends WindowController {
             if (data instanceof String) {
                 String string = (String) data;
                 valueText = MyString.quote(string);
+            } else if (data instanceof Bone) {
+                Bone bone = (Bone) data;
+                valueText = bone.getName();
             } else {
                 valueText = data.toString();
             }
