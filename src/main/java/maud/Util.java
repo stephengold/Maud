@@ -52,6 +52,7 @@ import com.jme3.scene.plugins.bvh.BVHAnimData;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
+import java.lang.reflect.Field;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -232,6 +233,27 @@ public class Util {
         }
 
         return storeResult;
+    }
+
+    /**
+     * Cancel the attachments node of the specified bone.
+     *
+     * @param bone which bone (not null, modified)
+     */
+    public static void cancelAttachments(Bone bone) {
+        Class<?> boneClass = bone.getClass();
+        Field attachNodeField;
+        try {
+            attachNodeField = boneClass.getDeclaredField("attachNode");
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException();
+        }
+        attachNodeField.setAccessible(true);
+        try {
+            attachNodeField.set(bone, null);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException();
+        }
     }
 
     /**
@@ -442,6 +464,31 @@ public class Util {
         }
 
         return bestIndex;
+    }
+
+    /**
+     * Access the attachments node of the specified bone.
+     *
+     * @param bone which bone (not null, unaffected)
+     * @return the pre-existing instance, or null if none
+     */
+    public static Node getAttachments(Bone bone) {
+        Class<?> boneClass = bone.getClass();
+        Field attachNodeField;
+        try {
+            attachNodeField = boneClass.getDeclaredField("attachNode");
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException();
+        }
+        attachNodeField.setAccessible(true);
+        Node result;
+        try {
+            result = (Node) attachNodeField.get(bone);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException();
+        }
+
+        return result;
     }
 
     /**
