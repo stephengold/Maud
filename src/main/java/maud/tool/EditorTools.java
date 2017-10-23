@@ -58,7 +58,7 @@ public class EditorTools {
      */
     final private AnimationTool animation;
     /**
-     * controller for the "Axes Tool" window
+     * controller for the "Axes Tool" window TODO make private
      */
     final public AxesTool axes;
     /**
@@ -66,11 +66,11 @@ public class EditorTools {
      */
     final private BackgroundTool background;
     /**
-     * controller for the "Bone Rotation Tool" window
+     * controller for the "Bone-Rotation Tool" window
      */
     final private BoneRotationTool boneRotation;
     /**
-     * controller for the "Bone Scale Tool" window
+     * controller for the "Bone-Scale Tool" window
      */
     final private BoneScaleTool boneScale;
     /**
@@ -78,7 +78,7 @@ public class EditorTools {
      */
     final private BoneTool bone;
     /**
-     * controller for the "Bone Translation Tool" window
+     * controller for the "Bone-Translation Tool" window
      */
     final private BoneTranslationTool boneTranslation;
     /**
@@ -86,7 +86,7 @@ public class EditorTools {
      */
     final private BoundsTool bounds;
     /**
-     * controller for the "Camera Tool" window
+     * controller for the "Camera Tool" window TODO make private
      */
     final public CameraTool camera;
     /**
@@ -102,7 +102,7 @@ public class EditorTools {
      */
     final private DisplaySettingsTool displaySettings;
     /**
-     * controller for the "History Tool" window
+     * controller for the "History Tool" window TODO make private
      */
     final public HistoryTool history;
     /**
@@ -174,11 +174,11 @@ public class EditorTools {
      */
     final private SpatialDetailsTool spatialDetails;
     /**
-     * controller for the "Spatial Rotation Tool" window
+     * controller for the "Spatial-Rotation Tool" window
      */
     final private SpatialRotationTool spatialRotation;
     /**
-     * controller for the "Spatial Scale Tool" window
+     * controller for the "Spatial-Scale Tool" window
      */
     final private SpatialScaleTool spatialScale;
     /**
@@ -186,7 +186,7 @@ public class EditorTools {
      */
     final private SpatialTool spatial;
     /**
-     * controller for the "Spatial Translation Tool" window
+     * controller for the "Spatial-Translation Tool" window
      */
     final private SpatialTranslationTool spatialTranslation;
     /**
@@ -286,6 +286,9 @@ public class EditorTools {
         switch (toolName) {
             case "animation":
                 controller = animation;
+                break;
+            case "axes":
+                controller = axes;
                 break;
             case "background":
                 controller = background;
@@ -396,7 +399,9 @@ public class EditorTools {
                 controller = vertex;
                 break;
             default:
-                controller = null;
+                String message = String.format("tool name = %s",
+                        MyString.quote(toolName));
+                throw new IllegalArgumentException(message);
         }
 
         return controller;
