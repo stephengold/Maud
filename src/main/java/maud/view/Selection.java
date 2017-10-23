@@ -34,6 +34,7 @@ import jme3utilities.Validate;
 import maud.Maud;
 import maud.model.Cgm;
 import maud.model.LoadedMap;
+import maud.tool.AxesTool;
 
 /**
  * Encapsulate an axis/bone/gnomon/keyframe/vertex selection from the user
@@ -54,8 +55,8 @@ public class Selection {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            Selection.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(Selection.class.getName());
     // *************************************************************************
     // fields
 
@@ -352,8 +353,8 @@ public class Selection {
         assert bestAxisIndex >= 0 : bestAxisIndex;
         assert bestAxisIndex < 3 : bestAxisIndex;
 
-        boolean farSide;
-        farSide = Maud.gui.tools.axes.isAxisReceding(bestCgm, bestAxisIndex);
+        AxesTool axesTool = (AxesTool) Maud.gui.tools.getTool("axes");
+        boolean farSide = axesTool.isAxisReceding(bestCgm, bestAxisIndex);
         SceneDrag.setDraggingAxis(bestAxisIndex, bestCgm, farSide);
     }
 

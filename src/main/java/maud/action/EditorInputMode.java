@@ -44,6 +44,7 @@ import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.SelectedBone;
+import maud.tool.CameraTool;
 import maud.view.SceneDrag;
 import maud.view.ViewType;
 
@@ -185,7 +186,8 @@ public class EditorInputMode extends InputMode {
     @Override
     public void activate() {
         super.activate();
-        Maud.gui.tools.camera.mapButton();
+        CameraTool cameraTool = (CameraTool) Maud.gui.tools.getTool("camera");
+        cameraTool.mapButton();
     }
 
     /**
@@ -193,7 +195,8 @@ public class EditorInputMode extends InputMode {
      */
     @Override
     public void deactivate() {
-        Maud.gui.tools.camera.unmapButton();
+        CameraTool cameraTool = (CameraTool) Maud.gui.tools.getTool("camera");
+        cameraTool.unmapButton();
         super.deactivate();
     }
 
