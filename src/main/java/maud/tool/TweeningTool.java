@@ -46,8 +46,8 @@ class TweeningTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            TweeningTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(TweeningTool.class.getName());
     // *************************************************************************
     // constructors
 

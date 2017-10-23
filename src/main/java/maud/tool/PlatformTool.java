@@ -63,17 +63,18 @@ class PlatformTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            PlatformTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(PlatformTool.class.getName());
     /**
      * mesh for generating square platforms
      */
-    final private static Mesh squareMesh = new Box(radius, squareThickness,
-            radius);
+    final private static Mesh squareMesh
+            = new Box(radius, squareThickness, radius);
     /**
      * path to texture asset for the platform
      */
-    final private static String textureAssetPath = "Textures/platform/rock_11474.jpg";
+    final private static String textureAssetPath
+            = "Textures/platform/rock_11474.jpg";
     // *************************************************************************
     // constructors
 

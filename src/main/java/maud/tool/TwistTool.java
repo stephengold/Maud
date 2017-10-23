@@ -53,8 +53,8 @@ public class TwistTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            TwistTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(TwistTool.class.getName());
     /**
      * names of the coordinate axes
      */

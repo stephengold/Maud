@@ -47,8 +47,8 @@ class DisplaySettingsTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            DisplaySettingsTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(DisplaySettingsTool.class.getName());
     // *************************************************************************
     // constructors
 

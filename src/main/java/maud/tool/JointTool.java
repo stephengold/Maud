@@ -45,8 +45,8 @@ class JointTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            JointTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(JointTool.class.getName());
     // *************************************************************************
     // constructors
 

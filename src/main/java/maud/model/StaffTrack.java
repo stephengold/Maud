@@ -56,8 +56,8 @@ public class StaffTrack {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            StaffTrack.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(StaffTrack.class.getName());
     // *************************************************************************
     // fields
 

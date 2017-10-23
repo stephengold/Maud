@@ -53,8 +53,8 @@ class BoneScaleTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            BoneScaleTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(BoneScaleTool.class.getName());
     /**
      * names of the coordinate axes
      */

@@ -43,8 +43,8 @@ public class ScoreDrag {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            ScoreDrag.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(ScoreDrag.class.getName());
     // *************************************************************************
     // fields
 

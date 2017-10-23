@@ -43,8 +43,8 @@ public class QuitDialog implements DialogController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            QuitDialog.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(QuitDialog.class.getName());
     // *************************************************************************
     // DialogController methods
 

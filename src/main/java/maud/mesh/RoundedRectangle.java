@@ -57,8 +57,8 @@ public class RoundedRectangle extends Mesh {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            RoundedRectangle.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(RoundedRectangle.class.getName());
     // *************************************************************************
     // constructors
 

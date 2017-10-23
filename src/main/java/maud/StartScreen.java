@@ -44,8 +44,8 @@ class StartScreen extends BasicScreenController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            StartScreen.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(StartScreen.class.getName());
     /**
      * Nifty id for this screen
      */
@@ -53,7 +53,8 @@ class StartScreen extends BasicScreenController {
     /**
      * asset path to Nifty XML layout of this screen
      */
-    final private static String xmlAssetPath = "Interface/Nifty/screens/start.xml";
+    final private static String xmlAssetPath
+            = "Interface/Nifty/screens/start.xml";
     // *************************************************************************
     // constructors
 

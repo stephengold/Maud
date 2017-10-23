@@ -87,8 +87,8 @@ public class ScoreResources {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            ScoreResources.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(ScoreResources.class.getName());
     /**
      * material for label backgrounds of non-selected bones
      */
