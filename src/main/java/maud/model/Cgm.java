@@ -63,8 +63,8 @@ import maud.view.SceneView;
 import maud.view.ScoreView;
 
 /**
- * MVC model for a computer-graphics (CG) model in the Maud application:
- * encapsulates the CG model's tree of spatials and provides access to related
+ * MVC model for a computer-graphics (C-G) model in the Maud application:
+ * encapsulates the C-G model's tree of spatials and provides access to related
  * MVC model state including the displayed pose, the loaded animation, and the
  * selected bone/joint/physics/sgc/shape/skeleton/spatial/track/userdata/vertex.
  *
@@ -94,7 +94,7 @@ public class Cgm implements Cloneable {
      */
     private ScenePov scenePov = new ScenePov();
     /**
-     * rendered 3-D visualization of the CG model (set by
+     * rendered 3-D visualization of the C-G model (set by
      * {@link #setViews(maud.SceneView, maud.ScoreView} or {@link #clone()})
      */
     private SceneView sceneView = null;
@@ -152,14 +152,14 @@ public class Cgm implements Cloneable {
      */
     private SelectedVertex selectedVertex = new SelectedVertex();
     /**
-     * root spatial in the MVC model's copy of the CG model
+     * root spatial in the MVC model's copy of the C-G model
      */
     protected Spatial rootSpatial = null;
     // *************************************************************************
     // constructors
 
     /**
-     * Instantiate with no CG model loaded.
+     * Instantiate with no C-G model loaded.
      */
     public Cgm() {
         Cgm cgm = this;
@@ -192,8 +192,7 @@ public class Cgm implements Cloneable {
     public int countAnimControls() {
         int count = 0;
         if (isLoaded()) {
-            Spatial root = getRootSpatial();
-            count = MySpatial.countControls(root, AnimControl.class);
+            count = MySpatial.countControls(rootSpatial, AnimControl.class);
         }
 
         assert count >= 0 : count;
@@ -328,7 +327,7 @@ public class Cgm implements Cloneable {
     /**
      * Access the local transform of the spatial in the specified position.
      *
-     * @param treePosition position in the CG model (not null, unaffected)
+     * @param treePosition position in the C-G model (not null, unaffected)
      * @return the pre-existing instance
      */
     public Transform getLocalTransform(List<Integer> treePosition) {
@@ -498,15 +497,14 @@ public class Cgm implements Cloneable {
     public boolean hasExtraSpatials() {
         boolean result = false;
         if (isLoaded()) {
-            Spatial root = getRootSpatial();
-            result = Util.hasExtraSpatials(root);
+            result = Util.hasExtraSpatials(rootSpatial);
         }
 
         return result;
     }
 
     /**
-     * Test whether the CG model contains the named geometry.
+     * Test whether the C-G model contains the named geometry.
      *
      * @param name (not null)
      * @return true if found, otherwise false
@@ -519,7 +517,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Test whether the CG model contains the named node.
+     * Test whether the C-G model contains the named node.
      *
      * @param name (not null)
      * @return true if found, otherwise false
@@ -532,7 +530,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Test whether the CG model contains the named spatial.
+     * Test whether the C-G model contains the named spatial.
      *
      * @param name (not null)
      * @return true if found, otherwise false
@@ -547,7 +545,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Test whether a CG model is loaded into this slot.
+     * Test whether a C-G model is loaded in this slot.
      *
      * @return true if loaded, otherwise false
      */
@@ -668,16 +666,15 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Enumerate all scene-graph controls of the specified type in the CG model.
+     * Enumerate all scene-graph controls of the specified type in the C-G
+     * model.
      *
      * @param <T> superclass of Control
      * @param sgcType superclass of Control to search for
      * @return a new list of pre-existing SGCs
      */
     <T extends Control> List<T> listSgcs(Class<T> sgcType) {
-        Spatial root = getRootSpatial();
-        List<T> sgcList = MySpatial.listControls(root, sgcType, null);
-
+        List<T> sgcList = MySpatial.listControls(rootSpatial, sgcType, null);
         return sgcList;
     }
 
@@ -753,7 +750,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Unload the (source) CG model.
+     * Unload the (source) C-G model.
      */
     public void unload() {
         Cgm target = Maud.getModel().getTarget();
@@ -920,7 +917,7 @@ public class Cgm implements Cloneable {
      * Update the scene's wireframe settings based on the MVC model. Note:
      * recursive!
      *
-     * @param subtree subtree in the MVC model's copy of the CG model (may be
+     * @param subtree subtree in the MVC model's copy of the C-G model (may be
      * null)
      */
     private void updateSceneWireframe(Spatial subtree) {
