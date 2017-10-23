@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
+import maud.tool.HistoryTool;
 
 /**
  * Edit history for Maud. Note: not checkpointed!
@@ -213,7 +214,8 @@ public class History {
         } else {
             logger.log(Level.INFO, "nothing to redo", nextIndex);
         }
-        Maud.gui.tools.history.setAutoScroll();
+
+        setAutoScroll();
     }
 
     /**
@@ -230,7 +232,8 @@ public class History {
         } else {
             logger.log(Level.INFO, "nothing to redo", nextIndex);
         }
-        Maud.gui.tools.history.setAutoScroll();
+
+        setAutoScroll();
     }
 
     /**
@@ -241,6 +244,15 @@ public class History {
      */
     public static void setAutoAdd(boolean newSetting) {
         autoAddFlag = newSetting;
+    }
+
+    /**
+     * Configure the History Tool to scroll to "you are here" on its next
+     * update.
+     */
+    public static void setAutoScroll() {
+        HistoryTool tool = (HistoryTool) Maud.gui.tools.getTool("history");
+        tool.setAutoScroll();
     }
 
     /**
@@ -266,6 +278,7 @@ public class History {
         } else {
             logger.log(Level.INFO, "nothing to undo");
         }
-        Maud.gui.tools.history.setAutoScroll();
+
+        setAutoScroll();
     }
 }

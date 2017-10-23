@@ -69,7 +69,10 @@ import maud.model.option.scene.AxesMode;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.Wireframe;
+import maud.tool.AxesTool;
+import maud.tool.CameraTool;
 import maud.tool.EditorTools;
+import maud.tool.HistoryTool;
 import maud.view.CgmTransform;
 import maud.view.EditorView;
 import maud.view.SceneDrag;
@@ -151,7 +154,8 @@ public class EditorScreen extends GuiScreenController {
         Date creationDate = checkpoint.copyTimestamp();
         String creationTime = DateFormat.getTimeInstance().format(creationDate);
 
-        tools.history.setAutoScroll();
+        HistoryTool historyTool = (HistoryTool) tools.getTool("history");
+        historyTool.setAutoScroll();
         String message = String.format("added checkpoint[%d] from %s at %s",
                 checkpointIndex, source, creationTime);
         setStatus(message);
@@ -789,7 +793,8 @@ public class EditorScreen extends GuiScreenController {
             }
 
             if (SceneDrag.isDraggingAxis()) {
-                Maud.gui.tools.axes.dragAxis();
+                AxesTool axesTool = (AxesTool) Maud.gui.tools.getTool("axes");
+                axesTool.dragAxis();
             }
 
         } else if (viewType == ViewType.Score) {
@@ -804,7 +809,8 @@ public class EditorScreen extends GuiScreenController {
                 cgm.getAnimation().setTime(newTime);
             }
         }
-        tools.camera.updatePov();
+        CameraTool cameraTool = (CameraTool) tools.getTool("camera");
+        cameraTool.updatePov();
         /*
          * Update the views.
          */
