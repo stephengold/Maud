@@ -47,8 +47,8 @@ class RetargetTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            RetargetTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(RetargetTool.class.getName());
     // *************************************************************************
     // constructors
 

@@ -52,8 +52,8 @@ class SpatialScaleTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SpatialScaleTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SpatialScaleTool.class.getName());
     /**
      * names of the coordinate axes
      */

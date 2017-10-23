@@ -49,8 +49,8 @@ class SourceAnimationTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SourceAnimationTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SourceAnimationTool.class.getName());
     // *************************************************************************
     // constructors
 

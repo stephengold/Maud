@@ -45,8 +45,8 @@ class ScoreTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            ScoreTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(ScoreTool.class.getName());
     // *************************************************************************
     // constructors
 

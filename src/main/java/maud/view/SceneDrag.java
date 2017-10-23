@@ -56,8 +56,8 @@ public class SceneDrag {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SceneDrag.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SceneDrag.class.getName());
     // *************************************************************************
     // fields
 

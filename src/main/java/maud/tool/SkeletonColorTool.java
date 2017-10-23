@@ -49,8 +49,8 @@ class SkeletonColorTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SkeletonColorTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SkeletonColorTool.class.getName());
     // *************************************************************************
     // constructors
 

@@ -48,8 +48,8 @@ class SkeletonTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SkeletonTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SkeletonTool.class.getName());
     // *************************************************************************
     // constructors
 

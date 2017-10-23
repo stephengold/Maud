@@ -47,8 +47,8 @@ class UserKeyDialog implements DialogController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            UserKeyDialog.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(UserKeyDialog.class.getName());
     // *************************************************************************
     // fields
 

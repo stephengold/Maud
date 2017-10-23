@@ -44,8 +44,8 @@ public class Sparkline extends Mesh {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            Sparkline.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(Sparkline.class.getName());
     // *************************************************************************
     // constructors
 

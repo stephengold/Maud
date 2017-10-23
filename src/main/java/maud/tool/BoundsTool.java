@@ -50,8 +50,8 @@ class BoundsTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            BoundsTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(BoundsTool.class.getName());
     // *************************************************************************
     // constructors
 

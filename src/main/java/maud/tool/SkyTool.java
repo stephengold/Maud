@@ -54,8 +54,8 @@ class SkyTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            SkyTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(SkyTool.class.getName());
     // *************************************************************************
     // constructors
 

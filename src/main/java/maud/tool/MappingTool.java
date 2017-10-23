@@ -49,8 +49,8 @@ public class MappingTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            MappingTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(MappingTool.class.getName());
     // *************************************************************************
     // constructors
 

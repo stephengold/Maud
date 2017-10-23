@@ -47,8 +47,8 @@ class KeyframeTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            KeyframeTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(KeyframeTool.class.getName());
     // *************************************************************************
     // constructors
 

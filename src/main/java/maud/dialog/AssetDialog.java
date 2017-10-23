@@ -57,8 +57,8 @@ class AssetDialog implements DialogController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            AssetDialog.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(AssetDialog.class.getName());
     // *************************************************************************
     // fields
 
@@ -83,8 +83,8 @@ class AssetDialog implements DialogController {
     // constructors
 
     /**
-     * Instantiate a controller with the specified commit description, asset location, and list
-     * of extensions.
+     * Instantiate a controller with the specified commit description, asset
+     * location, and list of extensions.
      *
      * @param description (not null)
      * @param specification URL specification of asset location, or null for the
@@ -169,10 +169,10 @@ class AssetDialog implements DialogController {
         if (pathCache.containsKey(assetPath)) {
             return pathCache.get(assetPath);
         }
-        
+
         AssetKey key = new AssetKey(assetPath);
         AssetManager manager = Locators.getAssetManager();
-        
+
         Locators.save();
         Locators.unregisterAll();
         Locators.register(spec);
@@ -186,7 +186,7 @@ class AssetDialog implements DialogController {
         amLogger.setLevel(savedLevel);
 
         Locators.restore();
-        
+
         boolean result;
         if (info == null) {
             result = false;
@@ -194,7 +194,7 @@ class AssetDialog implements DialogController {
             result = true;
         }
         pathCache.put(assetPath, result);
-        
+
         return result;
     }
 

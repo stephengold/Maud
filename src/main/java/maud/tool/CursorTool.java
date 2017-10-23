@@ -57,8 +57,8 @@ class CursorTool extends WindowController {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            CursorTool.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(CursorTool.class.getName());
     /**
      * asset path of the C-G model for the 3-D cursor
      */

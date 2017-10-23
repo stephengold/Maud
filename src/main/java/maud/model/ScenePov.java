@@ -56,8 +56,8 @@ public class ScenePov implements Cloneable, Pov {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            ScenePov.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(ScenePov.class.getName());
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_Y}
      */
