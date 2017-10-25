@@ -144,6 +144,10 @@ public class SelectedSpatial implements JmeCloneable {
      */
     public void addSkeletonControl() {
         Skeleton skeleton = cgm.getSkeleton().find();
+        if (skeleton == null) {
+            Bone[] bones = new Bone[0];
+            skeleton = new Skeleton(bones);
+        }
         SkeletonControl newSgc = new SkeletonControl(skeleton);
 
         editableCgm.addSgc(newSgc);
