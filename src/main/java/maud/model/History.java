@@ -191,7 +191,7 @@ public class History {
     }
 
     /**
-     * List all events since the previous checkpoint.
+     * Enumerate all events since the previous checkpoint.
      *
      * @return a new list of descriptions
      */
