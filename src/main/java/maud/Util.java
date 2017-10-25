@@ -58,6 +58,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -310,7 +311,7 @@ public class Util {
 
     /**
      * Find the specified spatial in the specified subtree and optionally store
-     * its tree position. Note: recursive!
+     * its tree position.
      *
      * @param spatial spatial to find (not null, unaffected)
      * @param subtree which subtree to search (may be null, unaffected)
@@ -323,26 +324,26 @@ public class Util {
         Validate.nonNull(spatial, "spatial");
 
         boolean success = false;
-        if (subtree != null) {
-            if (subtree.equals(spatial)) {
+        if (spatial == subtree) {
+            success = true;
+            if (storePosition != null) {
+                storePosition.clear();
+            }
+
+        } else if (subtree instanceof Node) {
+            Node subtreeNode = (Node) subtree;
+            if (spatial.hasAncestor(subtreeNode)) {
                 success = true;
                 if (storePosition != null) {
                     storePosition.clear();
-                }
-
-            } else if (subtree instanceof Node) {
-                Node node = (Node) subtree;
-                List<Spatial> children = node.getChildren();
-                int numChildren = children.size();
-                for (int childI = 0; childI < numChildren; childI++) {
-                    Spatial child = children.get(childI);
-                    success = findPosition(spatial, child, storePosition);
-                    if (success) {
-                        if (storePosition != null) {
-                            storePosition.add(0, childI);
-                        }
-                        break;
+                    while (spatial != subtree) {
+                        Node parent = spatial.getParent();
+                        int index = parent.getChildIndex(spatial);
+                        assert index >= 0 : index;
+                        storePosition.add(index);
+                        spatial = parent;
                     }
+                    Collections.reverse(storePosition);
                 }
             }
         }
