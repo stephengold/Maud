@@ -37,10 +37,10 @@ import maud.Maud;
 import maud.Util;
 import maud.dialog.EditorDialogs;
 import maud.menu.ShowMenus;
-import maud.model.DisplaySettings;
 import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.ShowBones;
+import maud.model.option.DisplaySettings;
 import maud.model.option.ViewMode;
 
 /**
