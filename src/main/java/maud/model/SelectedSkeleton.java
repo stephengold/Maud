@@ -31,6 +31,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.util.clone.Cloner;
@@ -82,6 +83,36 @@ public class SelectedSkeleton implements JmeCloneable {
     private Skeleton last = null;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Calculate the tree position of the attachments node, if any, for the
+     * specified bone.
+     *
+     * @param boneIndex which bone (&ge;0)
+     * @return tree position, or null if none
+     */
+    public List<Integer> attachmentsPosition(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+
+        Bone bone = getBone(boneIndex);
+        Node node = Util.getAttachments(bone);
+
+        List<Integer> result = null;
+        if (node != null) {
+            result = new ArrayList<>(5);
+            Node parent = node.getParent();
+            while (parent != null) {
+                int index = parent.getChildIndex(node);
+                assert index >= 0 : index;
+                result.add(index);
+                node = parent;
+                parent = node.getParent();
+            }
+            Collections.reverse(result);
+        }
+
+        return result;
+    }
 
     /**
      * Count the bones in the selected skeleton.
@@ -226,7 +257,7 @@ public class SelectedSkeleton implements JmeCloneable {
      * @param boneIndex which bone (&ge;0)
      * @return the pre-existing instance
      */
-    public Bone getBone(int boneIndex) {
+    Bone getBone(int boneIndex) {
         Validate.nonNegative(boneIndex, "bone index");
 
         Skeleton skeleton = find();
@@ -263,6 +294,25 @@ public class SelectedSkeleton implements JmeCloneable {
         Bone bone = skeleton.getBone(boneIndex);
         Bone parent = bone.getParent();
         int result = skeleton.getBoneIndex(parent);
+
+        return result;
+    }
+
+    /**
+     * Access a skeleton control for the selected skeleton.
+     */
+    SkeletonControl getSkeletonControl() {
+        Skeleton skeleton = find();
+        SkeletonControl result = null;
+
+        List<SkeletonControl> list = cgm.listSgcs(SkeletonControl.class);
+        for (SkeletonControl sgc : list) {
+            Skeleton controlSkeleton = sgc.getSkeleton();
+            if (controlSkeleton == skeleton) {
+                result = sgc;
+                break;
+            }
+        }
 
         return result;
     }

@@ -27,8 +27,10 @@
 package maud.model;
 
 import com.jme3.animation.AnimControl;
+import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
+import com.jme3.animation.SpatialTrack;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -49,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -328,6 +331,9 @@ public class SelectedSpatial implements JmeCloneable {
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
             editableCgm.deleteSubtree();
+            /*
+             * Select the parent node.
+             */
             int last = treePosition.size() - 1;
             treePosition.remove(last);
             assert find() == parent;
@@ -601,6 +607,41 @@ public class SelectedSpatial implements JmeCloneable {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Test whether the selected spatial is the target of a spatial track in the
+     * loaded animation.
+     *
+     * @return true if it's a target, otherwise false
+     */
+    public boolean isAnimationTarget() {
+        LoadedAnimation animation = cgm.getAnimation();
+        Spatial spatial = find();
+        SpatialTrack track = animation.findTrackForSpatial(spatial);
+        if (track == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Test whether the selected spatial is an attachments node.
+     *
+     * @return true if it's an attachments node, otherwise false
+     */
+    public boolean isAttachmentsNode() {
+        boolean result = false;
+        Spatial spatial = find();
+        if (spatial instanceof Node) {
+            Map<Bone, Spatial> map = cgm.mapAttachments();
+            if (map.containsValue(spatial)) {
+                result = true;
+            }
+        }
+
+        return result;
     }
 
     /**

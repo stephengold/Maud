@@ -88,9 +88,11 @@ import maud.Util;
 import maud.mesh.PointMesh;
 import maud.model.Cgm;
 import maud.model.DisplayedPose;
+import maud.model.SelectedSkeleton;
 import maud.model.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.SkeletonOptions;
+import maud.tool.AxesTool;
 
 /**
  * A 3-D visualization of a loaded C-G model in a scene-mode viewport.
@@ -152,7 +154,7 @@ public class SceneView
      */
     final private BulletAppState bulletAppState;
     /**
-     * C-G model that owns this view (not null)
+     * C-G model that appears in this view (not null)
      */
     private Cgm cgm;
     /**
@@ -289,12 +291,12 @@ public class SceneView
         /*
          * Attach the child to the scene.
          */
-        Node parent = (Node) cgmRoot;
+        Node parentNode = (Node) cgmRoot;
         for (int childIndex : parentPosition) {
-            Spatial parentSpatial = parent.getChild(childIndex);
-            parent = (Node) parentSpatial;
+            Spatial parentSpatial = parentNode.getChild(childIndex);
+            parentNode = (Node) parentSpatial;
         }
-        parent.attachChild(clone);
+        parentNode.attachChild(clone);
         /*
          * Re-attach the skeleton visualizer.
          */
@@ -302,17 +304,17 @@ public class SceneView
     }
 
     /**
-     * Delete the selected spatial and its children, if any.
+     * Delete the selected spatial and its descendents, if any.
      */
     public void deleteSubtree() {
         Spatial spatial = selectedSpatial();
-
         MySpatial.disablePhysicsControls(spatial);
-        spatial.removeFromParent();
+        boolean success = spatial.removeFromParent();
+        assert success;
     }
 
     /**
-     * Delete the specified spatial and its children, if any.
+     * Delete the specified spatial and its descendents, if any.
      *
      * @param treePosition tree position of spatial to delete (not null)
      */
@@ -326,7 +328,8 @@ public class SceneView
         }
 
         MySpatial.disablePhysicsControls(spatial);
-        spatial.removeFromParent();
+        boolean success = spatial.removeFromParent();
+        assert success;
     }
 
     /**
@@ -817,8 +820,9 @@ public class SceneView
         Validate.nonNull(selection, "selection");
 
         Camera camera = getCamera();
+        AxesTool tool = (AxesTool) Maud.gui.tools.getTool("axes");
         for (int axisIndex = 0; axisIndex < numAxes; axisIndex++) {
-            Vector3f tipWorld = Maud.gui.tools.axes.tipLocation(cgm, axisIndex);
+            Vector3f tipWorld = tool.tipLocation(cgm, axisIndex);
             if (tipWorld != null) {
                 Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);
                 Vector2f tipXY = new Vector2f(tipScreen.x, tipScreen.y);
@@ -1134,7 +1138,7 @@ public class SceneView
     }
 
     /**
-     * Add an axes visualizer to the root node of this view.
+     * Add an axes visualizer to the scene.
      */
     private void createAxes() {
         AssetManager assetManager = Locators.getAssetManager();
@@ -1148,7 +1152,7 @@ public class SceneView
     }
 
     /**
-     * Add a bounds visualizer to root node of this view.
+     * Add a bounds visualizer to the scene.
      */
     private void createBounds() {
         AssetManager assetManager = Locators.getAssetManager();
@@ -1369,11 +1373,11 @@ public class SceneView
     }
 
     /**
-     * Update the local transform of each spatial in the specified subtree based
-     * on the MVC model. Note: recursive!
+     * Copy the local transform of each spatial in the specified subtree from
+     * the MVC model. Note: recursive!
      *
      * @param spatial subtree in the scene (not null)
-     * @param position tree position (not null, unaffected)
+     * @param position tree position of subtree (not null, unaffected)
      */
     private void updateLocalTransforms(Spatial spatial,
             List<Integer> position) {
@@ -1421,10 +1425,11 @@ public class SceneView
     }
 
     /**
-     * Update bone transforms based on the pose in the MVC model.
+     * Update bone transforms based on the displayed pose in the MVC model.
      */
     private void updatePose() {
-        int boneCount = cgm.getSkeleton().countBones();
+        SelectedSkeleton ss = cgm.getSkeleton();
+        int boneCount = ss.countBones();
         Pose pose = cgm.getPose().get();
         int numTransforms = pose.countBones();
         assert numTransforms == boneCount : numTransforms;
@@ -1440,6 +1445,21 @@ public class SceneView
             pose.userTransform(boneIndex, transform);
             Bone bone = skeleton.getBone(boneIndex);
             bone.setUserTransforms(translation, rotation, scale);
+
+            List<Integer> nodePosition = ss.attachmentsPosition(boneIndex);
+            if (nodePosition != null) {
+                Node attachNode = (Node) cgmRoot;
+                for (int childIndex : nodePosition) {
+                    Spatial parentSpatial = attachNode.getChild(childIndex);
+                    attachNode = (Node) parentSpatial;
+                }
+
+                pose.modelTransform(boneIndex, transform);
+                Geometry ag = findAnimatedGeometry();
+                Transform worldTransform = ag.getWorldTransform();
+                transform.combineWithParent(worldTransform);
+                MySpatial.setWorldTransform(attachNode, transform);
+            }
         }
     }
 }
