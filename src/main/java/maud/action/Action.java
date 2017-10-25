@@ -46,12 +46,12 @@ public class Action {
     final private static Logger logger
             = Logger.getLogger(Action.class.getName());
     /**
-     * delete the currently selected animation
+     * delete the selected animation
      */
     final public static String deleteAnimation = "delete animation";
     final static String deleteMapping = "delete mapping";
     /**
-     * delete the currently selected S-G contol
+     * delete the selected S-G control
      */
     final public static String deleteSgc = "delete sgc";
     final static String deleteSingleKeyframe = "delete singleKeyframe";
@@ -168,6 +168,10 @@ public class Action {
     final static String setScoreBonesNone = "set scoreBonesNone";
     final static String setScoreBonesWhen = "set scoreBonesWhen";
     final static String setShadowMode = "set shadowMode";
+    final static String setSpatialAngleCardinal = "set spatialAngle cardinal";
+    final static String setSpatialAngleSnapX = "set spatialAngle snapX";
+    final static String setSpatialAngleSnapY = "set spatialAngle snapY";
+    final static String setSpatialAngleSnapZ = "set spatialAngle snapZ";
     final static String setTrackRotationAll = "set track rotation all";
     final static String setTrackScaleAll = "set track scale all";
     final static String setTrackTranslationAll = "set track translation all";

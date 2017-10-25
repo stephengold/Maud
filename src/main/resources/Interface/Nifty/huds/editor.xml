@@ -1961,23 +1961,43 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="spatialRotationTool" title="Spatial-Rotation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="220px" width="195px" x="60" y="40">
+                     height="250px" width="200px" x="60" y="40">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
-                        <control name="verticalSlider" id="xSaSlider"
-                                 buttonStepSize="1.57"
-                                 height="180px"
-                                 max="3.14" min="-3.14" stepSize="0.001"/>
-                        <control name="verticalSlider" id="ySaSlider"
-                                 buttonStepSize="1.57"
-                                 height="180px"
-                                 max="3.14" min="-3.14" stepSize="0.001"/>
-                        <control name="verticalSlider" id="zSaSlider"
-                                 buttonStepSize="1.57"
-                                 height="180px"
-                                 max="1.57" min="-1.57" stepSize="0.001"/>
-                        <panel childLayout="vertical"
-                               height="160px" width="110px">
+                        <panel childLayout="vertical">
+                            <control name="verticalSlider" id="xSaSlider"
+                                     buttonStepSize="1.571"
+                                     height="190px"
+                                     max="3.142" min="-3.142" stepSize="0.001"/>
+                            <control name="button" label="Snap"
+                                     id="id36ToAvoidNiftyWarning"
+                                     width="30px">
+                                <interact onRelease="perform(set spatialAngle snapX)"/>
+                            </control>
+                        </panel>
+                        <panel childLayout="vertical">
+                            <control name="verticalSlider" id="ySaSlider"
+                                     buttonStepSize="1.571"
+                                     height="190px"
+                                     max="3.142" min="-3.142" stepSize="0.001"/>
+                            <control name="button" label="Snap"
+                                     id="id37ToAvoidNiftyWarning"
+                                     width="30px">
+                                <interact onRelease="perform(set spatialAngle snapY)"/>
+                            </control>
+                        </panel>
+                        <panel childLayout="vertical">
+                            <control name="verticalSlider" id="zSaSlider"
+                                     buttonStepSize="1.571"
+                                     height="190px"
+                                     max="1.571" min="-1.571" stepSize="0.001"/>
+                            <control name="button" label="Snap"
+                                     id="id38ToAvoidNiftyWarning"
+                                     width="30px">
+                                <interact onRelease="perform(set spatialAngle snapZ)"/>
+                            </control>
+                        </panel>
+                        <panel childLayout="vertical">
                             <control name="label" id="xSaSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
@@ -1995,11 +2015,22 @@ the menu bar, status bar, and tool windows.
                                 </control>
                                 <panel/>
                             </panel>
-                            <control name="button" label="Reset"
-                                     id="id40ToAvoidNiftyWarning"
-                                     width="70px">
-                                <interact onRelease="perform(reset spatial rotation)"/>
-                            </control>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
+                                <control name="button" label="Snap"
+                                         id="id39ToAvoidNiftyWarning">
+                                    <interact onRelease="perform(set spatialAngle cardinal)"/>
+                                </control>
+                                <panel/>
+                            </panel>
+                            <panel childLayout="horizontal" height="30px">
+                                <panel/>
+                                <control name="button" label="Reset"
+                                         id="id40ToAvoidNiftyWarning">
+                                    <interact onRelease="perform(reset spatial rotation)"/>
+                                </control>
+                                <panel/>
+                            </panel>
                         </panel>
                     </panel>
                 </panel>
@@ -2140,7 +2171,6 @@ the menu bar, status bar, and tool windows.
                      hideOnClose="true"
                      height="250px" width="220px" x="35" y="65">
                 <panel childLayout="vertical">
-                    <panel/>
                     <panel childLayout="horizontal">
                         <panel childLayout="vertical">
                             <control name="verticalSlider" id="xTwistSlider"
@@ -2208,7 +2238,6 @@ the menu bar, status bar, and tool windows.
                             </panel>
                         </panel>
                     </panel>
-                    <panel/>
                 </panel>
             </control>
 

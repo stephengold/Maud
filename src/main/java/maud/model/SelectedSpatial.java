@@ -56,6 +56,7 @@ import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.math.MyQuaternion;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.Util;
@@ -169,6 +170,15 @@ public class SelectedSpatial implements JmeCloneable {
         String description;
         description = String.format("merge model %s", MyString.quote(name));
         editableCgm.attachSpatial(parentNode, clone, description);
+    }
+
+    /**
+     * Cardinalize the local rotation.
+     */
+    public void cardinalizeRotation() {
+        Quaternion localRotation = localRotation(null);
+        Util.cardinalizeLocal(localRotation);
+        editableCgm.setSpatialRotation(localRotation);
     }
 
     /**
@@ -949,6 +959,19 @@ public class SelectedSpatial implements JmeCloneable {
         } else {
             editableCgm = null;
         }
+    }
+
+    /**
+     * Snap one axis-angle of the local rotation.
+     *
+     * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
+     */
+    public void snapRotation(int axisIndex) {
+        Validate.inRange(axisIndex, "axis index", 0, 2);
+
+        Quaternion localRotation = localRotation(null);
+        MyQuaternion.snapLocal(localRotation, axisIndex);
+        editableCgm.setSpatialRotation(localRotation);
     }
 
     /**
