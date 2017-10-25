@@ -29,15 +29,18 @@ package maud.model;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.animation.SkeletonControl;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
 import jme3utilities.wes.Pose;
 import maud.Util;
@@ -69,11 +72,27 @@ public class SelectedBone implements Cloneable {
      */
     private EditableCgm editableCgm = null;
     /**
-     * index of the selected bone, or -1 for none selected
+     * index of the selected bone, or -1 for none selected TODO define constant
      */
     private int selectedIndex = -1;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Create an attachments node for the selected bone.
+     *
+     * @return the new instance
+     */
+    Node createAttachments() {
+        assert !hasAttachmentsNode();
+
+        SkeletonControl sc = cgm.getSkeleton().getSkeletonControl();
+        String boneName = getName();
+        Node newNode = sc.getAttachmentsNode(boneName);
+
+        assert hasAttachmentsNode();
+        return newNode;
+    }
 
     /**
      * Count how many children the selected bone has.
@@ -192,6 +211,21 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
+     * Test whether the selected bone has an attachments node.
+     *
+     * @return true if a bone has a node, otherwise false
+     */
+    public boolean hasAttachmentsNode() {
+        Bone bone = get();
+        Node node = Util.getAttachments(bone);
+        if (node == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Test whether the selected bone has a BoneTrack in the loaded animation.
      *
      * @return true if a bone is selected and it has a track, otherwise false
@@ -206,18 +240,47 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Test whether any mesh vertices are influenced by this bone.
+     * Test whether any mesh vertices are (directly or indirectly) animated by
+     * this bone. TODO rename influencesVertices
      *
-     * @return count (&ge;0)
+     * @return true if bone has influence, otherwise false
      */
     public boolean influence() {
         boolean result = false;
         if (isSelected()) {
-            SelectedSkeleton ss = cgm.getSkeleton();
-            Spatial subtree = ss.findSpatial();
-            Skeleton skeleton = ss.find();
+            SelectedSkeleton selectedSkeleton = cgm.getSkeleton();
+            Spatial subtree = selectedSkeleton.findSpatial();
+            Skeleton skeleton = selectedSkeleton.find();
             BitSet bones = Util.addAllInfluencers(subtree, skeleton, null);
             result = bones.get(selectedIndex);
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether the selected bone influences an attachments node.
+     *
+     * @return true if a bone influences a node, otherwise false
+     */
+    public boolean influencesAttachmentsNode() {
+        boolean result = hasAttachmentsNode();
+        if (!result) {
+            /*
+             * Test descendent bones.
+             */
+            Skeleton skeleton = cgm.getSkeleton().find();
+            int numBones = skeleton.getBoneCount();
+            for (int iBone = 0; iBone < numBones; iBone++) {
+                if (MySkeleton.descendsFrom(iBone, selectedIndex, skeleton)) {
+                    Bone bone = skeleton.getBone(iBone);
+                    Node node = Util.getAttachments(bone);
+                    if (node != null) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
         }
 
         return result;

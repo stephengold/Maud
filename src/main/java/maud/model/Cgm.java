@@ -28,6 +28,7 @@ package maud.model;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
+import com.jme3.animation.Bone;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.bullet.PhysicsSpace;
@@ -325,10 +326,12 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Access the local transform of the spatial in the specified position.
+     * Access the local transform of the spatial in the specified tree position.
+     * Accounts for the effects of spatial tracks but not those of bone
+     * attachments.
      *
      * @param treePosition position in the C-G model (not null, unaffected)
-     * @return the pre-existing instance
+     * @return a local transform
      */
     public Transform getLocalTransform(List<Integer> treePosition) {
         Spatial spatial = rootSpatial;
@@ -492,12 +495,13 @@ public class Cgm implements Cloneable {
     /**
      * Test whether there are any "extra" spatials in the C-G model.
      *
-     * @return true if any found, otherwise false
+     * @return true if any were found, otherwise false
      */
     public boolean hasExtraSpatials() {
         boolean result = false;
         if (isLoaded()) {
-            result = Util.hasExtraSpatials(rootSpatial);
+            Map<Bone, Spatial> map = mapAttachments();
+            result = Util.hasExtraSpatials(rootSpatial, map.values());
         }
 
         return result;
@@ -719,6 +723,16 @@ public class Cgm implements Cloneable {
             }
         }
 
+        return result;
+    }
+
+    /**
+     * Map all attachments nodes in the C-G model.
+     *
+     * @return a new map
+     */
+    Map<Bone, Spatial> mapAttachments() {
+        Map<Bone, Spatial> result = Util.mapAttachments(rootSpatial, null);
         return result;
     }
 

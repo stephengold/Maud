@@ -31,6 +31,7 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.Track;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.PhysicsControl;
@@ -48,6 +49,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
@@ -59,6 +62,7 @@ import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TrackEdit;
 import maud.Maud;
 import maud.PhysicsUtil;
+import maud.Util;
 import maud.view.SceneView;
 
 /**
@@ -120,6 +124,28 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Add an attachments node for the selected bone.
+     */
+    public void addAttachmentsNode() {
+        SelectedBone selectedBone = getBone();
+        assert !selectedBone.hasAttachmentsNode();
+
+        History.autoAdd();
+        Node newNode = selectedBone.createAttachments();
+
+        Node parent = newNode.getParent();
+        List<Integer> parentPosition = findSpatial(parent);
+        getSceneView().attachSpatial(parentPosition, newNode);
+
+        String boneName = selectedBone.getName();
+        String description = "add attachments node for "
+                + MyString.quote(boneName);
+        setEdited(description);
+
+        assert selectedBone.hasAttachmentsNode();
+    }
+
+    /**
      * Add a new S-G control to the selected spatial.
      *
      * @param newSgc (not null)
@@ -128,7 +154,7 @@ public class EditableCgm extends LoadedCgm {
         assert newSgc != null;
 
         History.autoAdd();
-        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().find();
         if (newSgc instanceof PhysicsControl) {
             PhysicsControl physicsControl = (PhysicsControl) newSgc;
             SceneView sceneView = getSceneView();
@@ -187,7 +213,7 @@ public class EditableCgm extends LoadedCgm {
         }
         byte objectType = UserData.getObjectType(object);
         UserData data = new UserData(objectType, object);
-        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().find();
 
         History.autoAdd();
         selectedSpatial.setUserData(key, data);
@@ -260,16 +286,43 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete all "extra" spatials, but not the root.
+     * Delete the attachments node for the selected bone.
+     */
+    public void deleteAttachmentsNode() {
+        SelectedBone selectedBone = getBone();
+        assert selectedBone.hasAttachmentsNode();
+
+        History.autoAdd();
+        Bone bone = selectedBone.get();
+        Node node = Util.getAttachments(bone);
+        List<Integer> nodePosition = findSpatial(node);
+
+        Util.cancelAttachments(bone);
+        boolean success = node.removeFromParent();
+        assert success;
+        getSceneView().deleteSubtree(nodePosition);
+
+        String boneName = selectedBone.getName();
+        String description = "delete attachments node for "
+                + MyString.quote(boneName);
+        setEdited(description);
+
+        assert !selectedBone.hasAttachmentsNode();
+    }
+
+    /**
+     * Delete all "extra" spatials in the model, but not the root.
      */
     public void deleteExtraSpatials() {
         if (rootSpatial instanceof Node) {
+            History.autoAdd();
             int oldNumSpatials = MySpatial.countSpatials(rootSpatial,
                     Spatial.class);
-            Node rootNode = (Node) rootSpatial;
 
-            History.autoAdd();
-            deleteExtraSpatials(rootNode);
+            Node rootNode = (Node) rootSpatial;
+            Map<Bone, Spatial> map = mapAttachments();
+            deleteExtraSpatials(rootNode, map.values());
+
             getSpatial().selectCgmRoot();
             int newNumSpatials = MySpatial.countSpatials(rootSpatial,
                     Spatial.class);
@@ -282,38 +335,81 @@ public class EditableCgm extends LoadedCgm {
 
     /**
      * Delete the selected S-G control. The invoker is responsible for
-     * deselecting the S-G control.
+     * deselecting the control.
      */
     void deleteSgc() {
-        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().find();
         Control selectedSgc = getSgc().find();
+        SceneView sceneView = getSceneView();
 
         History.autoAdd();
-        if (selectedSgc instanceof PhysicsControl) {
+        if (selectedSgc instanceof SkeletonControl) {
+            SkeletonControl skeletonControl = (SkeletonControl) selectedSgc;
+            Skeleton skeleton = skeletonControl.getSkeleton();
+            Map<Bone, Spatial> map = Util.mapAttachments(skeleton, null);
+            for (Bone bone : map.keySet()) {
+                Node attachmentsNode = Util.getAttachments(bone);
+                List<Integer> nodePosition = findSpatial(attachmentsNode);
+
+                Util.cancelAttachments(bone);
+                /*
+                 * Detach the attachments node from its parent.
+                 */
+                boolean success = attachmentsNode.removeFromParent();
+                assert success;
+                /*
+                 * Sychronize with the scene view.
+                 */
+                sceneView.deleteSubtree(nodePosition);
+            }
+
+        } else if (selectedSgc instanceof PhysicsControl) {
             PhysicsControl pc = (PhysicsControl) selectedSgc;
             int position = PhysicsUtil.pcToPosition(selectedSpatial, pc);
-            SceneView sceneView = getSceneView();
             sceneView.removePhysicsControl(position);
         }
+
         boolean success = selectedSpatial.removeControl(selectedSgc);
         assert success;
         setEdited("delete control");
     }
 
     /**
-     * Delete the selected spatial and its children, if any. The invoker is
+     * Delete the selected spatial and its descendents, if any. The invoker is
      * responsible for deselecting the spatial.
      */
     void deleteSubtree() {
-        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
-        Node parent = selectedSpatial.getParent();
+        SelectedSpatial ss = getSpatial();
+        assert !ss.isCgmRoot();
 
         History.autoAdd();
-        int position = parent.detachChild(selectedSpatial);
-        assert position != -1;
+        Spatial subtree = ss.find();
+        /*
+         * Cancel all attachments nodes in the subtree.
+         */
+        if (subtree instanceof Node) {
+            Node subtreeNode = (Node) subtree;
+            Map<Bone, Spatial> map = mapAttachments();
+            for (Entry<Bone, Spatial> mapEntry : map.entrySet()) {
+                Spatial spatial = mapEntry.getValue();
+                if (spatial == subtree || spatial.hasAncestor(subtreeNode)) {
+                    Bone bone = mapEntry.getKey();
+                    Util.cancelAttachments(bone);
+                }
+            }
+        }
+        /*
+         * Detach the subtree from its parent.
+         */
+        boolean success = subtree.removeFromParent();
+        assert success;
+        /*
+         * Sychronize with the scene view.
+         */
         SceneView sceneView = getSceneView();
         sceneView.deleteSubtree();
-        setEdited("delete spatial");
+
+        setEdited("delete subtree");
     }
 
     /**
@@ -321,7 +417,7 @@ public class EditableCgm extends LoadedCgm {
      * responsible for deselecting the user data.
      */
     void deleteUserData() {
-        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().find();
         String key = getUserData().getKey();
 
         History.autoAdd();
@@ -477,7 +573,7 @@ public class EditableCgm extends LoadedCgm {
                 MyControl.setApplyPhysicsLocal(modelSgc, newSetting);
 
                 SceneView sceneView = getSceneView();
-                Spatial ss = getSpatial().underRoot(rootSpatial);
+                Spatial ss = getSpatial().find();
                 PhysicsControl pc = (PhysicsControl) modelSgc;
                 int position = PhysicsUtil.pcToPosition(ss, pc);
                 sceneView.setApplyPhysicsLocal(position, newSetting);
@@ -499,7 +595,7 @@ public class EditableCgm extends LoadedCgm {
     public void setBatchHint(Spatial.BatchHint newHint) {
         Validate.nonNull(newHint, "batch hint");
 
-        Spatial modelSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial modelSpatial = getSpatial().find();
         Spatial.BatchHint oldHint = modelSpatial.getLocalBatchHint();
         if (oldHint != newHint) {
             History.autoAdd();
@@ -517,7 +613,7 @@ public class EditableCgm extends LoadedCgm {
     public void setCullHint(Spatial.CullHint newHint) {
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial modelSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial modelSpatial = getSpatial().find();
         Spatial.CullHint oldHint = modelSpatial.getLocalCullHint();
         if (oldHint != newHint) {
             History.autoAdd();
@@ -533,7 +629,7 @@ public class EditableCgm extends LoadedCgm {
      * @param newSetting true&rarr;ignore transform, false&rarr;apply transform
      */
     public void setIgnoreTransform(boolean newSetting) {
-        Spatial modelSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial modelSpatial = getSpatial().find();
         if (modelSpatial instanceof Geometry) {
             Geometry geometry = (Geometry) modelSpatial;
             boolean oldSetting = geometry.isIgnoreTransform();
@@ -603,7 +699,7 @@ public class EditableCgm extends LoadedCgm {
     public void setQueueBucket(RenderQueue.Bucket newBucket) {
         Validate.nonNull(newBucket, "new bucket");
 
-        Spatial modelSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial modelSpatial = getSpatial().find();
         RenderQueue.Bucket oldBucket = modelSpatial.getLocalQueueBucket();
         if (oldBucket != newBucket) {
             History.autoAdd();
@@ -626,7 +722,7 @@ public class EditableCgm extends LoadedCgm {
                 History.autoAdd();
                 MyControl.setEnabled(modelSgc, newSetting);
                 if (modelSgc instanceof PhysicsControl) {
-                    Spatial ss = getSpatial().underRoot(rootSpatial);
+                    Spatial ss = getSpatial().find();
                     PhysicsControl pc = (PhysicsControl) modelSgc;
                     int position = PhysicsUtil.pcToPosition(ss, pc);
 
@@ -650,7 +746,7 @@ public class EditableCgm extends LoadedCgm {
     public void setShadowMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "new mode");
 
-        Spatial modelSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial modelSpatial = getSpatial().find();
         RenderQueue.ShadowMode oldMode = modelSpatial.getLocalShadowMode();
         if (oldMode != newMode) {
             History.autoAdd();
@@ -668,7 +764,7 @@ public class EditableCgm extends LoadedCgm {
     public void setSpatialRotation(Quaternion rotation) {
         Validate.nonNull(rotation, "rotation");
 
-        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().find();
         selectedSpatial.setLocalRotation(rotation);
         setEditedSpatialTransform();
     }
@@ -684,7 +780,7 @@ public class EditableCgm extends LoadedCgm {
         Validate.positive(scale.y, "y scale");
         Validate.positive(scale.z, "z scale");
 
-        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().find();
         selectedSpatial.setLocalScale(scale);
         setEditedSpatialTransform();
     }
@@ -697,7 +793,7 @@ public class EditableCgm extends LoadedCgm {
     public void setSpatialTranslation(Vector3f translation) {
         Validate.nonNull(translation, "translation");
 
-        Spatial selectedSpatial = getSpatial().underRoot(rootSpatial);
+        Spatial selectedSpatial = getSpatial().find();
         selectedSpatial.setLocalTranslation(translation);
         setEditedSpatialTransform();
     }
@@ -844,18 +940,19 @@ public class EditableCgm extends LoadedCgm {
      * Delete all "extra" spatials among a node's descendents. Note: recursive!
      *
      * @param subtree subtree to traverse (not null)
+     * @param attachmentsNodes collection of attachments nodes (not null,
+     * unaffected)
      */
-    private void deleteExtraSpatials(Node subtree) {
+    private void deleteExtraSpatials(Node subtree,
+            Collection<Spatial> attachmentsNodes) {
         assert subtree != null;
+        assert attachmentsNodes != null;
 
         List<Spatial> childList = subtree.getChildren();
         int numChildren = childList.size();
         Spatial[] children = childList.toArray(new Spatial[numChildren]);
         for (Spatial child : children) {
-            int numSgcs = MySpatial.countControls(child, Control.class);
-            int numUserData = MySpatial.countUserData(child);
-            int numVertices = MySpatial.countVertices(child);
-            if (numSgcs == 0 && numUserData == 0 && numVertices == 0) {
+            if (Util.isExtra(child, attachmentsNodes)) {
                 List<Integer> position = findSpatial(child);
                 int index = subtree.detachChild(child);
                 assert index != -1;
@@ -865,7 +962,7 @@ public class EditableCgm extends LoadedCgm {
 
         for (Spatial child : subtree.getChildren()) {
             if (child instanceof Node) {
-                deleteExtraSpatials((Node) child);
+                deleteExtraSpatials((Node) child, attachmentsNodes);
             }
         }
     }
