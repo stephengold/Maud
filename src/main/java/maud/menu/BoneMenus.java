@@ -318,7 +318,7 @@ public class BoneMenus {
      */
     private static void selectTrackedBone() {
         Cgm target = Maud.getModel().getTarget();
-        List<String> boneNames = target.getAnimation().listBonesWithTrack();
+        List<String> boneNames = target.getAnimation().listTrackedBones();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
             target.getBone().select(boneNames.get(0));
