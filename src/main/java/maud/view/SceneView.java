@@ -183,7 +183,7 @@ public class SceneView
      */
     private SkeletonControl skeletonControl;
     /**
-     * skeleton visualizer with the selected skeleton
+     * skeleton visualizer with the selected skeleton, or null if none
      */
     private SkeletonVisualizer skeletonVisualizer;
     /**
@@ -283,11 +283,15 @@ public class SceneView
         MySpatial.removeNonPhysicsControls(clone);
         PhysicsSpace space = getPhysicsSpace();
         MySpatial.enablePhysicsControls(clone, space);
-        /*
-         * Temporarily detach the skeleton visualizer from the scene.
-         */
-        Spatial controlled = skeletonVisualizer.getSpatial();
-        controlled.removeControl(skeletonVisualizer);
+
+        Spatial controlled = null;
+        if (skeletonVisualizer != null) {
+            /*
+             * Temporarily detach the skeleton visualizer from the scene.
+             */
+            controlled = skeletonVisualizer.getSpatial();
+            controlled.removeControl(skeletonVisualizer);
+        }
         /*
          * Attach the child to the scene.
          */
@@ -297,10 +301,13 @@ public class SceneView
             parentNode = (Node) parentSpatial;
         }
         parentNode.attachChild(clone);
-        /*
-         * Re-attach the skeleton visualizer.
-         */
-        controlled.addControl(skeletonVisualizer);
+
+        if (controlled != null) {
+            /*
+             * Re-attach the skeleton visualizer.
+             */
+            controlled.addControl(skeletonVisualizer);
+        }
     }
 
     /**
