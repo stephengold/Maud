@@ -32,7 +32,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.Util;
-import maud.model.DisplaySettings;
+import maud.model.option.DisplaySettings;
 
 /**
  * The controller for the "Display-Settings Tool" window in Maud's editor
