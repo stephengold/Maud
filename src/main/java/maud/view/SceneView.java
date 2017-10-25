@@ -50,6 +50,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -59,6 +60,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.texture.Texture;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
@@ -66,6 +69,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
 import jme3utilities.MyControl;
@@ -108,6 +112,14 @@ public class SceneView
      * number of coordinate axes
      */
     final private static int numAxes = 3;
+    /**
+     * width and height of rendered shadow maps (pixels per side, &gt;0)
+     */
+    final private static int shadowMapSize = 4_096;
+    /**
+     * number of shadow map splits in shadow filters (&gt;0)
+     */
+    final private static int shadowMapSplits = 3;
     /**
      * message logger for this class
      */
@@ -241,7 +253,7 @@ public class SceneView
 
     /**
      * Add a copy of the specified physics control to the selected spatial and
-     * the physics space.
+     * the view's physics space.
      *
      * @param physicsControl (not null, unaffected)
      */
@@ -262,6 +274,24 @@ public class SceneView
 
         PhysicsSpace space = getPhysicsSpace();
         space.add(copy);
+    }
+
+    /**
+     * Add shadows to the specified view port, without specifying a light.
+     *
+     * @param vp which view port (not null)
+     */
+    public static void addShadows(ViewPort vp) {
+        Validate.nonNull(vp, "view port");
+
+        AssetManager assetManager = Locators.getAssetManager();
+        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(
+                assetManager, shadowMapSize, shadowMapSplits);
+        dlsf.setEdgeFilteringMode(EdgeFilteringMode.PCF8);
+        dlsf.setEnabled(false);
+
+        FilterPostProcessor fpp = Misc.getFpp(vp, assetManager);
+        fpp.addFilter(dlsf);
     }
 
     /**
