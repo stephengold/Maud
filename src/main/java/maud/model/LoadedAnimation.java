@@ -651,12 +651,11 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Enumerate bones that have tracks in the loaded animation. TODO rename
-     * listTrackedBones()
+     * Enumerate bones that have tracks in the loaded animation.
      *
      * @return a new list of names, in arbitrary order
      */
-    public List<String> listBonesWithTrack() {
+    public List<String> listTrackedBones() {
         int numTracks = countTracks();
         List<String> result = new ArrayList<>(numTracks);
         Animation animation = getAnimation();
