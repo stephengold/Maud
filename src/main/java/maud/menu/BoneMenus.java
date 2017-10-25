@@ -84,9 +84,16 @@ public class BoneMenus {
             handled = menuBoneSelectSource(selectArg);
 
         } else {
+            EditableCgm target = Maud.getModel().getTarget();
             switch (remainder) {
+                case "Attach node":
+                    target.addAttachmentsNode();
+                    break;
                 case "Deselect":
-                    Maud.getModel().getTarget().getBone().deselect();
+                    target.getBone().deselect();
+                    break;
+                case "Delete attachments":
+                    target.deleteAttachmentsNode();
                     break;
                 case "Rename":
                     EditorDialogs.renameBone();

@@ -260,7 +260,13 @@ class SpatialTool extends WindowController {
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.isTransformIgnored()) {
-            transformText = "IGNORED";
+            transformText = "Ignored";
+
+        } else if (spatial.isAnimationTarget()) {
+            transformText = "Controlled by a spatial track";
+
+        } else if (spatial.isAttachmentsNode()) {
+            transformText = "Controlled by a skeleton";
 
         } else {
             StringBuilder notes = new StringBuilder(20);

@@ -49,7 +49,8 @@ import maud.model.SelectedSkeleton;
 import maud.model.option.ViewMode;
 
 /**
- * Build menus in Maud's editor screen.
+ * Build menus in Maud's editor screen. TODO split off methods that don't need
+ * the reusable builder
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -547,12 +548,20 @@ public class BuildMenus {
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
-        if (Maud.getModel().getTarget().getBone().isSelected()) {
-            //builder.add("Attach prop"); TODO
+
+        EditorModel model = Maud.getModel();
+        SelectedBone selectedBone = model.getTarget().getBone();
+        if (selectedBone.isSelected()) {
+            boolean hasAttachments = selectedBone.hasAttachmentsNode();
+            if (hasAttachments) {
+                builder.addEdit("Delete attachments");
+            } else {
+                builder.addEdit("Attach node");
+            }
             builder.add("Deselect");
             builder.addDialog("Rename");
         }
-        if (Maud.getModel().getSource().isLoaded()) {
+        if (model.getSource().isLoaded()) {
             builder.add("Select source"); // TODO submenu
         }
     }

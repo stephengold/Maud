@@ -182,11 +182,20 @@ class BoneTool extends WindowController {
 
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
-            boolean influence = bone.influence();
-            if (influence) {
-                desc = "one or more mesh vertices";
+            boolean attachmentsNode = bone.influencesAttachmentsNode();
+            boolean meshVertices = bone.influence();
+            if (attachmentsNode) {
+                if (meshVertices) {
+                    desc = "attachments nodes and mesh vertices";
+                } else {
+                    desc = "attachments nodes only";
+                }
             } else {
-                desc = "no mesh vertices";
+                if (meshVertices) {
+                    desc = "mesh vertices only";
+                } else {
+                    desc = "no influence";
+                }
             }
         }
 
