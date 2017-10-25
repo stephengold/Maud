@@ -161,21 +161,6 @@ public class BoneMenus {
     }
 
     /**
-     * Select a tracked bone, using submenus. TODO privatize and rename
-     * selectTrackedBone
-     */
-    static void selectBoneWithTrack() {
-        Cgm target = Maud.getModel().getTarget();
-        List<String> boneNames = target.getAnimation().listBonesWithTrack();
-        int numBoneTracks = boneNames.size();
-        if (numBoneTracks == 1) {
-            target.getBone().select(boneNames.get(0));
-        } else if (numBoneTracks > 1) {
-            ShowMenus.showBoneSubmenu(boneNames);
-        }
-    }
-
-    /**
      * Handle a "select sourceBone" action with an argument.
      *
      * @param argument action argument (not null)
@@ -236,7 +221,7 @@ public class BoneMenus {
                 selectRootBone();
                 break;
             case "With track":
-                selectBoneWithTrack();
+                selectTrackedBone();
                 break;
             default:
                 handled = false;
@@ -325,6 +310,20 @@ public class BoneMenus {
         } else if (numRoots > 1) {
             List<String> names = source.getSkeleton().listRootBoneNames();
             ShowMenus.showSourceBoneSubmenu(names);
+        }
+    }
+
+    /**
+     * Select a tracked bone, using submenus.
+     */
+    private static void selectTrackedBone() {
+        Cgm target = Maud.getModel().getTarget();
+        List<String> boneNames = target.getAnimation().listBonesWithTrack();
+        int numBoneTracks = boneNames.size();
+        if (numBoneTracks == 1) {
+            target.getBone().select(boneNames.get(0));
+        } else if (numBoneTracks > 1) {
+            ShowMenus.showBoneSubmenu(boneNames);
         }
     }
 }
