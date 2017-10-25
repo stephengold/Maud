@@ -218,12 +218,11 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count how many levels of detail are in the selected spatial's mesh. TODO
-     * rename countLodLevels
+     * Count how many levels of detail are in the selected spatial's mesh.
      *
      * @return count (&ge;0)
      */
-    public int countLoDLevels() {
+    public int countLodLevels() {
         Mesh mesh = getMesh();
         int result;
         if (mesh == null) {
