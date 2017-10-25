@@ -161,10 +161,11 @@ public class BoneMenus {
     }
 
     /**
-     * Handle a "select boneWithTrack" action.
+     * Select a tracked bone, using submenus. TODO privatize and rename
+     * selectTrackedBone
      */
     static void selectBoneWithTrack() {
-        EditableCgm target = Maud.getModel().getTarget();
+        Cgm target = Maud.getModel().getTarget();
         List<String> boneNames = target.getAnimation().listBonesWithTrack();
         int numBoneTracks = boneNames.size();
         if (numBoneTracks == 1) {
@@ -205,8 +206,11 @@ public class BoneMenus {
         boolean handled = true;
 
         EditorModel model = Maud.getModel();
-        EditableCgm target = model.getTarget();
+        SelectedBone selection = model.getTarget().getBone();
         switch (remainder) {
+            case "Attached":
+                selectAttachedBone();
+                break;
             case "By name":
                 selectBoneByName();
                 break;
@@ -220,13 +224,13 @@ public class BoneMenus {
                 model.getMap().selectFromSource();
                 break;
             case "Next":
-                target.getBone().selectNext();
+                selection.selectNext();
                 break;
             case "Parent":
-                target.getBone().selectParent();
+                selection.selectParent();
                 break;
             case "Previous":
-                target.getBone().selectPrevious();
+                selection.selectPrevious();
                 break;
             case "Root":
                 selectRootBone();
@@ -262,6 +266,20 @@ public class BoneMenus {
         }
 
         return handled;
+    }
+
+    /**
+     * Select a bone with an attachments node, using submenus.
+     */
+    private static void selectAttachedBone() {
+        Cgm target = Maud.getModel().getTarget();
+        List<String> boneNames = target.getSkeleton().listAttachedBones();
+        int numAttachmentNodes = boneNames.size();
+        if (numAttachmentNodes == 1) {
+            target.getBone().select(boneNames.get(0));
+        } else if (numAttachmentNodes > 1) {
+            ShowMenus.showBoneSubmenu(boneNames);
+        }
     }
 
     /**
