@@ -240,26 +240,8 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Test whether any mesh vertices are (directly or indirectly) animated by
-     * this bone. TODO rename influencesVertices
-     *
-     * @return true if bone has influence, otherwise false
-     */
-    public boolean influence() {
-        boolean result = false;
-        if (isSelected()) {
-            SelectedSkeleton selectedSkeleton = cgm.getSkeleton();
-            Spatial subtree = selectedSkeleton.findSpatial();
-            Skeleton skeleton = selectedSkeleton.find();
-            BitSet bones = Util.addAllInfluencers(subtree, skeleton, null);
-            result = bones.get(selectedIndex);
-        }
-
-        return result;
-    }
-
-    /**
-     * Test whether the selected bone influences an attachments node.
+     * Test whether the selected bone influences (directly or indirectly) any
+     * attachments nodes.
      *
      * @return true if a bone influences a node, otherwise false
      */
@@ -281,6 +263,25 @@ public class SelectedBone implements Cloneable {
                     }
                 }
             }
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether the selected bone animates (directly or indirectly) any mesh
+     * vertices.
+     *
+     * @return true if bone has influence, otherwise false
+     */
+    public boolean influencesVertices() {
+        boolean result = false;
+        if (isSelected()) {
+            SelectedSkeleton selectedSkeleton = cgm.getSkeleton();
+            Spatial subtree = selectedSkeleton.findSpatial();
+            Skeleton skeleton = selectedSkeleton.find();
+            BitSet bones = Util.addAllInfluencers(subtree, skeleton, null);
+            result = bones.get(selectedIndex);
         }
 
         return result;
