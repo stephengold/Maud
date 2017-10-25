@@ -135,6 +135,22 @@ class SetAction {
                 ShowMenus.setShadowMode();
                 break;
 
+            case Action.setSpatialAngleCardinal:
+                target.getSpatial().cardinalizeRotation();
+                break;
+
+            case Action.setSpatialAngleSnapX:
+                target.getSpatial().snapRotation(PhysicsSpace.AXIS_X);
+                break;
+
+            case Action.setSpatialAngleSnapY:
+                target.getSpatial().snapRotation(PhysicsSpace.AXIS_Y);
+                break;
+
+            case Action.setSpatialAngleSnapZ:
+                target.getSpatial().snapRotation(PhysicsSpace.AXIS_Z);
+                break;
+
             case Action.setTrackRotationAll:
                 target.getTrack().setRotationAll();
                 break;
