@@ -399,6 +399,10 @@ public class ShowMenus {
             builder.addGeometry("Root");
         }
 
+        if (target.getBone().hasAttachmentsNode()) {
+            builder.addNode("Attachments node");
+        }
+
         names = target.listSpatialNames("", false);
         if (!names.isEmpty()) {
             builder.add("Geometry");

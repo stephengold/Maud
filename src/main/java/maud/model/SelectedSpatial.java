@@ -58,6 +58,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
 import maud.PhysicsUtil;
+import maud.Util;
 import maud.view.SceneView;
 
 /**
@@ -878,6 +879,16 @@ public class SelectedSpatial implements JmeCloneable {
         treePosition = position;
         assert find().getName().equals(name);
         postSelect();
+    }
+
+    /**
+     * Select the attachments node of the selected bone.
+     */
+    public void selectAttachmentsNode() {
+        SelectedBone selectedBone = cgm.getBone();
+        Bone bone = selectedBone.get();
+        Node attachmentsNode = Util.getAttachments(bone);
+        select(attachmentsNode);
     }
 
     /**
