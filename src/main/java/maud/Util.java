@@ -57,7 +57,10 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
@@ -236,7 +239,8 @@ public class Util {
     }
 
     /**
-     * Cancel the attachments node of the specified bone.
+     * Cancel the attachments node (if any) of the specified bone. The invoker
+     * is responsible for removing the node from the scene graph.
      *
      * @param bone which bone (not null, modified)
      */
@@ -258,8 +262,8 @@ public class Util {
 
     /**
      * Find a cardinal quaternion similar to the specified input. A cardinal
-     * quaternion is one for which the rotations angles on all 3 axes are
-     * integer multiples of Pi/2 radians.
+     * quaternion is one for which the rotation angles on all 3 axes are integer
+     * multiples of Pi/2 radians.
      *
      * @param input (not null, modified)
      */
@@ -269,6 +273,39 @@ public class Util {
         MyQuaternion.snapLocal(input, 0);
         MyQuaternion.snapLocal(input, 1);
         MyQuaternion.snapLocal(input, 2);
+    }
+
+    /**
+     * Test whether the specified subtree of a scene graph contains any of the
+     * collected spatials.
+     *
+     * @param subtree subtree to traverse (may be null, unaffected)
+     * @param collection spatials to find (not null, unaffected)
+     * @return true if one of the collected spatials was found, otherwise false
+     */
+    public static boolean descendentsInclude(Spatial subtree,
+            Collection<Spatial> collection) {
+        boolean result;
+        if (subtree == null) {
+            result = false;
+        } else if (collection.isEmpty()) {
+            result = false;
+        } else if (collection.contains(subtree)) {
+            result = true;
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            result = false;
+            for (Spatial spatial : collection) {
+                result = spatial.hasAncestor(node);
+                if (result) {
+                    break;
+                }
+            }
+        } else {
+            result = false;
+        }
+
+        return result;
     }
 
     /**
@@ -495,28 +532,71 @@ public class Util {
      * Test whether there are any "extra" spatials in the specified subtree.
      * Note: recursive!
      *
-     * @param subtree subtree to traverse (may be null)
+     * @param subtree subtree to traverse (may be null, unaffected)
+     * @param attachmentsNodes collection of attachments nodes (not null,
+     * unaffected)
      * @return true if any found, otherwise false
      */
-    public static boolean hasExtraSpatials(Spatial subtree) {
-        if (MySpatial.countControls(subtree, Control.class) == 0
-                && MySpatial.countUserData(subtree) == 0
-                && MySpatial.countVertices(subtree) == 0) {
-            return true;
-        }
+    public static boolean hasExtraSpatials(Spatial subtree,
+            Collection<Spatial> attachmentsNodes) {
+        Validate.nonNull(attachmentsNodes, "attachments nodes");
 
-        if (subtree instanceof Node) {
+        boolean result;
+        if (subtree != null && isExtra(subtree, attachmentsNodes)) {
+            result = true;
+
+        } else if (subtree instanceof Node) {
+            result = false;
             Node node = (Node) subtree;
             List<Spatial> children = node.getChildren();
             for (Spatial child : children) {
-                boolean hasExtras = hasExtraSpatials(child);
-                if (hasExtras) {
-                    return true;
+                result = hasExtraSpatials(child, attachmentsNodes);
+                if (result) {
+                    break;
                 }
             }
+
+        } else {
+            result = false;
         }
 
-        return false;
+        return result;
+    }
+
+    /**
+     * Test whether the specified spatial is an "extra" spatial.
+     *
+     * A spatial is "extra" iff neither it nor any of its descendents:
+     * <li> is an attachments node
+     * <li> has a scene-graph control
+     * <li> has user data, or
+     * <li> has mesh vertices.
+     *
+     * @param spatial spatial to test (not null, unaffected)
+     * @param attachmentsNodes collection of attachments nodes (not null,
+     * unaffected)
+     * @return true if extra, otherwise false
+     */
+    public static boolean isExtra(Spatial spatial,
+            Collection<Spatial> attachmentsNodes) {
+        Validate.nonNull(spatial, "spatial");
+        Validate.nonNull(attachmentsNodes, "attachments nodes");
+
+        boolean hasAttachments
+                = Util.descendentsInclude(spatial, attachmentsNodes);
+        int numSgcs = MySpatial.countControls(spatial, Control.class);
+        int numUserData = MySpatial.countUserData(spatial);
+        int numVertices = MySpatial.countVertices(spatial);
+
+        boolean result;
+        if (!hasAttachments && numSgcs == 0 && numUserData == 0
+                && numVertices == 0) {
+            result = true;
+        } else {
+            result = false;
+        }
+
+        return result;
     }
 
     /**
@@ -611,14 +691,14 @@ public class Util {
         Logger meshLoaderLogger = Logger.getLogger(MeshLoader.class.getName());
         Level meshLoaderLevel = meshLoaderLogger.getLevel();
 
-        Logger materialLoaderLogger = Logger.getLogger(
-                MaterialLoader.class.getName());
+        Logger materialLoaderLogger
+                = Logger.getLogger(MaterialLoader.class.getName());
         Level materialLoaderLevel = materialLoaderLogger.getLevel();
 
-        Logger compoundCollisionShapeLogger = Logger.getLogger(
-                CompoundCollisionShape.class.getName());
-        Level compoundCollisionShapeLevel;
-        compoundCollisionShapeLevel = compoundCollisionShapeLogger.getLevel();
+        Logger compoundCollisionShapeLogger
+                = Logger.getLogger(CompoundCollisionShape.class.getName());
+        Level compoundCollisionShapeLevel
+                = compoundCollisionShapeLogger.getLevel();
 
         org.slf4j.Logger slfLogger;
         slfLogger = LoggerFactory.getLogger("jme3_ext_xbuf.XbufLoader");
@@ -691,6 +771,63 @@ public class Util {
         }
 
         return loaded;
+    }
+
+    /**
+     * Map all attachments in the specified skeleton.
+     *
+     * @param skeleton (not null, unaffected)
+     * @param storeResult (added to if not null)
+     * @return an expanded map (either storeResult or a new instance)
+     */
+    public static Map<Bone, Spatial> mapAttachments(Skeleton skeleton,
+            Map<Bone, Spatial> storeResult) {
+        Validate.nonNull(skeleton, "skeleton");
+        if (storeResult == null) {
+            storeResult = new HashMap<>(4);
+        }
+
+        int numBones = skeleton.getBoneCount();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            Bone bone = skeleton.getBone(boneIndex);
+            Node attachmentsNode = getAttachments(bone);
+            if (attachmentsNode != null) {
+                if (storeResult.containsKey(bone)) {
+                    if (storeResult.get(bone) != attachmentsNode) {
+                        throw new IllegalStateException();
+                    }
+                } else {
+                    storeResult.put(bone, attachmentsNode);
+                }
+            }
+
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Map all attachments nodes in the specified subtree of a scene graph.
+     *
+     * @param subtree (not null, unaffected)
+     * @param storeResult (added to if not null)
+     * @return an expanded map (either storeResult or a new instance)
+     */
+    public static Map<Bone, Spatial> mapAttachments(Spatial subtree,
+            Map<Bone, Spatial> storeResult) {
+        Validate.nonNull(subtree, "subtree");
+        if (storeResult == null) {
+            storeResult = new HashMap<>(4);
+        }
+
+        List<SkeletonControl> list
+                = MySpatial.listControls(subtree, SkeletonControl.class, null);
+        for (SkeletonControl control : list) {
+            Skeleton skeleton = control.getSkeleton();
+            Util.mapAttachments(skeleton, storeResult);
+        }
+
+        return storeResult;
     }
 
     /**
