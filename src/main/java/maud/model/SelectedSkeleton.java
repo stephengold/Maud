@@ -86,7 +86,7 @@ public class SelectedSkeleton implements JmeCloneable {
 
     /**
      * Calculate the tree position of the attachments node, if any, for the
-     * specified bone.
+     * indexed bone.
      *
      * @param boneIndex which bone (&ge;0)
      * @return tree position, or null if none
@@ -94,22 +94,11 @@ public class SelectedSkeleton implements JmeCloneable {
     public List<Integer> attachmentsPosition(int boneIndex) {
         Validate.nonNegative(boneIndex, "bone index");
 
+        List<Integer> result = null;
         Bone bone = getBone(boneIndex);
         Node node = Util.getAttachments(bone);
-
-        //TODO rewrite Util.findPosition() and use that
-        List<Integer> result = null;
         if (node != null) {
-            result = new ArrayList<>(5);
-            Node parent = node.getParent();
-            while (parent != null) {
-                int index = parent.getChildIndex(node);
-                assert index >= 0 : index;
-                result.add(index);
-                node = parent;
-                parent = node.getParent();
-            }
-            Collections.reverse(result);
+            result = cgm.findSpatial(node);
         }
 
         return result;

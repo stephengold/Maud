@@ -476,9 +476,10 @@ public class LoadedMap implements Cloneable {
      * Select the bone mapping of the selected source bone.
      */
     public void selectFromSource() {
-        String sourceBoneName = Maud.getModel().getSource().getBone().getName();
+        EditorModel model = Maud.getModel();
+        String sourceBoneName = model.getSource().getBone().getName();
         String targetBoneName = targetBoneName(sourceBoneName);
-        Maud.getModel().getTarget().getBone().select(targetBoneName);
+        model.getTarget().getBone().select(targetBoneName);
     }
 
     /**

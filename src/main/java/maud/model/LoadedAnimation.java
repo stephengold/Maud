@@ -651,32 +651,10 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * List the indices of all bones with tracks in the loaded animation.
+     * Enumerate bones that have tracks in the loaded animation. TODO rename
+     * listTrackedBones()
      *
-     * @return a new list, in arbitrary order
-     */
-    public List<Integer> listBoneIndicesWithTracks() {
-        int numTracks = countTracks();
-        List<Integer> result = new ArrayList<>(numTracks);
-        Animation animation = getAnimation();
-        if (animation != null) {
-            Track[] tracks = animation.getTracks();
-            for (Track track : tracks) {
-                if (track instanceof BoneTrack) {
-                    BoneTrack boneTrack = (BoneTrack) track;
-                    int index = boneTrack.getTargetBoneIndex();
-                    result.add(index);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * List the names of all bones with tracks in the loaded animation.
-     *
-     * @return a new list, in arbitrary order
+     * @return a new list of names, in arbitrary order
      */
     public List<String> listBonesWithTrack() {
         int numTracks = countTracks();
@@ -688,8 +666,8 @@ public class LoadedAnimation implements Cloneable {
             for (Track track : tracks) {
                 if (track instanceof BoneTrack) {
                     BoneTrack boneTrack = (BoneTrack) track;
-                    String name;
-                    name = MyAnimation.getTargetName(boneTrack, animControl);
+                    String name
+                            = MyAnimation.getTargetName(boneTrack, animControl);
                     result.add(name);
                 }
             }
@@ -774,8 +752,8 @@ public class LoadedAnimation implements Cloneable {
      */
     public void loadNext() {
         if (cgm.isLoaded() && isReal()) {
-            List<String> nameList;
-            nameList = cgm.getAnimControl().listRealAnimationsSorted();
+            List<String> nameList
+                    = cgm.getAnimControl().listRealAnimationsSorted();
             int index = nameList.indexOf(loadedName);
             int numAnimations = nameList.size();
             int nextIndex = MyMath.modulo(index + 1, numAnimations);
@@ -789,8 +767,8 @@ public class LoadedAnimation implements Cloneable {
      */
     public void loadPrevious() {
         if (cgm.isLoaded() && isReal()) {
-            List<String> nameList;
-            nameList = cgm.getAnimControl().listRealAnimationsSorted();
+            List<String> nameList
+                    = cgm.getAnimControl().listRealAnimationsSorted();
             int index = nameList.indexOf(loadedName);
             int numAnimations = nameList.size();
             int prevIndex = MyMath.modulo(index - 1, numAnimations);

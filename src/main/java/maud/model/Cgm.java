@@ -260,8 +260,7 @@ public class Cgm implements Cloneable {
         Validate.nonNull(input, "input");
 
         List<Integer> treePosition = new ArrayList<>(4);
-        boolean success;
-        success = Util.findPosition(input, rootSpatial, treePosition);
+        boolean success = Util.findPosition(input, rootSpatial, treePosition);
         if (!success) {
             treePosition = null;
         }
@@ -737,7 +736,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Alter the selected SG control.
+     * Select the specified scene-graph control.
      *
      * @param newSgc an abstract control to select, or null to select none
      */
