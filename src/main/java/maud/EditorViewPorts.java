@@ -26,18 +26,12 @@
  */
 package maud;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import com.jme3.shadow.DirectionalLightShadowFilter;
-import com.jme3.shadow.EdgeFilteringMode;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
-import jme3utilities.ui.Locators;
 import maud.model.EditorModel;
 import maud.model.option.ViewMode;
 import maud.view.SceneView;
@@ -52,14 +46,6 @@ class EditorViewPorts {
     // *************************************************************************
     // constants and loggers
 
-    /**
-     * width and height of rendered shadow maps (pixels per side, &gt;0)
-     */
-    final private static int shadowMapSize = 4_096;
-    /**
-     * number of shadow map splits in shadow filters (&gt;0)
-     */
-    final private static int shadowMapSplits = 3;
     /**
      * message logger for this class
      */
@@ -115,7 +101,7 @@ class EditorViewPorts {
         Camera cam = application.getCamera();
         cam.setName("Target Scene Wide");
         ViewPort viewPort = application.getViewPort();
-        addShadows(viewPort);
+        SceneView.addShadows(viewPort);
         /*
          * Create 2 view ports for split-screen scene views.
          */
@@ -199,21 +185,6 @@ class EditorViewPorts {
     // private methods
 
     /**
-     * Add shadows to the specified view port, without specifying a light. TODO
-     * move to SceneView
-     */
-    private static void addShadows(ViewPort vp) {
-        AssetManager assetManager = Locators.getAssetManager();
-        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(
-                assetManager, shadowMapSize, shadowMapSplits);
-        dlsf.setEdgeFilteringMode(EdgeFilteringMode.PCF8);
-        dlsf.setEnabled(false);
-
-        FilterPostProcessor fpp = Misc.getFpp(vp, assetManager);
-        fpp.addFilter(dlsf);
-    }
-
-    /**
      * Instantiate a camera for a half-width view port.
      *
      * @param leftEdge which side (0 &rarr; left, 0.5 &rarr; right)
@@ -243,7 +214,7 @@ class EditorViewPorts {
         sourceSceneViewPort = renderManager.createMainView(name, camera);
         sourceSceneViewPort.setClearFlags(true, true, true);
         sourceSceneViewPort.setEnabled(false);
-        addShadows(sourceSceneViewPort);
+        SceneView.addShadows(sourceSceneViewPort);
         /*
          * Attach a scene to the new view port.
          */
@@ -292,7 +263,7 @@ class EditorViewPorts {
         targetSceneRightViewPort = renderManager.createMainView(name, camera);
         targetSceneRightViewPort.setClearFlags(true, true, true);
         targetSceneRightViewPort.setEnabled(false);
-        addShadows(targetSceneRightViewPort);
+        SceneView.addShadows(targetSceneRightViewPort);
         /*
          * Attach the existing scene to the new view port.
          */
