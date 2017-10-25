@@ -170,7 +170,7 @@ class SpatialTool extends WindowController {
                 meshText += String.format(" %s", mode.toString());
                 int numVertices = spatial.countVertices();
                 meshText += String.format(", %d verts, ", numVertices);
-                int numLevels = spatial.countLoDLevels();
+                int numLevels = spatial.countLodLevels();
                 if (numLevels == 1) {
                     meshText += "one LoD";
                 } else {
