@@ -93,7 +93,7 @@ public class Checkpoint {
     }
 
     /**
-     * List all events since the previous checkpoint.
+     * Enumerate events since the previous checkpoint.
      *
      * @return a new list of descriptions
      */
