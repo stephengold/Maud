@@ -42,6 +42,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import jme3utilities.wes.Pose;
 import maud.Util;
 
@@ -72,9 +73,9 @@ public class SelectedBone implements Cloneable {
      */
     private EditableCgm editableCgm = null;
     /**
-     * index of the selected bone, or -1 for none selected TODO define constant
+     * index of the selected bone, or noBoneIndex for none selected
      */
-    private int selectedIndex = -1;
+    private int selectedIndex = SelectedSkeleton.noBoneIndex;
     // *************************************************************************
     // new methods exposed
 
@@ -117,7 +118,7 @@ public class SelectedBone implements Cloneable {
      * Deselect the selected bone, if any.
      */
     public void deselect() {
-        selectedIndex = -1;
+        selectedIndex = SelectedSkeleton.noBoneIndex;
     }
 
     /**
@@ -127,7 +128,7 @@ public class SelectedBone implements Cloneable {
      */
     Bone get() {
         Bone bone;
-        if (selectedIndex == -1) {
+        if (selectedIndex == SelectedSkeleton.noBoneIndex) {
             bone = null;
         } else {
             bone = cgm.getSkeleton().getBone(selectedIndex);
@@ -165,9 +166,10 @@ public class SelectedBone implements Cloneable {
     /**
      * Read the index of the selected bone.
      *
-     * @return the bone index, or -1 if none selected
+     * @return the bone index, or noBoneIndex if none selected
      */
     public int getIndex() {
+        assert selectedIndex >= SelectedSkeleton.noBoneIndex : selectedIndex;
         return selectedIndex;
     }
 
@@ -178,7 +180,7 @@ public class SelectedBone implements Cloneable {
      */
     public String getName() {
         String name;
-        if (selectedIndex == -1) {
+        if (selectedIndex == SelectedSkeleton.noBoneIndex) {
             name = SelectedSkeleton.noBone;
         } else {
             Bone bone = get();
@@ -311,7 +313,7 @@ public class SelectedBone implements Cloneable {
      * @return true if selected, otherwise false
      */
     public boolean isSelected() {
-        if (selectedIndex == -1) {
+        if (selectedIndex == SelectedSkeleton.noBoneIndex) {
             return false;
         } else {
             return true;
@@ -415,10 +417,10 @@ public class SelectedBone implements Cloneable {
     /**
      * Find the index of the parent of the selected bone.
      *
-     * @return bone index, or -1 if none
+     * @return bone index, or noBoneIndex if none
      */
     public int parentIndex() {
-        int index = -1;
+        int index = SelectedSkeleton.noBoneIndex;
         Bone bone = get();
         if (bone != null) {
             Skeleton skeleton = cgm.getSkeleton().find();
@@ -469,7 +471,7 @@ public class SelectedBone implements Cloneable {
 
         Skeleton skeleton = cgm.getSkeleton().find();
         int index = skeleton.getBoneIndex(bone);
-        if (index != -1) {
+        if (index >= 0) {
             select(index);
         }
     }
@@ -477,9 +479,11 @@ public class SelectedBone implements Cloneable {
     /**
      * Select a bone by its index.
      *
-     * @param newIndex which bone to select, or -1 to deselect
+     * @param newIndex which bone to select, or noBoneIndex to deselect
      */
     public void select(int newIndex) {
+        Validate.inRange(newIndex, "bone index", SelectedSkeleton.noBoneIndex,
+                Short.MAX_VALUE);
         selectedIndex = newIndex;
     }
 
@@ -495,7 +499,7 @@ public class SelectedBone implements Cloneable {
         } else {
             Skeleton skeleton = cgm.getSkeleton().find();
             int index = skeleton.getBoneIndex(name);
-            if (index == -1) {
+            if (index == SelectedSkeleton.noBoneIndex) {
                 logger.log(Level.WARNING, "Select failed: no bone named {0}.",
                         MyString.quote(name));
             } else {
@@ -532,7 +536,7 @@ public class SelectedBone implements Cloneable {
      * Select the next bone (by index).
      */
     public void selectNext() {
-        if (selectedIndex != -1) {
+        if (selectedIndex >= 0) {
             ++selectedIndex;
             int numBones = cgm.getSkeleton().countBones();
             if (selectedIndex >= numBones) {
@@ -558,7 +562,7 @@ public class SelectedBone implements Cloneable {
      * Select the previous bone (by index).
      */
     public void selectPrevious() {
-        if (selectedIndex != -1) {
+        if (selectedIndex >= 0) {
             --selectedIndex;
             if (selectedIndex < 0) {
                 int numBones = cgm.getSkeleton().countBones();

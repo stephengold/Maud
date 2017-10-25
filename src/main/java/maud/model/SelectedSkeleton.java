@@ -62,6 +62,10 @@ public class SelectedSkeleton implements JmeCloneable {
     // constants and loggers
 
     /**
+     * dummy bone index, used to indicate that no bone is selected
+     */
+    final public static int noBoneIndex = -1;
+    /**
      * message logger for this class
      */
     final private static Logger logger
@@ -275,7 +279,7 @@ public class SelectedSkeleton implements JmeCloneable {
      * Read the index of the indexed bone's parent in the selected skeleton.
      *
      * @param boneIndex which bone (&ge;0)
-     * @return bone index (&ge;0) or -1 for a root bone
+     * @return bone index (&ge;0) or noBoneIndex for a root bone
      */
     public int getParentIndex(int boneIndex) {
         Validate.nonNegative(boneIndex, "bone index");
@@ -484,7 +488,7 @@ public class SelectedSkeleton implements JmeCloneable {
 
                 case Ancestry:
                     storeResult.clear();
-                    while (boneIndex != -1) {
+                    while (boneIndex != noBoneIndex) {
                         storeResult.set(boneIndex);
                         boneIndex = getParentIndex(boneIndex);
                     }
@@ -492,7 +496,7 @@ public class SelectedSkeleton implements JmeCloneable {
 
                 case Family:
                     storeResult.clear();
-                    if (boneIndex != -1) {
+                    if (boneIndex != noBoneIndex) {
                         Bone bone = skeleton.getBone(boneIndex);
                         List<Bone> children = bone.getChildren();
                         for (Bone child : children) {
@@ -500,7 +504,7 @@ public class SelectedSkeleton implements JmeCloneable {
                             storeResult.set(childIndex);
                         }
                     }
-                    while (boneIndex != -1) {
+                    while (boneIndex != noBoneIndex) {
                         storeResult.set(boneIndex);
                         boneIndex = getParentIndex(boneIndex);
                     }
@@ -550,14 +554,14 @@ public class SelectedSkeleton implements JmeCloneable {
 
                 case Selected:
                     storeResult.clear();
-                    if (boneIndex != -1) {
+                    if (boneIndex != noBoneIndex) {
                         storeResult.set(boneIndex);
                     }
                     break;
 
                 case Subtree:
                     storeResult.clear();
-                    if (boneIndex != -1) {
+                    if (boneIndex != noBoneIndex) {
                         for (int boneI = 0; boneI < numBones; boneI++) {
                             boolean inSubtree = (boneI == boneIndex)
                                     || MySkeleton.descendsFrom(boneI, boneIndex,

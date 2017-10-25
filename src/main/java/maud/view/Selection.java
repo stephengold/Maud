@@ -34,6 +34,7 @@ import jme3utilities.Validate;
 import maud.Maud;
 import maud.model.Cgm;
 import maud.model.LoadedMap;
+import maud.model.SelectedSkeleton;
 import maud.tool.AxesTool;
 
 /**
@@ -74,9 +75,9 @@ public class Selection {
      */
     private int bestAxisIndex = -1;
     /**
-     * the index of the bone to be selected, or -1 for none
+     * the index of the bone to be selected, or noBoneIndex for none
      */
-    private int bestBoneIndex = -1;
+    private int bestBoneIndex = SelectedSkeleton.noBoneIndex;
     /**
      * the index of the keyframe to be selected, or -1 for none
      */
@@ -141,7 +142,7 @@ public class Selection {
             bestDSquared = dSquared;
             bestGeometry = null;
             bestAxisIndex = axisIndex;
-            bestBoneIndex = -1;
+            bestBoneIndex = SelectedSkeleton.noBoneIndex;
             bestFrameIndex = -1;
             bestVertexIndex = -1;
             bestCgm = cgm;
@@ -193,7 +194,7 @@ public class Selection {
             bestDSquared = dSquared;
             bestGeometry = null;
             bestAxisIndex = -1;
-            bestBoneIndex = -1;
+            bestBoneIndex = SelectedSkeleton.noBoneIndex;
             bestFrameIndex = -1;
             bestVertexIndex = -1;
             bestCgm = cgm;
@@ -248,7 +249,7 @@ public class Selection {
             bestDSquared = dSquared;
             bestGeometry = geometry;
             bestAxisIndex = -1;
-            bestBoneIndex = -1;
+            bestBoneIndex = SelectedSkeleton.noBoneIndex;
             bestFrameIndex = -1;
             bestVertexIndex = vertexIndex;
             bestCgm = cgm;
