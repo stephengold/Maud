@@ -589,6 +589,13 @@ public class BuildMenus {
             builder.add("With track");
         }
 
+        int numAttachments = target.getSkeleton().listAttachedBones().size();
+        if (numAttachments == 1) {
+            builder.addBone("Attached");
+        } else if (numAttachments > 1) {
+            builder.add("Attached");
+        }
+
         String sourceBoneName = Maud.getModel().getSource().getBone().getName();
         String boneName;
         boneName = Maud.getModel().getMap().targetBoneName(sourceBoneName);

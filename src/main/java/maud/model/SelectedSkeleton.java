@@ -97,6 +97,7 @@ public class SelectedSkeleton implements JmeCloneable {
         Bone bone = getBone(boneIndex);
         Node node = Util.getAttachments(bone);
 
+        //TODO rewrite Util.findPosition() and use that
         List<Integer> result = null;
         if (node != null) {
             result = new ArrayList<>(5);
@@ -375,6 +376,27 @@ public class SelectedSkeleton implements JmeCloneable {
             Skeleton skeleton = find();
             if (skeleton != null) {
                 result = true;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Enumerate bones with attachment nodes.
+     *
+     * @return a new list of names, in arbitrary order
+     */
+    public List<String> listAttachedBones() {
+        List<String> result = new ArrayList<>(5);
+        Skeleton skeleton = find();
+        int numBones = countBones();
+        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            Bone bone = skeleton.getBone(boneIndex);
+            Node attachmentsNode = Util.getAttachments(bone);
+            if (attachmentsNode != null) {
+                String name = bone.getName();
+                result.add(name);
             }
         }
 
