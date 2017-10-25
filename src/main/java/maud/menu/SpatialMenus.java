@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.model.Cgm;
+import maud.model.SelectedSpatial;
 
 /**
  * Spatial menus in Maud's editor screen.
@@ -132,8 +133,8 @@ public class SpatialMenus {
             /*
              * Treat the argument as a spatial-name prefix.
              */
-            List<String> names;
-            names = target.listSpatialNames(argument, includeNodes);
+            List<String> names
+                    = target.listSpatialNames(argument, includeNodes);
             ShowMenus.showSpatialSubmenu(names, includeNodes);
         }
     }
@@ -147,8 +148,13 @@ public class SpatialMenus {
      * @return true if the action is handled, otherwise false
      */
     private static boolean menuSpatialSelect(String remainder) {
+        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
         boolean handled = true;
         switch (remainder) {
+            case "Attachments node":
+                ss.selectAttachmentsNode();
+                break;
+
             case "By name":
                 selectSpatial("", true);
                 break;
@@ -162,11 +168,11 @@ public class SpatialMenus {
                 break;
 
             case "Parent":
-                Maud.getModel().getTarget().getSpatial().selectParent();
+                ss.selectParent();
                 break;
 
             case "Root":
-                Maud.getModel().getTarget().getSpatial().selectCgmRoot();
+                ss.selectCgmRoot();
                 break;
 
             default:
