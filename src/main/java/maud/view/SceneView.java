@@ -366,8 +366,7 @@ public class SceneView
         Validate.nonNull(input, "input");
 
         List<Integer> treePosition = new ArrayList<>(4);
-        boolean success;
-        success = Util.findPosition(input, cgmRoot, treePosition);
+        boolean success = Util.findPosition(input, cgmRoot, treePosition);
         if (!success) {
             treePosition = null;
         }
