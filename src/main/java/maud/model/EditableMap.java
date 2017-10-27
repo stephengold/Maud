@@ -268,7 +268,7 @@ public class EditableMap extends LoadedMap {
     }
 
     /**
-     * Snap the one axis angle of the effective twist.
+     * Snap one axis-angle of the effective twist.
      *
      * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      */
