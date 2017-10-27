@@ -417,7 +417,9 @@ public class EditorTools {
             final SliderChangedEvent event) {
         Validate.nonNull(sliderId, "slider id");
         Validate.nonNull(event, "event");
+        assert sliderId.endsWith("Slider");
 
+        // TODO String prefix = MyString.removeSuffix(sliderId, "Slider");
         switch (sliderId) {
             case "speedSlider":
             case "timeSlider":
@@ -440,6 +442,7 @@ public class EditorTools {
                 boneRotation.onSliderChanged();
                 break;
 
+            case "scaMasterSlider":
             case "xScaSlider":
             case "yScaSlider":
             case "zScaSlider":

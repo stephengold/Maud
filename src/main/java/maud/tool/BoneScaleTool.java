@@ -28,9 +28,11 @@ package maud.tool;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
+import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
@@ -47,6 +49,10 @@ class BoneScaleTool extends WindowController {
     // constants and loggers
 
     /**
+     * logarithm base for the master slider
+     */
+    final private static float masterBase = 10f;
+    /**
      * number of coordinate axes
      */
     final private static int numAxes = 3;
@@ -62,6 +68,11 @@ class BoneScaleTool extends WindowController {
     // *************************************************************************
     // fields
 
+    /**
+     * reference to the master slider, set by
+     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
+     */
+    private Slider masterSlider = null;
     /**
      * references to the per-axis sliders, set by
      * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
@@ -96,6 +107,10 @@ class BoneScaleTool extends WindowController {
             scales.y = Math.max(scales.y, 0.001f);
             scales.z = Math.max(scales.z, 0.001f);
 
+            float logValue = masterSlider.getValue();
+            float masterScale = FastMath.pow(masterBase, logValue);
+            scales.multLocal(masterScale);
+
             int boneIndex = target.getBone().getIndex();
             target.getPose().get().setScale(boneIndex, scales);
         }
@@ -120,6 +135,7 @@ class BoneScaleTool extends WindowController {
             assert slider != null;
             sliders[iAxis] = slider;
         }
+        masterSlider = Maud.gui.getSlider("scaMaster");
     }
 
     /**
@@ -156,7 +172,7 @@ class BoneScaleTool extends WindowController {
     // private methods
 
     /**
-     * Reset all 3 sliders and clear their status labels.
+     * Reset all 4 sliders and clear the status labels.
      */
     private void clear() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
@@ -166,36 +182,44 @@ class BoneScaleTool extends WindowController {
             String statusName = axisName + "ScaSliderStatus";
             Maud.gui.setStatusText(statusName, "");
         }
+        masterSlider.setValue(0f);
     }
 
     /**
-     * Disable all 3 sliders.
+     * Disable all 4 sliders.
      */
     private void disableSliders() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             sliders[iAxis].disable();
         }
+        masterSlider.disable();
     }
 
     /**
-     * Enable all 3 sliders.
+     * Enable all 4 sliders.
      */
     private void enableSliders() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             sliders[iAxis].enable();
         }
+        masterSlider.enable();
     }
 
     /**
-     * Set all 3 sliders (and their status labels) based on the pose.
+     * Set all 4 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {
         Vector3f vector = Maud.getModel().getTarget().getBone().userScale(null);
+        float maxScale = MyMath.max(vector.x, vector.y, vector.z);
+        assert maxScale > 0f : maxScale;
+        float logMaxScale = FastMath.log(maxScale, masterBase);
+        masterSlider.setValue(logMaxScale);
+
         float[] scales = vector.toArray(null);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float scale = scales[iAxis];
-            sliders[iAxis].setValue(scale);
+            sliders[iAxis].setValue(scale / maxScale);
 
             String axisName = axisNames[iAxis];
             String sliderPrefix = axisName + "Sca";
