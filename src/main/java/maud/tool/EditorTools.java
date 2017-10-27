@@ -419,111 +419,111 @@ public class EditorTools {
         Validate.nonNull(event, "event");
         assert sliderId.endsWith("Slider");
 
-        // TODO String prefix = MyString.removeSuffix(sliderId, "Slider");
-        switch (sliderId) {
-            case "speedSlider":
-            case "timeSlider":
+        String prefix = MyString.removeSuffix(sliderId, "Slider");
+        switch (prefix) {
+            case "speed":
+            case "time":
                 animation.onSliderChanged();
                 break;
 
-            case "axesLineWidthSlider":
+            case "axesLineWidth":
                 axes.onSliderChanged();
                 break;
 
-            case "bgRSlider":
-            case "bgGSlider":
-            case "bgBSlider":
+            case "bgR":
+            case "bgG":
+            case "bgB":
                 background.onSliderChanged();
                 break;
 
-            case "xAngSlider":
-            case "yAngSlider":
-            case "zAngSlider":
+            case "xAng":
+            case "yAng":
+            case "zAng":
                 boneRotation.onSliderChanged();
                 break;
 
-            case "scaMasterSlider":
-            case "xScaSlider":
-            case "yScaSlider":
-            case "zScaSlider":
+            case "scaMaster":
+            case "xSca":
+            case "ySca":
+            case "zSca":
                 boneScale.onSliderChanged();
                 break;
 
-            case "xOffSlider":
-            case "yOffSlider":
-            case "zOffSlider":
+            case "xOff":
+            case "yOff":
+            case "zOff":
                 boneTranslation.onSliderChanged();
                 break;
 
-            case "boundsRSlider":
-            case "boundsGSlider":
-            case "boundsBSlider":
-            case "boundsLineWidthSlider":
+            case "boundsR":
+            case "boundsG":
+            case "boundsB":
+            case "boundsLineWidth":
                 bounds.onSliderChanged();
                 break;
 
-            case "cursorRSlider":
-            case "cursorGSlider":
-            case "cursorBSlider":
+            case "cursorR":
+            case "cursorG":
+            case "cursorB":
                 cursor.onSliderChanged();
                 break;
 
-            case "svRSlider":
-            case "svGSlider":
-            case "svBSlider":
-            case "svPointSizeSlider":
+            case "svR":
+            case "svG":
+            case "svB":
+            case "svPointSize":
                 sceneVertex.onSliderChanged();
                 break;
 
-            case "skeletonLineWidthSlider":
-            case "skeletonPointSizeSlider":
+            case "skeletonLineWidth":
+            case "skeletonPointSize":
                 skeleton.onSliderChanged();
                 break;
 
-            case "skeRSlider":
-            case "skeGSlider":
-            case "skeBSlider":
-            case "btRSlider":
-            case "btGSlider":
-            case "btBSlider":
-            case "bntRSlider":
-            case "bntGSlider":
-            case "bntBSlider":
+            case "skeR":
+            case "skeG":
+            case "skeB":
+            case "btR":
+            case "btG":
+            case "btB":
+            case "bntR":
+            case "bntG":
+            case "bntB":
                 skeletonColor.onSliderChanged();
                 break;
 
-            case "sSpeedSlider":
-            case "sourceTimeSlider":
+            case "sSpeed":
+            case "sourceTime":
                 sourceAnimation.onSliderChanged();
                 break;
 
-            case "xSaSlider":
-            case "ySaSlider":
-            case "zSaSlider":
+            case "xSa":
+            case "ySa":
+            case "zSa":
                 spatialRotation.onSliderChanged();
                 break;
 
-            case "ssMasterSlider":
-            case "xSsSlider":
-            case "ySsSlider":
-            case "zSsSlider":
+            case "ssMaster":
+            case "xSs":
+            case "ySs":
+            case "zSs":
                 spatialScale.onSliderChanged();
                 break;
 
-            case "offMasterSlider":
-            case "soMasterSlider":
+            case "offMaster":
+            case "soMaster":
                 // do nothing
                 break;
 
-            case "xSoSlider":
-            case "ySoSlider":
-            case "zSoSlider":
+            case "xSo":
+            case "ySo":
+            case "zSo":
                 spatialTranslation.onSliderChanged();
                 break;
 
-            case "xTwistSlider":
-            case "yTwistSlider":
-            case "zTwistSlider":
+            case "xTwist":
+            case "yTwist":
+            case "zTwist":
                 twist.onSliderChanged();
                 break;
 
