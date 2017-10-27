@@ -469,8 +469,13 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="boneScaleTool" title="Bone-Scale Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="200px" width="165px" x="50" y="50">
+                     height="265px" width="180px" x="50" y="50">
                 <panel childLayout="vertical">
+                    <control name="label" text="Master control:"/>
+                    <control name="horizontalSlider" id="scaMasterSlider"
+                             buttonStepSize="1"
+                             max="3" min="-2" stepSize="0.001"/>
+                    <control name="label" text="Per-axis controls:"/>
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xScaSlider"
                                  buttonStepSize="1"
@@ -485,7 +490,7 @@ the menu bar, status bar, and tool windows.
                                  height="160px"
                                  max="3" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
-                               height="160px" width="80px">
+                               height="160px" width="95px">
                             <control name="label" id="xScaSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
