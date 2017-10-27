@@ -63,7 +63,8 @@ public class BuildMenus {
      */
     final private static boolean haveTestdata = false;
     /**
-     * maximum number of items in a menu, determined by minimum screen height
+     * maximum number of items in a menu, derived from the minimum display
+     * height of 480 pixels
      */
     final private static int maxItems = 19;
     /**
