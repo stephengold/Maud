@@ -52,6 +52,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
+import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -731,7 +732,8 @@ public class Cgm implements Cloneable {
      * @return a new map
      */
     Map<Bone, Spatial> mapAttachments() {
-        Map<Bone, Spatial> result = Util.mapAttachments(rootSpatial, null);
+        Map<Bone, Spatial> result
+                = MySkeleton.mapAttachments(rootSpatial, null);
         return result;
     }
 
@@ -916,8 +918,8 @@ public class Cgm implements Cloneable {
                 Node node = (Node) subtree;
                 List<Spatial> children = node.getChildren();
                 for (Spatial child : children) {
-                    List<String> childNames;
-                    childNames = listSpatialNames(child, prefix, includeNodes);
+                    List<String> childNames
+                            = listSpatialNames(child, prefix, includeNodes);
                     names.addAll(childNames);
                 }
             }

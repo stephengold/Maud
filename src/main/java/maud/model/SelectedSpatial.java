@@ -53,6 +53,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -900,7 +901,7 @@ public class SelectedSpatial implements JmeCloneable {
     public void selectAttachmentsNode() {
         SelectedBone selectedBone = cgm.getBone();
         Bone bone = selectedBone.get();
-        Node attachmentsNode = Util.getAttachments(bone);
+        Node attachmentsNode = MySkeleton.getAttachments(bone);
         select(attachmentsNode);
     }
 

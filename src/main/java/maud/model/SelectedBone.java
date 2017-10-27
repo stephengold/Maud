@@ -219,7 +219,7 @@ public class SelectedBone implements Cloneable {
      */
     public boolean hasAttachmentsNode() {
         Bone bone = get();
-        Node node = Util.getAttachments(bone);
+        Node node = MySkeleton.getAttachments(bone);
         if (node == null) {
             return false;
         } else {
@@ -258,7 +258,7 @@ public class SelectedBone implements Cloneable {
             for (int iBone = 0; iBone < numBones; iBone++) {
                 if (MySkeleton.descendsFrom(iBone, selectedIndex, skeleton)) {
                     Bone bone = skeleton.getBone(iBone);
-                    Node node = Util.getAttachments(bone);
+                    Node node = MySkeleton.getAttachments(bone);
                     if (node != null) {
                         result = true;
                         break;

@@ -52,16 +52,12 @@ import com.jme3.scene.plugins.bvh.BVHAnimData;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
-import java.lang.reflect.Field;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
@@ -240,28 +236,6 @@ public class Util {
     }
 
     /**
-     * Cancel the attachments node (if any) of the specified bone. The invoker
-     * is responsible for removing the node from the scene graph.
-     *
-     * @param bone which bone (not null, modified)
-     */
-    public static void cancelAttachments(Bone bone) {
-        Class<?> boneClass = bone.getClass();
-        Field attachNodeField;
-        try {
-            attachNodeField = boneClass.getDeclaredField("attachNode");
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException();
-        }
-        attachNodeField.setAccessible(true);
-        try {
-            attachNodeField.set(bone, null);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException();
-        }
-    }
-
-    /**
      * Find a cardinal quaternion similar to the specified input. A cardinal
      * quaternion is one for which the rotation angles on all 3 axes are integer
      * multiples of Pi/2 radians.
@@ -274,39 +248,6 @@ public class Util {
         MyQuaternion.snapLocal(input, 0);
         MyQuaternion.snapLocal(input, 1);
         MyQuaternion.snapLocal(input, 2);
-    }
-
-    /**
-     * Test whether the specified subtree of a scene graph contains any of the
-     * collected spatials.
-     *
-     * @param subtree subtree to traverse (may be null, unaffected)
-     * @param collection spatials to find (not null, unaffected)
-     * @return true if one of the collected spatials was found, otherwise false
-     */
-    public static boolean descendentsInclude(Spatial subtree,
-            Collection<Spatial> collection) {
-        boolean result;
-        if (subtree == null) {
-            result = false;
-        } else if (collection.isEmpty()) {
-            result = false;
-        } else if (collection.contains(subtree)) {
-            result = true;
-        } else if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            result = false;
-            for (Spatial spatial : collection) {
-                result = spatial.hasAncestor(node);
-                if (result) {
-                    break;
-                }
-            }
-        } else {
-            result = false;
-        }
-
-        return result;
     }
 
     /**
@@ -505,31 +446,6 @@ public class Util {
     }
 
     /**
-     * Access the attachments node of the specified bone.
-     *
-     * @param bone which bone (not null, unaffected)
-     * @return the pre-existing instance, or null if none
-     */
-    public static Node getAttachments(Bone bone) {
-        Class<?> boneClass = bone.getClass();
-        Field attachNodeField;
-        try {
-            attachNodeField = boneClass.getDeclaredField("attachNode");
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException();
-        }
-        attachNodeField.setAccessible(true);
-        Node result;
-        try {
-            result = (Node) attachNodeField.get(bone);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException();
-        }
-
-        return result;
-    }
-
-    /**
      * Test whether there are any "extra" spatials in the specified subtree.
      * Note: recursive!
      *
@@ -584,7 +500,7 @@ public class Util {
         Validate.nonNull(attachmentsNodes, "attachments nodes");
 
         boolean hasAttachments
-                = Util.descendentsInclude(spatial, attachmentsNodes);
+                = MySpatial.subtreeContainsAny(spatial, attachmentsNodes);
         int numSgcs = MySpatial.countControls(spatial, Control.class);
         int numUserData = MySpatial.countUserData(spatial);
         int numVertices = MySpatial.countVertices(spatial);
@@ -598,39 +514,6 @@ public class Util {
         }
 
         return result;
-    }
-
-    /**
-     * Enumerate all animated meshes in the specified subtree of a scene graph.
-     * Note: recursive!
-     *
-     * @param subtree (not null, unaffected)
-     * @param storeResult (added to if not null)
-     * @return an expanded list (either storeResult or a new instance)
-     */
-    public static List<Mesh> listAnimatedMeshes(Spatial subtree,
-            List<Mesh> storeResult) {
-        Validate.nonNull(subtree, "subtree");
-        if (storeResult == null) {
-            storeResult = new ArrayList<>(10);
-        }
-
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            Mesh mesh = geometry.getMesh();
-            if (mesh.isAnimated()) {
-                storeResult.add(mesh);
-            }
-
-        } else if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                listAnimatedMeshes(child, storeResult);
-            }
-        }
-
-        return storeResult;
     }
 
     /**
@@ -772,63 +655,6 @@ public class Util {
         }
 
         return loaded;
-    }
-
-    /**
-     * Map all attachments in the specified skeleton.
-     *
-     * @param skeleton (not null, unaffected)
-     * @param storeResult (added to if not null)
-     * @return an expanded map (either storeResult or a new instance)
-     */
-    public static Map<Bone, Spatial> mapAttachments(Skeleton skeleton,
-            Map<Bone, Spatial> storeResult) {
-        Validate.nonNull(skeleton, "skeleton");
-        if (storeResult == null) {
-            storeResult = new HashMap<>(4);
-        }
-
-        int numBones = skeleton.getBoneCount();
-        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            Bone bone = skeleton.getBone(boneIndex);
-            Node attachmentsNode = getAttachments(bone);
-            if (attachmentsNode != null) {
-                if (storeResult.containsKey(bone)) {
-                    if (storeResult.get(bone) != attachmentsNode) {
-                        throw new IllegalStateException();
-                    }
-                } else {
-                    storeResult.put(bone, attachmentsNode);
-                }
-            }
-
-        }
-
-        return storeResult;
-    }
-
-    /**
-     * Map all attachments nodes in the specified subtree of a scene graph.
-     *
-     * @param subtree (not null, unaffected)
-     * @param storeResult (added to if not null)
-     * @return an expanded map (either storeResult or a new instance)
-     */
-    public static Map<Bone, Spatial> mapAttachments(Spatial subtree,
-            Map<Bone, Spatial> storeResult) {
-        Validate.nonNull(subtree, "subtree");
-        if (storeResult == null) {
-            storeResult = new HashMap<>(4);
-        }
-
-        List<SkeletonControl> list
-                = MySpatial.listControls(subtree, SkeletonControl.class, null);
-        for (SkeletonControl control : list) {
-            Skeleton skeleton = control.getSkeleton();
-            Util.mapAttachments(skeleton, storeResult);
-        }
-
-        return storeResult;
     }
 
     /**
