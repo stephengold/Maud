@@ -36,6 +36,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.PhysicsUtil;
+import maud.model.option.RigidBodyParameter;
 
 /**
  * The selected physics collision object in the Maud application.
@@ -88,17 +89,54 @@ public class SelectedPhysics implements Cloneable {
     }
 
     /**
-     * Read the mass of the selected rigid body.
+     * Read the specified parameter of the selected rigid body.
      *
-     * @return mass (as a string) or "" if not applicable
+     * @param parameter which parameter to read (not null)
+     * @return parameter value (as a string) or "" if not applicable
      */
-    public String getMass() {
+    public String getRbpValue(RigidBodyParameter parameter) {
+        Validate.nonNull(parameter, "parameter");
+
         String result = "";
         PhysicsCollisionObject object = find();
         if (object instanceof PhysicsRigidBody) {
             PhysicsRigidBody prb = (PhysicsRigidBody) object;
-            float mass = prb.getMass();
-            result = Float.toString(mass);
+            float value;
+            switch (parameter) {
+                case AngularDamping:
+                    value = prb.getAngularDamping();
+                    break;
+                case AngularSleep:
+                    value = prb.getAngularSleepingThreshold();
+                    break;
+                case Friction:
+                    value = prb.getFriction();
+                    break;
+                case GravityX:
+                    value = prb.getGravity().x;
+                    break;
+                case GravityY:
+                    value = prb.getGravity().y;
+                    break;
+                case GravityZ:
+                    value = prb.getGravity().z;
+                    break;
+                case LinearDamping:
+                    value = prb.getLinearDamping();
+                    break;
+                case LinearSleep:
+                    value = prb.getLinearSleepingThreshold();
+                    break;
+                case Mass:
+                    value = prb.getMass();
+                    break;
+                case Restitution:
+                    value = prb.getRestitution();
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+            result = Float.toString(value);
         }
 
         assert result != null;

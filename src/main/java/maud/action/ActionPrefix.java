@@ -220,6 +220,10 @@ public class ActionPrefix {
      */
     final public static String selectPhysics = "select physics ";
     /**
+     * argument is the name of a RigidBodyParameter
+     */
+    final public static String selectPhysicsRbp = "select physicsRbp ";
+    /**
      * argument is the id of a physics shape or a prefix thereof
      */
     final public static String selectShape = "select shape ";
@@ -290,9 +294,9 @@ public class ActionPrefix {
      */
     final public static String setIndexBase = "set indexBase ";
     /**
-     * argument is the new mass
+     * arguments are the parameter name and a decimal value
      */
-    final public static String setPhysicsMass = "set physicsMass ";
+    final public static String setPhysicsRbpValue = "set physicsRbpValue ";
     /**
      * argument is the decimal refresh rate in Hertz
      */

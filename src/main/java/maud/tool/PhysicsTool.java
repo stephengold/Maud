@@ -33,7 +33,9 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.model.Cgm;
+import maud.model.EditorModel;
 import maud.model.SelectedPhysics;
+import maud.model.option.RigidBodyParameter;
 
 /**
  * The controller for the "Physics Tool" window in Maud's editor screen.
@@ -76,11 +78,8 @@ class PhysicsTool extends WindowController {
 
         updateIndex();
         updateName();
+        updateRbp();
         updateShape();
-
-        SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
-        String mass = physics.getMass();
-        Maud.gui.setButtonLabel("physicsMassButton", mass);
     }
     // *************************************************************************
     // private methods
@@ -135,6 +134,20 @@ class PhysicsTool extends WindowController {
             name = "(none selected)";
         }
         Maud.gui.setStatusText("physicsName", " " + name);
+    }
+
+    /**
+     * Update the rigid-body parameter buttons.
+     */
+    private void updateRbp() {
+        EditorModel model = Maud.getModel();
+        RigidBodyParameter rbp = model.getMisc().getRbp();
+        String rbpName = rbp.toString();
+        SelectedPhysics physics = model.getTarget().getPhysics();
+        String rbpValue = physics.getRbpValue(rbp);
+
+        Maud.gui.setButtonLabel("physicsRbpButton", rbpName);
+        Maud.gui.setButtonLabel("physicsRbpValueButton", rbpValue);
     }
 
     /**

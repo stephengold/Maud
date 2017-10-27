@@ -139,6 +139,7 @@ public class Action {
     final static String selectMapTargetBone = "select mapTargetBone";
     final static String selectOrbitCenter = "select orbitCenter";
     final static String selectPhysics = "select physics";
+    final static String selectPhysicsRbp = "select physicsRbp";
     final static String selectPhysicsShape = "select physicsShape";
     final static String selectScreenBone = "select screenBone";
     final static String selectScreenGnomon = "select screenGnomon";
@@ -160,7 +161,7 @@ public class Action {
     final static String setBatchHint = "set batchHint";
     final static String setColorDepth = "set colorDepth";
     final static String setCullHint = "set cullHint";
-    final static String setPhysicsMass = "set physicsMass";
+    final static String setPhysicsRbpValue = "set physicsRbpValue";
     final static String setQueueBucket = "set queueBucket";
     final static String setRefreshRate = "set refreshRate";
     final static String setResolution = "set resolution";

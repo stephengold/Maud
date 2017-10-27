@@ -63,6 +63,7 @@ import jme3utilities.wes.TrackEdit;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.Util;
+import maud.model.option.RigidBodyParameter;
 import maud.view.SceneView;
 
 /**
@@ -673,25 +674,6 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Alter the mass of the selected rigid body.
-     *
-     * @param mass (&ge;0)
-     */
-    public void setMass(float mass) {
-        Validate.nonNegative(mass, "mass");
-
-        PhysicsCollisionObject object = getPhysics().find();
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody prb = (PhysicsRigidBody) object;
-
-            History.autoAdd();
-            prb.setMass(mass);
-            String eventDescription = String.format("set mass to %f", mass);
-            setEdited(eventDescription);
-        }
-    }
-
-    /**
      * Alter the render-queue bucket of the selected spatial.
      *
      * @param newBucket new value for queue bucket (not null)
@@ -706,6 +688,69 @@ public class EditableCgm extends LoadedCgm {
             modelSpatial.setQueueBucket(newBucket);
             getSceneView().setQueueBucket(newBucket);
             setEdited("change render-queue bucket");
+        }
+    }
+
+    /**
+     * Alter the specified parameter of the selected rigid body.
+     *
+     * @param parameter which parameter to alter (not null)
+     * @param newValue new parameter value
+     */
+    public void setRigidBodyParameter(RigidBodyParameter parameter,
+            float newValue) {
+        Validate.nonNull(parameter, "parameter");
+
+        PhysicsCollisionObject object = getPhysics().find();
+        if (object instanceof PhysicsRigidBody) {
+            PhysicsRigidBody prb = (PhysicsRigidBody) object;
+
+            History.autoAdd();
+            Vector3f vector;
+            switch (parameter) {
+                case AngularDamping:
+                    prb.setAngularDamping(newValue);
+                    break;
+                case AngularSleep:
+                    prb.setAngularSleepingThreshold(newValue);
+                    break;
+                case Friction:
+                    prb.setFriction(newValue);
+                    break;
+                case GravityX:
+                    vector = prb.getGravity();
+                    vector.x = newValue;
+                    prb.setGravity(vector);
+                    break;
+                case GravityY:
+                    vector = prb.getGravity();
+                    vector.y = newValue;
+                    prb.setGravity(vector);
+                    break;
+                case GravityZ:
+                    vector = prb.getGravity();
+                    vector.z = newValue;
+                    prb.setGravity(vector);
+                    break;
+                case LinearDamping:
+                    prb.setLinearDamping(newValue);
+                    break;
+                case LinearSleep:
+                    prb.setLinearSleepingThreshold(newValue);
+                    break;
+                case Mass:
+                    prb.setMass(newValue);
+                    break;
+                case Restitution:
+                    prb.setRestitution(newValue);
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+
+            String eventDescription = String.format("set rigid-body %s to %f",
+                    parameter.toString(), newValue);
+            setEdited(eventDescription);
         }
     }
 

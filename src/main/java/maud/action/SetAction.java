@@ -41,6 +41,7 @@ import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.ShowBones;
 import maud.model.option.DisplaySettings;
+import maud.model.option.RigidBodyParameter;
 import maud.model.option.ViewMode;
 
 /**
@@ -97,8 +98,9 @@ class SetAction {
                 ShowMenus.setCullHint();
                 break;
 
-            case Action.setPhysicsMass:
-                EditorDialogs.setPhysicsMass();
+            case Action.setPhysicsRbpValue:
+                RigidBodyParameter rbp = model.getMisc().getRbp();
+                EditorDialogs.setPhysicsRbpValue(rbp);
                 break;
 
             case Action.setQueueBucket:
@@ -274,10 +276,17 @@ class SetAction {
             int newSetting = Integer.parseInt(arg);
             model.getMisc().setIndexBase(newSetting);
 
-        } else if (actionString.startsWith(ActionPrefix.setPhysicsMass)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setPhysicsMass);
-            float value = Float.parseFloat(arg);
-            target.setMass(value);
+        } else if (actionString.startsWith(ActionPrefix.setPhysicsRbpValue)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setPhysicsRbpValue);
+            String[] args = arg.split(" ");
+            RigidBodyParameter parm = RigidBodyParameter.valueOf(args[0]);
+            if (args.length == 2) {
+                float value = Float.parseFloat(args[1]);
+                target.setRigidBodyParameter(parm, value);
+            } else {
+                handled = false;
+            }
 
         } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
             arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
@@ -291,9 +300,8 @@ class SetAction {
             DisplaySettings.save();
 
         } else if (actionString.startsWith(ActionPrefix.setResolution)) {
-            String argList = MyString.remainder(actionString,
-                    ActionPrefix.setResolution);
-            String[] args = argList.split(" ");
+            arg = MyString.remainder(actionString, ActionPrefix.setResolution);
+            String[] args = arg.split(" ");
             assert args.length == 3 : args.length;
             int width = Integer.parseInt(args[0]);
             assert "x".equals(args[1]) : args[1];
