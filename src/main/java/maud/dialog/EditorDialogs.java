@@ -30,6 +30,7 @@ import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.Nifty;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -124,6 +125,29 @@ public class EditorDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showInfoDialog("About Maud", text);
+    }
+
+    /**
+     * Display a confirmation dialog for overwriting a file.
+     *
+     * @param prefix action prefix (not null, not empty)
+     * @param baseFilePath base file path (not null, not empty)
+     */
+    public static void confirmOverwrite(String prefix, String baseFilePath) {
+        Validate.nonEmpty(prefix, "prefix");
+        Validate.nonEmpty(baseFilePath, "base file path");
+
+        String action = prefix + baseFilePath;
+        String filePath = baseFilePath + ".j3o";
+        File file = new File(filePath);
+        if (file.exists()) {
+            String message = String.format("Overwrite %s?",
+                    MyString.quote(filePath));
+            OverwriteDialog controller = new OverwriteDialog();
+            Maud.gui.showConfirmDialog(message, "", action, controller);
+        } else {
+            Maud.perform(action);
+        }
     }
 
     /**
@@ -399,7 +423,7 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "rename spatial" dialog.
+     * Display a "rename spatial" dialog to enter the new name.
      */
     public static void renameSpatial() {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -423,7 +447,7 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "rename userKey" dialog.
+     * Display a "rename userKey" dialog to enter the new key.
      */
     public static void renameUserKey() {
         EditableCgm target = Maud.getModel().getTarget();
@@ -469,7 +493,7 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "retarget animation" dialog.
+     * Display a "retarget animation" dialog to enter the new name.
      */
     public static void retargetAnimation() {
         String oldName = Maud.getModel().getSource().getAnimation().getName();
@@ -481,28 +505,28 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "save cgm" dialog.
+     * Display a "save cgmUnconfirmed" dialog to enter the base file path.
      */
     public static void saveCgm() {
         EditableCgm target = Maud.getModel().getTarget();
         String baseFilePath = target.baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for model:",
-                baseFilePath, "Save", ActionPrefix.saveCgm, null);
+                baseFilePath, "Save", ActionPrefix.saveCgmUnconfirmed, null);
     }
 
     /**
-     * Display a "save map" dialog.
+     * Display a "save mapUnconfirmed" dialog to enter the base file path.
      */
     public static void saveMap() {
         String baseFilePath = Maud.getModel().getMap().baseFilePathForWrite();
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for map:",
-                baseFilePath, "Save", ActionPrefix.saveMap, null);
+                baseFilePath, "Save", ActionPrefix.saveMapUnconfirmed, null);
     }
 
     /**
-     * Display a "select vertex " dialog.
+     * Display a "select vertex " dialog to enter the vertex index.
      */
     public static void selectVertex() {
         Cgm target = Maud.getModel().getTarget();
@@ -561,7 +585,7 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "set physicsRbpValue" dialog.
+     * Display a "set physicsRbpValue" dialog to enter the parameter value.
      *
      * @param parameter which rigid-body parameter to alter (not null)
      */

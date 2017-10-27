@@ -182,7 +182,15 @@ public class ActionPrefix {
     /**
      * argument is a base file path
      */
+    final public static String saveCgmUnconfirmed = "save cgmUnconfirmed ";
+    /**
+     * argument is a base file path
+     */
     final public static String saveMap = "save map ";
+    /**
+     * argument is a base file path
+     */
+    final public static String saveMapUnconfirmed = "save mapUnconfirmed ";
     /**
      * arguments are a spatial name and a deduplication index
      */
