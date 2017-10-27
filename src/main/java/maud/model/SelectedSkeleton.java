@@ -47,6 +47,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
 import maud.Util;
+import maud.model.option.ShowBones;
 
 /**
  * The MVC model of a selected skeleton in the Maud application.

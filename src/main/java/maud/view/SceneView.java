@@ -93,7 +93,7 @@ import maud.mesh.PointMesh;
 import maud.model.Cgm;
 import maud.model.DisplayedPose;
 import maud.model.SelectedSkeleton;
-import maud.model.ShowBones;
+import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.SkeletonOptions;
 import maud.tool.AxesTool;
