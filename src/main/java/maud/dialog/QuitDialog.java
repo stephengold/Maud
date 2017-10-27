@@ -69,12 +69,12 @@ public class QuitDialog implements DialogController {
      */
     @Override
     public void update(Element dialogElement, float elapsedTime) {
-        Button cancelButton;
-        cancelButton = dialogElement.findNiftyControl("#cancel", Button.class);
+        Button cancelButton
+                = dialogElement.findNiftyControl("#cancel", Button.class);
         cancelButton.setText("Stay");
 
-        Button commitButton;
-        commitButton = dialogElement.findNiftyControl("#commit", Button.class);
+        Button commitButton
+                = dialogElement.findNiftyControl("#commit", Button.class);
         commitButton.setText("Quit");
     }
 }
