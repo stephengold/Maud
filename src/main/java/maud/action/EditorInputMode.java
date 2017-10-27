@@ -520,18 +520,31 @@ public class EditorInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean saveAction(String actionString) {
-        boolean handled = false;
+        EditorModel model = Maud.getModel();
+        String baseFilePath;
+        boolean handled = true;
         if (actionString.startsWith(ActionPrefix.saveCgm)) {
-            String path;
-            path = MyString.remainder(actionString, ActionPrefix.saveCgm);
-            Maud.getModel().getTarget().writeToFile(path);
-            handled = true;
+            baseFilePath
+                    = MyString.remainder(actionString, ActionPrefix.saveCgm);
+            model.getTarget().writeToFile(baseFilePath);
+
+        } else if (actionString.startsWith(ActionPrefix.saveCgmUnconfirmed)) {
+            baseFilePath = MyString.remainder(actionString,
+                    ActionPrefix.saveCgmUnconfirmed);
+            EditorDialogs.confirmOverwrite(ActionPrefix.saveCgm, baseFilePath);
 
         } else if (actionString.startsWith(ActionPrefix.saveMap)) {
-            String path;
-            path = MyString.remainder(actionString, ActionPrefix.saveMap);
-            Maud.getModel().getMap().writeToFile(path);
-            handled = true;
+            baseFilePath
+                    = MyString.remainder(actionString, ActionPrefix.saveMap);
+            model.getMap().writeToFile(baseFilePath);
+
+        } else if (actionString.startsWith(ActionPrefix.saveMapUnconfirmed)) {
+            baseFilePath = MyString.remainder(actionString,
+                    ActionPrefix.saveMapUnconfirmed);
+            EditorDialogs.confirmOverwrite(ActionPrefix.saveMap, baseFilePath);
+
+        } else {
+            handled = false;
         }
 
         return handled;
