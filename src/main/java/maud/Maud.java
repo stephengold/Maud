@@ -277,11 +277,11 @@ public class Maud extends GuiApplication {
                     dumpScene();
                     break;
                 case "edit bindings":
-                    InputMode im = InputMode.getActiveMode();
-                    bindScreen.activate(im);
+                    InputMode activeInputMode = InputMode.getActiveMode();
+                    bindScreen.activate(activeInputMode);
                     break;
                 case "quit":
-                    quit();
+                    quitUnconfirmed();
                     break;
                 default:
                     handled = false;
@@ -348,7 +348,7 @@ public class Maud extends GuiApplication {
     /**
      * If confirmed, terminate the application.
      */
-    private void quit() {
+    private void quitUnconfirmed() {
         int cgmEdits = editorModel.getTarget().countUnsavedEdits();
         int mapEdits = editorModel.getMap().countUnsavedEdits();
 
