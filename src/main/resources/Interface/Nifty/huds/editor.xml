@@ -2043,8 +2043,13 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="spatialScaleTool" title="Spatial-Scale Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="200px" width="165px" x="50" y="50">
+                     height="265px" width="165px" x="50" y="50">
                 <panel childLayout="vertical">
+                    <control name="label" text="Master control:"/>
+                    <control name="horizontalSlider" id="ssMasterSlider"
+                             buttonStepSize="1"
+                             max="3" min="-2" stepSize="0.001"/>
+                    <control name="label" text="Per-axis controls:"/>
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xSsSlider"
                                  buttonStepSize="1"

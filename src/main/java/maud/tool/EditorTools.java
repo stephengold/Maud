@@ -500,6 +500,7 @@ public class EditorTools {
                 spatialRotation.onSliderChanged();
                 break;
 
+            case "ssMasterSlider":
             case "xSsSlider":
             case "ySsSlider":
             case "zSsSlider":
