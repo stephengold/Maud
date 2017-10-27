@@ -45,6 +45,7 @@ import maud.action.ActionPrefix;
 import maud.model.option.AssetLocations;
 import maud.model.option.MiscOptions;
 import maud.model.option.ScoreOptions;
+import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.SceneOptions;
 

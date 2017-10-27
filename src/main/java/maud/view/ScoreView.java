@@ -63,9 +63,9 @@ import maud.mesh.Sparkline;
 import maud.mesh.YSwarm;
 import maud.model.Cgm;
 import maud.model.LoadedAnimation;
-import maud.model.ShowBones;
 import maud.model.StaffTrack;
 import maud.model.option.ScoreOptions;
+import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 
 /**

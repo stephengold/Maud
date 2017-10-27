@@ -29,7 +29,7 @@ package maud.model.option.scene;
 import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
-import maud.model.ShowBones;
+import maud.model.option.ShowBones;
 
 /**
  * Options for skeleton visualizations in scene views.

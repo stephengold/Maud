@@ -30,7 +30,6 @@ import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.model.Cgm;
-import maud.model.ShowBones;
 
 /**
  * Options for "score" views in Maud's editor screen.
