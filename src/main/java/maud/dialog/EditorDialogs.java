@@ -60,6 +60,7 @@ import maud.model.SelectedPhysics;
 import maud.model.SelectedSpatial;
 import maud.model.SelectedTrack;
 import maud.model.TrackItem;
+import maud.model.option.RigidBodyParameter;
 
 /**
  * Dialog boxes created by Maud's "editor" screen.
@@ -560,18 +561,23 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "set physicsMass" dialog.
+     * Display a "set physicsRbpValue" dialog.
+     *
+     * @param parameter which rigid-body parameter to alter (not null)
      */
-    public static void setPhysicsMass() {
-        SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
-        String defaultText = physics.getMass();
+    public static void setPhysicsRbpValue(RigidBodyParameter parameter) {
+        Validate.nonNull(parameter, "parameter");
 
-        DialogController controller;
-        controller = new FloatDialog("Set mass", 0f, Float.MAX_VALUE);
+        SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
+        String defaultText = physics.getRbpValue(parameter);
+        DialogController controller
+                = new FloatDialog("Set", Float.MIN_VALUE, Float.MAX_VALUE);
+        String name = parameter.toString();
+        String prompt = String.format("Enter new %s:", name);
+        String prefix = ActionPrefix.setPhysicsRbpValue + name + " ";
 
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter new mass:", defaultText,
-                ActionPrefix.setPhysicsMass, controller);
+        Maud.gui.showTextEntryDialog(prompt, defaultText, prefix, controller);
     }
 
     /**

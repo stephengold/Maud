@@ -60,7 +60,11 @@ public class MiscOptions implements Cloneable {
      */
     private int indexBase = 1;
     /**
-     * view mode
+     * parameter displayed in PhysicsTool (not null)
+     */
+    private RigidBodyParameter rbp = RigidBodyParameter.Mass;
+    /**
+     * view mode (not null)
      */
     private ViewMode viewMode = ViewMode.Scene;
     // *************************************************************************
@@ -94,11 +98,22 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Read which rigid-body parameter to display in PhysicsTool.
+     *
+     * @return enum (not null)
+     */
+    public RigidBodyParameter getRbp() {
+        assert rbp != null;
+        return rbp;
+    }
+
+    /**
      * Read the view mode.
      *
      * @return enum (not null)
      */
     public ViewMode getViewMode() {
+        assert viewMode != null;
         return viewMode;
     }
 
@@ -148,6 +163,16 @@ public class MiscOptions implements Cloneable {
     public void setIndexBase(int newSetting) {
         Validate.inRange(newSetting, "new setting", 0, 1);
         indexBase = newSetting;
+    }
+
+    /**
+     * Alter which rigid-body parameter to display in PhysicsTool.
+     *
+     * @param newParameter enum (not null)
+     */
+    public void setRbp(RigidBodyParameter newParameter) {
+        Validate.nonNull(newParameter, "new parameter");
+        rbp = newParameter;
     }
 
     /**

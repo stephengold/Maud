@@ -53,6 +53,7 @@ import maud.model.SelectedSpatial;
 import maud.model.SelectedVertex;
 import maud.model.ShowBones;
 import maud.model.option.DisplaySettings;
+import maud.model.option.RigidBodyParameter;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.OrbitCenter;
@@ -91,10 +92,12 @@ public class ShowMenus {
      */
     static void addNewAnimation() {
         MenuBuilder builder = new MenuBuilder();
+
         builder.addDialog("Copy");
         builder.addDialog("Mix");
         builder.addDialog("Pose");
         builder.addTool("Retarget");
+
         builder.show("select menuItem Animation -> Add new -> ");
     }
 
@@ -103,10 +106,12 @@ public class ShowMenus {
      */
     public static void addNewSgc() {
         MenuBuilder builder = new MenuBuilder();
+
         builder.addEdit("Anim");
         builder.addEdit("Ghost");
         builder.addEdit("RigidBody");
         builder.addEdit("Skeleton");
+
         builder.show("select menuItem SGC -> Add new -> ");
     }
 
@@ -127,8 +132,10 @@ public class ShowMenus {
      */
     static void changeDuration() {
         MenuBuilder builder = new MenuBuilder();
+
         builder.addDialog("Proportional times");
         builder.addDialog("Same times");
+
         builder.show(
                 "select menuItem Animation -> Edit -> Change duration -> ");
     }
@@ -175,6 +182,7 @@ public class ShowMenus {
      */
     static void sceneViewOptions() {
         MenuBuilder builder = new MenuBuilder();
+
         builder.addTool("Axes");
         builder.addTool("Bounds");
         builder.addTool("Camera");
@@ -185,6 +193,7 @@ public class ShowMenus {
         builder.addTool("Skeleton color");
         builder.addTool("Sky");
         builder.addTool("Vertex");
+
         builder.show("select menuItem View -> Scene options -> ");
     }
 
@@ -193,8 +202,10 @@ public class ShowMenus {
      */
     static void scoreViewOptions() {
         MenuBuilder builder = new MenuBuilder();
+
         builder.addTool("Tool");
         builder.addTool("Background");
+
         builder.show("select menuItem View -> Score options -> ");
     }
 
@@ -315,7 +326,7 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "select physics" menu.
+     * Display a "select physics" menu to select a physics object.
      *
      * @param cgm which load slot (not null)
      */
@@ -330,6 +341,23 @@ public class ShowMenus {
                 builder.show(ActionPrefix.selectPhysics);
             }
         }
+    }
+
+    /**
+     * Display a "select physicsRbp" menu to select a rigid-body parameter.
+     */
+    public static void selectPhysicsRbp() {
+        MenuBuilder builder = new MenuBuilder();
+
+        RigidBodyParameter selectedRbp = Maud.getModel().getMisc().getRbp();
+        for (RigidBodyParameter rbp : RigidBodyParameter.values()) {
+            if (!rbp.equals(selectedRbp)) {
+                String name = rbp.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectPhysicsRbp);
     }
 
     /**

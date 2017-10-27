@@ -33,6 +33,7 @@ import maud.dialog.EditorDialogs;
 import maud.model.Cgm;
 import maud.model.SelectedShape;
 import maud.model.SelectedSpatial;
+import maud.model.option.RigidBodyParameter;
 
 /**
  * Physics menus in Maud's editor screen.
@@ -79,7 +80,7 @@ public class PhysicsMenus {
                     break;
 
                 case "Mass":
-                    EditorDialogs.setPhysicsMass();
+                    EditorDialogs.setPhysicsRbpValue(RigidBodyParameter.Mass);
                     break;
 
                 case "Object Tool":
