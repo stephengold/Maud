@@ -58,9 +58,9 @@ public class EditorTools {
      */
     final private AnimationTool animation;
     /**
-     * controller for the "Axes Tool" window TODO make private
+     * controller for the "Axes Tool" window
      */
-    final public AxesTool axes;
+    final private AxesTool axes;
     /**
      * controller for the "Background" window
      */
@@ -86,9 +86,9 @@ public class EditorTools {
      */
     final private BoundsTool bounds;
     /**
-     * controller for the "Camera Tool" window TODO make private
+     * controller for the "Camera Tool" window
      */
-    final public CameraTool camera;
+    final private CameraTool camera;
     /**
      * controller for the "Model Tool" window
      */
@@ -102,9 +102,9 @@ public class EditorTools {
      */
     final private DisplaySettingsTool displaySettings;
     /**
-     * controller for the "History Tool" window TODO make private
+     * controller for the "History Tool" window
      */
-    final public HistoryTool history;
+    final private HistoryTool history;
     /**
      * controller for the "Joint Tool" window
      */
