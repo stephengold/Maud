@@ -101,7 +101,7 @@ public class SelectedSkeleton implements JmeCloneable {
 
         List<Integer> result = null;
         Bone bone = getBone(boneIndex);
-        Node node = Util.getAttachments(bone);
+        Node node = MySkeleton.getAttachments(bone);
         if (node != null) {
             result = cgm.findSpatial(node);
         }
@@ -387,7 +387,7 @@ public class SelectedSkeleton implements JmeCloneable {
         int numBones = countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             Bone bone = skeleton.getBone(boneIndex);
-            Node attachmentsNode = Util.getAttachments(bone);
+            Node attachmentsNode = MySkeleton.getAttachments(bone);
             if (attachmentsNode != null) {
                 String name = bone.getName();
                 result.add(name);

@@ -304,7 +304,7 @@ public class CheckLoaded {
             }
         }
 
-        List<Mesh> animatedMeshes = Util.listAnimatedMeshes(cgmRoot, null);
+        List<Mesh> animatedMeshes = MySpatial.listAnimatedMeshes(cgmRoot, null);
         for (Mesh mesh : animatedMeshes) {
             int maxWeightsPerVert = mesh.getMaxNumWeights();
             if (maxWeightsPerVert < 1) {

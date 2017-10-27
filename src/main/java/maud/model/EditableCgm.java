@@ -295,10 +295,10 @@ public class EditableCgm extends LoadedCgm {
 
         History.autoAdd();
         Bone bone = selectedBone.get();
-        Node node = Util.getAttachments(bone);
+        Node node = MySkeleton.getAttachments(bone);
         List<Integer> nodePosition = findSpatial(node);
 
-        Util.cancelAttachments(bone);
+        MySkeleton.cancelAttachments(bone);
         boolean success = node.removeFromParent();
         assert success;
         getSceneView().deleteSubtree(nodePosition);
@@ -347,12 +347,12 @@ public class EditableCgm extends LoadedCgm {
         if (selectedSgc instanceof SkeletonControl) {
             SkeletonControl skeletonControl = (SkeletonControl) selectedSgc;
             Skeleton skeleton = skeletonControl.getSkeleton();
-            Map<Bone, Spatial> map = Util.mapAttachments(skeleton, null);
+            Map<Bone, Spatial> map = MySkeleton.mapAttachments(skeleton, null);
             for (Bone bone : map.keySet()) {
-                Node attachmentsNode = Util.getAttachments(bone);
+                Node attachmentsNode = MySkeleton.getAttachments(bone);
                 List<Integer> nodePosition = findSpatial(attachmentsNode);
 
-                Util.cancelAttachments(bone);
+                MySkeleton.cancelAttachments(bone);
                 /*
                  * Detach the attachments node from its parent.
                  */
@@ -395,7 +395,7 @@ public class EditableCgm extends LoadedCgm {
                 Spatial spatial = mapEntry.getValue();
                 if (spatial == subtree || spatial.hasAncestor(subtreeNode)) {
                     Bone bone = mapEntry.getKey();
-                    Util.cancelAttachments(bone);
+                    MySkeleton.cancelAttachments(bone);
                 }
             }
         }
