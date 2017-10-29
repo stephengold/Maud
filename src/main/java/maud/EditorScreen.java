@@ -51,7 +51,6 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
@@ -586,22 +585,6 @@ public class EditorScreen extends GuiScreenController {
             spatial.selectChild(childIndex);
         } else {
             ShowMenus.selectSpatialChild(argument);
-        }
-    }
-
-    /**
-     * Handle a "select tool" action.
-     *
-     * @param toolName which tool to select (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    public boolean selectTool(String toolName) {
-        WindowController controller = tools.getTool(toolName);
-        if (controller == null) {
-            return false;
-        } else {
-            controller.select();
-            return true;
         }
     }
 

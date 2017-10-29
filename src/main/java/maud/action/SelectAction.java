@@ -26,8 +26,13 @@
  */
 package maud.action;
 
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.tools.SizeValue;
+import de.lessvoid.nifty.tools.SizeValueType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.menu.BoneMenus;
 import maud.menu.EditorMenus;
@@ -351,7 +356,34 @@ class SelectAction {
         if (!handled && actionString.startsWith(ActionPrefix.selectTool)) {
             String toolName = MyString.remainder(actionString,
                     ActionPrefix.selectTool);
-            handled = Maud.gui.selectTool(toolName);
+            WindowController tool = Maud.gui.tools.getTool(toolName);
+            if (tool != null) {
+                tool.select();
+                handled = true;
+            }
+        }
+        if (!handled && actionString.startsWith(ActionPrefix.selectToolAt)) {
+            String argList = MyString.remainder(actionString,
+                    ActionPrefix.selectToolAt);
+            String[] args = argList.split(" ");
+            if (args.length == 3) {
+                String toolName = args[0];
+                int x = Integer.parseInt(args[1]);
+                int y = Integer.parseInt(args[2]);
+
+                WindowController tool = Maud.gui.tools.getTool(toolName);
+                if (tool != null) {
+                    tool.select();
+                    Element element = tool.getElement();
+                    SizeValue newX = new SizeValue(x, SizeValueType.Pixel);
+                    element.setConstraintX(newX);
+                    SizeValue newY = new SizeValue(y, SizeValueType.Pixel);
+                    element.setConstraintY(newY);
+                    Screen screen = Maud.gui.getScreen();
+                    screen.layoutLayers();
+                    handled = true;
+                }
+            }
         }
 
         return handled;

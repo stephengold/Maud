@@ -256,6 +256,10 @@ public class ActionPrefix {
      */
     final static String selectTool = "select tool ";
     /**
+     * arguments are the name of a tool window and decimal x,y coordinates
+     */
+    final public static String selectToolAt = "select toolAt ";
+    /**
      * argument is a pre-existing user key
      */
     final public static String selectUserKey = "select userKey ";
