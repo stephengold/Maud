@@ -112,7 +112,7 @@ the menu bar, status bar, and tool windows.
                          width="*"/>
             </panel>
         </layer>
-        <layer id="windowsLayer" childLayout="absolute">
+        <layer id="windowsLayer" childLayout="absolute-inside">
 
             <control name="window" id="animationTool" title="Animation Tool"
                      backgroundColor="#ffcf"
