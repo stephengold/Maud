@@ -125,7 +125,7 @@ public class AxesTool extends WindowController {
      * Test whether the indexed axis points toward or away from the camera.
      *
      * @param cgm which C-G model (not null, unaffected)
-     * @param axisIndex which axis (&ge;0, &lt;2)
+     * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      * @return true if pointing away, otherwise false
      */
     public boolean isAxisReceding(Cgm cgm, int axisIndex) {

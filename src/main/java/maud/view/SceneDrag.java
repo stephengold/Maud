@@ -146,7 +146,7 @@ public class SceneDrag {
     /**
      * Start dragging the specified axis.
      *
-     * @param axisIndex which axis to drag (&ge;0, &lt;numAxes)
+     * @param axisIndex which axis to drag: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      * @param cgm which CG model (not null)
      * @param farSideFlag true &rarr; drag on the far side of the axis origin,
      * false to drag on near side
