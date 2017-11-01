@@ -101,11 +101,10 @@ class SpatialTranslationTool extends WindowController {
     // new methods exposed
 
     /**
-     * If active, update the MVC model based on the sliders.
+     * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
         Vector3f offsets = Maud.gui.readVectorBank("So");
-
         float masterScale = readScale();
         offsets.multLocal(masterScale);
         Maud.getModel().getTarget().setSpatialTranslation(offsets);
