@@ -34,6 +34,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.Cgm;
 import maud.model.LoadedAnimation;
+import maud.model.PlayOptions;
 import maud.model.SelectedAnimControl;
 import maud.model.SelectedBone;
 
@@ -69,17 +70,17 @@ class AnimationTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
+        Cgm target = Maud.getModel().getTarget();
+        LoadedAnimation animation = target.getAnimation();
         if (animation.isRetargetedPose()) {
             animation = Maud.getModel().getSource().getAnimation();
         }
 
         float duration = animation.getDuration();
-        float speed;
         if (duration > 0f) {
             Slider slider = Maud.gui.getSlider("speed");
-            speed = slider.getValue();
-            animation.setSpeed(speed);
+            float speed = slider.getValue();
+            target.getPlay().setSpeed(speed);
         }
 
         boolean moving = animation.isMoving();
@@ -190,7 +191,7 @@ class AnimationTool extends WindowController {
     }
 
     /**
-     * Update the animation index status and previous/next buttons.
+     * Update the index status and previous/next/load buttons.
      */
     private void updateIndex() {
         String indexText;
@@ -247,15 +248,17 @@ class AnimationTool extends WindowController {
         LoadedAnimation animation = cgm.getAnimation();
         boolean frozen = cgm.getPose().isFrozen();
         Maud.gui.setChecked("freeze", frozen);
-        boolean looping = animation.willContinue();
+
+        PlayOptions options = cgm.getPlay();
+        boolean looping = options.willContinue();
         Maud.gui.setChecked("loop", looping);
-        boolean ponging = animation.willReverse();
+        boolean ponging = options.willReverse();
         Maud.gui.setChecked("pong", ponging);
 
         String pButton = "";
         float duration = animation.getDuration();
         if (duration > 0f) {
-            boolean paused = animation.isPaused();
+            boolean paused = options.isPaused();
             if (paused) {
                 pButton = "Resume";
             } else {
@@ -289,7 +292,8 @@ class AnimationTool extends WindowController {
      * Update the speed slider and its status label.
      */
     private void updateSpeed() {
-        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
+        Cgm target = Maud.getModel().getTarget();
+        LoadedAnimation animation = target.getAnimation();
         if (animation.isRetargetedPose()) {
             animation = Maud.getModel().getSource().getAnimation();
         }
@@ -302,7 +306,7 @@ class AnimationTool extends WindowController {
             slider.disable();
         }
 
-        float speed = animation.getSpeed();
+        float speed = target.getPlay().getSpeed();
         slider.setValue(speed);
         Maud.gui.updateSliderStatus("speed", speed, "x");
     }
@@ -334,11 +338,11 @@ class AnimationTool extends WindowController {
         if (animation.isRetargetedPose()) {
             animation = Maud.getModel().getSource().getAnimation();
         }
+        float duration = animation.getDuration();
         /*
          * slider
          */
         boolean moving = animation.isMoving();
-        float duration = animation.getDuration();
         Slider slider = Maud.gui.getSlider("time");
         if (duration == 0f || moving) {
             slider.disable();

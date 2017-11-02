@@ -92,6 +92,10 @@ public class Cgm implements Cloneable {
      */
     private LoadedAnimation loadedAnimation = new LoadedAnimation();
     /**
+     * animation playback options
+     */
+    private PlayOptions playOptions = new PlayOptions();
+    /**
      * POV for viewing the scene
      */
     private ScenePov scenePov = new ScenePov();
@@ -168,9 +172,11 @@ public class Cgm implements Cloneable {
 
         displayedPose.setCgm(cgm);
         loadedAnimation.setCgm(cgm);
+        // playOptions lacks a back pointer
         scenePov.setCgm(cgm);
+        assert sceneView == null;
         scorePov.setCgm(cgm);
-        // sceneView and scoreView are null
+        assert scoreView == null;
         selectedAnimControl.setCgm(cgm);
         selectedBone.setCgm(cgm);
         selectedJoint.setCgm(cgm);
@@ -360,6 +366,16 @@ public class Cgm implements Cloneable {
     public SelectedPhysics getPhysics() {
         assert selectedPhysics != null;
         return selectedPhysics;
+    }
+
+    /**
+     * Access the animation playback options.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public PlayOptions getPlay() {
+        assert playOptions != null;
+        return playOptions;
     }
 
     /**
@@ -809,6 +825,7 @@ public class Cgm implements Cloneable {
 
         clone.displayedPose = cloner.clone(displayedPose);
         clone.loadedAnimation = loadedAnimation.clone();
+        clone.playOptions = playOptions.clone();
         clone.rootSpatial = cloner.clone(rootSpatial);
         clone.scenePov = cloner.clone(scenePov);
         clone.sceneView = cloner.clone(sceneView);
@@ -833,6 +850,7 @@ public class Cgm implements Cloneable {
         clone.getBone().setCgm(clone);
         clone.getJoint().setCgm(clone);
         clone.getPhysics().setCgm(clone);
+        //playOptions lacks a back pointer
         clone.getPose().setCgm(clone);
         clone.getScenePov().setCgm(clone);
         clone.getSceneView().setCgm(clone);

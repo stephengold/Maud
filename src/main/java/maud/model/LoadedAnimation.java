@@ -76,24 +76,10 @@ public class LoadedAnimation implements Cloneable {
     // fields
 
     /**
-     * true &rarr; play continuously ("loop"), false &rarr; play once-through
-     * and then pause
-     */
-    private boolean continueFlag = true;
-    /**
-     * true &rarr; explicitly paused, false &rarr; running perhaps at speed=0
-     */
-    private boolean pausedFlag = false;
-    /**
-     * true &rarr; root bones pinned to bindPos, false &rarr; free to translate
-     * TODO move to DisplayedPose
+     * true &rarr; root bones pinned to bind transform, false &rarr; free to
+     * transform
      */
     private boolean pinnedFlag = false;
-    /**
-     * true &rarr; reverse playback direction ("pong") at limits, false &rarr;
-     * wrap time at limits
-     */
-    private boolean reverseFlag = false;
     /**
      * C-G model containing the animation (set by {@link #setCgm(Cgm)})
      */
@@ -104,14 +90,9 @@ public class LoadedAnimation implements Cloneable {
      */
     private EditableCgm editableCgm;
     /**
-     * current animation time for playback (in seconds, &ge;0)
+     * current animation time for playback (seconds since start, &ge;0)
      */
     private float currentTime = 0f;
-    /**
-     * playback speed and direction when not paused (1 &rarr; forward at normal
-     * speed)
-     */
-    private float speed = 1f;
     /**
      * name of the loaded animation, bindPoseName, or retargetedPoseName
      */
@@ -450,16 +431,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Read the animation speed.
-     *
-     * @return relative speed (1 &rarr; normal)
-     */
-    public float getSpeed() {
-        return speed;
-    }
-
-    /**
-     * Read the animation time.
+     * Read the animation time for playback.
      *
      * @return seconds since start (&ge;0)
      */
@@ -570,7 +542,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Test whether the track time is changing.
+     * Test whether the animation time is changing.
      *
      * @return true time is changing, false otherwise
      */
@@ -578,9 +550,9 @@ public class LoadedAnimation implements Cloneable {
         boolean running;
         if (!cgm.isLoaded()) {
             running = false;
-        } else if (pausedFlag) {
+        } else if (cgm.getPlay().isPaused()) {
             running = false;
-        } else if (speed == 0f) {
+        } else if (cgm.getPlay().getSpeed() == 0f) {
             running = false;
         } else {
             running = true;
@@ -590,16 +562,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Test whether the loaded animation is explicitly paused.
-     *
-     * @return true if paused, false otherwise
-     */
-    public boolean isPaused() {
-        return pausedFlag;
-    }
-
-    /**
-     * Test whether the root bones are pinned to bindPos.
+     * Test whether the root bones are pinned to bind transform.
      *
      * @return true if pinned, false otherwise
      */
@@ -725,7 +688,7 @@ public class LoadedAnimation implements Cloneable {
         assert !isReserved(name);
 
         loadedName = name;
-        speed = newSpeed;
+        cgm.getPlay().setSpeed(newSpeed);
         currentTime = 0f;
 
         boolean frozen = cgm.getPose().isFrozen();
@@ -739,7 +702,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void loadBindPose() {
         loadedName = bindPoseName;
-        speed = 0f;
+        cgm.getPlay().setSpeed(0f);
         currentTime = 0f;
 
         Skeleton skeleton = cgm.getSkeleton().find();
@@ -783,7 +746,7 @@ public class LoadedAnimation implements Cloneable {
         if (Maud.getModel().getSource().isLoaded()
                 && cgm.getSkeleton().isSelected()) {
             loadedName = retargetedPoseName;
-            speed = 0f;
+            cgm.getPlay().setSpeed(0f);
             currentTime = 0f;
             cgm.getPose().setToAnimation();
             cgm.getPose().setFrozen(false);
@@ -977,16 +940,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Alter whether the loaded animation plays continuously.
-     *
-     * @param newSetting true &rarr; play continuously, false &rarr; play
-     * once-through and then pause
-     */
-    public void setContinue(boolean newSetting) {
-        continueFlag = newSetting;
-    }
-
-    /**
      * Expand or compress the loaded animation to give it the specified
      * duration.
      *
@@ -1052,40 +1005,12 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Alter whether the loaded animation is explicitly paused.
-     *
-     * @param newSetting true &rarr; paused, false &rarr; running
-     */
-    public void setPaused(boolean newSetting) {
-        pausedFlag = newSetting;
-    }
-
-    /**
-     * Alter whether the root bones are pinned to bindPos.
+     * Alter whether the root bones are pinned to bind transform.
      *
      * @param newSetting true &rarr; pinned, false &rarr; free to translate
      */
     public void setPinned(boolean newSetting) {
         pinnedFlag = newSetting;
-    }
-
-    /**
-     * Alter whether the loaded animation will reverse direction when it reaches
-     * a limit.
-     *
-     * @param newSetting true &rarr; reverse, false &rarr; wrap
-     */
-    public void setReverse(boolean newSetting) {
-        reverseFlag = newSetting;
-    }
-
-    /**
-     * Alter the playback speed and/or direction.
-     *
-     * @param newSpeed (1 &rarr; forward at normal speed)
-     */
-    public void setSpeed(float newSpeed) {
-        speed = newSpeed;
     }
 
     /**
@@ -1108,13 +1033,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Toggle between paused and running.
-     */
-    public void togglePaused() {
-        setPaused(!pausedFlag);
-    }
-
-    /**
      * Delete everything after the current animation time, and make that the end
      * of the animation.
      */
@@ -1134,24 +1052,6 @@ public class LoadedAnimation implements Cloneable {
 
         editableCgm.replaceAnimation(loaded, newAnimation,
                 "truncate an animation");
-    }
-
-    /**
-     * Test whether the loaded animation will play continuously.
-     *
-     * @return true if continuous loop, false otherwise
-     */
-    public boolean willContinue() {
-        return continueFlag;
-    }
-
-    /**
-     * Test whether the loaded animation will reverse direction at limits.
-     *
-     * @return true if it will reverse, false otherwise
-     */
-    public boolean willReverse() {
-        return reverseFlag;
     }
 
     /**
