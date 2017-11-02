@@ -25,7 +25,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * MVC model classes and enums related to configurable view options
+ * MVC model classes and enums related to configurable score-view options
  * and global options.
  */
 package maud.model.option;
