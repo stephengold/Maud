@@ -578,19 +578,19 @@ public class EditorInputMode extends InputMode {
                 break;
 
             case Action.togglePause:
-                model.getSource().getAnimation().togglePaused();
-                model.getTarget().getAnimation().togglePaused();
+                model.getSource().getPlay().togglePaused();
+                model.getTarget().getPlay().togglePaused();
                 break;
 
             case Action.togglePauseSource:
-                model.getSource().getAnimation().togglePaused();
+                model.getSource().getPlay().togglePaused();
                 break;
 
             case Action.togglePauseTarget:
                 if (model.getTarget().getAnimation().isRetargetedPose()) {
-                    model.getSource().getAnimation().togglePaused();
+                    model.getSource().getPlay().togglePaused();
                 } else {
-                    model.getTarget().getAnimation().togglePaused();
+                    model.getTarget().getPlay().togglePaused();
                 }
                 break;
 

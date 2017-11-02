@@ -61,6 +61,7 @@ import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.LoadedAnimation;
+import maud.model.PlayOptions;
 import maud.model.Pov;
 import maud.model.SelectedSpatial;
 import maud.model.option.DisplaySettings;
@@ -351,10 +352,10 @@ public class EditorScreen extends GuiScreenController {
                 model.getMap().setInvertMap(isChecked);
                 break;
             case "loop":
-                animationCgm.getAnimation().setContinue(isChecked);
+                animationCgm.getPlay().setContinue(isChecked);
                 break;
             case "loopSource":
-                source.getAnimation().setContinue(isChecked);
+                source.getPlay().setContinue(isChecked);
                 break;
             case "physics":
                 scene.setPhysicsRendered(isChecked);
@@ -366,10 +367,10 @@ public class EditorScreen extends GuiScreenController {
                 source.getAnimation().setPinned(isChecked);
                 break;
             case "pong":
-                animationCgm.getAnimation().setReverse(isChecked);
+                animationCgm.getPlay().setReverse(isChecked);
                 break;
             case "pongSource":
-                source.getAnimation().setReverse(isChecked);
+                source.getPlay().setReverse(isChecked);
                 break;
             case "scoreRotations":
                 model.getScore().setShowRotations(isChecked);
@@ -813,14 +814,15 @@ public class EditorScreen extends GuiScreenController {
      */
     private void updateTrackTime(Cgm cgm, float tpf) {
         LoadedAnimation animation = cgm.getAnimation();
+        PlayOptions play = cgm.getPlay();
         assert animation.isMoving();
 
-        float speed = animation.getSpeed();
+        float speed = play.getSpeed();
         float time = animation.getTime();
         time += speed * tpf;
 
-        boolean cont = animation.willContinue();
-        boolean reverse = animation.willReverse();
+        boolean cont = play.willContinue();
+        boolean reverse = play.willReverse();
         float duration = animation.getDuration();
         if (duration == 0f) {
             time = 0f;
@@ -831,11 +833,11 @@ public class EditorScreen extends GuiScreenController {
             time = FastMath.clamp(time, 0f, duration);
             if (time != freeTime) { // reached a limit
                 if (reverse) {
-                    animation.setSpeed(-speed); // pong
+                    play.setSpeed(-speed); // pong
                 } else {
                     time = duration - time; // wrap
                 }
-                animation.setPaused(!cont);
+                play.setPaused(!cont);
             }
         }
         animation.setTime(time);

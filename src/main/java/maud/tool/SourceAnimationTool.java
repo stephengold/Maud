@@ -34,7 +34,9 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.Cgm;
 import maud.model.LoadedAnimation;
+import maud.model.PlayOptions;
 import maud.model.SelectedAnimControl;
+import maud.model.SelectedBone;
 
 /**
  * The controller for the "Source-Animation Tool" window in Maud's editor
@@ -69,13 +71,14 @@ class SourceAnimationTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        LoadedAnimation animation = Maud.getModel().getSource().getAnimation();
+        Cgm source = Maud.getModel().getSource();
+        LoadedAnimation animation = source.getAnimation();
+
         float duration = animation.getDuration();
-        float speed;
         if (duration > 0f) {
             Slider slider = Maud.gui.getSlider("sSpeed");
-            speed = slider.getValue();
-            animation.setSpeed(speed);
+            float speed = slider.getValue();
+            source.getPlay().setSpeed(speed);
         }
 
         boolean moving = animation.isMoving();
@@ -101,24 +104,8 @@ class SourceAnimationTool extends WindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        Cgm source = Maud.getModel().getSource();
-        String hasTrackText;
-        if (!source.isLoaded()) {
-            hasTrackText = "no model";
-        } else if (!source.getBone().isSelected()) {
-            hasTrackText = "no bone";
-        } else if (!source.getAnimation().isReal()) {
-            hasTrackText = "";
-        } else {
-            if (source.getBone().hasTrack()) {
-                hasTrackText = "has track";
-            } else {
-                hasTrackText = "no track";
-            }
-        }
-        Maud.gui.setStatusText("sourceAnimationHasTrack", " " + hasTrackText);
-
         updateControlIndex();
+        updateHasTrack();
         updateIndex();
         updateLooping();
         updateName();
@@ -132,7 +119,7 @@ class SourceAnimationTool extends WindowController {
     // private methods
 
     /**
-     * Update the control index status and previous/next/select buttons.
+     * Update the anim control index status and previous/next/select buttons.
      */
     private void updateControlIndex() {
         String indexText;
@@ -174,6 +161,27 @@ class SourceAnimationTool extends WindowController {
         Maud.gui.setStatusText("sourceAnimControlIndex", indexText);
         Maud.gui.setButtonLabel("sourceAnimControlNextButton", nButton);
         Maud.gui.setButtonLabel("sourceAnimControlSelectButton", sButton);
+    }
+
+    /**
+     * Update the "has track" status of the selected bone.
+     */
+    private void updateHasTrack() {
+        Cgm source = Maud.getModel().getSource();
+        SelectedBone bone = source.getBone();
+        String hasTrackText;
+        if (!source.isLoaded()) {
+            hasTrackText = "no model";
+        } else if (!bone.isSelected()) {
+            hasTrackText = "no bone";
+        } else if (!source.getAnimation().isReal()) {
+            hasTrackText = "";
+        } else if (bone.hasTrack()) {
+            hasTrackText = "has track";
+        } else {
+            hasTrackText = "no track";
+        }
+        Maud.gui.setStatusText("sourceAnimationHasTrack", " " + hasTrackText);
     }
 
     /**
@@ -223,18 +231,21 @@ class SourceAnimationTool extends WindowController {
      * Update the loop/pin/pong check boxes and the pause button label.
      */
     private void updateLooping() {
-        LoadedAnimation animation = Maud.getModel().getSource().getAnimation();
+        Cgm source = Maud.getModel().getSource();
+        LoadedAnimation animation = source.getAnimation();
         boolean pinned = animation.isPinned();
         Maud.gui.setChecked("pinSource", pinned);
-        boolean looping = animation.willContinue();
+
+        PlayOptions options = source.getPlay();
+        boolean looping = options.willContinue();
         Maud.gui.setChecked("loopSource", looping);
-        boolean ponging = animation.willReverse();
+        boolean ponging = options.willReverse();
         Maud.gui.setChecked("pongSource", ponging);
 
         String pButton = "";
         float duration = animation.getDuration();
         if (duration > 0f) {
-            boolean paused = animation.isPaused();
+            boolean paused = options.isPaused();
             if (paused) {
                 pButton = "Resume";
             } else {
@@ -249,6 +260,7 @@ class SourceAnimationTool extends WindowController {
      */
     private void updateName() {
         String nameText;
+
         Cgm source = Maud.getModel().getSource();
         if (source.isLoaded()) {
             String name = source.getAnimation().getName();
@@ -268,7 +280,9 @@ class SourceAnimationTool extends WindowController {
      * Update the speed slider and its status label.
      */
     private void updateSpeed() {
-        LoadedAnimation animation = Maud.getModel().getSource().getAnimation();
+        Cgm source = Maud.getModel().getSource();
+        LoadedAnimation animation = source.getAnimation();
+
         float duration = animation.getDuration();
         Slider slider = Maud.gui.getSlider("sSpeed");
         if (duration > 0f) {
@@ -277,7 +291,7 @@ class SourceAnimationTool extends WindowController {
             slider.disable();
         }
 
-        float speed = animation.getSpeed();
+        float speed = source.getPlay().getSpeed();
         slider.setValue(speed);
         Maud.gui.updateSliderStatus("sSpeed", speed, "x");
     }
@@ -334,11 +348,11 @@ class SourceAnimationTool extends WindowController {
          * status label
          */
         String statusText;
-        if (!source.isLoaded() || !animation.isReal()) {
-            statusText = "time = n/a";
-        } else {
+        if (source.isLoaded() && animation.isReal()) {
             statusText = String.format("time = %.3f / %.3f sec",
                     trackTime, duration);
+        } else {
+            statusText = "time = n/a";
         }
         Maud.gui.setStatusText("sourceTrackTime", statusText);
     }
