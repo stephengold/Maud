@@ -59,7 +59,7 @@ public class DisplaySettings {
     /**
      * application name for the window's title bar
      */
-    final private static String windowTitle = "Maud";
+    final private static String windowTitle = "Maud ALPHA+4";
     // *************************************************************************
     // fields
 
