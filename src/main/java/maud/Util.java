@@ -238,7 +238,7 @@ public class Util {
     /**
      * Find a cardinal quaternion similar to the specified input. A cardinal
      * quaternion is one for which the rotation angles on all 3 axes are integer
-     * multiples of Pi/2 radians.
+     * multiples of Pi/2 radians. TODO reimplement using dot product
      *
      * @param input (not null, modified)
      */
