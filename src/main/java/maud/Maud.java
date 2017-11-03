@@ -38,6 +38,7 @@ import jme3_ext_xbuf.XbufLoader;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.StringLoader;
+import jme3utilities.UncachedKey;
 import jme3utilities.Validate;
 import jme3utilities.debug.Dumper;
 import jme3utilities.nifty.GuiApplication;
@@ -384,7 +385,7 @@ public class Maud extends GuiApplication {
     private void startup1() {
         logger.info("");
         /*
-         * Register loaders for BVH, txt, and Xbuf assets.
+         * Register loaders for BVH, JavaScript, txt, and Xbuf assets.
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
         assetManager.registerLoader(ScriptLoader.class, "js");
