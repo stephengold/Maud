@@ -37,6 +37,7 @@ import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
@@ -63,7 +64,6 @@ import java.util.logging.Logger;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
-import jme3utilities.math.MyQuaternion;
 import jme3utilities.wes.Pose;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +92,17 @@ public class Util {
      * local copy of {@link com.jme3.math.Vector3f#UNIT_Z}
      */
     final private static Vector3f zAxis = new Vector3f(0f, 0f, 1f);
+    /**
+     * array of cardinal axes
+     */
+    final private static Vector3f cardinalAxes[] = {
+        xAxis,
+        yAxis,
+        zAxis,
+        new Vector3f(-1, 0, 0),
+        new Vector3f(0, -1, 0),
+        new Vector3f(0, 0, -1)
+    };
     // *************************************************************************
     // constructors
 
@@ -236,18 +247,43 @@ public class Util {
     }
 
     /**
-     * Find a cardinal quaternion similar to the specified input. A cardinal
-     * quaternion is one for which the rotation angles on all 3 axes are integer
-     * multiples of Pi/2 radians. TODO reimplement using dot product
+     * Find the cardinal rotation most similar to the specified input. A
+     * cardinal rotation is one for which the rotation angles on all 3 axes are
+     * integer multiples of Pi/2 radians.
      *
      * @param input (not null, modified)
      */
     public static void cardinalizeLocal(Quaternion input) {
         Validate.nonNull(input, "input");
 
-        MyQuaternion.snapLocal(input, 0);
-        MyQuaternion.snapLocal(input, 1);
-        MyQuaternion.snapLocal(input, 2);
+        input.normalizeLocal();
+        /*
+         * Generate each of the 24 cardinal rotations.
+         */
+        Quaternion cardinalRotation = new Quaternion();
+        Quaternion bestCardinalRotation = new Quaternion();
+        Vector3f z = new Vector3f();
+        float bestAbsDot = -1f;
+        for (Vector3f x : cardinalAxes) {
+            for (Vector3f y : cardinalAxes) {
+                x.cross(y, z);
+                if (z.isUnitVector()) {
+                    cardinalRotation.fromAxes(x, y, z);
+                    /*
+                     * Measure the similarity of the 2 rotations
+                     * using the absolute value of their dot product.
+                     */
+                    float dot = cardinalRotation.dot(input);
+                    float absDot = FastMath.abs(dot);
+                    if (absDot > bestAbsDot) {
+                        bestAbsDot = absDot;
+                        bestCardinalRotation.set(cardinalRotation);
+                    }
+                }
+            }
+        }
+
+        input.set(bestCardinalRotation);
     }
 
     /**
