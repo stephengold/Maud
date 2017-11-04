@@ -26,13 +26,12 @@
  */
 package maud.model;
 
-import com.jme3.animation.Bone;
-import com.jme3.animation.Skeleton;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.Quaternion;
 import com.jme3.scene.plugins.bvh.BoneMapping;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -178,21 +177,24 @@ public class EditableMap extends LoadedMap {
     }
 
     /**
-     * Replace the map with an identity map for the source model.
+     * Replace the map with an identity map for the specified C-G model.
      */
-    public void loadIdentityForSource() {
-        Cgm source = Maud.getModel().getSource();
-        Skeleton skeleton = source.getSkeleton().find();
-        loadIdentity(skeleton);
-    }
+    public void loadIdentityFor(Cgm cgm) {
+        SelectedSkeleton skeleton = cgm.getSkeleton();
+        List<String> boneNames = skeleton.listBoneNamesRaw();
 
-    /**
-     * Replace the map with an identity map for the target model.
-     */
-    public void loadIdentityForTarget() {
-        Cgm target = Maud.getModel().getTarget();
-        Skeleton skeleton = target.getSkeleton().find();
-        loadIdentity(skeleton);
+        History.autoAdd();
+        map.clear();
+        for (String name : boneNames) {
+            map.map(name, name);
+        }
+
+        assetRootPath = "";
+        baseAssetPath = "";
+        int numBones = boneNames.size();
+        String event = String.format("load an identity map with %d bone%s",
+                numBones, numBones == 1 ? "" : "s");
+        setEdited(event);
     }
 
     /**
@@ -241,8 +243,14 @@ public class EditableMap extends LoadedMap {
 
     /**
      * Callback after a bone in the target C-G model is renamed.
+     *
+     * @param oldName former name of bone (not null, not empty)
+     * @param newName new name of bone (not null, not empty)
      */
-    void renameBone(String oldName, String newName) {
+    public void renameBone(String oldName, String newName) {
+        Validate.nonEmpty(oldName, "old name");
+        Validate.nonEmpty(newName, "new name");
+
         if (isInvertingMap()) {
             map.renameSourceBone(oldName, newName);
         } else {
@@ -423,37 +431,15 @@ public class EditableMap extends LoadedMap {
      * @return a new quaternion
      */
     private Quaternion estimateTwist() {
-        Quaternion sourceMo;
-        sourceMo = Maud.getModel().getSource().getBone().modelOrientation(null);
-        Quaternion targetMo;
-        targetMo = Maud.getModel().getTarget().getBone().modelOrientation(null);
+        Quaternion sourceMo
+                = Maud.getModel().getSource().getBone().modelOrientation(null);
+        Quaternion targetMo
+                = Maud.getModel().getTarget().getBone().modelOrientation(null);
         Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
         Quaternion twist = invSourceMo.mult(targetMo, null);
         Util.cardinalizeLocal(twist);
 
         return twist;
-    }
-
-    /**
-     * Replace the map with an identity map for the specified skeleton.
-     *
-     * @param skeleton which skeleton to use (not null)
-     */
-    private void loadIdentity(Skeleton skeleton) {
-        History.autoAdd();
-        map.clear();
-        int numBones = skeleton.getBoneCount();
-        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            Bone bone = skeleton.getBone(boneIndex);
-            String name = bone.getName();
-            map.map(name, name);
-        }
-
-        assetRootPath = "";
-        baseAssetPath = "";
-        String event = String.format("load an identity map with %d bone%s",
-                numBones, numBones == 1 ? "" : "s");
-        setEdited(event);
     }
 
     /**
@@ -477,8 +463,8 @@ public class EditableMap extends LoadedMap {
             History.autoAdd();
             ++editCount;
             editedTwist = newName;
-            String event;
-            event = String.format("set twist for %s", MyString.quote(newName));
+            String event
+                    = String.format("set twist for %s", MyString.quote(newName));
             History.addEvent(event);
         }
     }

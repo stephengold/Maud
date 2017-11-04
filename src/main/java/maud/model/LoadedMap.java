@@ -26,9 +26,6 @@
  */
 package maud.model;
 
-import com.jme3.animation.Animation;
-import com.jme3.animation.Bone;
-import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Quaternion;
@@ -44,8 +41,6 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.ui.Locators;
 import jme3utilities.wes.Pose;
-import jme3utilities.wes.TrackEdit;
-import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.Util;
 import maud.dialog.EditorDialogs;
@@ -106,14 +101,12 @@ public class LoadedMap implements Cloneable {
 
         Cgm source = Maud.getModel().getSource();
         Cgm target = Maud.getModel().getTarget();
-        Skeleton targetSkeleton = target.getSkeleton().find();
-        Bone targetBone = targetSkeleton.getBone(boneIndex);
-        String targetName = targetBone.getName();
+        String targetName = target.getSkeleton().getBoneName(boneIndex);
         BoneMapping boneMapping = effectiveMapping(targetName);
-        Skeleton sourceSkeleton = source.getSkeleton().find();
-        if (boneMapping != null && sourceSkeleton != null) {
+        SelectedSkeleton sourceSkeleton = source.getSkeleton();
+        if (boneMapping != null && sourceSkeleton.isSelected()) {
             String sourceName = boneMapping.getSourceName();
-            int sourceIndex = sourceSkeleton.getBoneIndex(sourceName);
+            int sourceIndex = sourceSkeleton.boneIndex(sourceName);
             if (sourceIndex != -1) {
                 /*
                  * Calculate the model orientation of the source bone.
@@ -122,8 +115,8 @@ public class LoadedMap implements Cloneable {
                 Quaternion mo = sourcePose.modelOrientation(sourceIndex, null);
 
                 Pose targetPose = target.getPose().get();
-                Quaternion userRotation = targetPose.userForModel(boneIndex,
-                        mo, null);
+                Quaternion userRotation
+                        = targetPose.userForModel(boneIndex, mo, null);
                 Quaternion twist = boneMapping.getTwist();
                 userRotation.mult(twist, storeResult.getRotation());
             }
@@ -160,6 +153,26 @@ public class LoadedMap implements Cloneable {
      */
     public int countMappings() {
         int result = map.countMappings();
+        return result;
+    }
+
+    /**
+     * Calculate an effective skeleton map.
+     *
+     * @return a new map
+     */
+    public SkeletonMapping effectiveMap() {
+        SkeletonMapping result;
+        if (invertMapFlag) {
+            result = map.inverse();
+        } else {
+            try {
+                result = map.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException();
+            }
+        }
+
         return result;
     }
 
@@ -460,19 +473,6 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Retarget the source animation to the target C-G model and load the
-     * resulting animation.
-     *
-     * @param newName name for the new animation (not null, not empty)
-     */
-    public void retargetAndLoad(String newName) {
-        Validate.nonEmpty(newName, "new name");
-
-        retargetAndAdd(newName);
-        Maud.getModel().getTarget().getAnimation().load(newName);
-    }
-
-    /**
      * Select the bone mapping of the selected source bone.
      */
     public void selectFromSource() {
@@ -629,26 +629,6 @@ public class LoadedMap implements Cloneable {
     // private methods
 
     /**
-     * Calculate an effective skeleton map.
-     *
-     * @return a new map
-     */
-    private SkeletonMapping effectiveMap() {
-        SkeletonMapping result;
-        if (invertMapFlag) {
-            result = map.inverse();
-        } else {
-            try {
-                result = map.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException();
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Calculate an effective bone mapping for the named bone in the target C-G
      * model.
      *
@@ -703,8 +683,8 @@ public class LoadedMap implements Cloneable {
         AssetKey<SkeletonMapping> key = new AssetKey<>(path);
         if (!useCache) {
             /*
-                 * Delete the key from the asset manager's cache in order
-                 * to force a fresh load from persistent storage.
+             * Delete the key from the asset manager's cache in order
+             * to force a fresh load from persistent storage.
              */
             assetManager.deleteFromCache(key);
         }
@@ -720,31 +700,6 @@ public class LoadedMap implements Cloneable {
         }
 
         return loaded;
-    }
-
-    /**
-     * Add a re-targeted animation to the target C-G model.
-     *
-     * @param newAnimationName name for the resulting animation (not null)
-     */
-    private void retargetAndAdd(String newAnimationName) {
-        assert newAnimationName != null;
-
-        Cgm source = Maud.getModel().getSource();
-        EditableCgm target = Maud.getModel().getTarget();
-        Animation sourceAnimation = source.getAnimation().getAnimation();
-        Skeleton sourceSkeleton = source.getSkeleton().find();
-        Skeleton targetSkeleton = target.getSkeleton().find();
-        SkeletonMapping effectiveMap = effectiveMap();
-        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Animation retargeted = TrackEdit.retargetAnimation(sourceAnimation,
-                sourceSkeleton, targetSkeleton, effectiveMap, techniques,
-                newAnimationName);
-
-        float duration = retargeted.getLength();
-        assert duration >= 0f : duration;
-
-        target.addAnimation(retargeted);
     }
 
     /**

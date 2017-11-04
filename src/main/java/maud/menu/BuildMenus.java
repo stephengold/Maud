@@ -289,11 +289,13 @@ public class BuildMenus {
                 break;
 
             case identityForSource:
-                model.getMap().loadIdentityForSource();
+                Cgm source = model.getSource();
+                model.getMap().loadIdentityFor(source);
                 break;
 
             case identityForTarget:
-                model.getMap().loadIdentityForTarget();
+                Cgm target = model.getTarget();
+                model.getMap().loadIdentityFor(target);
                 break;
 
             default:

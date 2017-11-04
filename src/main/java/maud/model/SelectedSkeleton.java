@@ -110,6 +110,21 @@ public class SelectedSkeleton implements JmeCloneable {
     }
 
     /**
+     * Calculate the index of the named bone in the selected skeleton.
+     *
+     * @param boneName name of the bone (not null, not empty)
+     * @return the bone index (&ge;0) or -1 if not found
+     */
+    public int boneIndex(String boneName) {
+        Validate.nonEmpty(boneName, "bone name");
+
+        Skeleton skeleton = find();
+        int result = skeleton.getBoneIndex(boneName);
+
+        return result;
+    }
+
+    /**
      * Count the bones in the selected skeleton.
      *
      * @return count (&ge;0)
@@ -195,7 +210,7 @@ public class SelectedSkeleton implements JmeCloneable {
         }
 
         if (storeSelectedSpatialFlag != null) {
-            storeSelectedSpatialFlag = selectedSpatialFlag;
+            storeSelectedSpatialFlag = selectedSpatialFlag; // side-effect
         }
         return skeleton;
     }
@@ -398,16 +413,49 @@ public class SelectedSkeleton implements JmeCloneable {
     }
 
     /**
-     * Enumerate bones in the selected skeleton.
+     * Enumerate all named bones in lexicographic order, plus noBone.
      *
-     * @return a new list of names, including noBone
+     * @return a new list of names
      */
     public List<String> listBoneNames() {
-        List<String> names = new ArrayList<>(80);
+        List<String> names = listBoneNamesRaw();
+        Collections.sort(names);
+        names.add(noBone);
+
+        return names;
+    }
+
+    /**
+     * Enumerate named bones whose names start with the specified prefix.
+     *
+     * @param namePrefix the input prefix (not null)
+     * @return a new list of names, sorted, which may include noBone
+     */
+    public List<String> listBoneNames(String namePrefix) {
+        Validate.nonNull(namePrefix, "name prefix");
+
+        List<String> boneNames = listBoneNames();
+        for (String name : MyString.toArray(boneNames)) {
+            if (!name.startsWith(namePrefix)) {
+                boneNames.remove(name);
+            }
+        }
+
+        return boneNames;
+    }
+
+    /**
+     * Enumerate all named bones, in numeric order.
+     *
+     * @return a new list of names, not including noBone
+     */
+    public List<String> listBoneNamesRaw() {
+        int size = 1 + countBones(); // allocate an extra item for the invoker
+        List<String> names = new ArrayList<>(size);
+
         Skeleton skeleton = find();
         if (skeleton != null) {
             int boneCount = skeleton.getBoneCount();
-
             for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
                 Bone bone = skeleton.getBone(boneIndex);
                 String name = bone.getName();
@@ -417,28 +465,7 @@ public class SelectedSkeleton implements JmeCloneable {
             }
         }
 
-        Collections.sort(names);
-        names.add(noBone);
-
         return names;
-    }
-
-    /**
-     * Enumerate all bones in the loaded model having names that start with the
-     * specified prefix.
-     *
-     * @param namePrefix the input prefix
-     * @return a new list of names
-     */
-    public List<String> listBoneNames(String namePrefix) {
-        List<String> boneNames = listBoneNames();
-        for (String name : MyString.toArray(boneNames)) {
-            if (!name.startsWith(namePrefix)) {
-                boneNames.remove(name);
-            }
-        }
-
-        return boneNames;
     }
 
     /**

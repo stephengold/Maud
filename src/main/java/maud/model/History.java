@@ -110,7 +110,7 @@ public class History {
      *
      * @param description (not null, not empty)
      */
-    static void addEvent(String description) {
+    public static void addEvent(String description) {
         Validate.nonEmpty(description, "description");
 
         logger.log(Level.INFO, "{0}", description);
@@ -120,7 +120,7 @@ public class History {
     /**
      * Create a checkpoint if auto-add mode is enabled.
      */
-    static void autoAdd() {
+    public static void autoAdd() {
         if (autoAddFlag) {
             addCheckpoint();
         }

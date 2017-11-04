@@ -500,9 +500,11 @@ public class EditorInputMode extends InputMode {
         boolean handled = false;
 
         if (actionString.startsWith(ActionPrefix.retargetAnimation)) {
-            String name = MyString.remainder(actionString,
+            String newName = MyString.remainder(actionString,
                     ActionPrefix.retargetAnimation);
-            Maud.getModel().getMap().retargetAndLoad(name);
+            EditableCgm target = Maud.getModel().getTarget();
+            target.retargetAndAdd(newName);
+            target.getAnimation().load(newName);
             handled = true;
 
         } else if (actionString.equals(Action.retargetAnimation)) {

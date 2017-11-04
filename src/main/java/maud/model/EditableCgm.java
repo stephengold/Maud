@@ -45,6 +45,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.UserData;
 import com.jme3.scene.control.Control;
+import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -60,6 +61,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TrackEdit;
+import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.Util;
@@ -431,7 +433,7 @@ public class EditableCgm extends LoadedCgm {
     /**
      * Callback before a checkpoint is created.
      */
-    void preCheckpoint() {
+    public void preCheckpoint() {
         /*
          * Potentially a new spatial transform edit.
          */
@@ -557,6 +559,30 @@ public class EditableCgm extends LoadedCgm {
             loaded.setTime(duration); // keep track time in range
         }
         setEdited(eventDescription);
+    }
+
+    /**
+     * Add a re-targeted animation to the C-G model.
+     *
+     * @param newAnimationName name for the resulting animation (not null)
+     */
+    public void retargetAndAdd(String newAnimationName) {
+        Validate.nonNull(newAnimationName, "new animation name");
+
+        Cgm source = Maud.getModel().getSource();
+        Animation sourceAnimation = source.getAnimation().getAnimation();
+        Skeleton sourceSkeleton = source.getSkeleton().find();
+        Skeleton targetSkeleton = getSkeleton().find();
+        SkeletonMapping effectiveMap = Maud.getModel().getMap().effectiveMap();
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        Animation retargeted = TrackEdit.retargetAnimation(sourceAnimation,
+                sourceSkeleton, targetSkeleton, effectiveMap, techniques,
+                newAnimationName);
+
+        float duration = retargeted.getLength();
+        assert duration >= 0f : duration;
+
+        addAnimation(retargeted);
     }
 
     /**
