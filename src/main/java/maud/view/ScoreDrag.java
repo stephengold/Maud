@@ -38,6 +38,12 @@ import maud.model.cgm.Cgm;
  */
 public class ScoreDrag {
     // *************************************************************************
+    // enums
+
+    private enum WhichCgm {
+        None, Source, Target;
+    }
+    // *************************************************************************
     // constants and loggers
 
     /**
@@ -49,9 +55,9 @@ public class ScoreDrag {
     // fields
 
     /**
-     * which gnomon is being dragged ("none", "source", or "target")
+     * which CGM's gnomon is being dragged (not null)
      */
-    private static String dragGnomon = "none";
+    private static WhichCgm dragGnomon = WhichCgm.None;
     // *************************************************************************
     // constructors
 
@@ -71,13 +77,13 @@ public class ScoreDrag {
     public static Cgm getDraggingGnomonCgm() {
         Cgm result;
         switch (dragGnomon) {
-            case "none":
+            case None:
                 result = null;
                 break;
-            case "source":
+            case Source:
                 result = Maud.getModel().getSource();
                 break;
-            case "target":
+            case Target:
                 result = Maud.getModel().getTarget();
                 break;
             default:
@@ -89,15 +95,15 @@ public class ScoreDrag {
     /**
      * Alter which gnomon is being dragged.
      *
-     * @param cgm a CG model, or null
+     * @param cgm a CG model, or null for none
      */
     public static void setDraggingGnomon(Cgm cgm) {
         if (cgm == Maud.getModel().getTarget()) {
-            dragGnomon = "target";
+            dragGnomon = WhichCgm.Target;
         } else if (cgm == Maud.getModel().getSource()) {
-            dragGnomon = "source";
+            dragGnomon = WhichCgm.Source;
         } else if (cgm == null) {
-            dragGnomon = "none";
+            dragGnomon = WhichCgm.None;
         } else {
             throw new IllegalArgumentException();
         }
