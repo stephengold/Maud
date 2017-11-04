@@ -443,7 +443,7 @@ public class SelectedAnimControl implements JmeCloneable {
      * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
      *
      * @return never
-     * @throws CloneNotSupportedException
+     * @throws CloneNotSupportedException always
      */
     @Override
     public SelectedAnimControl clone() throws CloneNotSupportedException {

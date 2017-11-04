@@ -180,6 +180,8 @@ public class EditableMap extends LoadedMap {
 
     /**
      * Replace the map with an identity map for the specified C-G model.
+     *
+     * @param cgm which C-G model (not null, unaffected)
      */
     public void loadIdentityFor(Cgm cgm) {
         SelectedSkeleton skeleton = cgm.getSkeleton();

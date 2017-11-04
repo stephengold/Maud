@@ -520,10 +520,12 @@ public class Util {
      * Test whether the specified spatial is an "extra" spatial.
      *
      * A spatial is "extra" iff neither it nor any of its descendents:
+     * <ul>
      * <li> is an attachments node
      * <li> has a scene-graph control
      * <li> has user data, or
      * <li> has mesh vertices.
+     * </ul>
      *
      * @param spatial spatial to test (not null, unaffected)
      * @param attachmentsNodes collection of attachments nodes (not null,

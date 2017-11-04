@@ -466,7 +466,7 @@ public class BuildMenus {
     }
 
     /**
-     * Display a "Bone -> Select source" menu.
+     * Display a "Bone -&gt; Select source" menu.
      */
     public void selectSourceBone() {
         if (Maud.getModel().getSource().isLoaded()) {

@@ -983,7 +983,7 @@ public class ScoreView implements EditorView {
 
         String nameSuffix = String.format("%d", staffIndex);
         Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
-                yWidth, xHeight);
+                yWidth, xHeight); // swap X and Y
         visuals.attachChild(label);
         label.setLocalRotation(ScoreResources.quarterZ);
         float compression = cgm.getScorePov().compression();

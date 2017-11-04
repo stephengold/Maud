@@ -59,7 +59,8 @@ import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.OrbitCenter;
 
 /**
- * Display simple menus in Maud's editor screen. TODO rename methods & split up
+ * Display simple menus in Maud's editor screen. TODO rename methods and split
+ * up
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -102,7 +103,7 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "SGC -> Add new" menu.
+     * Display a "SGC -&gt; Add new" menu.
      */
     public static void addNewSgc() {
         MenuBuilder builder = new MenuBuilder();
@@ -528,7 +529,7 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "Vertex -> Select" menu.
+     * Display a "Vertex -&gt; Select" menu.
      */
     public static void selectVertex() {
         Cgm target = Maud.getModel().getTarget();

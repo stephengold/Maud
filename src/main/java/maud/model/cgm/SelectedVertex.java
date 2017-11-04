@@ -116,9 +116,10 @@ public class SelectedVertex implements Cloneable {
     }
 
     /**
+     * Calculate the bone weights of the vertex.
      *
-     * @param storeResult
-     * @return
+     * @param storeResult (modified if not null)
+     * @return array of weights (either storeResult or a new instance)
      */
     public float[] boneWeights(float[] storeResult) {
         if (storeResult == null) {
