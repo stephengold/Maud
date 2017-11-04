@@ -176,9 +176,9 @@ public class SelectedJoint implements Cloneable {
     /**
      * Select an identified joint.
      *
-     * @param jointId
+     * @param jointId which joint
      */
-    public void select(Long jointId) {
+    public void select(long jointId) {
         List<Long> ids = listJointIds();
         assert ids.contains(jointId) : jointId;
         selectedId = jointId;

@@ -208,9 +208,9 @@ public class SelectedShape implements Cloneable {
     /**
      * Select an identified shape.
      *
-     * @param shapeId
+     * @param shapeId which shape
      */
-    public void select(Long shapeId) {
+    public void select(long shapeId) {
         List<Long> ids = listShapeIds();
         assert ids.contains(shapeId) : shapeId;
         selectedId = shapeId;

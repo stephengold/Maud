@@ -150,7 +150,7 @@ public class EditorMenus {
         assert menuName != null;
         assert remainder != null;
 
-        boolean handled = false;
+        boolean handled;
         switch (menuName) {
             case "Animation":
                 handled = AnimationMenus.menuAnimation(remainder);
@@ -193,6 +193,9 @@ public class EditorMenus {
                 break;
             case "View":
                 handled = ViewMenus.menuView(remainder);
+                break;
+            default:
+                handled = false;
         }
 
         return handled;
