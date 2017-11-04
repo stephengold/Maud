@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.DialogController;
 import maud.Maud;
-import maud.model.LoadedAnimation;
+import maud.model.cgm.LoadedAnimation;
 
 /**
  * Controller for a text-entry dialog box used to name a new animation.

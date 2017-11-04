@@ -35,7 +35,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.SelectedSpatial;
+import maud.model.cgm.SelectedSpatial;
 
 /**
  * The controller for the "Spatial-Details Tool" window in Maud's editor screen.

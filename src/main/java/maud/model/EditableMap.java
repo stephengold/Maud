@@ -40,6 +40,8 @@ import jme3utilities.math.MyQuaternion;
 import jme3utilities.ui.ActionApplication;
 import maud.Maud;
 import maud.Util;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedSkeleton;
 
 /**
  * The loaded skeleton map in the Maud application, with editing features.

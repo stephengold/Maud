@@ -28,9 +28,9 @@ package maud.action;
 
 import java.util.logging.Logger;
 import maud.Maud;
-import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
+import maud.model.cgm.EditableCgm;
 
 /**
  * Process an action string that begins with the word "previous".

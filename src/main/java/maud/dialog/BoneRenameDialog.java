@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.DialogController;
 import maud.Maud;
-import maud.model.SelectedSkeleton;
+import maud.model.cgm.SelectedSkeleton;
 
 /**
  * Controller for a text-entry dialog box used to rename a bone.

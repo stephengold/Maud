@@ -44,6 +44,8 @@ import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.ScriptLoader;
 import maud.action.ActionPrefix;
+import maud.model.cgm.EditableCgm;
+import maud.model.cgm.LoadedCgm;
 import maud.model.option.AssetLocations;
 import maud.model.option.MiscOptions;
 import maud.model.option.ScoreOptions;

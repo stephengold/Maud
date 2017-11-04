@@ -29,7 +29,7 @@ package maud.view;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.model.Cgm;
+import maud.model.cgm.Cgm;
 
 /**
  * Drag state for scene views. Currently the only scene objects that can be

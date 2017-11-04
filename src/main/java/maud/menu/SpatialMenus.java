@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
-import maud.model.Cgm;
-import maud.model.SelectedSpatial;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedSpatial;
 
 /**
  * Spatial menus in Maud's editor screen.

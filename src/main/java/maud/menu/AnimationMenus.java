@@ -31,10 +31,10 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
-import maud.model.Cgm;
-import maud.model.EditableCgm;
-import maud.model.LoadedAnimation;
-import maud.model.SelectedAnimControl;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.EditableCgm;
+import maud.model.cgm.LoadedAnimation;
+import maud.model.cgm.SelectedAnimControl;
 
 /**
  * Animation menus in Maud's editor screen.

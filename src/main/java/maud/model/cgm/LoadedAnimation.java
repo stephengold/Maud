@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model;
+package maud.model.cgm;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
@@ -47,6 +47,8 @@ import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.Util;
+import maud.model.EditableMap;
+import maud.model.EditorModel;
 
 /**
  * The MVC model of the loaded animation in the Maud application. For loading

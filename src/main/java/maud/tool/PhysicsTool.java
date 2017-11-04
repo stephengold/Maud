@@ -32,9 +32,9 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.PhysicsUtil;
-import maud.model.Cgm;
 import maud.model.EditorModel;
-import maud.model.SelectedPhysics;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedPhysics;
 import maud.model.option.RigidBodyParameter;
 
 /**

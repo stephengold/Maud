@@ -35,8 +35,8 @@ import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.Cgm;
-import maud.model.SelectedBone;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedBone;
 
 /**
  * The controller for the "Bone-Rotation Tool" window in Maud's editor screen.

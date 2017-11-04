@@ -32,11 +32,11 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
-import maud.model.Cgm;
-import maud.model.EditableCgm;
 import maud.model.EditorModel;
-import maud.model.SelectedBone;
-import maud.model.SelectedSkeleton;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedSkeleton;
 
 /**
  * Bone menus in Maud's editor screen.

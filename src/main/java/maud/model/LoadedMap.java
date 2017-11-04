@@ -45,6 +45,8 @@ import maud.Maud;
 import maud.Util;
 import maud.dialog.EditorDialogs;
 import maud.menu.BuildMenus;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedSkeleton;
 
 /**
  * The loaded skeleton map in the Maud application, without editing features.

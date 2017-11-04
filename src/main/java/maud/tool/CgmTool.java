@@ -31,7 +31,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.EditableCgm;
+import maud.model.cgm.EditableCgm;
 
 /**
  * The controller for the "Model Tool" window in Maud's editor screen.

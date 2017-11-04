@@ -30,8 +30,8 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.Cgm;
-import maud.model.SelectedSgc;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedSgc;
 
 /**
  * The controller for the "Control Tool" window in Maud's editor screen.

@@ -46,8 +46,8 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import maud.model.LoadedAnimation;
-import maud.model.SelectedSkeleton;
+import maud.model.cgm.LoadedAnimation;
+import maud.model.cgm.SelectedSkeleton;
 
 /**
  * Utility methods to check for anomalies in objects loaded from assets. All

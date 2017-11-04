@@ -35,8 +35,8 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.EditableCgm;
-import maud.model.SelectedBone;
+import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedBone;
 
 /**
  * The controller for the "Bone-Translation Tool" window in Maud's editor

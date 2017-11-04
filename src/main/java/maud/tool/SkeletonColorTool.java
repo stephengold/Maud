@@ -33,7 +33,7 @@ import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.Cgm;
+import maud.model.cgm.Cgm;
 import maud.model.option.ShowBones;
 import maud.model.option.scene.SkeletonOptions;
 

@@ -31,8 +31,8 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
 import maud.menu.ShowMenus;
-import maud.model.EditableCgm;
-import maud.model.SelectedTrack;
+import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedTrack;
 
 /**
  * Process an action string that begins with the word "new".

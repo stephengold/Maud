@@ -32,7 +32,7 @@ import jme3utilities.nifty.WindowController;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 import maud.Maud;
-import maud.model.Cgm;
+import maud.model.cgm.Cgm;
 
 /**
  * The controller for the "Sky Tool" window in Maud's editor screen.

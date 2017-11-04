@@ -31,9 +31,9 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.Cgm;
-import maud.model.LoadedCgm;
 import maud.model.LoadedMap;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.LoadedCgm;
 
 /**
  * The controller for the "Retarget Tool" window in Maud's editor screen.

@@ -36,7 +36,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.EditorModel;
-import maud.model.SelectedSpatial;
+import maud.model.cgm.SelectedSpatial;
 
 /**
  * The controller for the "Spatial-Rotation Tool" window in Maud's editor

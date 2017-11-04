@@ -29,7 +29,7 @@ package maud.model.option.scene;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.model.Cgm;
+import maud.model.cgm.Cgm;
 
 /**
  * Display options applicable to "scene" views in Maud's editor screen.

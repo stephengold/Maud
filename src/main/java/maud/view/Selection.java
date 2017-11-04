@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.model.Cgm;
 import maud.model.LoadedMap;
-import maud.model.SelectedSkeleton;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedSkeleton;
 import maud.tool.AxesTool;
 
 /**
@@ -44,9 +44,9 @@ import maud.tool.AxesTool;
  * @author Stephen Gold sgold@sonic.net
  */
 public class Selection {
-
     // *************************************************************************
     // enums
+
     private enum Type {
         None, Bone, Gnomon, Keyframe, PoseTransformAxis, SceneAxis, Vertex;
     }

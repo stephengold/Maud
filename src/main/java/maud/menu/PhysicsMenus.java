@@ -30,9 +30,9 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
-import maud.model.Cgm;
-import maud.model.SelectedShape;
-import maud.model.SelectedSpatial;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedShape;
+import maud.model.cgm.SelectedSpatial;
 import maud.model.option.RigidBodyParameter;
 
 /**

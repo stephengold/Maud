@@ -30,10 +30,10 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.Cgm;
-import maud.model.EditableCgm;
-import maud.model.SelectedBone;
-import maud.model.SelectedTrack;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedTrack;
 
 /**
  * The controller for the "Keyframe Tool" window in Maud's editor screen.

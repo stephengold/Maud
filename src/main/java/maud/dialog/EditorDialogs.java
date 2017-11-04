@@ -51,16 +51,16 @@ import jme3utilities.wes.WesVersion;
 import maud.Maud;
 import maud.action.Action;
 import maud.action.ActionPrefix;
-import maud.model.Cgm;
-import maud.model.EditableCgm;
 import maud.model.EditorModel;
-import maud.model.LoadedAnimation;
-import maud.model.LoadedCgm;
-import maud.model.SelectedBone;
-import maud.model.SelectedPhysics;
-import maud.model.SelectedSpatial;
-import maud.model.SelectedTrack;
-import maud.model.TrackItem;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.EditableCgm;
+import maud.model.cgm.LoadedAnimation;
+import maud.model.cgm.LoadedCgm;
+import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedPhysics;
+import maud.model.cgm.SelectedSpatial;
+import maud.model.cgm.SelectedTrack;
+import maud.model.cgm.TrackItem;
 import maud.model.option.RigidBodyParameter;
 
 /**

@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.model;
+package maud.model.cgm;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
@@ -65,6 +65,7 @@ import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.Util;
+import maud.model.History;
 import maud.model.option.RigidBodyParameter;
 import maud.view.SceneView;
 

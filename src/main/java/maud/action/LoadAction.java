@@ -30,9 +30,9 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.menu.AnimationMenus;
-import maud.model.EditableCgm;
 import maud.model.EditorModel;
-import maud.model.LoadedCgm;
+import maud.model.cgm.EditableCgm;
+import maud.model.cgm.LoadedCgm;
 
 /**
  * Process an action string that begins with "load".

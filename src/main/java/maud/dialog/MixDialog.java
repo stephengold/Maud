@@ -33,7 +33,7 @@ import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.DialogController;
-import maud.model.TrackItem;
+import maud.model.cgm.TrackItem;
 
 /**
  * Controller for a multi-select dialog box used to select animation tracks for

@@ -32,11 +32,11 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.Cgm;
-import maud.model.LoadedAnimation;
-import maud.model.PlayOptions;
-import maud.model.SelectedAnimControl;
-import maud.model.SelectedBone;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.LoadedAnimation;
+import maud.model.cgm.PlayOptions;
+import maud.model.cgm.SelectedAnimControl;
+import maud.model.cgm.SelectedBone;
 
 /**
  * The controller for the "Animation Tool" window in Maud's editor screen.

@@ -30,8 +30,8 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.Cgm;
-import maud.model.SelectedShape;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedShape;
 
 /**
  * The controller for the "Shape Tool" window in Maud's editor screen.

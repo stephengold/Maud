@@ -28,7 +28,7 @@ package maud.view;
 
 import java.util.logging.Logger;
 import maud.Maud;
-import maud.model.Cgm;
+import maud.model.cgm.Cgm;
 
 /**
  * Drag state for score views. Currently the only score objects that can be

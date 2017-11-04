@@ -28,7 +28,7 @@ package maud.view;
 
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
-import maud.model.Cgm;
+import maud.model.cgm.Cgm;
 
 /**
  * Interface to an MVC view in Maud's edit screen.

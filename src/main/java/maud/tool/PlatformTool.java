@@ -39,7 +39,7 @@ import jme3utilities.MyAsset;
 import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 import maud.Maud;
-import maud.model.Cgm;
+import maud.model.cgm.Cgm;
 import maud.model.option.scene.PlatformType;
 import maud.view.SceneView;
 

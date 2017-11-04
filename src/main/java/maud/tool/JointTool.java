@@ -30,8 +30,8 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.Cgm;
-import maud.model.SelectedJoint;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedJoint;
 
 /**
  * The controller for the "Joint Tool" window in Maud's editor screen.

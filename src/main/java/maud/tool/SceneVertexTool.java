@@ -36,8 +36,8 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.Cgm;
-import maud.model.SelectedVertex;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedVertex;
 import maud.model.option.scene.VertexOptions;
 
 /**

@@ -45,10 +45,10 @@ import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
 import maud.dialog.QuitDialog;
-import maud.model.Cgm;
-import maud.model.EditableCgm;
 import maud.model.EditorModel;
 import maud.model.History;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.EditableCgm;
 import maud.model.option.DisplaySettings;
 import maud.view.SceneView;
 

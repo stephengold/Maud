@@ -32,9 +32,9 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.Cgm;
-import maud.model.SelectedSkeleton;
-import maud.model.SelectedVertex;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedSkeleton;
+import maud.model.cgm.SelectedVertex;
 
 /**
  * The controller for the "Vertex Tool" window in Maud's editor screen.

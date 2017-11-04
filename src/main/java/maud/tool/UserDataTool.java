@@ -32,9 +32,9 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.Cgm;
-import maud.model.EditableCgm;
-import maud.model.SelectedSpatial;
+import maud.model.cgm.Cgm;
+import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedSpatial;
 
 /**
  * The controller for the "User-Data Tool" window in Maud's editor screen.
