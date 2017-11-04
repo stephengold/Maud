@@ -28,7 +28,7 @@ package maud.dialog;
 
 /**
  * Enumerate licenses for code and assets. The text of each license is provided
- * in text form by the License"
+ * by an asset in the Licenses folder.
  *
  * @author Stephen Gold sgold@sonic.net
  */

@@ -25,6 +25,6 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * MVC model classes and interfaces for the Maud application.
+ * Top-level MVC model classes for the Maud application.
  */
 package maud.model;

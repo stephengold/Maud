@@ -72,7 +72,7 @@ public class EditorModel {
     // fields
 
     /**
-     * list of known asset locations
+     * global list of known asset locations
      */
     final private AssetLocations assetLocations;
     /**
@@ -88,7 +88,7 @@ public class EditorModel {
      */
     final private LoadedCgm sourceCgmLoadSlot;
     /**
-     * miscellaneous options
+     * miscellaneous global options
      */
     final private MiscOptions miscOptions;
     /**
@@ -100,7 +100,7 @@ public class EditorModel {
      */
     final private ScoreOptions scoreOptions;
     /**
-     * tweening techniques
+     * global tweening techniques
      */
     final private TweenTransforms techniques;
     // *************************************************************************
@@ -164,7 +164,7 @@ public class EditorModel {
     }
 
     /**
-     * Access the load slot for the skeleton map.
+     * Access the miscellaneous global options.
      *
      * @return the pre-existing instance (not null)
      */
@@ -214,7 +214,7 @@ public class EditorModel {
     }
 
     /**
-     * Access the tweening techniques.
+     * Access the global tweening techniques.
      *
      * @return the pre-existing instance (not null)
      */
@@ -248,7 +248,7 @@ public class EditorModel {
     }
 
     /**
-     * Update the startup script.
+     * Update the startup script based on this MVC model.
      */
     public void updateStartupScript() {
         try {

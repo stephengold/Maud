@@ -44,7 +44,7 @@ public enum ViewType {
     Scene,
     /**
      * A score view is a schematic, like a musical score, of a loaded animation.
-     * Bones are arranged vertically, and time (indicated by a gnomon)
+     * Tracks are arranged vertically, and time (indicated by a gnomon)
      * progresses from left to right.
      */
     Score;
