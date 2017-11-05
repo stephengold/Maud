@@ -94,7 +94,7 @@ public class ScoreOptions implements Cloneable {
      * Determine which bones to show in the specified C-G model.
      *
      * @param cgm which C-G model to use (not null)
-     * @return enum (not null)
+     * @return an enum value (not null)
      */
     public ShowBones bonesShown(Cgm cgm) {
         Validate.nonNull(cgm, "model");
@@ -113,7 +113,7 @@ public class ScoreOptions implements Cloneable {
     /**
      * Determine which bones to show when no bone is selected.
      *
-     * @return enum (not null)
+     * @return an enum value (not null)
      */
     public ShowBones getShowNoneSelected() {
         assert showNoneSelected != null;
@@ -123,7 +123,7 @@ public class ScoreOptions implements Cloneable {
     /**
      * Determine which bones to show when a bone is selected.
      *
-     * @return enum (not null)
+     * @return an enum value (not null)
      */
     public ShowBones getShowWhenSelected() {
         assert showWhenSelected != null;
@@ -142,7 +142,7 @@ public class ScoreOptions implements Cloneable {
     /**
      * Alter which bones to show when no bone is selected
      *
-     * @param newSetting enum (not null)
+     * @param newSetting an enum value (not null)
      */
     public void setShowNoneSelected(ShowBones newSetting) {
         Validate.nonNull(newSetting, "new setting");
@@ -194,7 +194,7 @@ public class ScoreOptions implements Cloneable {
     /**
      * Alter which bones to show when a bone is selected
      *
-     * @param newSetting enum (not null)
+     * @param newSetting an enum value (not null)
      */
     public void setShowWhenSelected(ShowBones newSetting) {
         Validate.nonNull(newSetting, "new setting");

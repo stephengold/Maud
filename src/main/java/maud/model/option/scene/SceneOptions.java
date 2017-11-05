@@ -161,7 +161,7 @@ public class SceneOptions implements Cloneable {
     /**
      * Read the type of platform included in scene views.
      *
-     * @return enum (not null)
+     * @return an enum value (not null)
      */
     public PlatformType getPlatformType() {
         assert platformType != null;
@@ -191,7 +191,7 @@ public class SceneOptions implements Cloneable {
     /**
      * Read the CG-model triangle rendering option.
      *
-     * @return enum (not null)
+     * @return an enum value (not null)
      */
     public Wireframe getWireframe() {
         assert wireframe != null;
@@ -238,7 +238,7 @@ public class SceneOptions implements Cloneable {
     /**
      * Alter the type of platform included in scene views.
      *
-     * @param newType enum
+     * @param newType an enum value (not null)
      */
     public void setPlatformType(PlatformType newType) {
         Validate.nonNull(newType, "new type");
@@ -266,7 +266,7 @@ public class SceneOptions implements Cloneable {
     /**
      * Alter how CG-model triangles are rendered.
      *
-     * @param newSetting enum (not null)
+     * @param newSetting an enum value (not null)
      */
     public void setWireframe(Wireframe newSetting) {
         Validate.nonNull(newSetting, "new setting");

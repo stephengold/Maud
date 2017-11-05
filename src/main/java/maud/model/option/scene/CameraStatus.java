@@ -140,7 +140,7 @@ public class CameraStatus implements Cloneable {
     /**
      * Read the centering option for orbit mode.
      *
-     * @return enum value (not null)
+     * @return an enum value (not null)
      */
     public OrbitCenter getOrbitCenter() {
         assert orbitCenter != null;

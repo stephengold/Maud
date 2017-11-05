@@ -58,7 +58,7 @@ public enum OrbitCenter {
      * Parse a value from a text string.
      *
      * @param string programmer-friendly name of an enum value
-     * @return enum value (not null)
+     * @return an enum value (not null)
      */
     public static OrbitCenter parse(String string) {
         for (OrbitCenter value : values()) {

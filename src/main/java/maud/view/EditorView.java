@@ -81,7 +81,7 @@ public interface EditorView {
     /**
      * Read what type of view this is.
      *
-     * @return enum (not null)
+     * @return an enum value (not null)
      */
     ViewType getType();
 

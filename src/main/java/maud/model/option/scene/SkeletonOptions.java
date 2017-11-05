@@ -141,9 +141,9 @@ public class SkeletonOptions implements Cloneable {
     }
 
     /**
-     * Which kinds of bones to visualize.
+     * Read which kinds of bones to visualize.
      *
-     * @return enum (not null)
+     * @return an enum value (not null)
      */
     public ShowBones getShowBones() {
         assert showBones != null;
@@ -183,7 +183,7 @@ public class SkeletonOptions implements Cloneable {
     /**
      * Alter which bones are visualized.
      *
-     * @param newSetting enum (not null)
+     * @param newSetting an enum value (not null)
      */
     public void setShowBones(ShowBones newSetting) {
         Validate.nonNull(newSetting, "new setting");

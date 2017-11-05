@@ -100,7 +100,7 @@ public class MiscOptions implements Cloneable {
     /**
      * Read which rigid-body parameter to display in PhysicsTool.
      *
-     * @return enum (not null)
+     * @return an enum value (not null)
      */
     public RigidBodyParameter getRbp() {
         assert rbp != null;
@@ -110,7 +110,7 @@ public class MiscOptions implements Cloneable {
     /**
      * Read the view mode.
      *
-     * @return enum (not null)
+     * @return an enum value (not null)
      */
     public ViewMode getViewMode() {
         assert viewMode != null;
@@ -168,7 +168,7 @@ public class MiscOptions implements Cloneable {
     /**
      * Alter which rigid-body parameter to display in PhysicsTool.
      *
-     * @param newParameter enum (not null)
+     * @param newParameter an enum value (not null)
      */
     public void setRbp(RigidBodyParameter newParameter) {
         Validate.nonNull(newParameter, "new parameter");
@@ -178,7 +178,7 @@ public class MiscOptions implements Cloneable {
     /**
      * Alter the view mode.
      *
-     * @param newMode enum (not null)
+     * @param newMode an enum value (not null)
      */
     public void setViewMode(ViewMode newMode) {
         Validate.nonNull(newMode, "new mode");
