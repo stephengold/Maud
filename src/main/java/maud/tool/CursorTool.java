@@ -60,10 +60,10 @@ class CursorTool extends WindowController {
     final private static Logger logger
             = Logger.getLogger(CursorTool.class.getName());
     /**
-     * asset path of the C-G model for the 3-D cursor
+     * asset path to the C-G model for the 3-D cursor
      */
     final private static String assetPath
-            = "Models/indicators/3d cursor/3d cursor.blend";
+            = "Models/indicators/3d cursor/3d cursor.j3o";
     // *************************************************************************
     // constructors
 

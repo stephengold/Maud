@@ -1,8 +1,8 @@
-Licensing history for assets in Models/indicator
+Licensing history for assets in "Models/indicators/3d cursor"
 
-Stephen Gold authored "3d cursor.blend" and makes it available under the
-Creative Commons Attribution-Share Alike 3.0 Unported license -- see
-https://creativecommons.org/licenses/by-sa/3.0/
+Stephen Gold authored "3d cursor.blend" and "3d cursor.j3o" and makes them
+available under the Creative Commons Attribution-Share Alike 3.0 Unported
+license -- see https://creativecommons.org/licenses/by-sa/3.0/
 for details.  When sharing or reusing this file, please attribute it to
 "Stephen Gold's Maud Project at https://github.com/stephengold/Maud"
 
