@@ -55,6 +55,7 @@ import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
+import maud.model.option.scene.AxesMode;
 import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.OrbitCenter;
 
@@ -582,6 +583,24 @@ public class ShowMenus {
         }
 
         builder.show(ActionPrefix.setAntiAliasing);
+    }
+
+    /**
+     * Display a menu to configure the axes mode using the "set axesMode "
+     * action prefix.
+     */
+    public static void setAxesMode() {
+        MenuBuilder builder = new MenuBuilder();
+
+        AxesMode selectedMode = Maud.getModel().getScene().getAxes().getMode();
+        for (AxesMode mode : AxesMode.values()) {
+            if (!mode.equals(selectedMode)) {
+                String name = mode.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.setAxesMode);
     }
 
     /**

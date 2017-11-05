@@ -42,15 +42,15 @@ public enum AxesMode {
     /**
      * display local axes of the selected bone, if any
      */
-    Bone,
+    SelectedBone,
     /**
-     * display axes of the loaded CG model
+     * axes of the loaded CG model's root node
      */
-    Cgm,
+    ModelRoot,
     /**
      * display local axes of the selected spatial
      */
-    Spatial,
+    SelectedSpatial,
     /**
      * display global/world coordinate axes
      */

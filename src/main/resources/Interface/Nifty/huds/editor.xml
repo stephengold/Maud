@@ -230,50 +230,30 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="axesTool" title="Axes Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="240px" width="200px" x="70" y="30">
+                     height="150px" width="210px" x="70" y="70">
                 <panel childLayout="vertical">
-                    <control name="radioButtonGroup" id="axesGroup"/>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="boneAxesRadioButton"
-                                 group="axesGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="bone axes"/>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" text="Visualize axes:    "
+                                 textHAlign="left"/>
+                        <control name="button" id="axesModeButton"
+                                 width="99px">
+                            <interact onRelease="perform(set axesMode)"/>
+                        </control>
                     </panel>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="modelAxesRadioButton"
-                                 group="axesGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="model axes"/>
-                    </panel>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="spatialAxesRadioButton"
-                                 group="axesGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="spatial axes"/>
-                    </panel>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="worldAxesRadioButton"
-                                 group="axesGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="world axes"/>
-                    </panel>
-                    <panel style="indentPanel">
-                        <control name="radioButton" id="hideAxesRadioButton"
-                                 group="axesGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="hide"/>
-                    </panel>
-                    <panel style="statusPanel">
-                        <control name="label" id="axesLineWidthSliderStatus"/>
-                    </panel>
-                    <control name="horizontalSlider" id="axesLineWidthSlider"
-                             buttonStepSize="1"
-                             height="40px"
-                             max="8" min="0" stepSize="0.001"/>
-                    <panel style="indentPanel">
+                    <panel childLayout="horizontal" height="27px">
                         <control name="checkbox" id="axesDepthTestCheckBox"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="depth test"/>
+                        <control name="label" text="  depth test"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" id="axesLineWidthSliderStatus"
+                                 textHAlign="right"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="horizontalSlider" id="axesLineWidthSlider"
+                                 buttonStepSize="1"
+                                 height="40px"
+                                 max="8" min="0" stepSize="0.001"/>
                     </panel>
                 </panel>
             </control>
@@ -587,15 +567,15 @@ the menu bar, status bar, and tool windows.
                      hideOnClose="true"
                      height="270px" width="190px" x="25" y="75">
                 <panel childLayout="vertical">
-                    <panel style="indentPanel">
+                    <panel childLayout="horizontal"
+                           padding="0,10">
                         <control name="checkbox" id="boundsDepthTestCheckBox"
                                  width="20px"/>
-                        <control name="label"
-                                 width="12px"/>
-                        <control name="label" text="depth test"/>
+                        <control name="label" text="  depth test"/>
                     </panel>
                     <panel style="statusPanel">
-                        <control name="label" id="boundsLineWidthSliderStatus"/>
+                        <control name="label" id="boundsLineWidthSliderStatus"
+                                 textHAlign="right"/>
                     </panel>
                     <control name="horizontalSlider" id="boundsLineWidthSlider"
                              buttonStepSize="1"
@@ -741,11 +721,11 @@ the menu bar, status bar, and tool windows.
                      hideOnClose="true"
                      height="240px" width="190px" x="40" y="60">
                 <panel childLayout="vertical">
-                    <panel style="indentPanel">
+                    <panel childLayout="horizontal"
+                           padding="0,10">
                         <control name="checkbox" id="3DCursorCheckBox"
                                  width="20px"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="show 3-D cursor"/>
+                        <control name="label" text="  show 3-D cursor"/>
                     </panel>
                     <control name="label" text="3-D cursor color:"
                              height="40px"
@@ -1198,13 +1178,15 @@ the menu bar, status bar, and tool windows.
                      height="90px" width="100px" x="70" y="30">
                 <panel childLayout="vertical">
                     <control name="radioButtonGroup" id="platformGroup"/>
-                    <panel style="indentPanel">
+                    <panel childLayout="horizontal"
+                           padding="0,10">
                         <control name="radioButton" id="squarePlatformRadioButton"
                                  group="platformGroup"/>
                         <control name="label" width="12px"/>
                         <control name="label" text="square"/>
                     </panel>
-                    <panel style="indentPanel">
+                    <panel childLayout="horizontal"
+                           padding="0,10">
                         <control name="radioButton" id="noPlatformRadioButton"
                                  group="platformGroup"/>
                         <control name="label" width="12px"/>
@@ -1668,11 +1650,11 @@ the menu bar, status bar, and tool windows.
                      hideOnClose="true"
                      height="160px" width="160px" x="20" y="80">
                 <panel childLayout="vertical">
-                    <panel style="indentPanel">
+                    <panel childLayout="horizontal"
+                           padding="0,10">
                         <control name="checkbox" id="skyCheckBox"
                                  width="20px"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="show sky"/>
+                        <control name="label" text="  show sky"/>
                     </panel>
                 </panel>
             </control>

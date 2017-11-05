@@ -273,6 +273,10 @@ public class ActionPrefix {
      */
     final public static String setAntiAliasing = "set antiAliasing ";
     /**
+     * argument is the name of an axes mode
+     */
+    final public static String setAxesMode = "set axesMode";
+    /**
      * argument is the name of a batch hint
      */
     final public static String setBatchHint = "set batchHint ";

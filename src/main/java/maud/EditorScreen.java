@@ -65,7 +65,6 @@ import maud.model.cgm.PlayOptions;
 import maud.model.cgm.Pov;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.option.DisplaySettings;
-import maud.model.option.scene.AxesMode;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.Wireframe;
@@ -427,22 +426,6 @@ public class EditorScreen extends GuiScreenController {
         SceneOptions scene = Maud.getModel().getScene();
 
         switch (buttonId) {
-            case "boneAxesRadioButton":
-                scene.getAxes().setMode(AxesMode.Bone);
-                break;
-            case "modelAxesRadioButton":
-                scene.getAxes().setMode(AxesMode.Cgm);
-                break;
-            case "spatialAxesRadioButton":
-                scene.getAxes().setMode(AxesMode.Spatial);
-                break;
-            case "worldAxesRadioButton":
-                scene.getAxes().setMode(AxesMode.World);
-                break;
-            case "hideAxesRadioButton":
-                scene.getAxes().setMode(AxesMode.None);
-                break;
-
             case "flyRadioButton":
                 scene.getCamera().setMode("fly");
                 break;

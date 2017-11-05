@@ -313,11 +313,11 @@ public class AxesTool extends WindowController {
          */
         AxesMode mode = Maud.getModel().getScene().getAxes().getMode();
         switch (mode) {
-            case Bone:
+            case SelectedBone:
                 rotateBone(rotation, cgm);
                 break;
 
-            case Cgm:
+            case ModelRoot:
                 /*
                  * Apply the Y-axis rotation to the transform status.
                  */
@@ -325,7 +325,7 @@ public class AxesTool extends WindowController {
                 cgm.getSceneView().getTransform().rotateY(yRotation);
                 break;
 
-            case Spatial:
+            case SelectedSpatial:
                 if (cgm instanceof EditableCgm) {
                     EditableCgm ecgm = (EditableCgm) cgm;
                     /*
@@ -344,12 +344,18 @@ public class AxesTool extends WindowController {
     }
 
     /**
-     * Update the status labels based on the MVC model.
+     * Update buttons and status labels based on the MVC model.
      */
     private void updateLabels() {
-        float lineWidth = Maud.getModel().getScene().getAxes().getLineWidth();
+        AxesOptions options = Maud.getModel().getScene().getAxes();
+
+        float lineWidth = options.getLineWidth();
         lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
+
+        AxesMode mode = options.getMode();
+        String modeName = mode.toString();
+        Maud.gui.setButtonLabel("axesModeButton", modeName);
     }
 
     /**
@@ -363,7 +369,7 @@ public class AxesTool extends WindowController {
         SceneView sceneView = cgm.getSceneView();
         AxesMode mode = Maud.getModel().getScene().getAxes().getMode();
         switch (mode) {
-            case Bone:
+            case SelectedBone:
                 if (cgm.getBone().isSelected()) {
                     transform = cgm.getBone().modelTransform(null);
                     Geometry ag = sceneView.findAnimatedGeometry();
@@ -372,7 +378,7 @@ public class AxesTool extends WindowController {
                 }
                 break;
 
-            case Cgm:
+            case ModelRoot:
                 if (cgm.isLoaded()) {
                     transform = sceneView.getTransform().worldTransform();
                 }
@@ -381,7 +387,7 @@ public class AxesTool extends WindowController {
             case None:
                 break;
 
-            case Spatial:
+            case SelectedSpatial:
                 if (cgm.isLoaded()) {
                     Spatial spatial = sceneView.selectedSpatial();
                     transform = spatial.getWorldTransform();

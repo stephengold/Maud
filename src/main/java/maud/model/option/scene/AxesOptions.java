@@ -55,9 +55,9 @@ public class AxesOptions implements Cloneable {
      */
     private float lineWidth = 0f;
     /**
-     * which set of axes is displayed
+     * which set of axes is visualized
      */
-    private AxesMode mode = AxesMode.Bone;
+    private AxesMode mode = AxesMode.SelectedBone;
     // *************************************************************************
     // new methods exposed
 

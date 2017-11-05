@@ -158,6 +158,7 @@ public class Action {
     final static String selectVertex = "select vertex";
 
     final static String setAntiAliasing = "set antiAliasing";
+    final static String setAxesMode = "set axesMode";
     final static String setBatchHint = "set batchHint";
     final static String setColorDepth = "set colorDepth";
     final static String setCullHint = "set cullHint";

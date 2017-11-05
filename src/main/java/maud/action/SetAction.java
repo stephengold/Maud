@@ -43,6 +43,7 @@ import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
+import maud.model.option.scene.AxesMode;
 
 /**
  * Process an action string that begins with "set".
@@ -84,6 +85,10 @@ class SetAction {
         switch (actionString) {
             case Action.setAntiAliasing:
                 ShowMenus.setAntiAliasing();
+                break;
+
+            case Action.setAxesMode:
+                ShowMenus.setAxesMode();
                 break;
 
             case Action.setBatchHint:
@@ -230,6 +235,11 @@ class SetAction {
             }
             DisplaySettings.get().setSamples(numSamples);
             DisplaySettings.save();
+
+        } else if (actionString.startsWith(ActionPrefix.setAxesMode)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setAxesMode);
+            AxesMode value = AxesMode.valueOf(arg);
+            model.getScene().getAxes().setMode(value);
 
         } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
