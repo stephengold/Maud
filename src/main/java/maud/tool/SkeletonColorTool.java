@@ -47,6 +47,10 @@ class SkeletonColorTool extends WindowController {
     // constants and loggers
 
     /**
+     * local copy of {@link com.jme3.math.ColorRGBA#BlackNoAlpha}
+     */
+    final private static ColorRGBA invisibleColor = new ColorRGBA(0f, 0f, 0f, 0f);
+    /**
      * message logger for this class
      */
     final private static Logger logger
@@ -106,8 +110,7 @@ class SkeletonColorTool extends WindowController {
         int numBones = modelCgm.getSkeleton().countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             if (showSet.get(boneIndex) == false) {
-                ColorRGBA invisible = new ColorRGBA(0f, 0f, 0f, 0f);
-                visualizer.setPointColor(boneIndex, invisible);
+                visualizer.setPointColor(boneIndex, invisibleColor);
             } else if (modelCgm.getAnimation().isRetargetedPose()) {
                 String name = modelCgm.getSkeleton().getBoneName(boneIndex);
                 if (Maud.getModel().getMap().isBoneMapped(name)) {
