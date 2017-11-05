@@ -218,13 +218,16 @@ public class SelectedBone implements Cloneable {
      * @return true if a bone has a node, otherwise false
      */
     public boolean hasAttachmentsNode() {
+        boolean result = false;
         Bone bone = get();
-        Node node = MySkeleton.getAttachments(bone);
-        if (node == null) {
-            return false;
-        } else {
-            return true;
+        if (bone != null) {
+            Node node = MySkeleton.getAttachments(bone);
+            if (node != null) {
+                result = true;
+            }
         }
+        
+        return result;
     }
 
     /**
