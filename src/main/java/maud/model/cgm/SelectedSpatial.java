@@ -31,6 +31,9 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.SpatialTrack;
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingSphere;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -565,6 +568,19 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Determine the type of the spatial's world bound.
+     *
+     * @return an enum value (not null)
+     */
+    public BoundingVolume.Type getWorldBoundType() {
+        Spatial spatial = find();
+        BoundingVolume bound = spatial.getWorldBound();
+        BoundingVolume.Type result = bound.getType();
+
+        return result;
+    }
+
+    /**
      * Test whether the selected spatial has an animated mesh.
      *
      * @return true if it has an animated mesh, otherwise false
@@ -972,6 +988,32 @@ public class SelectedSpatial implements JmeCloneable {
         Quaternion localRotation = localRotation(null);
         MyQuaternion.snapLocal(localRotation, axisIndex);
         editableCgm.setSpatialRotation(localRotation);
+    }
+
+    /**
+     * Toggle the type of the geometry's model bound.
+     */
+    void toggleBoundType() {
+        BoundingVolume.Type oldType = getWorldBoundType();
+        BoundingVolume newBound;
+        if (oldType == BoundingVolume.Type.AABB) {
+            newBound = new BoundingSphere();
+        } else {
+            assert oldType == BoundingVolume.Type.Sphere;
+            newBound = new BoundingBox();
+        }
+
+        Mesh mesh = getMesh();
+        mesh.setBound(newBound);
+
+        Spatial spatial = find();
+        spatial.updateModelBound();
+
+        Spatial modelRoot = cgm.getRootSpatial();
+        modelRoot.updateGeometricState();
+
+        SceneView sceneView = cgm.getSceneView();
+        sceneView.setModelBound(newBound);
     }
 
     /**

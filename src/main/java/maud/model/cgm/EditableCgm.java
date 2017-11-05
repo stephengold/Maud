@@ -906,6 +906,18 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Toggle the bounds type of the selected geometry.
+     */
+    public void toggleBoundType() {
+        SelectedSpatial ss = getSpatial();
+        if (ss.isGeometry()) {
+            History.autoAdd();
+            ss.toggleBoundType();
+            setEdited("alter bound type");
+        }
+    }
+
+    /**
      * Write the C-G model to the filesystem at the specified base path.
      *
      * @param baseFilePath file path without any extension (not null, not empty)

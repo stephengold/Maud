@@ -563,6 +563,10 @@ public class EditorInputMode extends InputMode {
 
         EditorModel model = Maud.getModel();
         switch (actionString) {
+            case Action.toggleBoundType:
+                model.getTarget().toggleBoundType();
+                break;
+
             case Action.toggleDegrees:
                 model.getMisc().toggleAnglesInDegrees();
                 break;

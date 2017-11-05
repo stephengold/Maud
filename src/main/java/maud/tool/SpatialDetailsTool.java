@@ -26,6 +26,7 @@
  */
 package maud.tool;
 
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ class SpatialDetailsTool extends WindowController {
         Maud.gui.setIgnoreGuiChanges(true);
 
         updateBatchHint();
+        updateBound();
         updateBucket();
         updateCull();
         updateIgnoreTransform();
@@ -102,6 +104,25 @@ class SpatialDetailsTool extends WindowController {
         Spatial.BatchHint hint = spatial.getLocalBatchHint();
         String description = hint.toString();
         Maud.gui.setButtonLabel("spatialBatchHintButton", description);
+    }
+
+    /**
+     * Update the spatial's bound-type status and toggle button.
+     */
+    private void updateBound() {
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        BoundingVolume.Type type = spatial.getWorldBoundType();
+        String typeText = "null";
+        if (type != null) {
+            typeText = type.toString();
+        }
+        Maud.gui.setStatusText("spatialBound", " " + typeText);
+
+        String toggleText = "";
+        if (spatial.isGeometry()) {
+            toggleText = "Toggle";
+        }
+        Maud.gui.setButtonLabel("spatialBoundTypeButton", toggleText);
     }
 
     /**

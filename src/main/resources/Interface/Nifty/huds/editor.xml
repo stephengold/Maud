@@ -269,7 +269,7 @@ the menu bar, status bar, and tool windows.
                     <control name="horizontalSlider" id="axesLineWidthSlider"
                              buttonStepSize="1"
                              height="40px"
-                             max="7" min="1" stepSize="0.001"/>
+                             max="8" min="0" stepSize="0.001"/>
                     <panel style="indentPanel">
                         <control name="checkbox" id="axesDepthTestCheckBox"/>
                         <control name="label" width="12px"/>
@@ -616,7 +616,7 @@ the menu bar, status bar, and tool windows.
                                  height="110px"
                                  max="1" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
-                               height="110px" width="90px">
+                               height="110px" width="110px">
                             <control name="label" id="boundsRSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
@@ -1879,7 +1879,7 @@ the menu bar, status bar, and tool windows.
                      title="Spatial Details Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="250px" width="255px" x="15" y="85">
+                     height="278px" width="255px" x="15" y="85">
                 <panel childLayout="vertical">
                     <panel height="5px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -1932,6 +1932,16 @@ the menu bar, status bar, and tool windows.
                                  id="id32ToAvoidNiftyWarning"
                                  width="36px">
                             <interact onRelease="perform(select tool overrides)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Bound type:  "/>
+                        <control name="label" id="spatialBound"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="spatialBoundTypeButton"
+                                 width="55px">
+                            <interact onRelease="perform(toggle boundType)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">

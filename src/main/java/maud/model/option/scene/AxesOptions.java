@@ -51,9 +51,9 @@ public class AxesOptions implements Cloneable {
      */
     private boolean depthTestFlag = false;
     /**
-     * line width for the axes (in pixels, &ge;1)
+     * line width for the arrows (in pixels, &ge;1) or 0 for solid arrows
      */
-    private float lineWidth = 4f;
+    private float lineWidth = 0f;
     /**
      * which set of axes is displayed
      */
@@ -73,17 +73,17 @@ public class AxesOptions implements Cloneable {
     /**
      * Read the width of each line.
      *
-     * @return width (in pixels, &ge;1)
+     * @return width (in pixels, &ge;1) or 0 for solid arrows
      */
     public float getLineWidth() {
-        assert lineWidth >= 1f : lineWidth;
+        assert lineWidth >= 0f : lineWidth;
         return lineWidth;
     }
 
     /**
      * Read the current mode.
      *
-     * @return mode enum (not null)
+     * @return a mode enum value (not null)
      */
     public AxesMode getMode() {
         assert mode != null;
@@ -100,19 +100,19 @@ public class AxesOptions implements Cloneable {
     }
 
     /**
-     * Alter the width.
+     * Alter the line width.
      *
-     * @param width line width for axes (in pixels, &ge;1)
+     * @param width line width for axes (in pixels, &ge;1) or 0 for solid arrows
      */
     public void setLineWidth(float width) {
-        Validate.inRange(width, "width", 1f, Float.MAX_VALUE);
+        Validate.nonNegative(width, "width");
         lineWidth = width;
     }
 
     /**
      * Alter the display mode.
      *
-     * @param newMode enum of new display mode (not null)
+     * @param newMode enum value of new display mode (not null)
      */
     public void setMode(AxesMode newMode) {
         Validate.nonNull(newMode, "new mode");
