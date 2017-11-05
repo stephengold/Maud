@@ -32,6 +32,7 @@ import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -703,6 +704,19 @@ public class SceneView
     }
 
     /**
+     * Alter the model bound of the selected spatial.
+     *
+     * @param modelBound object for model bound (not null, unaffected)
+     */
+    public void setModelBound(BoundingVolume modelBound) {
+        Validate.nonNull(modelBound, "model bound");
+
+        Spatial spatial = selectedSpatial();
+        BoundingVolume newBound = modelBound.clone();
+        spatial.setModelBound(newBound);
+    }
+
+    /**
      * Alter whether the specified physics control is enabled.
      *
      * @param position position among the physics controls added to the selected
@@ -737,7 +751,7 @@ public class SceneView
      * @param newBucket new value for queue bucket (not null)
      */
     public void setQueueBucket(RenderQueue.Bucket newBucket) {
-        Validate.nonNull(newBucket, "queue bucket");
+        Validate.nonNull(newBucket, "new bucket");
 
         Spatial spatial = selectedSpatial();
         spatial.setQueueBucket(newBucket);
@@ -776,11 +790,9 @@ public class SceneView
             skeletonVisualizer = new SkeletonVisualizer(assetManager);
             controlled.addControl(skeletonVisualizer);
             skeletonVisualizer.setSkeleton(skeleton);
-            /*
-             * Update the control to initialize vertex positions.
-             */
+            Geometry ag = MySpatial.findAnimatedGeometry(controlled);
+            skeletonVisualizer.setTransformSpatial(ag);
             skeletonVisualizer.setEnabled(true);
-            skeletonVisualizer.update(0f);
         }
     }
 
@@ -1286,7 +1298,7 @@ public class SceneView
 
             if (mode == Mesh.Mode.Triangles // work around JME issue #710
                     || mode == Mesh.Mode.TriangleStrip
-                    || mode == Mesh.Mode.TriangleFan) {
+                    || mode == Mesh.Mode.TriangleFan) { // TODO JME 3.2
                 Vector3f contactPoint = result.getContactPoint();
                 Vector3f offset = contactPoint.subtract(cameraLocation);
                 /*

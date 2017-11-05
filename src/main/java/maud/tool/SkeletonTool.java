@@ -87,6 +87,7 @@ class SkeletonTool extends WindowController {
         if (visualizer == null) {
             return;
         }
+        
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
         visualizer.setEnabled(showBones != ShowBones.None);
@@ -94,10 +95,8 @@ class SkeletonTool extends WindowController {
         float lineWidth = options.getLineWidth();
         visualizer.setLineWidth(lineWidth);
 
-        if (visualizer.supportsPointSize()) {
-            float pointSize = options.getPointSize();
-            visualizer.setPointSize(pointSize);
-        }
+        float pointSize = options.getPointSize();
+        visualizer.setPointSize(pointSize);
     }
     // *************************************************************************
     // WindowController methods
