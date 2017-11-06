@@ -27,7 +27,7 @@
 package maud.model.option.scene;
 
 /**
- * Enumerate the display modes for axes in scene views.
+ * Enumerate options for coordinate axes in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -36,7 +36,7 @@ public enum AxesMode {
     // values
 
     /**
-     * hide the coordinate axes
+     * hide the axes
      */
     None,
     /**
@@ -44,15 +44,19 @@ public enum AxesMode {
      */
     SelectedBone,
     /**
-     * axes of the loaded CG model's root node
+     * display axes of the loaded C-G model's root spatial
      */
     ModelRoot,
+    /**
+     * display axes of the selected physics object, if any
+     */
+    SelectedPhysics,
     /**
      * display local axes of the selected spatial
      */
     SelectedSpatial,
     /**
-     * display global/world coordinate axes
+     * display world axes
      */
     World;
 }

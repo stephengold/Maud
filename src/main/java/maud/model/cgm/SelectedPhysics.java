@@ -29,7 +29,12 @@ package maud.model.cgm;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.PhysicsVehicle;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
+import com.jme3.math.Vector3f;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -207,6 +212,25 @@ public class SelectedPhysics implements Cloneable {
     }
 
     /**
+     * Test whether the selected object can be reoriented.
+     *
+     * @return true if rotatable, otherwise false
+     */
+    public boolean isRotatable() {
+        boolean result = false;
+        PhysicsCollisionObject object = find();
+        if (object instanceof PhysicsRigidBody) {
+            result = true;
+        } else if (object instanceof PhysicsGhostObject) {
+            result = true;
+        } else if (object instanceof PhysicsVehicle) {
+            result = true;
+        }
+
+        return result;
+    }
+
+    /**
      * Test whether an object is selected.
      *
      * @return true if selected, otherwise false
@@ -221,6 +245,85 @@ public class SelectedPhysics implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Copy the location of the selected object.
+     *
+     * @param storeResult (modified if not null)
+     * @return world location (either storeResult or a new instance)
+     */
+    public Vector3f location(Vector3f storeResult) {
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        PhysicsCollisionObject object = find();
+        if (object instanceof PhysicsRigidBody) {
+            PhysicsRigidBody body = (PhysicsRigidBody) object;
+            body.getPhysicsLocation(storeResult);
+        } else if (object instanceof PhysicsGhostObject) {
+            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
+            ghost.getPhysicsLocation(storeResult);
+        } else if (object instanceof PhysicsVehicle) {
+            PhysicsVehicle vehicle = (PhysicsVehicle) object;
+            vehicle.getPhysicsLocation(storeResult);
+        } else {
+            throw new IllegalStateException();
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the world orientation of the selected object.
+     *
+     * @param storeResult (modified if not null)
+     * @return world orientation (either storeResult or a new instance)
+     */
+    public Quaternion orientation(Quaternion storeResult) {
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        PhysicsCollisionObject object = find();
+        if (object instanceof PhysicsRigidBody) {
+            PhysicsRigidBody body = (PhysicsRigidBody) object;
+            body.getPhysicsRotation(storeResult);
+        } else if (object instanceof PhysicsGhostObject) {
+            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
+            ghost.getPhysicsRotation(storeResult);
+        } else if (object instanceof PhysicsVehicle) {
+            PhysicsVehicle vehicle = (PhysicsVehicle) object;
+            vehicle.getPhysicsRotation(storeResult);
+        } else {
+            throw new IllegalStateException();
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the position of the selected object.
+     *
+     * @param storeResult (modified if not null)
+     * @return world transform (either storeResult or a new instance)
+     */
+    public Transform position(Transform storeResult) {
+        if (storeResult == null) {
+            storeResult = new Transform();
+        }
+
+        Vector3f storeLocation = storeResult.getTranslation();
+        location(storeLocation);
+
+        Quaternion storeOrientation = storeResult.getRotation();
+        orientation(storeOrientation);
+
+        Vector3f storeScale = storeResult.getScale();
+        storeScale.set(1f, 1f, 1f);
+
+        return storeResult;
     }
 
     /**
@@ -260,9 +363,6 @@ public class SelectedPhysics implements Cloneable {
     /**
      * Select the previous object (in cyclical index order).
      */
-    /**
-     * Select the next object (in cyclical index order).
-     */
     public void selectPrevious() {
         List<String> names = cgm.listObjectNames("");
         int index = names.indexOf(name);
@@ -276,7 +376,7 @@ public class SelectedPhysics implements Cloneable {
     /**
      * Alter which C-G model contains the selected object.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, alias created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
@@ -284,8 +384,31 @@ public class SelectedPhysics implements Cloneable {
 
         cgm = newCgm;
     }
+
+    /**
+     * Reorient the selected object.
+     *
+     * @param newOrientation (not null, unaffected)
+     */
+    public void setOrientation(Quaternion newOrientation) {
+        Validate.nonNull(newOrientation, "new orientation");
+
+        PhysicsCollisionObject object = find();
+        if (object instanceof PhysicsRigidBody) {
+            PhysicsRigidBody body = (PhysicsRigidBody) object;
+            body.setPhysicsRotation(newOrientation);
+        } else if (object instanceof PhysicsGhostObject) {
+            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
+            ghost.setPhysicsRotation(newOrientation);
+        } else if (object instanceof PhysicsVehicle) {
+            PhysicsVehicle vehicle = (PhysicsVehicle) object;
+            vehicle.setPhysicsRotation(newOrientation);
+        } else {
+            throw new IllegalStateException();
+        }
+    }
     // *************************************************************************
-    // Object methods
+    // Cloneable methods
 
     /**
      * Create a copy of this object.

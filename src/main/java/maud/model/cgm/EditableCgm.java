@@ -92,10 +92,14 @@ public class EditableCgm extends LoadedCgm {
      */
     private int editCount = 0;
     /**
-     * tree position of the spatial whose transform is being edited, or "" for
-     * none TODO use null for none
+     * model state that's being continuously edited, either:
+     * <ul>
+     * <li> tree position of the spatial whose transform is being edited, or
+     * <li> name of the physics object whose position is being edited, or
+     * <li> "" for none of the above
+     * </ul>
      */
-    private String editedSpatialTransform = "";
+    private String continousEditState = "";
     // *************************************************************************
     // new methods exposed
 
@@ -436,9 +440,9 @@ public class EditableCgm extends LoadedCgm {
      */
     public void preCheckpoint() {
         /*
-         * Potentially a new spatial transform edit.
+         * Potentially new continuous edits.
          */
-        editedSpatialTransform = "";
+        continousEditState = "";
     }
 
     /**
@@ -698,6 +702,18 @@ public class EditableCgm extends LoadedCgm {
             boneTrack.setKeyframes(times, translations, rotations, scales);
         }
         setEdited("replace keyframes");
+    }
+
+    /**
+     * Reorient the selected physics object.
+     *
+     * @param newOrientation (not null, unaffected)
+     */
+    public void setPhysicsOrientation(Quaternion newOrientation) {
+        Validate.nonNull(newOrientation, "new orientation");
+
+        getPhysics().setOrientation(newOrientation);
+        setEditedPhysicsPosition();
     }
 
     /**
@@ -1102,19 +1118,34 @@ public class EditableCgm extends LoadedCgm {
         assert eventDescription != null;
 
         ++editCount;
-        editedSpatialTransform = "";
+        continousEditState = "";
         History.addEvent(eventDescription);
     }
 
     /**
-     * If not a continuation of the previous edit, update the edit count.
+     * If not a continuation of the previous physics-position edit, update the
+     * edit count.
      */
-    private void setEditedSpatialTransform() {
-        String newString = getSpatial().toString();
-        if (!newString.equals(editedSpatialTransform)) {
+    private void setEditedPhysicsPosition() {
+        String newState = "pp" + getPhysics().getName();
+        if (!newState.equals(continousEditState)) {
             History.autoAdd();
             ++editCount;
-            editedSpatialTransform = newString;
+            continousEditState = newState;
+            History.addEvent("reposition physics");
+        }
+    }
+
+    /**
+     * If not a continuation of the previous spatial-transform edit, update the
+     * edit count.
+     */
+    private void setEditedSpatialTransform() {
+        String newState = "st" + getSpatial().toString();
+        if (!newState.equals(continousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continousEditState = newState;
             History.addEvent("transform spatial");
         }
     }
@@ -1126,7 +1157,7 @@ public class EditableCgm extends LoadedCgm {
      */
     private void setPristine(String eventDescription) {
         editCount = 0;
-        editedSpatialTransform = "";
+        continousEditState = "";
         History.addEvent(eventDescription);
     }
 }

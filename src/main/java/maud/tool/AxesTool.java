@@ -50,6 +50,7 @@ import maud.model.EditableMap;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedPhysics;
 import maud.model.option.scene.AxesMode;
 import maud.model.option.scene.AxesOptions;
 import maud.view.SceneDrag;
@@ -325,6 +326,22 @@ public class AxesTool extends WindowController {
                 cgm.getSceneView().getTransform().rotateY(yRotation);
                 break;
 
+            case SelectedPhysics:
+                if (cgm instanceof EditableCgm) {
+                    EditableCgm ecgm = (EditableCgm) cgm;
+                    SelectedPhysics physics = ecgm.getPhysics();
+                    if (physics.isRotatable()) {
+                        /*
+                         * Apply the full rotation to the selected object.
+                         */
+                        Quaternion oldQ = physics.orientation(null);
+                        Quaternion newQ = oldQ.mult(rotation);
+                        newQ.normalizeLocal();
+                        ecgm.setPhysicsOrientation(newQ);
+                    }
+                }
+                break;
+
             case SelectedSpatial:
                 if (cgm instanceof EditableCgm) {
                     EditableCgm ecgm = (EditableCgm) cgm;
@@ -385,6 +402,12 @@ public class AxesTool extends WindowController {
                 break;
 
             case None:
+                break;
+
+            case SelectedPhysics:
+                if (cgm.getPhysics().isSelected()) {
+                    transform = cgm.getPhysics().position(null);
+                }
                 break;
 
             case SelectedSpatial:
