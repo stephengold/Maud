@@ -102,7 +102,7 @@ public class DisplayedPose implements JmeCloneable {
      * Alter which C-G model displays the pose. (Invoked only during
      * initialization and cloning.)
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, alias created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
@@ -235,11 +235,10 @@ public class DisplayedPose implements JmeCloneable {
             throw new RuntimeException(exception);
         }
     }
-    // *************************************************************************
-    // Object methods
 
     /**
      * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
+     * TODO sort methods
      *
      * @return never
      * @throws CloneNotSupportedException always

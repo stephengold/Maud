@@ -739,7 +739,7 @@ public class SelectedSpatial implements JmeCloneable {
     /**
      * Test whether the selected spatial is a geometry with ignoreTransform set.
      *
-     * @return true if ignoring the transform, otherwise false
+     * @return true if ignoring its transform, otherwise false
      */
     public boolean isTransformIgnored() {
         Spatial spatial = find();
@@ -827,7 +827,7 @@ public class SelectedSpatial implements JmeCloneable {
      * Copy the local scale of the selected spatial.
      *
      * @param storeResult (modified if not null)
-     * @return local scale (either storeResult or a new instance)
+     * @return local scale vector (either storeResult or a new instance)
      */
     public Vector3f localScale(Vector3f storeResult) {
         if (storeResult == null) {
@@ -845,7 +845,7 @@ public class SelectedSpatial implements JmeCloneable {
      * Copy the local translation of the selected spatial.
      *
      * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
+     * @return local translation vector (either storeResult or a new instance)
      */
     public Vector3f localTranslation(Vector3f storeResult) {
         if (storeResult == null) {
@@ -963,7 +963,7 @@ public class SelectedSpatial implements JmeCloneable {
     /**
      * Alter which C-G model contains the spatial.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, aliases created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;

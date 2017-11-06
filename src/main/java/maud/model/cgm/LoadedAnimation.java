@@ -927,7 +927,7 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Alter which C-G model contains the animation.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, aliases created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;

@@ -47,7 +47,7 @@ public class AxesOptions implements Cloneable {
     // fields
 
     /**
-     * flag to enable depth test for visibility of the axes
+     * flag to enable the depth test for visibility of the axes
      */
     private boolean depthTestFlag = false;
     /**
@@ -62,7 +62,7 @@ public class AxesOptions implements Cloneable {
     // new methods exposed
 
     /**
-     * Read the depth test flag.
+     * Read the depth-test flag.
      *
      * @return true to enable test, otherwise false
      */

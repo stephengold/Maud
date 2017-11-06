@@ -68,7 +68,8 @@ import jme3utilities.wes.Pose;
 import org.slf4j.LoggerFactory;
 
 /**
- * Utility methods for the Maud application. All methods should be static.
+ * Utility methods for the Maud application. All methods should be static. TODO
+ * rename MaudUtil
  *
  * @author Stephen Gold sgold@sonic.net
  */

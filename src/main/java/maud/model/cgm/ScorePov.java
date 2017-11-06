@@ -254,7 +254,7 @@ public class ScorePov implements Cloneable, Pov {
      * Alter which C-G model uses this POV. (Invoked only during initialization
      * and cloning.)
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, alias created)
      */
     @Override
     public void setCgm(Cgm newCgm) {
