@@ -99,6 +99,10 @@ public class Maud extends GuiApplication {
      */
     private static EditorModel editorModel = new EditorModel();
     /**
+     * anti-aliasing factor in effect (samples per pixel, &ge;0, &le;16)
+     */
+    private static int numSamples;
+    /**
      * application instance, set by {@link #main(java.lang.String[])}
      */
     private static Maud application;
@@ -126,6 +130,18 @@ public class Maud extends GuiApplication {
     }
 
     /**
+     * Read the anti-aliasing factor.
+     *
+     * @return samples per pixel (&ge;0, &le;16)
+     */
+    public static int getNumSamples() {
+        assert numSamples >= 0 : numSamples;
+        assert numSamples <= 16 : numSamples;
+
+        return numSamples;
+    }
+
+    /**
      * Main entry point for Maud.
      *
      * @param arguments array of command-line arguments (not null)
@@ -144,6 +160,7 @@ public class Maud extends GuiApplication {
 
         AppSettings appSettings = DisplaySettings.initialize();
         if (appSettings != null) {
+            numSamples = appSettings.getSamples();
             application = new Maud();
             application.setSettings(appSettings);
             /*

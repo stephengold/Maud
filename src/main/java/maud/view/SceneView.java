@@ -292,6 +292,10 @@ public class SceneView
         dlsf.setEnabled(false);
 
         FilterPostProcessor fpp = Misc.getFpp(vp, assetManager);
+        int numSamples = Maud.getNumSamples();
+        if (numSamples > 1) {
+            fpp.setNumSamples(numSamples);
+        }
         fpp.addFilter(dlsf);
     }
 
