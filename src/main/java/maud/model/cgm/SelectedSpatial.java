@@ -62,8 +62,8 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.PhysicsUtil;
-import maud.Util;
 import maud.view.SceneView;
 
 /**
@@ -181,7 +181,7 @@ public class SelectedSpatial implements JmeCloneable {
      */
     public void cardinalizeRotation() {
         Quaternion localRotation = localRotation(null);
-        Util.cardinalizeLocal(localRotation);
+        MaudUtil.cardinalizeLocal(localRotation);
         editableCgm.setSpatialRotation(localRotation);
     }
 

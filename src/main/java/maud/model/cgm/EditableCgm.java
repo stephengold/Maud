@@ -63,8 +63,8 @@ import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.PhysicsUtil;
-import maud.Util;
 import maud.model.History;
 import maud.model.option.RigidBodyParameter;
 import maud.view.SceneView;
@@ -1052,7 +1052,7 @@ public class EditableCgm extends LoadedCgm {
         int numChildren = childList.size();
         Spatial[] children = childList.toArray(new Spatial[numChildren]);
         for (Spatial child : children) {
-            if (Util.isExtra(child, attachmentsNodes)) {
+            if (MaudUtil.isExtra(child, attachmentsNodes)) {
                 List<Integer> position = findSpatial(child);
                 int index = subtree.detachChild(child);
                 assert index != -1;

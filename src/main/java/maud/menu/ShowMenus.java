@@ -41,7 +41,7 @@ import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenTransforms;
 import jme3utilities.wes.TweenVectors;
 import maud.Maud;
-import maud.Util;
+import maud.MaudUtil;
 import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
 import maud.model.cgm.Cgm;
@@ -577,7 +577,7 @@ public class ShowMenus {
         int selectedSamples = DisplaySettings.get().getSamples();
         for (int numSamples = 1; numSamples <= 16; numSamples *= 2) {
             if (numSamples != selectedSamples) {
-                String aaDescription = Util.aaDescription(numSamples);
+                String aaDescription = MaudUtil.aaDescription(numSamples);
                 builder.add(aaDescription);
             }
         }

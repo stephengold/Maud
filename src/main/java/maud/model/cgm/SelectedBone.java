@@ -44,7 +44,7 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.wes.Pose;
-import maud.Util;
+import maud.MaudUtil;
 
 /**
  * The MVC model of the selected bone in a loaded C-G model.
@@ -226,7 +226,7 @@ public class SelectedBone implements Cloneable {
                 result = true;
             }
         }
-        
+
         return result;
     }
 
@@ -285,7 +285,7 @@ public class SelectedBone implements Cloneable {
             SelectedSkeleton selectedSkeleton = cgm.getSkeleton();
             Spatial subtree = selectedSkeleton.findSpatial();
             Skeleton skeleton = selectedSkeleton.find();
-            BitSet bones = Util.addAllInfluencers(subtree, skeleton, null);
+            BitSet bones = MaudUtil.addAllInfluencers(subtree, skeleton, null);
             result = bones.get(selectedIndex);
         }
 

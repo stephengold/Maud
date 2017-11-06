@@ -40,7 +40,7 @@ import jme3utilities.Validate;
 import jme3utilities.ui.Locators;
 import maud.CheckLoaded;
 import maud.Maud;
-import maud.Util;
+import maud.MaudUtil;
 import maud.dialog.EditorDialogs;
 import maud.menu.BuildMenus;
 import maud.model.History;
@@ -355,7 +355,7 @@ public class LoadedCgm extends Cgm {
                  */
                 assetManager.deleteFromCache(key);
             }
-            loaded = Util.loadBvhAsset(assetManager, key, diagnose);
+            loaded = MaudUtil.loadBvhAsset(assetManager, key, diagnose);
 
         } else {
             ModelKey key = new ModelKey(assetPath);
@@ -371,7 +371,7 @@ public class LoadedCgm extends Cgm {
             List<String> specList = Maud.getModel().getLocations().listAll();
             Locators.register(specList);
 
-            loaded = Util.loadCgmAsset(assetManager, key, diagnose);
+            loaded = MaudUtil.loadCgmAsset(assetManager, key, diagnose);
         }
         if (loaded == null) {
             logger.log(Level.SEVERE, "Failed to load model from asset {0}",

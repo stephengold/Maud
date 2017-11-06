@@ -58,8 +58,8 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.PhysicsUtil;
-import maud.Util;
 import maud.model.option.scene.Wireframe;
 import maud.view.SceneView;
 import maud.view.ScoreView;
@@ -267,7 +267,8 @@ public class Cgm implements Cloneable {
         Validate.nonNull(input, "input");
 
         List<Integer> treePosition = new ArrayList<>(4);
-        boolean success = Util.findPosition(input, rootSpatial, treePosition);
+        boolean success
+                = MaudUtil.findPosition(input, rootSpatial, treePosition);
         if (!success) {
             treePosition = null;
         }
@@ -517,7 +518,7 @@ public class Cgm implements Cloneable {
         boolean result = false;
         if (isLoaded()) {
             Map<Bone, Spatial> map = mapAttachments();
-            result = Util.hasExtraSpatials(rootSpatial, map.values());
+            result = MaudUtil.hasExtraSpatials(rootSpatial, map.values());
         }
 
         return result;

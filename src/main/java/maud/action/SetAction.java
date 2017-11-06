@@ -34,7 +34,7 @@ import jme3utilities.MyString;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenVectors;
 import maud.Maud;
-import maud.Util;
+import maud.MaudUtil;
 import maud.dialog.EditorDialogs;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
@@ -228,7 +228,7 @@ class SetAction {
                     ActionPrefix.setAntiAliasing);
             int numSamples;
             for (numSamples = 1; numSamples < 16; numSamples *= 2) {
-                String aaDescription = Util.aaDescription(numSamples);
+                String aaDescription = MaudUtil.aaDescription(numSamples);
                 if (arg.equals(aaDescription)) {
                     break;
                 }

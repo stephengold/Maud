@@ -46,7 +46,7 @@ import jme3utilities.wes.Pose;
 import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
-import maud.Util;
+import maud.MaudUtil;
 import maud.model.EditableMap;
 import maud.model.EditorModel;
 
@@ -362,7 +362,7 @@ public class LoadedAnimation implements Cloneable {
         SpatialTrack result = null;
         Animation animation = getAnimation();
         if (animation != null) {
-            result = Util.findSpatialTrack(animation, spatialTrackIndex);
+            result = MaudUtil.findSpatialTrack(animation, spatialTrackIndex);
         }
 
         return result;

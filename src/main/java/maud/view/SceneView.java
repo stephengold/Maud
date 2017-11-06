@@ -88,8 +88,8 @@ import jme3utilities.sky.Updater;
 import jme3utilities.ui.Locators;
 import jme3utilities.wes.Pose;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.PhysicsUtil;
-import maud.Util;
 import maud.mesh.PointMesh;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.DisplayedPose;
@@ -401,7 +401,7 @@ public class SceneView
         Validate.nonNull(input, "input");
 
         List<Integer> treePosition = new ArrayList<>(4);
-        boolean success = Util.findPosition(input, cgmRoot, treePosition);
+        boolean success = MaudUtil.findPosition(input, cgmRoot, treePosition);
         if (!success) {
             treePosition = null;
         }

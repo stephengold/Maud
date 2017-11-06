@@ -68,19 +68,19 @@ import jme3utilities.wes.Pose;
 import org.slf4j.LoggerFactory;
 
 /**
- * Utility methods for the Maud application. All methods should be static. TODO
- * rename MaudUtil
+ * Utility methods for the Maud application. All methods should be static.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class Util {
+public class MaudUtil {
     // *************************************************************************
     // constants and loggers
 
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(Util.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(MaudUtil.class.getName());
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_X}
      */
@@ -110,7 +110,7 @@ public class Util {
     /**
      * A private constructor to inhibit instantiation of this class.
      */
-    private Util() {
+    private MaudUtil() {
     }
     // *************************************************************************
     // new methods exposed

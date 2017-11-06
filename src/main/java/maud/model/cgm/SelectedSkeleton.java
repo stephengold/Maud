@@ -46,7 +46,7 @@ import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
-import maud.Util;
+import maud.MaudUtil;
 import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.option.ShowBones;
@@ -543,7 +543,7 @@ public class SelectedSkeleton implements JmeCloneable {
                 case Influencers:
                     storeResult.clear();
                     Spatial subtree = findSpatial();
-                    Util.addAllInfluencers(subtree, skeleton, storeResult);
+                    MaudUtil.addAllInfluencers(subtree, skeleton, storeResult);
                     break;
 
                 case Leaves:

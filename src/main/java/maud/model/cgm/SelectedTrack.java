@@ -56,7 +56,7 @@ import jme3utilities.wes.SmoothVectors;
 import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
-import maud.Util;
+import maud.MaudUtil;
 
 /**
  * The MVC model of the selected bone track in a loaded C-G model.
@@ -690,7 +690,7 @@ public class SelectedTrack implements Cloneable {
 
         Vector3f vertexLocation = new Vector3f();
         Geometry[] geometryRef = new Geometry[1];
-        int vertexIndex = Util.findSupport(subtree, skinningMatrices,
+        int vertexIndex = MaudUtil.findSupport(subtree, skinningMatrices,
                 vertexLocation, geometryRef);
         assert vertexIndex != -1;
 
@@ -747,7 +747,7 @@ public class SelectedTrack implements Cloneable {
                 /*
                  * Convert the world offset to a bone offset.
                  */
-                Util.sensitivity(boneIndex, previousGeometryRef[0],
+                MaudUtil.sensitivity(boneIndex, previousGeometryRef[0],
                         previousVertexIndex, tempPose, sensMat);
                 float determinant = sensMat.determinant();
                 if (FastMath.abs(determinant) <= FastMath.FLT_EPSILON) {
@@ -765,8 +765,8 @@ public class SelectedTrack implements Cloneable {
              * Using the original skinning matrices, pick a vertex to serve as
              * a reference for the next frame.
              */
-            previousVertexIndex = Util.findSupport(subtree, skinningMatrices,
-                    previousWorld, previousGeometryRef);
+            previousVertexIndex = MaudUtil.findSupport(subtree,
+                    skinningMatrices, previousWorld, previousGeometryRef);
             assert previousVertexIndex != -1;
             assert previousGeometryRef[0] != null;
         }
@@ -961,8 +961,8 @@ public class SelectedTrack implements Cloneable {
             float trackTime = times[frameIndex];
             tempPose.setToAnimation(animation, trackTime, techniques);
             tempPose.skin(skinningMatrices);
-            int vertexIndex = Util.findSupport(subtree, skinningMatrices, world,
-                    geometryRef);
+            int vertexIndex = MaudUtil.findSupport(subtree, skinningMatrices,
+                    world, geometryRef);
             assert vertexIndex != -1;
             world.x = 0f;
             world.y = cgmY - world.y;
@@ -971,7 +971,7 @@ public class SelectedTrack implements Cloneable {
              * Convert the world offset to a bone offset.
              */
             Geometry geometry = geometryRef[0];
-            Util.sensitivity(boneIndex, geometry, vertexIndex, tempPose,
+            MaudUtil.sensitivity(boneIndex, geometry, vertexIndex, tempPose,
                     sensMat);
             float det = sensMat.determinant();
             if (FastMath.abs(det) <= FastMath.FLT_EPSILON) {

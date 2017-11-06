@@ -39,7 +39,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.ui.ActionApplication;
 import maud.Maud;
-import maud.Util;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSkeleton;
 
@@ -95,7 +95,7 @@ public class EditableMap extends LoadedMap {
     public void cardinalizeTwist() {
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();
-        Util.cardinalizeLocal(twist);
+        MaudUtil.cardinalizeLocal(twist);
         setEditedTwist();
     }
 
@@ -441,7 +441,7 @@ public class EditableMap extends LoadedMap {
                 = Maud.getModel().getTarget().getBone().modelOrientation(null);
         Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
         Quaternion twist = invSourceMo.mult(targetMo, null);
-        Util.cardinalizeLocal(twist);
+        MaudUtil.cardinalizeLocal(twist);
 
         return twist;
     }
