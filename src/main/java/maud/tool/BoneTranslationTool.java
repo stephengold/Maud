@@ -26,13 +26,11 @@
  */
 package maud.tool;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.EditableCgm;
@@ -48,10 +46,6 @@ class BoneTranslationTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
-    /**
-     * logarithm base for the master slider
-     */
-    final private static float masterBase = 10f;
     /**
      * maximum scale for offsets (&gt;0)
      */
@@ -70,22 +64,17 @@ class BoneTranslationTool extends WindowController {
     final private static Logger logger
             = Logger.getLogger(BoneTranslationTool.class.getName());
     /**
+     * transform for the axis sliders
+     */
+    final private static SliderTransform axisSt = SliderTransform.Reversed;
+    /**
+     * transform for the master slider
+     */
+    final private static SliderTransform masterSt = SliderTransform.Log10;
+    /**
      * names of the coordinate axes
      */
     final private static String[] axisNames = {"x", "y", "z"};
-    // *************************************************************************
-    // fields
-
-    /**
-     * references to the per-axis sliders, set by
-     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
-     */
-    final private Slider sliders[] = new Slider[numAxes];
-    /**
-     * reference to the master slider, set by
-     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
-     */
-    private Slider masterSlider = null;
     // *************************************************************************
     // constructors
 
@@ -107,9 +96,9 @@ class BoneTranslationTool extends WindowController {
     void onSliderChanged() {
         EditableCgm target = Maud.getModel().getTarget();
         if (target.getBone().shouldEnableControls()) {
-            Vector3f offsets = Maud.gui.readVectorBank("Off");
-
-            float masterScale = readScale();
+            Vector3f offsets = Maud.gui.readVectorBank("Off", axisSt);
+            float masterScale
+                    = Maud.gui.readSlider("offMaster", masterSt);
             offsets.multLocal(masterScale);
 
             int boneIndex = target.getBone().getIndex();
@@ -120,26 +109,6 @@ class BoneTranslationTool extends WindowController {
     // WindowController methods
 
     /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application that owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String axisName = axisNames[iAxis];
-            Slider slider = Maud.gui.getSlider(axisName + "Off");
-            assert slider != null;
-            sliders[iAxis] = slider;
-        }
-        masterSlider = Maud.gui.getSlider("offMaster");
-    }
-
-    /**
      * Callback to update this state prior to rendering. (Invoked once per
      * render pass.)
      *
@@ -148,6 +117,7 @@ class BoneTranslationTool extends WindowController {
     @Override
     public void update(float tpf) {
         super.update(tpf);
+        Maud.gui.setIgnoreGuiChanges(true);
 
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
@@ -168,6 +138,8 @@ class BoneTranslationTool extends WindowController {
             Maud.gui.setButtonLabel("resetOffBindButton", "");
             disableSliders();
         }
+
+        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods
@@ -177,11 +149,9 @@ class BoneTranslationTool extends WindowController {
      */
     private void clear() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].setValue(0f);
-
-            String axisName = axisNames[iAxis];
-            String statusName = axisName + "OffSliderStatus";
-            Maud.gui.setStatusText(statusName, "");
+            String sliderName = axisNames[iAxis] + "Off";
+            Maud.gui.setSlider(sliderName, axisSt, 0f);
+            Maud.gui.setStatusText(sliderName + "SliderStatus", "");
         }
     }
 
@@ -190,9 +160,10 @@ class BoneTranslationTool extends WindowController {
      */
     private void disableSliders() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].disable();
+            String sliderName = axisNames[iAxis] + "Off";
+            Maud.gui.disableSlider(sliderName);
         }
-        masterSlider.disable();
+        Maud.gui.disableSlider("offMaster");
     }
 
     /**
@@ -200,19 +171,10 @@ class BoneTranslationTool extends WindowController {
      */
     private void enableSliders() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].enable();
+            String sliderName = axisNames[iAxis] + "Off";
+            Maud.gui.enableSlider(sliderName);
         }
-        masterSlider.enable();
-    }
-
-    /**
-     * Read the master slider.
-     */
-    private float readScale() {
-        float reading = masterSlider.getValue();
-        float result = FastMath.pow(masterBase, reading);
-
-        return result;
+        Maud.gui.enableSlider("offMaster");
     }
 
     /**
@@ -223,7 +185,7 @@ class BoneTranslationTool extends WindowController {
         Vector3f vector = target.getBone().userTranslation(null);
         float[] offsets = vector.toArray(null);
 
-        float scale = readScale();
+        float scale = Maud.gui.readSlider("offMaster", masterSt);
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float absOffset = FastMath.abs(offsets[iAxis]);
             if (absOffset > scale) {
@@ -231,16 +193,13 @@ class BoneTranslationTool extends WindowController {
             }
         }
         scale = FastMath.clamp(scale, minScale, maxScale);
-        float masterValue = FastMath.log(scale, masterBase);
-        masterSlider.setValue(masterValue);
+        Maud.gui.setSlider("offMaster", masterSt, scale);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float value = offsets[iAxis];
-            sliders[iAxis].setValue(value / scale);
-
-            String axisName = axisNames[iAxis];
-            String sliderPrefix = axisName + "Off";
-            Maud.gui.updateSliderStatus(sliderPrefix, value, " bu");
+            String sliderName = axisNames[iAxis] + "Off";
+            Maud.gui.setSlider(sliderName, axisSt, value / scale);
+            Maud.gui.updateSliderStatus(sliderName, value, " bu");
         }
     }
 }

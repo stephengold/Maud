@@ -35,7 +35,6 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
 import jme3utilities.Validate;
@@ -43,6 +42,7 @@ import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.wes.Pose;
 import maud.Maud;
@@ -70,6 +70,10 @@ public class AxesTool extends WindowController {
      */
     final private static Logger logger
             = Logger.getLogger(AxesTool.class.getName());
+    /**
+     * transform for the width slider
+     */
+    final private static SliderTransform widthSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -155,7 +159,7 @@ public class AxesTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        float lineWidth = Maud.gui.readSlider("axesLineWidth");
+        float lineWidth = Maud.gui.readSlider("axesLineWidth", widthSt);
         Maud.getModel().getScene().getAxes().setLineWidth(lineWidth);
     }
 
@@ -233,8 +237,7 @@ public class AxesTool extends WindowController {
         Maud.gui.setChecked("axesDepthTest", depthTestFlag);
 
         float lineWidth = options.getLineWidth();
-        Slider slider = Maud.gui.getSlider("axesLineWidth");
-        slider.setValue(lineWidth);
+        Maud.gui.setSlider("axesLineWidth", widthSt, lineWidth);
 
         updateLabels();
     }

@@ -29,6 +29,7 @@ package maud.tool;
 import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 
@@ -46,6 +47,10 @@ class BackgroundTool extends WindowController {
      */
     final private static Logger logger
             = Logger.getLogger(BackgroundTool.class.getName());
+    /**
+     * transform for the color sliders
+     */
+    final private static SliderTransform colorSt = SliderTransform.Reversed;
     // *************************************************************************
     // constructors
 
@@ -64,7 +69,7 @@ class BackgroundTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        ColorRGBA color = Maud.gui.readColorBank("bg");
+        ColorRGBA color = Maud.gui.readColorBank("bg", colorSt);
         Maud.getModel().getScore().setBackgroundColor(color);
     }
     // *************************************************************************
@@ -83,7 +88,7 @@ class BackgroundTool extends WindowController {
         Maud.gui.setIgnoreGuiChanges(true);
 
         ColorRGBA color = Maud.getModel().getScore().backgroundColor(null);
-        Maud.gui.setColorBank("bg", color);
+        Maud.gui.setColorBank("bg", colorSt, color);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

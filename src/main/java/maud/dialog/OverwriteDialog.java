@@ -29,7 +29,7 @@ package maud.dialog;
 import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.elements.Element;
 import java.util.logging.Logger;
-import jme3utilities.nifty.DialogController;
+import jme3utilities.nifty.dialog.DialogController;
 
 /**
  * Controller for a confirmation dialog box used to confirm overwriting a file.

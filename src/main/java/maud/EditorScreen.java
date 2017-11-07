@@ -51,6 +51,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
@@ -158,6 +159,30 @@ public class EditorScreen extends GuiScreenController {
         String message = String.format("added checkpoint[%d] from %s at %s",
                 checkpointIndex, source, creationTime);
         setStatus(message);
+    }
+
+    /**
+     * Disable the named Nifty slider.
+     *
+     * @param name unique id prefix of the slider to disable (not null)
+     */
+    public void disableSlider(String name) {
+        Validate.nonNull(name, "name");
+
+        Slider slider = getSlider(name);
+        slider.disable();
+    }
+
+    /**
+     * Enable the named Nifty slider.
+     *
+     * @param name unique id prefix of the slider to enable (not null)
+     */
+    public void enableSlider(String name) {
+        Validate.nonNull(name, "name");
+
+        Slider slider = getSlider(name);
+        slider.enable();
     }
 
     /**
@@ -483,43 +508,28 @@ public class EditorScreen extends GuiScreenController {
     /**
      * Read a bank of 3 sliders that control a color.
      *
-     * @param prefix unique id prefix of the bank (not null)
+     * @param name unique id prefix of the bank to read (not null)
+     * @param transform how to transform the raw readings (not null)
      * @return color indicated by the sliders (new instance)
      */
-    public ColorRGBA readColorBank(String prefix) {
-        assert prefix != null;
+    public ColorRGBA readColorBank(String name, SliderTransform transform) {
+        Validate.nonNull(name, "name");
+        Validate.nonNull(transform, "transform");
 
-        float r = readSlider(prefix + "R");
-        float g = readSlider(prefix + "G");
-        float b = readSlider(prefix + "B");
+        float r = readSlider(name + "R", transform);
+        float g = readSlider(name + "G", transform);
+        float b = readSlider(name + "B", transform);
         ColorRGBA color = new ColorRGBA(r, g, b, 1f);
 
         return color;
     }
 
     /**
-     * Read a bank of 3 sliders that control a vector.
-     *
-     * @param infix unique id infix of the bank (not null)
-     * @return vector indicated by the sliders (new instance)
-     */
-    public Vector3f readVectorBank(String infix) {
-        assert infix != null;
-
-        float x = readSlider("x" + infix);
-        float y = readSlider("y" + infix);
-        float z = readSlider("z" + infix);
-        Vector3f vector = new Vector3f(x, y, z);
-
-        return vector;
-    }
-
-    /**
      * Select a bone based on the screen coordinates of the mouse pointer.
      */
     public void selectBone() {
-        Cgm mouseCgm = Maud.gui.mouseCgm();
-        EditorView mouseView = Maud.gui.mouseView();
+        Cgm mouseCgm = mouseCgm();
+        EditorView mouseView = mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
             Selection selection = new Selection(mouseXY, dSquaredThreshold);
@@ -532,8 +542,8 @@ public class EditorScreen extends GuiScreenController {
      * Select a gnomon based on the screen coordinates of the mouse pointer.
      */
     public void selectGnomon() {
-        Cgm mouseCgm = Maud.gui.mouseCgm();
-        EditorView mouseView = Maud.gui.mouseView();
+        Cgm mouseCgm = mouseCgm();
+        EditorView mouseView = mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
             Selection selection = new Selection(mouseXY, Float.MAX_VALUE);
@@ -546,8 +556,8 @@ public class EditorScreen extends GuiScreenController {
      * Select a keyframe based on the screen coordinates of the mouse pointer.
      */
     public void selectKeyframe() {
-        Cgm mouseCgm = Maud.gui.mouseCgm();
-        EditorView mouseView = Maud.gui.mouseView();
+        Cgm mouseCgm = mouseCgm();
+        EditorView mouseView = mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
             Selection selection = new Selection(mouseXY, dSquaredThreshold);
@@ -576,8 +586,8 @@ public class EditorScreen extends GuiScreenController {
      * Select a vertex based on the screen coordinates of the mouse pointer.
      */
     public void selectVertex() {
-        Cgm mouseCgm = Maud.gui.mouseCgm();
-        EditorView mouseView = Maud.gui.mouseView();
+        Cgm mouseCgm = mouseCgm();
+        EditorView mouseView = mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
             Selection selection = new Selection(mouseXY, dSquaredThreshold);
@@ -591,8 +601,8 @@ public class EditorScreen extends GuiScreenController {
      * of the mouse pointer.
      */
     public void selectXY() {
-        Cgm mouseCgm = Maud.gui.mouseCgm();
-        EditorView mouseView = Maud.gui.mouseView();
+        Cgm mouseCgm = mouseCgm();
+        EditorView mouseView = mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
             Selection selection = new Selection(mouseXY, dSquaredThreshold);
@@ -605,25 +615,26 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Set a bank of 3 sliders that control a color.
+     * Set a bank of 3 sliders that control a color and update the status
+     * labels.
      *
-     * @param prefix unique id prefix of the bank (not null)
+     * @param name unique id prefix of the bank (not null)
+     * @param transform how each component has been transformed (not null)
      * @param color (not null, unaffected)
      */
-    public void setColorBank(String prefix, ColorRGBA color) {
-        assert prefix != null;
+    public void setColorBank(String name, SliderTransform transform,
+            ColorRGBA color) {
+        Validate.nonNull(name, "name");
+        Validate.nonNull(transform, "transform");
 
-        Slider slider = Maud.gui.getSlider(prefix + "R");
-        slider.setValue(color.r);
-        Maud.gui.updateSliderStatus(prefix + "R", color.r, "");
+        setSlider(name + "R", transform, color.r);
+        updateSliderStatus(name + "R", color.r, "");
 
-        slider = Maud.gui.getSlider(prefix + "G");
-        slider.setValue(color.g);
-        Maud.gui.updateSliderStatus(prefix + "G", color.g, "");
+        setSlider(name + "G", transform, color.g);
+        updateSliderStatus(name + "G", color.g, "");
 
-        slider = Maud.gui.getSlider(prefix + "B");
-        slider.setValue(color.b);
-        Maud.gui.updateSliderStatus(prefix + "B", color.b, "");
+        setSlider(name + "B", transform, color.b);
+        updateSliderStatus(name + "B", color.b, "");
     }
 
     /**
@@ -647,27 +658,10 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Update a bank of 3 sliders that control a color.
-     *
-     * @param prefix unique id prefix of the bank (not null)
-     * @return color indicated by the sliders (new instance)
-     */
-    ColorRGBA updateColorBank(String prefix) {
-        assert prefix != null;
-
-        float r = updateSlider(prefix + "R", "");
-        float g = updateSlider(prefix + "G", "");
-        float b = updateSlider(prefix + "B", "");
-        ColorRGBA color = new ColorRGBA(r, g, b, 1f);
-
-        return color;
-    }
-
-    /**
      * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
      */
     public void warpCursor() {
-        EditorView mouseView = Maud.gui.mouseView();
+        EditorView mouseView = mouseView();
         if (mouseView != null) {
             mouseView.warpCursor();
         }
@@ -760,7 +754,7 @@ public class EditorScreen extends GuiScreenController {
             }
 
             if (SceneDrag.isDraggingAxis()) {
-                AxesTool axesTool = (AxesTool) Maud.gui.tools.getTool("axes");
+                AxesTool axesTool = (AxesTool) tools.getTool("axes");
                 axesTool.dragAxis();
             }
 

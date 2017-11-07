@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.MySpatial;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
@@ -60,6 +61,10 @@ class CursorTool extends WindowController {
     final private static Logger logger
             = Logger.getLogger(CursorTool.class.getName());
     /**
+     * transform for the color sliders
+     */
+    final private static SliderTransform colorSt = SliderTransform.Reversed;
+    /**
      * asset path to the C-G model for the 3-D cursor
      */
     final private static String assetPath
@@ -82,7 +87,7 @@ class CursorTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        ColorRGBA color = Maud.gui.readColorBank("cursor");
+        ColorRGBA color = Maud.gui.readColorBank("cursor", colorSt);
         Maud.getModel().getScene().getCursor().setColor(color);
     }
 
@@ -147,7 +152,7 @@ class CursorTool extends WindowController {
         Maud.gui.setChecked("3DCursor", visible);
 
         ColorRGBA color = options.copyColor(null);
-        Maud.gui.setColorBank("cursor", color);
+        Maud.gui.setColorBank("cursor", colorSt, color);
     }
     // *************************************************************************
     // private methods

@@ -31,6 +31,7 @@ import java.util.BitSet;
 import java.util.logging.Logger;
 import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
@@ -49,12 +50,17 @@ class SkeletonColorTool extends WindowController {
     /**
      * local copy of {@link com.jme3.math.ColorRGBA#BlackNoAlpha}
      */
-    final private static ColorRGBA invisibleColor = new ColorRGBA(0f, 0f, 0f, 0f);
+    final private static ColorRGBA invisibleColor
+            = new ColorRGBA(0f, 0f, 0f, 0f);
     /**
      * message logger for this class
      */
     final private static Logger logger
             = Logger.getLogger(SkeletonColorTool.class.getName());
+    /**
+     * transform for the color sliders
+     */
+    final private static SliderTransform colorSt = SliderTransform.Reversed;
     // *************************************************************************
     // constructors
 
@@ -74,13 +80,13 @@ class SkeletonColorTool extends WindowController {
      */
     void onSliderChanged() {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
-        ColorRGBA color = Maud.gui.readColorBank("ske");
+        ColorRGBA color = Maud.gui.readColorBank("ske", colorSt);
         options.setLinkColor(color);
 
-        color = Maud.gui.readColorBank("bt");
+        color = Maud.gui.readColorBank("bt", colorSt);
         options.setTrackedColor(color);
 
-        color = Maud.gui.readColorBank("bnt");
+        color = Maud.gui.readColorBank("bnt", colorSt);
         options.setTracklessColor(color);
     }
 
@@ -138,13 +144,13 @@ class SkeletonColorTool extends WindowController {
 
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ColorRGBA color = options.copyLinkColor(null);
-        Maud.gui.setColorBank("ske", color);
+        Maud.gui.setColorBank("ske", colorSt, color);
 
         color = options.copyTrackedColor(null);
-        Maud.gui.setColorBank("bt", color);
+        Maud.gui.setColorBank("bt", colorSt, color);
 
         options.copyTracklessColor(color);
-        Maud.gui.setColorBank("bnt", color);
+        Maud.gui.setColorBank("bnt", colorSt, color);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

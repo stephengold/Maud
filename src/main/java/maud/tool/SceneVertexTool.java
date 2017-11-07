@@ -31,9 +31,9 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
-import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
@@ -54,6 +54,14 @@ class SceneVertexTool extends WindowController {
      */
     final private static Logger logger
             = Logger.getLogger(SceneVertexTool.class.getName());
+    /**
+     * transform for the color sliders
+     */
+    final private static SliderTransform colorSt = SliderTransform.Reversed;
+    /**
+     * transform for the point-size sliders
+     */
+    final private static SliderTransform sizeSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -74,10 +82,10 @@ class SceneVertexTool extends WindowController {
     void onSliderChanged() {
         VertexOptions options = Maud.getModel().getScene().getVertex();
 
-        ColorRGBA color = Maud.gui.readColorBank("sv");
+        ColorRGBA color = Maud.gui.readColorBank("sv", colorSt);
         options.setColor(color);
 
-        float pointSize = Maud.gui.readSlider("svPointSize");
+        float pointSize = Maud.gui.readSlider("svPointSize", sizeSt);
         options.setPointSize(pointSize);
     }
 
@@ -125,11 +133,10 @@ class SceneVertexTool extends WindowController {
         VertexOptions options = Maud.getModel().getScene().getVertex();
 
         ColorRGBA color = options.copyColor(null);
-        Maud.gui.setColorBank("sv", color);
+        Maud.gui.setColorBank("sv", colorSt, color);
 
-        Slider slider = Maud.gui.getSlider("svPointSize");
         float pointSize = options.getPointSize();
-        slider.setValue(pointSize);
+        Maud.gui.setSlider("svPointSize", sizeSt, pointSize);
         pointSize = Math.round(pointSize);
         Maud.gui.updateSliderStatus("svPointSize", pointSize, " pixels");
 

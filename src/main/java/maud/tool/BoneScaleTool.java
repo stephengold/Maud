@@ -26,14 +26,11 @@
  */
 package maud.tool;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.EditableCgm;
@@ -49,10 +46,6 @@ class BoneScaleTool extends WindowController {
     // constants and loggers
 
     /**
-     * logarithm base for the master slider
-     */
-    final private static float masterBase = 10f;
-    /**
      * number of coordinate axes
      */
     final private static int numAxes = 3;
@@ -62,22 +55,17 @@ class BoneScaleTool extends WindowController {
     final private static Logger logger
             = Logger.getLogger(BoneScaleTool.class.getName());
     /**
+     * transform for the axis sliders
+     */
+    final private static SliderTransform axisSt = SliderTransform.Reversed;
+    /**
+     * transform for the masterSlider
+     */
+    final private static SliderTransform masterSt = SliderTransform.Log10;
+    /**
      * names of the coordinate axes
      */
     final private static String[] axisNames = {"x", "y", "z"};
-    // *************************************************************************
-    // fields
-
-    /**
-     * reference to the master slider, set by
-     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
-     */
-    private Slider masterSlider = null;
-    /**
-     * references to the per-axis sliders, set by
-     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
-     */
-    final private Slider sliders[] = new Slider[numAxes];
     // *************************************************************************
     // constructors
 
@@ -99,7 +87,7 @@ class BoneScaleTool extends WindowController {
     void onSliderChanged() {
         EditableCgm target = Maud.getModel().getTarget();
         if (target.getBone().shouldEnableControls()) {
-            Vector3f scales = Maud.gui.readVectorBank("Sca");
+            Vector3f scales = Maud.gui.readVectorBank("Sca", axisSt);
             /*
              * Avoid scale factors near zero.
              */
@@ -107,8 +95,7 @@ class BoneScaleTool extends WindowController {
             scales.y = Math.max(scales.y, 0.001f);
             scales.z = Math.max(scales.z, 0.001f);
 
-            float logValue = masterSlider.getValue();
-            float masterScale = FastMath.pow(masterBase, logValue);
+            float masterScale = Maud.gui.readSlider("scaMaster", masterSt);
             scales.multLocal(masterScale);
 
             int boneIndex = target.getBone().getIndex();
@@ -117,26 +104,6 @@ class BoneScaleTool extends WindowController {
     }
     // *************************************************************************
     // WindowController methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application that owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String axisName = axisNames[iAxis];
-            Slider slider = Maud.gui.getSlider(axisName + "Sca");
-            assert slider != null;
-            sliders[iAxis] = slider;
-        }
-        masterSlider = Maud.gui.getSlider("scaMaster");
-    }
 
     /**
      * Callback to update this state prior to rendering. (Invoked once per
@@ -176,13 +143,11 @@ class BoneScaleTool extends WindowController {
      */
     private void clear() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].setValue(1f);
-
-            String axisName = axisNames[iAxis];
-            String statusName = axisName + "ScaSliderStatus";
-            Maud.gui.setStatusText(statusName, "");
+            String sliderName = axisNames[iAxis] + "Sca";
+            Maud.gui.setSlider(sliderName, axisSt, 1f);
+            Maud.gui.setStatusText(sliderName + "SliderStatus", "");
         }
-        masterSlider.setValue(0f);
+        Maud.gui.setSlider("scaMaster", masterSt, 1f);
     }
 
     /**
@@ -190,9 +155,10 @@ class BoneScaleTool extends WindowController {
      */
     private void disableSliders() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].disable();
+            String sliderName = axisNames[iAxis] + "Sca";
+            Maud.gui.disableSlider(sliderName);
         }
-        masterSlider.disable();
+        Maud.gui.disableSlider("scaMaster");
     }
 
     /**
@@ -200,9 +166,10 @@ class BoneScaleTool extends WindowController {
      */
     private void enableSliders() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].enable();
+            String sliderName = axisNames[iAxis] + "Sca";
+            Maud.gui.enableSlider(sliderName);
         }
-        masterSlider.enable();
+        Maud.gui.enableSlider("scaMaster");
     }
 
     /**
@@ -212,18 +179,15 @@ class BoneScaleTool extends WindowController {
         Vector3f vector = Maud.getModel().getTarget().getBone().userScale(null);
         float maxScale = MyMath.max(vector.x, vector.y, vector.z);
         assert maxScale > 0f : maxScale;
-        float logMaxScale = FastMath.log(maxScale, masterBase);
-        masterSlider.setValue(logMaxScale);
+        Maud.gui.setSlider("scaMaster", masterSt, maxScale);
 
         float[] scales = vector.toArray(null);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "Sca";
             float scale = scales[iAxis];
-            sliders[iAxis].setValue(scale / maxScale);
-
-            String axisName = axisNames[iAxis];
-            String sliderPrefix = axisName + "Sca";
-            Maud.gui.updateSliderStatus(sliderPrefix, scale, "x");
+            Maud.gui.setSlider(sliderName, axisSt, scale / maxScale);
+            Maud.gui.updateSliderStatus(sliderName, scale, "x");
         }
     }
 }

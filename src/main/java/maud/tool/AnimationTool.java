@@ -26,10 +26,10 @@
  */
 package maud.tool;
 
-import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
@@ -52,6 +52,14 @@ class AnimationTool extends WindowController {
      */
     final private static Logger logger
             = Logger.getLogger(AnimationTool.class.getName());
+    /**
+     * transform for the speed slider
+     */
+    final private static SliderTransform speedSt = SliderTransform.None;
+    /**
+     * transform for the time slider
+     */
+    final private static SliderTransform timeSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -78,15 +86,13 @@ class AnimationTool extends WindowController {
 
         float duration = animation.getDuration();
         if (duration > 0f) {
-            Slider slider = Maud.gui.getSlider("speed");
-            float speed = slider.getValue();
+            float speed = Maud.gui.readSlider("speed", speedSt);
             target.getPlay().setSpeed(speed);
         }
 
         boolean moving = animation.isMoving();
         if (!moving) {
-            Slider slider = Maud.gui.getSlider("time");
-            float fraction = slider.getValue();
+            float fraction = Maud.gui.readSlider("time", timeSt);
             float time = fraction * duration;
             animation.setTime(time);
         }
@@ -299,15 +305,14 @@ class AnimationTool extends WindowController {
         }
 
         float duration = animation.getDuration();
-        Slider slider = Maud.gui.getSlider("speed");
         if (duration > 0f) {
-            slider.enable();
+            Maud.gui.enableSlider("speed");
         } else {
-            slider.disable();
+            Maud.gui.disableSlider("speed");
         }
 
         float speed = target.getPlay().getSpeed();
-        slider.setValue(speed);
+        Maud.gui.setSlider("speed", speedSt, speed);
         Maud.gui.updateSliderStatus("speed", speed, "x");
     }
 
@@ -343,21 +348,20 @@ class AnimationTool extends WindowController {
          * slider
          */
         boolean moving = animation.isMoving();
-        Slider slider = Maud.gui.getSlider("time");
         if (duration == 0f || moving) {
-            slider.disable();
+            Maud.gui.disableSlider("time");
         } else {
-            slider.enable();
+            Maud.gui.enableSlider("time");
         }
 
         float trackTime;
         if (duration == 0f) {
             trackTime = 0f;
-            slider.setValue(0f);
+            Maud.gui.setSlider("time", timeSt, 0f);
         } else {
             trackTime = animation.getTime();
             float fraction = trackTime / duration;
-            slider.setValue(fraction);
+            Maud.gui.setSlider("time", timeSt, fraction);
         }
         /*
          * status label

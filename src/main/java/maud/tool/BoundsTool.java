@@ -28,10 +28,10 @@ package maud.tool;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Spatial;
-import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
@@ -52,6 +52,14 @@ class BoundsTool extends WindowController {
      */
     final private static Logger logger
             = Logger.getLogger(BoundsTool.class.getName());
+    /**
+     * transform for the color sliders
+     */
+    final private static SliderTransform colorSt = SliderTransform.Reversed;
+    /**
+     * transform for the width slider
+     */
+    final private static SliderTransform widthSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -71,10 +79,12 @@ class BoundsTool extends WindowController {
      */
     void onSliderChanged() {
         BoundsOptions options = Maud.getModel().getScene().getBounds();
-        float lineWidth = Maud.gui.readSlider("boundsLineWidth");
+
+        float lineWidth
+                = Maud.gui.readSlider("boundsLineWidth", widthSt);
         options.setLineWidth(lineWidth);
 
-        ColorRGBA color = Maud.gui.readColorBank("bounds");
+        ColorRGBA color = Maud.gui.readColorBank("bounds", colorSt);
         options.setColor(color);
     }
 
@@ -118,14 +128,13 @@ class BoundsTool extends WindowController {
         Maud.gui.setIgnoreGuiChanges(true);
 
         ColorRGBA color = options.copyColor(null);
-        Maud.gui.setColorBank("bounds", color);
+        Maud.gui.setColorBank("bounds", colorSt, color);
 
         boolean depthTestFlag = options.getDepthTestFlag();
         Maud.gui.setChecked("boundsDepthTest", depthTestFlag);
 
-        Slider slider = Maud.gui.getSlider("boundsLineWidth");
         float lineWidth = options.getLineWidth();
-        slider.setValue(lineWidth);
+        Maud.gui.setSlider("boundsLineWidth", widthSt, lineWidth);
         lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("boundsLineWidth", lineWidth, " pixels");
 

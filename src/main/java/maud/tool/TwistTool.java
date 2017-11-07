@@ -26,13 +26,11 @@
  */
 package maud.tool;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Quaternion;
-import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.EditableMap;
@@ -56,17 +54,13 @@ public class TwistTool extends WindowController {
     final private static Logger logger
             = Logger.getLogger(TwistTool.class.getName());
     /**
+     * transform for the axis sliders
+     */
+    final private static SliderTransform axisSt = SliderTransform.None;
+    /**
      * names of the coordinate axes
      */
     final private static String[] axisNames = {"x", "y", "z"};
-    // *************************************************************************
-    // fields
-
-    /**
-     * references to the per-axis sliders, set by
-     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
-     */
-    final private Slider sliders[] = new Slider[numAxes];
     // *************************************************************************
     // constructors
 
@@ -89,7 +83,8 @@ public class TwistTool extends WindowController {
         if (map.isBoneMappingSelected()) {
             float[] angles = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-                float value = sliders[iAxis].getValue();
+                String sliderName = axisNames[iAxis] + "Twist";
+                float value = Maud.gui.readSlider(sliderName, axisSt);
                 angles[iAxis] = value;
             }
             Quaternion twist = new Quaternion();
@@ -99,25 +94,6 @@ public class TwistTool extends WindowController {
     }
     // *************************************************************************
     // WindowController methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application that owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String axisName = axisNames[iAxis];
-            Slider slider = Maud.gui.getSlider(axisName + "Twist");
-            assert slider != null;
-            sliders[iAxis] = slider;
-        }
-    }
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -153,11 +129,9 @@ public class TwistTool extends WindowController {
      */
     private void clear() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].setValue(0f);
-
-            String axisName = axisNames[iAxis];
-            String statusName = axisName + "TwistSliderStatus";
-            Maud.gui.setStatusText(statusName, "");
+            String sliderName = axisNames[iAxis] + "Twist";
+            Maud.gui.setSlider(sliderName, axisSt, 0f);
+            Maud.gui.setStatusText(sliderName + "SliderStatus", "");
         }
     }
 
@@ -166,7 +140,8 @@ public class TwistTool extends WindowController {
      */
     private void disableSliders() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].disable();
+            String sliderName = axisNames[iAxis] + "Twist";
+            Maud.gui.disableSlider(sliderName);
         }
     }
 
@@ -175,7 +150,8 @@ public class TwistTool extends WindowController {
      */
     private void enableSliders() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            sliders[iAxis].enable();
+            String sliderName = axisNames[iAxis] + "Twist";
+            Maud.gui.enableSlider(sliderName);
         }
     }
 
@@ -188,19 +164,16 @@ public class TwistTool extends WindowController {
         boolean degrees = Maud.getModel().getMisc().getAnglesInDegrees();
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "Twist";
             float angle = angles[iAxis];
-            sliders[iAxis].setValue(angle);
+            Maud.gui.setSlider(sliderName, axisSt, angle);
 
-            String axisName = axisNames[iAxis];
-            String sliderPrefix = axisName + "Twist";
-            String units;
             if (degrees) {
                 angle = MyMath.toDegrees(angle);
-                units = " deg";
+                Maud.gui.updateSliderStatus(sliderName, angle, " deg");
             } else {
-                units = " rad";
+                Maud.gui.updateSliderStatus(sliderName, angle, " rad");
             }
-            Maud.gui.updateSliderStatus(sliderPrefix, angle, units);
         }
     }
 

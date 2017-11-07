@@ -26,13 +26,11 @@
  */
 package maud.tool;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Quaternion;
-import de.lessvoid.nifty.controls.Slider;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.EditorModel;
@@ -58,17 +56,13 @@ class SpatialRotationTool extends WindowController {
     final private static Logger logger
             = Logger.getLogger(SpatialRotationTool.class.getName());
     /**
+     * transform for the axis sliders
+     */
+    final private static SliderTransform axisSt = SliderTransform.Reversed;
+    /**
      * names of the coordinate axes
      */
     final private static String[] axisNames = {"x", "y", "z"};
-    // *************************************************************************
-    // fields
-
-    /**
-     * references to the per-axis sliders, set by
-     * {@link #initialize(com.jme3.app.state.AppStateManager, com.jme3.app.Application)}
-     */
-    final private Slider sliders[] = new Slider[numAxes];
     // *************************************************************************
     // constructors
 
@@ -90,7 +84,8 @@ class SpatialRotationTool extends WindowController {
     void onSliderChanged() {
         float[] angles = new float[numAxes];
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            float value = sliders[iAxis].getValue();
+            String sliderName = axisNames[iAxis] + "Sa";
+            float value = Maud.gui.readSlider(sliderName, axisSt);
             angles[iAxis] = value;
         }
         Quaternion rot = new Quaternion();
@@ -99,25 +94,6 @@ class SpatialRotationTool extends WindowController {
     }
     // *************************************************************************
     // WindowController methods
-
-    /**
-     * Initialize this controller prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application application that owns the window (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        super.initialize(stateManager, application);
-
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String axisName = axisNames[iAxis];
-            Slider slider = Maud.gui.getSlider(axisName + "Sa");
-            assert slider != null;
-            sliders[iAxis] = slider;
-        }
-    }
 
     /**
      * Callback to update this state prior to rendering. (Invoked once per
@@ -156,16 +132,15 @@ class SpatialRotationTool extends WindowController {
         boolean degrees = model.getMisc().getAnglesInDegrees();
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "Sa";
             float angle = angles[iAxis];
-            sliders[iAxis].setValue(angle);
+            Maud.gui.setSlider(sliderName, axisSt, angle);
 
-            String axisName = axisNames[iAxis];
-            String sliderPrefix = axisName + "Sa";
             if (degrees) {
                 angle = MyMath.toDegrees(angle);
-                Maud.gui.updateSliderStatus(sliderPrefix, angle, " deg");
+                Maud.gui.updateSliderStatus(sliderName, angle, " deg");
             } else {
-                Maud.gui.updateSliderStatus(sliderPrefix, angle, " rad");
+                Maud.gui.updateSliderStatus(sliderName, angle, " rad");
             }
         }
     }

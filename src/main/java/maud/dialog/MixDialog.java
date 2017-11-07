@@ -32,7 +32,7 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.nifty.DialogController;
+import jme3utilities.nifty.dialog.DialogController;
 import maud.model.cgm.TrackItem;
 
 /**

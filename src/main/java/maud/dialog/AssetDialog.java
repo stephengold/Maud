@@ -42,7 +42,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.nifty.DialogController;
+import jme3utilities.nifty.dialog.DialogController;
 import jme3utilities.ui.Locators;
 
 /**
