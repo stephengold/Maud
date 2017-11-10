@@ -44,7 +44,6 @@ import maud.model.History;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
-import maud.tool.CameraTool;
 import maud.view.SceneDrag;
 import maud.view.ViewType;
 
@@ -79,6 +78,13 @@ public class EditorInputMode extends InputMode {
      */
     final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
     // *************************************************************************
+    // fields
+
+    /**
+     * analog listener for POV zoom in/out
+     */
+    final private ZoomListener zoomListener = new ZoomListener();
+    // *************************************************************************
     // constructors
 
     /**
@@ -88,10 +94,10 @@ public class EditorInputMode extends InputMode {
         super("editor");
     }
     // *************************************************************************
-    // ActionListener methods
+    // InputMode methods
 
     /**
-     * Process an action from the GUI or keyboard.
+     * Process an action from the GUI or keyboard. TODO reorder methods
      *
      * @param actionString textual description of the action (not null)
      * @param ongoing true if the action is ongoing, otherwise false
@@ -177,8 +183,6 @@ public class EditorInputMode extends InputMode {
             actionApplication.onAction(actionString, ongoing, tpf);
         }
     }
-    // *************************************************************************
-    // InputMode methods
 
     /**
      * Activate this input mode.
@@ -186,8 +190,7 @@ public class EditorInputMode extends InputMode {
     @Override
     public void activate() {
         super.activate();
-        CameraTool cameraTool = (CameraTool) Maud.gui.tools.getTool("camera");
-        cameraTool.mapButton();
+        zoomListener.map();
     }
 
     /**
@@ -195,8 +198,7 @@ public class EditorInputMode extends InputMode {
      */
     @Override
     public void deactivate() {
-        CameraTool cameraTool = (CameraTool) Maud.gui.tools.getTool("camera");
-        cameraTool.unmapButton();
+        zoomListener.unmap();
         super.deactivate();
     }
 

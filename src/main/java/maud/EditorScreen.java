@@ -69,16 +69,16 @@ import maud.model.option.DisplaySettings;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.Wireframe;
-import maud.tool.AxesTool;
-import maud.tool.CameraTool;
 import maud.tool.EditorTools;
 import maud.tool.HistoryTool;
 import maud.view.CgmTransform;
 import maud.view.EditorView;
 import maud.view.SceneDrag;
+import maud.view.SceneView;
 import maud.view.ScoreDrag;
 import maud.view.Selection;
 import maud.view.ViewType;
+import org.lwjgl.input.Mouse;
 
 /**
  * The screen controller for Maud's editor screen. The GUI includes a menu bar,
@@ -107,6 +107,10 @@ public class EditorScreen extends GuiScreenController {
      * name of the signal that rotates the model clockwise around +Y
      */
     final private static String modelCWSignalName = "modelRight";
+    /**
+     * name of the signal that controls POV movement
+     */
+    final private static String povSignalName = "moveCamera";
     // *************************************************************************
     // fields
 
@@ -127,6 +131,10 @@ public class EditorScreen extends GuiScreenController {
      * controllers for tool windows
      */
     final public EditorTools tools = new EditorTools(this);
+    /**
+     * POV that's being dragged, or null for none
+     */
+    private Pov dragPov = null;
     // *************************************************************************
     // constructors
 
@@ -714,7 +722,7 @@ public class EditorScreen extends GuiScreenController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (!tools.getTool("camera").isInitialized()) {
+        if (!tools.getTool("camera").isInitialized()) { // TODO necessary?
             return;
         }
         /*
@@ -754,8 +762,9 @@ public class EditorScreen extends GuiScreenController {
             }
 
             if (SceneDrag.isDraggingAxis()) {
-                AxesTool axesTool = (AxesTool) tools.getTool("axes");
-                axesTool.dragAxis();
+                Cgm dragCgm = SceneDrag.getDragCgm();
+                SceneView sceneView = dragCgm.getSceneView();
+                sceneView.dragAxis();
             }
 
         } else if (viewType == ViewType.Score) {
@@ -770,8 +779,7 @@ public class EditorScreen extends GuiScreenController {
                 cgm.getAnimation().setTime(newTime);
             }
         }
-        CameraTool cameraTool = (CameraTool) tools.getTool("camera");
-        cameraTool.updatePov();
+        updateDragPov();
         /*
          * Update the views.
          */
@@ -782,6 +790,24 @@ public class EditorScreen extends GuiScreenController {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * If a POV is being dragged, update it.
+     */
+    void updateDragPov() {
+        if (signals.test(povSignalName)) { // dragging a POV
+            if (dragPov == null) { // a brand-new drag
+                dragPov = Maud.gui.mousePov();
+            } else {
+                float dx = Mouse.getDX();
+                float dy = Mouse.getDY();
+                dragPov.moveUp(-dy / 1024f);
+                dragPov.moveLeft(dx / 1024f);
+            }
+        } else {
+            dragPov = null;
+        }
+    }
 
     /**
      * Update the track time.

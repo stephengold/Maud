@@ -27,16 +27,12 @@
 package maud.tool;
 
 import com.jme3.math.ColorRGBA;
-import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
-import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.cgm.Cgm;
 import maud.model.option.scene.BoundsOptions;
-import maud.view.SceneView;
 
 /**
  * The controller for the "Bounds Tool" window in Maud's editor screen.
@@ -80,36 +76,11 @@ class BoundsTool extends WindowController {
     void onSliderChanged() {
         BoundsOptions options = Maud.getModel().getScene().getBounds();
 
-        float lineWidth
-                = Maud.gui.readSlider("boundsLineWidth", widthSt);
+        float lineWidth = Maud.gui.readSlider("boundsLineWidth", widthSt);
         options.setLineWidth(lineWidth);
 
         ColorRGBA color = Maud.gui.readColorBank("bounds", colorSt);
         options.setColor(color);
-    }
-
-    /**
-     * Update a C-G model's visualizer based on the MVC model.
-     *
-     * @param cgm which C-G model (not null)
-     */
-    void updateVisualizer(Cgm cgm) {
-        SceneView sceneView = cgm.getSceneView();
-        BoundsVisualizer visualizer = sceneView.getBoundsVisualizer();
-        visualizer.setEnabled(true);
-
-        BoundsOptions options = Maud.getModel().getScene().getBounds();
-        ColorRGBA color = options.copyColor(null);
-        visualizer.setColor(color);
-
-        boolean depthTestFlag = options.getDepthTestFlag();
-        visualizer.setDepthTest(depthTestFlag);
-
-        float lineWidth = options.getLineWidth();
-        visualizer.setLineWidth(lineWidth);
-
-        Spatial selectedSpatial = sceneView.selectedSpatial();
-        visualizer.setSubject(selectedSpatial);
     }
     // *************************************************************************
     // WindowController methods

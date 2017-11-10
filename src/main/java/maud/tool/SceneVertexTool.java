@@ -26,18 +26,12 @@
  */
 package maud.tool;
 
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.cgm.Cgm;
-import maud.model.cgm.SelectedVertex;
 import maud.model.option.scene.VertexOptions;
 
 /**
@@ -87,34 +81,6 @@ class SceneVertexTool extends WindowController {
 
         float pointSize = Maud.gui.readSlider("svPointSize", sizeSt);
         options.setPointSize(pointSize);
-    }
-
-    /**
-     * Update the visualization based on the MVC model.
-     *
-     * @param cgm which C-G model's view to update (not null)
-     */
-    void updateVisualizer(Cgm cgm) {
-        Spatial spatial = cgm.getSceneView().getVertexSpatial();
-
-        SelectedVertex vertex = cgm.getVertex();
-        if (vertex.isSelected()) {
-            Vector3f worldLocation = vertex.worldLocation(null);
-            spatial.setLocalTranslation(worldLocation);
-
-            Geometry geometry = (Geometry) spatial;
-            Material material = geometry.getMaterial();
-
-            VertexOptions options = Maud.getModel().getScene().getVertex();
-            ColorRGBA color = options.copyColor(null);
-            material.setColor("Color", color);
-            float pointSize = options.getPointSize();
-            material.setFloat("PointSize", pointSize);
-
-            spatial.setCullHint(Spatial.CullHint.Never);
-        } else {
-            spatial.setCullHint(Spatial.CullHint.Always);
-        }
     }
     // *************************************************************************
     // WindowController methods

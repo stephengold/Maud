@@ -26,22 +26,9 @@
  */
 package maud.tool;
 
-import com.jme3.material.Material;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.jme3.texture.Texture;
 import java.util.logging.Logger;
-import jme3utilities.MyAsset;
 import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
-import maud.Maud;
-import maud.model.cgm.Cgm;
-import maud.model.option.scene.PlatformType;
-import maud.view.SceneView;
 
 /**
  * The controller for the "Platform Tool" window in Maud's editor screen.
@@ -53,28 +40,10 @@ class PlatformTool extends WindowController {
     // constants and loggers
 
     /**
-     * radius of the platform (in model units, &gt;0)
-     */
-    final private static float radius = 0.5f;
-    /**
-     * thickness of the square (in model units, &gt;0)
-     */
-    final private static float squareThickness = 0.01f;
-    /**
      * message logger for this class
      */
     final private static Logger logger
             = Logger.getLogger(PlatformTool.class.getName());
-    /**
-     * mesh for generating square platforms
-     */
-    final private static Mesh squareMesh
-            = new Box(radius, squareThickness, radius);
-    /**
-     * path to texture asset for the platform
-     */
-    final private static String textureAssetPath
-            = "Textures/platform/rock_11474.jpg";
     // *************************************************************************
     // constructors
 
@@ -85,63 +54,5 @@ class PlatformTool extends WindowController {
      */
     PlatformTool(EditorScreen screenController) {
         super(screenController, "platformTool", false);
-    }
-    // *************************************************************************
-    // new methods exposed
-
-    /**
-     * Update a C-G model's scene graph based on the MVC model.
-     *
-     * @param cgm which C-G model (not null)
-     */
-    void updateScene(Cgm cgm) {
-        SceneView sceneView = cgm.getSceneView();
-        Spatial platform = sceneView.getPlatform();
-
-        PlatformType mode = Maud.getModel().getScene().getPlatformType();
-        switch (mode) {
-            case None:
-                if (platform != null) {
-                    sceneView.setPlatform(null);
-                    platform = null;
-                }
-                break;
-
-            case Square:
-                if (platform == null) {
-                    platform = createSquare();
-                    sceneView.setPlatform(platform);
-                }
-                break;
-
-            default:
-                throw new IllegalStateException();
-        }
-
-        if (platform != null) {
-            float diameter = Maud.getModel().getScene().getPlatformDiameter();
-            platform.setLocalScale(diameter);
-
-            Vector3f center = new Vector3f(0f, -diameter * squareThickness, 0f);
-            platform.setLocalTranslation(center);
-        }
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Create a square slab platform.
-     *
-     * @return a new, orphaned spatial
-     */
-    private Spatial createSquare() {
-        Spatial result = new Geometry("square platform", squareMesh);
-
-        Texture dirt = MyAsset.loadTexture(assetManager, textureAssetPath);
-        Material mat = MyAsset.createShadedMaterial(assetManager, dirt);
-        result.setMaterial(mat);
-        result.setShadowMode(RenderQueue.ShadowMode.Receive);
-
-        return result;
     }
 }

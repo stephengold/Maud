@@ -26,36 +26,24 @@
  */
 package maud.tool;
 
-import com.jme3.input.InputManager;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.AnalogListener;
-import com.jme3.input.controls.MouseAxisTrigger;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
-import jme3utilities.Validate;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.cgm.Pov;
 import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.OrbitCenter;
-import org.lwjgl.input.Mouse;
 
 /**
  * The controller for the "Camera Tool" window in Maud's editor screen. The
  * camera tool controls camera modes used in "scene" views.
  * <p>
- * Maud's cameras are primarily controlled by turning the scroll wheel and
- * dragging with the middle mouse button (MMB). In scene views, there are 2
- * movement modes: "orbit" mode, in which the camera always faces the 3-D
- * cursor, and "fly" mode, in which the camera turns freely.
+ * In scene views, there are 2 movement modes: "orbit" mode, in which the camera
+ * always faces the 3-D cursor (or other central point) and "fly" mode, in which
+ * the camera turns freely.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class CameraTool
-        extends WindowController
-        implements AnalogListener {
+class CameraTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -64,25 +52,6 @@ public class CameraTool
      */
     final private static Logger logger
             = Logger.getLogger(CameraTool.class.getName());
-    /**
-     * name of the signal that controls camera movement
-     */
-    final public static String cameraSignalName = "moveCamera";
-    /**
-     * analog event string to move backward
-     */
-    final private static String moveBackwardEvent = "pov backward";
-    /**
-     * analog event string to move forward
-     */
-    final private static String moveForwardEvent = "pov forward";
-    // *************************************************************************
-    // fields
-
-    /**
-     * the POV that is being dragged, or null for none
-     */
-    private Pov dragPov = null;
     // *************************************************************************
     // constructors
 
@@ -93,95 +62,6 @@ public class CameraTool
      */
     CameraTool(BasicScreenController screenController) {
         super(screenController, "cameraTool", false);
-    }
-    // *************************************************************************
-    // new methods exposed
-
-    /**
-     * If a POV is being dragged, update it.
-     */
-    public void updatePov() {
-        if (signals.test(cameraSignalName)) { // dragging a POV
-            if (dragPov == null) { // a brand-new drag
-                dragPov = Maud.gui.mousePov();
-            } else {
-                float dx = Mouse.getDX();
-                float dy = Mouse.getDY();
-                dragPov.moveUp(-dy / 1024f);
-                dragPov.moveLeft(dx / 1024f);
-            }
-        } else {
-            dragPov = null;
-        }
-    }
-    // *************************************************************************
-    // AnalogListener methods
-
-    /**
-     * Map the mouse wheel.
-     */
-    public void mapButton() {
-        Maud application = Maud.getApplication();
-        InputManager inputMgr = application.getInputManager();
-        /*
-         * Turning the mouse wheel up triggers positive Pov.moveBackward().
-         */
-        boolean wheelUp = true;
-        MouseAxisTrigger backwardTrigger;
-        backwardTrigger = new MouseAxisTrigger(MouseInput.AXIS_WHEEL, wheelUp);
-        inputMgr.addMapping(moveBackwardEvent, backwardTrigger);
-        inputMgr.addListener(this, moveBackwardEvent);
-        /*
-         * Turning the mouse wheel down triggers negative Pov.moveBackward().
-         */
-        boolean wheelDown = false;
-        MouseAxisTrigger forwardTrigger;
-        forwardTrigger = new MouseAxisTrigger(MouseInput.AXIS_WHEEL, wheelDown);
-        inputMgr.addMapping(moveForwardEvent, forwardTrigger);
-        inputMgr.addListener(this, moveForwardEvent);
-    }
-
-    /**
-     * Unmap the mouse wheel.
-     */
-    public void unmapButton() {
-        inputManager.deleteMapping(moveForwardEvent);
-        inputManager.deleteMapping(moveBackwardEvent);
-    }
-    // *************************************************************************
-    // AnalogListener methods
-
-    /**
-     * Process an analog event from the mouse.
-     *
-     * @param eventString textual description of the analog event (not null)
-     * @param amount amount of the event (&ge;0)
-     * @param ignored time interval between render passes (in seconds, &ge;0)
-     */
-    @Override
-    public void onAnalog(String eventString, float amount, float ignored) {
-        Validate.nonNegative(amount, "amount");
-        logger.log(Level.FINE, "Received analog event {0} with amount={1}",
-                new Object[]{MyString.quote(eventString), amount});
-
-        Pov pov = Maud.gui.mousePov();
-        if (pov == null) {
-            return;
-        }
-
-        switch (eventString) {
-            case moveBackwardEvent:
-                pov.moveBackward(+amount);
-                break;
-
-            case moveForwardEvent:
-                pov.moveBackward(-amount);
-                break;
-
-            default:
-                logger.log(Level.WARNING, "unexpected analog event {0}",
-                        MyString.quote(eventString));
-        }
     }
     // *************************************************************************
     // WindowController methods

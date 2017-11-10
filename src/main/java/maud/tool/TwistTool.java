@@ -40,7 +40,7 @@ import maud.model.EditableMap;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class TwistTool extends WindowController {
+class TwistTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 

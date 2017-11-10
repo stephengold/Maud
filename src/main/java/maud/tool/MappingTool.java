@@ -42,7 +42,7 @@ import maud.model.cgm.SelectedSkeleton;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class MappingTool extends WindowController {
+class MappingTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 

@@ -27,12 +27,10 @@
 package maud.tool;
 
 import java.util.logging.Logger;
-import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
-import maud.model.cgm.Cgm;
 import maud.model.option.ShowBones;
 import maud.model.option.scene.SkeletonOptions;
 
@@ -82,29 +80,6 @@ class SkeletonTool extends WindowController {
 
         float pointSize = Maud.gui.readSlider("skeletonPointSize", sizeSt);
         options.setPointSize(pointSize);
-    }
-
-    /**
-     * Update a skeleton visualizer based on the MVC model.
-     *
-     * @param modelCgm which C-G model's view to update (not null)
-     */
-    void updateVisualizer(Cgm modelCgm) {
-        SkeletonVisualizer visualizer;
-        visualizer = modelCgm.getSceneView().getSkeletonVisualizer();
-        if (visualizer == null) {
-            return;
-        }
-
-        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
-        ShowBones showBones = options.getShowBones();
-        visualizer.setEnabled(showBones != ShowBones.None);
-
-        float lineWidth = options.getLineWidth();
-        visualizer.setLineWidth(lineWidth);
-
-        float pointSize = options.getPointSize();
-        visualizer.setPointSize(pointSize);
     }
     // *************************************************************************
     // WindowController methods

@@ -29,10 +29,7 @@ package maud.tool;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
-import jme3utilities.sky.SkyControl;
-import jme3utilities.sky.Updater;
 import maud.Maud;
-import maud.model.cgm.Cgm;
 
 /**
  * The controller for the "Sky Tool" window in Maud's editor screen.
@@ -43,14 +40,6 @@ class SkyTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
-    /**
-     * multiplier for ambient light
-     */
-    final private static float ambientMultiplier = 1f;
-    /**
-     * multiplier for main light
-     */
-    final private static float mainMultiplier = 2f;
     /**
      * message logger for this class
      */
@@ -66,25 +55,6 @@ class SkyTool extends WindowController {
      */
     SkyTool(BasicScreenController screenController) {
         super(screenController, "skyTool", false);
-    }
-    // *************************************************************************
-    // new methods exposed
-
-    /**
-     * Update a C-G model's added sky based on the MVC model.
-     *
-     * @param cgm which C-G model (not null)
-     */
-    void updateSkyControl(Cgm cgm) {
-        SkyControl sky = cgm.getSceneView().getSkyControl();
-        boolean enable = Maud.getModel().getScene().isSkyRendered();
-        sky.setEnabled(enable);
-        sky.setCloudiness(0.5f);
-        sky.getSunAndStars().setHour(11f);
-
-        Updater updater = sky.getUpdater();
-        updater.setAmbientMultiplier(ambientMultiplier);
-        updater.setMainMultiplier(mainMultiplier);
     }
     // *************************************************************************
     // WindowController methods

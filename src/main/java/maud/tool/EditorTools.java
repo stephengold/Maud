@@ -34,7 +34,6 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
-import maud.model.cgm.Cgm;
 
 /**
  * Tool windows in Maud's editor screen.
@@ -543,29 +542,5 @@ public class EditorTools {
 
         WindowController controller = getTool(toolName);
         controller.select();
-    }
-
-    /**
-     * Scene updates performed even when all tools are disabled. (Invoked once
-     * per render pass for each C-G model that's rendered to a scene view.)
-     *
-     * @param cgm which C-G model occupies the scene to update (not null)
-     */
-    public void updateScene(Cgm cgm) {
-        Validate.nonNull(cgm, "loaded model");
-        assert cgm.getSceneView().getCamera() != null;
-
-        cgm.getScenePov().updateCamera();
-
-        axes.updateVisualizer(cgm);
-        bounds.updateVisualizer(cgm);
-        cursor.updateScene(cgm);
-        platform.updateScene(cgm);
-        render.updateShadowFilter(cgm);
-        render.updateVisualizer(cgm);
-        sceneVertex.updateVisualizer(cgm);
-        skeleton.updateVisualizer(cgm);
-        skeletonColor.updateVisualizer(cgm);
-        sky.updateSkyControl(cgm);
     }
 }

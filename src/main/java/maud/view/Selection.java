@@ -35,7 +35,6 @@ import maud.Maud;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSkeleton;
-import maud.tool.AxesTool;
 
 /**
  * Encapsulate an axis/bone/gnomon/keyframe/vertex selection from the user
@@ -230,9 +229,9 @@ public class Selection {
 
     /**
      * Consider selecting the indexed vertex in the specified geometry in the
-     * specified CG model.
+     * specified C-G model.
      *
-     * @param cgm CG model that contains the geometry (not null)
+     * @param cgm C-G model that contains the geometry (not null)
      * @param geometry which geometry to select (not null)
      * @param vertexIndex which vertex to select (&ge;0)
      * @param screenXY screen coordinates of the axis (in pixels, not null,
@@ -354,8 +353,8 @@ public class Selection {
         assert bestAxisIndex >= 0 : bestAxisIndex;
         assert bestAxisIndex < 3 : bestAxisIndex;
 
-        AxesTool axesTool = (AxesTool) Maud.gui.tools.getTool("axes");
-        boolean farSide = axesTool.isAxisReceding(bestCgm, bestAxisIndex);
+        SceneView sceneView = bestCgm.getSceneView();
+        boolean farSide = sceneView.isAxisReceding(bestAxisIndex);
         SceneDrag.setDraggingAxis(bestAxisIndex, bestCgm, farSide);
     }
 

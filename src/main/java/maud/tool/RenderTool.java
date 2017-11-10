@@ -26,22 +26,12 @@
  */
 package maud.tool;
 
-import com.jme3.bullet.BulletAppState;
-import com.jme3.light.DirectionalLight;
-import com.jme3.post.Filter;
-import com.jme3.post.FilterPostProcessor;
-import com.jme3.renderer.ViewPort;
-import com.jme3.shadow.DirectionalLightShadowFilter;
-import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
 import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 import maud.Maud;
-import maud.model.cgm.Cgm;
 import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.Wireframe;
-import maud.view.SceneView;
 
 /**
  * The controller for the "Render Tool" window in Maud's editor screen.
@@ -67,45 +57,6 @@ class RenderTool extends WindowController {
      */
     RenderTool(EditorScreen screenController) {
         super(screenController, "renderTool", false);
-    }
-    // *************************************************************************
-    // new methods exposed
-
-    /**
-     * Update a C-G model's shadow filter based on the MVC model.
-     *
-     * @param cgm which C-G model (not null)
-     */
-    void updateShadowFilter(Cgm cgm) {
-        SceneView view = cgm.getSceneView();
-        ViewPort vp = view.getViewPort();
-        if (vp != null && vp.isEnabled()) {
-            FilterPostProcessor fpp = Misc.getFpp(vp, assetManager);
-
-            DirectionalLightShadowFilter dlsf = null;
-            List<Filter> filterList = fpp.getFilterList();
-            for (Filter filter : filterList) {
-                if (filter instanceof DirectionalLightShadowFilter) {
-                    dlsf = (DirectionalLightShadowFilter) filter;
-                }
-            }
-            DirectionalLight mainLight = view.getMainLight();
-            dlsf.setLight(mainLight);
-            boolean enable = Maud.getModel().getScene().areShadowsRendered();
-            dlsf.setEnabled(enable);
-        }
-    }
-
-    /**
-     * Update a C-G model's physics visualizer based on the MVC model.
-     *
-     * @param cgm which C-G model (not null)
-     */
-    void updateVisualizer(Cgm cgm) {
-        SceneView sceneView = cgm.getSceneView();
-        BulletAppState bulletAppState = sceneView.getBulletAppState();
-        boolean enable = Maud.getModel().getScene().isPhysicsRendered();
-        bulletAppState.setDebugEnabled(enable);
     }
     // *************************************************************************
     // WindowController methods

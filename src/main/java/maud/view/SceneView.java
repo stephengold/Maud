@@ -45,6 +45,7 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.FastMath;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
@@ -91,13 +92,17 @@ import maud.Maud;
 import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.mesh.PointMesh;
+import maud.model.EditableMap;
+import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.DisplayedPose;
+import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedPhysics;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
+import maud.model.option.scene.AxesMode;
 import maud.model.option.scene.SkeletonOptions;
-import maud.tool.AxesTool;
 
 /**
  * A 3-D visualization of a loaded C-G model in a scene-mode viewport.
@@ -375,6 +380,42 @@ public class SceneView
     }
 
     /**
+     * While dragging an axis, update the orientation of the visualized object
+     * in the MVC model.
+     */
+    public void dragAxis() {
+        assert cgm.isLoaded();
+        int axisIndex = SceneDrag.getDragAxis();
+        boolean farSide = SceneDrag.isDraggingFarSide();
+
+        assert axesVisualizer.isEnabled();
+        Spatial axesSpatial = axesVisualizer.getSpatial();
+        /*
+         * Calculate the old axis direction in local coordinates.
+         */
+        Vector3f oldDirection = MyVector3f.axisVector(axisIndex, 1f, null);
+        assert oldDirection.isUnitVector() : oldDirection;
+        /*
+         * Calculate the new axis direction in local coordinates.
+         */
+        Camera camera = getCamera();
+        InputManager inputManager = Maud.getApplication().getInputManager();
+        Ray worldRay = MyCamera.mouseRay(camera, inputManager);
+        Ray localRay = MyMath.localizeRay(worldRay, axesSpatial);
+        float radius = axesVisualizer.getAxisLength();
+        Vector3f newDirection;
+        newDirection = MyVector3f.lineMeetsSphere(localRay, radius, farSide);
+        newDirection.divideLocal(radius);
+        assert newDirection.isUnitVector() : newDirection;
+
+        Vector3f cross = oldDirection.cross(newDirection);
+        float crossNorm = cross.length();
+        if (crossNorm > 0f) {
+            rotateObject(cross, cgm);
+        }
+    }
+
+    /**
      * Find a geometry that is animated by the selected skeleton control.
      *
      * @return a pre-existing instance, or null if none found
@@ -414,7 +455,7 @@ public class SceneView
      *
      * @return the pre-existing instance (not null)
      */
-    public AxesVisualizer getAxesVisualizer() {
+    AxesVisualizer getAxesVisualizer() {
         assert axesVisualizer != null;
         return axesVisualizer;
     }
@@ -525,6 +566,33 @@ public class SceneView
     public Spatial getVertexSpatial() {
         assert vertexSpatial != null;
         return vertexSpatial;
+    }
+
+    /**
+     * Test whether the indexed axis points toward or away from the camera.
+     *
+     * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
+     * @return true if pointing away, otherwise false
+     */
+    public boolean isAxisReceding(int axisIndex) {
+        Validate.nonNull(cgm, "model");
+        Validate.inRange(axisIndex, "axis index", 0, 2);
+
+        assert axesVisualizer.isEnabled();
+        Spatial axesSpatial = axesVisualizer.getSpatial();
+        /*
+         * Calculate distances to the tip and tail of the axis arrow.
+         */
+        Vector3f tailLocation = axesSpatial.getWorldTranslation();
+        Vector3f tipLocation = axesVisualizer.tipLocation(axisIndex);
+        Vector3f cameraLocation = cgm.getScenePov().cameraLocation(null);
+        float tailDS = cameraLocation.distanceSquared(tailLocation);
+        float tipDS = cameraLocation.distanceSquared(tipLocation);
+        if (tipDS > tailDS) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -872,9 +940,8 @@ public class SceneView
         Validate.nonNull(selection, "selection");
 
         Camera camera = getCamera();
-        AxesTool tool = (AxesTool) Maud.gui.tools.getTool("axes");
         for (int axisIndex = 0; axisIndex < numAxes; axisIndex++) {
-            Vector3f tipWorld = tool.tipLocation(cgm, axisIndex);
+            Vector3f tipWorld = tipLocation(axisIndex);
             if (tipWorld != null) {
                 Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);
                 Vector2f tipXY = new Vector2f(tipScreen.x, tipScreen.y);
@@ -1049,7 +1116,7 @@ public class SceneView
             updateParentShadowMode();
             updateParentTransform();
             updatePose();
-            Maud.gui.tools.updateScene(cgm);
+            SceneUpdater.update(cgm);
             skyControl.setCamera(camera);
         }
     }
@@ -1100,7 +1167,7 @@ public class SceneView
     public void cloneFields(Cloner cloner, Object original) {
         // ambientLight not cloned: shared
         animControl = cloner.clone(animControl);
-        // axesVisualizernot cloned: shared
+        // axesVisualizer not cloned: shared
         // boundsVisualizer not cloned: shared
         // bulletAppState not cloned: shared
         // cgm not cloned: set later
@@ -1422,6 +1489,143 @@ public class SceneView
         Vector3f cameraLocation;
         cameraLocation = new Vector3f(-2.4f, 1f, 1.6f); // TODO constants
         cgm.getScenePov().setCameraLocation(cameraLocation);
+    }
+
+    /**
+     * Rotate the visualized bone using the specified quaternion.
+     *
+     * @param rotation quaternion (not null, norm=1)
+     * @param cgm which C-G model (not null, unaffected)
+     */
+    private void rotateBone(Quaternion rotation, Cgm cgm) {
+        int boneIndex = cgm.getBone().getIndex();
+        assert boneIndex != -1;
+        EditorModel model = Maud.getModel();
+        EditableMap map = model.getMap();
+        EditableCgm target = model.getTarget();
+        Pose pose = cgm.getPose().get();
+        Quaternion oldUserRotation = pose.userRotation(boneIndex, null);
+
+        Quaternion newUserRotation = null;
+        if (cgm.getBone().shouldEnableControls()) {
+            /*
+             * Apply the rotation to the selected bone in the displayed pose.
+             */
+            newUserRotation = oldUserRotation.mult(rotation);
+            newUserRotation.normalizeLocal();
+            pose.setRotation(boneIndex, newUserRotation);
+
+        } else if (cgm == target
+                && cgm.getAnimation().isRetargetedPose()
+                && map.isBoneMappingSelected()) {
+            /*
+             * Apply the rotation to the target bone in the displayed pose.
+             */
+            newUserRotation = oldUserRotation.mult(rotation);
+            pose.setRotation(boneIndex, newUserRotation);
+        }
+
+        if (newUserRotation != null && !cgm.getBone().shouldEnableControls()) {
+            assert target.getAnimation().isRetargetedPose();
+            assert map.isBoneMappingSelected();
+            /*
+             * Infer a new effective twist for the selected bone mapping.
+             */
+            Quaternion sourceMo;
+            sourceMo = model.getSource().getBone().modelOrientation(null);
+            Quaternion targetMo;
+            targetMo = target.getBone().modelOrientation(null);
+            Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
+            Quaternion newEffectiveTwist = invSourceMo.mult(targetMo);
+            map.setTwist(newEffectiveTwist);
+        }
+    }
+
+    /**
+     * Rotate the visualized object using the specified cross product.
+     *
+     * @param cross cross product of two unit vectors (not null, length&gt;0)
+     * @param cgm which C-G model (not null, unaffected)
+     * @return the pre-existing instance
+     */
+    private void rotateObject(Vector3f cross, Cgm cgm) {
+        /*
+         * Convert the cross product to a rotation quaternion.
+         */
+        float crossNorm = cross.length();
+        Vector3f rotationAxis = cross.divide(crossNorm);
+        assert rotationAxis.isUnitVector() : rotationAxis;
+        float rotationAngle = FastMath.asin(crossNorm);
+        Quaternion rotation = new Quaternion();
+        rotation.fromAngleNormalAxis(rotationAngle, rotationAxis);
+        /*
+         * Determine which MVC-model object the control is visualizing,
+         * and apply the rotation to that object.
+         */
+        AxesMode mode = Maud.getModel().getScene().getAxes().getMode();
+        switch (mode) {
+            case SelectedBone:
+                rotateBone(rotation, cgm);
+                break;
+
+            case ModelRoot:
+                /*
+                 * Apply the Y-axis rotation to the transform status.
+                 */
+                float yRotation = FastMath.asin(cross.y * crossNorm);
+                getTransform().rotateY(yRotation);
+                break;
+
+            case SelectedPhysics:
+                if (cgm instanceof EditableCgm) {
+                    EditableCgm ecgm = (EditableCgm) cgm;
+                    SelectedPhysics physics = ecgm.getPhysics();
+                    if (physics.isRotatable()) {
+                        /*
+                         * Apply the full rotation to the selected object.
+                         */
+                        Quaternion oldQ = physics.orientation(null);
+                        Quaternion newQ = oldQ.mult(rotation);
+                        newQ.normalizeLocal();
+                        ecgm.setPhysicsOrientation(newQ);
+                    }
+                }
+                break;
+
+            case SelectedSpatial:
+                if (cgm instanceof EditableCgm) {
+                    EditableCgm ecgm = (EditableCgm) cgm;
+                    /*
+                     * Apply the full rotation to the selected spatial.
+                     */
+                    Quaternion oldQ = ecgm.getSpatial().localRotation(null);
+                    Quaternion newQ = oldQ.mult(rotation);
+                    newQ.normalizeLocal();
+                    ecgm.setSpatialRotation(newQ);
+                }
+                break;
+
+            case World:
+            // ignore attempts to drag the world axes
+        }
+    }
+
+    /**
+     * Calculate the tip location of the indexed axis in the axes visualizer.
+     *
+     * @param axisIndex which axis in the visualizer (&ge;0, &lt;3)
+     * @return a new vector (in world coordinates) or null if axis not displayed
+     */
+    private Vector3f tipLocation(int axisIndex) {
+        Validate.inRange(axisIndex, "axis index", 0, 2);
+
+        Vector3f result = null;
+        Transform transform = SceneUpdater.axesTransform(cgm);
+        if (transform != null) {
+            result = axesVisualizer.tipLocation(axisIndex);
+        }
+
+        return result;
     }
 
     /**
