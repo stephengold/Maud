@@ -97,7 +97,49 @@ public class EditorInputMode extends InputMode {
     // InputMode methods
 
     /**
-     * Process an action from the GUI or keyboard. TODO reorder methods
+     * Activate this input mode.
+     */
+    @Override
+    public void activate() {
+        super.activate();
+        zoomListener.map();
+    }
+
+    /**
+     * Deactivate this input mode.
+     */
+    @Override
+    public void deactivate() {
+        zoomListener.unmap();
+        super.deactivate();
+    }
+
+    /**
+     * Hotkey bindings used if the configuration asset is missing.
+     */
+    @Override
+    protected void defaultBindings() {
+        // intentionally empty
+    }
+
+    /**
+     * Initialize this (disabled) mode prior to its 1st update.
+     *
+     * @param stateManager (not null)
+     * @param application (not null)
+     */
+    @Override
+    public void initialize(AppStateManager stateManager,
+            Application application) {
+        AssetManager am = application.getAssetManager();
+        JmeCursor cursor = (JmeCursor) am.loadAsset(assetPath);
+        setCursor(cursor);
+
+        super.initialize(stateManager, application);
+    }
+
+    /**
+     * Process an action from the GUI or keyboard.
      *
      * @param actionString textual description of the action (not null)
      * @param ongoing true if the action is ongoing, otherwise false
@@ -182,48 +224,6 @@ public class EditorInputMode extends InputMode {
              */
             actionApplication.onAction(actionString, ongoing, tpf);
         }
-    }
-
-    /**
-     * Activate this input mode.
-     */
-    @Override
-    public void activate() {
-        super.activate();
-        zoomListener.map();
-    }
-
-    /**
-     * Deactivate this input mode.
-     */
-    @Override
-    public void deactivate() {
-        zoomListener.unmap();
-        super.deactivate();
-    }
-
-    /**
-     * Hotkey bindings used if the configuration asset is missing.
-     */
-    @Override
-    protected void defaultBindings() {
-        // intentionally empty
-    }
-
-    /**
-     * Initialize this (disabled) mode prior to its 1st update.
-     *
-     * @param stateManager (not null)
-     * @param application (not null)
-     */
-    @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
-        AssetManager am = application.getAssetManager();
-        JmeCursor cursor = (JmeCursor) am.loadAsset(assetPath);
-        setCursor(cursor);
-
-        super.initialize(stateManager, application);
     }
     // *************************************************************************
     // private methods
