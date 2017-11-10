@@ -69,7 +69,7 @@ import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 
 /**
- * A 2D visualization of a loaded animation in a score-mode viewport.
+ * A 2-D visualization of a loaded animation in a score view.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -496,14 +496,14 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Update this view prior to rendering. (Invoked once per render pass on
-     * each instance.)
+     * Update this view prior to rendering. Invoked once per render pass on each
+     * score view.
      *
-     * @param renderCgm which CG model to render (not null)
+     * @param viewCgm which C-G model occupies the view (not null)
      */
     @Override
-    public void update(Cgm renderCgm) {
-        Validate.nonNull(renderCgm, "render model");
+    public void update(Cgm viewCgm) {
+        Validate.nonNull(viewCgm, "view model");
 
         if (r == null) {
             r = new ScoreResources();
@@ -514,9 +514,9 @@ public class ScoreView implements EditorView {
 
         ViewPort viewPort = getViewPort();
         if (viewPort != null && viewPort.isEnabled()) {
-            assert renderCgm.isLoaded();
-            cgm = renderCgm;
-            StaffTrack.setCgm(renderCgm);
+            assert viewCgm.isLoaded();
+            cgm = viewCgm;
+            StaffTrack.setCgm(viewCgm);
 
             ScoreOptions options = Maud.getModel().getScore();
             ColorRGBA backgroundColor = options.backgroundColor(null);

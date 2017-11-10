@@ -722,7 +722,7 @@ public class EditorScreen extends GuiScreenController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (!tools.getTool("camera").isInitialized()) { // TODO necessary?
+        if (!tools.getTool("camera").isInitialized()) {
             return;
         }
         /*

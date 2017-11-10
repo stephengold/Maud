@@ -38,7 +38,7 @@ import maud.model.cgm.EditableCgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class CgmTool extends WindowController {
+class CgmTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -82,15 +82,15 @@ public class CgmTool extends WindowController {
          * asset base path
          */
         String assetPath = target.getAssetPath();
-        String abpDesc = assetPath.isEmpty() ? "unknown"
-                : MyString.quote(assetPath);
+        String abpDesc
+                = assetPath.isEmpty() ? "unknown" : MyString.quote(assetPath);
         Maud.gui.setStatusText("cgmAbp", " " + abpDesc);
         /*
          * asset root
          */
         String assetRoot = target.getAssetRootPath();
-        String assetRootDescription = assetRoot.isEmpty() ? "unknown"
-                : MyString.quote(assetRoot);
+        String assetRootDescription
+                = assetRoot.isEmpty() ? "unknown" : MyString.quote(assetRoot);
         Maud.gui.setStatusText("cgmAf", " " + assetRootDescription);
         /*
          * asset/file extension

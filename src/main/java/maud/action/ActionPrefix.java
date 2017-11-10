@@ -269,7 +269,7 @@ public class ActionPrefix {
     final public static String selectVertex = "select vertex ";
     /**
      * argument is the number of samples per pixel, formatted using
-     * {@link maud.Util#aaDescription(int)}
+     * {@link maud.MaudUtil#aaDescription(int)}
      */
     final public static String setAntiAliasing = "set antiAliasing ";
     /**
