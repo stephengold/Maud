@@ -677,4 +677,24 @@ public class EditorDialogs {
         Maud.gui.showTextEntryDialog("Enter samples per second:", "10",
                 actionPrefix, controller);
     }
+
+    /**
+     * Display a "wrap animation" dialog.
+     */
+    public static void wrapAnimation() {
+        FloatDialog controller = new FloatDialog("Wrap animation", 0f, 1f);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter weight for end-time keyframes:", "0",
+                ActionPrefix.wrapAnimation, controller);
+    }
+
+    /**
+     * Display a "wrap track" dialog.
+     */
+    public static void wrapTrack() {
+        FloatDialog controller = new FloatDialog("Wrap track", 0f, 1f);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter weight for end-time keyframe:", "0",
+                ActionPrefix.wrapTrack, controller);
+    }
 }

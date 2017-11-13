@@ -228,30 +228,43 @@ public class AnimationMenus {
                 case "Behead":
                     animation.behead();
                     break;
+
                 case "Change duration":
                     ShowMenus.changeDuration();
                     break;
+
                 case "Delete keyframes":
                     animation.deleteKeyframes();
                     break;
+
                 case "Insert keyframes":
                     animation.insertKeyframes();
                     break;
+
                 case "Reduce all tracks":
                     EditorDialogs.reduceAnimation();
                     break;
+
                 case "Resample all tracks to number":
                     EditorDialogs.resampleAnimation(false);
                     break;
+
                 case "Resample all tracks at rate":
                     EditorDialogs.resampleAnimation(true);
                     break;
+
                 case "Truncate":
                     animation.truncate();
                     break;
+
                 case "Wrap all tracks":
-                    animation.wrapAllTracks();
+                    if (animation.anyTrackEndsWithKeyframe()) {
+                        EditorDialogs.wrapAnimation();
+                    } else {
+                        animation.wrapAllTracks(0f);
+                    }
                     break;
+
                 default:
                     handled = false;
             }

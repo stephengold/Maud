@@ -44,6 +44,7 @@ import maud.model.History;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedTrack;
 import maud.view.SceneDrag;
 import maud.view.ViewType;
 
@@ -671,11 +672,31 @@ public class EditorInputMode extends InputMode {
      * @return true if the action is handled, otherwise false
      */
     private boolean wrapAction(String actionString) {
-        boolean handled = false;
-        switch (actionString) {
-            case Action.wrapTrack:
-                Maud.getModel().getTarget().getTrack().wrap();
-                handled = true;
+        boolean handled = true;
+
+        Cgm target = Maud.getModel().getTarget();
+        SelectedTrack track = target.getTrack();
+        if (actionString.equals(Action.wrapTrack)) {
+            if (track.endsWithKeyframe()) {
+                EditorDialogs.wrapTrack();
+            } else {
+                track.wrap(0f);
+            }
+
+        } else if (actionString.startsWith(ActionPrefix.wrapAnimation)) {
+            String weightString = MyString.remainder(actionString,
+                    ActionPrefix.wrapAnimation);
+            float endWeight = Float.parseFloat(weightString);
+            target.getAnimation().wrapAllTracks(endWeight);
+
+        } else if (actionString.startsWith(ActionPrefix.wrapTrack)) {
+            String weightString
+                    = MyString.remainder(actionString, ActionPrefix.wrapTrack);
+            float endWeight = Float.parseFloat(weightString);
+            track.wrap(endWeight);
+
+        } else {
+            handled = false;
         }
 
         return handled;

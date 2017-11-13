@@ -143,13 +143,15 @@ public class ShowMenus {
     }
 
     /**
-     * Display an "Animation -> Edit" menu (only for a real animation).
+     * Display an "Animation -> Edit" menu (only for a real animation). TODO
+     * move to AnimationMenus
      */
     static void editAnimation() {
         MenuBuilder builder = new MenuBuilder();
 
         Cgm target = Maud.getModel().getTarget();
-        float duration = target.getAnimation().getDuration();
+        LoadedAnimation animation = target.getAnimation();
+        float duration = animation.getDuration();
         if (duration > 0f) {
             builder.addEdit("Behead");
         }
@@ -161,7 +163,11 @@ public class ShowMenus {
             builder.addDialog("Resample all tracks at rate");
             builder.addDialog("Resample all tracks to number");
             builder.addEdit("Truncate");
-            builder.addEdit("Wrap all tracks");
+            if (animation.anyTrackEndsWithKeyframe()) {
+                builder.addDialog("Wrap all tracks");
+            } else {
+                builder.addEdit("Wrap all tracks");
+            }
         }
 
         builder.show("select menuItem Animation -> Edit -> ");

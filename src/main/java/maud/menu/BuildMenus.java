@@ -947,7 +947,11 @@ public class BuildMenus {
             builder.addEdit("Smooth");
             builder.addEdit("Translate for support");
             builder.addEdit("Translate for traction");
-            builder.addEdit("Wrap");
+            if (target.getTrack().endsWithKeyframe()) {
+                builder.addDialog("Wrap");
+            } else {
+                builder.addEdit("Wrap");
+            }
         } else if (bone.isSelected() && target.getAnimation().isReal()) {
             builder.addEdit("Create");
         }

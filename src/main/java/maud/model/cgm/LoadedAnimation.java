@@ -103,6 +103,28 @@ public class LoadedAnimation implements Cloneable {
     // new methods exposed
 
     /**
+     * Test whether any track ends with a keyframe.
+     *
+     * @return true if one or more tracks ends with a keyframe, otherwise false
+     */
+    public boolean anyTrackEndsWithKeyframe() {
+        boolean result = false;
+        Animation loaded = getAnimation();
+        if (loaded != null) {
+            float duration = getDuration();
+            Track[] loadedTracks = loaded.getTracks();
+            for (Track track : loadedTracks) {
+                int endIndex = MyAnimation.findKeyframeIndex(track, duration);
+                if (endIndex >= 0) {
+                    result = true;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Delete everything before the current animation time, and make that the
      * start of the animation.
      */
@@ -277,8 +299,8 @@ public class LoadedAnimation implements Cloneable {
         for (Track track : loadedTracks) {
             Track newTrack;
             if (track instanceof BoneTrack || track instanceof SpatialTrack) {
-                int keyframeIndex = MyAnimation.findKeyframeIndex(track,
-                        currentTime);
+                int keyframeIndex
+                        = MyAnimation.findKeyframeIndex(track, currentTime);
                 if (keyframeIndex >= 1) {
                     newTrack = TrackEdit.deleteRange(track, keyframeIndex, 1);
                     ++numDeletions;
@@ -387,7 +409,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Access the loaded animation.
+     * Access the loaded, real animation.
      *
      * @return the pre-existing instance, or null if none or in bind/retargeted
      * pose
@@ -496,8 +518,8 @@ public class LoadedAnimation implements Cloneable {
                 BoneTrack boneTrack = (BoneTrack) track;
                 int boneIndex = boneTrack.getTargetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
-                int frameIndex = MyAnimation.findKeyframeIndex(boneTrack,
-                        currentTime);
+                int frameIndex
+                        = MyAnimation.findKeyframeIndex(boneTrack, currentTime);
                 if (frameIndex == -1) {
                     newTrack = TrackEdit.insertKeyframe(boneTrack, currentTime,
                             user);
@@ -1057,10 +1079,13 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Set the final transform of each bone/spatial track to match its initial
-     * transform.
+     * Alter each track's 1st keyframe and end-time keyframe so that they
+     * precisely match. If a track doesn't end with a keyframe, append one.
+     *
+     * @param endWeight how much weight to give to pre-existing end-time
+     * keyframes, if any exist (&ge;0, &le;1)
      */
-    public void wrapAllTracks() {
+    public void wrapAllTracks(float endWeight) {
         Animation loaded = getAnimation();
         float duration = loaded.getLength();
         Animation newAnimation = new Animation(loadedName, duration);
@@ -1068,15 +1093,16 @@ public class LoadedAnimation implements Cloneable {
         for (Track track : loadedTracks) {
             Track newTrack;
             if (track instanceof BoneTrack || track instanceof SpatialTrack) {
-                newTrack = TrackEdit.wrap(track, duration);
+                newTrack = TrackEdit.wrap(track, duration, endWeight);
             } else {
                 newTrack = track.clone(); // TODO other track types
             }
             newAnimation.addTrack(newTrack);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation,
-                "wrap all tracks in animation");
+        String description = String.format(
+                "wrap all tracks in animation using end weight=%f", endWeight);
+        editableCgm.replaceAnimation(loaded, newAnimation, description);
     }
     // *************************************************************************
     // Object methods

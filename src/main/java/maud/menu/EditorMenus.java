@@ -39,6 +39,7 @@ import maud.model.History;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedSpatial;
+import maud.model.cgm.SelectedTrack;
 
 /**
  * Menus in Maud's editor screen.
@@ -550,44 +551,62 @@ public class EditorMenus {
      */
     private static boolean menuTrack(String remainder) {
         boolean handled = true;
+
         EditableCgm target = Maud.getModel().getTarget();
+        SelectedTrack track = target.getTrack();
         switch (remainder) {
             case "Create":
                 target.getAnimation().createBoneTrack();
                 break;
+
             case "Delete":
                 target.getAnimation().deleteTrack();
                 break;
+
             case "Load animation":
                 AnimationMenus.loadAnimation(target);
                 break;
+
             case "Reduce":
                 EditorDialogs.reduceTrack();
                 break;
+
             case "Resample at rate":
                 EditorDialogs.resampleTrack(true);
                 break;
+
             case "Resample to number":
                 EditorDialogs.resampleTrack(false);
                 break;
+
             case "Select bone":
                 Maud.gui.buildMenus.selectBone();
                 break;
+
             case "Smooth":
-                target.getTrack().smooth();
+                track.smooth();
                 break;
+
             case "Tool":
                 Maud.gui.tools.select("keyframe"); // shared with Keyframe menu
                 break;
+
             case "Translate for support":
-                target.getTrack().translateForSupport();
+                track.translateForSupport();
                 break;
+
             case "Translate for traction":
-                target.getTrack().translateForTraction();
+                track.translateForTraction();
                 break;
+
             case "Wrap":
-                target.getTrack().wrap();
+                if (track.endsWithKeyframe()) {
+                    EditorDialogs.wrapTrack();
+                } else {
+                    track.wrap(0f);
+                }
                 break;
+
             default:
                 handled = false;
         }

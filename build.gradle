@@ -51,7 +51,7 @@ dependencies {
     compile 'jme3utilities:jme3-utilities-ui:0.5.9'
     compile 'jme3utilities:jme3-utilities-nifty:0.7.2'
     compile 'jme3utilities:SkyControl:0.9.6'
-    compile 'jme3utilities:Wes:0.2.3'
+    compile 'jme3utilities:Wes:0.2.4'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jmonkeyengine's bintray repositories:

@@ -366,6 +366,14 @@ public class ActionPrefix {
      * argument is the name of a license type
      */
     final public static String viewLicense = "view license ";
+    /**
+     * argument is the weight to apply to end-time keyframes
+     */
+    final public static String wrapAnimation = "wrap animation ";
+    /**
+     * argument is the weight to apply to the end-time keyframe
+     */
+    final public static String wrapTrack = "wrap track ";
     // *************************************************************************
     // constructors
 

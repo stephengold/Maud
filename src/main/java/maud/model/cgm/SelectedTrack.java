@@ -213,6 +213,25 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
+     * Test whether the selected track ends with a keyframe.
+     *
+     * @return true if track ends with a keyframe, otherwise false
+     */
+    public boolean endsWithKeyframe() {
+        BoneTrack track = find();
+        float duration = cgm.getAnimation().getDuration();
+        int endIndex = MyAnimation.findKeyframeIndex(track, duration);
+        boolean result;
+        if (endIndex >= 0) {
+            result = true;
+        } else {
+            result = false;
+        }
+
+        return result;
+    }
+
+    /**
      * Find the track for the selected bone in the loaded animation.
      *
      * @return the pre-existing instance, or null if none
@@ -795,30 +814,36 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Alter the track's end-time keyframe to match the 1st keyframe. If the
-     * track doesn't end with a keyframe, append one.
+     * Alter the track's 1st keyframe and end-time keyframe so that they
+     * precisely match. If the track doesn't end with a keyframe, append one.
+     *
+     * @param endWeight how much weight to give to the pre-existing end-time
+     * keyframe, if one exists (&ge;0, &le;1)
      */
-    public void wrap() {
+    public void wrap(float endWeight) {
+        Validate.fraction(endWeight, "end weight");
         if (!isTrackSelected()) {
             return;
         }
 
         Animation newAnimation = newAnimation();
-        BoneTrack selectedTrack = find();
+        Track selectedTrack = find();
         Animation oldAnimation = cgm.getAnimation().getAnimation();
         Track[] oldTracks = oldAnimation.getTracks();
         for (Track track : oldTracks) {
             Track clone;
             if (track == selectedTrack) {
-                float endTime = cgm.getAnimation().getDuration();
-                clone = TrackEdit.wrap(selectedTrack, endTime);
+                float duration = cgm.getAnimation().getDuration();
+                clone = TrackEdit.wrap(selectedTrack, duration, endWeight);
             } else {
                 clone = track.clone();
             }
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(oldAnimation, newAnimation, "wrap track");
+        String description = String.format("wrap track using end weight=%f",
+                endWeight);
+        editableCgm.replaceAnimation(oldAnimation, newAnimation, description);
     }
     // *************************************************************************
     // Object methods
