@@ -436,6 +436,10 @@ public class EditorMenus {
                     Maud.gui.tools.select("settings");
                     break;
 
+                case "Tweening":
+                    Maud.gui.tools.select("tweening");
+                    break;
+
                 case "Update startup script":
                     Maud.getModel().updateStartupScript();
                     break;

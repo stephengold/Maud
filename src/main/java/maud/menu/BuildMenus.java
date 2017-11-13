@@ -826,10 +826,11 @@ public class BuildMenus {
     private void buildSettingsMenu() {
         builder.addTool("Tool");
         builder.add("Asset locations");
+        builder.addTool("Display-settings tool");
         builder.add("Hotkeys");
         //builder.add("Locale"); TODO
+        builder.addTool("Tweening");
         builder.add("Update startup script");
-        builder.addTool("Display-settings tool");
     }
 
     /**
