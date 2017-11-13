@@ -171,7 +171,7 @@ public class HistoryTool extends WindowController {
     }
 
     /**
-     * Add a label to the scroll panel content.
+     * Add a label to the scroll-panel content.
      *
      * @param text (not null)
      * @return the element of the newly-created label
@@ -189,7 +189,7 @@ public class HistoryTool extends WindowController {
                 backgroundColor(bgColor);
                 id(labelId);
                 label(" " + text);
-                width("250px");
+                width("330px");
             }
         };
         Element newLabel = builder.build(nifty, screen, content);
