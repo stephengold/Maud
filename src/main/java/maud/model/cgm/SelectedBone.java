@@ -73,7 +73,8 @@ public class SelectedBone implements Cloneable {
      */
     private EditableCgm editableCgm = null;
     /**
-     * index of the selected bone, or noBoneIndex for none selected
+     * index of the selected bone in the selected skeleton, or noBoneIndex for
+     * none selected
      */
     private int selectedIndex = SelectedSkeleton.noBoneIndex;
     // *************************************************************************
@@ -577,7 +578,7 @@ public class SelectedBone implements Cloneable {
     /**
      * Alter which C-G model contains the selected bone.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, aliases created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;

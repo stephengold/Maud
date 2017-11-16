@@ -57,7 +57,8 @@ public class SelectedUserData implements Cloneable {
      */
     private EditableCgm editableCgm;
     /**
-     * key of the selected user data, or null if none selected
+     * key of the selected user data in the selected spatial, or null if none
+     * selected
      */
     private String selectedKey = null;
     // *************************************************************************
@@ -137,7 +138,7 @@ public class SelectedUserData implements Cloneable {
     /**
      * Alter which C-G model contains the data.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, alias created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;

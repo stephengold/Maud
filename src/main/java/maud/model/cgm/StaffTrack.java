@@ -450,7 +450,7 @@ public class StaffTrack {
     /**
      * Alter which CG model is being visualized.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, alias created)
      */
     public static void setCgm(Cgm newCgm) {
         Validate.nonNull(newCgm, "new model");

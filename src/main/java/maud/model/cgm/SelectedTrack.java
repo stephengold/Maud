@@ -583,7 +583,7 @@ public class SelectedTrack implements Cloneable {
     /**
      * Alter which C-G model contains the track.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, aliases created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;

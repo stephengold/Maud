@@ -64,7 +64,8 @@ public class SelectedVertex implements Cloneable {
      */
     private Cgm cgm = null;
     /**
-     * index of the selected vertex, or -1 for none selected
+     * index of the selected vertex in the mesh of the selected spatial, or -1
+     * for none selected
      */
     private int selectedIndex = -1;
     // *************************************************************************
@@ -231,7 +232,7 @@ public class SelectedVertex implements Cloneable {
     /**
      * Alter which C-G model contains the vertex.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, alias created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;

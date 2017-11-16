@@ -688,7 +688,7 @@ public class SelectedSkeleton implements JmeCloneable {
     /**
      * Alter which C-G model contains the selected skeleton.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, alias created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;

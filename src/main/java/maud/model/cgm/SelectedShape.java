@@ -270,7 +270,7 @@ public class SelectedShape implements Cloneable {
     /**
      * Alter which C-G model contains the selected object.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, alias created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;

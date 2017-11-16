@@ -58,7 +58,7 @@ public interface Pov {
      * Alter which CG model uses this POV. (Invoked only during initialization
      * and cloning.)
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, alias created)
      */
     void setCgm(Cgm newCgm);
 

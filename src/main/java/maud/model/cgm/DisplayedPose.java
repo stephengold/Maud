@@ -37,7 +37,7 @@ import jme3utilities.Validate;
 import jme3utilities.wes.Pose;
 
 /**
- * The displayed pose of a loaded C-G model in the Editor screen.
+ * MVC model of a displayed pose in the Editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
