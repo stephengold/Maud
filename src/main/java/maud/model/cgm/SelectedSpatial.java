@@ -152,7 +152,13 @@ public class SelectedSpatial implements JmeCloneable {
     public void addSkeletonControl() {
         Skeleton skeleton = cgm.getSkeleton().find();
         if (skeleton == null) {
-            Bone[] bones = new Bone[0];
+            Spatial spatial = find();
+            int numBones = MaudUtil.countMeshBones(spatial);
+            Bone[] bones = new Bone[numBones];
+            for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+                String boneName = String.format("bone%d", boneIndex);
+                bones[boneIndex] = new Bone(boneName);
+            }
             skeleton = new Skeleton(bones);
         }
         SkeletonControl newSgc = new SkeletonControl(skeleton);

@@ -290,6 +290,75 @@ public class MaudUtil {
     }
 
     /**
+     * Estimate the number of bones in the specified mesh by reading its index
+     * buffers.
+     *
+     * @param mesh mesh to examine (not null)
+     * @return estimated number of bones (&ge;0)
+     */
+    public static int countBones(Mesh mesh) {
+        int maxWeightsPerVert = mesh.getMaxNumWeights();
+        assert maxWeightsPerVert > 0 : maxWeightsPerVert;
+        assert maxWeightsPerVert <= 4 : maxWeightsPerVert;
+
+        VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
+        Buffer boneIndexBuffer = biBuf.getDataReadOnly();
+        boneIndexBuffer.rewind();
+        int numBoneIndices = boneIndexBuffer.remaining();
+        assert numBoneIndices % 4 == 0 : numBoneIndices;
+        int numVertices = boneIndexBuffer.remaining() / 4;
+
+        VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
+        FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
+        weightBuffer.rewind();
+        int numWeights = weightBuffer.remaining();
+        assert numWeights == numVertices * 4 : numWeights;
+
+        int result = 0;
+        for (int vIndex = 0; vIndex < numVertices; vIndex++) {
+            for (int wIndex = 0; wIndex < 4; wIndex++) {
+                float weight = weightBuffer.get();
+                int bIndex = MyMesh.readIndex(boneIndexBuffer);
+                if (wIndex < maxWeightsPerVert && weight > 0f
+                        && bIndex >= result) {
+                    result = bIndex + 1;
+                }
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Estimate the number of bones in the specified subtree by reading its mesh
+     * index buffers.
+     *
+     * @param subtree (may be null)
+     * @return estimated number (&ge;0)
+     */
+    public static int countMeshBones(Spatial subtree) {
+        int result = 0;
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            Mesh mesh = geometry.getMesh();
+            result = countBones(mesh);
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                int childBones = countMeshBones(child);
+                if (childBones > result) {
+                    result = childBones;
+                }
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
      * Find a spatial controlled by the specified S-G control in the specified
      * subtree of the scene graph. Note: recursive!
      *
