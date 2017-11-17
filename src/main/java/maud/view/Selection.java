@@ -366,8 +366,8 @@ public class Selection {
         assert bestGeometry != null;
         assert bestVertexIndex != -1;
 
-        List<Integer> treePosition;
-        treePosition = bestCgm.getSceneView().findSpatial(bestGeometry);
+        List<Integer> treePosition
+                = bestCgm.getSceneView().findPosition(bestGeometry);
         assert treePosition != null;
         bestCgm.getSpatial().select(treePosition);
         bestCgm.getVertex().select(bestVertexIndex);

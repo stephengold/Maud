@@ -433,14 +433,13 @@ public class SceneView
     }
 
     /**
-     * Find the specified spatial in this view's copy of the C-G model.
+     * Find the the tree position of the specified spatial in this view's copy
+     * of the C-G model.
      *
      * @param input spatial to search for (not null)
      * @return a new tree-position instance, or null if not found
-     *
-     * TODO rename findPosition
      */
-    List<Integer> findSpatial(Spatial input) {
+    List<Integer> findPosition(Spatial input) {
         Validate.nonNull(input, "input");
 
         List<Integer> treePosition = new ArrayList<>(4);
