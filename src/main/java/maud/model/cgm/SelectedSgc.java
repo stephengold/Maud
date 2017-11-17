@@ -113,26 +113,7 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
-     * Access the S-G control.
-     *
-     * @return the pre-existing instance, or null if none selected
-     */
-    Control get() {
-        return selected;
-    }
-
-    /**
-     * Access the controlled spatial.
-     *
-     * @return the pre-existing instance, or null if none selected
-     */
-    Spatial getControlled() {
-        return controlled;
-    }
-
-    /**
-     * Read the position index of the S-G control in the C-G model. TODO reorder
-     * methods
+     * Read the position index of the S-G control in the C-G model.
      *
      * @return the index, or noSgcIndex if none selected
      */
@@ -148,52 +129,21 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
-     * Read the name of the physics mode of the S-G control. TODO reorder
-     * methods
+     * Access the S-G control.
      *
-     * @return mode name, or "" if unknown
+     * @return the pre-existing instance, or null if none selected
      */
-    public String physicsModeName() {
-        String result = "";
-        if (selected instanceof RigidBodyControl) {
-            RigidBodyControl rbc = (RigidBodyControl) selected;
-            boolean kinematic = rbc.isKinematicSpatial();
-            if (kinematic) {
-                result = "Kinematic";
-            } else {
-                float mass = rbc.getMass();
-                if (mass == 0f) {
-                    result = "Static";
-                } else {
-                    result = "Dynamic";
-                }
-            }
-
-        } else if (selected instanceof KinematicRagdollControl) {
-            KinematicRagdollControl krc = (KinematicRagdollControl) selected;
-            KinematicRagdollControl.Mode mode = krc.getMode();
-            result = mode.toString();
-        }
-
-        return result;
+    Control get() {
+        return selected;
     }
 
     /**
-     * Obtain the name of the physics object associated with the S-G control.
+     * Access the controlled spatial.
      *
-     * @return object name, or "" if unknown
+     * @return the pre-existing instance, or null if none selected
      */
-    public String physicsObjectName() {
-        String result = "";
-        if (selected instanceof PhysicsControl) {
-            List<Integer> treePosition = cgm.findSpatial(controlled);
-            PhysicsControl pc = (PhysicsControl) selected;
-            int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
-            SceneView sceneView = cgm.getSceneView();
-            result = sceneView.objectName(treePosition, pcPosition);
-        }
-
-        return result;
+    Spatial getControlled() {
+        return controlled;
     }
 
     /**
@@ -276,6 +226,54 @@ public class SelectedSgc implements JmeCloneable {
         }
 
         return name;
+    }
+
+    /**
+     * Read the name of the physics mode of the S-G control.
+     *
+     * @return mode name, or "" if unknown
+     */
+    public String physicsModeName() {
+        String result = "";
+        if (selected instanceof RigidBodyControl) {
+            RigidBodyControl rbc = (RigidBodyControl) selected;
+            boolean kinematic = rbc.isKinematicSpatial();
+            if (kinematic) {
+                result = "Kinematic";
+            } else {
+                float mass = rbc.getMass();
+                if (mass == 0f) {
+                    result = "Static";
+                } else {
+                    result = "Dynamic";
+                }
+            }
+
+        } else if (selected instanceof KinematicRagdollControl) {
+            KinematicRagdollControl krc = (KinematicRagdollControl) selected;
+            KinematicRagdollControl.Mode mode = krc.getMode();
+            result = mode.toString();
+        }
+
+        return result;
+    }
+
+    /**
+     * Obtain the name of the physics object associated with the S-G control.
+     *
+     * @return object name, or "" if unknown
+     */
+    public String physicsObjectName() {
+        String result = "";
+        if (selected instanceof PhysicsControl) {
+            List<Integer> treePosition = cgm.findSpatial(controlled);
+            PhysicsControl pc = (PhysicsControl) selected;
+            int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
+            SceneView sceneView = cgm.getSceneView();
+            result = sceneView.objectName(treePosition, pcPosition);
+        }
+
+        return result;
     }
 
     /**

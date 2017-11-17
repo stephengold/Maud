@@ -410,6 +410,18 @@ public class SelectedAnimControl implements JmeCloneable {
     // JmeCloneable methods
 
     /**
+     * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
+     *
+     * @return never
+     * @throws CloneNotSupportedException always
+     */
+    @Override
+    public SelectedAnimControl clone() throws CloneNotSupportedException {
+        super.clone();
+        throw new CloneNotSupportedException("use a cloner");
+    }
+
+    /**
      * Callback from {@link com.jme3.util.clone.Cloner} to convert this
      * shallow-cloned instance into a deep-cloned one, using the specified
      * cloner and original to resolve copied fields.
@@ -435,18 +447,5 @@ public class SelectedAnimControl implements JmeCloneable {
         } catch (CloneNotSupportedException exception) {
             throw new RuntimeException(exception);
         }
-    }
-
-    /**
-     * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
-     * TODO sort methods
-     *
-     * @return never
-     * @throws CloneNotSupportedException always
-     */
-    @Override
-    public SelectedAnimControl clone() throws CloneNotSupportedException {
-        super.clone();
-        throw new CloneNotSupportedException("use a cloner");
     }
 }
