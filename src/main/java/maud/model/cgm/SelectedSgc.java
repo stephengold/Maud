@@ -113,11 +113,11 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
-     * Access the S-G control. TODO rename get
+     * Access the S-G control.
      *
      * @return the pre-existing instance, or null if none selected
      */
-    Control find() {
+    Control get() {
         return selected;
     }
 
@@ -131,12 +131,12 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
-     * Read the position index of the S-G control in the C-G model. TODO rename
-     * findIndex
+     * Read the position index of the S-G control in the C-G model. TODO reorder
+     * methods
      *
      * @return the index, or noSgcIndex if none selected
      */
-    public int getIndex() {
+    public int findIndex() {
         int result = noSgcIndex;
         if (isSelected()) {
             List<Control> sgcs = cgm.listSgcs(Control.class);
@@ -148,12 +148,12 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
-     * Read the name of the physics mode of the S-G control. TODO rename
-     * physicsModeName
+     * Read the name of the physics mode of the S-G control. TODO reorder
+     * methods
      *
      * @return mode name, or "" if unknown
      */
-    public String getModeName() {
+    public String physicsModeName() {
         String result = "";
         if (selected instanceof RigidBodyControl) {
             RigidBodyControl rbc = (RigidBodyControl) selected;
@@ -180,11 +180,10 @@ public class SelectedSgc implements JmeCloneable {
 
     /**
      * Obtain the name of the physics object associated with the S-G control.
-     * TODO rename physicsObjectName
      *
      * @return object name, or "" if unknown
      */
-    public String objectName() {
+    public String physicsObjectName() {
         String result = "";
         if (selected instanceof PhysicsControl) {
             List<Integer> treePosition = cgm.findSpatial(controlled);
@@ -268,7 +267,7 @@ public class SelectedSgc implements JmeCloneable {
     public String name() {
         String name = noControl;
         if (isSelected()) {
-            int index = getIndex();
+            int index = findIndex();
             assert index != -1;
             List<String> names = cgm.listSgcNames(Control.class);
             name = names.get(index);
@@ -388,7 +387,7 @@ public class SelectedSgc implements JmeCloneable {
      */
     public void selectPrevious() {
         if (isSelected()) {
-            int newIndex = getIndex() - 1;
+            int newIndex = findIndex() - 1;
             if (newIndex < 0) {
                 int numSgcs = controlled.getNumControls();
                 newIndex = numSgcs - 1;

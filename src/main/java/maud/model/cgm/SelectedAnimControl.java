@@ -101,7 +101,7 @@ public class SelectedAnimControl implements JmeCloneable {
     AnimControl find() {
         AnimControl animControl;
         if (cgm.isLoaded()) {
-            Control sgc = cgm.getSgc().find();
+            Control sgc = cgm.getSgc().get();
             if (sgc instanceof AnimControl) {
                 animControl = (AnimControl) sgc;
             } else {

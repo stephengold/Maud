@@ -179,7 +179,7 @@ public class SelectedSkeleton implements JmeCloneable {
          * If the selected S-G control is an AnimControl or SkeletonControl,
          * use its skeleton, if it has one.
          */
-        Control selectedSgc = cgm.getSgc().find();
+        Control selectedSgc = cgm.getSgc().get();
         if (selectedSgc instanceof AnimControl) {
             animControl = (AnimControl) selectedSgc;
             skeleton = animControl.getSkeleton();

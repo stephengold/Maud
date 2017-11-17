@@ -84,8 +84,8 @@ class SgcTool extends WindowController {
 
         if (sgc.isSelected()) {
             deleteLabel = "Delete";
-            modeName = sgc.getModeName();
-            physicsName = sgc.objectName();
+            modeName = sgc.physicsModeName();
+            physicsName = sgc.physicsObjectName();
             if (physicsName.isEmpty() || !isEnabled) {
                 soButton = "";
             } else {
@@ -127,7 +127,7 @@ class SgcTool extends WindowController {
         Cgm target = Maud.getModel().getTarget();
         int numSgcs = target.countSgcs(Control.class);
         if (target.getSgc().isSelected()) {
-            int selectedIndex = target.getSgc().getIndex();
+            int selectedIndex = target.getSgc().findIndex();
             int indexBase = Maud.getModel().getMisc().getIndexBase();
             indexText = String.format("#%d of %d", selectedIndex + indexBase,
                     numSgcs);
