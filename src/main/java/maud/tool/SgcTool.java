@@ -26,6 +26,7 @@
  */
 package maud.tool;
 
+import com.jme3.scene.control.Control;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
@@ -74,35 +75,42 @@ class SgcTool extends WindowController {
 
         updateIndex();
 
-        String deleteLabel, modeName, physicsName, sButton, typeText;
-
         SelectedSgc sgc = Maud.getModel().getTarget().getSgc();
+        boolean isEnabled = sgc.isEnabled();
+        Maud.gui.setChecked("sgcEnable", isEnabled);
+
+        String deleteLabel, modeName, physicsName, spatialText, typeText;
+        String soButton, ssButton;
+
         if (sgc.isSelected()) {
             deleteLabel = "Delete";
             modeName = sgc.getModeName();
             physicsName = sgc.objectName();
-            if (physicsName.isEmpty()) {
-                sButton = "";
+            if (physicsName.isEmpty() || !isEnabled) {
+                soButton = "";
             } else {
-                sButton = "Select";
+                soButton = "Select";
             }
+            ssButton = "Select";
+            spatialText = sgc.controlledName();
             typeText = sgc.getType();
         } else {
             deleteLabel = "";
             modeName = "";
             physicsName = "";
-            sButton = "";
+            soButton = "";
+            ssButton = "";
+            spatialText = "(none selected)";
             typeText = "(none selected)";
         }
 
         Maud.gui.setButtonLabel("sgcDeleteButton", deleteLabel);
         Maud.gui.setStatusText("sgcMode", " " + modeName);
         Maud.gui.setStatusText("sgcObject", " " + physicsName);
-        Maud.gui.setButtonLabel("sgcSelectObjectButton", sButton);
+        Maud.gui.setButtonLabel("sgcSelectObjectButton", soButton);
+        Maud.gui.setButtonLabel("sgcSelectSpatialButton", ssButton);
+        Maud.gui.setStatusText("sgcSpatial", " " + spatialText);
         Maud.gui.setStatusText("sgcType", " " + typeText);
-
-        boolean isEnabled = sgc.isEnabled();
-        Maud.gui.setChecked("sgcEnable", isEnabled);
 
         boolean isLocalPhysics = sgc.isApplyPhysicsLocal();
         Maud.gui.setChecked("sgcLocalPhysics", isLocalPhysics);
@@ -117,7 +125,7 @@ class SgcTool extends WindowController {
         String indexText, nButton, pButton;
 
         Cgm target = Maud.getModel().getTarget();
-        int numSgcs = target.getSpatial().countSgcs();
+        int numSgcs = target.countSgcs(Control.class);
         if (target.getSgc().isSelected()) {
             int selectedIndex = target.getSgc().getIndex();
             int indexBase = Maud.getModel().getMisc().getIndexBase();

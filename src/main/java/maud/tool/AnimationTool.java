@@ -26,6 +26,7 @@
  */
 package maud.tool;
 
+import com.jme3.animation.AnimControl;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
@@ -136,9 +137,9 @@ class AnimationTool extends WindowController {
         String pButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        if (target.countAnimControls() > 0) {
+        int numAnimControls = target.countSgcs(AnimControl.class);
+        if (numAnimControls > 0) {
             sButton = "Select AnimControl";
-            int numAnimControls = target.countAnimControls();
             SelectedAnimControl sac = target.getAnimControl();
             if (sac.isSelected()) {
                 int selectedIndex = sac.findIndex();
@@ -148,13 +149,11 @@ class AnimationTool extends WindowController {
                 nButton = "+";
                 pButton = "-";
             } else {
-                if (numAnimControls == 0) {
-                    indexText = "no AnimControls";
-                } else if (numAnimControls == 1) {
+                if (numAnimControls == 1) {
                     indexText = "one AnimControl";
                 } else {
-                    indexText = String.format("%d AnimControls",
-                            numAnimControls);
+                    indexText
+                            = String.format("%d AnimControls", numAnimControls);
                 }
             }
 

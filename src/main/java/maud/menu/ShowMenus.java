@@ -28,6 +28,7 @@ package maud.menu;
 
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.Control;
 import com.jme3.system.AppSettings;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
@@ -374,9 +375,13 @@ public class ShowMenus {
     public static void selectSgc() {
         MenuBuilder builder = new MenuBuilder();
 
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        for (String name : spatial.listSgcNames()) {
-            builder.add(name);
+        Cgm target = Maud.getModel().getTarget();
+        String selectedName = target.getSgc().name();
+        List<String> names = target.listSgcNames(Control.class);
+        for (String name : names) {
+            if (!name.equals(selectedName)) {
+                builder.add(name);
+            }
         }
         builder.add(SelectedSgc.noControl);
 

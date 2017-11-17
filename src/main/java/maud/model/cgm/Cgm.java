@@ -41,7 +41,6 @@ import com.jme3.math.Transform;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.util.clone.Cloner;
 import java.util.ArrayList;
@@ -193,21 +192,6 @@ public class Cgm implements Cloneable {
     // new methods exposed
 
     /**
-     * Count anim controls.
-     *
-     * @return count (&ge;0)
-     */
-    public int countAnimControls() {
-        int count = 0;
-        if (isLoaded()) {
-            count = MySpatial.countControls(rootSpatial, AnimControl.class);
-        }
-
-        assert count >= 0 : count;
-        return count;
-    }
-
-    /**
      * Count the immediate children of the specified spatial.
      *
      * @param treePosition tree position (not null, unaffected)
@@ -245,6 +229,23 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Count scene-graph controls of the specified type.
+     *
+     * @param <T> superclass of Control
+     * @param controlType superclass of Control to search for
+     * @return count (&ge;0)
+     */
+    public <T extends Control> int countSgcs(Class<T> controlType) {
+        int count = 0;
+        if (isLoaded()) {
+            count = MySpatial.countControls(rootSpatial, controlType);
+        }
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
      * Count physics shapes.
      *
      * @return count (&ge;0)
@@ -258,13 +259,30 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Find the spatial controlled by the specified S-G control.
+     *
+     * @param sgc which scene-graph control (not null, unaffected)
+     * @return the pre-existing controlled spatial, or null if none found
+     */
+    Spatial findControlledSpatial(Control sgc) {
+        assert sgc != null;
+
+        Spatial result = null;
+        if (rootSpatial != null) {
+            result = MaudUtil.findControlledSpatial(sgc, rootSpatial);
+        }
+
+        return result;
+    }
+
+    /**
      * Find the specified spatial.
      *
      * @param input spatial to search for (not null)
      * @return a new tree-position instance, or null if not found
      */
     List<Integer> findSpatial(Spatial input) {
-        Validate.nonNull(input, "input");
+        assert input != null;
 
         List<Integer> treePosition = new ArrayList<>(4);
         boolean success
@@ -283,6 +301,9 @@ public class Cgm implements Cloneable {
      * @return a new tree-position instance, or null if not found
      */
     List<Integer> findSpatialNamed(String name) {
+        assert name != null;
+        assert !name.isEmpty();
+
         List<Integer> treePosition = new ArrayList<>(4);
         Spatial sp = findSpatialNamed(name, rootSpatial, treePosition);
         if (sp == null) {
@@ -662,6 +683,47 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Name all S-G controls of the specified type in the same order as
+     * {@link #listSgcs(java.lang.Class)}.
+     *
+     * @param <T> superclass of Control
+     * @param sgcType superclass of Control to search for
+     * @return a new list of names
+     */
+    public <T extends Control> List<String> listSgcNames(Class<T> sgcType) {
+        List<T> sgcList = listSgcs(sgcType);
+        int numSgcs = sgcList.size();
+        List<String> nameList = new ArrayList<>(numSgcs);
+        for (Control sgc : sgcList) {
+            String type = sgc.getClass().getSimpleName();
+            if (type.endsWith("Control")) {
+                type = MyString.removeSuffix(type, "Control");
+            }
+            Spatial controlledSpatial = findControlledSpatial(sgc);
+            String controlledName = controlledSpatial.getName();
+            assert !controlledName.isEmpty();
+            String name = type + "@" + controlledName;
+            nameList.add(name);
+        }
+        MyString.dedup(nameList, " #");
+
+        return nameList;
+    }
+
+    /**
+     * Enumerate all scene-graph controls of the specified type in the same
+     * order as {@link #listSgcNames(java.lang.Class)}.
+     *
+     * @param <T> superclass of Control
+     * @param sgcType superclass of Control to search for
+     * @return a new list of pre-existing S-G controls
+     */
+    <T extends Control> List<T> listSgcs(Class<T> sgcType) {
+        List<T> sgcList = MySpatial.listControls(rootSpatial, sgcType, null);
+        return sgcList;
+    }
+
+    /**
      * Enumerate all collision shapes with the specified name prefix.
      *
      * @param namePrefix (not null)
@@ -684,19 +746,6 @@ public class Cgm implements Cloneable {
         Collections.sort(result);
 
         return result;
-    }
-
-    /**
-     * Enumerate all scene-graph controls of the specified type in the C-G
-     * model.
-     *
-     * @param <T> superclass of Control
-     * @param sgcType superclass of Control to search for
-     * @return a new list of pre-existing SGCs
-     */
-    <T extends Control> List<T> listSgcs(Class<T> sgcType) {
-        List<T> sgcList = MySpatial.listControls(rootSpatial, sgcType, null);
-        return sgcList;
     }
 
     /**
@@ -752,19 +801,6 @@ public class Cgm implements Cloneable {
         Map<Bone, Spatial> result
                 = MySkeleton.mapAttachments(rootSpatial, null);
         return result;
-    }
-
-    /**
-     * Select the specified scene-graph control.
-     *
-     * @param newSgc an abstract control to select, or null to select none
-     */
-    void selectSgc(AbstractControl newSgc) {
-        if (newSgc != null) {
-            Spatial newSpatial = newSgc.getSpatial();
-            selectedSpatial.select(newSpatial);
-        }
-        selectedSgc.select(newSgc);
     }
 
     /**
@@ -836,7 +872,7 @@ public class Cgm implements Cloneable {
         clone.selectedBone = selectedBone.clone();
         clone.selectedJoint = selectedJoint.clone();
         clone.selectedPhysics = selectedPhysics.clone();
-        clone.selectedSgc = selectedSgc.clone();
+        clone.selectedSgc = cloner.clone(selectedSgc);
         clone.selectedShape = selectedShape.clone();
         clone.selectedSkeleton = cloner.clone(selectedSkeleton);
         clone.selectedSpatial = cloner.clone(selectedSpatial);

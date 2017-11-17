@@ -346,7 +346,7 @@ public class EditableCgm extends LoadedCgm {
      * deselecting the control.
      */
     void deleteSgc() {
-        Spatial selectedSpatial = getSpatial().find();
+        Spatial controlled = getSgc().getControlled();
         Control selectedSgc = getSgc().find();
         SceneView sceneView = getSceneView();
 
@@ -372,19 +372,20 @@ public class EditableCgm extends LoadedCgm {
             }
 
         } else if (selectedSgc instanceof PhysicsControl) {
+            List<Integer> treePosition = findSpatial(controlled);
             PhysicsControl pc = (PhysicsControl) selectedSgc;
-            int position = PhysicsUtil.pcToPosition(selectedSpatial, pc);
-            sceneView.removePhysicsControl(position);
+            int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
+            sceneView.removePhysicsControl(treePosition, pcPosition);
         }
 
-        boolean success = selectedSpatial.removeControl(selectedSgc);
+        boolean success = controlled.removeControl(selectedSgc);
         assert success;
         setEdited("delete control");
     }
 
     /**
      * Delete the selected spatial and its descendents, if any. The invoker is
-     * responsible for deselecting the spatial.
+     * responsible for updating selections.
      */
     void deleteSubtree() {
         SelectedSpatial ss = getSpatial();
@@ -412,7 +413,7 @@ public class EditableCgm extends LoadedCgm {
         boolean success = subtree.removeFromParent();
         assert success;
         /*
-         * Sychronize with the scene view.
+         * Sychronize the scene view.
          */
         SceneView sceneView = getSceneView();
         sceneView.deleteSubtree();
@@ -604,11 +605,13 @@ public class EditableCgm extends LoadedCgm {
                 History.autoAdd();
                 MyControl.setApplyPhysicsLocal(modelSgc, newSetting);
 
-                SceneView sceneView = getSceneView();
-                Spatial ss = getSpatial().find();
+                Spatial controlled = getSgc().getControlled();
+                List<Integer> treePosition = findSpatial(controlled);
                 PhysicsControl pc = (PhysicsControl) modelSgc;
-                int position = PhysicsUtil.pcToPosition(ss, pc);
-                sceneView.setApplyPhysicsLocal(position, newSetting);
+                int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
+                SceneView sceneView = getSceneView();
+                sceneView.setApplyPhysicsLocal(treePosition, pcPosition,
+                        newSetting);
 
                 if (newSetting) {
                     setEdited("enable local physics");
@@ -810,12 +813,14 @@ public class EditableCgm extends LoadedCgm {
                 History.autoAdd();
                 MyControl.setEnabled(modelSgc, newSetting);
                 if (modelSgc instanceof PhysicsControl) {
-                    Spatial ss = getSpatial().find();
+                    Spatial controlled = getSgc().getControlled();
+                    List<Integer> treePosition = findSpatial(controlled);
                     PhysicsControl pc = (PhysicsControl) modelSgc;
-                    int position = PhysicsUtil.pcToPosition(ss, pc);
+                    int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
 
                     SceneView sceneView = getSceneView();
-                    sceneView.setPhysicsControlEnabled(position, newSetting);
+                    sceneView.setPhysicsControlEnabled(treePosition, pcPosition,
+                            newSetting);
                 }
                 if (newSetting) {
                     setEdited("enable control");

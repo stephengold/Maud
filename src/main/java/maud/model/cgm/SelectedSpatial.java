@@ -93,7 +93,7 @@ public class SelectedSpatial implements JmeCloneable {
      */
     private EditableCgm editableCgm = null;
     /**
-     * tree position of the selected spatial (not null)
+     * tree position of the spatial (not null)
      */
     private List<Integer> treePosition = new ArrayList<>(3);
     /**
@@ -124,7 +124,8 @@ public class SelectedSpatial implements JmeCloneable {
         GhostControl newSgc = new GhostControl(shape);
 
         editableCgm.addSgc(newSgc);
-        editableCgm.getSgc().select(newSgc);
+        Spatial ss = find();
+        editableCgm.getSgc().select(newSgc, ss);
     }
 
     /**
@@ -141,7 +142,8 @@ public class SelectedSpatial implements JmeCloneable {
         // why is the default kinematic=false but kinematicSpatial=true?
 
         editableCgm.addSgc(newSgc);
-        editableCgm.getSgc().select(newSgc);
+        Spatial ss = find();
+        editableCgm.getSgc().select(newSgc, ss);
     }
 
     /**
@@ -247,7 +249,6 @@ public class SelectedSpatial implements JmeCloneable {
      */
     public int countOverrides() {
         Spatial spatial = find();
-
         List<MatParamOverride> list = spatial.getLocalMatParamOverrides();
         int result = list.size();
 
@@ -341,13 +342,21 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * If the selected spatial has a parent, delete the selected spatial and
-     * select the parent.
+     * If the spatial has a parent, delete the spatial and select its parent.
      */
     public void delete() {
         Spatial selectedSpatial = find();
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
+            /*
+             * If the selected S-G control will be deleted, deselect it.
+             */
+            SelectedSgc sgc = cgm.getSgc();
+            Spatial controlled = sgc.getControlled();
+            if (subtreeContains(controlled)) {
+                sgc.selectNone();
+            }
+
             editableCgm.deleteSubtree();
             /*
              * Select the parent node.
@@ -768,30 +777,6 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Enumerate all S-G controls in the selected spatial and assign them names.
-     *
-     * @return a new list of names ordered by sgc index
-     */
-    public List<String> listSgcNames() {
-        int numControls = countSgcs();
-        List<String> nameList = new ArrayList<>(numControls);
-
-        Spatial spatial = find();
-        for (int sgcIndex = 0; sgcIndex < numControls; sgcIndex++) {
-            Control sgc = spatial.getControl(sgcIndex);
-            String name = sgc.getClass().getSimpleName();
-            if (name.endsWith("Control")) {
-                int length = name.length();
-                name = name.substring(0, length - 7);
-            }
-            nameList.add(name);
-        }
-        MyString.dedup(nameList, " #");
-
-        return nameList;
-    }
-
-    /**
      * Enumerate the user keys of the selected spatial.
      *
      * @return a new list, sorted lexicographically
@@ -947,14 +932,24 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Select the controlled spatial of the selected S-G control.
+     */
+    public void selectControlled() {
+        Spatial controlled = cgm.getSgc().getControlled();
+        if (controlled != null) {
+            select(controlled);
+        }
+    }
+
+    /**
      * Select the parent of the selected spatial.
      */
     public void selectParent() {
         Spatial selectedSpatial = find();
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
-            int last = treePosition.size() - 1;
-            treePosition.remove(last);
+            int lastLevel = treePosition.size() - 1;
+            treePosition.remove(lastLevel);
             assert find() == parent;
             postSelect();
         }
@@ -988,6 +983,31 @@ public class SelectedSpatial implements JmeCloneable {
         Quaternion localRotation = localRotation(null);
         MyQuaternion.snapLocal(localRotation, axisIndex);
         editableCgm.setSpatialRotation(localRotation);
+    }
+
+    /**
+     * Test whether the selected subtree contains the specified spatial.
+     *
+     * @param input spatial to find (may be null, unaffected)
+     * @return true if one the collected spatial was found, otherwise false
+     */
+    boolean subtreeContains(Spatial input) {
+        boolean result;
+        if (input == null) {
+            result = false;
+        } else {
+            Spatial selectedSpatial = find();
+            if (input == selectedSpatial) {
+                result = true;
+            } else if (input instanceof Node) {
+                Node selectedNode = (Node) selectedSpatial;
+                result = input.hasAncestor(selectedNode);
+            } else {
+                result = false;
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -1137,7 +1157,6 @@ public class SelectedSpatial implements JmeCloneable {
     private void postSelect() {
         Spatial found = find();
         if (found != last) {
-            cgm.getSgc().selectNone();
             cgm.getUserData().selectKey(null);
             cgm.getVertex().deselect();
             last = found;

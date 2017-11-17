@@ -437,6 +437,8 @@ public class SceneView
      *
      * @param input spatial to search for (not null)
      * @return a new tree-position instance, or null if not found
+     *
+     * TODO rename findPosition
      */
     List<Integer> findSpatial(Spatial input) {
         Validate.nonNull(input, "input");
@@ -616,13 +618,17 @@ public class SceneView
      * Determine the name of the object associated with the indexed physics
      * control.
      *
-     * @param position position among the physics controls added to the selected
-     * spatial (ge;0)
+     * @param treePosition tree position of the controlled spatial (not null,
+     * unaffected)
+     * @param pcPosition position among the physics controls added to the
+     * controlled spatial (&ge;0)
      * @return name (not null, not empty)
      */
-    public String objectName(int position) {
-        Spatial spatial = selectedSpatial();
-        PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, position);
+    public String objectName(List<Integer> treePosition, int pcPosition) {
+        Validate.nonNull(treePosition, "tree position");
+        Validate.nonNegative(pcPosition, "control position");
+
+        PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
         PhysicsCollisionObject pco = (PhysicsCollisionObject) pc;
         String result = MyControl.objectName(pco);
 
@@ -659,17 +665,21 @@ public class SceneView
     }
 
     /**
-     * Remove an existing physics control from the selected spatial and the
-     * physics space.
+     * Remove an existing physics control from the scene graph and the physics
+     * space.
      *
-     * @param position position among the physics controls added to the selected
-     * spatial (ge;0)
+     * @param treePosition tree position of the controlled spatial (not null,
+     * unaffected)
+     * @param pcPosition position among the physics controls added to the
+     * controlled spatial (&ge;0)
      */
-    public void removePhysicsControl(int position) {
-        Validate.nonNegative(position, "position");
+    public void removePhysicsControl(List<Integer> treePosition,
+            int pcPosition) {
+        Validate.nonNull(treePosition, "tree position");
+        Validate.nonNegative(pcPosition, "control position");
 
-        Spatial spatial = selectedSpatial();
-        PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, position);
+        Spatial spatial = findSpatial(treePosition);
+        PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, pcPosition);
         pc.setEnabled(false);
         spatial.removeControl(pc);
     }
@@ -689,13 +699,18 @@ public class SceneView
      * Alter whether the indexed physics control applies to its spatial's local
      * translation.
      *
-     * @param position position among the physics controls added to the selected
-     * spatial (ge;0)
+     * @param treePosition tree position of the controlled spatial (not null,
+     * unaffected)
+     * @param pcPosition position among the physics controls added to the
+     * controlled spatial (&ge;0)
      * @param newSetting true&rarr;apply to local, false&rarr;apply to world
      */
-    public void setApplyPhysicsLocal(int position, boolean newSetting) {
-        Spatial spatial = selectedSpatial();
-        PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, position);
+    public void setApplyPhysicsLocal(List<Integer> treePosition, int pcPosition,
+            boolean newSetting) {
+        Validate.nonNull(treePosition, "tree position");
+        Validate.nonNegative(pcPosition, "control position");
+
+        PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
         assert MyControl.canApplyPhysicsLocal(pc);
         MyControl.setApplyPhysicsLocal(pc, newSetting);
     }
@@ -791,13 +806,18 @@ public class SceneView
     /**
      * Alter whether the specified physics control is enabled.
      *
-     * @param position position among the physics controls added to the selected
-     * spatial (ge;0)
+     * @param treePosition tree position of the controlled spatial (not null,
+     * unaffected)
+     * @param pcPosition position among the physics controls added to the
+     * controlled spatial (&ge;0)
      * @param newSetting true&rarr;enable, false&rarr;disable
      */
-    public void setPhysicsControlEnabled(int position, boolean newSetting) {
-        Spatial spatial = selectedSpatial();
-        PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, position);
+    public void setPhysicsControlEnabled(List<Integer> treePosition,
+            int pcPosition, boolean newSetting) {
+        Validate.nonNull(treePosition, "tree position");
+        Validate.nonNegative(pcPosition, "control position");
+
+        PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
         pc.setEnabled(newSetting);
     }
 
@@ -1385,6 +1405,44 @@ public class SceneView
         }
 
         return null;
+    }
+
+    /**
+     * Find a physics control specified by positional indices.
+     *
+     * @param treePosition tree position of the controlled spatial (not null,
+     * unaffected)
+     * @param pcPosition position among the physics controls added to the
+     * controlled spatial (&ge;0)
+     * @return the pre-existing physics control
+     */
+    private PhysicsControl findPhysicsControl(List<Integer> treePosition,
+            int pcPosition) {
+        Validate.nonNull(treePosition, "tree position");
+        Validate.nonNegative(pcPosition, "control position");
+
+        Spatial spatial = findSpatial(treePosition);
+        PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, pcPosition);
+
+        return pc;
+    }
+
+    /**
+     * Find a spatial specified by positional indices.
+     *
+     * @param treePosition tree position of the spatial (not null, unaffected)
+     * @return the pre-existing spatial
+     */
+    private Spatial findSpatial(List<Integer> treePosition) {
+        Validate.nonNull(treePosition, "tree position");
+
+        Spatial spatial = cgmRoot;
+        for (int childPosition : treePosition) {
+            Node node = (Node) spatial;
+            spatial = node.getChild(childPosition);
+        }
+
+        return spatial;
     }
 
     /**

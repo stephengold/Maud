@@ -31,6 +31,8 @@ import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.util.clone.Cloner;
+import com.jme3.util.clone.JmeCloneable;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
@@ -40,15 +42,19 @@ import maud.PhysicsUtil;
 import maud.view.SceneView;
 
 /**
- * The MVC model of the selected scene-graph (S-G) control in the Maud
- * application.
+ * The MVC model of the selected scene-graph (S-G) control in a loaded C-G
+ * model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedSgc implements Cloneable {
+public class SelectedSgc implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * dummy index, used to indicate that no S-G control is selected
+     */
+    final public static int noSgcIndex = -1;
     /**
      * message logger for this class
      */
@@ -62,70 +68,95 @@ public class SelectedSgc implements Cloneable {
     // fields
 
     /**
-     * C-G model containing the selected S-G control (set by
-     * {@link #setCgm(Cgm)})
+     * C-G model containing the S-G control (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
-     * editable C-G model, if any, containing the selected S-G control (set by
+     * current selection, or null if none
+     */
+    private Control selected = null;
+    /**
+     * editable C-G model, if any, containing the S-G control (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm = null;
     /**
-     * position of the selected S-G control in the MVC model, or -1 for none
-     * selected
+     * spatial controlled by the selection, or null if none
      */
-    private int selectedIndex = -1;
+    private Spatial controlled = null;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Delete the selected S-G control.
+     * Read the name of the controlled spatial.
+     *
+     * @return name of the controlled spatial, or "" if none
+     */
+    public String controlledName() {
+        String result = "";
+        if (isSelected()) {
+            assert controlled != null;
+            result = controlled.getName();
+        }
+
+        return result;
+    }
+
+    /**
+     * Delete the S-G control.
      */
     public void delete() {
         if (isSelected() && editableCgm != null) {
             editableCgm.deleteSgc();
-            select(-1);
+            selectNone();
         }
     }
 
     /**
-     * Access the selected S-G control.
+     * Access the S-G control. TODO rename get
      *
-     * @return the pre-existing instance, or null if none selected/found
+     * @return the pre-existing instance, or null if none selected
      */
     Control find() {
-        Control sgc = null;
-        if (selectedIndex != -1) {
-            Spatial spatial = cgm.getSpatial().find();
-            int numControls = spatial.getNumControls();
-            if (selectedIndex < numControls) {
-                sgc = spatial.getControl(selectedIndex);
-            }
-        }
-
-        return sgc;
+        return selected;
     }
 
     /**
-     * Read the position of the selected S-G control in the selected spatial.
+     * Access the controlled spatial.
      *
-     * @return the S-G control index, or -1 if none selected
+     * @return the pre-existing instance, or null if none selected
+     */
+    Spatial getControlled() {
+        return controlled;
+    }
+
+    /**
+     * Read the position index of the S-G control in the C-G model. TODO rename
+     * findIndex
+     *
+     * @return the index, or noSgcIndex if none selected
      */
     public int getIndex() {
-        return selectedIndex;
+        int result = noSgcIndex;
+        if (isSelected()) {
+            List<Control> sgcs = cgm.listSgcs(Control.class);
+            result = sgcs.indexOf(selected);
+            assert result != noSgcIndex;
+        }
+
+        return result;
     }
 
     /**
-     * Read the name of the physics mode of the selected S-G control.
+     * Read the name of the physics mode of the S-G control. TODO rename
+     * physicsModeName
      *
      * @return mode name, or "" if unknown
      */
     public String getModeName() {
         String result = "";
-        Control sgc = find();
-        if (sgc instanceof RigidBodyControl) {
-            RigidBodyControl rbc = (RigidBodyControl) sgc;
+        if (selected instanceof RigidBodyControl) {
+            RigidBodyControl rbc = (RigidBodyControl) selected;
             boolean kinematic = rbc.isKinematicSpatial();
             if (kinematic) {
                 result = "Kinematic";
@@ -138,8 +169,8 @@ public class SelectedSgc implements Cloneable {
                 }
             }
 
-        } else if (sgc instanceof KinematicRagdollControl) {
-            KinematicRagdollControl krc = (KinematicRagdollControl) sgc;
+        } else if (selected instanceof KinematicRagdollControl) {
+            KinematicRagdollControl krc = (KinematicRagdollControl) selected;
             KinematicRagdollControl.Mode mode = krc.getMode();
             result = mode.toString();
         }
@@ -148,33 +179,31 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Determine the name of the physics object associated with the selected S-G
-     * control.
+     * Obtain the name of the physics object associated with the S-G control.
+     * TODO rename physicsObjectName
      *
      * @return object name, or "" if unknown
      */
     public String objectName() {
         String result = "";
-        Control modelSgc = find();
-        if (modelSgc instanceof PhysicsControl) {
-            Spatial selectedSpatial = cgm.getSpatial().find();
-            PhysicsControl pc = (PhysicsControl) modelSgc;
-            int position = PhysicsUtil.pcToPosition(selectedSpatial, pc);
+        if (selected instanceof PhysicsControl) {
+            List<Integer> treePosition = cgm.findSpatial(controlled);
+            PhysicsControl pc = (PhysicsControl) selected;
+            int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
             SceneView sceneView = cgm.getSceneView();
-            result = sceneView.objectName(position);
+            result = sceneView.objectName(treePosition, pcPosition);
         }
 
         return result;
     }
 
     /**
-     * Read the type of the selected S-G control.
+     * Read the type of the S-G control.
      *
      * @return abbreviated name for the class
      */
     public String getType() {
-        Control sgc = find();
-        String name = sgc.getClass().getSimpleName();
+        String name = selected.getClass().getSimpleName();
         if (name.endsWith("Control")) {
             name = MyString.removeSuffix(name, "Control");
         }
@@ -183,17 +212,16 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Test whether the selected S-G control applies physics coordinates to its
-     * spatial's local translation.
+     * Test whether the S-G control applies physics coordinates to its spatial's
+     * local translation.
      *
      * @return true if applied to local translation, otherwise false
      */
     public boolean isApplyPhysicsLocal() {
         boolean result = false;
         if (isSelected()) {
-            Control sgc = find();
-            if (MyControl.canApplyPhysicsLocal(sgc)) {
-                result = MyControl.isApplyPhysicsLocal(sgc);
+            if (MyControl.canApplyPhysicsLocal(selected)) {
+                result = MyControl.isApplyPhysicsLocal(selected);
             }
         }
 
@@ -201,16 +229,15 @@ public class SelectedSgc implements Cloneable {
     }
 
     /**
-     * Test whether the selected S-G control is enabled.
+     * Test whether the S-G control is enabled.
      *
      * @return true if enabled or of unknown type, otherwise false
      */
     public boolean isEnabled() {
         boolean result = false;
         if (isSelected()) {
-            Control sgc = find();
-            if (MyControl.canDisable(sgc)) {
-                result = MyControl.isEnabled(sgc);
+            if (MyControl.canDisable(selected)) {
+                result = MyControl.isEnabled(selected);
             } else {
                 result = true;
             }
@@ -225,63 +252,86 @@ public class SelectedSgc implements Cloneable {
      * @return true if selected, otherwise false
      */
     public boolean isSelected() {
-        if (selectedIndex == -1) {
-            return false;
-        } else {
-            return true;
+        boolean result = false;
+        if (selected != null) {
+            result = true;
         }
+
+        return result;
     }
 
     /**
-     * Determine a name for the selected S-G control.
+     * Determine the name of the selected S-G control.
      *
      * @return a descriptive name, or noControl if none selected
      */
     public String name() {
-        List<String> names = cgm.getSpatial().listSgcNames();
-        String name;
+        String name = noControl;
         if (isSelected()) {
-            name = names.get(selectedIndex);
-        } else {
-            name = noControl;
+            int index = getIndex();
+            assert index != -1;
+            List<String> names = cgm.listSgcNames(Control.class);
+            name = names.get(index);
+            assert name != null;
+            assert !name.isEmpty();
         }
 
         return name;
     }
 
     /**
-     * After successfully loading a C-G model, deselect the selected S-G
-     * control, if any.
+     * After successfully loading a C-G model, deselect any selected S-G
+     * control.
      */
     void postLoad() {
-        selectedIndex = -1;
+        controlled = null;
+        selected = null;
     }
 
     /**
-     * Select the specified S-G control in the selected spatial.
+     * Select the specified S-G control.
      *
-     * @param newSgc which S-G control to select, or null to deselect
+     * @param sgc which S-G control to select (alias created), or null to
+     * deselect
      */
-    public void select(Control newSgc) {
-        if (newSgc == null) {
+    void select(Control sgc) {
+        if (sgc == null) {
             selectNone();
         } else {
-            Spatial spatial = cgm.getSpatial().find();
-            int newIndex = MyControl.findIndex(newSgc, spatial);
-            select(newIndex);
+            Spatial newControlled = cgm.findControlledSpatial(sgc);
+            select(sgc, newControlled);
         }
     }
 
     /**
-     * Select an S-G control by its index.
+     * Select the specified S-G control of the specified spatial.
      *
-     * @param newIndex which S-G control to select, or -1 to deselect
+     * @param sgc which S-G control to select (not null, alias created)
+     * @param spatial which spatial is controlled (not null)
      */
-    public void select(int newIndex) {
-        if (selectedIndex != newIndex) {
-            selectedIndex = newIndex;
-            cgm.getSkeleton().postSelect();
-            cgm.getAnimControl().postSelect();
+    void select(Control sgc, Spatial spatial) {
+        assert sgc != null;
+        assert spatial != null;
+        assert MyControl.findIndex(sgc, spatial) != noSgcIndex;
+
+        selected = sgc;
+        controlled = spatial;
+        cgm.getSkeleton().postSelect();
+        cgm.getAnimControl().postSelect();
+    }
+
+    /**
+     * Select an indexed S-G control of the selected spatial.
+     *
+     * @param index which S-G control to select, or noSgcIndex to deselect
+     */
+    public void select(int index) {
+        if (index == noSgcIndex) {
+            selectNone();
+        } else {
+            Spatial spatial = cgm.getSpatial().find();
+            Control sgc = spatial.getControl(index);
+            select(sgc, spatial);
         }
     }
 
@@ -297,9 +347,12 @@ public class SelectedSgc implements Cloneable {
         if (name.equals(noControl)) {
             selectNone();
         } else {
-            List<String> names = cgm.getSpatial().listSgcNames();
-            int newIndex = names.indexOf(name);
-            select(newIndex);
+            List<String> names = cgm.listSgcNames(Control.class);
+            int index = names.indexOf(name);
+            assert index != -1;
+            List<Control> sgcs = cgm.listSgcs(Control.class);
+            Control sgc = sgcs.get(index);
+            select(sgc);
         }
     }
 
@@ -308,12 +361,15 @@ public class SelectedSgc implements Cloneable {
      */
     public void selectNext() {
         if (isSelected()) {
-            int newIndex = selectedIndex + 1;
-            int numSgcs = cgm.getSpatial().countSgcs();
-            if (newIndex >= numSgcs) {
-                newIndex = 0;
+            List<Control> sgcs = cgm.listSgcs(Control.class);
+            int index = sgcs.indexOf(selected);
+            assert index != -1;
+            ++index;
+            if (index >= sgcs.size()) {
+                index = 0;
             }
-            select(newIndex);
+            Control sgc = sgcs.get(index);
+            select(sgc);
         }
     }
 
@@ -321,7 +377,10 @@ public class SelectedSgc implements Cloneable {
      * Deselect the selected S-G control, if any.
      */
     public void selectNone() {
-        select(-1);
+        controlled = null;
+        selected = null;
+        cgm.getSkeleton().postSelect();
+        cgm.getAnimControl().postSelect();
     }
 
     /**
@@ -329,19 +388,21 @@ public class SelectedSgc implements Cloneable {
      */
     public void selectPrevious() {
         if (isSelected()) {
-            int newIndex = selectedIndex - 1;
+            int newIndex = getIndex() - 1;
             if (newIndex < 0) {
-                int numSgcs = cgm.getSpatial().countSgcs();
+                int numSgcs = controlled.getNumControls();
                 newIndex = numSgcs - 1;
             }
-            select(newIndex);
+            selected = controlled.getControl(newIndex);
+            assert selected != null;
+            select(selected, controlled);
         }
     }
 
     /**
-     * Alter which C-G model contains the selected S-G control.
+     * Alter which C-G model contains the S-G control.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, aliases created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
@@ -355,17 +416,46 @@ public class SelectedSgc implements Cloneable {
         }
     }
     // *************************************************************************
-    // Object methods
+    // JmeCloneable methods
 
     /**
-     * Create a deep copy of this object.
+     * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
      *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if the superclass isn't cloneable
+     * @return never
+     * @throws CloneNotSupportedException always
      */
     @Override
     public SelectedSgc clone() throws CloneNotSupportedException {
-        SelectedSgc clone = (SelectedSgc) super.clone();
-        return clone;
+        super.clone();
+        throw new CloneNotSupportedException("use a cloner");
+    }
+
+    /**
+     * Callback from {@link com.jme3.util.clone.Cloner} to convert this
+     * shallow-cloned instance into a deep-cloned one, using the specified
+     * cloner and original to resolve copied fields.
+     *
+     * @param cloner the cloner currently cloning this control (not null)
+     * @param original the view from which this view was shallow-cloned (unused)
+     */
+    @Override
+    public void cloneFields(Cloner cloner, Object original) {
+        controlled = cloner.clone(controlled);
+        selected = cloner.clone(selected);
+    }
+
+    /**
+     * Create a shallow clone for the JME cloner.
+     *
+     * @return a new instance
+     */
+    @Override
+    public SelectedSgc jmeClone() {
+        try {
+            SelectedSgc clone = (SelectedSgc) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 }

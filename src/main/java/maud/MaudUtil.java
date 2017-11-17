@@ -47,6 +47,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.bvh.BVHAnimData;
@@ -61,6 +62,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyControl;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
@@ -94,7 +96,7 @@ public class MaudUtil {
      */
     final private static Vector3f zAxis = new Vector3f(0f, 0f, 1f);
     /**
-     * array of cardinal axes
+     * array of cardinal axes TODO replace with library
      */
     final private static Vector3f cardinalAxes[] = {
         xAxis,
@@ -250,7 +252,7 @@ public class MaudUtil {
     /**
      * Find the cardinal rotation most similar to the specified input. A
      * cardinal rotation is one for which the rotation angles on all 3 axes are
-     * integer multiples of Pi/2 radians.
+     * integer multiples of Pi/2 radians. TODO replace with library
      *
      * @param input (not null, modified)
      */
@@ -271,7 +273,7 @@ public class MaudUtil {
                 if (z.isUnitVector()) {
                     cardinalRotation.fromAxes(x, y, z);
                     /*
-                     * Measure the similarity of the 2 rotations
+                     * Measure similarity to the input rotation
                      * using the absolute value of their dot product.
                      */
                     float dot = cardinalRotation.dot(input);
@@ -285,6 +287,42 @@ public class MaudUtil {
         }
 
         input.set(bestCardinalRotation);
+    }
+
+    /**
+     * Find a spatial controlled by the specified S-G control in the specified
+     * subtree of the scene graph. Note: recursive!
+     *
+     * @param sgc which scene-graph control (not null, unaffected)
+     * @param subtree which subtree (not null, unaffected)
+     * @return the pre-existing controlled spatial, or null if none found
+     */
+    public static Spatial findControlledSpatial(Control sgc, Spatial subtree) {
+        Validate.nonNull(sgc, "control");
+        Validate.nonNull(subtree, "subtree");
+
+        Spatial result = null;
+        if (sgc instanceof AbstractControl) {
+            AbstractControl abstractControl = (AbstractControl) sgc;
+            result = abstractControl.getSpatial();
+        }
+        if (result == null) {
+            int sgcIndex = MyControl.findIndex(sgc, subtree);
+            if (sgcIndex != -1) {
+                result = subtree;
+            } else if (subtree instanceof Node) {
+                Node node = (Node) subtree;
+                List<Spatial> children = node.getChildren();
+                for (Spatial child : children) {
+                    result = findControlledSpatial(sgc, child);
+                    if (result != null) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 
     /**

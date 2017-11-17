@@ -361,7 +361,7 @@ public class SelectedAnimControl implements JmeCloneable {
         assert index != -1;
         List<AnimControl> animControls = cgm.listSgcs(AnimControl.class);
         AnimControl animControl = animControls.get(index);
-        cgm.selectSgc(animControl);
+        cgm.getSgc().select(animControl);
     }
 
     /**
@@ -376,7 +376,7 @@ public class SelectedAnimControl implements JmeCloneable {
             int numAnimControls = list.size();
             int nextIndex = MyMath.modulo(index + 1, numAnimControls);
             animControl = list.get(nextIndex);
-            cgm.selectSgc(animControl);
+            cgm.getSgc().select(animControl);
         }
     }
 
@@ -392,14 +392,14 @@ public class SelectedAnimControl implements JmeCloneable {
             int numAnimControls = list.size();
             int nextIndex = MyMath.modulo(index - 1, numAnimControls);
             animControl = list.get(nextIndex);
-            cgm.selectSgc(animControl);
+            cgm.getSgc().select(animControl);
         }
     }
 
     /**
      * Alter which C-G model contains the selected anim control.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, alias created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
@@ -436,11 +436,10 @@ public class SelectedAnimControl implements JmeCloneable {
             throw new RuntimeException(exception);
         }
     }
-    // *************************************************************************
-    // Object methods
 
     /**
      * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
+     * TODO sort methods
      *
      * @return never
      * @throws CloneNotSupportedException always

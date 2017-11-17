@@ -41,6 +41,7 @@ import maud.menu.ShowMenus;
 import maud.menu.SpatialMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedSgc;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.scene.OrbitCenter;
 import maud.view.SceneDrag;
@@ -176,11 +177,16 @@ class SelectAction {
                 break;
 
             case Action.selectSgcObject:
-                String physicsName = target.getSgc().objectName();
-                if (!physicsName.isEmpty()) {
+                SelectedSgc sgc = target.getSgc();
+                String physicsName = sgc.objectName();
+                if (!physicsName.isEmpty() && sgc.isEnabled()) {
                     target.getPhysics().select(physicsName);
                     Maud.gui.tools.select("physics");
                 }
+                break;
+
+            case Action.selectSgcSpatial:
+                target.getSpatial().selectControlled();
                 break;
 
             case Action.selectShape:
