@@ -91,32 +91,32 @@ public class SceneDrag {
     // new methods exposed
 
     /**
-     * Terminate axis dragging. TODO rename clear
+     * Terminate axis dragging.
      */
-    public static void clearDragAxis() {
+    public static void clear() {
         dragAxisIndex = noAxis;
-        assert !isDraggingAxis();
+        assert !isActive();
     }
 
     /**
-     * Read the index of the axis being dragged. TODO rename getAxisIndex
+     * Read the index of the axis being dragged.
      *
      * @return axis index (&ge;0, &lt;numAxes)
      */
-    static int getDragAxis() {
-        assert isDraggingAxis();
+    static int getAxisIndex() {
+        assert isActive();
         assert dragAxisIndex >= 0 : dragAxisIndex;
         assert dragAxisIndex < numAxes : dragAxisIndex;
         return dragAxisIndex;
     }
 
     /**
-     * Access the C-G model that's being manipulated. TODO rename getCgm
+     * Access the C-G model that's being manipulated.
      *
      * @return the pre-existing instance
      */
-    public static Cgm getDragCgm() {
-        assert isDraggingAxis();
+    public static Cgm getCgm() {
+        assert isActive();
 
         EditorModel model = Maud.getModel();
         Cgm result;
@@ -135,17 +135,17 @@ public class SceneDrag {
      * @return length (in local units, &gt;0)
      */
     public static float getInitialLength() {
-        assert isDraggingAxis();
+        assert isActive();
         assert dragInitialLength > 0f : dragInitialLength;
         return dragInitialLength;
     }
 
     /**
-     * Test whether axis dragging is active. TODO rename isActive
+     * Test whether axis dragging is active.
      *
      * @return true if selected, otherwise false
      */
-    public static boolean isDraggingAxis() {
+    public static boolean isActive() {
         if (dragAxisIndex == noAxis) {
             return false;
         } else {
@@ -154,25 +154,24 @@ public class SceneDrag {
     }
 
     /**
-     * Test whether the axis being dragged points away from the camera. TODO
-     * rename isFarSide
+     * Test whether the axis being dragged points away from the camera.
      *
      * @return true if pointing away from camera, otherwise false
      */
-    static boolean isDraggingFarSide() {
-        assert isDraggingAxis();
+    static boolean isFarSide() {
+        assert isActive();
         return dragFarSide;
     }
 
     /**
-     * Start dragging the specified axis. TODO rename start
+     * Start dragging the specified axis.
      *
      * @param axisIndex which axis to drag: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      * @param cgm which C-G model (not null)
      * @param farSideFlag true &rarr; drag on the far side of the axis origin,
      * false to drag on near side
      */
-    static void setDraggingAxis(int axisIndex, float initialLength, Cgm cgm,
+    static void start(int axisIndex, float initialLength, Cgm cgm,
             boolean farSideFlag) {
         Validate.inRange(axisIndex, "axis index", 0, lastAxis);
         Validate.positive(initialLength, "initial length");
@@ -186,14 +185,13 @@ public class SceneDrag {
         } else {
             dragSourceCgm = false;
         }
-        assert isDraggingAxis();
+        assert isActive();
     }
 
     /**
-     * Toggle which direction the dragged axis is pointing. TODO rename
-     * toggleSide
+     * Toggle which direction the dragged axis is pointing.
      */
-    public static void toggleDragSide() {
+    public static void toggleSide() {
         dragFarSide = !dragFarSide;
     }
 }

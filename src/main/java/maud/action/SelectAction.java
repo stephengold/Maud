@@ -247,7 +247,7 @@ class SelectAction {
                 break;
 
             case Action.selectScreenXY:
-                SceneDrag.clearDragAxis();
+                SceneDrag.clear();
                 ScoreDrag.setDraggingGnomon(null);
                 break;
             default:

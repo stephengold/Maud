@@ -575,7 +575,7 @@ public class EditorInputMode extends InputMode {
                 break;
 
             case Action.toggleDragSide:
-                SceneDrag.toggleDragSide();
+                SceneDrag.toggleSide();
                 break;
 
             case Action.toggleFreezeTarget:

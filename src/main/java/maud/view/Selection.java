@@ -356,7 +356,7 @@ public class Selection {
         SceneView sceneView = bestCgm.getSceneView();
         float length = sceneView.getAxesVisualizer().getAxisLength();
         boolean farSide = sceneView.isAxisReceding(bestAxisIndex);
-        SceneDrag.setDraggingAxis(bestAxisIndex, length, bestCgm, farSide);
+        SceneDrag.start(bestAxisIndex, length, bestCgm, farSide);
     }
 
     /**

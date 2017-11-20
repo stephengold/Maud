@@ -405,7 +405,7 @@ public class SceneView
 
         Spatial axesSpatial = axesVisualizer.getSpatial();
         Ray localRay = MyMath.localizeRay(worldRay, axesSpatial);
-        int axisIndex = SceneDrag.getDragAxis();
+        int axisIndex = SceneDrag.getAxisIndex();
         float oldLength = SceneDrag.getInitialLength();
         /*
          * Calculate the old axis direction in local coordinates.
@@ -425,7 +425,7 @@ public class SceneView
                 /*
                  * Calculate the new axis direction in local coordinates.
                  */
-                boolean farSide = SceneDrag.isDraggingFarSide();
+                boolean farSide = SceneDrag.isFarSide();
                 Vector3f newDirection = MyVector3f.lineMeetsSphere(localRay,
                         oldLength, farSide);
                 newDirection.divideLocal(oldLength);

@@ -761,8 +761,8 @@ public class EditorScreen extends GuiScreenController {
                 }
             }
 
-            if (SceneDrag.isDraggingAxis()) {
-                Cgm dragCgm = SceneDrag.getDragCgm();
+            if (SceneDrag.isActive()) {
+                Cgm dragCgm = SceneDrag.getCgm();
                 SceneView sceneView = dragCgm.getSceneView();
                 sceneView.dragAxis();
             }
