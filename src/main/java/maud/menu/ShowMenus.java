@@ -624,7 +624,7 @@ public class ShowMenus {
         MenuBuilder builder = new MenuBuilder();
 
         AxesSubject selectedSubject
-                = Maud.getModel().getScene().getAxes().getMode();
+                = Maud.getModel().getScene().getAxes().getSubject();
         for (AxesSubject subject : AxesSubject.values()) {
             if (!subject.equals(selectedSubject)) {
                 String name = subject.toString();

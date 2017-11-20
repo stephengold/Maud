@@ -111,7 +111,7 @@ class AxesTool extends WindowController {
         lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
 
-        AxesSubject subject = options.getMode();
+        AxesSubject subject = options.getSubject();
         String buttonLabel = subject.toString();
         Maud.gui.setButtonLabel("axesSubjectButton", buttonLabel);
 

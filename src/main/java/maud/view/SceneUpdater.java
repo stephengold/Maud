@@ -139,8 +139,8 @@ class SceneUpdater {
     static Transform axesTransform(Cgm cgm) {
         Transform transform = null;
         SceneView sceneView = cgm.getSceneView();
-        AxesSubject mode = Maud.getModel().getScene().getAxes().getMode();
-        switch (mode) {
+        AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
+        switch (subject) {
             case SelectedBone:
                 if (cgm.getBone().isSelected()) {
                     transform = cgm.getBone().modelTransform(null);

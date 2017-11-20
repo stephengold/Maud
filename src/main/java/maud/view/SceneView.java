@@ -1681,7 +1681,7 @@ public class SceneView
          * Determine which MVC-model object the control is visualizing,
          * and rotate that object.
          */
-        AxesSubject subject = Maud.getModel().getScene().getAxes().getMode();
+        AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
         switch (subject) {
             case ModelRoot:
                 /*
@@ -1742,7 +1742,7 @@ public class SceneView
          * Determine which MVC-model object the control is visualizing,
          * and scale that object.
          */
-        AxesSubject subject = Maud.getModel().getScene().getAxes().getMode();
+        AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
         switch (subject) {
             case ModelRoot:
                 /*
@@ -1818,7 +1818,7 @@ public class SceneView
          * Determine which MVC-model object the control is visualizing,
          * and translate that object.
          */
-        AxesSubject subject = Maud.getModel().getScene().getAxes().getMode();
+        AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
         switch (subject) {
             case ModelRoot: // ignore attempts to translate the model root
                 break;

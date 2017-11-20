@@ -95,11 +95,11 @@ public class AxesOptions implements Cloneable {
     }
 
     /**
-     * Read the current visualization subject. TODO rename getSubject
+     * Read the current visualization subject.
      *
      * @return an enum value (not null)
      */
-    public AxesSubject getMode() {
+    public AxesSubject getSubject() {
         assert subject != null;
         return subject;
     }
@@ -134,11 +134,11 @@ public class AxesOptions implements Cloneable {
     }
 
     /**
-     * Alter the visualization subject. TODO rename setSubject
+     * Alter the visualization subject.
      *
      * @param newSubject an enum value (not null)
      */
-    public void setMode(AxesSubject newSubject) {
+    public void setSubject(AxesSubject newSubject) {
         Validate.nonNull(newSubject, "new subject");
         subject = newSubject;
     }

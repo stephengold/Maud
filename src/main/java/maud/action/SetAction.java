@@ -250,7 +250,7 @@ class SetAction {
         } else if (actionString.startsWith(ActionPrefix.setAxesSubject)) {
             arg = MyString.remainder(actionString, ActionPrefix.setAxesSubject);
             AxesSubject value = AxesSubject.valueOf(arg);
-            model.getScene().getAxes().setMode(value);
+            model.getScene().getAxes().setSubject(value);
 
         } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
