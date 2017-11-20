@@ -57,7 +57,7 @@ import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.AxesDragEffect;
-import maud.model.option.scene.AxesMode;
+import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.OrbitCenter;
 
@@ -623,9 +623,9 @@ public class ShowMenus {
     public static void setAxesMode() {
         MenuBuilder builder = new MenuBuilder();
 
-        AxesMode selectedSubject
+        AxesSubject selectedSubject
                 = Maud.getModel().getScene().getAxes().getMode();
-        for (AxesMode subject : AxesMode.values()) {
+        for (AxesSubject subject : AxesSubject.values()) {
             if (!subject.equals(selectedSubject)) {
                 String name = subject.toString();
                 builder.add(name);

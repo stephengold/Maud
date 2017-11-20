@@ -32,8 +32,8 @@ import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.option.scene.AxesDragEffect;
-import maud.model.option.scene.AxesMode;
 import maud.model.option.scene.AxesOptions;
+import maud.model.option.scene.AxesSubject;
 
 /**
  * The controller for the "Axes Tool" window in Maud's editor screen.
@@ -111,7 +111,7 @@ class AxesTool extends WindowController {
         lineWidth = Math.round(lineWidth);
         Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
 
-        AxesMode subject = options.getMode();
+        AxesSubject subject = options.getMode();
         String buttonLabel = subject.toString();
         Maud.gui.setButtonLabel("axesSubjectButton", buttonLabel);
 

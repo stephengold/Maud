@@ -102,8 +102,8 @@ import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.AxesDragEffect;
-import maud.model.option.scene.AxesMode;
 import maud.model.option.scene.AxesOptions;
+import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
@@ -1681,7 +1681,7 @@ public class SceneView
          * Determine which MVC-model object the control is visualizing,
          * and rotate that object.
          */
-        AxesMode subject = Maud.getModel().getScene().getAxes().getMode();
+        AxesSubject subject = Maud.getModel().getScene().getAxes().getMode();
         switch (subject) {
             case ModelRoot:
                 /*
@@ -1742,7 +1742,7 @@ public class SceneView
          * Determine which MVC-model object the control is visualizing,
          * and scale that object.
          */
-        AxesMode subject = Maud.getModel().getScene().getAxes().getMode();
+        AxesSubject subject = Maud.getModel().getScene().getAxes().getMode();
         switch (subject) {
             case ModelRoot:
                 /*
@@ -1818,7 +1818,7 @@ public class SceneView
          * Determine which MVC-model object the control is visualizing,
          * and translate that object.
          */
-        AxesMode subject = Maud.getModel().getScene().getAxes().getMode();
+        AxesSubject subject = Maud.getModel().getScene().getAxes().getMode();
         switch (subject) {
             case ModelRoot: // ignore attempts to translate the model root
                 break;

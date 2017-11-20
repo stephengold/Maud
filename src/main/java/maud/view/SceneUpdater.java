@@ -61,8 +61,8 @@ import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedVertex;
 import maud.model.option.ShowBones;
-import maud.model.option.scene.AxesMode;
 import maud.model.option.scene.AxesOptions;
+import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.BoundsOptions;
 import maud.model.option.scene.DddCursorOptions;
 import maud.model.option.scene.PlatformType;
@@ -139,7 +139,7 @@ class SceneUpdater {
     static Transform axesTransform(Cgm cgm) {
         Transform transform = null;
         SceneView sceneView = cgm.getSceneView();
-        AxesMode mode = Maud.getModel().getScene().getAxes().getMode();
+        AxesSubject mode = Maud.getModel().getScene().getAxes().getMode();
         switch (mode) {
             case SelectedBone:
                 if (cgm.getBone().isSelected()) {

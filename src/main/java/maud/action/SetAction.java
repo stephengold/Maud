@@ -44,7 +44,7 @@ import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.AxesDragEffect;
-import maud.model.option.scene.AxesMode;
+import maud.model.option.scene.AxesSubject;
 
 /**
  * Process an action string that begins with "set".
@@ -249,7 +249,7 @@ class SetAction {
 
         } else if (actionString.startsWith(ActionPrefix.setAxesSubject)) {
             arg = MyString.remainder(actionString, ActionPrefix.setAxesSubject);
-            AxesMode value = AxesMode.valueOf(arg);
+            AxesSubject value = AxesSubject.valueOf(arg);
             model.getScene().getAxes().setMode(value);
 
         } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {

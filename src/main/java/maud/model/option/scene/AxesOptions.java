@@ -53,7 +53,7 @@ public class AxesOptions implements Cloneable {
     /**
      * which set of axes is visualized
      */
-    private AxesMode subject = AxesMode.SelectedBone;
+    private AxesSubject subject = AxesSubject.SelectedBone;
     /**
      * flag to enable the depth test for visibility of the axes
      */
@@ -99,7 +99,7 @@ public class AxesOptions implements Cloneable {
      *
      * @return an enum value (not null)
      */
-    public AxesMode getMode() {
+    public AxesSubject getMode() {
         assert subject != null;
         return subject;
     }
@@ -138,7 +138,7 @@ public class AxesOptions implements Cloneable {
      *
      * @param newSubject an enum value (not null)
      */
-    public void setMode(AxesMode newSubject) {
+    public void setMode(AxesSubject newSubject) {
         Validate.nonNull(newSubject, "new subject");
         subject = newSubject;
     }

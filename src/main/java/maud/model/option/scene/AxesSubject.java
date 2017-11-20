@@ -27,12 +27,12 @@
 package maud.model.option.scene;
 
 /**
- * Enumerate subjects for coordinate axes in scene views. TODO rename
- * AxesSubject TODO add value SelectedShape
+ * Enumerate subjects for coordinate axes in scene views. TODO add value
+ * SelectedShape
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum AxesMode {
+public enum AxesSubject {
     // *************************************************************************
     // values
 
