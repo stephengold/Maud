@@ -574,10 +574,10 @@ public class ScoreView implements EditorView {
      */
     @Override
     public void warpCursor() {
-        Maud application = Maud.getApplication();
-        InputManager inputManager = application.getInputManager();
         Camera camera = getCamera();
+        InputManager inputManager = Maud.getApplication().getInputManager();
         Ray ray = MyCamera.mouseRay(camera, inputManager);
+        
         Vector3f origin = ray.getOrigin();
         float newY = origin.y;
         cgm.getScorePov().setCameraY(newY);
