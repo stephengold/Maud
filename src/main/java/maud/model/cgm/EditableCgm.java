@@ -708,6 +708,18 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Relocate the selected physics object.
+     *
+     * @param newLocation (not null, unaffected)
+     */
+    public void setPhysicsLocation(Vector3f newLocation) {
+        Validate.nonNull(newLocation, "new location");
+
+        getPhysics().setLocation(newLocation);
+        setEditedPhysicsPosition();
+    }
+
+    /**
      * Reorient the selected physics object.
      *
      * @param newOrientation (not null, unaffected)

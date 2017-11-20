@@ -86,7 +86,7 @@ public class Selection {
      */
     private int bestVertexIndex = -1;
     /**
-     * the CG model to be selected, or null for none
+     * the C-G model to be selected, or null for none
      */
     private Cgm bestCgm = null;
     /**
@@ -120,7 +120,7 @@ public class Selection {
     /**
      * Consider selecting the indexed axis in the view.
      *
-     * @param cgm CG model that contains the bone (not null)
+     * @param cgm C-G model that contains the axis (not null)
      * @param axisIndex which axis to select (&ge;0)
      * @param scoreView true &rarr; axisIndex refers to a transform axis (score
      * view), false &rarr; it refers to a rotational axis (scene view)
@@ -156,7 +156,7 @@ public class Selection {
     /**
      * Consider selecting the indexed bone.
      *
-     * @param cgm CG model that contains the bone (not null)
+     * @param cgm C-G model that contains the bone (not null)
      * @param boneIndex which bone to consider (&ge;0)
      * @param dSquared squared distance between the bone's screen location and
      * {@link #inputXY} (in pixels squared, &ge;0)
@@ -181,7 +181,7 @@ public class Selection {
     /**
      * Consider selecting the gnomon.
      *
-     * @param cgm CG model that contains the bone (not null)
+     * @param cgm C-G model that contains the gnomon (not null)
      * @param dSquared squared distance between the gnomon's screen location and
      * {@link #inputXY} (in pixels squared, &ge;0)
      */
@@ -205,7 +205,7 @@ public class Selection {
      * Consider selecting the indexed keyframe of the currently selected bone
      * track.
      *
-     * @param cgm CG model that contains the bone track (not null)
+     * @param cgm C-G model that contains the bone track (not null)
      * @param frameIndex which keyframe to select (&ge;0)
      * @param dSquared squared distance between the keyframe's screen location
      * and {@link #inputXY} (in pixels squared, &ge;0)
@@ -354,12 +354,13 @@ public class Selection {
         assert bestAxisIndex < 3 : bestAxisIndex;
 
         SceneView sceneView = bestCgm.getSceneView();
+        float length = sceneView.getAxesVisualizer().getAxisLength();
         boolean farSide = sceneView.isAxisReceding(bestAxisIndex);
-        SceneDrag.setDraggingAxis(bestAxisIndex, bestCgm, farSide);
+        SceneDrag.setDraggingAxis(bestAxisIndex, length, bestCgm, farSide);
     }
 
     /**
-     * Select the vertex of the loaded CG model.
+     * Select the vertex of the loaded C-G model.
      */
     private void selectVertex() {
         assert bestCgm != null;

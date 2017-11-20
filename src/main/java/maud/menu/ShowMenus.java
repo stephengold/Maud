@@ -56,6 +56,7 @@ import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
+import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesMode;
 import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.OrbitCenter;
@@ -597,21 +598,41 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu to configure the axes mode using the "set axesMode "
-     * action prefix.
+     * Display a menu to configure the scene-view axis drag effect using the
+     * "set axesDragEffect " action prefix.
      */
-    public static void setAxesMode() {
+    public static void setAxesDragEffect() {
         MenuBuilder builder = new MenuBuilder();
 
-        AxesMode selectedMode = Maud.getModel().getScene().getAxes().getMode();
-        for (AxesMode mode : AxesMode.values()) {
-            if (!mode.equals(selectedMode)) {
-                String name = mode.toString();
+        AxesDragEffect selectedEffect
+                = Maud.getModel().getScene().getAxes().getDragEffect();
+        for (AxesDragEffect effect : AxesDragEffect.values()) {
+            if (!effect.equals(selectedEffect)) {
+                String name = effect.toString();
                 builder.add(name);
             }
         }
 
-        builder.show(ActionPrefix.setAxesMode);
+        builder.show(ActionPrefix.setAxesDragEffect);
+    }
+
+    /**
+     * Display a menu to configure the scene-view axis subject using the "set
+     * axesSubject " action prefix. TODO rename setAxesSubject
+     */
+    public static void setAxesMode() {
+        MenuBuilder builder = new MenuBuilder();
+
+        AxesMode selectedSubject
+                = Maud.getModel().getScene().getAxes().getMode();
+        for (AxesMode subject : AxesMode.values()) {
+            if (!subject.equals(selectedSubject)) {
+                String name = subject.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.setAxesSubject);
     }
 
     /**

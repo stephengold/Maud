@@ -47,6 +47,14 @@ public class AxesOptions implements Cloneable {
     // fields
 
     /**
+     * effect produced by dragging an axis tip
+     */
+    private AxesDragEffect dragEffect = AxesDragEffect.Rotate;
+    /**
+     * which set of axes is visualized
+     */
+    private AxesMode subject = AxesMode.SelectedBone;
+    /**
      * flag to enable the depth test for visibility of the axes
      */
     private boolean depthTestFlag = false;
@@ -54,10 +62,6 @@ public class AxesOptions implements Cloneable {
      * line width for the arrows (in pixels, &ge;1) or 0 for solid arrows
      */
     private float lineWidth = 0f;
-    /**
-     * which set of axes is visualized
-     */
-    private AxesMode mode = AxesMode.SelectedBone;
     // *************************************************************************
     // new methods exposed
 
@@ -71,6 +75,16 @@ public class AxesOptions implements Cloneable {
     }
 
     /**
+     * Read the drag effect.
+     *
+     * @return an enum value (not null)
+     */
+    public AxesDragEffect getDragEffect() {
+        assert dragEffect != null;
+        return dragEffect;
+    }
+
+    /**
      * Read the width of each line.
      *
      * @return width (in pixels, &ge;1) or 0 for solid arrows
@@ -81,13 +95,13 @@ public class AxesOptions implements Cloneable {
     }
 
     /**
-     * Read the current mode.
+     * Read the current visualization subject. TODO rename getSubject
      *
-     * @return a mode enum value (not null)
+     * @return an enum value (not null)
      */
     public AxesMode getMode() {
-        assert mode != null;
-        return mode;
+        assert subject != null;
+        return subject;
     }
 
     /**
@@ -97,6 +111,16 @@ public class AxesOptions implements Cloneable {
      */
     public void setDepthTestFlag(boolean newState) {
         depthTestFlag = newState;
+    }
+
+    /**
+     * Alter the drag effect.
+     *
+     * @param newEffect an enum value (not null)
+     */
+    public void setDragEffect(AxesDragEffect newEffect) {
+        Validate.nonNull(newEffect, "new effect");
+        dragEffect = newEffect;
     }
 
     /**
@@ -110,13 +134,13 @@ public class AxesOptions implements Cloneable {
     }
 
     /**
-     * Alter the display mode.
+     * Alter the visualization subject. TODO rename setSubject
      *
-     * @param newMode enum value of new display mode (not null)
+     * @param newSubject an enum value (not null)
      */
-    public void setMode(AxesMode newMode) {
-        Validate.nonNull(newMode, "new mode");
-        mode = newMode;
+    public void setMode(AxesMode newSubject) {
+        Validate.nonNull(newSubject, "new subject");
+        subject = newSubject;
     }
     // *************************************************************************
     // Object methods

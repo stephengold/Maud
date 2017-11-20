@@ -230,14 +230,22 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="axesTool" title="Axes Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="150px" width="210px" x="70" y="70">
+                     height="175px" width="210px" x="70" y="70">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="27px">
-                        <control name="label" text="Visualize axes:    "
+                        <control name="label" text="Visualize axes of  "
                                  textHAlign="left"/>
-                        <control name="button" id="axesModeButton"
+                        <control name="button" id="axesSubjectButton"
                                  width="99px">
-                            <interact onRelease="perform(set axesMode)"/>
+                            <interact onRelease="perform(set axesSubject)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" text="Drag effect:    "
+                                 textHAlign="left"/>
+                        <control name="button" id="axesDragButton"
+                                 width="89px">
+                            <interact onRelease="perform(set axesDragEffect)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="27px">

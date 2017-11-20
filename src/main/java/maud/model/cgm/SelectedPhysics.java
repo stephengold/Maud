@@ -212,9 +212,10 @@ public class SelectedPhysics implements Cloneable {
     }
 
     /**
-     * Test whether the selected object can be reoriented.
+     * Test whether the selected object can be repositioned (relocated and
+     * reoriented). TODO rename isRepositionable
      *
-     * @return true if rotatable, otherwise false
+     * @return true if repositionable, otherwise false
      */
     public boolean isRotatable() {
         boolean result = false;
@@ -222,8 +223,6 @@ public class SelectedPhysics implements Cloneable {
         if (object instanceof PhysicsRigidBody) {
             result = true;
         } else if (object instanceof PhysicsGhostObject) {
-            result = true;
-        } else if (object instanceof PhysicsVehicle) {
             result = true;
         }
 
@@ -386,7 +385,27 @@ public class SelectedPhysics implements Cloneable {
     }
 
     /**
-     * Reorient the selected object.
+     * Relocate the object.
+     *
+     * @param newLocation (not null, unaffected)
+     */
+    public void setLocation(Vector3f newLocation) {
+        Validate.nonNull(newLocation, "new location");
+
+        PhysicsCollisionObject object = find();
+        if (object instanceof PhysicsRigidBody) {
+            PhysicsRigidBody body = (PhysicsRigidBody) object;
+            body.setPhysicsLocation(newLocation);
+        } else if (object instanceof PhysicsGhostObject) {
+            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
+            ghost.setPhysicsLocation(newLocation);
+        } else {
+            throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * Reorient the object.
      *
      * @param newOrientation (not null, unaffected)
      */
@@ -400,9 +419,6 @@ public class SelectedPhysics implements Cloneable {
         } else if (object instanceof PhysicsGhostObject) {
             PhysicsGhostObject ghost = (PhysicsGhostObject) object;
             ghost.setPhysicsRotation(newOrientation);
-        } else if (object instanceof PhysicsVehicle) {
-            PhysicsVehicle vehicle = (PhysicsVehicle) object;
-            vehicle.setPhysicsRotation(newOrientation);
         } else {
             throw new IllegalStateException();
         }

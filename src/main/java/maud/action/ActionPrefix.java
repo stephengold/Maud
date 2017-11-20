@@ -273,9 +273,13 @@ public class ActionPrefix {
      */
     final public static String setAntiAliasing = "set antiAliasing ";
     /**
-     * argument is the name of an axes mode
+     * argument is the name of a scene-view axis drag effect
      */
-    final public static String setAxesMode = "set axesMode";
+    final public static String setAxesDragEffect = "set axesDragEffect ";
+    /**
+     * argument is the name of a scene-view axis subject
+     */
+    final public static String setAxesSubject = "set axesSubject ";
     /**
      * argument is the name of a batch hint
      */

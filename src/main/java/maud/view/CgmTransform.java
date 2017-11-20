@@ -102,6 +102,16 @@ public class CgmTransform implements Cloneable {
     }
 
     /**
+     * Enlarge the C-G model.
+     *
+     * @param scaleFactor scale factor (&gt;0, 1&rarr;no effect)
+     */
+    void scale(float scaleFactor) {
+        Validate.positive(scaleFactor, "scale factor");
+        scale *= scaleFactor;
+    }
+
+    /**
      * Calculate the transform to be applied to the C-G model. Note that this
      * may differ from the transform of the C-G model's root node.
      *

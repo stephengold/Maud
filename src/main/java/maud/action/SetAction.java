@@ -43,6 +43,7 @@ import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
+import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesMode;
 
 /**
@@ -87,7 +88,11 @@ class SetAction {
                 ShowMenus.setAntiAliasing();
                 break;
 
-            case Action.setAxesMode:
+            case Action.setAxesDragEffect:
+                ShowMenus.setAxesDragEffect();
+                break;
+
+            case Action.setAxesSubject:
                 ShowMenus.setAxesMode();
                 break;
 
@@ -236,8 +241,14 @@ class SetAction {
             DisplaySettings.get().setSamples(numSamples);
             DisplaySettings.save();
 
-        } else if (actionString.startsWith(ActionPrefix.setAxesMode)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setAxesMode);
+        } else if (actionString.startsWith(ActionPrefix.setAxesDragEffect)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setAxesDragEffect);
+            AxesDragEffect value = AxesDragEffect.valueOf(arg);
+            model.getScene().getAxes().setDragEffect(value);
+
+        } else if (actionString.startsWith(ActionPrefix.setAxesSubject)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setAxesSubject);
             AxesMode value = AxesMode.valueOf(arg);
             model.getScene().getAxes().setMode(value);
 

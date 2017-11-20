@@ -101,11 +101,13 @@ import maud.model.cgm.SelectedPhysics;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
+import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesMode;
+import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
- * A 3-D visualization of a loaded C-G model in a scene-mode viewport.
+ * A 3-D visualization of a loaded C-G model in a scene view.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -184,6 +186,10 @@ public class SceneView
      */
     final private DirectionalLight mainLight = new DirectionalLight();
     /**
+     * editable C-G model, if any, appearing in this view
+     */
+    private EditableCgm editableCgm;
+    /**
      * indicator for the 3-D cursor, or null if none
      */
     private Geometry cursor;
@@ -234,7 +240,7 @@ public class SceneView
     /**
      * Instantiate a new visualization.
      *
-     * @param ownerCgm C-G model that will own this view (not null, alias
+     * @param ownerCgm C-G model that will own this view (not null, aliases
      * created)
      * @param parentNode attachment point in the scene graph (not null, alias
      * created)
@@ -249,6 +255,12 @@ public class SceneView
         Validate.nonNull(port2, "port2");
 
         cgm = ownerCgm;
+        if (ownerCgm instanceof EditableCgm) {
+            editableCgm = (EditableCgm) ownerCgm;
+        } else {
+            editableCgm = null;
+        }
+
         parent = parentNode;
         viewPort1 = port1;
         viewPort2 = port2;
@@ -381,37 +393,87 @@ public class SceneView
 
     /**
      * While dragging an axis, update the orientation of the visualized object
-     * in the MVC model.
+     * in the MVC model. TODO move related methods to SceneDrag class
      */
     public void dragAxis() {
-        assert cgm.isLoaded();
-        int axisIndex = SceneDrag.getDragAxis();
-        boolean farSide = SceneDrag.isDraggingFarSide();
-
         assert axesVisualizer.isEnabled();
+        assert cgm.isLoaded();
+
+        Camera camera = getCamera();
+        InputManager inputManager = Maud.getApplication().getInputManager();
+        Ray worldRay = MyCamera.mouseRay(camera, inputManager);
+
         Spatial axesSpatial = axesVisualizer.getSpatial();
+        Ray localRay = MyMath.localizeRay(worldRay, axesSpatial);
+        int axisIndex = SceneDrag.getDragAxis();
+        float oldLength = SceneDrag.getInitialLength();
         /*
          * Calculate the old axis direction in local coordinates.
          */
         Vector3f oldDirection = MyVector3f.axisVector(axisIndex, 1f, null);
         assert oldDirection.isUnitVector() : oldDirection;
-        /*
-         * Calculate the new axis direction in local coordinates.
-         */
-        Camera camera = getCamera();
-        InputManager inputManager = Maud.getApplication().getInputManager();
-        Ray worldRay = MyCamera.mouseRay(camera, inputManager);
-        Ray localRay = MyMath.localizeRay(worldRay, axesSpatial);
-        float radius = axesVisualizer.getAxisLength();
-        Vector3f newDirection;
-        newDirection = MyVector3f.lineMeetsSphere(localRay, radius, farSide);
-        newDirection.divideLocal(radius);
-        assert newDirection.isUnitVector() : newDirection;
 
-        Vector3f cross = oldDirection.cross(newDirection);
-        float crossNorm = cross.length();
-        if (crossNorm > 0f) {
-            rotateObject(cross, cgm);
+        float dot2;
+        Vector3f n, n2;
+        AxesOptions options = Maud.getModel().getScene().getAxes();
+        AxesDragEffect effect = options.getDragEffect();
+        switch (effect) {
+            case None:
+                break;
+
+            case Rotate:
+                /*
+                 * Calculate the new axis direction in local coordinates.
+                 */
+                boolean farSide = SceneDrag.isDraggingFarSide();
+                Vector3f newDirection = MyVector3f.lineMeetsSphere(localRay,
+                        oldLength, farSide);
+                newDirection.divideLocal(oldLength);
+                assert newDirection.isUnitVector() : newDirection;
+
+                Vector3f cross = oldDirection.cross(newDirection);
+                float crossNorm = cross.length();
+                if (crossNorm > 0f) {
+                    rotateSubject(cross);
+                }
+                break;
+
+            case ScaleAll:
+                /*
+                 * Calculate the new axis length in local coordinates.
+                 */
+                n = oldDirection.cross(localRay.direction);
+                n2 = localRay.direction.cross(n);
+                dot2 = oldDirection.dot(n2);
+                if (dot2 != 0f) {
+                    float dot1 = localRay.origin.dot(n2);
+                    float newLength = dot1 / dot2;
+
+                    float scaleFactor = FastMath.abs(newLength / oldLength);
+                    if (scaleFactor > 0f) {
+                        scaleSubject(scaleFactor);
+                    }
+                }
+                break;
+
+            case Translate:
+                /*
+                 * Calculate the displacement in local units.
+                 */
+                n = oldDirection.cross(localRay.direction);
+                n2 = localRay.direction.cross(n);
+                dot2 = oldDirection.dot(n2);
+                if (dot2 != 0f) {
+                    float dot1 = localRay.origin.dot(n2);
+                    float displacement = dot1 / dot2 - oldLength;
+
+                    Vector3f offset = oldDirection.mult(displacement);
+                    translateSubject(offset);
+                }
+                break;
+
+            default:
+                throw new IllegalStateException();
         }
     }
 
@@ -718,12 +780,18 @@ public class SceneView
      * Alter which loaded C-G model corresponds with this view. Invoked after
      * cloning.
      *
-     * @param newCgm (not null)
+     * @param newCgm (not null, aliases created)
      */
     public void setCgm(Cgm newCgm) {
         Validate.nonNull(newCgm, "new model");
         assert newCgm.getSceneView() == this;
+
         cgm = newCgm;
+        if (newCgm instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newCgm;
+        } else {
+            editableCgm = null;
+        }
     }
 
     /**
@@ -1033,9 +1101,8 @@ public class SceneView
     public void considerVertices(Selection selection) {
         Validate.nonNull(selection, "selection");
 
-        Maud application = Maud.getApplication();
-        InputManager inputManager = application.getInputManager();
         Camera camera = getCamera();
+        InputManager inputManager = Maud.getApplication().getInputManager();
         Ray ray = MyCamera.mouseRay(camera, inputManager);
         /*
          * Trace the ray to the C-G model's visualization.
@@ -1145,9 +1212,8 @@ public class SceneView
      */
     @Override
     public void warpCursor() {
-        Maud application = Maud.getApplication();
-        InputManager inputManager = application.getInputManager();
         Camera camera = getCamera();
+        InputManager inputManager = Maud.getApplication().getInputManager();
         Ray ray = MyCamera.mouseRay(camera, inputManager);
         /*
          * Trace the ray to the C-G model's visualization.
@@ -1550,9 +1616,8 @@ public class SceneView
      * Rotate the visualized bone using the specified quaternion.
      *
      * @param rotation quaternion (not null, norm=1)
-     * @param cgm which C-G model (not null, unaffected)
      */
-    private void rotateBone(Quaternion rotation, Cgm cgm) {
+    private void rotateBone(Quaternion rotation) {
         int boneIndex = cgm.getBone().getIndex();
         assert boneIndex != -1;
         EditorModel model = Maud.getModel();
@@ -1586,10 +1651,10 @@ public class SceneView
             /*
              * Infer a new effective twist for the selected bone mapping.
              */
-            Quaternion sourceMo;
-            sourceMo = model.getSource().getBone().modelOrientation(null);
-            Quaternion targetMo;
-            targetMo = target.getBone().modelOrientation(null);
+            Quaternion sourceMo
+                    = model.getSource().getBone().modelOrientation(null);
+            Quaternion targetMo
+                    = target.getBone().modelOrientation(null);
             Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
             Quaternion newEffectiveTwist = invSourceMo.mult(targetMo);
             map.setTwist(newEffectiveTwist);
@@ -1597,17 +1662,16 @@ public class SceneView
     }
 
     /**
-     * Rotate the visualized object using the specified cross product.
+     * Rotate the subject using the specified cross product.
      *
      * @param cross cross product of two unit vectors (not null, length&gt;0)
-     * @param cgm which C-G model (not null, unaffected)
-     * @return the pre-existing instance
      */
-    private void rotateObject(Vector3f cross, Cgm cgm) {
+    private void rotateSubject(Vector3f cross) {
         /*
          * Convert the cross product to a rotation quaternion.
          */
         float crossNorm = cross.length();
+        assert crossNorm > 0f : crossNorm;
         Vector3f rotationAxis = cross.divide(crossNorm);
         assert rotationAxis.isUnitVector() : rotationAxis;
         float rotationAngle = FastMath.asin(crossNorm);
@@ -1615,53 +1679,114 @@ public class SceneView
         rotation.fromAngleNormalAxis(rotationAngle, rotationAxis);
         /*
          * Determine which MVC-model object the control is visualizing,
-         * and apply the rotation to that object.
+         * and rotate that object.
          */
-        AxesMode mode = Maud.getModel().getScene().getAxes().getMode();
-        switch (mode) {
-            case SelectedBone:
-                rotateBone(rotation, cgm);
-                break;
-
+        AxesMode subject = Maud.getModel().getScene().getAxes().getMode();
+        switch (subject) {
             case ModelRoot:
                 /*
-                 * Apply the Y-axis rotation to the transform status.
+                 * Apply the Y-axis rotation to the world transform.
                  */
-                float yRotation = FastMath.asin(cross.y * crossNorm);
-                getTransform().rotateY(yRotation);
+                float angle = FastMath.asin(cross.y * crossNorm);
+                cgmTransform.rotateY(angle);
+                break;
+
+            case SelectedBone:
+                rotateBone(rotation);
                 break;
 
             case SelectedPhysics:
-                if (cgm instanceof EditableCgm) {
-                    EditableCgm ecgm = (EditableCgm) cgm;
-                    SelectedPhysics physics = ecgm.getPhysics();
+                if (editableCgm != null) {
+                    SelectedPhysics physics = editableCgm.getPhysics();
                     if (physics.isRotatable()) {
                         /*
-                         * Apply the full rotation to the selected object.
+                         * Rotate the selected physics object.
                          */
-                        Quaternion oldQ = physics.orientation(null);
-                        Quaternion newQ = oldQ.mult(rotation);
-                        newQ.normalizeLocal();
-                        ecgm.setPhysicsOrientation(newQ);
+                        Quaternion orientation = physics.orientation(null);
+                        orientation.multLocal(rotation);
+                        orientation.normalizeLocal();
+                        editableCgm.setPhysicsOrientation(orientation);
                     }
                 }
                 break;
 
             case SelectedSpatial:
-                if (cgm instanceof EditableCgm) {
-                    EditableCgm ecgm = (EditableCgm) cgm;
+                if (editableCgm != null) {
                     /*
-                     * Apply the full rotation to the selected spatial.
+                     * Rotate the selected spatial.
                      */
-                    Quaternion oldQ = ecgm.getSpatial().localRotation(null);
-                    Quaternion newQ = oldQ.mult(rotation);
-                    newQ.normalizeLocal();
-                    ecgm.setSpatialRotation(newQ);
+                    Quaternion localRotation
+                            = editableCgm.getSpatial().localRotation(null);
+                    localRotation.multLocal(rotation);
+                    localRotation.normalizeLocal();
+                    editableCgm.setSpatialRotation(localRotation);
                 }
                 break;
 
-            case World:
-            // ignore attempts to drag the world axes
+            case World: // ignore attempts to drag the world axes
+                break;
+
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * Scale the subject uniformly by the specified factor.
+     *
+     * @param factor scale factor (&gt;0, 1 &rarr; no effect)
+     */
+    private void scaleSubject(float factor) {
+        assert factor > 0f : factor;
+        /*
+         * Determine which MVC-model object the control is visualizing,
+         * and scale that object.
+         */
+        AxesMode subject = Maud.getModel().getScene().getAxes().getMode();
+        switch (subject) {
+            case ModelRoot:
+                /*
+                 * Scale the world transform.
+                 */
+                cgmTransform.scale(factor);
+                break;
+
+            case SelectedBone:
+                int boneIndex = cgm.getBone().getIndex();
+                if (cgm.getBone().shouldEnableControls()) {
+                    /*
+                     * Scale the selected bone in the displayed pose.
+                     */
+                    Pose pose = cgm.getPose().get();
+                    Vector3f userScale = pose.userScale(boneIndex, null);
+                    userScale.multLocal(factor);
+                    pose.setScale(boneIndex, userScale);
+                }
+                break;
+
+            case SelectedPhysics:
+                /*
+                 * Ignore attempts to scale the physics object directly
+                 * -- user should scale its shape instead.
+                 */
+                break;
+
+            case SelectedSpatial:
+                if (editableCgm != null) {
+                    /*
+                     * Scale the selected spatial.
+                     */
+                    Vector3f localScale = cgm.getSpatial().localScale(null);
+                    localScale.multLocal(factor);
+                    editableCgm.setSpatialScale(localScale);
+                }
+                break;
+
+            case World: // ignore attempts to drag the world axes
+                break;
+
+            default:
+                throw new IllegalStateException();
         }
     }
 
@@ -1681,6 +1806,56 @@ public class SceneView
         }
 
         return result;
+    }
+
+    /**
+     * Translate the subject by the specified offset.
+     *
+     * @param offset (not null, unaffected)
+     */
+    private void translateSubject(Vector3f offset) {
+        /*
+         * Determine which MVC-model object the control is visualizing,
+         * and translate that object.
+         */
+        AxesMode subject = Maud.getModel().getScene().getAxes().getMode();
+        switch (subject) {
+            case ModelRoot: // ignore attempts to translate the model root
+                break;
+
+            case SelectedBone: // TODO
+                break;
+
+            case SelectedPhysics:
+                SelectedPhysics physics = editableCgm.getPhysics();
+                if (physics.isRotatable()) {
+                    /*
+                     * Translate the selected physics object.
+                     */
+                    Vector3f location = physics.location(null);
+                    location.addLocal(offset);
+                    editableCgm.setPhysicsLocation(location);
+                }
+                break;
+
+            case SelectedSpatial:
+                if (editableCgm != null) {
+                    /*
+                     * Translate the selected spatial.
+                     */
+                    Vector3f localTranslation
+                            = cgm.getSpatial().localTranslation(null);
+                    localTranslation.addLocal(offset);
+                    editableCgm.setSpatialTranslation(localTranslation);
+                }
+                break;
+
+            case World: // ignore attempts to drag the world axes
+                break;
+
+            default:
+                throw new IllegalStateException();
+        }
     }
 
     /**

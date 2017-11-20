@@ -29,11 +29,11 @@ package maud.view;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
+import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 
 /**
- * Drag state for scene views. Currently the only scene objects that can be
- * dragged are bone axes and twist axes.
+ * Drag state for scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -67,10 +67,14 @@ public class SceneDrag {
      */
     private static boolean dragFarSide;
     /**
-     * which CG model is being manipulated (true &rarr; source, false &rarr;
+     * which C-G model is being manipulated (true &rarr; source, false &rarr;
      * target)
      */
     private static boolean dragSourceCgm;
+    /**
+     * length of the axis when the drag began (in local units, &gt;0)
+     */
+    private static float dragInitialLength;
     /**
      * index of the axis being dragged (&ge;0, &lt;numAxes) or noAxis
      */
@@ -87,7 +91,7 @@ public class SceneDrag {
     // new methods exposed
 
     /**
-     * Terminate axis dragging.
+     * Terminate axis dragging. TODO rename clear
      */
     public static void clearDragAxis() {
         dragAxisIndex = noAxis;
@@ -95,11 +99,11 @@ public class SceneDrag {
     }
 
     /**
-     * Read the index of the axis being dragged.
+     * Read the index of the axis being dragged. TODO rename getAxisIndex
      *
      * @return axis index (&ge;0, &lt;numAxes)
      */
-    public static int getDragAxis() {
+    static int getDragAxis() {
         assert isDraggingAxis();
         assert dragAxisIndex >= 0 : dragAxisIndex;
         assert dragAxisIndex < numAxes : dragAxisIndex;
@@ -107,21 +111,37 @@ public class SceneDrag {
     }
 
     /**
-     * Access the CG model that's being manipulated.
+     * Access the C-G model that's being manipulated. TODO rename getCgm
      *
      * @return the pre-existing instance
      */
     public static Cgm getDragCgm() {
         assert isDraggingAxis();
+
+        EditorModel model = Maud.getModel();
+        Cgm result;
         if (dragSourceCgm) {
-            return Maud.getModel().getSource();
+            result = model.getSource();
         } else {
-            return Maud.getModel().getTarget();
+            result = model.getTarget();
         }
+
+        return result;
     }
 
     /**
-     * Test whether an axis dragging is active.
+     * Read the length of the axis when the drag began.
+     *
+     * @return length (in local units, &gt;0)
+     */
+    public static float getInitialLength() {
+        assert isDraggingAxis();
+        assert dragInitialLength > 0f : dragInitialLength;
+        return dragInitialLength;
+    }
+
+    /**
+     * Test whether axis dragging is active. TODO rename isActive
      *
      * @return true if selected, otherwise false
      */
@@ -134,29 +154,32 @@ public class SceneDrag {
     }
 
     /**
-     * Test whether the axis being dragged points away from the camera.
+     * Test whether the axis being dragged points away from the camera. TODO
+     * rename isFarSide
      *
      * @return true if pointing away from camera, otherwise false
      */
-    public static boolean isDraggingFarSide() {
+    static boolean isDraggingFarSide() {
         assert isDraggingAxis();
         return dragFarSide;
     }
 
     /**
-     * Start dragging the specified axis.
+     * Start dragging the specified axis. TODO rename start
      *
      * @param axisIndex which axis to drag: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
-     * @param cgm which CG model (not null)
+     * @param cgm which C-G model (not null)
      * @param farSideFlag true &rarr; drag on the far side of the axis origin,
      * false to drag on near side
      */
-    public static void setDraggingAxis(int axisIndex, Cgm cgm,
+    static void setDraggingAxis(int axisIndex, float initialLength, Cgm cgm,
             boolean farSideFlag) {
         Validate.inRange(axisIndex, "axis index", 0, lastAxis);
+        Validate.positive(initialLength, "initial length");
         Validate.nonNull(cgm, "model");
 
         dragAxisIndex = axisIndex;
+        dragInitialLength = initialLength;
         dragFarSide = farSideFlag;
         if (cgm == Maud.getModel().getSource()) {
             dragSourceCgm = true;
@@ -167,7 +190,8 @@ public class SceneDrag {
     }
 
     /**
-     * Toggle which side the axis being dragged is on.
+     * Toggle which direction the dragged axis is pointing. TODO rename
+     * toggleSide
      */
     public static void toggleDragSide() {
         dragFarSide = !dragFarSide;
