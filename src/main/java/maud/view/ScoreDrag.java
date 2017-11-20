@@ -70,9 +70,9 @@ public class ScoreDrag {
     // new methods exposed
 
     /**
-     * Access the CG model whose gnomon is being dragged.
+     * Access the C-G model whose gnomon is being dragged.
      *
-     * @return a CG model, or null
+     * @return a C-G model, or null
      */
     public static Cgm getDraggingGnomonCgm() {
         Cgm result;
@@ -89,13 +89,14 @@ public class ScoreDrag {
             default:
                 throw new IllegalStateException();
         }
+
         return result;
     }
 
     /**
      * Alter which gnomon is being dragged.
      *
-     * @param cgm a CG model, or null for none
+     * @param cgm a C-G model, or null for none
      */
     public static void setDraggingGnomon(Cgm cgm) {
         if (cgm == Maud.getModel().getTarget()) {

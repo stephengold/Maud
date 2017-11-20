@@ -55,7 +55,7 @@ public interface Pov {
     void moveUp(float amount);
 
     /**
-     * Alter which CG model uses this POV. (Invoked only during initialization
+     * Alter which C-G model uses this POV. (Invoked only during initialization
      * and cloning.)
      *
      * @param newCgm (not null, alias created)

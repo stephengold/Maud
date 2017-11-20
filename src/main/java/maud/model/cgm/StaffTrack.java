@@ -448,7 +448,7 @@ public class StaffTrack {
     }
 
     /**
-     * Alter which CG model is being visualized.
+     * Alter which C-G model is being visualized.
      *
      * @param newCgm (not null, alias created)
      */

@@ -27,7 +27,8 @@
 package maud.model.option.scene;
 
 /**
- * Enumerate options for coordinate axes in scene views.
+ * Enumerate subjects for coordinate axes in scene views. TODO rename
+ * AxesSubject TODO add value SelectedShape
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -44,7 +45,7 @@ public enum AxesMode {
      */
     SelectedBone,
     /**
-     * display axes of the loaded C-G model's root spatial
+     * display local axes of the loaded C-G model's root spatial
      */
     ModelRoot,
     /**
@@ -56,7 +57,7 @@ public enum AxesMode {
      */
     SelectedSpatial,
     /**
-     * display world axes
+     * display world axes of the view
      */
     World;
 }

@@ -65,7 +65,7 @@ public class History {
      */
     final private static List<Checkpoint> checkpoints = new ArrayList<>(20);
     /**
-     * list of events (CG model edits, loads, and saves) since the last
+     * list of events (C-G model edits, loads, and saves) since the last
      * checkpoint
      */
     final private static List<String> eventDescriptions = new ArrayList<>(20);
@@ -106,7 +106,7 @@ public class History {
     }
 
     /**
-     * Record an event: an edit/load/save of the map or the target CG model.
+     * Record an event: an edit/load/save of the map or the target C-G model.
      *
      * @param description (not null, not empty)
      */

@@ -96,7 +96,7 @@ public interface EditorView {
      * Update this view prior to rendering. (Invoked once per render pass on
      * each instance.)
      *
-     * @param renderCgm which CG model to render
+     * @param renderCgm which C-G model to render
      */
     void update(Cgm renderCgm);
 
