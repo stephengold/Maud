@@ -2069,15 +2069,15 @@ the menu bar, status bar, and tool windows.
                         <control name="verticalSlider" id="xSsSlider"
                                  buttonStepSize="1"
                                  height="160px"
-                                 max="3" min="0" stepSize="0.001"/>
+                                 max="1.2" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="ySsSlider"
                                  buttonStepSize="1"
                                  height="160px"
-                                 max="3" min="0" stepSize="0.001"/>
+                                 max="1.2" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="zSsSlider"
                                  buttonStepSize="1"
                                  height="160px"
-                                 max="3" min="0" stepSize="0.001"/>
+                                 max="1.2" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160px" width="80px">
                             <control name="label" id="xSsSliderStatus"
