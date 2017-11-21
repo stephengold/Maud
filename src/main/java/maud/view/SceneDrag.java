@@ -227,8 +227,7 @@ public class SceneDrag {
                  */
                 Vector3f newDirection = MyVector3f.lineMeetsSphere(localRay,
                         dragInitialLength, dragFarSide);
-                newDirection.divideLocal(dragInitialLength);
-                assert newDirection.isUnitVector() : newDirection;
+                newDirection.normalizeLocal();
 
                 Vector3f cross = oldDirection.cross(newDirection);
                 float crossNorm = cross.length();
