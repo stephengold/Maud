@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * A 2D, line-mode mesh used to plot a function defined by samples. In local
+ * A 2-D, line-mode mesh used to plot a function defined by samples. In local
  * coordinates, the mesh extends from 0 to 1 in X and from 0 to height in Y.
  *
  * @author Stephen Gold sgold@sonic.net
@@ -41,6 +41,10 @@ public class Sparkline extends Mesh {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * number of axes in a vector
+     */
+    final private static int numAxes = 3;
     /**
      * message logger for this class
      */
@@ -72,13 +76,13 @@ public class Sparkline extends Mesh {
         assert xs.length >= numVertices : xs.length;
         assert ys.length >= numVertices : ys.length;
 
-        float[] positions = new float[3 * numVertices];
+        float[] positions = new float[numAxes * numVertices];
         for (int i = 0; i < numVertices; i++) {
-            positions[3 * i] = xs[i];
-            positions[3 * i + 1] = ys[i] * height;
-            positions[3 * i + 2] = 0f;
+            positions[numAxes * i] = xs[i];
+            positions[numAxes * i + 1] = ys[i] * height;
+            positions[numAxes * i + 2] = 0f;
         }
-        setBuffer(Type.Position, 3, positions);
+        setBuffer(Type.Position, numAxes, positions);
 
         if (mode == Mode.Lines) {
             int numLines = numVertices - 1;

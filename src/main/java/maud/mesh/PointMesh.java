@@ -47,6 +47,10 @@ public class PointMesh extends Mesh {
     // constants and loggers
 
     /**
+     * number of axes in a vector
+     */
+    final private static int numAxes = 3;
+    /**
      * message logger for this class
      */
     final private static Logger logger
@@ -65,7 +69,7 @@ public class PointMesh extends Mesh {
      * Instantiate a mesh with the point at (0,0,0).
      */
     public PointMesh() {
-        fPositions = BufferUtils.createFloatBuffer(3);
+        fPositions = BufferUtils.createFloatBuffer(numAxes);
         fPositions.clear();
         fPositions.put(0f);
         fPositions.put(0f);
@@ -73,7 +77,7 @@ public class PointMesh extends Mesh {
         fPositions.flip(); // prepare for reading
 
         VertexBuffer vPositions = new VertexBuffer(Type.Position);
-        vPositions.setupData(Usage.Stream, 3, Format.Float, fPositions);
+        vPositions.setupData(Usage.Stream, numAxes, Format.Float, fPositions);
         setBuffer(vPositions);
 
         setMode(Mode.Points);

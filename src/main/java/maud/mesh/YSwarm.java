@@ -48,6 +48,10 @@ public class YSwarm extends Mesh {
     // constants and loggers
 
     /**
+     * number of axes in a vector
+     */
+    final private static int numAxes = 3;
+    /**
      * message logger for this class
      */
     final private static Logger logger
@@ -74,9 +78,9 @@ public class YSwarm extends Mesh {
     public YSwarm(int maxPoints) {
         Validate.positive(maxPoints, "max points");
 
-        fPositions = BufferUtils.createFloatBuffer(3 * maxPoints);
+        fPositions = BufferUtils.createFloatBuffer(numAxes * maxPoints);
         VertexBuffer vPositions = new VertexBuffer(Type.Position);
-        vPositions.setupData(Usage.Stream, 3, Format.Float, fPositions);
+        vPositions.setupData(Usage.Stream, numAxes, Format.Float, fPositions);
         setBuffer(vPositions);
 
         fColors = BufferUtils.createFloatBuffer(4 * maxPoints);

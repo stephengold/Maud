@@ -34,8 +34,8 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * A 2D, static, fan-mode mesh which renders an axis-aligned rounded rectangle
- * in the XY plane.
+ * A 2-D, static, fan-mode mesh which renders an axis-aligned rounded rectangle
+ * in the X-Y plane.
  * <p>
  * In local space, X extends from x1 to x2 and Y extends from y1 to y2, with
  * normals set to (0,0,zNorm). In texture space, X and Y extend from 0 to 1.
@@ -50,6 +50,10 @@ public class RoundedRectangle extends Mesh {
      * number of edges per arc
      */
     final private static int epa = 4;
+    /**
+     * number of axes in a vector
+     */
+    final private static int numAxes = 3;
     /**
      * number of vertices per triangle
      */
@@ -96,8 +100,8 @@ public class RoundedRectangle extends Mesh {
         int numVertices = 4 * epa + 5;
         int numIndices = numVertices + 1;
         short[] indices = new short[numIndices];
-        float[] normals = new float[3 * numVertices];
-        float[] positions = new float[3 * numVertices];
+        float[] normals = new float[numAxes * numVertices];
+        float[] positions = new float[numAxes * numVertices];
         float[] texCoords = new float[2 * numVertices];
 
         positions[0] = (x1 + x2) / 2;
@@ -112,8 +116,8 @@ public class RoundedRectangle extends Mesh {
             float theta = FastMath.HALF_PI * edge / epa;
             float sin = FastMath.sin(theta);
             float cos = FastMath.cos(theta);
-            positions[3 * vIndex] = centerX - cornerRadius * cos;
-            positions[3 * vIndex + 1] = centerY - cornerRadius * sin;
+            positions[numAxes * vIndex] = centerX - cornerRadius * cos;
+            positions[numAxes * vIndex + 1] = centerY - cornerRadius * sin;
             vIndex++;
         }
 
@@ -122,8 +126,8 @@ public class RoundedRectangle extends Mesh {
             float theta = FastMath.HALF_PI * edge / epa;
             float sin = FastMath.sin(theta);
             float cos = FastMath.cos(theta);
-            positions[3 * vIndex] = centerX + cornerRadius * sin;
-            positions[3 * vIndex + 1] = centerY - cornerRadius * cos;
+            positions[numAxes * vIndex] = centerX + cornerRadius * sin;
+            positions[numAxes * vIndex + 1] = centerY - cornerRadius * cos;
             vIndex++;
         }
 
@@ -132,8 +136,8 @@ public class RoundedRectangle extends Mesh {
             float theta = FastMath.HALF_PI * edge / epa;
             float sin = FastMath.sin(theta);
             float cos = FastMath.cos(theta);
-            positions[3 * vIndex] = centerX + cornerRadius * cos;
-            positions[3 * vIndex + 1] = centerY + cornerRadius * sin;
+            positions[numAxes * vIndex] = centerX + cornerRadius * cos;
+            positions[numAxes * vIndex + 1] = centerY + cornerRadius * sin;
             vIndex++;
         }
 
@@ -142,28 +146,28 @@ public class RoundedRectangle extends Mesh {
             float theta = FastMath.HALF_PI * edge / epa;
             float sin = FastMath.sin(theta);
             float cos = FastMath.cos(theta);
-            positions[3 * vIndex] = centerX - cornerRadius * sin;
-            positions[3 * vIndex + 1] = centerY + cornerRadius * cos;
+            positions[numAxes * vIndex] = centerX - cornerRadius * sin;
+            positions[numAxes * vIndex + 1] = centerY + cornerRadius * cos;
             vIndex++;
         }
         assert vIndex == numVertices : vIndex;
 
         for (int vi = 0; vi < numVertices; vi++) {
             indices[vi] = (short) vi;
-            normals[3 * vi] = 0f;
-            normals[3 * vi + 1] = 0f;
-            normals[3 * vi + 2] = zNorm;
-            positions[3 * vi + 2] = 0f;
-            float x = positions[3 * vi];
-            float y = positions[3 * vi + 1];
+            normals[numAxes * vi] = 0f;
+            normals[numAxes * vi + 1] = 0f;
+            normals[numAxes * vi + 2] = zNorm;
+            positions[numAxes * vi + 2] = 0f;
+            float x = positions[numAxes * vi];
+            float y = positions[numAxes * vi + 1];
             texCoords[2 * vi] = (x - x1) / (x2 - x1);
             texCoords[2 * vi + 1] = (y - y1) / (y2 - y1);
         }
         indices[numVertices] = 1;
 
-        setBuffer(Type.Normal, 3, normals);
+        setBuffer(Type.Normal, numAxes, normals);
         setBuffer(Type.Index, vpt, indices);
-        setBuffer(Type.Position, 3, positions);
+        setBuffer(Type.Position, numAxes, positions);
         setBuffer(Type.TexCoord, 2, texCoords);
 
         updateBound();

@@ -38,9 +38,9 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 
 /**
- * A 2D, static, line-mode mesh in the XY plane, intended to be used as an end
+ * A 2-D, static, line-mode mesh in the X-Y plane, intended to be used as an end
  * cap for a staff. A finial can have up to 3 limbs (for translation, rotation,
- * and scale). A branch has either 3 or 4 crowsfeet, with each foot marking 1
+ * and scale). A branch has either 3 or 4 crowsfeet, with each foot marking one
  * end of a sparkline.
  * <p>
  * In local coordinates, a finial extends from -width to 0 in X and from -height
@@ -64,6 +64,10 @@ public class Finial extends Mesh {
      * 1/3 of the total width (in local units)
      */
     final private static double otw = width / 3;
+    /**
+     * number of axes in a vector
+     */
+    final private static int numAxes = 3;
     /**
      * number of lines in a 3-foot limb
      */
@@ -141,9 +145,9 @@ public class Finial extends Mesh {
             numLines += numLines3;
         }
 
-        floats = BufferUtils.createFloatBuffer(3 * numVertices);
+        floats = BufferUtils.createFloatBuffer(numAxes * numVertices);
         VertexBuffer positions = new VertexBuffer(Type.Position);
-        positions.setupData(Usage.Static, 3, Format.Float, floats);
+        positions.setupData(Usage.Static, numAxes, Format.Float, floats);
         setBuffer(positions);
 
         shorts = BufferUtils.createShortBuffer(2 * numLines);
