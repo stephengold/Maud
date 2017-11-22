@@ -375,7 +375,7 @@ public class EditorScreen extends GuiScreenController {
                 DisplaySettings.get().setFullscreen(isChecked);
                 DisplaySettings.save();
                 break;
-            case "gamma":
+            case "gammaCorrection":
                 DisplaySettings.get().setGammaCorrection(isChecked);
                 DisplaySettings.save();
                 break;
