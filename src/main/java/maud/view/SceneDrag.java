@@ -47,7 +47,7 @@ import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.AxesSubject;
 
 /**
- * Drag state for scene views.
+ * Drag state for scene views. Never checkpointed.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -270,7 +270,7 @@ public class SceneDrag {
                     Vector3f oldTipLocal
                             = spatial.worldToLocal(oldTipWorld, null);
                     Vector3f displacement = newTipLocal.subtract(oldTipLocal);
-                    
+
                     translateSubject(displacement);
                 }
                 break;
@@ -450,12 +450,12 @@ public class SceneDrag {
                 break;
 
             case SelectedBone:
-                int boneIndex = cgm.getBone().getIndex();
                 if (cgm.getBone().shouldEnableControls()) {
                     /*
                      * Scale the selected bone in the displayed pose.
                      */
                     Pose pose = cgm.getPose().get();
+                    int boneIndex = cgm.getBone().getIndex();
                     Vector3f userScale = pose.userScale(boneIndex, null);
                     userScale.multLocal(factor);
                     pose.setScale(boneIndex, userScale);
@@ -505,7 +505,19 @@ public class SceneDrag {
             case ModelRoot: // ignore attempts to translate the model root
                 break;
 
-            case SelectedBone: // TODO
+            case SelectedBone:
+                Cgm cgm = getCgm();
+                if (cgm.getBone().shouldEnableControls()) {
+                    /*
+                     * Translate the selected bone in the displayed pose.
+                     */
+                    Pose pose = cgm.getPose().get();
+                    int boneIndex = cgm.getBone().getIndex();
+                    Vector3f userTranslation
+                            = pose.userTranslation(boneIndex, null);
+                    userTranslation.addLocal(offset);
+                    pose.setTranslation(boneIndex, userTranslation);
+                }
                 break;
 
             case SelectedPhysics:
