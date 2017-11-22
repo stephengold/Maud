@@ -577,9 +577,8 @@ public class ScoreView implements EditorView {
         Camera camera = getCamera();
         InputManager inputManager = Maud.getApplication().getInputManager();
         Ray ray = MyCamera.mouseRay(camera, inputManager);
-        
-        Vector3f origin = ray.getOrigin();
-        float newY = origin.y;
+
+        float newY = ray.origin.y;
         cgm.getScorePov().setCameraY(newY);
     }
     // *************************************************************************

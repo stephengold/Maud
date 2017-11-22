@@ -109,18 +109,6 @@ public class SceneDrag {
     }
 
     /**
-     * Read the index of the axis being dragged.
-     *
-     * @return axis index (&ge;0, &lt;numAxes)
-     */
-    static int getAxisIndex() {
-        assert isActive();
-        assert dragAxisIndex >= 0 : dragAxisIndex;
-        assert dragAxisIndex < numAxes : dragAxisIndex;
-        return dragAxisIndex;
-    }
-
-    /**
      * Access the C-G model that's being manipulated.
      *
      * @return the pre-existing instance
@@ -150,16 +138,6 @@ public class SceneDrag {
         } else {
             return true;
         }
-    }
-
-    /**
-     * Test whether the axis being dragged points away from the camera.
-     *
-     * @return true if pointing away from camera, otherwise false
-     */
-    static boolean isFarSide() {
-        assert isActive();
-        return dragFarSide;
     }
 
     /**
