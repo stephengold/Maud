@@ -467,6 +467,10 @@ public class EditorTools {
                 cursor.onSliderChanged();
                 break;
 
+            case "platformDiameter":
+                platform.onSliderChanged();
+                break;
+
             case "svR":
             case "svG":
             case "svB":

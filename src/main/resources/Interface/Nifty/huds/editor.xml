@@ -1183,22 +1183,28 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="platformTool" title="Platform Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="90px" width="100px" x="70" y="30">
+                     height="130px" width="200px" x="70" y="30">
                 <panel childLayout="vertical">
                     <control name="radioButtonGroup" id="platformGroup"/>
-                    <panel childLayout="horizontal"
-                           padding="0,10">
+                    <panel childLayout="horizontal" height="25px">
                         <control name="radioButton" id="squarePlatformRadioButton"
                                  group="platformGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="square"/>
+                        <control name="label" text="  square"/>
                     </panel>
-                    <panel childLayout="horizontal"
-                           padding="0,10">
+                    <panel childLayout="horizontal" height="25px">
                         <control name="radioButton" id="noPlatformRadioButton"
                                  group="platformGroup"/>
-                        <control name="label" width="12px"/>
-                        <control name="label" text="none"/>
+                        <control name="label" text="  none"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" id="platformDiameterSliderStatus"
+                                 width="*"
+                                 textHAlign="right"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="horizontalSlider" id="platformDiameterSlider"
+                                 buttonStepSize="1"
+                                 max="2" min="-1" stepSize="0.001"/>
                     </panel>
                 </panel>
             </control>

@@ -27,8 +27,10 @@
 package maud.tool;
 
 import java.util.logging.Logger;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
+import maud.Maud;
 
 /**
  * The controller for the "Platform Tool" window in Maud's editor screen.
@@ -44,6 +46,10 @@ class PlatformTool extends WindowController {
      */
     final private static Logger logger
             = Logger.getLogger(PlatformTool.class.getName());
+    /**
+     * transform for the diameter slider
+     */
+    final private static SliderTransform diameterSt = SliderTransform.Log10;
     // *************************************************************************
     // constructors
 
@@ -54,5 +60,35 @@ class PlatformTool extends WindowController {
      */
     PlatformTool(EditorScreen screenController) {
         super(screenController, "platformTool", false);
+    }
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Update the MVC model based on the sliders.
+     */
+    void onSliderChanged() {
+        float diameter = Maud.gui.readSlider("platformDiameter", diameterSt);
+        Maud.getModel().getScene().setPlatformDiameter(diameter);
+    }
+    // *************************************************************************
+    // WindowController methods
+
+    /**
+     * Callback to update this state prior to rendering. (Invoked once per
+     * render pass.)
+     *
+     * @param tpf time interval between render passes (in seconds, &ge;0)
+     */
+    @Override
+    public void update(float tpf) {
+        super.update(tpf);
+        Maud.gui.setIgnoreGuiChanges(true);
+
+        float diameter = Maud.getModel().getScene().getPlatformDiameter();
+        Maud.gui.setSlider("platformDiameter", diameterSt, diameter);
+        Maud.gui.updateSliderStatus("platformDiameter", diameter, "wu");
+
+        Maud.gui.setIgnoreGuiChanges(false);
     }
 }
