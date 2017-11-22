@@ -111,10 +111,6 @@ public class SceneView
     // constants and loggers
 
     /**
-     * number of coordinate axes
-     */
-    final private static int numAxes = 3;
-    /**
      * width and height of rendered shadow maps (pixels per side, &gt;0)
      */
     final private static int shadowMapSize = 4_096;
@@ -560,7 +556,8 @@ public class SceneView
      */
     public boolean isAxisReceding(int axisIndex) {
         Validate.nonNull(cgm, "model");
-        Validate.inRange(axisIndex, "axis index", 0, 2);
+        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
+                MyVector3f.lastAxis);
 
         assert axesVisualizer.isEnabled();
         Spatial axesSpatial = axesVisualizer.getSpatial();
@@ -948,7 +945,7 @@ public class SceneView
         Validate.nonNull(selection, "selection");
 
         Camera camera = getCamera();
-        for (int axisIndex = 0; axisIndex < numAxes; axisIndex++) {
+        for (int axisIndex = 0; axisIndex < MyVector3f.numAxes; axisIndex++) {
             Vector3f tipWorld = axesVisualizer.tipLocation(axisIndex);
             if (tipWorld != null) {
                 Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);

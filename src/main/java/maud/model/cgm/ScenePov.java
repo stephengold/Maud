@@ -183,7 +183,7 @@ public class ScenePov implements Cloneable, Pov {
         } else {
             if (cameraDirection.x != 0f || cameraDirection.z != 0f) {
                 cameraDirection.y = 0f;
-                cameraDirection.normalizeLocal();
+                MyVector3f.normalizeLocal(cameraDirection);
             }
         }
     }
@@ -461,7 +461,7 @@ public class ScenePov implements Cloneable, Pov {
     private Vector3f pitchAxis() {
         Vector3f result = cameraDirection.cross(yAxis);
         assert !MyVector3f.isZero(result);
-        result.normalizeLocal();
+        MyVector3f.normalizeLocal(result);
 
         return result;
     }
@@ -485,15 +485,15 @@ public class ScenePov implements Cloneable, Pov {
          * Limit the range and elevation angle.
          */
         float clampedRange = status.clampRange(range);
-        float clampedElevation;
-        clampedElevation = status.clampElevation(elevationAngle);
+        float clampedElevation = status.clampElevation(elevationAngle);
 
-        Vector3f dir = MyVector3f.fromAltAz(clampedElevation, azimuthAngle);
-        Vector3f offset = dir.mult(clampedRange);
+        Vector3f direction
+                = MyVector3f.fromAltAz(clampedElevation, azimuthAngle);
+        Vector3f offset = direction.mult(clampedRange);
         centerLocation(cameraLocation);
         cameraLocation.addLocal(offset);
 
-        dir.negateLocal();
-        cameraDirection.set(dir);
+        direction.negateLocal();
+        cameraDirection.set(direction);
     }
 }

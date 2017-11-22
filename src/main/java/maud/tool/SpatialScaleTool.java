@@ -29,6 +29,7 @@ package maud.tool;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
@@ -44,10 +45,6 @@ class SpatialScaleTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
-    /**
-     * number of coordinate axes
-     */
-    final private static int numAxes = 3;
     /**
      * message logger for this class
      */
@@ -129,7 +126,7 @@ class SpatialScaleTool extends WindowController {
         Maud.gui.setSlider("ssMaster", masterSt, maxScale);
 
         float[] scales = vector.toArray(null);
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+        for (int iAxis = 0; iAxis < MyVector3f.numAxes; iAxis++) {
             float scale = scales[iAxis];
             String sliderName = axisNames[iAxis] + "Ss";
             Maud.gui.setSlider(sliderName, axisSt, scale / maxScale);

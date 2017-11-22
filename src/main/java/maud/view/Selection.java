@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
+import jme3utilities.math.MyVector3f;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.LoadedMap;
@@ -137,7 +138,8 @@ public class Selection {
         if (scoreView) {
             Validate.inRange(axisIndex, "axis index", 0, 9);
         } else {
-            Validate.inRange(axisIndex, "axis index", 0, 2);
+            Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
+                    MyVector3f.lastAxis);
         }
 
         float dSquared = screenXY.distanceSquared(inputXY);
@@ -364,7 +366,7 @@ public class Selection {
         Vector3f tipWorld = visualizer.tipLocation(bestAxisIndex);
         Vector3f tipLocal = spatial.worldToLocal(tipWorld, null);
         float length = tipLocal.length();
-        
+
         boolean farSide = sceneView.isAxisReceding(bestAxisIndex);
         SceneDrag.start(bestAxisIndex, length, bestCgm, farSide);
     }

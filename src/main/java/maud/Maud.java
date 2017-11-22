@@ -40,6 +40,7 @@ import jme3utilities.MyString;
 import jme3utilities.StringLoader;
 import jme3utilities.UncachedKey;
 import jme3utilities.Validate;
+import jme3utilities.ViewPortAppState;
 import jme3utilities.debug.Dumper;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;

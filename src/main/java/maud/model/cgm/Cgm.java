@@ -269,7 +269,7 @@ public class Cgm implements Cloneable {
 
         Spatial result = null;
         if (rootSpatial != null) {
-            result = MaudUtil.findControlledSpatial(sgc, rootSpatial);
+            result = MySpatial.findControlledSpatial(sgc, rootSpatial);
         }
 
         return result;
@@ -695,10 +695,7 @@ public class Cgm implements Cloneable {
         int numSgcs = sgcList.size();
         List<String> nameList = new ArrayList<>(numSgcs);
         for (Control sgc : sgcList) {
-            String type = sgc.getClass().getSimpleName();
-            if (type.endsWith("Control")) {
-                type = MyString.removeSuffix(type, "Control");
-            }
+            String type = MyControl.describeType(sgc);
             Spatial controlledSpatial = findControlledSpatial(sgc);
             String controlledName = controlledSpatial.getName();
             assert !controlledName.isEmpty();

@@ -37,17 +37,14 @@ import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
-import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
-import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.bvh.BVHAnimData;
@@ -62,7 +59,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyControl;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
@@ -95,17 +91,6 @@ public class MaudUtil {
      * local copy of {@link com.jme3.math.Vector3f#UNIT_Z}
      */
     final private static Vector3f zAxis = new Vector3f(0f, 0f, 1f);
-    /**
-     * array of cardinal axes TODO replace with library
-     */
-    final private static Vector3f cardinalAxes[] = {
-        xAxis,
-        yAxis,
-        zAxis,
-        new Vector3f(-1, 0, 0),
-        new Vector3f(0, -1, 0),
-        new Vector3f(0, 0, -1)
-    };
     // *************************************************************************
     // constructors
 
@@ -247,151 +232,6 @@ public class MaudUtil {
         }
 
         return storeResult;
-    }
-
-    /**
-     * Find the cardinal rotation most similar to the specified input. A
-     * cardinal rotation is one for which the rotation angles on all 3 axes are
-     * integer multiples of Pi/2 radians. TODO replace with library
-     *
-     * @param input (not null, modified)
-     */
-    public static void cardinalizeLocal(Quaternion input) {
-        Validate.nonNull(input, "input");
-
-        input.normalizeLocal();
-        /*
-         * Generate each of the 24 cardinal rotations.
-         */
-        Quaternion cardinalRotation = new Quaternion();
-        Quaternion bestCardinalRotation = new Quaternion();
-        Vector3f z = new Vector3f();
-        float bestAbsDot = -1f;
-        for (Vector3f x : cardinalAxes) {
-            for (Vector3f y : cardinalAxes) {
-                x.cross(y, z);
-                if (z.isUnitVector()) {
-                    cardinalRotation.fromAxes(x, y, z);
-                    /*
-                     * Measure similarity to the input rotation
-                     * using the absolute value of their dot product.
-                     */
-                    float dot = cardinalRotation.dot(input);
-                    float absDot = FastMath.abs(dot);
-                    if (absDot > bestAbsDot) {
-                        bestAbsDot = absDot;
-                        bestCardinalRotation.set(cardinalRotation);
-                    }
-                }
-            }
-        }
-
-        input.set(bestCardinalRotation);
-    }
-
-    /**
-     * Estimate the number of bones in the specified mesh by reading its index
-     * buffers.
-     *
-     * @param mesh mesh to examine (not null)
-     * @return estimated number of bones (&ge;0)
-     */
-    public static int countBones(Mesh mesh) {
-        int maxWeightsPerVert = mesh.getMaxNumWeights();
-        assert maxWeightsPerVert > 0 : maxWeightsPerVert;
-        assert maxWeightsPerVert <= 4 : maxWeightsPerVert;
-
-        VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
-        Buffer boneIndexBuffer = biBuf.getDataReadOnly();
-        boneIndexBuffer.rewind();
-        int numBoneIndices = boneIndexBuffer.remaining();
-        assert numBoneIndices % 4 == 0 : numBoneIndices;
-        int numVertices = boneIndexBuffer.remaining() / 4;
-
-        VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
-        FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
-        weightBuffer.rewind();
-        int numWeights = weightBuffer.remaining();
-        assert numWeights == numVertices * 4 : numWeights;
-
-        int result = 0;
-        for (int vIndex = 0; vIndex < numVertices; vIndex++) {
-            for (int wIndex = 0; wIndex < 4; wIndex++) {
-                float weight = weightBuffer.get();
-                int bIndex = MyMesh.readIndex(boneIndexBuffer);
-                if (wIndex < maxWeightsPerVert && weight > 0f
-                        && bIndex >= result) {
-                    result = bIndex + 1;
-                }
-            }
-        }
-
-        assert result >= 0 : result;
-        return result;
-    }
-
-    /**
-     * Estimate the number of bones in the specified subtree by reading its mesh
-     * index buffers.
-     *
-     * @param subtree (may be null)
-     * @return estimated number (&ge;0)
-     */
-    public static int countMeshBones(Spatial subtree) {
-        int result = 0;
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            Mesh mesh = geometry.getMesh();
-            result = countBones(mesh);
-        } else if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                int childBones = countMeshBones(child);
-                if (childBones > result) {
-                    result = childBones;
-                }
-            }
-        }
-
-        assert result >= 0 : result;
-        return result;
-    }
-
-    /**
-     * Find a spatial controlled by the specified S-G control in the specified
-     * subtree of the scene graph. Note: recursive!
-     *
-     * @param sgc which scene-graph control (not null, unaffected)
-     * @param subtree which subtree (not null, unaffected)
-     * @return the pre-existing controlled spatial, or null if none found
-     */
-    public static Spatial findControlledSpatial(Control sgc, Spatial subtree) {
-        Validate.nonNull(sgc, "control");
-        Validate.nonNull(subtree, "subtree");
-
-        Spatial result = null;
-        if (sgc instanceof AbstractControl) {
-            AbstractControl abstractControl = (AbstractControl) sgc;
-            result = abstractControl.getSpatial();
-        }
-        if (result == null) {
-            int sgcIndex = MyControl.findIndex(sgc, subtree);
-            if (sgcIndex != -1) {
-                result = subtree;
-            } else if (subtree instanceof Node) {
-                Node node = (Node) subtree;
-                List<Spatial> children = node.getChildren();
-                for (Spatial child : children) {
-                    result = findControlledSpatial(sgc, child);
-                    if (result != null) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        return result;
     }
 
     /**

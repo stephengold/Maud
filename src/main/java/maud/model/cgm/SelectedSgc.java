@@ -147,17 +147,13 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
-     * Read the type of the S-G control.
+     * Describe the type of the S-G control.
      *
      * @return abbreviated name for the class
      */
     public String getType() {
-        String name = selected.getClass().getSimpleName();
-        if (name.endsWith("Control")) {
-            name = MyString.removeSuffix(name, "Control");
-        }
-
-        return name;
+        String description = MyControl.describeType(selected);
+        return description;
     }
 
     /**

@@ -37,9 +37,9 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.ui.ActionApplication;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSkeleton;
 
@@ -95,7 +95,7 @@ public class EditableMap extends LoadedMap {
     public void cardinalizeTwist() {
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();
-        MaudUtil.cardinalizeLocal(twist);
+        MyQuaternion.cardinalizeLocal(twist);
         setEditedTwist();
     }
 
@@ -285,7 +285,8 @@ public class EditableMap extends LoadedMap {
      * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      */
     public void snapTwist(int axisIndex) {
-        Validate.inRange(axisIndex, "axis index", 0, 2);
+        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
+                MyVector3f.lastAxis);
 
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();
@@ -435,13 +436,14 @@ public class EditableMap extends LoadedMap {
      * @return a new quaternion
      */
     private Quaternion estimateTwist() {
+        EditorModel model = Maud.getModel();
         Quaternion sourceMo
-                = Maud.getModel().getSource().getBone().modelOrientation(null);
+                = model.getSource().getBone().modelOrientation(null);
         Quaternion targetMo
-                = Maud.getModel().getTarget().getBone().modelOrientation(null);
+                = model.getTarget().getBone().modelOrientation(null);
         Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
         Quaternion twist = invSourceMo.mult(targetMo, null);
-        MaudUtil.cardinalizeLocal(twist);
+        MyQuaternion.cardinalizeLocal(twist);
 
         return twist;
     }
@@ -467,8 +469,8 @@ public class EditableMap extends LoadedMap {
             History.autoAdd();
             ++editCount;
             editedTwist = newName;
-            String event
-                    = String.format("set twist for %s", MyString.quote(newName));
+            String event = String.format("set twist for %s",
+                    MyString.quote(newName));
             History.addEvent(event);
         }
     }

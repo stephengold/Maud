@@ -61,8 +61,8 @@ import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
+import jme3utilities.math.MyVector3f;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.view.SceneView;
 
@@ -153,7 +153,7 @@ public class SelectedSpatial implements JmeCloneable {
         Skeleton skeleton = cgm.getSkeleton().find();
         if (skeleton == null) {
             Spatial spatial = find();
-            int numBones = MaudUtil.countMeshBones(spatial);
+            int numBones = MySpatial.countMeshBones(spatial);
             Bone[] bones = new Bone[numBones];
             for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
                 String boneName = String.format("bone%d", boneIndex);
@@ -189,7 +189,7 @@ public class SelectedSpatial implements JmeCloneable {
      */
     public void cardinalizeRotation() {
         Quaternion localRotation = localRotation(null);
-        MaudUtil.cardinalizeLocal(localRotation);
+        MyQuaternion.cardinalizeLocal(localRotation);
         editableCgm.setSpatialRotation(localRotation);
     }
 
@@ -984,7 +984,8 @@ public class SelectedSpatial implements JmeCloneable {
      * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      */
     public void snapRotation(int axisIndex) {
-        Validate.inRange(axisIndex, "axis index", 0, 2);
+        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
+                MyVector3f.lastAxis);
 
         Quaternion localRotation = localRotation(null);
         MyQuaternion.snapLocal(localRotation, axisIndex);
