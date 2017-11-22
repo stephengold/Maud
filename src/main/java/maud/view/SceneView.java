@@ -45,6 +45,7 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.Line;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
@@ -393,11 +394,8 @@ public class SceneView
 
         Camera camera = getCamera();
         InputManager inputManager = Maud.getApplication().getInputManager();
-        Ray worldRay = MyCamera.mouseRay(camera, inputManager);
-
-        Spatial axesSpatial = axesVisualizer.getSpatial();
-        Ray localRay = MyMath.localizeRay(worldRay, axesSpatial);
-        SceneDrag.updateSubject(localRay);
+        Line worldLine = MyCamera.mouseLine(camera, inputManager);
+        SceneDrag.updateSubject(axesVisualizer, worldLine);
     }
 
     /**
@@ -951,7 +949,7 @@ public class SceneView
 
         Camera camera = getCamera();
         for (int axisIndex = 0; axisIndex < numAxes; axisIndex++) {
-            Vector3f tipWorld = tipLocation(axisIndex);
+            Vector3f tipWorld = axesVisualizer.tipLocation(axisIndex);
             if (tipWorld != null) {
                 Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);
                 Vector2f tipXY = new Vector2f(tipScreen.x, tipScreen.y);
@@ -1533,24 +1531,6 @@ public class SceneView
         Vector3f cameraLocation;
         cameraLocation = new Vector3f(-2.4f, 1f, 1.6f); // TODO constants
         cgm.getScenePov().setCameraLocation(cameraLocation);
-    }
-
-    /**
-     * Calculate the tip location of the indexed axis in the axes visualizer.
-     *
-     * @param axisIndex which axis in the visualizer (&ge;0, &lt;3)
-     * @return a new vector (in world coordinates) or null if axis not displayed
-     */
-    private Vector3f tipLocation(int axisIndex) {
-        Validate.inRange(axisIndex, "axis index", 0, 2);
-
-        Vector3f result = null;
-        Transform transform = SceneUpdater.axesTransform(cgm);
-        if (transform != null) {
-            result = axesVisualizer.tipLocation(axisIndex);
-        }
-
-        return result;
     }
 
     /**

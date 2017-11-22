@@ -27,10 +27,12 @@
 package maud.view;
 
 import com.jme3.math.FastMath;
+import com.jme3.math.Line;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
+import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
 import maud.Maud;
@@ -80,9 +82,9 @@ public class SceneDrag {
      */
     private static boolean dragSourceCgm;
     /**
-     * length of the axis when the drag began (in local units, &gt;0)
+     * length of the axis arrow at previous update (in local units, &gt;0)
      */
-    private static float dragInitialLength;
+    private static float previousLength;
     /**
      * index of the axis being dragged (&ge;0, &lt;numAxes) or noAxis for none
      */
@@ -138,17 +140,6 @@ public class SceneDrag {
     }
 
     /**
-     * Read the length of the axis when the drag began.
-     *
-     * @return length (in local units, &gt;0)
-     */
-    public static float getInitialLength() {
-        assert isActive();
-        assert dragInitialLength > 0f : dragInitialLength;
-        return dragInitialLength;
-    }
-
-    /**
      * Test whether axis dragging is active.
      *
      * @return true if selected, otherwise false
@@ -175,6 +166,7 @@ public class SceneDrag {
      * Start dragging the specified axis.
      *
      * @param axisIndex which axis to drag: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
+     * @param initialLength length of axis in local units (&gt;0)
      * @param cgm which C-G model (not null)
      * @param farSideFlag true &rarr; drag on the far side of the axis origin,
      * false to drag on near side
@@ -186,7 +178,7 @@ public class SceneDrag {
         assert cgm != null;
 
         dragAxisIndex = axisIndex;
-        dragInitialLength = initialLength;
+        previousLength = initialLength;
         dragFarSide = farSideFlag;
         if (cgm == Maud.getModel().getSource()) {
             dragSourceCgm = true;
@@ -205,16 +197,22 @@ public class SceneDrag {
 
     /**
      * While dragging an axis, update the subject in the MVC model.
+     *
+     * @param visualizer (not null, unaffected)
+     * @param worldRay (not null, unaffected)
      */
-    static void updateSubject(Ray localRay) {
+    static void updateSubject(AxesVisualizer visualizer, Line worldLine) {
         /*
-         * Calculate the old axis direction in local coordinates.
+         * Calculate the old axis direction in world coordinates.
          */
-        Vector3f oldDirection = MyVector3f.axisVector(dragAxisIndex, 1f, null);
-        assert oldDirection.isUnitVector() : oldDirection;
+        Spatial spatial = visualizer.getSpatial();
+        Vector3f axesOrigin = spatial.getWorldTranslation();
+        Vector3f oldTipWorld = visualizer.tipLocation(dragAxisIndex);
+        Vector3f oldDirWorld = oldTipWorld.subtract(axesOrigin);
+        float oldLengthWorld = oldDirWorld.length();
 
-        float dot2;
-        Vector3f n, n2;
+        Line axisLine;
+        Vector3f newTipWorld;
         AxesOptions options = Maud.getModel().getScene().getAxes();
         AxesDragEffect effect = options.getDragEffect();
         switch (effect) {
@@ -223,51 +221,57 @@ public class SceneDrag {
 
             case Rotate:
                 /*
-                 * Calculate the new axis direction in local coordinates.
+                 * Calculate the new axis direction in world,
+                 * then local coordinates.
                  */
-                Vector3f newDirection = MyVector3f.lineMeetsSphere(localRay,
-                        dragInitialLength, dragFarSide);
-                newDirection.normalizeLocal();
+                newTipWorld = MyVector3f.lineMeetsSphere(worldLine, axesOrigin,
+                        oldLengthWorld, dragFarSide);
+                Vector3f newDirWorld = newTipWorld.subtract(axesOrigin);
+                Vector3f newDirLocal = MyVector3f.localizeDirection(newDirWorld,
+                        spatial, null);
 
-                Vector3f cross = oldDirection.cross(newDirection);
-                float crossNorm = cross.length();
-                if (crossNorm > 0f) {
+                Vector3f oldDirLocal = MyVector3f.localizeDirection(oldDirWorld,
+                        spatial, null);
+                Vector3f cross = oldDirLocal.cross(newDirLocal);
+                if (!MyVector3f.isZero(cross)) {
                     rotateSubject(cross);
                 }
                 break;
 
             case ScaleAll:
                 /*
-                 * Calculate the new axis length in local coordinates.
+                 * Calculate the new axis length in local units.
                  */
-                n = oldDirection.cross(localRay.direction);
-                n2 = localRay.direction.cross(n);
-                dot2 = oldDirection.dot(n2);
-                if (dot2 != 0f) {
-                    float dot1 = localRay.origin.dot(n2);
-                    float newLength = dot1 / dot2;
+                axisLine = new Line(axesOrigin, oldDirWorld);
+                newTipWorld = MyVector3f.lineMeetsLine(axisLine, worldLine);
+                if (newTipWorld != null) {
+                    Vector3f newTipLocal
+                            = spatial.worldToLocal(newTipWorld, null);
+                    float newLengthLocal = newTipLocal.length();
 
                     float scaleFactor
-                            = FastMath.abs(newLength / dragInitialLength);
+                            = FastMath.abs(newLengthLocal / previousLength);
                     if (scaleFactor > 0f) {
                         scaleSubject(scaleFactor);
+                        previousLength = newLengthLocal;
                     }
                 }
                 break;
 
             case Translate:
                 /*
-                 * Calculate the displacement in local units.
+                 * Calculate the axis displacement in local coordinates.
                  */
-                n = oldDirection.cross(localRay.direction);
-                n2 = localRay.direction.cross(n);
-                dot2 = oldDirection.dot(n2);
-                if (dot2 != 0f) {
-                    float dot1 = localRay.origin.dot(n2);
-                    float displacement = dot1 / dot2 - dragInitialLength;
-
-                    Vector3f offset = oldDirection.mult(displacement);
-                    translateSubject(offset);
+                axisLine = new Line(axesOrigin, oldDirWorld);
+                newTipWorld = MyVector3f.lineMeetsLine(axisLine, worldLine);
+                if (newTipWorld != null) {
+                    Vector3f newTipLocal
+                            = spatial.worldToLocal(newTipWorld, null);
+                    Vector3f oldTipLocal
+                            = spatial.worldToLocal(oldTipWorld, null);
+                    Vector3f displacement = newTipLocal.subtract(oldTipLocal);
+                    
+                    translateSubject(displacement);
                 }
                 break;
 
@@ -348,17 +352,20 @@ public class SceneDrag {
     /**
      * Rotate the subject using the specified cross product.
      *
-     * @param cross cross product of two unit vectors (not null, length&gt;0)
+     * @param cross cross product of two unit vectors in local coordinates (not
+     * null, length&gt;0, length&le;1)
      */
     private static void rotateSubject(Vector3f cross) {
         /*
          * Convert the cross product to a rotation quaternion.
          */
-        float crossNorm = cross.length();
-        assert crossNorm > 0f : crossNorm;
-        Vector3f rotationAxis = cross.divide(crossNorm);
-        assert rotationAxis.isUnitVector() : rotationAxis;
-        float rotationAngle = FastMath.asin(crossNorm);
+        double lengthSquared = MyVector3f.lengthSquared(cross);
+        double dLength = Math.sqrt(lengthSquared);
+        float fLength = (float) dLength;
+        assert fLength > 0f : fLength;
+        assert fLength <= 1f : fLength;
+        Vector3f rotationAxis = cross.divide(fLength);
+        float rotationAngle = (float) Math.asin(dLength);
         Quaternion rotation = new Quaternion();
         rotation.fromAngleNormalAxis(rotationAngle, rotationAxis);
 
@@ -375,7 +382,7 @@ public class SceneDrag {
                  */
                 Cgm cgm = getCgm();
                 CgmTransform cgmTransform = cgm.getSceneView().getTransform();
-                float angle = FastMath.asin(cross.y * crossNorm);
+                float angle = FastMath.asin(cross.y * fLength);
                 cgmTransform.rotateY(angle);
                 break;
 
@@ -485,7 +492,7 @@ public class SceneDrag {
     /**
      * Translate the subject by the specified offset.
      *
-     * @param offset (not null, unaffected)
+     * @param offset (in local coordinates, not null, unaffected)
      */
     private static void translateSubject(Vector3f offset) {
         EditableCgm editableCgm = getEditableCgm();

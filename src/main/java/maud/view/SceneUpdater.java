@@ -53,7 +53,6 @@ import jme3utilities.MySpatial;
 import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.debug.SkeletonVisualizer;
-import jme3utilities.math.MyMath;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 import jme3utilities.ui.Locators;
@@ -261,18 +260,14 @@ class SceneUpdater {
             Vector3f axesOrigin = transform.getTranslation();
             Vector3f cameraLocation = cgm.getScenePov().cameraLocation(null);
             float distance = axesOrigin.distance(cameraLocation);
-            Vector3f scale = transform.getScale();
-            float maxScale = MyMath.max(scale.x, scale.y, scale.z);
-            assert maxScale > 0f : maxScale;
-            float length = 0.2f * distance / maxScale;
+            float length = 0.2f * distance;
+            visualizer.setAxisLength(length);
 
             AxesOptions options = Maud.getModel().getScene().getAxes();
             boolean depthTestFlag = options.getDepthTestFlag();
-            float lineWidth = options.getLineWidth();
-
-            visualizer.setAxisLength(length);
             visualizer.setDepthTest(depthTestFlag);
-            visualizer.setEnabled(true);
+
+            float lineWidth = options.getLineWidth();
             visualizer.setLineWidth(lineWidth);
         }
     }

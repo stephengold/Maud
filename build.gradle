@@ -46,8 +46,8 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.2.3'
 
     // from stephengold's bintray repositories:
-    compile 'jme3utilities:jme3-utilities-heart:0.9.26'
-    compile 'jme3utilities:jme3-utilities-debug:0.8.0'
+    compile 'jme3utilities:jme3-utilities-heart:0.9.27'
+    compile 'jme3utilities:jme3-utilities-debug:0.8.1'
     compile 'jme3utilities:jme3-utilities-ui:0.5.9'
     compile 'jme3utilities:jme3-utilities-nifty:0.7.2'
     compile 'jme3utilities:SkyControl:0.9.6'

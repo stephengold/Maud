@@ -27,11 +27,15 @@
 package maud.view;
 
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import jme3utilities.debug.AxesVisualizer;
 import maud.Maud;
+import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSkeleton;
@@ -305,15 +309,16 @@ public class Selection {
         assert bestBoneIndex >= 0 : bestBoneIndex;
 
         bestCgm.getBone().select(bestBoneIndex);
-        if (Maud.getModel().getTarget().getAnimation().isRetargetedPose()) {
+        EditorModel model = Maud.getModel();
+        if (model.getTarget().getAnimation().isRetargetedPose()) {
             /*
              * Also select the mapped bone (if any).
              */
-            LoadedMap map = Maud.getModel().getMap();
-            if (bestCgm == Maud.getModel().getSource()
+            LoadedMap map = model.getMap();
+            if (bestCgm == model.getSource()
                     && map.isSourceBoneMapped(bestBoneIndex)) {
                 map.selectFromSource();
-            } else if (bestCgm == Maud.getModel().getTarget()
+            } else if (bestCgm == model.getTarget()
                     && map.isTargetBoneMapped(bestBoneIndex)) {
                 map.selectFromTarget();
             }
@@ -354,7 +359,12 @@ public class Selection {
         assert bestAxisIndex < 3 : bestAxisIndex;
 
         SceneView sceneView = bestCgm.getSceneView();
-        float length = sceneView.getAxesVisualizer().getAxisLength();
+        AxesVisualizer visualizer = sceneView.getAxesVisualizer();
+        Spatial spatial = visualizer.getSpatial();
+        Vector3f tipWorld = visualizer.tipLocation(bestAxisIndex);
+        Vector3f tipLocal = spatial.worldToLocal(tipWorld, null);
+        float length = tipLocal.length();
+        
         boolean farSide = sceneView.isAxisReceding(bestAxisIndex);
         SceneDrag.start(bestAxisIndex, length, bestCgm, farSide);
     }
