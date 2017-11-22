@@ -468,15 +468,15 @@ the menu bar, status bar, and tool windows.
                         <control name="verticalSlider" id="xScaSlider"
                                  buttonStepSize="1"
                                  height="160px"
-                                 max="3" min="0" stepSize="0.001"/>
+                                 max="1.2" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="yScaSlider"
                                  buttonStepSize="1"
                                  height="160px"
-                                 max="3" min="0" stepSize="0.001"/>
+                                 max="1.2" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="zScaSlider"
                                  buttonStepSize="1"
                                  height="160px"
-                                 max="3" min="0" stepSize="0.001"/>
+                                 max="1.2" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160px" width="95px">
                             <control name="label" id="xScaSliderStatus"
