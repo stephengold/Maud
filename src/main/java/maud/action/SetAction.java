@@ -47,7 +47,7 @@ import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesSubject;
 
 /**
- * Process an action string that begins with "set".
+ * Process an action string that begins with the word "set".
  *
  * @author Stephen Gold sgold@sonic.net
  */

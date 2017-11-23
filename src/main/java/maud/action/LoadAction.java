@@ -35,7 +35,7 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedCgm;
 
 /**
- * Process an action string that begins with "load".
+ * Process an action string that begins with the word "load".
  *
  * @author Stephen Gold sgold@sonic.net
  */

@@ -48,7 +48,7 @@ import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
 
 /**
- * Process an action string that begins with "select".
+ * Process an action string that begins with the word "select".
  *
  * @author Stephen Gold sgold@sonic.net
  */
