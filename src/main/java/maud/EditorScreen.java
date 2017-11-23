@@ -216,8 +216,8 @@ public class EditorScreen extends GuiScreenController {
         ViewPort tScore = target.getScoreView().getViewPort();
 
         Vector2f screenXY = inputManager.getCursorPosition();
-        List<ViewPort> viewPorts;
-        viewPorts = MyCamera.listViewPorts(renderManager, screenXY);
+        List<ViewPort> viewPorts
+                = MyCamera.listViewPorts(renderManager, screenXY);
         Cgm cgm = null;
         for (ViewPort vp : viewPorts) {
             if (vp.isEnabled()) {
@@ -248,8 +248,8 @@ public class EditorScreen extends GuiScreenController {
         EditorView tScore = target.getScoreView();
 
         Vector2f screenXY = inputManager.getCursorPosition();
-        List<ViewPort> viewPorts;
-        viewPorts = MyCamera.listViewPorts(renderManager, screenXY);
+        List<ViewPort> viewPorts
+                = MyCamera.listViewPorts(renderManager, screenXY);
         Pov result = null;
         for (ViewPort vp : viewPorts) {
             if (vp.isEnabled()) {
@@ -286,8 +286,8 @@ public class EditorScreen extends GuiScreenController {
         EditorView tScore = target.getScoreView();
 
         Vector2f screenXY = inputManager.getCursorPosition();
-        List<ViewPort> viewPorts;
-        viewPorts = MyCamera.listViewPorts(renderManager, screenXY);
+        List<ViewPort> viewPorts
+                = MyCamera.listViewPorts(renderManager, screenXY);
         EditorView result = null;
         for (ViewPort vp : viewPorts) {
             if (vp.isEnabled()) {
