@@ -108,7 +108,7 @@ public class Cgm implements Cloneable {
      */
     private ScorePov scorePov = new ScorePov();
     /**
-     * 2D visualization of the loaded animation (set by
+     * 2-D visualization of the loaded animation (set by
      * {@link #setViews(maud.SceneView, maud.ScoreView)}
      */
     private ScoreView scoreView = null;
