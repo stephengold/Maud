@@ -45,7 +45,9 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedTrack;
+import maud.view.EditorView;
 import maud.view.SceneDrag;
+import maud.view.SceneView;
 import maud.view.ViewType;
 
 /**
@@ -163,6 +165,9 @@ public class EditorInputMode extends InputMode {
                     break;
                 case "delete":
                     handled = deleteAction(actionString);
+                    break;
+                case "launch":
+                    handled = launchAction(actionString);
                     break;
                 case "load":
                     handled = LoadAction.process(actionString);
@@ -295,6 +300,26 @@ public class EditorInputMode extends InputMode {
                     int number = Integer.parseInt(arg);
                     target.getTrack().deletePreviousKeyframes(number);
                 }
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process an action that starts with "launch".
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean launchAction(String actionString) {
+        boolean handled = false;
+        if (actionString.equals(Action.launchProjectile)) {
+            EditorView view = Maud.gui.mouseView();
+            if (view instanceof SceneView) {
+                SceneView sceneView = (SceneView) view;
+                sceneView.getProjectile().launch();
+            }
+            handled = true;
         }
 
         return handled;

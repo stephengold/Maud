@@ -57,6 +57,8 @@ public class Action {
     final static String deleteSingleKeyframe = "delete singleKeyframe";
     final static String deleteUserKey = "delete userKey";
 
+    final static String launchProjectile = "launch projectile";
+
     final static String loadAnimation = "load animation";
     final static String loadCgm = "load cgm";
     final static String loadMapAsset = "load map asset";
