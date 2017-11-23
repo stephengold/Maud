@@ -30,11 +30,10 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
-import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 
 /**
- * The world transform applied to a loaded C-G model in its "scene" view.
+ * The world transform applied to a loaded C-G model in its scene view.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -59,41 +58,42 @@ public class CgmTransform implements Cloneable {
      */
     private float scale = 1f;
     /**
-     * rotation angle of the C-G model around the +Y axis (in radians)
+     * rotation angle of the C-G model around the world's +Y axis (in radians)
      */
     private float yAngle = 0f;
     /**
-     * Y-offset of the C-G model's base (in world units)
+     * the Y-coordinate (in CG-model space) of the C-G model's base in bind pose
      */
     private float yOffset = 0f;
     /**
-     * the location (in model space) of the C-G model's dominant root bone
+     * the coordinates (in CG-model space) of the C-G model's geometric center
+     * in bind pose
      */
-    private Vector3f bindLocation = new Vector3f();
+    private Vector3f bindCenter = new Vector3f();
     // *************************************************************************
     // new methods exposed
 
     /**
      * Automatically configure the transform for a newly loaded C-G model.
      *
-     * @param center the location of the C-G model's center in bind pose (in
-     * CG-model space, not null, unaffected)
-     * @param minY Y-offset of the C-G model's base (in CG-model units)
+     * @param center the coordinates (in CG-model space) of the geometric center
+     * (not null, unaffected)
+     * @param minY the Y-coordinate (in CG-model space) of the base
      * @param maxExtent the greatest extent of the C-G model over its 3
-     * principal axes in bind pose (in model units, &gt;0)
+     * principal axes (in CG-model units, &gt;0)
      */
-    public void loadCgm(Vector3f center, float minY, float maxExtent) {
-        Validate.nonNull(center, "center");
-        Validate.finite(minY, "min Y");
-        Validate.positive(maxExtent, "max extent");
+    void loadCgm(Vector3f center, float minY, float maxExtent) {
+        assert center != null;
+        assert Float.isFinite(minY) : minY;
+        assert maxExtent > 0f : maxExtent;
 
-        bindLocation.set(center);
+        bindCenter.set(center);
         scale = 1f / maxExtent;
         yOffset = -minY * scale;
     }
 
     /**
-     * Add to the Y-axis rotation angle of the C-G model.
+     * Add to the Y-axis rotation angle.
      *
      * @param angle (in radians)
      */
@@ -107,28 +107,28 @@ public class CgmTransform implements Cloneable {
      * @param scaleFactor scale factor (&gt;0, 1&rarr;no effect)
      */
     void scale(float scaleFactor) {
-        Validate.positive(scaleFactor, "scale factor");
+        assert scaleFactor > 0f : scaleFactor;
         scale *= scaleFactor;
     }
 
     /**
      * Calculate the transform to be applied to the C-G model. Note that this
-     * may differ from the transform of the C-G model's root node.
+     * may differ from the transform of the C-G model's root spatial.
      *
      * @return a new instance (in world coordinates)
      */
-    public Transform worldTransform() {
+    Transform worldTransform() {
         Transform result = new Transform();
         result.getRotation().fromAngleNormalAxis(yAngle, yAxis);
         result.getScale().set(scale, scale, scale);
         /*
-         * Offset the C-G model so that (in bind pose) the root bone is
-         * directly above the origin (center of platform).
+         * Translate the C-G model so that (in bind pose) its geometric center is
+         * directly above the world's origin (center of platform).
          */
-        Vector3f modelTranslation;
-        modelTranslation = new Vector3f(-bindLocation.x, 0f, -bindLocation.z);
-        Vector3f worldTranslation;
-        worldTranslation = result.transformVector(modelTranslation, null);
+        Vector3f modelTranslation
+                = new Vector3f(-bindCenter.x, 0f, -bindCenter.z);
+        Vector3f worldTranslation
+                = result.transformVector(modelTranslation, null);
         worldTranslation.addLocal(0f, yOffset, 0f);
         result.setTranslation(worldTranslation);
 
@@ -146,7 +146,7 @@ public class CgmTransform implements Cloneable {
     @Override
     public CgmTransform clone() throws CloneNotSupportedException {
         CgmTransform clone = (CgmTransform) super.clone();
-        clone.bindLocation = bindLocation.clone();
+        clone.bindCenter = bindCenter.clone();
 
         return clone;
     }
