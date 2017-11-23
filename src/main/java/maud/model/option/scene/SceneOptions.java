@@ -32,7 +32,7 @@ import maud.Maud;
 import maud.model.cgm.Cgm;
 
 /**
- * Display options applicable to "scene" views in Maud's editor screen.
+ * Display options applicable to scene views in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -77,11 +77,11 @@ public class SceneOptions implements Cloneable {
      */
     private DddCursorOptions cursor = new DddCursorOptions();
     /**
-     * diameter of the platform in scene views (in world units, &gt;0)
+     * diameter of platform(s) (in world units, &gt;0)
      */
-    private float platformDiameter = 1f;
+    private float platformDiameter = 2f;
     /**
-     * type of platform in scene views (not null)
+     * type of platform(s) (not null)
      */
     private PlatformType platformType = PlatformType.Square;
     /**
@@ -100,7 +100,7 @@ public class SceneOptions implements Cloneable {
     // new methods exposed
 
     /**
-     * Test whether shadows are rendered in scene views.
+     * Test whether shadows are rendered.
      *
      * @return true if rendered, otherwise false
      */
@@ -149,7 +149,7 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Read the diameter of the platform in scene views.
+     * Read the diameter of the platform(s).
      *
      * @return diameter (in world units, &gt;0)
      */
@@ -159,7 +159,7 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Read the type of platform included in scene views.
+     * Read the type of the platform(s).
      *
      * @return an enum value (not null)
      */
@@ -208,7 +208,7 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Test whether the sky background is rendered in scene views.
+     * Test whether the sky background is rendered.
      *
      * @return true if rendered, otherwise false
      */
@@ -226,7 +226,7 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Alter the diameter of the platform in scene views.
+     * Alter the diameter of the platform(s).
      *
      * @param diameter (in world units, &gt;0)
      */
@@ -236,7 +236,7 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Alter the type of platform included in scene views.
+     * Alter the type of the platform(s).
      *
      * @param newType an enum value (not null)
      */
@@ -246,7 +246,7 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Alter the rendering of shadows in scene views.
+     * Alter the rendering of shadows.
      *
      * @param newState true &rarr; rendered, false &rarr; not rendered
      */
@@ -255,7 +255,7 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Alter the rendering of the sky background in scene views.
+     * Alter the rendering of the sky background.
      *
      * @param newState true &rarr; rendered, false &rarr; not rendered
      */
@@ -271,7 +271,7 @@ public class SceneOptions implements Cloneable {
     public void setWireframe(Wireframe newSetting) {
         Validate.nonNull(newSetting, "new setting");
 
-        wireframe = newSetting;
+        wireframe = newSetting; // TODO check for change
 
         Cgm target = Maud.getModel().getTarget();
         target.updateSceneWireframe();
