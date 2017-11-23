@@ -94,14 +94,14 @@ import maud.PhysicsUtil;
 import maud.mesh.PointMesh;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.DisplayedPose;
-import maud.model.cgm.EditableCgm;
+import maud.model.cgm.ScenePov;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
- * A 3-D visualization of a loaded C-G model in a scene view.
+ * An editor view containing a 3-D visualization of a loaded C-G model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -168,17 +168,13 @@ public class SceneView
      */
     private Cgm cgm;
     /**
-     * world transform for the C-G model visualization
+     * world transform for the C-G model rendered in this view
      */
     private CgmTransform cgmTransform = new CgmTransform();
     /*
      * directional added to the scene (not null)
      */
     final private DirectionalLight mainLight = new DirectionalLight();
-    /**
-     * editable C-G model, if any, appearing in this view
-     */
-    private EditableCgm editableCgm;
     /**
      * indicator for the 3-D cursor, or null if none
      */
@@ -213,6 +209,10 @@ public class SceneView
      */
     private Spatial platform = null;
     /**
+     * test projectile
+     */
+    final private Projectile projectile = new Projectile(this);
+    /**
      * spatial to visualize the selected vertex
      */
     private Spatial vertexSpatial;
@@ -228,7 +228,7 @@ public class SceneView
     // constructors
 
     /**
-     * Instantiate a new visualization.
+     * Instantiate a new view.
      *
      * @param ownerCgm C-G model that will own this view (not null, aliases
      * created)
@@ -245,12 +245,6 @@ public class SceneView
         Validate.nonNull(port2, "port2");
 
         cgm = ownerCgm;
-        if (ownerCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) ownerCgm;
-        } else {
-            editableCgm = null;
-        }
-
         parent = parentNode;
         viewPort1 = port1;
         viewPort2 = port2;
@@ -307,11 +301,11 @@ public class SceneView
     }
 
     /**
-     * Attach a clone of the specified child to the specified parent node in the
-     * scene.
+     * Attach a clone of the specified child spatial to the specified node in
+     * the C-G model.
      *
      * @param parentPosition tree position of parent node (not null, unaffected)
-     * @param child (not null, unaffected)
+     * @param child spatial to clone (not null, unaffected)
      */
     public void attachSpatial(List<Integer> parentPosition, Spatial child) {
         Validate.nonNull(parentPosition, "parent position");
@@ -350,6 +344,18 @@ public class SceneView
              */
             controlled.addControl(skeletonVisualizer);
         }
+    }
+
+    /**
+     * Attach an orphan spatial to the scene's root node.
+     *
+     * @param orphan spatial to clone (not null)
+     */
+    void attachToSceneRoot(Spatial orphan) {
+        assert MySpatial.isOrphan(orphan);
+
+        Node scene = getSceneRoot();
+        scene.attachChild(orphan);
     }
 
     /**
@@ -415,7 +421,7 @@ public class SceneView
      * Find the the tree position of the specified spatial in this view's copy
      * of the C-G model.
      *
-     * @param input spatial to search for (not null)
+     * @param input spatial to search for (not null, unaffected)
      * @return a new tree-position instance, or null if not found
      */
     List<Integer> findPosition(Spatial input) {
@@ -445,7 +451,7 @@ public class SceneView
      *
      * @return the pre-existing instance (not null)
      */
-    public BoundsVisualizer getBoundsVisualizer() {
+    BoundsVisualizer getBoundsVisualizer() {
         assert boundsVisualizer != null;
         return boundsVisualizer;
     }
@@ -455,19 +461,9 @@ public class SceneView
      *
      * @return the pre-existing instance (not null)
      */
-    public BulletAppState getBulletAppState() {
+    BulletAppState getBulletAppState() {
         assert bulletAppState != null;
         return bulletAppState;
-    }
-
-    /**
-     * Access the root spatial in this view's copy of the C-G model.
-     *
-     * @return the pre-existing instance (not null)
-     */
-    public Spatial getCgmRoot() {
-        assert cgmRoot != null;
-        return cgmRoot;
     }
 
     /**
@@ -475,7 +471,7 @@ public class SceneView
      *
      * @return the pre-existing instance, or null if none
      */
-    public Geometry getCursor() {
+    Geometry getCursor() {
         return cursor;
     }
 
@@ -484,7 +480,7 @@ public class SceneView
      *
      * @return the pre-existing instance (not null)
      */
-    public DirectionalLight getMainLight() {
+    DirectionalLight getMainLight() {
         assert mainLight != null;
         return mainLight;
     }
@@ -505,8 +501,29 @@ public class SceneView
      *
      * @return the pre-existing instance, or null if none
      */
-    public Spatial getPlatform() {
+    Spatial getPlatform() {
         return platform;
+    }
+
+    /**
+     * Access the POV.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    ScenePov getPov() {
+        ScenePov pov = cgm.getScenePov();
+        assert pov != null;
+        return pov;
+    }
+
+    /**
+     * Access the test projectile for the scene.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public Projectile getProjectile() {
+        assert projectile != null;
+        return projectile;
     }
 
     /**
@@ -514,7 +531,7 @@ public class SceneView
      *
      * @return the pre-existing instance, or null if none
      */
-    public SkeletonVisualizer getSkeletonVisualizer() {
+    SkeletonVisualizer getSkeletonVisualizer() {
         return skeletonVisualizer;
     }
 
@@ -523,13 +540,13 @@ public class SceneView
      *
      * @return the pre-existing instance (not null)
      */
-    public SkyControl getSkyControl() {
+    SkyControl getSkyControl() {
         assert skyControl != null;
         return skyControl;
     }
 
     /**
-     * Access the world transform for the C-G model in this visualization.
+     * Access the world transform for the C-G model.
      *
      * @return the pre-existing instance (not null)
      */
@@ -543,7 +560,7 @@ public class SceneView
      *
      * @return the pre-existing instance (not null)
      */
-    public Spatial getVertexSpatial() {
+    Spatial getVertexSpatial() {
         assert vertexSpatial != null;
         return vertexSpatial;
     }
@@ -698,18 +715,13 @@ public class SceneView
      * Alter which loaded C-G model corresponds with this view. Invoked after
      * cloning.
      *
-     * @param newCgm (not null, aliases created)
+     * @param newCgm (not null, alias created)
      */
     public void setCgm(Cgm newCgm) {
         Validate.nonNull(newCgm, "new model");
         assert newCgm.getSceneView() == this;
 
         cgm = newCgm;
-        if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
-        } else {
-            editableCgm = null;
-        }
     }
 
     /**
@@ -738,17 +750,16 @@ public class SceneView
     }
 
     /**
-     * Alter which cursor indicator is attached to the scene.
+     * Alter which cursor indicator is attached to the scene graph.
      *
      * @param cursorSpatial (may be null)
      */
-    public void setCursor(Geometry cursorSpatial) {
+    void setCursor(Geometry cursorSpatial) {
         if (cursor != null) {
             cursor.removeFromParent();
         }
         if (cursorSpatial != null) {
-            Node scene = getScene();
-            scene.attachChild(cursorSpatial);
+            attachToSceneRoot(cursorSpatial);
         }
         cursor = cursorSpatial;
     }
@@ -764,7 +775,7 @@ public class SceneView
     }
 
     /**
-     * Alter the shadow mode of the selected spatial.
+     * Alter the shadow mode of the selected spatial. TODO rename setShadowMode
      *
      * @param newMode new value for shadow mode (not null)
      */
@@ -807,19 +818,32 @@ public class SceneView
     }
 
     /**
-     * Alter which platform spatial is attached to the scene.
+     * Alter which platform spatial is attached to the scene graph.
      *
      * @param platformSpatial (may be null, alias created)
      */
-    public void setPlatform(Spatial platformSpatial) {
-        if (platform != null) {
-            platform.removeFromParent();
+    void setPlatform(Spatial platformSpatial) {
+        if (platform != platformSpatial) {
+            if (platform != null) {
+                RigidBodyControl rbc
+                        = platform.getControl(RigidBodyControl.class);
+                if (rbc != null) {
+                    rbc.setEnabled(false);
+                }
+                platform.removeFromParent();
+            }
+            if (platformSpatial != null) {
+                attachToSceneRoot(platformSpatial);
+                RigidBodyControl rbc
+                        = platformSpatial.getControl(RigidBodyControl.class);
+                if (rbc != null) {
+                    PhysicsSpace space = getPhysicsSpace();
+                    rbc.setPhysicsSpace(space);
+                    rbc.setEnabled(true);
+                }
+            }
+            platform = platformSpatial;
         }
-        if (platformSpatial != null) {
-            Node scene = getScene();
-            scene.attachChild(platformSpatial);
-        }
-        platform = platformSpatial;
     }
 
     /**
@@ -874,9 +898,10 @@ public class SceneView
     }
 
     /**
-     * Alter the wireframe setting for the specified tree position.
+     * Alter the wireframe setting for the specified geometry.
      *
-     * @param treePosition (not null)
+     * @param treePosition position of the geometry with respect to the C-G
+     * model's root spatial (not null)
      * @param newSetting true&rarr;edges only, false&rarr;solid triangles
      */
     public void setWireframe(List<Integer> treePosition, boolean newSetting) {
@@ -894,11 +919,11 @@ public class SceneView
     }
 
     /**
-     * Update the scene when unloading the C-G model.
+     * Update the scene graph when unloading the C-G model.
      */
     public void unloadCgm() {
         /*
-         * Detach the old spatial (if any) from the scene.
+         * Detach the old spatial (if any) from the scene graph.
          */
         if (cgmRoot != null) {
             MySpatial.disablePhysicsControls(cgmRoot);
@@ -997,7 +1022,7 @@ public class SceneView
      */
     @Override
     public void considerGnomons(Selection selection) {
-        // no gnomons in scene view
+        // no gnomons in scene views
     }
 
     /**
@@ -1007,7 +1032,7 @@ public class SceneView
      */
     @Override
     public void considerKeyframes(Selection selection) {
-        // no keyframes in scene view
+        // no keyframes in scene views
     }
 
     /**
@@ -1025,8 +1050,7 @@ public class SceneView
         /*
          * Trace the ray to the C-G model's visualization.
          */
-        Spatial root = getCgmRoot();
-        CollisionResult collision = findCollision(root, ray);
+        CollisionResult collision = findCollision(cgmRoot, ray);
         if (collision != null) {
             Geometry geometry = collision.getGeometry();
             Mesh mesh = geometry.getMesh();
@@ -1103,7 +1127,7 @@ public class SceneView
     public void update(Cgm ignored) {
         if (skyControl == null) {  // TODO add an init method
             /*
-             * Initialize scene on first update.
+             * Initialize the scene graph on first update.
              */
             createAxes();
             createBounds();
@@ -1134,10 +1158,9 @@ public class SceneView
         InputManager inputManager = Maud.getApplication().getInputManager();
         Ray ray = MyCamera.mouseRay(camera, inputManager);
         /*
-         * Trace the ray to the C-G model's visualization.
+         * Trace the ray to the C-G model.
          */
-        Spatial root = getCgmRoot();
-        CollisionResult collision = findCollision(root, ray);
+        CollisionResult collision = findCollision(cgmRoot, ray);
         if (collision != null) {
             Vector3f contactPoint = collision.getContactPoint();
             cgm.getScenePov().setCursorLocation(contactPoint);
@@ -1145,9 +1168,8 @@ public class SceneView
             /*
              * The ray missed the C-G model; try to trace it to the platform.
              */
-            Spatial platformSpatial = getPlatform();
-            if (platformSpatial != null) {
-                collision = findCollision(platformSpatial, ray);
+            if (platform != null) {
+                collision = findCollision(platform, ray);
                 if (collision != null) {
                     Vector3f contactPoint = collision.getContactPoint();
                     cgm.getScenePov().setCursorLocation(contactPoint);
@@ -1192,6 +1214,7 @@ public class SceneView
         // mainLight not cloned: shared
         // parent not cloned: shared
         // platform not cloned: shared
+        // projectile not cloned: shared
         skeleton = cloner.clone(skeleton);
         skeletonControl = cloner.clone(skeletonControl);
         skeletonVisualizer = cloner.clone(skeletonVisualizer);
@@ -1235,7 +1258,7 @@ public class SceneView
             skeleton = null;
         }
         /*
-         * Remove any skeleton-dependent S-G controls from the scene.
+         * Remove any skeleton-dependent S-G controls from the scene graph.
          */
         if (animControl != null) {
             Spatial controlled = animControl.getSpatial();
@@ -1258,7 +1281,7 @@ public class SceneView
     }
 
     /**
-     * Add an axes visualizer to the scene.
+     * Add an axes visualizer to the scene graph.
      */
     private void createAxes() {
         AssetManager assetManager = Locators.getAssetManager();
@@ -1266,25 +1289,28 @@ public class SceneView
 
         Node axesNode = new Node("axes node");
         axesNode.addControl(axesVisualizer);
-
-        Node scene = getScene();
-        scene.attachChild(axesNode);
+        attachToSceneRoot(axesNode);
     }
 
     /**
-     * Add a bounds visualizer to the scene.
+     * Create a bounds visualizer and add it to the scene graph.
      */
     private void createBounds() {
+        assert boundsVisualizer == null;
+
         AssetManager assetManager = Locators.getAssetManager();
         boundsVisualizer = new BoundsVisualizer(assetManager);
-        Spatial scene = getScene();
+        Node scene = getSceneRoot();
         scene.addControl(boundsVisualizer);
     }
 
     /**
-     * Add lights and shadows to this view.
+     * Name 2 lights and add them to the scene graph.
      */
     private void createLights() {
+        Node scene = getSceneRoot();
+        int numLights = scene.getLocalLightList().size();
+        assert numLights == 0 : numLights;
         /*
          * Name the lights.
          */
@@ -1293,19 +1319,20 @@ public class SceneView
         /*
          * Light the scene.
          */
-        Spatial scene = getScene();
         scene.addLight(ambientLight);
         scene.addLight(mainLight);
     }
 
     /**
-     * Add a sky to this view.
+     * Create a sky simulation and add it to the scene graph.
      */
     private void createSky() {
+        assert skyControl == null;
+
         AssetManager assetManager = Locators.getAssetManager();
         Camera camera = viewPort2.getCamera();
         skyControl = new SkyControl(assetManager, camera, 0.9f, false, true);
-        Spatial scene = getScene();
+        Node scene = getSceneRoot();
         scene.addControl(skyControl);
 
         Updater updater = skyControl.getUpdater();
@@ -1315,13 +1342,15 @@ public class SceneView
     }
 
     /**
-     * Add vertex visualization to this view.
+     * Create a selected-vertex visualization and attach it to the scene graph.
      */
     private void createVertex() {
+        assert vertexSpatial == null;
+
         AssetManager assetManager = Locators.getAssetManager();
         Material material = new Material(assetManager,
                 "MatDefs/wireframe/multicolor2.j3md");
-        material.setFloat("PointSize", 12f);
+        material.setFloat("PointSize", 12f); // TODO constants
         Texture poseShape = MyAsset.loadTexture(assetManager,
                 "Textures/shapes/saltire.png");
         material.setTexture("PointShape", poseShape);
@@ -1334,8 +1363,7 @@ public class SceneView
         vertexSpatial.setMaterial(material);
         vertexSpatial.setQueueBucket(Bucket.Transparent);
 
-        Node scene = getScene();
-        scene.attachChild(vertexSpatial);
+        attachToSceneRoot(vertexSpatial);
     }
 
     /**
@@ -1427,11 +1455,11 @@ public class SceneView
     }
 
     /**
-     * Access the scene (root node) of this visualization.
+     * Access the root node of the main scene graph.
      *
      * @return the pre-existing instance (not null)
      */
-    private Node getScene() {
+    private Node getSceneRoot() {
         List<Spatial> scenes = viewPort2.getScenes();
         assert scenes.size() == 2 : scenes.size();
         Spatial spatial = scenes.get(0);
@@ -1452,7 +1480,7 @@ public class SceneView
     private BulletAppState makeBullet(ViewPort viewPort1, ViewPort viewPort2) {
         assert viewPort2 != null;
 
-        float radius = 1000f;
+        float radius = 100f;
         Vector3f worldMin = new Vector3f(-radius, -radius, -radius);
         Vector3f worldMax = new Vector3f(radius, radius, radius);
         BulletAppState result = new BulletAppState(worldMin, worldMax,
@@ -1481,9 +1509,7 @@ public class SceneView
     }
 
     /**
-     * Alter a newly loaded C-G model to prepare it for visualization. Assumes
-     * the C-G model's root node will be the selected spatial and no S-G control
-     * will be selected.
+     * Alter a newly loaded C-G model to prepare it for visualization.
      */
     private void prepareForViewing() {
         /*
@@ -1508,8 +1534,8 @@ public class SceneView
          */
         setSkeleton(selectedSkeleton, false);
         /*
-         * Configure the world transform based on the ranges of the mesh
-         * coordinates of the loaded C-G model.
+         * Configure the CG-model transform based on the ranges of vertex
+         * coordinates in the C-G model.
          */
         parent.setLocalTransform(transformIdentity);
         Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot, true);
@@ -1519,22 +1545,23 @@ public class SceneView
         float minY = minMax[0].y;
         cgmTransform.loadCgm(center, minY, maxExtent);
         /*
-         * reset the camera, cursor, and platform
+         * Reset the camera position and 3-D cursor location.
          */
+        ScenePov pov = cgm.getScenePov();
         Vector3f baseLocation = new Vector3f(0f, 0f, 0f);
-        cgm.getScenePov().setCursorLocation(baseLocation);
-        Maud.getModel().getScene().setPlatformDiameter(2f);
+        pov.setCursorLocation(baseLocation);
+        Vector3f cameraStartLocation
+                = new Vector3f(-2.4f, 1f, 1.6f); // TODO constants
+        pov.setCameraLocation(cameraStartLocation);
 
-        Vector3f cameraLocation;
-        cameraLocation = new Vector3f(-2.4f, 1f, 1.6f); // TODO constants
-        cgm.getScenePov().setCameraLocation(cameraLocation);
+        projectile.delete();
     }
 
     /**
      * Copy the local transform of each spatial in the specified subtree from
      * the MVC model. Note: recursive!
      *
-     * @param spatial subtree in the scene (not null)
+     * @param spatial subtree of the scene graph (not null)
      * @param position tree position of subtree (not null, unaffected)
      */
     private void updateLocalTransforms(Spatial spatial,
