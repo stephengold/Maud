@@ -1461,7 +1461,13 @@ public class SceneView
      */
     private Node getSceneRoot() {
         List<Spatial> scenes = viewPort2.getScenes();
-        assert scenes.size() == 2 : scenes.size();
+        int numScenes = scenes.size();
+        if (bulletAppState.isEnabled()) {
+            assert numScenes == 2 : numScenes;
+        } else {
+            assert numScenes == 1 : numScenes;
+        }
+
         Spatial spatial = scenes.get(0);
         Node node = (Node) spatial;
 
