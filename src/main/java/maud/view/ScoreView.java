@@ -69,7 +69,7 @@ import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 
 /**
- * A 2-D visualization of a loaded animation in a score view.
+ * An editor view containing a 2-D visualization of a loaded animation.
  *
  * @author Stephen Gold sgold@sonic.net
  */

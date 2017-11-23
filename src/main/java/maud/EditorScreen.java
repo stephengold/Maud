@@ -194,7 +194,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Activate "Bind" screen.
+     * Activate the "Bind" screen.
      */
     public void goBindScreen() {
         closeAllPopups();
@@ -751,8 +751,8 @@ public class EditorScreen extends GuiScreenController {
              */
             Cgm cgmToRotate = mouseCgm();
             if (cgmToRotate != null) {
-                CgmTransform cgmTransform;
-                cgmTransform = cgmToRotate.getSceneView().getTransform();
+                CgmTransform cgmTransform
+                        = cgmToRotate.getSceneView().getTransform();
                 if (signals.test(modelCCWSignalName)) {
                     cgmTransform.rotateY(tpf);
                 }

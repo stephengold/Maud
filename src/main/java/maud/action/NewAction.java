@@ -60,7 +60,7 @@ class NewAction {
     // new methods exposed
 
     /**
-     * Process an action string that begin with "new".
+     * Process an action string that begin with the word "new".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
