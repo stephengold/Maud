@@ -87,7 +87,7 @@ class ShapeTool extends WindowController {
         String nButton = "", pButton = "", sButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        int numShapes = target.countShapes();
+        int numShapes = target.getSceneView().shapeMap().size();
         if (numShapes > 0) {
             sButton = "Select";
         }

@@ -46,10 +46,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
@@ -105,24 +103,8 @@ public class PhysicsUtil {
         Collection<PhysicsRigidBody> rigids = space.getRigidBodyList();
         Collection<PhysicsVehicle> vehics = space.getVehicleList();
 
-        int count;
-        count = charas.size() + ghosts.size() + rigids.size() + vehics.size();
-
-        assert count >= 0 : count;
-        return count;
-    }
-
-    /**
-     * Count the collision shapes in the specified physics space.
-     *
-     * @param space which physics space (not null, unaffected)
-     * @return count (&ge;0)
-     */
-    public static int countShapes(PhysicsSpace space) {
-        Validate.nonNull(space, "space");
-
-        Map<Long, CollisionShape> map = shapeMap(space);
-        int count = map.size();
+        int count
+                = charas.size() + ghosts.size() + rigids.size() + vehics.size();
 
         assert count >= 0 : count;
         return count;
@@ -193,7 +175,7 @@ public class PhysicsUtil {
     /**
      * Find the identified collision shape in the specified physics space.
      *
-     * @param id identifier
+     * @param id shape identifier
      * @param space which physics space (not null, unaffected)
      * @return the pre-existing shape, or null if not found
      */
@@ -203,30 +185,6 @@ public class PhysicsUtil {
             Map<Long, CollisionShape> map = shapeMap(space);
             result = map.get(id);
         }
-
-        return result;
-    }
-
-    /**
-     * Enumerate all collision objects in the specified physics space.
-     *
-     * @param space which physics space (not null, unaffected)
-     * @return a new set of objects
-     */
-    public static Set<PhysicsCollisionObject> listObjects(PhysicsSpace space) {
-        Set<PhysicsCollisionObject> result = new HashSet<>(30);
-
-        Collection<PhysicsCharacter> characters = space.getCharacterList();
-        result.addAll(characters);
-
-        Collection<PhysicsGhostObject> ghosts = space.getGhostObjectList();
-        result.addAll(ghosts);
-
-        Collection<PhysicsRigidBody> rigidBodies = space.getRigidBodyList();
-        result.addAll(rigidBodies);
-
-        Collection<PhysicsVehicle> vehicles = space.getVehicleList();
-        result.addAll(vehicles);
 
         return result;
     }
@@ -266,6 +224,43 @@ public class PhysicsUtil {
         location.subtractLocal(translation);
         // TODO account for rotation
         result.addChildShape(childShape, location);
+
+        return result;
+    }
+
+    /**
+     * Enumerate all collision objects in the specified physics space.
+     *
+     * @param space which physics space (not null, unaffected)
+     * @return a new map from ids to objects
+     */
+    public static Map<Long, PhysicsCollisionObject> objectMap(
+            PhysicsSpace space) {
+        Map<Long, PhysicsCollisionObject> result = new TreeMap<>();
+
+        Collection<PhysicsCharacter> characters = space.getCharacterList();
+        for (PhysicsCollisionObject pco : characters) {
+            long id = pco.getObjectId();
+            result.put(id, pco);
+        }
+
+        Collection<PhysicsGhostObject> ghosts = space.getGhostObjectList();
+        for (PhysicsCollisionObject pco : ghosts) {
+            long id = pco.getObjectId();
+            result.put(id, pco);
+        }
+
+        Collection<PhysicsRigidBody> rigidBodies = space.getRigidBodyList();
+        for (PhysicsCollisionObject pco : rigidBodies) {
+            long id = pco.getObjectId();
+            result.put(id, pco);
+        }
+
+        Collection<PhysicsVehicle> vehicles = space.getVehicleList();
+        for (PhysicsCollisionObject pco : vehicles) {
+            long id = pco.getObjectId();
+            result.put(id, pco);
+        }
 
         return result;
     }
@@ -327,24 +322,18 @@ public class PhysicsUtil {
     public static Map<Long, CollisionShape> shapeMap(PhysicsSpace space) {
         Map<Long, CollisionShape> result = new TreeMap<>();
 
-        Set<PhysicsCollisionObject> pcoSet = listObjects(space);
-        for (PhysicsCollisionObject pco : pcoSet) {
+        Map<Long, PhysicsCollisionObject> objectMap = objectMap(space);
+        for (PhysicsCollisionObject pco : objectMap.values()) {
             CollisionShape shape = pco.getCollisionShape();
             long id = shape.getObjectId();
             result.put(id, shape);
-        }
-
-        int numShapes = result.size();
-        CollisionShape[] shapes = new CollisionShape[numShapes];
-        result.values().toArray(shapes);
-        for (CollisionShape shape : shapes) {
             if (shape instanceof CompoundCollisionShape) {
                 CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
                 List<ChildCollisionShape> children = ccs.getChildren();
                 for (ChildCollisionShape child : children) {
                     CollisionShape childShape = child.shape;
-                    long id = childShape.getObjectId();
-                    result.put(id, childShape);
+                    long childId = childShape.getObjectId();
+                    result.put(childId, childShape);
                 }
             }
         }

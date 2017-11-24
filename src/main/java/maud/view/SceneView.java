@@ -36,6 +36,7 @@ import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResult;
@@ -70,6 +71,8 @@ import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyAsset;
@@ -611,6 +614,25 @@ public class SceneView
     }
 
     /**
+     * Enumerate all collision objects in the physics space, excluding those
+     * added by this view.
+     *
+     * @return a new map from ids to objects
+     */
+    public Map<Long, PhysicsCollisionObject> objectMap() {
+        PhysicsSpace space = getPhysicsSpace();
+        Map<Long, PhysicsCollisionObject> result
+                = PhysicsUtil.objectMap(space);
+
+        Set<Long> viewIds = listIds(null);
+        for (long id : viewIds) {
+            result.remove(id);
+        }
+
+        return result;
+    }
+
+    /**
      * Determine the name of the object associated with the indexed physics
      * control.
      *
@@ -916,6 +938,24 @@ public class SceneView
         Material material = geometry.getMaterial();
         RenderState renderState = material.getAdditionalRenderState();
         renderState.setWireframe(newSetting);
+    }
+
+    /**
+     * Enumerate all collision shapes in the physics space, excluding those
+     * added by this view.
+     *
+     * @return a new map from ids to shapes
+     */
+    public Map<Long, CollisionShape> shapeMap() {
+        PhysicsSpace space = getPhysicsSpace();
+        Map<Long, CollisionShape> map = PhysicsUtil.shapeMap(space);
+
+        Set<Long> viewIds = listIds(null);
+        for (long id : viewIds) {
+            map.remove(id);
+        }
+
+        return map;
     }
 
     /**
@@ -1239,6 +1279,28 @@ public class SceneView
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Add all physics ids used by this view to the specified set.
+     *
+     * @param addResult (added to if not null)
+     * @return an expanded list (either addResult or a new instance)
+     */
+    private Set<Long> listIds(Set<Long> addResult) {
+        addResult = projectile.listIds(addResult);
+
+        if (platform != null) {
+            RigidBodyControl rbc = platform.getControl(RigidBodyControl.class);
+            long id = rbc.getObjectId();
+            addResult.add(id);
+
+            CollisionShape pShape = rbc.getCollisionShape();
+            id = pShape.getObjectId();
+            addResult.add(id);
+        }
+
+        return addResult;
+    }
 
     /**
      * Visualize in bind pose, without a skeleton.

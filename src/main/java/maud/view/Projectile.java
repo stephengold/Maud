@@ -42,6 +42,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
@@ -159,6 +161,30 @@ public class Projectile {
 
         BulletAppState bulletAppState = view.getBulletAppState();
         bulletAppState.setSpeed(1f);
+    }
+
+    /**
+     * Add all physics ids used by this projectile to the specified set.
+     *
+     * @param addResult (added to if not null)
+     * @return an expanded list (either addResult or a new instance)
+     */
+    Set<Long> listIds(Set<Long> addResult) {
+        if (addResult == null) {
+            addResult = new TreeSet<>();
+        }
+
+        if (spatial != null) {
+            RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
+            long id = rbc.getObjectId();
+            addResult.add(id);
+
+            CollisionShape pShape = rbc.getCollisionShape();
+            id = pShape.getObjectId();
+            addResult.add(id);
+        }
+
+        return addResult;
     }
     // *************************************************************************
     // private methods

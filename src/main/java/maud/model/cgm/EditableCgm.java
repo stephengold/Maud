@@ -862,6 +862,18 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Rescale the selected physics shape.
+     *
+     * @param newScale (not null, unaffected)
+     */
+    public void setShapeScale(Vector3f newScale) {
+        Validate.nonNull(newScale, "new scale");
+
+        getShape().setScale(newScale);
+        setEditedShapeTransform();
+    }
+
+    /**
      * Alter the local rotation of the selected spatial.
      *
      * @param rotation (not null, unaffected)
@@ -1154,11 +1166,25 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * If not a continuation of the previous shape-transform edit, update the
+     * edit count.
+     */
+    private void setEditedShapeTransform() {
+        String newState = "sh" + getShape().toString();
+        if (!newState.equals(continousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continousEditState = newState;
+            History.addEvent("transform shape");
+        }
+    }
+
+    /**
      * If not a continuation of the previous spatial-transform edit, update the
      * edit count.
      */
     private void setEditedSpatialTransform() {
-        String newState = "st" + getSpatial().toString();
+        String newState = "sp" + getSpatial().toString();
         if (!newState.equals(continousEditState)) {
             History.autoAdd();
             ++editCount;

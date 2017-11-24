@@ -48,7 +48,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
 import jme3utilities.MySkeleton;
@@ -58,7 +57,6 @@ import jme3utilities.Validate;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
-import maud.PhysicsUtil;
 import maud.model.option.scene.Wireframe;
 import maud.view.SceneView;
 import maud.view.ScoreView;
@@ -240,19 +238,6 @@ public class Cgm implements Cloneable {
         if (isLoaded()) {
             count = MySpatial.countControls(rootSpatial, controlType);
         }
-
-        assert count >= 0 : count;
-        return count;
-    }
-
-    /**
-     * Count physics shapes.
-     *
-     * @return count (&ge;0)
-     */
-    public int countShapes() {
-        PhysicsSpace space = getSceneView().getPhysicsSpace();
-        int count = PhysicsUtil.countShapes(space);
 
         assert count >= 0 : count;
         return count;
@@ -661,17 +646,17 @@ public class Cgm implements Cloneable {
      * Enumerate all physics collision objects with the specified name prefix.
      *
      * @param namePrefix (not null)
-     * @return a new list of names
+     * @return a new, sorted list of names
      */
     public List<String> listObjectNames(String namePrefix) {
         Validate.nonNull(namePrefix, "name prefix");
 
-        PhysicsSpace space = getSceneView().getPhysicsSpace();
-        Set<PhysicsCollisionObject> objects = PhysicsUtil.listObjects(space);
-        int numObjects = objects.size();
+        Map<Long, PhysicsCollisionObject> map = sceneView.objectMap();
+        Collection<PhysicsCollisionObject> collection = map.values();
+        int numObjects = collection.size();
         List<String> result = new ArrayList<>(numObjects);
 
-        for (PhysicsCollisionObject object : objects) {
+        for (PhysicsCollisionObject object : collection) {
             String name = MyControl.objectName(object);
             if (name.startsWith(namePrefix)) {
                 result.add(name);
@@ -721,7 +706,8 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Enumerate all collision shapes with the specified name prefix.
+     * Enumerate all collision shapes with the specified name prefix, excluding
+     * those added by the scene view.
      *
      * @param namePrefix (not null)
      * @return a new sorted list of names
@@ -729,8 +715,7 @@ public class Cgm implements Cloneable {
     public List<String> listShapeNames(String namePrefix) {
         Validate.nonNull(namePrefix, "name prefix");
 
-        PhysicsSpace space = getSceneView().getPhysicsSpace();
-        Map<Long, CollisionShape> map = PhysicsUtil.shapeMap(space);
+        Map<Long, CollisionShape> map = sceneView.shapeMap();
         int numShapes = map.size();
         List<String> result = new ArrayList<>(numShapes);
 

@@ -30,6 +30,7 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
+import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +40,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.PhysicsUtil;
+import maud.view.SceneView;
 
 /**
  * The selected physics shape in the Maud application.
@@ -67,6 +69,24 @@ public class SelectedShape implements Cloneable {
     private long selectedId = -1L;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Copy the scale of the shape.
+     *
+     * @param storeResult (modified if not null)
+     * @return a scale vector (either storeResult or a new instance)
+     */
+    public Vector3f copyScale(Vector3f storeResult) {
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        CollisionShape shape = find();
+        Vector3f scale = shape.getScale();
+        storeResult.set(scale);
+
+        return storeResult;
+    }
 
     /**
      * Count the children in a compound shape.
@@ -217,7 +237,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Select the first child shape of the selected compound shape.
+     * Select the first child shape of the compound shape.
      */
     public void selectFirstChild() {
         CollisionShape parent = find();
@@ -268,7 +288,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the selected object.
+     * Alter which C-G model contains the shape.
      *
      * @param newCgm (not null, alias created)
      */
@@ -277,6 +297,18 @@ public class SelectedShape implements Cloneable {
         assert newCgm.getShape() == this;
 
         cgm = newCgm;
+    }
+
+    /**
+     * Alter the scale of the shape.
+     *
+     * @param newScale (not null, unaffected)
+     */
+    void setScale(Vector3f newScale) {
+        assert newScale != null;
+
+        CollisionShape shape = find();
+        shape.setScale(newScale);
     }
     // *************************************************************************
     // Object methods
@@ -296,18 +328,15 @@ public class SelectedShape implements Cloneable {
     // private methods
 
     /**
-     * Enumerate all physics shapes in ID order.
+     * Enumerate all physics shapes in ID order, excluding shapes added by the
+     * scene view.
      *
      * @return a new list of shape identifiers
      */
     private List<Long> listShapeIds() {
-        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        Map<Long, CollisionShape> map = PhysicsUtil.shapeMap(space);
-        int numShapes = map.size();
-        List<Long> result = new ArrayList<>(numShapes);
-        for (long id : map.keySet()) {
-            result.add(id);
-        }
+        SceneView sceneView = cgm.getSceneView();
+        Map<Long, CollisionShape> map = sceneView.shapeMap();
+        List<Long> result = new ArrayList<>(map.keySet());
         Collections.sort(result);
 
         return result;
