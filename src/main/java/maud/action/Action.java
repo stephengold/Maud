@@ -153,6 +153,7 @@ public class Action {
     final static String selectSgcSpatial = "select sgcSpatial";
     final static String selectShape = "select shape";
     final static String selectShapeChild = "select shapeChild";
+    final static String selectShapeUser = "select shapeUser";
     final static String selectSourceAnimControl = "select sourceAnimControl";
     final static String selectSourceBone = "select sourceBone";
     final static String selectSpatialChild = "select spatialChild";

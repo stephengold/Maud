@@ -48,7 +48,9 @@ import com.jme3.scene.control.Control;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 
@@ -120,6 +122,7 @@ public class PhysicsUtil {
     public static PhysicsCollisionObject findObject(String name,
             PhysicsSpace space) {
         Validate.nonNull(name, "name");
+        Validate.nonNull(space, "space");
 
         if (name.length() < 6) {
             return null;
@@ -173,13 +176,35 @@ public class PhysicsUtil {
     }
 
     /**
+     * Find the identified collision object in the specified physics space.
+     *
+     * @param id object identifier
+     * @param space which physics space (not null, unaffected)
+     * @return the pre-existing object, or null if not found
+     */
+    public static PhysicsCollisionObject findObject(long id,
+            PhysicsSpace space) {
+        Validate.nonNull(space, "space");
+
+        PhysicsCollisionObject result = null;
+        if (id != -1L) {
+            Map<Long, PhysicsCollisionObject> map = objectMap(space);
+            result = map.get(id);
+        }
+
+        return result;
+    }
+
+    /**
      * Find the identified collision shape in the specified physics space.
      *
      * @param id shape identifier
      * @param space which physics space (not null, unaffected)
      * @return the pre-existing shape, or null if not found
      */
-    public static CollisionShape findShape(Long id, PhysicsSpace space) {
+    public static CollisionShape findShape(long id, PhysicsSpace space) {
+        Validate.nonNull(space, "space");
+
         CollisionShape result = null;
         if (id != -1L) {
             Map<Long, CollisionShape> map = shapeMap(space);
@@ -236,6 +261,7 @@ public class PhysicsUtil {
      */
     public static Map<Long, PhysicsCollisionObject> objectMap(
             PhysicsSpace space) {
+
         Map<Long, PhysicsCollisionObject> result = new TreeMap<>();
 
         Collection<PhysicsCharacter> characters = space.getCharacterList();
@@ -320,8 +346,9 @@ public class PhysicsUtil {
      * @return a new map from ids to shapes
      */
     public static Map<Long, CollisionShape> shapeMap(PhysicsSpace space) {
-        Map<Long, CollisionShape> result = new TreeMap<>();
+        Validate.nonNull(space, "space");
 
+        Map<Long, CollisionShape> result = new TreeMap<>();
         Map<Long, PhysicsCollisionObject> objectMap = objectMap(space);
         for (PhysicsCollisionObject pco : objectMap.values()) {
             CollisionShape shape = pco.getCollisionShape();
@@ -334,6 +361,43 @@ public class PhysicsUtil {
                     CollisionShape childShape = child.shape;
                     long childId = childShape.getObjectId();
                     result.put(childId, childShape);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Enumerate all collision objects and compound shapes in the specified
+     * physics space that reference the identified shape.
+     *
+     * @param usedShapeId id of the collision shape to find
+     * @param space which physics space to search (not null, unaffected)
+     * @return a new set of ids of objects/shapes
+     */
+    public static Set<Long> userSet(long usedShapeId, PhysicsSpace space) {
+        Validate.nonNull(space, "space");
+
+        Set<Long> result = new TreeSet<>();
+        Map<Long, PhysicsCollisionObject> objectMap = objectMap(space);
+        for (PhysicsCollisionObject pco : objectMap.values()) {
+            CollisionShape shape = pco.getCollisionShape();
+            long shapeId = shape.getObjectId();
+            if (shapeId == usedShapeId) {
+                long pcoId = pco.getObjectId();
+                result.add(pcoId);
+            }
+            if (shape instanceof CompoundCollisionShape) {
+                CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
+                List<ChildCollisionShape> children = ccs.getChildren();
+                for (ChildCollisionShape child : children) {
+                    CollisionShape childShape = child.shape;
+                    long childId = childShape.getObjectId();
+                    if (childId == usedShapeId) {
+                        long parentId = shape.getObjectId();
+                        result.add(parentId);
+                    }
                 }
             }
         }

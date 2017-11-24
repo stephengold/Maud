@@ -26,10 +26,17 @@
  */
 package maud.tool;
 
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
+import jme3utilities.MyControl;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedShape;
 
@@ -132,27 +139,64 @@ class ShapeTool extends WindowController {
     }
 
     /**
-     * Update the shape status and select button.
+     * Update the users, type, children, and select buttons.
      */
     private void updateShape() {
+        String usersText = "";
+        String suButton = "";
+        String type = "";
         String childrenText = "";
-        String sButton = "";
+        String scButton = "";
 
-        SelectedShape shape = Maud.getModel().getTarget().getShape();
-        String type = shape.getType();
-        if (type.equals("Compound")) {
-            int numChildren = shape.countChildren();
-            if (numChildren == 1) {
-                childrenText = "one child";
-                sButton = "Select";
-            } else if (numChildren > 1) {
-                childrenText = String.format("%d children", numChildren);
-                sButton = "Select";
+        Cgm target = Maud.getModel().getTarget();
+        SelectedShape shape = target.getShape();
+        if (shape.isSelected()) {
+            type = shape.getType();
+
+            Set<Long> userSet = shape.userSet();
+            int numUsers = userSet.size();
+            if (numUsers == 0) {
+                usersText = "unused";
+            } else if (numUsers == 1) {
+                Long[] ids = new Long[1];
+                userSet.toArray(ids);
+                long userId = ids[0];
+                PhysicsSpace space = target.getSceneView().getPhysicsSpace();
+                CollisionShape userShape = PhysicsUtil.findShape(userId, space);
+                if (userShape != null) {
+                    usersText = Long.toHexString(userId);
+                    suButton = "Select";
+                } else {
+                    PhysicsCollisionObject userObject
+                            = PhysicsUtil.findObject(userId, space);
+                    usersText = MyControl.objectName(userObject);
+                    suButton = "Select";
+                }
+            } else {
+                usersText = String.format("%d users", numUsers);
+            }
+
+            if (type.equals("Compound")) {
+                int numChildren = shape.countChildren();
+                if (numChildren == 0) {
+                    childrenText = "none";
+                } else if (numChildren == 1) {
+                    List<String> children = shape.listChildNames("");
+                    childrenText = children.get(0);
+                    scButton = "Select";
+                } else {
+                    childrenText = String.format("%d children", numChildren);
+                    scButton = "Select";
+                }
+            } else {
+                childrenText = "n/a";
             }
         }
 
-        Maud.gui.setStatusText("shapeChildren", " " + childrenText);
+        Maud.gui.setStatusText("shapeUsers", " " + usersText);
+        Maud.gui.setButtonLabel("shapeSelectUserButton", suButton);
         Maud.gui.setStatusText("shapeType", " " + type);
-        Maud.gui.setButtonLabel("shapeSelectChildButton", sButton);
+        Maud.gui.setStatusText("shapeChildren", " " + childrenText);
+        Maud.gui.setButtonLabel("shapeSelectChildButton", scButton);
     }
 }

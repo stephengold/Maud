@@ -26,9 +26,15 @@
  */
 package maud.menu;
 
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import java.util.Set;
 import java.util.logging.Logger;
+import jme3utilities.MyControl;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.PhysicsUtil;
 import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedShape;
@@ -110,6 +116,32 @@ public class PhysicsMenus {
             shape.selectFirstChild();
         } else if (numChildren > 1) {
             ShowMenus.selectShapeChild();
+        }
+    }
+
+    /**
+     * Handle a "select shapeUser" action without arguments.
+     */
+    public static void selectShapeUser() {
+        Cgm target = Maud.getModel().getTarget();
+        SelectedShape shape = target.getShape();
+        Set<Long> userSet = shape.userSet();
+        int numUsers = userSet.size();
+        if (numUsers == 1) {
+            Long[] ids = new Long[1];
+            userSet.toArray(ids);
+            long userId = ids[0];
+            PhysicsSpace space = target.getSceneView().getPhysicsSpace();
+            CollisionShape userShape = PhysicsUtil.findShape(userId, space);
+            if (userShape != null) {
+                shape.select(userId);
+            } else {
+                PhysicsCollisionObject userObject
+                        = PhysicsUtil.findObject(userId, space);
+                String name = MyControl.objectName(userObject);
+                target.getPhysics().select(name);
+                Maud.gui.tools.select("physics");
+            }
         }
     }
     // *************************************************************************

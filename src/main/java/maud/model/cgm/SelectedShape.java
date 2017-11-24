@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -309,6 +310,19 @@ public class SelectedShape implements Cloneable {
 
         CollisionShape shape = find();
         shape.setScale(newScale);
+    }
+
+    /**
+     * Enumerate all collision objects and compound shapes that reference the
+     * selected shape.
+     *
+     * @return a new set of ids of objects/shapes
+     */
+    public Set<Long> userSet() {
+        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
+        Set<Long> result = PhysicsUtil.userSet(selectedId, space);
+
+        return result;
     }
     // *************************************************************************
     // Object methods

@@ -197,6 +197,10 @@ class SelectAction {
                 PhysicsMenus.selectShapeChild();
                 break;
 
+            case Action.selectShapeUser:
+                PhysicsMenus.selectShapeUser();
+                break;
+
             case Action.selectSourceAnimControl:
                 ShowMenus.selectAnimControl(model.getSource());
                 break;

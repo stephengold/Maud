@@ -1505,7 +1505,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="shapeTool" title="Shape Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="140px" width="200px" x="65" y="35">
+                     height="167px" width="210px" x="65" y="35">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="shapePreviousButton"
@@ -1522,7 +1522,7 @@ the menu bar, status bar, and tool windows.
                         </control>
                         <panel width="10px"/>
                         <control name="button" id="shapeSelectButton"
-                                 width="60px">
+                                 width="50px">
                             <interact onRelease="perform(select shape)"/>
                         </control>
                     </panel>
@@ -1530,7 +1530,17 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Selected:  "/>
                         <control name="label" id="shapeName"
                                  backgroundColor="#ffff"
+                                 width="92px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Users:  "/>
+                        <control name="label" id="shapeUsers"
+                                 backgroundColor="#ffff"
                                  width="110px"/>
+                        <control name="button" id="shapeSelectUserButton"
+                                 width="50px">
+                            <interact onRelease="perform(select shapeUser)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Type:  "/>
@@ -1542,9 +1552,9 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Children:  "/>
                         <control name="label" id="shapeChildren"
                                  backgroundColor="#ffff"
-                                 width="70px"/>
+                                 width="80px"/>
                         <control name="button" id="shapeSelectChildButton"
-                                 width="60px">
+                                 width="50px">
                             <interact onRelease="perform(select shapeChild)"/>
                         </control>
                     </panel>
