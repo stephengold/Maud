@@ -36,7 +36,6 @@ import com.jme3.util.clone.JmeCloneable;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
-import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.PhysicsUtil;
 import maud.view.SceneView;
