@@ -593,15 +593,18 @@ public class EditorDialogs {
         Validate.nonNull(parameter, "parameter");
 
         SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
-        String defaultText = physics.getRbpValue(parameter);
-        DialogController controller
-                = new FloatDialog("Set", Float.MIN_VALUE, Float.MAX_VALUE);
-        String name = parameter.toString();
-        String prompt = String.format("Enter new %s:", name);
-        String prefix = ActionPrefix.setPhysicsRbpValue + name + " ";
+        if (physics.isSelected()) {
+            String defaultText = physics.getRbpValue(parameter);
+            DialogController controller
+                    = new FloatDialog("Set", Float.MIN_VALUE, Float.MAX_VALUE);
+            String name = parameter.toString();
+            String prompt = String.format("Enter new %s:", name);
+            String prefix = ActionPrefix.setPhysicsRbpValue + name + " ";
 
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog(prompt, defaultText, prefix, controller);
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog(prompt, defaultText, prefix,
+                    controller);
+        }
     }
 
     /**
