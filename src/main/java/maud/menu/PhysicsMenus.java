@@ -90,7 +90,7 @@ public class PhysicsMenus {
                     break;
 
                 case "Object Tool":
-                    Maud.gui.tools.select("physics");
+                    Maud.gui.tools.select("object");
                     break;
 
                 case "Shape Tool":
@@ -140,7 +140,7 @@ public class PhysicsMenus {
                         = PhysicsUtil.findObject(userId, space);
                 String name = MyControl.objectName(userObject);
                 target.getPhysics().select(name);
-                Maud.gui.tools.select("physics");
+                Maud.gui.tools.select("object");
             }
         }
     }

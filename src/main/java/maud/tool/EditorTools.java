@@ -117,9 +117,9 @@ public class EditorTools {
      */
     final private MappingTool mapping;
     /**
-     * controller for the "Physics Tool" window
+     * controller for the "Object Tool" window
      */
-    final private PhysicsTool physics;
+    final private ObjectTool object;
     /**
      * controller for the "Platform Tool" window
      */
@@ -231,7 +231,7 @@ public class EditorTools {
         joint = new JointTool(screen);
         keyframe = new KeyframeTool(screen);
         mapping = new MappingTool(screen);
-        physics = new PhysicsTool(screen);
+        object = new ObjectTool(screen);
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
         retarget = new RetargetTool(screen);
@@ -265,7 +265,7 @@ public class EditorTools {
     public void attachAll(AppStateManager stateManager) {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
-                displaySettings, history, keyframe, joint, mapping, physics,
+                displaySettings, history, keyframe, joint, mapping, object,
                 platform, render, retarget, sceneVertex, score, settings, sgc,
                 shape, skeleton, skeletonColor, sky, sourceAnimation, spatial,
                 spatialDetails, spatialRotation, spatialScale,
@@ -331,8 +331,8 @@ public class EditorTools {
             case "map":
                 controller = mapping;
                 break;
-            case "physics":
-                controller = physics;
+            case "object":
+                controller = object;
                 break;
             case "platform":
                 controller = platform;

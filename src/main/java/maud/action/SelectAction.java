@@ -178,10 +178,10 @@ class SelectAction {
 
             case Action.selectSgcObject:
                 SelectedSgc sgc = target.getSgc();
-                String physicsName = sgc.physicsObjectName();
-                if (!physicsName.isEmpty() && sgc.isEnabled()) {
-                    target.getPhysics().select(physicsName);
-                    Maud.gui.tools.select("physics");
+                String objectName = sgc.physicsObjectName();
+                if (!objectName.isEmpty() && sgc.isEnabled()) {
+                    target.getPhysics().select(objectName);
+                    Maud.gui.tools.select("object");
                 }
                 break;
 

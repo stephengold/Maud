@@ -36,11 +36,11 @@ import maud.model.cgm.SelectedPhysics;
 import maud.model.option.RigidBodyParameter;
 
 /**
- * The controller for the "Physics Tool" window in Maud's editor screen.
+ * The controller for the "Object Tool" window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class PhysicsTool extends WindowController {
+class ObjectTool extends WindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -48,7 +48,7 @@ class PhysicsTool extends WindowController {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(PhysicsTool.class.getName());
+            = Logger.getLogger(ObjectTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -57,8 +57,8 @@ class PhysicsTool extends WindowController {
      *
      * @param screenController
      */
-    PhysicsTool(BasicScreenController screenController) {
-        super(screenController, "physicsTool", false);
+    ObjectTool(BasicScreenController screenController) {
+        super(screenController, "objectTool", false);
     }
     // *************************************************************************
     // WindowController methods
