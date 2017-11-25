@@ -596,7 +596,7 @@ public class EditorDialogs {
         if (physics.isSelected()) {
             String defaultText = physics.getRbpValue(parameter);
             DialogController controller
-                    = new FloatDialog("Set", Float.MIN_VALUE, Float.MAX_VALUE);
+                    = new FloatDialog("Set", -Float.MAX_VALUE, Float.MAX_VALUE);
             String name = parameter.toString();
             String prompt = String.format("Enter new %s:", name);
             String prefix = ActionPrefix.setPhysicsRbpValue + name + " ";
