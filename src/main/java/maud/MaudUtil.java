@@ -39,6 +39,7 @@ import com.jme3.asset.ModelKey;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -62,6 +63,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +81,10 @@ public class MaudUtil {
      */
     final private static Logger logger
             = Logger.getLogger(MaudUtil.class.getName());
+    /**
+     * local copy of {@link com.jme3.math.Transform#IDENTITY}
+     */
+    final private static Transform transformIdentity = new Transform();
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_X}
      */
@@ -427,6 +433,26 @@ public class MaudUtil {
         }
 
         return bestIndex;
+    }
+
+    /**
+     * Calculate half extents for a symmetrical bounding box aligned with the
+     * local axes of the specified scene-graph subtree.
+     *
+     * @param subtree (not null, unaffected)
+     * @return a new vector
+     */
+    static Vector3f halfExtents(Spatial subtree) {
+        Spatial clone = subtree.clone(false);
+        clone.setLocalTransform(transformIdentity);
+        Vector3f[] minMax = MySpatial.findMinMaxCoords(clone, true);
+        float heX = Math.max(-minMax[0].x, minMax[1].x);
+        float heY = Math.max(-minMax[0].y, minMax[1].y);
+        float heZ = Math.max(-minMax[0].z, minMax[1].z);
+        Vector3f result = new Vector3f(heX, heY, heZ);
+        assert MyVector3f.isAllNonNegative(result);
+
+        return result;
     }
 
     /**

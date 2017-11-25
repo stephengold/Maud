@@ -26,14 +26,14 @@
  */
 package maud;
 
-import com.jme3.bounding.BoundingBox;
-import com.jme3.bounding.BoundingSphere;
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.bullet.collision.shapes.ConeCollisionShape;
+import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
@@ -53,6 +53,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 
 /**
  * Physics utility methods. All methods should be static.
@@ -60,6 +61,51 @@ import jme3utilities.Validate;
  * @author Stephen Gold sgold@sonic.net
  */
 public class PhysicsUtil {
+    // *************************************************************************
+    // enums
+
+    /**
+     * Enumerate the types of collision shapes that makeShape() knows how to
+     * make.
+     */
+    public enum ShapeType {
+        /**
+         * BoxCollisionShape
+         */
+        Box,
+        /**
+         * CapsuleCollisionShape
+         */
+        Capsule,
+        /**
+         * ConeCollisionShape on X axis
+         */
+        ConeX,
+        /**
+         * ConeCollisionShape on Y axis
+         */
+        ConeY,
+        /**
+         * ConeCollisionShape on Z axis
+         */
+        ConeZ,
+        /**
+         * CylinderCollisionShape on X axis
+         */
+        CylinderX,
+        /**
+         * CylinderCollisionShape on Y axis
+         */
+        CylinderY,
+        /**
+         * CylinderCollisionShape on Z axis
+         */
+        CylinderZ,
+        /**
+         * SphereCollisionShape
+         */
+        Sphere;
+    }
     // *************************************************************************
     // constants and loggers
 
@@ -78,6 +124,24 @@ public class PhysicsUtil {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Test whether a shape can be scaled.
+     *
+     * @param shape which collision shape (not null, unaffected)
+     * @return true if the shape is scalable, otherwise false
+     */
+    public static boolean canScale(CollisionShape shape) {
+        boolean result = true;
+        if (shape instanceof CapsuleCollisionShape
+                || shape instanceof CompoundCollisionShape
+                || shape instanceof CylinderCollisionShape
+                || shape instanceof SphereCollisionShape) {
+            result = false;
+        }
+
+        return result;
+    }
 
     /**
      * Count the joints in the specified physics space.
@@ -215,40 +279,100 @@ public class PhysicsUtil {
     }
 
     /**
-     * Create a collision shape suitable for the specified spatial.
+     * Create a collision shape of the specified type suitable for the specified
+     * spatial.
      *
-     * @param spatial (not null)
+     * @param spatial where the physics control will be attached (not null)
+     * @param shapeType type of shape (not null)
      * @return a new instance
      */
-    public static CollisionShape makeShape(Spatial spatial) {
-        CollisionShape childShape;
-        BoundingVolume bound = spatial.getWorldBound();
-        if (bound instanceof BoundingBox) {
-            BoundingBox boundingBox = (BoundingBox) bound;
-            float xHalfExtent = boundingBox.getXExtent();
-            float yHalfExtent = boundingBox.getYExtent();
-            float zHalfExtent = boundingBox.getZExtent();
-            // TODO consider other possible axes for the capsule
-            float radius = Math.max(xHalfExtent, zHalfExtent);
-            if (yHalfExtent > radius) {
-                float height = 2 * (yHalfExtent - radius);
-                childShape = new CapsuleCollisionShape(radius, height);
-            } else {
-                childShape = new SphereCollisionShape(yHalfExtent);
-            }
-        } else if (bound instanceof BoundingSphere) {
-            BoundingSphere boundingSphere = (BoundingSphere) bound;
-            float radius = boundingSphere.getRadius();
-            childShape = new SphereCollisionShape(radius);
-        } else {
-            throw new IllegalStateException();
+    public static CollisionShape makeShape(Spatial spatial,
+            ShapeType shapeType) {
+        CollisionShape result;
+        float height, radius;
+        int axis;
+        Vector3f halfExtents;
+
+        switch (shapeType) {
+            case Box:
+                halfExtents = MaudUtil.halfExtents(spatial);
+                result = new BoxCollisionShape(halfExtents);
+                break;
+
+            case Capsule:
+                halfExtents = MaudUtil.halfExtents(spatial);
+                if (halfExtents.x >= halfExtents.y
+                        && halfExtents.x >= halfExtents.z) {
+                    radius = Math.max(halfExtents.y, halfExtents.z);
+                    height = halfExtents.x;
+                    axis = PhysicsSpace.AXIS_X;
+                } else if (halfExtents.y >= halfExtents.z) {
+                    radius = Math.max(halfExtents.x, halfExtents.z);
+                    height = halfExtents.y;
+                    axis = PhysicsSpace.AXIS_Y;
+                } else {
+                    radius = Math.max(halfExtents.x, halfExtents.y);
+                    height = halfExtents.z;
+                    axis = PhysicsSpace.AXIS_Z;
+                }
+                height = 2f * (height - radius);
+                assert height >= 0f : height;
+                result = new CapsuleCollisionShape(radius, height, axis);
+                break;
+
+            case ConeX:
+                halfExtents = MaudUtil.halfExtents(spatial);
+                radius = Math.max(halfExtents.y, halfExtents.z);
+                height = 2f * halfExtents.x;
+                result = new ConeCollisionShape(radius, height,
+                        PhysicsSpace.AXIS_X);
+                break;
+
+            case ConeY:
+                halfExtents = MaudUtil.halfExtents(spatial);
+                radius = Math.max(halfExtents.x, halfExtents.z);
+                height = 2f * halfExtents.y;
+                result = new ConeCollisionShape(radius, height,
+                        PhysicsSpace.AXIS_Y);
+                break;
+
+            case ConeZ:
+                halfExtents = MaudUtil.halfExtents(spatial);
+                radius = Math.max(halfExtents.x, halfExtents.y);
+                height = 2f * halfExtents.z;
+                result = new ConeCollisionShape(radius, height,
+                        PhysicsSpace.AXIS_Z);
+                break;
+
+            case CylinderX:
+                halfExtents = MaudUtil.halfExtents(spatial);
+                result = new CylinderCollisionShape(halfExtents,
+                        PhysicsSpace.AXIS_X);
+                break;
+
+            case CylinderY:
+                halfExtents = MaudUtil.halfExtents(spatial);
+                result = new CylinderCollisionShape(halfExtents,
+                        PhysicsSpace.AXIS_Y);
+                break;
+
+            case CylinderZ:
+                halfExtents = MaudUtil.halfExtents(spatial);
+                result = new CylinderCollisionShape(halfExtents,
+                        PhysicsSpace.AXIS_Z);
+                break;
+
+            case Sphere:
+                halfExtents = MaudUtil.halfExtents(spatial);
+                radius = MyMath.max(halfExtents.x, halfExtents.y,
+                        halfExtents.z);
+                assert radius > 0f : radius;
+                result = new SphereCollisionShape(radius);
+                break;
+
+            default:
+                throw new IllegalArgumentException();
         }
-        CompoundCollisionShape result = new CompoundCollisionShape();
-        Vector3f location = bound.getCenter();
-        Vector3f translation = spatial.getWorldTranslation();
-        location.subtractLocal(translation);
-        // TODO account for rotation
-        result.addChildShape(childShape, location);
 
         return result;
     }
@@ -261,7 +385,6 @@ public class PhysicsUtil {
      */
     public static Map<Long, PhysicsCollisionObject> objectMap(
             PhysicsSpace space) {
-
         Map<Long, PhysicsCollisionObject> result = new TreeMap<>();
 
         Collection<PhysicsCharacter> characters = space.getCharacterList();

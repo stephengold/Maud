@@ -116,34 +116,42 @@ public class SelectedSpatial implements JmeCloneable {
 
     /**
      * Add a GhostControl to the selected spatial and select the new control.
+     *
+     * @param shapeType desired type of shape (not null)
      */
-    public void addGhostControl() {
+    public void addGhostControl(PhysicsUtil.ShapeType shapeType) {
+        Validate.nonNull(shapeType, "shape type");
+
         SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
-        CollisionShape shape = PhysicsUtil.makeShape(viewSpatial);
-        GhostControl newSgc = new GhostControl(shape);
+        CollisionShape shape = PhysicsUtil.makeShape(viewSpatial, shapeType);
+        GhostControl ghostControl = new GhostControl(shape);
 
-        editableCgm.addSgc(newSgc);
-        Spatial ss = find();
-        editableCgm.getSgc().select(newSgc, ss);
+        editableCgm.addSgc(ghostControl);
+        Spatial modelSpatial = find();
+        editableCgm.getSgc().select(ghostControl, modelSpatial);
     }
 
     /**
      * Add a RigidBodyControl to the selected spatial and select the new
      * control.
+     *
+     * @param shapeType desired type of shape (not null)
      */
-    public void addRigidBodyControl() {
+    public void addRigidBodyControl(PhysicsUtil.ShapeType shapeType) {
+        Validate.nonNull(shapeType, "shape type");
+
         SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
-        CollisionShape shape = PhysicsUtil.makeShape(viewSpatial);
+        CollisionShape shape = PhysicsUtil.makeShape(viewSpatial, shapeType);
         float mass = 1f;
-        RigidBodyControl newSgc = new RigidBodyControl(shape, mass);
-        newSgc.setKinematic(true);
+        RigidBodyControl rbc = new RigidBodyControl(shape, mass);
+        rbc.setKinematic(true);
         // why is the default kinematic=false but kinematicSpatial=true?
 
-        editableCgm.addSgc(newSgc);
-        Spatial ss = find();
-        editableCgm.getSgc().select(newSgc, ss);
+        editableCgm.addSgc(rbc);
+        Spatial modelSpatial = find();
+        editableCgm.getSgc().select(rbc, modelSpatial);
     }
 
     /**
@@ -179,8 +187,8 @@ public class SelectedSpatial implements JmeCloneable {
         String name = sourceCgm.getName();
 
         Spatial clone = cgmRoot.clone();
-        String description;
-        description = String.format("merge model %s", MyString.quote(name));
+        String description
+                = String.format("merge model %s", MyString.quote(name));
         editableCgm.attachSpatial(parentNode, clone, description);
     }
 
@@ -367,8 +375,8 @@ public class SelectedSpatial implements JmeCloneable {
             /*
              * Select the parent node.
              */
-            int last = treePosition.size() - 1;
-            treePosition.remove(last);
+            int lastLevel = treePosition.size() - 1;
+            treePosition.remove(lastLevel);
             assert find() == parent;
             postSelect();
         }

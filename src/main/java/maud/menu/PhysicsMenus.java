@@ -35,10 +35,10 @@ import jme3utilities.MyControl;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.PhysicsUtil;
+import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedShape;
-import maud.model.cgm.SelectedSpatial;
 import maud.model.option.RigidBodyParameter;
 
 /**
@@ -81,6 +81,10 @@ public class PhysicsMenus {
 
         } else {
             switch (remainder) {
+                case "Add new":
+                    addNew();
+                    break;
+
                 case "Joint Tool":
                     Maud.gui.tools.select("joint");
                     break;
@@ -144,8 +148,37 @@ public class PhysicsMenus {
             }
         }
     }
+
+    /**
+     * Display a menu of types of shapes.
+     *
+     * @param actionPrefix action prefix for the menu (not null, not empty)
+     */
+    static void showShapeTypeMenu(String actionPrefix) {
+        assert actionPrefix != null;
+        assert !actionPrefix.isEmpty();
+
+        MenuBuilder builder = new MenuBuilder();
+        for (PhysicsUtil.ShapeType shapeType : PhysicsUtil.ShapeType.values()) {
+            String string = shapeType.toString();
+            builder.add(string);
+        }
+        builder.show(actionPrefix);
+    }
     // *************************************************************************
     // private methods
+
+    /**
+     * Display a "Physics -> Add new" menu.
+     */
+    private static void addNew() {
+        MenuBuilder builder = new MenuBuilder();
+
+        builder.addEdit("Ghost");
+        builder.addEdit("RigidBody");
+
+        builder.show("select menuItem Physics -> Add new -> ");
+    }
 
     /**
      * Handle a "select menuItem" action from the "Physics -> Add new" menu.
@@ -155,14 +188,13 @@ public class PhysicsMenus {
      */
     private static boolean menuPhysicsAdd(String remainder) {
         boolean handled = true;
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         switch (remainder) {
             case "Ghost":
-                spatial.addGhostControl();
+                showShapeTypeMenu(ActionPrefix.newGhostControl);
                 break;
 
             case "RigidBody":
-                spatial.addRigidBodyControl();
+                showShapeTypeMenu(ActionPrefix.newRbc);
                 break;
 
             default:

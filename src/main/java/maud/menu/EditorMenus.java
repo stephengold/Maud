@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.EditableMap;
 import maud.model.History;
@@ -503,15 +504,19 @@ public class EditorMenus {
             case "Anim":
                 spatial.addAnimControl();
                 break;
+
             case "Ghost":
-                spatial.addGhostControl();
+                PhysicsMenus.showShapeTypeMenu(ActionPrefix.newGhostControl);
                 break;
+
             case "RigidBody":
-                spatial.addRigidBodyControl();
+                PhysicsMenus.showShapeTypeMenu(ActionPrefix.newRbc);
                 break;
+
             case "Skeleton":
                 spatial.addSkeletonControl();
                 break;
+
             default:
                 handled = false;
         }

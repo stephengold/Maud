@@ -29,6 +29,7 @@ package maud.action;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.PhysicsUtil;
 import maud.dialog.EditorDialogs;
 import maud.menu.ShowMenus;
 import maud.model.cgm.EditableCgm;
@@ -147,9 +148,23 @@ class NewAction {
                     ActionPrefix.newAnimationFromPose);
             target.getAnimation().poseAndLoad(name);
 
+        } else if (actionString.startsWith(ActionPrefix.newGhostControl)) {
+            String shapeName = MyString.remainder(actionString,
+                    ActionPrefix.newGhostControl);
+            PhysicsUtil.ShapeType shapeType
+                    = PhysicsUtil.ShapeType.valueOf(shapeName);
+            target.getSpatial().addGhostControl(shapeType);
+
+        } else if (actionString.startsWith(ActionPrefix.newRbc)) {
+            String shapeName
+                    = MyString.remainder(actionString, ActionPrefix.newRbc);
+            PhysicsUtil.ShapeType shapeType
+                    = PhysicsUtil.ShapeType.valueOf(shapeName);
+            target.getSpatial().addRigidBodyControl(shapeType);
+
         } else if (actionString.startsWith(ActionPrefix.newUserKey)) {
-            String args;
-            args = MyString.remainder(actionString, ActionPrefix.newUserKey);
+            String args
+                    = MyString.remainder(actionString, ActionPrefix.newUserKey);
             if (args.contains(" ")) {
                 String type = args.split(" ")[0];
                 String key = MyString.remainder(args, type + " ");
