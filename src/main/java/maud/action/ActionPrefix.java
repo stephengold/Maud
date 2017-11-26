@@ -244,6 +244,10 @@ public class ActionPrefix {
      */
     final public static String selectShape = "select shape ";
     /**
+     * argument is the name of a ShapeParameter
+     */
+    final public static String selectShapeParm = "select shapeParm ";
+    /**
      * arguments are a spatial name and a de-duplication index
      */
     final static String selectSourceAnimControl = "select sourceAnimControl ";
@@ -354,6 +358,10 @@ public class ActionPrefix {
      * argument is the name of a shadow mode
      */
     final public static String setShadowMode = "set shadowMode ";
+    /**
+     * arguments are the parameter name and a decimal value
+     */
+    final public static String setShapeParmValue = "set shapeParmValue ";
     /**
      * argument is the name of a quaternion interpolation technique
      */

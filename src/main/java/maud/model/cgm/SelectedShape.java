@@ -27,8 +27,13 @@
 package maud.model.cgm;
 
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.bullet.collision.shapes.ConeCollisionShape;
+import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
@@ -41,6 +46,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import maud.PhysicsUtil;
+import maud.model.option.ShapeParameter;
 import maud.view.SceneView;
 
 /**
@@ -70,6 +76,32 @@ public class SelectedShape implements Cloneable {
     private long selectedId = -1L;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Test whether the specified parameter is settable.
+     *
+     * @param parameter which parameter (not null)
+     * @return true if settable, otherwise false
+     */
+    public boolean canSetParameter(ShapeParameter parameter) {
+        Validate.nonNull(parameter, "parameter");
+
+        if (!isSelected()) {
+            return false;
+        }
+
+        boolean result;
+        switch (parameter) {
+            case Margin:
+                CollisionShape shape = find();
+                result = !(shape instanceof SphereCollisionShape);
+                break;
+            default:
+                result = false;
+        }
+
+        return result;
+    }
 
     /**
      * Copy the scale of the shape.
@@ -121,6 +153,21 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
+     * Read the axis index of the selected shape, if it has one.
+     *
+     * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;none
+     */
+    public int getAxisIndex() {
+        CollisionShape shape = find();
+        int result = -1;
+        if (shape != null) {
+            result = PhysicsUtil.getAxisIndex(shape);
+        }
+
+        return result;
+    }
+
+    /**
      * Read the id of the selected shape.
      *
      * @return id, or -1L if none selected
@@ -143,6 +190,87 @@ public class SelectedShape implements Cloneable {
         }
 
         assert result != null;
+        return result;
+    }
+
+    /**
+     * Read the specified parameter of the shape.
+     *
+     * @param parameter which parameter to read (not null)
+     * @return parameter value or NaN if not applicable
+     */
+    public float getParameterValue(ShapeParameter parameter) {
+        Validate.nonNull(parameter, "parameter");
+
+        CollisionShape shape = find();
+        float result = Float.NaN;
+        switch (parameter) {
+            case HalfExtentX:
+            case HalfExtentY:
+            case HalfExtentZ:
+                Vector3f halfExtents;
+                if (shape instanceof BoxCollisionShape) {
+                    BoxCollisionShape box
+                            = (BoxCollisionShape) shape;
+                    halfExtents = box.getHalfExtents();
+
+                } else if (shape instanceof CylinderCollisionShape) {
+                    CylinderCollisionShape cylinder
+                            = (CylinderCollisionShape) shape;
+                    halfExtents = cylinder.getHalfExtents();
+
+                } else {
+                    break;
+                }
+                if (parameter == ShapeParameter.HalfExtentX) {
+                    result = halfExtents.x;
+                } else if (parameter == ShapeParameter.HalfExtentY) {
+                    result = halfExtents.y;
+                } else if (parameter == ShapeParameter.HalfExtentZ) {
+                    result = halfExtents.z;
+                }
+                break;
+
+            case Height:
+                if (shape instanceof CapsuleCollisionShape) {
+                    CapsuleCollisionShape capsule
+                            = (CapsuleCollisionShape) shape;
+                    result = capsule.getHeight();
+                } else if (shape instanceof ConeCollisionShape) {
+                    ConeCollisionShape cone = (ConeCollisionShape) shape;
+                    result = cone.getHeight();
+                }
+                break;
+
+            case Margin:
+                result = shape.getMargin();
+                break;
+
+            case Radius:
+                if (shape instanceof CapsuleCollisionShape) {
+                    CapsuleCollisionShape capsule
+                            = (CapsuleCollisionShape) shape;
+                    result = capsule.getRadius();
+                } else if (shape instanceof ConeCollisionShape) {
+                    ConeCollisionShape cone = (ConeCollisionShape) shape;
+                    result = cone.getRadius();
+                } else if (shape instanceof SphereCollisionShape) {
+                    SphereCollisionShape sphere = (SphereCollisionShape) shape;
+                    result = sphere.getRadius();
+                }
+                break;
+
+            case ScaleX:
+                result = shape.getScale().x;
+                break;
+            case ScaleY:
+                result = shape.getScale().y;
+                break;
+            case ScaleZ:
+                result = shape.getScale().z;
+                break;
+        }
+
         return result;
     }
 
@@ -298,6 +426,23 @@ public class SelectedShape implements Cloneable {
         assert newCgm.getShape() == this;
 
         cgm = newCgm;
+    }
+
+    /**
+     * Alter the specified parameter of the shape.
+     *
+     * @param parameter which parameter to alter (not null)
+     * @param newValue new parameter value
+     */
+    void setParameter(ShapeParameter parameter, float newValue) {
+        Validate.nonNull(parameter, "parameter");
+
+        CollisionShape shape = find();
+        switch (parameter) {
+            case Margin:
+                shape.setMargin(newValue);
+                break;
+        }
     }
 
     /**

@@ -54,6 +54,7 @@ import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedVertex;
 import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
+import maud.model.option.ShapeParameter;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.AxesDragEffect;
@@ -420,6 +421,23 @@ public class ShowMenus {
             }
             builder.show(ActionPrefix.selectShape);
         }
+    }
+
+    /**
+     * Display a "select shapeParm" menu to select a shape parameter.
+     */
+    public static void selectShapeParameter() {
+        MenuBuilder builder = new MenuBuilder();
+
+        ShapeParameter selected = Maud.getModel().getMisc().getShapeParameter();
+        for (ShapeParameter parm : ShapeParameter.values()) {
+            if (!parm.equals(selected)) {
+                String name = parm.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectShapeParm);
     }
 
     /**

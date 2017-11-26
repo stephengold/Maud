@@ -41,6 +41,7 @@ import maud.model.EditorModel;
 import maud.model.cgm.EditableCgm;
 import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
+import maud.model.option.ShapeParameter;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.AxesDragEffect;
@@ -145,6 +146,12 @@ class SetAction {
 
             case Action.setShadowMode:
                 ShowMenus.setShadowMode();
+                break;
+
+            case Action.setShapeParmValue:
+                ShapeParameter shapeParameter
+                        = model.getMisc().getShapeParameter();
+                EditorDialogs.setShapeParameterValue(shapeParameter);
                 break;
 
             case Action.setSpatialAngleCardinal:
@@ -352,6 +359,18 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);
             RenderQueue.ShadowMode value = RenderQueue.ShadowMode.valueOf(arg);
             target.setShadowMode(value);
+
+        } else if (actionString.startsWith(ActionPrefix.setShapeParmValue)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setShapeParmValue);
+            String[] args = arg.split(" ");
+            ShapeParameter parm = ShapeParameter.valueOf(args[0]);
+            if (args.length == 2) {
+                float value = Float.parseFloat(args[1]);
+                target.setShapeParameter(parm, value);
+            } else {
+                handled = false;
+            }
 
         } else if (actionString.startsWith(ActionPrefix.setTweenRotations)) {
             arg = MyString.remainder(actionString,

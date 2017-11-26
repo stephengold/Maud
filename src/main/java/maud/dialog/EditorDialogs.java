@@ -58,10 +58,12 @@ import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedPhysics;
+import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedTrack;
 import maud.model.cgm.TrackItem;
 import maud.model.option.RigidBodyParameter;
+import maud.model.option.ShapeParameter;
 
 /**
  * Dialog boxes created by Maud's "editor" screen.
@@ -600,6 +602,33 @@ public class EditorDialogs {
             String name = parameter.toString();
             String prompt = String.format("Enter new %s:", name);
             String prefix = ActionPrefix.setPhysicsRbpValue + name + " ";
+
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog(prompt, defaultText, prefix,
+                    controller);
+        }
+    }
+
+    /**
+     * Display a "set shapeParmValue" dialog to enter the parameter value.
+     *
+     * @param parameter which shape parameter to alter (not null)
+     */
+    public static void setShapeParameterValue(ShapeParameter parameter) {
+        Validate.nonNull(parameter, "parameter");
+
+        SelectedShape shape = Maud.getModel().getTarget().getShape();
+        if (shape.canSetParameter(parameter)) {
+            float defaultValue = shape.getParameterValue(parameter);
+            String defaultText = "";
+            if (!Float.isNaN(defaultValue)) {
+                defaultText = Float.toString(defaultValue);
+            }
+            DialogController controller
+                    = new FloatDialog("Set", -Float.MAX_VALUE, Float.MAX_VALUE);
+            String name = parameter.toString();
+            String prompt = String.format("Enter new %s:", name);
+            String prefix = ActionPrefix.setShapeParmValue + name + " ";
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog(prompt, defaultText, prefix,

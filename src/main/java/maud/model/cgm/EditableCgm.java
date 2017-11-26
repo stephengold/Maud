@@ -67,6 +67,7 @@ import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.model.History;
 import maud.model.option.RigidBodyParameter;
+import maud.model.option.ShapeParameter;
 import maud.view.SceneView;
 
 /**
@@ -750,7 +751,8 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Alter the specified parameter of the selected rigid body.
+     * Alter the specified parameter of the selected rigid body. TODO move the
+     * meat to SelectedPhysics class
      *
      * @param parameter which parameter to alter (not null)
      * @param newValue new parameter value
@@ -806,8 +808,8 @@ public class EditableCgm extends LoadedCgm {
                     throw new IllegalArgumentException();
             }
 
-            String eventDescription = String.format("set rigid-body %s to %f",
-                    parameter.toString(), newValue);
+            String eventDescription = String.format(
+                    "set %s of rigid body to %f", parameter, newValue);
             setEdited(eventDescription);
         }
     }
@@ -857,12 +859,32 @@ public class EditableCgm extends LoadedCgm {
             History.autoAdd();
             modelSpatial.setShadowMode(newMode);
             getSceneView().setMode(newMode);
-            setEdited("change shadow mode");
+            setEdited("alter shadow mode");
         }
     }
 
     /**
-     * Rescale the selected physics shape.
+     * Alter the specified parameter of the selected physics collision shape.
+     *
+     * @param parameter which parameter to alter (not null)
+     * @param newValue new parameter value
+     */
+    public void setShapeParameter(ShapeParameter parameter, float newValue) {
+        Validate.nonNull(parameter, "parameter");
+
+        SelectedShape shape = getShape();
+        float oldValue = shape.getParameterValue(parameter);
+        if (newValue != oldValue && shape.canSetParameter(parameter)) {
+            History.autoAdd();
+            shape.setParameter(parameter, newValue);
+            String description = String.format("set %s of shape to %f",
+                    parameter, newValue);
+            setEdited(description);
+        }
+    }
+
+    /**
+     * Rescale the selected physics collision shape.
      *
      * @param newScale (not null, unaffected)
      */
@@ -1118,23 +1140,23 @@ public class EditableCgm extends LoadedCgm {
         }
 
         if (numTracksZfed > 0) {
-            String message = "zeroed the time of the 1st keyframe in ";
+            String description = "zeroed the time of the 1st keyframe in ";
             if (numTracksZfed == 1) {
-                message += "one track";
+                description += "one track";
             } else {
-                message += String.format("%d tracks", numTracksZfed);
+                description += String.format("%d tracks", numTracksZfed);
             }
-            setEdited(message);
+            setEdited(description);
         }
 
         if (numTracksRred > 0) {
-            String message = "removed repeat keyframe(s) from ";
+            String description = "removed repeat keyframe(s) from ";
             if (numTracksRred == 1) {
-                message += "one track";
+                description += "one track";
             } else {
-                message += String.format("%d tracks", numTracksRred);
+                description += String.format("%d tracks", numTracksRred);
             }
-            setEdited(message);
+            setEdited(description);
         }
     }
 

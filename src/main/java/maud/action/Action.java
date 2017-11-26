@@ -153,6 +153,7 @@ public class Action {
     final static String selectSgcSpatial = "select sgcSpatial";
     final static String selectShape = "select shape";
     final static String selectShapeChild = "select shapeChild";
+    final static String selectShapeParm = "select shapeParm";
     final static String selectShapeUser = "select shapeUser";
     final static String selectSourceAnimControl = "select sourceAnimControl";
     final static String selectSourceBone = "select sourceBone";
@@ -175,6 +176,7 @@ public class Action {
     final static String setScoreBonesNone = "set scoreBonesNone";
     final static String setScoreBonesWhen = "set scoreBonesWhen";
     final static String setShadowMode = "set shadowMode";
+    final static String setShapeParmValue = "set shapeParmValue";
     final static String setSpatialAngleCardinal = "set spatialAngle cardinal";
     final static String setSpatialAngleSnapX = "set spatialAngle snapX";
     final static String setSpatialAngleSnapY = "set spatialAngle snapY";

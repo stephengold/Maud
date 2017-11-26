@@ -43,6 +43,7 @@ import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSgc;
 import maud.model.option.RigidBodyParameter;
+import maud.model.option.ShapeParameter;
 import maud.model.option.scene.OrbitCenter;
 import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
@@ -197,6 +198,10 @@ class SelectAction {
                 PhysicsMenus.selectShapeChild();
                 break;
 
+            case Action.selectShapeParm:
+                ShowMenus.selectShapeParameter();
+                break;
+
             case Action.selectShapeUser:
                 PhysicsMenus.selectShapeUser();
                 break;
@@ -323,6 +328,12 @@ class SelectAction {
             arg = MyString.remainder(actionString, ActionPrefix.selectShape);
             long id = Long.parseLong(arg, 16);
             target.getShape().select(id);
+
+        } else if (actionString.startsWith(ActionPrefix.selectShapeParm)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectShapeParm);
+            ShapeParameter parameter = ShapeParameter.valueOf(arg);
+            model.getMisc().setShapeParameter(parameter);
 
         } else if (actionString.startsWith(
                 ActionPrefix.selectSourceAnimControl)) {

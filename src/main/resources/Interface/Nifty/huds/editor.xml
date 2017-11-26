@@ -1505,7 +1505,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="shapeTool" title="Shape Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="167px" width="210px" x="65" y="35">
+                     height="195px" width="210px" x="65" y="35">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="shapePreviousButton"
@@ -1546,7 +1546,23 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Type:  "/>
                         <control name="label" id="shapeType"
                                  backgroundColor="#ffff"
-                                 width="140px"/>
+                                 width="99px"/>
+                        <control name="label" text="    Axis:  "/>
+                        <control name="label" id="shapeAxis"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="20px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="shapeParmButton"
+                                 width="100px">
+                            <interact onRelease="perform(select shapeParm)"/>
+                        </control>
+                        <control name="label" text=" =  "/>
+                        <control name="button" id="shapeParmValueButton"
+                                 width="85px">
+                            <interact onRelease="perform(set shapeParmValue)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Children:  "/>

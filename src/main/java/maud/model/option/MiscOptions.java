@@ -60,9 +60,13 @@ public class MiscOptions implements Cloneable {
      */
     private int indexBase = 1;
     /**
-     * parameter displayed in PhysicsTool (not null)
+     * parameter displayed in ObjectTool (not null)
      */
     private RigidBodyParameter rbp = RigidBodyParameter.Mass;
+    /**
+     * parameter displayed in ShapeTool (not null)
+     */
+    private ShapeParameter shapeParameter = ShapeParameter.Radius;
     /**
      * view mode (not null)
      */
@@ -98,13 +102,23 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read which rigid-body parameter to display in PhysicsTool.
+     * Read which rigid-body parameter to display in ObjectTool.
      *
      * @return an enum value (not null)
      */
     public RigidBodyParameter getRbp() {
         assert rbp != null;
         return rbp;
+    }
+
+    /**
+     * Read which shape parameter to display in ShapeTool.
+     *
+     * @return an enum value (not null)
+     */
+    public ShapeParameter getShapeParameter() {
+        assert shapeParameter != null;
+        return shapeParameter;
     }
 
     /**
@@ -166,13 +180,23 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter which rigid-body parameter to display in PhysicsTool.
+     * Alter which rigid-body parameter to display in ObjectTool.
      *
      * @param newParameter an enum value (not null)
      */
     public void setRbp(RigidBodyParameter newParameter) {
         Validate.nonNull(newParameter, "new parameter");
         rbp = newParameter;
+    }
+
+    /**
+     * Alter which shape parameter to display in ShapeTool.
+     *
+     * @param newParameter an enum value (not null)
+     */
+    public void setShapeParameter(ShapeParameter newParameter) {
+        Validate.nonNull(newParameter, "new parameter");
+        shapeParameter = newParameter;
     }
 
     /**

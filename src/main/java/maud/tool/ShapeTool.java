@@ -37,8 +37,10 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.PhysicsUtil;
+import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedShape;
+import maud.model.option.ShapeParameter;
 
 /**
  * The controller for the "Shape Tool" window in Maud's editor screen.
@@ -54,6 +56,10 @@ class ShapeTool extends WindowController {
      */
     final private static Logger logger
             = Logger.getLogger(ShapeTool.class.getName());
+    /**
+     * names of the coordinate axes
+     */
+    final private static String[] axisNames = {"X", "Y", "Z"};
     // *************************************************************************
     // constructors
 
@@ -79,12 +85,47 @@ class ShapeTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
 
+        updateChildren();
         updateIndex();
         updateName();
-        updateShape();
+        updateParameter();
+        updateType();
+        updateUsers();
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Update the children and select button.
+     */
+    private void updateChildren() {
+        String childrenText = "";
+        String scButton = "";
+
+        Cgm target = Maud.getModel().getTarget();
+        SelectedShape shape = target.getShape();
+        if (shape.isSelected()) {
+            String type = shape.getType();
+            if (type.equals("Compound")) {
+                int numChildren = shape.countChildren();
+                if (numChildren == 0) {
+                    childrenText = "none";
+                } else if (numChildren == 1) {
+                    List<String> children = shape.listChildNames("");
+                    childrenText = children.get(0);
+                    scButton = "Select";
+                } else {
+                    childrenText = String.format("%d children", numChildren);
+                    scButton = "Select";
+                }
+            } else {
+                childrenText = "n/a";
+            }
+        }
+
+        Maud.gui.setStatusText("shapeChildren", " " + childrenText);
+        Maud.gui.setButtonLabel("shapeSelectChildButton", scButton);
+    }
 
     /**
      * Update the index status and next/previous/select buttons.
@@ -139,20 +180,54 @@ class ShapeTool extends WindowController {
     }
 
     /**
-     * Update the users, type, children, and select buttons.
+     * Update the parameter buttons.
      */
-    private void updateShape() {
-        String usersText = "";
-        String suButton = "";
+    private void updateParameter() {
+        EditorModel model = Maud.getModel();
+        ShapeParameter parameter = model.getMisc().getShapeParameter();
+        String name = parameter.toString();
+        Maud.gui.setButtonLabel("shapeParmButton", name);
+
+        SelectedShape shape = model.getTarget().getShape();
+        float value = shape.getParameterValue(parameter);
+        String valueString = "";
+        if (!Float.isNaN(value)) {
+            valueString = Float.toString(value);
+        }
+        Maud.gui.setButtonLabel("shapeParmValueButton", valueString);
+    }
+
+    /**
+     * Update the type and axis.
+     */
+    private void updateType() {
         String type = "";
-        String childrenText = "";
-        String scButton = "";
+        String axisName = "";
 
         Cgm target = Maud.getModel().getTarget();
         SelectedShape shape = target.getShape();
         if (shape.isSelected()) {
             type = shape.getType();
+            int axisIndex = shape.getAxisIndex();
+            if (axisIndex != -1) {
+                axisName = axisNames[axisIndex];
+            }
+        }
 
+        Maud.gui.setStatusText("shapeType", " " + type);
+        Maud.gui.setStatusText("shapeAxis", axisName);
+    }
+
+    /**
+     * Update the users and select buttons.
+     */
+    private void updateUsers() {
+        String usersText = "";
+        String suButton = "";
+
+        Cgm target = Maud.getModel().getTarget();
+        SelectedShape shape = target.getShape();
+        if (shape.isSelected()) {
             Set<Long> userSet = shape.userSet();
             int numUsers = userSet.size();
             if (numUsers == 0) {
@@ -175,28 +250,9 @@ class ShapeTool extends WindowController {
             } else {
                 usersText = String.format("%d users", numUsers);
             }
-
-            if (type.equals("Compound")) {
-                int numChildren = shape.countChildren();
-                if (numChildren == 0) {
-                    childrenText = "none";
-                } else if (numChildren == 1) {
-                    List<String> children = shape.listChildNames("");
-                    childrenText = children.get(0);
-                    scButton = "Select";
-                } else {
-                    childrenText = String.format("%d children", numChildren);
-                    scButton = "Select";
-                }
-            } else {
-                childrenText = "n/a";
-            }
         }
 
         Maud.gui.setStatusText("shapeUsers", " " + usersText);
         Maud.gui.setButtonLabel("shapeSelectUserButton", suButton);
-        Maud.gui.setStatusText("shapeType", " " + type);
-        Maud.gui.setStatusText("shapeChildren", " " + childrenText);
-        Maud.gui.setButtonLabel("shapeSelectChildButton", scButton);
     }
 }
