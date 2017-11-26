@@ -45,6 +45,7 @@ import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -273,6 +274,42 @@ public class PhysicsUtil {
         if (id != -1L) {
             Map<Long, CollisionShape> map = shapeMap(space);
             result = map.get(id);
+        }
+
+        return result;
+    }
+
+    /**
+     * Read the axis index of the specified shape.
+     *
+     * @param shape (not null, unaffected)
+     * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;none
+     */
+    public static int getAxisIndex(CollisionShape shape) {
+        int result = -1;
+        if (shape instanceof CapsuleCollisionShape) {
+            CapsuleCollisionShape capsule = (CapsuleCollisionShape) shape;
+            result = capsule.getAxis();
+
+        } else if (shape instanceof ConeCollisionShape) {
+            ConeCollisionShape cone = (ConeCollisionShape) shape;
+            Field axisField;
+            try {
+                axisField = ConeCollisionShape.class.getDeclaredField("axis");
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException();
+            }
+            axisField.setAccessible(true);
+
+            try {
+                result = (Integer) axisField.get(cone);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException();
+            }
+
+        } else if (shape instanceof CylinderCollisionShape) {
+            CylinderCollisionShape cylinder = (CylinderCollisionShape) shape;
+            result = cylinder.getAxis();
         }
 
         return result;
