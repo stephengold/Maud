@@ -94,7 +94,7 @@ class PreviousAction {
                 break;
 
             case Action.previousPhysics:
-                target.getPhysics().selectPrevious();
+                target.getObject().selectPrevious();
                 break;
 
             case Action.previousSgc:

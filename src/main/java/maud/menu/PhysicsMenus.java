@@ -143,7 +143,7 @@ public class PhysicsMenus {
                 PhysicsCollisionObject userObject
                         = PhysicsUtil.findObject(userId, space);
                 String name = MyControl.objectName(userObject);
-                target.getPhysics().select(name);
+                target.getObject().select(name);
                 Maud.gui.tools.select("object");
             }
         }

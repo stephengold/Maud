@@ -95,9 +95,9 @@ class ObjectTool extends WindowController {
             sButton = "Select";
         }
 
-        SelectedObject physics = target.getPhysics();
-        if (physics.isSelected()) {
-            int selectedIndex = physics.index();
+        SelectedObject object = target.getObject();
+        if (object.isSelected()) {
+            int selectedIndex = object.index();
             int indexBase = Maud.getModel().getMisc().getIndexBase();
             indexText = String.format("#%d of %d", selectedIndex + indexBase,
                     numObjects);
@@ -124,9 +124,9 @@ class ObjectTool extends WindowController {
      */
     private void updateName() {
         String name;
-        SelectedObject physics = Maud.getModel().getTarget().getPhysics();
-        if (physics.isSelected()) {
-            name = physics.getName();
+        SelectedObject object = Maud.getModel().getTarget().getObject();
+        if (object.isSelected()) {
+            name = object.getName();
         } else {
             name = "(none selected)";
         }
@@ -140,8 +140,8 @@ class ObjectTool extends WindowController {
         EditorModel model = Maud.getModel();
         RigidBodyParameter rbp = model.getMisc().getRbp();
         String rbpName = rbp.toString();
-        SelectedObject physics = model.getTarget().getPhysics();
-        String rbpValue = physics.getRbpValue(rbp);
+        SelectedObject object = model.getTarget().getObject();
+        String rbpValue = object.getRbpValue(rbp);
 
         Maud.gui.setButtonLabel("physicsRbpButton", rbpName);
         Maud.gui.setButtonLabel("physicsRbpValueButton", rbpValue);
@@ -153,8 +153,8 @@ class ObjectTool extends WindowController {
     private void updateShape() {
         String sButton, shape;
 
-        SelectedObject physics = Maud.getModel().getTarget().getPhysics();
-        long id = physics.getShapeId();
+        SelectedObject object = Maud.getModel().getTarget().getObject();
+        long id = object.getShapeId();
         if (id == -1L) {
             shape = "";
             sButton = "";

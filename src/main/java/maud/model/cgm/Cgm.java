@@ -125,7 +125,7 @@ public class Cgm implements Cloneable {
     /**
      * which physics collision object is selected
      */
-    private SelectedObject selectedPhysics = new SelectedObject();
+    private SelectedObject selectedObject = new SelectedObject();
     /**
      * which scene-graph control is selected in the selected spatial
      */
@@ -177,7 +177,7 @@ public class Cgm implements Cloneable {
         selectedAnimControl.setCgm(cgm);
         selectedBone.setCgm(cgm);
         selectedJoint.setCgm(cgm);
-        selectedPhysics.setCgm(cgm);
+        selectedObject.setCgm(cgm);
         selectedSgc.setCgm(cgm);
         selectedShape.setCgm(cgm);
         selectedSkeleton.setCgm(cgm);
@@ -370,9 +370,9 @@ public class Cgm implements Cloneable {
      *
      * @return the pre-existing instance (not null)
      */
-    public SelectedObject getPhysics() {
-        assert selectedPhysics != null;
-        return selectedPhysics;
+    public SelectedObject getObject() {
+        assert selectedObject != null;
+        return selectedObject;
     }
 
     /**
@@ -813,7 +813,7 @@ public class Cgm implements Cloneable {
          */
         selectedBone.deselect();
         selectedJoint.selectNone();
-        selectedPhysics.selectNone();
+        selectedObject.selectNone();
         selectedShape.selectNone();
         selectedVertex.deselect();
 
@@ -853,7 +853,7 @@ public class Cgm implements Cloneable {
         clone.selectedAnimControl = cloner.clone(selectedAnimControl);
         clone.selectedBone = selectedBone.clone();
         clone.selectedJoint = selectedJoint.clone();
-        clone.selectedPhysics = selectedPhysics.clone();
+        clone.selectedObject = selectedObject.clone();
         clone.selectedSgc = cloner.clone(selectedSgc);
         clone.selectedShape = selectedShape.clone();
         clone.selectedSkeleton = cloner.clone(selectedSkeleton);
@@ -868,7 +868,7 @@ public class Cgm implements Cloneable {
         clone.getAnimControl().setCgm(clone);
         clone.getBone().setCgm(clone);
         clone.getJoint().setCgm(clone);
-        clone.getPhysics().setCgm(clone);
+        clone.getObject().setCgm(clone);
         //playOptions lacks a back pointer
         clone.getPose().setCgm(clone);
         clone.getScenePov().setCgm(clone);

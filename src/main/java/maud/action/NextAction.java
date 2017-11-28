@@ -94,7 +94,7 @@ class NextAction {
                 break;
 
             case Action.nextPhysics:
-                target.getPhysics().selectNext();
+                target.getObject().selectNext();
                 break;
 
             case Action.nextSgc:

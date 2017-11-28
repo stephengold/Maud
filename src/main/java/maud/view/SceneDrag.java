@@ -370,12 +370,12 @@ public class SceneDrag {
 
             case SelectedPhysics:
                 if (editableCgm != null) {
-                    SelectedObject physics = editableCgm.getPhysics();
-                    if (physics.isRotatable()) {
+                    SelectedObject object = editableCgm.getObject();
+                    if (object.isRotatable()) {
                         /*
                          * Rotate the selected physics object.
                          */
-                        Quaternion orientation = physics.orientation(null);
+                        Quaternion orientation = object.orientation(null);
                         orientation.multLocal(rotation);
                         orientation.normalizeLocal();
                         editableCgm.setPhysicsOrientation(orientation);
@@ -499,12 +499,12 @@ public class SceneDrag {
                 break;
 
             case SelectedPhysics:
-                SelectedObject physics = editableCgm.getPhysics();
-                if (physics.isRotatable()) {
+                SelectedObject object = editableCgm.getObject();
+                if (object.isRotatable()) {
                     /*
                      * Translate the selected physics object.
                      */
-                    Vector3f location = physics.location(null);
+                    Vector3f location = object.location(null);
                     location.addLocal(offset);
                     editableCgm.setPhysicsLocation(location);
                 }

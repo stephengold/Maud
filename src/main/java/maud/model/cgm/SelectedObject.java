@@ -379,7 +379,7 @@ public class SelectedObject implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
-        assert newCgm.getPhysics() == this;
+        assert newCgm.getObject() == this;
 
         cgm = newCgm;
     }

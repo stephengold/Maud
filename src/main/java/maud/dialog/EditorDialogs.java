@@ -594,9 +594,9 @@ public class EditorDialogs {
     public static void setPhysicsRbpValue(RigidBodyParameter parameter) {
         Validate.nonNull(parameter, "parameter");
 
-        SelectedObject physics = Maud.getModel().getTarget().getPhysics();
-        if (physics.isSelected()) {
-            String defaultText = physics.getRbpValue(parameter);
+        SelectedObject object = Maud.getModel().getTarget().getObject();
+        if (object.isSelected()) {
+            String defaultText = object.getRbpValue(parameter);
             DialogController controller;
             switch (parameter) {
                 case GravityX:

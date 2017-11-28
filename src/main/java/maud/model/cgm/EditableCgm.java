@@ -716,7 +716,7 @@ public class EditableCgm extends LoadedCgm {
     public void setPhysicsLocation(Vector3f newLocation) {
         Validate.nonNull(newLocation, "new location");
 
-        getPhysics().setLocation(newLocation);
+        getObject().setLocation(newLocation);
         setEditedPhysicsPosition();
     }
 
@@ -728,7 +728,7 @@ public class EditableCgm extends LoadedCgm {
     public void setPhysicsOrientation(Quaternion newOrientation) {
         Validate.nonNull(newOrientation, "new orientation");
 
-        getPhysics().setOrientation(newOrientation);
+        getObject().setOrientation(newOrientation);
         setEditedPhysicsPosition();
     }
 
@@ -761,7 +761,7 @@ public class EditableCgm extends LoadedCgm {
             float newValue) {
         Validate.nonNull(parameter, "parameter");
 
-        PhysicsCollisionObject object = getPhysics().find();
+        PhysicsCollisionObject object = getObject().find();
         if (object instanceof PhysicsRigidBody) {
             PhysicsRigidBody prb = (PhysicsRigidBody) object;
 
@@ -1173,7 +1173,7 @@ public class EditableCgm extends LoadedCgm {
      * edit count.
      */
     private void setEditedPhysicsPosition() {
-        String newState = "pp" + getPhysics().getName();
+        String newState = "pp" + getObject().getName();
         if (!newState.equals(continousEditState)) {
             History.autoAdd();
             ++editCount;

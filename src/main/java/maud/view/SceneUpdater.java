@@ -162,8 +162,8 @@ class SceneUpdater {
                 break;
 
             case SelectedPhysics:
-                if (cgm.getPhysics().isSelected()) {
-                    transform = cgm.getPhysics().position(null);
+                if (cgm.getObject().isSelected()) {
+                    transform = cgm.getObject().position(null);
                 }
                 break;
 

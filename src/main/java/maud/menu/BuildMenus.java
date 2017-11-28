@@ -816,7 +816,7 @@ public class BuildMenus {
         builder.addTool("Joint Tool");
         builder.addTool("Shape Tool");
         builder.add("Add new");
-        if (Maud.getModel().getTarget().getPhysics().hasMass()) {
+        if (Maud.getModel().getTarget().getObject().hasMass()) {
             builder.addDialog("Mass");
         }
     }
