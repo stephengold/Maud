@@ -42,6 +42,8 @@ import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.objects.PhysicsVehicle;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
@@ -360,6 +362,36 @@ public class PhysicsUtil {
     }
 
     /**
+     * Determine the location (translation) of the specified collision object.
+     *
+     * @param object (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return world coordinates (either storeResult or a new instance)
+     */
+    public static Vector3f location(PhysicsCollisionObject object,
+            Vector3f storeResult) {
+        Validate.nonNull(object, "object");
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+
+        if (object instanceof PhysicsRigidBody) {
+            PhysicsRigidBody prb = (PhysicsRigidBody) object;
+            prb.getPhysicsLocation(storeResult);
+        } else if (object instanceof PhysicsGhostObject) {
+            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
+            ghost.getPhysicsLocation(storeResult);
+        } else if (object instanceof PhysicsCharacter) {
+            PhysicsCharacter character = (PhysicsCharacter) object;
+            character.getPhysicsLocation(storeResult);
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        return storeResult;
+    }
+
+    /**
      * Enumerate all collision objects in the specified physics space.
      *
      * @param space which physics space (not null, unaffected)
@@ -394,6 +426,33 @@ public class PhysicsUtil {
         }
 
         return result;
+    }
+
+    /**
+     * Determine the orientation of the specified collision object.
+     *
+     * @param object (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return world orientation (either storeResult or a new instance)
+     */
+    public static Quaternion orientation(PhysicsCollisionObject object,
+            Quaternion storeResult) {
+        Validate.nonNull(object, "object");
+        if (storeResult == null) {
+            storeResult = new Quaternion();
+        }
+
+        if (object instanceof PhysicsRigidBody) {
+            PhysicsRigidBody prb = (PhysicsRigidBody) object;
+            prb.getPhysicsRotation(storeResult);
+        } else if (object instanceof PhysicsGhostObject) {
+            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
+            ghost.getPhysicsRotation(storeResult);
+        } else { // TODO PhysicsCharacter
+            throw new IllegalArgumentException();
+        }
+
+        return storeResult;
     }
 
     /**
@@ -473,6 +532,53 @@ public class PhysicsUtil {
     }
 
     /**
+     * Relocate (translate) the specified collision object.
+     *
+     * @param object (not null, modified)
+     * @param newLocation (not null, unaffected)
+     */
+    public static void setLocation(PhysicsCollisionObject object,
+            Vector3f newLocation) {
+        Validate.nonNull(object, "object");
+        Validate.nonNull(newLocation, "new location");
+
+        if (object instanceof PhysicsRigidBody) {
+            PhysicsRigidBody body = (PhysicsRigidBody) object;
+            body.setPhysicsLocation(newLocation);
+        } else if (object instanceof PhysicsGhostObject) {
+            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
+            ghost.setPhysicsLocation(newLocation);
+        } else if (object instanceof PhysicsCharacter) {
+            PhysicsCharacter character = (PhysicsCharacter) object;
+            character.setPhysicsLocation(newLocation);
+        } else {
+            throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * Reorient (rotate) the specified collision object.
+     *
+     * @param object (not null, modified)
+     * @param newOrientation in world (not null, unaffected)
+     */
+    public static void setOrientation(PhysicsCollisionObject object,
+            Quaternion newOrientation) {
+        Validate.nonNull(object, "object");
+        Validate.nonNull(newOrientation, "new orientation");
+
+        if (object instanceof PhysicsRigidBody) {
+            PhysicsRigidBody body = (PhysicsRigidBody) object;
+            body.setPhysicsRotation(newOrientation);
+        } else if (object instanceof PhysicsGhostObject) {
+            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
+            ghost.setPhysicsRotation(newOrientation);
+        } else { // TODO PhysicsCharacter
+            throw new IllegalStateException();
+        }
+    }
+
+    /**
      * Enumerate all collision shapes in the specified physics space.
      *
      * @param space which physics space (not null, unaffected)
@@ -499,6 +605,33 @@ public class PhysicsUtil {
         }
 
         return result;
+    }
+
+    /**
+     * Calculate the transform of the specified collision object.
+     *
+     * @param object (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return world transform (either storeResult or a new instance)
+     */
+    public static Transform transform(PhysicsCollisionObject object,
+            Transform storeResult) {
+        Validate.nonNull(object, "object");
+        if (storeResult == null) {
+            storeResult = new Transform();
+        }
+
+        Vector3f storeLocation = storeResult.getTranslation();
+        location(object, storeLocation);
+
+        Quaternion storeOrientation = storeResult.getRotation();
+        orientation(object, storeOrientation);
+
+        CollisionShape shape = object.getCollisionShape();
+        Vector3f scale = shape.getScale();
+        storeResult.setScale(scale);
+
+        return storeResult;
     }
 
     /**
