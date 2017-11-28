@@ -34,8 +34,10 @@ import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.ConeCollisionShape;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
 import com.jme3.math.Vector3f;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
@@ -66,7 +68,8 @@ public class MyShape {
     // new methods exposed
 
     /**
-     * Determine the axis index of the specified shape.
+     * Determine the main axis of the specified shape, which must be a capsule,
+     * cone, or cylinder.
      *
      * @param shape (may be null, unaffected)
      * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;doesn't have an axis
@@ -463,6 +466,34 @@ public class MyShape {
 
         float margin = oldShape.getMargin();
         result.setMargin(margin);
+
+        return result;
+    }
+
+    /**
+     * Test whether the specified shape uses (or identifies as) the identified
+     * shape.
+     *
+     * @param user (not null, unaffected)
+     * @param shapeId id of the shape to find
+     * @return true if used/identical, otherwise false
+     */
+    public static boolean usesShape(CollisionShape user, long shapeId) {
+        long id = user.getObjectId();
+        boolean result = false;
+        if (id == shapeId) {
+            result = true;
+        } else if (user instanceof CompoundCollisionShape) {
+            CompoundCollisionShape compound = (CompoundCollisionShape) user;
+            List<ChildCollisionShape> children = compound.getChildren();
+            for (ChildCollisionShape child : children) {
+                id = child.shape.getObjectId();
+                if (id == shapeId) {
+                    result = true;
+                    break;
+                }
+            }
+        }
 
         return result;
     }
