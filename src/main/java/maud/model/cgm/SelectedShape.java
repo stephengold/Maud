@@ -196,23 +196,6 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Read the margin of the selected shape.
-     *
-     * @return margin (as a string) or "" if not applicable
-     */
-    public String getMargin() {
-        String result = "";
-        CollisionShape shape = find();
-        if (shape != null) {
-            float margin = shape.getMargin();
-            result = Float.toString(margin);
-        }
-
-        assert result != null;
-        return result;
-    }
-
-    /**
      * Read the specified parameter of the shape. TODO rename getValue
      *
      * @param parameter which parameter to read (not null)
