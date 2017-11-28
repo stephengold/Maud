@@ -172,8 +172,9 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
         }
         setPhysicsLocation(getSpatialTranslation());
         setPhysicsRotation(getSpatialRotation());
-        if (MyShape.canScale(collisionShape)) {
-            collisionShape.setScale(getSpatialScale());
+        Vector3f newScale = getSpatialScale();
+        if (MyShape.canScale(collisionShape, newScale)) {
+            collisionShape.setScale(newScale);
         }
     }
 

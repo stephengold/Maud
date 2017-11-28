@@ -102,18 +102,21 @@ public class MyShape {
     }
 
     /**
-     * Test whether a shape can be scaled.
+     * Test whether the specified scale can be applied to the specified shape.
      *
      * @param shape which collision shape (not null, unaffected)
-     * @return true if the shape is scalable, otherwise false
+     * @param scale scale vector (not null, unaffected)
+     * @return true if the shape is fully scalable, otherwise false
      */
-    public static boolean canScale(CollisionShape shape) {
+    public static boolean canScale(CollisionShape shape, Vector3f scale) {
         boolean result = true;
-        if (shape instanceof CapsuleCollisionShape
-                || shape instanceof CompoundCollisionShape
+        if (shape instanceof CompoundCollisionShape) {
+            result = false;
+
+        } else if (shape instanceof CapsuleCollisionShape
                 || shape instanceof CylinderCollisionShape
                 || shape instanceof SphereCollisionShape) {
-            result = false;
+            result = (scale.x == scale.y && scale.y == scale.z);
         }
 
         return result;

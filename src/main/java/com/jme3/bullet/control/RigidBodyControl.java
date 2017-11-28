@@ -265,8 +265,8 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
             if (isKinematic() && kinematicSpatial) {
                 super.setPhysicsLocation(getSpatialTranslation());
                 super.setPhysicsRotation(getSpatialRotation());
-                if (MyShape.canScale(collisionShape)) {
-                    Vector3f newScale = getSpatialScale();
+                Vector3f newScale = getSpatialScale();
+                if (MyShape.canScale(collisionShape, newScale)) {
                     Vector3f oldScale = collisionShape.getScale();
                     if (!newScale.equals(oldScale)) {
                         collisionShape.setScale(newScale);
