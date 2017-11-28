@@ -57,7 +57,7 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.SelectedBone;
-import maud.model.cgm.SelectedPhysics;
+import maud.model.cgm.SelectedObject;
 import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedTrack;
@@ -594,7 +594,7 @@ public class EditorDialogs {
     public static void setPhysicsRbpValue(RigidBodyParameter parameter) {
         Validate.nonNull(parameter, "parameter");
 
-        SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
+        SelectedObject physics = Maud.getModel().getTarget().getPhysics();
         if (physics.isSelected()) {
             String defaultText = physics.getRbpValue(parameter);
             DialogController controller;

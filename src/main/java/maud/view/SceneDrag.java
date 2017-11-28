@@ -41,7 +41,7 @@ import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
-import maud.model.cgm.SelectedPhysics;
+import maud.model.cgm.SelectedObject;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.AxesSubject;
@@ -370,7 +370,7 @@ public class SceneDrag {
 
             case SelectedPhysics:
                 if (editableCgm != null) {
-                    SelectedPhysics physics = editableCgm.getPhysics();
+                    SelectedObject physics = editableCgm.getPhysics();
                     if (physics.isRotatable()) {
                         /*
                          * Rotate the selected physics object.
@@ -499,7 +499,7 @@ public class SceneDrag {
                 break;
 
             case SelectedPhysics:
-                SelectedPhysics physics = editableCgm.getPhysics();
+                SelectedObject physics = editableCgm.getPhysics();
                 if (physics.isRotatable()) {
                     /*
                      * Translate the selected physics object.

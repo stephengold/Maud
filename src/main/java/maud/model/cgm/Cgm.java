@@ -125,7 +125,7 @@ public class Cgm implements Cloneable {
     /**
      * which physics collision object is selected
      */
-    private SelectedPhysics selectedPhysics = new SelectedPhysics();
+    private SelectedObject selectedPhysics = new SelectedObject();
     /**
      * which scene-graph control is selected in the selected spatial
      */
@@ -370,7 +370,7 @@ public class Cgm implements Cloneable {
      *
      * @return the pre-existing instance (not null)
      */
-    public SelectedPhysics getPhysics() {
+    public SelectedObject getPhysics() {
         assert selectedPhysics != null;
         return selectedPhysics;
     }

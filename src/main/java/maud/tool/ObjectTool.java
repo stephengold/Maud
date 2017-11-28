@@ -32,7 +32,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
-import maud.model.cgm.SelectedPhysics;
+import maud.model.cgm.SelectedObject;
 import maud.model.option.RigidBodyParameter;
 
 /**
@@ -95,7 +95,7 @@ class ObjectTool extends WindowController {
             sButton = "Select";
         }
 
-        SelectedPhysics physics = target.getPhysics();
+        SelectedObject physics = target.getPhysics();
         if (physics.isSelected()) {
             int selectedIndex = physics.index();
             int indexBase = Maud.getModel().getMisc().getIndexBase();
@@ -124,7 +124,7 @@ class ObjectTool extends WindowController {
      */
     private void updateName() {
         String name;
-        SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
+        SelectedObject physics = Maud.getModel().getTarget().getPhysics();
         if (physics.isSelected()) {
             name = physics.getName();
         } else {
@@ -140,7 +140,7 @@ class ObjectTool extends WindowController {
         EditorModel model = Maud.getModel();
         RigidBodyParameter rbp = model.getMisc().getRbp();
         String rbpName = rbp.toString();
-        SelectedPhysics physics = model.getTarget().getPhysics();
+        SelectedObject physics = model.getTarget().getPhysics();
         String rbpValue = physics.getRbpValue(rbp);
 
         Maud.gui.setButtonLabel("physicsRbpButton", rbpName);
@@ -153,7 +153,7 @@ class ObjectTool extends WindowController {
     private void updateShape() {
         String sButton, shape;
 
-        SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
+        SelectedObject physics = Maud.getModel().getTarget().getPhysics();
         long id = physics.getShapeId();
         if (id == -1L) {
             shape = "";

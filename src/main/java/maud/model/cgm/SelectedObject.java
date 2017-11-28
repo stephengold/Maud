@@ -48,7 +48,7 @@ import maud.model.option.RigidBodyParameter;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedPhysics implements Cloneable {
+public class SelectedObject implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -56,7 +56,7 @@ public class SelectedPhysics implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(SelectedPhysics.class.getName());
+            = Logger.getLogger(SelectedObject.class.getName());
     // *************************************************************************
     // fields
 
@@ -259,8 +259,8 @@ public class SelectedPhysics implements Cloneable {
 
         PhysicsCollisionObject object = find();
         if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody body = (PhysicsRigidBody) object;
-            body.getPhysicsLocation(storeResult);
+            PhysicsRigidBody prb = (PhysicsRigidBody) object;
+            prb.getPhysicsLocation(storeResult);
         } else if (object instanceof PhysicsGhostObject) {
             PhysicsGhostObject ghost = (PhysicsGhostObject) object;
             ghost.getPhysicsLocation(storeResult);
@@ -287,8 +287,8 @@ public class SelectedPhysics implements Cloneable {
 
         PhysicsCollisionObject object = find();
         if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody body = (PhysicsRigidBody) object;
-            body.getPhysicsRotation(storeResult);
+            PhysicsRigidBody prb = (PhysicsRigidBody) object;
+            prb.getPhysicsRotation(storeResult);
         } else if (object instanceof PhysicsGhostObject) {
             PhysicsGhostObject ghost = (PhysicsGhostObject) object;
             ghost.getPhysicsRotation(storeResult);
@@ -326,21 +326,21 @@ public class SelectedPhysics implements Cloneable {
     }
 
     /**
-     * Select the named physics object.
+     * Select the named physics collision object.
      *
-     * @param physicsName (not null, not empty)
+     * @param name (not null, not empty)
      */
-    public void select(String physicsName) {
-        Validate.nonEmpty(physicsName, "physics name");
+    public void select(String name) {
+        Validate.nonEmpty(name, "name");
 
         List<String> names = cgm.listObjectNames("");
-        if (names.contains(physicsName)) {
-            name = physicsName;
+        if (names.contains(name)) {
+            name = name;
         }
     }
 
     /**
-     * Select the next object (in cyclical index order).
+     * Select the next physics collision object (in cyclical index order).
      */
     public void selectNext() {
         List<String> names = cgm.listObjectNames("");
@@ -353,14 +353,14 @@ public class SelectedPhysics implements Cloneable {
     }
 
     /**
-     * Deselect the selected object, if any.
+     * Deselect the selected physics collision object, if any.
      */
     public void selectNone() {
         name = null;
     }
 
     /**
-     * Select the previous object (in cyclical index order).
+     * Select the previous physics collision object (in cyclical index order).
      */
     public void selectPrevious() {
         List<String> names = cgm.listObjectNames("");
@@ -433,8 +433,8 @@ public class SelectedPhysics implements Cloneable {
      * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
-    public SelectedPhysics clone() throws CloneNotSupportedException {
-        SelectedPhysics clone = (SelectedPhysics) super.clone();
+    public SelectedObject clone() throws CloneNotSupportedException {
+        SelectedObject clone = (SelectedObject) super.clone();
         return clone;
     }
 }
