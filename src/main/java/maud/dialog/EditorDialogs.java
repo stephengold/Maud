@@ -597,8 +597,17 @@ public class EditorDialogs {
         SelectedPhysics physics = Maud.getModel().getTarget().getPhysics();
         if (physics.isSelected()) {
             String defaultText = physics.getRbpValue(parameter);
-            DialogController controller
-                    = new FloatDialog("Set", -Float.MAX_VALUE, Float.MAX_VALUE);
+            DialogController controller;
+            switch (parameter) {
+                case GravityX:
+                case GravityY:
+                case GravityZ:
+                    controller = new FloatDialog("Set", -Float.MAX_VALUE,
+                            Float.MAX_VALUE);
+                    break;
+                default:
+                    controller = new FloatDialog("Set", 0f, Float.MAX_VALUE);
+            }
             String name = parameter.toString();
             String prompt = String.format("Enter new %s:", name);
             String prefix = ActionPrefix.setPhysicsRbpValue + name + " ";
@@ -625,7 +634,7 @@ public class EditorDialogs {
                 defaultText = Float.toString(defaultValue);
             }
             DialogController controller
-                    = new FloatDialog("Set", -Float.MAX_VALUE, Float.MAX_VALUE);
+                    = new FloatDialog("Set", 0f, Float.MAX_VALUE);
             String name = parameter.toString();
             String prompt = String.format("Enter new %s:", name);
             String prefix = ActionPrefix.setShapeParmValue + name + " ";
