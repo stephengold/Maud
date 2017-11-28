@@ -442,7 +442,7 @@ public class MaudUtil {
      * @param subtree (not null, unaffected)
      * @return a new vector
      */
-    static Vector3f halfExtents(Spatial subtree) {
+    public static Vector3f halfExtents(Spatial subtree) {
         Spatial clone = subtree.clone(false);
         clone.setLocalTransform(transformIdentity);
         Vector3f[] minMax = MySpatial.findMinMaxCoords(clone, true);
