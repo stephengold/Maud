@@ -29,9 +29,13 @@ package maud.view;
 import com.jme3.math.FastMath;
 import com.jme3.math.Line;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
+import jme3utilities.MySpatial;
 import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
@@ -177,7 +181,7 @@ public class SceneDrag {
      * While dragging an axis, update the subject in the MVC model.
      *
      * @param visualizer (not null, unaffected)
-     * @param worldRay (not null, unaffected)
+     * @param worldLine (not null, unaffected)
      */
     static void updateSubject(AxesVisualizer visualizer, Line worldLine) {
         /*
@@ -238,16 +242,12 @@ public class SceneDrag {
 
             case Translate:
                 /*
-                 * Calculate the axis displacement in local coordinates.
+                 * Calculate the axis displacement in world coordinates.
                  */
                 axisLine = new Line(axesOrigin, oldDirWorld);
                 newTipWorld = MyVector3f.lineMeetsLine(axisLine, worldLine);
                 if (newTipWorld != null) {
-                    Vector3f newTipLocal
-                            = spatial.worldToLocal(newTipWorld, null);
-                    Vector3f oldTipLocal
-                            = spatial.worldToLocal(oldTipWorld, null);
-                    Vector3f displacement = newTipLocal.subtract(oldTipLocal);
+                    Vector3f displacement = newTipWorld.subtract(oldTipWorld);
 
                     translateSubject(displacement);
                 }
@@ -470,10 +470,11 @@ public class SceneDrag {
     /**
      * Translate the subject by the specified offset.
      *
-     * @param offset (in local coordinates, not null, unaffected)
+     * @param offset (in world coordinates, not null, unaffected)
      */
     private static void translateSubject(Vector3f offset) {
         EditableCgm editableCgm = getEditableCgm();
+        Cgm cgm = getCgm();
         /*
          * Determine which MVC-model object the control is visualizing,
          * and translate that object.
@@ -484,16 +485,33 @@ public class SceneDrag {
                 break;
 
             case SelectedBone:
-                Cgm cgm = getCgm();
                 if (cgm.getBone().shouldEnableControls()) {
                     /*
-                     * Translate the selected bone in the displayed pose.
+                     * Factor out the animated geometry's rotation and
+                     * scaling in this view.
+                     */
+                    Spatial spatial = cgm.getSceneView().selectedSpatial();
+                    Geometry ag = MySpatial.findAnimatedGeometry(spatial);
+                    Transform transform = ag.getWorldTransform().clone();
+                    transform.getTranslation().zero();
+                    Vector3f meshOffset
+                            = transform.transformInverseVector(offset, null);
+                    /*
+                     * Factor out the selected bone's rotation and scaling
+                     * in the displayed pose.
                      */
                     Pose pose = cgm.getPose().get();
                     int boneIndex = cgm.getBone().getIndex();
+                    pose.modelTransform(boneIndex, transform);
+                    transform.getTranslation().zero();
+                    Vector3f userOffset = transform.transformInverseVector(
+                            meshOffset, null);
+                    /*
+                     * Translate the selected bone in the displayed pose.
+                     */
                     Vector3f userTranslation
                             = pose.userTranslation(boneIndex, null);
-                    userTranslation.addLocal(offset);
+                    userTranslation.addLocal(userOffset);
                     pose.setTranslation(boneIndex, userTranslation);
                 }
                 break;
@@ -513,11 +531,20 @@ public class SceneDrag {
             case SelectedSpatial:
                 if (editableCgm != null) {
                     /*
+                     * Factor out parental rotation and scaling in this view.
+                     */
+                    Spatial spatial = cgm.getSceneView().selectedSpatial();
+                    Node parent = spatial.getParent();
+                    Transform transform = parent.getWorldTransform().clone();
+                    transform.getTranslation().zero();
+                    Vector3f localOffset
+                            = transform.transformInverseVector(offset, null);
+                    /*
                      * Translate the selected spatial.
                      */
                     Vector3f localTranslation
                             = editableCgm.getSpatial().localTranslation(null);
-                    localTranslation.addLocal(offset);
+                    localTranslation.addLocal(localOffset);
                     editableCgm.setSpatialTranslation(localTranslation);
                 }
                 break;
