@@ -47,7 +47,7 @@ import com.jme3.scene.control.Control;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
-import maud.PhysicsUtil;
+import maud.MyShape;
 
 /**
  * A GhostControl moves with the spatial it is attached to and can be used to check
@@ -172,7 +172,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
         }
         setPhysicsLocation(getSpatialTranslation());
         setPhysicsRotation(getSpatialRotation());
-        if (PhysicsUtil.canScale(collisionShape)) {
+        if (MyShape.canScale(collisionShape)) {
             collisionShape.setScale(getSpatialScale());
         }
     }

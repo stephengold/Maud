@@ -54,7 +54,7 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
-import maud.PhysicsUtil;
+import maud.MyShape;
 
 /**
  *
@@ -265,7 +265,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
             if (isKinematic() && kinematicSpatial) {
                 super.setPhysicsLocation(getSpatialTranslation());
                 super.setPhysicsRotation(getSpatialRotation());
-                if (PhysicsUtil.canScale(collisionShape)) {
+                if (MyShape.canScale(collisionShape)) {
                     Vector3f newScale = getSpatialScale();
                     Vector3f oldScale = collisionShape.getScale();
                     if (!newScale.equals(oldScale)) {

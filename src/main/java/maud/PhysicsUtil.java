@@ -45,7 +45,6 @@ import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +54,7 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.math.MyVector3f;
 
 /**
  * Physics utility methods. All methods should be static.
@@ -125,24 +125,6 @@ public class PhysicsUtil {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Test whether a shape can be scaled.
-     *
-     * @param shape which collision shape (not null, unaffected)
-     * @return true if the shape is scalable, otherwise false
-     */
-    public static boolean canScale(CollisionShape shape) {
-        boolean result = true;
-        if (shape instanceof CapsuleCollisionShape
-                || shape instanceof CompoundCollisionShape
-                || shape instanceof CylinderCollisionShape
-                || shape instanceof SphereCollisionShape) {
-            result = false;
-        }
-
-        return result;
-    }
 
     /**
      * Count the joints in the specified physics space.
@@ -280,85 +262,52 @@ public class PhysicsUtil {
     }
 
     /**
-     * Read the axis index of the specified shape.
+     * Create a collision shape of the specified type with the specified half
+     * extents and margin.
      *
-     * @param shape (not null, unaffected)
-     * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;none
-     */
-    public static int getAxisIndex(CollisionShape shape) {
-        int result = -1;
-        if (shape instanceof CapsuleCollisionShape) {
-            CapsuleCollisionShape capsule = (CapsuleCollisionShape) shape;
-            result = capsule.getAxis();
-
-        } else if (shape instanceof ConeCollisionShape) {
-            ConeCollisionShape cone = (ConeCollisionShape) shape;
-            Field axisField;
-            try {
-                axisField = ConeCollisionShape.class.getDeclaredField("axis");
-            } catch (NoSuchFieldException e) {
-                throw new RuntimeException();
-            }
-            axisField.setAccessible(true);
-
-            try {
-                result = (Integer) axisField.get(cone);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException();
-            }
-
-        } else if (shape instanceof CylinderCollisionShape) {
-            CylinderCollisionShape cylinder = (CylinderCollisionShape) shape;
-            result = cylinder.getAxis();
-        }
-
-        return result;
-    }
-
-    /**
-     * Create a collision shape of the specified type suitable for the specified
-     * spatial.
-     *
-     * @param spatial where the physics control will be attached (not null)
      * @param shapeType type of shape (not null)
+     * @param halfExtents desired half extents relative to the center (not null,
+     * all non-negative, unaffected)
+     * @param margin desired margin (&ge;0)
      * @return a new instance
      */
-    public static CollisionShape makeShape(Spatial spatial,
-            ShapeType shapeType) {
+    public static CollisionShape makeShape(ShapeType shapeType,
+            Vector3f halfExtents, float margin) {
+        Validate.nonNull(shapeType, "shape type");
+        Validate.nonNull(halfExtents, "half extents");
+        assert MyVector3f.isAllNonNegative(halfExtents);
+        Validate.nonNegative(margin, "margin");
+
         CollisionShape result;
-        float height, radius;
+        float axisHalfExtent, height, radius;
         int axis;
-        Vector3f halfExtents;
 
         switch (shapeType) {
             case Box:
-                halfExtents = MaudUtil.halfExtents(spatial);
                 result = new BoxCollisionShape(halfExtents);
                 break;
 
             case Capsule:
-                halfExtents = MaudUtil.halfExtents(spatial);
                 if (halfExtents.x >= halfExtents.y
                         && halfExtents.x >= halfExtents.z) {
                     radius = Math.max(halfExtents.y, halfExtents.z);
-                    height = halfExtents.x;
+                    axisHalfExtent = halfExtents.x;
                     axis = PhysicsSpace.AXIS_X;
                 } else if (halfExtents.y >= halfExtents.z) {
                     radius = Math.max(halfExtents.x, halfExtents.z);
-                    height = halfExtents.y;
+                    axisHalfExtent = halfExtents.y;
                     axis = PhysicsSpace.AXIS_Y;
                 } else {
                     radius = Math.max(halfExtents.x, halfExtents.y);
-                    height = halfExtents.z;
+                    axisHalfExtent = halfExtents.z;
                     axis = PhysicsSpace.AXIS_Z;
                 }
-                height = 2f * (height - radius);
+                height = 2f * (axisHalfExtent - radius);
                 assert height >= 0f : height;
                 result = new CapsuleCollisionShape(radius, height, axis);
                 break;
 
             case ConeX:
-                halfExtents = MaudUtil.halfExtents(spatial);
                 radius = Math.max(halfExtents.y, halfExtents.z);
                 height = 2f * halfExtents.x;
                 result = new ConeCollisionShape(radius, height,
@@ -366,7 +315,6 @@ public class PhysicsUtil {
                 break;
 
             case ConeY:
-                halfExtents = MaudUtil.halfExtents(spatial);
                 radius = Math.max(halfExtents.x, halfExtents.z);
                 height = 2f * halfExtents.y;
                 result = new ConeCollisionShape(radius, height,
@@ -374,7 +322,6 @@ public class PhysicsUtil {
                 break;
 
             case ConeZ:
-                halfExtents = MaudUtil.halfExtents(spatial);
                 radius = Math.max(halfExtents.x, halfExtents.y);
                 height = 2f * halfExtents.z;
                 result = new ConeCollisionShape(radius, height,
@@ -382,25 +329,21 @@ public class PhysicsUtil {
                 break;
 
             case CylinderX:
-                halfExtents = MaudUtil.halfExtents(spatial);
                 result = new CylinderCollisionShape(halfExtents,
                         PhysicsSpace.AXIS_X);
                 break;
 
             case CylinderY:
-                halfExtents = MaudUtil.halfExtents(spatial);
                 result = new CylinderCollisionShape(halfExtents,
                         PhysicsSpace.AXIS_Y);
                 break;
 
             case CylinderZ:
-                halfExtents = MaudUtil.halfExtents(spatial);
                 result = new CylinderCollisionShape(halfExtents,
                         PhysicsSpace.AXIS_Z);
                 break;
 
             case Sphere:
-                halfExtents = MaudUtil.halfExtents(spatial);
                 radius = MyMath.max(halfExtents.x, halfExtents.y,
                         halfExtents.z);
                 assert radius > 0f : radius;
@@ -410,6 +353,8 @@ public class PhysicsUtil {
             default:
                 throw new IllegalArgumentException();
         }
+
+        result.setMargin(margin);
 
         return result;
     }
@@ -497,6 +442,34 @@ public class PhysicsUtil {
             }
         }
         throw new IllegalArgumentException();
+    }
+
+    /**
+     * Replace every use of the specified shape in the specified physics space
+     * with a new shape.
+     *
+     * @param space which physics space (not null)
+     * @param oldShape shape to replace (not null)
+     * @param newShape new shape (not null)
+     */
+    public static void replace(PhysicsSpace space, CollisionShape oldShape,
+            CollisionShape newShape) {
+        Validate.nonNull(space, "space");
+        Validate.nonNull(newShape, "new shape");
+
+        long oldShapeId = oldShape.getObjectId();
+
+        Map<Long, PhysicsCollisionObject> objectMap = objectMap(space);
+        for (PhysicsCollisionObject pco : objectMap.values()) {
+            CollisionShape shape = pco.getCollisionShape();
+            long shapeId = shape.getObjectId();
+            if (shapeId == oldShapeId) {
+                space.remove(pco);
+                pco.setCollisionShape(newShape);
+                space.add(pco);
+            }
+            // TODO check whether shape is used by a ChildCollisionShape
+        }
     }
 
     /**

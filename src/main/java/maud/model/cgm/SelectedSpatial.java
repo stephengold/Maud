@@ -63,6 +63,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.view.SceneView;
 
@@ -124,7 +125,10 @@ public class SelectedSpatial implements JmeCloneable {
 
         SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
-        CollisionShape shape = PhysicsUtil.makeShape(viewSpatial, shapeType);
+        Vector3f halfExtents = MaudUtil.halfExtents(viewSpatial);
+        float margin = 0f;
+        CollisionShape shape
+                = PhysicsUtil.makeShape(shapeType, halfExtents, margin);
         GhostControl ghostControl = new GhostControl(shape);
 
         editableCgm.addSgc(ghostControl);
@@ -143,7 +147,10 @@ public class SelectedSpatial implements JmeCloneable {
 
         SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
-        CollisionShape shape = PhysicsUtil.makeShape(viewSpatial, shapeType);
+        Vector3f halfExtents = MaudUtil.halfExtents(viewSpatial);
+        float margin = 0f;
+        CollisionShape shape
+                = PhysicsUtil.makeShape(shapeType, halfExtents, margin);
         float mass = 1f;
         RigidBodyControl rbc = new RigidBodyControl(shape, mass);
         rbc.setKinematic(true);

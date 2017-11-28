@@ -543,7 +543,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Replace the specified animation with a new one.
+     * Replace the specified animation with a new one. TODO rename replace
      *
      * @param oldAnimation (not null)
      * @param newAnimation (not null)
@@ -859,7 +859,9 @@ public class EditableCgm extends LoadedCgm {
             History.autoAdd();
             modelSpatial.setShadowMode(newMode);
             getSceneView().setMode(newMode);
-            setEdited("alter shadow mode");
+            String description = String.format(
+                    "change spatial's shadow mode to %s", newMode);
+            setEdited(description);
         }
     }
 
@@ -873,26 +875,19 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(parameter, "parameter");
 
         SelectedShape shape = getShape();
+        assert shape.canSetParameter(parameter);
         float oldValue = shape.getParameterValue(parameter);
-        if (newValue != oldValue && shape.canSetParameter(parameter)) {
+        if (newValue != oldValue) {
             History.autoAdd();
             shape.setParameter(parameter, newValue);
-            String description = String.format("set %s of shape to %f",
-                    parameter, newValue);
-            setEdited(description);
+            if (parameter.equals(ShapeParameter.Margin)) {
+                String description = String.format(
+                        "change shape's margin to %f", newValue);
+                setEdited(description);
+            } else {
+                setEditedShapeSize();
+            }
         }
-    }
-
-    /**
-     * Rescale the selected physics collision shape.
-     *
-     * @param newScale (not null, unaffected)
-     */
-    public void setShapeScale(Vector3f newScale) {
-        Validate.nonNull(newScale, "new scale");
-
-        getShape().setScale(newScale);
-        setEditedShapeTransform();
     }
 
     /**
@@ -1188,16 +1183,16 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * If not a continuation of the previous shape-transform edit, update the
-     * edit count.
+     * If not a continuation of the previous shape-size edit, update the edit
+     * count.
      */
-    private void setEditedShapeTransform() {
-        String newState = "sh" + getShape().toString();
+    private void setEditedShapeSize() {
+        String newState = "ss" + getShape().toString();
         if (!newState.equals(continousEditState)) {
             History.autoAdd();
             ++editCount;
             continousEditState = newState;
-            History.addEvent("transform shape");
+            History.addEvent("resize shape");
         }
     }
 
@@ -1206,7 +1201,7 @@ public class EditableCgm extends LoadedCgm {
      * edit count.
      */
     private void setEditedSpatialTransform() {
-        String newState = "sp" + getSpatial().toString();
+        String newState = "st" + getSpatial().toString();
         if (!newState.equals(continousEditState)) {
             History.autoAdd();
             ++editCount;

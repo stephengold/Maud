@@ -45,6 +45,8 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.math.MyVector3f;
+import maud.MyShape;
 import maud.PhysicsUtil;
 import maud.model.option.ShapeParameter;
 import maud.view.SceneView;
@@ -78,7 +80,8 @@ public class SelectedShape implements Cloneable {
     // new methods exposed
 
     /**
-     * Test whether the specified parameter is settable.
+     * Test whether the specified parameter can be set to the specified value.
+     * TODO rename canSet
      *
      * @param parameter which parameter (not null)
      * @return true if settable, otherwise false
@@ -89,12 +92,27 @@ public class SelectedShape implements Cloneable {
         if (!isSelected()) {
             return false;
         }
+        CollisionShape shape = find();
+
+        boolean box = shape instanceof BoxCollisionShape;
+        boolean capsule = shape instanceof CapsuleCollisionShape;
+        boolean cone = shape instanceof ConeCollisionShape;
+        boolean cylinder = shape instanceof CylinderCollisionShape;
+        boolean sphere = shape instanceof SphereCollisionShape;
 
         boolean result;
         switch (parameter) {
+            case HalfExtentX:
+            case HalfExtentY:
+            case HalfExtentZ:
+                result = box || cylinder;
+                break;
+            case Height:
+            case Radius:
+                result = box || capsule || cone || cylinder || sphere;
+                break;
             case Margin:
-                CollisionShape shape = find();
-                result = !(shape instanceof SphereCollisionShape);
+                result = !sphere;
                 break;
             default:
                 result = false;
@@ -118,6 +136,7 @@ public class SelectedShape implements Cloneable {
         Vector3f scale = shape.getScale();
         storeResult.set(scale);
 
+        assert MyVector3f.isAllNonNegative(scale);
         return storeResult;
     }
 
@@ -153,15 +172,15 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Read the axis index of the selected shape, if it has one.
+     * Determine the axis index of the shape. TODO rename getAxisIndex
      *
-     * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;none
+     * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;doesn't have an axis
      */
     public int getAxisIndex() {
         CollisionShape shape = find();
         int result = -1;
         if (shape != null) {
-            result = PhysicsUtil.getAxisIndex(shape);
+            result = MyShape.axisIndex(shape);
         }
 
         return result;
@@ -194,83 +213,53 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Read the specified parameter of the shape.
+     * Read the specified parameter of the shape. TODO rename getValue
      *
      * @param parameter which parameter to read (not null)
-     * @return parameter value or NaN if not applicable
+     * @return parameter value (&ge;0) or NaN if not applicable
      */
     public float getParameterValue(ShapeParameter parameter) {
         Validate.nonNull(parameter, "parameter");
 
-        CollisionShape shape = find();
         float result = Float.NaN;
-        switch (parameter) {
-            case HalfExtentX:
-            case HalfExtentY:
-            case HalfExtentZ:
-                Vector3f halfExtents;
-                if (shape instanceof BoxCollisionShape) {
-                    BoxCollisionShape box
-                            = (BoxCollisionShape) shape;
-                    halfExtents = box.getHalfExtents();
-
-                } else if (shape instanceof CylinderCollisionShape) {
-                    CylinderCollisionShape cylinder
-                            = (CylinderCollisionShape) shape;
-                    halfExtents = cylinder.getHalfExtents();
-
-                } else {
+        if (isSelected()) {
+            CollisionShape shape = find();
+            switch (parameter) {
+                case HalfExtentX:
+                case HalfExtentY:
+                case HalfExtentZ:
+                    Vector3f halfExtents = MyShape.halfExtents(shape, null);
+                    if (parameter == ShapeParameter.HalfExtentX) {
+                        result = halfExtents.x;
+                    } else if (parameter == ShapeParameter.HalfExtentY) {
+                        result = halfExtents.y;
+                    } else if (parameter == ShapeParameter.HalfExtentZ) {
+                        result = halfExtents.z;
+                    }
                     break;
-                }
-                if (parameter == ShapeParameter.HalfExtentX) {
-                    result = halfExtents.x;
-                } else if (parameter == ShapeParameter.HalfExtentY) {
-                    result = halfExtents.y;
-                } else if (parameter == ShapeParameter.HalfExtentZ) {
-                    result = halfExtents.z;
-                }
-                break;
 
-            case Height:
-                if (shape instanceof CapsuleCollisionShape) {
-                    CapsuleCollisionShape capsule
-                            = (CapsuleCollisionShape) shape;
-                    result = capsule.getHeight();
-                } else if (shape instanceof ConeCollisionShape) {
-                    ConeCollisionShape cone = (ConeCollisionShape) shape;
-                    result = cone.getHeight();
-                }
-                break;
-
-            case Margin:
-                result = shape.getMargin();
-                break;
-
-            case Radius:
-                if (shape instanceof CapsuleCollisionShape) {
-                    CapsuleCollisionShape capsule
-                            = (CapsuleCollisionShape) shape;
-                    result = capsule.getRadius();
-                } else if (shape instanceof ConeCollisionShape) {
-                    ConeCollisionShape cone = (ConeCollisionShape) shape;
-                    result = cone.getRadius();
-                } else if (shape instanceof SphereCollisionShape) {
-                    SphereCollisionShape sphere = (SphereCollisionShape) shape;
-                    result = sphere.getRadius();
-                }
-                break;
-
-            case ScaleX:
-                result = shape.getScale().x;
-                break;
-            case ScaleY:
-                result = shape.getScale().y;
-                break;
-            case ScaleZ:
-                result = shape.getScale().z;
-                break;
+                case Height:
+                    result = MyShape.height(shape);
+                    break;
+                case Margin:
+                    result = shape.getMargin();
+                    break;
+                case Radius:
+                    result = MyShape.radius(shape);
+                    break;
+                case ScaleX:
+                    result = shape.getScale().x;
+                    break;
+                case ScaleY:
+                    result = shape.getScale().y;
+                    break;
+                case ScaleZ:
+                    result = shape.getScale().z;
+                    break;
+            }
         }
 
+        assert Float.isNaN(result) || result >= 0f : result;
         return result;
     }
 
@@ -307,7 +296,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Test whether a physics shape is selected.
+     * Test whether a collision shape is selected.
      *
      * @return true if selected, otherwise false
      */
@@ -403,9 +392,6 @@ public class SelectedShape implements Cloneable {
     /**
      * Select the previous shape (in cyclical index order).
      */
-    /**
-     * Select the next object (in cyclical index order).
-     */
     public void selectPrevious() {
         List<Long> ids = listShapeIds();
         int index = ids.indexOf(selectedId);
@@ -429,32 +415,49 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Alter the specified parameter of the shape.
+     * Alter the specified parameter of the shape. TODO rename set
      *
      * @param parameter which parameter to alter (not null)
-     * @param newValue new parameter value
+     * @param newValue new parameter value (&ge;0)
      */
     void setParameter(ShapeParameter parameter, float newValue) {
         Validate.nonNull(parameter, "parameter");
+        Validate.nonNegative(newValue, "new value");
+        assert isSelected();
 
         CollisionShape shape = find();
+        Vector3f halfExtents = MyShape.halfExtents(shape, null);
         switch (parameter) {
+            case HalfExtentX:
+                halfExtents.x = newValue;
+                setHalfExtents(halfExtents);
+                break;
+
+            case HalfExtentY:
+                halfExtents.y = newValue;
+                setHalfExtents(halfExtents);
+                break;
+
+            case HalfExtentZ:
+                halfExtents.z = newValue;
+                setHalfExtents(halfExtents);
+                break;
+
+            case Height:
+                setHeight(newValue);
+                break;
+
             case Margin:
                 shape.setMargin(newValue);
                 break;
+
+            case Radius:
+                setRadius(newValue);
+                break;
+
+            default:
+                throw new IllegalArgumentException();
         }
-    }
-
-    /**
-     * Alter the scale of the shape.
-     *
-     * @param newScale (not null, unaffected)
-     */
-    void setScale(Vector3f newScale) {
-        assert newScale != null;
-
-        CollisionShape shape = find();
-        shape.setScale(newScale);
     }
 
     /**
@@ -499,5 +502,57 @@ public class SelectedShape implements Cloneable {
         Collections.sort(result);
 
         return result;
+    }
+
+    /**
+     * Replace the selected shape with the specified shape.
+     *
+     * @param newShape (not null)
+     */
+    private void replaceWith(CollisionShape newShape) {
+        CollisionShape shape = find();
+        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
+        PhysicsUtil.replace(space, shape, newShape);
+        selectedId = newShape.getObjectId();
+    }
+
+    /**
+     * Replace the shape with new shape that has different half extents.
+     *
+     * @param newHalfExtents (not null, all elements non-negative)
+     */
+    private void setHalfExtents(Vector3f newHalfExtents) {
+        assert newHalfExtents != null;
+        assert MyVector3f.isAllNonNegative(newHalfExtents) : newHalfExtents;
+
+        CollisionShape shape = find();
+        CollisionShape newShape = MyShape.setHalfExtents(shape, newHalfExtents);
+        replaceWith(newShape);
+    }
+
+    /**
+     * Replace the shape with a new shape that has a different height.
+     *
+     * @param newHeight (&ge;0)
+     */
+    private void setHeight(float newHeight) {
+        assert newHeight >= 0f : newHeight;
+
+        CollisionShape shape = find();
+        CollisionShape newShape = MyShape.setHeight(shape, newHeight);
+        replaceWith(newShape);
+    }
+
+    /**
+     * Replace the shape with a new shape that has a different radius.
+     *
+     * @param newRadius (&ge;0)
+     */
+    private void setRadius(float newRadius) {
+        assert newRadius >= 0f : newRadius;
+
+        CollisionShape shape = find();
+        CollisionShape newShape = MyShape.setRadius(shape, newRadius);
+        replaceWith(newShape);
     }
 }
