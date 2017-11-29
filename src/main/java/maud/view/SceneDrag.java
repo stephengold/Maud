@@ -383,6 +383,9 @@ public class SceneDrag {
                 }
                 break;
 
+            case SelectedShape:
+                break;
+
             case SelectedSpatial:
                 if (editableCgm != null) {
                     /*
@@ -413,6 +416,7 @@ public class SceneDrag {
         assert factor > 0f : factor;
 
         Cgm cgm = getCgm();
+        EditableCgm editableCgm = getEditableCgm();
         /*
          * Determine which MVC-model object the control is visualizing,
          * and scale that object.
@@ -443,12 +447,19 @@ public class SceneDrag {
             case SelectedPhysics:
                 /*
                  * Ignore attempts to scale the physics object directly
-                 * -- user should scale its shape instead.
+                 * -- the user should scale its geometry or resize its
+                 * shape instead.
                  */
                 break;
 
+            case SelectedShape:
+                if (editableCgm != null) {
+                    Vector3f scale = new Vector3f(factor, factor, factor);
+                    editableCgm.resizeShape(scale);
+                }
+                break;
+
             case SelectedSpatial:
-                EditableCgm editableCgm = getEditableCgm();
                 if (editableCgm != null) {
                     /*
                      * Scale the selected spatial.
@@ -526,6 +537,9 @@ public class SceneDrag {
                     location.addLocal(offset);
                     editableCgm.setPhysicsLocation(location);
                 }
+                break;
+
+            case SelectedShape:
                 break;
 
             case SelectedSpatial:

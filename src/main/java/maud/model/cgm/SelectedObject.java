@@ -31,7 +31,6 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.bullet.objects.PhysicsVehicle;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -40,6 +39,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import maud.MyShape;
 import maud.PhysicsUtil;
 import maud.model.option.RigidBodyParameter;
 
@@ -67,7 +67,7 @@ public class SelectedObject implements Cloneable {
     /**
      * constructed name for the selected object (not null)
      */
-    private String name = "";
+    private String selectedName = "";
     // *************************************************************************
     // new methods exposed
 
@@ -78,7 +78,8 @@ public class SelectedObject implements Cloneable {
      */
     PhysicsCollisionObject find() {
         PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        PhysicsCollisionObject result = PhysicsUtil.findObject(name, space);
+        PhysicsCollisionObject result
+                = PhysicsUtil.findObject(selectedName, space);
 
         return result;
     }
@@ -86,18 +87,18 @@ public class SelectedObject implements Cloneable {
     /**
      * Read the name of the selected object.
      *
-     * @return name (not null, not empty)
+     * @return constructed name, or "" if none selected (not null)
      */
     public String getName() {
         assert isSelected();
-        return name;
+        return selectedName;
     }
 
     /**
      * Read the specified parameter of the selected rigid body.
      *
      * @param parameter which parameter to read (not null)
-     * @return parameter value (as a string) or "" if not applicable
+     * @return parameter value (as a string) or "" if not applicable (not null)
      */
     public String getRbpValue(RigidBodyParameter parameter) {
         Validate.nonNull(parameter, "parameter");
@@ -149,7 +150,7 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Read the shape of the selected collision object.
+     * Access the shape of the object.
      *
      * @return id of the shape, or -1L if none
      */
@@ -165,7 +166,7 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Read the type of the selected collision object.
+     * Access the type of the object.
      *
      * @return abbreviated name for the class
      */
@@ -182,7 +183,7 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Test whether the selected object has mass.
+     * Test whether the object has mass.
      *
      * @return true if the object is a rigid body, otherwise false
      */
@@ -199,13 +200,13 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Calculate the index of the selected object.
+     * Calculate the position of the object in the master list.
      *
      * @return index (&ge;0)
      */
     public int index() {
         List<String> names = cgm.listObjectNames("");
-        int index = names.indexOf(name);
+        int index = names.indexOf(selectedName);
 
         assert index >= 0 : index;
         return index;
@@ -213,7 +214,7 @@ public class SelectedObject implements Cloneable {
 
     /**
      * Test whether the selected object can be repositioned (relocated and
-     * reoriented). TODO rename isRepositionable
+     * reoriented). TODO rename canReposition
      *
      * @return true if repositionable, otherwise false
      */
@@ -230,7 +231,7 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Test whether an object is selected.
+     * Test whether a physics collision object is selected.
      *
      * @return true if selected, otherwise false
      */
@@ -253,23 +254,8 @@ public class SelectedObject implements Cloneable {
      * @return world location (either storeResult or a new instance)
      */
     public Vector3f location(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-
         PhysicsCollisionObject object = find();
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody prb = (PhysicsRigidBody) object;
-            prb.getPhysicsLocation(storeResult);
-        } else if (object instanceof PhysicsGhostObject) {
-            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
-            ghost.getPhysicsLocation(storeResult);
-        } else if (object instanceof PhysicsVehicle) {
-            PhysicsVehicle vehicle = (PhysicsVehicle) object;
-            vehicle.getPhysicsLocation(storeResult);
-        } else {
-            throw new IllegalStateException();
-        }
+        storeResult = PhysicsUtil.location(object, storeResult);
 
         return storeResult;
     }
@@ -281,46 +267,8 @@ public class SelectedObject implements Cloneable {
      * @return world orientation (either storeResult or a new instance)
      */
     public Quaternion orientation(Quaternion storeResult) {
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-
         PhysicsCollisionObject object = find();
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody prb = (PhysicsRigidBody) object;
-            prb.getPhysicsRotation(storeResult);
-        } else if (object instanceof PhysicsGhostObject) {
-            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
-            ghost.getPhysicsRotation(storeResult);
-        } else if (object instanceof PhysicsVehicle) {
-            PhysicsVehicle vehicle = (PhysicsVehicle) object;
-            vehicle.getPhysicsRotation(storeResult);
-        } else {
-            throw new IllegalStateException();
-        }
-
-        return storeResult;
-    }
-
-    /**
-     * Copy the position of the selected object.
-     *
-     * @param storeResult (modified if not null)
-     * @return world transform (either storeResult or a new instance)
-     */
-    public Transform position(Transform storeResult) {
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
-
-        Vector3f storeLocation = storeResult.getTranslation();
-        location(storeLocation);
-
-        Quaternion storeOrientation = storeResult.getRotation();
-        orientation(storeOrientation);
-
-        Vector3f storeScale = storeResult.getScale();
-        storeScale.set(1f, 1f, 1f);
+        storeResult = PhysicsUtil.orientation(object, storeResult);
 
         return storeResult;
     }
@@ -335,7 +283,7 @@ public class SelectedObject implements Cloneable {
 
         List<String> names = cgm.listObjectNames("");
         if (names.contains(name)) {
-            name = name;
+            selectedName = name;
         }
     }
 
@@ -344,11 +292,11 @@ public class SelectedObject implements Cloneable {
      */
     public void selectNext() {
         List<String> names = cgm.listObjectNames("");
-        int index = names.indexOf(name);
+        int index = names.indexOf(selectedName);
         if (index != -1) {
             int numObjects = names.size();
             int newIndex = MyMath.modulo(index + 1, numObjects);
-            name = names.get(newIndex);
+            selectedName = names.get(newIndex);
         }
     }
 
@@ -356,7 +304,7 @@ public class SelectedObject implements Cloneable {
      * Deselect the selected physics collision object, if any.
      */
     public void selectNone() {
-        name = null;
+        selectedName = null;
     }
 
     /**
@@ -364,11 +312,11 @@ public class SelectedObject implements Cloneable {
      */
     public void selectPrevious() {
         List<String> names = cgm.listObjectNames("");
-        int index = names.indexOf(name);
+        int index = names.indexOf(selectedName);
         if (index != -1) {
             int numObjects = names.size();
             int newIndex = MyMath.modulo(index - 1, numObjects);
-            name = names.get(newIndex);
+            selectedName = names.get(newIndex);
         }
     }
 
@@ -385,7 +333,7 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Relocate the object.
+     * Relocate (translate) the object.
      *
      * @param newLocation (not null, unaffected)
      */
@@ -393,19 +341,11 @@ public class SelectedObject implements Cloneable {
         Validate.nonNull(newLocation, "new location");
 
         PhysicsCollisionObject object = find();
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody body = (PhysicsRigidBody) object;
-            body.setPhysicsLocation(newLocation);
-        } else if (object instanceof PhysicsGhostObject) {
-            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
-            ghost.setPhysicsLocation(newLocation);
-        } else {
-            throw new IllegalStateException();
-        }
+        PhysicsUtil.setLocation(object, newLocation);
     }
 
     /**
-     * Reorient the object.
+     * Reorient (rotate) the object.
      *
      * @param newOrientation (not null, unaffected)
      */
@@ -413,15 +353,38 @@ public class SelectedObject implements Cloneable {
         Validate.nonNull(newOrientation, "new orientation");
 
         PhysicsCollisionObject object = find();
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody body = (PhysicsRigidBody) object;
-            body.setPhysicsRotation(newOrientation);
-        } else if (object instanceof PhysicsGhostObject) {
-            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
-            ghost.setPhysicsRotation(newOrientation);
-        } else {
-            throw new IllegalStateException();
+        PhysicsUtil.setOrientation(object, newOrientation);
+    }
+
+    /**
+     * Calculate the transform of the object.
+     *
+     * @param storeResult (modified if not null)
+     * @return world transform (either storeResult or a new instance)
+     */
+    public Transform transform(Transform storeResult) {
+        PhysicsCollisionObject object = find();
+        storeResult = PhysicsUtil.transform(object, storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Test whether the object uses (directly or indirectly) the identified
+     * shape.
+     *
+     * @param shapeId id of the shape to find
+     * @return true if used, otherwise false
+     */
+    public boolean usesShape(long shapeId) {
+        PhysicsCollisionObject object = find();
+        boolean result = false;
+        if (object != null) {
+            CollisionShape shape = object.getCollisionShape();
+            result = MyShape.usesShape(shape, shapeId);
         }
+
+        return result;
     }
     // *************************************************************************
     // Cloneable methods

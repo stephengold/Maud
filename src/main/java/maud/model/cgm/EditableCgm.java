@@ -34,6 +34,7 @@ import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.Track;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.binary.BinaryExporter;
@@ -59,6 +60,7 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
@@ -93,11 +95,12 @@ public class EditableCgm extends LoadedCgm {
      */
     private int editCount = 0;
     /**
-     * model state that's being continuously edited, either:
+     * indicates which model state is being edited continuously, either:
      * <ul>
-     * <li> tree position of the spatial whose transform is being edited, or
-     * <li> name of the physics object whose position is being edited, or
-     * <li> "" for none of the above
+     * <li> "ss" + physics collision shape being resized, or
+     * <li> "st" + tree position of the spatial being transformed, or
+     * <li> "pp" + physics collision object being repositioned, or
+     * <li> "" for no continuous edits
      * </ul>
      */
     private String continousEditState = "";
@@ -569,6 +572,38 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Update which shape is being resized without triggering a history event.
+     */
+    void replace(CollisionShape oldShape, CollisionShape newShape) {
+        String oldState = "ss" + oldShape.toString();
+        if (oldState.equals(continousEditState)) {
+            String newState = "ss" + newShape.toString();
+            continousEditState = newState;
+        } else {
+            assert oldState.isEmpty();
+        }
+    }
+
+    /**
+     * Resize the selected physics collision shape by the specified factors
+     * without changing its scale.
+     *
+     * @param factors size factor to apply each local axis (not null,
+     * unaffected)
+     */
+    public void resizeShape(Vector3f factors) {
+        Validate.nonNull(factors, "factors");
+
+        SelectedShape shape = getShape();
+        if (!MyVector3f.isScaleIdentity(factors)) {
+            Vector3f he = shape.halfExtents(null);
+            he.multLocal(factors);
+            shape.setHalfExtents(he);
+            setEditedShapeSize();
+        }
+    }
+
+    /**
      * Add a re-targeted animation to the C-G model.
      *
      * @param newAnimationName name for the resulting animation (not null)
@@ -878,13 +913,14 @@ public class EditableCgm extends LoadedCgm {
         assert shape.canSetParameter(parameter);
         float oldValue = shape.getParameterValue(parameter);
         if (newValue != oldValue) {
-            History.autoAdd();
-            shape.setParameter(parameter, newValue);
             if (parameter.equals(ShapeParameter.Margin)) {
+                History.autoAdd();
+                shape.setParameter(parameter, newValue);
                 String description = String.format(
                         "change shape's margin to %f", newValue);
                 setEdited(description);
             } else {
+                shape.setParameter(parameter, newValue);
                 setEditedShapeSize();
             }
         }
@@ -1169,7 +1205,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * If not a continuation of the previous physics-position edit, update the
+     * If not a continuation of the previous object-position edit, update the
      * edit count.
      */
     private void setEditedPhysicsPosition() {
@@ -1178,7 +1214,7 @@ public class EditableCgm extends LoadedCgm {
             History.autoAdd();
             ++editCount;
             continousEditState = newState;
-            History.addEvent("reposition physics");
+            History.addEvent("reposition collision object");
         }
     }
 
@@ -1187,12 +1223,12 @@ public class EditableCgm extends LoadedCgm {
      * count.
      */
     private void setEditedShapeSize() {
-        String newState = "ss" + getShape().toString();
+        String newState = "ss" + getShape().find().toString();
         if (!newState.equals(continousEditState)) {
             History.autoAdd();
             ++editCount;
             continousEditState = newState;
-            History.addEvent("resize shape");
+            History.addEvent("resize collision shape");
         }
     }
 

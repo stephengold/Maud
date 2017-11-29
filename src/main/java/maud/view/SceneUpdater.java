@@ -163,7 +163,13 @@ class SceneUpdater {
 
             case SelectedPhysics:
                 if (cgm.getObject().isSelected()) {
-                    transform = cgm.getObject().position(null);
+                    transform = cgm.getObject().transform(null);
+                }
+                break;
+
+            case SelectedShape:
+                if (cgm.getShape().isSelected()) {
+                    transform = cgm.getShape().transform(null);
                 }
                 break;
 
@@ -376,7 +382,7 @@ class SceneUpdater {
             case None:
                 if (platform != null) {
                     platform = null;
-                    sceneView.setPlatform(platform);
+                    sceneView.setPlatform(null);
                 }
                 break;
 

@@ -27,6 +27,7 @@
 package maud.model.cgm;
 
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -35,6 +36,7 @@ import com.jme3.bullet.collision.shapes.ConeCollisionShape;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -266,7 +268,21 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Calculate the index of the selected shape.
+     * Calculate the half extents of the selected shape.
+     *
+     * @param storeResult (modified if not null)
+     * @return half extents on the local axes in world units (either storeResult
+     * or a new instance)
+     */
+    public Vector3f halfExtents(Vector3f storeResult) {
+        CollisionShape shape = find();
+        storeResult = MyShape.halfExtents(shape, storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Calculate the position of the shape in the master list.
      *
      * @return index (&ge;0)
      */
@@ -338,7 +354,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Select the first child shape of the compound shape.
+     * Select the 1st child shape of the compound shape.
      */
     public void selectFirstChild() {
         CollisionShape parent = find();
@@ -444,6 +460,45 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
+     * Calculate the transform of the shape.
+     *
+     * @param storeResult (modified if not null)
+     * @return world transform (either storeResult or a new instance)
+     */
+    public Transform transform(Transform storeResult) {
+        if (storeResult == null) {
+            storeResult = new Transform();
+        }
+
+        SelectedObject selectedObject = cgm.getObject();
+        if (selectedObject.usesShape(selectedId)) {
+            selectedObject.transform(storeResult);
+            // further transform if part of a compound shape
+        } else {
+            Set<Long> userSet = userSet();
+            int numUsers = userSet.size();
+            if (numUsers == 1) {
+                Long[] ids = new Long[1];
+                userSet.toArray(ids);
+                long userId = ids[0];
+
+                PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
+                PhysicsCollisionObject pco
+                        = PhysicsUtil.findObject(userId, space);
+                PhysicsUtil.transform(pco, storeResult);
+                // TODO peel back transform if part of a compound shape
+            } else {
+                /*
+                 * shape has multiple users, or none
+                 */
+                storeResult.loadIdentity();
+            }
+        }
+
+        return storeResult;
+    }
+
+    /**
      * Enumerate all collision objects and compound shapes that reference the
      * selected shape.
      *
@@ -493,18 +548,25 @@ public class SelectedShape implements Cloneable {
      * @param newShape (not null)
      */
     private void replaceWith(CollisionShape newShape) {
+        long newShapeId = newShape.getObjectId();
+
         CollisionShape shape = find();
         PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
         PhysicsUtil.replace(space, shape, newShape);
-        selectedId = newShape.getObjectId();
+
+        EditableCgm editableCgm = (EditableCgm) cgm;
+        editableCgm.replace(shape, newShape);
+
+        selectedId = newShapeId;
     }
 
     /**
-     * Replace the shape with new shape that has different half extents.
+     * Replace the shape with new shape that has different half extents. TODO
+     * reorder methods
      *
      * @param newHalfExtents (not null, all elements non-negative)
      */
-    private void setHalfExtents(Vector3f newHalfExtents) {
+    void setHalfExtents(Vector3f newHalfExtents) {
         assert newHalfExtents != null;
         assert MyVector3f.isAllNonNegative(newHalfExtents) : newHalfExtents;
 
