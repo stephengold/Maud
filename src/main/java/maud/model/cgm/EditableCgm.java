@@ -791,8 +791,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Alter the specified parameter of the selected rigid body. TODO move the
-     * meat to SelectedPhysics class
+     * Alter the specified parameter of the selected rigid body.
      *
      * @param parameter which parameter to alter (not null)
      * @param newValue new parameter value
@@ -801,53 +800,11 @@ public class EditableCgm extends LoadedCgm {
             float newValue) {
         Validate.nonNull(parameter, "parameter");
 
-        PhysicsCollisionObject object = getObject().find();
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody prb = (PhysicsRigidBody) object;
-
+        SelectedObject selected = getObject();
+        PhysicsCollisionObject pco = selected.find();
+        if (pco instanceof PhysicsRigidBody) {
             History.autoAdd();
-            Vector3f vector;
-            switch (parameter) {
-                case AngularDamping:
-                    prb.setAngularDamping(newValue);
-                    break;
-                case AngularSleep:
-                    prb.setAngularSleepingThreshold(newValue);
-                    break;
-                case Friction:
-                    prb.setFriction(newValue);
-                    break;
-                case GravityX:
-                    vector = prb.getGravity();
-                    vector.x = newValue;
-                    prb.setGravity(vector);
-                    break;
-                case GravityY:
-                    vector = prb.getGravity();
-                    vector.y = newValue;
-                    prb.setGravity(vector);
-                    break;
-                case GravityZ:
-                    vector = prb.getGravity();
-                    vector.z = newValue;
-                    prb.setGravity(vector);
-                    break;
-                case LinearDamping:
-                    prb.setLinearDamping(newValue);
-                    break;
-                case LinearSleep:
-                    prb.setLinearSleepingThreshold(newValue);
-                    break;
-                case Mass:
-                    prb.setMass(newValue);
-                    break;
-                case Restitution:
-                    prb.setRestitution(newValue);
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
-
+            selected.set(parameter, newValue);
             String eventDescription = String.format(
                     "set %s of rigid body to %f", parameter, newValue);
             setEdited(eventDescription);

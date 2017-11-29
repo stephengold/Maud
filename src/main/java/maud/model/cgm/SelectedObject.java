@@ -321,6 +321,61 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
+     * Alter the specified rigid body parameter.
+     *
+     * @param parameter which parameter to alter (not null)
+     * @param newValue new parameter value
+     */
+    void set(RigidBodyParameter parameter, float newValue) {
+        Validate.nonNull(parameter, "parameter");
+
+        PhysicsCollisionObject object = find();
+        PhysicsRigidBody prb = (PhysicsRigidBody) object;
+        Vector3f vector;
+
+        switch (parameter) {
+            case AngularDamping:
+                prb.setAngularDamping(newValue);
+                break;
+            case AngularSleep:
+                prb.setAngularSleepingThreshold(newValue);
+                break;
+            case Friction:
+                prb.setFriction(newValue);
+                break;
+            case GravityX:
+                vector = prb.getGravity();
+                vector.x = newValue;
+                prb.setGravity(vector);
+                break;
+            case GravityY:
+                vector = prb.getGravity();
+                vector.y = newValue;
+                prb.setGravity(vector);
+                break;
+            case GravityZ:
+                vector = prb.getGravity();
+                vector.z = newValue;
+                prb.setGravity(vector);
+                break;
+            case LinearDamping:
+                prb.setLinearDamping(newValue);
+                break;
+            case LinearSleep:
+                prb.setLinearSleepingThreshold(newValue);
+                break;
+            case Mass:
+                prb.setMass(newValue);
+                break;
+            case Restitution:
+                prb.setRestitution(newValue);
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    /**
      * Alter which C-G model contains the selected object.
      *
      * @param newCgm (not null, alias created)
