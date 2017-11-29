@@ -151,8 +151,7 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(newTrack);
         }
         currentTime = 0f;
-        editableCgm.replaceAnimation(loaded, newAnimation,
-                "behead an animation");
+        editableCgm.replace(loaded, newAnimation, "behead an animation");
     }
 
     /**
@@ -314,7 +313,7 @@ public class LoadedAnimation implements Cloneable {
         }
 
         if (numDeletions > 0) {
-            editableCgm.replaceAnimation(loaded, newAnimation,
+            editableCgm.replace(loaded, newAnimation,
                     "delete keyframes from an animation");
         }
     }
@@ -337,7 +336,7 @@ public class LoadedAnimation implements Cloneable {
             }
         }
 
-        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+        editableCgm.replace(oldAnimation, newAnimation,
                 "delete a track from an animation");
     }
 
@@ -533,7 +532,7 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(newTrack);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation,
+        editableCgm.replace(loaded, newAnimation,
                 "insert keyframes into an animation");
     }
 
@@ -839,7 +838,7 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation,
+        editableCgm.replace(loaded, newAnimation,
                 "thin the keyframes in an animation");
     }
 
@@ -866,8 +865,7 @@ public class LoadedAnimation implements Cloneable {
         }
 
         loadedName = newName;
-        editableCgm.replaceAnimation(loaded, newAnimation,
-                "rename an animation");
+        editableCgm.replace(loaded, newAnimation, "rename an animation");
     }
 
     /**
@@ -896,8 +894,7 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation,
-                "resample an animation");
+        editableCgm.replace(loaded, newAnimation, "resample an animation");
     }
 
     /**
@@ -928,8 +925,7 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation,
-                "resample an animation");
+        editableCgm.replace(loaded, newAnimation, "resample an animation");
     }
 
     /**
@@ -988,8 +984,7 @@ public class LoadedAnimation implements Cloneable {
             } else {
                 eventDescription = "speed up an animation";
             }
-            editableCgm.replaceAnimation(loaded, newAnimation,
-                    eventDescription);
+            editableCgm.replace(loaded, newAnimation, eventDescription);
         }
     }
 
@@ -1024,7 +1019,7 @@ public class LoadedAnimation implements Cloneable {
             } else {
                 description = "extend an animation";
             }
-            editableCgm.replaceAnimation(loaded, newAnimation, description);
+            editableCgm.replace(loaded, newAnimation, description);
         }
     }
 
@@ -1074,8 +1069,7 @@ public class LoadedAnimation implements Cloneable {
             newAnimation.addTrack(newTrack);
         }
 
-        editableCgm.replaceAnimation(loaded, newAnimation,
-                "truncate an animation");
+        editableCgm.replace(loaded, newAnimation, "truncate an animation");
     }
 
     /**
@@ -1102,7 +1096,7 @@ public class LoadedAnimation implements Cloneable {
 
         String description = String.format(
                 "wrap all tracks in animation using end weight=%f", endWeight);
-        editableCgm.replaceAnimation(loaded, newAnimation, description);
+        editableCgm.replace(loaded, newAnimation, description);
     }
     // *************************************************************************
     // Object methods

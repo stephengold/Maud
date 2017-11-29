@@ -297,7 +297,7 @@ public class SelectedTrack implements Cloneable {
             newAnimation.addTrack(clone);
         } // TODO new bone tracks?
 
-        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+        editableCgm.replace(oldAnimation, newAnimation,
                 "insert single keyframe");
     }
 
@@ -403,7 +403,7 @@ public class SelectedTrack implements Cloneable {
 
         String description = String.format(
                 "thin the keyframes in a single bone track by %dx", factor);
-        editableCgm.replaceAnimation(oldAnimation, newAnimation, description);
+        editableCgm.replace(oldAnimation, newAnimation, description);
     }
 
     /**
@@ -438,9 +438,9 @@ public class SelectedTrack implements Cloneable {
 
         String boneName = cgm.getBone().getName();
         float time = cgm.getAnimation().getTime();
-        String desc = String.format("replace keyframe for %s at t=%f",
+        String description = String.format("replace keyframe for %s at t=%f",
                 MyString.quote(boneName), time);
-        editableCgm.replaceAnimation(oldAnimation, newAnimation, desc);
+        editableCgm.replace(oldAnimation, newAnimation, description);
     }
 
     /**
@@ -470,7 +470,7 @@ public class SelectedTrack implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+        editableCgm.replace(oldAnimation, newAnimation,
                 "resample a single track");
     }
 
@@ -502,7 +502,7 @@ public class SelectedTrack implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+        editableCgm.replace(oldAnimation, newAnimation,
                 "resample a single track");
     }
 
@@ -687,7 +687,7 @@ public class SelectedTrack implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        editableCgm.replaceAnimation(oldAnimation, newAnimation, "smooth track");
+        editableCgm.replace(oldAnimation, newAnimation, "smooth track");
     }
 
     /**
@@ -716,7 +716,7 @@ public class SelectedTrack implements Cloneable {
         float bindSupportY = vertexLocation.y;
         boolean success = translateForSupport(bindSupportY);
         if (!success) {
-            String message = String.format("animation translation failed");
+            String message = "animation translation failed";
             Maud.gui.setStatus(message);
         }
     }
@@ -807,7 +807,7 @@ public class SelectedTrack implements Cloneable {
             }
             newAnimation.addTrack(clone);
         }
-        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+        editableCgm.replace(oldAnimation, newAnimation,
                 "translate track for traction");
 
         return true;
@@ -841,9 +841,9 @@ public class SelectedTrack implements Cloneable {
             newAnimation.addTrack(clone);
         }
 
-        String description = String.format("wrap track using end weight=%f",
-                endWeight);
-        editableCgm.replaceAnimation(oldAnimation, newAnimation, description);
+        String description
+                = String.format("wrap track using end weight=%f", endWeight);
+        editableCgm.replace(oldAnimation, newAnimation, description);
     }
     // *************************************************************************
     // Object methods
@@ -895,8 +895,7 @@ public class SelectedTrack implements Cloneable {
         } else {
             eventDescription = String.format("delete %d keyframes", number);
         }
-        editableCgm.replaceAnimation(oldAnimation, newAnimation,
-                eventDescription);
+        editableCgm.replace(oldAnimation, newAnimation, eventDescription);
     }
 
     /**
@@ -1028,7 +1027,7 @@ public class SelectedTrack implements Cloneable {
             }
             newAnimation.addTrack(clone);
         }
-        editableCgm.replaceAnimation(oldAnimation, newAnimation,
+        editableCgm.replace(oldAnimation, newAnimation,
                 "translate track for support");
 
         return true;

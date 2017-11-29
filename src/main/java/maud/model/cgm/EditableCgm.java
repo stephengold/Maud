@@ -546,13 +546,13 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Replace the specified animation with a new one. TODO rename replace
+     * Replace the specified animation with a new one.
      *
-     * @param oldAnimation (not null)
-     * @param newAnimation (not null)
+     * @param oldAnimation animation to replace (not null)
+     * @param newAnimation replacement animation (not null)
      * @param eventDescription description for the edit history (not null)
      */
-    void replaceAnimation(Animation oldAnimation, Animation newAnimation,
+    void replace(Animation oldAnimation, Animation newAnimation,
             String eventDescription) {
         assert oldAnimation != null;
         assert newAnimation != null;
@@ -573,8 +573,13 @@ public class EditableCgm extends LoadedCgm {
 
     /**
      * Update which shape is being resized without triggering a history event.
+     *
+     * @param oldShape shape to replace (not null, unaffected)
+     * @param newShape replacement shape (not null)
      */
     void replace(CollisionShape oldShape, CollisionShape newShape) {
+        assert newShape != null;
+
         String oldState = "ss" + oldShape.toString();
         if (oldState.equals(continousEditState)) {
             String newState = "ss" + newShape.toString();
@@ -586,7 +591,7 @@ public class EditableCgm extends LoadedCgm {
 
     /**
      * Resize the selected physics collision shape by the specified factors
-     * without changing its scale.
+     * without altering its scale.
      *
      * @param factors size factor to apply each local axis (not null,
      * unaffected)
