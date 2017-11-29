@@ -44,7 +44,7 @@ import maud.PhysicsUtil;
 import maud.model.option.RigidBodyParameter;
 
 /**
- * The selected physics collision object in the Maud application.
+ * The selected physics collision object of a C-G model in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -70,6 +70,23 @@ public class SelectedObject implements Cloneable {
     private String selectedName = "";
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Test whether the object can be repositioned (relocated and reoriented).
+     *
+     * @return true if repositionable, otherwise false
+     */
+    public boolean canReposition() {
+        boolean result = false;
+        PhysicsCollisionObject object = find();
+        if (object instanceof PhysicsRigidBody) {
+            result = true;
+        } else if (object instanceof PhysicsGhostObject) {
+            result = true;
+        }
+
+        return result;
+    }
 
     /**
      * Access the selected object.
@@ -210,24 +227,6 @@ public class SelectedObject implements Cloneable {
 
         assert index >= 0 : index;
         return index;
-    }
-
-    /**
-     * Test whether the selected object can be repositioned (relocated and
-     * reoriented). TODO rename canReposition
-     *
-     * @return true if repositionable, otherwise false
-     */
-    public boolean isRotatable() {
-        boolean result = false;
-        PhysicsCollisionObject object = find();
-        if (object instanceof PhysicsRigidBody) {
-            result = true;
-        } else if (object instanceof PhysicsGhostObject) {
-            result = true;
-        }
-
-        return result;
     }
 
     /**

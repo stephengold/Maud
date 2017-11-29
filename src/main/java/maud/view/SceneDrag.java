@@ -371,7 +371,7 @@ public class SceneDrag {
             case SelectedPhysics:
                 if (editableCgm != null) {
                     SelectedObject object = editableCgm.getObject();
-                    if (object.isRotatable()) {
+                    if (object.canReposition()) {
                         /*
                          * Rotate the selected physics object.
                          */
@@ -529,7 +529,7 @@ public class SceneDrag {
 
             case SelectedPhysics:
                 SelectedObject object = editableCgm.getObject();
-                if (object.isRotatable()) {
+                if (object.canReposition()) {
                     /*
                      * Translate the selected physics object.
                      */
