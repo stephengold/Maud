@@ -797,18 +797,6 @@ public class SceneView
     }
 
     /**
-     * Alter the shadow mode of the selected spatial. TODO sort methods
-     *
-     * @param newMode new value for shadow mode (not null)
-     */
-    public void setShadowMode(RenderQueue.ShadowMode newMode) {
-        Validate.nonNull(newMode, "shadow mode");
-
-        Spatial spatial = selectedSpatial();
-        spatial.setShadowMode(newMode);
-    }
-
-    /**
      * Alter the model bound of the selected spatial.
      *
      * @param modelBound object for model bound (not null, unaffected)
@@ -878,6 +866,18 @@ public class SceneView
 
         Spatial spatial = selectedSpatial();
         spatial.setQueueBucket(newBucket);
+    }
+
+    /**
+     * Alter the shadow mode of the selected spatial.
+     *
+     * @param newMode new value for shadow mode (not null)
+     */
+    public void setShadowMode(RenderQueue.ShadowMode newMode) {
+        Validate.nonNull(newMode, "shadow mode");
+
+        Spatial spatial = selectedSpatial();
+        spatial.setShadowMode(newMode);
     }
 
     /**
@@ -1281,29 +1281,6 @@ public class SceneView
     // private methods
 
     /**
-     * Add all physics ids used by this view to the specified set. TODO sort
-     * methods
-     *
-     * @param addResult (added to if not null)
-     * @return an expanded list (either addResult or a new instance)
-     */
-    private Set<Long> listIds(Set<Long> addResult) {
-        addResult = projectile.listIds(addResult);
-
-        if (platform != null) {
-            RigidBodyControl rbc = platform.getControl(RigidBodyControl.class);
-            long id = rbc.getObjectId();
-            addResult.add(id);
-
-            CollisionShape pShape = rbc.getCollisionShape();
-            id = pShape.getObjectId();
-            addResult.add(id);
-        }
-
-        return addResult;
-    }
-
-    /**
      * Visualize in bind pose, without a skeleton.
      */
     private void clearSkeleton() {
@@ -1536,6 +1513,28 @@ public class SceneView
 
         assert node != null;
         return node;
+    }
+
+    /**
+     * Add all physics ids used by this view to the specified set.
+     *
+     * @param addResult (added to if not null)
+     * @return an expanded list (either addResult or a new instance)
+     */
+    private Set<Long> listIds(Set<Long> addResult) {
+        addResult = projectile.listIds(addResult);
+
+        if (platform != null) {
+            RigidBodyControl rbc = platform.getControl(RigidBodyControl.class);
+            long id = rbc.getObjectId();
+            addResult.add(id);
+
+            CollisionShape pShape = rbc.getCollisionShape();
+            id = pShape.getObjectId();
+            addResult.add(id);
+        }
+
+        return addResult;
     }
 
     /**
