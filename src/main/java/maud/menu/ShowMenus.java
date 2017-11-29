@@ -568,9 +568,9 @@ public class ShowMenus {
 
     /**
      * Display a menu to configure the scene-view axis subject using the "set
-     * axesSubject " action prefix. TODO rename setAxesSubject
+     * axesSubject " action prefix.
      */
-    public static void setAxesMode() {
+    public static void setAxesSubject() {
         MenuBuilder builder = new MenuBuilder();
 
         AxesSubject selectedSubject

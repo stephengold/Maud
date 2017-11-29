@@ -94,7 +94,7 @@ class SetAction {
                 break;
 
             case Action.setAxesSubject:
-                ShowMenus.setAxesMode();
+                ShowMenus.setAxesSubject();
                 break;
 
             case Action.setBatchHint:
