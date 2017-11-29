@@ -401,19 +401,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the shape.
-     *
-     * @param newCgm (not null, alias created)
-     */
-    void setCgm(Cgm newCgm) {
-        assert newCgm != null;
-        assert newCgm.getShape() == this;
-
-        cgm = newCgm;
-    }
-
-    /**
-     * Alter the value of specified parameter of the shape. TODO sort methods
+     * Alter the value of specified parameter of the shape.
      *
      * @param parameter which parameter to alter (not null)
      * @param newValue new value for the parameter (&ge;0)
@@ -456,6 +444,32 @@ public class SelectedShape implements Cloneable {
             default:
                 throw new IllegalArgumentException();
         }
+    }
+
+    /**
+     * Alter which C-G model contains the shape.
+     *
+     * @param newCgm (not null, alias created)
+     */
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
+        assert newCgm.getShape() == this;
+
+        cgm = newCgm;
+    }
+
+    /**
+     * Replace the shape with new shape that has different half extents.
+     *
+     * @param newHalfExtents (not null, all elements non-negative)
+     */
+    void setHalfExtents(Vector3f newHalfExtents) {
+        assert newHalfExtents != null;
+        assert MyVector3f.isAllNonNegative(newHalfExtents) : newHalfExtents;
+
+        CollisionShape shape = find();
+        CollisionShape newShape = MyShape.setHalfExtents(shape, newHalfExtents);
+        replaceWith(newShape);
     }
 
     /**
@@ -557,21 +571,6 @@ public class SelectedShape implements Cloneable {
         editableCgm.replace(shape, newShape);
 
         selectedId = newShapeId;
-    }
-
-    /**
-     * Replace the shape with new shape that has different half extents. TODO
-     * reorder methods
-     *
-     * @param newHalfExtents (not null, all elements non-negative)
-     */
-    void setHalfExtents(Vector3f newHalfExtents) {
-        assert newHalfExtents != null;
-        assert MyVector3f.isAllNonNegative(newHalfExtents) : newHalfExtents;
-
-        CollisionShape shape = find();
-        CollisionShape newShape = MyShape.setHalfExtents(shape, newHalfExtents);
-        replaceWith(newShape);
     }
 
     /**
