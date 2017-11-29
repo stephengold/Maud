@@ -83,12 +83,11 @@ public class SelectedShape implements Cloneable {
 
     /**
      * Test whether the specified parameter can be set to the specified value.
-     * TODO rename canSet
      *
      * @param parameter which parameter (not null)
      * @return true if settable, otherwise false
      */
-    public boolean canSetParameter(ShapeParameter parameter) {
+    public boolean canSet(ShapeParameter parameter) {
         Validate.nonNull(parameter, "parameter");
 
         if (!isSelected()) {
@@ -174,7 +173,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Determine the axis index of the shape. TODO rename getAxisIndex
+     * Determine the axis index of the shape.
      *
      * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;doesn't have an axis
      */
@@ -198,12 +197,12 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Read the specified parameter of the shape. TODO rename getValue
+     * Read the specified parameter of the shape.
      *
      * @param parameter which parameter to read (not null)
      * @return parameter value (&ge;0) or NaN if not applicable
      */
-    public float getParameterValue(ShapeParameter parameter) {
+    public float getValue(ShapeParameter parameter) {
         Validate.nonNull(parameter, "parameter");
 
         float result = Float.NaN;
@@ -414,14 +413,14 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Alter the specified parameter of the shape. TODO rename set
+     * Alter the value of specified parameter of the shape. TODO sort methods
      *
      * @param parameter which parameter to alter (not null)
-     * @param newValue new parameter value (&ge;0)
+     * @param newValue new value for the parameter (&ge;0)
      */
-    void setParameter(ShapeParameter parameter, float newValue) {
-        Validate.nonNull(parameter, "parameter");
-        Validate.nonNegative(newValue, "new value");
+    void set(ShapeParameter parameter, float newValue) {
+        assert parameter != null;
+        assert newValue >= 0f : newValue;
         assert isSelected();
 
         CollisionShape shape = find();

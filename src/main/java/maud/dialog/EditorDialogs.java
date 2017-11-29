@@ -627,8 +627,8 @@ public class EditorDialogs {
         Validate.nonNull(parameter, "parameter");
 
         SelectedShape shape = Maud.getModel().getTarget().getShape();
-        if (shape.canSetParameter(parameter)) {
-            float defaultValue = shape.getParameterValue(parameter);
+        if (shape.canSet(parameter)) {
+            float defaultValue = shape.getValue(parameter);
             String defaultText = "";
             if (!Float.isNaN(defaultValue)) {
                 defaultText = Float.toString(defaultValue);

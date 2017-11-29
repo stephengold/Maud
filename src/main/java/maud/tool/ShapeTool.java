@@ -189,7 +189,7 @@ class ShapeTool extends WindowController {
         Maud.gui.setButtonLabel("shapeParmButton", name);
 
         SelectedShape shape = model.getTarget().getShape();
-        float value = shape.getParameterValue(parameter);
+        float value = shape.getValue(parameter);
         String valueString = "";
         if (!Float.isNaN(value)) {
             valueString = Float.toString(value);

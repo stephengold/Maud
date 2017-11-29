@@ -872,17 +872,17 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(parameter, "parameter");
 
         SelectedShape shape = getShape();
-        assert shape.canSetParameter(parameter);
-        float oldValue = shape.getParameterValue(parameter);
+        assert shape.canSet(parameter);
+        float oldValue = shape.getValue(parameter);
         if (newValue != oldValue) {
             if (parameter.equals(ShapeParameter.Margin)) {
                 History.autoAdd();
-                shape.setParameter(parameter, newValue);
+                shape.set(parameter, newValue);
                 String description = String.format(
                         "change shape's margin to %f", newValue);
                 setEdited(description);
             } else {
-                shape.setParameter(parameter, newValue);
+                shape.set(parameter, newValue);
                 setEditedShapeSize();
             }
         }
