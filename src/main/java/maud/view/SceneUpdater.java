@@ -28,9 +28,6 @@ package maud.view;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -39,14 +36,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.post.Filter;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.ViewPort;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
 import com.jme3.shadow.DirectionalLightShadowFilter;
-import com.jme3.texture.Texture;
 import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Logger;
@@ -67,7 +60,6 @@ import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.BoundsOptions;
 import maud.model.option.scene.DddCursorOptions;
-import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.SkeletonOptions;
 import maud.model.option.scene.VertexOptions;
 
@@ -94,33 +86,15 @@ class SceneUpdater {
      */
     final private static float mainMultiplier = 2f;
     /**
-     * radius of the platform (in model units, &gt;0)
-     */
-    final private static float radius = 0.5f;
-    /**
-     * thickness of the square (in model units, &gt;0)
-     */
-    final private static float squareThickness = 0.01f;
-    /**
      * message logger for this class
      */
     final private static Logger logger
             = Logger.getLogger(SceneUpdater.class.getName());
     /**
-     * mesh for generating square platforms
-     */
-    final private static Mesh squareMesh
-            = new Box(radius, squareThickness, radius);
-    /**
      * asset path to the C-G model for the 3-D cursor
      */
     final private static String cursorAssetPath
             = "Models/indicators/3d cursor/3d cursor.j3o";
-    /**
-     * asset path to the texture for platforms
-     */
-    final private static String textureAssetPath
-            = "Textures/platform/rock_11474.jpg";
     // *************************************************************************
     // constructors
 
@@ -205,7 +179,7 @@ class SceneUpdater {
         updateBounds(viewCgm);
         updateCursor(viewCgm);
         updatePhysics(viewCgm);
-        updatePlatform(viewCgm);
+        viewCgm.getSceneView().getPlatform().update();
         updateShadowFilter(viewCgm);
         updateSkeleton(viewCgm);
         updateSky(viewCgm);
@@ -230,30 +204,6 @@ class SceneUpdater {
 
         Material material = MyAsset.createUnshadedMaterial(assetManager);
         result.setMaterial(material);
-
-        return result;
-    }
-
-    /**
-     * Create a square slab platform.
-     *
-     * @return a new, orphaned spatial with its own RigidBodyControl, not added
-     * to any physics space
-     */
-    private static Spatial createSquare() {
-        Spatial result = new Geometry("square platform", squareMesh);
-
-        AssetManager assetManager = Locators.getAssetManager();
-        Texture texture = MyAsset.loadTexture(assetManager, textureAssetPath);
-        Material material = MyAsset.createShadedMaterial(assetManager, texture);
-        result.setMaterial(material);
-        result.setShadowMode(RenderQueue.ShadowMode.Receive);
-
-        Vector3f halfExtents = new Vector3f(radius, squareThickness, radius);
-        BoxCollisionShape shape = new BoxCollisionShape(halfExtents);
-        float mass = 0f;
-        RigidBodyControl rbc = new RigidBodyControl(shape, mass);
-        result.addControl(rbc);
 
         return result;
     }
@@ -366,54 +316,6 @@ class SceneUpdater {
         BulletAppState bulletAppState = sceneView.getBulletAppState();
         boolean enable = Maud.getModel().getScene().isPhysicsRendered();
         bulletAppState.setDebugEnabled(enable);
-    }
-
-    /**
-     * Update the platform based on the MVC model.
-     *
-     * @param cgm which C-G model (not null)
-     */
-    private static void updatePlatform(Cgm cgm) {
-        SceneView sceneView = cgm.getSceneView();
-        Spatial platform = sceneView.getPlatform();
-
-        PlatformType type = Maud.getModel().getScene().getPlatformType();
-        switch (type) {
-            case None:
-                if (platform != null) {
-                    platform = null;
-                    sceneView.setPlatform(null);
-                }
-                break;
-
-            case Square:
-                if (platform == null) {
-                    platform = createSquare();
-                    sceneView.setPlatform(platform);
-                }
-                break;
-
-            default:
-                throw new IllegalStateException();
-        }
-
-        if (platform != null) {
-            float diameter = Maud.getModel().getScene().getPlatformDiameter();
-            Vector3f center = new Vector3f(0f, -diameter * squareThickness, 0f);
-
-            RigidBodyControl rbc = platform.getControl(RigidBodyControl.class);
-            rbc.setPhysicsLocation(center);
-            CollisionShape shape = rbc.getCollisionShape();
-            Vector3f scale = new Vector3f(1f, 1f, 1f);
-            shape.setScale(scale);
-            rbc.setCollisionShape(shape);
-            Vector3f scale2 = new Vector3f(diameter, diameter, diameter);
-            shape.setScale(scale2);
-            rbc.setCollisionShape(shape);
-
-            platform.setLocalTranslation(center);
-            platform.setLocalScale(diameter);
-        }
     }
 
     /**

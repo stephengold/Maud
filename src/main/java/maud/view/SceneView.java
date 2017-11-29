@@ -188,6 +188,10 @@ public class SceneView
      */
     final private Node parent;
     /**
+     * supporting platform
+     */
+    final private Platform platform = new Platform(this);
+    /**
      * selected skeleton in this view's copy of the C-G model
      */
     private Skeleton skeleton;
@@ -207,10 +211,6 @@ public class SceneView
      * root spatial in this view's copy of the C-G model
      */
     private Spatial cgmRoot;
-    /**
-     * horizontal platform added to the scene, or null if none
-     */
-    private Spatial platform = null;
     /**
      * test projectile
      */
@@ -500,11 +500,12 @@ public class SceneView
     }
 
     /**
-     * Access the spatial for the scene's platform.
+     * Access the supporting platform for the scene.
      *
-     * @return the pre-existing instance, or null if none
+     * @return the pre-existing instance (not null)
      */
-    Spatial getPlatform() {
+    Platform getPlatform() {
+        assert platform != null;
         return platform;
     }
 
@@ -586,7 +587,7 @@ public class SceneView
          */
         Vector3f tailLocation = axesSpatial.getWorldTranslation();
         Vector3f tipLocation = axesVisualizer.tipLocation(axisIndex);
-        Vector3f cameraLocation = cgm.getScenePov().cameraLocation(null);
+        Vector3f cameraLocation = getPov().cameraLocation(null);
         float tailDS = cameraLocation.distanceSquared(tailLocation);
         float tipDS = cameraLocation.distanceSquared(tipLocation);
         if (tipDS > tailDS) {
@@ -825,35 +826,6 @@ public class SceneView
 
         PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
         pc.setEnabled(newSetting);
-    }
-
-    /**
-     * Alter which platform spatial is attached to the scene graph.
-     *
-     * @param platformSpatial (may be null, alias created)
-     */
-    void setPlatform(Spatial platformSpatial) {
-        if (platform != platformSpatial) {
-            if (platform != null) {
-                RigidBodyControl rbc
-                        = platform.getControl(RigidBodyControl.class);
-                if (rbc != null) {
-                    rbc.setEnabled(false);
-                }
-                platform.removeFromParent();
-            }
-            if (platformSpatial != null) {
-                attachToSceneRoot(platformSpatial);
-                RigidBodyControl rbc
-                        = platformSpatial.getControl(RigidBodyControl.class);
-                if (rbc != null) {
-                    PhysicsSpace space = getPhysicsSpace();
-                    rbc.setPhysicsSpace(space);
-                    rbc.setEnabled(true);
-                }
-            }
-            platform = platformSpatial;
-        }
     }
 
     /**
@@ -1203,18 +1175,12 @@ public class SceneView
         CollisionResult collision = findCollision(cgmRoot, ray);
         if (collision != null) {
             Vector3f contactPoint = collision.getContactPoint();
-            cgm.getScenePov().setCursorLocation(contactPoint);
+            getPov().setCursorLocation(contactPoint);
         } else {
             /*
              * The ray missed the C-G model; try to trace it to the platform.
              */
-            if (platform != null) {
-                collision = findCollision(platform, ray);
-                if (collision != null) {
-                    Vector3f contactPoint = collision.getContactPoint();
-                    cgm.getScenePov().setCursorLocation(contactPoint);
-                }
-            }
+            platform.warpCursor(ray);
         }
     }
     // *************************************************************************
@@ -1408,14 +1374,14 @@ public class SceneView
 
     /**
      * For the specified camera ray, find the nearest collision involving a
-     * triangle facing the camera.
+     * triangle facing the camera. TODO move to MaudUtil class
      *
      * @param spatial (not null, unaffected)
      * @param ray (not null, unaffected)
      * @return collision result, or null of no collision with a triangle facing
      * the camera
      */
-    private CollisionResult findCollision(Spatial spatial, Ray ray) {
+    CollisionResult findCollision(Spatial spatial, Ray ray) {
         assert ray != null;
 
         MySpatial.prepareForCollide(spatial);
@@ -1523,16 +1489,7 @@ public class SceneView
      */
     private Set<Long> listIds(Set<Long> addResult) {
         addResult = projectile.listIds(addResult);
-
-        if (platform != null) {
-            RigidBodyControl rbc = platform.getControl(RigidBodyControl.class);
-            long id = rbc.getObjectId();
-            addResult.add(id);
-
-            CollisionShape pShape = rbc.getCollisionShape();
-            id = pShape.getObjectId();
-            addResult.add(id);
-        }
+        platform.listIds(addResult);
 
         return addResult;
     }
@@ -1615,7 +1572,7 @@ public class SceneView
         /*
          * Reset the camera position and 3-D cursor location.
          */
-        ScenePov pov = cgm.getScenePov();
+        ScenePov pov = getPov();
         Vector3f baseLocation = new Vector3f(0f, 0f, 0f);
         pov.setCursorLocation(baseLocation);
         Vector3f cameraStartLocation
