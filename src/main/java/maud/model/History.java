@@ -276,7 +276,9 @@ public class History {
             logger.log(Level.INFO, "undo to [{0}]", getIndex);
 
         } else {
-            logger.log(Level.INFO, "nothing to undo");
+            String message = "There is nothing to undo!";
+            logger.log(Level.INFO, message);
+            Maud.gui.setStatus(message);
         }
 
         setAutoScroll();
