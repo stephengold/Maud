@@ -36,6 +36,10 @@ public enum AxesSubject {
     // values
 
     /**
+     * display model-space axes of the loaded C-G model
+     */
+    Model,
+    /**
      * hide the axes
      */
     None,
@@ -44,17 +48,11 @@ public enum AxesSubject {
      */
     SelectedBone,
     /**
-     * display local axes of the loaded C-G model's root spatial TODO rename
-     * LoadedModel
+     * display axes of the selected physics object, if any
      */
-    ModelRoot,
+    SelectedObject,
     /**
-     * display axes of the selected physics object, if any TODO rename
-     * SelectedObject
-     */
-    SelectedPhysics,
-    /**
-     * display local axes of the selected shape
+     * display local axes of the selected shape, if any
      */
     SelectedShape,
     /**

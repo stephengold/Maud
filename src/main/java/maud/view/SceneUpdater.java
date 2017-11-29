@@ -143,6 +143,15 @@ class SceneUpdater {
         SceneView sceneView = cgm.getSceneView();
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
         switch (subject) {
+            case Model:
+                if (cgm.isLoaded()) {
+                    transform = sceneView.getTransform().worldTransform();
+                }
+                break;
+
+            case None:
+                break;
+
             case SelectedBone:
                 if (cgm.getBone().isSelected()) {
                     transform = cgm.getBone().modelTransform(null);
@@ -152,16 +161,7 @@ class SceneUpdater {
                 }
                 break;
 
-            case ModelRoot:
-                if (cgm.isLoaded()) {
-                    transform = sceneView.getTransform().worldTransform();
-                }
-                break;
-
-            case None:
-                break;
-
-            case SelectedPhysics:
+            case SelectedObject:
                 if (cgm.getObject().isSelected()) {
                     transform = cgm.getObject().transform(null);
                 }

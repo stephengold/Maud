@@ -354,7 +354,7 @@ public class SceneDrag {
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
         switch (subject) {
-            case ModelRoot:
+            case Model:
                 /*
                  * Apply the Y-axis rotation to the world transform.
                  */
@@ -368,7 +368,7 @@ public class SceneDrag {
                 rotateBone(rotation);
                 break;
 
-            case SelectedPhysics:
+            case SelectedObject:
                 if (editableCgm != null) {
                     SelectedObject object = editableCgm.getObject();
                     if (object.canReposition()) {
@@ -423,7 +423,7 @@ public class SceneDrag {
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
         switch (subject) {
-            case ModelRoot:
+            case Model:
                 /*
                  * Scale the world transform.
                  */
@@ -444,7 +444,7 @@ public class SceneDrag {
                 }
                 break;
 
-            case SelectedPhysics:
+            case SelectedObject:
                 /*
                  * Ignore attempts to scale the physics object directly
                  * -- the user should scale its geometry or resize its
@@ -492,7 +492,7 @@ public class SceneDrag {
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
         switch (subject) {
-            case ModelRoot: // ignore attempts to translate the model root
+            case Model: // ignore attempts to translate the model root
                 break;
 
             case SelectedBone:
@@ -527,7 +527,7 @@ public class SceneDrag {
                 }
                 break;
 
-            case SelectedPhysics:
+            case SelectedObject:
                 SelectedObject object = editableCgm.getObject();
                 if (object.canReposition()) {
                     /*
