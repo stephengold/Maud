@@ -47,7 +47,6 @@ import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
-import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.SelectedSgc;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.cgm.SelectedSpatial;
@@ -75,7 +74,7 @@ public class ShowMenus {
     /**
      * maximum number of items in a menu, determined by minimum screen height
      */
-    final private static int maxItems = 19;
+    final public static int maxItems = 19;
     /**
      * message logger for this class
      */
@@ -91,20 +90,6 @@ public class ShowMenus {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Display an "Animation -> Add new" menu.
-     */
-    static void addNewAnimation() {
-        MenuBuilder builder = new MenuBuilder();
-
-        builder.addDialog("Copy");
-        builder.addDialog("Mix");
-        builder.addDialog("Pose");
-        builder.addTool("Retarget");
-
-        builder.show("select menuItem Animation -> Add new -> ");
-    }
 
     /**
      * Display a "SGC -&gt; Add new" menu.
@@ -143,37 +128,6 @@ public class ShowMenus {
 
         builder.show(
                 "select menuItem Animation -> Edit -> Change duration -> ");
-    }
-
-    /**
-     * Display an "Animation -> Edit" menu (only for a real animation). TODO
-     * move to AnimationMenus
-     */
-    static void editAnimation() {
-        MenuBuilder builder = new MenuBuilder();
-
-        Cgm target = Maud.getModel().getTarget();
-        LoadedAnimation animation = target.getAnimation();
-        float duration = animation.getDuration();
-        if (duration > 0f) {
-            builder.addEdit("Behead");
-        }
-        builder.add("Change duration");
-        if (duration > 0f) {
-            builder.addEdit("Delete keyframes");
-            builder.addEdit("Insert keyframes");
-            builder.addDialog("Reduce all tracks");
-            builder.addDialog("Resample all tracks at rate");
-            builder.addDialog("Resample all tracks to number");
-            builder.addEdit("Truncate");
-            if (animation.anyTrackEndsWithKeyframe()) {
-                builder.addDialog("Wrap all tracks");
-            } else {
-                builder.addEdit("Wrap all tracks");
-            }
-        }
-
-        builder.show("select menuItem Animation -> Edit -> ");
     }
 
     /**
@@ -218,28 +172,6 @@ public class ShowMenus {
         builder.addTool("Background");
 
         builder.show("select menuItem View -> Score options -> ");
-    }
-
-    /**
-     * Handle a "select (source)animControl" action without an argument.
-     *
-     * @param cgm which load slot (not null)
-     */
-    public static void selectAnimControl(Cgm cgm) {
-        if (cgm.isLoaded()) {
-            MenuBuilder builder = new MenuBuilder();
-            List<String> names = cgm.listAnimControlNames();
-            for (String name : names) {
-                builder.add(name);
-            }
-            if (cgm == Maud.getModel().getTarget()) {
-                builder.show("select animControl ");
-            } else if (cgm == Maud.getModel().getSource()) {
-                builder.show("select sourceAnimControl ");
-            } else {
-                throw new IllegalArgumentException();
-            }
-        }
     }
 
     /**
@@ -911,46 +843,6 @@ public class ShowMenus {
             }
         }
         builder.show(ActionPrefix.setTweenTranslations);
-    }
-
-    /**
-     * Display a submenu for selecting an animation by name using the "select
-     * (source)animation" action prefix.
-     *
-     * @param nameList list of names from which to select (not null, modified)
-     * @param cgm which load slot (not null)
-     */
-    static void showAnimationSubmenu(List<String> nameList, Cgm cgm) {
-        assert nameList != null;
-        assert cgm != null;
-
-        String loadedAnimation = cgm.getAnimation().getName();
-        boolean success = nameList.remove(loadedAnimation);
-        assert success;
-
-        MyString.reduce(nameList, maxItems);
-        Collections.sort(nameList);
-
-        MenuBuilder builder = new MenuBuilder();
-        for (String name : nameList) {
-            if (cgm.getAnimControl().hasRealAnimation(name)) {
-                builder.add(name); // TODO icon
-            } else if (name.equals(LoadedAnimation.bindPoseName)) {
-                builder.add(name);
-            } else if (name.equals(LoadedAnimation.retargetedPoseName)) {
-                builder.add(name);
-            } else {
-                builder.addEllipsis(name);
-            }
-        }
-
-        if (cgm == Maud.getModel().getTarget()) {
-            builder.show(ActionPrefix.loadAnimation);
-        } else if (cgm == Maud.getModel().getSource()) {
-            builder.show(ActionPrefix.loadSourceAnimation);
-        } else {
-            throw new IllegalArgumentException();
-        }
     }
 
     /**

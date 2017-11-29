@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.menu.AnimationMenus;
 import maud.menu.BoneMenus;
 import maud.menu.EditorMenus;
 import maud.menu.PhysicsMenus;
@@ -86,7 +87,7 @@ class SelectAction {
         Cgm target = model.getTarget();
         switch (actionString) {
             case Action.selectAnimControl:
-                ShowMenus.selectAnimControl(target);
+                AnimationMenus.selectAnimControl(target);
                 break;
 
             case Action.selectBone:
@@ -207,7 +208,7 @@ class SelectAction {
                 break;
 
             case Action.selectSourceAnimControl:
-                ShowMenus.selectAnimControl(model.getSource());
+                AnimationMenus.selectAnimControl(model.getSource());
                 break;
 
             case Action.selectSourceBone:
