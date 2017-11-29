@@ -428,7 +428,7 @@ public class SceneView
      * @return a new tree-position instance, or null if not found
      */
     List<Integer> findPosition(Spatial input) {
-        Validate.nonNull(input, "input");
+        assert input != null;
 
         List<Integer> treePosition = new ArrayList<>(4);
         boolean success = MaudUtil.findPosition(input, cgmRoot, treePosition);
@@ -509,7 +509,7 @@ public class SceneView
     }
 
     /**
-     * Access the POV.
+     * Access the point-of-view.
      *
      * @return the pre-existing instance (not null)
      */
@@ -797,11 +797,11 @@ public class SceneView
     }
 
     /**
-     * Alter the shadow mode of the selected spatial. TODO rename setShadowMode
+     * Alter the shadow mode of the selected spatial. TODO sort methods
      *
      * @param newMode new value for shadow mode (not null)
      */
-    public void setMode(RenderQueue.ShadowMode newMode) {
+    public void setShadowMode(RenderQueue.ShadowMode newMode) {
         Validate.nonNull(newMode, "shadow mode");
 
         Spatial spatial = selectedSpatial();
@@ -959,7 +959,7 @@ public class SceneView
     }
 
     /**
-     * Update the scene graph when unloading the C-G model.
+     * Update the view when unloading the C-G model.
      */
     public void unloadCgm() {
         /*
@@ -1281,7 +1281,8 @@ public class SceneView
     // private methods
 
     /**
-     * Add all physics ids used by this view to the specified set.
+     * Add all physics ids used by this view to the specified set. TODO sort
+     * methods
      *
      * @param addResult (added to if not null)
      * @return an expanded list (either addResult or a new instance)
@@ -1489,8 +1490,8 @@ public class SceneView
      */
     private PhysicsControl findPhysicsControl(List<Integer> treePosition,
             int pcPosition) {
-        Validate.nonNull(treePosition, "tree position");
-        Validate.nonNegative(pcPosition, "control position");
+        assert treePosition != null;
+        assert pcPosition >= 0 : pcPosition;
 
         Spatial spatial = findSpatial(treePosition);
         PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, pcPosition);
@@ -1505,7 +1506,7 @@ public class SceneView
      * @return the pre-existing spatial
      */
     private Spatial findSpatial(List<Integer> treePosition) {
-        Validate.nonNull(treePosition, "tree position");
+        assert treePosition != null;
 
         Spatial spatial = cgmRoot;
         for (int childPosition : treePosition) {
@@ -1634,6 +1635,8 @@ public class SceneView
      */
     private void updateLocalTransforms(Spatial spatial,
             List<Integer> position) {
+        assert position != null;
+        assert spatial != null;
         /*
          * Copy local transform from the MVC model.
          */

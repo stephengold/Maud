@@ -855,7 +855,7 @@ public class EditableCgm extends LoadedCgm {
         if (oldMode != newMode) {
             History.autoAdd();
             modelSpatial.setShadowMode(newMode);
-            getSceneView().setMode(newMode);
+            getSceneView().setShadowMode(newMode);
             String description = String.format(
                     "change spatial's shadow mode to %s", newMode);
             setEdited(description);
