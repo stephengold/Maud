@@ -26,6 +26,7 @@
  */
 package maud.menu;
 
+import com.jme3.bullet.PhysicsSpace;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +39,7 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.PhysicsUtil;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.EditorModel;
@@ -47,6 +49,7 @@ import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.ViewMode;
+import maud.view.SceneView;
 
 /**
  * Build menus in Maud's editor screen. TODO split off methods that don't need
@@ -812,12 +815,34 @@ public class BuildMenus {
      * Build a Physics menu.
      */
     private void buildPhysicsMenu() {
-        builder.addTool("Object Tool");
-        builder.addTool("Joint Tool");
         builder.addTool("Shape Tool");
+
+        Cgm target = Maud.getModel().getTarget();
+        SceneView sceneView = target.getSceneView();
+        int numShapes = sceneView.shapeMap().size();
+        if (numShapes > 0) {
+            builder.add("Select Shape");
+        }
+
+        builder.addTool("Object Tool");
+
+        int numObjects = sceneView.objectMap().size();
+        if (numObjects > 0) {
+            builder.add("Select Object");
+        }
+
         builder.add("Add new");
-        if (Maud.getModel().getTarget().getObject().hasMass()) {
+
+        if (target.getObject().hasMass()) {
             builder.addDialog("Mass");
+        }
+
+        builder.addTool("Joint Tool");
+
+        PhysicsSpace space = sceneView.getPhysicsSpace();
+        int numJoints = PhysicsUtil.countJoints(space);
+        if (numJoints > 0) {
+            builder.add("Select Joint");
         }
     }
 

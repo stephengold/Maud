@@ -80,6 +80,7 @@ public class PhysicsMenus {
             handled = menuPhysicsAdd(arg);
 
         } else {
+            Cgm target = Maud.getModel().getTarget();
             switch (remainder) {
                 case "Add new":
                     addNew();
@@ -95,6 +96,18 @@ public class PhysicsMenus {
 
                 case "Object Tool":
                     Maud.gui.tools.select("object");
+                    break;
+
+                case "Select Joint":
+                    ShowMenus.selectJoint(target);
+                    break;
+
+                case "Select Object":
+                    ShowMenus.selectPhysics(target);
+                    break;
+
+                case "Select Shape":
+                    ShowMenus.selectShape(target);
                     break;
 
                 case "Shape Tool":
