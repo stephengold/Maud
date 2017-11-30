@@ -68,7 +68,7 @@ public class MyShape {
     // new methods exposed
 
     /**
-     * Determine the main axis of the specified shape, which must be a capsule,
+     * Determine the main axis of the specified shape, provided it's a capsule,
      * cone, or cylinder.
      *
      * @param shape (may be null, unaffected)
@@ -108,15 +108,13 @@ public class MyShape {
      * Test whether the specified scale can be applied to the specified shape.
      *
      * @param shape which collision shape (not null, unaffected)
-     * @param scale scale vector (not null, unaffected)
-     * @return true if the shape is fully scalable, otherwise false
+     * @param scale scale factor for each local axis (not null, unaffected)
+     * @return true if can be applied, otherwise false
      */
     public static boolean canScale(CollisionShape shape, Vector3f scale) {
         boolean result = true;
-        if (shape instanceof CompoundCollisionShape) {
-            result = false;
-
-        } else if (shape instanceof CapsuleCollisionShape
+        if (shape instanceof CompoundCollisionShape
+                || shape instanceof CapsuleCollisionShape
                 || shape instanceof CylinderCollisionShape
                 || shape instanceof SphereCollisionShape) {
             result = (scale.x == scale.y && scale.y == scale.z);
