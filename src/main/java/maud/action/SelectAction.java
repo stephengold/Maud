@@ -103,7 +103,7 @@ class SelectAction {
                 break;
 
             case Action.selectJoint:
-                ShowMenus.selectJoint(target);
+                PhysicsMenus.selectJoint(target);
                 break;
 
             case Action.selectKeyframeFirst:
@@ -139,11 +139,11 @@ class SelectAction {
                 break;
 
             case Action.selectPhysics:
-                ShowMenus.selectPhysics(target);
+                PhysicsMenus.selectObject(target);
                 break;
 
             case Action.selectPhysicsRbp:
-                ShowMenus.selectPhysicsRbp();
+                PhysicsMenus.selectRbp();
                 break;
 
             case Action.selectPhysicsShape:
@@ -192,7 +192,7 @@ class SelectAction {
                 break;
 
             case Action.selectShape:
-                ShowMenus.selectShape(target);
+                PhysicsMenus.selectShape(target);
                 break;
 
             case Action.selectShapeChild:
@@ -200,7 +200,7 @@ class SelectAction {
                 break;
 
             case Action.selectShapeParm:
-                ShowMenus.selectShapeParameter();
+                PhysicsMenus.selectShapeParameter();
                 break;
 
             case Action.selectShapeUser:

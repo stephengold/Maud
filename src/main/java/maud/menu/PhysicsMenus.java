@@ -29,6 +29,7 @@ package maud.menu;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
@@ -40,6 +41,7 @@ import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedShape;
 import maud.model.option.RigidBodyParameter;
+import maud.model.option.ShapeParameter;
 
 /**
  * Physics menus in Maud's editor screen.
@@ -99,15 +101,15 @@ public class PhysicsMenus {
                     break;
 
                 case "Select Joint":
-                    ShowMenus.selectJoint(target);
+                    selectJoint(target);
                     break;
 
                 case "Select Object":
-                    ShowMenus.selectPhysics(target);
+                    selectObject(target);
                     break;
 
                 case "Select Shape":
-                    ShowMenus.selectShape(target);
+                    selectShape(target);
                     break;
 
                 case "Shape Tool":
@@ -123,6 +125,77 @@ public class PhysicsMenus {
     }
 
     /**
+     * Display a "select joint" menu.
+     *
+     * @param cgm which load slot (not null)
+     */
+    public static void selectJoint(Cgm cgm) {
+        if (cgm.isLoaded()) {
+            List<String> names = cgm.listJointNames("");
+            if (!names.isEmpty()) {
+                MenuBuilder builder = new MenuBuilder();
+                for (String name : names) {
+                    builder.add(name);
+                }
+                builder.show(ActionPrefix.selectJoint);
+            }
+        }
+    }
+
+    /**
+     * Display a "select physics" menu to select a physics object.
+     *
+     * @param cgm which load slot (not null)
+     */
+    public static void selectObject(Cgm cgm) {
+        if (cgm.isLoaded()) {
+            List<String> names = cgm.listObjectNames("");
+            if (!names.isEmpty()) {
+                MenuBuilder builder = new MenuBuilder();
+                for (String name : names) {
+                    builder.add(name);
+                }
+                builder.show(ActionPrefix.selectPhysics);
+            }
+        }
+    }
+
+    /**
+     * Display a "select physicsRbp" menu to select a rigid-body parameter.
+     */
+    public static void selectRbp() {
+        MenuBuilder builder = new MenuBuilder();
+
+        RigidBodyParameter selectedRbp = Maud.getModel().getMisc().getRbp();
+        for (RigidBodyParameter rbp : RigidBodyParameter.values()) {
+            if (!rbp.equals(selectedRbp)) {
+                String name = rbp.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectPhysicsRbp);
+    }
+
+    /**
+     * Display a "select shape" menu.
+     *
+     * @param cgm which load slot (not null)
+     */
+    public static void selectShape(Cgm cgm) {
+        if (cgm.isLoaded()) {
+            List<String> names = cgm.listShapeNames("");
+            if (!names.isEmpty()) {
+                MenuBuilder builder = new MenuBuilder();
+                for (String name : names) {
+                    builder.add(name);
+                }
+                builder.show(ActionPrefix.selectShape);
+            }
+        }
+    }
+
+    /**
      * Handle a "select shapeChild" action without arguments.
      */
     public static void selectShapeChild() {
@@ -132,8 +205,32 @@ public class PhysicsMenus {
         if (numChildren == 1) {
             shape.selectFirstChild();
         } else if (numChildren > 1) {
-            ShowMenus.selectShapeChild();
+            List<String> names = shape.listChildNames("");
+            if (!names.isEmpty()) {
+                MenuBuilder builder = new MenuBuilder();
+                for (String name : names) {
+                    builder.add(name);
+                }
+                builder.show(ActionPrefix.selectShape);
+            }
         }
+    }
+
+    /**
+     * Display a "select shapeParm" menu to select a shape parameter.
+     */
+    public static void selectShapeParameter() {
+        MenuBuilder builder = new MenuBuilder();
+
+        ShapeParameter selected = Maud.getModel().getMisc().getShapeParameter();
+        for (ShapeParameter parm : ShapeParameter.values()) {
+            if (!parm.equals(selected)) {
+                String name = parm.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectShapeParm);
     }
 
     /**

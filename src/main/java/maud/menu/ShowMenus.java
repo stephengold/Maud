@@ -52,8 +52,6 @@ import maud.model.cgm.SelectedSkeleton;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedVertex;
 import maud.model.option.DisplaySettings;
-import maud.model.option.RigidBodyParameter;
-import maud.model.option.ShapeParameter;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.AxesDragEffect;
@@ -218,24 +216,6 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "select joint" menu.
-     *
-     * @param cgm which load slot (not null)
-     */
-    public static void selectJoint(Cgm cgm) {
-        if (cgm.isLoaded()) {
-            List<String> names = cgm.listJointNames("");
-            if (!names.isEmpty()) {
-                MenuBuilder builder = new MenuBuilder();
-                for (String name : names) {
-                    builder.add(name);
-                }
-                builder.show(ActionPrefix.selectJoint);
-            }
-        }
-    }
-
-    /**
      * Display a "Keyframe -> Select" menu.
      */
     static void selectKeyframe() {
@@ -269,41 +249,6 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "select physics" menu to select a physics object.
-     *
-     * @param cgm which load slot (not null)
-     */
-    public static void selectPhysics(Cgm cgm) {
-        if (cgm.isLoaded()) {
-            List<String> names = cgm.listObjectNames("");
-            if (!names.isEmpty()) {
-                MenuBuilder builder = new MenuBuilder();
-                for (String name : names) {
-                    builder.add(name);
-                }
-                builder.show(ActionPrefix.selectPhysics);
-            }
-        }
-    }
-
-    /**
-     * Display a "select physicsRbp" menu to select a rigid-body parameter.
-     */
-    public static void selectPhysicsRbp() {
-        MenuBuilder builder = new MenuBuilder();
-
-        RigidBodyParameter selectedRbp = Maud.getModel().getMisc().getRbp();
-        for (RigidBodyParameter rbp : RigidBodyParameter.values()) {
-            if (!rbp.equals(selectedRbp)) {
-                String name = rbp.toString();
-                builder.add(name);
-            }
-        }
-
-        builder.show(ActionPrefix.selectPhysicsRbp);
-    }
-
-    /**
      * Display a "select sgc" menu.
      */
     public static void selectSgc() {
@@ -320,56 +265,6 @@ public class ShowMenus {
         builder.add(SelectedSgc.noControl);
 
         builder.show(ActionPrefix.selectSgc);
-    }
-
-    /**
-     * Display a "select shape" menu.
-     *
-     * @param cgm which load slot (not null)
-     */
-    public static void selectShape(Cgm cgm) {
-        if (cgm.isLoaded()) {
-            List<String> names = cgm.listShapeNames("");
-            if (!names.isEmpty()) {
-                MenuBuilder builder = new MenuBuilder();
-                for (String name : names) {
-                    builder.add(name);
-                }
-                builder.show(ActionPrefix.selectShape);
-            }
-        }
-    }
-
-    /**
-     * Display a "select shapeChild" menu.
-     */
-    static void selectShapeChild() {
-        Cgm target = Maud.getModel().getTarget();
-        List<String> names = target.getShape().listChildNames("");
-        if (!names.isEmpty()) {
-            MenuBuilder builder = new MenuBuilder();
-            for (String name : names) {
-                builder.add(name);
-            }
-            builder.show(ActionPrefix.selectShape);
-        }
-    }
-
-    /**
-     * Display a "select shapeParm" menu to select a shape parameter.
-     */
-    public static void selectShapeParameter() {
-        MenuBuilder builder = new MenuBuilder();
-
-        ShapeParameter selected = Maud.getModel().getMisc().getShapeParameter();
-        for (ShapeParameter parm : ShapeParameter.values()) {
-            if (!parm.equals(selected)) {
-                String name = parm.toString();
-                builder.add(name);
-            }
-        }
-
-        builder.show(ActionPrefix.selectShapeParm);
     }
 
     /**
