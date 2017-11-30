@@ -114,6 +114,10 @@ public class SceneView
     // constants and loggers
 
     /**
+     * linear size of the marker for the selected vertex (in pixels)
+     */
+    final private static float vertexSize = 12f;
+    /**
      * width and height of rendered shadow maps (pixels per side, &gt;0)
      */
     final private static int shadowMapSize = 4_096;
@@ -1356,7 +1360,7 @@ public class SceneView
         AssetManager assetManager = Locators.getAssetManager();
         Material material = new Material(assetManager,
                 "MatDefs/wireframe/multicolor2.j3md");
-        material.setFloat("PointSize", 12f); // TODO constants
+        material.setFloat("PointSize", vertexSize);
         Texture poseShape = MyAsset.loadTexture(assetManager,
                 "Textures/shapes/saltire.png");
         material.setTexture("PointShape", poseShape);
