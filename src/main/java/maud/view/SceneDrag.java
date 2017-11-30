@@ -217,11 +217,12 @@ public class SceneDrag {
                         spatial, null);
                 Vector3f cross = oldDirLocal.cross(newDirLocal);
                 if (!MyVector3f.isZero(cross)) {
-                    rotateSubject(cross);
+                    rotate(cross);
                 }
                 break;
 
             case ScaleAll:
+            case ScaleAxis:
                 /*
                  * Calculate the new axis length in local units.
                  */
@@ -235,7 +236,11 @@ public class SceneDrag {
                     float scaleFactor
                             = FastMath.abs(newLengthLocal / previousLength);
                     if (scaleFactor > 0f) {
-                        scaleSubject(scaleFactor);
+                        if (effect == AxesDragEffect.ScaleAll) {
+                            scaleAll(scaleFactor);
+                        } else {
+                            scaleAxis(scaleFactor);
+                        }
                         previousLength = newLengthLocal;
                     }
                 }
@@ -250,7 +255,7 @@ public class SceneDrag {
                 if (newTipWorld != null) {
                     Vector3f displacement = newTipWorld.subtract(oldTipWorld);
 
-                    translateSubject(displacement);
+                    translate(displacement);
                 }
                 break;
 
@@ -334,7 +339,7 @@ public class SceneDrag {
      * @param cross cross product of two unit vectors in local coordinates (not
      * null, length&gt;0, length&le;1)
      */
-    private static void rotateSubject(Vector3f cross) {
+    private static void rotate(Vector3f cross) {
         /*
          * Convert the cross product to a rotation quaternion.
          */
@@ -409,11 +414,11 @@ public class SceneDrag {
     }
 
     /**
-     * Scale the subject uniformly by the specified factor.
+     * Scale/resize the subject uniformly on all 3 axes.
      *
      * @param factor scale factor (&gt;0, 1 &rarr; no effect)
      */
-    private static void scaleSubject(float factor) {
+    private static void scaleAll(float factor) {
         assert factor > 0f : factor;
 
         Cgm cgm = getCgm();
@@ -480,11 +485,61 @@ public class SceneDrag {
     }
 
     /**
+     * Scale/resize the subject on the dragged axis only.
+     *
+     * @param factor scale factor (&gt;0, 1 &rarr; no effect)
+     */
+    private static void scaleAxis(float factor) {
+        assert factor > 0f : factor;
+
+        Vector3f scale = MyVector3f.axisVector(dragAxisIndex, factor, null);
+        scale.multLocal(factor - 1f);
+        scale.addLocal(1f, 1f, 1f);
+
+        Cgm cgm = getCgm();
+        EditableCgm editableCgm = getEditableCgm();
+        /*
+         * Determine which MVC-model object the control is visualizing,
+         * and scale that object.
+         */
+        AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
+        switch (subject) {
+            case Model: // ignore attempts to drag the world axes
+            case SelectedBone: // ignore attempts to drag the bone axes
+            case SelectedObject: // ignore attempts to drag the object axes
+                break;
+
+            case SelectedShape: // won't work on all shapes
+                if (editableCgm != null) {
+                    editableCgm.resizeShape(scale);
+                }
+                break;
+
+            case SelectedSpatial:
+                if (editableCgm != null) {
+                    /*
+                     * Scale the selected spatial.
+                     */
+                    Vector3f localScale = cgm.getSpatial().localScale(null);
+                    localScale.multLocal(scale);
+                    editableCgm.setSpatialScale(localScale);
+                }
+                break;
+
+            case World: // ignore attempts to drag the world axes
+                break;
+
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    /**
      * Translate the subject by the specified offset.
      *
      * @param offset (in world coordinates, not null, unaffected)
      */
-    private static void translateSubject(Vector3f offset) {
+    private static void translate(Vector3f offset) {
         EditableCgm editableCgm = getEditableCgm();
         Cgm cgm = getCgm();
         /*

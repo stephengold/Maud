@@ -469,7 +469,9 @@ public class SelectedShape implements Cloneable {
 
         CollisionShape shape = find();
         CollisionShape newShape = MyShape.setHalfExtents(shape, newHalfExtents);
-        replaceWith(newShape);
+        if (newShape != null) {
+            replaceWith(newShape);
+        }
     }
 
     /**

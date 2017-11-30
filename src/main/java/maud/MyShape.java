@@ -283,7 +283,7 @@ public class MyShape {
      *
      * @param oldShape input shape (not null, unaffected)
      * @param newHalfExtents (not null, all non-negative, unaffected)
-     * @return a new shape
+     * @return a new shape, or null if not possible
      */
     public static CollisionShape setHalfExtents(CollisionShape oldShape,
             Vector3f newHalfExtents) {
@@ -319,9 +319,8 @@ public class MyShape {
                     throw new IllegalStateException();
             }
             if (radius1 != radius2) {
-                throw new IllegalArgumentException();
-            }
-            if (oldShape instanceof CapsuleCollisionShape) {
+                result = null;
+            } else if (oldShape instanceof CapsuleCollisionShape) {
                 float height = 2f * (axisHalfExtent - radius1);
                 result = new CapsuleCollisionShape(radius1, height, axisIndex);
             } else {
@@ -337,16 +336,19 @@ public class MyShape {
         } else if (oldShape instanceof SphereCollisionShape) {
             if (newHalfExtents.x != newHalfExtents.y
                     || newHalfExtents.y != newHalfExtents.z) {
-                throw new IllegalArgumentException();
+                result = null;
+            } else {
+                result = new SphereCollisionShape(newHalfExtents.x);
             }
-            result = new SphereCollisionShape(newHalfExtents.x);
 
         } else {
             throw new IllegalArgumentException();
         }
 
-        float margin = oldShape.getMargin();
-        result.setMargin(margin);
+        if (result != null) {
+            float margin = oldShape.getMargin();
+            result.setMargin(margin);
+        }
 
         return result;
     }

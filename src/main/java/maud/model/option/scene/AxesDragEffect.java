@@ -27,7 +27,7 @@
 package maud.model.option.scene;
 
 /**
- * Enumerate options for coordinate-axis dragging effects in scene views.
+ * Enumerate possible coordinate-axis dragging effects in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -44,11 +44,15 @@ public enum AxesDragEffect {
      */
     Rotate,
     /**
-     * drag to scale the subject uniformly on all 3 axes
+     * drag to scale/resize the subject uniformly on all 3 axes
      */
     ScaleAll,
     /**
-     * drag to translate the subject along the dragged axis
+     * drag to scale/resize the subject on the dragged axis only
+     */
+    ScaleAxis,
+    /**
+     * drag to translate the subject along the dragged axis only
      */
     Translate;
 }

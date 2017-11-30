@@ -584,8 +584,6 @@ public class EditableCgm extends LoadedCgm {
         if (oldState.equals(continousEditState)) {
             String newState = "ss" + newShape.toString();
             continousEditState = newState;
-        } else {
-            assert oldState.isEmpty();
         }
     }
 
