@@ -47,6 +47,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.ui.Locators;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.option.scene.PlatformType;
 
 /**
@@ -181,7 +182,7 @@ class Platform {
      */
     void warpCursor(Ray ray) {
         if (spatial != null) {
-            CollisionResult collision = view.findCollision(spatial, ray);
+            CollisionResult collision = MaudUtil.findCollision(spatial, ray);
             if (collision != null) {
                 Vector3f contactPoint = collision.getContactPoint();
                 view.getPov().setCursorLocation(contactPoint);

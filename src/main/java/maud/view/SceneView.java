@@ -40,7 +40,6 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -1066,7 +1065,7 @@ public class SceneView
         /*
          * Trace the ray to the C-G model's visualization.
          */
-        CollisionResult collision = findCollision(cgmRoot, ray);
+        CollisionResult collision = MaudUtil.findCollision(cgmRoot, ray);
         if (collision != null) {
             Geometry geometry = collision.getGeometry();
             Mesh mesh = geometry.getMesh();
@@ -1176,7 +1175,7 @@ public class SceneView
         /*
          * Trace the ray to the C-G model.
          */
-        CollisionResult collision = findCollision(cgmRoot, ray);
+        CollisionResult collision = MaudUtil.findCollision(cgmRoot, ray);
         if (collision != null) {
             Vector3f contactPoint = collision.getContactPoint();
             getPov().setCursorLocation(contactPoint);
@@ -1374,56 +1373,6 @@ public class SceneView
         vertexSpatial.setQueueBucket(Bucket.Transparent);
 
         attachToSceneRoot(vertexSpatial);
-    }
-
-    /**
-     * For the specified camera ray, find the nearest collision involving a
-     * triangle facing the camera. TODO move to MaudUtil class
-     *
-     * @param spatial (not null, unaffected)
-     * @param ray (not null, unaffected)
-     * @return collision result, or null of no collision with a triangle facing
-     * the camera
-     */
-    CollisionResult findCollision(Spatial spatial, Ray ray) {
-        assert ray != null;
-
-        MySpatial.prepareForCollide(spatial);
-        CollisionResults results = new CollisionResults();
-        spatial.collideWith(ray, results);
-        /*
-         * Collision results are sorted by increasing distance from the camera,
-         * so the first result is also the nearest one.
-         */
-        Camera cam = getCamera();
-        Vector3f cameraLocation = cam.getLocation();
-        for (int resultIndex = 0; resultIndex < results.size(); resultIndex++) {
-            /*
-             * Calculate the offset from the camera to the point of contact.
-             */
-            CollisionResult result = results.getCollision(resultIndex);
-            Geometry geometry = result.getGeometry();
-            Mesh mesh = geometry.getMesh();
-            Mesh.Mode mode = mesh.getMode();
-
-            if (mode == Mesh.Mode.Triangles // work around JME issue #710
-                    || mode == Mesh.Mode.TriangleStrip
-                    || mode == Mesh.Mode.TriangleFan) { // TODO JME 3.2
-                Vector3f contactPoint = result.getContactPoint();
-                Vector3f offset = contactPoint.subtract(cameraLocation);
-                /*
-                 * If the dot product of the normal with the offset is negative,
-                 * then the triangle faces the camera.
-                 */
-                Vector3f normal = result.getContactNormal();
-                float dotProduct = offset.dot(normal);
-                if (dotProduct < 0f) {
-                    return result;
-                }
-            }
-        }
-
-        return null;
     }
 
     /**
