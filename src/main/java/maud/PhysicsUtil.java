@@ -143,25 +143,6 @@ public class PhysicsUtil {
     }
 
     /**
-     * Count the collision objects in the specified physics space.
-     *
-     * @param space which physics space (not null, unaffected)
-     * @return count (&ge;0)
-     */
-    public static int countObjects(PhysicsSpace space) {
-        Collection<PhysicsCharacter> charas = space.getCharacterList();
-        Collection<PhysicsGhostObject> ghosts = space.getGhostObjectList();
-        Collection<PhysicsRigidBody> rigids = space.getRigidBodyList();
-        Collection<PhysicsVehicle> vehics = space.getVehicleList();
-
-        int count
-                = charas.size() + ghosts.size() + rigids.size() + vehics.size();
-
-        assert count >= 0 : count;
-        return count;
-    }
-
-    /**
      * Find the named collision object in the specified physics space.
      *
      * @param name generated name (not null)
