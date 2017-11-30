@@ -509,7 +509,7 @@ public class PhysicsUtil {
      *
      * @param space which physics space (not null)
      * @param oldShape shape to replace (not null)
-     * @param newShape new shape (not null)
+     * @param newShape replacement shape (not null)
      */
     public static void replace(PhysicsSpace space, CollisionShape oldShape,
             CollisionShape newShape) {

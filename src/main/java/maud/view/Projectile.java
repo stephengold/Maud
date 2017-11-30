@@ -106,7 +106,7 @@ public class Projectile {
      */
     final private SceneView view;
     /**
-     * spatial for visualization, or null if none
+     * spatial attached to the scene graph for visualization, or null if none
      */
     private Spatial spatial = null;
     // *************************************************************************
