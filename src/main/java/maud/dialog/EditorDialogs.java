@@ -143,8 +143,8 @@ public class EditorDialogs {
         String filePath = baseFilePath + ".j3o";
         File file = new File(filePath);
         if (file.exists()) {
-            String message = String.format("Overwrite %s?",
-                    MyString.quote(filePath));
+            String message
+                    = String.format("Overwrite %s?", MyString.quote(filePath));
             OverwriteDialog controller = new OverwriteDialog();
             Maud.gui.showConfirmDialog(message, "", action, controller);
         } else {
@@ -181,8 +181,8 @@ public class EditorDialogs {
      */
     public static void deleteSgc() {
         String name = Maud.getModel().getTarget().getSgc().name();
-        String message;
-        message = String.format("Delete the %s control?", MyString.quote(name));
+        String message
+                = String.format("Delete the %s control?", MyString.quote(name));
         Maud.gui.closeAllPopups();
         Maud.gui.showConfirmDialog(message, "Delete", Action.deleteSgc, null);
     }
@@ -385,8 +385,8 @@ public class EditorDialogs {
     public static void reduceTrack() {
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.hasTrack()) {
-            IntegerDialog controller;
-            controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
+            IntegerDialog controller
+                    = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter reduction factor:", "2",
@@ -561,8 +561,8 @@ public class EditorDialogs {
         } else {
             min = 0f;
         }
-        DialogController controller;
-        controller = new FloatDialog("Set", min, Float.MAX_VALUE);
+        DialogController controller
+                = new FloatDialog("Set", min, Float.MAX_VALUE);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
@@ -578,8 +578,8 @@ public class EditorDialogs {
         String defaultText = Float.toString(oldDuration);
 
         float finalTime = animation.findLatestKeyframe();
-        DialogController controller;
-        controller = new FloatDialog("Extend", finalTime, Float.MAX_VALUE);
+        DialogController controller
+                = new FloatDialog("Extend", finalTime, Float.MAX_VALUE);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
@@ -674,8 +674,8 @@ public class EditorDialogs {
                     ActionPrefix.setUserData, controller);
 
         } else if (data instanceof Long) {
-            DialogController controller = new LongDialog("Set",
-                    Long.MIN_VALUE, Long.MAX_VALUE);
+            DialogController controller
+                    = new LongDialog("Set", Long.MIN_VALUE, Long.MAX_VALUE);
             long oldValue = (long) data;
             String stringData = Long.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new long integer value:",

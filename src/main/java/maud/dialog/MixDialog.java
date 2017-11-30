@@ -114,8 +114,8 @@ class MixDialog implements DialogController {
             feedbackMessage = "";
         }
 
-        Button commitButton;
-        commitButton = dialogElement.findNiftyControl("#commit", Button.class);
+        Button commitButton
+                = dialogElement.findNiftyControl("#commit", Button.class);
         commitButton.setText(commitLabel);
 
         Element feedbackElement = dialogElement.findElementById("#feedback");

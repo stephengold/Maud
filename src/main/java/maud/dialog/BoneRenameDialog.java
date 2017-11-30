@@ -116,8 +116,8 @@ class BoneRenameDialog implements DialogController {
             feedbackMessage = "";
         }
 
-        Button commitButton = dialogElement.findNiftyControl("#commit",
-                Button.class);
+        Button commitButton
+                = dialogElement.findNiftyControl("#commit", Button.class);
         commitButton.setText(commitLabel);
 
         Element feedbackElement = dialogElement.findElementById("#feedback");
@@ -136,8 +136,8 @@ class BoneRenameDialog implements DialogController {
     private String getName(Element dialogElement) {
         assert dialogElement != null;
 
-        TextField textField = dialogElement.findNiftyControl("#textfield",
-                TextField.class);
+        TextField textField
+                = dialogElement.findNiftyControl("#textfield", TextField.class);
         String text = textField.getRealText();
 
         assert text != null;

@@ -115,8 +115,8 @@ class UserKeyDialog implements DialogController {
             feedbackMessage = "";
         }
 
-        Button commitButton;
-        commitButton = dialogElement.findNiftyControl("#commit", Button.class);
+        Button commitButton
+                = dialogElement.findNiftyControl("#commit", Button.class);
         commitButton.setText(commitLabel);
 
         Element feedbackElement = dialogElement.findElementById("#feedback");
@@ -151,8 +151,8 @@ class UserKeyDialog implements DialogController {
     private String getKey(Element dialogElement) {
         assert dialogElement != null;
 
-        TextField textField = dialogElement.findNiftyControl("#textfield",
-                TextField.class);
+        TextField textField
+                = dialogElement.findNiftyControl("#textfield", TextField.class);
         String text = textField.getRealText();
 
         assert text != null;
