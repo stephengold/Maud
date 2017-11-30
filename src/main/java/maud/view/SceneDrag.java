@@ -46,12 +46,13 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedObject;
+import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.AxesSubject;
 
 /**
- * Drag state for scene views. Never checkpointed.
+ * Axis drag state for scene views. Never checkpointed.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -508,18 +509,25 @@ public class SceneDrag {
                     Vector3f meshOffset
                             = transform.transformInverseVector(offset, null);
                     /*
-                     * Factor out the selected bone's rotation and scaling
+                     * Factor out the parent bone's rotation and scaling
                      * in the displayed pose.
                      */
+                    SelectedBone bone = cgm.getBone();
+                    int parentIndex = bone.parentIndex();
                     Pose pose = cgm.getPose().get();
-                    int boneIndex = cgm.getBone().getIndex();
-                    pose.modelTransform(boneIndex, transform);
-                    transform.getTranslation().zero();
-                    Vector3f userOffset = transform.transformInverseVector(
-                            meshOffset, null);
+                    Vector3f userOffset;
+                    if (parentIndex == SelectedSkeleton.noBoneIndex) {
+                        userOffset = meshOffset;
+                    } else {
+                        pose.modelTransform(parentIndex, transform);
+                        transform.getTranslation().zero();
+                        userOffset = transform.transformInverseVector(
+                                meshOffset, null);
+                    }
                     /*
                      * Translate the selected bone in the displayed pose.
                      */
+                    int boneIndex = bone.getIndex();
                     Vector3f userTranslation
                             = pose.userTranslation(boneIndex, null);
                     userTranslation.addLocal(userOffset);
