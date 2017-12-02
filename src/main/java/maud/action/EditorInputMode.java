@@ -30,8 +30,6 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.cursors.plugins.JmeCursor;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -43,7 +41,6 @@ import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
-import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedTrack;
 import maud.view.EditorView;
 import maud.view.SceneDrag;
@@ -65,21 +62,9 @@ public class EditorInputMode extends InputMode {
     final private static Logger logger
             = Logger.getLogger(EditorInputMode.class.getName());
     /**
-     * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
-     */
-    final private static Quaternion rotationIdentity = new Quaternion();
-    /**
      * asset path to the cursor for this input mode
      */
     final private static String assetPath = "Textures/cursors/default.cur";
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
-     */
-    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#ZERO}
-     */
-    final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
     // *************************************************************************
     // fields
 
@@ -191,7 +176,7 @@ public class EditorInputMode extends InputMode {
                     handled = resampleAction(actionString);
                     break;
                 case "reset":
-                    handled = resetAction(actionString);
+                    handled = ResetAction.process(actionString);
                     break;
                 case "retarget":
                     handled = retargetAction(actionString);
@@ -235,7 +220,7 @@ public class EditorInputMode extends InputMode {
     // private methods
 
     /**
-     * Process an action that starts with "copy ".
+     * Process an action that starts with the word "copy".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -253,7 +238,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "delete ".
+     * Process an action that starts with the word "delete".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -306,7 +291,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "launch".
+     * Process an action that starts with the word "launch".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -326,7 +311,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "reduce".
+     * Process an action that starts with the word "reduce".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -362,29 +347,32 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "rename".
+     * Process an action that starts with the word "rename".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
     private boolean renameAction(String actionString) {
-        boolean handled = false;
+        boolean handled = true;
         switch (actionString) {
             case Action.renameAnimation:
                 EditorDialogs.renameAnimation();
-                handled = true;
                 break;
+
             case Action.renameBone:
                 EditorDialogs.renameBone();
-                handled = true;
                 break;
+
             case Action.renameSpatial:
                 EditorDialogs.renameSpatial();
-                handled = true;
                 break;
+
             case Action.renameUserKey:
                 EditorDialogs.renameUserKey();
-                handled = true;
+                break;
+
+            default:
+                handled = false;
         }
 
         if (!handled) {
@@ -420,7 +408,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "resample".
+     * Process an action that starts with the word "resample".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -463,63 +451,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "reset".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean resetAction(String actionString) {
-        boolean handled = true;
-        EditableCgm target = Maud.getModel().getTarget();
-        SelectedBone bone = target.getBone();
-        Cgm mouseCgm = Maud.gui.mouseCgm();
-        switch (actionString) {
-            case Action.resetBoneAngleToAnimation:
-                bone.setRotationToAnimation();
-                break;
-            case Action.resetBoneAngleToBind:
-                bone.resetRotation();
-                break;
-            case Action.resetBoneOffsetToAnimation:
-                bone.setTranslationToAnimation();
-                break;
-            case Action.resetBoneOffsetToBind:
-                bone.resetTranslation();
-                break;
-            case Action.resetBoneScaleToAnimation:
-                bone.setScaleToAnimation();
-                break;
-            case Action.resetBoneScaleToBind:
-                bone.resetScale();
-                break;
-            case Action.resetBoneSelection:
-                mouseCgm.getBone().deselect();
-                break;
-            case Action.resetSpatialRotation:
-                target.setSpatialRotation(rotationIdentity);
-                break;
-            case Action.resetSpatialScale:
-                target.setSpatialScale(scaleIdentity);
-                break;
-            case Action.resetSpatialTranslation:
-                target.setSpatialTranslation(translateIdentity);
-                break;
-            case Action.resetTwist:
-                Maud.getModel().getMap().setTwist(rotationIdentity);
-                break;
-            case Action.resetVertexSelection:
-                mouseCgm.getVertex().deselect();
-                break;
-
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with "retarget".
+     * Process an action that starts with the word "retarget".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -544,7 +476,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "save".
+     * Process an action that starts with the word "save".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -640,7 +572,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "view".
+     * Process an action that starts with the word "view".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -670,7 +602,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "warp".
+     * Process an action that starts with the word "warp".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -691,7 +623,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with "wrap".
+     * Process an action that starts with the word "wrap".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
