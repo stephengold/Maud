@@ -84,11 +84,15 @@ public class PhysicsMenus {
         } else {
             Cgm target = Maud.getModel().getTarget();
             switch (remainder) {
-                case "Add new":
-                    addNew();
+                case "Add control":
+                    addControl();
                     break;
 
-                case "Joint Tool":
+                case "Compound shape":
+                    target.getShape().addParent();
+                    break;
+
+                case "Joint tool":
                     Maud.gui.tools.select("joint");
                     break;
 
@@ -96,23 +100,23 @@ public class PhysicsMenus {
                     EditorDialogs.setPhysicsRbpValue(RigidBodyParameter.Mass);
                     break;
 
-                case "Object Tool":
+                case "Object tool":
                     Maud.gui.tools.select("object");
                     break;
 
-                case "Select Joint":
+                case "Select joint":
                     selectJoint(target);
                     break;
 
-                case "Select Object":
+                case "Select object":
                     selectObject(target);
                     break;
 
-                case "Select Shape":
+                case "Select shape":
                     selectShape(target);
                     break;
 
-                case "Shape Tool":
+                case "Shape tool":
                     Maud.gui.tools.select("shape");
                     break;
 
@@ -279,9 +283,9 @@ public class PhysicsMenus {
     // private methods
 
     /**
-     * Display a "Physics -> Add new" menu.
+     * Display a "Physics -> Add control" menu.
      */
-    private static void addNew() {
+    private static void addControl() {
         MenuBuilder builder = new MenuBuilder();
 
         builder.addEdit("Ghost");

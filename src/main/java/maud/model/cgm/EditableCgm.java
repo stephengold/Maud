@@ -33,6 +33,7 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.Track;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
@@ -572,7 +573,8 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Update which shape is being resized without triggering a history event.
+     * Update which physics collision shape is being resized without triggering
+     * a history event. TODO rename replaceForResize
      *
      * @param oldShape shape to replace (not null, unaffected)
      * @param newShape replacement shape (not null)
@@ -588,8 +590,30 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Replace the specified physics collision shape with a completely different
+     * shape, but only in objects, not in compound shapes.
+     *
+     * @param oldAnimation animation to replace (not null)
+     * @param newAnimation replacement animation (not null)
+     * @param eventDescription description for the edit history (not null, not
+     * empty)
+     */
+    void replaceInObjects(CollisionShape oldShape, CollisionShape newShape,
+            String eventDescription) {
+        assert oldShape != null;
+        assert newShape != null;
+        assert eventDescription != null;
+        assert !eventDescription.isEmpty();
+
+        PhysicsSpace space = getSceneView().getPhysicsSpace();
+        History.autoAdd();
+        PhysicsUtil.replaceInObjects(space, oldShape, newShape);
+        setEdited(eventDescription);
+    }
+
+    /**
      * Resize the selected physics collision shape by the specified factors
-     * without altering its scale.
+     * without altering its scale. Has no effect on compound shapes.
      *
      * @param factors size factor to apply each local axis (not null,
      * unaffected)
@@ -598,7 +622,7 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(factors, "factors");
 
         SelectedShape shape = getShape();
-        if (!MyVector3f.isScaleIdentity(factors)) {
+        if (!MyVector3f.isScaleIdentity(factors) && !shape.isCompound()) {
             Vector3f he = shape.halfExtents(null);
             he.multLocal(factors);
             shape.setHalfExtents(he);

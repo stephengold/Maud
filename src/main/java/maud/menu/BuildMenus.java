@@ -47,6 +47,7 @@ import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.ViewMode;
 import maud.view.SceneView;
@@ -815,34 +816,39 @@ public class BuildMenus {
      * Build a Physics menu.
      */
     private void buildPhysicsMenu() {
-        builder.addTool("Shape Tool");
+        builder.addTool("Shape tool");
 
         Cgm target = Maud.getModel().getTarget();
         SceneView sceneView = target.getSceneView();
         int numShapes = sceneView.shapeMap().size();
         if (numShapes > 0) {
-            builder.add("Select Shape");
+            builder.add("Select shape");
         }
 
-        builder.addTool("Object Tool");
+        SelectedShape shape = target.getShape();
+        if (shape.isSelected() && !shape.isCompound()) {
+            builder.add("Compound shape");
+        }
+
+        builder.addTool("Object tool");
 
         int numObjects = sceneView.objectMap().size();
         if (numObjects > 0) {
-            builder.add("Select Object");
+            builder.add("Select object");
         }
 
-        builder.add("Add new");
+        builder.add("Add control");
 
         if (target.getObject().hasMass()) {
             builder.addDialog("Mass");
         }
 
-        builder.addTool("Joint Tool");
+        builder.addTool("Joint tool");
 
         PhysicsSpace space = sceneView.getPhysicsSpace();
         int numJoints = PhysicsUtil.countJoints(space);
         if (numJoints > 0) {
-            builder.add("Select Joint");
+            builder.add("Select joint");
         }
     }
 

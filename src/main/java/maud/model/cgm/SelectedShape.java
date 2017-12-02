@@ -36,6 +36,7 @@ import com.jme3.bullet.collision.shapes.ConeCollisionShape;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
@@ -80,6 +81,25 @@ public class SelectedShape implements Cloneable {
     private long selectedId = -1L;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Create a compound shape having the selected shape as its only child. The
+     * parent shape replaces the child shape in every collision object that uses
+     * it.
+     * <p>
+     * The child shape cannot itself be a compound shape.
+     */
+    public void addParent() {
+        CollisionShape child = find();
+        if (child != null && !(child instanceof CompoundCollisionShape)) {
+            CompoundCollisionShape parent = new CompoundCollisionShape();
+            Vector3f location = new Vector3f();
+            parent.addChildShape(child, location);
+
+            replaceInObjects(parent,
+                    "replace collision shape with a compound shape");
+        }
+    }
 
     /**
      * Test whether the specified parameter can be set to the specified value.
@@ -208,6 +228,16 @@ public class SelectedShape implements Cloneable {
         float result = Float.NaN;
         if (isSelected()) {
             CollisionShape shape = find();
+            if (shape instanceof CompoundCollisionShape) {
+                switch (parameter) {
+                    case HalfExtentX:
+                    case HalfExtentY:
+                    case HalfExtentZ:
+                    case Height:
+                    case Radius:
+                        return Float.NaN;
+                }
+            }
             switch (parameter) {
                 case HalfExtentX:
                 case HalfExtentY:
@@ -248,7 +278,8 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Read the type of the selected shape.
+     * Read the type of the selected shape. TODO reorder methods, move the meat
+     * to MyShape.describeType()
      *
      * @return abbreviated class name, or "" if none selected
      */
@@ -281,7 +312,8 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Calculate the position of the shape in the master list.
+     * Find the index of the shape among all shapes in the C-G model in ID
+     * order.
      *
      * @return index (&ge;0)
      */
@@ -291,6 +323,18 @@ public class SelectedShape implements Cloneable {
 
         assert index >= 0 : index;
         return index;
+    }
+
+    /**
+     * Test whether the shape is a compound shape.
+     *
+     * @return true if compound, otherwise false
+     */
+    public boolean isCompound() {
+        CollisionShape shape = find();
+        boolean result = shape instanceof CompoundCollisionShape;
+
+        return result;
     }
 
     /**
@@ -322,8 +366,8 @@ public class SelectedShape implements Cloneable {
         List<String> result;
         CollisionShape shape = find();
         if (shape instanceof CompoundCollisionShape) {
-            CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
-            List<ChildCollisionShape> children = ccs.getChildren();
+            CompoundCollisionShape compound = (CompoundCollisionShape) shape;
+            List<ChildCollisionShape> children = compound.getChildren();
             int count = children.size();
             result = new ArrayList<>(count);
             for (int childIndex = 0; childIndex < count; childIndex++) {
@@ -342,13 +386,14 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Select an identified shape.
+     * Select the identified shape.
      *
      * @param shapeId which shape
      */
     public void select(long shapeId) {
-        List<Long> ids = listShapeIds();
-        assert ids.contains(shapeId) : shapeId;
+        SceneView sceneView = cgm.getSceneView();
+        Map<Long, CollisionShape> map = sceneView.shapeMap();
+        assert map.containsKey(shapeId) : shapeId;
         selectedId = shapeId;
     }
 
@@ -368,7 +413,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Select the next shape (in cyclical index order).
+     * Select the next shape in the C-G model in cyclic ID order.
      */
     public void selectNext() {
         List<Long> ids = listShapeIds();
@@ -388,7 +433,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Select the previous shape (in cyclical index order).
+     * Select the previous shape in the C-G model in cyclic ID order.
      */
     public void selectPrevious() {
         List<Long> ids = listShapeIds();
@@ -412,19 +457,22 @@ public class SelectedShape implements Cloneable {
         assert isSelected();
 
         CollisionShape shape = find();
-        Vector3f halfExtents = MyShape.halfExtents(shape, null);
+        Vector3f halfExtents;
         switch (parameter) {
             case HalfExtentX:
+                halfExtents = MyShape.halfExtents(shape, null);
                 halfExtents.x = newValue;
                 setHalfExtents(halfExtents);
                 break;
 
             case HalfExtentY:
+                halfExtents = MyShape.halfExtents(shape, null);
                 halfExtents.y = newValue;
                 setHalfExtents(halfExtents);
                 break;
 
             case HalfExtentZ:
+                halfExtents = MyShape.halfExtents(shape, null);
                 halfExtents.z = newValue;
                 setHalfExtents(halfExtents);
                 break;
@@ -470,7 +518,7 @@ public class SelectedShape implements Cloneable {
         CollisionShape shape = find();
         CollisionShape newShape = MyShape.setHalfExtents(shape, newHalfExtents);
         if (newShape != null) {
-            replaceWith(newShape);
+            replaceForResize(newShape);
         }
     }
 
@@ -493,15 +541,34 @@ public class SelectedShape implements Cloneable {
             Set<Long> userSet = userSet();
             int numUsers = userSet.size();
             if (numUsers == 1) {
-                Long[] ids = new Long[1];
-                userSet.toArray(ids);
-                long userId = ids[0];
+                Long[] userIds = new Long[1];
+                userSet.toArray(userIds);
+                long userId = userIds[0];
 
                 PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-                PhysicsCollisionObject pco
+                PhysicsCollisionObject objectUser
                         = PhysicsUtil.findObject(userId, space);
-                PhysicsUtil.transform(pco, storeResult);
-                // TODO peel back transform if part of a compound shape
+                if (objectUser != null) {
+                    PhysicsUtil.transform(objectUser, storeResult);
+                } else {
+                    CollisionShape shapeUser
+                            = PhysicsUtil.findShape(userId, space);
+                    CompoundCollisionShape compound
+                            = (CompoundCollisionShape) shapeUser;
+                    List<ChildCollisionShape> children = compound.getChildren();
+
+                    Transform parent = new Transform();
+                    for (ChildCollisionShape child : children) {
+                        long id = child.shape.getObjectId();
+                        if (id == userId) {
+                            parent.setTranslation(child.location);
+                            Quaternion rot = parent.getRotation();
+                            rot.fromRotationMatrix(child.rotation);
+                        }
+                    }
+                    storeResult.combineWithParent(parent);
+                }
+
             } else {
                 /*
                  * shape has multiple users, or none
@@ -543,8 +610,7 @@ public class SelectedShape implements Cloneable {
     // private methods
 
     /**
-     * Enumerate all physics shapes in ID order, excluding shapes added by the
-     * scene view.
+     * Enumerate all shapes in the C-G model in ID order.
      *
      * @return a new list of shape identifiers
      */
@@ -558,20 +624,44 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Replace the selected shape with the specified shape.
+     * Replace the selected shape with a resized shape.
      *
-     * @param newShape (not null)
+     * @param newShape replacement shape (not null, not a compound shape)
      */
-    private void replaceWith(CollisionShape newShape) {
-        long newShapeId = newShape.getObjectId();
+    private void replaceForResize(CollisionShape newShape) {
+        Validate.nonNull(newShape, "new shape");
+        assert !(newShape instanceof CompoundCollisionShape);
 
-        CollisionShape shape = find();
         PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        PhysicsUtil.replace(space, shape, newShape);
+        CollisionShape shape = find();
+        PhysicsUtil.replaceInObjects(space, shape, newShape);
+        PhysicsUtil.replaceInCompounds(space, shape, newShape);
 
         EditableCgm editableCgm = (EditableCgm) cgm;
         editableCgm.replace(shape, newShape);
 
+        long newShapeId = newShape.getObjectId();
+        selectedId = newShapeId;
+    }
+
+    /**
+     * Replace the selected shape with a new shape, but only in objects, not in
+     * compound shapes.
+     *
+     * @param newShape replacement shape (not null)
+     * @param eventDescription description for the edit history (not null, not
+     * empty)
+     */
+    private void replaceInObjects(CollisionShape newShape,
+            String eventDescription) {
+        assert newShape != null;
+        assert eventDescription != null;
+        assert !eventDescription.isEmpty();
+
+        CollisionShape shape = find();
+        EditableCgm editableCgm = (EditableCgm) cgm;
+        editableCgm.replaceInObjects(shape, newShape, eventDescription);
+        long newShapeId = newShape.getObjectId();
         selectedId = newShapeId;
     }
 
@@ -585,7 +675,7 @@ public class SelectedShape implements Cloneable {
 
         CollisionShape shape = find();
         CollisionShape newShape = MyShape.setHeight(shape, newHeight);
-        replaceWith(newShape);
+        replaceForResize(newShape);
     }
 
     /**
@@ -598,6 +688,6 @@ public class SelectedShape implements Cloneable {
 
         CollisionShape shape = find();
         CollisionShape newShape = MyShape.setRadius(shape, newRadius);
-        replaceWith(newShape);
+        replaceForResize(newShape);
     }
 }

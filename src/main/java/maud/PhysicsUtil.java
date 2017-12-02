@@ -42,6 +42,7 @@ import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.objects.PhysicsVehicle;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -485,15 +486,55 @@ public class PhysicsUtil {
     }
 
     /**
-     * Replace every use of the specified shape in the specified physics space
-     * with a new shape.
+     * Replace all uses of the specified shape in compound shapes in the
+     * specified space.
+     *
+     * @param space which physics space (not null)
+     * @param oldShape shape to replace (not null)
+     * @param newShape replacement shape (not null, not a compound shape)
+     */
+    public static void replaceInCompounds(PhysicsSpace space,
+            CollisionShape oldShape, CollisionShape newShape) {
+        Validate.nonNull(space, "space");
+        Validate.nonNull(oldShape, "old shape");
+        Validate.nonNull(newShape, "new shape");
+        assert !(newShape instanceof CompoundCollisionShape);
+
+        long oldShapeId = oldShape.getObjectId();
+        Map<Long, CollisionShape> shapeMap = shapeMap(space);
+        for (CollisionShape shape : shapeMap.values()) {
+            if (shape instanceof CompoundCollisionShape) {
+                CompoundCollisionShape compound
+                        = (CompoundCollisionShape) shape;
+                List<ChildCollisionShape> childList = compound.getChildren();
+                int numChildren = childList.size();
+                ChildCollisionShape[] childArray
+                        = new ChildCollisionShape[numChildren];
+                childList.toArray(childArray);
+                for (ChildCollisionShape child : childArray) {
+                    CollisionShape childShape = child.shape;
+                    long shapeId = childShape.getObjectId();
+                    if (shapeId == oldShapeId) {
+                        Vector3f location = child.location.clone();
+                        Matrix3f rotation = child.rotation.clone();
+                        compound.removeChildShape(childShape);
+                        compound.addChildShape(newShape, location, rotation);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Replace all uses of the specified shape in collision objects in the
+     * specified space.
      *
      * @param space which physics space (not null)
      * @param oldShape shape to replace (not null)
      * @param newShape replacement shape (not null)
      */
-    public static void replace(PhysicsSpace space, CollisionShape oldShape,
-            CollisionShape newShape) {
+    public static void replaceInObjects(PhysicsSpace space,
+            CollisionShape oldShape, CollisionShape newShape) {
         Validate.nonNull(space, "space");
         Validate.nonNull(newShape, "new shape");
 
@@ -504,11 +545,10 @@ public class PhysicsUtil {
             CollisionShape shape = pco.getCollisionShape();
             long shapeId = shape.getObjectId();
             if (shapeId == oldShapeId) {
-                space.remove(pco);
+                space.remove(pco); // TODO not necessary for Ghost?
                 pco.setCollisionShape(newShape);
                 space.add(pco);
             }
-            // TODO check whether shape is used by a ChildCollisionShape
         }
     }
 
