@@ -498,7 +498,7 @@ public class MaudUtil {
     public static Vector3f halfExtents(Spatial subtree) {
         Spatial clone = subtree.clone(false);
         clone.setLocalTransform(transformIdentity);
-        Vector3f[] minMax = MySpatial.findMinMaxCoords(clone, true);
+        Vector3f[] minMax = MySpatial.findMinMaxCoords(clone);
         float heX = Math.max(-minMax[0].x, minMax[1].x);
         float heY = Math.max(-minMax[0].y, minMax[1].y);
         float heZ = Math.max(-minMax[0].z, minMax[1].z);

@@ -625,8 +625,7 @@ public class SceneView
      */
     public Map<Long, PhysicsCollisionObject> objectMap() {
         PhysicsSpace space = getPhysicsSpace();
-        Map<Long, PhysicsCollisionObject> result
-                = PhysicsUtil.objectMap(space);
+        Map<Long, PhysicsCollisionObject> result = PhysicsUtil.objectMap(space);
 
         Set<Long> viewIds = listIds(null);
         for (long id : viewIds) {
@@ -1516,7 +1515,7 @@ public class SceneView
          * coordinates in the C-G model.
          */
         parent.setLocalTransform(transformIdentity);
-        Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot, true);
+        Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot);
         Vector3f extent = minMax[1].subtract(minMax[0]);
         Vector3f center = MyVector3f.midpoint(minMax[0], minMax[1]);
         float maxExtent = MyMath.max(extent.x, extent.y, extent.z);
