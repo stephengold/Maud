@@ -80,7 +80,7 @@ public class Projectile {
     /**
      * mass of each projectile (in kg)
      */
-    final private static float mass = 1f;
+    final private static float mass = 0.001f;
     /**
      * message logger for this class
      */
