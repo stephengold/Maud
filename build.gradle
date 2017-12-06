@@ -11,7 +11,7 @@ gradle.projectsEvaluated {
     }
 }
 
-ext.jmonkeyengineVersion = '3.1.0-stable'
+ext.jmonkeyengineVersion = '3.2.0-alpha2'
 //ext.jmonkeyengineVersion = '[3.2,)'
 
 if (!hasProperty('mainClass')) {
@@ -46,12 +46,12 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.2.3'
 
     // from stephengold's bintray repositories:
-    compile 'jme3utilities:jme3-utilities-heart:1.0.0for31'
-    compile 'jme3utilities:jme3-utilities-debug:0.8.2for31'
-    compile 'jme3utilities:jme3-utilities-ui:0.6.0for31'
-    compile 'jme3utilities:jme3-utilities-nifty:0.7.3for31'
-    compile 'jme3utilities:SkyControl:0.9.7for31'
-    compile 'jme3utilities:Wes:0.3.0for31'
+    compile 'jme3utilities:jme3-utilities-heart:1.0.0for32'
+    compile 'jme3utilities:jme3-utilities-debug:0.8.2for32'
+    compile 'jme3utilities:jme3-utilities-ui:0.6.0for32'
+    compile 'jme3utilities:jme3-utilities-nifty:0.7.3for32'
+    compile 'jme3utilities:SkyControl:0.9.7for32'
+    compile 'jme3utilities:Wes:0.3.0for32'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jmonkeyengine's bintray repositories:
