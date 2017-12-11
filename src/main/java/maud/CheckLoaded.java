@@ -219,7 +219,7 @@ public class CheckLoaded {
      * Check for anomalies in a loaded BoneTrack.
      *
      * @param boneTrack (not null, unaffected)
-     * @param numBones (&gt;0, &le;255)
+     * @param numBones (&gt;0)
      * @param numFrames (&gt;0)
      * @param targetBoneIndexSet (not null, modified)
      * @return false if issues found, otherwise true
@@ -227,7 +227,6 @@ public class CheckLoaded {
     public static boolean boneTrack(BoneTrack boneTrack, int numBones,
             int numFrames, Set<Integer> targetBoneIndexSet) {
         assert numBones > 0 : numBones;
-        assert numBones <= 255 : numBones; // TODO JME 3.2
         assert numFrames > 0 : numFrames;
 
         int targetBoneIndex = boneTrack.getTargetBoneIndex();
@@ -324,10 +323,6 @@ public class CheckLoaded {
      */
     public static boolean skeleton(Skeleton skeleton) {
         int numBones = skeleton.getBoneCount();
-        if (numBones > 255) { // TODO JME 3.2
-            logger.warning("too many bones");
-            return false;
-        }
         if (numBones < 0) {
             logger.warning("bone count is negative");
             return false;
