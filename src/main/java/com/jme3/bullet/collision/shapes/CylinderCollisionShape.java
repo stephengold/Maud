@@ -83,16 +83,16 @@ public class CylinderCollisionShape extends CollisionShape {
 
     /**
      * WARNING - non-uniform scaling has no effect.
+     * @param scale desired scale factor for each local axis (not null)
      */
     @Override
     public void setScale(Vector3f scale) {
         if (scale.x != scale.y || scale.y != scale.z) {
-            Logger.getLogger(this.getClass().getName()).log(Level.WARNING,
-                    "CylinderCollisionShape cannot be scaled non-uniformly");
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE,
+                    "CylinderCollisionShape cannot be scaled non-uniformly.");
         } else {    
             super.setScale(scale);
         }
-
     }
 
     public void write(JmeExporter ex) throws IOException {

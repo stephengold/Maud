@@ -126,8 +126,8 @@ public class CompoundCollisionShape extends CollisionShape {
     @Override
     public void setScale(Vector3f newScale) {
         if (newScale.x != newScale.y || newScale.y != newScale.z) {
-            Logger.getLogger(this.getClass().getName()).log(Level.WARNING,
-                    "CompoundCollisionShape cannot be scaled non-uniformly");
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE,
+                    "CompoundCollisionShape cannot be scaled non-uniformly.");
         } else {
             float growFactor = newScale.x / scale.x;
             int numChildren = children.size();

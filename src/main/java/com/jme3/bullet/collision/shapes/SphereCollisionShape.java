@@ -83,8 +83,8 @@ public class SphereCollisionShape extends CollisionShape {
     @Override
     public void setScale(Vector3f scale) {
         if (scale.x != scale.y || scale.y != scale.z) {
-            Logger.getLogger(this.getClass().getName()).log(Level.WARNING,
-                    "SphereCollisionShape cannot be scaled non-uniformly");
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE,
+                    "SphereCollisionShape cannot be scaled non-uniformly.");
         } else {    
             super.setScale(scale);
         }
