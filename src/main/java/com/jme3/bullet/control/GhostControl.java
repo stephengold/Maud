@@ -175,6 +175,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
         Vector3f newScale = getSpatialScale();
         if (MyShape.canScale(collisionShape, newScale)) {
             collisionShape.setScale(newScale);
+            // note: assuming single-use shape
         }
     }
 

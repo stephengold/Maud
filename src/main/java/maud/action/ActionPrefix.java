@@ -125,11 +125,11 @@ public class ActionPrefix {
      */
     final public static String newAssetLocationSpec = "new assetLocationSpec ";
     /**
-     * argument is the name of a type of physics collision shape
+     * argument is the name of a ShapeType
      */
     final public static String newGhostControl = "new ghostControl ";
     /**
-     * argument is the name of a type of physics collision shape
+     * argument is the name of a ShapeType
      */
     final public static String newRbc = "new rbc ";
     /**

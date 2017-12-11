@@ -84,7 +84,7 @@ public class SelectedShape implements Cloneable {
 
     /**
      * Create a compound shape having the selected shape as its only child. The
-     * parent shape replaces the child shape in every collision object that uses
+     * new shape replaces the child shape in every collision object that uses
      * it.
      * <p>
      * The child shape cannot itself be a compound shape.
