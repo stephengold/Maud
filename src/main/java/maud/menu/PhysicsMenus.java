@@ -44,7 +44,8 @@ import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 
 /**
- * Physics menus in Maud's editor screen.
+ * Menus in Maud's editor screen that relate to physics shapes, objects, and
+ * joints.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -76,10 +77,10 @@ public class PhysicsMenus {
      */
     static boolean menuPhysics(String remainder) {
         boolean handled = true;
-        String addPrefix = "Add new" + EditorMenus.menuPathSeparator;
-        if (remainder.startsWith(addPrefix)) {
-            String arg = MyString.remainder(remainder, addPrefix);
-            handled = menuPhysicsAdd(arg);
+        String addControlPrefix = "Add control" + EditorMenus.menuPathSeparator;
+        if (remainder.startsWith(addControlPrefix)) {
+            String arg = MyString.remainder(remainder, addControlPrefix);
+            handled = menuPhysicsAddControl(arg);
 
         } else {
             Cgm target = Maud.getModel().getTarget();
@@ -264,7 +265,7 @@ public class PhysicsMenus {
     }
 
     /**
-     * Display a menu of types of shapes.
+     * Display a menu of types of shapes that can be created.
      *
      * @param actionPrefix action prefix for the menu (not null, not empty)
      */
@@ -291,16 +292,16 @@ public class PhysicsMenus {
         builder.addEdit("Ghost");
         builder.addEdit("RigidBody");
 
-        builder.show("select menuItem Physics -> Add new -> ");
+        builder.show("select menuItem Physics -> Add control -> ");
     }
 
     /**
-     * Handle a "select menuItem" action from the "Physics -> Add new" menu.
+     * Handle a "select menuItem" action from the "Physics -> Add control" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
      */
-    private static boolean menuPhysicsAdd(String remainder) {
+    private static boolean menuPhysicsAddControl(String remainder) {
         boolean handled = true;
         switch (remainder) {
             case "Ghost":
