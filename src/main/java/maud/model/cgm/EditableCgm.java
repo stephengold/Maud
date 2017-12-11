@@ -151,8 +151,8 @@ public class EditableCgm extends LoadedCgm {
         getSceneView().attachSpatial(parentPosition, newNode);
 
         String boneName = selectedBone.getName();
-        String description = "add attachments node for "
-                + MyString.quote(boneName);
+        String description
+                = "add attachments node for " + MyString.quote(boneName);
         setEdited(description);
 
         assert selectedBone.hasAttachmentsNode();
@@ -613,7 +613,8 @@ public class EditableCgm extends LoadedCgm {
 
     /**
      * Resize the selected physics collision shape by the specified factors
-     * without altering its scale. Has no effect on compound shapes.
+     * without altering its scale. Has no effect on compound shapes. TODO
+     * implement for compound shapes
      *
      * @param factors size factor to apply each local axis (not null,
      * unaffected)

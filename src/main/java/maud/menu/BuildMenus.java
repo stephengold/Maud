@@ -813,7 +813,7 @@ public class BuildMenus {
     }
 
     /**
-     * Build a Physics menu.
+     * Build a Physics menu. TODO move to PhysicsMenus
      */
     private void buildPhysicsMenu() {
         builder.addTool("Shape tool");
@@ -826,8 +826,10 @@ public class BuildMenus {
         }
 
         SelectedShape shape = target.getShape();
-        if (shape.isSelected() && !shape.isCompound()) {
-            builder.add("Compound shape");
+        boolean isSelected = shape.isSelected();
+        boolean isCompound = shape.isCompound();
+        if (isSelected && !isCompound) {
+            builder.addEdit("Compound shape");
         }
 
         builder.addTool("Object tool");

@@ -144,9 +144,9 @@ class NewAction {
             }
 
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromPose)) {
-            String name = MyString.remainder(actionString,
+            String animationName = MyString.remainder(actionString,
                     ActionPrefix.newAnimationFromPose);
-            target.getAnimation().poseAndLoad(name);
+            target.getAnimation().poseAndLoad(animationName);
 
         } else if (actionString.startsWith(ActionPrefix.newGhostControl)) {
             String shapeName = MyString.remainder(actionString,
