@@ -269,24 +269,16 @@ public class MaudUtil {
              * Calculate the offset from the camera to the point of contact.
              */
             CollisionResult result = results.getCollision(resultIndex);
-            Geometry geometry = result.getGeometry();
-            Mesh mesh = geometry.getMesh();
-            Mesh.Mode mode = mesh.getMode();
-
-            if (mode == Mesh.Mode.Triangles // work around JME issue #710
-                    || mode == Mesh.Mode.TriangleStrip
-                    || mode == Mesh.Mode.TriangleFan) { // TODO JME 3.2
-                Vector3f contactPoint = result.getContactPoint();
-                Vector3f offset = contactPoint.subtract(ray.origin);
-                /*
-                 * If the dot product of the normal with the offset is negative,
-                 * then the triangle faces the camera.
-                 */
-                Vector3f normal = result.getContactNormal();
-                float dotProduct = offset.dot(normal);
-                if (dotProduct < 0f) {
-                    return result;
-                }
+            Vector3f contactPoint = result.getContactPoint();
+            Vector3f offset = contactPoint.subtract(ray.origin);
+            /*
+             * If the dot product of the normal with the offset is negative,
+             * then the triangle faces the camera.
+             */
+            Vector3f normal = result.getContactNormal();
+            float dotProduct = offset.dot(normal);
+            if (dotProduct < 0f) {
+                return result;
             }
         }
 
