@@ -260,6 +260,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         return spatial.getWorldScale();
     }
 
+    @Override
     public void update(float tpf) {
         if (enabled && spatial != null) {
             if (isKinematic() && kinematicSpatial) {
@@ -269,6 +270,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
                 if (MyShape.canScale(collisionShape, newScale)) {
                     Vector3f oldScale = collisionShape.getScale();
                     if (!newScale.equals(oldScale)) {
+                        // assuming single-use shape
                         collisionShape.setScale(newScale);
                         setCollisionShape(collisionShape);
                     }
@@ -276,6 +278,20 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
             } else {
                 getMotionState().applyTransform(spatial);
             }
+        }
+    }
+
+    /**
+     * After reshaping the body, always remove it from any physics space and
+     * then re-add it.
+     *
+     * @param collisionShape replacement shape
+     */
+    public void setCollisionShape(CollisionShape collisionShape) {
+        super.setCollisionShape(collisionShape);
+        if (space != null) {
+            space.removeCollisionObject(this);
+            space.addCollisionObject(this);
         }
     }
 
