@@ -42,6 +42,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedShape;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
+import maud.view.SceneView;
 
 /**
  * Menus in Maud's editor screen that relate to physics shapes, objects, and
@@ -68,6 +69,48 @@ public class PhysicsMenus {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Build a Physics menu.
+     */
+    static void buildPhysicsMenu(MenuBuilder builder) {
+        builder.addTool("Shape tool");
+
+        Cgm target = Maud.getModel().getTarget();
+        SceneView sceneView = target.getSceneView();
+        int numShapes = sceneView.shapeMap().size();
+        if (numShapes > 0) {
+            builder.add("Select shape");
+        }
+
+        SelectedShape shape = target.getShape();
+        boolean isSelected = shape.isSelected();
+        boolean isCompound = shape.isCompound();
+        if (isSelected && !isCompound) {
+            builder.addEdit("Compound shape");
+        }
+
+        builder.addTool("Object tool");
+
+        int numObjects = sceneView.objectMap().size();
+        if (numObjects > 0) {
+            builder.add("Select object");
+        }
+
+        builder.add("Add control");
+
+        if (target.getObject().hasMass()) {
+            builder.addDialog("Mass");
+        }
+
+        builder.addTool("Joint tool");
+
+        PhysicsSpace space = sceneView.getPhysicsSpace();
+        int numJoints = PhysicsUtil.countJoints(space);
+        if (numJoints > 0) {
+            builder.add("Select joint");
+        }
+    }
 
     /**
      * Handle a "select menuItem" action from the Physics menu.

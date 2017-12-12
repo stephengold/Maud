@@ -26,7 +26,6 @@
  */
 package maud.menu;
 
-import com.jme3.bullet.PhysicsSpace;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +38,6 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
-import maud.PhysicsUtil;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.EditorModel;
@@ -47,10 +45,8 @@ import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.SelectedBone;
-import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.ViewMode;
-import maud.view.SceneView;
 
 /**
  * Build menus in Maud's editor screen. TODO split off methods that don't need
@@ -384,7 +380,7 @@ public class BuildMenus {
                 buildMapMenu();
                 break;
             case "Physics":
-                buildPhysicsMenu();
+                PhysicsMenus.buildPhysicsMenu(builder);
                 break;
             case "Settings":
                 buildSettingsMenu();
@@ -810,48 +806,6 @@ public class BuildMenus {
         }
         builder.addDialog("Save");
         builder.addTool("Twist tool");
-    }
-
-    /**
-     * Build a Physics menu. TODO move to PhysicsMenus
-     */
-    private void buildPhysicsMenu() {
-        builder.addTool("Shape tool");
-
-        Cgm target = Maud.getModel().getTarget();
-        SceneView sceneView = target.getSceneView();
-        int numShapes = sceneView.shapeMap().size();
-        if (numShapes > 0) {
-            builder.add("Select shape");
-        }
-
-        SelectedShape shape = target.getShape();
-        boolean isSelected = shape.isSelected();
-        boolean isCompound = shape.isCompound();
-        if (isSelected && !isCompound) {
-            builder.addEdit("Compound shape");
-        }
-
-        builder.addTool("Object tool");
-
-        int numObjects = sceneView.objectMap().size();
-        if (numObjects > 0) {
-            builder.add("Select object");
-        }
-
-        builder.add("Add control");
-
-        if (target.getObject().hasMass()) {
-            builder.addDialog("Mass");
-        }
-
-        builder.addTool("Joint tool");
-
-        PhysicsSpace space = sceneView.getPhysicsSpace();
-        int numJoints = PhysicsUtil.countJoints(space);
-        if (numJoints > 0) {
-            builder.add("Select joint");
-        }
     }
 
     /**
