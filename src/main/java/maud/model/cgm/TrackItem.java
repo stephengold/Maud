@@ -166,18 +166,18 @@ public class TrackItem {
 
         } else if (track instanceof SpatialTrack
                 && otherTrack instanceof SpatialTrack) {
-            //SpatialTrack spatialTrack = (SpatialTrack) track;
-            Spatial //spatial = spatialTrack.getTrackSpatial(); //TODO JME 3.2
-                    //if (spatial == null) {
-                    spatial = animControl.getSpatial();
-            //}
+            SpatialTrack spatialTrack = (SpatialTrack) track;
+            Spatial spatial = spatialTrack.getTrackSpatial();
+            if (spatial == null) {
+                spatial = animControl.getSpatial();
+            }
 
             AnimControl otherAnimControl = otherItem.getAnimControl();
-            //SpatialTrack otherSpatialTrack = (SpatialTrack) otherTrack;
-            Spatial //otherSpatial = otherSpatialTrack.getTrackSpatial(); //TODO JME 3.2
-                    //if (otherSpatial == null) {
-                    otherSpatial = otherAnimControl.getSpatial();
-            //}
+            SpatialTrack otherSpatialTrack = (SpatialTrack) otherTrack;
+            Spatial otherSpatial = otherSpatialTrack.getTrackSpatial();
+            if (otherSpatial == null) {
+                otherSpatial = otherAnimControl.getSpatial();
+            }
 
             if (spatial == otherSpatial) {
                 result = true;

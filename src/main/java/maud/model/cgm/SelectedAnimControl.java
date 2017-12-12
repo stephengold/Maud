@@ -28,6 +28,7 @@ package maud.model.cgm;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
+import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
@@ -320,16 +321,16 @@ public class SelectedAnimControl implements JmeCloneable {
         for (TrackItem item : selectedTracks) {
             Track track = item.getTrack();
             Track clone = track.clone();
-            //if (track instanceof SpatialTrack) {
-            //SpatialTrack spatialTrack = (SpatialTrack) track;
-            //Spatial spatial = spatialTrack.getTrackSpatial(); //TODO JME 3.2
-            //if (spatial == null) {
-            //AnimControl animControl = item.getAnimControl();
-            //spatial = animControl.getSpatial();
-            //}
-            //SpatialTrack cloneSt = (SpatialTrack) clone;
-            //cloneSt.setTrackSpatial(spatial);
-            //}
+            if (track instanceof SpatialTrack) {
+                SpatialTrack spatialTrack = (SpatialTrack) track;
+                Spatial spatial = spatialTrack.getTrackSpatial();
+                if (spatial == null) {
+                    AnimControl animControl = item.getAnimControl();
+                    spatial = animControl.getSpatial();
+                }
+                SpatialTrack cloneSt = (SpatialTrack) clone;
+                cloneSt.setTrackSpatial(spatial);
+            }
             mix.addTrack(clone);
         }
 
