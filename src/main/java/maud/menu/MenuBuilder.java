@@ -161,8 +161,8 @@ class MenuBuilder {
             addBlend(name);
         } else if (name.endsWith(".bvh")) {
             addBvh(name);
-            //} else if (name.endsWith(".gltf")) { // TODO JME 3.2
-            //    addXbuf(name);
+        } else if (name.endsWith(".gltf")) {
+            addGeometry(name); // TODO use a glTF icon here
         } else if (name.endsWith(".j3o")) {
             addJme(name);
         } else if (name.endsWith(".jar")) {
@@ -342,8 +342,8 @@ class MenuBuilder {
             result = true;
         } else if (name.endsWith(".bvh")) {
             result = true;
-            //} else if (name.endsWith(".gltf")) { // TODO JME 3.2
-            //    result = true;
+        } else if (name.endsWith(".gltf")) {
+            result = true;
         } else if (name.endsWith(".j3o")) {
             result = true;
         } else if (name.endsWith(".obj")) {
