@@ -45,7 +45,6 @@ import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.SelectedBone;
-import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.ViewMode;
 
 /**
@@ -455,36 +454,6 @@ public class BuildMenus {
             ShowMenus.showBoneSubmenu(boneNames);
         }
     }
-
-    /**
-     * Display a "Bone -&gt; Select source" menu.
-     */
-    public void selectSourceBone() {
-        if (Maud.getModel().getSource().isLoaded()) {
-            builder.reset();
-            buildSourceBoneSelectMenu();
-            builder.show("select menuItem Bone -> Select source -> ");
-        }
-    }
-
-    /**
-     * Handle a "select sourceBone" action with an argument.
-     *
-     * @param argument action argument (not null)
-     */
-    void selectSourceBone(String argument) {
-        Cgm source = Maud.getModel().getSource();
-        SelectedSkeleton skeleton = source.getSkeleton();
-        if (skeleton.hasBone(argument)) {
-            source.getBone().select(argument);
-        } else {
-            /*
-             * Treat the argument as a bone-name prefix.
-             */
-            List<String> boneNames = skeleton.listBoneNames(argument);
-            ShowMenus.showBoneSubmenu(boneNames);
-        }
-    }
     // *************************************************************************
     // private methods
 
@@ -767,26 +736,6 @@ public class BuildMenus {
         if (Maud.getModel().getTarget().getSgc().isSelected()) {
             builder.addEdit("Delete");
             builder.add("Deselect");
-        }
-    }
-
-    /**
-     * Build a "Bone -> Select source" menu.
-     */
-    private void buildSourceBoneSelectMenu() {
-        EditorModel model = Maud.getModel();
-        int numRoots = model.getSource().getSkeleton().countRootBones();
-        if (numRoots == 1) {
-            builder.addBone("Root");
-        } else if (numRoots > 1) {
-            builder.add("Root");
-        }
-
-        String targetBoneName = model.getTarget().getBone().getName();
-        String boneName = model.getMap().sourceBoneName(targetBoneName);
-        if (boneName != null
-                && model.getSource().getSkeleton().hasBone(boneName)) {
-            builder.addBone("Mapped");
         }
     }
 

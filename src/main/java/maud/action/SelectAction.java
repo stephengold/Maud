@@ -212,7 +212,7 @@ class SelectAction {
                 break;
 
             case Action.selectSourceBone:
-                Maud.gui.buildMenus.selectSourceBone();
+                BoneMenus.selectSourceBone();
                 break;
 
             case Action.selectSpatialChild:

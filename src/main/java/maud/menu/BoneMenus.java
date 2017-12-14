@@ -108,7 +108,7 @@ public class BoneMenus {
                     selectBone();
                     break;
                 case "Select source":
-                    Maud.gui.buildMenus.selectSourceBone();
+                    selectSourceBone();
                     break;
                 case "Tool":
                     Maud.gui.tools.select("bone");
@@ -216,6 +216,32 @@ public class BoneMenus {
                 List<String> boneNames = bone.listChildNames();
                 ShowMenus.showBoneSubmenu(boneNames);
             }
+        }
+    }
+
+    /**
+     * Handle a "select sourceBone" action without an argument.
+     */
+    public static void selectSourceBone() {
+        EditorModel model = Maud.getModel();
+        if (model.getSource().isLoaded()) {
+            MenuBuilder builder = new MenuBuilder();
+
+            SelectedSkeleton sourceSkeleton = model.getSource().getSkeleton();
+            int numRoots = sourceSkeleton.countRootBones();
+            if (numRoots == 1) {
+                builder.addBone("Root");
+            } else if (numRoots > 1) {
+                builder.add("Root");
+            }
+
+            String targetBoneName = model.getTarget().getBone().getName();
+            String boneName = model.getMap().sourceBoneName(targetBoneName);
+            if (boneName != null && sourceSkeleton.hasBone(boneName)) {
+                builder.addBone("Mapped");
+            }
+
+            builder.show("select menuItem Bone -> Select source -> ");
         }
     }
 
