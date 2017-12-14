@@ -18,7 +18,7 @@ if (!hasProperty('mainClass')) {
     ext.mainClass = 'maud.Maud'
 }
 jar.manifest.attributes(
-    'Main-Class': "${mainClass}"
+    'Main-Class': ext.mainClass
 )
 
 repositories {
