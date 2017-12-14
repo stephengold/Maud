@@ -189,6 +189,7 @@ public class SceneDrag {
          * Calculate the old axis direction in world coordinates.
          */
         Spatial spatial = visualizer.getSpatial();
+        assert !MySpatial.isIgnoringTransforms(spatial);
         Vector3f axesOrigin = spatial.getWorldTranslation();
         Vector3f oldTipWorld = visualizer.tipLocation(dragAxisIndex);
         Vector3f oldDirWorld = oldTipWorld.subtract(axesOrigin);
@@ -229,6 +230,7 @@ public class SceneDrag {
                 axisLine = new Line(axesOrigin, oldDirWorld);
                 newTipWorld = MyVector3f.lineMeetsLine(axisLine, worldLine);
                 if (newTipWorld != null) {
+                    assert !MySpatial.isIgnoringTransforms(spatial);
                     Vector3f newTipLocal
                             = spatial.worldToLocal(newTipWorld, null);
                     float newLengthLocal = newTipLocal.length();
@@ -559,8 +561,13 @@ public class SceneDrag {
                      */
                     Spatial spatial = cgm.getSceneView().selectedSpatial();
                     Geometry ag = MySpatial.findAnimatedGeometry(spatial);
-                    Transform transform = ag.getWorldTransform().clone();
-                    transform.getTranslation().zero();
+                    Transform transform;
+                    if (ag.isIgnoreTransform()) {
+                        transform = new Transform(); // identity
+                    } else {
+                        transform = ag.getWorldTransform().clone();
+                        transform.getTranslation().zero();
+                    }
                     Vector3f meshOffset
                             = transform.transformInverseVector(offset, null);
                     /*

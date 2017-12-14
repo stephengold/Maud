@@ -588,6 +588,7 @@ public class SceneView
         /*
          * Calculate distances to the tip and tail of the axis arrow.
          */
+        assert !MySpatial.isIgnoringTransforms(axesSpatial);
         Vector3f tailLocation = axesSpatial.getWorldTranslation();
         Vector3f tipLocation = axesVisualizer.tipLocation(axisIndex);
         Vector3f cameraLocation = getPov().cameraLocation(null);
@@ -966,8 +967,10 @@ public class SceneView
         if (basedOn == null) {
             basedOn = cgmRoot;
         }
-        Transform alias = basedOn.getWorldTransform();
-        storeResult.set(alias);
+        if (!MySpatial.isIgnoringTransforms(basedOn)) {
+            Transform alias = basedOn.getWorldTransform();
+            storeResult.set(alias);
+        }
 
         return storeResult;
     }
@@ -1620,8 +1623,10 @@ public class SceneView
 
                 pose.modelTransform(boneIndex, transform);
                 Geometry ag = findAnimatedGeometry();
-                Transform worldTransform = ag.getWorldTransform();
-                transform.combineWithParent(worldTransform);
+                if (!ag.isIgnoreTransform()) {
+                    Transform worldTransform = ag.getWorldTransform();
+                    transform.combineWithParent(worldTransform);
+                }
                 MySpatial.setWorldTransform(attachNode, transform);
             }
         }

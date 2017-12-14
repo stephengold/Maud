@@ -130,8 +130,10 @@ class SceneUpdater {
                 if (cgm.getBone().isSelected()) {
                     transform = cgm.getBone().modelTransform(null);
                     Geometry ag = sceneView.findAnimatedGeometry();
-                    Transform worldTransform = ag.getWorldTransform();
-                    transform.combineWithParent(worldTransform);
+                    if (!ag.isIgnoreTransform()) {
+                        Transform worldTransform = ag.getWorldTransform();
+                        transform.combineWithParent(worldTransform);
+                    }
                 }
                 break;
 
@@ -150,7 +152,11 @@ class SceneUpdater {
             case SelectedSpatial:
                 if (cgm.isLoaded()) {
                     Spatial spatial = sceneView.selectedSpatial();
-                    transform = spatial.getWorldTransform();
+                    if (MySpatial.isIgnoringTransforms(spatial)) {
+                        transform = new Transform(); // identity
+                    } else {
+                        transform = spatial.getWorldTransform();
+                    }
                 }
                 break;
 

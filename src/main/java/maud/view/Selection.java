@@ -32,6 +32,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.math.MyVector3f;
@@ -364,6 +365,7 @@ public class Selection {
         AxesVisualizer visualizer = sceneView.getAxesVisualizer();
         Spatial spatial = visualizer.getSpatial();
         Vector3f tipWorld = visualizer.tipLocation(bestAxisIndex);
+        assert !MySpatial.isIgnoringTransforms(spatial);
         Vector3f tipLocal = spatial.worldToLocal(tipWorld, null);
         float length = tipLocal.length();
 

@@ -412,7 +412,11 @@ public class MaudUtil {
                 }
             }
 
-            geometry.localToWorld(meshLoc, worldLoc);
+            if (geometry.isIgnoreTransform()) {
+                worldLoc.set(meshLoc);
+            } else {
+                geometry.localToWorld(meshLoc, worldLoc);
+            }
             if (worldLoc.y < bestY) {
                 bestIndex = vertexIndex;
                 bestY = worldLoc.y;

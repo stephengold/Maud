@@ -54,6 +54,7 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
+import jme3utilities.MySpatial;
 import maud.MyShape;
 
 /**
@@ -240,21 +241,27 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
     }
 
     private Vector3f getSpatialTranslation(){
-        if(motionState.isApplyPhysicsLocal()){
+        if (MySpatial.isIgnoringTransforms(spatial)) {
+            return new Vector3f(); // identity
+        } else if (motionState.isApplyPhysicsLocal()){
             return spatial.getLocalTranslation();
         }
         return spatial.getWorldTranslation();
     }
 
     private Quaternion getSpatialRotation(){
-        if(motionState.isApplyPhysicsLocal()){
+        if (MySpatial.isIgnoringTransforms(spatial)) {
+            return new Quaternion(); // identity
+        } else if (motionState.isApplyPhysicsLocal()){
             return spatial.getLocalRotation();
         }
         return spatial.getWorldRotation();
     }
 
     private Vector3f getSpatialScale() {
-        if (motionState.isApplyPhysicsLocal()) {
+        if (MySpatial.isIgnoringTransforms(spatial)) {
+            return new Vector3f(1f, 1f, 1f);
+        } else if (motionState.isApplyPhysicsLocal()) {
             return spatial.getLocalScale();
         }
         return spatial.getWorldScale();

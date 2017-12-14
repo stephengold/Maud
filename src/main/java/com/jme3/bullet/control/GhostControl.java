@@ -47,6 +47,7 @@ import com.jme3.scene.control.Control;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
+import jme3utilities.MySpatial;
 import maud.MyShape;
 
 /**
@@ -83,21 +84,27 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
     }
 
     private Vector3f getSpatialTranslation() {
-        if (applyLocal) {
+        if (MySpatial.isIgnoringTransforms(spatial)) {
+            return new Vector3f(); // identity
+        } else if (applyLocal) {
             return spatial.getLocalTranslation();
         }
         return spatial.getWorldTranslation();
     }
 
     private Quaternion getSpatialRotation() {
-        if (applyLocal) {
+        if (MySpatial.isIgnoringTransforms(spatial)) {
+            return new Quaternion();
+        } else if (applyLocal) {
             return spatial.getLocalRotation();
         }
         return spatial.getWorldRotation();
     }
 
     private Vector3f getSpatialScale() {
-        if (applyLocal) {
+        if (MySpatial.isIgnoringTransforms(spatial)) {
+            return new Vector3f(1f, 1f, 1f);
+        } else if (applyLocal) {
             return spatial.getLocalScale();
         }
         return spatial.getWorldScale();
