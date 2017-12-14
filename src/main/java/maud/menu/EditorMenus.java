@@ -589,7 +589,7 @@ public class EditorMenus {
                 break;
 
             case "Select bone":
-                Maud.gui.buildMenus.selectBone();
+                BoneMenus.selectBone();
                 break;
 
             case "Smooth":

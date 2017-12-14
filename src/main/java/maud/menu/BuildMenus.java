@@ -443,15 +443,6 @@ public class BuildMenus {
     }
 
     /**
-     * Handle a "select bone" action without an argument.
-     */
-    public void selectBone() {
-        builder.reset();
-        buildBoneSelectMenu();
-        builder.show("select menuItem Bone -> Select -> ");
-    }
-
-    /**
      * Handle a "select boneWithTrack" action.
      */
     void selectBoneWithTrack() {
@@ -566,61 +557,6 @@ public class BuildMenus {
         }
         if (model.getSource().isLoaded()) {
             builder.add("Select source"); // TODO submenu
-        }
-    }
-
-    /**
-     * Build a "Bone -> Select" menu.
-     */
-    private void buildBoneSelectMenu() {
-        Cgm target = Maud.getModel().getTarget();
-        builder.add("By name");
-        int numBones = target.getSkeleton().countBones();
-        if (numBones > 0) {
-            builder.add("By parent");
-        }
-
-        int numRoots = target.getSkeleton().countRootBones();
-        if (numRoots == 1) {
-            builder.addBone("Root");
-        } else if (numRoots > 1) {
-            builder.add("Root");
-        }
-
-        int numTracks = target.getAnimation().countBoneTracks();
-        if (numTracks > 0) {
-            builder.add("With track");
-        }
-
-        int numAttachments = target.getSkeleton().listAttachedBones().size();
-        if (numAttachments == 1) {
-            builder.addBone("Attached");
-        } else if (numAttachments > 1) {
-            builder.add("Attached");
-        }
-
-        String sourceBoneName = Maud.getModel().getSource().getBone().getName();
-        String boneName;
-        boneName = Maud.getModel().getMap().targetBoneName(sourceBoneName);
-        if (boneName != null && target.getSkeleton().hasBone(boneName)) {
-            builder.addBone("Mapped");
-        }
-
-        int numChildren = target.getBone().countChildren();
-        if (numChildren == 1) {
-            builder.addBone("Child");
-        } else if (numChildren > 1) {
-            builder.add("Child");
-        }
-
-        boolean isSelected = target.getBone().isSelected();
-        boolean isRoot = target.getBone().isRootBone();
-        if (isSelected && !isRoot) {
-            builder.addBone("Parent");
-        }
-        if (isSelected) {
-            builder.addBone("Next");
-            builder.addBone("Previous");
         }
     }
 

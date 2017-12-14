@@ -91,7 +91,7 @@ class SelectAction {
                 break;
 
             case Action.selectBone:
-                Maud.gui.buildMenus.selectBone();
+                BoneMenus.selectBone();
                 break;
 
             case Action.selectBoneChild:
