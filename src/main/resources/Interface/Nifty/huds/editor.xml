@@ -342,9 +342,9 @@ the menu bar, status bar, and tool windows.
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Influence:  "/>
                         <control name="label" id="boneInfluence"
                                  backgroundColor="#ffff"
-                                 textHAlign="center"
                                  width="*"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">

@@ -199,7 +199,7 @@ class BoneTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("boneInfluence", desc);
+        Maud.gui.setStatusText("boneInfluence", " " + desc);
     }
 
     /**
