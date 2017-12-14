@@ -33,6 +33,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyArray;
 import jme3utilities.wes.Pose;
@@ -191,7 +192,8 @@ public class StaffTrack {
 
         SpatialTrack spatialTrack
                 = cgm.getAnimation().findSpatialTrack(spatialTrackIndex);
-        labelText = spatialTrack.getTrackSpatial().getName();
+        String spatialName = spatialTrack.getTrackSpatial().getName();
+        labelText = "s" + MyString.quote(spatialName);
         track = spatialTrack;
         loadTrack();
     }
