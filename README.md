@@ -14,7 +14,7 @@ Summary of features:
 
  + load models from local filesystems, JAR/ZIP archives, or HTTP servers
  + merge models
- + import models from [Blender][]/[Ogre][]/[Wavefront][obj]/[Xbuf][] and save to native J3O format
+ + import models from [Blender][]/[glTF][]/[Ogre][]/[Wavefront][obj]/[Xbuf][] and save to native J3O format
  + import animations from [Biovision Hierarchy (BVH)](#bvh) files
  + visualize animations, axes, bones, bounding boxes, mesh vertices, physics objects, and skeletons
  + browse animations, bones, keyframes, mesh vertices, physics objects,
@@ -42,7 +42,7 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
-Status as of November 2017: seeking more alpha testers.
+Status as of December 2017: seeking more alpha testers.
 
 ## Contents of this document
 
@@ -77,7 +77,7 @@ Status as of November 2017: seeking more alpha testers.
 
 ## How to build Maud from source
 
-Maud currently targets Version 3.1 of jME.  You are welcome to
+Maud currently targets Version 3.2 of jME.  You are welcome to
 use jME without installing its Integrated Development Environment (IDE),
 but I use the IDE, so I tend to assume you will too.
 
@@ -398,6 +398,7 @@ To be recognized, such models must have filenames ending in ".j3o".
 Maud can also import models in other formats:
 
  + [Blender 3D][blender] (filename must end in ".blend")
+ + [glTF][] (filename must end in ".gltf")
  + [Ogre][] DotScene (filename must end in ".scene")
  + [Ogre][] XML (filename must end in ".mesh.xml")
  + [Wavefront OBJ][obj] (filename must end in ".obj")
@@ -723,13 +724,12 @@ Maud is incomplete.
 The following features are on my "to do" list, in no particular order:
 
  + advance/delay keyframe(s)
- + better support for physics controls/objects
+ + better support for physics controls/joints/objects/shapes
  + smoother camera motion
  + tools for Lights/Materials/Meshes/MPOs
  + select bone mappings that don't correspond to the loaded models
  + export a model to [OBJ][] format
- + export an animation to [BVH][#bvh] format
- + import models from [glTF][] files
+ + export an animation to [BVH](#bvh) format
  + localization
  + more scene-view options for platform/shadows/sky
  + concatenate animations
