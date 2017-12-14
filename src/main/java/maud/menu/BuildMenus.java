@@ -361,7 +361,7 @@ public class BuildMenus {
                 buildAnimationMenu();
                 break;
             case "Bone":
-                buildBoneMenu();
+                BoneMenus.buildBoneMenu(builder);
                 break;
             case "CGM":
                 buildCgmMenu();
@@ -440,20 +440,6 @@ public class BuildMenus {
             builder.show(prefix);
         }
     }
-
-    /**
-     * Handle a "select boneWithTrack" action.
-     */
-    void selectBoneWithTrack() {
-        Cgm target = Maud.getModel().getTarget();
-        List<String> boneNames = target.getAnimation().listTrackedBones();
-        int numBoneTracks = boneNames.size();
-        if (numBoneTracks == 1) {
-            target.getBone().select(boneNames.get(0));
-        } else if (numBoneTracks > 1) {
-            ShowMenus.showBoneSubmenu(boneNames);
-        }
-    }
     // *************************************************************************
     // private methods
 
@@ -500,33 +486,6 @@ public class BuildMenus {
             builder.add("Load source");
         }
         builder.addTool("Tweening");
-    }
-
-    /**
-     * Build a Bone menu.
-     */
-    private void buildBoneMenu() {
-        builder.addTool("Tool");
-        builder.add("Select");
-        builder.addTool("Rotate");
-        builder.addTool("Scale");
-        builder.addTool("Translate");
-
-        EditorModel model = Maud.getModel();
-        SelectedBone selectedBone = model.getTarget().getBone();
-        if (selectedBone.isSelected()) {
-            boolean hasAttachments = selectedBone.hasAttachmentsNode();
-            if (hasAttachments) {
-                builder.addEdit("Delete attachments");
-            } else {
-                builder.addEdit("Attach node");
-            }
-            builder.add("Deselect");
-            builder.addDialog("Rename");
-        }
-        if (model.getSource().isLoaded()) {
-            builder.add("Select source"); // TODO submenu
-        }
     }
 
     /**

@@ -64,6 +64,33 @@ public class BoneMenus {
     // new methods exposed
 
     /**
+     * Build a Bone menu.
+     */
+    static void buildBoneMenu(MenuBuilder builder) {
+        builder.addTool("Tool");
+        builder.add("Select");
+        builder.addTool("Rotate");
+        builder.addTool("Scale");
+        builder.addTool("Translate");
+
+        EditorModel model = Maud.getModel();
+        SelectedBone selectedBone = model.getTarget().getBone();
+        if (selectedBone.isSelected()) {
+            boolean hasAttachments = selectedBone.hasAttachmentsNode();
+            if (hasAttachments) {
+                builder.addEdit("Delete attachments");
+            } else {
+                builder.addEdit("Attach node");
+            }
+            builder.add("Deselect");
+            builder.addDialog("Rename");
+        }
+        if (model.getSource().isLoaded()) {
+            builder.add("Select source"); // TODO submenu
+        }
+    }
+
+    /**
      * Handle a "select menuItem" action from the Bone menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -89,33 +116,43 @@ public class BoneMenus {
                 case "Attach node":
                     target.addAttachmentsNode();
                     break;
+
                 case "Deselect":
                     target.getBone().deselect();
                     break;
+
                 case "Delete attachments":
                     target.deleteAttachmentsNode();
                     break;
+
                 case "Rename":
                     EditorDialogs.renameBone();
                     break;
+
                 case "Rotate":
                     Maud.gui.tools.select("boneRotation");
                     break;
+
                 case "Scale":
                     Maud.gui.tools.select("boneScale");
                     break;
+
                 case "Select":
                     selectBone();
                     break;
+
                 case "Select source":
                     selectSourceBone();
                     break;
+
                 case "Tool":
                     Maud.gui.tools.select("bone");
                     break;
+
                 case "Translate":
                     Maud.gui.tools.select("boneTranslation");
                     break;
+
                 default:
                     handled = false;
             }
