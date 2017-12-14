@@ -676,6 +676,7 @@ public class ScoreView implements EditorView {
             assert staffHeight > 0f : staffHeight;
         } else {
             finial = null;
+            StaffTrack.setTracklessBone(boneIndex);
             staffHeight = 0f;
         }
         /*
@@ -737,7 +738,7 @@ public class ScoreView implements EditorView {
         geometry.setLocalTranslation(xLeftMargin, -height, zLines);
         geometry.setMaterial(wireMaterial);
         /*
-         * Attach a label to the left of the left-hand finial.
+         * Attach a track label to the left of the left-hand finial.
          */
         float leftX = cgm.getScorePov().leftX() + xGap;
         float rightX = xLeftMargin - ScoreResources.hashSize;
@@ -854,7 +855,7 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attach a right-aligned label to the visuals.
+     * Attach a right-aligned track label to the visuals.
      *
      * @param rightX world X coordinate for the right edge of the label
      * @param centerY world Y coordinate for the center of the label
@@ -878,12 +879,7 @@ public class ScoreView implements EditorView {
             bgMaterial = r.bgNotSelected;
         }
 
-        String labelText;
-        if (currentBone == -2) {
-            labelText = "(spatial)"; // TODO
-        } else {
-            labelText = cgm.getSkeleton().getBoneName(currentBone);
-        }
+        String labelText = StaffTrack.labelText();
         float textSize = 4f + r.labelFont.getLineWidth(labelText);
         /*
          * Calculate the effective width and height for the label and the size
@@ -1018,7 +1014,7 @@ public class ScoreView implements EditorView {
         geometry.setLocalTranslation(xLeftMargin, -height, zLines);
         geometry.setMaterial(wireMaterial);
         /*
-         * Attach a label overlapping the left-hand rectangle.
+         * Attach a track label overlapping the left-hand rectangle.
          */
         float leftX = cgm.getScorePov().leftX() + xGap;
         float rightX = -0.2f * ScoreResources.hashSize;
@@ -1115,8 +1111,12 @@ public class ScoreView implements EditorView {
 
     /**
      * Attach a staff to visualize a spatial track.
+     *
+     * @param spatialTrackIndex which spatial track (&ge;0)
      */
     private void attachSpatialStaff(int spatialTrackIndex) {
+        assert spatialTrackIndex >= 0 : spatialTrackIndex;
+
         StaffTrack.loadSpatialTrack(spatialTrackIndex);
         boolean hasTranslations = StaffTrack.hasTranslations();
         boolean hasRotations = StaffTrack.hasRotations();
@@ -1203,7 +1203,7 @@ public class ScoreView implements EditorView {
         float zoom = cgm.getScorePov().getHalfHeight();
         if (zoom < 4f) {
             /*
-             * Attach a label overlapping the left-hand hash mark.
+             * Attach a track label overlapping the left-hand hash mark.
              */
             float leftX = cgm.getScorePov().leftX() + xGap;
             float rightX = -0.2f * ScoreResources.hashSize;

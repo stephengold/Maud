@@ -27,6 +27,7 @@
 package maud.model.cgm;
 
 import com.jme3.animation.BoneTrack;
+import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -83,7 +84,11 @@ public class StaffTrack {
      */
     private static int numSamples = 0;
     /**
-     * the bone/spatial track currently loaded for visualization
+     * text for the track label
+     */
+    private static String labelText = null;
+    /**
+     * bone/spatial track currently loaded for visualization
      */
     private static Track track = null;
     // *************************************************************************
@@ -154,6 +159,16 @@ public class StaffTrack {
     }
 
     /**
+     * Read the text for the track label.
+     *
+     * @return text (not null)
+     */
+    public static String labelText() {
+        assert labelText != null;
+        return labelText;
+    }
+
+    /**
      * Load the bone track (from the loaded animation) for the indexed bone.
      *
      * @param boneIndex which bone (&ge;0)
@@ -161,6 +176,7 @@ public class StaffTrack {
     public static void loadBoneTrack(int boneIndex) {
         Validate.nonNegative(boneIndex, "bone index");
 
+        labelText = cgm.getSkeleton().getBoneName(boneIndex);
         track = cgm.getAnimation().findTrackForBone(boneIndex);
         loadTrack();
     }
@@ -173,7 +189,10 @@ public class StaffTrack {
     public static void loadSpatialTrack(int spatialTrackIndex) {
         Validate.nonNegative(spatialTrackIndex, "spatial track index");
 
-        track = cgm.getAnimation().findSpatialTrack(spatialTrackIndex);
+        SpatialTrack spatialTrack
+                = cgm.getAnimation().findSpatialTrack(spatialTrackIndex);
+        labelText = spatialTrack.getTrackSpatial().getName();
+        track = spatialTrack;
         loadTrack();
     }
 
@@ -465,6 +484,20 @@ public class StaffTrack {
     public static void setNumSamples(int newNumSamples) {
         Validate.nonNegative(newNumSamples, "new number of samples");
         numSamples = newNumSamples;
+    }
+
+    /**
+     * Unload the loaded track and update the label text for the indexed bone,
+     * which must not have a track in the loaded animation.
+     *
+     * @param boneIndex which bone (&ge;0)
+     */
+    public static void setTracklessBone(int boneIndex) {
+        Validate.nonNegative(boneIndex, "bone index");
+        assert !cgm.getAnimation().hasTrackForBone(boneIndex);
+
+        labelText = cgm.getSkeleton().getBoneName(boneIndex);
+        track = null;
     }
     // *************************************************************************
     // private methods
