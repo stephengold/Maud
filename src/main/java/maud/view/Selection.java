@@ -358,8 +358,8 @@ public class Selection {
      */
     private void selectSceneAxis() {
         assert bestCgm != null;
-        assert bestAxisIndex >= 0 : bestAxisIndex;
-        assert bestAxisIndex < 3 : bestAxisIndex;
+        assert bestAxisIndex >= MyVector3f.firstAxis : bestAxisIndex;
+        assert bestAxisIndex < MyVector3f.numAxes : bestAxisIndex;
 
         SceneView sceneView = bestCgm.getSceneView();
         AxesVisualizer visualizer = sceneView.getAxesVisualizer();

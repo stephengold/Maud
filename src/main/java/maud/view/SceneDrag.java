@@ -65,10 +65,6 @@ public class SceneDrag {
      */
     final private static int noAxis = -1;
     /**
-     * number of coordinate axes
-     */
-    final private static int numAxes = 3;
-    /**
      * message logger for this class
      */
     final private static Logger logger
@@ -156,7 +152,8 @@ public class SceneDrag {
      */
     static void start(int axisIndex, float initialLength, Cgm cgm,
             boolean farSideFlag) {
-        assert axisIndex >= 0 && axisIndex < numAxes : axisIndex;
+        assert axisIndex >= MyVector3f.firstAxis : axisIndex;
+        assert axisIndex < MyVector3f.numAxes : axisIndex;
         assert initialLength > 0f : initialLength;
         assert cgm != null;
 

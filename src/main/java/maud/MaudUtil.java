@@ -391,7 +391,7 @@ public class MaudUtil {
         Buffer boneIndexBuffer = biBuf.getData();
         boneIndexBuffer.rewind();
 
-        int numVertices = posBuffer.remaining() / 3;
+        int numVertices = posBuffer.remaining() / MyVector3f.numAxes;
         for (int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++) {
             float bx = posBuffer.get(); // bind position
             float by = posBuffer.get();

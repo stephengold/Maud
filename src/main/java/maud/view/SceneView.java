@@ -987,7 +987,8 @@ public class SceneView
         Validate.nonNull(selection, "selection");
 
         Camera camera = getCamera();
-        for (int axisIndex = 0; axisIndex < MyVector3f.numAxes; axisIndex++) {
+        for (int axisIndex = MyVector3f.firstAxis; 
+                axisIndex < MyVector3f.numAxes; axisIndex++) {
             Vector3f tipWorld = axesVisualizer.tipLocation(axisIndex);
             if (tipWorld != null) {
                 Vector3f tipScreen = camera.getScreenCoordinates(tipWorld);
