@@ -57,6 +57,7 @@ import jme3utilities.Validate;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.MyShape;
 import maud.model.option.scene.Wireframe;
 import maud.view.SceneView;
 import maud.view.ScoreView;
@@ -706,23 +707,23 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Enumerate all collision shapes with the specified name prefix, excluding
-     * those added by the scene view.
+     * Enumerate all collision shapes whose descriptions begin with the
+     * specified prefix, excluding any added by the scene view.
      *
-     * @param namePrefix (not null)
-     * @return a new sorted list of names
+     * @param prefix description prefix (not null, may be empty)
+     * @return a new sorted list of descriptions
      */
-    public List<String> listShapeNames(String namePrefix) {
-        Validate.nonNull(namePrefix, "name prefix");
+    public List<String> listShapes(String prefix) {
+        Validate.nonNull(prefix, "prefix");
 
         Map<Long, CollisionShape> map = sceneView.shapeMap();
         int numShapes = map.size();
         List<String> result = new ArrayList<>(numShapes);
 
-        for (long id : map.keySet()) {
-            String name = Long.toHexString(id);
-            if (name.startsWith(namePrefix)) {
-                result.add(name);
+        for (CollisionShape shape : map.values()) {
+            String description = MyShape.describe(shape);
+            if (description.startsWith(prefix)) {
+                result.add(description);
             }
         }
         Collections.sort(result);

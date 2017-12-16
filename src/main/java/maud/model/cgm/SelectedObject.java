@@ -89,6 +89,21 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
+     * Describe the object's shape.
+     *
+     * @return a description of the shape, or "" if no shape
+     */
+    public String describeShape() {
+        String result = "";
+        CollisionShape shape = getShape();
+        if (shape != null) {
+            result = MyShape.describe(shape);
+        }
+
+        return result;
+    }
+
+    /**
      * Access the selected object.
      *
      * @return the pre-existing instance, or null if not found
@@ -167,15 +182,14 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Access the shape of the object.
+     * Read the id of the object's shape.
      *
      * @return id of the shape, or -1L if none
      */
     public long getShapeId() {
         long result = -1L;
-        PhysicsCollisionObject object = find();
-        if (object != null) {
-            CollisionShape shape = object.getCollisionShape();
+        CollisionShape shape = getShape();
+        if (shape != null) {
             result = shape.getObjectId();
         }
 
@@ -436,6 +450,23 @@ public class SelectedObject implements Cloneable {
         if (object != null) {
             CollisionShape shape = object.getCollisionShape();
             result = MyShape.usesShape(shape, shapeId);
+        }
+
+        return result;
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Access the shape of the object.
+     *
+     * @return the shape, or null if none
+     */
+    private CollisionShape getShape() {
+        CollisionShape result = null;
+        PhysicsCollisionObject object = find();
+        if (object != null) {
+            result = object.getCollisionShape();
         }
 
         return result;

@@ -159,7 +159,7 @@ class ObjectTool extends WindowController {
             shape = "";
             sButton = "";
         } else {
-            shape = Long.toHexString(id);
+            shape = object.describeShape();
             sButton = "Select";
         }
 

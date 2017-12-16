@@ -38,12 +38,14 @@ import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
 import com.jme3.math.Vector3f;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 
 /**
- * Physics utility methods. All methods should be static.
+ * Utility methods for physics collision shapes. All methods should be static.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -121,6 +123,39 @@ public class MyShape {
         }
 
         return result;
+    }
+
+    /**
+     * Generate a brief textual description of a shape, consisting of its type
+     * and id.
+     *
+     * @param shape instance to describe (not null, unaffected)
+     * @return description (not null, not empty)
+     */
+    public static String describe(CollisionShape shape) {
+        Validate.nonNull(shape, "shape");
+
+        String type = describeType(shape);
+        type = type.toLowerCase(Locale.ROOT);
+        long id = shape.getObjectId();
+        String result = String.format("%s:%x", type, id);
+
+        return result;
+    }
+
+    /**
+     * Describe the type of a shape.
+     *
+     * @param shape instance to describe (not null, unaffected)
+     * @return description (not null)
+     */
+    public static String describeType(CollisionShape shape) {
+        String description = shape.getClass().getSimpleName();
+        if (description.endsWith("CollisionShape")) {
+            description = MyString.removeSuffix(description, "CollisionShape");
+        }
+
+        return description;
     }
 
     /**

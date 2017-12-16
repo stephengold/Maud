@@ -327,8 +327,14 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectShape)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectShape);
-            long id = Long.parseLong(arg, 16);
-            target.getShape().select(id);
+            int colonPosition = arg.indexOf(":");
+            if (colonPosition == -1) {
+                handled = false;
+            } else {
+                String hexId = arg.substring(colonPosition + 1);
+                long id = Long.parseLong(hexId, 16);
+                target.getShape().select(id);
+            }
 
         } else if (actionString.startsWith(ActionPrefix.selectShapeParm)) {
             arg = MyString.remainder(actionString,

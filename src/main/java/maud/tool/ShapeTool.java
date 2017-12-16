@@ -36,6 +36,7 @@ import jme3utilities.MyControl;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.MyShape;
 import maud.PhysicsUtil;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
@@ -171,8 +172,7 @@ class ShapeTool extends WindowController {
         String name;
         SelectedShape shape = Maud.getModel().getTarget().getShape();
         if (shape.isSelected()) {
-            long id = shape.getId();
-            name = Long.toHexString(id);
+            name = shape.describe();
         } else {
             name = "(none selected)";
         }
@@ -239,7 +239,7 @@ class ShapeTool extends WindowController {
                 PhysicsSpace space = target.getSceneView().getPhysicsSpace();
                 CollisionShape userShape = PhysicsUtil.findShape(userId, space);
                 if (userShape != null) {
-                    usersText = Long.toHexString(userId);
+                    usersText = MyShape.describe(userShape);
                     suButton = "Select";
                 } else {
                     PhysicsCollisionObject userObject

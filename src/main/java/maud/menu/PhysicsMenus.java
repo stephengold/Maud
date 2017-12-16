@@ -232,7 +232,7 @@ public class PhysicsMenus {
      */
     public static void selectShape(Cgm cgm) {
         if (cgm.isLoaded()) {
-            List<String> names = cgm.listShapeNames("");
+            List<String> names = cgm.listShapes("");
             if (!names.isEmpty()) {
                 MenuBuilder builder = new MenuBuilder();
                 for (String name : names) {

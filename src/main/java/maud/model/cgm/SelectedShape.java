@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
@@ -180,6 +179,21 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
+     * Describe the shape.
+     *
+     * @return a brief description of the shape, or "" if none selected
+     */
+    public String describe() {
+        String result = "";
+        CollisionShape shape = find();
+        if (shape != null) {
+            result = MyShape.describe(shape);
+        }
+
+        return result;
+    }
+
+    /**
      * Access the selected shape.
      *
      * @return the pre-existing instance, or null if not found
@@ -214,6 +228,22 @@ public class SelectedShape implements Cloneable {
      */
     public long getId() {
         return selectedId;
+    }
+
+    /**
+     * Read the type of the selected shape.
+     *
+     * @return abbreviated class name, or "" if none selected
+     */
+    public String getType() {
+        String type = "";
+        CollisionShape shape = find();
+        if (shape != null) {
+            type = MyShape.describeType(shape);
+        }
+
+        assert type != null;
+        return type;
     }
 
     /**
@@ -278,26 +308,6 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Read the type of the selected shape. TODO reorder methods, move the meat
-     * to MyShape.describeType()
-     *
-     * @return abbreviated class name, or "" if none selected
-     */
-    public String getType() {
-        String type = "";
-        CollisionShape shape = find();
-        if (shape != null) {
-            type = shape.getClass().getSimpleName();
-            if (type.endsWith("CollisionShape")) {
-                type = MyString.removeSuffix(type, "CollisionShape");
-            }
-        }
-
-        assert type != null;
-        return type;
-    }
-
-    /**
      * Calculate the half extents of the selected shape.
      *
      * @param storeResult (modified if not null)
@@ -355,10 +365,10 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Enumerate the children in a compound shape.
+     * Enumerate the children of a compound shape.
      *
-     * @param prefix (not null)
-     * @return a new list of names
+     * @param prefix (not null. may be empty)
+     * @return a new list of descriptions
      */
     public List<String> listChildNames(String prefix) {
         Validate.nonNull(prefix, "prefix");
@@ -372,10 +382,9 @@ public class SelectedShape implements Cloneable {
             result = new ArrayList<>(count);
             for (int childIndex = 0; childIndex < count; childIndex++) {
                 ChildCollisionShape child = children.get(childIndex);
-                long id = child.shape.getObjectId();
-                String name = Long.toHexString(id);
-                if (name.startsWith(prefix)) {
-                    result.add(name);
+                String description = MyShape.describe(child.shape);
+                if (description.startsWith(prefix)) {
+                    result.add(description);
                 }
             }
         } else {
