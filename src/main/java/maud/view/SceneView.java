@@ -412,13 +412,16 @@ public class SceneView
      * @return a pre-existing instance, or null if none found
      */
     public Geometry findAnimatedGeometry() {
+        Geometry result = null;
         List<Integer> treePosition = cgm.getSkeleton().findAnimatedGeometry();
-        Spatial spatial = cgmRoot;
-        for (int childPosition : treePosition) {
-            Node node = (Node) spatial;
-            spatial = node.getChild(childPosition);
+        if (treePosition != null) {
+            Spatial spatial = cgmRoot;
+            for (int childPosition : treePosition) {
+                Node node = (Node) spatial;
+                spatial = node.getChild(childPosition);
+            }
+            result = (Geometry) spatial;
         }
-        Geometry result = (Geometry) spatial;
 
         return result;
     }
@@ -987,7 +990,7 @@ public class SceneView
         Validate.nonNull(selection, "selection");
 
         Camera camera = getCamera();
-        for (int axisIndex = MyVector3f.firstAxis; 
+        for (int axisIndex = MyVector3f.firstAxis;
                 axisIndex < MyVector3f.numAxes; axisIndex++) {
             Vector3f tipWorld = axesVisualizer.tipLocation(axisIndex);
             if (tipWorld != null) {
