@@ -129,9 +129,9 @@ class SceneUpdater {
             case SelectedBone:
                 if (cgm.getBone().isSelected()) {
                     transform = cgm.getBone().modelTransform(null);
-                    Geometry ag = sceneView.findAnimatedGeometry();
-                    if (!ag.isIgnoreTransform()) {
-                        Transform worldTransform = ag.getWorldTransform();
+                    Spatial tsp = sceneView.findTransformSpatial();
+                    if (!MySpatial.isIgnoringTransforms(tsp)) {
+                        Transform worldTransform = tsp.getWorldTransform();
                         transform.combineWithParent(worldTransform);
                     }
                 }

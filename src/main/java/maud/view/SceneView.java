@@ -407,26 +407,6 @@ public class SceneView
     }
 
     /**
-     * Find a geometry that is animated by the selected skeleton control.
-     *
-     * @return a pre-existing instance, or null if none found
-     */
-    public Geometry findAnimatedGeometry() {
-        Geometry result = null;
-        List<Integer> treePosition = cgm.getSkeleton().findAnimatedGeometry();
-        if (treePosition != null) {
-            Spatial spatial = cgmRoot;
-            for (int childPosition : treePosition) {
-                Node node = (Node) spatial;
-                spatial = node.getChild(childPosition);
-            }
-            result = (Geometry) spatial;
-        }
-
-        return result;
-    }
-
-    /**
      * Find the the tree position of the specified spatial in this view's copy
      * of the C-G model.
      *
@@ -443,6 +423,24 @@ public class SceneView
         }
 
         return treePosition;
+    }
+
+    /**
+     * Find a geometry that is animated by the selected skeleton control.
+     *
+     * @return a pre-existing instance, or cgmRoot if none found
+     */
+    public Spatial findTransformSpatial() {
+        Spatial result = cgmRoot;
+        List<Integer> treePosition = cgm.getSkeleton().findAnimatedGeometry();
+        if (treePosition != null) {
+            for (int childPosition : treePosition) {
+                Node node = (Node) result;
+                result = node.getChild(childPosition);
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -974,12 +972,9 @@ public class SceneView
             storeResult = new Transform();
         }
 
-        Spatial basedOn = findAnimatedGeometry();
-        if (basedOn == null) {
-            basedOn = cgmRoot;
-        }
-        if (!MySpatial.isIgnoringTransforms(basedOn)) {
-            Transform alias = basedOn.getWorldTransform();
+        Spatial transformSpatial = findTransformSpatial();
+        if (!MySpatial.isIgnoringTransforms(transformSpatial)) {
+            Transform alias = transformSpatial.getWorldTransform();
             storeResult.set(alias);
         }
 
@@ -1634,9 +1629,9 @@ public class SceneView
                 }
 
                 pose.modelTransform(boneIndex, transform);
-                Geometry ag = findAnimatedGeometry();
-                if (!ag.isIgnoreTransform()) {
-                    Transform worldTransform = ag.getWorldTransform();
+                Spatial transformSpatial = findTransformSpatial();
+                if (!MySpatial.isIgnoringTransforms(transformSpatial)) {
+                    Transform worldTransform = transformSpatial.getWorldTransform();
                     transform.combineWithParent(worldTransform);
                 }
                 MySpatial.setWorldTransform(attachNode, transform);
