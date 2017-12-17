@@ -82,6 +82,10 @@ class SettingsTool extends WindowController {
         description = Integer.toString(indexBase);
         Maud.gui.setButtonLabel("settingsIndexBaseButton", description);
 
+        boolean zUpFlag = options.getLoadZup();
+        description = zUpFlag ? "+Z up" : "+Y up";
+        Maud.gui.setButtonLabel("settingsLoadOrientationButton", description);
+
         boolean diagnoseFlag = options.getDiagnoseLoads();
         Maud.gui.setChecked("settingsDiagnose", diagnoseFlag);
 

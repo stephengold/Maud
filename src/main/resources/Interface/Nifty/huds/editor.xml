@@ -1398,7 +1398,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="settingsTool" title="Settings Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="115px" width="200px" x="65" y="35">
+                     height="143px" width="200px" x="65" y="35">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Display angles in  "/>
@@ -1412,6 +1412,13 @@ the menu bar, status bar, and tool windows.
                         <control name="button" id="settingsIndexBaseButton"
                                  width="25px">
                             <interact onRelease="perform(toggle indexBase)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Load orientation:  "/>
+                        <control name="button" id="settingsLoadOrientationButton"
+                                 width="40px">
+                            <interact onRelease="perform(toggle loadOrientation)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">

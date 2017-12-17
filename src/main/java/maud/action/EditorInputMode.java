@@ -543,6 +543,10 @@ public class EditorInputMode extends InputMode {
                 model.getMisc().toggleIndexBase();
                 break;
 
+            case Action.toggleLoadOrientation:
+                model.getMisc().toggleLoadOrientation();
+                break;
+
             case Action.togglePause:
                 model.getSource().getPlay().togglePaused();
                 model.getTarget().getPlay().togglePaused();
