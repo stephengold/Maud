@@ -184,6 +184,7 @@ public class Action {
     final static String setTrackRotationAll = "set track rotation all";
     final static String setTrackScaleAll = "set track scale all";
     final static String setTrackTranslationAll = "set track translation all";
+    final static String setTriangleMode = "set triangleMode";
     final static String setTweenRotations = "set tweenRotations";
     final static String setTweenScales = "set tweenScales";
     final static String setTweenTranslations = "set tweenTranslations";

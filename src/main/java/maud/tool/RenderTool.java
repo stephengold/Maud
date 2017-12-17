@@ -71,26 +71,16 @@ class RenderTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
-
         SceneOptions options = Maud.getModel().getScene();
+        
         boolean shadowsFlag = options.areShadowsRendered();
         Maud.gui.setChecked("shadows", shadowsFlag);
+
         boolean renderFlag = options.isPhysicsRendered();
         Maud.gui.setChecked("physics", renderFlag);
 
         Wireframe wireframe = options.getWireframe();
-        switch (wireframe) {
-            case Material:
-                Maud.gui.setRadioButton("wireframeMaterialRadioButton");
-                break;
-            case Solid:
-                Maud.gui.setRadioButton("wireframeSolidRadioButton");
-                break;
-            case Wire:
-                Maud.gui.setRadioButton("wireframeWireRadioButton");
-                break;
-            default:
-                throw new RuntimeException();
-        }
+        String description = wireframe.toString();
+        Maud.gui.setButtonLabel("trianglesButton", description);
     }
 }

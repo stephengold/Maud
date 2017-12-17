@@ -58,6 +58,7 @@ import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.OrbitCenter;
+import maud.model.option.scene.Wireframe;
 
 /**
  * Display simple menus in Maud's editor screen. TODO rename methods and split
@@ -687,6 +688,22 @@ public class ShowMenus {
         }
 
         builder.show(actionPrefix);
+    }
+
+    /**
+     * Display a menu to set the scene-view triangle rendering mode using the
+     * "set triangleMode " action prefix.
+     */
+    public static void setTriangleMode() {
+        MenuBuilder builder = new MenuBuilder();
+        Wireframe selected = Maud.getModel().getScene().getWireframe();
+        for (Wireframe t : Wireframe.values()) {
+            if (!t.equals(selected)) {
+                String name = t.toString();
+                builder.add(name);
+            }
+        }
+        builder.show(ActionPrefix.setTriangleMode);
     }
 
     /**

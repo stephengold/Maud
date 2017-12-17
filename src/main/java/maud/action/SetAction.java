@@ -46,6 +46,7 @@ import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesSubject;
+import maud.model.option.scene.Wireframe;
 
 /**
  * Process an action string that begins with the word "set".
@@ -180,6 +181,10 @@ class SetAction {
 
             case Action.setTrackTranslationAll:
                 target.getTrack().setTranslationAll();
+                break;
+
+            case Action.setTriangleMode:
+                ShowMenus.setTriangleMode();
                 break;
 
             case Action.setTweenRotations:
@@ -371,6 +376,12 @@ class SetAction {
             } else {
                 handled = false;
             }
+
+        } else if (actionString.startsWith(ActionPrefix.setTriangleMode)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setTriangleMode);
+            Wireframe value = Wireframe.valueOf(arg);
+            model.getScene().setWireframe(value);
 
         } else if (actionString.startsWith(ActionPrefix.setTweenRotations)) {
             arg = MyString.remainder(actionString,

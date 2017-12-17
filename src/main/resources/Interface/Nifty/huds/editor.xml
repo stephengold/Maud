@@ -1212,36 +1212,22 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="renderTool" title="Render Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="180px" width="140px" x="30" y="70">
+                     height="90px" width="190px" x="30" y="70">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal" height="28px">
+                    <panel childLayout="horizontal" height="30px">
                         <control name="checkbox" id="physicsCheckBox"
                                  width="20px"/>
-                        <control name="label" text="  physics"/>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="  physics      "/>
                         <control name="checkbox" id="shadowsCheckBox"
                                  width="20px"/>
                         <control name="label" text="  shadows"/>
                     </panel>
-                    <control name="label" text="Wireframe options:"
-                             textHAlign="left"
-                             width="*"/>
-                    <control name="radioButtonGroup" id="wireframeGroup"/>
-                    <panel childLayout="horizontal">
-                        <control name="radioButton" id="wireframeMaterialRadioButton"
-                                 group="wireframeGroup"/>
-                        <control name="label" text="  per material"/>
-                    </panel>
-                    <panel childLayout="horizontal">
-                        <control name="radioButton" id="wireframeWireRadioButton"
-                                 group="wireframeGroup"/>
-                        <control name="label" text="  force wireframe"/>
-                    </panel>
-                    <panel childLayout="horizontal">
-                        <control name="radioButton" id="wireframeSolidRadioButton"
-                                 group="wireframeGroup"/>
-                        <control name="label" text="  force solid"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Triangle mode:  "/>
+                        <control name="button" id="trianglesButton"
+                                 width="90px">
+                            <interact onRelease="perform(set triangleMode)"/>
+                        </control>
                     </panel>
                 </panel>
             </control>

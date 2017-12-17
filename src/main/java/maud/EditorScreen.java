@@ -68,7 +68,6 @@ import maud.model.cgm.SelectedSpatial;
 import maud.model.option.DisplaySettings;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.SceneOptions;
-import maud.model.option.scene.Wireframe;
 import maud.tool.EditorTools;
 import maud.tool.HistoryTool;
 import maud.view.CgmTransform;
@@ -477,15 +476,6 @@ public class EditorScreen extends GuiScreenController {
                 break;
             case "squarePlatformRadioButton":
                 scene.setPlatformType(PlatformType.Square);
-                break;
-            case "wireframeMaterialRadioButton":
-                scene.setWireframe(Wireframe.Material);
-                break;
-            case "wireframeSolidRadioButton":
-                scene.setWireframe(Wireframe.Solid);
-                break;
-            case "wireframeWireRadioButton":
-                scene.setWireframe(Wireframe.Wire);
                 break;
 
             default:

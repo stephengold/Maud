@@ -363,6 +363,10 @@ public class ActionPrefix {
      */
     final public static String setShapeParmValue = "set shapeParmValue ";
     /**
+     * argument is the name of a triangle mode
+     */
+    final public static String setTriangleMode = "set triangleMode ";
+    /**
      * argument is the name of a quaternion interpolation technique
      */
     final public static String setTweenRotations = "set tweenRotations ";
