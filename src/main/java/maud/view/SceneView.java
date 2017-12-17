@@ -1528,9 +1528,10 @@ public class SceneView
         Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot);
         Vector3f extent = minMax[1].subtract(minMax[0]);
         Vector3f center = MyVector3f.midpoint(minMax[0], minMax[1]);
+        boolean zUp = Maud.getModel().getMisc().getLoadZup();
+        float baseElevation = zUp ? minMax[0].z : minMax[0].y;
         float maxExtent = MyMath.max(extent.x, extent.y, extent.z);
-        float minY = minMax[0].y;
-        cgmTransform.loadCgm(center, minY, maxExtent);
+        cgmTransform.loadCgm(center, baseElevation, maxExtent, zUp);
         /*
          * Reset the camera position and 3-D cursor location.
          */

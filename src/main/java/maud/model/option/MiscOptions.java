@@ -56,6 +56,11 @@ public class MiscOptions implements Cloneable {
      */
     private boolean diagnoseLoads = false;
     /**
+     * orientation for loading C-G models (true &rarr; +Z upward, false &rarr;
+     * +Y upward)
+     */
+    private boolean loadZup = false;
+    /**
      * starting point for displayed indices (0 or 1)
      */
     private int indexBase = 1;
@@ -99,6 +104,15 @@ public class MiscOptions implements Cloneable {
      */
     public int getIndexBase() {
         return indexBase;
+    }
+
+    /**
+     * Test the orientation for loading C-G models.
+     *
+     * @return true &rarr; +Z upward, false &rarr; +Y upward
+     */
+    public boolean getLoadZup() {
+        return loadZup;
     }
 
     /**
@@ -180,6 +194,15 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter the orientation for loading C-G models.
+     *
+     * @param newSetting (true &rarr; +Z upward, false &rarr; +Y upward)
+     */
+    public void setLoadZup(boolean newSetting) {
+        loadZup = newSetting;
+    }
+
+    /**
      * Alter which rigid-body parameter to display in ObjectTool.
      *
      * @param newParameter an enum value (not null)
@@ -221,6 +244,13 @@ public class MiscOptions implements Cloneable {
      */
     public void toggleIndexBase() {
         setIndexBase(1 - indexBase);
+    }
+
+    /**
+     * Toggle the orientation for loading C-G models.
+     */
+    public void toggleLoadOrientation() {
+        setLoadZup(!loadZup);
     }
     // *************************************************************************
     // Object methods

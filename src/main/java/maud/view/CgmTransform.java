@@ -27,6 +27,7 @@
 package maud.view;
 
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
@@ -47,12 +48,20 @@ public class CgmTransform implements Cloneable {
     final private static Logger logger
             = Logger.getLogger(CgmTransform.class.getName());
     /**
+     * local copy of {@link com.jme3.math.Vector3f#UNIT_X}
+     */
+    final private static Vector3f xAxis = new Vector3f(1f, 0f, 0f);
+    /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_Y}
      */
     final private static Vector3f yAxis = new Vector3f(0f, 1f, 0f);
     // *************************************************************************
     // fields
 
+    /**
+     * true&rarr; model Z-axis points up, false&rarr; model Y-axis points up
+     */
+    private boolean zUpFlag = false;
     /**
      * scale of the C-G model on all 3 axes (&gt;0, 1 &rarr; unscaled)
      */
@@ -62,12 +71,12 @@ public class CgmTransform implements Cloneable {
      */
     private float yAngle = 0f;
     /**
-     * the Y-coordinate (in CG-model space) of the C-G model's base in bind pose
+     * Y-coordinate (in world space) of the C-G model's base in bind pose
      */
     private float yOffset = 0f;
     /**
-     * the coordinates (in CG-model space) of the C-G model's geometric center
-     * in bind pose
+     * coordinates (in CG-model space) of the C-G model's geometric center in
+     * bind pose
      */
     private Vector3f bindCenter = new Vector3f();
     // *************************************************************************
@@ -78,18 +87,21 @@ public class CgmTransform implements Cloneable {
      *
      * @param center the coordinates (in CG-model space) of the geometric center
      * (not null, unaffected)
-     * @param minY the Y-coordinate (in CG-model space) of the base
+     * @param baseElevation the elevation (in CG-model space) of the base
      * @param maxExtent the greatest extent of the C-G model over its 3
      * principal axes (in CG-model units, &gt;0)
+     * @param zUp true&rarr; model Z-axis points up
      */
-    void loadCgm(Vector3f center, float minY, float maxExtent) {
+    void loadCgm(Vector3f center, float baseElevation, float maxExtent,
+            boolean zUp) {
         assert center != null;
-        assert Float.isFinite(minY) : minY;
+        assert Float.isFinite(baseElevation) : baseElevation;
         assert maxExtent > 0f : maxExtent;
 
         bindCenter.set(center);
         scale = 1f / maxExtent;
-        yOffset = -minY * scale;
+        yOffset = -baseElevation * scale;
+        zUpFlag = zUp;
     }
 
     /**
@@ -113,23 +125,33 @@ public class CgmTransform implements Cloneable {
 
     /**
      * Calculate the transform to be applied to the C-G model. Note that this
-     * may differ from the transform of the C-G model's root spatial.
+     * may differ from the world transform of the C-G model's root spatial.
      *
      * @return a new instance (in world coordinates)
      */
     Transform worldTransform() {
         Transform result = new Transform();
-        result.getRotation().fromAngleNormalAxis(yAngle, yAxis);
+        Quaternion rotation = result.getRotation();
+        rotation.fromAngleNormalAxis(yAngle, yAxis);
+        if (zUpFlag) {
+            Quaternion q2 = new Quaternion();
+            q2.fromAngleNormalAxis(-FastMath.HALF_PI, xAxis);
+            rotation.multLocal(q2);
+        }
         result.getScale().set(scale, scale, scale);
         /*
-         * Translate the C-G model so that (in bind pose) its geometric center is
-         * directly above the world's origin (center of platform).
+         * Translate the C-G model so that (in bind pose) its geometric center
+         * is directly above the world's origin (center of platform).
          */
-        Vector3f modelTranslation
-                = new Vector3f(-bindCenter.x, 0f, -bindCenter.z);
+        Vector3f modelTranslation;
+        if (zUpFlag) {
+            modelTranslation = new Vector3f(-bindCenter.x, -bindCenter.y, 0f);
+        } else {
+            modelTranslation = new Vector3f(-bindCenter.x, 0f, -bindCenter.z);
+        }
         Vector3f worldTranslation
                 = result.transformVector(modelTranslation, null);
-        worldTranslation.addLocal(0f, yOffset, 0f);
+        worldTranslation.y += yOffset;
         result.setTranslation(worldTranslation);
 
         return result;
