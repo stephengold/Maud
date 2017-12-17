@@ -891,9 +891,17 @@ public class SceneView
             skeletonVisualizer = new SkeletonVisualizer(assetManager);
             controlled.addControl(skeletonVisualizer);
             skeletonVisualizer.setSkeleton(skeleton);
-            Geometry ag = MySpatial.findAnimatedGeometry(controlled);
-            skeletonVisualizer.setTransformSpatial(ag);
+            Spatial ts = MySpatial.findAnimatedGeometry(controlled);
+            if (ts == null) {
+                ts = controlled;
+            }
+            skeletonVisualizer.setTransformSpatial(ts);
             skeletonVisualizer.setEnabled(true);
+            /*
+             * Make the visualizer add its geometries to the scene graph.
+             * This is vital when loading BVH files.
+             */
+            skeletonVisualizer.update(0f);
         }
     }
 
