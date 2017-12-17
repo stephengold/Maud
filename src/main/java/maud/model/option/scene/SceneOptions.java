@@ -89,13 +89,13 @@ public class SceneOptions implements Cloneable {
      */
     private SkeletonOptions skeleton = new SkeletonOptions();
     /**
+     * CG-model triangle rendering option
+     */
+    private TriangleMode triangleMode = TriangleMode.PerMaterial;
+    /**
      * configuration of the vertex visualization(s)
      */
     private VertexOptions vertex = new VertexOptions();
-    /**
-     * CG-model triangle rendering option
-     */
-    private Wireframe wireframe = Wireframe.Material;
     // *************************************************************************
     // new methods exposed
 
@@ -179,6 +179,16 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
+     * Read the CG-model triangle rendering mode.
+     *
+     * @return an enum value (not null)
+     */
+    public TriangleMode getTriangleMode() {
+        assert triangleMode != null;
+        return triangleMode;
+    }
+
+    /**
      * Access the configuration of the vertex visualization(s).
      *
      * @return the pre-existing instance (not null)
@@ -186,16 +196,6 @@ public class SceneOptions implements Cloneable {
     public VertexOptions getVertex() {
         assert vertex != null;
         return vertex;
-    }
-
-    /**
-     * Read the CG-model triangle rendering option.
-     *
-     * @return an enum value (not null)
-     */
-    public Wireframe getWireframe() {
-        assert wireframe != null;
-        return wireframe;
     }
 
     /**
@@ -268,10 +268,10 @@ public class SceneOptions implements Cloneable {
      *
      * @param newSetting an enum value (not null)
      */
-    public void setWireframe(Wireframe newSetting) {
+    public void setTriangleMode(TriangleMode newSetting) {
         Validate.nonNull(newSetting, "new setting");
 
-        wireframe = newSetting; // TODO check for change
+        triangleMode = newSetting; // TODO check for change
 
         Cgm target = Maud.getModel().getTarget();
         target.updateSceneWireframe();

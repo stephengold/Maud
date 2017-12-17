@@ -31,7 +31,7 @@ import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 import maud.Maud;
 import maud.model.option.scene.SceneOptions;
-import maud.model.option.scene.Wireframe;
+import maud.model.option.scene.TriangleMode;
 
 /**
  * The controller for the "Render Tool" window in Maud's editor screen.
@@ -72,15 +72,15 @@ class RenderTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
         SceneOptions options = Maud.getModel().getScene();
-        
+
         boolean shadowsFlag = options.areShadowsRendered();
         Maud.gui.setChecked("shadows", shadowsFlag);
 
         boolean renderFlag = options.isPhysicsRendered();
         Maud.gui.setChecked("physics", renderFlag);
 
-        Wireframe wireframe = options.getWireframe();
-        String description = wireframe.toString();
-        Maud.gui.setButtonLabel("trianglesButton", description);
+        TriangleMode mode = options.getTriangleMode();
+        String modeName = mode.toString();
+        Maud.gui.setButtonLabel("trianglesButton", modeName);
     }
 }

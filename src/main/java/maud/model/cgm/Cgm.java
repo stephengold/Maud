@@ -58,7 +58,7 @@ import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.MyShape;
-import maud.model.option.scene.Wireframe;
+import maud.model.option.scene.TriangleMode;
 import maud.view.SceneView;
 import maud.view.ScoreView;
 
@@ -967,8 +967,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Update the scene's wireframe settings based on the MVC model. Note:
-     * recursive!
+     * Update the scene to reflect the triangle-rendering mode. Note: recursive!
      *
      * @param subtree subtree in the MVC model's copy of the C-G model (may be
      * null)
@@ -976,9 +975,9 @@ public class Cgm implements Cloneable {
     private void updateSceneWireframe(Spatial subtree) {
         if (subtree instanceof Geometry) {
             boolean setting;
-            Wireframe wireframe = Maud.getModel().getScene().getWireframe();
-            switch (wireframe) {
-                case Material:
+            TriangleMode mode = Maud.getModel().getScene().getTriangleMode();
+            switch (mode) {
+                case PerMaterial:
                     Geometry geometry = (Geometry) subtree;
                     Material material = geometry.getMaterial();
                     RenderState rs = material.getAdditionalRenderState();
@@ -987,7 +986,7 @@ public class Cgm implements Cloneable {
                 case Solid:
                     setting = false;
                     break;
-                case Wire:
+                case Wireframe:
                     setting = true;
                     break;
                 default:

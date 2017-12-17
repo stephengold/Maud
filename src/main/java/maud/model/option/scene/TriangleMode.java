@@ -31,14 +31,14 @@ package maud.model.option.scene;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum Wireframe {
+public enum TriangleMode {
     // *************************************************************************
     // values
 
     /**
      * render CG-model triangles as specified by their materials
      */
-    Material,
+    PerMaterial,
     /**
      * force non-wireframe rendering for all CG-model triangles
      */
@@ -46,5 +46,5 @@ public enum Wireframe {
     /**
      * force wireframe rendering for all CG-model triangles
      */
-    Wire;
+    Wireframe;
 }

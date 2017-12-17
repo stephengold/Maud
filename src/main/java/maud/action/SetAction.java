@@ -46,7 +46,7 @@ import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesSubject;
-import maud.model.option.scene.Wireframe;
+import maud.model.option.scene.TriangleMode;
 
 /**
  * Process an action string that begins with the word "set".
@@ -380,8 +380,8 @@ class SetAction {
         } else if (actionString.startsWith(ActionPrefix.setTriangleMode)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTriangleMode);
-            Wireframe value = Wireframe.valueOf(arg);
-            model.getScene().setWireframe(value);
+            TriangleMode mode = TriangleMode.valueOf(arg);
+            model.getScene().setTriangleMode(mode);
 
         } else if (actionString.startsWith(ActionPrefix.setTweenRotations)) {
             arg = MyString.remainder(actionString,
