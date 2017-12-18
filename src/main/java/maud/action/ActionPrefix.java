@@ -129,6 +129,10 @@ public class ActionPrefix {
      */
     final public static String newGhostControl = "new ghostControl ";
     /**
+     * argument are the name of the VarType and an optional parameter name
+     */
+    final public static String newOverride = "new override ";
+    /**
      * argument is the name of a ShapeType
      */
     final public static String newRbc = "new rbc ";
@@ -152,6 +156,10 @@ public class ActionPrefix {
      * argument is the new name for the selected bone
      */
     final public static String renameBone = "rename bone ";
+    /**
+     * argument is the new name for the material-parameter override
+     */
+    final public static String renameOverride = "rename override ";
     /**
      * argument is the new name for the selected spatial
      */
@@ -231,6 +239,10 @@ public class ActionPrefix {
      * argument is the name of an orbit-center enum value
      */
     final public static String selectOrbitCenter = "select orbitCenter ";
+    /**
+     * argument is a pre-existing parameter name
+     */
+    final public static String selectOverride = "select override ";
     /**
      * argument is the name of a physics object or a prefix thereof
      */
@@ -325,6 +337,10 @@ public class ActionPrefix {
      * argument is 0 or 1
      */
     final public static String setIndexBase = "set indexBase ";
+    /**
+     * argument is a parameter value
+     */
+    final public static String setOverrideValue = "set overrideValue ";
     /**
      * arguments are the parameter name and a decimal value
      */

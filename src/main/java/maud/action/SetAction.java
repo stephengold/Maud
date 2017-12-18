@@ -110,6 +110,10 @@ class SetAction {
                 ShowMenus.setCullHint();
                 break;
 
+            case Action.setOverrideValue:
+                EditorDialogs.setOverrideValue();
+                break;
+
             case Action.setPhysicsRbpValue:
                 RigidBodyParameter rbp = model.getMisc().getRbp();
                 EditorDialogs.setPhysicsRbpValue(rbp);
@@ -308,6 +312,11 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setIndexBase);
             int newSetting = Integer.parseInt(arg);
             model.getMisc().setIndexBase(newSetting);
+
+        } else if (actionString.startsWith(ActionPrefix.setOverrideValue)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setOverrideValue);
+            target.setOverrideValue(arg);
 
         } else if (actionString.startsWith(ActionPrefix.setPhysicsRbpValue)) {
             arg = MyString.remainder(actionString,

@@ -93,6 +93,10 @@ class PreviousAction {
                 model.getMap().selectPrevious();
                 break;
 
+            case Action.previousOverride:
+                target.getOverride().selectPreviousName();
+                break;
+
             case Action.previousPhysics:
                 target.getObject().selectPrevious();
                 break;

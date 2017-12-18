@@ -138,6 +138,10 @@ class SelectAction {
                 ShowMenus.selectOrbitCenter();
                 break;
 
+            case Action.selectOverride:
+                ShowMenus.selectOverride();
+                break;
+
             case Action.selectPhysics:
                 PhysicsMenus.selectObject(target);
                 break;
@@ -311,6 +315,10 @@ class SelectAction {
             OrbitCenter oc = OrbitCenter.parse(arg);
             model.getScene().getCamera().setMode(oc);
 
+        } else if (actionString.startsWith(ActionPrefix.selectOverride)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectOverride);
+            target.getOverride().selectParameter(arg);
+
         } else if (actionString.startsWith(ActionPrefix.selectPhysics)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectPhysics);
             target.getObject().select(arg);
@@ -327,7 +335,7 @@ class SelectAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectShape)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectShape);
-            int colonPosition = arg.indexOf(":");
+            int colonPosition = arg.indexOf(':');
             if (colonPosition == -1) {
                 handled = false;
             } else {

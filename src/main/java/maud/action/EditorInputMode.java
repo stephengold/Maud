@@ -253,6 +253,9 @@ public class EditorInputMode extends InputMode {
             case Action.deleteMapping:
                 Maud.getModel().getMap().deleteBoneMapping();
                 break;
+            case Action.deleteOverride:
+                target.getOverride().delete();
+                break;
             case Action.deleteSgc:
                 target.getSgc().delete();
                 break;
@@ -363,6 +366,10 @@ public class EditorInputMode extends InputMode {
                 EditorDialogs.renameBone();
                 break;
 
+            case Action.renameOverride:
+                EditorDialogs.renameOverride();
+                break;
+
             case Action.renameSpatial:
                 EditorDialogs.renameSpatial();
                 break;
@@ -378,29 +385,34 @@ public class EditorInputMode extends InputMode {
         if (!handled) {
             String newName;
             EditableCgm target = Maud.getModel().getTarget();
+            handled = true;
             if (actionString.startsWith(ActionPrefix.renameAnimation)) {
                 newName = MyString.remainder(actionString,
                         ActionPrefix.renameAnimation);
                 target.getAnimation().rename(newName);
-                handled = true;
 
             } else if (actionString.startsWith(ActionPrefix.renameBone)) {
                 newName = MyString.remainder(actionString,
                         ActionPrefix.renameBone);
                 target.renameBone(newName);
-                handled = true;
+
+            } else if (actionString.startsWith(ActionPrefix.renameOverride)) {
+                newName = MyString.remainder(actionString,
+                        ActionPrefix.renameOverride);
+                target.renameOverride(newName);
 
             } else if (actionString.startsWith(ActionPrefix.renameSpatial)) {
                 newName = MyString.remainder(actionString,
                         ActionPrefix.renameSpatial);
                 target.renameSpatial(newName);
-                handled = true;
 
             } else if (actionString.startsWith(ActionPrefix.renameUserKey)) {
                 newName = MyString.remainder(actionString,
                         ActionPrefix.renameUserKey);
                 target.renameUserKey(newName);
-                handled = true;
+
+            } else {
+                handled = false;
             }
         }
 

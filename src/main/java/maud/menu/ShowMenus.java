@@ -29,6 +29,7 @@ package maud.menu;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.shader.VarType;
 import com.jme3.system.AppSettings;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
@@ -250,6 +251,39 @@ public class ShowMenus {
     }
 
     /**
+     * Display a menu for selecting a material-parameter override using the
+     * "select override " action prefix.
+     */
+    public static void selectOverride() {
+        MenuBuilder builder = new MenuBuilder();
+
+        EditableCgm target = Maud.getModel().getTarget();
+        List<String> nameList = target.getSpatial().listOverrideNames();
+        String selectedName = target.getOverride().getName();
+        for (String name : nameList) {
+            if (!name.equals(selectedName)) {
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectOverride);
+    }
+
+    /**
+     * Display a menu for selecting a material parameter type using the "new
+     * override " action prefix.
+     */
+    public static void selectOverrideType() {
+        MenuBuilder builder = new MenuBuilder();
+
+        builder.add(VarType.Float.toString());
+        builder.add(VarType.Int.toString());
+        // TODO other types
+
+        builder.show(ActionPrefix.newOverride);
+    }
+
+    /**
      * Display a "select sgc" menu.
      */
     public static void selectSgc() {
@@ -359,12 +393,14 @@ public class ShowMenus {
      */
     public static void selectUserDataType() {
         MenuBuilder builder = new MenuBuilder();
+
         builder.add("integer");
         builder.add("float");
         builder.add("boolean");
         builder.add("string");
         builder.add("long");
         // TODO savable, list, map, array
+
         builder.show(ActionPrefix.newUserKey);
     }
 

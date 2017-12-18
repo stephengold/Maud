@@ -50,6 +50,7 @@ public class Action {
      */
     final public static String deleteAnimation = "delete animation";
     final static String deleteMapping = "delete mapping";
+    final static String deleteOverride = "delete override";
     /**
      * delete the selected S-G control
      */
@@ -72,6 +73,7 @@ public class Action {
     final static String nextCheckpoint = "next checkpoint";
     final static String nextJoint = "next joint";
     final static String nextMapping = "next mapping";
+    final static String nextOverride = "next override";
     final static String nextPhysics = "next physics";
     final static String nextSgc = "next sgc";
     final static String nextShape = "next shape";
@@ -84,6 +86,7 @@ public class Action {
     final static String newAnimationFromPose = "new animation fromPose";
     final static String newCheckpoint = "new checkpoint";
     final static String newMapping = "new mapping";
+    final static String newOverride = "new override";
     final static String newSgc = "new sgc";
     final static String newSingleKeyframe = "new singleKeyframe";
     final static String newUserKey = "new userKey";
@@ -94,6 +97,7 @@ public class Action {
     final static String previousCheckpoint = "previous checkpoint";
     final static String previousJoint = "previous joint";
     final static String previousMapping = "previous mapping";
+    final static String previousOverride = "previous override";
     final static String previousPhysics = "previous physics";
     final static String previousSgc = "previous sgc";
     final static String previousShape = "previous shape";
@@ -109,6 +113,7 @@ public class Action {
 
     final static String renameAnimation = "rename animation";
     final static String renameBone = "rename bone";
+    final static String renameOverride = "rename override";
     final static String renameSpatial = "rename spatial";
     final static String renameUserKey = "rename userKey";
 
@@ -140,6 +145,7 @@ public class Action {
     final static String selectMapSourceBone = "select mapSourceBone";
     final static String selectMapTargetBone = "select mapTargetBone";
     final static String selectOrbitCenter = "select orbitCenter";
+    final static String selectOverride = "select override";
     final static String selectPhysics = "select physics";
     final static String selectPhysicsRbp = "select physicsRbp";
     final static String selectPhysicsShape = "select physicsShape";
@@ -169,6 +175,7 @@ public class Action {
     final static String setColorDepth = "set colorDepth";
     final static String setCullHint = "set cullHint";
     final static String setPhysicsRbpValue = "set physicsRbpValue";
+    final static String setOverrideValue = "set overrideValue";
     final static String setQueueBucket = "set queueBucket";
     final static String setRefreshRate = "set refreshRate";
     final static String setResolution = "set resolution";

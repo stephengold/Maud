@@ -28,6 +28,7 @@ package maud.dialog;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
+import com.jme3.shader.VarType;
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.Nifty;
 import java.io.File;
@@ -58,6 +59,7 @@ import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedObject;
+import maud.model.cgm.SelectedOverride;
 import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedTrack;
@@ -350,14 +352,32 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "new userKey" dialog to enter the user-data key.
+     * Display a "new override" dialog to name a new material-parameter
+     * override.
+     *
+     * @param actionPrefix (not null, not empty)
+     */
+    public static void newOverride(String actionPrefix) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
+        DialogController controller = new OverrideNameDialog("Add");
+        String defaultName = "ParameterName";
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog(
+                "Enter a parameter name for the new override:", defaultName,
+                actionPrefix, controller);
+    }
+
+    /**
+     * Display a "new userKey" dialog to name a new user-data key.
      *
      * @param actionPrefix (not null, not empty)
      */
     public static void newUserKey(String actionPrefix) {
         Validate.nonEmpty(actionPrefix, "action prefix");
 
-        DialogController controller = new UserKeyDialog("Create");
+        DialogController controller = new UserKeyDialog("Add");
         String defaultKey = "key";
 
         Maud.gui.closeAllPopups();
@@ -421,6 +441,22 @@ public class EditorDialogs {
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new name for the bone:",
                     oldName, ActionPrefix.renameBone, controller);
+        }
+    }
+
+    /**
+     * Display a "rename override" dialog.
+     */
+    public static void renameOverride() {
+        SelectedOverride override = Maud.getModel().getTarget().getOverride();
+        if (override.isSelected()) {
+            String oldName = override.getName();
+            DialogController controller = new OverrideNameDialog("Rename");
+
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog(
+                    "Enter a new name for the parameter override:",
+                    oldName, ActionPrefix.renameOverride, controller);
         }
     }
 
@@ -584,6 +620,51 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
                 defaultText, ActionPrefix.setDurationSame, controller);
+    }
+
+    /**
+     * Display a "set overrideValue" dialog.
+     */
+    public static void setOverrideValue() {
+        EditableCgm target = Maud.getModel().getTarget();
+        SelectedOverride override = target.getOverride();
+        if (override.isSelected()) {
+            VarType varType = override.getVarType();
+            Object data = override.getValue();
+            DialogController controller;
+            String defaultValue, promptMessage;
+            switch (varType) {
+                case Float:
+                    if (data == null) {
+                        defaultValue = "0.0";
+                    } else {
+                        float floatValue = (float) data;
+                        defaultValue = Float.toString(floatValue);
+                    }
+                    controller = new FloatDialog("Set", Float.NEGATIVE_INFINITY,
+                            Float.POSITIVE_INFINITY);
+                    promptMessage = "Enter new float value:";
+                    break;
+
+                case Int:
+                    if (data == null) {
+                        defaultValue = "0";
+                    } else {
+                        int intValue = (int) data;
+                        defaultValue = Integer.toString(intValue);
+                    }
+                    controller = new IntegerDialog("Set", Integer.MIN_VALUE,
+                            Integer.MAX_VALUE);
+                    promptMessage = "Enter new integer value:";
+                    break;
+
+                default:
+                    throw new IllegalStateException();
+            }
+
+            Maud.gui.showTextEntryDialog(promptMessage, defaultValue,
+                    ActionPrefix.setOverrideValue, controller);
+        }
     }
 
     /**

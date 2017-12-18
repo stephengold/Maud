@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
@@ -80,6 +81,10 @@ class NewAction {
 
             case Action.newMapping:
                 Maud.getModel().getMap().mapBones();
+                break;
+
+            case Action.newOverride:
+                ShowMenus.selectOverrideType();
                 break;
 
             case Action.newSgc:
@@ -154,6 +159,18 @@ class NewAction {
             PhysicsUtil.ShapeType shapeType
                     = PhysicsUtil.ShapeType.valueOf(shapeName);
             target.getSpatial().addGhostControl(shapeType);
+
+        } else if (actionString.startsWith(ActionPrefix.newOverride)) {
+            String args = MyString.remainder(actionString,
+                    ActionPrefix.newOverride);
+            if (args.contains(" ")) {
+                String typeName = args.split(" ")[0];
+                VarType type = VarType.valueOf(typeName);
+                String parameterName = MyString.remainder(args, typeName + " ");
+                target.addOverride(type, parameterName);
+            } else {
+                EditorDialogs.newOverride(actionString + " ");
+            }
 
         } else if (actionString.startsWith(ActionPrefix.newRbc)) {
             String shapeName

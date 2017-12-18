@@ -93,6 +93,10 @@ class NextAction {
                 model.getMap().selectNext();
                 break;
 
+            case Action.nextOverride:
+                target.getOverride().selectNextName();
+                break;
+
             case Action.nextPhysics:
                 target.getObject().selectNext();
                 break;

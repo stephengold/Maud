@@ -121,6 +121,10 @@ public class EditorTools {
      */
     final private ObjectTool object;
     /**
+     * controller for the "Overrides Tool" window
+     */
+    final private OverridesTool overrides;
+    /**
      * controller for the "Platform Tool" window
      */
     final private PlatformTool platform;
@@ -232,6 +236,7 @@ public class EditorTools {
         keyframe = new KeyframeTool(screen);
         mapping = new MappingTool(screen);
         object = new ObjectTool(screen);
+        overrides = new OverridesTool(screen);
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
         retarget = new RetargetTool(screen);
@@ -266,10 +271,11 @@ public class EditorTools {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
                 displaySettings, history, keyframe, joint, mapping, object,
-                platform, render, retarget, sceneVertex, score, settings, sgc,
-                shape, skeleton, skeletonColor, sky, sourceAnimation, spatial,
-                spatialDetails, spatialRotation, spatialScale,
-                spatialTranslation, tweening, twist, userData, vertex);
+                overrides, platform, render, retarget, sceneVertex, score,
+                settings, sgc, shape, skeleton, skeletonColor, sky,
+                sourceAnimation, spatial, spatialDetails, spatialRotation,
+                spatialScale, spatialTranslation, tweening,
+                twist, userData, vertex);
     }
 
     /**
@@ -333,6 +339,9 @@ public class EditorTools {
                 break;
             case "object":
                 controller = object;
+                break;
+            case "overrides":
+                controller = overrides;
                 break;
             case "platform":
                 controller = platform;
