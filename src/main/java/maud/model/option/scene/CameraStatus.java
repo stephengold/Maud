@@ -27,9 +27,7 @@
 package maud.model.option.scene;
 
 import com.jme3.math.FastMath;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.Maud;
 
@@ -64,15 +62,6 @@ public class CameraStatus implements Cloneable {
     // fields
 
     /**
-     * movement mode: true &rarr; orbit, false &rarr; fly
-     */
-    private boolean orbitMode = true;
-    /**
-     * projection mode: true &rarr; parallel/orthographic, false &rarr;
-     * perspective
-     */
-    private boolean parallelMode = false;
-    /**
      * movement rate (fly mode only, world units per scroll wheel notch)
      */
     private float flyRate = 0.1f;
@@ -87,9 +76,17 @@ public class CameraStatus implements Cloneable {
      */
     private float minRange = 0.2f;
     /**
+     * movement mode (not null)
+     */
+    private MovementMode movementMode = MovementMode.Orbit;
+    /**
      * centering option (orbit mode only, not null)
      */
     private OrbitCenter orbitCenter = OrbitCenter.DddCursor;
+    /**
+     * projection mode (not null)
+     */
+    private ProjectionMode projectionMode = ProjectionMode.Perspective;
     // *************************************************************************
     // new methods exposed
 
@@ -138,6 +135,16 @@ public class CameraStatus implements Cloneable {
     }
 
     /**
+     * Read the scene camera's movement mode.
+     *
+     * @return an enum value (not null)
+     */
+    public MovementMode getMovementMode() {
+        assert movementMode != null;
+        return movementMode;
+    }
+
+    /**
      * Read the centering option for orbit mode.
      *
      * @return an enum value (not null)
@@ -148,49 +155,44 @@ public class CameraStatus implements Cloneable {
     }
 
     /**
+     * Read the scene camera's projection mode.
+     *
+     * @return an enum value (not null)
+     */
+    public ProjectionMode getProjectionMode() {
+        assert projectionMode != null;
+        return projectionMode;
+    }
+
+    /**
      * Test whether the camera is in orbit mode.
      *
      * @return true if in orbit mode, otherwise false
      */
     public boolean isOrbitMode() {
-        return orbitMode;
+        boolean result = movementMode.equals(MovementMode.Orbit);
+        return result;
     }
 
     /**
-     * Test whether the camera is in parallel-projection mode.
+     * Test whether the camera is in ortho/parallel-projection mode.
      *
      * @return true if in parallel-projection mode, otherwise false
      */
     public boolean isParallelProjection() {
-        return parallelMode;
+        boolean result = projectionMode.equals(ProjectionMode.Parallel);
+        return result;
     }
 
     /**
-     * Alter one of the camera's modes.
+     * Alter the camera's movement mode.
      *
-     * @param modeName "fly", "orbit", "parallel", or "perspective"
+     * @param newMode (not null)
      */
-    public void setMode(String modeName) {
-        switch (modeName) {
-            case "fly":
-                orbitMode = false;
-                break;
-            case "orbit":
-                orbitMode = true;
-                break;
-            case "parallel":
-                parallelMode = true;
-                break;
-            case "perspective":
-                parallelMode = false;
-                break;
-            default:
-                logger.log(Level.SEVERE, "newMode={0}",
-                        MyString.quote(modeName));
-                throw new IllegalArgumentException();
-        }
+    public void setMode(MovementMode newMode) {
+        movementMode = newMode;
 
-        if (orbitMode) {
+        if (newMode == MovementMode.Orbit) {
             Maud.getModel().getSource().getScenePov().aim();
             Maud.getModel().getTarget().getScenePov().aim();
         }
@@ -205,9 +207,30 @@ public class CameraStatus implements Cloneable {
         Validate.nonNull(newCenter, "new center");
 
         orbitCenter = newCenter;
-        if (orbitMode) {
+        if (movementMode == MovementMode.Orbit) {
             Maud.getModel().getSource().getScenePov().aim();
             Maud.getModel().getTarget().getScenePov().aim();
+        }
+    }
+
+    /**
+     * Alter the camera's projection mode.
+     *
+     * @param mode (not null)
+     */
+    public void setMode(ProjectionMode mode) {
+        Validate.nonNull(mode, "mode");
+        projectionMode = mode;
+    }
+
+    /**
+     * Toggle the movement mode.
+     */
+    public void toggleMovement() {
+        if (movementMode.equals(MovementMode.Orbit)) {
+            setMode(MovementMode.Fly);
+        } else {
+            setMode(MovementMode.Orbit);
         }
     }
 
@@ -215,7 +238,11 @@ public class CameraStatus implements Cloneable {
      * Toggle the projection mode.
      */
     public void toggleProjection() {
-        parallelMode = !parallelMode;
+        if (projectionMode.equals(ProjectionMode.Parallel)) {
+            projectionMode = ProjectionMode.Perspective;
+        } else {
+            projectionMode = ProjectionMode.Parallel;
+        }
     }
     // *************************************************************************
     // Object methods

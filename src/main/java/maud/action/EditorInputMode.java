@@ -559,6 +559,10 @@ public class EditorInputMode extends InputMode {
                 model.getMisc().toggleLoadOrientation();
                 break;
 
+            case Action.toggleMovement:
+                model.getScene().getCamera().toggleMovement();
+                break;
+
             case Action.togglePause:
                 model.getSource().getPlay().togglePaused();
                 model.getTarget().getPlay().togglePaused();

@@ -207,6 +207,7 @@ public class Action {
     final static String toggleFreezeTarget = "toggle freeze target";
     final static String toggleIndexBase = "toggle indexBase";
     final static String toggleLoadOrientation = "toggle loadOrientation";
+    final static String toggleMovement = "toggle movement";
     final static String togglePause = "toggle pause";
     final static String togglePauseSource = "toggle pause source";
     final static String togglePauseTarget = "toggle pause target";

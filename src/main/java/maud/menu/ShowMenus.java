@@ -236,18 +236,20 @@ public class ShowMenus {
      * Display a "select orbitCenter" menu.
      */
     public static void selectOrbitCenter() {
-        MenuBuilder builder = new MenuBuilder();
-
         CameraStatus status = Maud.getModel().getScene().getCamera();
-        OrbitCenter selectedCenter = status.getOrbitCenter();
-        for (OrbitCenter center : OrbitCenter.values()) {
-            if (!center.equals(selectedCenter)) {
-                String name = center.toString();
-                builder.add(name);
-            }
-        }
+        if (status.isOrbitMode()) {
+            MenuBuilder builder = new MenuBuilder();
 
-        builder.show(ActionPrefix.selectOrbitCenter);
+            OrbitCenter selectedCenter = status.getOrbitCenter();
+            for (OrbitCenter center : OrbitCenter.values()) {
+                if (!center.equals(selectedCenter)) {
+                    String name = center.toString();
+                    builder.add(name);
+                }
+            }
+
+            builder.show(ActionPrefix.selectOrbitCenter);
+        }
     }
 
     /**

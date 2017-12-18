@@ -31,7 +31,9 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.option.scene.CameraStatus;
+import maud.model.option.scene.MovementMode;
 import maud.model.option.scene.OrbitCenter;
+import maud.model.option.scene.ProjectionMode;
 
 /**
  * The controller for the "Camera Tool" window in Maud's editor screen. The
@@ -79,22 +81,20 @@ class CameraTool extends WindowController {
         Maud.gui.setIgnoreGuiChanges(true);
 
         CameraStatus status = Maud.getModel().getScene().getCamera();
-        boolean parallel = status.isParallelProjection();
-        if (parallel) {
-            Maud.gui.setRadioButton("parallelRadioButton");
-        } else {
-            Maud.gui.setRadioButton("perspectiveRadioButton");
-        }
 
-        boolean orbit = status.isOrbitMode();
-        if (orbit) {
-            Maud.gui.setRadioButton("orbitRadioButton");
-        } else {
-            Maud.gui.setRadioButton("flyRadioButton");
-        }
+        MovementMode movement = status.getMovementMode();
+        String mButton = movement.toString();
+        Maud.gui.setButtonLabel("cameraMovementButton", mButton);
 
-        OrbitCenter orbitCenter = status.getOrbitCenter();
-        String ocButton = orbitCenter.toString();
+        ProjectionMode projection = status.getProjectionMode();
+        String pButton = projection.toString();
+        Maud.gui.setButtonLabel("cameraProjectionButton", pButton);
+
+        String ocButton = "";
+        if (status.isOrbitMode()) {
+            OrbitCenter orbitCenter = status.getOrbitCenter();
+            ocButton = orbitCenter.toString();
+        }
         Maud.gui.setButtonLabel("orbitCenterButton", ocButton);
 
         Maud.gui.setIgnoreGuiChanges(false);

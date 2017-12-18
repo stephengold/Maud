@@ -458,19 +458,6 @@ public class EditorScreen extends GuiScreenController {
         SceneOptions scene = Maud.getModel().getScene();
 
         switch (buttonId) {
-            case "flyRadioButton":
-                scene.getCamera().setMode("fly");
-                break;
-            case "orbitRadioButton":
-                scene.getCamera().setMode("orbit");
-                break;
-            case "perspectiveRadioButton":
-                scene.getCamera().setMode("perspective");
-                break;
-            case "parallelRadioButton":
-                scene.getCamera().setMode("parallel");
-                break;
-
             case "noPlatformRadioButton":
                 scene.setPlatformType(PlatformType.None);
                 break;
