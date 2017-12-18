@@ -156,6 +156,7 @@ public class CompoundCollisionShape extends CollisionShape {
         capsule.writeSavableArrayList(children, "children", new ArrayList<ChildCollisionShape>());
     }
 
+    @SuppressWarnings("unchecked")
     public void read(JmeImporter im) throws IOException {
         super.read(im);
         InputCapsule capsule = im.getCapsule(this);
