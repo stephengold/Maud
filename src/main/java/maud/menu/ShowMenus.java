@@ -280,9 +280,10 @@ public class ShowMenus {
     public static void selectOverrideType() {
         MenuBuilder builder = new MenuBuilder();
 
+        builder.add(VarType.Boolean.toString());
         builder.add(VarType.Float.toString());
         builder.add(VarType.Int.toString());
-        // TODO other types
+        // TODO other types: Vector2, Vector3, Vector4, ...
 
         builder.show(ActionPrefix.newOverride);
     }
