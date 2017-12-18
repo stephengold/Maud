@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
 
 /**
- * The MVC model of the selected user data a loaded C-G model.
+ * The MVC model of the selected user data in a loaded C-G model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -84,8 +84,7 @@ public class SelectedUserData implements Cloneable {
         if (selectedKey == null) {
             index = -1;
         } else {
-            List<String> keyList;
-            keyList = cgm.getSpatial().listUserKeys();
+            List<String> keyList = cgm.getSpatial().listUserKeys();
             index = keyList.indexOf(selectedKey);
         }
 
@@ -152,7 +151,7 @@ public class SelectedUserData implements Cloneable {
         }
     }
     // *************************************************************************
-    // Object methods
+    // Cloneable methods
 
     /**
      * Create a deep copy of this object.
