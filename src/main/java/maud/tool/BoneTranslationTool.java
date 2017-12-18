@@ -123,19 +123,19 @@ class BoneTranslationTool extends WindowController {
         if (bone.isSelected()) {
             setSlidersToPose();
             if (bone.shouldEnableControls()) {
-                Maud.gui.setButtonLabel("resetOffAnimButton", "Animation");
-                Maud.gui.setButtonLabel("resetOffBindButton", "Bind pose");
+                Maud.gui.setButtonText("resetOffAnim", "Animation");
+                Maud.gui.setButtonText("resetOffBind", "Bind pose");
                 enableSliders();
             } else {
-                Maud.gui.setButtonLabel("resetOffAnimButton", "");
-                Maud.gui.setButtonLabel("resetOffBindButton", "");
+                Maud.gui.setButtonText("resetOffAnim", "");
+                Maud.gui.setButtonText("resetOffBind", "");
                 disableSliders();
             }
 
         } else {
             clear();
-            Maud.gui.setButtonLabel("resetOffAnimButton", "");
-            Maud.gui.setButtonLabel("resetOffBindButton", "");
+            Maud.gui.setButtonText("resetOffAnim", "");
+            Maud.gui.setButtonText("resetOffBind", "");
             disableSliders();
         }
 

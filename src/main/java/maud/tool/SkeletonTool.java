@@ -99,7 +99,7 @@ class SkeletonTool extends WindowController {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
         String bLabel = showBones.toString();
-        Maud.gui.setButtonLabel("skeletonShowBonesButton", bLabel);
+        Maud.gui.setButtonText("skeletonShowBones", bLabel);
 
         float lineWidth = options.getLineWidth();
         Maud.gui.setSlider("skeletonLineWidth", widthSt, lineWidth);

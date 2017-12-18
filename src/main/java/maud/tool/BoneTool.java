@@ -112,7 +112,7 @@ class BoneTool extends WindowController {
         }
 
         Maud.gui.setStatusText("boneChildren", " " + childText);
-        Maud.gui.setButtonLabel("boneSelectChildButton", scButton);
+        Maud.gui.setButtonText("boneSelectChild", scButton);
     }
 
     /**
@@ -170,8 +170,8 @@ class BoneTool extends WindowController {
         }
 
         Maud.gui.setStatusText("boneIndex", indexText);
-        Maud.gui.setButtonLabel("boneNextButton", nButton);
-        Maud.gui.setButtonLabel("bonePreviousButton", pButton);
+        Maud.gui.setButtonText("boneNext", nButton);
+        Maud.gui.setButtonText("bonePrevious", pButton);
     }
 
     /**
@@ -220,7 +220,7 @@ class BoneTool extends WindowController {
         }
 
         Maud.gui.setStatusText("boneName", " " + nameText);
-        Maud.gui.setButtonLabel("boneRenameButton", rButton);
+        Maud.gui.setButtonText("boneRename", rButton);
     }
 
     /**
@@ -253,7 +253,7 @@ class BoneTool extends WindowController {
         }
 
         Maud.gui.setStatusText("boneParent", " " + parentText);
-        Maud.gui.setButtonLabel("boneSelectParentButton", spButton);
+        Maud.gui.setButtonText("boneSelectParent", spButton);
     }
 
     /**
@@ -272,8 +272,8 @@ class BoneTool extends WindowController {
             tButton = "";
         }
 
-        Maud.gui.setButtonLabel("boneRotateButton", rButton);
-        Maud.gui.setButtonLabel("boneScaleButton", sButton);
-        Maud.gui.setButtonLabel("boneTranslateButton", tButton);
+        Maud.gui.setButtonText("boneRotate", rButton);
+        Maud.gui.setButtonText("boneScale", sButton);
+        Maud.gui.setButtonText("boneTranslate", tButton);
     }
 }

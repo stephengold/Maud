@@ -81,6 +81,6 @@ class RenderTool extends WindowController {
 
         TriangleMode mode = options.getTriangleMode();
         String modeName = mode.toString();
-        Maud.gui.setButtonLabel("trianglesButton", modeName);
+        Maud.gui.setButtonText("triangles", modeName);
     }
 }

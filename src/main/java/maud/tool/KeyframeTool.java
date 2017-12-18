@@ -138,11 +138,11 @@ class KeyframeTool extends WindowController {
             sButton = "Set all to pose";
         }
 
-        Maud.gui.setButtonLabel("deleteSingleKeyframeButton", dButton);
-        Maud.gui.setButtonLabel("insertSingleKeyframeButton", iButton);
-        Maud.gui.setButtonLabel("rotationsToPoseKeyframeButton", sButton);
-        Maud.gui.setButtonLabel("scalesToPoseKeyframeButton", sButton);
-        Maud.gui.setButtonLabel("translationsToPoseKeyframeButton", sButton);
+        Maud.gui.setButtonText("deleteSingleKeyframe", dButton);
+        Maud.gui.setButtonText("insertSingleKeyframe", iButton);
+        Maud.gui.setButtonText("rotationsToPoseKeyframe", sButton);
+        Maud.gui.setButtonText("scalesToPoseKeyframe", sButton);
+        Maud.gui.setButtonText("translationsToPoseKeyframe", sButton);
     }
 
     /**
@@ -178,11 +178,11 @@ class KeyframeTool extends WindowController {
             }
         }
 
-        Maud.gui.setButtonLabel("firstKeyframeButton", firstButton);
-        Maud.gui.setButtonLabel("previousKeyframeButton", previousButton);
-        Maud.gui.setButtonLabel("nearestKeyframeButton", nearestButton);
-        Maud.gui.setButtonLabel("nextKeyframeButton", nextButton);
-        Maud.gui.setButtonLabel("lastKeyframeButton", lastButton);
+        Maud.gui.setButtonText("firstKeyframe", firstButton);
+        Maud.gui.setButtonText("previousKeyframe", previousButton);
+        Maud.gui.setButtonText("nearestKeyframe", nearestButton);
+        Maud.gui.setButtonText("nextKeyframe", nextButton);
+        Maud.gui.setButtonText("lastKeyframe", lastButton);
     }
 
     /**

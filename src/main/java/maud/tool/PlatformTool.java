@@ -90,7 +90,7 @@ class PlatformTool extends WindowController {
 
         PlatformType type = options.getPlatformType();
         String tButton = type.toString();
-        Maud.gui.setButtonLabel("platformTypeButton", tButton);
+        Maud.gui.setButtonText("platformType", tButton);
 
         float diameter = options.getPlatformDiameter();
         Maud.gui.setSlider("platformDiameter", diameterSt, diameter);

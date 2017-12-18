@@ -107,15 +107,15 @@ public class HistoryTool extends WindowController {
             aButton = "Redo all";
             rButton = "Redo";
         }
-        Maud.gui.setButtonLabel("historyRedoAllButton", aButton);
-        Maud.gui.setButtonLabel("historyRedoButton", rButton);
+        Maud.gui.setButtonText("historyRedoAll", aButton);
+        Maud.gui.setButtonText("historyRedo", rButton);
 
         String uButton = "";
         boolean noneVulnerable = !History.hasVulnerable();
         if (nextIndex > 1 || noneVulnerable && nextIndex > 0) {
             uButton = "Undo";
         }
-        Maud.gui.setButtonLabel("historyUndoButton", uButton);
+        Maud.gui.setButtonText("historyUndo", uButton);
         /*
          * Add dynamic content to the scroll panel.
          */

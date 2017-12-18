@@ -188,8 +188,8 @@ class VertexTool extends WindowController {
         }
 
         Maud.gui.setStatusText("vertexIndex", indexText);
-        Maud.gui.setButtonLabel("vertexNextButton", nButton);
-        Maud.gui.setButtonLabel("vertexPreviousButton", pButton);
+        Maud.gui.setButtonText("vertexNext", nButton);
+        Maud.gui.setButtonText("vertexPrevious", pButton);
     }
 
     /**
@@ -204,6 +204,6 @@ class VertexTool extends WindowController {
             sButton = "";
         }
 
-        Maud.gui.setButtonLabel("vertexSelect", sButton);
+        Maud.gui.setButtonText("vertexSelect", sButton);
     }
 }

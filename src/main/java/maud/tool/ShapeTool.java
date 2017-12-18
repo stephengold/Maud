@@ -125,7 +125,7 @@ class ShapeTool extends WindowController {
         }
 
         Maud.gui.setStatusText("shapeChildren", " " + childrenText);
-        Maud.gui.setButtonLabel("shapeSelectChildButton", scButton);
+        Maud.gui.setButtonText("shapeSelectChild", scButton);
     }
 
     /**
@@ -160,9 +160,9 @@ class ShapeTool extends WindowController {
         }
 
         Maud.gui.setStatusText("shapeIndex", indexText);
-        Maud.gui.setButtonLabel("shapeNextButton", nButton);
-        Maud.gui.setButtonLabel("shapePreviousButton", pButton);
-        Maud.gui.setButtonLabel("shapeSelectButton", sButton);
+        Maud.gui.setButtonText("shapeNext", nButton);
+        Maud.gui.setButtonText("shapePrevious", pButton);
+        Maud.gui.setButtonText("shapeSelect", sButton);
     }
 
     /**
@@ -186,7 +186,7 @@ class ShapeTool extends WindowController {
         EditorModel model = Maud.getModel();
         ShapeParameter parameter = model.getMisc().getShapeParameter();
         String name = parameter.toString();
-        Maud.gui.setButtonLabel("shapeParmButton", name);
+        Maud.gui.setButtonText("shapeParm", name);
 
         SelectedShape shape = model.getTarget().getShape();
         float value = shape.getValue(parameter);
@@ -194,7 +194,7 @@ class ShapeTool extends WindowController {
         if (!Float.isNaN(value)) {
             valueString = Float.toString(value);
         }
-        Maud.gui.setButtonLabel("shapeParmValueButton", valueString);
+        Maud.gui.setButtonText("shapeParmValue", valueString);
     }
 
     /**
@@ -253,6 +253,6 @@ class ShapeTool extends WindowController {
         }
 
         Maud.gui.setStatusText("shapeUsers", " " + usersText);
-        Maud.gui.setButtonLabel("shapeSelectUserButton", suButton);
+        Maud.gui.setButtonText("shapeSelectUser", suButton);
     }
 }

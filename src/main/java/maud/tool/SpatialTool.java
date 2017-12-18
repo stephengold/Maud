@@ -124,7 +124,7 @@ class SpatialTool extends WindowController {
         }
 
         Maud.gui.setStatusText("spatialChildren", " " + childrenText);
-        Maud.gui.setButtonLabel("spatialSelectChildButton", scButton);
+        Maud.gui.setButtonText("spatialSelectChild", scButton);
     }
 
     /**
@@ -223,7 +223,7 @@ class SpatialTool extends WindowController {
         }
 
         Maud.gui.setStatusText("spatialParent", " " + parentText);
-        Maud.gui.setButtonLabel("spatialSelectParentButton", spButton);
+        Maud.gui.setButtonText("spatialSelectParent", spButton);
     }
 
     /**

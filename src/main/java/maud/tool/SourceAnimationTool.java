@@ -163,10 +163,10 @@ class SourceAnimationTool extends WindowController {
             indexText = "no model loaded";
         }
 
-        Maud.gui.setButtonLabel("sourceAnimControlPreviousButton", pButton);
+        Maud.gui.setButtonText("sourceAnimControlPrevious", pButton);
         Maud.gui.setStatusText("sourceAnimControlIndex", indexText);
-        Maud.gui.setButtonLabel("sourceAnimControlNextButton", nButton);
-        Maud.gui.setButtonLabel("sourceAnimControlSelectButton", sButton);
+        Maud.gui.setButtonText("sourceAnimControlNext", nButton);
+        Maud.gui.setButtonText("sourceAnimControlSelect", sButton);
     }
 
     /**
@@ -227,10 +227,10 @@ class SourceAnimationTool extends WindowController {
             indexText = "no model";
         }
 
-        Maud.gui.setButtonLabel("sourceAnimationPreviousButton", pButton);
+        Maud.gui.setButtonText("sourceAnimationPrevious", pButton);
         Maud.gui.setStatusText("sourceAnimationIndex", indexText);
-        Maud.gui.setButtonLabel("sourceAnimationNextButton", nButton);
-        Maud.gui.setButtonLabel("sourceAnimationLoadButton", lButton);
+        Maud.gui.setButtonText("sourceAnimationNext", nButton);
+        Maud.gui.setButtonText("sourceAnimationLoad", lButton);
     }
 
     /**
@@ -258,7 +258,7 @@ class SourceAnimationTool extends WindowController {
                 pButton = "Pause";
             }
         }
-        Maud.gui.setButtonLabel("togglePauseSourceButton", pButton);
+        Maud.gui.setButtonText("togglePauseSource", pButton);
     }
 
     /**

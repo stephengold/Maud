@@ -113,10 +113,10 @@ class AxesTool extends WindowController {
 
         AxesSubject subject = options.getSubject();
         String buttonLabel = subject.toString();
-        Maud.gui.setButtonLabel("axesSubjectButton", buttonLabel);
+        Maud.gui.setButtonText("axesSubject", buttonLabel);
 
         AxesDragEffect effect = options.getDragEffect();
         buttonLabel = effect.toString();
-        Maud.gui.setButtonLabel("axesDragButton", buttonLabel);
+        Maud.gui.setButtonText("axesDrag", buttonLabel);
     }
 }

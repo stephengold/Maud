@@ -116,9 +116,9 @@ class OverridesTool extends WindowController {
         }
 
         Maud.gui.setStatusText("mpoIndex", indexText);
-        Maud.gui.setButtonLabel("mpoNextButton", nButton);
-        Maud.gui.setButtonLabel("mpoPreviousButton", pButton);
-        Maud.gui.setButtonLabel("mpoSelectButton", sButton);
+        Maud.gui.setButtonText("mpoNext", nButton);
+        Maud.gui.setButtonText("mpoPrevious", pButton);
+        Maud.gui.setButtonText("mpoSelect", sButton);
     }
 
     /**
@@ -140,8 +140,8 @@ class OverridesTool extends WindowController {
         }
 
         Maud.gui.setStatusText("mpoName", " " + nameText);
-        Maud.gui.setButtonLabel("mpoDeleteButton", dButton);
-        Maud.gui.setButtonLabel("mpoRenameButton", rButton);
+        Maud.gui.setButtonText("mpoDelete", dButton);
+        Maud.gui.setButtonText("mpoRename", rButton);
     }
 
     /**
@@ -170,6 +170,6 @@ class OverridesTool extends WindowController {
         }
 
         Maud.gui.setStatusText("mpoValue", " " + valueText);
-        Maud.gui.setButtonLabel("mpoEditButton", eButton);
+        Maud.gui.setButtonText("mpoEdit", eButton);
     }
 }

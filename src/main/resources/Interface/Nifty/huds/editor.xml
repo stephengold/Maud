@@ -1048,7 +1048,7 @@ the menu bar, status bar, and tool windows.
                     </panel>
                     <panel/>
                     <panel childLayout="horizontal" height="25px">
-                        <control name="button" id="loadRetargetedPose"
+                        <control name="button" id="loadRetargetedPoseButton"
                                  width="130px">
                             <interact onRelease="perform(load retargetedPose)"/>
                         </control>
@@ -1075,7 +1075,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button"
-                                 id="selectSourceBone"
+                                 id="selectSourceBoneButton"
                                  width="50px">
                             <interact onRelease="perform(select sourceBone)"/>
                         </control>
@@ -2106,7 +2106,7 @@ the menu bar, status bar, and tool windows.
                                      width="*"/>
                             <panel childLayout="horizontal" height="30px">
                                 <panel/>
-                                <control name="button" id="degreesButton2"
+                                <control name="button" id="degrees2Button"
                                          width="50px">
                                     <interact onRelease="perform(toggle degrees)"/>
                                 </control>
@@ -2316,7 +2316,7 @@ the menu bar, status bar, and tool windows.
                                      width="*"/>
                             <panel childLayout="horizontal" height="30px">
                                 <panel/>
-                                <control name="button" id="degreesButton3"
+                                <control name="button" id="degrees3Button"
                                          width="50px">
                                     <interact onRelease="perform(toggle degrees)"/>
                                 </control>
@@ -2426,7 +2426,7 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(next vertex)"/>
                         </control>
                         <panel width="5px"/>
-                        <control name="button" id="vertexSelect"
+                        <control name="button" id="vertexSelectButton"
                                  width="50px">
                             <interact onRelease="perform(select vertex)"/>
                         </control>

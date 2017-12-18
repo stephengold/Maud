@@ -117,7 +117,7 @@ class TwistTool extends WindowController {
         } else {
             dButton = "degrees";
         }
-        Maud.gui.setButtonLabel("degreesButton3", dButton);
+        Maud.gui.setButtonText("degrees3", dButton);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }
@@ -195,10 +195,10 @@ class TwistTool extends WindowController {
             disableSliders();
         }
 
-        Maud.gui.setButtonLabel("resetTwistButton", rButton);
-        Maud.gui.setButtonLabel("snapTwistButton", sButton);
-        Maud.gui.setButtonLabel("snapXTwistButton", sButton);
-        Maud.gui.setButtonLabel("snapYTwistButton", sButton);
-        Maud.gui.setButtonLabel("snapZTwistButton", sButton);
+        Maud.gui.setButtonText("resetTwist", rButton);
+        Maud.gui.setButtonText("snapTwist", sButton);
+        Maud.gui.setButtonText("snapXTwist", sButton);
+        Maud.gui.setButtonText("snapYTwist", sButton);
+        Maud.gui.setButtonText("snapZTwist", sButton);
     }
 }

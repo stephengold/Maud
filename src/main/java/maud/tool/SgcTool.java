@@ -104,11 +104,11 @@ class SgcTool extends WindowController {
             typeText = "(none selected)";
         }
 
-        Maud.gui.setButtonLabel("sgcDeleteButton", deleteLabel);
+        Maud.gui.setButtonText("sgcDelete", deleteLabel);
         Maud.gui.setStatusText("sgcMode", " " + modeName);
         Maud.gui.setStatusText("sgcObject", " " + physicsName);
-        Maud.gui.setButtonLabel("sgcSelectObjectButton", soButton);
-        Maud.gui.setButtonLabel("sgcSelectSpatialButton", ssButton);
+        Maud.gui.setButtonText("sgcSelectObject", soButton);
+        Maud.gui.setButtonText("sgcSelectSpatial", ssButton);
         Maud.gui.setStatusText("sgcSpatial", " " + spatialText);
         Maud.gui.setStatusText("sgcType", " " + typeText);
 
@@ -147,7 +147,7 @@ class SgcTool extends WindowController {
         }
 
         Maud.gui.setStatusText("sgcIndex", indexText);
-        Maud.gui.setButtonLabel("sgcNextButton", nButton);
-        Maud.gui.setButtonLabel("sgcPreviousButton", pButton);
+        Maud.gui.setButtonText("sgcNext", nButton);
+        Maud.gui.setButtonText("sgcPrevious", pButton);
     }
 }

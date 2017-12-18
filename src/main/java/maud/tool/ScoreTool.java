@@ -85,11 +85,11 @@ class ScoreTool extends WindowController {
 
         ShowBones showNoneSelected = scoreOptions.getShowNoneSelected();
         String noneButton = showNoneSelected.toString();
-        Maud.gui.setButtonLabel("scoreShowNoneSelectedButton", noneButton);
+        Maud.gui.setButtonText("scoreShowNoneSelected", noneButton);
 
         ShowBones showWhenSelected = scoreOptions.getShowWhenSelected();
         String whenButton = showWhenSelected.toString();
-        Maud.gui.setButtonLabel("scoreShowWhenSelectedButton", whenButton);
+        Maud.gui.setButtonText("scoreShowWhenSelected", whenButton);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

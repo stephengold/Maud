@@ -86,15 +86,15 @@ class DisplaySettingsTool extends WindowController {
         int width = settings.getWidth();
         int height = settings.getHeight();
         String resolution = String.format("%d x %d", width, height);
-        Maud.gui.setButtonLabel("displayResolutionButton", resolution);
+        Maud.gui.setButtonText("displayResolution", resolution);
 
         int numSamples = settings.getSamples();
         String aaDescription = MaudUtil.aaDescription(numSamples);
-        Maud.gui.setButtonLabel("displayAntiAliasingButton", aaDescription);
+        Maud.gui.setButtonText("displayAntiAliasing", aaDescription);
 
         int colorDepth = settings.getBitsPerPixel();
         String cdDescription = String.format("%d bits", colorDepth);
-        Maud.gui.setButtonLabel("colorDepthButton", cdDescription);
+        Maud.gui.setButtonText("colorDepth", cdDescription);
 
         int refreshRate = settings.getFrequency();
         String rrDescription;
@@ -103,7 +103,7 @@ class DisplaySettingsTool extends WindowController {
         } else {
             rrDescription = String.format("%d Hz", refreshRate);
         }
-        Maud.gui.setButtonLabel("refreshRateButton", rrDescription);
+        Maud.gui.setButtonText("refreshRate", rrDescription);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

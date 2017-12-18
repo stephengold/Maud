@@ -103,7 +103,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         Spatial.BatchHint hint = spatial.getLocalBatchHint();
         String description = hint.toString();
-        Maud.gui.setButtonLabel("spatialBatchHintButton", description);
+        Maud.gui.setButtonText("spatialBatchHint", description);
     }
 
     /**
@@ -122,7 +122,7 @@ class SpatialDetailsTool extends WindowController {
         if (spatial.isGeometry()) {
             toggleText = "Toggle";
         }
-        Maud.gui.setButtonLabel("spatialBoundTypeButton", toggleText);
+        Maud.gui.setButtonText("spatialBoundType", toggleText);
     }
 
     /**
@@ -132,7 +132,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         RenderQueue.Bucket bucket = spatial.getLocalQueueBucket();
         String description = bucket.toString();
-        Maud.gui.setButtonLabel("spatialBucketButton", description);
+        Maud.gui.setButtonText("spatialBucket", description);
     }
 
     /**
@@ -142,7 +142,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         Spatial.CullHint hint = spatial.getLocalCullHint();
         String description = hint.toString();
-        Maud.gui.setButtonLabel("spatialCullHintButton", description);
+        Maud.gui.setButtonText("spatialCullHint", description);
     }
 
     /**
@@ -245,7 +245,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         RenderQueue.ShadowMode mode = spatial.getLocalShadowMode();
         String description = mode.toString();
-        Maud.gui.setButtonLabel("spatialShadowsButton", description);
+        Maud.gui.setButtonText("spatialShadows", description);
     }
 
     /**

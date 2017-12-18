@@ -99,7 +99,7 @@ class MappingTool extends WindowController {
         } else {
             mButton = "Show retargeted pose";
         }
-        Maud.gui.setButtonLabel("loadRetargetedPose", mButton);
+        Maud.gui.setButtonText("loadRetargetedPose", mButton);
     }
     // *************************************************************************
     // private methods
@@ -211,8 +211,8 @@ class MappingTool extends WindowController {
         }
 
         Maud.gui.setStatusText("mappingIndex", indexText);
-        Maud.gui.setButtonLabel("mappingNextButton", nButton);
-        Maud.gui.setButtonLabel("mappingPreviousButton", pButton);
+        Maud.gui.setButtonText("mappingNext", nButton);
+        Maud.gui.setButtonText("mappingPrevious", pButton);
     }
 
     /**
@@ -229,8 +229,8 @@ class MappingTool extends WindowController {
             mButton = "Map";
         }
 
-        Maud.gui.setButtonLabel("addMappingButton", mButton);
-        Maud.gui.setButtonLabel("deleteMappingButton", uButton);
+        Maud.gui.setButtonText("addMapping", mButton);
+        Maud.gui.setButtonText("deleteMapping", uButton);
     }
 
     /**
@@ -264,7 +264,7 @@ class MappingTool extends WindowController {
         } else {
             sButton = "";
         }
-        Maud.gui.setButtonLabel("selectSourceBone", sButton);
+        Maud.gui.setButtonText("selectSourceBone", sButton);
     }
 
     /**

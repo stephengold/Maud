@@ -161,10 +161,10 @@ class AnimationTool extends WindowController {
             indexText = "not animated";
         }
 
-        Maud.gui.setButtonLabel("animControlPreviousButton", pButton);
+        Maud.gui.setButtonText("animControlPrevious", pButton);
         Maud.gui.setStatusText("animControlIndex", indexText);
-        Maud.gui.setButtonLabel("animControlNextButton", nButton);
-        Maud.gui.setButtonLabel("animControlSelectButton", sButton);
+        Maud.gui.setButtonText("animControlNext", nButton);
+        Maud.gui.setButtonText("animControlSelect", sButton);
     }
 
     /**
@@ -231,9 +231,9 @@ class AnimationTool extends WindowController {
         }
 
         Maud.gui.setStatusText("animationIndex", indexText);
-        Maud.gui.setButtonLabel("animationNextButton", nButton);
-        Maud.gui.setButtonLabel("animationPreviousButton", pButton);
-        Maud.gui.setButtonLabel("animationLoadButton", lButton);
+        Maud.gui.setButtonText("animationNext", nButton);
+        Maud.gui.setButtonText("animationPrevious", pButton);
+        Maud.gui.setButtonText("animationLoad", lButton);
     }
 
     /**
@@ -270,7 +270,7 @@ class AnimationTool extends WindowController {
                 pButton = "Pause";
             }
         }
-        Maud.gui.setButtonLabel("togglePauseButton", pButton);
+        Maud.gui.setButtonText("togglePause", pButton);
     }
 
     /**
@@ -290,7 +290,7 @@ class AnimationTool extends WindowController {
         }
 
         Maud.gui.setStatusText("animationName", " " + nameText);
-        Maud.gui.setButtonLabel("animationRenameButton", rButton);
+        Maud.gui.setButtonText("animationRename", rButton);
     }
 
     /**

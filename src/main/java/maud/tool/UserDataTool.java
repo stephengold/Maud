@@ -117,9 +117,9 @@ class UserDataTool extends WindowController {
         }
 
         Maud.gui.setStatusText("userDataIndex", indexText);
-        Maud.gui.setButtonLabel("userDataNextButton", nButton);
-        Maud.gui.setButtonLabel("userDataPreviousButton", pButton);
-        Maud.gui.setButtonLabel("userKeySelectButton", sButton);
+        Maud.gui.setButtonText("userDataNext", nButton);
+        Maud.gui.setButtonText("userDataPrevious", pButton);
+        Maud.gui.setButtonText("userKeySelect", sButton);
     }
 
     /**
@@ -141,8 +141,8 @@ class UserDataTool extends WindowController {
         }
 
         Maud.gui.setStatusText("userKey", " " + keyText);
-        Maud.gui.setButtonLabel("userKeyDeleteButton", dButton);
-        Maud.gui.setButtonLabel("userKeyRenameButton", rButton);
+        Maud.gui.setButtonText("userKeyDelete", dButton);
+        Maud.gui.setButtonText("userKeyRename", rButton);
     }
 
     /**
@@ -172,6 +172,6 @@ class UserDataTool extends WindowController {
         }
 
         Maud.gui.setStatusText("userValue", " " + valueText);
-        Maud.gui.setButtonLabel("userDataEditButton", eButton);
+        Maud.gui.setButtonText("userDataEdit", eButton);
     }
 }

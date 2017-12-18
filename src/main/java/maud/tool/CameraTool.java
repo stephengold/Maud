@@ -84,18 +84,18 @@ class CameraTool extends WindowController {
 
         MovementMode movement = status.getMovementMode();
         String mButton = movement.toString();
-        Maud.gui.setButtonLabel("cameraMovementButton", mButton);
+        Maud.gui.setButtonText("cameraMovement", mButton);
 
         ProjectionMode projection = status.getProjectionMode();
         String pButton = projection.toString();
-        Maud.gui.setButtonLabel("cameraProjectionButton", pButton);
+        Maud.gui.setButtonText("cameraProjection", pButton);
 
         String ocButton = "";
         if (status.isOrbitMode()) {
             OrbitCenter orbitCenter = status.getOrbitCenter();
             ocButton = orbitCenter.toString();
         }
-        Maud.gui.setButtonLabel("orbitCenterButton", ocButton);
+        Maud.gui.setButtonText("orbitCenter", ocButton);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

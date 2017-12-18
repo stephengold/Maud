@@ -126,8 +126,8 @@ class BoneRotationTool extends WindowController {
             clear();
             disableSliders();
         }
-        Maud.gui.setButtonLabel("resetAngAnimButton", aButton);
-        Maud.gui.setButtonLabel("resetAngBindButton", bButton);
+        Maud.gui.setButtonText("resetAngAnim", aButton);
+        Maud.gui.setButtonText("resetAngBind", bButton);
 
         String dButton; // TODO remove?
         if (Maud.getModel().getMisc().getAnglesInDegrees()) {
@@ -135,7 +135,7 @@ class BoneRotationTool extends WindowController {
         } else {
             dButton = "degrees";
         }
-        Maud.gui.setButtonLabel("degreesButton", dButton);
+        Maud.gui.setButtonText("degrees", dButton);
         Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************

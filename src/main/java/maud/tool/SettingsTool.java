@@ -76,15 +76,15 @@ class SettingsTool extends WindowController {
 
         boolean degreesFlag = options.getAnglesInDegrees();
         String description = degreesFlag ? "degrees" : "radians";
-        Maud.gui.setButtonLabel("settingsDegreesButton", description);
+        Maud.gui.setButtonText("settingsDegrees", description);
 
         int indexBase = options.getIndexBase();
         description = Integer.toString(indexBase);
-        Maud.gui.setButtonLabel("settingsIndexBaseButton", description);
+        Maud.gui.setButtonText("settingsIndexBase", description);
 
         boolean zUpFlag = options.getLoadZup();
         description = zUpFlag ? "+Z up" : "+Y up";
-        Maud.gui.setButtonLabel("settingsLoadOrientationButton", description);
+        Maud.gui.setButtonText("settingsLoadOrientation", description);
 
         boolean diagnoseFlag = options.getDiagnoseLoads();
         Maud.gui.setChecked("settingsDiagnose", diagnoseFlag);

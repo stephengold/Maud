@@ -94,7 +94,7 @@ class RetargetTool extends WindowController {
             }
         }
         Maud.gui.setStatusText("sourceName", " " + sourceDesc);
-        Maud.gui.setButtonLabel("selectSourceAnimationButton", sButton);
+        Maud.gui.setButtonText("selectSourceAnimation", sButton);
 
         int numBoneMappings = Maud.getModel().getMap().countMappings();
         String mappingDesc = Integer.toString(numBoneMappings);
@@ -158,6 +158,6 @@ class RetargetTool extends WindowController {
         }
 
         Maud.gui.setStatusText("retargetFeedback", feedback);
-        Maud.gui.setButtonLabel("retargetButton", rButton);
+        Maud.gui.setButtonText("retarget", rButton);
     }
 }

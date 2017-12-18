@@ -113,7 +113,7 @@ class SpatialRotationTool extends WindowController {
         } else {
             dButton = "degrees";
         }
-        Maud.gui.setButtonLabel("degreesButton2", dButton);
+        Maud.gui.setButtonText("degrees2", dButton);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

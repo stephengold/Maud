@@ -114,9 +114,9 @@ class ObjectTool extends WindowController {
         }
 
         Maud.gui.setStatusText("physicsIndex", indexText);
-        Maud.gui.setButtonLabel("physicsNextButton", nButton);
-        Maud.gui.setButtonLabel("physicsPreviousButton", pButton);
-        Maud.gui.setButtonLabel("physicsSelectObjectButton", sButton);
+        Maud.gui.setButtonText("physicsNext", nButton);
+        Maud.gui.setButtonText("physicsPrevious", pButton);
+        Maud.gui.setButtonText("physicsSelectObject", sButton);
     }
 
     /**
@@ -143,8 +143,8 @@ class ObjectTool extends WindowController {
         SelectedObject object = model.getTarget().getObject();
         String rbpValue = object.getRbpValue(rbp);
 
-        Maud.gui.setButtonLabel("physicsRbpButton", rbpName);
-        Maud.gui.setButtonLabel("physicsRbpValueButton", rbpValue);
+        Maud.gui.setButtonText("physicsRbp", rbpName);
+        Maud.gui.setButtonText("physicsRbpValue", rbpValue);
     }
 
     /**
@@ -164,6 +164,6 @@ class ObjectTool extends WindowController {
         }
 
         Maud.gui.setStatusText("physicsShape", " " + shape);
-        Maud.gui.setButtonLabel("physicsSelectShapeButton", sButton);
+        Maud.gui.setButtonText("physicsSelectShape", sButton);
     }
 }

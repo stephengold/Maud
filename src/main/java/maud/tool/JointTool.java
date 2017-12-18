@@ -120,9 +120,9 @@ class JointTool extends WindowController {
         }
 
         Maud.gui.setStatusText("jointIndex", indexText);
-        Maud.gui.setButtonLabel("jointNextButton", nButton);
-        Maud.gui.setButtonLabel("jointPreviousButton", pButton);
-        Maud.gui.setButtonLabel("jointSelectButton", sButton);
+        Maud.gui.setButtonText("jointNext", nButton);
+        Maud.gui.setButtonText("jointPrevious", pButton);
+        Maud.gui.setButtonText("jointSelect", sButton);
     }
 
     /**
