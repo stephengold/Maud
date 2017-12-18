@@ -43,6 +43,7 @@ import com.jme3.collision.CollisionResult;
 import com.jme3.input.InputManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.Line;
@@ -62,6 +63,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.shader.VarType;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.texture.Texture;
@@ -69,6 +71,7 @@ import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -260,6 +263,22 @@ public class SceneView
     // new methods exposed
 
     /**
+     * Add a new material-parameter override to the selected spatial.
+     *
+     * @param varType the variable type (not null)
+     * @param parameterName a name for the parameter (not null)
+     */
+    public void addOverride(VarType varType, String parameterName) {
+        Validate.nonNull(varType, "variable type");
+        Validate.nonNull(parameterName, "parameter name");
+
+        Spatial selectedSpatial = selectedSpatial();
+        MatParamOverride newMpo
+                = new MatParamOverride(varType, parameterName, null);
+        selectedSpatial.addMatParamOverride(newMpo);
+    }
+
+    /**
      * Add a copy of the specified physics control to the selected spatial and
      * the view's physics space.
      *
@@ -362,6 +381,15 @@ public class SceneView
 
         Node scene = getSceneRoot();
         scene.attachChild(orphan);
+    }
+
+    /**
+     * Delete the selected material-parameter override.
+     */
+    public void deleteOverride() {
+        Spatial spatial = selectedSpatial();
+        MatParamOverride mpo = findSelectedMpo();
+        spatial.removeMatParamOverride(mpo);
     }
 
     /**
@@ -708,6 +736,27 @@ public class SceneView
     }
 
     /**
+     * Rename the selected material-parameter override.
+     *
+     * @param newName (not null, not empty)
+     */
+    public void renameOverride(String newName) {
+        Validate.nonEmpty(newName, "new name");
+
+        Spatial spatial = selectedSpatial();
+        MatParamOverride oldMpo = findSelectedMpo();
+
+        Object value = oldMpo.getValue();
+        VarType varType = oldMpo.getVarType();
+        MatParamOverride newMpo = new MatParamOverride(varType, newName, value);
+        boolean enabled = oldMpo.isEnabled();
+        newMpo.setEnabled(enabled);
+
+        spatial.addMatParamOverride(newMpo);
+        spatial.removeMatParamOverride(oldMpo);
+    }
+
+    /**
      * Access the selected spatial in this view's copy of its C-G model.
      *
      * @return the pre-existing spatial (not null)
@@ -812,6 +861,25 @@ public class SceneView
         Spatial spatial = selectedSpatial();
         BoundingVolume newBound = modelBound.clone();
         spatial.setModelBound(newBound);
+    }
+
+    /**
+     * Alter the value of the selected material-parameter override.
+     *
+     * @param newValue (may be null, alias created if not null)
+     */
+    public void setOverrideValue(Object newValue) {
+        Spatial spatial = selectedSpatial();
+        MatParamOverride oldMpo = findSelectedMpo();
+
+        String name = oldMpo.getName();
+        VarType varType = oldMpo.getVarType();
+        MatParamOverride newMpo = new MatParamOverride(varType, name, newValue);
+        boolean enabled = oldMpo.isEnabled();
+        newMpo.setEnabled(enabled);
+
+        spatial.removeMatParamOverride(oldMpo);
+        spatial.addMatParamOverride(newMpo);
     }
 
     /**
@@ -1402,6 +1470,27 @@ public class SceneView
         PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, pcPosition);
 
         return pc;
+    }
+
+    /**
+     * Find the selected material-parameter override in this view's copy of its
+     * C-G model.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    private MatParamOverride findSelectedMpo() {
+        MatParamOverride result = null;
+        Spatial spatial = selectedSpatial();
+        String parameterName = cgm.getOverride().getName();
+        Collection<MatParamOverride> mpos = spatial.getLocalMatParamOverrides();
+        for (MatParamOverride mpo : mpos) {
+            if (mpo.getName().equals(parameterName)) {
+                result = mpo;
+            }
+        }
+
+        assert result != null;
+        return result;
     }
 
     /**

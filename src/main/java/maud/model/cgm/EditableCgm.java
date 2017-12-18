@@ -163,19 +163,23 @@ public class EditableCgm extends LoadedCgm {
     /**
      * Add a new material-parameter override to the selected spatial.
      *
-     * @param varType the value type (VarType.Float or VarType.Int)
+     * @param varType the variable type (not null)
      * @param parameterName a name for the parameter (not null)
      */
     public void addOverride(VarType varType, String parameterName) {
+        Validate.nonNull(varType, "variable type");
         Validate.nonNull(parameterName, "parameter name");
 
+        Spatial selectedSpatial = getSpatial().find();
         MatParamOverride newMpo
                 = new MatParamOverride(varType, parameterName, null);
-        Spatial selectedSpatial = getSpatial().find();
 
         History.autoAdd();
         selectedSpatial.addMatParamOverride(newMpo);
-        String description = String.format("add material-parameter override %s",
+        getSceneView().addOverride(varType, parameterName);
+
+        String description = String.format(
+                "add new material-parameter override %s",
                 MyString.quote(parameterName));
         setEdited(description);
 
@@ -381,6 +385,8 @@ public class EditableCgm extends LoadedCgm {
 
         History.autoAdd();
         selectedSpatial.removeMatParamOverride(mpo);
+        getSceneView().deleteOverride();
+
         String description = String.format(
                 "delete material-parameter override %s", MyString.quote(pname));
         setEdited(description);
@@ -577,14 +583,18 @@ public class EditableCgm extends LoadedCgm {
         Spatial spatial = getSpatial().find();
         SelectedOverride override = getOverride();
         MatParamOverride oldMpo = override.find();
+
         String oldName = oldMpo.getName();
         Object value = oldMpo.getValue();
-        VarType type = oldMpo.getVarType();
-        MatParamOverride newMpo = new MatParamOverride(type, newName, value);
+        VarType varType = oldMpo.getVarType();
+        MatParamOverride newMpo = new MatParamOverride(varType, newName, value);
+        boolean enabled = oldMpo.isEnabled();
+        newMpo.setEnabled(enabled);
 
         History.autoAdd();
         spatial.addMatParamOverride(newMpo);
         spatial.removeMatParamOverride(oldMpo);
+        getSceneView().renameOverride(newName);
 
         String description = String.format(
                 "rename material-parameter override %s to %s",
@@ -848,28 +858,38 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(valueString, "value string");
 
         Spatial spatial = getSpatial().find();
-        SelectedOverride override = getOverride();
-        MatParamOverride oldMpo = override.find();
+        MatParamOverride oldMpo = getOverride().find();
         String parameterName = oldMpo.getName();
         VarType varType = oldMpo.getVarType();
-        Object value;
+        Object modelValue, viewValue;
         switch (varType) {
+            case Boolean:
+                modelValue = Boolean.parseBoolean(valueString);
+                viewValue = Boolean.parseBoolean(valueString);
+                break;
             case Float:
-                value = Float.parseFloat(valueString);
+                modelValue = Float.parseFloat(valueString);
+                viewValue = Float.parseFloat(valueString);
                 break;
             case Int:
-                value = Integer.parseInt(valueString);
+                modelValue = Integer.parseInt(valueString);
+                viewValue = Integer.parseInt(valueString);
                 break;
-            default:
-                throw new IllegalArgumentException();
+            default: // TODO types
+                throw new IllegalStateException();
         }
 
         History.autoAdd();
         spatial.removeMatParamOverride(oldMpo);
         MatParamOverride newMpo
-                = new MatParamOverride(varType, parameterName, value);
+                = new MatParamOverride(varType, parameterName, modelValue);
         spatial.addMatParamOverride(newMpo);
-        setEdited("alter material-parameter override");
+        getSceneView().setOverrideValue(viewValue);
+
+        String description = String.format(
+                "alter value of material-parameter override %s",
+                MyString.quote(parameterName));
+        setEdited(description);
     }
 
     /**
