@@ -653,6 +653,24 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Test whether the named material-parameter override exists in the selected
+     * spatial.
+     *
+     * @param parameterName the parameter name to search for (not null)
+     * @return true if it exists, otherwise false
+     */
+    public boolean hasOverride(String parameterName) {
+        Validate.nonNull(parameterName, "parameter name");
+
+        MatParamOverride mpo = cgm.getOverride().find(parameterName);
+        if (mpo == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Test whether the specified user key exists in the selected spatial.
      *
      * @param key the key to search for (not null)
@@ -798,7 +816,27 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Enumerate the user keys of the selected spatial.
+     * Enumerate the material-parameter names of all the spatial's local
+     * overrides.
+     *
+     * @return a new list, sorted lexicographically
+     */
+    public List<String> listOverrideNames() {
+        Spatial spatial = find();
+        Collection<MatParamOverride> mpos = spatial.getLocalMatParamOverrides();
+        int numMpos = mpos.size();
+        List<String> result = new ArrayList<>(numMpos);
+        for (MatParamOverride mpo : mpos) {
+            String name = mpo.getName();
+            result.add(name);
+        }
+        Collections.sort(result);
+
+        return result;
+    }
+
+    /**
+     * Enumerate the keys of the all the spatial's user data.
      *
      * @return a new list, sorted lexicographically
      */
@@ -1179,6 +1217,7 @@ public class SelectedSpatial implements JmeCloneable {
     private void postSelect() {
         Spatial found = find();
         if (found != last) {
+            cgm.getOverride().deselect();
             cgm.getUserData().selectKey(null);
             cgm.getVertex().deselect();
             last = found;

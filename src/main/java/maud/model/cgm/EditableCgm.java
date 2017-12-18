@@ -39,6 +39,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.binary.BinaryExporter;
+import com.jme3.material.MatParamOverride;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
@@ -48,6 +49,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.UserData;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
+import com.jme3.shader.VarType;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -131,8 +133,8 @@ public class EditableCgm extends LoadedCgm {
             skeletonSpatial.addControl(control);
         }
         control.addAnim(newAnimation);
-        String description;
-        description = "add animation " + MyString.quote(newAnimationName);
+        String description
+                = "add animation " + MyString.quote(newAnimationName);
         setEdited(description);
     }
 
@@ -156,6 +158,28 @@ public class EditableCgm extends LoadedCgm {
         setEdited(description);
 
         assert selectedBone.hasAttachmentsNode();
+    }
+
+    /**
+     * Add a new material-parameter override to the selected spatial.
+     *
+     * @param varType the value type (VarType.Float or VarType.Int)
+     * @param parameterName a name for the parameter (not null)
+     */
+    public void addOverride(VarType varType, String parameterName) {
+        Validate.nonNull(parameterName, "parameter name");
+
+        MatParamOverride newMpo
+                = new MatParamOverride(varType, parameterName, null);
+        Spatial selectedSpatial = getSpatial().find();
+
+        History.autoAdd();
+        selectedSpatial.addMatParamOverride(newMpo);
+        String description = String.format("add material-parameter override %s",
+                MyString.quote(parameterName));
+        setEdited(description);
+
+        getOverride().selectParameter(parameterName);
     }
 
     /**
@@ -195,7 +219,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Add a user key to the selected spatial.
+     * Add a new user key to the selected spatial.
      *
      * @param type name of the data type ("boolean", "float", "integer", "long",
      * or "string")
@@ -230,8 +254,8 @@ public class EditableCgm extends LoadedCgm {
 
         History.autoAdd();
         selectedSpatial.setUserData(key, data);
-        String description;
-        description = String.format("add user key %s", MyString.quote(key));
+        String description
+                = String.format("add user key %s", MyString.quote(key));
         setEdited(description);
         getUserData().selectKey(key);
     }
@@ -347,6 +371,22 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Delete the selected material-parameter override from the selected
+     * spatial. The invoker is responsible for deselecting the override.
+     */
+    void deleteOverride() {
+        Spatial selectedSpatial = getSpatial().find();
+        MatParamOverride mpo = getOverride().find();
+        String pname = mpo.getName();
+
+        History.autoAdd();
+        selectedSpatial.removeMatParamOverride(mpo);
+        String description = String.format(
+                "delete material-parameter override %s", MyString.quote(pname));
+        setEdited(description);
+    }
+
+    /**
      * Delete the selected S-G control. The invoker is responsible for
      * deselecting the control.
      */
@@ -436,8 +476,8 @@ public class EditableCgm extends LoadedCgm {
 
         History.autoAdd();
         selectedSpatial.setUserData(key, null);
-        String description;
-        description = String.format("delete user data %s", MyString.quote(key));
+        String description
+                = String.format("delete user data %s", MyString.quote(key));
         setEdited(description);
     }
 
@@ -524,6 +564,34 @@ public class EditableCgm extends LoadedCgm {
         }
 
         return success;
+    }
+
+    /**
+     * Rename the selected material-parameter override.
+     *
+     * @param newName new parameter name (not null, not empty)
+     */
+    public void renameOverride(String newName) {
+        Validate.nonEmpty(newName, "new name");
+
+        Spatial spatial = getSpatial().find();
+        SelectedOverride override = getOverride();
+        MatParamOverride oldMpo = override.find();
+        String oldName = oldMpo.getName();
+        Object value = oldMpo.getValue();
+        VarType type = oldMpo.getVarType();
+        MatParamOverride newMpo = new MatParamOverride(type, newName, value);
+
+        History.autoAdd();
+        spatial.addMatParamOverride(newMpo);
+        spatial.removeMatParamOverride(oldMpo);
+
+        String description = String.format(
+                "rename material-parameter override %s to %s",
+                MyString.quote(oldName), MyString.quote(newName));
+        setEdited(description);
+
+        override.selectParameter(newName);
     }
 
     /**
@@ -769,6 +837,39 @@ public class EditableCgm extends LoadedCgm {
             boneTrack.setKeyframes(times, translations, rotations, scales);
         }
         setEdited("replace keyframes");
+    }
+
+    /**
+     * Alter the value of the selected material-parameter override.
+     *
+     * @param valueString string representation of the new value (not null)
+     */
+    public void setOverrideValue(String valueString) {
+        Validate.nonNull(valueString, "value string");
+
+        Spatial spatial = getSpatial().find();
+        SelectedOverride override = getOverride();
+        MatParamOverride oldMpo = override.find();
+        String parameterName = oldMpo.getName();
+        VarType varType = oldMpo.getVarType();
+        Object value;
+        switch (varType) {
+            case Float:
+                value = Float.parseFloat(valueString);
+                break;
+            case Int:
+                value = Integer.parseInt(valueString);
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        History.autoAdd();
+        spatial.removeMatParamOverride(oldMpo);
+        MatParamOverride newMpo
+                = new MatParamOverride(varType, parameterName, value);
+        spatial.addMatParamOverride(newMpo);
+        setEdited("alter material-parameter override");
     }
 
     /**

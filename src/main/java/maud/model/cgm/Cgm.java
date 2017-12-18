@@ -128,6 +128,10 @@ public class Cgm implements Cloneable {
      */
     private SelectedObject selectedObject = new SelectedObject();
     /**
+     * which material-parameter override is selected in the selected spatial
+     */
+    private SelectedOverride selectedOverride = new SelectedOverride();
+    /**
      * which scene-graph control is selected in the selected spatial
      */
     private SelectedSgc selectedSgc = new SelectedSgc();
@@ -179,6 +183,7 @@ public class Cgm implements Cloneable {
         selectedBone.setCgm(cgm);
         selectedJoint.setCgm(cgm);
         selectedObject.setCgm(cgm);
+        selectedOverride.setCgm(cgm);
         selectedSgc.setCgm(cgm);
         selectedShape.setCgm(cgm);
         selectedSkeleton.setCgm(cgm);
@@ -374,6 +379,16 @@ public class Cgm implements Cloneable {
     public SelectedObject getObject() {
         assert selectedObject != null;
         return selectedObject;
+    }
+
+    /**
+     * Access the selected material-parameter override.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedOverride getOverride() {
+        assert selectedOverride != null;
+        return selectedOverride;
     }
 
     /**
@@ -855,6 +870,7 @@ public class Cgm implements Cloneable {
         clone.selectedBone = selectedBone.clone();
         clone.selectedJoint = selectedJoint.clone();
         clone.selectedObject = selectedObject.clone();
+        clone.selectedOverride = selectedOverride.clone();
         clone.selectedSgc = cloner.clone(selectedSgc);
         clone.selectedShape = selectedShape.clone();
         clone.selectedSkeleton = cloner.clone(selectedSkeleton);
