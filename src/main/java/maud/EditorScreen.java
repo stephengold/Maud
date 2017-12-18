@@ -37,7 +37,6 @@ import com.jme3.renderer.ViewPort;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
-import de.lessvoid.nifty.controls.RadioButtonStateChangedEvent;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.screen.Screen;
@@ -66,7 +65,6 @@ import maud.model.cgm.PlayOptions;
 import maud.model.cgm.Pov;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.option.DisplaySettings;
-import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.SceneOptions;
 import maud.tool.EditorTools;
 import maud.tool.HistoryTool;
@@ -437,37 +435,6 @@ public class EditorScreen extends GuiScreenController {
             default:
                 logger.log(Level.WARNING, "check box with unknown id={0}",
                         MyString.quote(checkBoxId));
-        }
-    }
-
-    /**
-     * Callback handler that Nifty invokes after a radio button changes.
-     *
-     * @param buttonId Nifty element id of the radio button (not null)
-     * @param event details of the event (not null)
-     */
-    @NiftyEventSubscriber(pattern = ".*RadioButton")
-    public void onRadioButtonChanged(final String buttonId,
-            final RadioButtonStateChangedEvent event) {
-        Validate.nonNull(buttonId, "button id");
-        Validate.nonNull(event, "event");
-
-        if (ignoreGuiChanges || !hasStarted() || !event.isSelected()) {
-            return;
-        }
-        SceneOptions scene = Maud.getModel().getScene();
-
-        switch (buttonId) {
-            case "noPlatformRadioButton":
-                scene.setPlatformType(PlatformType.None);
-                break;
-            case "squarePlatformRadioButton":
-                scene.setPlatformType(PlatformType.Square);
-                break;
-
-            default:
-                logger.log(Level.WARNING, "unknown radio button with id={0}",
-                        MyString.quote(buttonId));
         }
     }
 

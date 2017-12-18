@@ -31,6 +31,8 @@ import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 import maud.Maud;
+import maud.model.option.scene.PlatformType;
+import maud.model.option.scene.SceneOptions;
 
 /**
  * The controller for the "Platform Tool" window in Maud's editor screen.
@@ -84,8 +86,13 @@ class PlatformTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
         Maud.gui.setIgnoreGuiChanges(true);
+        SceneOptions options = Maud.getModel().getScene();
 
-        float diameter = Maud.getModel().getScene().getPlatformDiameter();
+        PlatformType type = options.getPlatformType();
+        String tButton = type.toString();
+        Maud.gui.setButtonLabel("platformTypeButton", tButton);
+
+        float diameter = options.getPlatformDiameter();
         Maud.gui.setSlider("platformDiameter", diameterSt, diameter);
         Maud.gui.updateSliderStatus("platformDiameter", diameter, "wu");
 

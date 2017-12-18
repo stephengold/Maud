@@ -59,6 +59,8 @@ import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.OrbitCenter;
+import maud.model.option.scene.PlatformType;
+import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.TriangleMode;
 
 /**
@@ -283,6 +285,25 @@ public class ShowMenus {
         // TODO other types
 
         builder.show(ActionPrefix.newOverride);
+    }
+
+    /**
+     * Display a menu for selecting a platform type using the "select
+     * platformType " action prefix.
+     */
+    public static void selectPlatformType() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SceneOptions options = Maud.getModel().getScene();
+        PlatformType selectedType = options.getPlatformType();
+        for (PlatformType type : PlatformType.values()) {
+            if (!type.equals(selectedType)) {
+                String name = type.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectPlatformType);
     }
 
     /**

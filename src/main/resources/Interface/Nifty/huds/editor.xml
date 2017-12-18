@@ -1238,18 +1238,15 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="platformTool" title="Platform Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="130px" width="200px" x="70" y="30">
+                     height="130px" width="170px" x="70" y="30">
                 <panel childLayout="vertical">
-                    <control name="radioButtonGroup" id="platformGroup"/>
-                    <panel childLayout="horizontal" height="25px">
-                        <control name="radioButton" id="squarePlatformRadioButton"
-                                 group="platformGroup"/>
-                        <control name="label" text="  square"/>
-                    </panel>
-                    <panel childLayout="horizontal" height="25px">
-                        <control name="radioButton" id="noPlatformRadioButton"
-                                 group="platformGroup"/>
-                        <control name="label" text="  none"/>
+                    <panel/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Platform type:  "/>
+                        <control name="button" id="platformTypeButton"
+                                 width="*">
+                            <interact onRelease="perform(select platformType)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" id="platformDiameterSliderStatus"
@@ -1261,6 +1258,7 @@ the menu bar, status bar, and tool windows.
                                  buttonStepSize="1"
                                  max="2" min="-1" stepSize="0.001"/>
                     </panel>
+                    <panel/>
                 </panel>
             </control>
 

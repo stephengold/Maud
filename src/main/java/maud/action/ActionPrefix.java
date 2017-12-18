@@ -252,6 +252,10 @@ public class ActionPrefix {
      */
     final public static String selectPhysicsRbp = "select physicsRbp ";
     /**
+     * argument is the name of a PlatformType
+     */
+    final public static String selectPlatformType = "select platformType ";
+    /**
      * argument is the id of a physics shape or a prefix thereof
      */
     final public static String selectShape = "select shape ";

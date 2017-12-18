@@ -149,6 +149,7 @@ public class Action {
     final static String selectPhysics = "select physics";
     final static String selectPhysicsRbp = "select physicsRbp";
     final static String selectPhysicsShape = "select physicsShape";
+    final static String selectPlatformType = "select platformType";
     final static String selectScreenBone = "select screenBone";
     final static String selectScreenGnomon = "select screenGnomon";
     final static String selectScreenKeyframe = "select screenKeyframe";

@@ -46,6 +46,7 @@ import maud.model.cgm.SelectedSgc;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 import maud.model.option.scene.OrbitCenter;
+import maud.model.option.scene.PlatformType;
 import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
 
@@ -156,6 +157,10 @@ class SelectAction {
                     target.getShape().select(shapeId);
                     Maud.gui.tools.select("shape");
                 }
+                break;
+
+            case Action.selectPlatformType:
+                ShowMenus.selectPlatformType();
                 break;
 
             case Action.selectScreenBone:
@@ -328,6 +333,12 @@ class SelectAction {
                     ActionPrefix.selectPhysicsRbp);
             RigidBodyParameter rbp = RigidBodyParameter.valueOf(arg);
             model.getMisc().setRbp(rbp);
+
+        } else if (actionString.startsWith(ActionPrefix.selectPlatformType)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectPlatformType);
+            PlatformType type = PlatformType.valueOf(arg);
+            model.getScene().setPlatformType(type);
 
         } else if (actionString.startsWith(ActionPrefix.selectSgc)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectSgc);
