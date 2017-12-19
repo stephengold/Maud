@@ -653,8 +653,20 @@ public class EditorDialogs {
                         int intValue = (int) data;
                         defaultValue = Integer.toString(intValue);
                     }
-                    controller = new IntegerDialog("Set", Integer.MIN_VALUE,
-                            Integer.MAX_VALUE);
+                    int minValue = Integer.MIN_VALUE;
+                    int maxValue = Integer.MAX_VALUE;
+                    String name = override.getName();
+                    if (name.equals("NumberOfBones")) {
+                        /*
+                         * PreShadow.vert crashes if NumberOfBones < 1.
+                         */
+                        minValue = 1;
+                        /*
+                         * Lighting.frag crashes if NumberOfBones > 250.
+                         */
+                        maxValue = 250;
+                    }
+                    controller = new IntegerDialog("Set", minValue, maxValue);
                     promptMessage = "Enter new integer value:";
                     break;
 
