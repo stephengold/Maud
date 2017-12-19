@@ -386,6 +386,9 @@ public class EditorScreen extends GuiScreenController {
             case "loopSource":
                 source.getPlay().setContinue(isChecked);
                 break;
+            case "mpoEnable":
+                target.setOverrideEnabled(isChecked);
+                break;
             case "physics":
                 scene.setPhysicsRendered(isChecked);
                 break;

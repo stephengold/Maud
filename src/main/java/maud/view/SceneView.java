@@ -864,6 +864,16 @@ public class SceneView
     }
 
     /**
+     * Alter whether the selected material-parameter override is enabled.
+     *
+     * @param newSetting true&rarr;enable, false&rarr;disable
+     */
+    public void setOverrideEnabled(boolean newSetting) {
+        MatParamOverride mpo = findSelectedMpo();
+        mpo.setEnabled(newSetting);
+    }
+
+    /**
      * Alter the value of the selected material-parameter override.
      *
      * @param newValue (may be null, alias created if not null)
@@ -871,14 +881,13 @@ public class SceneView
     public void setOverrideValue(Object newValue) {
         Spatial spatial = selectedSpatial();
         MatParamOverride oldMpo = findSelectedMpo();
+        spatial.removeMatParamOverride(oldMpo);
 
         String name = oldMpo.getName();
         VarType varType = oldMpo.getVarType();
         MatParamOverride newMpo = new MatParamOverride(varType, name, newValue);
         boolean enabled = oldMpo.isEnabled();
         newMpo.setEnabled(enabled);
-
-        spatial.removeMatParamOverride(oldMpo);
         spatial.addMatParamOverride(newMpo);
     }
 

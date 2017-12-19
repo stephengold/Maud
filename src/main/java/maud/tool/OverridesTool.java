@@ -27,6 +27,7 @@
 package maud.tool;
 
 import com.jme3.animation.Bone;
+import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
@@ -77,6 +78,7 @@ class OverridesTool extends WindowController {
 
         updateIndex();
         updateName();
+        updateType();
         updateValue();
 
         Maud.gui.setIgnoreGuiChanges(false);
@@ -85,7 +87,7 @@ class OverridesTool extends WindowController {
     // private methods
 
     /**
-     * Update the index status and next/previous/select buttons.
+     * Update the index status and next/previous/select button texts.
      */
     private void updateIndex() {
         String indexText;
@@ -122,7 +124,7 @@ class OverridesTool extends WindowController {
     }
 
     /**
-     * Update the "selected name" label and rename button label.
+     * Update the name status and delete/rename button texts.
      */
     private void updateName() {
         String dButton, nameText, rButton;
@@ -145,17 +147,29 @@ class OverridesTool extends WindowController {
     }
 
     /**
-     * Update the value label.
+     * Update the type status and enable check box.
+     */
+    private void updateType() {
+        SelectedOverride override = Maud.getModel().getTarget().getOverride();
+        boolean isEnabled = override.isEnabled();
+        Maud.gui.setChecked("mpoEnable", isEnabled);
+
+        String typeText = "";
+        if (override.isSelected()) {
+            VarType varType = override.getVarType();
+            typeText = varType.toString();
+        }
+        Maud.gui.setStatusText("mpoType", " " + typeText);
+    }
+
+    /**
+     * Update the value status and the alter button text.
      */
     private void updateValue() {
-        String eButton, valueText;
+        String eButton = "", valueText = "";
 
         SelectedOverride override = Maud.getModel().getTarget().getOverride();
-        String name = override.getName();
-        if (name == null) {
-            eButton = "";
-            valueText = "";
-        } else {
+        if (override.isSelected()) {
             eButton = "Alter";
             Object data = override.getValue();
             if (data == null || data instanceof String) {

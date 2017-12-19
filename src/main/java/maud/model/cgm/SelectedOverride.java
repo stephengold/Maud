@@ -94,7 +94,7 @@ public class SelectedOverride implements Cloneable {
      */
     MatParamOverride find() {
         MatParamOverride result = null;
-        if (selectedName != null) {
+        if (isSelected()) {
             result = find(selectedName);
         }
 
@@ -131,10 +131,8 @@ public class SelectedOverride implements Cloneable {
      * @return index, or -1 if none selected
      */
     public int findNameIndex() {
-        int index;
-        if (selectedName == null) {
-            index = -1;
-        } else {
+        int index = -1;
+        if (isSelected()) {
             List<String> nameList = cgm.getSpatial().listOverrideNames();
             index = nameList.indexOf(selectedName);
         }
@@ -143,7 +141,7 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Read the selected override's parameter name.
+     * Read the override's parameter name.
      *
      * @return a parameter name, or null if none selected
      */
@@ -152,7 +150,7 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Read the value of the selected override.
+     * Read the override's parameter value.
      *
      * @return the pre-existing object, or null if none
      */
@@ -167,7 +165,7 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Read the type of the selected override.
+     * Read the override's type.
      *
      * @return an enum, or null if none selected
      */
@@ -182,7 +180,22 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Test whether an override is selected.
+     * Test whether the override is enabled.
+     *
+     * @return true if enabled, otherwise false
+     */
+    public boolean isEnabled() {
+        boolean result = false;
+        if (isSelected()) {
+            MatParamOverride mpo = find();
+            result = mpo.isEnabled();
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether the override is selected.
      *
      * @return true if selected, otherwise false
      */

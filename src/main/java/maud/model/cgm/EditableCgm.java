@@ -850,6 +850,30 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter whether the selected material-parameter override is enabled.
+     *
+     * @param newSetting true&rarr;enable, false&rarr;disable
+     */
+    public void setOverrideEnabled(boolean newSetting) {
+        MatParamOverride mpo = getOverride().find();
+        if (mpo != null) {
+            boolean oldSetting = mpo.isEnabled();
+            if (oldSetting != newSetting) {
+                History.autoAdd();
+                mpo.setEnabled(newSetting);
+                getSceneView().setOverrideEnabled(newSetting);
+
+                String verb = newSetting ? "enable" : "disable";
+                String parameterName = mpo.getName();
+                String description = String.format(
+                        "%s material-parameter override %s",
+                        verb, MyString.quote(parameterName));
+                setEdited(description);
+            }
+        }
+    }
+
+    /**
      * Alter the value of the selected material-parameter override.
      *
      * @param valueString string representation of the new value (not null)
@@ -859,7 +883,6 @@ public class EditableCgm extends LoadedCgm {
 
         Spatial spatial = getSpatial().find();
         MatParamOverride oldMpo = getOverride().find();
-        String parameterName = oldMpo.getName();
         VarType varType = oldMpo.getVarType();
         Object modelValue, viewValue;
         switch (varType) {
@@ -878,6 +901,7 @@ public class EditableCgm extends LoadedCgm {
             default: // TODO types
                 throw new IllegalStateException();
         }
+        String parameterName = oldMpo.getName();
 
         History.autoAdd();
         spatial.removeMatParamOverride(oldMpo);
