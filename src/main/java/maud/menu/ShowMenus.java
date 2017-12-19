@@ -34,6 +34,7 @@ import com.jme3.system.AppSettings;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
@@ -274,16 +275,20 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu for selecting a material parameter type using the "new
+     * Display a menu for selecting a material-parameter type using the "new
      * override " action prefix.
      */
     public static void selectOverrideType() {
         MenuBuilder builder = new MenuBuilder();
 
-        builder.add(VarType.Boolean.toString());
-        builder.add(VarType.Float.toString());
-        builder.add(VarType.Int.toString());
-        // TODO other types: Vector2, Vector3, Vector4, ...
+        int numValues = VarType.values().length;
+        List<String> names = new ArrayList<>(numValues);
+        for (VarType type : VarType.values()) {
+            String name = type.toString();
+            names.add(name);
+        }
+        Collections.sort(names);
+        builder.addAll(names);
 
         builder.show(ActionPrefix.newOverride);
     }

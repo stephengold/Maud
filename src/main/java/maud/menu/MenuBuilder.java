@@ -27,6 +27,7 @@
 package maud.menu;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -64,7 +65,7 @@ class MenuBuilder {
     // new methods exposed
 
     /**
-     * Add an item with no icon to the menu.
+     * Add an item without an icon.
      *
      * @param item (not null, not empty)
      *
@@ -87,6 +88,19 @@ class MenuBuilder {
 
         items.add(item);
         icons.add(iconAssetPath);
+    }
+
+    /**
+     * Add a collection of items without icons.
+     *
+     * @param items (not null, unaffected)
+     */
+    void addAll(Collection<String> items) {
+        Validate.nonNull(items, "items");
+
+        for (String item : items) {
+            add(item);
+        }
     }
 
     /**
@@ -184,13 +198,13 @@ class MenuBuilder {
     }
 
     /**
-     * Reduce a list of filenames (or zip entry names) to the specified number
-     * and add them to the menu.
+     * Reduce a collection of filenames (or zip entry names) to the specified
+     * number and add them to the menu.
      *
-     * @param names the list of names (not null)
+     * @param names the collection of filenames (not null, unaffected)
      * @param maxItems maximum number of menu items to add (&ge;2)
      */
-    void addFiles(List<String> names, int maxItems) {
+    void addFiles(Collection<String> names, int maxItems) {
         Validate.nonNull(names, "names");
         Validate.inRange(maxItems, "max items", 2, Integer.MAX_VALUE);
         /*
