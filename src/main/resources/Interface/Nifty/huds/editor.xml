@@ -269,34 +269,70 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="backgroundTool" title="Background Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="140px" width="190px" x="25" y="75">
+                     height="320px" width="190px" x="25" y="75">
                 <panel childLayout="vertical">
+                    <panel/>
+                    <panel childLayout="horizontal" height="25px">
+                        <control name="label" text="For thetarget model:"
+                                 textHAlign="left"/>
+                    </panel>
                     <panel childLayout="horizontal">
-                        <control name="verticalSlider" id="bgRSlider"
+                        <control name="verticalSlider" id="tbgRSlider"
                                  buttonStepSize="1"
                                  height="110px"
                                  max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="bgGSlider"
+                        <control name="verticalSlider" id="tbgGSlider"
                                  buttonStepSize="1"
                                  height="110px"
                                  max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="bgBSlider"
+                        <control name="verticalSlider" id="tbgBSlider"
                                  buttonStepSize="1"
                                  height="110px"
                                  max="1" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="110px" width="90px">
-                            <control name="label" id="bgRSliderStatus"
+                            <control name="label" id="tbgRSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <control name="label" id="bgGSliderStatus"
+                            <control name="label" id="tbgGSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <control name="label" id="bgBSliderStatus"
+                            <control name="label" id="tbgBSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
                         </panel>
                     </panel>
+                    <panel childLayout="horizontal" height="25px">
+                        <control name="label" text="For the source model:"
+                                 textHAlign="left"/>
+                    </panel>
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="sbgRSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="sbgGSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="sbgBSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="110px" width="90px">
+                            <control name="label" id="sbgRSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="sbgGSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="sbgBSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                        </panel>
+                    </panel>
+                    <panel/>
                 </panel>
             </control>
 

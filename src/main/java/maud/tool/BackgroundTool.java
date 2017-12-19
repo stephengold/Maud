@@ -32,6 +32,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
+import maud.model.option.ScoreOptions;
 
 /**
  * The controller for the "Background Tool" window in Maud's editor screen.
@@ -69,8 +70,13 @@ class BackgroundTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        ColorRGBA color = Maud.gui.readColorBank("bg", colorSt);
-        Maud.getModel().getScore().setBackgroundColor(color);
+        ScoreOptions options = Maud.getModel().getScore();
+
+        ColorRGBA color = Maud.gui.readColorBank("sbg", colorSt);
+        options.setSourceBackgroundColor(color);
+
+        color = Maud.gui.readColorBank("tbg", colorSt);
+        options.setTargetBackgroundColor(color);
     }
     // *************************************************************************
     // WindowController methods
@@ -86,9 +92,13 @@ class BackgroundTool extends WindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
+        ScoreOptions options = Maud.getModel().getScore();
 
-        ColorRGBA color = Maud.getModel().getScore().backgroundColor(null);
-        Maud.gui.setColorBank("bg", colorSt, color);
+        ColorRGBA color = options.sourceBackgroundColor(null);
+        Maud.gui.setColorBank("sbg", colorSt, color);
+
+        options.targetBackgroundColor(color);
+        Maud.gui.setColorBank("tbg", colorSt, color);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

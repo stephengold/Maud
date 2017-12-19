@@ -438,9 +438,12 @@ public class EditorTools {
                 axes.onSliderChanged();
                 break;
 
-            case "bgR":
-            case "bgG":
-            case "bgB":
+            case "sbgR":
+            case "sbgG":
+            case "sbgB":
+            case "tbgR":
+            case "tbgG":
+            case "tbgB":
                 background.onSliderChanged();
                 break;
 

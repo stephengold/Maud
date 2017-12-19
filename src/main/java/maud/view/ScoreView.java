@@ -61,6 +61,7 @@ import maud.Maud;
 import maud.mesh.Finial;
 import maud.mesh.Sparkline;
 import maud.mesh.YSwarm;
+import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.StaffTrack;
@@ -518,8 +519,15 @@ public class ScoreView implements EditorView {
             cgm = viewCgm;
             StaffTrack.setCgm(viewCgm);
 
-            ScoreOptions options = Maud.getModel().getScore();
-            ColorRGBA backgroundColor = options.backgroundColor(null);
+            EditorModel model = Maud.getModel();
+            ScoreOptions options = model.getScore();
+            ColorRGBA backgroundColor;
+            if (cgm == model.getSource()) {
+                backgroundColor = options.sourceBackgroundColor(null);
+            } else {
+                assert cgm == model.getTarget();
+                backgroundColor = options.targetBackgroundColor(null);
+            }
             viewPort.setBackgroundColor(backgroundColor);
             /*
              * Pre-configure finials for bone tracks.

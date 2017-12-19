@@ -61,9 +61,13 @@ public class ScoreOptions implements Cloneable {
      */
     private boolean showTranslationsFlag = true;
     /**
-     * background color for score views
+     * background color for the source C-G model
      */
-    private ColorRGBA scoreBackground = new ColorRGBA(0.84f, 0.84f, 0.72f, 1f);
+    private ColorRGBA sourceBackground = new ColorRGBA(0.78f, 0.78f, 0.72f, 1f);
+    /**
+     * background color for the target C-G model
+     */
+    private ColorRGBA targetBackground = new ColorRGBA(0.84f, 0.84f, 0.72f, 1f);
     /**
      * bones shown when none is selected (not null)
      */
@@ -74,21 +78,6 @@ public class ScoreOptions implements Cloneable {
     private ShowBones showWhenSelected = ShowBones.Family;
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Copy the background color.
-     *
-     * @param storeResult (modified if not null)
-     * @return color (either storeResult or a new instance)
-     */
-    public ColorRGBA backgroundColor(ColorRGBA storeResult) {
-        if (storeResult == null) {
-            storeResult = new ColorRGBA();
-        }
-        storeResult.set(scoreBackground);
-
-        return storeResult;
-    }
 
     /**
      * Determine which bones to show in the specified C-G model.
@@ -128,15 +117,6 @@ public class ScoreOptions implements Cloneable {
     public ShowBones getShowWhenSelected() {
         assert showWhenSelected != null;
         return showWhenSelected;
-    }
-
-    /**
-     * Alter the background color.
-     *
-     * @param newColor (not null, unaffected)
-     */
-    public void setBackgroundColor(ColorRGBA newColor) {
-        scoreBackground.set(newColor);
     }
 
     /**
@@ -202,6 +182,24 @@ public class ScoreOptions implements Cloneable {
     }
 
     /**
+     * Alter the background color for the source C-G model..
+     *
+     * @param newColor (not null, unaffected)
+     */
+    public void setSourceBackgroundColor(ColorRGBA newColor) {
+        sourceBackground.set(newColor);
+    }
+
+    /**
+     * Alter the background color for the target C-G model..
+     *
+     * @param newColor (not null, unaffected)
+     */
+    public void setTargetBackgroundColor(ColorRGBA newColor) {
+        targetBackground.set(newColor);
+    }
+
+    /**
      * Test whether bone rotations are shown.
      *
      * @return true if shown, otherwise false
@@ -227,6 +225,36 @@ public class ScoreOptions implements Cloneable {
     public boolean showsTranslations() {
         return showTranslationsFlag;
     }
+
+    /**
+     * Copy the background color for the source C-G model.
+     *
+     * @param storeResult (modified if not null)
+     * @return color (either storeResult or a new instance)
+     */
+    public ColorRGBA sourceBackgroundColor(ColorRGBA storeResult) {
+        if (storeResult == null) {
+            storeResult = new ColorRGBA();
+        }
+        storeResult.set(sourceBackground);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the background color for the target C-G model.
+     *
+     * @param storeResult (modified if not null)
+     * @return color (either storeResult or a new instance)
+     */
+    public ColorRGBA targetBackgroundColor(ColorRGBA storeResult) {
+        if (storeResult == null) {
+            storeResult = new ColorRGBA();
+        }
+        storeResult.set(targetBackground);
+
+        return storeResult;
+    }
     // *************************************************************************
     // Object methods
 
@@ -239,7 +267,8 @@ public class ScoreOptions implements Cloneable {
     @Override
     public ScoreOptions clone() throws CloneNotSupportedException {
         ScoreOptions clone = (ScoreOptions) super.clone();
-        clone.scoreBackground = scoreBackground.clone();
+        clone.sourceBackground = sourceBackground.clone();
+        clone.targetBackground = targetBackground.clone();
 
         return clone;
     }
