@@ -583,29 +583,17 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Access the user data of the specified key.
-     *
-     * @param key (not null)
-     * @return the pre-existing instance or null
-     */
-    public Object getUserData(String key) {
-        Validate.nonNull(key, "key");
-
-        Spatial spatial = find();
-        Object result = spatial.getUserData(key);
-
-        return result;
-    }
-
-    /**
      * Determine the type of the spatial's world bound.
      *
-     * @return an enum value (not null)
+     * @return an enum value, or null if bound not set
      */
     public BoundingVolume.Type getWorldBoundType() {
         Spatial spatial = find();
         BoundingVolume bound = spatial.getWorldBound();
-        BoundingVolume.Type result = bound.getType();
+        BoundingVolume.Type result = null;
+        if (bound != null) {
+            result = bound.getType();
+        }
 
         return result;
     }
