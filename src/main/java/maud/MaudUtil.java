@@ -55,19 +55,24 @@ import com.jme3.scene.plugins.bvh.BVHAnimData;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
+import com.jme3.shader.VarType;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
+import maud.dialog.VectorDialog;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -84,6 +89,10 @@ public class MaudUtil {
      */
     final private static Logger logger
             = Logger.getLogger(MaudUtil.class.getName());
+    /**
+     * pattern for matching the word "null"
+     */
+    final private static Pattern nullPattern = Pattern.compile("\\s*null\\s*");
     /**
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
@@ -716,6 +725,48 @@ public class MaudUtil {
         }
 
         return loaded;
+    }
+
+    /**
+     * Parse a material parameter from the specified text string.
+     *
+     * @param varType type of parameter (not null)
+     * @param textString (not null, not empty)
+     * @return a new object or null
+     */
+    public static Object parseMatParam(VarType varType, String textString) {
+        Validate.nonNull(varType, "type");
+        Validate.nonEmpty(textString, "text string");
+
+        String lcText = textString.toLowerCase(Locale.ROOT);
+        Matcher matcher = nullPattern.matcher(lcText);
+        Object result = null;
+        if (!matcher.matches()) {
+            switch (varType) {
+                case Boolean:
+                    result = Boolean.parseBoolean(lcText);
+                    break;
+
+                case Float:
+                    result = Float.parseFloat(lcText);
+                    break;
+
+                case Int:
+                    result = Integer.parseInt(lcText);
+                    break;
+
+                case Vector2:
+                case Vector3:
+                case Vector4:
+                    result = VectorDialog.parseVector(lcText);
+                    break;
+
+                default: // TODO more types
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        return result;
     }
 
     /**

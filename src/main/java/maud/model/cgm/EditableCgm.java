@@ -881,27 +881,12 @@ public class EditableCgm extends LoadedCgm {
     public void setOverrideValue(String valueString) {
         Validate.nonNull(valueString, "value string");
 
-        Spatial spatial = getSpatial().find();
         MatParamOverride oldMpo = getOverride().find();
         VarType varType = oldMpo.getVarType();
-        Object modelValue, viewValue;
-        switch (varType) {
-            case Boolean:
-                modelValue = Boolean.parseBoolean(valueString);
-                viewValue = Boolean.parseBoolean(valueString);
-                break;
-            case Float:
-                modelValue = Float.parseFloat(valueString);
-                viewValue = Float.parseFloat(valueString);
-                break;
-            case Int:
-                modelValue = Integer.parseInt(valueString);
-                viewValue = Integer.parseInt(valueString);
-                break;
-            default: // TODO types
-                throw new IllegalStateException();
-        }
+        Object modelValue = MaudUtil.parseMatParam(varType, valueString);
+        Object viewValue = MaudUtil.parseMatParam(varType, valueString);
         String parameterName = oldMpo.getName();
+        Spatial spatial = getSpatial().find();
 
         History.autoAdd();
         spatial.removeMatParamOverride(oldMpo);

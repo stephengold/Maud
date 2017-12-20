@@ -28,6 +28,9 @@ package maud.dialog;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.shader.VarType;
 import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.Nifty;
@@ -634,6 +637,17 @@ public class EditorDialogs {
             DialogController controller;
             String defaultValue, promptMessage;
             switch (varType) {
+                case Boolean:
+                    if (data == null) {
+                        defaultValue = "null";
+                    } else {
+                        boolean booleanValue = (boolean) data;
+                        defaultValue = Boolean.toString(booleanValue);
+                    }
+                    controller = new BooleanDialog("Set", true);
+                    promptMessage = "Enter new boolean value:";
+                    break;
+
                 case Float:
                     if (data == null) {
                         defaultValue = "0.0";
@@ -670,8 +684,42 @@ public class EditorDialogs {
                     promptMessage = "Enter new integer value:";
                     break;
 
+                case Vector2:
+                    if (data == null) {
+                        defaultValue = "null";
+                    } else {
+                        Vector2f vec2Value = (Vector2f) data;
+                        defaultValue = vec2Value.toString();
+                    }
+                    controller = new VectorDialog("Set", 2, true);
+                    promptMessage = "Enter new vector2 value:";
+                    break;
+
+                case Vector3:
+                    if (data == null) {
+                        defaultValue = "null";
+                    } else {
+                        Vector3f vec3Value = (Vector3f) data;
+                        defaultValue = vec3Value.toString();
+                    }
+                    controller = new VectorDialog("Set", 3, true);
+                    promptMessage = "Enter new vector3 value:";
+                    break;
+
+                case Vector4:
+                    if (data == null) {
+                        defaultValue = "null";
+                    } else {
+                        Vector4f vec4Value = (Vector4f) data;
+                        defaultValue = vec4Value.toString();
+                    }
+                    controller = new VectorDialog("Set", 4, true);
+                    promptMessage = "Enter new vector4 value:";
+                    break;
+
+                // TODO handle more types
                 default:
-                    throw new IllegalStateException();
+                    return;
             }
 
             Maud.gui.showTextEntryDialog(promptMessage, defaultValue,
