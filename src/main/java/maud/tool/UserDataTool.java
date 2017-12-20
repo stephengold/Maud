@@ -34,7 +34,7 @@ import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
-import maud.model.cgm.SelectedSpatial;
+import maud.model.cgm.SelectedUserData;
 
 /**
  * The controller for the "User-Data Tool" window in Maud's editor screen.
@@ -78,6 +78,7 @@ class UserDataTool extends WindowController {
 
         updateIndex();
         updateKey();
+        updateType();
         updateValue();
 
         Maud.gui.setIgnoreGuiChanges(false);
@@ -146,28 +147,41 @@ class UserDataTool extends WindowController {
     }
 
     /**
+     * Update the type status.
+     */
+    private void updateType() {
+        SelectedUserData data = Maud.getModel().getTarget().getUserData();
+
+        String typeText = "";
+        if (data.isSelected()) {
+            typeText = data.describeType();
+        }
+
+        Maud.gui.setStatusText("userDataType", " " + typeText);
+    }
+
+    /**
      * Update the value label.
      */
     private void updateValue() {
         String eButton, valueText;
 
-        Cgm target = Maud.getModel().getTarget();
-        String key = target.getUserData().getKey();
+        SelectedUserData datum = Maud.getModel().getTarget().getUserData();
+        String key = datum.getKey();
         if (key == null) {
             eButton = "";
             valueText = "";
         } else {
             eButton = "Alter";
-            SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-            Object data = spatial.getUserData(key);
-            if (data instanceof String) {
-                String string = (String) data;
+            Object value = datum.getValue();
+            if (value instanceof String) {
+                String string = (String) value;
                 valueText = MyString.quote(string);
-            } else if (data instanceof Bone) {
-                Bone bone = (Bone) data;
+            } else if (value instanceof Bone) {
+                Bone bone = (Bone) value;
                 valueText = bone.getName();
             } else {
-                valueText = data.toString();
+                valueText = value.toString();
             }
         }
 

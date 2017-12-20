@@ -2391,9 +2391,9 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="userDataTool" title="User-Data Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="125px" width="340px" x="65" y="35">
+                     height="145px" width="315px" x="65" y="35">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="button" id="userDataPreviousButton"
                                  width="20px">
                             <interact onRelease="perform(previous userData)"/>
@@ -2406,24 +2406,36 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next userData)"/>
                         </control>
-                        <panel width="*"/>
+                        <panel/>
+                        <control name="button" label="Add new"
+                                 id="id61ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(new userKey)"/>
+                        </control>
+                        <panel/>
                         <control name="button"
                                  id="userKeySelectButton"
                                  width="60px">
                             <interact onRelease="perform(select userKey)"/>
                         </control>
-                        <panel width="*"/>
-                        <control name="button" label="Add"
-                                 id="id61ToAvoidNiftyWarning"
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Type:  "
+                                 textHAlign="right"
+                                 width="42px"/>
+                        <control name="label" id="userDataType"
+                                 backgroundColor="#ffff"
+                                 width="110px"/>
+                        <panel/>
+                        <control name="button" id="userKeyDeleteButton"
                                  width="60px">
-                            <interact onRelease="perform(new userKey)"/>
+                            <interact onRelease="perform(delete userKey)"/>
                         </control>
                     </panel>
-                    <panel height="10px"/>
-                    <panel childLayout="horizontal">
-                        <control name="label" text="Selected key:  "
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Key:  "
                                  textHAlign="right"
-                                 width="80px"/>
+                                 width="42px"/>
                         <control name="label" id="userKey"
                                  backgroundColor="#ffff"
                                  width="*"/>
@@ -2431,16 +2443,11 @@ the menu bar, status bar, and tool windows.
                                  width="60px">
                             <interact onRelease="perform(rename userKey)"/>
                         </control>
-                        <control name="button" id="userKeyDeleteButton"
-                                 width="60px">
-                            <interact onRelease="perform(delete userKey)"/>
-                        </control>
                     </panel>
-                    <panel height="10px"/>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Value:  "
                                  textHAlign="right"
-                                 width="80px"/>
+                                 width="42px"/>
                         <control name="label" id="userValue"
                                  backgroundColor="#ffff"
                                  width="*"/>
