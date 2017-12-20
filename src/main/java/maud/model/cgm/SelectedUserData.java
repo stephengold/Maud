@@ -26,12 +26,13 @@
  */
 package maud.model.cgm;
 
+import com.jme3.scene.Spatial;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
 
 /**
- * The MVC model of the selected user data in a loaded C-G model.
+ * The MVC model of the selected user datum in a loaded C-G model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -48,16 +49,16 @@ public class SelectedUserData implements Cloneable {
     // fields
 
     /**
-     * C-G model containing the user data (set by {@link #setCgm(Cgm)})
+     * C-G model containing the datum (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
-     * editable C-G model, if any, containing the user data (set by
+     * editable C-G model, if any, containing the datum (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm;
     /**
-     * key of the selected user data in the selected spatial, or null if none
+     * key of the selected datum in the selected spatial, or null if none
      * selected
      */
     private String selectedKey = null;
@@ -65,17 +66,40 @@ public class SelectedUserData implements Cloneable {
     // new methods exposed
 
     /**
-     * Delete (and deselect) the selected user data.
+     * Delete (and deselect) the selected datum.
      */
     public void delete() {
-        if (selectedKey != null) {
+        if (isSelected()) {
             editableCgm.deleteUserData();
             selectedKey = null;
         }
     }
 
     /**
-     * Find the index of the selected user data (in key lexical order).
+     * Describe the datum's type.
+     *
+     * @return a textual description (not null, not empty) or "" if none
+     * selected
+     */
+    public String describeType() {
+        String result = "";
+        if (isSelected()) {
+            Object value = getValue();
+            result = value.getClass().getSimpleName();
+        }
+
+        return result;
+    }
+
+    /**
+     * Deselect the selected datum, if any.
+     */
+    public void deselect() {
+        selectedKey = null;
+    }
+
+    /**
+     * Find the index of the selected datum (in key lexical order).
      *
      * @return index, or -1 if none selected
      */
@@ -92,7 +116,7 @@ public class SelectedUserData implements Cloneable {
     }
 
     /**
-     * Read the selected user data's key.
+     * Read the selected datum's key.
      *
      * @return a key, or null if none selected
      */
@@ -101,8 +125,35 @@ public class SelectedUserData implements Cloneable {
     }
 
     /**
-     * Select the user data with the specified key. TODO add deselectKey()
-     * method
+     * Access the selected datum's value.
+     *
+     * @return the pre-existing instance, or null if none selected
+     */
+    public Object getValue() {
+        Spatial selectedSpatial = cgm.getSpatial().find();
+        Object result = selectedSpatial.getUserData(selectedKey);
+
+        return result;
+    }
+
+    /**
+     * Test whether a datum is selected.
+     *
+     * @return true if selected, otherwise false
+     */
+    public boolean isSelected() {
+        boolean result;
+        if (selectedKey == null) {
+            result = false;
+        } else {
+            result = true;
+        }
+
+        return result;
+    }
+
+    /**
+     * Select the datum with the specified key.
      *
      * @param key a key, or null to deselect
      */
@@ -111,7 +162,7 @@ public class SelectedUserData implements Cloneable {
     }
 
     /**
-     * Select the next user data (in key lexical order).
+     * Select the next datum (in key lexical order).
      */
     public void selectNextKey() {
         List<String> keyList = cgm.getSpatial().listUserKeys();
@@ -123,7 +174,7 @@ public class SelectedUserData implements Cloneable {
     }
 
     /**
-     * Select the previous user data (in key lexical order).
+     * Select the previous datum (in key lexical order).
      */
     public void selectPreviousKey() {
         List<String> keyList = cgm.getSpatial().listUserKeys();
@@ -135,7 +186,7 @@ public class SelectedUserData implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the data.
+     * Alter which C-G model contains the datum.
      *
      * @param newCgm (not null, alias created)
      */

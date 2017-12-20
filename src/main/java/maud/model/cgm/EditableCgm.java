@@ -612,14 +612,18 @@ public class EditableCgm extends LoadedCgm {
     public void renameUserKey(String newKey) {
         Validate.nonNull(newKey, "new key");
 
-        Spatial sp = getSpatial().find();
-        String oldKey = getUserData().getKey();
-        Object data = sp.getUserData(oldKey);
+        Spatial spatial = getSpatial().find();
+        SelectedUserData datum = getUserData();
+        String oldKey = datum.getKey();
+        Object value = datum.getValue();
 
         History.autoAdd();
-        sp.setUserData(oldKey, null);
-        sp.setUserData(newKey, data);
-        setEdited("rename user-data key");
+        spatial.setUserData(oldKey, null);
+        spatial.setUserData(newKey, value);
+
+        String description = String.format("rename user-data key %s to %s",
+                MyString.quote(oldKey), MyString.quote(newKey));
+        setEdited(description);
 
         getUserData().selectKey(newKey);
     }
@@ -1084,38 +1088,44 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Alter the selected user data.
+     * Alter the selected user datum.
      *
      * @param valueString string representation of the new value (not null)
      */
     public void setUserData(String valueString) {
         Validate.nonNull(valueString, "value string");
 
-        String key = getUserData().getKey();
+        SelectedUserData datum = getUserData();
+        Object value = datum.getValue();
         Spatial sp = getSpatial().find();
-        Object data = getSpatial().getUserData(key);
+        String key = datum.getKey();
 
         History.autoAdd();
-        if (data instanceof Boolean) {
+        if (value instanceof Boolean) {
             boolean valueBoolean = Boolean.parseBoolean(valueString);
             sp.setUserData(key, valueBoolean);
 
-        } else if (data instanceof Float) {
+        } else if (value instanceof Float) {
             float valueFloat = Float.parseFloat(valueString);
             sp.setUserData(key, valueFloat);
 
-        } else if (data instanceof Integer) {
+        } else if (value instanceof Integer) {
             int valueInteger = Integer.parseInt(valueString);
             sp.setUserData(key, valueInteger);
 
-        } else if (data instanceof Long) {
+        } else if (value instanceof Long) {
             long valueLong = Long.parseLong(valueString);
             sp.setUserData(key, valueLong);
 
-        } else if (data instanceof String) {
+        } else if (value instanceof String) {
             sp.setUserData(key, valueString);
         }
-        setEdited("alter user data");
+        // TODO bone/vector data
+
+        String description = String.format(
+                "alter value of user datum %s",
+                MyString.quote(key));
+        setEdited(description);
     }
 
     /**

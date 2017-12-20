@@ -791,44 +791,44 @@ public class EditorDialogs {
      */
     public static void setUserData() {
         EditableCgm target = Maud.getModel().getTarget();
-        String key = target.getUserData().getKey();
-        Object data = target.getSpatial().getUserData(key);
-        if (data instanceof Boolean) {
-            boolean oldValue = (boolean) data;
+        Object value = target.getUserData().getValue();
+        if (value instanceof Boolean) {
+            boolean oldValue = (boolean) value;
             String newValue = Boolean.toString(!oldValue); // toggle value
             target.setUserData(newValue);
 
-        } else if (data instanceof Float) {
+        } else if (value instanceof Float) {
             DialogController controller = new FloatDialog("Set",
                     Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
-            float oldValue = (float) data;
+            float oldValue = (float) value;
             String stringData = Float.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new float value:", stringData,
                     ActionPrefix.setUserData, controller);
 
-        } else if (data instanceof Integer) {
+        } else if (value instanceof Integer) {
             DialogController controller = new IntegerDialog("Set",
                     Integer.MIN_VALUE, Integer.MAX_VALUE);
-            int oldValue = (int) data;
+            int oldValue = (int) value;
             String stringData = Integer.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new integer value:", stringData,
                     ActionPrefix.setUserData, controller);
 
-        } else if (data instanceof Long) {
+        } else if (value instanceof Long) {
             DialogController controller
                     = new LongDialog("Set", Long.MIN_VALUE, Long.MAX_VALUE);
-            long oldValue = (long) data;
+            long oldValue = (long) value;
             String stringData = Long.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new long integer value:",
                     stringData, ActionPrefix.setUserData, controller);
 
-        } else if (data instanceof String) {
+        } else if (value instanceof String) {
             DialogController controller = new TextEntryDialog();
-            String oldValue = (String) data;
+            String oldValue = (String) value;
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new string value:", oldValue,
                     "Set", ActionPrefix.setUserData, controller);
         }
+        // TODO bone/vector data
     }
     // *************************************************************************
     // private methods
