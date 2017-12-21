@@ -33,13 +33,10 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
-import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.EditableMap;
 import maud.model.History;
-import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
-import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedTrack;
 
 /**
@@ -161,7 +158,7 @@ public class EditorMenus {
                 handled = BoneMenus.menuBone(remainder);
                 break;
             case "CGM":
-                handled = menuCgm(remainder);
+                handled = CgmMenus.menuCgm(remainder);
                 break;
             case "Help":
                 handled = menuHelp(remainder);
@@ -170,7 +167,7 @@ public class EditorMenus {
                 handled = menuHistory(remainder);
                 break;
             case "Keyframe":
-                handled = menuKeyframe(remainder);
+                handled = KeyframeMenus.menuKeyframe(remainder);
                 break;
             case "Map":
                 handled = menuMap(remainder);
@@ -182,7 +179,7 @@ public class EditorMenus {
                 handled = menuSettings(remainder);
                 break;
             case "SGC":
-                handled = menuSgc(remainder);
+                handled = SgcMenus.menuSgc(remainder);
                 break;
             case "Spatial":
                 handled = SpatialMenus.menuSpatial(remainder);
@@ -198,44 +195,6 @@ public class EditorMenus {
                 break;
             default:
                 handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the CGM menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuCgm(String remainder) {
-        boolean handled = true;
-        String sourcePrefix = "Source model" + EditorMenus.menuPathSeparator;
-        if (remainder.startsWith(sourcePrefix)) {
-            String selectArg = MyString.remainder(remainder, sourcePrefix);
-            handled = menuSourceCgm(selectArg);
-
-        } else {
-            switch (remainder) {
-                case "History":
-                    Maud.gui.tools.select("history");
-                    break;
-                case "Load":
-                    Maud.gui.buildMenus.loadCgm();
-                    break;
-                case "Save":
-                    EditorDialogs.saveCgm();
-                    break;
-                case "Source model":
-                    ShowMenus.sourceCgm();
-                    break;
-                case "Tool":
-                    Maud.gui.tools.select("cgm");
-                    break;
-                default:
-                    handled = false;
-            }
         }
 
         return handled;
@@ -283,83 +242,6 @@ public class EditorMenus {
                 break;
             case "Tool":
                 Maud.gui.tools.select("history");
-                break;
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the Keyframe menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuKeyframe(String remainder) {
-        boolean handled = true;
-        String selectPrefix = "Select" + menuPathSeparator;
-        if (remainder.startsWith(selectPrefix)) {
-            String arg = MyString.remainder(remainder, selectPrefix);
-            handled = menuKeyframeSelect(arg);
-
-        } else {
-            EditableCgm target = Maud.getModel().getTarget();
-            switch (remainder) {
-                case "Delete next":
-                    EditorDialogs.deleteNextKeyframes();
-                    break;
-                case "Delete previous":
-                    EditorDialogs.deletePreviousKeyframes();
-                    break;
-                case "Delete selected":
-                    target.getTrack().deleteSelectedKeyframe();
-                    break;
-                case "Insert from pose":
-                    target.getTrack().insertKeyframe();
-                    break;
-                case "Replace with pose":
-                    target.getTrack().replaceKeyframe();
-                    break;
-                case "Select":
-                    ShowMenus.selectKeyframe();
-                    break;
-                case "Tool":
-                    Maud.gui.tools.select("keyframe");
-                    break;
-                default:
-                    handled = false;
-            }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "Keyframe -> Select" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuKeyframeSelect(String remainder) {
-        boolean handled = true;
-        Cgm target = Maud.getModel().getTarget();
-        switch (remainder) {
-            case "First":
-                target.getTrack().selectFirstKeyframe();
-                break;
-            case "Last":
-                target.getTrack().selectLastKeyframe();
-                break;
-            case "Nearest":
-                target.getTrack().selectNearestKeyframe();
-                break;
-            case "Next":
-                target.getTrack().selectNextKeyframe();
-                break;
-            case "Previous":
-                target.getTrack().selectPreviousKeyframe();
                 break;
             default:
                 handled = false;
@@ -448,105 +330,6 @@ public class EditorMenus {
                 default:
                     handled = false;
             }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the SGC menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuSgc(String remainder) {
-        boolean handled = true;
-        String addPrefix = "Add new" + menuPathSeparator;
-        if (remainder.startsWith(addPrefix)) {
-            String arg = MyString.remainder(remainder, addPrefix);
-            handled = menuSgcAdd(arg);
-
-        } else {
-            switch (remainder) {
-                case "Add new":
-                    ShowMenus.addNewSgc();
-                    break;
-                case "Delete":
-                    EditorDialogs.deleteSgc();
-                    break;
-                case "Deselect":
-                    Maud.getModel().getTarget().getSgc().selectNone();
-                    break;
-                case "Select":
-                    ShowMenus.selectSgc();
-                    break;
-                case "Tool":
-                    Maud.gui.tools.select("sgc");
-                    break;
-                default:
-                    handled = false;
-            }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "SGC -> Add new" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuSgcAdd(String remainder) {
-        boolean handled = true;
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        switch (remainder) {
-            case "Anim":
-                spatial.addAnimControl();
-                break;
-
-            case "Ghost":
-                PhysicsMenus.showShapeTypeMenu(ActionPrefix.newGhostControl);
-                break;
-
-            case "RigidBody":
-                PhysicsMenus.showShapeTypeMenu(ActionPrefix.newRbc);
-                break;
-
-            case "Skeleton":
-                spatial.addSkeletonControl();
-                break;
-
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "CGM -> Source model" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuSourceCgm(String remainder) {
-        boolean handled = true;
-        switch (remainder) {
-            case "Load":
-                Maud.gui.buildMenus.loadSourceCgm();
-                break;
-
-            case "Merge":
-                Maud.getModel().getTarget().getSpatial().attachClone();
-                break;
-
-            case "Unload":
-                Maud.getModel().getSource().unload();
-                break;
-
-            default:
-                handled = false;
         }
 
         return handled;
