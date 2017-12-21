@@ -790,45 +790,67 @@ public class EditorDialogs {
      * Display a "set userData" dialog.
      */
     public static void setUserData() {
+        Maud.gui.closeAllPopups();
         EditableCgm target = Maud.getModel().getTarget();
         Object value = target.getUserData().getValue();
+        DialogController controller;
+        String defaultText;
         if (value instanceof Boolean) {
             boolean oldValue = (boolean) value;
-            String newValue = Boolean.toString(!oldValue); // toggle value
-            target.setUserData(newValue);
+            String newText = Boolean.toString(!oldValue); // toggle value
+            target.setUserData(newText);
 
         } else if (value instanceof Float) {
-            DialogController controller = new FloatDialog("Set",
-                    Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
             float oldValue = (float) value;
-            String stringData = Float.toString(oldValue);
-            Maud.gui.showTextEntryDialog("Enter new float value:", stringData,
+            controller = new FloatDialog("Set", Float.NEGATIVE_INFINITY,
+                    Float.POSITIVE_INFINITY);
+            defaultText = Float.toString(oldValue);
+            Maud.gui.showTextEntryDialog("Enter new float value:", defaultText,
                     ActionPrefix.setUserData, controller);
 
         } else if (value instanceof Integer) {
-            DialogController controller = new IntegerDialog("Set",
-                    Integer.MIN_VALUE, Integer.MAX_VALUE);
             int oldValue = (int) value;
-            String stringData = Integer.toString(oldValue);
-            Maud.gui.showTextEntryDialog("Enter new integer value:", stringData,
-                    ActionPrefix.setUserData, controller);
+            controller = new IntegerDialog("Set", Integer.MIN_VALUE,
+                    Integer.MAX_VALUE);
+            defaultText = Integer.toString(oldValue);
+            Maud.gui.showTextEntryDialog("Enter new integer value:",
+                    defaultText, ActionPrefix.setUserData, controller);
 
         } else if (value instanceof Long) {
-            DialogController controller
-                    = new LongDialog("Set", Long.MIN_VALUE, Long.MAX_VALUE);
             long oldValue = (long) value;
-            String stringData = Long.toString(oldValue);
+            controller = new LongDialog("Set", Long.MIN_VALUE, Long.MAX_VALUE);
+            defaultText = Long.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new long integer value:",
-                    stringData, ActionPrefix.setUserData, controller);
+                    defaultText, ActionPrefix.setUserData, controller);
 
         } else if (value instanceof String) {
-            DialogController controller = new TextEntryDialog();
-            String oldValue = (String) value;
-            Maud.gui.closeAllPopups();
-            Maud.gui.showTextEntryDialog("Enter new string value:", oldValue,
+            controller = new TextEntryDialog();
+            defaultText = (String) value;
+            Maud.gui.showTextEntryDialog("Enter new string value:", defaultText,
                     "Set", ActionPrefix.setUserData, controller);
+
+        } else if (value instanceof Vector2f) {
+            Vector2f oldValue = (Vector2f) value;
+            controller = new VectorDialog("Set", 2, false);
+            defaultText = oldValue.toString();
+            Maud.gui.showTextEntryDialog("Enter new Vector2f value:",
+                    defaultText, ActionPrefix.setUserData, controller);
+
+        } else if (value instanceof Vector3f) {
+            Vector3f oldValue = (Vector3f) value;
+            controller = new VectorDialog("Set", 3, false);
+            defaultText = oldValue.toString();
+            Maud.gui.showTextEntryDialog("Enter new Vector3f value:",
+                    defaultText, ActionPrefix.setUserData, controller);
+
+        } else if (value instanceof Vector4f) {
+            Vector4f oldValue = (Vector4f) value;
+            controller = new VectorDialog("Set", 4, false);
+            defaultText = oldValue.toString();
+            Maud.gui.showTextEntryDialog("Enter new Vector4f value:",
+                    defaultText, ActionPrefix.setUserData, controller);
         }
-        // TODO bone/vector data
+        // TODO bone data
     }
     // *************************************************************************
     // private methods

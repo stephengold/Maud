@@ -423,12 +423,15 @@ public class ShowMenus {
     public static void selectUserDataType() {
         MenuBuilder builder = new MenuBuilder();
 
-        builder.add("integer");
-        builder.add("float");
         builder.add("boolean");
-        builder.add("string");
+        builder.add("float");
+        builder.add("integer");
         builder.add("long");
-        // TODO savable, list, map, array
+        builder.add("string");
+        builder.add("vector2f");
+        builder.add("vector3f");
+        builder.add("vector4f");
+        // TODO savable, list, map, array, bone
 
         builder.show(ActionPrefix.newUserKey);
     }

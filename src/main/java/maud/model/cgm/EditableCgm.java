@@ -41,7 +41,9 @@ import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.material.MatParamOverride;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -70,6 +72,7 @@ import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.PhysicsUtil;
+import maud.dialog.VectorDialog;
 import maud.model.History;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
@@ -226,7 +229,7 @@ public class EditableCgm extends LoadedCgm {
      * Add a new user key to the selected spatial.
      *
      * @param type name of the data type ("boolean", "float", "integer", "long",
-     * or "string")
+     * "string", "vector2f", "vector3f", or "vector4f")
      * @param key user key to create (not null)
      */
     public void addUserKey(String type, String key) {
@@ -249,8 +252,17 @@ public class EditableCgm extends LoadedCgm {
             case "string":
                 object = "";
                 break;
+            case "vector2f":
+                object = new Vector2f();
+                break;
+            case "vector3f":
+                object = new Vector3f();
+                break;
+            case "vector4f":
+                object = new Vector4f();
+                break;
             default:
-                assert false;
+                throw new IllegalArgumentException();
         }
         byte objectType = UserData.getObjectType(object);
         UserData data = new UserData(objectType, object);
@@ -258,6 +270,7 @@ public class EditableCgm extends LoadedCgm {
 
         History.autoAdd();
         selectedSpatial.setUserData(key, data);
+
         String description
                 = String.format("add user key %s", MyString.quote(key));
         setEdited(description);
@@ -1097,30 +1110,38 @@ public class EditableCgm extends LoadedCgm {
 
         SelectedUserData datum = getUserData();
         Object value = datum.getValue();
-        Spatial sp = getSpatial().find();
+        Spatial spatial = getSpatial().find();
         String key = datum.getKey();
 
         History.autoAdd();
         if (value instanceof Boolean) {
-            boolean valueBoolean = Boolean.parseBoolean(valueString);
-            sp.setUserData(key, valueBoolean);
+            boolean newValue = Boolean.parseBoolean(valueString);
+            spatial.setUserData(key, newValue);
 
         } else if (value instanceof Float) {
-            float valueFloat = Float.parseFloat(valueString);
-            sp.setUserData(key, valueFloat);
+            float newValue = Float.parseFloat(valueString);
+            spatial.setUserData(key, newValue);
 
         } else if (value instanceof Integer) {
-            int valueInteger = Integer.parseInt(valueString);
-            sp.setUserData(key, valueInteger);
+            int newValue = Integer.parseInt(valueString);
+            spatial.setUserData(key, newValue);
 
         } else if (value instanceof Long) {
-            long valueLong = Long.parseLong(valueString);
-            sp.setUserData(key, valueLong);
+            long newValue = Long.parseLong(valueString);
+            spatial.setUserData(key, newValue);
 
         } else if (value instanceof String) {
-            sp.setUserData(key, valueString);
+            spatial.setUserData(key, valueString);
+
+        } else if (value instanceof Vector2f
+                || value instanceof Vector3f
+                || value instanceof Vector4f) {
+            Object newValue = VectorDialog.parseVector(valueString);
+            spatial.setUserData(key, newValue);
+
+        } else {        // TODO bone value
+            throw new IllegalStateException();
         }
-        // TODO bone/vector data
 
         String description = String.format(
                 "alter value of user datum %s",
