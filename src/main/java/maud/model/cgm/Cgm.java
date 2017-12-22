@@ -124,6 +124,10 @@ public class Cgm implements Cloneable {
      */
     private SelectedJoint selectedJoint = new SelectedJoint();
     /**
+     * which material parameter is selected in the selected spatial
+     */
+    private SelectedMatParam selectedMatParam = new SelectedMatParam();
+    /**
      * which physics collision object is selected
      */
     private SelectedObject selectedObject = new SelectedObject();
@@ -182,6 +186,7 @@ public class Cgm implements Cloneable {
         selectedAnimControl.setCgm(cgm);
         selectedBone.setCgm(cgm);
         selectedJoint.setCgm(cgm);
+        selectedMatParam.setCgm(cgm);
         selectedObject.setCgm(cgm);
         selectedOverride.setCgm(cgm);
         selectedSgc.setCgm(cgm);
@@ -369,6 +374,16 @@ public class Cgm implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Access the selected material parameter.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedMatParam getMatParam() {
+        assert selectedMatParam != null;
+        return selectedMatParam;
     }
 
     /**
@@ -869,6 +884,7 @@ public class Cgm implements Cloneable {
         clone.selectedAnimControl = cloner.clone(selectedAnimControl);
         clone.selectedBone = selectedBone.clone();
         clone.selectedJoint = selectedJoint.clone();
+        clone.selectedMatParam = selectedMatParam.clone();
         clone.selectedObject = selectedObject.clone();
         clone.selectedOverride = selectedOverride.clone();
         clone.selectedSgc = cloner.clone(selectedSgc);

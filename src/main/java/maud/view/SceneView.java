@@ -100,6 +100,7 @@ import maud.mesh.PointMesh;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.DisplayedPose;
 import maud.model.cgm.ScenePov;
+import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
@@ -381,6 +382,15 @@ public class SceneView
 
         Node scene = getSceneRoot();
         scene.attachChild(orphan);
+    }
+
+    /**
+     * Clear the selected material parameter.
+     */
+    public void deleteMatParam() {
+        Material material = selectedMaterial();
+        String parameterName = cgm.getMatParam().getName();
+        material.clearParam(parameterName);
     }
 
     /**
@@ -841,6 +851,17 @@ public class SceneView
     }
 
     /**
+     * Alter the depth-test setting of the selected material.
+     *
+     * @param newState true &rarr; enable test, false &rarr; disable it
+     */
+    public void setDepthTest(boolean newState) {
+        Material material = selectedMaterial();
+        RenderState modelState = material.getAdditionalRenderState();
+        modelState.setDepthTest(newState);
+    }
+
+    /**
      * Alter whether the selected geometry ignores its transform.
      *
      * @param newSetting true&rarr;ignore transform, false&rarr;apply transform
@@ -848,6 +869,19 @@ public class SceneView
     public void setIgnoreTransform(boolean newSetting) {
         Geometry geometry = (Geometry) selectedSpatial();
         geometry.setIgnoreTransform(newSetting);
+    }
+
+    /**
+     * Alter the value of the selected material parameter.
+     *
+     * @param newValue (may be null, alias created if not null)
+     */
+    public void setMatParamValue(Object newValue) {
+        Material material = selectedMaterial();
+        SelectedMatParam matParam = cgm.getMatParam();
+        String name = matParam.getName();
+        VarType varType = matParam.getVarType();
+        material.setParam(name, varType, newValue);
     }
 
     /**
@@ -1641,6 +1675,20 @@ public class SceneView
         pov.setCameraLocation(cameraStartLocation);
 
         projectile.delete();
+    }
+
+    /**
+     * Access the selected material in this view's copy of its C-G model.
+     *
+     * @return the pre-existing material (not null)
+     */
+    private Material selectedMaterial() {
+        Spatial spatial = selectedSpatial();
+        Geometry geometry = (Geometry) spatial;
+        Material material = geometry.getMaterial();
+
+        assert material != null;
+        return material;
     }
 
     /**

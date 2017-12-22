@@ -39,7 +39,10 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.binary.BinaryExporter;
+import com.jme3.material.MatParam;
 import com.jme3.material.MatParamOverride;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -378,8 +381,8 @@ public class EditableCgm extends LoadedCgm {
             deleteExtraSpatials(rootNode, map.values());
 
             getSpatial().selectCgmRoot();
-            int newNumSpatials = MySpatial.countSpatials(rootSpatial,
-                    Spatial.class);
+            int newNumSpatials
+                    = MySpatial.countSpatials(rootSpatial, Spatial.class);
             int numDeleted = oldNumSpatials - newNumSpatials;
             String description = String.format("delete %d extra spatial%s",
                     numDeleted, numDeleted == 1 ? "" : "s");
@@ -388,20 +391,39 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Delete the selected material parameter. The invoker is responsible for
+     * deselecting the parameter.
+     */
+    void deleteMatParam() {
+        Material material = getSpatial().getMaterial();
+        String parameterName = getMatParam().getName();
+        SceneView sceneView = getSceneView();
+
+        History.autoAdd();
+        material.clearParam(parameterName);
+        sceneView.deleteMatParam();
+
+        String description = String.format(
+                "delete material parameter %s", MyString.quote(parameterName));
+        setEdited(description);
+    }
+
+    /**
      * Delete the selected material-parameter override from the selected
      * spatial. The invoker is responsible for deselecting the override.
      */
     void deleteOverride() {
-        Spatial selectedSpatial = getSpatial().find();
+        Spatial spatial = getSpatial().find();
         MatParamOverride mpo = getOverride().find();
-        String pname = mpo.getName();
+        String parameterName = mpo.getName();
 
         History.autoAdd();
-        selectedSpatial.removeMatParamOverride(mpo);
+        spatial.removeMatParamOverride(mpo);
         getSceneView().deleteOverride();
 
         String description = String.format(
-                "delete material-parameter override %s", MyString.quote(pname));
+                "delete material-parameter override %s",
+                MyString.quote(parameterName));
         setEdited(description);
     }
 
@@ -818,6 +840,29 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter the depth-test setting of the selected material.
+     *
+     * @param newState true &rarr; enable test, false &rarr; disable it
+     */
+    public void setDepthTest(boolean newState) {
+        Material material = getSpatial().getMaterial();
+        if (material != null) {
+            RenderState modelState = material.getAdditionalRenderState();
+            if (modelState.isDepthTest() != newState) {
+                History.autoAdd();
+                modelState.setDepthTest(newState);
+                SceneView sceneView = getSceneView();
+                sceneView.setDepthTest(newState);
+
+                String description = String.format(
+                        "set depth test to %s in the selected material",
+                        newState);
+                setEdited(description);
+            }
+        }
+    }
+
+    /**
      * Alter whether the selected geometry ignores its transform.
      *
      * @param newSetting true&rarr;ignore transform, false&rarr;apply transform
@@ -867,6 +912,31 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter the value of the selected material parameter.
+     *
+     * @param valueString string representation of the new value (not null)
+     */
+    public void setMatParamValue(String valueString) {
+        Validate.nonNull(valueString, "value string");
+
+        MatParam oldParam = getMatParam().find();
+        Object modelValue = MaudUtil.parseMatParam(oldParam, valueString);
+        Object viewValue = MaudUtil.parseMatParam(oldParam, valueString);
+        String parameterName = oldParam.getName();
+        Material material = getSpatial().getMaterial();
+
+        History.autoAdd();
+        VarType varType = oldParam.getVarType();
+        material.setParam(parameterName, varType, modelValue);
+        getSceneView().setMatParamValue(viewValue);
+
+        String description = String.format(
+                "alter value of material parameter %s",
+                MyString.quote(parameterName));
+        setEdited(description);
+    }
+
+    /**
      * Alter whether the selected material-parameter override is enabled.
      *
      * @param newSetting true&rarr;enable, false&rarr;disable
@@ -899,14 +969,14 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(valueString, "value string");
 
         MatParamOverride oldMpo = getOverride().find();
-        VarType varType = oldMpo.getVarType();
-        Object modelValue = MaudUtil.parseMatParam(varType, valueString);
-        Object viewValue = MaudUtil.parseMatParam(varType, valueString);
+        Object modelValue = MaudUtil.parseMatParam(oldMpo, valueString);
+        Object viewValue = MaudUtil.parseMatParam(oldMpo, valueString);
         String parameterName = oldMpo.getName();
         Spatial spatial = getSpatial().find();
 
         History.autoAdd();
         spatial.removeMatParamOverride(oldMpo);
+        VarType varType = oldMpo.getVarType();
         MatParamOverride newMpo
                 = new MatParamOverride(varType, parameterName, modelValue);
         spatial.addMatParamOverride(newMpo);
@@ -1101,6 +1171,29 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter the wireframe setting for the selected material.
+     *
+     * @param newState true &rarr; render edges only, false &rarr; fill
+     * triangles
+     */
+    public void setWireframe(boolean newState) {
+        Material material = getSpatial().getMaterial();
+        if (material != null) {
+            RenderState modelState = material.getAdditionalRenderState();
+            if (modelState.isWireframe() != newState) {
+                History.autoAdd();
+                modelState.setWireframe(newState);
+                updateSceneWireframe();
+
+                String description = String.format(
+                        "set wireframe to %s in the selected material",
+                        newState);
+                setEdited(description);
+            }
+        }
+    }
+
+    /**
      * Alter the selected user datum.
      *
      * @param valueString string representation of the new value (not null)
@@ -1143,8 +1236,7 @@ public class EditableCgm extends LoadedCgm {
             throw new IllegalStateException();
         }
 
-        String description = String.format(
-                "alter value of user datum %s",
+        String description = String.format("alter value of user datum %s",
                 MyString.quote(key));
         setEdited(description);
     }

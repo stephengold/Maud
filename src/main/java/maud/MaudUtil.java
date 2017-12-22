@@ -39,11 +39,15 @@ import com.jme3.asset.ModelKey;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.material.MatParam;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -730,18 +734,20 @@ public class MaudUtil {
     /**
      * Parse a material parameter from the specified text string.
      *
-     * @param varType type of parameter (not null)
-     * @param textString (not null, not empty)
+     * @param oldParameter old parameter (not null, unaffected)
+     * @param textString input text (not null, not empty)
      * @return a new object or null
      */
-    public static Object parseMatParam(VarType varType, String textString) {
-        Validate.nonNull(varType, "type");
+    public static Object parseMatParam(MatParam oldParameter,
+            String textString) {
+        Validate.nonNull(oldParameter, "old parameter");
         Validate.nonEmpty(textString, "text string");
 
         String lcText = textString.toLowerCase(Locale.ROOT);
         Matcher matcher = nullPattern.matcher(lcText);
         Object result = null;
         if (!matcher.matches()) {
+            VarType varType = oldParameter.getVarType();
             switch (varType) {
                 case Boolean:
                     result = Boolean.parseBoolean(lcText);
@@ -757,8 +763,22 @@ public class MaudUtil {
 
                 case Vector2:
                 case Vector3:
+                    result = VectorDialog.parseVector(lcText);
+                    break;
+
                 case Vector4:
                     result = VectorDialog.parseVector(lcText);
+                    Vector4f v = (Vector4f) result;
+                    Object oldValue = oldParameter.getValue();
+                    if (oldValue instanceof Quaternion) {
+                        result = new Quaternion(v.x, v.y, v.z, v.w);
+                    } else if (!(oldValue instanceof Vector4f)) {
+                        /*
+                         * best guess for oldValue == null
+                         * If we guess wrong, there's a delayed cast exception.
+                         */
+                        result = new ColorRGBA(v.x, v.y, v.z, v.w);
+                    }
                     break;
 
                 default: // TODO more types

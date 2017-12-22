@@ -38,8 +38,11 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.LightList;
+import com.jme3.material.MatParam;
 import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
+import com.jme3.material.MaterialDef;
+import com.jme3.material.RenderState;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
@@ -187,6 +190,7 @@ public class SelectedSpatial implements JmeCloneable {
      */
     public void attachClone() {
         assert cgm == Maud.getModel().getTarget();
+        
         LoadedCgm sourceCgm = Maud.getModel().getSource();
         Node parentNode = (Node) find();
         assert sourceCgm.isLoaded();
@@ -209,7 +213,19 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count how many children are attached to the selected spatial.
+     * Copy the material's additional render state.
+     *
+     * @return a new instance
+     */
+    public RenderState copyAdditionalRenderState() {
+        Material material = getMaterial();
+        RenderState result = material.getAdditionalRenderState();
+
+        return result.clone();
+    }
+
+    /**
+     * Count how many children are attached to the spatial.
      *
      * @return count (&ge;0) or 0 if the spatial is not a scene-graph node
      */
@@ -230,7 +246,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count how many local lights the selected spatial has.
+     * Count how many local lights the spatial has.
      *
      * @return count (&ge;0)
      */
@@ -245,7 +261,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count how many levels of detail are in the selected spatial's mesh.
+     * Count how many levels of detail are in the mesh.
      *
      * @return count (&ge;0)
      */
@@ -263,8 +279,25 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count how many local material-parameter overrides the selected spatial
-     * has.
+     * Count the parameters in the material.
+     *
+     * @return count (&ge;0)
+     */
+    public int countMatParams() {
+        Spatial spatial = find();
+        int result = 0;
+        if (spatial instanceof Geometry) {
+            Material material = getMaterial();
+            Collection<MatParam> params = material.getParams();
+            result = params.size();
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Count how many local material-parameter overrides the spatial has.
      *
      * @return count (&ge;0)
      */
@@ -278,8 +311,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count how many scene-graph controls are added directly to the selected
-     * spatial.
+     * Count how many scene-graph controls are added directly to the spatial.
      *
      * @return count (&ge;0)
      */
@@ -292,8 +324,8 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count how many scene-graph controls are contained in the selected
-     * spatial's subtree.
+     * Count how many scene-graph controls are contained in the spatial's
+     * subtree.
      *
      * @return count (&ge;0)
      */
@@ -306,7 +338,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count how many user data are contained in the selected spatial's subtree.
+     * Count how many user data are contained in the spatial's subtree.
      *
      * @return count (&ge;0)
      */
@@ -319,7 +351,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count how many vertices are influenced by the selected spatial.
+     * Count how many vertices are influenced by the spatial.
      *
      * @return count (&ge;0)
      */
@@ -332,7 +364,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count the user data of the selected spatial.
+     * Count the user data of the spatial.
      *
      * @return count (&ge;0)
      */
@@ -345,7 +377,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count how many vertices are in the selected spatial's mesh.
+     * Count the vertices are in the spatial's mesh.
      *
      * @return count (&ge;0)
      */
@@ -390,7 +422,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Describe the type of the selected spatial.
+     * Name the type of the spatial.
      *
      * @return textual description (not null)
      */
@@ -423,11 +455,9 @@ public class SelectedSpatial implements JmeCloneable {
     public String getChildName(int childIndex) {
         assert childIndex >= 0 : childIndex;
 
+        String result = null;
         Spatial child = modelChild(childIndex);
-        String result;
-        if (child == null) {
-            result = null;
-        } else {
+        if (child != null) {
             result = child.getName();
         }
 
@@ -437,7 +467,7 @@ public class SelectedSpatial implements JmeCloneable {
     /**
      * Read the local batch hint of the selected spatial.
      *
-     * @return hint (not null)
+     * @return an enum value (not null)
      */
     public Spatial.BatchHint getLocalBatchHint() {
         Spatial spatial = find();
@@ -448,9 +478,9 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Read the local cull hint of the selected spatial.
+     * Read the local cull hint of the spatial.
      *
-     * @return hint (not null)
+     * @return an enum value (not null)
      */
     public Spatial.CullHint getLocalCullHint() {
         Spatial spatial = find();
@@ -461,9 +491,9 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Read the local render bucket of the selected spatial.
+     * Read the local render bucket of the spatial.
      *
-     * @return bucket (not null)
+     * @return an enum value (not null)
      */
     public RenderQueue.Bucket getLocalQueueBucket() {
         Spatial spatial = find();
@@ -474,9 +504,9 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Read the local shadow mode of the selected spatial.
+     * Read the local shadow mode of the spatial.
      *
-     * @return mode (not null)
+     * @return an enum value (not null)
      */
     public RenderQueue.ShadowMode getLocalShadowMode() {
         Spatial spatial = find();
@@ -487,16 +517,48 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Read the name of the selected spatial's material.
+     * Access the material.
      *
-     * @return name, or null if none
+     * @return the pre-existing instance, or null if none
+     */
+    Material getMaterial() {
+        Material material = null;
+        Spatial spatial = find();
+        if (spatial instanceof Geometry) {
+            Geometry geometry = (Geometry) spatial;
+            material = geometry.getMaterial();
+        }
+
+        return material;
+    }
+
+    /**
+     * Read the name of the material definition.
+     *
+     * @return name (not null) or "" if none
+     */
+    public String getMaterialDefName() {
+        String name = null;
+        Material material = getMaterial();
+        if (material != null) {
+            MaterialDef def = material.getMaterialDef();
+            if (def != null) {
+                name = def.getName();
+            }
+        }
+
+        return name;
+    }
+
+    /**
+     * Read the name of the material.
+     *
+     * @return name, or null if no material
      */
     public String getMaterialName() {
-        Material material = material();
-        String result;
-        if (material == null) {
-            result = null;
-        } else {
+        String result = null;
+        Material material = getMaterial();
+        if (material != null) {
             result = material.getName();
         }
 
@@ -504,7 +566,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Read the maximum number of weights per vertex in the selected mesh.
+     * Read the maximum number of weights per vertex in the mesh.
      *
      * @return count (&ge;0, &le;4)
      */
@@ -518,34 +580,30 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Access the mesh of the selected spatial.
+     * Access the mesh.
      *
      * @return the pre-existing instance, or null if none
      */
     Mesh getMesh() {
-        Mesh result;
+        Mesh result = null;
         Spatial spatial = find();
         if (spatial instanceof Geometry) {
             Geometry geometry = (Geometry) spatial;
             result = geometry.getMesh();
-        } else {
-            result = null;
         }
 
         return result;
     }
 
     /**
-     * Read the mode of the selected spatial's mesh.
+     * Read the mode of the mesh.
      *
-     * @return the mode of the mesh, or null if none
+     * @return an enum value, or null if none
      */
     public Mesh.Mode getMeshMode() {
+        Mesh.Mode result = null;
         Mesh mesh = getMesh();
-        Mesh.Mode result;
-        if (mesh == null) {
-            result = null;
-        } else {
+        if (mesh != null) {
             result = mesh.getMode();
         }
 
@@ -553,7 +611,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Read the name of the selected spatial.
+     * Read the name of the spatial.
      *
      * @return name, or null if none
      */
@@ -599,7 +657,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the selected spatial has an animated mesh.
+     * Test whether the mesh is animated.
      *
      * @return true if it has an animated mesh, otherwise false
      */
@@ -613,12 +671,12 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the selected spatial has a material.
+     * Test whether the spatial has a material.
      *
      * @return true if it has a material, otherwise false
      */
     public boolean hasMaterial() {
-        Material material = material();
+        Material material = getMaterial();
         if (material == null) {
             return false;
         } else {
@@ -627,7 +685,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the selected spatial has a mesh.
+     * Test whether the spatial has a mesh.
      *
      * @return true if it has a mesh, otherwise false
      */
@@ -641,8 +699,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the named material-parameter override exists in the selected
-     * spatial.
+     * Test whether the named material-parameter override exists in the spatial.
      *
      * @param parameterName the parameter name to search for (not null)
      * @return true if it exists, otherwise false
@@ -659,7 +716,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the specified user key exists in the selected spatial.
+     * Test whether the specified user key exists in the spatial.
      *
      * @param key the key to search for (not null)
      * @return true if it exists, otherwise false
@@ -677,8 +734,8 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the selected spatial is the target of a spatial track in the
-     * loaded animation.
+     * Test whether the spatial is the target of a spatial track in the loaded
+     * animation.
      *
      * @return true if it's a target, otherwise false
      */
@@ -694,7 +751,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the selected spatial is an attachments node.
+     * Test whether the spatial is an attachments node.
      *
      * @return true if it's an attachments node, otherwise false
      */
@@ -712,7 +769,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the selected spatial is the root of the C-G model.
+     * Test whether the spatial is the root of the loaded C-G model.
      *
      * @return true if it's the root, otherwise false
      */
@@ -745,7 +802,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the selected spatial is a geometry.
+     * Test whether the spatial is a geometry.
      *
      * @return true if it's a geometry, otherwise false
      */
@@ -759,7 +816,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the selected spatial is a node.
+     * Test whether the spatial is a node.
      *
      * @return true if it's a node, otherwise false
      */
@@ -773,7 +830,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the selected spatial is a geometry with ignoreTransform set.
+     * Test whether the spatial is a geometry with ignoreTransform set.
      *
      * @return true if ignoring its transform, otherwise false
      */
@@ -785,7 +842,30 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Enumerate all children of the selected spatial, numbering them to prevent
+     * Enumerate all parameters in the material.
+     *
+     * @return a new list of parameter names, sorted lexicographically
+     */
+    public List<String> listMatParamNames() {
+        int numNames = countMatParams();
+        List<String> result = new ArrayList<>(numNames);
+
+        Spatial spatial = find();
+        if (spatial instanceof Geometry) {
+            Material material = getMaterial();
+            Collection<MatParam> params = material.getParams();
+            for (MatParam param : params) {
+                String name = param.getName();
+                result.add(name);
+            }
+            Collections.sort(result);
+        }
+
+        return result;
+    }
+
+    /**
+     * Enumerate all children of the spatial, numbering them to prevent
      * duplication.
      *
      * @return a new list of numbered names ordered by index
@@ -804,10 +884,9 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Enumerate the material-parameter names of all the spatial's local
-     * overrides.
+     * Enumerate the spatial's local material-parameter overrides.
      *
-     * @return a new list, sorted lexicographically
+     * @return a new list of parameter names, sorted lexicographically
      */
     public List<String> listOverrideNames() {
         Spatial spatial = find();
@@ -838,7 +917,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Copy the local rotation of the selected spatial.
+     * Copy the local rotation of the spatial.
      *
      * @param storeResult (modified if not null)
      * @return local rotation (either storeResult or a new instance)
@@ -856,7 +935,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Copy the local scale of the selected spatial.
+     * Copy the local scale of the spatial.
      *
      * @param storeResult (modified if not null)
      * @return local scale vector (either storeResult or a new instance)
@@ -874,7 +953,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Copy the local translation of the selected spatial.
+     * Copy the local translation of the spatial.
      *
      * @param storeResult (modified if not null)
      * @return local translation vector (either storeResult or a new instance)
@@ -1020,7 +1099,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Snap one axis-angle of the local rotation.
+     * Snap one axis-angle of the spatial's local rotation.
      *
      * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      */
@@ -1161,24 +1240,6 @@ public class SelectedSpatial implements JmeCloneable {
     // private methods
 
     /**
-     * Access the material of the selected spatial.
-     *
-     * @return the pre-existing instance, or null if none
-     */
-    private Material material() {
-        Material result;
-        Spatial spatial = find();
-        if (spatial instanceof Geometry) {
-            Geometry geometry = (Geometry) spatial;
-            result = geometry.getMaterial();
-        } else {
-            result = null;
-        }
-
-        return result;
-    }
-
-    /**
      * Access (by index) a child of the selected spatial in the MVC model.
      *
      * @param childIndex which child (&ge;0)
@@ -1205,8 +1266,9 @@ public class SelectedSpatial implements JmeCloneable {
     private void postSelect() {
         Spatial found = find();
         if (found != last) {
+            cgm.getMatParam().deselect();
             cgm.getOverride().deselect();
-            cgm.getUserData().selectKey(null);
+            cgm.getUserData().deselect();
             cgm.getVertex().deselect();
             last = found;
         }
