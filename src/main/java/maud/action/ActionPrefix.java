@@ -220,6 +220,10 @@ public class ActionPrefix {
      */
     final public static String selectBoneChild = "select boneChild ";
     /**
+     * argument is the name of an EdgeFilteringMode value
+     */
+    final public static String selectEdgeFilter = "select edgeFilter ";
+    /**
      * argument is an index or noControl
      */
     final public static String selectSgc = "select sgc ";

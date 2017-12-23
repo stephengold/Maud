@@ -53,7 +53,6 @@ import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -64,8 +63,6 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shader.VarType;
-import com.jme3.shadow.DirectionalLightShadowFilter;
-import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.texture.Texture;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
@@ -76,7 +73,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
 import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
 import jme3utilities.MyControl;
@@ -104,6 +100,7 @@ import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
+import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
@@ -120,14 +117,6 @@ public class SceneView
      * linear size of the marker for the selected vertex (in pixels)
      */
     final private static float vertexSize = 12f;
-    /**
-     * width and height of rendered shadow maps (pixels per side, &gt;0)
-     */
-    final private static int shadowMapSize = 4_096;
-    /**
-     * number of shadow map splits in shadow filters (&gt;0)
-     */
-    final private static int shadowMapSplits = 3;
     /**
      * message logger for this class
      */
@@ -189,6 +178,14 @@ public class SceneView
      * indicator for the 3-D cursor, or null if none
      */
     private Geometry cursor;
+    /**
+     * width (and height) of shadow maps on previous update
+     */
+    int mapSize = 0;
+    /**
+     * number of shadow-map splits on previous update
+     */
+    int numSplits = 0;
     /**
      * attachment point for this view's copy of the C-G model (applies
      * shadowMode and transforms)
@@ -302,28 +299,6 @@ public class SceneView
 
         PhysicsSpace space = getPhysicsSpace();
         space.add(copy);
-    }
-
-    /**
-     * Add shadows to the specified view port, without specifying a light.
-     *
-     * @param vp which view port (not null)
-     */
-    public static void addShadows(ViewPort vp) {
-        Validate.nonNull(vp, "view port");
-
-        AssetManager assetManager = Locators.getAssetManager();
-        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(
-                assetManager, shadowMapSize, shadowMapSplits);
-        dlsf.setEdgeFilteringMode(EdgeFilteringMode.PCF8);
-        dlsf.setEnabled(false);
-
-        FilterPostProcessor fpp = Misc.getFpp(vp, assetManager);
-        int numSamples = Maud.getNumSamples();
-        if (numSamples > 1) {
-            fpp.setNumSamples(numSamples);
-        }
-        fpp.addFilter(dlsf);
     }
 
     /**
@@ -609,6 +584,29 @@ public class SceneView
     Spatial getVertexSpatial() {
         assert vertexSpatial != null;
         return vertexSpatial;
+    }
+
+    /**
+     * Test whether shadow options have changed since the last time this view
+     * was updated.
+     *
+     * @return true if changed, otherwise false
+     */
+    boolean haveShadowOptionsChanged() {
+        SceneOptions options = Maud.getModel().getScene();
+        int newNumSplits = options.getNumSplits();
+        int newMapSize = options.getShadowMapSize();
+
+        boolean result;
+        if (numSplits == newNumSplits && mapSize == newMapSize) {
+            result = false;
+        } else {
+            numSplits = newNumSplits;
+            mapSize = newMapSize;
+            result = true;
+        }
+
+        return result;
     }
 
     /**

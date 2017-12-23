@@ -26,7 +26,9 @@
  */
 package maud.tool;
 
+import com.jme3.shadow.EdgeFilteringMode;
 import java.util.logging.Logger;
+import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 import maud.Maud;
@@ -47,6 +49,14 @@ class RenderTool extends WindowController {
      */
     final private static Logger logger
             = Logger.getLogger(RenderTool.class.getName());
+    /**
+     * transform for the size slider
+     */
+    final private static SliderTransform sizeSt = SliderTransform.Log2;
+    /**
+     * transform for the splits slider
+     */
+    final private static SliderTransform splitsSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -57,6 +67,23 @@ class RenderTool extends WindowController {
      */
     RenderTool(EditorScreen screenController) {
         super(screenController, "renderTool", false);
+    }
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Update the MVC model based on the sliders.
+     */
+    void onSliderChanged() {
+        SceneOptions options = Maud.getModel().getScene();
+
+        float mapSize = Maud.gui.readSlider("mapSize", sizeSt);
+        int newSize = (int) Math.round(mapSize);
+        options.setShadowsMapSize(newSize);
+
+        float mapSplits = Maud.gui.readSlider("mapSplits", splitsSt);
+        int newNumSplits = (int) Math.round(mapSplits);
+        options.setNumSplits(newNumSplits);
     }
     // *************************************************************************
     // WindowController methods
@@ -71,6 +98,7 @@ class RenderTool extends WindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
+        Maud.gui.setIgnoreGuiChanges(true);
         SceneOptions options = Maud.getModel().getScene();
 
         boolean shadowsFlag = options.areShadowsRendered();
@@ -82,5 +110,19 @@ class RenderTool extends WindowController {
         TriangleMode mode = options.getTriangleMode();
         String modeName = mode.toString();
         Maud.gui.setButtonText("triangles", modeName);
+
+        int numSplits = options.getNumSplits();
+        Maud.gui.setSlider("mapSplits", splitsSt, numSplits);
+        Maud.gui.updateSliderStatus("mapSplits", numSplits, "");
+
+        int mapSize = options.getShadowMapSize();
+        Maud.gui.setSlider("mapSize", sizeSt, mapSize);
+        Maud.gui.updateSliderStatus("mapSize", mapSize, " px");
+
+        EdgeFilteringMode edgeFilter = options.getEdgeFilter();
+        modeName = edgeFilter.toString();
+        Maud.gui.setButtonText("edgeFilter", modeName);
+
+        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

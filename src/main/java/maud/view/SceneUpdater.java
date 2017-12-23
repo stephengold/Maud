@@ -40,6 +40,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.EdgeFilteringMode;
 import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Logger;
@@ -52,6 +53,7 @@ import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 import jme3utilities.ui.Locators;
+import maud.EditorViewPorts;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedVertex;
@@ -60,6 +62,7 @@ import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.BoundsOptions;
 import maud.model.option.scene.DddCursorOptions;
+import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.SkeletonOptions;
 import maud.model.option.scene.VertexOptions;
 
@@ -341,8 +344,20 @@ class SceneUpdater {
             for (Filter filter : filterList) {
                 if (filter instanceof DirectionalLightShadowFilter) {
                     dlsf = (DirectionalLightShadowFilter) filter;
+                    break;
                 }
             }
+
+            boolean changed = view.haveShadowOptionsChanged();
+            if (changed) {
+                dlsf.setEnabled(false);
+                fpp.removeFilter(dlsf);
+                dlsf = EditorViewPorts.addShadows(vp);
+            }
+
+            SceneOptions options = Maud.getModel().getScene();
+            EdgeFilteringMode edgeFilter = options.getEdgeFilter();
+            dlsf.setEdgeFilteringMode(edgeFilter);
             DirectionalLight mainLight = view.getMainLight();
             dlsf.setLight(mainLight);
             boolean enable = Maud.getModel().getScene().areShadowsRendered();

@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.shadow.EdgeFilteringMode;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.tools.SizeValue;
@@ -101,6 +102,10 @@ class SelectAction {
 
             case Action.selectBoneParent:
                 target.getBone().selectParent();
+                break;
+
+            case Action.selectEdgeFilter:
+                ShowMenus.selectEdgeFilter();
                 break;
 
             case Action.selectJoint:
@@ -308,6 +313,12 @@ class SelectAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectBoneChild);
             ShowMenus.selectBoneChild(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectEdgeFilter)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectEdgeFilter);
+            EdgeFilteringMode newMode = EdgeFilteringMode.valueOf(arg);
+            model.getScene().setEdgeFilter(newMode);
 
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);

@@ -30,6 +30,7 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.shader.VarType;
+import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.system.AppSettings;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
@@ -202,6 +203,25 @@ public class ShowMenus {
             }
             builder.show(ActionPrefix.selectBoneChild);
         }
+    }
+
+    /**
+     * Display a menu to set the shadow edge filtering mode using the "select
+     * edgeFilter " action prefix.
+     */
+    public static void selectEdgeFilter() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SceneOptions options = Maud.getModel().getScene();
+        EdgeFilteringMode selectedMode = options.getEdgeFilter();
+        for (EdgeFilteringMode mode : EdgeFilteringMode.values()) {
+            if (!mode.equals(selectedMode)) {
+                String name = mode.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectEdgeFilter);
     }
 
     /**

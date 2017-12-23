@@ -491,6 +491,11 @@ public class EditorTools {
                 platform.onSliderChanged();
                 break;
 
+            case "mapSize":
+            case "mapSplits":
+                render.onSliderChanged();
+                break;
+
             case "svR":
             case "svG":
             case "svB":

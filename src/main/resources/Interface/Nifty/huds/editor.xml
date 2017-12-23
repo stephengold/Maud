@@ -1386,21 +1386,48 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="renderTool" title="Render Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="90px" width="190px" x="30" y="70">
+                     height="235px" width="190px" x="30" y="70">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal" height="30px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="physicsCheckBox"
                                  width="20px"/>
-                        <control name="label" text="  physics      "/>
-                        <control name="checkbox" id="shadowsCheckBox"
-                                 width="20px"/>
-                        <control name="label" text="  shadows"/>
+                        <control name="label" text="  physics"/>
                     </panel>
-                    <panel childLayout="horizontal" height="28px">
+                    <panel childLayout="horizontal" height="38px">
                         <control name="label" text="Triangle mode:  "/>
                         <control name="button" id="trianglesButton"
                                  width="90px">
                             <interact onRelease="perform(set triangleMode)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="shadowsCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  shadows"/>
+                        <control name="label" id="mapSplitsSliderStatus"
+                                 width="*"
+                                 textHAlign="right"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="horizontalSlider" id="mapSplitsSlider"
+                                 buttonStepSize="1"
+                                 max="4" min="1" stepSize="1"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" id="mapSizeSliderStatus"
+                                 width="*"
+                                 textHAlign="right"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="horizontalSlider" id="mapSizeSlider"
+                                 buttonStepSize="1"
+                                 max="13" min="6" stepSize="1"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Edge filter:  "/>
+                        <control name="button" id="edgeFilterButton"
+                                 width="100px">
+                            <interact onRelease="perform(select edgeFilter)"/>
                         </control>
                     </panel>
                 </panel>

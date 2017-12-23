@@ -26,6 +26,7 @@
  */
 package maud.model.option.scene;
 
+import com.jme3.shadow.EdgeFilteringMode;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
@@ -77,9 +78,21 @@ public class SceneOptions implements Cloneable {
      */
     private DddCursorOptions cursor = new DddCursorOptions();
     /**
+     * edge filtering mode for shadows
+     */
+    private EdgeFilteringMode edgeFilter = EdgeFilteringMode.PCF8;
+    /**
      * diameter of platform(s) (in world units, &gt;0)
      */
     private float platformDiameter = 2f;
+    /**
+     * number of shadow-map splits (&gt;0)
+     */
+    private int numSplits = 3;
+    /**
+     * width (and height) of shadow maps (pixels per side, &gt;0)
+     */
+    private int shadowMapSize = 4_096;
     /**
      * type of platform(s) (not null)
      */
@@ -149,6 +162,26 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
+     * Read the edge filtering mode for shadows.
+     *
+     * @return an enum value (not null)
+     */
+    public EdgeFilteringMode getEdgeFilter() {
+        assert edgeFilter != null;
+        return edgeFilter;
+    }
+
+    /**
+     * Read the number of shadow-map splits.
+     *
+     * @return count (&gt;0)
+     */
+    public int getNumSplits() {
+        assert numSplits > 0 : numSplits;
+        return numSplits;
+    }
+
+    /**
      * Read the diameter of the platform(s).
      *
      * @return diameter (in world units, &gt;0)
@@ -166,6 +199,16 @@ public class SceneOptions implements Cloneable {
     public PlatformType getPlatformType() {
         assert platformType != null;
         return platformType;
+    }
+
+    /**
+     * Read the width (and height) of shadow maps.
+     *
+     * @return pixels per side (&gt;0)
+     */
+    public int getShadowMapSize() {
+        assert shadowMapSize > 0 : shadowMapSize;
+        return shadowMapSize;
     }
 
     /**
@@ -217,6 +260,26 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
+     * Alter the edge filtering mode for shadows.
+     *
+     * @param newSetting (not null)
+     */
+    public void setEdgeFilter(EdgeFilteringMode newSetting) {
+        Validate.nonNull(newSetting, "new setting");
+        edgeFilter = newSetting;
+    }
+
+    /**
+     * Alter the number of shadow-map splits.
+     *
+     * @param newNumSplits new size (in pixels, &gt;0)
+     */
+    public void setNumSplits(int newNumSplits) {
+        Validate.inRange(newNumSplits, "new size", 1, Integer.MAX_VALUE);
+        numSplits = newNumSplits;
+    }
+
+    /**
      * Alter whether physics objects are visualized.
      *
      * @param newSetting true to visualize, false to hide
@@ -246,7 +309,17 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Alter the rendering of shadows.
+     * Alter the width (and height) of shadow maps.
+     *
+     * @param newSize new size (in pixels, &gt;0)
+     */
+    public void setShadowsMapSize(int newSize) {
+        Validate.inRange(newSize, "new size", 1, Integer.MAX_VALUE);
+        shadowMapSize = newSize;
+    }
+
+    /**
+     * Alter whether shadows are rendered.
      *
      * @param newState true &rarr; rendered, false &rarr; not rendered
      */
