@@ -705,7 +705,7 @@ public class BuildMenus {
         builder.addTool("Tool");
         builder.add("Select");
         builder.addTool("Details");
-        //builder.addTool("Material"); TODO
+        builder.addTool("Material");
         //builder.addTool("Mesh"); TODO
         builder.addTool("Rotate");
         builder.addTool("Scale");

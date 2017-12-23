@@ -135,6 +135,10 @@ class SelectAction {
                 model.getMap().selectFromTarget();
                 break;
 
+            case Action.selectMatParam:
+                ShowMenus.selectMatParam();
+                break;
+
             case Action.selectOrbitCenter:
                 ShowMenus.selectOrbitCenter();
                 break;
@@ -313,6 +317,10 @@ class SelectAction {
             arg = MyString.remainder(actionString, ActionPrefix.selectJoint);
             long id = Long.parseLong(arg, 16);
             target.getJoint().select(id);
+
+        } else if (actionString.startsWith(ActionPrefix.selectMatParam)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectMatParam);
+            target.getMatParam().select(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectOrbitCenter)) {
             arg = MyString.remainder(actionString,

@@ -253,6 +253,9 @@ public class EditorInputMode extends InputMode {
             case Action.deleteMapping:
                 Maud.getModel().getMap().deleteBoneMapping();
                 break;
+            case Action.deleteMatParam:
+                target.getMatParam().delete();
+                break;
             case Action.deleteOverride:
                 target.getOverride().delete();
                 break;

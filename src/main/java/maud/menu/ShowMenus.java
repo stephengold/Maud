@@ -236,6 +236,25 @@ public class ShowMenus {
     }
 
     /**
+     * Display a menu for selecting a material parameter using the "select
+     * matParam " action prefix.
+     */
+    public static void selectMatParam() {
+        MenuBuilder builder = new MenuBuilder();
+
+        EditableCgm target = Maud.getModel().getTarget();
+        List<String> nameList = target.getSpatial().listMatParamNames();
+        String selectedName = target.getMatParam().getName();
+        for (String name : nameList) {
+            if (!name.equals(selectedName)) {
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectMatParam);
+    }
+
+    /**
      * Display a "select orbitCenter" menu.
      */
     public static void selectOrbitCenter() {

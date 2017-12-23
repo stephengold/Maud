@@ -28,6 +28,8 @@ package maud.dialog;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
@@ -626,105 +628,119 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "set overrideValue" dialog.
+     * Display a dialog to alter the value of a material parameter or
+     * material-parameter override.
+     *
+     * @param parameterName name of the parameter to alter (not null)
+     * @param varType (not null)
+     * @param oldValue (unaffected)
+     * @param allowNull if true, "null" will be an allowed value
+     * @param actionPrefix (not null, not empty)
      */
-    public static void setOverrideValue() {
-        EditableCgm target = Maud.getModel().getTarget();
-        SelectedOverride override = target.getOverride();
-        if (override.isSelected()) {
-            VarType varType = override.getVarType();
-            Object data = override.getValue();
-            DialogController controller;
-            String defaultValue, promptMessage;
-            switch (varType) {
-                case Boolean:
-                    if (data == null) {
-                        defaultValue = "null";
-                    } else {
-                        boolean booleanValue = (boolean) data;
-                        defaultValue = Boolean.toString(booleanValue);
-                    }
-                    controller = new BooleanDialog("Set", true);
-                    promptMessage = "Enter new boolean value:";
-                    break;
+    public static void setMatParamValue(String parameterName, VarType varType,
+            Object oldValue, boolean allowNull, String actionPrefix) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+        Validate.nonNull(parameterName, "parameter name");
+        Validate.nonNull(varType, "var type");
 
-                case Float:
-                    if (data == null) {
-                        defaultValue = "0.0";
-                    } else {
-                        float floatValue = (float) data;
-                        defaultValue = Float.toString(floatValue);
-                    }
-                    controller = new FloatDialog("Set", Float.NEGATIVE_INFINITY,
-                            Float.POSITIVE_INFINITY);
-                    promptMessage = "Enter new float value:";
-                    break;
+        DialogController controller;
+        String defaultValue, promptMessage;
+        switch (varType) {
+            case Boolean:
+                if (oldValue == null) {
+                    defaultValue = "null";
+                } else {
+                    boolean booleanValue = (boolean) oldValue;
+                    defaultValue = Boolean.toString(booleanValue);
+                }
+                controller = new BooleanDialog("Set", allowNull);
+                promptMessage = "Enter new boolean value:";
+                break;
 
-                case Int:
-                    if (data == null) {
-                        defaultValue = "0";
-                    } else {
-                        int intValue = (int) data;
-                        defaultValue = Integer.toString(intValue);
-                    }
-                    int minValue = Integer.MIN_VALUE;
-                    int maxValue = Integer.MAX_VALUE;
-                    String name = override.getName();
-                    if (name.equals("NumberOfBones")) {
-                        /*
-                         * PreShadow.vert crashes if NumberOfBones < 1.
-                         */
-                        minValue = 1;
-                        /*
-                         * Lighting.frag crashes if NumberOfBones > 250.
-                         */
-                        maxValue = 250;
-                    }
-                    controller = new IntegerDialog("Set", minValue, maxValue);
-                    promptMessage = "Enter new integer value:";
-                    break;
+            case Float:
+                if (oldValue == null) {
+                    defaultValue = "0.0";
+                } else {
+                    float floatValue = (float) oldValue;
+                    defaultValue = Float.toString(floatValue);
+                }
+                controller = new FloatDialog("Set", Float.NEGATIVE_INFINITY,
+                        Float.POSITIVE_INFINITY);
+                promptMessage = "Enter new float value:";
+                break;
 
-                case Vector2:
-                    if (data == null) {
-                        defaultValue = "null";
-                    } else {
-                        Vector2f vec2Value = (Vector2f) data;
-                        defaultValue = vec2Value.toString();
-                    }
-                    controller = new VectorDialog("Set", 2, true);
-                    promptMessage = "Enter new vector2 value:";
-                    break;
+            case Int:
+                if (oldValue == null) {
+                    defaultValue = "0";
+                } else {
+                    int intValue = (int) oldValue;
+                    defaultValue = Integer.toString(intValue);
+                }
+                int minValue = Integer.MIN_VALUE;
+                int maxValue = Integer.MAX_VALUE;
+                if (parameterName.equals("NumberOfBones")) {
+                    /*
+                     * PreShadow.vert crashes if NumberOfBones < 1.
+                     */
+                    minValue = 1;
+                    /*
+                     * Lighting.frag crashes if NumberOfBones > 250.
+                     */
+                    maxValue = 250;
+                }
+                controller = new IntegerDialog("Set", minValue, maxValue);
+                promptMessage = "Enter new integer value:";
+                break;
 
-                case Vector3:
-                    if (data == null) {
-                        defaultValue = "null";
-                    } else {
-                        Vector3f vec3Value = (Vector3f) data;
-                        defaultValue = vec3Value.toString();
-                    }
-                    controller = new VectorDialog("Set", 3, true);
-                    promptMessage = "Enter new vector3 value:";
-                    break;
+            case Vector2:
+                if (oldValue == null) {
+                    defaultValue = "null";
+                } else {
+                    defaultValue = oldValue.toString();
+                }
+                controller = new VectorDialog("Set", 2, allowNull);
+                promptMessage = "Enter new vector2 value:";
+                break;
 
-                case Vector4:
-                    if (data == null) {
-                        defaultValue = "null";
-                    } else {
-                        Vector4f vec4Value = (Vector4f) data;
-                        defaultValue = vec4Value.toString();
-                    }
-                    controller = new VectorDialog("Set", 4, true);
-                    promptMessage = "Enter new vector4 value:";
-                    break;
+            case Vector3:
+                if (oldValue == null) {
+                    defaultValue = "null";
+                } else {
+                    defaultValue = oldValue.toString();
+                }
+                controller = new VectorDialog("Set", 3, allowNull);
+                promptMessage = "Enter new vector3 value:";
+                break;
 
-                // TODO handle more types
-                default:
-                    return;
-            }
+            case Vector4:
+                if (oldValue == null) {
+                    defaultValue = "null";
+                } else if (oldValue instanceof ColorRGBA) {
+                    ColorRGBA color = (ColorRGBA) oldValue;
+                    defaultValue = color.r + " " + color.g + " " + color.b
+                            + " " + color.a;
+                } else if (oldValue instanceof Quaternion) {
+                    Quaternion q = (Quaternion) oldValue;
+                    defaultValue = q.getX() + " " + q.getY() + " " + q.getZ()
+                            + " " + q.getW();
+                } else if (oldValue instanceof Vector4f) {
+                    Vector4f vector = (Vector4f) oldValue;
+                    defaultValue = vector.x + " " + vector.y + " " + vector.z
+                            + " " + vector.w;
+                } else {
+                    throw new IllegalArgumentException();
+                }
+                controller = new VectorDialog("Set", 4, allowNull);
+                promptMessage = "Enter new vector4 value:";
+                break;
 
-            Maud.gui.showTextEntryDialog(promptMessage, defaultValue,
-                    ActionPrefix.setOverrideValue, controller);
+            // TODO handle more types
+            default:
+                return;
         }
+
+        Maud.gui.showTextEntryDialog(promptMessage, defaultValue, actionPrefix,
+                controller);
     }
 
     /**

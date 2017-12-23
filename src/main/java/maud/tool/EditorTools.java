@@ -117,6 +117,10 @@ public class EditorTools {
      */
     final private MappingTool mapping;
     /**
+     * controller for the "Material Tool" window
+     */
+    final private MaterialTool material;
+    /**
      * controller for the "Object Tool" window
      */
     final private ObjectTool object;
@@ -235,6 +239,7 @@ public class EditorTools {
         joint = new JointTool(screen);
         keyframe = new KeyframeTool(screen);
         mapping = new MappingTool(screen);
+        material = new MaterialTool(screen);
         object = new ObjectTool(screen);
         overrides = new OverridesTool(screen);
         platform = new PlatformTool(screen);
@@ -270,9 +275,9 @@ public class EditorTools {
     public void attachAll(AppStateManager stateManager) {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
-                displaySettings, history, keyframe, joint, mapping, object,
-                overrides, platform, render, retarget, sceneVertex, score,
-                settings, sgc, shape, skeleton, skeletonColor, sky,
+                displaySettings, history, keyframe, joint, mapping, material,
+                object, overrides, platform, render, retarget, sceneVertex,
+                score, settings, sgc, shape, skeleton, skeletonColor, sky,
                 sourceAnimation, spatial, spatialDetails, spatialRotation,
                 spatialScale, spatialTranslation, tweening,
                 twist, userData, vertex);
@@ -336,6 +341,9 @@ public class EditorTools {
                 break;
             case "map":
                 controller = mapping;
+                break;
+            case "material":
+                controller = material;
                 break;
             case "object":
                 controller = object;

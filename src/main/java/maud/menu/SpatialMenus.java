@@ -85,6 +85,10 @@ public class SpatialMenus {
                     Maud.gui.tools.select("spatialDetails");
                     break;
 
+                case "Material":
+                    Maud.gui.tools.select("material");
+                    break;
+
                 case "Rotate":
                     Maud.gui.tools.select("spatialRotation");
                     break;
@@ -148,11 +152,11 @@ public class SpatialMenus {
      * @return true if the action is handled, otherwise false
      */
     private static boolean menuSpatialSelect(String remainder) {
-        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         boolean handled = true;
         switch (remainder) {
             case "Attachments node":
-                ss.selectAttachmentsNode();
+                spatial.selectAttachmentsNode();
                 break;
 
             case "By name":
@@ -168,11 +172,11 @@ public class SpatialMenus {
                 break;
 
             case "Parent":
-                ss.selectParent();
+                spatial.selectParent();
                 break;
 
             case "Root":
-                ss.selectCgmRoot();
+                spatial.selectCgmRoot();
                 break;
 
             default:

@@ -93,6 +93,10 @@ class NextAction {
                 model.getMap().selectNext();
                 break;
 
+            case Action.nextMatParam:
+                target.getMatParam().selectNextName();
+                break;
+
             case Action.nextOverride:
                 target.getOverride().selectNextName();
                 break;

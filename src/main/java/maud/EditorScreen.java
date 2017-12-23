@@ -386,6 +386,12 @@ public class EditorScreen extends GuiScreenController {
             case "loopSource":
                 source.getPlay().setContinue(isChecked);
                 break;
+            case "matDepthTest":
+                target.setDepthTest(isChecked);
+                break;
+            case "matWireframe":
+                target.setWireframe(isChecked);
+                break;
             case "mpoEnable":
                 target.setOverrideEnabled(isChecked);
                 break;

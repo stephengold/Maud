@@ -1153,6 +1153,82 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="materialTool" title="Material Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="165px" width="500px" x="65" y="35">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Name:  "/>
+                        <control name="label" id="matName"
+                                 backgroundColor="#ffff"
+                                 width="200px"/>
+                        <control name="label" text="    Def:  "/>
+                        <control name="label" id="matDef"
+                                 backgroundColor="#ffff"
+                                 width="100px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Render state:    "/>
+                        <control name="checkbox" id="matDepthTestCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  depth test    "/>
+                        <control name="checkbox" id="matWireframeCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  wireframe"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Parameters:  "/>
+                        <control name="button" id="mpPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous matParam)"/>
+                        </control>
+                        <control name="label" id="mpIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="90px"/>
+                        <control name="button" id="mpNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next matParam)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="mpSelectButton"
+                                 width="60px">
+                            <interact onRelease="perform(select matParam)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Name:  "
+                                 textHAlign="right"
+                                 width="42px"/>
+                        <control name="label" id="mpName"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="    Type:  "/>
+                        <control name="label" id="mpType"
+                                 backgroundColor="#ffff"
+                                 width="110px"/>
+                        <control name="label" text="  "/>
+                        <control name="button" id="mpDeleteButton"
+                                 width="60px">
+                            <interact onRelease="perform(delete matParam)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Value:  "
+                                 textHAlign="right"
+                                 width="42px"/>
+                        <control name="label" id="mpValue"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="mpEditButton"
+                                 width="60px">
+                            <interact onRelease="perform(set matParamValue)"/>
+                        </control>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="objectTool" title="Object Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
@@ -1956,6 +2032,11 @@ the menu bar, status bar, and tool windows.
                         <control name="label" id="spatialMaterial"
                                  backgroundColor="#ffff"
                                  width="*"/>
+                        <control name="button" label="Tool"
+                                 id="id24ToAvoidNiftyWarning"
+                                 width="40px">
+                            <interact onRelease="perform(select tool material)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Mesh:  "/>
@@ -1970,27 +2051,27 @@ the menu bar, status bar, and tool windows.
                                  width="*"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Tools:  "/>
+                        <control name="label" text="More tools:  "/>
                         <control name="button" label="Details"
-                                 id="id24ToAvoidNiftyWarning"
+                                 id="id25ToAvoidNiftyWarning"
                                  width="50px">
                             <interact onRelease="perform(select tool spatialDetails)"/>
                         </control>
                         <panel/>
                         <control name="button" label="Rotate"
-                                 id="id25ToAvoidNiftyWarning"
-                                 width="53px">
+                                 id="id26ToAvoidNiftyWarning"
+                                 width="51px">
                             <interact onRelease="perform(select tool spatialRotation)"/>
                         </control>
                         <panel/>
                         <control name="button" label="Scale"
-                                 id="id26ToAvoidNiftyWarning"
-                                 width="47px">
+                                 id="id27ToAvoidNiftyWarning"
+                                 width="45px">
                             <interact onRelease="perform(select tool spatialScale)"/>
                         </control>
                         <panel/>
                         <control name="button" label="Translate"
-                                 id="id27ToAvoidNiftyWarning"
+                                 id="id28ToAvoidNiftyWarning"
                                  width="70px">
                             <interact onRelease="perform(select tool spatialTranslation)"/>
                         </control>
@@ -2023,7 +2104,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Tool"
-                                 id="id28ToAvoidNiftyWarning"
+                                 id="id29ToAvoidNiftyWarning"
                                  width="36px">
                             <interact onRelease="perform(select tool sgc)"/>
                         </control>
@@ -2032,7 +2113,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Tool"
-                                 id="id29ToAvoidNiftyWarning"
+                                 id="id30ToAvoidNiftyWarning"
                                  width="36px">
                             <interact onRelease="perform(select tool userData)"/>
                         </control>

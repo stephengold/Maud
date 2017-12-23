@@ -29,6 +29,7 @@ package maud.action;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
+import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.wes.TweenRotations;
@@ -39,6 +40,8 @@ import maud.dialog.EditorDialogs;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedMatParam;
+import maud.model.cgm.SelectedOverride;
 import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
@@ -110,8 +113,28 @@ class SetAction {
                 ShowMenus.setCullHint();
                 break;
 
+            case Action.setMatParamValue:
+                SelectedMatParam matParam = target.getMatParam();
+                if (matParam.isSelected()) {
+                    String parameterName = matParam.getName();
+                    VarType varType = matParam.getVarType();
+                    Object oldValue = matParam.getValue();
+                    boolean allowNull = false;
+                    EditorDialogs.setMatParamValue(parameterName, varType,
+                            oldValue, allowNull, ActionPrefix.setMatParamValue);
+                }
+                break;
+
             case Action.setOverrideValue:
-                EditorDialogs.setOverrideValue();
+                SelectedOverride override = target.getOverride();
+                if (override.isSelected()) {
+                    String parameterName = override.getName();
+                    VarType varType = override.getVarType();
+                    Object oldValue = override.getValue();
+                    boolean allowNull = false;
+                    EditorDialogs.setMatParamValue(parameterName, varType,
+                            oldValue, allowNull, ActionPrefix.setOverrideValue);
+                }
                 break;
 
             case Action.setPhysicsRbpValue:
@@ -312,6 +335,11 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setIndexBase);
             int newSetting = Integer.parseInt(arg);
             model.getMisc().setIndexBase(newSetting);
+
+        } else if (actionString.startsWith(ActionPrefix.setMatParamValue)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setMatParamValue);
+            target.setMatParamValue(arg);
 
         } else if (actionString.startsWith(ActionPrefix.setOverrideValue)) {
             arg = MyString.remainder(actionString,

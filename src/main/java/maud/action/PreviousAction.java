@@ -93,6 +93,10 @@ class PreviousAction {
                 model.getMap().selectPrevious();
                 break;
 
+            case Action.previousMatParam:
+                target.getMatParam().selectPreviousName();
+                break;
+
             case Action.previousOverride:
                 target.getOverride().selectPreviousName();
                 break;

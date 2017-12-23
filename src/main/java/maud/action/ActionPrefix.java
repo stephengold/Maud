@@ -232,6 +232,10 @@ public class ActionPrefix {
      */
     final public static String selectJoint = "select joint ";
     /**
+     * argument is a pre-existing material-parameter name
+     */
+    final public static String selectMatParam = "select matParam ";
+    /**
      * argument is the menu path of a menu item
      */
     final public static String selectMenuItem = "select menuItem ";
@@ -342,9 +346,13 @@ public class ActionPrefix {
      */
     final public static String setIndexBase = "set indexBase ";
     /**
-     * argument is a parameter value
+     * argument is a material-parameter value
      */
-    final public static String setOverrideValue = "set overrideValue ";
+    final static String setMatParamValue = "set matParamValue ";
+    /**
+     * argument is a material-parameter value or "null"
+     */
+    final static String setOverrideValue = "set overrideValue ";
     /**
      * arguments are the parameter name and a decimal value
      */
