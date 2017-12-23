@@ -398,7 +398,7 @@ To be recognized, such models must have filenames ending in ".j3o".
 Maud can also import models in other formats:
 
  + [Blender 3D][blender] (filename must end in ".blend")
- + [glTF][] (filename must end in ".gltf")
+ + [glTF][] (filename must end in ".glb" or ".gltf")
  + [Ogre][] DotScene (filename must end in ".scene")
  + [Ogre][] XML (filename must end in ".mesh.xml")
  + [Wavefront OBJ][obj] (filename must end in ".obj")

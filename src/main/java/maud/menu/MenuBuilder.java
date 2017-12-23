@@ -175,6 +175,8 @@ class MenuBuilder {
             addBlend(name);
         } else if (name.endsWith(".bvh")) {
             addBvh(name);
+        } else if (name.endsWith(".glb")) {
+            addGeometry(name); // TODO use a glTF icon here
         } else if (name.endsWith(".gltf")) {
             addGeometry(name); // TODO use a glTF icon here
         } else if (name.endsWith(".j3o")) {
@@ -355,6 +357,8 @@ class MenuBuilder {
         if (name.endsWith(".blend")) {
             result = true;
         } else if (name.endsWith(".bvh")) {
+            result = true;
+        } else if (name.endsWith(".glb")) {
             result = true;
         } else if (name.endsWith(".gltf")) {
             result = true;
