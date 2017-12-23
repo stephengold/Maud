@@ -118,6 +118,7 @@ public class SelectedOverride implements Cloneable {
             for (MatParamOverride mpo : mpos) {
                 if (mpo.getName().equals(parameterName)) {
                     result = mpo;
+                    break;
                 }
             }
         }
@@ -195,7 +196,7 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Test whether the override is selected.
+     * Test whether an override is selected.
      *
      * @return true if selected, otherwise false
      */
@@ -235,7 +236,7 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Select the previous user data (in name lexical order).
+     * Select the previous override (in name lexical order).
      */
     public void selectPreviousName() {
         List<String> nameList = cgm.getSpatial().listOverrideNames();
