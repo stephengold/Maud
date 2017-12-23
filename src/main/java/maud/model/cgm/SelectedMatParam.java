@@ -167,7 +167,7 @@ public class SelectedMatParam implements Cloneable {
     /**
      * Read the parameter's type.
      *
-     * @return an enum, or null if none selected
+     * @return an enum value, or null if none selected
      */
     public VarType getVarType() {
         VarType varType = null;

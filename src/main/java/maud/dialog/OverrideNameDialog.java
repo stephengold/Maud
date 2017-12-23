@@ -36,7 +36,8 @@ import jme3utilities.nifty.dialog.DialogController;
 import maud.Maud;
 
 /**
- * Controller for a text-entry dialog box used to rename a bone.
+ * Controller for a text-entry dialog box used to rename a material-parameter
+ * override.
  *
  * @author Stephen Gold sgold@sonic.net
  */

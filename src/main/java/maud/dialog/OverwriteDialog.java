@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.dialog.DialogController;
 
 /**
- * Controller for a confirmation dialog box used to confirm overwriting a file.
+ * Controller for a confirmation dialog box to confirm overwriting a file.
  *
  * @author Stephen Gold sgold@sonic.net
  */

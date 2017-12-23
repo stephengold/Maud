@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.dialog.DialogController;
 
 /**
- * Controller for a confirmation dialog box used to quit the application.
+ * Controller for a confirmation dialog box to confirm quitting the application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
