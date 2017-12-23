@@ -28,6 +28,7 @@ package maud.tool;
 
 import com.jme3.scene.control.Control;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.WindowController;
 import maud.Maud;
@@ -92,7 +93,8 @@ class SgcTool extends WindowController {
                 soButton = "Select";
             }
             ssButton = "Select";
-            spatialText = sgc.controlledName();
+            String spatialName = sgc.controlledName();
+            spatialText = MyString.quote(spatialName);
             typeText = sgc.getType();
         } else {
             deleteLabel = "";
@@ -119,7 +121,7 @@ class SgcTool extends WindowController {
     // private methods
 
     /**
-     * Update the index status and previous/next buttons.
+     * Update the index status and previous/next-button texts.
      */
     private void updateIndex() {
         String indexText, nButton, pButton;
