@@ -94,7 +94,7 @@ class PlatformTool extends WindowController {
 
         float diameter = options.getPlatformDiameter();
         Maud.gui.setSlider("platformDiameter", diameterSt, diameter);
-        Maud.gui.updateSliderStatus("platformDiameter", diameter, "wu");
+        Maud.gui.updateSliderStatus("platformDiameter", diameter, " wu");
 
         Maud.gui.setIgnoreGuiChanges(false);
     }
