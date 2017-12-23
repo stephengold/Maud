@@ -87,7 +87,7 @@ class OverridesTool extends WindowController {
     // private methods
 
     /**
-     * Update the index status and next/previous/select button texts.
+     * Update the index status and next/previous/select-button texts.
      */
     private void updateIndex() {
         String indexText;
@@ -141,8 +141,8 @@ class OverridesTool extends WindowController {
             rButton = "Rename";
         }
 
-        Maud.gui.setStatusText("mpoName", " " + nameText);
         Maud.gui.setButtonText("mpoDelete", dButton);
+        Maud.gui.setStatusText("mpoName", " " + nameText);
         Maud.gui.setButtonText("mpoRename", rButton);
     }
 
@@ -156,21 +156,26 @@ class OverridesTool extends WindowController {
 
         String typeText = "";
         if (override.isSelected()) {
-            VarType varType = override.getVarType();
-            typeText = varType.toString();
+            Object value = override.getValue();
+            if (value == null) {
+                VarType varType = override.getVarType();
+                typeText = varType.toString();
+            } else {
+                typeText = value.getClass().getSimpleName();
+            }
         }
         Maud.gui.setStatusText("mpoType", " " + typeText);
     }
 
     /**
-     * Update the value status and the alter button text.
+     * Update the value status and the edit button text.
      */
     private void updateValue() {
         String eButton = "", valueText = "";
 
         SelectedOverride override = Maud.getModel().getTarget().getOverride();
         if (override.isSelected()) {
-            eButton = "Alter";
+            eButton = "Edit";
             Object data = override.getValue();
             if (data == null || data instanceof String) {
                 String string = (String) data;
