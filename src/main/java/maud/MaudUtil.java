@@ -39,6 +39,8 @@ import com.jme3.asset.ModelKey;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.light.Light;
+import com.jme3.light.LightList;
 import com.jme3.material.MatParam;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
@@ -62,6 +64,7 @@ import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.shader.VarType;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -73,6 +76,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
@@ -257,6 +261,57 @@ public class MaudUtil {
     }
 
     /**
+     * Count all lights of the specified type in the specified subtree of a
+     * scene graph. Note: recursive!
+     *
+     * @param <T> superclass of Light
+     * @param subtree subtree to traverse (may be null, unaffected)
+     * @param lightType superclass of Light to search for
+     * @return number of lights controls found (&ge;0)
+     */
+    public static <T extends Light> int countLights(Spatial subtree,
+            Class<T> lightType) {
+        int result = 0;
+
+        if (subtree != null) {
+            LightList lights = subtree.getLocalLightList();
+            int numLights = lights.size();
+            for (int lightI = 0; lightI < numLights; lightI++) {
+                Light light = lights.get(lightI);
+                if (lightType.isAssignableFrom(light.getClass())) {
+                    ++result;
+                }
+            }
+        }
+
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result += countLights(child, lightType);
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Describe the type of a light.
+     *
+     * @param light instance to describe (not null, unaffected)
+     * @return description (not null)
+     */
+    public static String describeType(Light light) {
+        String description = light.getClass().getSimpleName();
+        if (description.endsWith("Light")) {
+            description = MyString.removeSuffix(description, "Light");
+        }
+
+        return description;
+    }
+
+    /**
      * For the specified camera ray, find the nearest collision involving a
      * triangle facing the camera.
      *
@@ -296,6 +351,88 @@ public class MaudUtil {
         }
 
         return null;
+    }
+
+    /**
+     * Find the index of the specified light in the specified spatial.
+     *
+     * @param light light to find (not null, unaffected)
+     * @param owner where the light was added (not null, unaffected)
+     * @return index (&ge;0) or -1 if not found
+     */
+    public static int findIndex(Light light, Spatial owner) {
+        Validate.nonNull(light, "light");
+
+        int result = -1;
+        LightList lights = owner.getLocalLightList();
+        int numLights = lights.size();
+        for (int index = 0; index < numLights; index++) {
+            Light indexedLight = lights.get(index);
+            if (indexedLight == light) {
+                result = index;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Find the 1st instance of a light with the specified name in the specified
+     * subtree. Note: recursive!
+     *
+     * @param lightName light name to find (not null, unaffected)
+     * @param subtree subtree to traverse (may be null, unaffected)
+     * @return a pre-existing instance, or null if none found
+     */
+    public static Light findLight(String lightName, Spatial subtree) {
+        Validate.nonNull(lightName, "light name");
+
+        Light light = MySpatial.findLight(subtree, lightName);
+        if (light != null) {
+            return light;
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                light = findLight(lightName, child);
+                if (light != null) {
+                    return light;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find the spatial that owns the specified light in the specified subtree
+     * of the scene graph. Note: recursive!
+     *
+     * @param light which light to search for (not null, unaffected)
+     * @param subtree which subtree to search (not null, unaffected)
+     * @return the pre-existing spatial, or null if none found
+     */
+    public static Spatial findOwner(Light light, Spatial subtree) {
+        Validate.nonNull(light, "light");
+        Validate.nonNull(subtree, "subtree");
+
+        Spatial result = null;
+        int lightIndex = findIndex(light, subtree);
+        if (lightIndex != -1) {
+            result = subtree;
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result = findOwner(light, child);
+                if (result != null) {
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -588,6 +725,45 @@ public class MaudUtil {
         }
 
         return result;
+    }
+
+    /**
+     * Enumerate all lights of the specified type in the specified subtree of a
+     * scene graph. Note: recursive!
+     *
+     * @param <T> superclass of Light
+     * @param subtree (not null)
+     * @param lightType superclass of Light to search for
+     * @param storeResult (added to if not null)
+     * @return an expanded list (either storeResult or a new instance)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Light> List<T> listLights(Spatial subtree,
+            Class<T> lightType, List<T> storeResult) {
+        Validate.nonNull(subtree, "subtree");
+        if (storeResult == null) {
+            storeResult = new ArrayList<>(4);
+        }
+
+        LightList lights = subtree.getLocalLightList();
+        int numLights = lights.size();
+        for (int lightIndex = 0; lightIndex < numLights; lightIndex++) {
+            T light = (T) lights.get(lightIndex);
+            if (lightType.isAssignableFrom(light.getClass())
+                    && !storeResult.contains(light)) {
+                storeResult.add(light);
+            }
+        }
+
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                listLights(child, lightType, storeResult);
+            }
+        }
+
+        return storeResult;
     }
 
     /**
