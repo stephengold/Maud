@@ -37,7 +37,12 @@ import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
+import com.jme3.light.Light;
 import com.jme3.light.LightList;
+import com.jme3.light.PointLight;
+import com.jme3.light.SpotLight;
 import com.jme3.material.MatParam;
 import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
@@ -108,7 +113,7 @@ public class SelectedSpatial implements JmeCloneable {
     // new methods exposed
 
     /**
-     * Add an AnimControl to the selected spatial and select the new control.
+     * Add an AnimControl to the spatial and select the new control.
      */
     public void addAnimControl() {
         Skeleton skeleton = cgm.getSkeleton().find();
@@ -119,7 +124,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Add a GhostControl to the selected spatial and select the new control.
+     * Add a GhostControl to the spatial and select the new control.
      *
      * @param shapeType desired type of shape (not null)
      */
@@ -140,8 +145,50 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Add a RigidBodyControl to the selected spatial and select the new
-     * control.
+     * Add a light to the spatial and select the new light.
+     *
+     * @param type (not null)
+     * @param name a name for the new light (not null, not empty)
+     */
+    public void addLight(Light.Type type, String name) {
+        Validate.nonEmpty(name, "name");
+        assert !cgm.hasLight(name);
+
+        Light newLight;
+        switch (type) {
+            case Ambient:
+                newLight = new AmbientLight();
+                break;
+
+            case Directional:
+                newLight = new DirectionalLight();
+                break;
+
+            case Point:
+                newLight = new PointLight();
+                break;
+
+            case Spot:
+                newLight = new SpotLight();
+                break;
+
+            case Probe: // TODO
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        newLight.setName(name);
+
+        String description = String.format("add %s light named %s",
+                type.toString(), MyString.quote(name));
+        editableCgm.addLight(newLight, description);
+
+        Spatial spatial = find();
+        editableCgm.getLight().select(newLight, spatial);
+    }
+
+    /**
+     * Add a RigidBodyControl to the spatial and select the new control.
      *
      * @param shapeType desired type of shape (not null)
      */
@@ -190,7 +237,7 @@ public class SelectedSpatial implements JmeCloneable {
      */
     public void attachClone() {
         assert cgm == Maud.getModel().getTarget();
-        
+
         LoadedCgm sourceCgm = Maud.getModel().getSource();
         Node parentNode = (Node) find();
         assert sourceCgm.isLoaded();
@@ -974,6 +1021,7 @@ public class SelectedSpatial implements JmeCloneable {
      * After successfully loading a C-G model, select the root of the model.
      */
     void postLoad() {
+        cgm.getLight().postLoad();
         cgm.getSgc().postLoad();
         treePosition.clear();
         postSelect();
@@ -1064,6 +1112,17 @@ public class SelectedSpatial implements JmeCloneable {
         Spatial controlled = cgm.getSgc().getControlled();
         if (controlled != null) {
             select(controlled);
+        }
+    }
+
+    /**
+     * Select the spatial that owns the selected light.
+     */
+    public void selectLightOwner() {
+        Spatial owner = cgm.getLight().getOwner();
+        if (owner != null) {
+            select(owner);
+            Maud.gui.tools.select("spatial");
         }
     }
 

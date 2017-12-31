@@ -39,6 +39,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.binary.BinaryExporter;
+import com.jme3.light.Light;
 import com.jme3.material.MatParam;
 import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
@@ -167,6 +168,25 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Add a newly-created light to the selected spatial.
+     *
+     * @param newLight the light to add (not null, alias created)
+     * @param eventDescription a textual description of the event for the edit
+     * history (not null, not empty)
+     */
+    void addLight(Light newLight, String eventDescription) {
+        assert newLight != null;
+        assert eventDescription != null;
+        assert !eventDescription.isEmpty();
+
+        History.autoAdd();
+        Spatial selectedSpatial = getSpatial().find();
+        selectedSpatial.addLight(newLight);
+        getSceneView().addLight(newLight);
+        setEdited(eventDescription);
+    }
+
+    /**
      * Add a new material-parameter override to the selected spatial.
      *
      * @param varType the variable type (not null)
@@ -193,7 +213,8 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Add a new S-G control to the selected spatial.
+     * Add a newly-created S-G control to the selected spatial. TODO caller
+     * should provide a description
      *
      * @param newSgc (not null)
      */
@@ -608,7 +629,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Rename the selected material-parameter override.
+     * Rename the selected material-parameter override. TODO sort methods
      *
      * @param newName new parameter name (not null, not empty)
      */
@@ -726,6 +747,56 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         PhysicsUtil.replaceInObjects(space, oldShape, newShape);
         setEdited(eventDescription);
+    }
+
+    /**
+     * Remove the selected light, and optionally replace it with the specified
+     * light. The invoker is responsible for updating the selection.
+     *
+     * @param newLight the light to add (alias created) if null, the existing
+     * light is simply removed
+     * @param eventDescription a textual description of the event for the edit
+     * history (not null, not empty)
+     */
+    void replaceLight(Light newLight, String eventDescription) {
+        assert eventDescription != null;
+        assert !eventDescription.isEmpty();
+
+        SelectedLight selectedLight = getLight();
+        Spatial owner = selectedLight.getOwner();
+        Light oldLight = selectedLight.get();
+        String oldName = oldLight.getName();
+
+        History.autoAdd();
+        owner.removeLight(oldLight);
+        if (newLight != null) {
+            owner.addLight(newLight);
+        }
+        getSceneView().replaceLight(oldName, newLight);
+        setEdited(eventDescription);
+    }
+
+    /**
+     * Remove the selected light and replace it the specified light, which
+     * differs only in position and/or direction. The invoker is responsible for
+     * updating the selection.
+     *
+     * @param newLight the light to add (not null, alias created)
+     */
+    void replaceLightPosDir(Light newLight) {
+        assert newLight != null;
+
+        SelectedLight selectedLight = getLight();
+        Spatial owner = selectedLight.getOwner();
+        Light oldLight = selectedLight.get();
+        String oldName = oldLight.getName();
+
+        owner.removeLight(oldLight);
+        if (newLight != null) {
+            owner.addLight(newLight);
+        }
+        getSceneView().replaceLight(oldName, newLight);
+        setEditedLightPosDir();
     }
 
     /**
@@ -1440,6 +1511,24 @@ public class EditableCgm extends LoadedCgm {
         ++editCount;
         continousEditState = "";
         History.addEvent(eventDescription);
+    }
+
+    /**
+     * If not a continuation of the previous light-position/direction edit,
+     * update the edit count.
+     */
+    private void setEditedLightPosDir() {
+        String lightName = getLight().name();
+        String newState = "lpd" + lightName;
+        if (!newState.equals(continousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continousEditState = newState;
+            String description = String.format(
+                    "reposition and/or redirect light named %s",
+                    MyString.quote(lightName));
+            History.addEvent(description);
+        }
     }
 
     /**

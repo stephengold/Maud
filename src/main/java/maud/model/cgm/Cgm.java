@@ -35,6 +35,7 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.joints.PhysicsJoint;
+import com.jme3.light.Light;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.Transform;
@@ -124,7 +125,11 @@ public class Cgm implements Cloneable {
      */
     private SelectedJoint selectedJoint = new SelectedJoint();
     /**
-     * which material parameter is selected in the selected spatial
+     * which light is selected
+     */
+    private SelectedLight selectedLight = new SelectedLight();
+    /**
+     * which material parameter is selected in the selected spatial's material
      */
     private SelectedMatParam selectedMatParam = new SelectedMatParam();
     /**
@@ -171,7 +176,7 @@ public class Cgm implements Cloneable {
     // constructors
 
     /**
-     * Instantiate with no C-G model loaded.
+     * Instantiate a slot with no C-G model loaded.
      */
     public Cgm() {
         Cgm cgm = this;
@@ -186,6 +191,7 @@ public class Cgm implements Cloneable {
         selectedAnimControl.setCgm(cgm);
         selectedBone.setCgm(cgm);
         selectedJoint.setCgm(cgm);
+        selectedLight.setCgm(cgm);
         selectedMatParam.setCgm(cgm);
         selectedObject.setCgm(cgm);
         selectedOverride.setCgm(cgm);
@@ -201,10 +207,10 @@ public class Cgm implements Cloneable {
     // new methods exposed
 
     /**
-     * Count the immediate children of the specified spatial.
+     * Count immediate children of the spatial in the specified position.
      *
-     * @param treePosition tree position (not null, unaffected)
-     * @return count (&ge;0)
+     * @param treePosition tree position of spatial (not null, unaffected)
+     * @return number found (&ge;0)
      */
     public int countChildren(List<Integer> treePosition) {
         Spatial spatial = rootSpatial;
@@ -224,9 +230,9 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Count physics joints.
+     * Count physics joints in the C-G model.
      *
-     * @return count (&ge;0)
+     * @return number found (&ge;0)
      */
     public int countJoints() {
         PhysicsSpace space = getSceneView().getPhysicsSpace();
@@ -238,11 +244,28 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Count scene-graph controls of the specified type.
+     * Count lights of the specified type in the C-G model.
+     *
+     * @param <T> superclass of Light
+     * @param lightType superclass of Light to search for
+     * @return number found (&ge;0)
+     */
+    public <T extends Light> int countLights(Class<T> lightType) {
+        int count = 0;
+        if (isLoaded()) {
+            count = MaudUtil.countLights(rootSpatial, lightType);
+        }
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Count scene-graph controls of the specified type in the C-G model.
      *
      * @param <T> superclass of Control
      * @param controlType superclass of Control to search for
-     * @return count (&ge;0)
+     * @return number found (&ge;0)
      */
     public <T extends Control> int countSgcs(Class<T> controlType) {
         int count = 0;
@@ -266,6 +289,23 @@ public class Cgm implements Cloneable {
         Spatial result = null;
         if (rootSpatial != null) {
             result = MySpatial.findControlledSpatial(sgc, rootSpatial);
+        }
+
+        return result;
+    }
+
+    /**
+     * Find the spatial that owns the specified light.
+     *
+     * @param light which light to search for (not null, unaffected)
+     * @return the pre-existing spatial, or null if none found
+     */
+    Spatial findOwner(Light light) {
+        assert light != null;
+
+        Spatial result = null;
+        if (rootSpatial != null) {
+            result = MaudUtil.findOwner(light, rootSpatial);
         }
 
         return result;
@@ -347,6 +387,16 @@ public class Cgm implements Cloneable {
     public SelectedJoint getJoint() {
         assert selectedJoint != null;
         return selectedJoint;
+    }
+
+    /**
+     * Access the selected light.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedLight getLight() {
+        assert selectedLight != null;
+        return selectedLight;
     }
 
     /**
@@ -575,6 +625,21 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Test whether the C-G model contains the named light.
+     *
+     * @param lightName (not null)
+     * @return true if found, otherwise false
+     */
+    public boolean hasLight(String lightName) {
+        Light light = MaudUtil.findLight(lightName, rootSpatial);
+        if (light == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Test whether the C-G model contains the named node.
      *
      * @param name (not null)
@@ -670,6 +735,40 @@ public class Cgm implements Cloneable {
         }
         Collections.sort(result);
 
+        return result;
+    }
+
+    /**
+     * Name all lights of the specified type in the same order as
+     * {@link #listLights(java.lang.Class)}.
+     *
+     * @param <T> superclass of Light
+     * @param lightType superclass of Light to search for
+     * @return a new list of names
+     */
+    public <T extends Light> List<String> listLightNames(Class<T> lightType) {
+        List<T> lightList = listLights(lightType);
+        int numSgcs = lightList.size();
+        List<String> nameList = new ArrayList<>(numSgcs);
+        for (Light light : lightList) {
+            String name = light.getName();
+            nameList.add(name);
+        }
+        MyString.dedup(nameList, " #");
+
+        return nameList;
+    }
+
+    /**
+     * Enumerate all lights of the specified type in the same order as
+     * {@link #listLightNames(java.lang.Class)}.
+     *
+     * @param <T> superclass of Light
+     * @param lightType superclass of Light to search for
+     * @return a new list of pre-existing lights
+     */
+    <T extends Light> List<T> listLights(Class<T> lightType) {
+        List<T> result = MaudUtil.listLights(rootSpatial, lightType, null);
         return result;
     }
 
@@ -884,6 +983,7 @@ public class Cgm implements Cloneable {
         clone.selectedAnimControl = cloner.clone(selectedAnimControl);
         clone.selectedBone = selectedBone.clone();
         clone.selectedJoint = selectedJoint.clone();
+        clone.selectedLight = cloner.clone(selectedLight);
         clone.selectedMatParam = selectedMatParam.clone();
         clone.selectedObject = selectedObject.clone();
         clone.selectedOverride = selectedOverride.clone();
@@ -901,6 +1001,7 @@ public class Cgm implements Cloneable {
         clone.getAnimControl().setCgm(clone);
         clone.getBone().setCgm(clone);
         clone.getJoint().setCgm(clone);
+        clone.getLight().setCgm(clone);
         clone.getObject().setCgm(clone);
         //playOptions lacks a back pointer
         clone.getPose().setCgm(clone);
@@ -923,7 +1024,7 @@ public class Cgm implements Cloneable {
 
     /**
      * Find a spatial with the specified name in the specified subtree. Note:
-     * recursive!
+     * recursive! TODO move to MaudUtils
      *
      * @param name what name to search for (not null, not empty)
      * @param subtree which subtree to search (may be null, unaffected)

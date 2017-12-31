@@ -43,6 +43,7 @@ import com.jme3.collision.CollisionResult;
 import com.jme3.input.InputManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.Light;
 import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
@@ -104,7 +105,8 @@ import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
- * An editor view containing a 3-D visualization of a loaded C-G model.
+ * An editor view containing a 3-D visualization of a loaded C-G model. TODO
+ * split off a core class
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -259,6 +261,17 @@ public class SceneView
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Add a clone of the specified light to the selected spatial.
+     *
+     * @param light the light to clone (not null, unaffected)
+     */
+    public void addLight(Light light) {
+        Light cloneLight = light.clone();
+        Spatial selectedSpatial = selectedSpatial();
+        selectedSpatial.addLight(cloneLight);
+    }
 
     /**
      * Add a new material-parameter override to the selected spatial.
@@ -762,6 +775,27 @@ public class SceneView
 
         spatial.addMatParamOverride(newMpo);
         spatial.removeMatParamOverride(oldMpo);
+    }
+
+    /**
+     * Remove the named light, and optionally replace it with a clone of the
+     * specified light.
+     *
+     * @param name the name of the light to remove/replace (not null)
+     * @param light a replacement light (unaffected) if null, the existing light
+     * is simply removed
+     */
+    public void replaceLight(String name, Light light) {
+        Validate.nonNull(name, "name");
+
+        Light oldLight = MaudUtil.findLight(name, cgmRoot);
+        assert oldLight != null;
+        Spatial owner = MaudUtil.findOwner(oldLight, cgmRoot);
+        owner.removeLight(oldLight);
+        if (light != null) {
+            Light cloneLight = light.clone();
+            owner.addLight(cloneLight);
+        }
     }
 
     /**
