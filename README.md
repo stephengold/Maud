@@ -16,20 +16,20 @@ Summary of features:
  + merge models
  + import models from [Blender][]/[glTF][]/[Ogre][]/[Wavefront][obj]/[Xbuf][] and save to native J3O format
  + import animations from [Biovision Hierarchy (BVH)](#bvh) files
- + visualize animations, axes, bones, bounding boxes, mesh vertices, physics objects, and skeletons
- + browse animations, bones, keyframes, mesh vertices, physics objects,
+ + visualize animations, axes, bones, bounding boxes, lights, mesh vertices, physics objects, and skeletons
+ + browse animations, bones, keyframes, lights, mesh vertices, physics objects,
    physics shapes, scene-graph controls, spatials, tracks, and user data
  + play animations forward/backward at various speeds and pause them
  + create new animations from poses or by altering/mixing existing animations
  + retarget bone animations from one model to another using skeleton maps
- + create new attachments nodes, scene-graph controls, and user data
+ + create new attachments nodes, lights, physics controls, scene-graph controls, and user data
  + insert keyframes into animations and bone tracks
- + rename animations, bones, spatials, and user data
+ + rename animations, bones, lights, spatials, and user data
  + change animation speeds/durations
  + behead/mix/truncate animations
  + reduce/resample/wrap animations and bone tracks
  + translate animations for support or traction
- + delete animations, keyframes, scene-graph controls, spatials, tracks,
+ + delete animations, keyframes, lights, scene-graph controls, spatials, tracks,
    and user data
  + modify bone/spatial transforms (translation, rotation, and scale)
  + modify batch hints, cull hints, render-queue buckets, shadow modes, and user data
@@ -42,7 +42,7 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
-Status as of December 2017: seeking more alpha testers.
+Status as of January 2018: seeking more alpha testers.
 
 ## Contents of this document
 
@@ -179,7 +179,7 @@ is split into overlapping sub-windows called "tools".
 
 #### Tools
 
-At last count, Maud had 39 tools.
+At last count, Maud had 41 tools.
 Each tool can be independently hidden or made visible.
 
 Selecting a tool makes it visible and moves it to the top layer for convenient
