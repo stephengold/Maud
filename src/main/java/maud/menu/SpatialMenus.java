@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -85,8 +85,16 @@ public class SpatialMenus {
                     Maud.gui.tools.select("spatialDetails");
                     break;
 
+                case "Lights":
+                    Maud.gui.tools.select("lights");
+                    break;
+
                 case "Material":
                     Maud.gui.tools.select("material");
+                    break;
+
+                case "Overrides":
+                    Maud.gui.tools.select("overrides");
                     break;
 
                 case "Rotate":
@@ -109,7 +117,7 @@ public class SpatialMenus {
                     Maud.gui.tools.select("spatialTranslation");
                     break;
 
-                case "User data tool":
+                case "User-Data":
                     Maud.gui.tools.select("userData");
                     break;
 

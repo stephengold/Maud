@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -704,13 +704,17 @@ public class BuildMenus {
     private void buildSpatialMenu() {
         builder.addTool("Tool");
         builder.add("Select");
+
         builder.addTool("Details");
+        builder.addTool("Lights");
         builder.addTool("Material");
         //builder.addTool("Mesh"); TODO
+        builder.addTool("Overrides");
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
-        //builder.addTool("User data tool");
+        builder.addTool("User-Data");
+
         Cgm target = Maud.getModel().getTarget();
         if (!target.getSpatial().isCgmRoot()) {
             builder.addEdit("Delete");
