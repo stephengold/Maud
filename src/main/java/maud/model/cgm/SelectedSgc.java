@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -41,8 +41,7 @@ import maud.PhysicsUtil;
 import maud.view.SceneView;
 
 /**
- * The MVC model of the selected scene-graph (S-G) control in a loaded C-G
- * model.
+ * The MVC model of the selected scene-graph (S-G) control in a C-G model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -51,7 +50,7 @@ public class SelectedSgc implements JmeCloneable {
     // constants and loggers
 
     /**
-     * dummy index, used to indicate that no S-G control is selected
+     * dummy index, used to indicate that no S-G control is found/selected
      */
     final public static int noSgcIndex = -1;
     /**
@@ -80,7 +79,7 @@ public class SelectedSgc implements JmeCloneable {
      */
     private EditableCgm editableCgm = null;
     /**
-     * spatial controlled by the selection, or null if none
+     * spatial controlled by the selected SGC, or null if no SGC is selected
      */
     private Spatial controlled = null;
     // *************************************************************************
@@ -114,7 +113,7 @@ public class SelectedSgc implements JmeCloneable {
     /**
      * Read the position index of the S-G control in the C-G model.
      *
-     * @return the index, or noSgcIndex if none selected
+     * @return the index, or noSgcIndex if no SGC is selected
      */
     public int findIndex() {
         int result = noSgcIndex;
@@ -139,16 +138,16 @@ public class SelectedSgc implements JmeCloneable {
     /**
      * Access the controlled spatial.
      *
-     * @return the pre-existing instance, or null if none selected
+     * @return the pre-existing instance, or null if no light is selected
      */
     Spatial getControlled() {
         return controlled;
     }
 
     /**
-     * Describe the type of the S-G control.
+     * Describe S-G control's type.
      *
-     * @return abbreviated name for the class
+     * @return abbreviated name for its class
      */
     public String getType() {
         String description = MyControl.describeType(selected);
@@ -272,8 +271,8 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
-     * After successfully loading a C-G model, deselect any selected S-G
-     * control.
+     * After successfully loading a C-G model, deselect any previously selected
+     * S-G control.
      */
     void postLoad() {
         controlled = null;
@@ -299,7 +298,7 @@ public class SelectedSgc implements JmeCloneable {
      * Select the specified S-G control of the specified spatial.
      *
      * @param sgc which S-G control to select (not null, alias created)
-     * @param spatial which spatial is controlled (not null)
+     * @param spatial which spatial is controlled (not null, alias created)
      */
     void select(Control sgc, Spatial spatial) {
         assert sgc != null;
@@ -310,21 +309,6 @@ public class SelectedSgc implements JmeCloneable {
         controlled = spatial;
         cgm.getSkeleton().postSelect();
         cgm.getAnimControl().postSelect();
-    }
-
-    /**
-     * Select an indexed S-G control of the selected spatial.
-     *
-     * @param index which S-G control to select, or noSgcIndex to deselect
-     */
-    public void select(int index) {
-        if (index == noSgcIndex) {
-            selectNone();
-        } else {
-            Spatial spatial = cgm.getSpatial().find();
-            Control sgc = spatial.getControl(index);
-            select(sgc, spatial);
-        }
     }
 
     /**
@@ -354,13 +338,12 @@ public class SelectedSgc implements JmeCloneable {
     public void selectNext() {
         if (isSelected()) {
             List<Control> sgcs = cgm.listSgcs(Control.class);
-            int index = sgcs.indexOf(selected);
-            assert index != -1;
-            ++index;
-            if (index >= sgcs.size()) {
-                index = 0;
+            int newIndex = findIndex() + 1;
+            int numSgcs = sgcs.size();
+            if (newIndex >= numSgcs) {
+                newIndex = 0;
             }
-            Control sgc = sgcs.get(index);
+            Control sgc = sgcs.get(newIndex);
             select(sgc);
         }
     }
@@ -380,14 +363,14 @@ public class SelectedSgc implements JmeCloneable {
      */
     public void selectPrevious() {
         if (isSelected()) {
+            List<Control> sgcs = cgm.listSgcs(Control.class);
             int newIndex = findIndex() - 1;
             if (newIndex < 0) {
-                int numSgcs = controlled.getNumControls();
+                int numSgcs = sgcs.size();
                 newIndex = numSgcs - 1;
             }
-            selected = controlled.getControl(newIndex);
-            assert selected != null;
-            select(selected, controlled);
+            Control sgc = sgcs.get(newIndex);
+            select(sgc);
         }
     }
 
@@ -428,7 +411,8 @@ public class SelectedSgc implements JmeCloneable {
      * cloner and original to resolve copied fields.
      *
      * @param cloner the cloner currently cloning this control (not null)
-     * @param original the view from which this view was shallow-cloned (unused)
+     * @param original the object from which this object was shallow-cloned
+     * (unused)
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
