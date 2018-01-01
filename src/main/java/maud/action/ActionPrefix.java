@@ -129,7 +129,11 @@ public class ActionPrefix {
      */
     final public static String newGhostControl = "new ghostControl ";
     /**
-     * argument are the name of the VarType and an optional parameter name
+     * arguments are the name of a Light.Type and an optional light name
+     */
+    final public static String newLight = "new light ";
+    /**
+     * arguments are the name of the VarType and an optional parameter name
      */
     final public static String newOverride = "new override ";
     /**
@@ -156,6 +160,10 @@ public class ActionPrefix {
      * argument is the new name for the selected bone
      */
     final public static String renameBone = "rename bone ";
+    /**
+     * argument is the new name for the light
+     */
+    final public static String renameLight = "rename light ";
     /**
      * argument is the new name for the material-parameter override
      */
@@ -224,7 +232,11 @@ public class ActionPrefix {
      */
     final public static String selectEdgeFilter = "select edgeFilter ";
     /**
-     * argument is an index or noControl
+     * argument is a light name or noLight
+     */
+    final public static String selectLight = "select light ";
+    /**
+     * argument is an SGC name or noControl
      */
     final public static String selectSgc = "select sgc ";
     /**

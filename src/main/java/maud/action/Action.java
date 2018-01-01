@@ -49,6 +49,7 @@ public class Action {
      * delete the selected animation
      */
     final public static String deleteAnimation = "delete animation";
+    final static String deleteLight = "delete light";
     final static String deleteMapping = "delete mapping";
     final static String deleteMatParam = "delete matParam";
     final static String deleteOverride = "delete override";
@@ -73,6 +74,7 @@ public class Action {
     final static String nextBone = "next bone";
     final static String nextCheckpoint = "next checkpoint";
     final static String nextJoint = "next joint";
+    final static String nextLight = "next light";
     final static String nextMapping = "next mapping";
     final static String nextMatParam = "next matParam";
     final static String nextOverride = "next override";
@@ -85,8 +87,10 @@ public class Action {
     final static String nextVertex = "next vertex";
     final static String nextViewMode = "next viewMode";
 
+    // TODO sort fields
     final static String newAnimationFromPose = "new animation fromPose";
     final static String newCheckpoint = "new checkpoint";
+    final static String newLight = "new light";
     final static String newMapping = "new mapping";
     final static String newOverride = "new override";
     final static String newSgc = "new sgc";
@@ -98,6 +102,7 @@ public class Action {
     final static String previousBone = "previous bone";
     final static String previousCheckpoint = "previous checkpoint";
     final static String previousJoint = "previous joint";
+    final static String previousLight = "previous light";
     final static String previousMapping = "previous mapping";
     final static String previousMatParam = "previous matParam";
     final static String previousOverride = "previous override";
@@ -116,6 +121,7 @@ public class Action {
 
     final static String renameAnimation = "rename animation";
     final static String renameBone = "rename bone";
+    final static String renameLight = "rename light";
     final static String renameOverride = "rename override";
     final static String renameSpatial = "rename spatial";
     final static String renameUserKey = "rename userKey";
@@ -146,6 +152,8 @@ public class Action {
     final static String selectKeyframeNearest = "select keyframeNearest";
     final static String selectKeyframeNext = "select keyframeNext";
     final static String selectKeyframePrevious = "select keyframePrevious";
+    final static String selectLight = "select light";
+    final static String selectLightOwner = "select lightOwner";
     final static String selectMapSourceBone = "select mapSourceBone";
     final static String selectMapTargetBone = "select mapTargetBone";
     final static String selectMatParam = "select matParam";

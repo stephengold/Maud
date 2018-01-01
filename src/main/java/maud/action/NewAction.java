@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.light.Light;
 import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -77,6 +78,10 @@ class NewAction {
 
             case Action.newCheckpoint:
                 Maud.gui.addCheckpoint("user interface");
+                break;
+
+            case Action.newLight:
+                ShowMenus.addNewLight();
                 break;
 
             case Action.newMapping:
@@ -159,6 +164,18 @@ class NewAction {
             PhysicsUtil.ShapeType shapeType
                     = PhysicsUtil.ShapeType.valueOf(shapeName);
             target.getSpatial().addGhostControl(shapeType);
+
+        } else if (actionString.startsWith(ActionPrefix.newLight)) {
+            String args = MyString.remainder(actionString,
+                    ActionPrefix.newLight);
+            if (args.contains(" ")) {
+                String typeName = args.split(" ")[0];
+                Light.Type type = Light.Type.valueOf(typeName);
+                String lightName = MyString.remainder(args, typeName + " ");
+                target.getSpatial().addLight(type, lightName);
+            } else {
+                EditorDialogs.newLight(actionString + " ");
+            }
 
         } else if (actionString.startsWith(ActionPrefix.newOverride)) {
             String args = MyString.remainder(actionString,

@@ -132,6 +132,14 @@ class SelectAction {
                 target.getTrack().selectPreviousKeyframe();
                 break;
 
+            case Action.selectLight:
+                ShowMenus.selectLight();
+                break;
+
+            case Action.selectLightOwner:
+                target.getSpatial().selectLightOwner();
+                break;
+
             case Action.selectMapSourceBone:
                 model.getMap().selectFromSource();
                 break;
@@ -328,6 +336,10 @@ class SelectAction {
             arg = MyString.remainder(actionString, ActionPrefix.selectJoint);
             long id = Long.parseLong(arg, 16);
             target.getJoint().select(id);
+
+        } else if (actionString.startsWith(ActionPrefix.selectLight)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectLight);
+            target.getLight().select(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectMatParam)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectMatParam);

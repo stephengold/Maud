@@ -26,6 +26,7 @@
  */
 package maud.menu;
 
+import com.jme3.light.Light;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
@@ -50,6 +51,7 @@ import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedSgc;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.cgm.SelectedSpatial;
@@ -94,6 +96,20 @@ public class ShowMenus {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Display a "Spatial -&gt; Light -&gt; Add new" menu.
+     */
+    public static void addNewLight() {
+        MenuBuilder builder = new MenuBuilder();
+
+        for (Light.Type type : Light.Type.values()) {
+            String name = type.toString();
+            builder.add(name);
+        }
+
+        builder.show(ActionPrefix.newLight);
+    }
 
     /**
      * Display a "SGC -&gt; Add new" menu.
@@ -256,6 +272,25 @@ public class ShowMenus {
     }
 
     /**
+     * Display a "select light" menu.
+     */
+    public static void selectLight() {
+        MenuBuilder builder = new MenuBuilder();
+
+        Cgm target = Maud.getModel().getTarget();
+        String selectedName = target.getLight().name();
+        List<String> names = target.listLightNames(Light.class);
+        for (String name : names) {
+            if (!name.equals(selectedName)) {
+                builder.add(name);
+            }
+        }
+        builder.add(SelectedLight.noLight);
+
+        builder.show(ActionPrefix.selectLight);
+    }
+
+    /**
      * Display a menu for selecting a material parameter using the "select
      * matParam " action prefix.
      */
@@ -315,7 +350,7 @@ public class ShowMenus {
 
     /**
      * Display a menu for selecting a material-parameter type using the "new
-     * override " action prefix.
+     * override " action prefix. TODO distinguish the 3 Vector4 types
      */
     public static void selectOverrideType() {
         MenuBuilder builder = new MenuBuilder();

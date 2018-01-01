@@ -167,7 +167,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Disable the named Nifty slider.
+     * Disable the named Nifty slider. TODO move to GuiScreenController
      *
      * @param name unique id prefix of the slider to disable (not null)
      */
@@ -179,7 +179,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Enable the named Nifty slider.
+     * Enable the named Nifty slider. TODO move to GuiScreenController
      *
      * @param name unique id prefix of the slider to enable (not null)
      */
@@ -379,6 +379,9 @@ public class EditorScreen extends GuiScreenController {
             case "invertRma":
             case "invertRma2":
                 model.getMap().setInvertMap(isChecked);
+                break;
+            case "lightEnable":
+                target.getLight().setEnabled(isChecked);
                 break;
             case "loop":
                 animationCgm.getPlay().setContinue(isChecked);

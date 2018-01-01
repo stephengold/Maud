@@ -113,6 +113,10 @@ public class EditorTools {
      */
     final private KeyframeTool keyframe;
     /**
+     * controller for the "Lights Tool" window
+     */
+    final private LightsTool lights;
+    /**
      * controller for the "Mapping Tool" window
      */
     final private MappingTool mapping;
@@ -238,6 +242,7 @@ public class EditorTools {
         history = new HistoryTool(screen);
         joint = new JointTool(screen);
         keyframe = new KeyframeTool(screen);
+        lights = new LightsTool(screen);
         mapping = new MappingTool(screen);
         material = new MaterialTool(screen);
         object = new ObjectTool(screen);
@@ -275,11 +280,11 @@ public class EditorTools {
     public void attachAll(AppStateManager stateManager) {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
-                displaySettings, history, keyframe, joint, mapping, material,
-                object, overrides, platform, render, retarget, sceneVertex,
-                score, settings, sgc, shape, skeleton, skeletonColor, sky,
-                sourceAnimation, spatial, spatialDetails, spatialRotation,
-                spatialScale, spatialTranslation, tweening,
+                displaySettings, history, keyframe, joint, lights, mapping,
+                material, object, overrides, platform, render, retarget,
+                sceneVertex, score, settings, sgc, shape, skeleton,
+                skeletonColor, sky, sourceAnimation, spatial, spatialDetails,
+                spatialRotation, spatialScale, spatialTranslation, tweening,
                 twist, userData, vertex);
     }
 
@@ -338,6 +343,9 @@ public class EditorTools {
                 break;
             case "keyframe":
                 controller = keyframe;
+                break;
+            case "lights":
+                controller = lights;
                 break;
             case "map":
                 controller = mapping;

@@ -1041,6 +1041,95 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="lightsTool" title="Lights Tool"
+                     backgroundColor="#ffcf"
+                     hideOnClose="true"
+                     height="225px" width="270px" x="65" y="35">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="lightPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous light)"/>
+                        </control>
+                        <control name="label" id="lightIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="75px"/>
+                        <control name="button" id="lightNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next light)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" label="Add new"
+                                 id="id7ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(new light)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" label="Select"
+                                 id="id8ToAvoidNiftyWarning"
+                                 width="60px">
+                            <interact onRelease="perform(select light)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Name:  "
+                                 textHAlign="right"
+                                 width="42px"/>
+                        <control name="label" id="lightName"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="lightRenameButton"
+                                 width="60px">
+                            <interact onRelease="perform(rename light)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Type:  "/>
+                        <control name="label" id="lightType"
+                                 backgroundColor="#ffff"
+                                 width="110px"/>
+                        <panel width="*"/>
+                        <control name="button" id="lightDeleteButton"
+                                 width="60px">
+                            <interact onRelease="perform(delete light)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Owner:  "/>
+                        <control name="label" id="lightOwner"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="lightSelectOwnerButton"
+                                 width="50px">
+                            <interact onRelease="perform(select lightOwner)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="lightEnableCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  enable"/>
+                        <control name="label" text="    Color:  "/>
+                        <control name="label" id="lightColor"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Direction:  "/>
+                        <control name="label" id="lightDirection"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Position:  "/>
+                        <control name="label" id="lightPosition"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                </panel>
+            </control>
+
+
             <control name="window" id="mappingTool" title="Mapping Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"

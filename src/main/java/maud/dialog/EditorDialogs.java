@@ -63,6 +63,7 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedObject;
 import maud.model.cgm.SelectedOverride;
 import maud.model.cgm.SelectedShape;
@@ -357,6 +358,22 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "new light" dialog to name a new light.
+     *
+     * @param actionPrefix (not null, not empty)
+     */
+    public static void newLight(String actionPrefix) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
+        DialogController controller = new LightNameDialog("Add");
+        String defaultName = "light";
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter a name for the new light:",
+                defaultName, actionPrefix, controller);
+    }
+
+    /**
      * Display a "new override" dialog to name a new material-parameter
      * override.
      *
@@ -446,6 +463,21 @@ public class EditorDialogs {
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter new name for the bone:",
                     oldName, ActionPrefix.renameBone, controller);
+        }
+    }
+
+    /**
+     * Display a "rename light" dialog.
+     */
+    public static void renameLight() {
+        SelectedLight light = Maud.getModel().getTarget().getLight();
+        if (light.isSelected()) {
+            String oldName = light.name();
+            DialogController controller = new LightNameDialog("Rename");
+
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog("Enter a new name for the light:",
+                    oldName, ActionPrefix.renameLight, controller);
         }
     }
 

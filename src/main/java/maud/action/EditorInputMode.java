@@ -250,6 +250,9 @@ public class EditorInputMode extends InputMode {
             case Action.deleteAnimation:
                 target.getAnimation().delete();
                 break;
+            case Action.deleteLight:
+                target.getLight().delete();
+                break;
             case Action.deleteMapping:
                 Maud.getModel().getMap().deleteBoneMapping();
                 break;
@@ -369,6 +372,10 @@ public class EditorInputMode extends InputMode {
                 EditorDialogs.renameBone();
                 break;
 
+            case Action.renameLight:
+                EditorDialogs.renameLight();
+                break;
+
             case Action.renameOverride:
                 EditorDialogs.renameOverride();
                 break;
@@ -398,6 +405,11 @@ public class EditorInputMode extends InputMode {
                 newName = MyString.remainder(actionString,
                         ActionPrefix.renameBone);
                 target.renameBone(newName);
+
+            } else if (actionString.startsWith(ActionPrefix.renameLight)) {
+                newName = MyString.remainder(actionString,
+                        ActionPrefix.renameLight);
+                target.getLight().rename(newName);
 
             } else if (actionString.startsWith(ActionPrefix.renameOverride)) {
                 newName = MyString.remainder(actionString,
