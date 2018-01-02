@@ -48,11 +48,15 @@ public enum AxesSubject {
      */
     SelectedBone,
     /**
+     * display axes of the selected light, if any
+     */
+    SelectedLight,
+    /**
      * display axes of the selected physics object, if any
      */
     SelectedObject,
     /**
-     * display local axes of the selected shape, if any
+     * display local axes of the selected physics shape, if any
      */
     SelectedShape,
     /**

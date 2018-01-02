@@ -45,6 +45,7 @@ import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedObject;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.scene.AxesDragEffect;
@@ -215,7 +216,7 @@ public class SceneDrag {
                         spatial, null);
                 Vector3f cross = oldDirLocal.cross(newDirLocal);
                 if (!MyVector3f.isZero(cross)) {
-                    rotate(cross);
+                    rotate(cross, newDirWorld);
                 }
                 break;
 
@@ -253,7 +254,6 @@ public class SceneDrag {
                 newTipWorld = MyVector3f.lineMeetsLine(axisLine, worldLine);
                 if (newTipWorld != null) {
                     Vector3f displacement = newTipWorld.subtract(oldTipWorld);
-
                     translate(displacement);
                 }
                 break;
@@ -337,8 +337,10 @@ public class SceneDrag {
      *
      * @param cross cross product of two unit vectors in local coordinates (not
      * null, length&gt;0, length&le;1)
+     * @param newDirWorld new axis direction in world coordinates (not null,
+     * length&gt;0)
      */
-    private static void rotate(Vector3f cross) {
+    private static void rotate(Vector3f cross, Vector3f newDirWorld) {
         /*
          * Convert the cross product to a rotation quaternion.
          */
@@ -354,7 +356,7 @@ public class SceneDrag {
 
         EditableCgm editableCgm = getEditableCgm();
         /*
-         * Determine which MVC-model object the control is visualizing,
+         * Determine which MVC-model object the axes control is visualizing,
          * and rotate that object.
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
@@ -371,6 +373,18 @@ public class SceneDrag {
 
             case SelectedBone:
                 rotateBone(rotation);
+                break;
+
+            case SelectedLight:
+                if (dragAxisIndex == MyVector3f.xAxis) {
+                    SelectedLight light = editableCgm.getLight();
+                    if (light.canDirect()) {
+                        /*
+                         * Adjust the direction of the selected light.
+                         */
+                        light.setDirection(newDirWorld);
+                    }
+                }
                 break;
 
             case SelectedObject:
@@ -449,6 +463,9 @@ public class SceneDrag {
                 }
                 break;
 
+            case SelectedLight: // ignore attempts to scale lights
+                break;
+
             case SelectedObject:
                 /*
                  * Ignore attempts to scale the physics object directly
@@ -503,9 +520,10 @@ public class SceneDrag {
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
         switch (subject) {
-            case Model: // ignore attempts to drag the world axes
-            case SelectedBone: // ignore attempts to drag the bone axes
-            case SelectedObject: // ignore attempts to drag the object axes
+            case Model: // ignore attempts to scale a model axis
+            case SelectedBone: // ignore attempts to scale bones
+            case SelectedLight: // ignore attempts to scale lights
+            case SelectedObject: // ignore attempts to scale objects
                 break;
 
             case SelectedShape: // won't work on all shapes
@@ -594,6 +612,18 @@ public class SceneDrag {
                 }
                 break;
 
+            case SelectedLight:
+                SelectedLight light = editableCgm.getLight();
+                if (light.canPosition()) {
+                    /*
+                     * Translate the selected light.
+                     */
+                    Vector3f position = light.position();
+                    position.addLocal(offset);
+                    light.setPosition(position);
+                }
+                break;
+
             case SelectedObject:
                 SelectedObject object = editableCgm.getObject();
                 if (object.canReposition()) {
@@ -606,7 +636,7 @@ public class SceneDrag {
                 }
                 break;
 
-            case SelectedShape:
+            case SelectedShape: // TODO
                 break;
 
             case SelectedSpatial:

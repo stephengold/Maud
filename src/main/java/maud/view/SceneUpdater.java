@@ -56,8 +56,10 @@ import jme3utilities.ui.Locators;
 import maud.EditorViewPorts;
 import maud.Maud;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedVertex;
 import maud.model.option.ShowBones;
+import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.BoundsOptions;
@@ -137,6 +139,12 @@ class SceneUpdater {
                         Transform worldTransform = tsp.getWorldTransform();
                         transform.combineWithParent(worldTransform);
                     }
+                }
+                break;
+
+            case SelectedLight:
+                if (cgm.getLight().isSelected()) {
+                    transform = cgm.getLight().transform(null);
                 }
                 break;
 
@@ -244,6 +252,19 @@ class SceneUpdater {
 
             float lineWidth = options.getLineWidth();
             visualizer.setLineWidth(lineWidth);
+
+            int numAxes;
+            AxesSubject subject = options.getSubject();
+            AxesDragEffect effect = options.getDragEffect();
+            SelectedLight selectedLight = cgm.getLight();
+            if (subject.equals(AxesSubject.SelectedLight)
+                    && selectedLight.canDirect()
+                    && effect.equals(AxesDragEffect.Rotate)) {
+                numAxes = 1;
+            } else {
+                numAxes = 3;
+            }
+            visualizer.setNumAxes(numAxes);
         }
     }
 
