@@ -11,7 +11,7 @@ gradle.projectsEvaluated {
     }
 }
 
-ext.jmonkeyengineVersion = '3.2.0-beta1'
+ext.jmonkeyengineVersion = '3.2.0-beta2'
 //ext.jmonkeyengineVersion = '[3.2,)'
 
 if (!hasProperty('mainClass')) {
@@ -47,7 +47,7 @@ dependencies {
 
     // from stephengold's bintray repositories:
     compile 'jme3utilities:jme3-utilities-heart:1.0.0for32'
-    compile 'jme3utilities:jme3-utilities-debug:0.8.2for32'
+    compile 'jme3utilities:jme3-utilities-debug:0.8.3'
     compile 'jme3utilities:jme3-utilities-ui:0.6.0for32'
     compile 'jme3utilities:jme3-utilities-nifty:0.7.4'
     compile 'jme3utilities:SkyControl:0.9.7for32'
