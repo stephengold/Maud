@@ -779,6 +779,7 @@ I therefore acknowledge the following artists and software developers:
 + the brave souls who volunteered to be alpha testers for Maud, including:
   + "Jesterrrrrr"
   + Moff Kalast
+  + Adam (aka "safari")
 + plus the creators of (and contributors to) the following software:
   + [Adobe Photoshop Elements][elements]
   + the [Blender][] 3-D animation suite
