@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,8 @@ package maud.tool;
 
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.EditableCgm;
 
@@ -38,7 +38,7 @@ import maud.model.cgm.EditableCgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CgmTool extends WindowController {
+class CgmTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -55,7 +55,7 @@ class CgmTool extends WindowController {
      *
      * @param screenController
      */
-    CgmTool(BasicScreenController screenController) {
+    CgmTool(GuiScreenController screenController) {
         super(screenController, "cgmTool", false);
     }
     // *************************************************************************
@@ -77,26 +77,26 @@ class CgmTool extends WindowController {
         EditableCgm target = Maud.getModel().getTarget();
         String name = target.getName();
         String nameDesc = MyString.quote(name);
-        Maud.gui.setStatusText("cgmName", " " + nameDesc);
+        setStatusText("cgmName", " " + nameDesc);
         /*
          * asset base path
          */
         String assetPath = target.getAssetPath();
         String abpDesc
                 = assetPath.isEmpty() ? "unknown" : MyString.quote(assetPath);
-        Maud.gui.setStatusText("cgmAbp", " " + abpDesc);
+        setStatusText("cgmAbp", " " + abpDesc);
         /*
          * asset root
          */
         String assetRoot = target.getAssetRootPath();
         String assetRootDescription
                 = assetRoot.isEmpty() ? "unknown" : MyString.quote(assetRoot);
-        Maud.gui.setStatusText("cgmAf", " " + assetRootDescription);
+        setStatusText("cgmAf", " " + assetRootDescription);
         /*
          * asset/file extension
          */
         String extDesc = target.getExtension();
-        Maud.gui.setStatusText("cgmExt", extDesc);
+        setStatusText("cgmExt", extDesc);
         /*
          * pristine/edited status
          */
@@ -109,6 +109,6 @@ class CgmTool extends WindowController {
         } else {
             pristineDesc = String.format("%d edits", editCount);
         }
-        Maud.gui.setStatusText("cgmPristine", pristineDesc);
+        setStatusText("cgmPristine", pristineDesc);
     }
 }

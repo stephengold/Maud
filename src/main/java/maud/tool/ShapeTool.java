@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.MyShape;
 import maud.PhysicsUtil;
@@ -48,7 +48,7 @@ import maud.model.option.ShapeParameter;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ShapeTool extends WindowController {
+class ShapeTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -69,7 +69,7 @@ class ShapeTool extends WindowController {
      *
      * @param screenController
      */
-    ShapeTool(BasicScreenController screenController) {
+    ShapeTool(GuiScreenController screenController) {
         super(screenController, "shapeTool", false);
     }
     // *************************************************************************
@@ -124,8 +124,8 @@ class ShapeTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("shapeChildren", " " + childrenText);
-        Maud.gui.setButtonText("shapeSelectChild", scButton);
+        setStatusText("shapeChildren", " " + childrenText);
+        setButtonText("shapeSelectChild", scButton);
     }
 
     /**
@@ -159,10 +159,10 @@ class ShapeTool extends WindowController {
             indexText = String.format("%d shapes", numShapes);
         }
 
-        Maud.gui.setStatusText("shapeIndex", indexText);
-        Maud.gui.setButtonText("shapeNext", nButton);
-        Maud.gui.setButtonText("shapePrevious", pButton);
-        Maud.gui.setButtonText("shapeSelect", sButton);
+        setStatusText("shapeIndex", indexText);
+        setButtonText("shapeNext", nButton);
+        setButtonText("shapePrevious", pButton);
+        setButtonText("shapeSelect", sButton);
     }
 
     /**
@@ -176,7 +176,7 @@ class ShapeTool extends WindowController {
         } else {
             name = "(none selected)";
         }
-        Maud.gui.setStatusText("shapeName", " " + name);
+        setStatusText("shapeName", " " + name);
     }
 
     /**
@@ -186,7 +186,7 @@ class ShapeTool extends WindowController {
         EditorModel model = Maud.getModel();
         ShapeParameter parameter = model.getMisc().getShapeParameter();
         String name = parameter.toString();
-        Maud.gui.setButtonText("shapeParm", name);
+        setButtonText("shapeParm", name);
 
         SelectedShape shape = model.getTarget().getShape();
         float value = shape.getValue(parameter);
@@ -194,7 +194,7 @@ class ShapeTool extends WindowController {
         if (!Float.isNaN(value)) {
             valueString = Float.toString(value);
         }
-        Maud.gui.setButtonText("shapeParmValue", valueString);
+        setButtonText("shapeParmValue", valueString);
     }
 
     /**
@@ -214,8 +214,8 @@ class ShapeTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("shapeType", " " + type);
-        Maud.gui.setStatusText("shapeAxis", axisName);
+        setStatusText("shapeType", " " + type);
+        setStatusText("shapeAxis", axisName);
     }
 
     /**
@@ -252,7 +252,7 @@ class ShapeTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("shapeUsers", " " + usersText);
-        Maud.gui.setButtonText("shapeSelectUser", suButton);
+        setStatusText("shapeUsers", " " + usersText);
+        setButtonText("shapeSelectUser", suButton);
     }
 }

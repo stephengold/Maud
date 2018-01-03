@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,8 @@ package maud.tool;
 
 import com.jme3.system.AppSettings;
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.model.option.DisplaySettings;
@@ -40,7 +40,7 @@ import maud.model.option.DisplaySettings;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class DisplaySettingsTool extends WindowController {
+class DisplaySettingsTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -57,7 +57,7 @@ class DisplaySettingsTool extends WindowController {
      *
      * @param screenController
      */
-    DisplaySettingsTool(BasicScreenController screenController) {
+    DisplaySettingsTool(GuiScreenController screenController) {
         super(screenController, "displaySettingsTool", false);
     }
     // *************************************************************************
@@ -77,24 +77,24 @@ class DisplaySettingsTool extends WindowController {
         Maud.gui.setIgnoreGuiChanges(true);
 
         boolean fullscreen = settings.isFullscreen();
-        Maud.gui.setChecked("fullscreen", fullscreen);
+        setChecked("fullscreen", fullscreen);
         boolean gamma = settings.isGammaCorrection();
-        Maud.gui.setChecked("gammaCorrection", gamma);
+        setChecked("gammaCorrection", gamma);
         boolean vsync = settings.isVSync();
-        Maud.gui.setChecked("vsync", vsync);
+        setChecked("vsync", vsync);
 
         int width = settings.getWidth();
         int height = settings.getHeight();
         String resolution = String.format("%d x %d", width, height);
-        Maud.gui.setButtonText("displayResolution", resolution);
+        setButtonText("displayResolution", resolution);
 
         int numSamples = settings.getSamples();
         String aaDescription = MaudUtil.aaDescription(numSamples);
-        Maud.gui.setButtonText("displayAntiAliasing", aaDescription);
+        setButtonText("displayAntiAliasing", aaDescription);
 
         int colorDepth = settings.getBitsPerPixel();
         String cdDescription = String.format("%d bits", colorDepth);
-        Maud.gui.setButtonText("colorDepth", cdDescription);
+        setButtonText("colorDepth", cdDescription);
 
         int refreshRate = settings.getFrequency();
         String rrDescription;
@@ -103,7 +103,7 @@ class DisplaySettingsTool extends WindowController {
         } else {
             rrDescription = String.format("%d Hz", refreshRate);
         }
-        Maud.gui.setButtonText("refreshRate", rrDescription);
+        setButtonText("refreshRate", rrDescription);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

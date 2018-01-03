@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,9 @@ import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.SelectedSpatial;
 
@@ -41,7 +41,7 @@ import maud.model.cgm.SelectedSpatial;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SpatialScaleTool extends WindowController {
+class SpatialScaleTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -71,7 +71,7 @@ class SpatialScaleTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    SpatialScaleTool(BasicScreenController screenController) {
+    SpatialScaleTool(GuiScreenController screenController) {
         super(screenController, "spatialScaleTool", false);
     }
     // *************************************************************************
@@ -89,7 +89,7 @@ class SpatialScaleTool extends WindowController {
         scales.y = Math.max(scales.y, 0.001f);
         scales.z = Math.max(scales.z, 0.001f);
 
-        float masterScale = Maud.gui.readSlider("ssMaster", masterSt);
+        float masterScale = readSlider("ssMaster", masterSt);
         scales.multLocal(masterScale);
         Maud.getModel().getTarget().setSpatialScale(scales);
     }
@@ -123,14 +123,14 @@ class SpatialScaleTool extends WindowController {
         float maxScale = MyMath.max(vector.x, vector.y, vector.z);
         assert maxScale > 0f : maxScale;
 
-        Maud.gui.setSlider("ssMaster", masterSt, maxScale);
+        setSlider("ssMaster", masterSt, maxScale);
 
         float[] scales = vector.toArray(null);
         for (int iAxis = 0; iAxis < MyVector3f.numAxes; iAxis++) {
             float scale = scales[iAxis];
             String sliderName = axisNames[iAxis] + "Ss";
-            Maud.gui.setSlider(sliderName, axisSt, scale / maxScale);
-            Maud.gui.updateSliderStatus(sliderName, scale, "x");
+            setSlider(sliderName, axisSt, scale / maxScale);
+            updateSliderStatus(sliderName, scale, "x");
         }
     }
 }

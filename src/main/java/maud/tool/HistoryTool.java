@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.Checkpoint;
 import maud.model.History;
@@ -45,7 +46,7 @@ import maud.model.History;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class HistoryTool extends WindowController {
+public class HistoryTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -73,7 +74,7 @@ public class HistoryTool extends WindowController {
      *
      * @param screenController
      */
-    HistoryTool(BasicScreenController screenController) {
+    HistoryTool(GuiScreenController screenController) {
         super(screenController, "historyTool", false);
     }
     // *************************************************************************
@@ -107,15 +108,15 @@ public class HistoryTool extends WindowController {
             aButton = "Redo all";
             rButton = "Redo";
         }
-        Maud.gui.setButtonText("historyRedoAll", aButton);
-        Maud.gui.setButtonText("historyRedo", rButton);
+        setButtonText("historyRedoAll", aButton);
+        setButtonText("historyRedo", rButton);
 
         String uButton = "";
         boolean noneVulnerable = !History.hasVulnerable();
         if (nextIndex > 1 || noneVulnerable && nextIndex > 0) {
             uButton = "Undo";
         }
-        Maud.gui.setButtonText("historyUndo", uButton);
+        setButtonText("historyUndo", uButton);
         /*
          * Add dynamic content to the scroll panel.
          */
@@ -141,7 +142,7 @@ public class HistoryTool extends WindowController {
          * the "automatic checkpoints" checkbox
          */
         boolean autoAddFlag = History.isAutoAdd();
-        Maud.gui.setChecked("autoCheckpoint", autoAddFlag);
+        setChecked("autoCheckpoint", autoAddFlag);
 
         if (autoScrollFlag) {
             autoScrollFlag = false;
@@ -207,8 +208,7 @@ public class HistoryTool extends WindowController {
      * @param y vertical offset (in pixels downward from top edge)
      */
     private void scrollTo(int y) {
-        BasicScreenController screenController = getScreenController();
-        Screen screen = screenController.getScreen();
+        Screen screen = Maud.gui.getScreen();
         ScrollPanel scpa = screen.findNiftyControl("historyScrollPanel",
                 ScrollPanel.class);
         scpa.setVerticalPos(y);

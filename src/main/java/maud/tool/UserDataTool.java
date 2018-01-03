@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,8 +29,8 @@ package maud.tool;
 import com.jme3.animation.Bone;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
@@ -41,7 +41,7 @@ import maud.model.cgm.SelectedUserData;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class UserDataTool extends WindowController {
+class UserDataTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -58,7 +58,7 @@ class UserDataTool extends WindowController {
      *
      * @param screenController
      */
-    UserDataTool(BasicScreenController screenController) {
+    UserDataTool(GuiScreenController screenController) {
         super(screenController, "userDataTool", false);
     }
     // *************************************************************************
@@ -117,10 +117,10 @@ class UserDataTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("userDataIndex", indexText);
-        Maud.gui.setButtonText("userDataNext", nButton);
-        Maud.gui.setButtonText("userDataPrevious", pButton);
-        Maud.gui.setButtonText("userKeySelect", sButton);
+        setStatusText("userDataIndex", indexText);
+        setButtonText("userDataNext", nButton);
+        setButtonText("userDataPrevious", pButton);
+        setButtonText("userKeySelect", sButton);
     }
 
     /**
@@ -141,9 +141,9 @@ class UserDataTool extends WindowController {
             rButton = "Rename";
         }
 
-        Maud.gui.setStatusText("userKey", " " + keyText);
-        Maud.gui.setButtonText("userKeyDelete", dButton);
-        Maud.gui.setButtonText("userKeyRename", rButton);
+        setStatusText("userKey", " " + keyText);
+        setButtonText("userKeyDelete", dButton);
+        setButtonText("userKeyRename", rButton);
     }
 
     /**
@@ -157,7 +157,7 @@ class UserDataTool extends WindowController {
             typeText = data.describeType();
         }
 
-        Maud.gui.setStatusText("userDataType", " " + typeText);
+        setStatusText("userDataType", " " + typeText);
     }
 
     /**
@@ -185,7 +185,7 @@ class UserDataTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("userValue", " " + valueText);
-        Maud.gui.setButtonText("userDataEdit", eButton);
+        setStatusText("userValue", " " + valueText);
+        setButtonText("userDataEdit", eButton);
     }
 }

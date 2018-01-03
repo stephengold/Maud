@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,9 @@ package maud.tool;
 import com.jme3.animation.AnimControl;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedAnimation;
@@ -44,7 +44,7 @@ import maud.model.cgm.SelectedBone;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class AnimationTool extends WindowController {
+class AnimationTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -69,7 +69,7 @@ class AnimationTool extends WindowController {
      *
      * @param screenController
      */
-    AnimationTool(BasicScreenController screenController) {
+    AnimationTool(GuiScreenController screenController) {
         super(screenController, "animationTool", false);
     }
     // *************************************************************************
@@ -87,13 +87,13 @@ class AnimationTool extends WindowController {
 
         float duration = animation.getDuration();
         if (duration > 0f) {
-            float speed = Maud.gui.readSlider("speed", speedSt);
+            float speed = readSlider("speed", speedSt);
             target.getPlay().setSpeed(speed);
         }
 
         boolean moving = animation.isMoving();
         if (!moving) {
-            float fraction = Maud.gui.readSlider("time", timeSt);
+            float fraction = readSlider("time", timeSt);
             float time = fraction * duration;
             animation.setTime(time);
         }
@@ -161,10 +161,10 @@ class AnimationTool extends WindowController {
             indexText = "not animated";
         }
 
-        Maud.gui.setButtonText("animControlPrevious", pButton);
-        Maud.gui.setStatusText("animControlIndex", indexText);
-        Maud.gui.setButtonText("animControlNext", nButton);
-        Maud.gui.setButtonText("animControlSelect", sButton);
+        setButtonText("animControlPrevious", pButton);
+        setStatusText("animControlIndex", indexText);
+        setButtonText("animControlNext", nButton);
+        setButtonText("animControlSelect", sButton);
     }
 
     /**
@@ -192,7 +192,7 @@ class AnimationTool extends WindowController {
         } else {
             hasTrackText = "";
         }
-        Maud.gui.setStatusText("animationHasTrack", " " + hasTrackText);
+        setStatusText("animationHasTrack", " " + hasTrackText);
     }
 
     /**
@@ -230,10 +230,10 @@ class AnimationTool extends WindowController {
             indexText = "not selected";
         }
 
-        Maud.gui.setStatusText("animationIndex", indexText);
-        Maud.gui.setButtonText("animationNext", nButton);
-        Maud.gui.setButtonText("animationPrevious", pButton);
-        Maud.gui.setButtonText("animationLoad", lButton);
+        setStatusText("animationIndex", indexText);
+        setButtonText("animationNext", nButton);
+        setButtonText("animationPrevious", pButton);
+        setButtonText("animationLoad", lButton);
     }
 
     /**
@@ -242,7 +242,7 @@ class AnimationTool extends WindowController {
     private void updateLooping() {
         Cgm target = Maud.getModel().getTarget();
         boolean pinned = target.getAnimation().isPinned();
-        Maud.gui.setChecked("pin", pinned);
+        setChecked("pin", pinned);
 
         Cgm cgm;
         if (target.getAnimation().isRetargetedPose()) {
@@ -252,13 +252,13 @@ class AnimationTool extends WindowController {
         }
         LoadedAnimation animation = cgm.getAnimation();
         boolean frozen = cgm.getPose().isFrozen();
-        Maud.gui.setChecked("freeze", frozen);
+        setChecked("freeze", frozen);
 
         PlayOptions options = cgm.getPlay();
         boolean looping = options.willContinue();
-        Maud.gui.setChecked("loop", looping);
+        setChecked("loop", looping);
         boolean ponging = options.willReverse();
-        Maud.gui.setChecked("pong", ponging);
+        setChecked("pong", ponging);
 
         String pButton = "";
         float duration = animation.getDuration();
@@ -270,7 +270,7 @@ class AnimationTool extends WindowController {
                 pButton = "Pause";
             }
         }
-        Maud.gui.setButtonText("togglePause", pButton);
+        setButtonText("togglePause", pButton);
     }
 
     /**
@@ -289,8 +289,8 @@ class AnimationTool extends WindowController {
             rButton = "";
         }
 
-        Maud.gui.setStatusText("animationName", " " + nameText);
-        Maud.gui.setButtonText("animationRename", rButton);
+        setStatusText("animationName", " " + nameText);
+        setButtonText("animationRename", rButton);
     }
 
     /**
@@ -304,15 +304,11 @@ class AnimationTool extends WindowController {
         }
 
         float duration = animation.getDuration();
-        if (duration > 0f) {
-            Maud.gui.enableSlider("speed");
-        } else {
-            Maud.gui.disableSlider("speed");
-        }
+        setSliderEnabled("speed", duration > 0f);
 
         float speed = target.getPlay().getSpeed();
-        Maud.gui.setSlider("speed", speedSt, speed);
-        Maud.gui.updateSliderStatus("speed", speed, "x");
+        setSlider("speed", speedSt, speed);
+        updateSliderStatus("speed", speed, "x");
     }
 
     /**
@@ -322,16 +318,16 @@ class AnimationTool extends WindowController {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         int numBoneTracks = animation.countBoneTracks();
         String boneTracksText = Integer.toString(numBoneTracks);
-        Maud.gui.setStatusText("boneTracks", boneTracksText);
+        setStatusText("boneTracks", boneTracksText);
 
         int numSpatialTracks = animation.countSpatialTracks();
         String spatialTracksText = Integer.toString(numSpatialTracks);
-        Maud.gui.setStatusText("spatialTracks", spatialTracksText);
+        setStatusText("spatialTracks", spatialTracksText);
 
         int numTracks = animation.countTracks();
         int numOtherTracks = numTracks - numBoneTracks - numSpatialTracks;
         String otherTracksText = String.format("%d", numOtherTracks);
-        Maud.gui.setStatusText("otherTracks", otherTracksText);
+        setStatusText("otherTracks", otherTracksText);
     }
 
     /**
@@ -347,21 +343,17 @@ class AnimationTool extends WindowController {
          * slider
          */
         boolean moving = animation.isMoving();
-        if (duration == 0f || moving) {
-            Maud.gui.disableSlider("time");
-        } else {
-            Maud.gui.enableSlider("time");
-        }
+        setSliderEnabled("time", duration == 0f || moving);
 
-        float trackTime;
+        float fraction, trackTime;
         if (duration == 0f) {
             trackTime = 0f;
-            Maud.gui.setSlider("time", timeSt, 0f);
+            fraction = 0f;
         } else {
             trackTime = animation.getTime();
-            float fraction = trackTime / duration;
-            Maud.gui.setSlider("time", timeSt, fraction);
+            fraction = trackTime / duration;
         }
+        setSlider("time", timeSt, fraction);
         /*
          * status label
          */
@@ -372,6 +364,6 @@ class AnimationTool extends WindowController {
         } else {
             statusText = "time = n/a";
         }
-        Maud.gui.setStatusText("trackTime", statusText);
+        setStatusText("trackTime", statusText);
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,9 @@ package maud.tool;
 
 import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.option.ScoreOptions;
 
@@ -39,7 +39,7 @@ import maud.model.option.ScoreOptions;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BackgroundTool extends WindowController {
+class BackgroundTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -60,7 +60,7 @@ class BackgroundTool extends WindowController {
      *
      * @param screenController
      */
-    BackgroundTool(BasicScreenController screenController) {
+    BackgroundTool(GuiScreenController screenController) {
         super(screenController, "backgroundTool", false);
     }
     // *************************************************************************

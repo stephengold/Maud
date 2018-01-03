@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
 package maud.tool;
 
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.option.ScoreOptions;
 import maud.model.option.ShowBones;
@@ -38,7 +38,7 @@ import maud.model.option.ShowBones;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ScoreTool extends WindowController {
+class ScoreTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -55,7 +55,7 @@ class ScoreTool extends WindowController {
      *
      * @param screenController (not null)
      */
-    ScoreTool(BasicScreenController screenController) {
+    ScoreTool(GuiScreenController screenController) {
         super(screenController, "scoreTool", false);
     }
     // *************************************************************************
@@ -75,21 +75,21 @@ class ScoreTool extends WindowController {
         Maud.gui.setIgnoreGuiChanges(true);
 
         boolean translations = scoreOptions.showsTranslations();
-        Maud.gui.setChecked("scoreTranslations", translations);
+        setChecked("scoreTranslations", translations);
 
         boolean rotations = scoreOptions.showsRotations();
-        Maud.gui.setChecked("scoreRotations", rotations);
+        setChecked("scoreRotations", rotations);
 
         boolean scales = scoreOptions.showsScales();
-        Maud.gui.setChecked("scoreScales", scales);
+        setChecked("scoreScales", scales);
 
         ShowBones showNoneSelected = scoreOptions.getShowNoneSelected();
         String noneButton = showNoneSelected.toString();
-        Maud.gui.setButtonText("scoreShowNoneSelected", noneButton);
+        setButtonText("scoreShowNoneSelected", noneButton);
 
         ShowBones showWhenSelected = scoreOptions.getShowWhenSelected();
         String whenButton = showWhenSelected.toString();
-        Maud.gui.setButtonText("scoreShowWhenSelected", whenButton);
+        setButtonText("scoreShowWhenSelected", whenButton);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

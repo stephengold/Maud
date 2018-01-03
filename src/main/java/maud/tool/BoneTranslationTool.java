@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,9 @@ package maud.tool;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
@@ -42,7 +42,7 @@ import maud.model.cgm.SelectedBone;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneTranslationTool extends WindowController {
+class BoneTranslationTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -84,7 +84,7 @@ class BoneTranslationTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    BoneTranslationTool(BasicScreenController screenController) {
+    BoneTranslationTool(GuiScreenController screenController) {
         super(screenController, "boneTranslationTool", false);
     }
     // *************************************************************************
@@ -97,8 +97,7 @@ class BoneTranslationTool extends WindowController {
         EditableCgm target = Maud.getModel().getTarget();
         if (target.getBone().shouldEnableControls()) {
             Vector3f offsets = Maud.gui.readVectorBank("Off", axisSt);
-            float masterScale
-                    = Maud.gui.readSlider("offMaster", masterSt);
+            float masterScale = readSlider("offMaster", masterSt);
             offsets.multLocal(masterScale);
 
             int boneIndex = target.getBone().getIndex();
@@ -119,25 +118,24 @@ class BoneTranslationTool extends WindowController {
         super.update(tpf);
         Maud.gui.setIgnoreGuiChanges(true);
 
+        boolean enableSliders = false;
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             setSlidersToPose();
             if (bone.shouldEnableControls()) {
-                Maud.gui.setButtonText("resetOffAnim", "Animation");
-                Maud.gui.setButtonText("resetOffBind", "Bind pose");
-                enableSliders();
+                setButtonText("resetOffAnim", "Animation");
+                setButtonText("resetOffBind", "Bind pose");
+                enableSliders = true;
             } else {
-                Maud.gui.setButtonText("resetOffAnim", "");
-                Maud.gui.setButtonText("resetOffBind", "");
-                disableSliders();
+                setButtonText("resetOffAnim", "");
+                setButtonText("resetOffBind", "");
             }
-
         } else {
             clear();
-            Maud.gui.setButtonText("resetOffAnim", "");
-            Maud.gui.setButtonText("resetOffBind", "");
-            disableSliders();
+            setButtonText("resetOffAnim", "");
+            setButtonText("resetOffBind", "");
         }
+        setSlidersEnabled(enableSliders);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }
@@ -150,31 +148,22 @@ class BoneTranslationTool extends WindowController {
     private void clear() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Off";
-            Maud.gui.setSlider(sliderName, axisSt, 0f);
-            Maud.gui.setStatusText(sliderName + "SliderStatus", "");
+            setSlider(sliderName, axisSt, 0f);
+            setStatusText(sliderName + "SliderStatus", "");
         }
     }
 
     /**
-     * Disable all 4 sliders.
+     * Disable or enable all 4 sliders.
+     *
+     * @param newState true&rarr;enable the sliders, false&rarr;disable them
      */
-    private void disableSliders() {
+    private void setSlidersEnabled(boolean newState) {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Off";
-            Maud.gui.disableSlider(sliderName);
+            setSliderEnabled(sliderName, newState);
         }
-        Maud.gui.disableSlider("offMaster");
-    }
-
-    /**
-     * Enable all 4 sliders.
-     */
-    private void enableSliders() {
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String sliderName = axisNames[iAxis] + "Off";
-            Maud.gui.enableSlider(sliderName);
-        }
-        Maud.gui.enableSlider("offMaster");
+        setSliderEnabled("offMaster", newState);
     }
 
     /**
@@ -185,7 +174,7 @@ class BoneTranslationTool extends WindowController {
         Vector3f vector = target.getBone().userTranslation(null);
         float[] offsets = vector.toArray(null);
 
-        float scale = Maud.gui.readSlider("offMaster", masterSt);
+        float scale = readSlider("offMaster", masterSt);
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float absOffset = FastMath.abs(offsets[iAxis]);
             if (absOffset > scale) {
@@ -193,13 +182,13 @@ class BoneTranslationTool extends WindowController {
             }
         }
         scale = FastMath.clamp(scale, minScale, maxScale);
-        Maud.gui.setSlider("offMaster", masterSt, scale);
+        setSlider("offMaster", masterSt, scale);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float value = offsets[iAxis];
             String sliderName = axisNames[iAxis] + "Off";
-            Maud.gui.setSlider(sliderName, axisSt, value / scale);
-            Maud.gui.updateSliderStatus(sliderName, value, " bu");
+            setSlider(sliderName, axisSt, value / scale);
+            updateSliderStatus(sliderName, value, " bu");
         }
     }
 }

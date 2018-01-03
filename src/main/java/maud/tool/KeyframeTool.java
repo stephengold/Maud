@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
 package maud.tool;
 
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
@@ -40,7 +40,7 @@ import maud.model.cgm.SelectedTrack;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class KeyframeTool extends WindowController {
+class KeyframeTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -57,7 +57,7 @@ class KeyframeTool extends WindowController {
      *
      * @param screenController
      */
-    KeyframeTool(BasicScreenController screenController) {
+    KeyframeTool(GuiScreenController screenController) {
         super(screenController, "keyframeTool", false);
     }
     // *************************************************************************
@@ -105,8 +105,8 @@ class KeyframeTool extends WindowController {
             timeText = String.format("%.3f", time);
         }
 
-        Maud.gui.setStatusText("keyframeIndex", indexText);
-        Maud.gui.setStatusText("keyframeTime", timeText);
+        setStatusText("keyframeIndex", indexText);
+        setStatusText("keyframeTime", timeText);
 
         updateEditButtons();
         updateNavigationButtons();
@@ -138,11 +138,11 @@ class KeyframeTool extends WindowController {
             sButton = "Set all to pose";
         }
 
-        Maud.gui.setButtonText("deleteSingleKeyframe", dButton);
-        Maud.gui.setButtonText("insertSingleKeyframe", iButton);
-        Maud.gui.setButtonText("rotationsToPoseKeyframe", sButton);
-        Maud.gui.setButtonText("scalesToPoseKeyframe", sButton);
-        Maud.gui.setButtonText("translationsToPoseKeyframe", sButton);
+        setButtonText("deleteSingleKeyframe", dButton);
+        setButtonText("insertSingleKeyframe", iButton);
+        setButtonText("rotationsToPoseKeyframe", sButton);
+        setButtonText("scalesToPoseKeyframe", sButton);
+        setButtonText("translationsToPoseKeyframe", sButton);
     }
 
     /**
@@ -178,11 +178,11 @@ class KeyframeTool extends WindowController {
             }
         }
 
-        Maud.gui.setButtonText("firstKeyframe", firstButton);
-        Maud.gui.setButtonText("previousKeyframe", previousButton);
-        Maud.gui.setButtonText("nearestKeyframe", nearestButton);
-        Maud.gui.setButtonText("nextKeyframe", nextButton);
-        Maud.gui.setButtonText("lastKeyframe", lastButton);
+        setButtonText("firstKeyframe", firstButton);
+        setButtonText("previousKeyframe", previousButton);
+        setButtonText("nearestKeyframe", nearestButton);
+        setButtonText("nextKeyframe", nextButton);
+        setButtonText("lastKeyframe", lastButton);
     }
 
     /**
@@ -206,7 +206,7 @@ class KeyframeTool extends WindowController {
             trackDescription = "(select a bone)";
         }
 
-        Maud.gui.setStatusText("trackDescription", " " + trackDescription);
+        setStatusText("trackDescription", " " + trackDescription);
     }
 
     /**
@@ -230,8 +230,8 @@ class KeyframeTool extends WindowController {
             scaleCount = String.format("%d", numScales);
         }
 
-        Maud.gui.setStatusText("trackTranslationCount", translationCount);
-        Maud.gui.setStatusText("trackRotationCount", rotationCount);
-        Maud.gui.setStatusText("trackScaleCount", scaleCount);
+        setStatusText("trackTranslationCount", translationCount);
+        setStatusText("trackRotationCount", rotationCount);
+        setStatusText("trackScaleCount", scaleCount);
     }
 }

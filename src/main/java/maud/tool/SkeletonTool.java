@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,9 @@
 package maud.tool;
 
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.option.ShowBones;
 import maud.model.option.scene.SkeletonOptions;
@@ -39,7 +39,7 @@ import maud.model.option.scene.SkeletonOptions;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SkeletonTool extends WindowController {
+class SkeletonTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -64,7 +64,7 @@ class SkeletonTool extends WindowController {
      *
      * @param screenController
      */
-    SkeletonTool(BasicScreenController screenController) {
+    SkeletonTool(GuiScreenController screenController) {
         super(screenController, "skeletonTool", false);
     }
     // *************************************************************************
@@ -75,10 +75,10 @@ class SkeletonTool extends WindowController {
      */
     void onSliderChanged() {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
-        float lineWidth = Maud.gui.readSlider("skeletonLineWidth", widthSt);
+        float lineWidth = readSlider("skeletonLineWidth", widthSt);
         options.setLineWidth(lineWidth);
 
-        float pointSize = Maud.gui.readSlider("skeletonPointSize", sizeSt);
+        float pointSize = readSlider("skeletonPointSize", sizeSt);
         options.setPointSize(pointSize);
     }
     // *************************************************************************
@@ -99,17 +99,17 @@ class SkeletonTool extends WindowController {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
         String bLabel = showBones.toString();
-        Maud.gui.setButtonText("skeletonShowBones", bLabel);
+        setButtonText("skeletonShowBones", bLabel);
 
         float lineWidth = options.getLineWidth();
-        Maud.gui.setSlider("skeletonLineWidth", widthSt, lineWidth);
+        setSlider("skeletonLineWidth", widthSt, lineWidth);
         lineWidth = Math.round(lineWidth);
-        Maud.gui.updateSliderStatus("skeletonLineWidth", lineWidth, " pixels");
+        updateSliderStatus("skeletonLineWidth", lineWidth, " pixels");
 
         float pointSize = options.getPointSize();
-        Maud.gui.setSlider("skeletonPointSize", sizeSt, pointSize);
+        setSlider("skeletonPointSize", sizeSt, pointSize);
         pointSize = Math.round(pointSize);
-        Maud.gui.updateSliderStatus("skeletonPointSize", pointSize, " pixels");
+        updateSliderStatus("skeletonPointSize", pointSize, " pixels");
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,9 @@
 package maud.tool;
 
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesOptions;
@@ -40,7 +40,7 @@ import maud.model.option.scene.AxesSubject;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class AxesTool extends WindowController {
+class AxesTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -62,7 +62,7 @@ class AxesTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    AxesTool(BasicScreenController screenController) {
+    AxesTool(GuiScreenController screenController) {
         super(screenController, "axesTool", false);
     }
     // *************************************************************************
@@ -72,7 +72,7 @@ class AxesTool extends WindowController {
      * Update the MVC model based on the slider.
      */
     void onSliderChanged() {
-        float lineWidth = Maud.gui.readSlider("axesLineWidth", widthSt);
+        float lineWidth = readSlider("axesLineWidth", widthSt);
         Maud.getModel().getScene().getAxes().setLineWidth(lineWidth);
     }
     // *************************************************************************
@@ -91,10 +91,10 @@ class AxesTool extends WindowController {
 
         AxesOptions options = Maud.getModel().getScene().getAxes();
         boolean depthTestFlag = options.getDepthTestFlag();
-        Maud.gui.setChecked("axesDepthTest", depthTestFlag);
+        setChecked("axesDepthTest", depthTestFlag);
 
         float lineWidth = options.getLineWidth();
-        Maud.gui.setSlider("axesLineWidth", widthSt, lineWidth);
+        setSlider("axesLineWidth", widthSt, lineWidth);
 
         updateLabels();
     }
@@ -109,14 +109,14 @@ class AxesTool extends WindowController {
 
         float lineWidth = options.getLineWidth();
         lineWidth = Math.round(lineWidth);
-        Maud.gui.updateSliderStatus("axesLineWidth", lineWidth, " pixels");
+        updateSliderStatus("axesLineWidth", lineWidth, " pixels");
 
         AxesSubject subject = options.getSubject();
         String buttonLabel = subject.toString();
-        Maud.gui.setButtonText("axesSubject", buttonLabel);
+        setButtonText("axesSubject", buttonLabel);
 
         AxesDragEffect effect = options.getDragEffect();
         buttonLabel = effect.toString();
-        Maud.gui.setButtonText("axesDrag", buttonLabel);
+        setButtonText("axesDrag", buttonLabel);
     }
 }

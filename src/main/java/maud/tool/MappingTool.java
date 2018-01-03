@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,8 @@ package maud.tool;
 
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.LoadedMap;
@@ -42,7 +42,7 @@ import maud.model.cgm.SelectedSkeleton;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class MappingTool extends WindowController {
+class MappingTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -59,7 +59,7 @@ class MappingTool extends WindowController {
      *
      * @param screenController
      */
-    MappingTool(BasicScreenController screenController) {
+    MappingTool(GuiScreenController screenController) {
         super(screenController, "mappingTool", false);
     }
     // *************************************************************************
@@ -87,7 +87,7 @@ class MappingTool extends WindowController {
          */
         EditorModel model = Maud.getModel();
         boolean invertFlag = model.getMap().isInvertingMap();
-        Maud.gui.setChecked("invertRma2", invertFlag);
+        setChecked("invertRma2", invertFlag);
         /*
          * the "Show retargeted pose" button
          */
@@ -99,7 +99,7 @@ class MappingTool extends WindowController {
         } else {
             mButton = "Show retargeted pose";
         }
-        Maud.gui.setButtonText("loadRetargetedPose", mButton);
+        setButtonText("loadRetargetedPose", mButton);
     }
     // *************************************************************************
     // private methods
@@ -118,7 +118,7 @@ class MappingTool extends WindowController {
         } else {
             assetDesc = MyString.quote(assetPath);
         }
-        Maud.gui.setStatusText("mapAssetPath", " " + assetDesc);
+        setStatusText("mapAssetPath", " " + assetDesc);
         /*
          * pristine/edited status
          */
@@ -131,7 +131,7 @@ class MappingTool extends WindowController {
         } else {
             pristineDesc = String.format("%d edits", editCount);
         }
-        Maud.gui.setStatusText("mapPristine", pristineDesc);
+        setStatusText("mapPristine", pristineDesc);
     }
 
     /**
@@ -178,7 +178,7 @@ class MappingTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("mappingFeedback", feedback);
+        setStatusText("mappingFeedback", feedback);
     }
 
     /**
@@ -210,9 +210,9 @@ class MappingTool extends WindowController {
             pButton = "";
         }
 
-        Maud.gui.setStatusText("mappingIndex", indexText);
-        Maud.gui.setButtonText("mappingNext", nButton);
-        Maud.gui.setButtonText("mappingPrevious", pButton);
+        setStatusText("mappingIndex", indexText);
+        setButtonText("mappingNext", nButton);
+        setButtonText("mappingPrevious", pButton);
     }
 
     /**
@@ -229,8 +229,8 @@ class MappingTool extends WindowController {
             mButton = "Map";
         }
 
-        Maud.gui.setButtonText("addMapping", mButton);
-        Maud.gui.setButtonText("deleteMapping", uButton);
+        setButtonText("addMapping", mButton);
+        setButtonText("deleteMapping", uButton);
     }
 
     /**
@@ -254,7 +254,7 @@ class MappingTool extends WindowController {
         } else {
             sourceBoneDesc = "( no model )";
         }
-        Maud.gui.setStatusText("sourceBone", " " + sourceBoneDesc);
+        setStatusText("sourceBone", " " + sourceBoneDesc);
         /*
          * select button
          */
@@ -264,7 +264,7 @@ class MappingTool extends WindowController {
         } else {
             sButton = "";
         }
-        Maud.gui.setButtonText("selectSourceBone", sButton);
+        setButtonText("selectSourceBone", sButton);
     }
 
     /**
@@ -285,6 +285,6 @@ class MappingTool extends WindowController {
             targetBoneDesc = SelectedSkeleton.noBone;
         }
 
-        Maud.gui.setStatusText("targetBone", " " + targetBoneDesc);
+        setStatusText("targetBone", " " + targetBoneDesc);
     }
 }

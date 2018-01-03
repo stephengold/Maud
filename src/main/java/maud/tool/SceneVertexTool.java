@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,9 @@ package maud.tool;
 
 import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.option.scene.VertexOptions;
 
@@ -39,7 +39,7 @@ import maud.model.option.scene.VertexOptions;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SceneVertexTool extends WindowController {
+class SceneVertexTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -64,7 +64,7 @@ class SceneVertexTool extends WindowController {
      *
      * @param screenController
      */
-    SceneVertexTool(BasicScreenController screenController) {
+    SceneVertexTool(GuiScreenController screenController) {
         super(screenController, "sceneVertexTool", false);
     }
     // *************************************************************************
@@ -79,7 +79,7 @@ class SceneVertexTool extends WindowController {
         ColorRGBA color = Maud.gui.readColorBank("sv", colorSt);
         options.setColor(color);
 
-        float pointSize = Maud.gui.readSlider("svPointSize", sizeSt);
+        float pointSize = readSlider("svPointSize", sizeSt);
         options.setPointSize(pointSize);
     }
     // *************************************************************************
@@ -102,9 +102,9 @@ class SceneVertexTool extends WindowController {
         Maud.gui.setColorBank("sv", colorSt, color);
 
         float pointSize = options.getPointSize();
-        Maud.gui.setSlider("svPointSize", sizeSt, pointSize);
+        setSlider("svPointSize", sizeSt, pointSize);
         pointSize = Math.round(pointSize);
-        Maud.gui.updateSliderStatus("svPointSize", pointSize, " pixels");
+        updateSliderStatus("svPointSize", pointSize, " pixels");
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

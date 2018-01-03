@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
 package maud.tool;
 
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenTransforms;
 import jme3utilities.wes.TweenVectors;
@@ -39,7 +39,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class TweeningTool extends WindowController {
+class TweeningTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -56,7 +56,7 @@ class TweeningTool extends WindowController {
      *
      * @param screenController (not null)
      */
-    TweeningTool(BasicScreenController screenController) {
+    TweeningTool(GuiScreenController screenController) {
         super(screenController, "tweeningTool", false);
     }
     // *************************************************************************
@@ -77,15 +77,15 @@ class TweeningTool extends WindowController {
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
         TweenVectors tweenTranslations = techniques.getTweenTranslations();
         String desc = tweenTranslations.toString();
-        Maud.gui.setStatusText("tweenTranslations", " " + desc);
+        setStatusText("tweenTranslations", " " + desc);
 
         TweenRotations tweenRotations = techniques.getTweenRotations();
         desc = tweenRotations.toString();
-        Maud.gui.setStatusText("tweenRotations", " " + desc);
+        setStatusText("tweenRotations", " " + desc);
 
         TweenVectors tweenScales = techniques.getTweenScales();
         desc = tweenScales.toString();
-        Maud.gui.setStatusText("tweenScales", " " + desc);
+        setStatusText("tweenScales", " " + desc);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,8 +29,8 @@ package maud.tool;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSkeleton;
@@ -41,7 +41,7 @@ import maud.model.cgm.SelectedVertex;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class VertexTool extends WindowController {
+class VertexTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -58,7 +58,7 @@ class VertexTool extends WindowController {
      *
      * @param screenController
      */
-    VertexTool(BasicScreenController screenController) {
+    VertexTool(GuiScreenController screenController) {
         super(screenController, "vertexTool", false);
     }
     // *************************************************************************
@@ -99,9 +99,9 @@ class VertexTool extends WindowController {
             locZ = String.format(" %f", location.z);
         }
 
-        Maud.gui.setStatusText("vertexBindLocX", locX);
-        Maud.gui.setStatusText("vertexBindLocY", locY);
-        Maud.gui.setStatusText("vertexBindLocZ", locZ);
+        setStatusText("vertexBindLocX", locX);
+        setStatusText("vertexBindLocY", locY);
+        setStatusText("vertexBindLocZ", locZ);
     }
 
     /**
@@ -146,14 +146,14 @@ class VertexTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("vertexBone0Name", bone0Name);
-        Maud.gui.setStatusText("vertexBone0Weight", bone0Weight);
-        Maud.gui.setStatusText("vertexBone1Name", bone1Name);
-        Maud.gui.setStatusText("vertexBone1Weight", bone1Weight);
-        Maud.gui.setStatusText("vertexBone2Name", bone2Name);
-        Maud.gui.setStatusText("vertexBone2Weight", bone2Weight);
-        Maud.gui.setStatusText("vertexBone3Name", bone3Name);
-        Maud.gui.setStatusText("vertexBone3Weight", bone3Weight);
+        setStatusText("vertexBone0Name", bone0Name);
+        setStatusText("vertexBone0Weight", bone0Weight);
+        setStatusText("vertexBone1Name", bone1Name);
+        setStatusText("vertexBone1Weight", bone1Weight);
+        setStatusText("vertexBone2Name", bone2Name);
+        setStatusText("vertexBone2Weight", bone2Weight);
+        setStatusText("vertexBone3Name", bone3Name);
+        setStatusText("vertexBone3Weight", bone3Weight);
     }
 
     /**
@@ -187,9 +187,9 @@ class VertexTool extends WindowController {
             indexText = "(select a mesh)";
         }
 
-        Maud.gui.setStatusText("vertexIndex", indexText);
-        Maud.gui.setButtonText("vertexNext", nButton);
-        Maud.gui.setButtonText("vertexPrevious", pButton);
+        setStatusText("vertexIndex", indexText);
+        setButtonText("vertexNext", nButton);
+        setButtonText("vertexPrevious", pButton);
     }
 
     /**
@@ -204,6 +204,6 @@ class VertexTool extends WindowController {
             sButton = "";
         }
 
-        Maud.gui.setButtonText("vertexSelect", sButton);
+        setButtonText("vertexSelect", sButton);
     }
 }

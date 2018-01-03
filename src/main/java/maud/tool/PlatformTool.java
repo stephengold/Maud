@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,9 @@
 package maud.tool;
 
 import java.util.logging.Logger;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
-import maud.EditorScreen;
 import maud.Maud;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.SceneOptions;
@@ -39,7 +39,7 @@ import maud.model.option.scene.SceneOptions;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class PlatformTool extends WindowController {
+class PlatformTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -60,7 +60,7 @@ class PlatformTool extends WindowController {
      *
      * @param screenController
      */
-    PlatformTool(EditorScreen screenController) {
+    PlatformTool(GuiScreenController screenController) {
         super(screenController, "platformTool", false);
     }
     // *************************************************************************
@@ -70,7 +70,7 @@ class PlatformTool extends WindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        float diameter = Maud.gui.readSlider("platformDiameter", diameterSt);
+        float diameter = readSlider("platformDiameter", diameterSt);
         Maud.getModel().getScene().setPlatformDiameter(diameter);
     }
     // *************************************************************************
@@ -90,11 +90,11 @@ class PlatformTool extends WindowController {
 
         PlatformType type = options.getPlatformType();
         String tButton = type.toString();
-        Maud.gui.setButtonText("platformType", tButton);
+        setButtonText("platformType", tButton);
 
         float diameter = options.getPlatformDiameter();
-        Maud.gui.setSlider("platformDiameter", diameterSt, diameter);
-        Maud.gui.updateSliderStatus("platformDiameter", diameter, " wu");
+        setSlider("platformDiameter", diameterSt, diameter);
+        updateSliderStatus("platformDiameter", diameter, " wu");
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

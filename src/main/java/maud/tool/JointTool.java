@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
 package maud.tool;
 
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedJoint;
@@ -38,7 +38,7 @@ import maud.model.cgm.SelectedJoint;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class JointTool extends WindowController {
+class JointTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -55,7 +55,7 @@ class JointTool extends WindowController {
      *
      * @param screenController
      */
-    JointTool(BasicScreenController screenController) {
+    JointTool(GuiScreenController screenController) {
         super(screenController, "jointTool", false);
     }
     // *************************************************************************
@@ -85,7 +85,7 @@ class JointTool extends WindowController {
     private void updateDescription() {
         SelectedJoint joint = Maud.getModel().getTarget().getJoint();
         String type = joint.getType();
-        Maud.gui.setStatusText("jointType", type);
+        setStatusText("jointType", type);
     }
 
     /**
@@ -119,10 +119,10 @@ class JointTool extends WindowController {
             indexText = String.format("%d joints", numJoints);
         }
 
-        Maud.gui.setStatusText("jointIndex", indexText);
-        Maud.gui.setButtonText("jointNext", nButton);
-        Maud.gui.setButtonText("jointPrevious", pButton);
-        Maud.gui.setButtonText("jointSelect", sButton);
+        setStatusText("jointIndex", indexText);
+        setButtonText("jointNext", nButton);
+        setButtonText("jointPrevious", pButton);
+        setButtonText("jointSelect", sButton);
     }
 
     /**
@@ -137,6 +137,6 @@ class JointTool extends WindowController {
         } else {
             name = "(none selected)";
         }
-        Maud.gui.setStatusText("jointName", " " + name);
+        setStatusText("jointName", " " + name);
     }
 }

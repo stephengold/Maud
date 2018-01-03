@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,9 @@ package maud.tool;
 import com.jme3.math.Quaternion;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.cgm.SelectedSpatial;
@@ -42,7 +42,7 @@ import maud.model.cgm.SelectedSpatial;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SpatialRotationTool extends WindowController {
+class SpatialRotationTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -72,7 +72,7 @@ class SpatialRotationTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    SpatialRotationTool(BasicScreenController screenController) {
+    SpatialRotationTool(GuiScreenController screenController) {
         super(screenController, "spatialRotationTool", false);
     }
     // *************************************************************************
@@ -85,7 +85,7 @@ class SpatialRotationTool extends WindowController {
         float[] angles = new float[numAxes];
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Sa";
-            float value = Maud.gui.readSlider(sliderName, axisSt);
+            float value = readSlider(sliderName, axisSt);
             angles[iAxis] = value;
         }
         Quaternion rot = new Quaternion();
@@ -113,7 +113,7 @@ class SpatialRotationTool extends WindowController {
         } else {
             dButton = "degrees";
         }
-        Maud.gui.setButtonText("degrees2", dButton);
+        setButtonText("degrees2", dButton);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }
@@ -134,14 +134,16 @@ class SpatialRotationTool extends WindowController {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Sa";
             float angle = angles[iAxis];
-            Maud.gui.setSlider(sliderName, axisSt, angle);
+            setSlider(sliderName, axisSt, angle);
 
+            String unitSuffix;
             if (degrees) {
                 angle = MyMath.toDegrees(angle);
-                Maud.gui.updateSliderStatus(sliderName, angle, " deg");
+                unitSuffix = " deg";
             } else {
-                Maud.gui.updateSliderStatus(sliderName, angle, " rad");
+                unitSuffix = " rad";
             }
+            updateSliderStatus(sliderName, angle, unitSuffix);
         }
     }
 }

@@ -28,9 +28,9 @@ package maud.tool;
 
 import com.jme3.shadow.EdgeFilteringMode;
 import java.util.logging.Logger;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
-import maud.EditorScreen;
 import maud.Maud;
 import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.TriangleMode;
@@ -40,7 +40,7 @@ import maud.model.option.scene.TriangleMode;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class RenderTool extends WindowController {
+class RenderTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -65,7 +65,7 @@ class RenderTool extends WindowController {
      *
      * @param screenController
      */
-    RenderTool(EditorScreen screenController) {
+    RenderTool(GuiScreenController screenController) {
         super(screenController, "renderTool", false);
     }
     // *************************************************************************
@@ -77,11 +77,11 @@ class RenderTool extends WindowController {
     void onSliderChanged() {
         SceneOptions options = Maud.getModel().getScene();
 
-        float mapSize = Maud.gui.readSlider("mapSize", sizeSt);
+        float mapSize = readSlider("mapSize", sizeSt);
         int newSize = Math.round(mapSize);
         options.setShadowsMapSize(newSize);
 
-        float mapSplits = Maud.gui.readSlider("mapSplits", splitsSt);
+        float mapSplits = readSlider("mapSplits", splitsSt);
         int newNumSplits = Math.round(mapSplits);
         options.setNumSplits(newNumSplits);
     }
@@ -102,26 +102,26 @@ class RenderTool extends WindowController {
         SceneOptions options = Maud.getModel().getScene();
 
         boolean shadowsFlag = options.areShadowsRendered();
-        Maud.gui.setChecked("shadows", shadowsFlag);
+        setChecked("shadows", shadowsFlag);
 
         boolean renderFlag = options.isPhysicsRendered();
-        Maud.gui.setChecked("physics", renderFlag);
+        setChecked("physics", renderFlag);
 
         TriangleMode mode = options.getTriangleMode();
         String modeName = mode.toString();
-        Maud.gui.setButtonText("triangles", modeName);
+        setButtonText("triangles", modeName);
 
         int numSplits = options.getNumSplits();
-        Maud.gui.setSlider("mapSplits", splitsSt, numSplits);
-        Maud.gui.updateSliderStatus("mapSplits", numSplits, "");
+        setSlider("mapSplits", splitsSt, numSplits);
+        updateSliderStatus("mapSplits", numSplits, "");
 
         int mapSize = options.getShadowMapSize();
-        Maud.gui.setSlider("mapSize", sizeSt, mapSize);
-        Maud.gui.updateSliderStatus("mapSize", mapSize, " px");
+        setSlider("mapSize", sizeSt, mapSize);
+        updateSliderStatus("mapSize", mapSize, " px");
 
         EdgeFilteringMode edgeFilter = options.getEdgeFilter();
         modeName = edgeFilter.toString();
-        Maud.gui.setButtonText("edgeFilter", modeName);
+        setButtonText("edgeFilter", modeName);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

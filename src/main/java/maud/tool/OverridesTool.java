@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,8 @@ import com.jme3.animation.Bone;
 import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedOverride;
@@ -41,7 +41,7 @@ import maud.model.cgm.SelectedOverride;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class OverridesTool extends WindowController {
+class OverridesTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -58,7 +58,7 @@ class OverridesTool extends WindowController {
      *
      * @param screenController
      */
-    OverridesTool(BasicScreenController screenController) {
+    OverridesTool(GuiScreenController screenController) {
         super(screenController, "overridesTool", false);
     }
     // *************************************************************************
@@ -117,10 +117,10 @@ class OverridesTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("mpoIndex", indexText);
-        Maud.gui.setButtonText("mpoNext", nButton);
-        Maud.gui.setButtonText("mpoPrevious", pButton);
-        Maud.gui.setButtonText("mpoSelect", sButton);
+        setStatusText("mpoIndex", indexText);
+        setButtonText("mpoNext", nButton);
+        setButtonText("mpoPrevious", pButton);
+        setButtonText("mpoSelect", sButton);
     }
 
     /**
@@ -141,9 +141,9 @@ class OverridesTool extends WindowController {
             rButton = "Rename";
         }
 
-        Maud.gui.setButtonText("mpoDelete", dButton);
-        Maud.gui.setStatusText("mpoName", " " + nameText);
-        Maud.gui.setButtonText("mpoRename", rButton);
+        setButtonText("mpoDelete", dButton);
+        setStatusText("mpoName", " " + nameText);
+        setButtonText("mpoRename", rButton);
     }
 
     /**
@@ -152,7 +152,7 @@ class OverridesTool extends WindowController {
     private void updateType() {
         SelectedOverride override = Maud.getModel().getTarget().getOverride();
         boolean isEnabled = override.isEnabled();
-        Maud.gui.setChecked("mpoEnable", isEnabled);
+        setChecked("mpoEnable", isEnabled);
 
         String typeText = "";
         if (override.isSelected()) {
@@ -164,7 +164,7 @@ class OverridesTool extends WindowController {
                 typeText = value.getClass().getSimpleName();
             }
         }
-        Maud.gui.setStatusText("mpoType", " " + typeText);
+        setStatusText("mpoType", " " + typeText);
     }
 
     /**
@@ -188,7 +188,7 @@ class OverridesTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("mpoValue", " " + valueText);
-        Maud.gui.setButtonText("mpoEdit", eButton);
+        setStatusText("mpoValue", " " + valueText);
+        setButtonText("mpoEdit", eButton);
     }
 }

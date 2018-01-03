@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,9 @@ package maud.tool;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
@@ -41,7 +41,7 @@ import maud.model.cgm.SelectedBone;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneScaleTool extends WindowController {
+class BoneScaleTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -75,7 +75,7 @@ class BoneScaleTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    BoneScaleTool(BasicScreenController screenController) {
+    BoneScaleTool(GuiScreenController screenController) {
         super(screenController, "boneScaleTool", false);
     }
     // *************************************************************************
@@ -95,7 +95,7 @@ class BoneScaleTool extends WindowController {
             scales.y = Math.max(scales.y, 0.001f);
             scales.z = Math.max(scales.z, 0.001f);
 
-            float masterScale = Maud.gui.readSlider("scaMaster", masterSt);
+            float masterScale = readSlider("scaMaster", masterSt);
             scales.multLocal(masterScale);
 
             int boneIndex = target.getBone().getIndex();
@@ -115,25 +115,24 @@ class BoneScaleTool extends WindowController {
     public void update(float tpf) {
         super.update(tpf);
 
+        boolean enableSliders = false;
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             setSlidersToPose();
             if (bone.shouldEnableControls()) {
-                Maud.gui.setButtonText("resetScaAnim", "Animation");
-                Maud.gui.setButtonText("resetScaBind", "Bind pose");
-                enableSliders();
+                setButtonText("resetScaAnim", "Animation");
+                setButtonText("resetScaBind", "Bind pose");
+                enableSliders = true;
             } else {
-                Maud.gui.setButtonText("resetScaAnim", "");
-                Maud.gui.setButtonText("resetScaBind", "");
-                disableSliders();
+                setButtonText("resetScaAnim", "");
+                setButtonText("resetScaBind", "");
             }
-
         } else {
             clear();
-            Maud.gui.setButtonText("resetScaAnim", "");
-            Maud.gui.setButtonText("resetScaBind", "");
-            disableSliders();
+            setButtonText("resetScaAnim", "");
+            setButtonText("resetScaBind", "");
         }
+        setSlidersEnabled(enableSliders);
     }
     // *************************************************************************
     // private methods
@@ -144,32 +143,23 @@ class BoneScaleTool extends WindowController {
     private void clear() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Sca";
-            Maud.gui.setSlider(sliderName, axisSt, 1f);
-            Maud.gui.setStatusText(sliderName + "SliderStatus", "");
+            setSlider(sliderName, axisSt, 1f);
+            setStatusText(sliderName + "SliderStatus", "");
         }
-        Maud.gui.setSlider("scaMaster", masterSt, 1f);
+        setSlider("scaMaster", masterSt, 1f);
     }
 
     /**
-     * Disable all 4 sliders.
+     * Disable or enable all 4 sliders.
+     *
+     * @param newState true&rarr;enable the sliders, false&rarr;disable them
      */
-    private void disableSliders() {
+    private void setSlidersEnabled(boolean newState) {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Sca";
-            Maud.gui.disableSlider(sliderName);
+            setSliderEnabled(sliderName, newState);
         }
-        Maud.gui.disableSlider("scaMaster");
-    }
-
-    /**
-     * Enable all 4 sliders.
-     */
-    private void enableSliders() {
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String sliderName = axisNames[iAxis] + "Sca";
-            Maud.gui.enableSlider(sliderName);
-        }
-        Maud.gui.enableSlider("scaMaster");
+        setSliderEnabled("scaMaster", newState);
     }
 
     /**
@@ -179,15 +169,15 @@ class BoneScaleTool extends WindowController {
         Vector3f vector = Maud.getModel().getTarget().getBone().userScale(null);
         float maxScale = MyMath.max(vector.x, vector.y, vector.z);
         assert maxScale > 0f : maxScale;
-        Maud.gui.setSlider("scaMaster", masterSt, maxScale);
+        setSlider("scaMaster", masterSt, maxScale);
 
         float[] scales = vector.toArray(null);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Sca";
             float scale = scales[iAxis];
-            Maud.gui.setSlider(sliderName, axisSt, scale / maxScale);
-            Maud.gui.updateSliderStatus(sliderName, scale, "x");
+            setSlider(sliderName, axisSt, scale / maxScale);
+            updateSliderStatus(sliderName, scale, "x");
         }
     }
 }

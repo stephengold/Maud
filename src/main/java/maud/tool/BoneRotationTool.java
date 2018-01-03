@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,9 @@ package maud.tool;
 import com.jme3.math.Quaternion;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedBone;
@@ -41,7 +41,7 @@ import maud.model.cgm.SelectedBone;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneRotationTool extends WindowController {
+class BoneRotationTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -71,7 +71,7 @@ class BoneRotationTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    BoneRotationTool(BasicScreenController screenController) {
+    BoneRotationTool(GuiScreenController screenController) {
         super(screenController, "boneRotationTool", false);
     }
     // *************************************************************************
@@ -86,7 +86,7 @@ class BoneRotationTool extends WindowController {
             float[] angles = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 String sliderName = axisNames[iAxis] + "Ang";
-                float value = Maud.gui.readSlider(sliderName, axisSt);
+                float value = readSlider(sliderName, axisSt);
                 angles[iAxis] = value;
             }
             Quaternion rot = new Quaternion();
@@ -109,25 +109,25 @@ class BoneRotationTool extends WindowController {
         super.update(tpf);
         Maud.gui.setIgnoreGuiChanges(true);
 
+        boolean enableSliders = false;
         String aButton = "";
         String bButton = "";
+
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             setSlidersToPose();
             if (bone.shouldEnableControls()) {
                 aButton = "Animation";
                 bButton = "Bind pose";
-                enableSliders();
-            } else {
-                disableSliders();
+                enableSliders = true;
             }
-
         } else {
             clear();
-            disableSliders();
         }
-        Maud.gui.setButtonText("resetAngAnim", aButton);
-        Maud.gui.setButtonText("resetAngBind", bButton);
+
+        setButtonText("resetAngAnim", aButton);
+        setButtonText("resetAngBind", bButton);
+        setSlidersEnabled(enableSliders);
 
         String dButton; // TODO remove?
         if (Maud.getModel().getMisc().getAnglesInDegrees()) {
@@ -135,7 +135,8 @@ class BoneRotationTool extends WindowController {
         } else {
             dButton = "degrees";
         }
-        Maud.gui.setButtonText("degrees", dButton);
+        setButtonText("degrees", dButton);
+
         Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
@@ -147,28 +148,20 @@ class BoneRotationTool extends WindowController {
     private void clear() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Ang";
-            Maud.gui.setSlider(sliderName, axisSt, 0f);
-            Maud.gui.setStatusText(sliderName + "SliderStatus", "");
+            setSlider(sliderName, axisSt, 0f);
+            setStatusText(sliderName + "SliderStatus", "");
         }
     }
 
     /**
-     * Disable all 3 sliders.
+     * Disable or enable all 3 sliders.
+     *
+     * @param newState true&rarr;enable the sliders, false&rarr;disable them
      */
-    private void disableSliders() {
+    private void setSlidersEnabled(boolean newState) {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Ang";
-            Maud.gui.disableSlider(sliderName);
-        }
-    }
-
-    /**
-     * Enable all 3 sliders.
-     */
-    private void enableSliders() {
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String sliderName = axisNames[iAxis] + "Ang";
-            Maud.gui.enableSlider(sliderName);
+            setSliderEnabled(sliderName, newState);
         }
     }
 
@@ -184,14 +177,16 @@ class BoneRotationTool extends WindowController {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Ang";
             float angle = angles[iAxis];
-            Maud.gui.setSlider(sliderName, axisSt, angle);
+            setSlider(sliderName, axisSt, angle);
 
+            String unitSuffix;
             if (degrees) {
                 angle = MyMath.toDegrees(angle);
-                Maud.gui.updateSliderStatus(sliderName, angle, " deg");
+                unitSuffix = " deg";
             } else {
-                Maud.gui.updateSliderStatus(sliderName, angle, " rad");
+                unitSuffix = " rad";
             }
+            updateSliderStatus(sliderName, angle, unitSuffix);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
 package maud.tool;
 
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 
 /**
@@ -36,7 +36,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SkyTool extends WindowController {
+class SkyTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -53,7 +53,7 @@ class SkyTool extends WindowController {
      *
      * @param screenController
      */
-    SkyTool(BasicScreenController screenController) {
+    SkyTool(GuiScreenController screenController) {
         super(screenController, "skyTool", false);
     }
     // *************************************************************************
@@ -71,6 +71,6 @@ class SkyTool extends WindowController {
         super.update(elapsedTime);
 
         boolean renderFlag = Maud.getModel().getScene().isSkyRendered();
-        Maud.gui.setChecked("sky", renderFlag);
+        setChecked("sky", renderFlag);
     }
 }

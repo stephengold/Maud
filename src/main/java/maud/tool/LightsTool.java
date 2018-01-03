@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,8 +31,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedLight;
@@ -42,7 +42,7 @@ import maud.model.cgm.SelectedLight;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class LightsTool extends WindowController {
+class LightsTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -59,7 +59,7 @@ class LightsTool extends WindowController {
      *
      * @param screenController
      */
-    LightsTool(BasicScreenController screenController) {
+    LightsTool(GuiScreenController screenController) {
         super(screenController, "lightsTool", false);
     }
     // *************************************************************************
@@ -81,7 +81,7 @@ class LightsTool extends WindowController {
 
         SelectedLight light = Maud.getModel().getTarget().getLight();
         boolean isEnabled = light.isEnabled();
-        Maud.gui.setChecked("lightEnable", isEnabled);
+        setChecked("lightEnable", isEnabled);
 
         String deleteButton, renameButton, selectOwnerButton;
         String nameStatus, ownerStatus, typeStatus;
@@ -104,12 +104,12 @@ class LightsTool extends WindowController {
             typeStatus = "(no light selected)";
         }
 
-        Maud.gui.setButtonText("lightDelete", deleteButton);
-        Maud.gui.setButtonText("lightRename", renameButton);
-        Maud.gui.setButtonText("lightSelectOwner", selectOwnerButton);
-        Maud.gui.setStatusText("lightName", " " + nameStatus);
-        Maud.gui.setStatusText("lightOwner", " " + ownerStatus);
-        Maud.gui.setStatusText("lightType", " " + typeStatus);
+        setButtonText("lightDelete", deleteButton);
+        setButtonText("lightRename", renameButton);
+        setButtonText("lightSelectOwner", selectOwnerButton);
+        setStatusText("lightName", " " + nameStatus);
+        setStatusText("lightOwner", " " + ownerStatus);
+        setStatusText("lightType", " " + typeStatus);
     }
     // *************************************************************************
     // private methods
@@ -143,9 +143,9 @@ class LightsTool extends WindowController {
             }
         }
 
-        Maud.gui.setButtonText("lightNext", nextButton);
-        Maud.gui.setButtonText("lightPrevious", previousButton);
-        Maud.gui.setStatusText("lightIndex", indexStatus);
+        setButtonText("lightNext", nextButton);
+        setButtonText("lightPrevious", previousButton);
+        setStatusText("lightIndex", indexStatus);
     }
 
     /**
@@ -181,8 +181,8 @@ class LightsTool extends WindowController {
             positionStatus = "(no light selected)";
         }
 
-        Maud.gui.setStatusText("lightColor", " " + colorStatus);
-        Maud.gui.setStatusText("lightDirection", " " + directionStatus);
-        Maud.gui.setStatusText("lightPosition", " " + positionStatus);
+        setStatusText("lightColor", " " + colorStatus);
+        setStatusText("lightDirection", " " + directionStatus);
+        setStatusText("lightPosition", " " + positionStatus);
     }
 }

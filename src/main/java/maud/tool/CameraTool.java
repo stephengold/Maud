@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
 package maud.tool;
 
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.option.scene.CameraStatus;
 import maud.model.option.scene.MovementMode;
@@ -45,7 +45,7 @@ import maud.model.option.scene.ProjectionMode;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CameraTool extends WindowController {
+class CameraTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -62,7 +62,7 @@ class CameraTool extends WindowController {
      *
      * @param screenController (not null)
      */
-    CameraTool(BasicScreenController screenController) {
+    CameraTool(GuiScreenController screenController) {
         super(screenController, "cameraTool", false);
     }
     // *************************************************************************
@@ -84,18 +84,18 @@ class CameraTool extends WindowController {
 
         MovementMode movement = status.getMovementMode();
         String mButton = movement.toString();
-        Maud.gui.setButtonText("cameraMovement", mButton);
+        setButtonText("cameraMovement", mButton);
 
         ProjectionMode projection = status.getProjectionMode();
         String pButton = projection.toString();
-        Maud.gui.setButtonText("cameraProjection", pButton);
+        setButtonText("cameraProjection", pButton);
 
         String ocButton = "";
         if (status.isOrbitMode()) {
             OrbitCenter orbitCenter = status.getOrbitCenter();
             ocButton = orbitCenter.toString();
         }
-        Maud.gui.setButtonText("orbitCenter", ocButton);
+        setButtonText("orbitCenter", ocButton);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

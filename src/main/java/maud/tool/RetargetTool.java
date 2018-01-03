@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,8 @@ package maud.tool;
 
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
@@ -40,7 +40,7 @@ import maud.model.cgm.LoadedCgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class RetargetTool extends WindowController {
+class RetargetTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -57,7 +57,7 @@ class RetargetTool extends WindowController {
      *
      * @param screenController
      */
-    RetargetTool(BasicScreenController screenController) {
+    RetargetTool(GuiScreenController screenController) {
         super(screenController, "retargetTool", false);
     }
     // *************************************************************************
@@ -76,7 +76,7 @@ class RetargetTool extends WindowController {
 
         String targetName = Maud.getModel().getTarget().getName();
         String targetDesc = MyString.quote(targetName);
-        Maud.gui.setStatusText("targetName", " " + targetDesc);
+        setStatusText("targetName", " " + targetDesc);
 
         LoadedCgm source = Maud.getModel().getSource();
         String sButton, sourceDesc;
@@ -93,12 +93,12 @@ class RetargetTool extends WindowController {
                 sButton = "";
             }
         }
-        Maud.gui.setStatusText("sourceName", " " + sourceDesc);
-        Maud.gui.setButtonText("selectSourceAnimation", sButton);
+        setStatusText("sourceName", " " + sourceDesc);
+        setButtonText("selectSourceAnimation", sButton);
 
         int numBoneMappings = Maud.getModel().getMap().countMappings();
         String mappingDesc = Integer.toString(numBoneMappings);
-        Maud.gui.setStatusText("mappingCount", mappingDesc);
+        setStatusText("mappingCount", mappingDesc);
 
         updateBottom();
         updateFeedback();
@@ -119,7 +119,7 @@ class RetargetTool extends WindowController {
             sourceAnimDesc = MyString.quote(name);
         }
 
-        Maud.gui.setStatusText("sourceAnimation", " " + sourceAnimDesc);
+        setStatusText("sourceAnimation", " " + sourceAnimDesc);
     }
 
     /**
@@ -157,7 +157,7 @@ class RetargetTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("retargetFeedback", feedback);
-        Maud.gui.setButtonText("retarget", rButton);
+        setStatusText("retargetFeedback", feedback);
+        setButtonText("retarget", rButton);
     }
 }

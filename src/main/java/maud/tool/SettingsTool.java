@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
 package maud.tool;
 
 import java.util.logging.Logger;
-import jme3utilities.nifty.WindowController;
-import maud.EditorScreen;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.option.MiscOptions;
 
@@ -37,7 +37,7 @@ import maud.model.option.MiscOptions;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SettingsTool extends WindowController {
+class SettingsTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -54,7 +54,7 @@ class SettingsTool extends WindowController {
      *
      * @param screenController
      */
-    SettingsTool(EditorScreen screenController) {
+    SettingsTool(GuiScreenController screenController) {
         super(screenController, "settingsTool", false);
     }
     // *************************************************************************
@@ -76,18 +76,18 @@ class SettingsTool extends WindowController {
 
         boolean degreesFlag = options.getAnglesInDegrees();
         String description = degreesFlag ? "degrees" : "radians";
-        Maud.gui.setButtonText("settingsDegrees", description);
+        setButtonText("settingsDegrees", description);
 
         int indexBase = options.getIndexBase();
         description = Integer.toString(indexBase);
-        Maud.gui.setButtonText("settingsIndexBase", description);
+        setButtonText("settingsIndexBase", description);
 
         boolean zUpFlag = options.getLoadZup();
         description = zUpFlag ? "+Z up" : "+Y up";
-        Maud.gui.setButtonText("settingsLoadOrientation", description);
+        setButtonText("settingsLoadOrientation", description);
 
         boolean diagnoseFlag = options.getDiagnoseLoads();
-        Maud.gui.setChecked("settingsDiagnose", diagnoseFlag);
+        setChecked("settingsDiagnose", diagnoseFlag);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

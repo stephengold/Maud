@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,9 @@ package maud.tool;
 
 import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.option.scene.DddCursorOptions;
 
@@ -40,7 +40,7 @@ import maud.model.option.scene.DddCursorOptions;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CursorTool extends WindowController {
+class CursorTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -61,7 +61,7 @@ class CursorTool extends WindowController {
      *
      * @param screenController (not null)
      */
-    CursorTool(BasicScreenController screenController) {
+    CursorTool(GuiScreenController screenController) {
         super(screenController, "cursorTool", false);
     }
     // *************************************************************************
@@ -89,7 +89,7 @@ class CursorTool extends WindowController {
 
         DddCursorOptions options = Maud.getModel().getScene().getCursor();
         boolean visible = options.isVisible();
-        Maud.gui.setChecked("3DCursor", visible);
+        setChecked("3DCursor", visible);
 
         ColorRGBA color = options.copyColor(null);
         Maud.gui.setColorBank("cursor", colorSt, color);

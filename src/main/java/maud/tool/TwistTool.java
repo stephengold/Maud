@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,9 @@ package maud.tool;
 import com.jme3.math.Quaternion;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.EditableMap;
 
@@ -40,7 +40,7 @@ import maud.model.EditableMap;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class TwistTool extends WindowController {
+class TwistTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -69,7 +69,7 @@ class TwistTool extends WindowController {
      *
      * @param screenController
      */
-    TwistTool(BasicScreenController screenController) {
+    TwistTool(GuiScreenController screenController) {
         super(screenController, "twistTool", false);
     }
     // *************************************************************************
@@ -84,7 +84,7 @@ class TwistTool extends WindowController {
             float[] angles = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 String sliderName = axisNames[iAxis] + "Twist";
-                float value = Maud.gui.readSlider(sliderName, axisSt);
+                float value = readSlider(sliderName, axisSt);
                 angles[iAxis] = value;
             }
             Quaternion twist = new Quaternion();
@@ -117,7 +117,7 @@ class TwistTool extends WindowController {
         } else {
             dButton = "degrees";
         }
-        Maud.gui.setButtonText("degrees3", dButton);
+        setButtonText("degrees3", dButton);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }
@@ -130,28 +130,20 @@ class TwistTool extends WindowController {
     private void clear() {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Twist";
-            Maud.gui.setSlider(sliderName, axisSt, 0f);
-            Maud.gui.setStatusText(sliderName + "SliderStatus", "");
+            setSlider(sliderName, axisSt, 0f);
+            setStatusText(sliderName + "SliderStatus", "");
         }
     }
 
     /**
-     * Disable all 3 sliders.
+     * Disable or enable all 3 sliders.
+     *
+     * @param newState true&rarr;enable the sliders, false&rarr;disable them
      */
-    private void disableSliders() {
+    private void setSlidersEnabled(boolean newState) {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Twist";
-            Maud.gui.disableSlider(sliderName);
-        }
-    }
-
-    /**
-     * Enable all 3 sliders.
-     */
-    private void enableSliders() {
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String sliderName = axisNames[iAxis] + "Twist";
-            Maud.gui.enableSlider(sliderName);
+            setSliderEnabled(sliderName, newState);
         }
     }
 
@@ -166,13 +158,13 @@ class TwistTool extends WindowController {
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Twist";
             float angle = angles[iAxis];
-            Maud.gui.setSlider(sliderName, axisSt, angle);
+            setSlider(sliderName, axisSt, angle);
 
             if (degrees) {
                 angle = MyMath.toDegrees(angle);
-                Maud.gui.updateSliderStatus(sliderName, angle, " deg");
+                updateSliderStatus(sliderName, angle, " deg");
             } else {
-                Maud.gui.updateSliderStatus(sliderName, angle, " rad");
+                updateSliderStatus(sliderName, angle, " rad");
             }
         }
     }
@@ -181,24 +173,23 @@ class TwistTool extends WindowController {
      * Update the twist sliders and reset button.
      */
     private void updateSelected() {
-        String rButton, sButton;
+        boolean enableSliders = false;
+        String rButton = "", sButton = "";
 
         if (Maud.getModel().getMap().isBoneMappingSelected()) {
             setSlidersToTwist();
             rButton = "Reset";
             sButton = "Snap";
-            enableSliders();
+            enableSliders = true;
         } else {
             clear();
-            rButton = "";
-            sButton = "";
-            disableSliders();
         }
 
-        Maud.gui.setButtonText("resetTwist", rButton);
-        Maud.gui.setButtonText("snapTwist", sButton);
-        Maud.gui.setButtonText("snapXTwist", sButton);
-        Maud.gui.setButtonText("snapYTwist", sButton);
-        Maud.gui.setButtonText("snapZTwist", sButton);
+        setButtonText("resetTwist", rButton);
+        setButtonText("snapTwist", sButton);
+        setButtonText("snapXTwist", sButton);
+        setButtonText("snapYTwist", sButton);
+        setButtonText("snapZTwist", sButton);
+        setSlidersEnabled(enableSliders);
     }
 }

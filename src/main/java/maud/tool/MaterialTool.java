@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,8 +31,8 @@ import com.jme3.material.RenderState;
 import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedMatParam;
@@ -43,7 +43,7 @@ import maud.model.cgm.SelectedSpatial;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class MaterialTool extends WindowController {
+class MaterialTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -60,7 +60,7 @@ class MaterialTool extends WindowController {
      *
      * @param screenController
      */
-    MaterialTool(BasicScreenController screenController) {
+    MaterialTool(GuiScreenController screenController) {
         super(screenController, "materialTool", false);
     }
     // *************************************************************************
@@ -114,8 +114,8 @@ class MaterialTool extends WindowController {
             materialText = "(no material)";
         }
 
-        Maud.gui.setStatusText("matDef", " " + defText);
-        Maud.gui.setStatusText("matName", " " + materialText);
+        setStatusText("matDef", " " + defText);
+        setStatusText("matName", " " + materialText);
     }
 
     /**
@@ -132,8 +132,8 @@ class MaterialTool extends WindowController {
             wireframe = state.isWireframe();
         }
 
-        Maud.gui.setChecked("matDepthTest", depthTest);
-        Maud.gui.setChecked("matWireframe", wireframe);
+        setChecked("matDepthTest", depthTest);
+        setChecked("matWireframe", wireframe);
     }
 
     /**
@@ -167,10 +167,10 @@ class MaterialTool extends WindowController {
             }
         }
 
-        Maud.gui.setStatusText("mpIndex", indexText);
-        Maud.gui.setButtonText("mpNext", nButton);
-        Maud.gui.setButtonText("mpPrevious", pButton);
-        Maud.gui.setButtonText("mpSelect", sButton);
+        setStatusText("mpIndex", indexText);
+        setButtonText("mpNext", nButton);
+        setButtonText("mpPrevious", pButton);
+        setButtonText("mpSelect", sButton);
     }
 
     /**
@@ -192,9 +192,9 @@ class MaterialTool extends WindowController {
             typeText = "";
         }
 
-        Maud.gui.setStatusText("mpName", " " + nameText);
-        Maud.gui.setStatusText("mpType", " " + typeText);
-        Maud.gui.setButtonText("mpDelete", dButton);
+        setStatusText("mpName", " " + nameText);
+        setStatusText("mpType", " " + typeText);
+        setButtonText("mpDelete", dButton);
     }
 
     /**
@@ -224,7 +224,7 @@ class MaterialTool extends WindowController {
             valueText = "(no parameter selected)";
         }
 
-        Maud.gui.setStatusText("mpValue", " " + valueText);
-        Maud.gui.setButtonText("mpEdit", eButton);
+        setStatusText("mpValue", " " + valueText);
+        setButtonText("mpEdit", eButton);
     }
 }

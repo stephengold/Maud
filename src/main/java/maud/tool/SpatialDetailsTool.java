@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -33,8 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.SelectedSpatial;
 
@@ -43,7 +43,7 @@ import maud.model.cgm.SelectedSpatial;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SpatialDetailsTool extends WindowController {
+class SpatialDetailsTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -60,7 +60,7 @@ class SpatialDetailsTool extends WindowController {
      *
      * @param screenController (not null)
      */
-    SpatialDetailsTool(BasicScreenController screenController) {
+    SpatialDetailsTool(GuiScreenController screenController) {
         super(screenController, "spatialDetailsTool", false);
     }
     // *************************************************************************
@@ -103,7 +103,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         Spatial.BatchHint hint = spatial.getLocalBatchHint();
         String description = hint.toString();
-        Maud.gui.setButtonText("spatialBatchHint", description);
+        setButtonText("spatialBatchHint", description);
     }
 
     /**
@@ -116,13 +116,13 @@ class SpatialDetailsTool extends WindowController {
         if (type != null) {
             typeText = type.toString();
         }
-        Maud.gui.setStatusText("spatialBound", " " + typeText);
+        setStatusText("spatialBound", " " + typeText);
 
         String toggleText = "";
         if (spatial.isGeometry()) {
             toggleText = "Toggle";
         }
-        Maud.gui.setButtonText("spatialBoundType", toggleText);
+        setButtonText("spatialBoundType", toggleText);
     }
 
     /**
@@ -132,7 +132,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         RenderQueue.Bucket bucket = spatial.getLocalQueueBucket();
         String description = bucket.toString();
-        Maud.gui.setButtonText("spatialBucket", description);
+        setButtonText("spatialBucket", description);
     }
 
     /**
@@ -142,7 +142,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         Spatial.CullHint hint = spatial.getLocalCullHint();
         String description = hint.toString();
-        Maud.gui.setButtonText("spatialCullHint", description);
+        setButtonText("spatialCullHint", description);
     }
 
     /**
@@ -151,7 +151,7 @@ class SpatialDetailsTool extends WindowController {
     private void updateIgnoreTransform() {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         boolean flag = spatial.isTransformIgnored();
-        Maud.gui.setChecked("spatialIgnoreTransform", flag);
+        setChecked("spatialIgnoreTransform", flag);
     }
 
     /**
@@ -195,7 +195,7 @@ class SpatialDetailsTool extends WindowController {
             description = MyString.join(", ", list);
         }
 
-        Maud.gui.setStatusText("spatialInfluence", " " + description);
+        setStatusText("spatialInfluence", " " + description);
     }
 
     /**
@@ -205,7 +205,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         int numLights = spatial.countLights();
         String statusText = String.format(" %d", numLights);
-        Maud.gui.setStatusText("spatialLights", statusText);
+        setStatusText("spatialLights", statusText);
     }
 
     /**
@@ -215,7 +215,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         String name = spatial.getName();
         String description = MyString.quote(name);
-        Maud.gui.setStatusText("spatialName2", " " + description);
+        setStatusText("spatialName2", " " + description);
     }
 
     /**
@@ -225,7 +225,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         int numOverrides = spatial.countOverrides();
         String statusText = String.format(" %d", numOverrides);
-        Maud.gui.setStatusText("spatialOverrides", statusText);
+        setStatusText("spatialOverrides", statusText);
     }
 
     /**
@@ -235,7 +235,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         int numSgcs = spatial.countSgcs();
         String statusText = String.format(" %d", numSgcs);
-        Maud.gui.setStatusText("spatialControls", statusText);
+        setStatusText("spatialControls", statusText);
     }
 
     /**
@@ -245,7 +245,7 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         RenderQueue.ShadowMode mode = spatial.getLocalShadowMode();
         String description = mode.toString();
-        Maud.gui.setButtonText("spatialShadows", description);
+        setButtonText("spatialShadows", description);
     }
 
     /**
@@ -255,6 +255,6 @@ class SpatialDetailsTool extends WindowController {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         int numKeys = spatial.countUserData();
         String statusText = String.format(" %d", numKeys);
-        Maud.gui.setStatusText("spatialUserData", statusText);
+        setStatusText("spatialUserData", statusText);
     }
 }

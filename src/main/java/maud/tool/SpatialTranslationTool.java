@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,9 @@ package maud.tool;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
-import jme3utilities.nifty.BasicScreenController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
-import jme3utilities.nifty.WindowController;
 import maud.Maud;
 import maud.model.cgm.SelectedSpatial;
 
@@ -41,7 +41,7 @@ import maud.model.cgm.SelectedSpatial;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SpatialTranslationTool extends WindowController {
+class SpatialTranslationTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -83,7 +83,7 @@ class SpatialTranslationTool extends WindowController {
      * @param screenController the controller of the screen that contains the
      * window (not null)
      */
-    SpatialTranslationTool(BasicScreenController screenController) {
+    SpatialTranslationTool(GuiScreenController screenController) {
         super(screenController, "spatialTranslationTool", false);
     }
     // *************************************************************************
@@ -94,7 +94,7 @@ class SpatialTranslationTool extends WindowController {
      */
     void onSliderChanged() {
         Vector3f offsets = Maud.gui.readVectorBank("So", axisSt);
-        float masterScale = Maud.gui.readSlider("soMaster", masterSt);
+        float masterScale = readSlider("soMaster", masterSt);
         offsets.multLocal(masterScale);
         Maud.getModel().getTarget().setSpatialTranslation(offsets);
     }
@@ -126,7 +126,7 @@ class SpatialTranslationTool extends WindowController {
         Vector3f vector = spatial.localTranslation(null);
         float[] offsets = vector.toArray(null);
 
-        float scale = Maud.gui.readSlider("soMaster", masterSt);
+        float scale = readSlider("soMaster", masterSt);
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float absOffset = FastMath.abs(offsets[iAxis]);
             if (absOffset > scale) {
@@ -134,13 +134,13 @@ class SpatialTranslationTool extends WindowController {
             }
         }
         scale = FastMath.clamp(scale, minScale, maxScale);
-        Maud.gui.setSlider("soMaster", masterSt, scale);
+        setSlider("soMaster", masterSt, scale);
 
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             float value = offsets[iAxis];
             String sliderName = axisNames[iAxis] + "So";
-            Maud.gui.setSlider(sliderName, axisSt, value / scale);
-            Maud.gui.updateSliderStatus(sliderName, value, " lu");
+            setSlider(sliderName, axisSt, value / scale);
+            updateSliderStatus(sliderName, value, " lu");
         }
     }
 }

@@ -29,8 +29,8 @@ package maud.tool;
 import com.jme3.scene.control.Control;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.BasicScreenController;
-import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSgc;
@@ -40,7 +40,7 @@ import maud.model.cgm.SelectedSgc;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SgcTool extends WindowController {
+class SgcTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -57,7 +57,7 @@ class SgcTool extends WindowController {
      *
      * @param screenController
      */
-    SgcTool(BasicScreenController screenController) {
+    SgcTool(GuiScreenController screenController) {
         super(screenController, "sgcTool", false);
     }
     // *************************************************************************
@@ -78,7 +78,7 @@ class SgcTool extends WindowController {
 
         SelectedSgc sgc = Maud.getModel().getTarget().getSgc();
         boolean isEnabled = sgc.isEnabled();
-        Maud.gui.setChecked("sgcEnable", isEnabled);
+        setChecked("sgcEnable", isEnabled);
 
         String deleteButton, selectObjectButton, selectSpatialButton;
         String modeStatus, objectStatus, spatialStatus, typeStatus;
@@ -107,16 +107,16 @@ class SgcTool extends WindowController {
             typeStatus = "(no control selected)";
         }
 
-        Maud.gui.setButtonText("sgcDelete", deleteButton);
-        Maud.gui.setButtonText("sgcSelectObject", selectObjectButton);
-        Maud.gui.setButtonText("sgcSelectSpatial", selectSpatialButton);
-        Maud.gui.setStatusText("sgcMode", " " + modeStatus);
-        Maud.gui.setStatusText("sgcObject", " " + objectStatus);
-        Maud.gui.setStatusText("sgcSpatial", " " + spatialStatus);
-        Maud.gui.setStatusText("sgcType", " " + typeStatus);
+        setButtonText("sgcDelete", deleteButton);
+        setButtonText("sgcSelectObject", selectObjectButton);
+        setButtonText("sgcSelectSpatial", selectSpatialButton);
+        setStatusText("sgcMode", " " + modeStatus);
+        setStatusText("sgcObject", " " + objectStatus);
+        setStatusText("sgcSpatial", " " + spatialStatus);
+        setStatusText("sgcType", " " + typeStatus);
 
         boolean isLocalPhysics = sgc.isApplyPhysicsLocal();
-        Maud.gui.setChecked("sgcLocalPhysics", isLocalPhysics);
+        setChecked("sgcLocalPhysics", isLocalPhysics);
     }
     // *************************************************************************
     // private methods
@@ -149,8 +149,8 @@ class SgcTool extends WindowController {
             }
         }
 
-        Maud.gui.setButtonText("sgcNext", nextButton);
-        Maud.gui.setButtonText("sgcPrevious", previousButton);
-        Maud.gui.setStatusText("sgcIndex", indexStatus);
+        setButtonText("sgcNext", nextButton);
+        setButtonText("sgcPrevious", previousButton);
+        setStatusText("sgcIndex", indexStatus);
     }
 }
