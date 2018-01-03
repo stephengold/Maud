@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -78,11 +78,11 @@ class RenderTool extends WindowController {
         SceneOptions options = Maud.getModel().getScene();
 
         float mapSize = Maud.gui.readSlider("mapSize", sizeSt);
-        int newSize = (int) Math.round(mapSize);
+        int newSize = Math.round(mapSize);
         options.setShadowsMapSize(newSize);
 
         float mapSplits = Maud.gui.readSlider("mapSplits", splitsSt);
-        int newNumSplits = (int) Math.round(mapSplits);
+        int newNumSplits = Math.round(mapSplits);
         options.setNumSplits(newNumSplits);
     }
     // *************************************************************************
