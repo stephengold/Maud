@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -203,7 +203,7 @@ public class EditorDialogs {
         int numFrames = track.countKeyframes();
         int frameIndex = track.findKeyframeIndex();
         int max = numFrames - frameIndex - 2;
-        IntegerDialog controller = new IntegerDialog("Delete", 1, max);
+        IntegerDialog controller = new IntegerDialog("Delete", 1, max, false);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter number of keyframes:", "1",
                 ActionPrefix.deleteNextKeyframes, controller);
@@ -216,7 +216,7 @@ public class EditorDialogs {
         SelectedTrack track = Maud.getModel().getTarget().getTrack();
         int frameIndex = track.findKeyframeIndex();
         int max = frameIndex - 1;
-        IntegerDialog controller = new IntegerDialog("Delete", 1, max);
+        IntegerDialog controller = new IntegerDialog("Delete", 1, max, false);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter number of keyframes:", "1",
                 ActionPrefix.deletePreviousKeyframes, controller);
@@ -245,8 +245,8 @@ public class EditorDialogs {
             bodyText = String.format("Your %s license is missing!",
                     licenseName);
         } else {
-            bodyText = String.format(
-                    "Here's your %s license:%n%n%s%n", licenseName, licenseText);
+            bodyText = String.format("Here's your %s license:%n%n%s%n",
+                    licenseName, licenseText);
         }
 
         Maud.gui.closeAllPopups();
@@ -412,8 +412,8 @@ public class EditorDialogs {
      */
     public static void reduceAnimation() {
         if (Maud.getModel().getTarget().getAnimation().isReal()) {
-            IntegerDialog controller;
-            controller = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
+            IntegerDialog controller = new IntegerDialog("Reduce", 2,
+                    Integer.MAX_VALUE, false);
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter reduction factor:", "2",
@@ -428,7 +428,7 @@ public class EditorDialogs {
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.hasTrack()) {
             IntegerDialog controller
-                    = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE);
+                    = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE, false);
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter reduction factor:", "2",
@@ -608,7 +608,7 @@ public class EditorDialogs {
         int numVertices = target.getSpatial().countVertices();
         int indexBase = Maud.getModel().getMisc().getIndexBase();
         DialogController controller = new IntegerDialog("Select", indexBase,
-                numVertices + indexBase - 1);
+                numVertices + indexBase - 1, false);
 
         int oldIndex = target.getVertex().getIndex();
         int defaultIndex = (oldIndex == -1) ? indexBase : oldIndex;
@@ -635,7 +635,7 @@ public class EditorDialogs {
             min = 0f;
         }
         DialogController controller
-                = new FloatDialog("Set", min, Float.MAX_VALUE);
+                = new FloatDialog("Set", min, Float.MAX_VALUE, false);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
@@ -652,7 +652,7 @@ public class EditorDialogs {
 
         float finalTime = animation.findLatestKeyframe();
         DialogController controller
-                = new FloatDialog("Extend", finalTime, Float.MAX_VALUE);
+                = new FloatDialog("Extend", finalTime, Float.MAX_VALUE, false);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
@@ -697,7 +697,7 @@ public class EditorDialogs {
                     defaultValue = Float.toString(floatValue);
                 }
                 controller = new FloatDialog("Set", Float.NEGATIVE_INFINITY,
-                        Float.POSITIVE_INFINITY);
+                        Float.POSITIVE_INFINITY, allowNull);
                 promptMessage = "Enter new float value:";
                 break;
 
@@ -720,7 +720,8 @@ public class EditorDialogs {
                      */
                     maxValue = 250;
                 }
-                controller = new IntegerDialog("Set", minValue, maxValue);
+                controller = new IntegerDialog("Set", minValue, maxValue,
+                        allowNull);
                 promptMessage = "Enter new integer value:";
                 break;
 
@@ -792,10 +793,11 @@ public class EditorDialogs {
                 case GravityY:
                 case GravityZ:
                     controller = new FloatDialog("Set", -Float.MAX_VALUE,
-                            Float.MAX_VALUE);
+                            Float.MAX_VALUE, false);
                     break;
                 default:
-                    controller = new FloatDialog("Set", 0f, Float.MAX_VALUE);
+                    controller = new FloatDialog("Set", 0f, Float.MAX_VALUE,
+                            false);
             }
             String name = parameter.toString();
             String prompt = String.format("Enter new %s:", name);
@@ -823,7 +825,7 @@ public class EditorDialogs {
                 defaultText = Float.toString(defaultValue);
             }
             DialogController controller
-                    = new FloatDialog("Set", 0f, Float.MAX_VALUE);
+                    = new FloatDialog("Set", 0f, Float.MAX_VALUE, false);
             String name = parameter.toString();
             String prompt = String.format("Enter new %s:", name);
             String prefix = ActionPrefix.setShapeParmValue + name + " ";
@@ -851,7 +853,7 @@ public class EditorDialogs {
         } else if (value instanceof Float) {
             float oldValue = (float) value;
             controller = new FloatDialog("Set", Float.NEGATIVE_INFINITY,
-                    Float.POSITIVE_INFINITY);
+                    Float.POSITIVE_INFINITY, false);
             defaultText = Float.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new float value:", defaultText,
                     ActionPrefix.setUserData, controller);
@@ -859,14 +861,15 @@ public class EditorDialogs {
         } else if (value instanceof Integer) {
             int oldValue = (int) value;
             controller = new IntegerDialog("Set", Integer.MIN_VALUE,
-                    Integer.MAX_VALUE);
+                    Integer.MAX_VALUE, false);
             defaultText = Integer.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new integer value:",
                     defaultText, ActionPrefix.setUserData, controller);
 
         } else if (value instanceof Long) {
             long oldValue = (long) value;
-            controller = new LongDialog("Set", Long.MIN_VALUE, Long.MAX_VALUE);
+            controller = new LongDialog("Set", Long.MIN_VALUE, Long.MAX_VALUE,
+                    false);
             defaultText = Long.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new long integer value:",
                     defaultText, ActionPrefix.setUserData, controller);
@@ -911,7 +914,8 @@ public class EditorDialogs {
     private static void resampleCount(String actionPrefix) {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         if (animation.getDuration() > 0f) {
-            IntegerDialog controller = new IntegerDialog("Resample", 2, 999);
+            IntegerDialog controller
+                    = new IntegerDialog("Resample", 2, 999, false);
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter number of samples:", "17",
                     actionPrefix, controller);
@@ -924,7 +928,8 @@ public class EditorDialogs {
      * @param actionPrefix action prefix (not null)
      */
     private static void resampleRate(String actionPrefix) {
-        FloatDialog controller = new FloatDialog("Resample", 0.1f, 1000f);
+        FloatDialog controller
+                = new FloatDialog("Resample", 0.1f, 1000f, false);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter samples per second:", "10",
                 actionPrefix, controller);
@@ -934,7 +939,8 @@ public class EditorDialogs {
      * Display a "wrap animation" dialog.
      */
     public static void wrapAnimation() {
-        FloatDialog controller = new FloatDialog("Wrap animation", 0f, 1f);
+        FloatDialog controller
+                = new FloatDialog("Wrap animation", 0f, 1f, false);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter weight for end-time keyframes:", "0",
                 ActionPrefix.wrapAnimation, controller);
@@ -944,7 +950,7 @@ public class EditorDialogs {
      * Display a "wrap track" dialog.
      */
     public static void wrapTrack() {
-        FloatDialog controller = new FloatDialog("Wrap track", 0f, 1f);
+        FloatDialog controller = new FloatDialog("Wrap track", 0f, 1f, false);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter weight for end-time keyframe:", "0",
                 ActionPrefix.wrapTrack, controller);
