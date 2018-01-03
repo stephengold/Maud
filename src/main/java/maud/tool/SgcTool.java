@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -80,39 +80,40 @@ class SgcTool extends WindowController {
         boolean isEnabled = sgc.isEnabled();
         Maud.gui.setChecked("sgcEnable", isEnabled);
 
-        String deleteLabel, modeName, physicsName, spatialText, typeText;
-        String soButton, ssButton;
+        String deleteButton, selectObjectButton, selectSpatialButton;
+        String modeStatus, objectStatus, spatialStatus, typeStatus;
 
         if (sgc.isSelected()) {
-            deleteLabel = "Delete";
-            modeName = sgc.physicsModeName();
-            physicsName = sgc.physicsObjectName();
-            if (physicsName.isEmpty() || !isEnabled) {
-                soButton = "";
+            deleteButton = "Delete";
+            objectStatus = sgc.physicsObjectName();
+            if (objectStatus.isEmpty() || !isEnabled) {
+                selectObjectButton = "";
             } else {
-                soButton = "Select";
+                selectObjectButton = "Select";
             }
-            ssButton = "Select";
+            selectSpatialButton = "Select";
+
+            modeStatus = sgc.physicsModeName();
             String spatialName = sgc.controlledName();
-            spatialText = MyString.quote(spatialName);
-            typeText = sgc.getType();
+            spatialStatus = MyString.quote(spatialName);
+            typeStatus = sgc.getType();
         } else {
-            deleteLabel = "";
-            modeName = "";
-            physicsName = "";
-            soButton = "";
-            ssButton = "";
-            spatialText = "(none selected)";
-            typeText = "(none selected)";
+            deleteButton = "";
+            selectObjectButton = "";
+            selectSpatialButton = "";
+            modeStatus = "(no control selected)";
+            objectStatus = "(no control selected)";
+            spatialStatus = "(no control selected)";
+            typeStatus = "(no control selected)";
         }
 
-        Maud.gui.setButtonText("sgcDelete", deleteLabel);
-        Maud.gui.setStatusText("sgcMode", " " + modeName);
-        Maud.gui.setStatusText("sgcObject", " " + physicsName);
-        Maud.gui.setButtonText("sgcSelectObject", soButton);
-        Maud.gui.setButtonText("sgcSelectSpatial", ssButton);
-        Maud.gui.setStatusText("sgcSpatial", " " + spatialText);
-        Maud.gui.setStatusText("sgcType", " " + typeText);
+        Maud.gui.setButtonText("sgcDelete", deleteButton);
+        Maud.gui.setButtonText("sgcSelectObject", selectObjectButton);
+        Maud.gui.setButtonText("sgcSelectSpatial", selectSpatialButton);
+        Maud.gui.setStatusText("sgcMode", " " + modeStatus);
+        Maud.gui.setStatusText("sgcObject", " " + objectStatus);
+        Maud.gui.setStatusText("sgcSpatial", " " + spatialStatus);
+        Maud.gui.setStatusText("sgcType", " " + typeStatus);
 
         boolean isLocalPhysics = sgc.isApplyPhysicsLocal();
         Maud.gui.setChecked("sgcLocalPhysics", isLocalPhysics);
@@ -124,32 +125,32 @@ class SgcTool extends WindowController {
      * Update the index status and previous/next-button texts.
      */
     private void updateIndex() {
-        String indexText, nButton, pButton;
+        String nextButton, previousButton, indexStatus;
 
         Cgm target = Maud.getModel().getTarget();
         int numSgcs = target.countSgcs(Control.class);
         if (target.getSgc().isSelected()) {
+            nextButton = "+";
+            previousButton = "-";
             int selectedIndex = target.getSgc().findIndex();
             int indexBase = Maud.getModel().getMisc().getIndexBase();
-            indexText = String.format("#%d of %d", selectedIndex + indexBase,
+            indexStatus = String.format("#%d of %d", selectedIndex + indexBase,
                     numSgcs);
-            nButton = "+";
-            pButton = "-";
 
         } else {
+            nextButton = "";
+            previousButton = "";
             if (numSgcs == 0) {
-                indexText = "no controls";
+                indexStatus = "no controls";
             } else if (numSgcs == 1) {
-                indexText = "one control";
+                indexStatus = "one control";
             } else {
-                indexText = String.format("%d controls", numSgcs);
+                indexStatus = String.format("%d controls", numSgcs);
             }
-            nButton = "";
-            pButton = "";
         }
 
-        Maud.gui.setStatusText("sgcIndex", indexText);
-        Maud.gui.setButtonText("sgcNext", nButton);
-        Maud.gui.setButtonText("sgcPrevious", pButton);
+        Maud.gui.setButtonText("sgcNext", nextButton);
+        Maud.gui.setButtonText("sgcPrevious", previousButton);
+        Maud.gui.setStatusText("sgcIndex", indexStatus);
     }
 }

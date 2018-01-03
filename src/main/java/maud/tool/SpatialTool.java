@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -104,7 +104,7 @@ class SpatialTool extends WindowController {
         if (spatial.isNode()) {
             int numChildren = spatial.countChildren();
             if (numChildren == 0) {
-                childrenText = "none";
+                childrenText = "none (a leaf node is selected)";
                 scButton = "";
             } else if (numChildren == 1) {
                 String childName = spatial.getChildName(0);
@@ -119,7 +119,7 @@ class SpatialTool extends WindowController {
                 scButton = "Select";
             }
         } else {
-            childrenText = "n/a";
+            childrenText = "none (a geometry is selected)";
             scButton = "";
         }
 
@@ -210,7 +210,7 @@ class SpatialTool extends WindowController {
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.isCgmRoot()) {
-            parentText = "none (the model root)";
+            parentText = "none (the model root is selected)";
             spButton = "";
         } else {
             String name = spatial.getParentName();
