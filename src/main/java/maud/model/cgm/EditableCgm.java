@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -596,6 +596,38 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Rename the selected material-parameter override.
+     *
+     * @param newName new parameter name (not null, not empty)
+     */
+    public void renameOverride(String newName) {
+        Validate.nonEmpty(newName, "new name");
+
+        Spatial spatial = getSpatial().find();
+        SelectedOverride override = getOverride();
+        MatParamOverride oldMpo = override.find();
+
+        String oldName = oldMpo.getName();
+        Object value = oldMpo.getValue();
+        VarType varType = oldMpo.getVarType();
+        MatParamOverride newMpo = new MatParamOverride(varType, newName, value);
+        boolean enabled = oldMpo.isEnabled();
+        newMpo.setEnabled(enabled);
+
+        History.autoAdd();
+        spatial.addMatParamOverride(newMpo);
+        spatial.removeMatParamOverride(oldMpo);
+        getSceneView().renameOverride(newName);
+
+        String description = String.format(
+                "rename material-parameter override %s to %s",
+                MyString.quote(oldName), MyString.quote(newName));
+        setEdited(description);
+
+        override.selectParameter(newName);
+    }
+
+    /**
      * Rename the selected spatial.
      *
      * @param newName new name (not null)
@@ -626,38 +658,6 @@ public class EditableCgm extends LoadedCgm {
         }
 
         return success;
-    }
-
-    /**
-     * Rename the selected material-parameter override. TODO sort methods
-     *
-     * @param newName new parameter name (not null, not empty)
-     */
-    public void renameOverride(String newName) {
-        Validate.nonEmpty(newName, "new name");
-
-        Spatial spatial = getSpatial().find();
-        SelectedOverride override = getOverride();
-        MatParamOverride oldMpo = override.find();
-
-        String oldName = oldMpo.getName();
-        Object value = oldMpo.getValue();
-        VarType varType = oldMpo.getVarType();
-        MatParamOverride newMpo = new MatParamOverride(varType, newName, value);
-        boolean enabled = oldMpo.isEnabled();
-        newMpo.setEnabled(enabled);
-
-        History.autoAdd();
-        spatial.addMatParamOverride(newMpo);
-        spatial.removeMatParamOverride(oldMpo);
-        getSceneView().renameOverride(newName);
-
-        String description = String.format(
-                "rename material-parameter override %s to %s",
-                MyString.quote(oldName), MyString.quote(newName));
-        setEdited(description);
-
-        override.selectParameter(newName);
     }
 
     /**
