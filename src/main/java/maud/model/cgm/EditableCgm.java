@@ -792,9 +792,7 @@ public class EditableCgm extends LoadedCgm {
         String oldName = oldLight.getName();
 
         owner.removeLight(oldLight);
-        if (newLight != null) {
-            owner.addLight(newLight);
-        }
+        owner.addLight(newLight);
         getSceneView().replaceLight(oldName, newLight);
         setEditedLightPosDir();
     }
