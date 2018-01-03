@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -664,6 +664,8 @@ public class EditorScreen extends GuiScreenController {
         inputMode.setEnabled(true);
         inputMode.influence(this);
         setListener(inputMode);
+        
+        setSubmenuWarp(true, true);
 
         super.initialize(stateManager, application);
     }
