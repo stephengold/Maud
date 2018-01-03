@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,7 @@ import maud.Maud;
 import maud.menu.AnimationMenus;
 import maud.menu.BoneMenus;
 import maud.menu.EditorMenus;
+import maud.menu.EnumMenus;
 import maud.menu.PhysicsMenus;
 import maud.menu.ShowMenus;
 import maud.menu.SpatialMenus;
@@ -105,7 +106,7 @@ class SelectAction {
                 break;
 
             case Action.selectEdgeFilter:
-                ShowMenus.selectEdgeFilter();
+                EnumMenus.selectEdgeFilter();
                 break;
 
             case Action.selectJoint:
@@ -153,7 +154,7 @@ class SelectAction {
                 break;
 
             case Action.selectOrbitCenter:
-                ShowMenus.selectOrbitCenter();
+                EnumMenus.selectOrbitCenter();
                 break;
 
             case Action.selectOverride:
@@ -177,7 +178,7 @@ class SelectAction {
                 break;
 
             case Action.selectPlatformType:
-                ShowMenus.selectPlatformType();
+                EnumMenus.selectPlatformType();
                 break;
 
             case Action.selectScreenBone:

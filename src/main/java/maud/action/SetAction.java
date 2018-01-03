@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.dialog.EditorDialogs;
+import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.EditableCgm;
@@ -94,15 +95,15 @@ class SetAction {
                 break;
 
             case Action.setAxesDragEffect:
-                ShowMenus.setAxesDragEffect();
+                EnumMenus.setAxesDragEffect();
                 break;
 
             case Action.setAxesSubject:
-                ShowMenus.setAxesSubject();
+                EnumMenus.setAxesSubject();
                 break;
 
             case Action.setBatchHint:
-                ShowMenus.setBatchHint();
+                EnumMenus.setBatchHint();
                 break;
 
             case Action.setColorDepth:
@@ -110,7 +111,7 @@ class SetAction {
                 break;
 
             case Action.setCullHint:
-                ShowMenus.setCullHint();
+                EnumMenus.setCullHint();
                 break;
 
             case Action.setMatParamValue:
@@ -143,7 +144,7 @@ class SetAction {
                 break;
 
             case Action.setQueueBucket:
-                ShowMenus.setQueueBucket();
+                EnumMenus.setQueueBucket();
                 break;
 
             case Action.setRefreshRate:
@@ -156,24 +157,24 @@ class SetAction {
 
             case Action.setSceneBones:
                 currentOption = model.getScene().getSkeleton().getShowBones();
-                ShowMenus.setShowBones(ActionPrefix.setSceneBones,
+                EnumMenus.setShowBones(ActionPrefix.setSceneBones,
                         currentOption);
                 break;
 
             case Action.setScoreBonesNone:
                 currentOption = model.getScore().getShowNoneSelected();
-                ShowMenus.setShowBones(ActionPrefix.setScoreBonesNone,
+                EnumMenus.setShowBones(ActionPrefix.setScoreBonesNone,
                         currentOption);
                 break;
 
             case Action.setScoreBonesWhen:
                 currentOption = model.getScore().getShowWhenSelected();
-                ShowMenus.setShowBones(ActionPrefix.setScoreBonesWhen,
+                EnumMenus.setShowBones(ActionPrefix.setScoreBonesWhen,
                         currentOption);
                 break;
 
             case Action.setShadowMode:
-                ShowMenus.setShadowMode();
+                EnumMenus.setShadowMode();
                 break;
 
             case Action.setShapeParmValue:
@@ -211,19 +212,19 @@ class SetAction {
                 break;
 
             case Action.setTriangleMode:
-                ShowMenus.setTriangleMode();
+                EnumMenus.setTriangleMode();
                 break;
 
             case Action.setTweenRotations:
-                ShowMenus.setTweenRotations();
+                EnumMenus.setTweenRotations();
                 break;
 
             case Action.setTweenScales:
-                ShowMenus.setTweenScales();
+                EnumMenus.setTweenScales();
                 break;
 
             case Action.setTweenTranslations:
-                ShowMenus.setTweenTranslations();
+                EnumMenus.setTweenTranslations();
                 break;
 
             case Action.setTwistCardinal:

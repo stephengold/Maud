@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,7 @@ public class ViewMenus {
         } else {
             switch (remainder) {
                 case "Mode":
-                    ShowMenus.selectViewMode();
+                    EnumMenus.selectViewMode();
                     break;
                 case "Scene options":
                     ShowMenus.sceneViewOptions();
@@ -123,7 +123,7 @@ public class ViewMenus {
                 Maud.gui.tools.select("cursor");
                 break;
             case "Mode":
-                ShowMenus.selectViewMode();
+                EnumMenus.selectViewMode();
                 break;
             case "Platform":
                 Maud.gui.tools.select("platform");

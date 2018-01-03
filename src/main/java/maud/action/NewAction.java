@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.dialog.EditorDialogs;
+import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedTrack;
@@ -81,7 +82,7 @@ class NewAction {
                 break;
 
             case Action.newLight:
-                ShowMenus.addNewLight();
+                EnumMenus.addNewLight();
                 break;
 
             case Action.newMapping:
@@ -89,7 +90,7 @@ class NewAction {
                 break;
 
             case Action.newOverride:
-                ShowMenus.selectOverrideType();
+                EnumMenus.selectOverrideType();
                 break;
 
             case Action.newSgc:

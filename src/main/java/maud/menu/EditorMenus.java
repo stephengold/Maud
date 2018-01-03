@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -216,7 +216,7 @@ public class EditorMenus {
                 Misc.browseWeb("http://jmonkeyengine.org/");
                 break;
             case "License":
-                ShowMenus.viewLicense();
+                EnumMenus.viewLicense();
                 break;
             case "Source":
                 Misc.browseWeb("https://github.com/stephengold/Maud");
