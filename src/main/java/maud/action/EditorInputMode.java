@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -170,7 +170,7 @@ public class EditorInputMode extends InputMode {
                     handled = reduceAction(actionString);
                     break;
                 case "rename":
-                    handled = renameAction(actionString);
+                    handled = RenameAction.process(actionString);
                     break;
                 case "resample":
                     handled = resampleAction(actionString);
@@ -220,7 +220,7 @@ public class EditorInputMode extends InputMode {
     // private methods
 
     /**
-     * Process an action that starts with the word "copy".
+     * Process an ongoing action that starts with the word "copy".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -238,7 +238,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with the word "delete".
+     * Process an ongoing action that starts with the word "delete".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -300,7 +300,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with the word "launch".
+     * Process an ongoing action that starts with the word "launch".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -320,7 +320,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with the word "reduce".
+     * Process an ongoing action that starts with the word "reduce".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -356,86 +356,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with the word "rename".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean renameAction(String actionString) {
-        boolean handled = true;
-        switch (actionString) {
-            case Action.renameAnimation:
-                EditorDialogs.renameAnimation();
-                break;
-
-            case Action.renameBone:
-                EditorDialogs.renameBone();
-                break;
-
-            case Action.renameLight:
-                EditorDialogs.renameLight();
-                break;
-
-            case Action.renameOverride:
-                EditorDialogs.renameOverride();
-                break;
-
-            case Action.renameSpatial:
-                EditorDialogs.renameSpatial();
-                break;
-
-            case Action.renameUserKey:
-                EditorDialogs.renameUserKey();
-                break;
-
-            default:
-                handled = false;
-        }
-
-        if (!handled) {
-            String newName;
-            EditableCgm target = Maud.getModel().getTarget();
-            handled = true;
-            if (actionString.startsWith(ActionPrefix.renameAnimation)) {
-                newName = MyString.remainder(actionString,
-                        ActionPrefix.renameAnimation);
-                target.getAnimation().rename(newName);
-
-            } else if (actionString.startsWith(ActionPrefix.renameBone)) {
-                newName = MyString.remainder(actionString,
-                        ActionPrefix.renameBone);
-                target.renameBone(newName);
-
-            } else if (actionString.startsWith(ActionPrefix.renameLight)) {
-                newName = MyString.remainder(actionString,
-                        ActionPrefix.renameLight);
-                target.getLight().rename(newName);
-
-            } else if (actionString.startsWith(ActionPrefix.renameOverride)) {
-                newName = MyString.remainder(actionString,
-                        ActionPrefix.renameOverride);
-                target.renameOverride(newName);
-
-            } else if (actionString.startsWith(ActionPrefix.renameSpatial)) {
-                newName = MyString.remainder(actionString,
-                        ActionPrefix.renameSpatial);
-                target.renameSpatial(newName);
-
-            } else if (actionString.startsWith(ActionPrefix.renameUserKey)) {
-                newName = MyString.remainder(actionString,
-                        ActionPrefix.renameUserKey);
-                target.renameUserKey(newName);
-
-            } else {
-                handled = false;
-            }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an action that starts with the word "resample".
+     * Process an ongoing action that starts with the word "resample".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -478,7 +399,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with the word "retarget".
+     * Process an ongoing action that starts with the word "retarget".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -503,7 +424,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with the word "save".
+     * Process an ongoing action that starts with the word "save".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -540,7 +461,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with the word "toggle".
+     * Process an ongoing action that starts with the word "toggle".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -607,7 +528,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with the word "view".
+     * Process an ongoing action that starts with the word "view".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -637,7 +558,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with the word "warp".
+     * Process an ongoing action that starts with the word "warp".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -658,7 +579,7 @@ public class EditorInputMode extends InputMode {
     }
 
     /**
-     * Process an action that starts with the word "wrap".
+     * Process an ongoing action that starts with the word "wrap".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
