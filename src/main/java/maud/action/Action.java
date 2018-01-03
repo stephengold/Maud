@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -69,6 +69,15 @@ public class Action {
     final static String loadSourceAnimation = "load sourceAnimation";
     final static String loadSourceCgm = "load sourceCgm";
 
+    final static String newAnimationFromPose = "new animation fromPose";
+    final static String newCheckpoint = "new checkpoint";
+    final static String newLight = "new light";
+    final static String newMapping = "new mapping";
+    final static String newOverride = "new override";
+    final static String newSgc = "new sgc";
+    final static String newSingleKeyframe = "new singleKeyframe";
+    final static String newUserKey = "new userKey";
+
     final static String nextAnimation = "next animation";
     final static String nextAnimControl = "next animControl";
     final static String nextBone = "next bone";
@@ -86,16 +95,6 @@ public class Action {
     final static String nextUserData = "next userData";
     final static String nextVertex = "next vertex";
     final static String nextViewMode = "next viewMode";
-
-    // TODO sort fields
-    final static String newAnimationFromPose = "new animation fromPose";
-    final static String newCheckpoint = "new checkpoint";
-    final static String newLight = "new light";
-    final static String newMapping = "new mapping";
-    final static String newOverride = "new override";
-    final static String newSgc = "new sgc";
-    final static String newSingleKeyframe = "new singleKeyframe";
-    final static String newUserKey = "new userKey";
 
     final static String previousAnimation = "previous animation";
     final static String previousAnimControl = "previous animControl";
