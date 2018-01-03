@@ -37,7 +37,6 @@ import com.jme3.renderer.ViewPort;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
-import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.screen.Screen;
 import java.text.DateFormat;
@@ -164,30 +163,6 @@ public class EditorScreen extends GuiScreenController {
         String message = String.format("added checkpoint[%d] from %s at %s",
                 checkpointIndex, source, creationTime);
         setStatus(message);
-    }
-
-    /**
-     * Disable the named Nifty slider. TODO move to GuiScreenController
-     *
-     * @param name unique id prefix of the slider to disable (not null)
-     */
-    public void disableSlider(String name) {
-        Validate.nonNull(name, "name");
-
-        Slider slider = getSlider(name);
-        slider.disable();
-    }
-
-    /**
-     * Enable the named Nifty slider. TODO move to GuiScreenController
-     *
-     * @param name unique id prefix of the slider to enable (not null)
-     */
-    public void enableSlider(String name) {
-        Validate.nonNull(name, "name");
-
-        Slider slider = getSlider(name);
-        slider.enable();
     }
 
     /**
@@ -664,7 +639,7 @@ public class EditorScreen extends GuiScreenController {
         inputMode.setEnabled(true);
         inputMode.influence(this);
         setListener(inputMode);
-        
+
         setSubmenuWarp(true, true);
 
         super.initialize(stateManager, application);
