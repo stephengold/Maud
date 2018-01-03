@@ -76,7 +76,7 @@ public class ScorePov implements Cloneable, Pov {
     /**
      * 1/2 the height of the camera's frustum (in world units, &gt;0)
      */
-    private float halfHeight = 5f;
+    private float halfHeight = 2f;
     /**
      * range of world Y coordinates occupied by the most recently selected bone
      */
