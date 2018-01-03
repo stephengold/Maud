@@ -132,7 +132,7 @@ class SetAction {
                     String parameterName = override.getName();
                     VarType varType = override.getVarType();
                     Object oldValue = override.getValue();
-                    boolean allowNull = false;
+                    boolean allowNull = true;
                     EditorDialogs.setMatParamValue(parameterName, varType,
                             oldValue, allowNull, ActionPrefix.setOverrideValue);
                 }
