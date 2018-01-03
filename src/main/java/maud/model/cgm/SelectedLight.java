@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
-import maud.MaudUtil;
+import maud.LightUtil;
 
 /**
  * The MVC model of the selected light in a C-G model.
@@ -213,7 +213,7 @@ public class SelectedLight implements JmeCloneable {
      * @return abbreviated name for its class
      */
     public String getType() {
-        String description = MaudUtil.describeType(selected);
+        String description = LightUtil.describeType(selected);
         return description;
     }
 
@@ -347,7 +347,7 @@ public class SelectedLight implements JmeCloneable {
     void select(Light light, Spatial spatial) {
         assert light != null;
         assert spatial != null;
-        assert MaudUtil.findIndex(light, spatial) != noLightIndex;
+        assert LightUtil.findIndex(light, spatial) != noLightIndex;
 
         selected = light;
         owner = spatial;

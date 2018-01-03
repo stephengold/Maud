@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -90,6 +90,7 @@ import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 import jme3utilities.ui.Locators;
 import jme3utilities.wes.Pose;
+import maud.LightUtil;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.PhysicsUtil;
@@ -788,9 +789,9 @@ public class SceneView
     public void replaceLight(String name, Light light) {
         Validate.nonNull(name, "name");
 
-        Light oldLight = MaudUtil.findLight(name, cgmRoot);
+        Light oldLight = LightUtil.findLight(name, cgmRoot);
         assert oldLight != null;
-        Spatial owner = MaudUtil.findOwner(oldLight, cgmRoot);
+        Spatial owner = LightUtil.findOwner(oldLight, cgmRoot);
         owner.removeLight(oldLight);
         if (light != null) {
             Light cloneLight = light.clone();
