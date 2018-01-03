@@ -53,7 +53,7 @@ import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
 
 /**
- * Process an action string that begins with the word "select".
+ * Process actions that start with the word "select".
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -78,7 +78,7 @@ class SelectAction {
     // new methods exposed
 
     /**
-     * Process an ongoing action string that begin with "select".
+     * Process an ongoing action that starts with the word "select".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -266,7 +266,7 @@ class SelectAction {
     }
 
     /**
-     * Process a non-ongoing action string that begin with "select".
+     * Process a non-ongoing action that starts with the word "select".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -297,8 +297,8 @@ class SelectAction {
     // private methods
 
     /**
-     * Process an action that starts with "select" -- 2nd part: test for
-     * prefixes.
+     * Process an ongoing action that starts with the word "select" -- 2nd part:
+     * test for prefixes.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false

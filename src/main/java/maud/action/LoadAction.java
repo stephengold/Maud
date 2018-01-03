@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedCgm;
 
 /**
- * Process an action string that begins with the word "load".
+ * Process actions that start with the word "load".
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -60,7 +60,7 @@ class LoadAction {
     // new methods exposed
 
     /**
-     * Process an action string that begin with "load".
+     * Process an ongoing action that starts with the word "load".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -100,7 +100,8 @@ class LoadAction {
     // private methods
 
     /**
-     * Process an action that starts with "load" -- 2nd part: test for prefixes.
+     * Process an ongoing action that starts with the word "load" -- 2nd part:
+     * test for prefixes.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false

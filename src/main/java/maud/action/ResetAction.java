@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
 
 /**
- * Process an action string that begins with the word "reset".
+ * Process actions that start with the word "reset".
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -72,7 +72,7 @@ class ResetAction {
     // new methods exposed
 
     /**
-     * Process an ongoing action string that begin with "reset".
+     * Process an ongoing action that starts with the word "reset".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false

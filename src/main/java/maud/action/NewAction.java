@@ -39,7 +39,7 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedTrack;
 
 /**
- * Process an action string that begins with the word "new".
+ * Process actions that start with the word "new".
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -64,7 +64,7 @@ class NewAction {
     // new methods exposed
 
     /**
-     * Process an action string that begin with the word "new".
+     * Process an ongoing action that starts with the word "new".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -123,7 +123,8 @@ class NewAction {
     // private methods
 
     /**
-     * Process an action that starts with "new" -- 2nd part: test for prefixes.
+     * Process an ongoing action that starts with the word "new" -- 2nd part:
+     * test for prefixes.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false

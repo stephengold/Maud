@@ -53,7 +53,7 @@ import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.TriangleMode;
 
 /**
- * Process an action string that begins with the word "set".
+ * Process actions that start with the word "set".
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -78,7 +78,7 @@ class SetAction {
     // new methods exposed
 
     /**
-     * Process an action string that begin with "set".
+     * Process an ongoing action that starts with the word "set".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -257,7 +257,8 @@ class SetAction {
     // private methods
 
     /**
-     * Process an action that starts with "set" -- 2nd part: test for prefixes.
+     * Process an ongoing action that starts with the word "set" -- 2nd part:
+     * test for prefixes.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false

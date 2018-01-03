@@ -79,7 +79,7 @@ public class EnumMenus {
     // new methods exposed
 
     /**
-     * Display a "Spatial -> Light -> Add new" menu.
+     * Display a "Spatial -&gt; Light -&gt; Add new" menu.
      */
     public static void addNewLight() {
         MenuBuilder builder = new MenuBuilder();

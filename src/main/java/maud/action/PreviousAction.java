@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ import maud.model.History;
 import maud.model.cgm.EditableCgm;
 
 /**
- * Process an action string that begins with the word "previous".
+ * Process actions that start with the word "previous".
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -58,7 +58,7 @@ class PreviousAction {
     // new methods exposed
 
     /**
-     * Process an action string that begins with the word "previous".
+     * Process an ongoing action that starts with the word "previous".
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false

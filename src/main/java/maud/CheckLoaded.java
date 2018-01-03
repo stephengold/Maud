@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -280,7 +280,8 @@ public class CheckLoaded {
     }
 
     /**
-     * Check for anomalies in a loaded C-G model.
+     * Check for anomalies in a loaded C-G model. TODO check for duplicate
+     * spatial names and duplicate light names
      *
      * @param cgmRoot (not null, unaffected)
      * @return false if issues found, otherwise true
