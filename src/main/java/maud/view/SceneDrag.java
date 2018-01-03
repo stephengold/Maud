@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -390,7 +390,7 @@ public class SceneDrag {
             case SelectedObject:
                 if (editableCgm != null) {
                     SelectedObject object = editableCgm.getObject();
-                    if (object.canReposition()) {
+                    if (object.canPosition()) {
                         /*
                          * Rotate the selected physics object.
                          */
@@ -626,7 +626,7 @@ public class SceneDrag {
 
             case SelectedObject:
                 SelectedObject object = editableCgm.getObject();
-                if (object.canReposition()) {
+                if (object.canPosition()) {
                     /*
                      * Translate the selected physics object.
                      */
