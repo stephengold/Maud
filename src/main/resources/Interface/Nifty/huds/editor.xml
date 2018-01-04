@@ -117,7 +117,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="animationTool" title="Animation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="270px" width="306px" x="75" y="25">
+                     height="270px" width="306px" x="220" y="50">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="30px">
                         <control name="button" id="animControlPreviousButton"
@@ -230,7 +230,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="axesTool" title="Axes Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="175px" width="210px" x="70" y="70">
+                     height="175px" width="210px" x="215" y="55">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="27px">
                         <control name="label" text="Visualize axes of  "
@@ -269,7 +269,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="backgroundTool" title="Background Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="320px" width="190px" x="25" y="75">
+                     height="320px" width="190px" x="210" y="60">
                 <panel childLayout="vertical">
                     <panel/>
                     <panel childLayout="horizontal" height="25px">
@@ -339,7 +339,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="boneTool" title="Bone Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="192px" width="280px" x="65" y="35">
+                     height="192px" width="280px" x="205" y="65">
                 <panel childLayout="vertical">
                     <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -432,7 +432,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="boneRotationTool" title="Bone-Rotation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="220px" width="195px" x="60" y="40">
+                     height="220px" width="195px" x="200" y="70">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xAngSlider"
@@ -493,7 +493,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="boneScaleTool" title="Bone-Scale Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="265px" width="180px" x="50" y="50">
+                     height="265px" width="180px" x="195" y="75">
                 <panel childLayout="vertical">
                     <control name="label" text="Master control:"/>
                     <control name="horizontalSlider" id="scaMasterSlider"
@@ -551,7 +551,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="boneTranslationTool" title="Bone-Translation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="270px" width="180px" x="55" y="45">
+                     height="270px" width="180px" x="190" y="80">
                 <panel childLayout="vertical">
                     <control name="label" text="Master control:"/>
                     <control name="horizontalSlider" id="offMasterSlider"
@@ -609,7 +609,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="boundsTool" title="Bounds Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="270px" width="190px" x="25" y="75">
+                     height="270px" width="190px" x="185" y="85">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal"
                            padding="0,10">
@@ -658,7 +658,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="cameraTool" title="Camera Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="112px" width="195px" x="45" y="55">
+                     height="112px" width="195px" x="180" y="90">
                 <panel childLayout="vertical">
                     <panel/>
                     <panel childLayout="horizontal" height="28px">
@@ -689,7 +689,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="cgmTool" title="Model Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="140px" width="520px" x="35" y="65">
+                     height="140px" width="520px" x="175" y="95">
                 <panel childLayout="vertical">
                     <panel/>
                     <panel childLayout="horizontal" height="28px">
@@ -754,7 +754,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="cursorTool" title="Cursor Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="240px" width="190px" x="40" y="60">
+                     height="240px" width="190px" x="170" y="100">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal"
                            padding="0,10">
@@ -797,7 +797,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="displaySettingsTool" title="Display-Settings Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="220px" width="200px" x="70" y="30">
+                     height="220px" width="200px" x="165" y="105">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="fullscreenCheckBox"/>
@@ -843,7 +843,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="historyTool" title="History Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="240px" width="370px" x="65" y="35">
+                     height="240px" width="370px" x="160" y="110">
                 <panel childLayout="vertical">
                     <control name="scrollPanel" id="historyScrollPanel"
                              style="bats-scroll-panel"
@@ -886,7 +886,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="jointTool" title="Joint Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="140px" width="250px" x="65" y="35">
+                     height="140px" width="250px" x="155" y="115">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="jointPreviousButton"
@@ -935,7 +935,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="keyframeTool" title="Keyframe Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="218px" width="270px" x="65" y="35">
+                     height="218px" width="270px" x="150" y="120">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="27px">
                         <control name="label" text="Track:  "/>
@@ -1044,7 +1044,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="lightsTool" title="Lights Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="225px" width="270px" x="65" y="35">
+                     height="225px" width="270px" x="145" y="125">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="lightPreviousButton"
@@ -1133,7 +1133,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="mappingTool" title="Mapping Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="225px" width="360px" x="35" y="65">
+                     height="225px" width="360px" x="140" y="130">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="25px">
                         <control name="label" text="Asset base path:  "/>
@@ -1245,7 +1245,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="materialTool" title="Material Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="165px" width="500px" x="65" y="35">
+                     height="165px" width="500px" x="135" y="135">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Name:  "/>
@@ -1321,7 +1321,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="objectTool" title="Object Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="140px" width="242px" x="65" y="35">
+                     height="140px" width="242px" x="130" y="140">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="physicsPreviousButton"
@@ -1375,7 +1375,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="overridesTool" title="Overrides Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="145px" width="315px" x="65" y="35">
+                     height="145px" width="315px" x="125" y="145">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="mpoPreviousButton"
@@ -1448,7 +1448,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="platformTool" title="Platform Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="130px" width="180px" x="70" y="30">
+                     height="130px" width="180px" x="120" y="150">
                 <panel childLayout="vertical">
                     <panel/>
                     <panel childLayout="horizontal" height="28px">
@@ -1475,7 +1475,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="renderTool" title="Render Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="235px" width="190px" x="30" y="70">
+                     height="235px" width="190px" x="115" y="155">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="physicsCheckBox"
@@ -1525,7 +1525,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="retargetTool" title="Retarget Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="170px" width="320px" x="30" y="70">
+                     height="170px" width="320px" x="110" y="160">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Target model:  "/>
@@ -1588,7 +1588,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="sceneVertexTool" title="Scene Vertex Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="250px" width="160px" x="25" y="75">
+                     height="250px" width="160px" x="105" y="165">
                 <panel childLayout="vertical">
                     <panel height="4px"/>
                     <panel childLayout="horizontal" height="27px">
@@ -1636,7 +1636,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="scoreTool" title="Score Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="130px" width="320px" x="20" y="80">
+                     height="130px" width="320px" x="100" y="170">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="label"
@@ -1674,7 +1674,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="settingsTool" title="Settings Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="143px" width="200px" x="65" y="35">
+                     height="143px" width="200px" x="95" y="175">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Display angles in  "/>
@@ -1708,7 +1708,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="sgcTool" title="Control Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="202px" width="270px" x="65" y="35">
+                     height="202px" width="270px" x="90" y="180">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="sgcPreviousButton"
@@ -1788,7 +1788,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="shapeTool" title="Shape Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="195px" width="230px" x="65" y="35">
+                     height="195px" width="230px" x="85" y="185">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="shapePreviousButton"
@@ -1863,7 +1863,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="skeletonTool" title="Skeleton Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="175px" width="250px" x="25" y="75">
+                     height="175px" width="250px" x="80" y="190">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
                         <control name="label" text="Bones shown:  "/>
@@ -1892,7 +1892,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="skeletonColorTool" title="Skeleton Color Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="430px" width="175px" x="75" y="25">
+                     height="430px" width="175px" x="75" y="195">
                 <panel childLayout="vertical">
                     <control name="label" text="Link color:"/>
                     <panel childLayout="horizontal">
@@ -1981,7 +1981,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="skyTool" title="Sky Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="160px" width="160px" x="20" y="80">
+                     height="160px" width="160px" x="70" y="200">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal"
                            padding="0,10">
@@ -1995,7 +1995,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="sourceAnimationTool" title="Source Animation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="280px" width="290px" x="75" y="25">
+                     height="280px" width="290px" x="65" y="205">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="30px">
                         <control name="button" id="sourceAnimControlPreviousButton"
@@ -2096,7 +2096,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="spatialTool" title="Spatial Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="250px" width="315px" x="15" y="85">
+                     height="250px" width="315px" x="60" y="210">
                 <panel childLayout="vertical">
                     <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -2199,7 +2199,7 @@ the menu bar, status bar, and tool windows.
                      title="Spatial Details Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="278px" width="255px" x="15" y="85">
+                     height="278px" width="255px" x="55" y="215">
                 <panel childLayout="vertical">
                     <panel height="5px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -2300,7 +2300,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="spatialRotationTool" title="Spatial-Rotation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="250px" width="200px" x="60" y="40">
+                     height="250px" width="200px" x="50" y="220">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
                         <panel childLayout="vertical">
@@ -2378,7 +2378,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="spatialScaleTool" title="Spatial-Scale Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="265px" width="165px" x="50" y="50">
+                     height="265px" width="165px" x="45" y="225">
                 <panel childLayout="vertical">
                     <control name="label" text="Master control:"/>
                     <control name="horizontalSlider" id="ssMasterSlider"
@@ -2422,7 +2422,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="spatialTranslationTool" title="Spatial-Translation Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="270px" width="180px" x="55" y="45">
+                     height="270px" width="180px" x="40" y="230">
                 <panel childLayout="vertical">
                     <control name="label" text="Master control:"/>
                     <control name="horizontalSlider" id="soMasterSlider"
@@ -2466,7 +2466,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="tweeningTool" title="Tweening Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="110px" width="300px" x="35" y="65">
+                     height="110px" width="300px" x="35" y="235">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="27px">
                         <control name="label" text="For translations:  "
@@ -2513,7 +2513,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="twistTool" title="Twist Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="250px" width="220px" x="35" y="65">
+                     height="250px" width="220px" x="30" y="240">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
                         <panel childLayout="vertical">
@@ -2588,7 +2588,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="userDataTool" title="User-Data Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="145px" width="315px" x="65" y="35">
+                     height="145px" width="315px" x="25" y="245">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="userDataPreviousButton"
@@ -2659,7 +2659,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="vertexTool" title="Vertex Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="245px" width="210px" x="35" y="65">
+                     height="245px" width="210px" x="20" y="250">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="27px">
                         <control name="button" id="vertexPreviousButton"
