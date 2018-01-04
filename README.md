@@ -228,6 +228,7 @@ Keyboard shortcuts in the Editor Screen include:
 
  + "." to pause/restart the loaded animation(s)
  + "Esc" to exit from the active menu (or if there's no active menu, to exit from Maud)
+ + "H" to toggle the visibility of the menu bar and the status bar
  + "X" to create a checkpoint
  + "Z" to undo to the previous checkpoint
  + "Y" to redo to the next checkpoint

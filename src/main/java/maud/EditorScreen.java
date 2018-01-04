@@ -38,6 +38,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
+import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import java.text.DateFormat;
 import java.util.Date;
@@ -659,13 +660,22 @@ public class EditorScreen extends GuiScreenController {
             return;
         }
         /*
+         * Update visibility of the menu bar and status bar.
+         */
+        EditorModel model = Maud.getModel();
+        boolean mbVisible = model.getMisc().isMenuBarVisible();
+        Element menuBar = getScreen().findElementById("menu bar");
+        menuBar.setVisible(mbVisible);
+        Element statusBar = getScreen().findElementById("status bar");
+        statusBar.setVisible(mbVisible);
+        /*
          * Update animations.
          */
-        Cgm source = Maud.getModel().getSource();
+        Cgm source = model.getSource();
         if (source.getAnimation().isMoving()) {
             updateTrackTime(source, tpf);
         }
-        Cgm target = Maud.getModel().getTarget();
+        Cgm target = model.getTarget();
         if (target.getAnimation().isMoving()) {
             updateTrackTime(target, tpf);
         } else if (target.getAnimation().isRetargetedPose()) {
@@ -730,7 +740,7 @@ public class EditorScreen extends GuiScreenController {
     void updateDragPov() {
         if (signals.test(povSignalName)) { // dragging a POV
             if (dragPov == null) { // a brand-new drag
-                dragPov = Maud.gui.mousePov();
+                dragPov = mousePov();
             } else {
                 float dx = Mouse.getDX();
                 float dy = Mouse.getDY();

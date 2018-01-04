@@ -495,6 +495,10 @@ public class EditorInputMode extends InputMode {
                 model.getMisc().toggleLoadOrientation();
                 break;
 
+            case Action.toggleMenuBar:
+                model.getMisc().toggleMenuBarVisibility();
+                break;
+
             case Action.toggleMovement:
                 model.getScene().getCamera().toggleMovement();
                 break;

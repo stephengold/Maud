@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -60,6 +60,10 @@ public class MiscOptions implements Cloneable {
      * +Y upward)
      */
     private boolean loadZup = false;
+    /**
+     * visibility of the menu bar (true &rarr; visible, false &rarr; hidden)
+     */
+    private boolean menuBarVisibility = true;
     /**
      * starting point for displayed indices (0 or 1)
      */
@@ -143,6 +147,15 @@ public class MiscOptions implements Cloneable {
     public ViewMode getViewMode() {
         assert viewMode != null;
         return viewMode;
+    }
+
+    /**
+     * Test the visibility of the menu bar.
+     *
+     * @return true &rarr; visible, false &rarr; hidden
+     */
+    public boolean isMenuBarVisible() {
+        return menuBarVisibility;
     }
 
     /**
@@ -251,6 +264,13 @@ public class MiscOptions implements Cloneable {
      */
     public void toggleLoadOrientation() {
         setLoadZup(!loadZup);
+    }
+
+    /**
+     * Toggle the visibility of the menu bar.
+     */
+    public void toggleMenuBarVisibility() {
+        menuBarVisibility = !menuBarVisibility;
     }
     // *************************************************************************
     // Object methods
