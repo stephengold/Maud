@@ -455,6 +455,9 @@ public class EditorMenus {
             case "Next":
                 Maud.getModel().getTarget().getVertex().selectNext();
                 break;
+            case "None":
+                Maud.getModel().getTarget().getVertex().deselect();
+                break;
             case "Previous":
                 Maud.getModel().getTarget().getVertex().selectPrevious();
                 break;

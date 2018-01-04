@@ -433,6 +433,7 @@ public class ShowMenus {
             if (vertex.isSelected()) {
                 //builder.add("Neighbor"); TODO
                 builder.add("Next");
+                builder.add("None");
                 builder.add("Previous");
             }
 
