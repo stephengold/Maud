@@ -205,7 +205,7 @@ class Platform {
         Texture texture = MyAsset.loadTexture(assetManager, textureAssetPath);
         Material material = MyAsset.createShadedMaterial(assetManager, texture);
         result.setMaterial(material);
-        result.setShadowMode(RenderQueue.ShadowMode.Receive);
+        result.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 
         Vector3f halfExtents = new Vector3f(radius, squareThickness, radius);
         BoxCollisionShape shape = new BoxCollisionShape(halfExtents);
