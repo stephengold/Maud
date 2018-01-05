@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,8 @@ public class ScenePov implements Cloneable, Pov {
     /**
      * direction the scene camera points (unit vector in world coordinates)
      */
-    private Vector3f cameraDirection = new Vector3f(1f, 0f, 0f);
+    private Vector3f cameraDirection
+            = new Vector3f(0.78614616f, -0.3275609f, -0.52409756f);
     /**
      * location of the scene camera (in world coordinates)
      */

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -51,6 +51,9 @@ import maud.model.option.MiscOptions;
 import maud.model.option.ScoreOptions;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
+import maud.model.option.scene.MovementMode;
+import maud.model.option.scene.OrbitCenter;
+import maud.model.option.scene.ProjectionMode;
 import maud.model.option.scene.SceneOptions;
 
 /**
@@ -347,7 +350,9 @@ public class EditorModel {
         ViewMode viewMode = miscOptions.getViewMode();
         arg = viewMode.toString();
         writePerformAction(writer, ActionPrefix.setViewMode + arg);
-
+        /*
+         * tweening techniques
+         */
         TweenVectors tweenTranslations = techniques.getTweenTranslations();
         arg = tweenTranslations.toString();
         writePerformAction(writer, ActionPrefix.setTweenTranslations + arg);
@@ -359,11 +364,28 @@ public class EditorModel {
         TweenVectors tweenScales = techniques.getTweenScales();
         arg = tweenScales.toString();
         writePerformAction(writer, ActionPrefix.setTweenScales + arg);
-
+        /*
+         * scene-view options
+         */
         ShowBones sceneBones = sceneOptions.getSkeleton().getShowBones();
         arg = sceneBones.toString();
         writePerformAction(writer, ActionPrefix.setSceneBones + arg);
 
+        MovementMode movementMode = sceneOptions.getCamera().getMovementMode();
+        arg = movementMode.toString();
+        writePerformAction(writer, ActionPrefix.selectMovement + arg);
+
+        OrbitCenter center = sceneOptions.getCamera().getOrbitCenter();
+        arg = center.toString();
+        writePerformAction(writer, ActionPrefix.selectOrbitCenter + arg);
+
+        ProjectionMode projection
+                = sceneOptions.getCamera().getProjectionMode();
+        arg = projection.toString();
+        writePerformAction(writer, ActionPrefix.selectProjection + arg);
+        /*
+         * score-view options
+         */
         ShowBones showNoneSelected = scoreOptions.getShowNoneSelected();
         arg = showNoneSelected.toString();
         writePerformAction(writer, ActionPrefix.setScoreBonesNone + arg);
@@ -374,7 +396,7 @@ public class EditorModel {
 
         writePerformAction(writer, ActionPrefix.loadCgmNamed + "Jaime");
         /*
-         * select each enabled tool at its current display position
+         * each selected tool at its current display position
          */
         for (WindowController tool : Maud.gui.listWindowControllers()) {
             if (tool.isEnabled()) {
