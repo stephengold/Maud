@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -256,6 +256,10 @@ public class ActionPrefix {
      */
     final public static String selectMenuItem = "select menuItem ";
     /**
+     * argument is the name of a movement-mode enum value
+     */
+    final public static String selectMovement = "select movement ";
+    /**
      * argument is the name of an orbit-center enum value
      */
     final public static String selectOrbitCenter = "select orbitCenter ";
@@ -275,6 +279,10 @@ public class ActionPrefix {
      * argument is the name of a PlatformType
      */
     final public static String selectPlatformType = "select platformType ";
+    /**
+     * argument is the name of a projection-mode enum value
+     */
+    final public static String selectProjection = "select projection ";
     /**
      * argument is the id of a physics shape or a prefix thereof
      */

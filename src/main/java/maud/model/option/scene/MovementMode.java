@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -43,29 +43,4 @@ public enum MovementMode {
      * orbit a central point
      */
     Orbit;
-    // *************************************************************************
-    // Enum methods
-
-    /**
-     * Read the programmer-friendly name of the enum value.
-     *
-     * @return name (not null)
-     */
-    @Override
-    public String toString() {
-        String result;
-
-        switch (this) {
-            case Fly:
-                result = "fly";
-                break;
-            case Orbit:
-                result = "orbit";
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-
-        return result;
-    }
 }

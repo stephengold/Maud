@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -43,29 +43,4 @@ public enum ProjectionMode {
      * render viewport in perspective
      */
     Perspective;
-    // *************************************************************************
-    // Enum methods
-
-    /**
-     * Read the programmer-friendly name of the enum value.
-     *
-     * @return name (not null)
-     */
-    @Override
-    public String toString() {
-        String result;
-
-        switch (this) {
-            case Parallel:
-                result = "parallel";
-                break;
-            case Perspective:
-                result = "perspective";
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-
-        return result;
-    }
 }

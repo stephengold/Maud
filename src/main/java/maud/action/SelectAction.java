@@ -47,8 +47,10 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSgc;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
+import maud.model.option.scene.MovementMode;
 import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.PlatformType;
+import maud.model.option.scene.ProjectionMode;
 import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
 
@@ -346,6 +348,11 @@ class SelectAction {
             arg = MyString.remainder(actionString, ActionPrefix.selectMatParam);
             target.getMatParam().select(arg);
 
+        } else if (actionString.startsWith(ActionPrefix.selectMovement)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectMovement);
+            MovementMode mode = MovementMode.valueOf(arg);
+            model.getScene().getCamera().setMode(mode);
+
         } else if (actionString.startsWith(ActionPrefix.selectOrbitCenter)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectOrbitCenter);
@@ -371,6 +378,12 @@ class SelectAction {
                     ActionPrefix.selectPlatformType);
             PlatformType type = PlatformType.valueOf(arg);
             model.getScene().setPlatformType(type);
+
+        } else if (actionString.startsWith(ActionPrefix.selectProjection)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectProjection);
+            ProjectionMode mode = ProjectionMode.valueOf(arg);
+            model.getScene().getCamera().setMode(mode);
 
         } else if (actionString.startsWith(ActionPrefix.selectSgc)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectSgc);
