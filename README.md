@@ -357,6 +357,7 @@ In Parallel Mode, the mouse wheel
 alters the scale of the projection without actually moving the camera.
 
 Standard keyboard shortcuts affecting the scene-view cameras:
+ + "Numpad-0" to toggle between movement modes
  + "Numpad-1" to move (or rotate) a camera to a horizontal view
  + "Numpad-5" to toggle between projection modes
 
