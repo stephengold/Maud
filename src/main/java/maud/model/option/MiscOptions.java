@@ -73,13 +73,17 @@ public class MiscOptions implements Cloneable {
      */
     private int indexBase = 1;
     /**
-     * parameter displayed in ObjectTool (not null)
+     * rigid-body parameter to display in ObjectTool (not null)
      */
     private RigidBodyParameter rbp = RigidBodyParameter.Mass;
     /**
-     * parameter displayed in ShapeTool (not null)
+     * shape parameter to display in ShapeTool (not null)
      */
     private ShapeParameter shapeParameter = ShapeParameter.Radius;
+    /**
+     * message to display in the status bar (not null)
+     */
+    private String statusMessage = "Welcome to Maud!";
     /**
      * view mode (not null)
      */
@@ -141,6 +145,16 @@ public class MiscOptions implements Cloneable {
     public ShapeParameter getShapeParameter() {
         assert shapeParameter != null;
         return shapeParameter;
+    }
+
+    /**
+     * Read the message to display in the status bar.
+     *
+     * @return message to display (not null)
+     */
+    public String getStatusMessage() {
+        assert statusMessage != null;
+        return statusMessage;
     }
 
     /**
@@ -237,6 +251,16 @@ public class MiscOptions implements Cloneable {
     public void setShapeParameter(ShapeParameter newParameter) {
         Validate.nonNull(newParameter, "new parameter");
         shapeParameter = newParameter;
+    }
+
+    /**
+     * Alter the message to display in the status bar.
+     *
+     * @param newMessage what to display (not null)
+     */
+    public void setStatusMessage(String newMessage) {
+        Validate.nonNull(newMessage, "new message");
+        statusMessage = newMessage;
     }
 
     /**

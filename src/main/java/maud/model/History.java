@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -278,7 +278,7 @@ public class History {
         } else {
             String message = "There is nothing to undo!";
             logger.log(Level.INFO, message);
-            Maud.gui.setStatus(message);
+            Maud.getModel().getMisc().setStatusMessage(message);
         }
 
         setAutoScroll();

@@ -65,6 +65,7 @@ import maud.model.cgm.PlayOptions;
 import maud.model.cgm.Pov;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.option.DisplaySettings;
+import maud.model.option.MiscOptions;
 import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.SceneOptions;
 import maud.tool.EditorTools;
@@ -162,9 +163,10 @@ public class EditorScreen extends GuiScreenController {
 
         HistoryTool historyTool = (HistoryTool) tools.getTool("history");
         historyTool.setAutoScroll();
+
         String message = String.format("added checkpoint[%d] from %s at %s",
                 checkpointIndex, source, creationTime);
-        setStatus(message);
+        Maud.getModel().getMisc().setStatusMessage(message);
     }
 
     /**
@@ -176,7 +178,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Select a loaded C-G model (source or target) based on the screen position
+     * Select a loaded C-G model (source or target) based on the screen location
      * of the mouse pointer.
      *
      * @return a pre-existing instance, or null if none applies
@@ -209,7 +211,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Select a POV based on the screen position of the mouse pointer.
+     * Select a POV based on the screen location of the mouse pointer.
      *
      * @return the pre-existing instance, or null if none applies
      */
@@ -247,7 +249,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Select a view based on the screen position of the mouse pointer.
+     * Select a view based on the screen location of the mouse pointer.
      *
      * @return the pre-existing instance, or null if none applies
      */
@@ -285,7 +287,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Select a view type based on the screen position of the mouse pointer.
+     * Select a view type based on the screen location of the mouse pointer.
      *
      * @return an enum value, or null if neither applies
      */
@@ -589,16 +591,6 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Update the status bar.
-     *
-     * @param message what to display (not null)
-     */
-    public void setStatus(String message) {
-        Validate.nonNull(message, "message");
-        setStatusText("messageLabel", message);
-    }
-
-    /**
      * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
      */
     public void warpCursor() {
@@ -730,28 +722,33 @@ public class EditorScreen extends GuiScreenController {
      */
     private void updateBars() {
         EditorModel model = Maud.getModel();
+        MiscOptions misc = model.getMisc();
         /*
-         * Update visibility of the bars.
+         * Update visibility of both bars.
          */
-        boolean mbVisible = model.getMisc().isMenuBarVisible();
+        boolean visible = misc.isMenuBarVisible();
         Element menuBar = getScreen().findElementById("menu bar");
-        menuBar.setVisible(mbVisible);
+        menuBar.setVisible(visible);
         Element statusBar = getScreen().findElementById("status bar");
-        statusBar.setVisible(mbVisible);
+        statusBar.setVisible(visible);
 
-        ViewType viewType = mouseViewType();
-        if (mbVisible) {
+        if (visible) {
             /*
-             * Update the description of camera options in the status bar.
+             * Copy the status message.
+             */
+            String message = misc.getStatusMessage();
+            setStatusText("statusCenter", message);
+            /*
+             * Update the description of camera options.
              */
             String description = "";
+            ViewType viewType = mouseViewType();
             if (viewType == ViewType.Scene) {
                 CameraOptions options = model.getScene().getCamera();
                 description = options.describe();
             }
-            setStatusText("cameraOptionsLabel", description);
+            setStatusText("statusRight", description);
         }
-
     }
 
     /**

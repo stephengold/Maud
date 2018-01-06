@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -717,7 +717,7 @@ public class SelectedTrack implements Cloneable {
         boolean success = translateForSupport(bindSupportY);
         if (!success) {
             String message = "animation translation failed";
-            Maud.gui.setStatus(message);
+            Maud.getModel().getMisc().setStatusMessage(message);
         }
     }
 

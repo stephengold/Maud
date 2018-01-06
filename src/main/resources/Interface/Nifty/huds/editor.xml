@@ -105,15 +105,18 @@ the menu bar, status bar, and tool windows.
                    backgroundColor="#ffff"
                    childLayout="overlay"
                    height="20px">
-                <control name="label" id="messageLabel"
+                <control name="label" id="statusLeft"
+                         color="#080f"
+                         textHAlign="left"
+                         width="100%"/>
+                <control name="label" id="statusCenter"
                          color="#000f"
-                         text="Welcome to Maud!"
                          textHAlign="center"
-                         width="90%"/>
-                <control name="label" id="cameraOptionsLabel"
+                         width="100%"/>
+                <control name="label" id="statusRight"
                          color="#00ff"
                          textHAlign="right"
-                         width="40%"/>
+                         width="100%"/>
             </panel>
         </layer>
         <layer id="windowsLayer" childLayout="absolute-inside">

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -253,7 +253,7 @@ public class Maud extends GuiApplication {
 
         String message = String.format("unimplemented feature (action = %s)",
                 MyString.quote(actionString));
-        gui.setStatus(message);
+        editorModel.getMisc().setStatusMessage(message);
     }
 
     /**
