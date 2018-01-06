@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,12 @@
 package maud.model.option;
 
 import com.jme3.math.ColorRGBA;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.MaudUtil;
+import maud.action.ActionPrefix;
 import maud.model.cgm.Cgm;
 
 /**
@@ -254,6 +258,23 @@ public class ScoreOptions implements Cloneable {
         storeResult.set(targetBackground);
 
         return storeResult;
+    }
+
+    /**
+     * Write the options to a script using the specified writer.
+     *
+     * @param writer (not null)
+     * @throws java.io.IOException if an I/O error occurs while writing
+     */
+    public void writeToScript(Writer writer) throws IOException {
+        Validate.nonNull(writer, "writer");
+
+        String action
+                = ActionPrefix.setScoreBonesNone + showNoneSelected.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setScoreBonesWhen + showWhenSelected.toString();
+        MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
     // Object methods

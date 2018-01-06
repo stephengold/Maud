@@ -60,6 +60,8 @@ import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.shader.VarType;
+import java.io.IOException;
+import java.io.Writer;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.BitSet;
@@ -867,5 +869,22 @@ public class MaudUtil {
         storeResult.setColumn(2, testWorld);
 
         return storeResult;
+    }
+
+    /**
+     * Write an editor action to the specified writer.
+     *
+     * @param writer (not null)
+     * @param actionString (not null)
+     * @throws java.io.IOException if an I/O error occurs while writing
+     */
+    public static void writePerformAction(Writer writer, String actionString)
+            throws IOException {
+        Validate.nonNull(writer, "writer");
+        Validate.nonNull(actionString, "action string");
+
+        writer.write("Maud.perform('");
+        writer.write(actionString);
+        writer.write("');\n");
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,8 @@
 package maud.model.option.scene;
 
 import com.jme3.shadow.EdgeFilteringMode;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
@@ -353,6 +355,19 @@ public class SceneOptions implements Cloneable {
         if (source.isLoaded()) {
             source.updateSceneWireframe();
         }
+    }
+
+    /**
+     * Write the options to a script using the specified writer.
+     *
+     * @param writer (not null)
+     * @throws java.io.IOException if an I/O error occurs while writing
+     */
+    public void writeToScript(Writer writer) throws IOException {
+        Validate.nonNull(writer, "writer");
+
+        camera.writeToScript(writer);
+        skeleton.writeToScript(writer);
     }
     // *************************************************************************
     // Object methods

@@ -32,7 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -42,6 +41,7 @@ import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenTransforms;
 import jme3utilities.wes.TweenVectors;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.ScriptLoader;
 import maud.action.ActionPrefix;
 import maud.model.cgm.EditableCgm;
@@ -49,11 +49,6 @@ import maud.model.cgm.LoadedCgm;
 import maud.model.option.AssetLocations;
 import maud.model.option.MiscOptions;
 import maud.model.option.ScoreOptions;
-import maud.model.option.ShowBones;
-import maud.model.option.ViewMode;
-import maud.model.option.scene.MovementMode;
-import maud.model.option.scene.OrbitCenter;
-import maud.model.option.scene.ProjectionMode;
 import maud.model.option.scene.SceneOptions;
 
 /**
@@ -267,18 +262,6 @@ public class EditorModel {
     // private methods
 
     /**
-     * Write an editor action to the specified writer.
-     *
-     * @param writer (not null)
-     */
-    private void writePerformAction(Writer writer, String actionString)
-            throws IOException {
-        writer.write("Maud.perform('");
-        writer.write(actionString);
-        writer.write("');\n");
-    }
-
-    /**
      * Write a startup script.
      *
      * @param assetPath asset path to startup script (not null)
@@ -308,7 +291,7 @@ public class EditorModel {
             stream = new FileOutputStream(filePath);
             OutputStreamWriter writer
                     = new OutputStreamWriter(stream, ScriptLoader.charset);
-            writeStartupScript(writer);
+            writeToScript(writer);
 
         } catch (IOException exception) {
             throw exception;
@@ -325,78 +308,37 @@ public class EditorModel {
      *
      * @param writer (not null)
      */
-    private void writeStartupScript(Writer writer) throws IOException {
+    private void writeToScript(Writer writer) throws IOException {
         String declareMaud = "var Maud = Java.type('maud.Maud');\n";
         writer.write(declareMaud);
 
-        List<String> specs = assetLocations.listAll();
-        for (String spec : specs) {
-            writePerformAction(writer,
-                    ActionPrefix.newAssetLocationSpec + spec);
-        }
-
-        boolean anglesInDegrees = miscOptions.getAnglesInDegrees();
-        String arg = Boolean.toString(anglesInDegrees);
-        writePerformAction(writer, ActionPrefix.setDegrees + arg);
-
-        boolean diagnose = miscOptions.getDiagnoseLoads();
-        arg = Boolean.toString(diagnose);
-        writePerformAction(writer, ActionPrefix.setDiagnose + arg);
-
-        int indexBase = miscOptions.getIndexBase();
-        arg = Integer.toString(indexBase);
-        writePerformAction(writer, ActionPrefix.setIndexBase + arg);
-
-        ViewMode viewMode = miscOptions.getViewMode();
-        arg = viewMode.toString();
-        writePerformAction(writer, ActionPrefix.setViewMode + arg);
+        assetLocations.writeToScript(writer);
+        miscOptions.writeToScript(writer);
+        sceneOptions.writeToScript(writer);
+        scoreOptions.writeToScript(writer);
         /*
          * tweening techniques
          */
         TweenVectors tweenTranslations = techniques.getTweenTranslations();
-        arg = tweenTranslations.toString();
-        writePerformAction(writer, ActionPrefix.setTweenTranslations + arg);
+        String arg = tweenTranslations.toString();
+        MaudUtil.writePerformAction(writer,
+                ActionPrefix.setTweenTranslations + arg);
 
         TweenRotations tweenRotations = techniques.getTweenRotations();
         arg = tweenRotations.toString();
-        writePerformAction(writer, ActionPrefix.setTweenRotations + arg);
+        MaudUtil.writePerformAction(writer,
+                ActionPrefix.setTweenRotations + arg);
 
         TweenVectors tweenScales = techniques.getTweenScales();
         arg = tweenScales.toString();
-        writePerformAction(writer, ActionPrefix.setTweenScales + arg);
+        MaudUtil.writePerformAction(writer, ActionPrefix.setTweenScales + arg);
         /*
-         * scene-view options
+         * Always load Jaime at startup.
          */
-        ShowBones sceneBones = sceneOptions.getSkeleton().getShowBones();
-        arg = sceneBones.toString();
-        writePerformAction(writer, ActionPrefix.setSceneBones + arg);
-
-        MovementMode movementMode = sceneOptions.getCamera().getMovementMode();
-        arg = movementMode.toString();
-        writePerformAction(writer, ActionPrefix.selectMovement + arg);
-
-        OrbitCenter center = sceneOptions.getCamera().getOrbitCenter();
-        arg = center.toString();
-        writePerformAction(writer, ActionPrefix.selectOrbitCenter + arg);
-
-        ProjectionMode projection
-                = sceneOptions.getCamera().getProjectionMode();
-        arg = projection.toString();
-        writePerformAction(writer, ActionPrefix.selectProjection + arg);
+        MaudUtil.writePerformAction(writer,
+                ActionPrefix.loadCgmNamed + "Jaime");
         /*
-         * score-view options
-         */
-        ShowBones showNoneSelected = scoreOptions.getShowNoneSelected();
-        arg = showNoneSelected.toString();
-        writePerformAction(writer, ActionPrefix.setScoreBonesNone + arg);
-
-        ShowBones showWhenSelected = scoreOptions.getShowWhenSelected();
-        arg = showWhenSelected.toString();
-        writePerformAction(writer, ActionPrefix.setScoreBonesWhen + arg);
-
-        writePerformAction(writer, ActionPrefix.loadCgmNamed + "Jaime");
-        /*
-         * each selected tool at its current display position
+         * Select and position each selected tool.
          */
         for (WindowController tool : Maud.gui.listWindowControllers()) {
             if (tool.isEnabled()) {
@@ -408,7 +350,7 @@ public class EditorModel {
                 int y = element.getY();
                 String action = String.format("%s%s %d %d",
                         ActionPrefix.selectToolAt, name, x, y);
-                writePerformAction(writer, action);
+                MaudUtil.writePerformAction(writer, action);
             }
         }
 

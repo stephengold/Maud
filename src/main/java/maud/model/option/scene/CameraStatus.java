@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,13 @@
 package maud.model.option.scene;
 
 import com.jme3.math.FastMath;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
+import maud.MaudUtil;
+import maud.action.ActionPrefix;
 
 /**
  * Status of the scene cameras in Maud's editor screen.
@@ -243,6 +247,25 @@ public class CameraStatus implements Cloneable {
         } else {
             projectionMode = ProjectionMode.Parallel;
         }
+    }
+
+    /**
+     * Write the status to a script using the specified writer.
+     *
+     * @param writer (not null)
+     * @throws java.io.IOException if an I/O error occurs while writing
+     */
+    public void writeToScript(Writer writer) throws IOException {
+        Validate.nonNull(writer, "writer");
+
+        String action = ActionPrefix.selectMovement + movementMode.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectOrbitCenter + orbitCenter.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectProjection + projectionMode.toString();
+        MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
     // Object methods

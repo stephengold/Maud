@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,14 @@
 package maud.model.option;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.MaudUtil;
+import maud.action.ActionPrefix;
 
 /**
  * The MVC model of asset locations known to Maud.
@@ -163,6 +167,21 @@ public class AssetLocations implements Cloneable {
             knownSpecs.remove(spec);
         } else {
             assert false;
+        }
+    }
+
+    /**
+     * Write the locations to a script using the specified writer.
+     *
+     * @param writer (not null)
+     * @throws java.io.IOException if an I/O error occurs while writing
+     */
+    public void writeToScript(Writer writer) throws IOException {
+        Validate.nonNull(writer, "writer");
+
+        for (String spec : knownSpecs) {
+            String action = ActionPrefix.newAssetLocationSpec + spec;
+            MaudUtil.writePerformAction(writer, action);
         }
     }
     // *************************************************************************

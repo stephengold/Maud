@@ -26,9 +26,13 @@
  */
 package maud.model.option;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.MaudUtil;
+import maud.action.ActionPrefix;
 
 /**
  * The MVC model of miscellaneous global options in Maud's editor screen.
@@ -271,6 +275,29 @@ public class MiscOptions implements Cloneable {
      */
     public void toggleMenuBarVisibility() {
         menuBarVisibility = !menuBarVisibility;
+    }
+
+    /**
+     * Write the options to a script using the specified writer.
+     *
+     * @param writer (not null)
+     * @throws java.io.IOException if an I/O error occurs while writing
+     */
+    public void writeToScript(Writer writer) throws IOException {
+        Validate.nonNull(writer, "writer");
+
+        String action
+                = ActionPrefix.setDegrees + Boolean.toString(anglesInDegrees);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setDiagnose + Boolean.toString(diagnoseLoads);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setIndexBase + Integer.toString(indexBase);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setViewMode + viewMode.toString();
+        MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
     // Object methods
