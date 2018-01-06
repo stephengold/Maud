@@ -38,6 +38,7 @@ import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.Checkpoint;
 import maud.model.History;
 
@@ -50,6 +51,11 @@ public class HistoryTool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * formatter for timestamps
+     */
+    final private static DateFormat timestampFormatter
+            = DateFormat.getTimeInstance();
     /**
      * message logger for this class
      */
@@ -139,7 +145,7 @@ public class HistoryTool extends GuiWindowController {
         Element windowElement = getElement();
         windowElement.layoutElements();
         /*
-         * the "automatic checkpoints" checkbox
+         * Update the "automatic checkpoints" checkbox.
          */
         boolean autoAddFlag = History.isAutoAdd();
         setChecked("autoCheckpoint", autoAddFlag);
@@ -163,10 +169,11 @@ public class HistoryTool extends GuiWindowController {
         for (String event : events) {
             addLabel(". " + event, bgColor);
         }
+
+        String id = MaudUtil.formatIndex(cpIndex);
         Date creationDate = checkpoint.copyTimestamp();
-        DateFormat format = DateFormat.getTimeInstance();
-        String creationTime = format.format(creationDate);
-        String text = String.format("checkpoint[%d] created at %s", cpIndex,
+        String creationTime = timestampFormatter.format(creationDate);
+        String text = String.format("checkpoint%s added at %s", id,
                 creationTime);
         addLabel(text, bgColor);
     }

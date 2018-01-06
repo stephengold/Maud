@@ -35,8 +35,11 @@ import maud.PhysicsUtil;
 import maud.dialog.EditorDialogs;
 import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
+import maud.model.EditorModel;
+import maud.model.History;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedTrack;
+import maud.tool.HistoryTool;
 
 /**
  * Process actions that start with the word "new".
@@ -72,13 +75,17 @@ class NewAction {
     static boolean process(String actionString) {
         boolean handled = true;
 
+        EditorModel model = Maud.getModel();
         switch (actionString) {
             case Action.newAnimationFromPose:
                 EditorDialogs.newAnimationFromPose();
                 break;
 
             case Action.newCheckpoint:
-                Maud.gui.addCheckpoint("user interface");
+                History.addCheckpoint();
+                HistoryTool historyTool
+                        = (HistoryTool) Maud.gui.tools.getTool("history");
+                historyTool.setAutoScroll();
                 break;
 
             case Action.newLight:
@@ -86,7 +93,7 @@ class NewAction {
                 break;
 
             case Action.newMapping:
-                Maud.getModel().getMap().mapBones();
+                model.getMap().mapBones();
                 break;
 
             case Action.newOverride:
@@ -98,7 +105,7 @@ class NewAction {
                 break;
 
             case Action.newSingleKeyframe: // insert OR replace
-                SelectedTrack track = Maud.getModel().getTarget().getTrack();
+                SelectedTrack track = model.getTarget().getTrack();
                 if (track.isTrackSelected()) {
                     int frameIndex = track.findKeyframeIndex();
                     if (frameIndex == -1) {

@@ -28,10 +28,10 @@ package maud.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.tool.HistoryTool;
 
 /**
@@ -87,17 +87,22 @@ public class History {
      * @return index of the new checkpoint (&ge;0)
      */
     public static int addCheckpoint() {
+        String message;
         while (hasVulnerable()) {
             int lastIndex = checkpoints.size() - 1;
             checkpoints.remove(lastIndex);
-            logger.log(Level.INFO, "discard [{0}]", lastIndex);
+            message = "discard checkpoint" + MaudUtil.formatIndex(lastIndex);
+            logger.info(message);
         }
 
         Checkpoint newbie = new Checkpoint(eventDescriptions);
         checkpoints.add(newbie);
         eventDescriptions.clear();
 
-        logger.log(Level.INFO, "add checkpoint [{0}]", nextIndex);
+        String id = MaudUtil.formatIndex(nextIndex);
+        message = "add new checkpoint" + id;
+        logger.info(message);
+
         int result = nextIndex;
         ++nextIndex;
 
@@ -113,7 +118,7 @@ public class History {
     public static void addEvent(String description) {
         Validate.nonEmpty(description, "description");
 
-        logger.log(Level.INFO, "{0}", description);
+        logger.info(description);
         eventDescriptions.add(description);
     }
 
@@ -205,14 +210,17 @@ public class History {
      * the index.
      */
     public static void redo() {
+        String message;
         if (checkpoints.size() > nextIndex) {
             Checkpoint next = checkpoints.get(nextIndex);
             next.restore();
             eventDescriptions.clear();
-            logger.log(Level.INFO, "redo to [{0}]", nextIndex);
+            message = "redo to checkpoint" + MaudUtil.formatIndex(nextIndex);
+            logger.info(message);
             ++nextIndex;
         } else {
-            logger.log(Level.INFO, "nothing to redo", nextIndex);
+            message = "There is nothing to redo!";
+            logger.warning(message);
         }
 
         setAutoScroll();
@@ -222,15 +230,21 @@ public class History {
      * Restore the final checkpoint and update the index.
      */
     public static void redoAll() {
+        String message;
         if (checkpoints.size() > nextIndex) {
             int lastIndex = checkpoints.size() - 1;
             Checkpoint last = checkpoints.get(lastIndex);
             last.restore();
             eventDescriptions.clear();
-            logger.log(Level.INFO, "redo to [{0}]", lastIndex);
             nextIndex = checkpoints.size();
+
+            message = "redo to checkpoint" + MaudUtil.formatIndex(lastIndex);
+            logger.info(message);
+
         } else {
-            logger.log(Level.INFO, "nothing to redo", nextIndex);
+            message = "There is nothing to redo!";
+            logger.warning(message);
+            Maud.getModel().getMisc().setStatusMessage(message);
         }
 
         setAutoScroll();
@@ -260,12 +274,17 @@ public class History {
      * index. If there are no vulnerable checkpoints, add one.
      */
     public static void undo() {
+        String message;
         boolean noneVulnerable = !hasVulnerable();
         if (nextIndex > 1 || noneVulnerable && nextIndex > 0) {
             if (noneVulnerable) {
                 Checkpoint newbie = new Checkpoint(eventDescriptions);
                 checkpoints.add(newbie);
-                logger.log(Level.INFO, "add checkpoint [{0}]", nextIndex);
+
+                message = "add precautionary checkpoint"
+                        + MaudUtil.formatIndex(nextIndex);
+                logger.info(message);
+
             } else {
                 --nextIndex;
             }
@@ -273,12 +292,13 @@ public class History {
             Checkpoint previous = checkpoints.get(getIndex);
             previous.restore();
             eventDescriptions.clear();
-            logger.log(Level.INFO, "undo to [{0}]", getIndex);
+
+            message = "undo to checkpoint" + MaudUtil.formatIndex(getIndex);
+            logger.info(message);
 
         } else {
-            String message = "There is nothing to undo!";
-            logger.log(Level.INFO, message);
-            Maud.getModel().getMisc().setStatusMessage(message);
+            message = "There is nothing to undo!";
+            logger.warning(message);
         }
 
         setAutoScroll();

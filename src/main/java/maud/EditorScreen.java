@@ -40,8 +40,6 @@ import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,7 +53,6 @@ import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
 import maud.menu.ShowMenus;
-import maud.model.Checkpoint;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.cgm.Cgm;
@@ -69,7 +66,6 @@ import maud.model.option.MiscOptions;
 import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.SceneOptions;
 import maud.tool.EditorTools;
-import maud.tool.HistoryTool;
 import maud.view.CgmTransform;
 import maud.view.EditorView;
 import maud.view.SceneDrag;
@@ -146,28 +142,6 @@ public class EditorScreen extends GuiScreenController {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Add a checkpoint and report details to the status line.
-     *
-     * @param source textual description of what triggered invocation (not null
-     * or empty)
-     */
-    public void addCheckpoint(String source) {
-        Validate.nonEmpty(source, "source");
-
-        int checkpointIndex = History.addCheckpoint();
-        Checkpoint checkpoint = History.getCheckpoint(checkpointIndex);
-        Date creationDate = checkpoint.copyTimestamp();
-        String creationTime = DateFormat.getTimeInstance().format(creationDate);
-
-        HistoryTool historyTool = (HistoryTool) tools.getTool("history");
-        historyTool.setAutoScroll();
-
-        String message = String.format("added checkpoint[%d] from %s at %s",
-                checkpointIndex, source, creationTime);
-        Maud.getModel().getMisc().setStatusMessage(message);
-    }
 
     /**
      * Activate the "Bind" screen.
