@@ -65,6 +65,7 @@ import maud.model.cgm.PlayOptions;
 import maud.model.cgm.Pov;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.option.DisplaySettings;
+import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.SceneOptions;
 import maud.tool.EditorTools;
 import maud.tool.HistoryTool;
@@ -659,18 +660,12 @@ public class EditorScreen extends GuiScreenController {
         if (!tools.getTool("camera").isInitialized()) {
             return;
         }
+        EditorViewPorts.update();
+        updateBars();
         /*
-         * Update visibility of the menu bar and status bar.
+         * Update the loaded animations.
          */
         EditorModel model = Maud.getModel();
-        boolean mbVisible = model.getMisc().isMenuBarVisible();
-        Element menuBar = getScreen().findElementById("menu bar");
-        menuBar.setVisible(mbVisible);
-        Element statusBar = getScreen().findElementById("status bar");
-        statusBar.setVisible(mbVisible);
-        /*
-         * Update animations.
-         */
         Cgm source = model.getSource();
         if (source.getAnimation().isMoving()) {
             updateTrackTime(source, tpf);
@@ -681,15 +676,11 @@ public class EditorScreen extends GuiScreenController {
         } else if (target.getAnimation().isRetargetedPose()) {
             target.getPose().setToAnimation();
         }
-        /*
-         * Configure view ports based on the MVC model.
-         */
-        EditorViewPorts.update();
 
         ViewType viewType = mouseViewType();
         if (viewType == ViewType.Scene) {
             /*
-             * Based on mouse pointer position, select a loaded C-G model
+             * Based on the mouse-pointer location, select a loaded C-G model
              * to rotate around its Y-axis.
              */
             Cgm cgmToRotate = mouseCgm();
@@ -733,6 +724,35 @@ public class EditorScreen extends GuiScreenController {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Update the menu bar and status bar.
+     */
+    private void updateBars() {
+        EditorModel model = Maud.getModel();
+        /*
+         * Update visibility of the bars.
+         */
+        boolean mbVisible = model.getMisc().isMenuBarVisible();
+        Element menuBar = getScreen().findElementById("menu bar");
+        menuBar.setVisible(mbVisible);
+        Element statusBar = getScreen().findElementById("status bar");
+        statusBar.setVisible(mbVisible);
+
+        ViewType viewType = mouseViewType();
+        if (mbVisible) {
+            /*
+             * Update the description of camera options in the status bar.
+             */
+            String description = "";
+            if (viewType == ViewType.Scene) {
+                CameraOptions options = model.getScene().getCamera();
+                description = options.describe();
+            }
+            setStatusText("cameraOptionsLabel", description);
+        }
+
+    }
 
     /**
      * If a POV is being dragged, update it.

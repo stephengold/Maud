@@ -114,6 +114,25 @@ public class CameraOptions implements Cloneable {
     }
 
     /**
+     * Generate a description of the options, for display in the status bar.
+     *
+     * @return textual description (not null, length&lt;50)
+     */
+    public String describe() {
+        StringBuilder builder = new StringBuilder(50);
+        builder.append(movementMode);
+        if (isOrbitMode()) {
+            builder.append(" ");
+            builder.append(orbitCenter);
+        }
+        builder.append(" in ");
+        builder.append(projectionMode);
+
+        assert builder.length() < 50 : builder.length();
+        return builder.toString();
+    }
+
+    /**
      * Read the vertical angle of the camera's frustum.
      *
      * @return angle (in degrees of arc, &gt;0, &lt;180)

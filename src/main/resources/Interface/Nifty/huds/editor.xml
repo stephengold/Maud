@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -103,13 +103,17 @@ the menu bar, status bar, and tool windows.
             <panel/>
             <panel id="status bar"
                    backgroundColor="#ffff"
-                   childLayout="horizontal"
+                   childLayout="overlay"
                    height="20px">
                 <control name="label" id="messageLabel"
                          color="#000f"
                          text="Welcome to Maud!"
                          textHAlign="center"
-                         width="*"/>
+                         width="90%"/>
+                <control name="label" id="cameraOptionsLabel"
+                         color="#00ff"
+                         textHAlign="right"
+                         width="40%"/>
             </panel>
         </layer>
         <layer id="windowsLayer" childLayout="absolute-inside">
