@@ -70,6 +70,10 @@ public class ScenePov implements Cloneable, Pov {
      */
     private Cgm cgm = null;
     /**
+     * movement rate (fly mode only, world units per scroll wheel notch)
+     */
+    private float flyRate = 0.1f;
+    /**
      * direction the scene camera points (unit vector in world coordinates)
      */
     private Vector3f cameraDirection
@@ -294,7 +298,6 @@ public class ScenePov implements Cloneable, Pov {
             setOrbitMode(elevationAngle, azimuthAngle, range);
 
         } else {
-            float flyRate = status.getFlyRate();
             Vector3f offset = cameraDirection.mult(amount * flyRate);
             cameraLocation.addLocal(offset);
         }

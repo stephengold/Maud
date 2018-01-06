@@ -36,7 +36,8 @@ import maud.MaudUtil;
 import maud.action.ActionPrefix;
 
 /**
- * Status of the scene cameras in Maud's editor screen.
+ * Status of the scene cameras in Maud's editor screen. TODO rename
+ * CameraOptions
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -65,10 +66,6 @@ public class CameraStatus implements Cloneable {
     // *************************************************************************
     // fields
 
-    /**
-     * movement rate (fly mode only, world units per scroll wheel notch)
-     */
-    private float flyRate = 0.1f;
     /**
      * maximum distance of camera from the center (orbit mode only, in world
      * units, &gt;0)
@@ -115,16 +112,6 @@ public class CameraStatus implements Cloneable {
     public float clampRange(float range) {
         float result = FastMath.clamp(range, minRange, maxRange);
         return result;
-    }
-
-    /**
-     * Read the movement rate for fly mode.
-     *
-     * @return rate (in world units per scroll wheel notch, &gt;0)
-     */
-    public float getFlyRate() {
-        assert flyRate > 0f : flyRate;
-        return flyRate;
     }
 
     /**
