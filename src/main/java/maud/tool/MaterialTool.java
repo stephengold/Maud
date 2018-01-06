@@ -34,6 +34,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedSpatial;
@@ -147,9 +148,8 @@ class MaterialTool extends GuiWindowController {
         int numParams = target.getSpatial().countMatParams();
         int selectedIndex = target.getMatParam().findNameIndex();
         if (selectedIndex >= 0) {
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
-            indexText = String.format("#%d of %d", selectedIndex + indexBase,
-                    numParams);
+            indexText = MaudUtil.formatIndex(selectedIndex);
+            indexText = String.format("%s of %d", indexText, numParams);
             if (numParams > 1) {
                 nButton = "+";
                 pButton = "-";

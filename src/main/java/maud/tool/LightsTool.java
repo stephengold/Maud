@@ -34,6 +34,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedLight;
 
@@ -127,10 +128,8 @@ class LightsTool extends GuiWindowController {
             nextButton = "+";
             previousButton = "-";
             int selectedIndex = light.findIndex();
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
-            indexStatus = String.format("#%d of %d", selectedIndex + indexBase,
-                    numLights);
-
+            indexStatus = MaudUtil.formatIndex(selectedIndex);
+            indexStatus = String.format("%s of %d", indexStatus, numLights);
         } else {
             nextButton = "";
             previousButton = "";

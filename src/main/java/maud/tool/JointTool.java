@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedJoint;
 
@@ -104,9 +105,8 @@ class JointTool extends GuiWindowController {
         SelectedJoint joint = target.getJoint();
         if (joint.isSelected()) {
             int selectedIndex = joint.index();
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
-            indexText = String.format("#%d of %d", selectedIndex + indexBase,
-                    numJoints);
+            indexText = MaudUtil.formatIndex(selectedIndex);
+            indexText = String.format("%s of %d", indexText, numJoints);
             if (numJoints > 1) {
                 nButton = "+";
                 pButton = "-";

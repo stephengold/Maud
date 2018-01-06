@@ -36,6 +36,7 @@ import jme3utilities.MyControl;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.MyShape;
 import maud.PhysicsUtil;
 import maud.model.EditorModel;
@@ -144,9 +145,8 @@ class ShapeTool extends GuiWindowController {
         SelectedShape shape = target.getShape();
         if (shape.isSelected()) {
             int selectedIndex = shape.index();
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
-            indexText = String.format("#%d of %d", selectedIndex + indexBase,
-                    numShapes);
+            indexText = MaudUtil.formatIndex(selectedIndex);
+            indexText = String.format("%s of %d", indexText, numShapes);
             if (numShapes > 1) {
                 nButton = "+";
                 pButton = "-";

@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
@@ -96,9 +97,8 @@ class KeyframeTool extends GuiWindowController {
                     indexText = String.format("%d keyframes", numKeyframes);
                 }
             } else {
-                int indexBase = Maud.getModel().getMisc().getIndexBase();
-                indexText = String.format("#%d of %d", index + indexBase,
-                        numKeyframes);
+                indexText = MaudUtil.formatIndex(numKeyframes);
+                indexText = String.format("%s of %d", indexText, numKeyframes);
             }
 
             float time = target.getAnimation().getTime();

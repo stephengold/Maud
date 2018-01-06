@@ -32,6 +32,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedUserData;
@@ -97,9 +98,8 @@ class UserDataTool extends GuiWindowController {
         int numKeys = target.getSpatial().countUserData();
         int selectedIndex = target.getUserData().findKeyIndex();
         if (selectedIndex >= 0) {
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
-            indexText = String.format("#%d of %d", selectedIndex + indexBase,
-                    numKeys);
+            indexText = MaudUtil.formatIndex(selectedIndex);
+            indexText = String.format("%s of %d", indexText, numKeys);
             if (numKeys > 1) {
                 nButton = "+";
                 pButton = "-";

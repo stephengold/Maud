@@ -31,6 +31,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
@@ -192,9 +193,8 @@ class MappingTool extends GuiWindowController {
         int numBoneMappings = map.countMappings();
         if (map.isBoneMappingSelected()) {
             int index = map.findIndex();
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
-            indexText = String.format("#%d of %d", index + indexBase,
-                    numBoneMappings);
+            indexText = MaudUtil.formatIndex(index);
+            indexText = String.format("%s of %d", indexText, numBoneMappings);
             nButton = "+";
             pButton = "-";
 

@@ -33,6 +33,7 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.PlayOptions;
@@ -143,9 +144,9 @@ class AnimationTool extends GuiWindowController {
             SelectedAnimControl sac = target.getAnimControl();
             if (sac.isSelected()) {
                 int selectedIndex = sac.findIndex();
-                int indexBase = Maud.getModel().getMisc().getIndexBase();
-                indexText = String.format("#%d of %d",
-                        selectedIndex + indexBase, numAnimControls);
+                indexText = MaudUtil.formatIndex(selectedIndex);
+                indexText
+                        = String.format("%s of %d", indexText, numAnimControls);
                 nButton = "+";
                 pButton = "-";
             } else {
@@ -211,9 +212,8 @@ class AnimationTool extends GuiWindowController {
             int numAnimations = sac.countAnimations();
             if (target.getAnimation().isReal()) {
                 int selectedIndex = target.getAnimation().findIndex();
-                int indexBase = Maud.getModel().getMisc().getIndexBase();
-                indexText = String.format("#%d of %d",
-                        selectedIndex + indexBase, numAnimations);
+                indexText = MaudUtil.formatIndex(selectedIndex);
+                indexText = String.format("%s of %d", indexText, numAnimations);
                 nButton = "+";
                 pButton = "-";
 

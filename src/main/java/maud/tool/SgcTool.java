@@ -32,6 +32,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSgc;
 
@@ -133,9 +134,8 @@ class SgcTool extends GuiWindowController {
             nextButton = "+";
             previousButton = "-";
             int selectedIndex = target.getSgc().findIndex();
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
-            indexStatus = String.format("#%d of %d", selectedIndex + indexBase,
-                    numSgcs);
+            indexStatus = MaudUtil.formatIndex(selectedIndex);
+            indexStatus = String.format("%s of %d", indexStatus, numSgcs);
 
         } else {
             nextButton = "";

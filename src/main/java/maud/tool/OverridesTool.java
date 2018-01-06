@@ -33,6 +33,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedOverride;
 
@@ -97,9 +98,8 @@ class OverridesTool extends GuiWindowController {
         int numMpos = target.getSpatial().countOverrides();
         int selectedIndex = target.getOverride().findNameIndex();
         if (selectedIndex >= 0) {
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
-            indexText = String.format("#%d of %d", selectedIndex + indexBase,
-                    numMpos);
+            indexText = MaudUtil.formatIndex(selectedIndex);
+            indexText = String.format("%s of %d", indexText, numMpos);
             if (numMpos > 1) {
                 nButton = "+";
                 pButton = "-";

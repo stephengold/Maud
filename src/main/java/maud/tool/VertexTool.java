@@ -32,6 +32,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.cgm.SelectedVertex;
@@ -168,9 +169,8 @@ class VertexTool extends GuiWindowController {
         int numVertices = target.getSpatial().countVertices();
         if (target.getVertex().isSelected()) {
             int selectedIndex = target.getVertex().getIndex();
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
-            indexText = String.format("#%d of %d", selectedIndex + indexBase,
-                    numVertices);
+            indexText = MaudUtil.formatIndex(selectedIndex);
+            indexText = String.format("%s of %d", indexText, numVertices);
             nButton = "+";
             pButton = "-";
 

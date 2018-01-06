@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedObject;
@@ -98,9 +99,8 @@ class ObjectTool extends GuiWindowController {
         SelectedObject object = target.getObject();
         if (object.isSelected()) {
             int selectedIndex = object.index();
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
-            indexText = String.format("#%d of %d", selectedIndex + indexBase,
-                    numObjects);
+            indexText = MaudUtil.formatIndex(selectedIndex);
+            indexText = String.format("%s of %d", indexText, numObjects);
             if (numObjects > 1) {
                 nButton = "+";
                 pButton = "-";

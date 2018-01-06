@@ -498,6 +498,30 @@ public class MaudUtil {
     }
 
     /**
+     * Format an index value for the current index base.
+     *
+     * @param index zero-base index value (&ge;0)
+     * @return formatted text string (not null, not empty)
+     */
+    public static String formatIndex(int index) {
+        Validate.nonNegative(index, "index");
+
+        String result;
+        int indexBase = Maud.getModel().getMisc().getIndexBase();
+        if (indexBase == 0) {
+            result = String.format("[%d]", index);
+        } else if (indexBase == 1) {
+            result = String.format("#%d", index + 1);
+        } else {
+            throw new IllegalStateException();
+        }
+
+        assert result != null;
+        assert !result.isEmpty();
+        return result;
+    }
+
+    /**
      * Calculate half extents for a symmetrical bounding box aligned with the
      * local axes of the specified scene-graph subtree.
      *
@@ -512,8 +536,8 @@ public class MaudUtil {
         float heY = Math.max(-minMax[0].y, minMax[1].y);
         float heZ = Math.max(-minMax[0].z, minMax[1].z);
         Vector3f result = new Vector3f(heX, heY, heZ);
-        assert MyVector3f.isAllNonNegative(result);
 
+        assert MyVector3f.isAllNonNegative(result);
         return result;
     }
 
