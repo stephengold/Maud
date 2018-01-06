@@ -338,10 +338,26 @@ class SetAction {
             int newSetting = Integer.parseInt(arg);
             model.getMisc().setIndexBase(newSetting);
 
+        } else if (actionString.startsWith(ActionPrefix.setMapSize)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setMapSize);
+            int mapSize = Integer.parseInt(arg);
+            model.getScene().setShadowsMapSize(mapSize);
+
         } else if (actionString.startsWith(ActionPrefix.setMatParamValue)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setMatParamValue);
             target.setMatParamValue(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.setNumSplits)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setNumSplits);
+            int numSplits = Integer.parseInt(arg);
+            model.getScene().setNumSplits(numSplits);
+
+        } else if (actionString.startsWith(ActionPrefix.setPhysicsRendered)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setPhysicsRendered);
+            boolean rendered = Boolean.parseBoolean(arg);
+            model.getScene().setPhysicsRendered(rendered);
 
         } else if (actionString.startsWith(ActionPrefix.setOverrideValue)) {
             arg = MyString.remainder(actionString,
@@ -404,6 +420,12 @@ class SetAction {
             RenderQueue.ShadowMode value = RenderQueue.ShadowMode.valueOf(arg);
             target.setShadowMode(value);
 
+        } else if (actionString.startsWith(ActionPrefix.setShadowsRendered)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setShadowsRendered);
+            boolean rendered = Boolean.parseBoolean(arg);
+            model.getScene().setShadowsRendered(rendered);
+
         } else if (actionString.startsWith(ActionPrefix.setShapeParmValue)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setShapeParmValue);
@@ -415,6 +437,11 @@ class SetAction {
             } else {
                 handled = false;
             }
+
+        } else if (actionString.startsWith(ActionPrefix.setSkyRendered)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setSkyRendered);
+            boolean rendered = Boolean.parseBoolean(arg);
+            model.getScene().setSkyRendered(rendered);
 
         } else if (actionString.startsWith(ActionPrefix.setTriangleMode)) {
             arg = MyString.remainder(actionString,

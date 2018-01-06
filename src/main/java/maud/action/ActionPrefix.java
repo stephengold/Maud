@@ -370,9 +370,17 @@ public class ActionPrefix {
      */
     final public static String setIndexBase = "set indexBase ";
     /**
+     * argument is a decimal value
+     */
+    final public static String setMapSize = "set mapSize ";
+    /**
      * argument is a material-parameter value
      */
     final static String setMatParamValue = "set matParamValue ";
+    /**
+     * argument is a decimal value
+     */
+    final public static String setNumSplits = "set numSplits ";
     /**
      * argument is a material-parameter value or "null"
      */
@@ -381,6 +389,10 @@ public class ActionPrefix {
      * arguments are the parameter name and a decimal value
      */
     final public static String setPhysicsRbpValue = "set physicsRbpValue ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String setPhysicsRendered = "set physicsRendered ";
     /**
      * argument is the decimal refresh rate in Hertz
      */
@@ -411,11 +423,19 @@ public class ActionPrefix {
      */
     final public static String setShadowMode = "set shadowMode ";
     /**
+     * argument is a boolean value
+     */
+    final public static String setShadowsRendered = "set shadowsRendered ";
+    /**
      * arguments are the parameter name and a decimal value
      */
     final public static String setShapeParmValue = "set shapeParmValue ";
     /**
-     * argument is the name of a triangle mode
+     * argument is a boolean value
+     */
+    final public static String setSkyRendered = "set skyRendered ";
+    /**
+     * argument is the name of a triangle mode TODO rename select triangleMode
      */
     final public static String setTriangleMode = "set triangleMode ";
     /**

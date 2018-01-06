@@ -32,6 +32,8 @@ import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import maud.Maud;
+import maud.MaudUtil;
+import maud.action.ActionPrefix;
 import maud.model.cgm.Cgm;
 
 /**
@@ -368,6 +370,29 @@ public class SceneOptions implements Cloneable {
 
         camera.writeToScript(writer);
         skeleton.writeToScript(writer);
+
+        String action = ActionPrefix.setPhysicsRendered
+                + Boolean.toString(physicsRendered);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setShadowsRendered
+                + Boolean.toString(shadowsRendered);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectEdgeFilter + edgeFilter.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setNumSplits + Integer.toString(numSplits);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setMapSize + Integer.toString(shadowMapSize);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setSkyRendered + Boolean.toString(skyRendered);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setTriangleMode + triangleMode.toString();
+        MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
     // Object methods
