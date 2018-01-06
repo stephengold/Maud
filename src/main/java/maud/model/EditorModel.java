@@ -255,7 +255,7 @@ public class EditorModel {
      */
     public void updateStartupScript() {
         try {
-            updateStartupScript(Maud.startupScriptAssetPath);
+            writeStartupScript(Maud.startupScriptAssetPath);
         } catch (IOException exception) {
             logger.log(Level.SEVERE,
                     "Output exception while writing startup script to {0}!",
@@ -267,11 +267,23 @@ public class EditorModel {
     // private methods
 
     /**
-     * Update a startup script.
+     * Write an editor action to the specified writer.
+     *
+     * @param writer (not null)
+     */
+    private void writePerformAction(Writer writer, String actionString)
+            throws IOException {
+        writer.write("Maud.perform('");
+        writer.write(actionString);
+        writer.write("');\n");
+    }
+
+    /**
+     * Write a startup script.
      *
      * @param assetPath asset path to startup script (not null)
      */
-    private void updateStartupScript(String assetPath) throws IOException {
+    private void writeStartupScript(String assetPath) throws IOException {
         assert assetPath != null;
 
         logger.log(Level.INFO, "Updating startup script in asset {0}.",
@@ -306,18 +318,6 @@ public class EditorModel {
                 stream.close();
             }
         }
-    }
-
-    /**
-     * Write an editor action to the specified writer.
-     *
-     * @param writer (not null)
-     */
-    private void writePerformAction(Writer writer, String actionString)
-            throws IOException {
-        writer.write("Maud.perform('");
-        writer.write(actionString);
-        writer.write("');\n");
     }
 
     /**
