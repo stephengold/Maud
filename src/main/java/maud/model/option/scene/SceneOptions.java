@@ -76,7 +76,7 @@ public class SceneOptions implements Cloneable {
     /**
      * configuration of the camera(s)
      */
-    private CameraStatus camera = new CameraStatus();
+    private CameraOptions camera = new CameraOptions();
     /**
      * configuration of the 3-D cursor(s)
      */
@@ -150,7 +150,7 @@ public class SceneOptions implements Cloneable {
      *
      * @return the pre-existing instance (not null)
      */
-    public CameraStatus getCamera() {
+    public CameraOptions getCamera() {
         assert camera != null;
         return camera;
     }

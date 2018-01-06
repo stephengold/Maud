@@ -47,7 +47,7 @@ import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesSubject;
-import maud.model.option.scene.CameraStatus;
+import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.SceneOptions;
@@ -115,11 +115,11 @@ public class EnumMenus {
      * Display a "select orbitCenter" menu.
      */
     public static void selectOrbitCenter() {
-        CameraStatus status = Maud.getModel().getScene().getCamera();
-        if (status.isOrbitMode()) {
+        CameraOptions options = Maud.getModel().getScene().getCamera();
+        if (options.isOrbitMode()) {
             MenuBuilder builder = new MenuBuilder();
 
-            OrbitCenter selectedCenter = status.getOrbitCenter();
+            OrbitCenter selectedCenter = options.getOrbitCenter();
             for (OrbitCenter center : OrbitCenter.values()) {
                 if (!center.equals(selectedCenter)) {
                     String name = center.toString();

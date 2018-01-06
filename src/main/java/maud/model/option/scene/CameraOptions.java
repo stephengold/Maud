@@ -36,12 +36,11 @@ import maud.MaudUtil;
 import maud.action.ActionPrefix;
 
 /**
- * Status of the scene cameras in Maud's editor screen. TODO rename
- * CameraOptions
+ * Options for cameras in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class CameraStatus implements Cloneable {
+public class CameraOptions implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -62,7 +61,7 @@ public class CameraStatus implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(CameraStatus.class.getName());
+            = Logger.getLogger(CameraOptions.class.getName());
     // *************************************************************************
     // fields
 
@@ -237,7 +236,7 @@ public class CameraStatus implements Cloneable {
     }
 
     /**
-     * Write the status to a script using the specified writer.
+     * Write the options to a script using the specified writer.
      *
      * @param writer (not null)
      * @throws java.io.IOException if an I/O error occurs while writing
@@ -264,8 +263,8 @@ public class CameraStatus implements Cloneable {
      * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
-    public CameraStatus clone() throws CloneNotSupportedException {
-        CameraStatus clone = (CameraStatus) super.clone();
+    public CameraOptions clone() throws CloneNotSupportedException {
+        CameraOptions clone = (CameraOptions) super.clone();
         return clone;
     }
 }

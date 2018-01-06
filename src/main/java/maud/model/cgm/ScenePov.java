@@ -35,7 +35,7 @@ import jme3utilities.MyCamera;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
-import maud.model.option.scene.CameraStatus;
+import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.DddCursorOptions;
 import maud.model.option.scene.OrbitCenter;
 import maud.view.SceneView;
@@ -124,8 +124,8 @@ public class ScenePov implements Cloneable, Pov {
             storeResult = new Vector3f();
         }
 
-        CameraStatus status = Maud.getModel().getScene().getCamera();
-        OrbitCenter orbitCenter = status.getOrbitCenter();
+        CameraOptions options = Maud.getModel().getScene().getCamera();
+        OrbitCenter orbitCenter = options.getOrbitCenter();
         switch (orbitCenter) {
             case DddCursor:
                 storeResult.set(cursorLocation);
@@ -286,12 +286,12 @@ public class ScenePov implements Cloneable, Pov {
      */
     @Override
     public void moveBackward(float amount) {
-        CameraStatus status = Maud.getModel().getScene().getCamera();
-        if (status.isOrbitMode()) {
+        CameraOptions options = Maud.getModel().getScene().getCamera();
+        if (options.isOrbitMode()) {
             float rate = 1f + dollyInOutRate / 100f;
             float factor = FastMath.pow(rate, amount);
             float range = range();
-            range = status.clampRange(range * factor);
+            range = options.clampRange(range * factor);
 
             float elevationAngle = elevationAngle();
             float azimuthAngle = azimuthAngle();
@@ -332,11 +332,11 @@ public class ScenePov implements Cloneable, Pov {
      */
     @Override
     public void moveUp(float amount) {
-        CameraStatus status = Maud.getModel().getScene().getCamera();
-        if (status.isOrbitMode()) {
+        CameraOptions options = Maud.getModel().getScene().getCamera();
+        if (options.isOrbitMode()) {
             float elevationAngle = elevationAngle();
             elevationAngle += amount;
-            elevationAngle = status.clampElevation(elevationAngle);
+            elevationAngle = options.clampElevation(elevationAngle);
 
             float azimuthAngle = azimuthAngle();
             float range = range();
@@ -367,8 +367,8 @@ public class ScenePov implements Cloneable, Pov {
      */
     @Override
     public void updateCamera() {
-        CameraStatus status = Maud.getModel().getScene().getCamera();
-        if (status.isOrbitMode()) {
+        CameraOptions options = Maud.getModel().getScene().getCamera();
+        if (options.isOrbitMode()) {
             aim(); // in case the center has moved
         }
 
@@ -383,7 +383,7 @@ public class ScenePov implements Cloneable, Pov {
             float range = range();
             float far = 10f * range;
             float near = 0.01f * range;
-            boolean parallel = status.isParallelProjection();
+            boolean parallel = options.isParallelProjection();
             if (parallel) {
                 float halfHeight = 0.4f * range;
                 float halfWidth = aspectRatio * halfHeight;
@@ -395,7 +395,7 @@ public class ScenePov implements Cloneable, Pov {
                 camera.setFrustumTop(halfHeight);
                 camera.setParallelProjection(true);
             } else {
-                float yDegrees = status.getFrustumYDegrees();
+                float yDegrees = options.getFrustumYDegrees();
                 camera.setFrustumPerspective(yDegrees, aspectRatio, near, far);
             }
         }
@@ -483,13 +483,13 @@ public class ScenePov implements Cloneable, Pov {
     private void setOrbitMode(float elevationAngle, float azimuthAngle,
             float range) {
         Validate.nonNegative(range, "range");
-        CameraStatus status = Maud.getModel().getScene().getCamera();
-        assert status.isOrbitMode();
+        CameraOptions options = Maud.getModel().getScene().getCamera();
+        assert options.isOrbitMode();
         /*
          * Limit the range and elevation angle.
          */
-        float clampedRange = status.clampRange(range);
-        float clampedElevation = status.clampElevation(elevationAngle);
+        float clampedRange = options.clampRange(range);
+        float clampedElevation = options.clampElevation(elevationAngle);
 
         Vector3f direction
                 = MyVector3f.fromAltAz(clampedElevation, azimuthAngle);

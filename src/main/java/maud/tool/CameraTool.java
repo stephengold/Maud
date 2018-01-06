@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
-import maud.model.option.scene.CameraStatus;
+import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.MovementMode;
 import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.ProjectionMode;
@@ -69,8 +69,8 @@ class CameraTool extends GuiWindowController {
     // WindowController methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
+     * Callback to update the tool prior to rendering. (Invoked once per render
+     * pass.)
      *
      * @param elapsedTime time interval between render passes (in seconds,
      * &ge;0)
@@ -80,19 +80,19 @@ class CameraTool extends GuiWindowController {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
 
-        CameraStatus status = Maud.getModel().getScene().getCamera();
+        CameraOptions options = Maud.getModel().getScene().getCamera();
 
-        MovementMode movement = status.getMovementMode();
+        MovementMode movement = options.getMovementMode();
         String mButton = movement.toString();
         setButtonText("cameraMovement", mButton);
 
-        ProjectionMode projection = status.getProjectionMode();
+        ProjectionMode projection = options.getProjectionMode();
         String pButton = projection.toString();
         setButtonText("cameraProjection", pButton);
 
         String ocButton = "";
-        if (status.isOrbitMode()) {
-            OrbitCenter orbitCenter = status.getOrbitCenter();
+        if (options.isOrbitMode()) {
+            OrbitCenter orbitCenter = options.getOrbitCenter();
             ocButton = orbitCenter.toString();
         }
         setButtonText("orbitCenter", ocButton);
