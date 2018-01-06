@@ -84,7 +84,7 @@ public class SceneOptions implements Cloneable {
     /**
      * edge filtering mode for shadows
      */
-    private EdgeFilteringMode edgeFilter = EdgeFilteringMode.PCF8;
+    private EdgeFilteringMode edgeFilter = EdgeFilteringMode.Bilinear;
     /**
      * diameter of platform(s) (in world units, &gt;0)
      */
