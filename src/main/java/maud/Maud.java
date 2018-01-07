@@ -31,7 +31,6 @@ import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.audio.openal.ALAudioRenderer;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.plugins.bvh.BVHLoader;
-import com.jme3.scene.plugins.gltf.GlbLoader;
 import com.jme3.system.AppSettings;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -404,10 +403,9 @@ public class Maud extends GuiApplication {
     private void startup1() {
         logger.info("");
         /*
-         * Register loaders for BVH, GLB, JavaScript, txt, and Xbuf assets.
+         * Register loaders for BVH, JavaScript, txt, and Xbuf assets.
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
-        assetManager.registerLoader(GlbLoader.class, "glb");
         assetManager.registerLoader(ScriptLoader.class, "js");
         assetManager.registerLoader(StringLoader.class, "txt");
         assetManager.registerLoader(XbufLoader.class, "xbuf");
