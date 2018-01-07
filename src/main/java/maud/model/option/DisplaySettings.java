@@ -59,7 +59,7 @@ public class DisplaySettings {
     /**
      * application name for the window's title bar
      */
-    final private static String windowTitle = "Maud version 1.0.0-alpha.5";
+    final private static String windowTitle = "Maud";
     // *************************************************************************
     // fields
 
