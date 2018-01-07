@@ -7,6 +7,7 @@ sourceCompatibility = '1.8'
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
+        // extra javac options
         options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
     }
 }
@@ -37,12 +38,9 @@ dependencies {
     compile "org.jmonkeyengine:jme3-bullet:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-bullet-native:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-desktop:${jmonkeyengineVersion}"
-    compile "org.jmonkeyengine:jme3-effects:${jmonkeyengineVersion}"
-    compile "org.jmonkeyengine:jme3-jogg:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-lwjgl:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-niftygui:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-plugins:${jmonkeyengineVersion}"
-    compile "org.jmonkeyengine:jme3-terrain:${jmonkeyengineVersion}"
     compile 'ch.qos.logback:logback-classic:1.2.3'
 
     // from stephengold's bintray repositories:
