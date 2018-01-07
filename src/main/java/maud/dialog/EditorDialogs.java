@@ -109,6 +109,7 @@ public class EditorDialogs {
         String text = "Maud, by Stephen Gold\n\nYou are c"
                 + "urrently using Maud, a jMonkeyEngine application for edit"
                 + "ing animated models.\n\nThe version you are using "
+                + "is designated 1.0.0-alpha.5 .\n\nIt "
                 + "includes the following libraries:";
         text += String.format("%n   jme3-core version %s",
                 MyString.quote(JmeVersion.FULL_NAME));
@@ -131,6 +132,8 @@ public class EditorDialogs {
         text += String.format("%n   jme3-bullet-native");
         text += String.format("%n   jme3-desktop");
         text += String.format("%n   jme3-lwjgl");
+        text += String.format("%n   jme3-niftygui");
+        text += String.format("%n   jme3-plugins");
 
         text += String.format("%n   jme3_xbuf_loader");
         text += String.format("%n   logback-classic%n%n");

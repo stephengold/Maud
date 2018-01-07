@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -59,7 +59,7 @@ public class DisplaySettings {
     /**
      * application name for the window's title bar
      */
-    final private static String windowTitle = "Maud";
+    final private static String windowTitle = "Maud version 1.0.0-alpha.5";
     // *************************************************************************
     // fields
 
