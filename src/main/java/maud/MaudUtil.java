@@ -77,8 +77,8 @@ import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
+import jme3utilities.nifty.dialog.VectorDialog;
 import jme3utilities.wes.Pose;
-import maud.dialog.VectorDialog;
 import org.slf4j.LoggerFactory;
 
 /**
