@@ -380,26 +380,6 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu for selecting a user data type using the "new userKey "
-     * action prefix.
-     */
-    public static void selectUserDataType() {
-        MenuBuilder builder = new MenuBuilder();
-
-        builder.add("boolean");
-        builder.add("float");
-        builder.add("integer");
-        builder.add("long");
-        builder.add("string");
-        builder.add("vector2f");
-        builder.add("vector3f");
-        builder.add("vector4f");
-        // TODO savable, list, map, array, bone
-
-        builder.show(ActionPrefix.newUserKey);
-    }
-
-    /**
      * Display a menu for selecting a user key using the "select userKey "
      * action prefix.
      */

@@ -43,6 +43,7 @@ import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
 import maud.model.cgm.SelectedSpatial;
+import maud.model.cgm.UserDataType;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.AxesDragEffect;
@@ -394,6 +395,21 @@ public class EnumMenus {
         }
 
         builder.show(ActionPrefix.setTweenTranslations);
+    }
+
+    /**
+     * Display a menu for selecting a user-data type using the "new userKey "
+     * action prefix.
+     */
+    public static void selectUserDataType() {
+        MenuBuilder builder = new MenuBuilder();
+
+        for (UserDataType type : UserDataType.values()) {
+            String description = type.toString();
+            builder.addDialog(description);
+        }
+
+        builder.show(ActionPrefix.newUserKey);
     }
 
     /**

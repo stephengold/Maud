@@ -39,6 +39,7 @@ import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedTrack;
+import maud.model.cgm.UserDataType;
 import maud.tool.HistoryTool;
 
 /**
@@ -117,7 +118,7 @@ class NewAction {
                 break;
 
             case Action.newUserKey:
-                ShowMenus.selectUserDataType();
+                EnumMenus.selectUserDataType();
                 break;
 
             default:
@@ -209,8 +210,9 @@ class NewAction {
             String args
                     = MyString.remainder(actionString, ActionPrefix.newUserKey);
             if (args.contains(" ")) {
-                String type = args.split(" ")[0];
-                String key = MyString.remainder(args, type + " ");
+                String typeName = args.split(" ")[0];
+                UserDataType type = UserDataType.valueOf(typeName);
+                String key = MyString.remainder(args, typeName + " ");
                 target.addUserKey(type, key);
             } else {
                 EditorDialogs.newUserKey(actionString + " ");

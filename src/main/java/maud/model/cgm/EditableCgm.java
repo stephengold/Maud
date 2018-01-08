@@ -252,37 +252,37 @@ public class EditableCgm extends LoadedCgm {
     /**
      * Add a new user key to the selected spatial.
      *
-     * @param type name of the data type ("boolean", "float", "integer", "long",
-     * "string", "vector2f", "vector3f", or "vector4f")
+     * @param dataType the data type (not null)
      * @param key user key to create (not null)
      */
-    public void addUserKey(String type, String key) {
+    public void addUserKey(UserDataType dataType, String key) {
+        Validate.nonNull(dataType, "data type");
         Validate.nonNull(key, "key");
 
         Object object = null;
-        switch (type) {
-            case "boolean":
+        switch (dataType) {
+            case Boolean:
                 object = false;
                 break;
-            case "float":
+            case Float:
                 object = 0f;
                 break;
-            case "integer":
+            case Integer:
                 object = 0;
                 break;
-            case "long":
+            case Long:
                 object = 0L;
                 break;
-            case "string":
+            case String:
                 object = "";
                 break;
-            case "vector2f":
+            case Vector2f:
                 object = new Vector2f();
                 break;
-            case "vector3f":
+            case Vector3f:
                 object = new Vector3f();
                 break;
-            case "vector4f":
+            case Vector4f:
                 object = new Vector4f();
                 break;
             default:
