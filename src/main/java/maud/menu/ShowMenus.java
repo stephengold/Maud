@@ -42,6 +42,7 @@ import maud.action.ActionPrefix;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedLight;
+import maud.model.cgm.SelectedOverride;
 import maud.model.cgm.SelectedSgc;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.cgm.SelectedSpatial;
@@ -271,6 +272,7 @@ public class ShowMenus {
                 builder.add(name);
             }
         }
+        builder.add(SelectedOverride.noParam);
 
         builder.show(ActionPrefix.selectOverride);
     }

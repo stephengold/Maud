@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -50,6 +50,10 @@ public class SelectedOverride implements Cloneable {
      */
     final private static Logger logger
             = Logger.getLogger(SelectedOverride.class.getName());
+    /**
+     * dummy parameter name used to indicate that no override is selected
+     */
+    final public static String noParam = "( no override )";
     // *************************************************************************
     // fields
 
@@ -228,11 +232,16 @@ public class SelectedOverride implements Cloneable {
     /**
      * Select the override with the specified parameter name.
      *
-     * @param parameterName a parameter name (not null, not empty)
+     * @param parameterName a parameter name (not null, not empty) or noParam
      */
     public void selectParameter(String parameterName) {
         Validate.nonEmpty(parameterName, "parameter name");
-        selectedName = parameterName;
+
+        if (parameterName.equals(noParam)) {
+            deselect();
+        } else {
+            selectedName = parameterName;
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.dialog.DialogController;
 import maud.Maud;
+import maud.model.cgm.SelectedOverride;
 
 /**
  * Controller for a text-entry dialog box used to rename a material-parameter
@@ -153,6 +154,8 @@ class OverrideNameDialog implements DialogController {
     private static boolean isReserved(String name) {
         boolean result;
         if (name.isEmpty()) {
+            result = true;
+        } else if (name.equals(SelectedOverride.noParam)) {
             result = true;
         } else {
             result = false;
