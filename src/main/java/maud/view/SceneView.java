@@ -104,7 +104,6 @@ import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.MiscOptions;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
-import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
@@ -135,6 +134,16 @@ public class SceneView
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
     final private static Transform transformIdentity = new Transform();
+    /**
+     * location of the camera after loading a new C-G model
+     */
+    final private static Vector3f cameraStartLocation
+            = new Vector3f(-2.4f, 1f, 1.6f);
+    /**
+     * location of the 3-D cursor after loading a new C-G model
+     */
+    final private static Vector3f cursorStartLocation
+            = new Vector3f(0f, 0f, 0f);
     /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
      */
@@ -183,14 +192,6 @@ public class SceneView
      * indicator for the 3-D cursor, or null if none
      */
     private Geometry cursor;
-    /**
-     * width (and height) of shadow maps on previous update, or 0 if not updated
-     */
-    int mapSize = 0;
-    /**
-     * number of shadow-map splits on previous update, or 0 if not updated
-     */
-    int numSplits = 0;
     /**
      * attachment point for this view's copy of the C-G model (applies
      * shadowMode and transforms)
@@ -600,29 +601,6 @@ public class SceneView
     Spatial getVertexSpatial() {
         assert vertexSpatial != null;
         return vertexSpatial;
-    }
-
-    /**
-     * Test whether shadow options have changed since the last time this view
-     * was updated.
-     *
-     * @return true if changed, otherwise false
-     */
-    boolean haveShadowOptionsChanged() {
-        SceneOptions options = Maud.getModel().getScene();
-        int newNumSplits = options.getNumSplits();
-        int newMapSize = options.getShadowMapSize();
-
-        boolean result;
-        if (numSplits == newNumSplits && mapSize == newMapSize) {
-            result = false;
-        } else {
-            numSplits = newNumSplits;
-            mapSize = newMapSize;
-            result = true;
-        }
-
-        return result;
     }
 
     /**
@@ -1723,10 +1701,7 @@ public class SceneView
          * Reset the camera position and 3-D cursor location.
          */
         ScenePov pov = getPov();
-        Vector3f baseLocation = new Vector3f(0f, 0f, 0f);
-        pov.setCursorLocation(baseLocation);
-        Vector3f cameraStartLocation
-                = new Vector3f(-2.4f, 1f, 1.6f); // TODO constants
+        pov.setCursorLocation(cursorStartLocation);
         pov.setCameraLocation(cameraStartLocation);
 
         projectile.delete();

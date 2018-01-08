@@ -366,13 +366,17 @@ class SceneUpdater {
 
             SceneOptions options = Maud.getModel().getScene();
             if (options.areShadowsRendered()) {
-                // TODO compare options to the renderer itself
-                boolean changed = view.haveShadowOptionsChanged();
-                if (changed && dlsr != null) {
-                    vp.removeProcessor(dlsr);
+                if (dlsr == null) {
                     dlsr = EditorViewPorts.addShadows(vp);
-                } else if (dlsr == null) {
-                    dlsr = EditorViewPorts.addShadows(vp);
+                } else {
+                    int newMaps = options.getNumSplits();
+                    int oldMaps = dlsr.getNumShadowMaps();
+                    int newSize = options.getShadowMapSize();
+                    int oldSize = dlsr.getShadowMapSize();
+                    if (newMaps != oldMaps || newSize != oldSize) {
+                        vp.removeProcessor(dlsr);
+                        dlsr = EditorViewPorts.addShadows(vp);
+                    }
                 }
 
                 DirectionalLight mainLight = view.getMainLight();
