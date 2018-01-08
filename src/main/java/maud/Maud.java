@@ -28,6 +28,7 @@ package maud;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
+import com.jme3.asset.AssetConfig;
 import com.jme3.audio.openal.ALAudioRenderer;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.plugins.bvh.BVHLoader;
@@ -47,7 +48,6 @@ import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
 import maud.dialog.QuitDialog;
 import maud.model.EditorModel;
-import maud.model.History;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.option.DisplaySettings;
@@ -100,10 +100,6 @@ public class Maud extends GuiApplication {
      */
     private static EditorModel editorModel = new EditorModel();
     /**
-     * anti-aliasing factor in effect (samples per pixel, &ge;0, &le;16)
-     */
-    private static int numSamples;
-    /**
      * application instance, set by {@link #main(java.lang.String[])}
      */
     private static Maud application;
@@ -131,37 +127,22 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Read the anti-aliasing factor.
-     *
-     * @return samples per pixel (&ge;0, &le;16)
-     */
-    public static int getNumSamples() {
-        assert numSamples >= 0 : numSamples;
-        assert numSamples <= 16 : numSamples;
-
-        return numSamples;
-    }
-
-    /**
      * Main entry point for Maud.
      *
      * @param arguments array of command-line arguments (not null)
      */
     public static void main(String[] arguments) {
         /*
-         * Mute the chatty loggers found in some imported packages.
+         * Mute the chatty loggers of certain packages.
          */
         Misc.setLoggingLevels(Level.WARNING);
         Logger.getLogger(ALAudioRenderer.class.getName())
                 .setLevel(Level.SEVERE);
-        /*
-         * Lower logging thresholds for classes of interest.
-         */
-        History.logger.setLevel(Level.INFO);
+        Logger.getLogger(AssetConfig.class.getName())
+                .setLevel(Level.SEVERE);
 
         AppSettings appSettings = DisplaySettings.initialize();
         if (appSettings != null) {
-            numSamples = appSettings.getSamples();
             application = new Maud();
             application.setSettings(appSettings);
             /*
