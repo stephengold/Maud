@@ -309,7 +309,7 @@ public class Selection {
                 Drag.startDraggingBoundary();
                 break;
             case Gnomon:
-                ScoreDrag.setDraggingGnomon(bestCgm);
+                Drag.startDraggingGnomon(bestCgm);
                 break;
             case Keyframe:
                 selectKeyframe();

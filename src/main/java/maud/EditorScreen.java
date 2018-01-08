@@ -31,8 +31,6 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
@@ -71,7 +69,6 @@ import maud.view.Drag;
 import maud.view.EditorView;
 import maud.view.SceneDrag;
 import maud.view.SceneView;
-import maud.view.ScoreDrag;
 import maud.view.Selection;
 import maud.view.ViewType;
 import org.lwjgl.input.Mouse;
@@ -672,16 +669,7 @@ public class EditorScreen extends GuiScreenController {
             }
 
         } else if (viewType == ViewType.Score) {
-            Cgm cgm = ScoreDrag.getDraggingGnomonCgm();
-            if (cgm != null) {
-                Camera camera = cgm.getScoreView().getCamera();
-                Vector2f mouseXY = inputManager.getCursorPosition();
-                Vector3f world = camera.getWorldCoordinates(mouseXY, 0f);
-                float worldX = FastMath.clamp(world.x, 0f, 1f);
-                float duration = cgm.getAnimation().getDuration();
-                float newTime = worldX * duration;
-                cgm.getAnimation().setTime(newTime);
-            }
+            Drag.updateGnomon();
         }
         updateDragPov();
         /*
