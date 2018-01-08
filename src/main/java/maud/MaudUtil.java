@@ -328,12 +328,16 @@ public class MaudUtil {
                 success = true;
                 if (storePosition != null) {
                     storePosition.clear();
-                    while (spatial != subtree) {
-                        Node parent = spatial.getParent();
-                        int index = parent.getChildIndex(spatial);
+                    /*
+                     * Climb to the subtree's root, adding indices to the list.
+                     */
+                    Spatial climber = spatial;
+                    while (climber != subtree) {
+                        Node parent = climber.getParent();
+                        int index = parent.getChildIndex(climber);
                         assert index >= 0 : index;
                         storePosition.add(index);
-                        spatial = parent; // TODO method parameter
+                        climber = parent;
                     }
                     Collections.reverse(storePosition);
                 }
