@@ -391,7 +391,7 @@ public class SceneOptions implements Cloneable {
         action = ActionPrefix.setSkyRendered + Boolean.toString(skyRendered);
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setTriangleMode + triangleMode.toString();
+        action = ActionPrefix.selectTriangleMode + triangleMode.toString();
         MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************

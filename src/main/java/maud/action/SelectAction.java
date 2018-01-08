@@ -51,6 +51,7 @@ import maud.model.option.scene.MovementMode;
 import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.ProjectionMode;
+import maud.model.option.scene.TriangleMode;
 import maud.view.Drag;
 import maud.view.SceneDrag;
 
@@ -427,6 +428,12 @@ class SelectAction {
         } else if (actionString.startsWith(ActionPrefix.selectSpatial)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectSpatial);
             SpatialMenus.selectSpatial(arg, true);
+
+        } else if (actionString.startsWith(ActionPrefix.selectTriangleMode)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectTriangleMode);
+            TriangleMode mode = TriangleMode.valueOf(arg);
+            model.getScene().setTriangleMode(mode);
 
         } else if (actionString.startsWith(ActionPrefix.selectUserKey)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectUserKey);

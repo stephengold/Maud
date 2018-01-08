@@ -337,7 +337,7 @@ public class EnumMenus {
             }
         }
 
-        builder.show(ActionPrefix.setTriangleMode);
+        builder.show(ActionPrefix.selectTriangleMode);
     }
 
     /**

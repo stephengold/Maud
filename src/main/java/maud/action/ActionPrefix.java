@@ -316,6 +316,10 @@ public class ActionPrefix {
      */
     final public static String selectToolAt = "select toolAt ";
     /**
+     * argument is the name of a triangle mode
+     */
+    final public static String selectTriangleMode = "select triangleMode ";
+    /**
      * argument is a pre-existing user key
      */
     final public static String selectUserKey = "select userKey ";
@@ -434,10 +438,6 @@ public class ActionPrefix {
      * argument is a boolean value
      */
     final public static String setSkyRendered = "set skyRendered ";
-    /**
-     * argument is the name of a triangle mode TODO rename select triangleMode
-     */
-    final public static String setTriangleMode = "set triangleMode ";
     /**
      * argument is the name of a quaternion interpolation technique
      */

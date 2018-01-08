@@ -443,12 +443,6 @@ class SetAction {
             boolean rendered = Boolean.parseBoolean(arg);
             model.getScene().setSkyRendered(rendered);
 
-        } else if (actionString.startsWith(ActionPrefix.setTriangleMode)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setTriangleMode);
-            TriangleMode mode = TriangleMode.valueOf(arg);
-            model.getScene().setTriangleMode(mode);
-
         } else if (actionString.startsWith(ActionPrefix.setTweenRotations)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setTweenRotations);
