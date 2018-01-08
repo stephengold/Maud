@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,18 +27,17 @@
 package maud;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
 import jme3utilities.Validate;
 import jme3utilities.ui.Locators;
 import maud.model.EditorModel;
+import maud.model.option.MiscOptions;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.SceneOptions;
 import maud.view.SceneView;
@@ -97,31 +96,24 @@ public class EditorViewPorts {
     // new methods exposed
 
     /**
-     * Add a shadow filter to the specified view port, without specifying a
+     * Add a shadow renderer to the specified view port, without specifying a
      * light.
      *
      * @param vp which view port (not null)
      * @return the new, disabled instance
      */
-    public static DirectionalLightShadowFilter addShadows(ViewPort vp) {
+    public static DirectionalLightShadowRenderer addShadows(ViewPort vp) {
         Validate.nonNull(vp, "view port");
 
-        AssetManager assetManager = Locators.getAssetManager();
+        AssetManager manager = Locators.getAssetManager();
         SceneOptions options = Maud.getModel().getScene();
         int mapSize = options.getShadowMapSize();
         int numSplits = options.getNumSplits();
-        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(
-                assetManager, mapSize, numSplits);
-        dlsf.setEnabled(false);
+        DirectionalLightShadowRenderer dlsr;
+        dlsr = new DirectionalLightShadowRenderer(manager, mapSize, numSplits);
+        vp.addProcessor(dlsr);
 
-        FilterPostProcessor fpp = Misc.getFpp(vp, assetManager);
-        int numSamples = Maud.getNumSamples();
-        if (numSamples > 1) {
-            fpp.setNumSamples(numSamples);
-        }
-        fpp.addFilter(dlsf);
-
-        return dlsf;
+        return dlsr;
     }
 
     /**
@@ -136,9 +128,8 @@ public class EditorViewPorts {
         Camera cam = application.getCamera();
         cam.setName("Target Scene Wide");
         ViewPort viewPort = application.getViewPort();
-        addShadows(viewPort);
         /*
-         * Create 2 view ports for split-screen scene views.
+         * Create 2 view ports for split-display scene views.
          */
         Node sourceSceneParent = createSourceSceneViewPort();
         Node targetSceneParent = createTargetSceneViewPort();
@@ -177,11 +168,12 @@ public class EditorViewPorts {
     static void update() {
         ViewPort viewPort = Maud.getApplication().getViewPort();
         EditorModel editorModel = Maud.getModel();
-        boolean splitScreen = editorModel.getSource().isLoaded();
+        boolean twoModelsLoaded = editorModel.getSource().isLoaded();
+        MiscOptions misc = editorModel.getMisc();
 
-        ViewMode viewMode = editorModel.getMisc().getViewMode();
+        ViewMode viewMode = misc.getViewMode();
         switch (viewMode) {
-            case Hybrid:
+            case Hybrid: // score on left, scene on right
                 sourceSceneViewPort.setEnabled(false);
                 targetSceneRightViewPort.setEnabled(true);
                 viewPort.setEnabled(false);
@@ -192,9 +184,9 @@ public class EditorViewPorts {
                 break;
 
             case Scene:
-                sourceSceneViewPort.setEnabled(splitScreen);
-                targetSceneRightViewPort.setEnabled(splitScreen);
-                viewPort.setEnabled(!splitScreen);
+                sourceSceneViewPort.setEnabled(twoModelsLoaded);
+                targetSceneRightViewPort.setEnabled(twoModelsLoaded);
+                viewPort.setEnabled(!twoModelsLoaded);
                 sourceScoreViewPort.setEnabled(false);
                 targetScoreLeftViewPort.setEnabled(false);
                 targetScoreRightViewPort.setEnabled(false);
@@ -205,10 +197,10 @@ public class EditorViewPorts {
                 sourceSceneViewPort.setEnabled(false);
                 targetSceneRightViewPort.setEnabled(false);
                 viewPort.setEnabled(false);
-                sourceScoreViewPort.setEnabled(splitScreen);
+                sourceScoreViewPort.setEnabled(twoModelsLoaded);
                 targetScoreLeftViewPort.setEnabled(false);
-                targetScoreRightViewPort.setEnabled(splitScreen);
-                targetScoreWideViewPort.setEnabled(!splitScreen);
+                targetScoreRightViewPort.setEnabled(twoModelsLoaded);
+                targetScoreWideViewPort.setEnabled(!twoModelsLoaded);
                 break;
 
             default:
@@ -220,18 +212,17 @@ public class EditorViewPorts {
     // private methods
 
     /**
-     * Instantiate a camera for a half-width view port.
+     * Instantiate a new camera with a half-width view port.
      *
-     * @param leftEdge which side (0 &rarr; left, 0.5 &rarr; right)
+     * @param onRightSide which side of the boundary the viewport is on (false
+     * &rarr; left, true &rarr; right)
      * @return a new instance with perspective projection
      */
-    private static Camera createHalfCamera(float leftEdge) {
+    private static Camera createHalfCamera(boolean onRightSide) {
         Camera cam = Maud.getApplication().getCamera();
         Camera camera = cam.clone();
-        float bottomEdge = 0f;
-        float rightEdge = leftEdge + 0.5f;
-        float topEdge = 1f;
-        camera.setViewPort(leftEdge, rightEdge, bottomEdge, topEdge);
+        float xBoundary = 0.5f;
+        updateSideCamera(camera, onRightSide, xBoundary);
 
         return camera;
     }
@@ -243,13 +234,12 @@ public class EditorViewPorts {
      */
     private static Node createSourceSceneViewPort() {
         String name = "Source Scene Left";
-        Camera camera = createHalfCamera(0f);
+        Camera camera = createHalfCamera(false);
         camera.setName(name);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
         sourceSceneViewPort = renderManager.createMainView(name, camera);
         sourceSceneViewPort.setClearFlags(true, true, true);
         sourceSceneViewPort.setEnabled(false);
-        addShadows(sourceSceneViewPort);
         /*
          * Attach a scene to the new view port.
          */
@@ -269,7 +259,7 @@ public class EditorViewPorts {
      */
     private static void createSourceScoreViewPort() {
         String name = "Source Score Left";
-        Camera camera = createHalfCamera(0f);
+        Camera camera = createHalfCamera(false);
         camera.setName(name);
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
@@ -291,14 +281,13 @@ public class EditorViewPorts {
      */
     private static Node createTargetSceneViewPort() {
         String name = "Target Scene Right";
-        Camera camera = createHalfCamera(0.5f);
+        Camera camera = createHalfCamera(true);
         camera.setName(name);
         Maud application = Maud.getApplication();
         RenderManager renderManager = application.getRenderManager();
         targetSceneRightViewPort = renderManager.createMainView(name, camera);
         targetSceneRightViewPort.setClearFlags(true, true, true);
         targetSceneRightViewPort.setEnabled(false);
-        addShadows(targetSceneRightViewPort);
         /*
          * Attach the existing scene to the new view port.
          */
@@ -318,7 +307,7 @@ public class EditorViewPorts {
      */
     private static void createTargetScoreLeftViewPort() {
         String name = "Target Score Left";
-        Camera camera = createHalfCamera(0f);
+        Camera camera = createHalfCamera(false);
         camera.setName(name);
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
@@ -337,7 +326,7 @@ public class EditorViewPorts {
      */
     private static void createTargetScoreRightViewPort() {
         String name = "Target Score Right";
-        Camera camera = createHalfCamera(0.5f);
+        Camera camera = createHalfCamera(true);
         camera.setName(name);
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
@@ -370,5 +359,32 @@ public class EditorViewPorts {
          */
         Node root = new Node("Root for " + name);
         targetScoreWideViewPort.attachScene(root);
+    }
+
+    /**
+     * Update the partial-width view port of the specified camera.
+     *
+     * @param camera the camera to update (not null)
+     * @param onRightSide which side of the boundary the viewport is on (false
+     * &rarr; left, true &rarr; right)
+     * @param xBoundary the display X-coordinate of the left-right boundary
+     * (&gt;0, &lt;1)
+     */
+    private static void updateSideCamera(Camera camera, boolean onRightSide,
+            float xBoundary) {
+        assert xBoundary > 0f : xBoundary;
+        assert xBoundary < 1f : xBoundary;
+
+        float leftEdge, rightEdge;
+        if (onRightSide) {
+            leftEdge = xBoundary;
+            rightEdge = 1f;
+        } else {
+            leftEdge = 0f;
+            rightEdge = xBoundary;
+        }
+        float bottomEdge = 0f;
+        float topEdge = 1f;
+        camera.setViewPort(leftEdge, rightEdge, bottomEdge, topEdge);
     }
 }

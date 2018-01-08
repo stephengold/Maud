@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -33,18 +33,16 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import com.jme3.post.Filter;
-import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.SceneProcessor;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
 import jme3utilities.MyAsset;
 import jme3utilities.MySpatial;
 import jme3utilities.debug.AxesVisualizer;
@@ -197,7 +195,7 @@ class SceneUpdater {
         updateCursor(viewCgm);
         updatePhysics(viewCgm);
         viewCgm.getSceneView().getPlatform().update();
-        updateShadowFilter(viewCgm);
+        updateShadows(viewCgm);
         updateSkeleton(viewCgm);
         updateSky(viewCgm);
         updateVertex(viewCgm);
@@ -349,40 +347,42 @@ class SceneUpdater {
     }
 
     /**
-     * Update the shadow filter based on the MVC model.
+     * Update the shadow renderer based on the MVC model.
      *
      * @param cgm which C-G model (not null)
      */
-    private static void updateShadowFilter(Cgm cgm) {
+    private static void updateShadows(Cgm cgm) {
         SceneView view = cgm.getSceneView();
         ViewPort vp = view.getViewPort();
         if (vp != null && vp.isEnabled()) {
-            AssetManager assetManager = Locators.getAssetManager();
-            FilterPostProcessor fpp = Misc.getFpp(vp, assetManager);
-
-            DirectionalLightShadowFilter dlsf = null;
-            List<Filter> filterList = fpp.getFilterList();
-            for (Filter filter : filterList) {
-                if (filter instanceof DirectionalLightShadowFilter) {
-                    dlsf = (DirectionalLightShadowFilter) filter;
+            DirectionalLightShadowRenderer dlsr = null;
+            List<SceneProcessor> list = vp.getProcessors();
+            for (SceneProcessor processor : list) {
+                if (processor instanceof DirectionalLightShadowRenderer) {
+                    dlsr = (DirectionalLightShadowRenderer) processor;
                     break;
                 }
             }
 
-            boolean changed = view.haveShadowOptionsChanged();
-            if (changed) {
-                dlsf.setEnabled(false);
-                fpp.removeFilter(dlsf);
-                dlsf = EditorViewPorts.addShadows(vp);
-            }
-
             SceneOptions options = Maud.getModel().getScene();
-            EdgeFilteringMode edgeFilter = options.getEdgeFilter();
-            dlsf.setEdgeFilteringMode(edgeFilter);
-            DirectionalLight mainLight = view.getMainLight();
-            dlsf.setLight(mainLight);
-            boolean enable = Maud.getModel().getScene().areShadowsRendered();
-            dlsf.setEnabled(enable);
+            if (options.areShadowsRendered()) {
+                // TODO compare options to the renderer itself
+                boolean changed = view.haveShadowOptionsChanged();
+                if (changed && dlsr != null) {
+                    vp.removeProcessor(dlsr);
+                    dlsr = EditorViewPorts.addShadows(vp);
+                } else if (dlsr == null) {
+                    dlsr = EditorViewPorts.addShadows(vp);
+                }
+
+                DirectionalLight mainLight = view.getMainLight();
+                dlsr.setLight(mainLight);
+                EdgeFilteringMode edgeFilter = options.getEdgeFilter();
+                dlsr.setEdgeFilteringMode(edgeFilter);
+
+            } else if (dlsr != null) {
+                vp.removeProcessor(dlsr);
+            }
         }
     }
 
