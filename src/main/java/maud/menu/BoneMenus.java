@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -214,6 +214,7 @@ public class BoneMenus {
         }
         if (isSelected) {
             builder.addBone("Next");
+            builder.addBone("None");
             builder.addBone("Previous");
         }
 
@@ -332,6 +333,9 @@ public class BoneMenus {
                 break;
             case "Next":
                 selection.selectNext();
+                break;
+            case "None":
+                selection.deselect();
                 break;
             case "Parent":
                 selection.selectParent();
