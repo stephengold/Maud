@@ -712,12 +712,12 @@ public class EditableCgm extends LoadedCgm {
 
     /**
      * Update which physics collision shape is being resized without triggering
-     * a history event. TODO rename replaceForResize
+     * a history event.
      *
      * @param oldShape shape to replace (not null, unaffected)
      * @param newShape replacement shape (not null)
      */
-    void replace(CollisionShape oldShape, CollisionShape newShape) {
+    void replaceForResize(CollisionShape oldShape, CollisionShape newShape) {
         assert newShape != null;
 
         String oldState = "ss" + oldShape.toString();

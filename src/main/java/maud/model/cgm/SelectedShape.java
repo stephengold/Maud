@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -647,7 +647,7 @@ public class SelectedShape implements Cloneable {
         PhysicsUtil.replaceInCompounds(space, shape, newShape);
 
         EditableCgm editableCgm = (EditableCgm) cgm;
-        editableCgm.replace(shape, newShape);
+        editableCgm.replaceForResize(shape, newShape);
 
         long newShapeId = newShape.getObjectId();
         selectedId = newShapeId;
