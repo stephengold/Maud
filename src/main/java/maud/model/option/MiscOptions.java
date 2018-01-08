@@ -26,6 +26,7 @@
  */
 package maud.model.option;
 
+import com.jme3.math.FastMath;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Level;
@@ -35,7 +36,8 @@ import maud.MaudUtil;
 import maud.action.ActionPrefix;
 
 /**
- * The MVC model of miscellaneous global options in Maud's editor screen.
+ * The MVC model of miscellaneous global options pertaining to Maud's editor
+ * screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -43,6 +45,14 @@ public class MiscOptions implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * maximum X-coordinate of the left-right boundary
+     */
+    final private static float maxXBoundary = 0.8f;
+    /**
+     * minimum X-coordinate of the left-right boundary
+     */
+    final private static float minXBoundary = 0.2f;
     /**
      * message logger for this class
      */
@@ -69,15 +79,20 @@ public class MiscOptions implements Cloneable {
      */
     private boolean menuBarVisibility = true;
     /**
+     * display X-coordinate of the left-right boundary (&ge;minXBoundary,
+     * &le;maxXBoundary)
+     */
+    private float xBoundary = 0.5f;
+    /**
      * starting point for displayed indices (0 or 1)
      */
     private int indexBase = 1;
     /**
-     * rigid-body parameter to display in ObjectTool (not null)
+     * rigid-body parameter to view/edit in ObjectTool (not null)
      */
     private RigidBodyParameter rbp = RigidBodyParameter.Mass;
     /**
-     * shape parameter to display in ShapeTool (not null)
+     * shape parameter to view/edit in ShapeTool (not null)
      */
     private ShapeParameter shapeParameter = ShapeParameter.Radius;
     /**
@@ -165,6 +180,17 @@ public class MiscOptions implements Cloneable {
     public ViewMode getViewMode() {
         assert viewMode != null;
         return viewMode;
+    }
+
+    /**
+     * Read the location of the display's left-right boundary.
+     *
+     * @return display X-coordinate (&gt;0, &lt;1)
+     */
+    public float getXBoundary() {
+        assert xBoundary >= minXBoundary : xBoundary;
+        assert xBoundary <= maxXBoundary : xBoundary;
+        return xBoundary;
     }
 
     /**
@@ -271,6 +297,15 @@ public class MiscOptions implements Cloneable {
     public void setViewMode(ViewMode newMode) {
         Validate.nonNull(newMode, "new mode");
         viewMode = newMode;
+    }
+
+    /**
+     * Alter the location of the display's left-right boundary.
+     *
+     * @param newX display X-coordinate
+     */
+    public void setXBoundary(float newX) {
+        xBoundary = FastMath.clamp(newX, minXBoundary, maxXBoundary);
     }
 
     /**

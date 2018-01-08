@@ -51,6 +51,7 @@ import maud.model.option.scene.MovementMode;
 import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.ProjectionMode;
+import maud.view.Drag;
 import maud.view.SceneDrag;
 import maud.view.ScoreDrag;
 
@@ -286,9 +287,11 @@ class SelectAction {
                 break;
 
             case Action.selectScreenXY:
+                Drag.stopDraggingBoundary();
                 SceneDrag.clear();
                 ScoreDrag.setDraggingGnomon(null);
                 break;
+
             default:
                 handled = false;
         }

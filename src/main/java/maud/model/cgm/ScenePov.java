@@ -378,8 +378,10 @@ public class ScenePov implements Cloneable, Pov {
             camera.setLocation(cameraLocation);
             Quaternion orientation = cameraOrientation(null);
             camera.setRotation(orientation);
-
-            float aspectRatio = MyCamera.frustumAspectRatio(camera);
+            /*
+             * Use the view ratio in case the boundary is being dragged.
+             */
+            float aspectRatio = MyCamera.viewAspectRatio(camera);
             float range = range();
             float far = 10f * range;
             float near = 0.01f * range;

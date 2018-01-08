@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -49,6 +49,13 @@ public interface EditorView {
      * @param bestSelection best selection found so far (not null, modified)
      */
     void considerBones(Selection bestSelection);
+
+    /**
+     * Consider selecting each boundary of this view.
+     *
+     * @param bestSelection best selection found so far (not null, modified)
+     */
+    void considerBoundaries(Selection bestSelection);
 
     /**
      * Consider selecting each gnomon in this view.

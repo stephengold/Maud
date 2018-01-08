@@ -47,6 +47,7 @@ import com.jme3.light.Light;
 import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.FastMath;
 import com.jme3.math.Line;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
@@ -100,6 +101,7 @@ import maud.model.cgm.DisplayedPose;
 import maud.model.cgm.ScenePov;
 import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedSkeleton;
+import maud.model.option.MiscOptions;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.SceneOptions;
@@ -182,11 +184,11 @@ public class SceneView
      */
     private Geometry cursor;
     /**
-     * width (and height) of shadow maps on previous update
+     * width (and height) of shadow maps on previous update, or 0 if not updated
      */
     int mapSize = 0;
     /**
-     * number of shadow-map splits on previous update
+     * number of shadow-map splits on previous update, or 0 if not updated
      */
     int numSplits = 0;
     /**
@@ -1180,6 +1182,26 @@ public class SceneView
                 float dSquared = boneXY.distanceSquared(inputXY);
                 selection.considerBone(cgm, boneIndex, dSquared);
             }
+        }
+    }
+
+    /**
+     * Consider selecting the boundary of this view.
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    @Override
+    public void considerBoundaries(Selection selection) {
+        Validate.nonNull(selection, "selection");
+
+        Camera camera = getCamera();
+        if (!MaudUtil.isFullWidth(camera)) {
+            MiscOptions misc = Maud.getModel().getMisc();
+            int width = camera.getWidth();
+            float boundaryX = misc.getXBoundary() * width;
+            Vector2f inputXY = selection.copyInputXY();
+            float dSquared = FastMath.sqr(inputXY.x - boundaryX);
+            selection.considerBoundary(dSquared);
         }
     }
 

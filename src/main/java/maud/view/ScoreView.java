@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -58,6 +58,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.mesh.RectangleMesh;
 import jme3utilities.wes.Pose;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.mesh.Finial;
 import maud.mesh.Sparkline;
 import maud.mesh.YSwarm;
@@ -65,6 +66,7 @@ import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.StaffTrack;
+import maud.model.option.MiscOptions;
 import maud.model.option.ScoreOptions;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
@@ -369,21 +371,44 @@ public class ScoreView implements EditorView {
             if (boneIndex != selectedBone) {
                 Vector2f minMax = entry.getValue();
 
-                Vector3f world1 = new Vector3f(xRightMargin, minMax.x, zLines);
+                Vector3f world1 = new Vector3f(-0.15f, minMax.x, zLines);
                 Vector3f world2 = new Vector3f(xRightMargin, minMax.y, zLines);
                 Vector3f screen1 = camera.getScreenCoordinates(world1);
                 Vector3f screen2 = camera.getScreenCoordinates(world2);
 
-                float dSquared;
-                if (MyMath.isBetween(screen1.y, inputXY.y, screen2.y)) {
-                    dSquared = 0f;
-                } else {
+                float dSquared = 0f;
+                if (!MyMath.isBetween(screen1.y, inputXY.y, screen2.y)) {
                     float dSquared1 = FastMath.sqr(inputXY.y - screen1.y);
                     float dSquared2 = FastMath.sqr(inputXY.y - screen2.y);
-                    dSquared = Math.min(dSquared1, dSquared2);
+                    dSquared += Math.min(dSquared1, dSquared2);
+                }
+                if (!MyMath.isBetween(screen1.x, inputXY.x, screen2.x)) {
+                    float dSquared1 = FastMath.sqr(inputXY.x - screen1.x);
+                    float dSquared2 = FastMath.sqr(inputXY.x - screen2.x);
+                    dSquared += Math.min(dSquared1, dSquared2);
                 }
                 selection.considerBone(cgm, boneIndex, dSquared);
             }
+        }
+    }
+
+    /**
+     * Consider selecting the boundary of this view.
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    @Override
+    public void considerBoundaries(Selection selection) {
+        Validate.nonNull(selection, "selection");
+
+        Camera camera = getCamera();
+        if (!MaudUtil.isFullWidth(camera)) {
+            MiscOptions misc = Maud.getModel().getMisc();
+            int width = camera.getWidth(); // in pixels
+            float boundaryX = misc.getXBoundary() * width;
+            Vector2f inputXY = selection.copyInputXY();
+            float dSquared = FastMath.sqr(inputXY.x - boundaryX);
+            selection.considerBoundary(dSquared);
         }
     }
 

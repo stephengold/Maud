@@ -173,7 +173,7 @@ public class EditorViewPorts {
 
         ViewMode viewMode = misc.getViewMode();
         switch (viewMode) {
-            case Hybrid: // score on left, scene on right
+            case Hybrid: // score view on left, scene view on right
                 sourceSceneViewPort.setEnabled(false);
                 targetSceneRightViewPort.setEnabled(true);
                 viewPort.setEnabled(false);
@@ -206,6 +206,16 @@ public class EditorViewPorts {
             default:
                 logger.log(Level.SEVERE, "view mode={0}", viewMode);
                 throw new IllegalStateException("unknown view mode");
+        }
+
+        boolean split = twoModelsLoaded || viewMode == ViewMode.Hybrid;
+        if (split) {
+            float xBoundary = misc.getXBoundary();
+            updateSideViewPort(sourceSceneViewPort, false, xBoundary);
+            updateSideViewPort(sourceScoreViewPort, false, xBoundary);
+            updateSideViewPort(targetSceneRightViewPort, true, xBoundary);
+            updateSideViewPort(targetScoreLeftViewPort, false, xBoundary);
+            updateSideViewPort(targetScoreRightViewPort, true, xBoundary);
         }
     }
     // *************************************************************************
@@ -386,5 +396,25 @@ public class EditorViewPorts {
         float bottomEdge = 0f;
         float topEdge = 1f;
         camera.setViewPort(leftEdge, rightEdge, bottomEdge, topEdge);
+    }
+
+    /**
+     * Update the specified partial-width view port unless it's disabled.
+     *
+     * @param vp the view port to update (not null)
+     * @param onRightSide which side of the boundary the viewport is on (false
+     * &rarr; left, true &rarr; right)
+     * @param xBoundary the display X-coordinate of the left-right boundary
+     * (&gt;0, &lt;1)
+     */
+    private static void updateSideViewPort(ViewPort vp, boolean onRightSide,
+            float xBoundary) {
+        assert xBoundary > 0f : xBoundary;
+        assert xBoundary < 1f : xBoundary;
+
+        if (vp.isEnabled()) {
+            Camera camera = vp.getCamera();
+            updateSideCamera(camera, onRightSide, xBoundary);
+        }
     }
 }

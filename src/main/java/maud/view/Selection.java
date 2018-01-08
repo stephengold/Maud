@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -43,8 +43,8 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSkeleton;
 
 /**
- * Encapsulate an axis/bone/gnomon/keyframe/vertex selection from the user
- * interface. This data is not checkpointed.
+ * Encapsulate an axis/bone/boundary/gnomon/keyframe/vertex selection by the
+ * user. Never checkpointed.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -53,7 +53,8 @@ public class Selection {
     // enums
 
     private enum Type {
-        None, Bone, Gnomon, Keyframe, PoseTransformAxis, SceneAxis, Vertex;
+        None, Bone, Boundary, Gnomon, Keyframe,
+        PoseTransformAxis, SceneAxis, Vertex;
     }
     // *************************************************************************
     // constants and loggers
@@ -133,8 +134,8 @@ public class Selection {
      * @param screenXY screen coordinates of the axis (in pixels, not null,
      * unaffected)
      */
-    public void considerAxis(Cgm cgm, int axisIndex,
-            boolean scoreView, Vector2f screenXY) {
+    public void considerAxis(Cgm cgm, int axisIndex, boolean scoreView,
+            Vector2f screenXY) {
         Validate.nonNull(cgm, "model");
         if (scoreView) {
             Validate.inRange(axisIndex, "axis index", 0, 9);
@@ -182,6 +183,27 @@ public class Selection {
             bestVertexIndex = -1;
             bestCgm = cgm;
             bestType = Type.Bone;
+        }
+    }
+
+    /**
+     * Consider selecting the view-port boundary.
+     *
+     * @param dSquared squared distance between the boundary's screen location
+     * and {@link #inputXY} (in pixels squared, &ge;0)
+     */
+    public void considerBoundary(float dSquared) {
+        Validate.nonNegative(dSquared, "distance squared");
+
+        if (dSquared < bestDSquared) {
+            bestDSquared = dSquared;
+            bestGeometry = null;
+            bestAxisIndex = -1;
+            bestBoneIndex = SelectedSkeleton.noBoneIndex;
+            bestFrameIndex = -1;
+            bestVertexIndex = -1;
+            bestCgm = null;
+            bestType = Type.Boundary;
         }
     }
 
@@ -283,8 +305,11 @@ public class Selection {
             case Bone:
                 selectBone();
                 break;
+            case Boundary:
+                Drag.startDraggingBoundary();
+                break;
             case Gnomon:
-                selectGnomon();
+                ScoreDrag.setDraggingGnomon(bestCgm);
                 break;
             case Keyframe:
                 selectKeyframe();
@@ -306,7 +331,7 @@ public class Selection {
     // private methods
 
     /**
-     * Select the bone.
+     * Select a bone.
      */
     private void selectBone() {
         assert bestBoneIndex >= 0 : bestBoneIndex;
@@ -329,14 +354,7 @@ public class Selection {
     }
 
     /**
-     * Select the gnomon in a score view.
-     */
-    private void selectGnomon() {
-        ScoreDrag.setDraggingGnomon(bestCgm);
-    }
-
-    /**
-     * Select the keyframe in the selected bone track.
+     * Select a keyframe in the selected bone track.
      */
     private void selectKeyframe() {
         assert bestFrameIndex >= 0 : bestFrameIndex;
@@ -347,14 +365,14 @@ public class Selection {
     }
 
     /**
-     * Select the transform axis of the selected bone in the the current pose.
+     * Select a transform axis of the selected bone in the the current pose.
      */
     private void selectPoseTransformAxis() {
         // TODO drag transform axis
     }
 
     /**
-     * Select the axis of the scene's axis visualizer.
+     * Select an axis of the scene's axis visualizer.
      */
     private void selectSceneAxis() {
         assert bestCgm != null;
@@ -374,7 +392,7 @@ public class Selection {
     }
 
     /**
-     * Select the vertex of the loaded C-G model.
+     * Select a vertex of the loaded C-G model.
      */
     private void selectVertex() {
         assert bestCgm != null;

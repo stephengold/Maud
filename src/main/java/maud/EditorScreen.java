@@ -67,6 +67,7 @@ import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.SceneOptions;
 import maud.tool.EditorTools;
 import maud.view.CgmTransform;
+import maud.view.Drag;
 import maud.view.EditorView;
 import maud.view.SceneDrag;
 import maud.view.SceneView;
@@ -86,9 +87,9 @@ public class EditorScreen extends GuiScreenController {
     // constants and loggers
 
     /**
-     * largest squared distance for bone/axis selection (in pixels squared)
+     * squared distance limit for most selections (in pixels squared)
      */
-    final private static float dSquaredThreshold = 1000f;
+    final private static float maxDSquared = 1600f;
     /**
      * message logger for this class
      */
@@ -449,7 +450,7 @@ public class EditorScreen extends GuiScreenController {
         EditorView mouseView = mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
-            Selection selection = new Selection(mouseXY, dSquaredThreshold);
+            Selection selection = new Selection(mouseXY, maxDSquared);
             mouseView.considerBones(selection);
             selection.select();
         }
@@ -477,7 +478,7 @@ public class EditorScreen extends GuiScreenController {
         EditorView mouseView = mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
-            Selection selection = new Selection(mouseXY, dSquaredThreshold);
+            Selection selection = new Selection(mouseXY, maxDSquared);
             mouseView.considerKeyframes(selection);
             selection.select();
         }
@@ -507,24 +508,25 @@ public class EditorScreen extends GuiScreenController {
         EditorView mouseView = mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
-            Selection selection = new Selection(mouseXY, dSquaredThreshold);
+            Selection selection = new Selection(mouseXY, maxDSquared);
             mouseView.considerVertices(selection);
             selection.select();
         }
     }
 
     /**
-     * Select an axis, bone, gnomon, or keyframe based on the screen coordinates
-     * of the mouse pointer.
+     * Select an axis, bone, boundary, gnomon, or keyframe based on the screen
+     * coordinates of the mouse pointer.
      */
     public void selectXY() {
         Cgm mouseCgm = mouseCgm();
         EditorView mouseView = mouseView();
         if (mouseCgm != null && mouseView != null) {
             Vector2f mouseXY = inputManager.getCursorPosition();
-            Selection selection = new Selection(mouseXY, dSquaredThreshold);
+            Selection selection = new Selection(mouseXY, maxDSquared);
             mouseView.considerAxes(selection);
             mouseView.considerBones(selection);
+            mouseView.considerBoundaries(selection);
             mouseView.considerGnomons(selection);
             mouseView.considerKeyframes(selection);
             selection.select();
@@ -626,6 +628,8 @@ public class EditorScreen extends GuiScreenController {
         if (!tools.getTool("camera").isInitialized()) {
             return;
         }
+
+        Drag.updateBoundary();
         EditorViewPorts.update();
         updateBars();
         /*
