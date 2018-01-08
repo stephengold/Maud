@@ -31,6 +31,7 @@ import com.jme3.system.JmeSystem;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import maud.Maud;
 
 /**
@@ -99,10 +100,13 @@ public class DisplaySettings {
         /*
          * Load settings from persistent storage.
          */
+        boolean loadedFromStore = false;
         try {
-            appSettings.load(preferencesKey);
+            if (Preferences.userRoot().nodeExists(preferencesKey)) {
+                appSettings.load(preferencesKey);
+                loadedFromStore = true;
+            }
         } catch (BackingStoreException e) {
-            logger.log(Level.WARNING, "App settings were not loaded.");
         }
         /*
          * Apply overrides.
@@ -111,17 +115,21 @@ public class DisplaySettings {
         appSettings.setMinWidth(640);
         appSettings.setSettingsDialogImage(logoAssetPath);
         appSettings.setTitle(windowTitle);
-        /*
-         * Display JME's settings dialog.
-         */
-        boolean loadFlag = false;
-        boolean proceed;
-        proceed = JmeSystem.showSettingsDialog(appSettings, loadFlag);
-        if (!proceed) {
+
+        // TODO a way for the user to force Maud to show the dialog
+        if (!loadedFromStore) {
             /*
-             * The user clicked on the "Cancel" button.
+             * Display JME's settings dialog.
              */
-            return null;
+            boolean loadFlag = false;
+            boolean proceed
+                    = JmeSystem.showSettingsDialog(appSettings, loadFlag);
+            if (!proceed) {
+                /*
+                 * The user clicked on the "Cancel" button.
+                 */
+                return null;
+            }
         }
         save();
 
