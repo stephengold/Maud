@@ -17,7 +17,8 @@ Summary of features:
  + import models from [Blender][]/[glTF][]/[Ogre][]/[Wavefront][obj]/[Xbuf][] and save to native J3O format
  + import animations from [Biovision Hierarchy (BVH)](#bvh) files
  + visualize animations, axes, bones, bounding boxes, lights, mesh vertices, physics objects, and skeletons
- + browse animations, bones, keyframes, lights, mesh vertices, physics objects,
+ + browse animations, bones, keyframes, lights, material parameters,
+   material-parameter overrides, mesh vertices, physics objects,
    physics shapes, scene-graph controls, spatials, tracks, and user data
  + play animations forward/backward at various speeds and pause them
  + create new animations from poses or by altering/mixing existing animations
@@ -27,12 +28,14 @@ Summary of features:
  + rename animations, bones, lights, spatials, and user data
  + change animation speeds/durations
  + behead/mix/truncate animations
- + reduce/resample/wrap animations and bone tracks
+ + reduce/resample/wrap animations and tracks
  + translate animations for support or traction
- + delete animations, keyframes, lights, scene-graph controls, spatials, tracks,
+ + delete animations, keyframes, lights, material parameters,
+   material-parameter overrides, scene-graph controls, spatials, tracks,
    and user data
  + modify bone/spatial transforms (translation, rotation, and scale)
- + modify batch hints, cull hints, render-queue buckets, shadow modes, and user data
+ + modify batch hints, cull hints, lights, material parameters,
+   material-parameter overrides, render-queue buckets, shadow modes, and user data
  + review an unlimited edit history and undo/redo edits
  + customizable mouse-button assignments and keyboard shortcuts
  + complete Java source code provided under a [BSD 3-Clause License][bsd3]
@@ -741,8 +744,8 @@ The following features are on my "to do" list, in no particular order:
  + mirror an animation/pose
  + joint-angle limits for models
  + save more options to the startup script
- + drag/animate the boundary of a split screen
  + insert a node into the scene graph
+ + changes to display settings should take effect immediately
 
 <a name="conventions">
 
