@@ -160,7 +160,8 @@ Clone the Maud repository using Git:
     that doesn't already contain "Maud".
  3. git clone https://github.com/stephengold/Maud.git
  4. cd Maud
- 5. ./gradlew build
+ 5. Ensure that the "gradlew" script is executable: chmod +x gradlew
+ 6. ./gradlew build
 
 <a name="use">
 
