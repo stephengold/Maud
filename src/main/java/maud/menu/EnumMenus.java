@@ -94,6 +94,44 @@ public class EnumMenus {
     }
 
     /**
+     * Display a menu to configure the scene-view axis drag effect using the
+     * "select axesDragEffect " action prefix.
+     */
+    public static void selectAxesDragEffect() {
+        MenuBuilder builder = new MenuBuilder();
+
+        AxesDragEffect selectedEffect
+                = Maud.getModel().getScene().getAxes().getDragEffect();
+        for (AxesDragEffect effect : AxesDragEffect.values()) {
+            if (!effect.equals(selectedEffect)) {
+                String name = effect.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectAxesDragEffect);
+    }
+
+    /**
+     * Display a menu to configure the scene-view axis subject using the "select
+     * axesSubject " action prefix.
+     */
+    public static void selectAxesSubject() {
+        MenuBuilder builder = new MenuBuilder();
+
+        AxesSubject selectedSubject
+                = Maud.getModel().getScene().getAxes().getSubject();
+        for (AxesSubject subject : AxesSubject.values()) {
+            if (!subject.equals(selectedSubject)) {
+                String name = subject.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectAxesSubject);
+    }
+
+    /**
      * Display a menu to set the shadow edge filtering mode using the "select
      * edgeFilter " action prefix.
      */
@@ -171,6 +209,118 @@ public class EnumMenus {
     }
 
     /**
+     * Display a menu to set a bone-inclusion option using the specified action
+     * prefix.
+     *
+     * @param actionPrefix (not null, not empty)
+     * @param currentOption currently selected option, or null
+     */
+    public static void selectShowBones(String actionPrefix,
+            ShowBones currentOption) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
+        MenuBuilder builder = new MenuBuilder();
+        for (ShowBones option : ShowBones.values()) {
+            if (!option.equals(currentOption)) {
+                String name = option.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(actionPrefix);
+    }
+
+    /**
+     * Display a menu to set the scene-view triangle rendering mode using the
+     * "select triangleMode " action prefix.
+     */
+    public static void selectTriangleMode() {
+        MenuBuilder builder = new MenuBuilder();
+
+        TriangleMode selected = Maud.getModel().getScene().getTriangleMode();
+        for (TriangleMode mode : TriangleMode.values()) {
+            if (!mode.equals(selected)) {
+                String modeName = mode.toString();
+                builder.add(modeName);
+            }
+        }
+
+        builder.show(ActionPrefix.selectTriangleMode);
+    }
+
+    /**
+     * Display a menu to set the rotation tweening mode using the "select
+     * tweenRotations " action prefix.
+     */
+    public static void selectTweenRotations() {
+        MenuBuilder builder = new MenuBuilder();
+
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        TweenRotations selected = techniques.getTweenRotations();
+        for (TweenRotations t : TweenRotations.values()) {
+            if (!t.equals(selected)) {
+                String name = t.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectTweenRotations);
+    }
+
+    /**
+     * Display a menu to set the scale tweening mode using the "select
+     * tweenScales " action prefix.
+     */
+    public static void selectTweenScales() {
+        MenuBuilder builder = new MenuBuilder();
+
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        TweenVectors selected = techniques.getTweenScales();
+        for (TweenVectors t : TweenVectors.values()) {
+            if (!t.equals(selected)) {
+                String name = t.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectTweenScales);
+    }
+
+    /**
+     * Display a menu to set the translation tweening mode using the "select
+     * tweenTranslations " action prefix.
+     */
+    public static void selectTweenTranslations() {
+        MenuBuilder builder = new MenuBuilder();
+
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        TweenVectors selected = techniques.getTweenTranslations();
+        for (TweenVectors t : TweenVectors.values()) {
+            if (!t.equals(selected)) {
+                String name = t.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectTweenTranslations);
+    }
+
+    /**
+     * Display a menu for selecting a user-data type using the "new userKey "
+     * action prefix.
+     */
+    public static void selectUserDataType() {
+        MenuBuilder builder = new MenuBuilder();
+
+        for (UserDataType type : UserDataType.values()) {
+            String description = type.toString();
+            builder.addDialog(description);
+        }
+
+        builder.show(ActionPrefix.newUserKey);
+    }
+
+    /**
      * Handle a "select viewMode" action without an argument.
      */
     static void selectViewMode() {
@@ -184,44 +334,6 @@ public class EnumMenus {
         }
 
         builder.show("select menuItem View -> Mode -> ");
-    }
-
-    /**
-     * Display a menu to configure the scene-view axis drag effect using the
-     * "select axesDragEffect " action prefix. TODO sort methods
-     */
-    public static void selectAxesDragEffect() {
-        MenuBuilder builder = new MenuBuilder();
-
-        AxesDragEffect selectedEffect
-                = Maud.getModel().getScene().getAxes().getDragEffect();
-        for (AxesDragEffect effect : AxesDragEffect.values()) {
-            if (!effect.equals(selectedEffect)) {
-                String name = effect.toString();
-                builder.add(name);
-            }
-        }
-
-        builder.show(ActionPrefix.selectAxesDragEffect);
-    }
-
-    /**
-     * Display a menu to configure the scene-view axis subject using the "select
-     * axesSubject " action prefix. TODO sort methods
-     */
-    public static void selectAxesSubject() {
-        MenuBuilder builder = new MenuBuilder();
-
-        AxesSubject selectedSubject
-                = Maud.getModel().getScene().getAxes().getSubject();
-        for (AxesSubject subject : AxesSubject.values()) {
-            if (!subject.equals(selectedSubject)) {
-                String name = subject.toString();
-                builder.add(name);
-            }
-        }
-
-        builder.show(ActionPrefix.selectAxesSubject);
     }
 
     /**
@@ -298,118 +410,6 @@ public class EnumMenus {
         }
 
         builder.show(ActionPrefix.setShadowMode);
-    }
-
-    /**
-     * Display a menu to set a bone-inclusion option using the specified action
-     * prefix.
-     *
-     * @param actionPrefix (not null, not empty)
-     * @param currentOption currently selected option, or null
-     */
-    public static void selectShowBones(String actionPrefix,
-            ShowBones currentOption) {
-        Validate.nonEmpty(actionPrefix, "action prefix");
-
-        MenuBuilder builder = new MenuBuilder();
-        for (ShowBones option : ShowBones.values()) {
-            if (!option.equals(currentOption)) {
-                String name = option.toString();
-                builder.add(name);
-            }
-        }
-
-        builder.show(actionPrefix);
-    }
-
-    /**
-     * Display a menu to set the scene-view triangle rendering mode using the
-     * "set triangleMode " action prefix.
-     */
-    public static void selectTriangleMode() {
-        MenuBuilder builder = new MenuBuilder();
-
-        TriangleMode selected = Maud.getModel().getScene().getTriangleMode();
-        for (TriangleMode mode : TriangleMode.values()) {
-            if (!mode.equals(selected)) {
-                String modeName = mode.toString();
-                builder.add(modeName);
-            }
-        }
-
-        builder.show(ActionPrefix.selectTriangleMode);
-    }
-
-    /**
-     * Display a menu to set the rotation tweening mode using the "set
-     * tweenRotations " action prefix.
-     */
-    public static void selectTweenRotations() {
-        MenuBuilder builder = new MenuBuilder();
-
-        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        TweenRotations selected = techniques.getTweenRotations();
-        for (TweenRotations t : TweenRotations.values()) {
-            if (!t.equals(selected)) {
-                String name = t.toString();
-                builder.add(name);
-            }
-        }
-
-        builder.show(ActionPrefix.selectTweenRotations);
-    }
-
-    /**
-     * Display a menu to set the scale tweening mode using the "set tweenScales
-     * " action prefix.
-     */
-    public static void selectTweenScales() {
-        MenuBuilder builder = new MenuBuilder();
-
-        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        TweenVectors selected = techniques.getTweenScales();
-        for (TweenVectors t : TweenVectors.values()) {
-            if (!t.equals(selected)) {
-                String name = t.toString();
-                builder.add(name);
-            }
-        }
-
-        builder.show(ActionPrefix.selectTweenScales);
-    }
-
-    /**
-     * Display a menu to set the translation tweening mode using the "set
-     * tweenTranslations " action prefix.
-     */
-    public static void selectTweenTranslations() {
-        MenuBuilder builder = new MenuBuilder();
-
-        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        TweenVectors selected = techniques.getTweenTranslations();
-        for (TweenVectors t : TweenVectors.values()) {
-            if (!t.equals(selected)) {
-                String name = t.toString();
-                builder.add(name);
-            }
-        }
-
-        builder.show(ActionPrefix.selectTweenTranslations);
-    }
-
-    /**
-     * Display a menu for selecting a user-data type using the "new userKey "
-     * action prefix.
-     */
-    public static void selectUserDataType() {
-        MenuBuilder builder = new MenuBuilder();
-
-        for (UserDataType type : UserDataType.values()) {
-            String description = type.toString();
-            builder.addDialog(description);
-        }
-
-        builder.show(ActionPrefix.newUserKey);
     }
 
     /**
