@@ -188,9 +188,9 @@ public class EnumMenus {
 
     /**
      * Display a menu to configure the scene-view axis drag effect using the
-     * "set axesDragEffect " action prefix.
+     * "select axesDragEffect " action prefix. TODO sort methods
      */
-    public static void setAxesDragEffect() {
+    public static void selectAxesDragEffect() {
         MenuBuilder builder = new MenuBuilder();
 
         AxesDragEffect selectedEffect
@@ -202,14 +202,14 @@ public class EnumMenus {
             }
         }
 
-        builder.show(ActionPrefix.setAxesDragEffect);
+        builder.show(ActionPrefix.selectAxesDragEffect);
     }
 
     /**
-     * Display a menu to configure the scene-view axis subject using the "set
-     * axesSubject " action prefix.
+     * Display a menu to configure the scene-view axis subject using the "select
+     * axesSubject " action prefix. TODO sort methods
      */
-    public static void setAxesSubject() {
+    public static void selectAxesSubject() {
         MenuBuilder builder = new MenuBuilder();
 
         AxesSubject selectedSubject
@@ -221,7 +221,7 @@ public class EnumMenus {
             }
         }
 
-        builder.show(ActionPrefix.setAxesSubject);
+        builder.show(ActionPrefix.selectAxesSubject);
     }
 
     /**
@@ -307,7 +307,7 @@ public class EnumMenus {
      * @param actionPrefix (not null, not empty)
      * @param currentOption currently selected option, or null
      */
-    public static void setShowBones(String actionPrefix,
+    public static void selectShowBones(String actionPrefix,
             ShowBones currentOption) {
         Validate.nonEmpty(actionPrefix, "action prefix");
 
@@ -326,7 +326,7 @@ public class EnumMenus {
      * Display a menu to set the scene-view triangle rendering mode using the
      * "set triangleMode " action prefix.
      */
-    public static void setTriangleMode() {
+    public static void selectTriangleMode() {
         MenuBuilder builder = new MenuBuilder();
 
         TriangleMode selected = Maud.getModel().getScene().getTriangleMode();
@@ -344,7 +344,7 @@ public class EnumMenus {
      * Display a menu to set the rotation tweening mode using the "set
      * tweenRotations " action prefix.
      */
-    public static void setTweenRotations() {
+    public static void selectTweenRotations() {
         MenuBuilder builder = new MenuBuilder();
 
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
@@ -356,14 +356,14 @@ public class EnumMenus {
             }
         }
 
-        builder.show(ActionPrefix.setTweenRotations);
+        builder.show(ActionPrefix.selectTweenRotations);
     }
 
     /**
      * Display a menu to set the scale tweening mode using the "set tweenScales
      * " action prefix.
      */
-    public static void setTweenScales() {
+    public static void selectTweenScales() {
         MenuBuilder builder = new MenuBuilder();
 
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
@@ -375,14 +375,14 @@ public class EnumMenus {
             }
         }
 
-        builder.show(ActionPrefix.setTweenScales);
+        builder.show(ActionPrefix.selectTweenScales);
     }
 
     /**
      * Display a menu to set the translation tweening mode using the "set
      * tweenTranslations " action prefix.
      */
-    public static void setTweenTranslations() {
+    public static void selectTweenTranslations() {
         MenuBuilder builder = new MenuBuilder();
 
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
@@ -394,7 +394,7 @@ public class EnumMenus {
             }
         }
 
-        builder.show(ActionPrefix.setTweenTranslations);
+        builder.show(ActionPrefix.selectTweenTranslations);
     }
 
     /**

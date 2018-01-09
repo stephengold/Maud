@@ -34,6 +34,8 @@ import de.lessvoid.nifty.tools.SizeValueType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.WindowController;
+import jme3utilities.wes.TweenRotations;
+import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.menu.AnimationMenus;
 import maud.menu.BoneMenus;
@@ -47,6 +49,10 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSgc;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
+import maud.model.option.ShowBones;
+import maud.model.option.ViewMode;
+import maud.model.option.scene.AxesDragEffect;
+import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.MovementMode;
 import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.PlatformType;
@@ -91,9 +97,18 @@ class SelectAction {
 
         EditorModel model = Maud.getModel();
         Cgm target = model.getTarget();
+        ShowBones currentOption;
         switch (actionString) {
             case Action.selectAnimControl:
                 AnimationMenus.selectAnimControl(target);
+                break;
+
+            case Action.selectAxesDragEffect:
+                EnumMenus.selectAxesDragEffect();
+                break;
+
+            case Action.selectAxesSubject:
+                EnumMenus.selectAxesSubject();
                 break;
 
             case Action.selectBone:
@@ -184,6 +199,24 @@ class SelectAction {
                 EnumMenus.selectPlatformType();
                 break;
 
+            case Action.selectSceneBones:
+                currentOption = model.getScene().getSkeleton().getShowBones();
+                EnumMenus.selectShowBones(ActionPrefix.selectSceneBones,
+                        currentOption);
+                break;
+
+            case Action.selectScoreBonesNone:
+                currentOption = model.getScore().getShowNoneSelected();
+                EnumMenus.selectShowBones(ActionPrefix.selectScoreBonesNone,
+                        currentOption);
+                break;
+
+            case Action.selectScoreBonesWhen:
+                currentOption = model.getScore().getShowWhenSelected();
+                EnumMenus.selectShowBones(ActionPrefix.selectScoreBonesWhen,
+                        currentOption);
+                break;
+
             case Action.selectScreenBone:
                 Maud.gui.selectBone();
                 break;
@@ -253,6 +286,22 @@ class SelectAction {
                 target.getSpatial().selectParent();
                 break;
 
+            case Action.selectTriangleMode:
+                EnumMenus.selectTriangleMode();
+                break;
+
+            case Action.selectTweenRotations:
+                EnumMenus.selectTweenRotations();
+                break;
+
+            case Action.selectTweenScales:
+                EnumMenus.selectTweenScales();
+                break;
+
+            case Action.selectTweenTranslations:
+                EnumMenus.selectTweenTranslations();
+                break;
+
             case Action.selectUserKey:
                 ShowMenus.selectUserKey();
                 break;
@@ -318,6 +367,18 @@ class SelectAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectAnimControl);
             target.getAnimControl().select(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectAxesDragEffect)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectAxesDragEffect);
+            AxesDragEffect value = AxesDragEffect.valueOf(arg);
+            model.getScene().getAxes().setDragEffect(value);
+
+        } else if (actionString.startsWith(ActionPrefix.selectAxesSubject)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectAxesSubject);
+            AxesSubject value = AxesSubject.valueOf(arg);
+            model.getScene().getAxes().setSubject(value);
 
         } else if (actionString.startsWith(ActionPrefix.selectBone)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectBone);
@@ -392,6 +453,24 @@ class SelectAction {
             arg = MyString.remainder(actionString, ActionPrefix.selectSgc);
             target.getSgc().select(arg);
 
+        } else if (actionString.startsWith(ActionPrefix.selectSceneBones)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectSceneBones);
+            ShowBones value = ShowBones.valueOf(arg);
+            model.getScene().getSkeleton().setShowBones(value);
+
+        } else if (actionString.startsWith(ActionPrefix.selectScoreBonesNone)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectScoreBonesNone);
+            ShowBones value = ShowBones.valueOf(arg);
+            model.getScore().setShowNoneSelected(value);
+
+        } else if (actionString.startsWith(ActionPrefix.selectScoreBonesWhen)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectScoreBonesWhen);
+            ShowBones value = ShowBones.valueOf(arg);
+            model.getScore().setShowWhenSelected(value);
+
         } else if (actionString.startsWith(ActionPrefix.selectShape)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectShape);
             int colonPosition = arg.indexOf(':');
@@ -435,6 +514,25 @@ class SelectAction {
             TriangleMode mode = TriangleMode.valueOf(arg);
             model.getScene().setTriangleMode(mode);
 
+        } else if (actionString.startsWith(ActionPrefix.selectTweenRotations)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectTweenRotations);
+            TweenRotations value = TweenRotations.valueOf(arg);
+            model.getTweenTransforms().setTweenRotations(value);
+
+        } else if (actionString.startsWith(ActionPrefix.selectTweenScales)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectTweenScales);
+            TweenVectors value = TweenVectors.valueOf(arg);
+            model.getTweenTransforms().setTweenScales(value);
+
+        } else if (actionString.startsWith(
+                ActionPrefix.selectTweenTranslations)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectTweenTranslations);
+            TweenVectors value = TweenVectors.valueOf(arg);
+            model.getTweenTransforms().setTweenTranslations(value);
+
         } else if (actionString.startsWith(ActionPrefix.selectUserKey)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectUserKey);
             target.getUserData().selectKey(arg);
@@ -444,6 +542,11 @@ class SelectAction {
             int index = Integer.parseInt(arg);
             int indexBase = Maud.getModel().getMisc().getIndexBase();
             target.getVertex().select(index - indexBase);
+
+        } else if (actionString.startsWith(ActionPrefix.selectViewMode)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectViewMode);
+            ViewMode newSetting = ViewMode.valueOf(arg);
+            model.getMisc().setViewMode(newSetting);
 
         } else {
             handled = false;

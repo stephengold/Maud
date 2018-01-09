@@ -32,8 +32,6 @@ import com.jme3.scene.Spatial;
 import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.wes.TweenRotations;
-import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.dialog.EditorDialogs;
@@ -46,11 +44,6 @@ import maud.model.cgm.SelectedOverride;
 import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
-import maud.model.option.ShowBones;
-import maud.model.option.ViewMode;
-import maud.model.option.scene.AxesDragEffect;
-import maud.model.option.scene.AxesSubject;
-import maud.model.option.scene.TriangleMode;
 
 /**
  * Process actions that start with the word "set".
@@ -88,18 +81,9 @@ class SetAction {
 
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
-        ShowBones currentOption;
         switch (actionString) {
             case Action.setAntiAliasing:
                 ShowMenus.setAntiAliasing();
-                break;
-
-            case Action.setAxesDragEffect:
-                EnumMenus.setAxesDragEffect();
-                break;
-
-            case Action.setAxesSubject:
-                EnumMenus.setAxesSubject();
                 break;
 
             case Action.setBatchHint:
@@ -155,24 +139,6 @@ class SetAction {
                 ShowMenus.setResolution();
                 break;
 
-            case Action.setSceneBones:
-                currentOption = model.getScene().getSkeleton().getShowBones();
-                EnumMenus.setShowBones(ActionPrefix.setSceneBones,
-                        currentOption);
-                break;
-
-            case Action.setScoreBonesNone:
-                currentOption = model.getScore().getShowNoneSelected();
-                EnumMenus.setShowBones(ActionPrefix.setScoreBonesNone,
-                        currentOption);
-                break;
-
-            case Action.setScoreBonesWhen:
-                currentOption = model.getScore().getShowWhenSelected();
-                EnumMenus.setShowBones(ActionPrefix.setScoreBonesWhen,
-                        currentOption);
-                break;
-
             case Action.setShadowMode:
                 EnumMenus.setShadowMode();
                 break;
@@ -209,22 +175,6 @@ class SetAction {
 
             case Action.setTrackTranslationAll:
                 target.getTrack().setTranslationAll();
-                break;
-
-            case Action.setTriangleMode:
-                EnumMenus.setTriangleMode();
-                break;
-
-            case Action.setTweenRotations:
-                EnumMenus.setTweenRotations();
-                break;
-
-            case Action.setTweenScales:
-                EnumMenus.setTweenScales();
-                break;
-
-            case Action.setTweenTranslations:
-                EnumMenus.setTweenTranslations();
                 break;
 
             case Action.setTwistCardinal:
@@ -281,17 +231,6 @@ class SetAction {
             }
             DisplaySettings.get().setSamples(numSamples);
             DisplaySettings.save();
-
-        } else if (actionString.startsWith(ActionPrefix.setAxesDragEffect)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setAxesDragEffect);
-            AxesDragEffect value = AxesDragEffect.valueOf(arg);
-            model.getScene().getAxes().setDragEffect(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setAxesSubject)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setAxesSubject);
-            AxesSubject value = AxesSubject.valueOf(arg);
-            model.getScene().getAxes().setSubject(value);
 
         } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
@@ -398,23 +337,6 @@ class SetAction {
             DisplaySettings.get().setHeight(height);
             DisplaySettings.save();
 
-        } else if (actionString.startsWith(ActionPrefix.setSceneBones)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setSceneBones);
-            ShowBones value = ShowBones.valueOf(arg);
-            model.getScene().getSkeleton().setShowBones(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setScoreBonesNone)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setScoreBonesNone);
-            ShowBones value = ShowBones.valueOf(arg);
-            model.getScore().setShowNoneSelected(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setScoreBonesWhen)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setScoreBonesWhen);
-            ShowBones value = ShowBones.valueOf(arg);
-            model.getScore().setShowWhenSelected(value);
-
         } else if (actionString.startsWith(ActionPrefix.setShadowMode)) {
             arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);
             RenderQueue.ShadowMode value = RenderQueue.ShadowMode.valueOf(arg);
@@ -443,32 +365,9 @@ class SetAction {
             boolean rendered = Boolean.parseBoolean(arg);
             model.getScene().setSkyRendered(rendered);
 
-        } else if (actionString.startsWith(ActionPrefix.setTweenRotations)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setTweenRotations);
-            TweenRotations value = TweenRotations.valueOf(arg);
-            model.getTweenTransforms().setTweenRotations(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setTweenScales)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setTweenScales);
-            TweenVectors value = TweenVectors.valueOf(arg);
-            model.getTweenTransforms().setTweenScales(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setTweenTranslations)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setTweenTranslations);
-            TweenVectors value = TweenVectors.valueOf(arg);
-            model.getTweenTransforms().setTweenTranslations(value);
-
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);
             target.setUserData(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.setViewMode)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setViewMode);
-            ViewMode newSetting = ViewMode.valueOf(arg);
-            model.getMisc().setViewMode(newSetting);
 
         } else {
             handled = false;

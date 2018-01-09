@@ -220,6 +220,14 @@ public class ActionPrefix {
      */
     final static String selectAnimControl = "select animControl ";
     /**
+     * argument is the name of a scene-view axis drag effect
+     */
+    final public static String selectAxesDragEffect = "select axesDragEffect ";
+    /**
+     * argument is the name of a scene-view axis subject
+     */
+    final public static String selectAxesSubject = "select axesSubject ";
+    /**
      * argument is the name of a bone or a prefix thereof
      */
     final public static String selectBone = "select bone ";
@@ -235,10 +243,6 @@ public class ActionPrefix {
      * argument is a light name or noLight
      */
     final public static String selectLight = "select light ";
-    /**
-     * argument is an SGC name or noControl
-     */
-    final public static String selectSgc = "select sgc ";
     /**
      * argument is the name of a geometry or a prefix thereof
      */
@@ -284,6 +288,22 @@ public class ActionPrefix {
      */
     final public static String selectProjection = "select projection ";
     /**
+     * argument is the name of a ShowBones value
+     */
+    final public static String selectSceneBones = "select sceneBones ";
+    /**
+     * argument is the name of a ShowBones value
+     */
+    final public static String selectScoreBonesNone = "select scoreBonesNone ";
+    /**
+     * argument is the name of a ShowBones value
+     */
+    final public static String selectScoreBonesWhen = "select scoreBonesWhen ";
+    /**
+     * argument is an SGC name or noControl
+     */
+    final public static String selectSgc = "select sgc ";
+    /**
      * argument is the id of a physics shape or a prefix thereof
      */
     final public static String selectShape = "select shape ";
@@ -320,6 +340,19 @@ public class ActionPrefix {
      */
     final public static String selectTriangleMode = "select triangleMode ";
     /**
+     * argument is the name of a quaternion interpolation technique
+     */
+    final public static String selectTweenRotations = "select tweenRotations ";
+    /**
+     * argument is the name of a vector interpolation technique
+     */
+    final public static String selectTweenScales = "select tweenScales ";
+    /**
+     * argument is the name of a vector interpolation technique
+     */
+    final public static String selectTweenTranslations
+            = "select tweenTranslations ";
+    /**
      * argument is a pre-existing user key
      */
     final public static String selectUserKey = "select userKey ";
@@ -328,18 +361,14 @@ public class ActionPrefix {
      */
     final public static String selectVertex = "select vertex ";
     /**
+     * argument is the name of a view mode
+     */
+    final public static String selectViewMode = "select viewMode ";
+    /**
      * argument is the number of samples per pixel, formatted using
      * {@link maud.MaudUtil#aaDescription(int)}
      */
     final public static String setAntiAliasing = "set antiAliasing ";
-    /**
-     * argument is the name of a scene-view axis drag effect
-     */
-    final public static String setAxesDragEffect = "set axesDragEffect ";
-    /**
-     * argument is the name of a scene-view axis subject
-     */
-    final public static String setAxesSubject = "set axesSubject ";
     /**
      * argument is the name of a batch hint
      */
@@ -411,18 +440,6 @@ public class ActionPrefix {
      */
     final public static String setQueueBucket = "set queueBucket ";
     /**
-     * argument is the name of a ShowBones value
-     */
-    final public static String setSceneBones = "set sceneBones ";
-    /**
-     * argument is the name of a ShowBones value
-     */
-    final public static String setScoreBonesNone = "set scoreBonesNone ";
-    /**
-     * argument is the name of a ShowBones value
-     */
-    final public static String setScoreBonesWhen = "set scoreBonesWhen ";
-    /**
      * argument is the name of a shadow mode
      */
     final public static String setShadowMode = "set shadowMode ";
@@ -439,25 +456,9 @@ public class ActionPrefix {
      */
     final public static String setSkyRendered = "set skyRendered ";
     /**
-     * argument is the name of a quaternion interpolation technique
-     */
-    final public static String setTweenRotations = "set tweenRotations ";
-    /**
-     * argument is the name of a vector interpolation technique
-     */
-    final public static String setTweenScales = "set tweenScales ";
-    /**
-     * argument is the name of a vector interpolation technique
-     */
-    final public static String setTweenTranslations = "set tweenTranslations ";
-    /**
      * argument is the new value
      */
     final public static String setUserData = "set userData ";
-    /**
-     * argument is the name of a view mode
-     */
-    final public static String setViewMode = "set viewMode ";
     /**
      * argument is the name of a license type
      */

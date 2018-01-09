@@ -355,7 +355,7 @@ public class MiscOptions implements Cloneable {
         action = ActionPrefix.setIndexBase + Integer.toString(indexBase);
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setViewMode + viewMode.toString();
+        action = ActionPrefix.selectViewMode + viewMode.toString();
         MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************

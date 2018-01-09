@@ -244,7 +244,7 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="left"/>
                         <control name="button" id="axesSubjectButton"
                                  width="99px">
-                            <interact onRelease="perform(set axesSubject)"/>
+                            <interact onRelease="perform(select axesSubject)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="27px">
@@ -252,7 +252,7 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="left"/>
                         <control name="button" id="axesDragButton"
                                  width="89px">
-                            <interact onRelease="perform(set axesDragEffect)"/>
+                            <interact onRelease="perform(select axesDragEffect)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="27px">
@@ -1493,7 +1493,7 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Triangle mode:  "/>
                         <control name="button" id="trianglesButton"
                                  width="90px">
-                            <interact onRelease="perform(set triangleMode)"/>
+                            <interact onRelease="perform(select triangleMode)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
@@ -1665,14 +1665,14 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Bones shown when a bone is selected:  "/>
                         <control name="button" id="scoreShowWhenSelectedButton"
                                  width="80px">
-                            <interact onRelease="perform(set scoreBonesWhen)"/>
+                            <interact onRelease="perform(select scoreBonesWhen)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Bones shown when no bone is selected:  "/>
                         <control name="button" id="scoreShowNoneSelectedButton"
                                  width="80px">
-                            <interact onRelease="perform(set scoreBonesNone)"/>
+                            <interact onRelease="perform(select scoreBonesNone)"/>
                         </control>
                     </panel>
                 </panel>
@@ -1876,7 +1876,7 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Bones shown:  "/>
                         <control name="button" id="skeletonShowBonesButton"
                                  width="80px">
-                            <interact onRelease="perform(set sceneBones)"/>
+                            <interact onRelease="perform(select sceneBones)"/>
                         </control>
                     </panel>
                     <panel style="statusPanel">
@@ -2485,7 +2485,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Edit"
                                  id="id54ToAvoidNiftyWarning"
                                  width="50px">
-                            <interact onRelease="perform(set tweenTranslations)"/>
+                            <interact onRelease="perform(select tweenTranslations)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="27px">
@@ -2498,7 +2498,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Edit"
                                  id="id55ToAvoidNiftyWarning"
                                  width="50px">
-                            <interact onRelease="perform(set tweenRotations)"/>
+                            <interact onRelease="perform(select tweenRotations)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="27px">
@@ -2511,7 +2511,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Edit"
                                  id="id56ToAvoidNiftyWarning"
                                  width="50px">
-                            <interact onRelease="perform(set tweenScales)"/>
+                            <interact onRelease="perform(select tweenScales)"/>
                         </control>
                     </panel>
                 </panel>

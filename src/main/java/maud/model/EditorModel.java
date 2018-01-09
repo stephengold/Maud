@@ -322,16 +322,17 @@ public class EditorModel {
         TweenVectors tweenTranslations = techniques.getTweenTranslations();
         String arg = tweenTranslations.toString();
         MaudUtil.writePerformAction(writer,
-                ActionPrefix.setTweenTranslations + arg);
+                ActionPrefix.selectTweenTranslations + arg);
 
         TweenRotations tweenRotations = techniques.getTweenRotations();
         arg = tweenRotations.toString();
         MaudUtil.writePerformAction(writer,
-                ActionPrefix.setTweenRotations + arg);
+                ActionPrefix.selectTweenRotations + arg);
 
         TweenVectors tweenScales = techniques.getTweenScales();
         arg = tweenScales.toString();
-        MaudUtil.writePerformAction(writer, ActionPrefix.setTweenScales + arg);
+        MaudUtil.writePerformAction(writer,
+                ActionPrefix.selectTweenScales + arg);
         /*
          * Always load Jaime at startup.
          */

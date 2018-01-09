@@ -141,6 +141,8 @@ public class Action {
     final static String retargetAnimation = "retarget animation";
 
     final static String selectAnimControl = "select animControl";
+    final static String selectAxesDragEffect = "select axesDragEffect";
+    final static String selectAxesSubject = "select axesSubject";
     final static String selectBone = "select bone";
     final static String selectBoneChild = "select boneChild";
     final static String selectBoneParent = "select boneParent";
@@ -162,6 +164,9 @@ public class Action {
     final static String selectPhysicsRbp = "select physicsRbp";
     final static String selectPhysicsShape = "select physicsShape";
     final static String selectPlatformType = "select platformType";
+    final static String selectSceneBones = "select sceneBones";
+    final static String selectScoreBonesNone = "select scoreBonesNone";
+    final static String selectScoreBonesWhen = "select scoreBonesWhen";
     final static String selectScreenBone = "select screenBone";
     final static String selectScreenGnomon = "select screenGnomon";
     final static String selectScreenKeyframe = "select screenKeyframe";
@@ -178,12 +183,14 @@ public class Action {
     final static String selectSourceBone = "select sourceBone";
     final static String selectSpatialChild = "select spatialChild";
     final static String selectSpatialParent = "select spatialParent";
+    final static String selectTriangleMode = "select triangleMode";
+    final static String selectTweenRotations = "select tweenRotations";
+    final static String selectTweenScales = "select tweenScales";
+    final static String selectTweenTranslations = "select tweenTranslations";
     final static String selectUserKey = "select userKey";
     final static String selectVertex = "select vertex";
 
     final static String setAntiAliasing = "set antiAliasing";
-    final static String setAxesDragEffect = "set axesDragEffect";
-    final static String setAxesSubject = "set axesSubject";
     final static String setBatchHint = "set batchHint";
     final static String setColorDepth = "set colorDepth";
     final static String setCullHint = "set cullHint";
@@ -193,9 +200,6 @@ public class Action {
     final static String setQueueBucket = "set queueBucket";
     final static String setRefreshRate = "set refreshRate";
     final static String setResolution = "set resolution";
-    final static String setSceneBones = "set sceneBones";
-    final static String setScoreBonesNone = "set scoreBonesNone";
-    final static String setScoreBonesWhen = "set scoreBonesWhen";
     final static String setShadowMode = "set shadowMode";
     final static String setShapeParmValue = "set shapeParmValue";
     final static String setSpatialAngleCardinal = "set spatialAngle cardinal";
@@ -205,10 +209,6 @@ public class Action {
     final static String setTrackRotationAll = "set track rotation all";
     final static String setTrackScaleAll = "set track scale all";
     final static String setTrackTranslationAll = "set track translation all";
-    final static String setTriangleMode = "set triangleMode";
-    final static String setTweenRotations = "set tweenRotations";
-    final static String setTweenScales = "set tweenScales";
-    final static String setTweenTranslations = "set tweenTranslations";
     final static String setTwistCardinal = "set twist cardinal";
     final static String setTwistSnapX = "set twist snapX";
     final static String setTwistSnapY = "set twist snapY";

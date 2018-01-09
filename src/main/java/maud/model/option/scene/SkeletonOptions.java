@@ -223,7 +223,7 @@ public class SkeletonOptions implements Cloneable {
     public void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
-        String action = ActionPrefix.setSceneBones + showBones.toString();
+        String action = ActionPrefix.selectSceneBones + showBones.toString();
         MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
