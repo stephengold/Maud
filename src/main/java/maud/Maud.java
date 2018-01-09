@@ -242,8 +242,19 @@ public class Maud extends GuiApplication {
     @Override
     public void guiInitializeApplication() {
         logger.info("");
+        
         if (!Misc.areAssertionsEnabled()) {
-            logger.warning("Assertions are disabled.");
+            String message = "Assertions are disabled.";
+            logger.warning(message);
+            editorModel.getMisc().setStatusMessage(message);
+        }
+        
+        int buttonCount = context.getMouseInput().getButtonCount();
+        if (buttonCount < 3) {
+            String message = String.format("Number of mouse buttons = %d.",
+                    buttonCount);
+            logger.warning(message);
+            editorModel.getMisc().setStatusMessage(message);
         }
 
         StartScreen startScreen = new StartScreen();
