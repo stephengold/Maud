@@ -10,7 +10,9 @@ gradle.projectsEvaluated {
         options.encoding = 'UTF-8'
     }
     tasks.withType(JavaExec) {
+        //args = ['--forceDialog']
         classpath sourceSets.main.runtimeClasspath
+        //debug true
         enableAssertions true
     }
 }

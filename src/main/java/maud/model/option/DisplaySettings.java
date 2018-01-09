@@ -28,7 +28,6 @@ package maud.model.option;
 
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -65,10 +64,15 @@ public class DisplaySettings {
     // fields
 
     /**
-     * Cached settings that will be used to (re-)start the application,
+     * cached settings that will be used to (re-)start the application,
      * initialized to JME defaults.
      */
     final private static AppSettings appSettings = new AppSettings(true);
+    /**
+     * true&rarr;force startup to show the settings dialog, false&rarr; show the
+     * dialog only if persistent settings are missing
+     */
+    private static boolean forceDialog = false;
     // *************************************************************************
     // constructors
 
@@ -116,8 +120,7 @@ public class DisplaySettings {
         appSettings.setSettingsDialogImage(logoAssetPath);
         appSettings.setTitle(windowTitle);
 
-        // TODO a way for the user to force Maud to show the dialog
-        if (!loadedFromStore) {
+        if (!loadedFromStore || forceDialog) {
             /*
              * Display JME's settings dialog.
              */
@@ -143,7 +146,19 @@ public class DisplaySettings {
         try {
             appSettings.save(preferencesKey);
         } catch (BackingStoreException e) {
-            logger.log(Level.WARNING, "App settings were not saved.");
+            String message = "Display settings were not saved.";
+            logger.warning(message);
+            Maud.getModel().getMisc().setStatusMessage(message);
         }
+    }
+
+    /**
+     * Alter whether startup should show the settings dialog.
+     *
+     * @param newSetting true&rarr;force startup to show it, false&rarr; show it
+     * only if persistent settings are missing
+     */
+    public static void setForceDialog(boolean newSetting) {
+        forceDialog = newSetting;
     }
 }

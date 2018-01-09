@@ -133,6 +133,21 @@ public class Maud extends GuiApplication {
      */
     public static void main(String[] arguments) {
         /*
+         * Process any command-line arguments.
+         */
+        for (String arg : arguments) {
+            switch (arg) {
+                case "--forceDialog":
+                    DisplaySettings.setForceDialog(true);
+                    break;
+
+                default:
+                    logger.log(Level.WARNING,
+                            "Unknown command-line argument {0}",
+                            MyString.quote(arg));
+            }
+        }
+        /*
          * Mute the chatty loggers of certain packages.
          */
         Misc.setLoggingLevels(Level.WARNING);
@@ -146,7 +161,7 @@ public class Maud extends GuiApplication {
             application = new Maud();
             application.setSettings(appSettings);
             /*
-             * Start the application without displaying another dialog.
+             * If the settings dialog should be shown, it already has been.
              */
             application.setShowSettings(false);
             application.start();
@@ -242,13 +257,13 @@ public class Maud extends GuiApplication {
     @Override
     public void guiInitializeApplication() {
         logger.info("");
-        
+
         if (!Misc.areAssertionsEnabled()) {
             String message = "Assertions are disabled.";
             logger.warning(message);
             editorModel.getMisc().setStatusMessage(message);
         }
-        
+
         int buttonCount = context.getMouseInput().getButtonCount();
         if (buttonCount < 3) {
             String message = String.format("Number of mouse buttons = %d.",
