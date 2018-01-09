@@ -149,7 +149,7 @@ public class EditorInputMode extends InputMode {
                     handled = copyAction(actionString);
                     break;
                 case "delete":
-                    handled = deleteAction(actionString);
+                    handled = DeleteAction.process(actionString);
                     break;
                 case "launch":
                     handled = launchAction(actionString);
@@ -232,68 +232,6 @@ public class EditorInputMode extends InputMode {
                     ActionPrefix.copyAnimation);
             Maud.getModel().getTarget().getAnimation().copyAndLoad(destName);
             handled = true;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an ongoing action that starts with the word "delete".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean deleteAction(String actionString) {
-        boolean handled = true;
-        EditableCgm target = Maud.getModel().getTarget();
-        switch (actionString) {
-            case Action.deleteAnimation:
-                target.getAnimation().delete();
-                break;
-            case Action.deleteLight:
-                target.getLight().delete();
-                break;
-            case Action.deleteMapping:
-                Maud.getModel().getMap().deleteBoneMapping();
-                break;
-            case Action.deleteMatParam:
-                target.getMatParam().delete();
-                break;
-            case Action.deleteOverride:
-                target.getOverride().delete();
-                break;
-            case Action.deleteSgc:
-                target.getSgc().delete();
-                break;
-            case Action.deleteSingleKeyframe:
-                target.getTrack().deleteSelectedKeyframe();
-                break;
-            case Action.deleteUserKey:
-                target.getUserData().delete();
-                break;
-            default:
-                handled = false;
-                if (actionString.startsWith(
-                        ActionPrefix.deleteAssetLocationSpec)) {
-                    String spec = MyString.remainder(actionString,
-                            ActionPrefix.deleteAssetLocationSpec);
-                    Maud.getModel().getLocations().remove(spec);
-                    handled = true;
-
-                } else if (actionString.startsWith(
-                        ActionPrefix.deleteNextKeyframes)) {
-                    String arg = MyString.remainder(actionString,
-                            ActionPrefix.deleteNextKeyframes);
-                    int number = Integer.parseInt(arg);
-                    target.getTrack().deleteNextKeyframes(number);
-
-                } else if (actionString.startsWith(
-                        ActionPrefix.deletePreviousKeyframes)) {
-                    String arg = MyString.remainder(actionString,
-                            ActionPrefix.deletePreviousKeyframes);
-                    int number = Integer.parseInt(arg);
-                    target.getTrack().deletePreviousKeyframes(number);
-                }
         }
 
         return handled;
