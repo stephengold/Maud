@@ -140,6 +140,7 @@ public class Action {
 
     final static String retargetAnimation = "retarget animation";
 
+    final static String selectAnimationEditMenu = "select editAnimationMenu";
     final static String selectAnimControl = "select animControl";
     final static String selectAxesDragEffect = "select axesDragEffect";
     final static String selectAxesSubject = "select axesSubject";

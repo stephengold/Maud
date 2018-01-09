@@ -99,6 +99,12 @@ class SelectAction {
         Cgm target = model.getTarget();
         ShowBones currentOption;
         switch (actionString) {
+            case Action.selectAnimationEditMenu:
+                if (target.getAnimation().isReal()) {
+                    AnimationMenus.editAnimation();
+                }
+                break;
+
             case Action.selectAnimControl:
                 AnimationMenus.selectAnimControl(target);
                 break;

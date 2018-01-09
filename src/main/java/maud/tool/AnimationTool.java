@@ -274,23 +274,26 @@ class AnimationTool extends GuiWindowController {
     }
 
     /**
-     * Update the name label and rename button label.
+     * Update the name status and edit/rename button labels.
      */
     private void updateName() {
-        String nameText, rButton;
+        String eButton, nameText, rButton;
 
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         String name = animation.getName();
         if (animation.isReal()) {
+            eButton = "Edit";
             nameText = MyString.quote(name);
             rButton = "Rename";
         } else {
+            eButton = "";
             nameText = name;
             rButton = "";
         }
 
-        setStatusText("animationName", " " + nameText);
+        setButtonText("animationEdit", eButton);
         setButtonText("animationRename", rButton);
+        setStatusText("animationName", " " + nameText);
     }
 
     /**

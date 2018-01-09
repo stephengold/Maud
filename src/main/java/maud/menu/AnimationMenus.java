@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -62,6 +62,36 @@ public class AnimationMenus {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Display an "Animation -> Edit" menu (only for a real animation).
+     */
+    public static void editAnimation() {
+        MenuBuilder builder = new MenuBuilder();
+
+        Cgm target = Maud.getModel().getTarget();
+        LoadedAnimation animation = target.getAnimation();
+        float duration = animation.getDuration();
+        if (duration > 0f) {
+            builder.addEdit("Behead");
+        }
+        builder.add("Change duration");
+        if (duration > 0f) {
+            builder.addEdit("Delete keyframes");
+            builder.addEdit("Insert keyframes");
+            builder.addDialog("Reduce all tracks");
+            builder.addDialog("Resample all tracks at rate");
+            builder.addDialog("Resample all tracks to number");
+            builder.addEdit("Truncate");
+            if (animation.anyTrackEndsWithKeyframe()) {
+                builder.addDialog("Wrap all tracks");
+            } else {
+                builder.addEdit("Wrap all tracks");
+            }
+        }
+
+        builder.show("select menuItem Animation -> Edit -> ");
+    }
 
     /**
      * Handle a "load (source)animation" action without arguments.
@@ -191,36 +221,6 @@ public class AnimationMenus {
         builder.addTool("Retarget");
 
         builder.show("select menuItem Animation -> Add new -> ");
-    }
-
-    /**
-     * Display an "Animation -> Edit" menu (only for a real animation).
-     */
-    private static void editAnimation() {
-        MenuBuilder builder = new MenuBuilder();
-
-        Cgm target = Maud.getModel().getTarget();
-        LoadedAnimation animation = target.getAnimation();
-        float duration = animation.getDuration();
-        if (duration > 0f) {
-            builder.addEdit("Behead");
-        }
-        builder.add("Change duration");
-        if (duration > 0f) {
-            builder.addEdit("Delete keyframes");
-            builder.addEdit("Insert keyframes");
-            builder.addDialog("Reduce all tracks");
-            builder.addDialog("Resample all tracks at rate");
-            builder.addDialog("Resample all tracks to number");
-            builder.addEdit("Truncate");
-            if (animation.anyTrackEndsWithKeyframe()) {
-                builder.addDialog("Wrap all tracks");
-            } else {
-                builder.addEdit("Wrap all tracks");
-            }
-        }
-
-        builder.show("select menuItem Animation -> Edit -> ");
     }
 
     /**
