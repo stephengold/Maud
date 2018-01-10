@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -92,7 +92,7 @@ class Platform {
     /**
      * view that owns this platform (not null)
      */
-    final private SceneView view;
+    final private SceneViewCore view;
     /**
      * spatial attached to the scene graph for visualization, or null if none
      */
@@ -106,7 +106,7 @@ class Platform {
      * @param owner the view that will own this platform (not null, alias
      * created)
      */
-    Platform(SceneView owner) {
+    Platform(SceneViewCore owner) {
         assert owner != null;
         view = owner;
     }

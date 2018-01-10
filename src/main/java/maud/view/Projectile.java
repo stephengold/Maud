@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -104,7 +104,7 @@ public class Projectile {
     /**
      * view that owns this projectile (not null)
      */
-    final private SceneView view;
+    final private SceneViewCore view;
     /**
      * spatial attached to the scene graph for visualization, or null if none
      */
@@ -118,7 +118,7 @@ public class Projectile {
      * @param owner the view that will own this projectile (not null, alias
      * created)
      */
-    Projectile(SceneView owner) {
+    Projectile(SceneViewCore owner) {
         assert owner != null;
         view = owner;
     }
