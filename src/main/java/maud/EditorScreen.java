@@ -562,16 +562,6 @@ public class EditorScreen extends GuiScreenController {
     public void setIgnoreGuiChanges(boolean newSetting) {
         ignoreGuiChanges = newSetting;
     }
-
-    /**
-     * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
-     */
-    public void warpCursor() {
-        EditorView mouseView = mouseView();
-        if (mouseView != null) {
-            mouseView.warpCursor();
-        }
-    }
     // *************************************************************************
     // GuiScreenController methods
 

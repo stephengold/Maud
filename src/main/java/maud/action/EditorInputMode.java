@@ -509,9 +509,13 @@ public class EditorInputMode extends InputMode {
         boolean handled = false;
         switch (actionString) {
             case Action.warpCursor:
-                Maud.gui.warpCursor();
+                EditorView mouseView = Maud.gui.mouseView();
+                if (mouseView != null) {
+                    mouseView.warpCursor();
+                }
                 handled = true;
                 break;
+
             case Action.warpLastCheckpoint:
                 History.redoAll();
                 handled = true;
