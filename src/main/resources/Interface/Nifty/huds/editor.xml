@@ -628,10 +628,9 @@ the menu bar, status bar, and tool windows.
                                  width="20px"/>
                         <control name="label" text="  depth test"/>
                     </panel>
-                    <panel style="statusPanel">
-                        <control name="label" id="boundsLineWidthSliderStatus"
-                                 textHAlign="right"/>
-                    </panel>
+                    <control name="label" id="boundsLineWidthSliderStatus"
+                             textHAlign="right"
+                             width="*"/>
                     <control name="horizontalSlider" id="boundsLineWidthSlider"
                              buttonStepSize="1"
                              height="30px"
@@ -1883,16 +1882,16 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(select sceneBones)"/>
                         </control>
                     </panel>
-                    <panel style="statusPanel">
-                        <control name="label" id="skeletonLineWidthSliderStatus"/>
-                    </panel>
+                    <control name="label" id="skeletonLineWidthSliderStatus"
+                             textHAlign="right"
+                             width="*"/>
                     <control name="horizontalSlider" id="skeletonLineWidthSlider"
                              buttonStepSize="1"
                              height="30px"
                              max="10" min="0" stepSize="1"/>
-                    <panel style="statusPanel">
-                        <control name="label" id="skeletonPointSizeSliderStatus"/>
-                    </panel>
+                    <control name="label" id="skeletonPointSizeSliderStatus"
+                             textHAlign="right"
+                             width="*"/>
                     <control name="horizontalSlider" id="skeletonPointSizeSlider"
                              buttonStepSize="1"
                              height="30px"
