@@ -621,12 +621,7 @@ public class SceneView extends SceneViewCore {
      */
     @Override
     public SceneView jmeClone() {
-        try {
-            SceneView clone = (SceneView) super.clone();
-            return clone;
-        } catch (CloneNotSupportedException exception) {
-            throw new RuntimeException(exception);
-        }
+        return (SceneView) super.jmeClone();
     }
     // *************************************************************************
     // private methods
