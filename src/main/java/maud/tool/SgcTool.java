@@ -62,7 +62,7 @@ class SgcTool extends GuiWindowController {
         super(screenController, "sgcTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -77,16 +77,22 @@ class SgcTool extends GuiWindowController {
 
         updateIndex();
 
-        SelectedSgc sgc = Maud.getModel().getTarget().getSgc();
-        boolean isEnabled = sgc.isEnabled();
-        setChecked("sgcEnable", isEnabled);
-
         String deleteButton, selectObjectButton, selectSpatialButton;
         String modeStatus, objectStatus, spatialStatus, typeStatus;
 
+        SelectedSgc sgc = Maud.getModel().getTarget().getSgc();
         if (sgc.isSelected()) {
-            deleteButton = "Delete";
+            boolean isEnabled = sgc.isEnabled();
+            setChecked("sgcEnable", isEnabled);
             objectStatus = sgc.physicsObjectName();
+            if (objectStatus.isEmpty()) {
+                disableCheckBox("sgcLocalPhysics");
+            } else {
+                boolean isLocalPhysics = sgc.isApplyPhysicsLocal();
+                setChecked("sgcLocalPhysics", isLocalPhysics);
+            }
+
+            deleteButton = "Delete";
             if (objectStatus.isEmpty() || !isEnabled) {
                 selectObjectButton = "";
             } else {
@@ -98,10 +104,15 @@ class SgcTool extends GuiWindowController {
             String spatialName = sgc.controlledName();
             spatialStatus = MyString.quote(spatialName);
             typeStatus = sgc.getType();
+
         } else {
+            disableCheckBox("sgcEnable");
+            disableCheckBox("sgcLocalPhysics");
+
             deleteButton = "";
             selectObjectButton = "";
             selectSpatialButton = "";
+
             modeStatus = "(no control selected)";
             objectStatus = "(no control selected)";
             spatialStatus = "(no control selected)";
@@ -115,9 +126,6 @@ class SgcTool extends GuiWindowController {
         setStatusText("sgcObject", " " + objectStatus);
         setStatusText("sgcSpatial", " " + spatialStatus);
         setStatusText("sgcType", " " + typeStatus);
-
-        boolean isLocalPhysics = sgc.isApplyPhysicsLocal();
-        setChecked("sgcLocalPhysics", isLocalPhysics);
     }
     // *************************************************************************
     // private methods

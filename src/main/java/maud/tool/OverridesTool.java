@@ -63,7 +63,7 @@ class OverridesTool extends GuiWindowController {
         super(screenController, "overridesTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -150,12 +150,13 @@ class OverridesTool extends GuiWindowController {
      * Update the type status and enable check box.
      */
     private void updateType() {
-        SelectedOverride override = Maud.getModel().getTarget().getOverride();
-        boolean isEnabled = override.isEnabled();
-        setChecked("mpoEnable", isEnabled);
-
         String typeText = "";
+
+        SelectedOverride override = Maud.getModel().getTarget().getOverride();
         if (override.isSelected()) {
+            boolean isEnabled = override.isEnabled();
+            setChecked("mpoEnable", isEnabled);
+
             Object value = override.getValue();
             if (value == null) {
                 VarType varType = override.getVarType();
@@ -163,7 +164,11 @@ class OverridesTool extends GuiWindowController {
             } else {
                 typeText = value.getClass().getSimpleName();
             }
+
+        } else {
+            disableCheckBox("mpoEnable");
         }
+
         setStatusText("mpoType", " " + typeText);
     }
 

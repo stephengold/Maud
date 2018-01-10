@@ -65,7 +65,7 @@ class MaterialTool extends GuiWindowController {
         super(screenController, "materialTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -123,18 +123,17 @@ class MaterialTool extends GuiWindowController {
      * Update the additional render state information.
      */
     private void updateRenderState() {
-        boolean depthTest = false;
-        boolean wireframe = false;
-
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.hasMaterial()) {
             RenderState state = spatial.copyAdditionalRenderState();
-            depthTest = state.isDepthTest();
-            wireframe = state.isWireframe();
+            boolean depthTest = state.isDepthTest();
+            setChecked("matDepthTest", depthTest);
+            boolean wireframe = state.isWireframe();
+            setChecked("matWireframe", wireframe);
+        } else {
+            disableCheckBox("matDepthTest");
+            disableCheckBox("matWireframe");
         }
-
-        setChecked("matDepthTest", depthTest);
-        setChecked("matWireframe", wireframe);
     }
 
     /**

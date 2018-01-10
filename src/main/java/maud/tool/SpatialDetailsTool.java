@@ -64,7 +64,7 @@ class SpatialDetailsTool extends GuiWindowController {
         super(screenController, "spatialDetailsTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -150,8 +150,13 @@ class SpatialDetailsTool extends GuiWindowController {
      */
     private void updateIgnoreTransform() {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        boolean flag = spatial.isTransformIgnored();
-        setChecked("spatialIgnoreTransform", flag);
+        boolean isGeometry = spatial.isGeometry();
+        if (isGeometry) {
+            boolean flag = spatial.isTransformIgnored();
+            setChecked("spatialIgnoreTransform", flag);
+        } else {
+            disableCheckBox("spatialIgnoreTransform");
+        }
     }
 
     /**

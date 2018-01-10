@@ -64,7 +64,7 @@ class LightsTool extends GuiWindowController {
         super(screenController, "lightsTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -80,14 +80,14 @@ class LightsTool extends GuiWindowController {
         updateIndex();
         updateProperties();
 
-        SelectedLight light = Maud.getModel().getTarget().getLight();
-        boolean isEnabled = light.isEnabled();
-        setChecked("lightEnable", isEnabled);
-
         String deleteButton, renameButton, selectOwnerButton;
         String nameStatus, ownerStatus, typeStatus;
 
+        SelectedLight light = Maud.getModel().getTarget().getLight();
         if (light.isSelected()) {
+            boolean isEnabled = light.isEnabled();
+            setChecked("lightEnable", isEnabled);
+
             deleteButton = "Delete";
             renameButton = "Rename";
             selectOwnerButton = "Select";
@@ -96,7 +96,10 @@ class LightsTool extends GuiWindowController {
             String spatialName = light.ownerName();
             ownerStatus = MyString.quote(spatialName);
             typeStatus = light.getType();
+
         } else {
+            disableCheckBox("lightEnable");
+
             deleteButton = "";
             renameButton = "";
             selectOwnerButton = "";
