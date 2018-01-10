@@ -26,7 +26,6 @@
  */
 package maud.action;
 
-import com.jme3.shadow.EdgeFilteringMode;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.tools.SizeValue;
@@ -39,7 +38,6 @@ import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.menu.AnimationMenus;
 import maud.menu.BoneMenus;
-import maud.menu.EditorMenus;
 import maud.menu.EnumMenus;
 import maud.menu.PhysicsMenus;
 import maud.menu.ShowMenus;
@@ -51,9 +49,6 @@ import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
-import maud.model.option.scene.AxesDragEffect;
-import maud.model.option.scene.AxesSubject;
-import maud.model.option.scene.MovementMode;
 import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.ProjectionMode;
@@ -62,11 +57,12 @@ import maud.view.Drag;
 import maud.view.SceneDrag;
 
 /**
- * Process actions that start with the word "select".
+ * Process actions that start with the word "select" and a letter in the o-z
+ * range.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SelectAction {
+class SelectOZAction {
     // *************************************************************************
     // constants and loggers
 
@@ -74,20 +70,21 @@ class SelectAction {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(SelectAction.class.getName());
+            = Logger.getLogger(SelectOZAction.class.getName());
     // *************************************************************************
     // constructors
 
     /**
      * A private constructor to inhibit instantiation of this class.
      */
-    private SelectAction() {
+    private SelectOZAction() {
     }
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Process an ongoing action that starts with the word "select".
+     * Process an ongoing action that starts with the word "select" and a letter
+     * in the o-z range.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -99,84 +96,6 @@ class SelectAction {
         Cgm target = model.getTarget();
         ShowBones currentOption;
         switch (actionString) {
-            case Action.selectAnimationEditMenu:
-                if (target.getAnimation().isReal()) {
-                    AnimationMenus.editAnimation();
-                }
-                break;
-
-            case Action.selectAnimControl:
-                AnimationMenus.selectAnimControl(target);
-                break;
-
-            case Action.selectAxesDragEffect:
-                EnumMenus.selectAxesDragEffect();
-                break;
-
-            case Action.selectAxesSubject:
-                EnumMenus.selectAxesSubject();
-                break;
-
-            case Action.selectBone:
-                BoneMenus.selectBone();
-                break;
-
-            case Action.selectBoneChild:
-                BoneMenus.selectBoneChild();
-                break;
-
-            case Action.selectBoneParent:
-                target.getBone().selectParent();
-                break;
-
-            case Action.selectEdgeFilter:
-                EnumMenus.selectEdgeFilter();
-                break;
-
-            case Action.selectJoint:
-                PhysicsMenus.selectJoint(target);
-                break;
-
-            case Action.selectKeyframeFirst:
-                target.getTrack().selectFirstKeyframe();
-                break;
-
-            case Action.selectKeyframeLast:
-                target.getTrack().selectLastKeyframe();
-                break;
-
-            case Action.selectKeyframeNearest:
-                target.getTrack().selectNearestKeyframe();
-                break;
-
-            case Action.selectKeyframeNext:
-                target.getTrack().selectNextKeyframe();
-                break;
-
-            case Action.selectKeyframePrevious:
-                target.getTrack().selectPreviousKeyframe();
-                break;
-
-            case Action.selectLight:
-                ShowMenus.selectLight();
-                break;
-
-            case Action.selectLightOwner:
-                target.getSpatial().selectLightOwner();
-                break;
-
-            case Action.selectMapSourceBone:
-                model.getMap().selectFromSource();
-                break;
-
-            case Action.selectMapTargetBone:
-                model.getMap().selectFromTarget();
-                break;
-
-            case Action.selectMatParam:
-                ShowMenus.selectMatParam();
-                break;
-
             case Action.selectOrbitCenter:
                 EnumMenus.selectOrbitCenter();
                 break;
@@ -324,7 +243,8 @@ class SelectAction {
     }
 
     /**
-     * Process a non-ongoing action that starts with the word "select".
+     * Process a non-ongoing action that starts with the word "select" and a
+     * letter in the o-z range.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -357,8 +277,8 @@ class SelectAction {
     // private methods
 
     /**
-     * Process an ongoing action that starts with the word "select" -- 2nd part:
-     * test for prefixes.
+     * Process an ongoing action that starts with the word "select" and a letter
+     * in the o-z range -- 2nd part: test for prefixes.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -369,61 +289,7 @@ class SelectAction {
         EditorModel model = Maud.getModel();
         Cgm target = model.getTarget();
         String arg;
-        if (actionString.startsWith(ActionPrefix.selectAnimControl)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectAnimControl);
-            target.getAnimControl().select(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectAxesDragEffect)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectAxesDragEffect);
-            AxesDragEffect value = AxesDragEffect.valueOf(arg);
-            model.getScene().getAxes().setDragEffect(value);
-
-        } else if (actionString.startsWith(ActionPrefix.selectAxesSubject)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectAxesSubject);
-            AxesSubject value = AxesSubject.valueOf(arg);
-            model.getScene().getAxes().setSubject(value);
-
-        } else if (actionString.startsWith(ActionPrefix.selectBone)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectBone);
-            BoneMenus.selectBone(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectBoneChild)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectBoneChild);
-            ShowMenus.selectBoneChild(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectEdgeFilter)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectEdgeFilter);
-            EdgeFilteringMode newMode = EdgeFilteringMode.valueOf(arg);
-            model.getScene().setEdgeFilter(newMode);
-
-        } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
-            SpatialMenus.selectSpatial(arg, false);
-
-        } else if (actionString.startsWith(ActionPrefix.selectJoint)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectJoint);
-            long id = Long.parseLong(arg, 16);
-            target.getJoint().select(id);
-
-        } else if (actionString.startsWith(ActionPrefix.selectLight)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectLight);
-            target.getLight().select(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectMatParam)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectMatParam);
-            target.getMatParam().select(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.selectMovement)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectMovement);
-            MovementMode mode = MovementMode.valueOf(arg);
-            model.getScene().getCamera().setMode(mode);
-
-        } else if (actionString.startsWith(ActionPrefix.selectOrbitCenter)) {
+        if (actionString.startsWith(ActionPrefix.selectOrbitCenter)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectOrbitCenter);
             OrbitCenter oc = OrbitCenter.parse(arg);
@@ -558,11 +424,6 @@ class SelectAction {
             handled = false;
         }
 
-        if (!handled && actionString.startsWith(ActionPrefix.selectMenuItem)) {
-            String menuPath = MyString.remainder(actionString,
-                    ActionPrefix.selectMenuItem);
-            handled = EditorMenus.selectMenuItem(menuPath);
-        }
         if (!handled && actionString.startsWith(ActionPrefix.selectTool)) {
             String toolName = MyString.remainder(actionString,
                     ActionPrefix.selectTool);

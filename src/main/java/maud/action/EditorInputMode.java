@@ -142,7 +142,8 @@ public class EditorInputMode extends InputMode {
          * Parse the action string and attempt to handle the action.
          */
         boolean handled = false;
-        String firstWord = actionString.split(" ")[0];
+        String[] words = actionString.split(" ");
+        String firstWord = words[0];
         if (ongoing) {
             switch (firstWord) {
                 case "copy":
@@ -185,7 +186,12 @@ public class EditorInputMode extends InputMode {
                     handled = saveAction(actionString);
                     break;
                 case "select":
-                    handled = SelectAction.process(actionString);
+                    char firstChar = words[1].charAt(0);
+                    if (firstChar < 'o') {
+                        handled = SelectANAction.process(actionString);
+                    } else {
+                        handled = SelectOZAction.process(actionString);
+                    }
                     break;
                 case "set":
                     handled = SetAction.process(actionString);
@@ -204,8 +210,9 @@ public class EditorInputMode extends InputMode {
             }
 
         } else { // action not ongoing
-            if ("select".equals(firstWord)) {
-                handled = SelectAction.processNotOngoing(actionString);
+            char firstChar = words[1].charAt(0);
+            if ("select".equals(firstWord) && firstChar >= 'o') {
+                handled = SelectOZAction.processNotOngoing(actionString);
             }
         }
 
