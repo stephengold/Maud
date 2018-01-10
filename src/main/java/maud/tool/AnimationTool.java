@@ -337,23 +337,23 @@ class AnimationTool extends GuiWindowController {
      * Update the track-time slider and its status label.
      */
     private void updateTrackTime() {
-        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
-        if (animation.isRetargetedPose()) {
-            animation = Maud.getModel().getSource().getAnimation();
+        LoadedAnimation master = Maud.getModel().getTarget().getAnimation();
+        if (master.isRetargetedPose()) {
+            master = Maud.getModel().getSource().getAnimation();
         }
-        float duration = animation.getDuration();
+        float duration = master.getDuration();
         /*
          * slider
          */
-        boolean moving = animation.isMoving();
-        setSliderEnabled("time", duration == 0f || moving);
+        boolean moving = master.isMoving();
+        setSliderEnabled("time", duration != 0f && !moving);
 
         float fraction, trackTime;
         if (duration == 0f) {
             trackTime = 0f;
             fraction = 0f;
         } else {
-            trackTime = animation.getTime();
+            trackTime = master.getTime();
             fraction = trackTime / duration;
         }
         setSlider("time", timeSt, fraction);
@@ -361,7 +361,7 @@ class AnimationTool extends GuiWindowController {
          * status label
          */
         String statusText;
-        if (animation.isReal()) {
+        if (master.isReal()) {
             statusText = String.format("time = %.3f / %.3f sec",
                     trackTime, duration);
         } else {

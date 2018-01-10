@@ -329,7 +329,7 @@ class SourceAnimationTool extends GuiWindowController {
          * slider
          */
         boolean moving = animation.isMoving();
-        setSliderEnabled("sourceTime", duration == 0f || moving);
+        setSliderEnabled("sourceTime", duration != 0f && !moving);
 
         float fraction, trackTime;
         if (duration == 0f) {
