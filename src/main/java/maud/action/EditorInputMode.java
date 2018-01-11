@@ -186,8 +186,7 @@ public class EditorInputMode extends InputMode {
                     handled = saveAction(actionString);
                     break;
                 case "select":
-                    char firstChar = words[1].charAt(0);
-                    if (firstChar < 'o') {
+                    if (words.length > 1 && words[1].charAt(0) < 'o') {
                         handled = SelectANAction.process(actionString);
                     } else {
                         handled = SelectOZAction.process(actionString);
@@ -210,8 +209,7 @@ public class EditorInputMode extends InputMode {
             }
 
         } else { // action not ongoing
-            char firstChar = words[1].charAt(0);
-            if ("select".equals(firstWord) && firstChar >= 'o') {
+            if ("select".equals(firstWord)) {
                 handled = SelectOZAction.processNotOngoing(actionString);
             }
         }
@@ -223,8 +221,8 @@ public class EditorInputMode extends InputMode {
             actionApplication.onAction(actionString, ongoing, tpf);
         }
     }
-    // *************************************************************************
-    // private methods
+// *************************************************************************
+// private methods
 
     /**
      * Process an ongoing action that starts with the word "copy".
