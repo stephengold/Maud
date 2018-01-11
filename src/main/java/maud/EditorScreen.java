@@ -61,6 +61,7 @@ import maud.model.cgm.Pov;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.option.DisplaySettings;
 import maud.model.option.MiscOptions;
+import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.SceneOptions;
 import maud.tool.EditorTools;
@@ -690,20 +691,30 @@ public class EditorScreen extends GuiScreenController {
 
         if (visible) {
             /*
-             * Copy the status message.
-             */
-            String message = misc.getStatusMessage();
-            setStatusText("statusCenter", message);
-            /*
-             * Update the description of camera options.
+             * Update the description of axis-dragging options at the left end
+             * of the status bar.
              */
             String description = "";
             ViewType viewType = mouseViewType();
             if (viewType == ViewType.Scene) {
+                AxesOptions axesOptions = model.getScene().getAxes();
+                description = axesOptions.describe();
+            }
+            setStatusText("statusLeft", " " + description);
+            /*
+             * Copy the status message to the center.
+             */
+            String message = misc.getStatusMessage();
+            setStatusText("statusCenter", message);
+            /*
+             * Update the description of camera options at the right end.
+             */
+            description = "";
+            if (viewType == ViewType.Scene) {
                 CameraOptions options = model.getScene().getCamera();
                 description = options.describe();
             }
-            setStatusText("statusRight", description);
+            setStatusText("statusRight", description + " ");
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -64,6 +64,25 @@ public class AxesOptions implements Cloneable {
     private float lineWidth = 0f;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Generate a description of the options, for display in the status bar.
+     *
+     * @return textual description (not null, length&lt;50)
+     */
+    public String describe() {
+        StringBuilder builder = new StringBuilder(50);
+        if (subject == AxesSubject.None) {
+            builder.append("axes disabled");
+        } else {
+            builder.append(dragEffect);
+            builder.append(" ");
+            builder.append(subject);
+        }
+
+        assert builder.length() < 50 : builder.length();
+        return builder.toString();
+    }
 
     /**
      * Read the depth-test flag.
