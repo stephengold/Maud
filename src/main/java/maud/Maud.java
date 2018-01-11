@@ -137,6 +137,7 @@ public class Maud extends GuiApplication {
          */
         for (String arg : arguments) {
             switch (arg) {
+                case "-f":
                 case "--forceDialog":
                     DisplaySettings.setForceDialog(true);
                     break;
