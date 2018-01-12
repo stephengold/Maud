@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ public class DddCursorOptions implements Cloneable {
     /**
      * color of the cursor
      */
-    private ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 1f);
+    private ColorRGBA color = new ColorRGBA(1f, 1f, 0f, 1f);
     /**
      * angular size of the cursor (in arbitrary units, &gt;0)
      */
@@ -125,7 +125,7 @@ public class DddCursorOptions implements Cloneable {
         visible = newState;
     }
     // *************************************************************************
-    // Object methods
+    // Cloneable methods
 
     /**
      * Create a deep copy of this object.
