@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -114,7 +114,7 @@ public class TrackItem {
     /**
      * Access the anim control.
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     AnimControl getAnimControl() {
         assert animControl != null;

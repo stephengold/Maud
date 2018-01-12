@@ -154,7 +154,7 @@ public class History {
      * Access the indexed checkpoint.
      *
      * @param index (&ge;0)
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     public static Checkpoint getCheckpoint(int index) {
         Checkpoint result = checkpoints.get(index);

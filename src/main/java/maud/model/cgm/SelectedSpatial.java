@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -483,7 +483,7 @@ public class SelectedSpatial implements JmeCloneable {
     /**
      * Access the selected spatial in the MVC model.
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     Spatial find() {
         Spatial modelRoot = cgm.getRootSpatial();

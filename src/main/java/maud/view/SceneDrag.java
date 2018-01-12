@@ -113,7 +113,7 @@ public class SceneDrag {
     /**
      * Access the C-G model that's being manipulated.
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     public static Cgm getCgm() {
         assert isActive();
@@ -268,7 +268,7 @@ public class SceneDrag {
     /**
      * Access the editable C-G model that's being manipulated.
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     private static EditableCgm getEditableCgm() {
         assert isActive();
