@@ -109,7 +109,7 @@ public class Maud extends GuiApplication {
     /**
      * Access the application.
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     public static Maud getApplication() {
         assert application != null;
@@ -119,11 +119,21 @@ public class Maud extends GuiApplication {
     /**
      * Access the live MVC model for the editor screen.
      *
-     * @return the pre-existing instance
+     * @return the pre-existing instance (not null)
      */
     public static EditorModel getModel() {
         assert editorModel != null;
         return editorModel;
+    }
+
+    /**
+     * Access the live display settings.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public static AppSettings getSettings() {
+        assert application.settings != null;
+        return application.settings;
     }
 
     /**
@@ -149,7 +159,7 @@ public class Maud extends GuiApplication {
             }
         }
         /*
-         * Mute the chatty loggers of certain packages.
+         * Mute the chatty loggers found in certain packages.
          */
         Misc.setLoggingLevels(Level.WARNING);
         Logger.getLogger(ALAudioRenderer.class.getName())
@@ -162,7 +172,13 @@ public class Maud extends GuiApplication {
             application = new Maud();
             application.setSettings(appSettings);
             /*
-             * If the settings dialog should be shown, it already has been.
+             * Don't pause on lost focus.  This simplifies debugging by
+             * permitting the application to run while minimized.
+             */
+            application.setPauseOnLostFocus(false);
+            /*
+             * If the settings dialog should be shown, it was already shown
+             * by DisplaySettings.initialize().
              */
             application.setShowSettings(false);
             application.start();
