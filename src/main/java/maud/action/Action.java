@@ -45,6 +45,8 @@ public class Action {
      */
     final private static Logger logger
             = Logger.getLogger(Action.class.getName());
+
+    final static String applyDisplaySettings = "apply displaySettings";
     /**
      * delete the selected animation
      */
@@ -139,6 +141,7 @@ public class Action {
     final static String resetVertexSelection = "reset vertex selection";
 
     final static String retargetAnimation = "retarget animation";
+    final static String saveDisplaySettings = "save displaySettings";
 
     final static String selectAnimationEditMenu = "select editAnimationMenu";
     final static String selectAnimControl = "select animControl";
@@ -191,7 +194,7 @@ public class Action {
     final static String selectUserKey = "select userKey";
     final static String selectVertex = "select vertex";
 
-    final static String setAntiAliasing = "set antiAliasing";
+    final static String setAntiAliasing = "set antiAliasing"; // TODO setMsaaFactor
     final static String setBatchHint = "set batchHint";
     final static String setColorDepth = "set colorDepth";
     final static String setCullHint = "set cullHint";
@@ -200,7 +203,7 @@ public class Action {
     final static String setOverrideValue = "set overrideValue";
     final static String setQueueBucket = "set queueBucket";
     final static String setRefreshRate = "set refreshRate";
-    final static String setResolution = "set resolution";
+    final static String setResolution = "set resolution"; // TODO setDimensions
     final static String setShadowMode = "set shadowMode";
     final static String setShapeParmValue = "set shapeParmValue";
     final static String setSpatialAngleCardinal = "set spatialAngle cardinal";

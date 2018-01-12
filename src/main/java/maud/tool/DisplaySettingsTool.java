@@ -26,7 +26,6 @@
  */
 package maud.tool;
 
-import com.jme3.system.AppSettings;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
@@ -61,7 +60,7 @@ class DisplaySettingsTool extends GuiWindowController {
         super(screenController, "displaySettingsTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per
@@ -73,37 +72,51 @@ class DisplaySettingsTool extends GuiWindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
-        AppSettings settings = DisplaySettings.get();
         Maud.gui.setIgnoreGuiChanges(true);
 
-        boolean fullscreen = settings.isFullscreen();
+        boolean fullscreen = DisplaySettings.isFullscreen();
         setChecked("fullscreen", fullscreen);
-        boolean gamma = settings.isGammaCorrection();
+        boolean gamma = DisplaySettings.isGammaCorrection();
         setChecked("gammaCorrection", gamma);
-        boolean vsync = settings.isVSync();
-        setChecked("vsync", vsync);
+        boolean vsync = DisplaySettings.isVSync();
+        setChecked("vsync", vsync); // TODO rename checkbox to "vSync"
 
-        int width = settings.getWidth();
-        int height = settings.getHeight();
-        String resolution = String.format("%d x %d", width, height);
-        setButtonText("displayResolution", resolution);
+        int width = DisplaySettings.getWidth();
+        int height = DisplaySettings.getHeight();
+        String dimensionsButton = MaudUtil.describeDimensions(width, height);
+        setButtonText("displayResolution", dimensionsButton);
+        // TODO rename button to "displayDimensions"
 
-        int numSamples = settings.getSamples();
-        String aaDescription = MaudUtil.aaDescription(numSamples);
-        setButtonText("displayAntiAliasing", aaDescription);
+        int multiSampling = DisplaySettings.getMsaaFactor();
+        String antiAliasingButton = MaudUtil.aaDescription(multiSampling);
+        setButtonText("displayAntiAliasing", antiAliasingButton);
 
-        int colorDepth = settings.getBitsPerPixel();
-        String cdDescription = String.format("%d bits", colorDepth);
-        setButtonText("colorDepth", cdDescription);
-
-        int refreshRate = settings.getFrequency();
-        String rrDescription;
-        if (!fullscreen || refreshRate <= 0) {
-            rrDescription = "unknown";
-        } else {
-            rrDescription = String.format("%d Hz", refreshRate);
+        String refreshRateButton = "";
+        if (fullscreen) {
+            int refreshRate = DisplaySettings.getRefreshRate();
+            if (refreshRate <= 0) {
+                refreshRateButton = "unknown";
+            } else {
+                refreshRateButton = String.format("%d Hz", refreshRate);
+            }
         }
-        setButtonText("refreshRate", rrDescription);
+        setButtonText("refreshRate", refreshRateButton);
+
+        int colorDepth = DisplaySettings.getColorDepth();
+        String colorDepthButton = String.format("%d bpp", colorDepth);
+        setButtonText("colorDepth", colorDepthButton);
+
+        String applyButton = "";
+        if (DisplaySettings.canApply() && !DisplaySettings.areApplied()) {
+            applyButton = "Apply";
+        }
+        setButtonText("applyDisplaySettings", applyButton);
+
+        String saveButton = "";
+        if (DisplaySettings.areValid() && !DisplaySettings.areSaved()) {
+            saveButton = "Save";
+        }
+        setButtonText("saveDisplaySettings", saveButton);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

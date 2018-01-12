@@ -321,12 +321,10 @@ public class EditorScreen extends GuiScreenController {
                 animationCgm.getPose().setFrozen(isChecked);
                 break;
             case "fullscreen":
-                DisplaySettings.get().setFullscreen(isChecked);
-                DisplaySettings.save();
+                DisplaySettings.setFullscreen(isChecked);
                 break;
             case "gammaCorrection":
-                DisplaySettings.get().setGammaCorrection(isChecked);
-                DisplaySettings.save();
+                DisplaySettings.setGammaCorrection(isChecked);
                 break;
             case "invertRma":
             case "invertRma2":
@@ -393,8 +391,7 @@ public class EditorScreen extends GuiScreenController {
                 target.setIgnoreTransform(isChecked);
                 break;
             case "vsync":
-                DisplaySettings.get().setVSync(isChecked);
-                DisplaySettings.save();
+                DisplaySettings.setVSync(isChecked);
                 break;
             default:
                 logger.log(Level.WARNING, "check box with unknown id={0}",

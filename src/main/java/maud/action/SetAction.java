@@ -136,7 +136,11 @@ class SetAction {
                 break;
 
             case Action.setResolution:
-                ShowMenus.setResolution();
+                if (DisplaySettings.isFullscreen()) {
+                    ShowMenus.setResolution();
+                } else {
+                    EditorDialogs.setDimensions();
+                }
                 break;
 
             case Action.setShadowMode:
@@ -222,15 +226,14 @@ class SetAction {
         if (actionString.startsWith(ActionPrefix.setAntiAliasing)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setAntiAliasing);
-            int numSamples;
-            for (numSamples = 1; numSamples < 16; numSamples *= 2) {
-                String aaDescription = MaudUtil.aaDescription(numSamples);
+            int factor;
+            for (factor = 1; factor < 16; factor *= 2) {
+                String aaDescription = MaudUtil.aaDescription(factor);
                 if (arg.equals(aaDescription)) {
                     break;
                 }
             }
-            DisplaySettings.get().setSamples(numSamples);
-            DisplaySettings.save();
+            DisplaySettings.setMsaaFactor(factor);
 
         } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
@@ -240,9 +243,8 @@ class SetAction {
         } else if (actionString.startsWith(ActionPrefix.setColorDepth)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setColorDepth);
-            int value = Integer.parseInt(arg);
-            DisplaySettings.get().setBitsPerPixel(value);
-            DisplaySettings.save();
+            int bitsPerPixel = Integer.parseInt(arg);
+            DisplaySettings.setColorDepth(bitsPerPixel);
 
         } else if (actionString.startsWith(ActionPrefix.setCullHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setCullHint);
@@ -322,20 +324,21 @@ class SetAction {
 
         } else if (actionString.startsWith(ActionPrefix.setRefreshRate)) {
             arg = MyString.remainder(actionString, ActionPrefix.setRefreshRate);
-            int value = Integer.parseInt(arg);
-            DisplaySettings.get().setFrequency(value);
-            DisplaySettings.save();
+            int hertz = Integer.parseInt(arg);
+            DisplaySettings.setRefreshRate(hertz);
 
         } else if (actionString.startsWith(ActionPrefix.setResolution)) {
             arg = MyString.remainder(actionString, ActionPrefix.setResolution);
             String[] args = arg.split(" ");
-            assert args.length == 3 : args.length;
-            int width = Integer.parseInt(args[0]);
-            assert "x".equals(args[1]) : args[1];
-            int height = Integer.parseInt(args[2]);
-            DisplaySettings.get().setWidth(width);
-            DisplaySettings.get().setHeight(height);
-            DisplaySettings.save();
+            handled = false;
+            if (args.length >= 3) {
+                int width = Integer.parseInt(args[0]);
+                int height = Integer.parseInt(args[2]);
+                if ("x".equals(args[1])) {
+                    DisplaySettings.setDimensions(width, height);
+                    handled = true;
+                }
+            }
 
         } else if (actionString.startsWith(ActionPrefix.setShadowMode)) {
             arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);

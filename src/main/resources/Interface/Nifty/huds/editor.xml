@@ -807,7 +807,7 @@ the menu bar, status bar, and tool windows.
             <control name="window" id="displaySettingsTool" title="Display-Settings Tool"
                      backgroundColor="#ffcf"
                      hideOnClose="true"
-                     height="220px" width="200px" x="165" y="105">
+                     height="230px" width="175px" x="165" y="105">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="fullscreenCheckBox"/>
@@ -827,24 +827,35 @@ the menu bar, status bar, and tool windows.
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="resolution:  "/>
+                        <control name="label" text="refresh rate:  "/>
+                        <control name="button" id="refreshRateButton"
+                                 width="65px">
+                            <interact onRelease="perform(set refreshRate)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="dimensions:  "/>
                         <control name="button" id="displayResolutionButton"
                                  width="80px">
                             <interact onRelease="perform(set resolution)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="anti-aliasing:  "/>
+                        <control name="label" text="MSAA factor:  "/>
                         <control name="button" id="displayAntiAliasingButton"
-                                 width="70px">
+                                 width="65px">
                             <interact onRelease="perform(set antiAliasing)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="refresh rate:  "/>
-                        <control name="button" id="refreshRateButton"
-                                 width="70px">
-                            <interact onRelease="perform(set refreshRate)"/>
+                        <control name="button" id="applyDisplaySettingsButton"
+                                 width="*">
+                            <interact onRelease="perform(apply displaySettings)"/>
+                        </control>
+                        <control name="label" text="   "/>
+                        <control name="button" id="saveDisplaySettingsButton"
+                                 width="*">
+                            <interact onRelease="perform(save displaySettings)"/>
                         </control>
                     </panel>
                 </panel>

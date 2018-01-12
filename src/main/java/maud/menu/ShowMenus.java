@@ -28,7 +28,6 @@ package maud.menu;
 
 import com.jme3.light.Light;
 import com.jme3.scene.control.Control;
-import com.jme3.system.AppSettings;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -424,13 +423,13 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu to configure anti-aliasing using the "set antiAliasing "
-     * action prefix.
+     * Display a menu to configure MSAA using the "set antiAliasing " action
+     * prefix. TODO rename setMsaaFactor
      */
     public static void setAntiAliasing() {
         MenuBuilder builder = new MenuBuilder();
 
-        int selectedSamples = DisplaySettings.get().getSamples();
+        int selectedSamples = DisplaySettings.getMsaaFactor();
         for (int numSamples = 1; numSamples <= 16; numSamples *= 2) {
             if (numSamples != selectedSamples) {
                 String aaDescription = MaudUtil.aaDescription(numSamples);
@@ -448,15 +447,14 @@ public class ShowMenus {
     public static void setColorDepth() {
         MenuBuilder builder = new MenuBuilder();
 
-        AppSettings settings = DisplaySettings.get();
-        int depth = settings.getBitsPerPixel();
+        int depth = DisplaySettings.getColorDepth();
 
-        if (settings.isFullscreen()) {
-            int height = settings.getHeight();
-            int width = settings.getWidth();
-            GraphicsEnvironment env;
-            env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice device = env.getDefaultScreenDevice();
+        if (DisplaySettings.isFullscreen()) {
+            int height = DisplaySettings.getHeight();
+            int width = DisplaySettings.getWidth();
+            GraphicsEnvironment environment
+                    = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice device = environment.getDefaultScreenDevice();
             DisplayMode[] modes = device.getDisplayModes();
             for (DisplayMode mode : modes) {
                 int modeDepth = mode.getBitDepth();
@@ -488,14 +486,13 @@ public class ShowMenus {
      * refreshRate " action prefix.
      */
     public static void setRefreshRate() {
-        AppSettings settings = DisplaySettings.get();
-        if (settings.isFullscreen()) {
+        if (DisplaySettings.isFullscreen()) {
             MenuBuilder builder = new MenuBuilder();
-            int refreshRate = settings.getFrequency();
-            int height = settings.getHeight();
-            int width = settings.getWidth();
-            GraphicsEnvironment env;
-            env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            int refreshRate = DisplaySettings.getRefreshRate();
+            int height = DisplaySettings.getHeight();
+            int width = DisplaySettings.getWidth();
+            GraphicsEnvironment env
+                    = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice device = env.getDefaultScreenDevice();
             DisplayMode[] modes = device.getDisplayModes();
             for (DisplayMode mode : modes) {
@@ -515,38 +512,31 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu to set the display resolution using the "set resolution "
-     * action prefix.
+     * Display a menu to set the (full-screen) display dimensions using the "set
+     * resolution " action prefix. TODO rename setDimensions
      */
     public static void setResolution() {
         MenuBuilder builder = new MenuBuilder();
 
-        AppSettings settings = DisplaySettings.get();
-        int height = settings.getHeight();
-        int minHeight = settings.getMinHeight();
-        int minWidth = settings.getMinWidth();
-        int width = settings.getWidth();
+        int height = DisplaySettings.getHeight();
+        int width = DisplaySettings.getWidth();
 
-        if (settings.isFullscreen()) {
-            GraphicsEnvironment env;
-            env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice device = env.getDefaultScreenDevice();
-            DisplayMode[] modes = device.getDisplayModes();
-            for (DisplayMode mode : modes) {
-                int modeHeight = mode.getHeight();
-                int modeWidth = mode.getWidth();
-                if (modeHeight >= minHeight && modeWidth >= minWidth
-                        && (modeHeight != height || modeWidth != width)) {
-                    String modeItem;
-                    modeItem = String.format("%d x %d", modeWidth, modeHeight);
-                    if (!builder.hasItem(modeItem)) {
-                        builder.add(modeItem);
-                    }
+        GraphicsEnvironment environment
+                = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice device = environment.getDefaultScreenDevice();
+        DisplayMode[] modes = device.getDisplayModes();
+        for (DisplayMode mode : modes) {
+            int modeHeight = mode.getHeight();
+            int modeWidth = mode.getWidth();
+            if (modeHeight >= DisplaySettings.minHeight
+                    && modeWidth >= DisplaySettings.minWidth
+                    && (modeHeight != height || modeWidth != width)) {
+                String modeItem
+                        = MaudUtil.describeDimensions(modeWidth, modeHeight);
+                if (!builder.hasItem(modeItem)) {
+                    builder.add(modeItem);
                 }
             }
-
-        } else {
-
         }
 
         builder.show(ActionPrefix.setResolution);

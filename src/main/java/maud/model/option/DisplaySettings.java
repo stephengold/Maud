@@ -28,10 +28,15 @@ package maud.model.option;
 
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import jme3utilities.Validate;
 import maud.Maud;
+import maud.MaudUtil;
 
 /**
  * Display settings for Maud. Note: not checkpointed!
@@ -42,6 +47,22 @@ public class DisplaySettings {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * maximum display height (in pixels, &ge;minHeight)
+     */
+    final public static int maxHeight = 1_080;
+    /**
+     * maximum display width (in pixels, &ge;minWidth)
+     */
+    final public static int maxWidth = 2_048;
+    /**
+     * minimum display height (in pixels, &le;maxHeight)
+     */
+    final public static int minHeight = 480;
+    /**
+     * minimum display width (in pixels, &le;maxWidth)
+     */
+    final public static int minWidth = 640;
     /**
      * message logger for this class
      */
@@ -64,15 +85,25 @@ public class DisplaySettings {
     // fields
 
     /**
-     * cached settings that will be used to (re-)start the application,
-     * initialized to JME defaults.
+     * cached settings that can be applied (to the application context) or saved
+     * (written to persistent storage)
      */
-    final private static AppSettings appSettings = new AppSettings(true);
+    final private static AppSettings cachedSettings = new AppSettings(true);
     /**
      * true&rarr;force startup to show the settings dialog, false&rarr; show the
      * dialog only if persistent settings are missing
      */
     private static boolean forceDialog = false;
+    /**
+     * true&rarr;settings have been applied since their last modification,
+     * otherwise false
+     */
+    private static boolean areApplied = true;
+    /**
+     * true&rarr;settings have been saved since their last modification,
+     * otherwise false
+     */
+    private static boolean areSaved = false;
     // *************************************************************************
     // constructors
 
@@ -85,29 +116,182 @@ public class DisplaySettings {
     // new methods exposed
 
     /**
-     * Access the cached settings. Any modifications should be copied to
-     * persistent storage by invoking {@link #save()}
-     *
-     * @return the pre-existing instance
+     * Apply the cached settings to the application context and restart the
+     * context to put them into effect.
      */
-    public static AppSettings get() {
-        return appSettings;
+    public static void applyToDisplay() {
+        assert canApply();
+        assert !areApplied;
+
+        AppSettings clone = new AppSettings(false);
+        clone.copyFrom(cachedSettings);
+
+        Maud application = Maud.getApplication();
+        application.setSettings(clone);
+        application.restart();
+        areApplied = true;
+    }
+
+    /**
+     * Test whether the cached settings have been applied since their last
+     * modification.
+     *
+     * @return true if clean, otherwise false
+     */
+    public static boolean areApplied() {
+        return areApplied;
+    }
+
+    /**
+     * Test whether the cached settings have been saved (written to persistent
+     * storage) since their last modification.
+     *
+     * @return true if clean, otherwise false
+     */
+    public static boolean areSaved() {
+        return areSaved;
+    }
+
+    /**
+     * Test the validity of the cached settings prior to a save.
+     *
+     * @return true if good enough, otherwise false
+     */
+    public static boolean areValid() {
+        int height = cachedSettings.getHeight();
+        if (!MaudUtil.isBetween(minHeight, height, maxHeight)) {
+            return false;
+        }
+
+        int width = cachedSettings.getWidth();
+        if (!MaudUtil.isBetween(minWidth, width, maxWidth)) {
+            return false;
+        }
+
+        if (cachedSettings.isFullscreen()) {
+            GraphicsEnvironment environment
+                    = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice device = environment.getDefaultScreenDevice();
+            if (!device.isFullScreenSupported()) {
+                return false;
+            }
+
+            boolean foundMatch = false;
+            DisplayMode[] modes = device.getDisplayModes();
+            for (DisplayMode mode : modes) {
+                int bitDepth = mode.getBitDepth();
+                int frequency = mode.getRefreshRate();
+                // TODO see algorithm in LwjglDisplay.getFullscreenDisplayMode()
+                if (bitDepth == DisplayMode.BIT_DEPTH_MULTI
+                        || bitDepth == cachedSettings.getBitsPerPixel()) {
+                    if (mode.getWidth() == cachedSettings.getWidth()
+                            && mode.getHeight() == cachedSettings.getHeight()
+                            && frequency == cachedSettings.getFrequency()) {
+                        foundMatch = true;
+                    }
+                }
+            }
+            return foundMatch;
+
+        } else { // The cached settings specify a windowed display.
+            return true;
+        }
+    }
+
+    /**
+     * Test whether the cached settings can be applied immediately.
+     *
+     * @return true if can be applied, otherwise false
+     */
+    public static boolean canApply() {
+        AppSettings current = Maud.getSettings();
+        boolean inFullscreen = current.isFullscreen();
+        int currentBpp = current.getBitsPerPixel();
+        boolean bppChanged = currentBpp != cachedSettings.getBitsPerPixel();
+        int currentMsaa = current.getSamples();
+        boolean msaaChanged = currentMsaa != cachedSettings.getSamples();
+
+        boolean result;
+        if (inFullscreen != cachedSettings.isFullscreen()) {
+            result = false; // work around JME issue #798 and related issues
+        } else if (bppChanged || msaaChanged) {
+            result = false; // work around JME issue #801 and related issues
+        } else {
+            result = areValid();
+        }
+
+        return result;
+    }
+
+    /**
+     * Read the color depth.
+     *
+     * @return depth (in bits per pixel, &gt;0)
+     */
+    public static int getColorDepth() {
+        int result = cachedSettings.getBitsPerPixel();
+        assert result > 0 : result;
+        return result;
+    }
+
+    /**
+     * Read the display height.
+     *
+     * @return height (in pixels, &gt;0)
+     */
+    public static int getHeight() {
+        int result = cachedSettings.getHeight();
+        assert result > 0 : result;
+        return result;
+    }
+
+    /**
+     * Read the sampling factor for multi-sample anti-aliasing (MSAA).
+     *
+     * @return sampling factor (in samples per pixel, &ge;0)
+     */
+    public static int getMsaaFactor() {
+        int result = cachedSettings.getSamples();
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Read the display's refresh rate, which is relevant only to full-screen
+     * mode.
+     *
+     * @return frequency (in Hertz, &ge;1) or -1 for unknown
+     */
+    public static int getRefreshRate() {
+        int result = cachedSettings.getFrequency();
+        assert result >= 1 || result == -1 : result;
+        return result;
+    }
+
+    /**
+     * Read the display width.
+     *
+     * @return height (in pixels, &gt;0)
+     */
+    public static int getWidth() {
+        int result = cachedSettings.getWidth();
+        assert result > 0 : result;
+        return result;
     }
 
     /**
      * Initialize the settings before the application starts.
      *
-     * @return the pre-existing instance, or null if user clicked on the
-     * "Cancel" button
+     * @return a new instance, or null if user clicked on the "Cancel" button
      */
     public static AppSettings initialize() {
         /*
-         * Load settings from persistent storage.
+         * Attempt to load settings from Preferences (persistent storage).
          */
         boolean loadedFromStore = false;
         try {
             if (Preferences.userRoot().nodeExists(preferencesKey)) {
-                appSettings.load(preferencesKey);
+                cachedSettings.load(preferencesKey);
                 loadedFromStore = true;
             }
         } catch (BackingStoreException e) {
@@ -115,18 +299,18 @@ public class DisplaySettings {
         /*
          * Apply overrides.
          */
-        appSettings.setMinHeight(480);
-        appSettings.setMinWidth(640);
-        appSettings.setSettingsDialogImage(logoAssetPath);
-        appSettings.setTitle(windowTitle);
+        cachedSettings.setMinHeight(minHeight);
+        cachedSettings.setMinWidth(minWidth);
+        cachedSettings.setSettingsDialogImage(logoAssetPath);
+        cachedSettings.setTitle(windowTitle);
 
         if (!loadedFromStore || forceDialog) {
             /*
-             * Display JME's settings dialog.
+             * Show JME's settings dialog.
              */
             boolean loadFlag = false;
             boolean proceed
-                    = JmeSystem.showSettingsDialog(appSettings, loadFlag);
+                    = JmeSystem.showSettingsDialog(cachedSettings, loadFlag);
             if (!proceed) {
                 /*
                  * The user clicked on the "Cancel" button.
@@ -134,17 +318,55 @@ public class DisplaySettings {
                 return null;
             }
         }
-        save();
 
-        return appSettings;
+        if (areValid()) {
+            save();
+        }
+
+        AppSettings clone = new AppSettings(false);
+        clone.copyFrom(cachedSettings);
+
+        return clone;
     }
 
     /**
-     * Write the cached settings to persistent storage.
+     * Test whether full-screen mode is enabled.
+     *
+     * @return true if full-screen, otherwise false
+     */
+    public static boolean isFullscreen() {
+        boolean result = cachedSettings.isFullscreen();
+        return result;
+    }
+
+    /**
+     * Test whether gamma correction is enabled.
+     *
+     * @return true if enabled, otherwise false
+     */
+    public static boolean isGammaCorrection() {
+        boolean result = cachedSettings.isGammaCorrection();
+        return result;
+    }
+
+    /**
+     * Test whether VSync is enabled.
+     *
+     * @return true if enabled, otherwise false
+     */
+    public static boolean isVSync() {
+        boolean result = cachedSettings.isVSync();
+        return result;
+    }
+
+    /**
+     * Write the cached settings to persistent storage so they will take effect
+     * the next time Maud is launched.
      */
     public static void save() {
         try {
-            appSettings.save(preferencesKey);
+            cachedSettings.save(preferencesKey);
+            areSaved = true;
         } catch (BackingStoreException e) {
             String message = "Display settings were not saved.";
             logger.warning(message);
@@ -153,12 +375,125 @@ public class DisplaySettings {
     }
 
     /**
-     * Alter whether startup should show the settings dialog.
+     * Alter the color depth.
+     *
+     * @param newBpp color depth (in bits per pixel, &ge;1, &le;32)
+     */
+    public static void setColorDepth(int newBpp) {
+        Validate.inRange(newBpp, "new depth", 1, 32);
+
+        int oldBpp = cachedSettings.getBitsPerPixel();
+        if (newBpp != oldBpp) {
+            cachedSettings.setBitsPerPixel(newBpp);
+            areApplied = false;
+            areSaved = false;
+        }
+    }
+
+    /**
+     * Alter the display dimensions.
+     *
+     * @param newWidth width (in pixels, &ge;minWidth, &le;maxWidth)
+     * @param newHeight height (in pixels, &ge;minHeight, &le;maxHeight)
+     */
+    public static void setDimensions(int newWidth, int newHeight) {
+        Validate.inRange(newWidth, "new width", minWidth, maxWidth);
+        Validate.inRange(newHeight, "new height", minHeight, maxHeight);
+
+        int oldWidth = cachedSettings.getWidth();
+        if (newWidth != oldWidth) {
+            cachedSettings.setWidth(newWidth);
+            areApplied = false;
+            areSaved = false;
+        }
+        int oldHeight = cachedSettings.getHeight();
+        if (newHeight != oldHeight) {
+            cachedSettings.setHeight(newHeight);
+            areApplied = false;
+            areSaved = false;
+        }
+    }
+
+    /**
+     * Alter whether startup must show the settings dialog.
      *
      * @param newSetting true&rarr;force startup to show it, false&rarr; show it
      * only if persistent settings are missing
      */
     public static void setForceDialog(boolean newSetting) {
         forceDialog = newSetting;
+    }
+
+    /**
+     * Enable or disable full-screen mode.
+     *
+     * @param newSetting true&rarr;full screen, false&rarr; windowed
+     */
+    public static void setFullscreen(boolean newSetting) {
+        boolean oldSetting = cachedSettings.isFullscreen();
+        if (newSetting != oldSetting) {
+            cachedSettings.setFullscreen(newSetting);
+            areApplied = false;
+            areSaved = false;
+        }
+    }
+
+    /**
+     * Enable or disable gamma-correction mode.
+     *
+     * @param newSetting true&rarr;enable correction, false&rarr; disable it
+     */
+    public static void setGammaCorrection(boolean newSetting) {
+        boolean oldSetting = cachedSettings.isGammaCorrection();
+        if (newSetting != oldSetting) {
+            cachedSettings.setGammaCorrection(newSetting);
+            areApplied = false;
+            areSaved = false;
+        }
+    }
+
+    /**
+     * Alter the sampling factor for multi-sample anti-aliasing (MSAA).
+     *
+     * @param newFactor number of samples per pixel (&ge;1, &le;16)
+     */
+    public static void setMsaaFactor(int newFactor) {
+        Validate.inRange(newFactor, "new factor", 1, 16);
+
+        int oldFactor = cachedSettings.getSamples();
+        if (newFactor != oldFactor) {
+            cachedSettings.setSamples(newFactor);
+            areApplied = false;
+            areSaved = false;
+        }
+    }
+
+    /**
+     * Alter the refresh rate.
+     *
+     * @param newRate frequency (in Hertz, &gt;0)
+     */
+    public static void setRefreshRate(int newRate) {
+        Validate.positive(newRate, "new rate");
+        int oldRate = cachedSettings.getFrequency();
+        if (newRate != oldRate) {
+            cachedSettings.setFrequency(newRate);
+            areApplied = false;
+            areSaved = false;
+        }
+    }
+
+    /**
+     * Enable or disable VSync mode.
+     *
+     * @param newSetting true&rarr;synchronize, false&rarr; don't synchronize
+     */
+    public static void setVSync(boolean newSetting) {
+        boolean oldSetting = cachedSettings.isVSync();
+        if (newSetting != oldSetting) {
+            cachedSettings.setVSync(newSetting);
+            areApplied = false;
+            areSaved = false;
+        }
     }
 }

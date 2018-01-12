@@ -128,20 +128,20 @@ public class MaudUtil {
     // new methods exposed
 
     /**
-     * Describe a anti-aliasing factor.
+     * Describe an MSAA sampling factor. TODO rename describeMsaaFactor
      *
-     * @param numSamples samples per pixel (&ge;0, &le;16)
-     * @return textual description
+     * @param factor samples per pixel (&ge;0, &le;16)
+     * @return a textual description (not null, not empty)
      */
-    public static String aaDescription(int numSamples) {
-        String aaDescription;
-        if (numSamples <= 1) {
-            aaDescription = "disabled";
+    public static String aaDescription(int factor) {
+        String description;
+        if (factor <= 1) {
+            description = "disabled";
         } else {
-            aaDescription = String.format("%dx", numSamples);
+            description = String.format("%dx", factor);
         }
 
-        return aaDescription;
+        return description;
     }
 
     /**
@@ -257,6 +257,21 @@ public class MaudUtil {
         }
 
         return storeResult;
+    }
+
+    /**
+     * Describe a pair of display dimensions.
+     *
+     * @param width width in pixels (&gt;0)
+     * @param height height in pixels (&gt;0)
+     * @return a textual description (not null, not empty)
+     */
+    public static String describeDimensions(int width, int height) {
+        Validate.positive(width, "width");
+        Validate.positive(height, "height");
+
+        String description = String.format("%d x %d", width, height);
+        return description;
     }
 
     /**
@@ -581,6 +596,25 @@ public class MaudUtil {
         }
 
         return result;
+    }
+
+    /**
+     * Test whether b is between a and c. TODO use library
+     *
+     * @param a 1st input value
+     * @param b 2nd input value
+     * @param c 3rd input value
+     * @return true if b is between a and c (inclusive), otherwise false
+     */
+    public static boolean isBetween(int a, int b, int c) {
+        if (a > c) {
+            return a >= b && b >= c;
+        } else if (a < c) {
+            return a <= b && b <= c;
+        } else {
+            assert a == c;
+            return a == b;
+        }
     }
 
     /**

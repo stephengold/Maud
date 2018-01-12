@@ -57,6 +57,7 @@ import jme3utilities.ui.Locators;
 import jme3utilities.ui.UiVersion;
 import jme3utilities.wes.WesVersion;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.action.Action;
 import maud.action.ActionPrefix;
 import maud.model.EditorModel;
@@ -72,6 +73,7 @@ import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedTrack;
 import maud.model.cgm.TrackItem;
+import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 
@@ -815,6 +817,26 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "set resolution" dialog to enter the dimensions.
+     */
+    public static void setDimensions() {
+        int height = DisplaySettings.getHeight();
+        int maxHeight = DisplaySettings.maxHeight;
+        int maxWidth = DisplaySettings.maxWidth;
+        int minHeight = DisplaySettings.minHeight;
+        int minWidth = DisplaySettings.minWidth;
+        int width = DisplaySettings.getWidth();
+
+        String defaultText = MaudUtil.describeDimensions(width, height);
+        DialogController controller = new DimensionsDialog("Set", minWidth,
+                minHeight, maxWidth, maxHeight);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter display dimensions:",
+                defaultText, ActionPrefix.setResolution, controller);
+    }
+
+    /**
      * Display a "set shapeParmValue" dialog to enter the parameter value.
      *
      * @param parameter which shape parameter to alter (not null)
@@ -947,8 +969,8 @@ public class EditorDialogs {
         FloatDialog controller
                 = new FloatDialog("Wrap animation", 0f, 1f, false);
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter weight for end-time keyframes:", "0",
-                ActionPrefix.wrapAnimation, controller);
+        Maud.gui.showTextEntryDialog("Enter weight for end-time keyframes:",
+                "0", ActionPrefix.wrapAnimation, controller);
     }
 
     /**

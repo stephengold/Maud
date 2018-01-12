@@ -368,7 +368,7 @@ public class ActionPrefix {
      * argument is the number of samples per pixel, formatted using
      * {@link maud.MaudUtil#aaDescription(int)}
      */
-    final public static String setAntiAliasing = "set antiAliasing ";
+    final public static String setAntiAliasing = "set antiAliasing ";  // TODO setMsaaFactor
     /**
      * argument is the name of a batch hint
      */
@@ -434,7 +434,7 @@ public class ActionPrefix {
      * arguments are the decimal width in pixels, an "x", and the decimal height
      * in pixels
      */
-    final public static String setResolution = "set resolution ";
+    final public static String setResolution = "set resolution "; // TODO setDimensions
     /**
      * argument is the name of a queue bucket
      */
