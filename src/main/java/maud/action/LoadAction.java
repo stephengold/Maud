@@ -74,18 +74,23 @@ class LoadAction {
             case Action.loadAnimation:
                 AnimationMenus.loadAnimation(target);
                 break;
+
             case Action.loadCgm:
                 Maud.gui.buildMenus.loadCgm();
                 break;
+
             case Action.loadMapAsset:
                 Maud.gui.buildMenus.loadMapAsset();
                 break;
+
             case Action.loadRetargetedPose:
                 target.getAnimation().loadRetargetedPose();
                 break;
+
             case Action.loadSourceAnimation:
                 AnimationMenus.loadAnimation(source);
                 break;
+
             case Action.loadSourceCgm:
                 Maud.gui.buildMenus.loadSourceCgm();
                 break;

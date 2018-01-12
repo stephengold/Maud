@@ -93,7 +93,7 @@ public class HistoryTool extends GuiWindowController {
         autoScrollFlag = true;
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

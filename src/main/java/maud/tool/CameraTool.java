@@ -66,7 +66,7 @@ class CameraTool extends GuiWindowController {
         super(screenController, "cameraTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update the tool prior to rendering. (Invoked once per render

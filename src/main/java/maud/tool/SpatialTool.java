@@ -65,7 +65,7 @@ class SpatialTool extends GuiWindowController {
         super(screenController, "spatialTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

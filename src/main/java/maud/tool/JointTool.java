@@ -60,7 +60,7 @@ class JointTool extends GuiWindowController {
         super(screenController, "jointTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

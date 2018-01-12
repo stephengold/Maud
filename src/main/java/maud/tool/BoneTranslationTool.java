@@ -105,7 +105,7 @@ class BoneTranslationTool extends GuiWindowController {
         }
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this state prior to rendering. (Invoked once per

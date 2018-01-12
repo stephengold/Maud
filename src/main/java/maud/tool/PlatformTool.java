@@ -74,7 +74,7 @@ class PlatformTool extends GuiWindowController {
         Maud.getModel().getScene().setPlatformDiameter(diameter);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this state prior to rendering. (Invoked once per

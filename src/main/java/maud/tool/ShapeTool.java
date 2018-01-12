@@ -74,7 +74,7 @@ class ShapeTool extends GuiWindowController {
         super(screenController, "shapeTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

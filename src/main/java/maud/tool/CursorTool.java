@@ -75,7 +75,7 @@ class CursorTool extends GuiWindowController {
         Maud.getModel().getScene().getCursor().setColor(color);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

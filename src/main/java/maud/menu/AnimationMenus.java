@@ -64,7 +64,7 @@ public class AnimationMenus {
     // new methods exposed
 
     /**
-     * Display an "Animation -> Edit" menu (only for a real animation).
+     * Display an "Animation -&gt; Edit" menu (only for a real animation).
      */
     public static void editAnimation() {
         MenuBuilder builder = new MenuBuilder();

@@ -93,7 +93,7 @@ class SpatialRotationTool extends GuiWindowController {
         Maud.getModel().getTarget().setSpatialRotation(rot);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this state prior to rendering. (Invoked once per

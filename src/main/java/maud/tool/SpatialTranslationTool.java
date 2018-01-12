@@ -99,7 +99,7 @@ class SpatialTranslationTool extends GuiWindowController {
         Maud.getModel().getTarget().setSpatialTranslation(offsets);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this state prior to rendering. (Invoked once per

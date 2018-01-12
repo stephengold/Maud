@@ -81,7 +81,7 @@ class SkeletonColorTool extends GuiWindowController {
         options.setTracklessColor(color);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

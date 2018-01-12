@@ -76,7 +76,7 @@ class AxesTool extends GuiWindowController {
         Maud.getModel().getScene().getAxes().setLineWidth(lineWidth);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

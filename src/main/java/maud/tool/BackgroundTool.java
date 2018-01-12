@@ -79,7 +79,7 @@ class BackgroundTool extends GuiWindowController {
         options.setTargetBackgroundColor(color);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

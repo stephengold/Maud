@@ -82,7 +82,7 @@ class SkeletonTool extends GuiWindowController {
         options.setPointSize(pointSize);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

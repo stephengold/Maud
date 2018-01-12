@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -646,7 +646,7 @@ public class LoadedMap implements Cloneable {
             if (inverse != null) {
                 String sourceBoneName = inverse.getTargetName();
                 Quaternion inverseTwist = inverse.getTwist();
-                Quaternion twist = inverseTwist.inverse(); // TODO conjugate
+                Quaternion twist = inverseTwist.inverse();
                 result = new BoneMapping(targetBoneName, sourceBoneName, twist);
             }
         } else {

@@ -63,7 +63,7 @@ class UserDataTool extends GuiWindowController {
         super(screenController, "userDataTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

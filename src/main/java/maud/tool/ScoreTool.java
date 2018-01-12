@@ -59,7 +59,7 @@ class ScoreTool extends GuiWindowController {
         super(screenController, "scoreTool", false);
     }
     // *************************************************************************
-    // WindowController methods
+    // GuiWindowController methods
 
     /**
      * Callback to update this window prior to rendering. (Invoked once per

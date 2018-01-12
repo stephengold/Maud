@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -271,7 +271,7 @@ public class EditableMap extends LoadedMap {
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();
         if (isInvertingMap()) {
-            Quaternion tmp = newTwist.inverse(); // TODO conjugate
+            Quaternion tmp = newTwist.inverse();
             twist.set(tmp);
         } else {
             twist.set(newTwist);
@@ -441,7 +441,7 @@ public class EditableMap extends LoadedMap {
                 = model.getSource().getBone().modelOrientation(null);
         Quaternion targetMo
                 = model.getTarget().getBone().modelOrientation(null);
-        Quaternion invSourceMo = sourceMo.inverse(); // TODO conjugate
+        Quaternion invSourceMo = sourceMo.inverse();
         Quaternion twist = invSourceMo.mult(targetMo, null);
         MyQuaternion.cardinalizeLocal(twist);
 
