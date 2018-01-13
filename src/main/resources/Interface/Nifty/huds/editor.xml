@@ -281,7 +281,7 @@ the menu bar, status bar, and tool windows.
                 <panel childLayout="vertical">
                     <panel/>
                     <panel childLayout="horizontal" height="25px">
-                        <control name="label" text="For thetarget model:"
+                        <control name="label" text="For the target model:"
                                  textHAlign="left"/>
                     </panel>
                     <panel childLayout="horizontal">
@@ -1978,8 +1978,8 @@ the menu bar, status bar, and tool windows.
                         <control name="checkbox" id="skyCheckBox"
                                  width="20px"/>
                         <control name="label" text="  show sky"/>
+                        </panel>
                     </panel>
-                </panel>
             </control>
 
             <control name="window" id="sourceAnimationTool" title="Source Animation Tool"
