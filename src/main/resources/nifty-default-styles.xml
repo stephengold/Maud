@@ -4,15 +4,15 @@
     <useStyles filename="tabs/nifty-tabs.xml"/>
     <!-- nifty-panel.xml is already imported by nifty-tabs.xml -->
     <!-- <useStyles filename="panel/nifty-panel.xml"/> -->
-    <useStyles filename="button/nifty-button.xml"/>
+    <useStyles filename="Interface/Nifty/styles/button/nifty-button.xml"/>
     <useStyles filename="label/nifty-label.xml"/>
-    <useStyles filename="textfield/nifty-textfield.xml"/>
+    <useStyles filename="Interface/Nifty/styles/textfield/nifty-textfield.xml"/>
     <useStyles filename="dropdown/nifty-drop-down.xml"/>
     <useStyles filename="imageselect/nifty-image-select.xml"/>
     <useStyles filename="Interface/Nifty/styles/checkbox/nifty-checkbox.xml"/>
     <useStyles filename="radiobutton/nifty-radiobutton.xml"/>
-    <useStyles filename="scrollbar/nifty-scrollbar-style.xml"/>
-    <useStyles filename="slider/nifty-slider-style.xml"/>
+    <useStyles filename="Interface/Nifty/styles/scrollbar/nifty-scrollbar-style.xml"/>
+    <useStyles filename="Interface/Nifty/styles/slider/nifty-slider-style.xml"/>
     <useStyles filename="scrollpanel/nifty-scrollpanel-style.xml"/>
     <useStyles filename="console/nifty-console-style.xml"/>
     <useStyles filename="chat-control/nifty-chat-control.xml"/>

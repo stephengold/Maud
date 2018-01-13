@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-styles xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
+
+    <!-- +++++++++++++++++++++++++++++++++++++ -->
+    <!-- style for the button text -->
+    <!-- +++++++++++++++++++++++++++++++++++++ -->
+    <style id="nifty-button#text" base="button-font">
+        <attributes align="center" valign="center" textHAlign="center" textVAlign="center" visibleToMouse="false"/>
+        <effect>
+            <onEnabled name="textColorAnimated" startColor="#8886" endColor="#eeef" post="false" length="150"/>
+            <onDisabled name="textColorAnimated" startColor="#eeef" endColor="#8886" post="false" length="150"/>
+        </effect>
+    </style>
+</nifty-styles>

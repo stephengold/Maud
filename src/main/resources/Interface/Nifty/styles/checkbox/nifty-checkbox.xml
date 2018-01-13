@@ -5,8 +5,8 @@
         <attributes width="23px" height="23px" childLayout="center" backgroundColor="#666f"/>
         <effect>
             <onActive name="border" color="#222f" post="true" inset="1px"/>
-            <onFocus name="colorBar" color="#800f" post="true" inset="1px"/>
-            <onHover name="border" color="#822f" post="true"/>
+            <onFocus name="colorBar" color="#080f" post="true" inset="1px"/>
+            <onHover name="border" color="#282f" post="true"/>
             <onEnabled name="renderQuad" startColor="#ffc8" endColor="#ffc0" post="true" length="150"/>
             <onDisabled name="renderQuad" startColor="#ffc0" endColor="#ffc8" post="true" length="150"/>
         </effect>
