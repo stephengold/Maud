@@ -18,7 +18,7 @@
     <useStyles filename="chat-control/nifty-chat-control.xml"/>
     <useStyles filename="menu/nifty-menu-style.xml"/>
     <useStyles filename="listbox/nifty-listbox-style.xml"/>
-    <useStyles filename="window/nifty-window.xml"/>
+    <useStyles filename="Interface/Nifty/styles/window/nifty-window.xml"/>
     <useStyles filename="hint/nifty-hint.xml"/>
     <useStyles filename="treebox/nifty-treebox.xml"/>
     <useStyles filename="messagebox/nifty-messagebox.xml"/>
