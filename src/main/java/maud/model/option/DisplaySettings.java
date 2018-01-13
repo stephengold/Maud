@@ -207,14 +207,17 @@ public class DisplaySettings {
         AppSettings current = Maud.getSettings();
         boolean inFullscreen = current.isFullscreen();
         int currentBpp = current.getBitsPerPixel();
-        boolean bppChanged = currentBpp != cachedSettings.getBitsPerPixel();
+        boolean bppChange = currentBpp != cachedSettings.getBitsPerPixel();
+        boolean currentGamma = current.isGammaCorrection();
+        boolean gammaChange
+                = currentGamma != cachedSettings.isGammaCorrection();
         int currentMsaa = current.getSamples();
-        boolean msaaChanged = currentMsaa != cachedSettings.getSamples();
+        boolean msaaChange = currentMsaa != cachedSettings.getSamples();
 
         boolean result;
         if (inFullscreen != cachedSettings.isFullscreen()) {
             result = false; // work around JME issue #798 and related issues
-        } else if (bppChanged || msaaChanged) {
+        } else if (bppChange || gammaChange || msaaChange) {
             result = false; // work around JME issue #801 and related issues
         } else {
             result = areValid();
