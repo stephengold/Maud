@@ -206,13 +206,15 @@ public class DisplaySettings {
     public static boolean canApply() {
         AppSettings current = Maud.getSettings();
         boolean inFullscreen = current.isFullscreen();
+
         int currentBpp = current.getBitsPerPixel();
-        boolean bppChange = currentBpp != cachedSettings.getBitsPerPixel();
+        boolean bppChange = currentBpp != getColorDepth();
+
         boolean currentGamma = current.isGammaCorrection();
-        boolean gammaChange
-                = currentGamma != cachedSettings.isGammaCorrection();
+        boolean gammaChange = currentGamma != isGammaCorrection();
+
         int currentMsaa = current.getSamples();
-        boolean msaaChange = currentMsaa != cachedSettings.getSamples();
+        boolean msaaChange = currentMsaa != getMsaaFactor();
 
         boolean result;
         if (inFullscreen != cachedSettings.isFullscreen()) {
@@ -261,7 +263,7 @@ public class DisplaySettings {
 
     /**
      * Read the display's refresh rate, which is relevant only to full-screen
-     * mode.
+     * displays.
      *
      * @return frequency (in Hertz, &ge;1) or -1 for unknown
      */
@@ -304,6 +306,7 @@ public class DisplaySettings {
          */
         cachedSettings.setMinHeight(minHeight);
         cachedSettings.setMinWidth(minWidth);
+        cachedSettings.setResizable(false);
         cachedSettings.setSettingsDialogImage(logoAssetPath);
         cachedSettings.setTitle(windowTitle);
 
@@ -385,7 +388,7 @@ public class DisplaySettings {
     public static void setColorDepth(int newBpp) {
         Validate.inRange(newBpp, "new depth", 1, 32);
 
-        int oldBpp = cachedSettings.getBitsPerPixel();
+        int oldBpp = getColorDepth();
         if (newBpp != oldBpp) {
             cachedSettings.setBitsPerPixel(newBpp);
             areApplied = false;
@@ -403,13 +406,13 @@ public class DisplaySettings {
         Validate.inRange(newWidth, "new width", minWidth, maxWidth);
         Validate.inRange(newHeight, "new height", minHeight, maxHeight);
 
-        int oldWidth = cachedSettings.getWidth();
+        int oldWidth = getWidth();
         if (newWidth != oldWidth) {
             cachedSettings.setWidth(newWidth);
             areApplied = false;
             areSaved = false;
         }
-        int oldHeight = cachedSettings.getHeight();
+        int oldHeight = getHeight();
         if (newHeight != oldHeight) {
             cachedSettings.setHeight(newHeight);
             areApplied = false;
@@ -433,7 +436,7 @@ public class DisplaySettings {
      * @param newSetting true&rarr;full screen, false&rarr; windowed
      */
     public static void setFullscreen(boolean newSetting) {
-        boolean oldSetting = cachedSettings.isFullscreen();
+        boolean oldSetting = isFullscreen();
         if (newSetting != oldSetting) {
             cachedSettings.setFullscreen(newSetting);
             areApplied = false;
@@ -447,7 +450,7 @@ public class DisplaySettings {
      * @param newSetting true&rarr;enable correction, false&rarr; disable it
      */
     public static void setGammaCorrection(boolean newSetting) {
-        boolean oldSetting = cachedSettings.isGammaCorrection();
+        boolean oldSetting = isGammaCorrection();
         if (newSetting != oldSetting) {
             cachedSettings.setGammaCorrection(newSetting);
             areApplied = false;
@@ -463,7 +466,7 @@ public class DisplaySettings {
     public static void setMsaaFactor(int newFactor) {
         Validate.inRange(newFactor, "new factor", 1, 16);
 
-        int oldFactor = cachedSettings.getSamples();
+        int oldFactor = getMsaaFactor();
         if (newFactor != oldFactor) {
             cachedSettings.setSamples(newFactor);
             areApplied = false;
@@ -478,7 +481,7 @@ public class DisplaySettings {
      */
     public static void setRefreshRate(int newRate) {
         Validate.positive(newRate, "new rate");
-        int oldRate = cachedSettings.getFrequency();
+        int oldRate = getRefreshRate();
         if (newRate != oldRate) {
             cachedSettings.setFrequency(newRate);
             areApplied = false;
@@ -492,7 +495,7 @@ public class DisplaySettings {
      * @param newSetting true&rarr;synchronize, false&rarr; don't synchronize
      */
     public static void setVSync(boolean newSetting) {
-        boolean oldSetting = cachedSettings.isVSync();
+        boolean oldSetting = isVSync();
         if (newSetting != oldSetting) {
             cachedSettings.setVSync(newSetting);
             areApplied = false;
