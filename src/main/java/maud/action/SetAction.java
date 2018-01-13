@@ -82,8 +82,8 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         switch (actionString) {
-            case Action.setAntiAliasing:
-                ShowMenus.setAntiAliasing();
+            case Action.setMsaaFactor:
+                ShowMenus.setMsaaFactor();
                 break;
 
             case Action.setBatchHint:
@@ -96,6 +96,14 @@ class SetAction {
 
             case Action.setCullHint:
                 EnumMenus.setCullHint();
+                break;
+
+            case Action.setDimensions:
+                if (DisplaySettings.isFullscreen()) {
+                    ShowMenus.setDimensions();
+                } else {
+                    EditorDialogs.setDimensions();
+                }
                 break;
 
             case Action.setMatParamValue:
@@ -133,14 +141,6 @@ class SetAction {
 
             case Action.setRefreshRate:
                 ShowMenus.setRefreshRate();
-                break;
-
-            case Action.setResolution:
-                if (DisplaySettings.isFullscreen()) {
-                    ShowMenus.setResolution();
-                } else {
-                    EditorDialogs.setDimensions();
-                }
                 break;
 
             case Action.setShadowMode:
@@ -223,12 +223,12 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         String arg;
-        if (actionString.startsWith(ActionPrefix.setAntiAliasing)) {
+        if (actionString.startsWith(ActionPrefix.setMsaaFactor)) {
             arg = MyString.remainder(actionString,
-                    ActionPrefix.setAntiAliasing);
+                    ActionPrefix.setMsaaFactor);
             int factor;
             for (factor = 1; factor < 16; factor *= 2) {
-                String aaDescription = MaudUtil.aaDescription(factor);
+                String aaDescription = MaudUtil.describeMsaaFactor(factor);
                 if (arg.equals(aaDescription)) {
                     break;
                 }
@@ -260,6 +260,19 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setDiagnose);
             boolean newSetting = Boolean.parseBoolean(arg);
             model.getMisc().setDiagnoseLoads(newSetting);
+
+        } else if (actionString.startsWith(ActionPrefix.setDimensions)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setDimensions);
+            String[] args = arg.split(" ");
+            handled = false;
+            if (args.length >= 3) {
+                int width = Integer.parseInt(args[0]);
+                int height = Integer.parseInt(args[2]);
+                if ("x".equals(args[1])) {
+                    DisplaySettings.setDimensions(width, height);
+                    handled = true;
+                }
+            }
 
         } else if (actionString.startsWith(
                 ActionPrefix.setDurationProportional)) {
@@ -326,19 +339,6 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setRefreshRate);
             int hertz = Integer.parseInt(arg);
             DisplaySettings.setRefreshRate(hertz);
-
-        } else if (actionString.startsWith(ActionPrefix.setResolution)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setResolution);
-            String[] args = arg.split(" ");
-            handled = false;
-            if (args.length >= 3) {
-                int width = Integer.parseInt(args[0]);
-                int height = Integer.parseInt(args[2]);
-                if ("x".equals(args[1])) {
-                    DisplaySettings.setDimensions(width, height);
-                    handled = true;
-                }
-            }
 
         } else if (actionString.startsWith(ActionPrefix.setShadowMode)) {
             arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);

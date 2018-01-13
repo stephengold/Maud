@@ -390,7 +390,7 @@ public class EditorScreen extends GuiScreenController {
             case "spatialIgnoreTransform":
                 target.setIgnoreTransform(isChecked);
                 break;
-            case "vsync":
+            case "vSync":
                 DisplaySettings.setVSync(isChecked);
                 break;
             default:

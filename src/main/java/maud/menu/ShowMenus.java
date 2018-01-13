@@ -423,24 +423,6 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu to configure MSAA using the "set antiAliasing " action
-     * prefix. TODO rename setMsaaFactor
-     */
-    public static void setAntiAliasing() {
-        MenuBuilder builder = new MenuBuilder();
-
-        int selectedSamples = DisplaySettings.getMsaaFactor();
-        for (int numSamples = 1; numSamples <= 16; numSamples *= 2) {
-            if (numSamples != selectedSamples) {
-                String aaDescription = MaudUtil.aaDescription(numSamples);
-                builder.add(aaDescription);
-            }
-        }
-
-        builder.show(ActionPrefix.setAntiAliasing);
-    }
-
-    /**
      * Display a menu to set the color depth (bits per pixel) for the display
      * using the "set colorDepth " action prefix.
      */
@@ -482,6 +464,55 @@ public class ShowMenus {
     }
 
     /**
+     * Display a menu to set the (full-screen) display dimensions using the "set
+     * dimensions " action prefix.
+     */
+    public static void setDimensions() {
+        MenuBuilder builder = new MenuBuilder();
+
+        int height = DisplaySettings.getHeight();
+        int width = DisplaySettings.getWidth();
+
+        GraphicsEnvironment environment
+                = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice device = environment.getDefaultScreenDevice();
+        DisplayMode[] modes = device.getDisplayModes();
+        for (DisplayMode mode : modes) {
+            int modeHeight = mode.getHeight();
+            int modeWidth = mode.getWidth();
+            if (modeHeight >= DisplaySettings.minHeight
+                    && modeWidth >= DisplaySettings.minWidth
+                    && (modeHeight != height || modeWidth != width)) {
+                String modeItem
+                        = MaudUtil.describeDimensions(modeWidth, modeHeight);
+                if (!builder.hasItem(modeItem)) {
+                    builder.add(modeItem);
+                }
+            }
+        }
+
+        builder.show(ActionPrefix.setDimensions);
+    }
+
+    /**
+     * Display a menu to configure MSAA using the "set msaaFactor " action
+     * prefix.
+     */
+    public static void setMsaaFactor() {
+        MenuBuilder builder = new MenuBuilder();
+
+        int selectedFactor = DisplaySettings.getMsaaFactor();
+        for (int factor = 1; factor <= 16; factor *= 2) {
+            if (factor != selectedFactor) {
+                String description = MaudUtil.describeMsaaFactor(factor);
+                builder.add(description);
+            }
+        }
+
+        builder.show(ActionPrefix.setMsaaFactor);
+    }
+
+    /**
      * Display a menu to set the refresh rate for the display using the "set
      * refreshRate " action prefix.
      */
@@ -509,37 +540,6 @@ public class ShowMenus {
             }
             builder.show(ActionPrefix.setRefreshRate);
         }
-    }
-
-    /**
-     * Display a menu to set the (full-screen) display dimensions using the "set
-     * resolution " action prefix. TODO rename setDimensions
-     */
-    public static void setResolution() {
-        MenuBuilder builder = new MenuBuilder();
-
-        int height = DisplaySettings.getHeight();
-        int width = DisplaySettings.getWidth();
-
-        GraphicsEnvironment environment
-                = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice device = environment.getDefaultScreenDevice();
-        DisplayMode[] modes = device.getDisplayModes();
-        for (DisplayMode mode : modes) {
-            int modeHeight = mode.getHeight();
-            int modeWidth = mode.getWidth();
-            if (modeHeight >= DisplaySettings.minHeight
-                    && modeWidth >= DisplaySettings.minWidth
-                    && (modeHeight != height || modeWidth != width)) {
-                String modeItem
-                        = MaudUtil.describeDimensions(modeWidth, modeHeight);
-                if (!builder.hasItem(modeItem)) {
-                    builder.add(modeItem);
-                }
-            }
-        }
-
-        builder.show(ActionPrefix.setResolution);
     }
 
     /**

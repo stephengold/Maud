@@ -128,23 +128,6 @@ public class MaudUtil {
     // new methods exposed
 
     /**
-     * Describe an MSAA sampling factor. TODO rename describeMsaaFactor
-     *
-     * @param factor samples per pixel (&ge;0, &le;16)
-     * @return a textual description (not null, not empty)
-     */
-    public static String aaDescription(int factor) {
-        String description;
-        if (factor <= 1) {
-            description = "disabled";
-        } else {
-            description = String.format("%dx", factor);
-        }
-
-        return description;
-    }
-
-    /**
      * Add indices to the result for bones that influence (directly or
      * indirectly) vertices in the specified subtree of the scene graph. Note:
      * recursive!
@@ -271,6 +254,23 @@ public class MaudUtil {
         Validate.positive(height, "height");
 
         String description = String.format("%d x %d", width, height);
+        return description;
+    }
+
+    /**
+     * Describe an MSAA sampling factor.
+     *
+     * @param factor samples per pixel (&ge;0, &le;16)
+     * @return a textual description (not null, not empty)
+     */
+    public static String describeMsaaFactor(int factor) {
+        String description;
+        if (factor <= 1) {
+            description = "disabled";
+        } else {
+            description = String.format("%dx", factor);
+        }
+
         return description;
     }
 

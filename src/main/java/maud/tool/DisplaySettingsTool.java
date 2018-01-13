@@ -78,18 +78,17 @@ class DisplaySettingsTool extends GuiWindowController {
         setChecked("fullscreen", fullscreen);
         boolean gamma = DisplaySettings.isGammaCorrection();
         setChecked("gammaCorrection", gamma);
-        boolean vsync = DisplaySettings.isVSync();
-        setChecked("vsync", vsync); // TODO rename checkbox to "vSync"
+        boolean vSync = DisplaySettings.isVSync();
+        setChecked("vSync", vSync);
 
         int width = DisplaySettings.getWidth();
         int height = DisplaySettings.getHeight();
         String dimensionsButton = MaudUtil.describeDimensions(width, height);
-        setButtonText("displayResolution", dimensionsButton);
-        // TODO rename button to "displayDimensions"
+        setButtonText("displayDimensions", dimensionsButton);
 
-        int multiSampling = DisplaySettings.getMsaaFactor();
-        String antiAliasingButton = MaudUtil.aaDescription(multiSampling);
-        setButtonText("displayAntiAliasing", antiAliasingButton);
+        int msaaFactor = DisplaySettings.getMsaaFactor();
+        String msaaButton = MaudUtil.describeMsaaFactor(msaaFactor);
+        setButtonText("displayMsaa", msaaButton);
 
         String refreshRateButton = "";
         if (fullscreen) {

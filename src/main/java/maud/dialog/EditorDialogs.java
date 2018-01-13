@@ -817,7 +817,7 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "set resolution" dialog to enter the dimensions.
+     * Display a "set dimensions" dialog to enter the dimensions.
      */
     public static void setDimensions() {
         int height = DisplaySettings.getHeight();
@@ -833,7 +833,7 @@ public class EditorDialogs {
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter display dimensions:",
-                defaultText, ActionPrefix.setResolution, controller);
+                defaultText, ActionPrefix.setDimensions, controller);
     }
 
     /**

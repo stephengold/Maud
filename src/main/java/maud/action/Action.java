@@ -194,16 +194,16 @@ public class Action {
     final static String selectUserKey = "select userKey";
     final static String selectVertex = "select vertex";
 
-    final static String setAntiAliasing = "set antiAliasing"; // TODO setMsaaFactor
     final static String setBatchHint = "set batchHint";
     final static String setColorDepth = "set colorDepth";
     final static String setCullHint = "set cullHint";
+    final static String setDimensions = "set dimensions";
     final static String setMatParamValue = "set matParamValue";
+    final static String setMsaaFactor = "set msaaFactor";
     final static String setPhysicsRbpValue = "set physicsRbpValue";
     final static String setOverrideValue = "set overrideValue";
     final static String setQueueBucket = "set queueBucket";
     final static String setRefreshRate = "set refreshRate";
-    final static String setResolution = "set resolution"; // TODO setDimensions
     final static String setShadowMode = "set shadowMode";
     final static String setShapeParmValue = "set shapeParmValue";
     final static String setSpatialAngleCardinal = "set spatialAngle cardinal";

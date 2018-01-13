@@ -812,8 +812,8 @@ the menu bar, status bar, and tool windows.
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="fullscreenCheckBox"/>
                         <control name="label" text="  full screen    "/>
-                        <control name="checkbox" id="vsyncCheckBox"/>
-                        <control name="label" text="  vsync"/>
+                        <control name="checkbox" id="vSyncCheckBox"/>
+                        <control name="label" text="  vSync"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="gammaCorrectionCheckBox"/>
@@ -835,16 +835,16 @@ the menu bar, status bar, and tool windows.
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="dimensions:  "/>
-                        <control name="button" id="displayResolutionButton"
+                        <control name="button" id="displayDimensionsButton"
                                  width="80px">
-                            <interact onRelease="perform(set resolution)"/>
+                            <interact onRelease="perform(set dimensions)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="MSAA factor:  "/>
-                        <control name="button" id="displayAntiAliasingButton"
+                        <control name="button" id="displayMsaaButton"
                                  width="65px">
-                            <interact onRelease="perform(set antiAliasing)"/>
+                            <interact onRelease="perform(set msaaFactor)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">

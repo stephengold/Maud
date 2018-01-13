@@ -365,11 +365,6 @@ public class ActionPrefix {
      */
     final public static String selectViewMode = "select viewMode ";
     /**
-     * argument is the number of samples per pixel, formatted using
-     * {@link maud.MaudUtil#aaDescription(int)}
-     */
-    final public static String setAntiAliasing = "set antiAliasing ";  // TODO setMsaaFactor
-    /**
      * argument is the name of a batch hint
      */
     final public static String setBatchHint = "set batchHint ";
@@ -390,6 +385,11 @@ public class ActionPrefix {
      */
     final public static String setDiagnose = "set diagnose ";
     /**
+     * arguments are the decimal width in pixels, an "x", and the decimal height
+     * in pixels
+     */
+    final public static String setDimensions = "set dimensions ";
+    /**
      * argument is a new duration in seconds
      */
     final public static String setDurationProportional
@@ -406,6 +406,11 @@ public class ActionPrefix {
      * argument is a decimal value
      */
     final public static String setMapSize = "set mapSize ";
+    /**
+     * argument is the number of samples per pixel, formatted using
+     * {@link maud.MaudUtil#describeMsaa(int)}
+     */
+    final public static String setMsaaFactor = "set msaaFactor ";
     /**
      * argument is a material-parameter value
      */
@@ -430,11 +435,6 @@ public class ActionPrefix {
      * argument is the decimal refresh rate in Hertz
      */
     final public static String setRefreshRate = "set refreshRate ";
-    /**
-     * arguments are the decimal width in pixels, an "x", and the decimal height
-     * in pixels
-     */
-    final public static String setResolution = "set resolution "; // TODO setDimensions
     /**
      * argument is the name of a queue bucket
      */
