@@ -349,7 +349,7 @@ public class EditorScreen extends GuiScreenController {
                 target.setOverrideEnabled(isChecked);
                 break;
             case "physics":
-                scene.setPhysicsRendered(isChecked);
+                scene.getRender().setPhysicsRendered(isChecked);
                 break;
             case "pin":
                 target.getAnimation().setPinned(isChecked);
@@ -382,10 +382,10 @@ public class EditorScreen extends GuiScreenController {
                 target.setApplyPhysicsLocal(isChecked);
                 break;
             case "shadows":
-                scene.setShadowsRendered(isChecked);
+                scene.getRender().setShadowsRendered(isChecked);
                 break;
             case "sky":
-                scene.setSkyRendered(isChecked);
+                scene.getRender().setSkyRendered(isChecked);
                 break;
             case "spatialIgnoreTransform":
                 target.setIgnoreTransform(isChecked);

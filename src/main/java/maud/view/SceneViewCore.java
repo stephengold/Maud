@@ -91,6 +91,7 @@ import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.MiscOptions;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
+import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
@@ -1235,7 +1236,8 @@ public class SceneViewCore
      */
     private void updateParentShadowMode() {
         RenderQueue.ShadowMode mode;
-        boolean enableShadows = Maud.getModel().getScene().areShadowsRendered();
+        RenderOptions options = Maud.getModel().getScene().getRender();
+        boolean enableShadows = options.areShadowsRendered();
         if (enableShadows) {
             mode = RenderQueue.ShadowMode.CastAndReceive;
         } else {

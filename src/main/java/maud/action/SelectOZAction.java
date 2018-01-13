@@ -384,7 +384,7 @@ class SelectOZAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectTriangleMode);
             TriangleMode mode = TriangleMode.valueOf(arg);
-            model.getScene().setTriangleMode(mode);
+            model.getScene().getRender().setTriangleMode(mode);
 
         } else if (actionString.startsWith(ActionPrefix.selectTweenRotations)) {
             arg = MyString.remainder(actionString,

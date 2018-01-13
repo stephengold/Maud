@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
+import maud.model.option.scene.RenderOptions;
 
 /**
  * The controller for the "Sky Tool" window in Maud's editor screen.
@@ -57,6 +58,14 @@ class SkyTool extends GuiWindowController {
         super(screenController, "skyTool", false);
     }
     // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Update the MVC model based on the sliders.
+     */
+    void onSliderChanged() {
+    }
+    // *************************************************************************
     // GuiWindowController methods
 
     /**
@@ -69,8 +78,12 @@ class SkyTool extends GuiWindowController {
     @Override
     public void update(float elapsedTime) {
         super.update(elapsedTime);
+        Maud.gui.setIgnoreGuiChanges(true);
+        RenderOptions options = Maud.getModel().getScene().getRender();
 
-        boolean renderFlag = Maud.getModel().getScene().isSkyRendered();
+        boolean renderFlag = options.isSkyRendered();
         setChecked("sky", renderFlag);
+
+        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

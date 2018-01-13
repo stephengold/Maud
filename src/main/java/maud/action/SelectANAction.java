@@ -214,7 +214,7 @@ class SelectANAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectEdgeFilter);
             EdgeFilteringMode newMode = EdgeFilteringMode.valueOf(arg);
-            model.getScene().setEdgeFilter(newMode);
+            model.getScene().getRender().setEdgeFilter(newMode);
 
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);

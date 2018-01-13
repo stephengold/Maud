@@ -295,7 +295,7 @@ class SetAction {
         } else if (actionString.startsWith(ActionPrefix.setMapSize)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMapSize);
             int mapSize = Integer.parseInt(arg);
-            model.getScene().setShadowsMapSize(mapSize);
+            model.getScene().getRender().setShadowsMapSize(mapSize);
 
         } else if (actionString.startsWith(ActionPrefix.setMatParamValue)) {
             arg = MyString.remainder(actionString,
@@ -305,13 +305,13 @@ class SetAction {
         } else if (actionString.startsWith(ActionPrefix.setNumSplits)) {
             arg = MyString.remainder(actionString, ActionPrefix.setNumSplits);
             int numSplits = Integer.parseInt(arg);
-            model.getScene().setNumSplits(numSplits);
+            model.getScene().getRender().setNumSplits(numSplits);
 
         } else if (actionString.startsWith(ActionPrefix.setPhysicsRendered)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setPhysicsRendered);
             boolean rendered = Boolean.parseBoolean(arg);
-            model.getScene().setPhysicsRendered(rendered);
+            model.getScene().getRender().setPhysicsRendered(rendered);
 
         } else if (actionString.startsWith(ActionPrefix.setOverrideValue)) {
             arg = MyString.remainder(actionString,
@@ -349,7 +349,7 @@ class SetAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setShadowsRendered);
             boolean rendered = Boolean.parseBoolean(arg);
-            model.getScene().setShadowsRendered(rendered);
+            model.getScene().getRender().setShadowsRendered(rendered);
 
         } else if (actionString.startsWith(ActionPrefix.setShapeParmValue)) {
             arg = MyString.remainder(actionString,
@@ -366,7 +366,7 @@ class SetAction {
         } else if (actionString.startsWith(ActionPrefix.setSkyRendered)) {
             arg = MyString.remainder(actionString, ActionPrefix.setSkyRendered);
             boolean rendered = Boolean.parseBoolean(arg);
-            model.getScene().setSkyRendered(rendered);
+            model.getScene().getRender().setSkyRendered(rendered);
 
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);

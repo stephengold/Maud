@@ -51,6 +51,7 @@ import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.PlatformType;
+import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.TriangleMode;
 
@@ -138,7 +139,7 @@ public class EnumMenus {
     public static void selectEdgeFilter() {
         MenuBuilder builder = new MenuBuilder();
 
-        SceneOptions options = Maud.getModel().getScene();
+        RenderOptions options = Maud.getModel().getScene().getRender();
         EdgeFilteringMode selectedMode = options.getEdgeFilter();
         for (EdgeFilteringMode mode : EdgeFilteringMode.values()) {
             if (!mode.equals(selectedMode)) {
@@ -237,7 +238,8 @@ public class EnumMenus {
     public static void selectTriangleMode() {
         MenuBuilder builder = new MenuBuilder();
 
-        TriangleMode selected = Maud.getModel().getScene().getTriangleMode();
+        RenderOptions options = Maud.getModel().getScene().getRender();
+        TriangleMode selected = options.getTriangleMode();
         for (TriangleMode mode : TriangleMode.values()) {
             if (!mode.equals(selected)) {
                 String modeName = mode.toString();

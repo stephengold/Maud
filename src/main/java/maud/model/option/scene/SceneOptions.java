@@ -26,15 +26,10 @@
  */
 package maud.model.option.scene;
 
-import com.jme3.shadow.EdgeFilteringMode;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
-import maud.Maud;
-import maud.MaudUtil;
-import maud.action.ActionPrefix;
-import maud.model.cgm.Cgm;
 
 /**
  * Display options applicable to scene views in Maud's editor screen.
@@ -54,135 +49,82 @@ public class SceneOptions implements Cloneable {
     // fields
 
     /**
-     * configuration of coordinate axes visualization(s)
+     * options for the coordinate axes visualization(s)
      */
-    private AxesOptions axes = new AxesOptions();
+    private AxesOptions axesOptions = new AxesOptions();
     /**
-     * true if physics objects are visualized, otherwise false
+     * options for the bounds visualization(s)
      */
-    private boolean physicsRendered = true;
+    private BoundsOptions boundsOptions = new BoundsOptions();
     /**
-     * shadows (true &rarr; rendered, false &rarr; not rendered)
+     * options for the camera(s)
      */
-    private boolean shadowsRendered = true;
+    private CameraOptions cameraOptions = new CameraOptions();
     /**
-     * sky background (true &rarr; rendered, false &rarr; not rendered)
+     * options for the 3-D cursor(s)
      */
-    private boolean skyRendered = true;
-    /**
-     * configuration of the bounds visualization(s)
-     */
-    private BoundsOptions bounds = new BoundsOptions();
-    /**
-     * configuration of the camera(s)
-     */
-    private CameraOptions camera = new CameraOptions();
-    /**
-     * configuration of the 3-D cursor(s)
-     */
-    private DddCursorOptions cursor = new DddCursorOptions();
-    /**
-     * edge filtering mode for shadows
-     */
-    private EdgeFilteringMode edgeFilter = EdgeFilteringMode.Bilinear;
+    private DddCursorOptions cursorOptions = new DddCursorOptions();
     /**
      * diameter of platform(s) (in world units, &gt;0)
      */
     private float platformDiameter = 2f;
     /**
-     * number of shadow-map splits (&gt;0)
-     */
-    private int numSplits = 3;
-    /**
-     * width (and height) of shadow maps (pixels per side, &gt;0)
-     */
-    private int shadowMapSize = 4_096;
-    /**
      * type of platform(s) (not null)
      */
     private PlatformType platformType = PlatformType.Square;
     /**
-     * configuration of the skeleton visualization(s)
+     * options for rendering the scene(s)
      */
-    private SkeletonOptions skeleton = new SkeletonOptions();
+    private RenderOptions renderOptions = new RenderOptions();
     /**
-     * CG-model triangle rendering option
+     * options for the skeleton visualization(s)
      */
-    private TriangleMode triangleMode = TriangleMode.PerMaterial;
+    private SkeletonOptions skeletonOptions = new SkeletonOptions();
     /**
-     * configuration of the vertex visualization(s)
+     * options for the vertex visualization(s)
      */
-    private VertexOptions vertex = new VertexOptions();
+    private VertexOptions vertexOptions = new VertexOptions();
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Test whether shadows are rendered.
-     *
-     * @return true if rendered, otherwise false
-     */
-    public boolean areShadowsRendered() {
-        return shadowsRendered;
-    }
-
-    /**
-     * Access the configuration of coordinate axes visualization(s).
+     * Access the options for coordinate axes visualization(s).
      *
      * @return the pre-existing instance (not null)
      */
     public AxesOptions getAxes() {
-        assert axes != null;
-        return axes;
+        assert axesOptions != null;
+        return axesOptions;
     }
 
     /**
-     * Access the configuration of bounds visualization(s).
+     * Access the options for bounds visualization(s).
      *
      * @return the pre-existing instance (not null)
      */
     public BoundsOptions getBounds() {
-        assert bounds != null;
-        return bounds;
+        assert boundsOptions != null;
+        return boundsOptions;
     }
 
     /**
-     * Access the configuration of the camera(s).
+     * Access the options for the camera(s).
      *
      * @return the pre-existing instance (not null)
      */
     public CameraOptions getCamera() {
-        assert camera != null;
-        return camera;
+        assert cameraOptions != null;
+        return cameraOptions;
     }
 
     /**
-     * Access the configuration of the 3-D cursor(s).
+     * Access the options for the 3-D cursor(s).
      *
      * @return the pre-existing instance (not null)
      */
     public DddCursorOptions getCursor() {
-        assert cursor != null;
-        return cursor;
-    }
-
-    /**
-     * Read the edge filtering mode for shadows.
-     *
-     * @return an enum value (not null)
-     */
-    public EdgeFilteringMode getEdgeFilter() {
-        assert edgeFilter != null;
-        return edgeFilter;
-    }
-
-    /**
-     * Read the number of shadow-map splits.
-     *
-     * @return count (&gt;0)
-     */
-    public int getNumSplits() {
-        assert numSplits > 0 : numSplits;
-        return numSplits;
+        assert cursorOptions != null;
+        return cursorOptions;
     }
 
     /**
@@ -206,90 +148,33 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Read the width (and height) of shadow maps.
-     *
-     * @return pixels per side (&gt;0)
-     */
-    public int getShadowMapSize() {
-        assert shadowMapSize > 0 : shadowMapSize;
-        return shadowMapSize;
-    }
-
-    /**
-     * Access the configuration of the skeleton visualization(s).
+     * Access the options for the skeleton visualization(s).
      *
      * @return the pre-existing instance (not null)
      */
     public SkeletonOptions getSkeleton() {
-        assert skeleton != null;
-        return skeleton;
+        assert skeletonOptions != null;
+        return skeletonOptions;
     }
 
     /**
-     * Read the CG-model triangle rendering mode.
+     * Access the options for rendering the scene(s).
      *
-     * @return an enum value (not null)
+     * @return the pre-existing instance (not null)
      */
-    public TriangleMode getTriangleMode() {
-        assert triangleMode != null;
-        return triangleMode;
+    public RenderOptions getRender() {
+        assert renderOptions != null;
+        return renderOptions;
     }
 
     /**
-     * Access the configuration of the vertex visualization(s).
+     * Access the options for the vertex visualization(s).
      *
      * @return the pre-existing instance (not null)
      */
     public VertexOptions getVertex() {
-        assert vertex != null;
-        return vertex;
-    }
-
-    /**
-     * Test whether physics objects are visualized.
-     *
-     * @return true if visualized, otherwise false
-     */
-    public boolean isPhysicsRendered() {
-        return physicsRendered;
-    }
-
-    /**
-     * Test whether the sky background is rendered.
-     *
-     * @return true if rendered, otherwise false
-     */
-    public boolean isSkyRendered() {
-        return skyRendered;
-    }
-
-    /**
-     * Alter the edge filtering mode for shadows.
-     *
-     * @param newSetting (not null)
-     */
-    public void setEdgeFilter(EdgeFilteringMode newSetting) {
-        Validate.nonNull(newSetting, "new setting");
-        edgeFilter = newSetting;
-    }
-
-    /**
-     * Alter the number of shadow-map splits.
-     *
-     * @param newNumSplits new size (in pixels, &gt;0)
-     */
-    public void setNumSplits(int newNumSplits) {
-        Validate.inRange(newNumSplits, "new size", 1, Integer.MAX_VALUE);
-        numSplits = newNumSplits;
-    }
-
-    /**
-     * Alter whether physics objects are visualized.
-     *
-     * @param newSetting true to visualize, false to hide
-     */
-    public void setPhysicsRendered(boolean newSetting) {
-        physicsRendered = newSetting;
+        assert vertexOptions != null;
+        return vertexOptions;
     }
 
     /**
@@ -313,53 +198,6 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Alter the width (and height) of shadow maps.
-     *
-     * @param newSize new size (in pixels, &gt;0)
-     */
-    public void setShadowsMapSize(int newSize) {
-        Validate.inRange(newSize, "new size", 1, Integer.MAX_VALUE);
-        shadowMapSize = newSize;
-    }
-
-    /**
-     * Alter whether shadows are rendered.
-     *
-     * @param newState true &rarr; rendered, false &rarr; not rendered
-     */
-    public void setShadowsRendered(boolean newState) {
-        shadowsRendered = newState;
-    }
-
-    /**
-     * Alter the rendering of the sky background.
-     *
-     * @param newState true &rarr; rendered, false &rarr; not rendered
-     */
-    public void setSkyRendered(boolean newState) {
-        skyRendered = newState;
-    }
-
-    /**
-     * Alter how CG-model triangles are rendered.
-     *
-     * @param newSetting an enum value (not null)
-     */
-    public void setTriangleMode(TriangleMode newSetting) {
-        Validate.nonNull(newSetting, "new setting");
-
-        triangleMode = newSetting; // TODO check for change
-
-        Cgm target = Maud.getModel().getTarget();
-        target.updateSceneWireframe();
-
-        Cgm source = Maud.getModel().getSource();
-        if (source.isLoaded()) {
-            source.updateSceneWireframe();
-        }
-    }
-
-    /**
      * Write the options to a script using the specified writer.
      *
      * @param writer (not null)
@@ -368,34 +206,12 @@ public class SceneOptions implements Cloneable {
     public void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
-        camera.writeToScript(writer);
-        skeleton.writeToScript(writer);
-
-        String action = ActionPrefix.setPhysicsRendered
-                + Boolean.toString(physicsRendered);
-        MaudUtil.writePerformAction(writer, action);
-
-        action = ActionPrefix.setShadowsRendered
-                + Boolean.toString(shadowsRendered);
-        MaudUtil.writePerformAction(writer, action);
-
-        action = ActionPrefix.selectEdgeFilter + edgeFilter.toString();
-        MaudUtil.writePerformAction(writer, action);
-
-        action = ActionPrefix.setNumSplits + Integer.toString(numSplits);
-        MaudUtil.writePerformAction(writer, action);
-
-        action = ActionPrefix.setMapSize + Integer.toString(shadowMapSize);
-        MaudUtil.writePerformAction(writer, action);
-
-        action = ActionPrefix.setSkyRendered + Boolean.toString(skyRendered);
-        MaudUtil.writePerformAction(writer, action);
-
-        action = ActionPrefix.selectTriangleMode + triangleMode.toString();
-        MaudUtil.writePerformAction(writer, action);
+        cameraOptions.writeToScript(writer);
+        renderOptions.writeToScript(writer);
+        skeletonOptions.writeToScript(writer);
     }
     // *************************************************************************
-    // Object methods
+    // Cloneable methods
 
     /**
      * Create a deep copy of this object.
@@ -406,12 +222,13 @@ public class SceneOptions implements Cloneable {
     @Override
     public SceneOptions clone() throws CloneNotSupportedException {
         SceneOptions clone = (SceneOptions) super.clone();
-        axes = axes.clone();
-        bounds = bounds.clone();
-        camera = camera.clone();
-        cursor = cursor.clone();
-        skeleton = skeleton.clone();
-        vertex = vertex.clone();
+        axesOptions = axesOptions.clone();
+        boundsOptions = boundsOptions.clone();
+        cameraOptions = cameraOptions.clone();
+        cursorOptions = cursorOptions.clone();
+        renderOptions = renderOptions.clone();
+        skeletonOptions = skeletonOptions.clone();
+        vertexOptions = vertexOptions.clone();
 
         return clone;
     }

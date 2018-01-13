@@ -62,7 +62,7 @@ import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.BoundsOptions;
 import maud.model.option.scene.DddCursorOptions;
-import maud.model.option.scene.SceneOptions;
+import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.SkeletonOptions;
 import maud.model.option.scene.VertexOptions;
 
@@ -342,7 +342,8 @@ class SceneUpdater {
     private static void updatePhysics(Cgm cgm) {
         SceneView sceneView = cgm.getSceneView();
         BulletAppState bulletAppState = sceneView.getBulletAppState();
-        boolean enable = Maud.getModel().getScene().isPhysicsRendered();
+        RenderOptions options = Maud.getModel().getScene().getRender();
+        boolean enable = options.isPhysicsRendered();
         bulletAppState.setDebugEnabled(enable);
     }
 
@@ -364,7 +365,7 @@ class SceneUpdater {
                 }
             }
 
-            SceneOptions options = Maud.getModel().getScene();
+            RenderOptions options = Maud.getModel().getScene().getRender();
             if (options.areShadowsRendered()) {
                 if (dlsr == null) {
                     dlsr = EditorViewPorts.addShadows(vp);
@@ -443,7 +444,8 @@ class SceneUpdater {
      */
     private static void updateSky(Cgm cgm) {
         SkyControl sky = cgm.getSceneView().getSkyControl();
-        boolean enable = Maud.getModel().getScene().isSkyRendered();
+        RenderOptions options = Maud.getModel().getScene().getRender();
+        boolean enable = options.isSkyRendered();
         sky.setEnabled(enable);
         sky.setCloudiness(0.5f);
         sky.getSunAndStars().setHour(11f);

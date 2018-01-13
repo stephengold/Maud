@@ -39,7 +39,7 @@ import jme3utilities.ui.Locators;
 import maud.model.EditorModel;
 import maud.model.option.MiscOptions;
 import maud.model.option.ViewMode;
-import maud.model.option.scene.SceneOptions;
+import maud.model.option.scene.RenderOptions;
 import maud.view.SceneView;
 import maud.view.ScoreView;
 
@@ -106,7 +106,7 @@ public class EditorViewPorts {
         Validate.nonNull(vp, "view port");
 
         AssetManager manager = Locators.getAssetManager();
-        SceneOptions options = Maud.getModel().getScene();
+        RenderOptions options = Maud.getModel().getScene().getRender();
         int mapSize = options.getShadowMapSize();
         int numSplits = options.getNumSplits();
         DirectionalLightShadowRenderer dlsr;

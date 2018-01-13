@@ -32,7 +32,7 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.option.scene.SceneOptions;
+import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.TriangleMode;
 
 /**
@@ -75,7 +75,7 @@ class RenderTool extends GuiWindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        SceneOptions options = Maud.getModel().getScene();
+        RenderOptions options = Maud.getModel().getScene().getRender();
 
         float mapSize = readSlider("mapSize", sizeSt);
         int newSize = Math.round(mapSize);
@@ -99,7 +99,7 @@ class RenderTool extends GuiWindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
-        SceneOptions options = Maud.getModel().getScene();
+        RenderOptions options = Maud.getModel().getScene().getRender();
 
         boolean shadowsFlag = options.areShadowsRendered();
         setChecked("shadows", shadowsFlag);

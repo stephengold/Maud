@@ -60,6 +60,7 @@ import maud.LightUtil;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.MyShape;
+import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.TriangleMode;
 import maud.view.SceneView;
 import maud.view.ScoreView;
@@ -1109,7 +1110,8 @@ public class Cgm implements Cloneable {
     private void updateSceneWireframe(Spatial subtree) {
         if (subtree instanceof Geometry) {
             boolean setting;
-            TriangleMode mode = Maud.getModel().getScene().getTriangleMode();
+            RenderOptions options = Maud.getModel().getScene().getRender();
+            TriangleMode mode = options.getTriangleMode();
             switch (mode) {
                 case PerMaterial:
                     Geometry geometry = (Geometry) subtree;
