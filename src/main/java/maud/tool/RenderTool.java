@@ -30,7 +30,6 @@ import com.jme3.shadow.EdgeFilteringMode;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
-import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.TriangleMode;
@@ -49,14 +48,6 @@ class RenderTool extends GuiWindowController {
      */
     final private static Logger logger
             = Logger.getLogger(RenderTool.class.getName());
-    /**
-     * transform for the size slider
-     */
-    final private static SliderTransform sizeSt = SliderTransform.Log2;
-    /**
-     * transform for the splits slider
-     */
-    final private static SliderTransform splitsSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -75,15 +66,6 @@ class RenderTool extends GuiWindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        RenderOptions options = Maud.getModel().getScene().getRender();
-
-        float mapSize = readSlider("mapSize", sizeSt);
-        int newSize = Math.round(mapSize);
-        options.setShadowsMapSize(newSize);
-
-        float mapSplits = readSlider("mapSplits", splitsSt);
-        int newNumSplits = Math.round(mapSplits);
-        options.setNumSplits(newNumSplits);
     }
     // *************************************************************************
     // GuiWindowController methods
@@ -110,14 +92,6 @@ class RenderTool extends GuiWindowController {
         TriangleMode mode = options.getTriangleMode();
         String modeName = mode.toString();
         setButtonText("triangles", modeName);
-
-        int numSplits = options.getNumSplits();
-        setSlider("mapSplits", splitsSt, numSplits);
-        updateSliderStatus("mapSplits", numSplits, "");
-
-        int mapSize = options.getShadowMapSize();
-        setSlider("mapSize", sizeSt, mapSize);
-        updateSliderStatus("mapSize", mapSize, " px");
 
         EdgeFilteringMode edgeFilter = options.getEdgeFilter();
         modeName = edgeFilter.toString();

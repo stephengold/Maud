@@ -1472,7 +1472,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="renderTool" title="Render Tool"
                      hideOnClose="true"
-                     height="235px" width="195px" x="115" y="155">
+                     height="153px" width="195px" x="115" y="155">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="physicsCheckBox"
@@ -1490,24 +1490,6 @@ the menu bar, status bar, and tool windows.
                         <control name="checkbox" id="shadowsCheckBox"
                                  width="20px"/>
                         <control name="label" text="  shadows"/>
-                        <control name="label" id="mapSplitsSliderStatus"
-                                 width="*"
-                                 textHAlign="right"/>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="horizontalSlider" id="mapSplitsSlider"
-                                 buttonStepSize="1"
-                                 max="4" min="1" stepSize="1"/>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" id="mapSizeSliderStatus"
-                                 width="*"
-                                 textHAlign="right"/>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="horizontalSlider" id="mapSizeSlider"
-                                 buttonStepSize="1"
-                                 max="13" min="6" stepSize="1"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Edge filter:  "/>
