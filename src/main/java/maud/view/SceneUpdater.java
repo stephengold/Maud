@@ -447,12 +447,18 @@ class SceneUpdater {
         RenderOptions options = Maud.getModel().getScene().getRender();
         boolean enable = options.isSkyRendered();
         sky.setEnabled(enable);
-        sky.setCloudiness(0.5f);
-        sky.getSunAndStars().setHour(11f);
+        float cloudiness = options.getCloudiness();
+        sky.setCloudiness(cloudiness);
+        float hour = options.getHour();
+        sky.getSunAndStars().setHour(hour);
 
         Updater updater = sky.getUpdater();
         updater.setAmbientMultiplier(ambientMultiplier);
         updater.setMainMultiplier(mainMultiplier);
+
+        ColorRGBA backgroundColor = options.backgroundColor(null);
+        ViewPort viewPort = cgm.getSceneView().getViewPort();
+        viewPort.setBackgroundColor(backgroundColor);
     }
 
     /**

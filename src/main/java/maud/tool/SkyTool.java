@@ -26,9 +26,13 @@
  */
 package maud.tool;
 
+import com.jme3.math.ColorRGBA;
 import java.util.logging.Logger;
+import static jme3utilities.TimeOfDay.minutesPerHour;
+import static jme3utilities.TimeOfDay.secondsPerMinute;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
+import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.scene.RenderOptions;
 
@@ -46,6 +50,18 @@ class SkyTool extends GuiWindowController {
      */
     final private static Logger logger
             = Logger.getLogger(SkyTool.class.getName());
+    /**
+     * transform for the cloudiness slider
+     */
+    final private static SliderTransform cloudinessSt = SliderTransform.None;
+    /**
+     * transform for the color sliders
+     */
+    final private static SliderTransform colorSt = SliderTransform.Reversed;
+    /**
+     * transform for the hour slider
+     */
+    final private static SliderTransform hourSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -64,6 +80,16 @@ class SkyTool extends GuiWindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
+        RenderOptions options = Maud.getModel().getScene().getRender();
+
+        ColorRGBA color = Maud.gui.readColorBank("noSky", colorSt);
+        options.setBackgroundColor(color);
+
+        float cloudiness = readSlider("cloudiness", cloudinessSt);
+        options.setCloudiness(cloudiness);
+
+        float hour = readSlider("hour", hourSt);
+        options.setHour(hour);
     }
     // *************************************************************************
     // GuiWindowController methods
@@ -83,6 +109,22 @@ class SkyTool extends GuiWindowController {
 
         boolean renderFlag = options.isSkyRendered();
         setChecked("sky", renderFlag);
+
+        ColorRGBA color = options.backgroundColor(null);
+        Maud.gui.setColorBank("noSky", colorSt, color);
+
+        float cloudiness = options.getCloudiness();
+        setSlider("cloudiness", cloudinessSt, cloudiness);
+        updateSliderStatus("cloudiness", 100f * cloudiness, "%");
+
+        float hour = options.getHour();
+        setSlider("hour", hourSt, hour);
+        int second = (int) Math.round(hour * secondsPerMinute * minutesPerHour);
+        int minute = second / secondsPerMinute;
+        int mm = minute % minutesPerHour;
+        int hh = minute / minutesPerHour;
+        String tod = String.format("solarTime = %d:%02d", hh, mm);
+        setStatusText("hourSliderStatus", tod);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

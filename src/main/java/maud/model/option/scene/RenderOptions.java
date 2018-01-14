@@ -26,6 +26,7 @@
  */
 package maud.model.option.scene;
 
+import com.jme3.math.ColorRGBA;
 import com.jme3.shadow.EdgeFilteringMode;
 import java.io.IOException;
 import java.io.Writer;
@@ -62,15 +63,27 @@ public class RenderOptions implements Cloneable {
      */
     private boolean shadowsRendered = true;
     /**
-     * sky background (true &rarr; rendered, false &rarr; not rendered)
+     * sky simulation (true &rarr; simulated, false &rarr; not simulated)
      */
-    private boolean skyRendered = true;
+    private boolean skySimulated = true;
+    /**
+     * background color when no sky is simulated
+     */
+    private ColorRGBA background = new ColorRGBA(0.33f, 0.33f, 0.33f, 1f);
     /**
      * edge filtering mode for shadows
      */
     private EdgeFilteringMode edgeFilter = EdgeFilteringMode.Bilinear;
     /**
-     * number of shadow-map splits (&gt;0)
+     * opacity of cloud layers (&ge;0, &le;1)
+     */
+    private float cloudiness = 0.5f;
+    /**
+     * hours since midnight, solar time (&ge;0, &le;24)
+     */
+    private float hour = 11f;
+    /**
+     * number of shadow-map splits (&ge;1, &le;4)
      */
     private int numSplits = 3;
     /**
@@ -94,7 +107,34 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
-     * Read the edge filtering mode for shadows.
+     * Copy the background color when no sky is simulated.
+     *
+     * @param storeResult (modified if not null)
+     * @return color (either storeResult or a new instance)
+     */
+    public ColorRGBA backgroundColor(ColorRGBA storeResult) {
+        if (storeResult == null) {
+            storeResult = new ColorRGBA();
+        }
+        storeResult.set(background);
+
+        return storeResult;
+    }
+
+    /**
+     * Read the cloudiness for sky simulation.
+     *
+     * @return layer opacity (&ge;0, &le;1)
+     */
+    public float getCloudiness() {
+        assert cloudiness >= 0f;
+        assert cloudiness <= 1f;
+
+        return cloudiness;
+    }
+
+    /**
+     * Read the edge-filtering mode for shadows.
      *
      * @return an enum value (not null)
      */
@@ -104,12 +144,26 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
+     * Read the time of day for sky simulation.
+     *
+     * @return hours since midnight, solar time (&ge;0, &le;24)
+     */
+    public float getHour() {
+        assert hour >= 0f;
+        assert hour <= 24f;
+
+        return hour;
+    }
+
+    /**
      * Read the number of shadow-map splits.
      *
-     * @return count (&gt;0)
+     * @return number (&ge;1, &le;4)
      */
     public int getNumSplits() {
-        assert numSplits > 0 : numSplits;
+        assert numSplits >= 1 : numSplits;
+        assert numSplits <= 4 : numSplits;
+
         return numSplits;
     }
 
@@ -148,7 +202,26 @@ public class RenderOptions implements Cloneable {
      * @return true if rendered, otherwise false
      */
     public boolean isSkyRendered() {
-        return skyRendered;
+        return skySimulated;
+    }
+
+    /**
+     * Alter the background color when no sky is simulated.
+     *
+     * @param newColor (not null, unaffected)
+     */
+    public void setBackgroundColor(ColorRGBA newColor) {
+        background.set(newColor);
+    }
+
+    /**
+     * Alter the cloudiness of the sky.
+     *
+     * @param newOpacity (&ge;0, &le;1)
+     */
+    public void setCloudiness(float newOpacity) {
+        Validate.fraction(newOpacity, "new opacity");
+        cloudiness = newOpacity;
     }
 
     /**
@@ -162,12 +235,22 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
+     * Alter the time of day.
+     *
+     * @param newHour hours since midnight, solar time (&ge;0, &le;24)
+     */
+    public void setHour(float newHour) {
+        Validate.inRange(newHour, "new hour", 0f, 24f);
+        hour = newHour;
+    }
+
+    /**
      * Alter the number of shadow-map splits.
      *
-     * @param newNumSplits new size (in pixels, &gt;0)
+     * @param newNumSplits new number (&ge;1, &le;4)
      */
     public void setNumSplits(int newNumSplits) {
-        Validate.inRange(newNumSplits, "new size", 1, Integer.MAX_VALUE);
+        Validate.inRange(newNumSplits, "new number of splits", 1, 4);
         numSplits = newNumSplits;
     }
 
@@ -205,7 +288,7 @@ public class RenderOptions implements Cloneable {
      * @param newState true &rarr; rendered, false &rarr; not rendered
      */
     public void setSkyRendered(boolean newState) {
-        skyRendered = newState;
+        skySimulated = newState;
     }
 
     /**
@@ -253,7 +336,7 @@ public class RenderOptions implements Cloneable {
         action = ActionPrefix.setMapSize + Integer.toString(shadowMapSize);
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setSkyRendered + Boolean.toString(skyRendered);
+        action = ActionPrefix.setSkyRendered + Boolean.toString(skySimulated);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectTriangleMode + triangleMode.toString();
@@ -271,6 +354,7 @@ public class RenderOptions implements Cloneable {
     @Override
     public RenderOptions clone() throws CloneNotSupportedException {
         RenderOptions clone = (RenderOptions) super.clone();
+        background = background.clone();
         return clone;
     }
 }

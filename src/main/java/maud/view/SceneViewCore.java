@@ -1045,13 +1045,16 @@ public class SceneViewCore
         AssetManager assetManager = Locators.getAssetManager();
         Camera camera = viewPort2.getCamera();
         skyControl = new SkyControl(assetManager, camera, 0.9f, false, true);
+        skyControl.setCloudsRate(4f);
+        skyControl.setSunStyle("Textures/skies/suns/hazy-disc.png");
+        skyControl.setTopVerticalAngle(1.784f);
+
         Node scene = getSceneRoot();
         scene.addControl(skyControl);
 
         Updater updater = skyControl.getUpdater();
         updater.setAmbientLight(ambientLight);
         updater.setMainLight(mainLight);
-        //updater.addShadowFilter(dlsf);
     }
 
     /**

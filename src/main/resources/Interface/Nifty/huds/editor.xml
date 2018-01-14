@@ -36,8 +36,7 @@ the menu bar, status bar, and tool windows.
             <panel id="menu bar"
                    childLayout="vertical">
                 <panel id="menu bar top row"
-                       childLayout="horizontal"
-                       height="20px">
+                       childLayout="horizontal">
                     <control name="button" id="ViewButton" label="1] View"
                              width="55px">
                         <interact onRelease="perform(select menuItem View)"/>
@@ -76,8 +75,7 @@ the menu bar, status bar, and tool windows.
                     </control>
                 </panel>
                 <panel id="menu bar bottom row"
-                       childLayout="horizontal"
-                       height="20px">
+                       childLayout="horizontal">
                     <control name="button" id="KeyframeButton" label="0] Keyframe"
                              width="78px">
                         <interact onRelease="perform(select menuItem Keyframe)"/>
@@ -795,7 +793,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="displaySettingsTool" title="Display-Settings Tool"
                      hideOnClose="true"
-                     height="230px" width="175px" x="165" y="105">
+                     height="223px" width="175px" x="165" y="105">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="fullscreenCheckBox"/>
@@ -1474,12 +1472,12 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="renderTool" title="Render Tool"
                      hideOnClose="true"
-                     height="235px" width="190px" x="115" y="155">
+                     height="235px" width="195px" x="115" y="155">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="physicsCheckBox"
                                  width="20px"/>
-                        <control name="label" text="  physics"/>
+                        <control name="label" text="  visualize physics"/>
                     </panel>
                     <panel childLayout="horizontal" height="38px">
                         <control name="label" text="Triangle mode:  "/>
@@ -1971,15 +1969,62 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="skyTool" title="Sky Tool"
                      hideOnClose="true"
-                     height="160px" width="160px" x="70" y="200">
+                     height="290px" width="170px" x="70" y="200">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal"
-                           padding="0,10">
-                        <control name="checkbox" id="skyCheckBox"
-                                 width="20px"/>
-                        <control name="label" text="  show sky"/>
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="noSkyRSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="noSkyGSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="noSkyBSlider"
+                                 buttonStepSize="1"
+                                 height="110px"
+                                 max="1" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="110px" width="90px">
+                            <control name="label" id="noSkyRSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="noSkyGSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="noSkyBSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
                         </panel>
                     </panel>
+                    <panel height="7px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="skyCheckBox"/>
+                        <control name="label" text="  simulate sky"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" id="cloudinessSliderStatus"
+                                 textHAlign="right"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="horizontalSlider" id="cloudinessSlider"
+                                 buttonStepSize="1"
+                                 max="1" min="0" stepSize="0.001"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" id="hourSliderStatus"
+                                 textHAlign="right"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="horizontalSlider" id="hourSlider"
+                                 buttonStepSize="1"
+                                 max="24" min="0" stepSize="0.01"
+                                 width="*"/>
+                    </panel>
+                </panel>
             </control>
 
             <control name="window" id="sourceAnimationTool" title="Source Animation Tool"
