@@ -145,6 +145,10 @@ public class EditorTools {
      */
     final private RetargetTool retarget;
     /**
+     * controller for the "Scene Lighting Tool" window
+     */
+    final private SceneLightingTool sceneLighting;
+    /**
      * controller for the "Scene Vertex Tool" window
      */
     final private SceneVertexTool sceneVertex;
@@ -250,6 +254,7 @@ public class EditorTools {
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
         retarget = new RetargetTool(screen);
+        sceneLighting = new SceneLightingTool(screen);
         sceneVertex = new SceneVertexTool(screen);
         score = new ScoreTool(screen);
         settings = new SettingsTool(screen);
@@ -282,7 +287,7 @@ public class EditorTools {
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
                 displaySettings, history, keyframe, joint, lights, mapping,
                 material, object, overrides, platform, render, retarget,
-                sceneVertex, score, settings, sgc, shape, skeleton,
+                sceneLighting, sceneVertex, score, settings, sgc, shape, skeleton,
                 skeletonColor, sky, sourceAnimation, spatial, spatialDetails,
                 spatialRotation, spatialScale, spatialTranslation, tweening,
                 twist, userData, vertex);
@@ -367,6 +372,9 @@ public class EditorTools {
                 break;
             case "retarget":
                 controller = retarget;
+                break;
+            case "sceneLighting":
+                controller = sceneLighting;
                 break;
             case "sceneVertex":
                 controller = sceneVertex;
@@ -494,6 +502,14 @@ public class EditorTools {
 
             case "platformDiameter":
                 platform.onSliderChanged();
+                break;
+
+            case "ambientLevel":
+            case "mainLevel":
+            case "xDir":
+            case "yDir":
+            case "zDir":
+                sceneLighting.onSliderChanged();
                 break;
 
             case "svR":

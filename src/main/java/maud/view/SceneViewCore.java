@@ -48,6 +48,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.post.SceneProcessor;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -57,6 +58,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.texture.Texture;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
@@ -266,8 +268,8 @@ public class SceneViewCore
     }
 
     /**
-     * Find the the tree position of the specified spatial in this view's copy
-     * of the C-G model.
+     * Find the tree position of the specified spatial in this view's copy of
+     * the C-G model.
      *
      * @param input spatial to search for (not null, unaffected)
      * @return a new tree-position instance, or null if not found
@@ -300,6 +302,16 @@ public class SceneViewCore
         }
 
         return result;
+    }
+
+    /**
+     * Access the ambient light added to the scene.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    AmbientLight getAmbientLight() {
+        assert ambientLight != null;
+        return ambientLight;
     }
 
     /**
@@ -391,6 +403,27 @@ public class SceneViewCore
     public Projectile getProjectile() {
         assert projectile != null;
         return projectile;
+    }
+
+    /**
+     * Access the shadow renderer added to the scene.
+     *
+     * @return the pre-existing instance, or null if none
+     */
+    DirectionalLightShadowRenderer getShadowRenderer() {
+        DirectionalLightShadowRenderer result = null;
+        ViewPort viewPort = getViewPort();
+        if (viewPort != null) {
+            List<SceneProcessor> list = viewPort.getProcessors();
+            for (SceneProcessor processor : list) {
+                if (processor instanceof DirectionalLightShadowRenderer) {
+                    result = (DirectionalLightShadowRenderer) processor;
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**

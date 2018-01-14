@@ -1538,6 +1538,59 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="sceneLightingTool" title="Scene Lighting Tool"
+                     hideOnClose="true"
+                     height="300px" width="170px" x="105" y="165">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" id="ambientLevelSliderStatus"
+                                 width="*"
+                                 textHAlign="right"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="30px">
+                        <control name="horizontalSlider" id="ambientLevelSlider"
+                                 buttonStepSize="1"
+                                 max="2.5" min="0" stepSize="0.001"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" id="mainLevelSliderStatus"
+                                 width="*"
+                                 textHAlign="right"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="30px">
+                        <control name="horizontalSlider" id="mainLevelSlider"
+                                 buttonStepSize="1"
+                                 max="2.5" min="0" stepSize="0.001"/>
+                    </panel>
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="xDirSlider"
+                                 buttonStepSize="1"
+                                 height="160px"
+                                 max="1" min="-1" stepSize="0.001"/>
+                        <control name="verticalSlider" id="yDirSlider"
+                                 buttonStepSize="1"
+                                 height="160px"
+                                 max="1" min="-1" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zDirSlider"
+                                 buttonStepSize="1"
+                                 height="160px"
+                                 max="1" min="-1" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="160px" width="100px">
+                            <control name="label" id="xDirSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="yDirSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="zDirSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="sceneVertexTool" title="Scene Vertex Tool"
                      hideOnClose="true"
                      height="250px" width="160px" x="105" y="165">

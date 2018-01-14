@@ -139,6 +139,7 @@ public class ShowMenus {
         builder.addTool("Bounds");
         builder.addTool("Camera");
         builder.addTool("Cursor");
+        builder.addTool("Lighting");
         builder.addTool("Platform");
         builder.addTool("Render");
         builder.addTool("Skeleton");

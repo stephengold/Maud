@@ -125,6 +125,9 @@ public class ViewMenus {
             case "Cursor":
                 Maud.gui.tools.select("cursor");
                 break;
+            case "Lighting":
+                Maud.gui.tools.select("sceneLighting");
+                break;
             case "Mode":
                 EnumMenus.selectViewMode();
                 break;

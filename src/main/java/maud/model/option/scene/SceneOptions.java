@@ -65,6 +65,10 @@ public class SceneOptions implements Cloneable {
      */
     private DddCursorOptions cursorOptions = new DddCursorOptions();
     /**
+     * options for lights with no sky simulation
+     */
+    private LightsOptions lightsOptions = new LightsOptions();
+    /**
      * diameter of platform(s) (in world units, &gt;0)
      */
     private float platformDiameter = 2f;
@@ -125,6 +129,16 @@ public class SceneOptions implements Cloneable {
     public DddCursorOptions getCursor() {
         assert cursorOptions != null;
         return cursorOptions;
+    }
+
+    /**
+     * Access the options for lights with no sky simulation.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public LightsOptions getLights() {
+        assert lightsOptions != null;
+        return lightsOptions;
     }
 
     /**
@@ -226,6 +240,7 @@ public class SceneOptions implements Cloneable {
         boundsOptions = boundsOptions.clone();
         cameraOptions = cameraOptions.clone();
         cursorOptions = cursorOptions.clone();
+        lightsOptions = lightsOptions.clone();
         renderOptions = renderOptions.clone();
         skeletonOptions = skeletonOptions.clone();
         vertexOptions = vertexOptions.clone();

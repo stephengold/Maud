@@ -28,12 +28,13 @@ package maud.view;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import com.jme3.post.SceneProcessor;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -41,7 +42,6 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import java.util.BitSet;
-import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.MySpatial;
@@ -63,7 +63,9 @@ import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.BoundsOptions;
 import maud.model.option.scene.DddCursorOptions;
+import maud.model.option.scene.LightsOptions;
 import maud.model.option.scene.RenderOptions;
+import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.SkeletonOptions;
 import maud.model.option.scene.VertexOptions;
 
@@ -225,6 +227,23 @@ class SceneUpdater {
     }
 
     /**
+     * Update the specified view's ambient light based on the MVC model.
+     *
+     * @param sceneView which view (not null)
+     */
+    private static void updateAmbientLight(SceneView sceneView) {
+        SceneOptions options = Maud.getModel().getScene();
+        assert !options.getRender().isSkyRendered();
+
+        float ambientLevel = options.getLights().getAmbientLevel();
+        ColorRGBA ambientColor = new ColorRGBA(ambientLevel, ambientLevel,
+                ambientLevel, 1f);
+
+        AmbientLight ambient = sceneView.getAmbientLight();
+        ambient.setColor(ambientColor);
+    }
+
+    /**
      * Update the axes visualizer based on the MVC model.
      *
      * @param cgm which C-G model (not null)
@@ -268,9 +287,31 @@ class SceneUpdater {
     }
 
     /**
-     * Update the bounds visualizer based on the MVC model.
+     * Update the specified C-G model's background color based on the MVC model.
      *
      * @param cgm which C-G model (not null)
+     */
+    private static void updateBackground(Cgm cgm) {
+        EditorModel model = Maud.getModel();
+        RenderOptions renderOptions = model.getScene().getRender();
+        assert !renderOptions.isSkyRendered();
+
+        ColorRGBA backgroundColor;
+        if (cgm == model.getSource()) {
+            backgroundColor = renderOptions.sourceBackgroundColor(null);
+        } else {
+            assert cgm == model.getTarget();
+            backgroundColor = renderOptions.targetBackgroundColor(null);
+        }
+
+        ViewPort viewPort = cgm.getSceneView().getViewPort();
+        viewPort.setBackgroundColor(backgroundColor);
+    }
+
+    /**
+     * Update the bounds visualizer based on the MVC model.
+     *
+     * @param cgm which C-G model (not null) TODO pass sceneView instead
      */
     private static void updateBounds(Cgm cgm) {
         SceneView sceneView = cgm.getSceneView();
@@ -336,6 +377,27 @@ class SceneUpdater {
     }
 
     /**
+     * Update the specified view's main (directional) light based on the MVC
+     * model.
+     *
+     * @param sceneView which view (not null)
+     */
+    private static void updateMainLight(SceneView sceneView) {
+        SceneOptions options = Maud.getModel().getScene();
+        assert !options.getRender().isSkyRendered();
+
+        LightsOptions lightsOptions = options.getLights();
+        float mainLevel = lightsOptions.getMainLevel();
+        ColorRGBA mainColor
+                = new ColorRGBA(mainLevel, mainLevel, mainLevel, 1f);
+
+        DirectionalLight main = sceneView.getMainLight();
+        main.setColor(mainColor);
+        Vector3f direction = lightsOptions.direction(null);
+        main.setDirection(direction);
+    }
+
+    /**
      * Update the physics visualization based on the MVC model.
      *
      * @param cgm which C-G model (not null)
@@ -343,56 +405,75 @@ class SceneUpdater {
     private static void updatePhysics(Cgm cgm) {
         SceneView sceneView = cgm.getSceneView();
         BulletAppState bulletAppState = sceneView.getBulletAppState();
-        RenderOptions options = Maud.getModel().getScene().getRender();
-        boolean enable = options.isPhysicsRendered();
+        RenderOptions renderOptions = Maud.getModel().getScene().getRender();
+        boolean enable = renderOptions.isPhysicsRendered();
         bulletAppState.setDebugEnabled(enable);
     }
 
     /**
-     * Update the shadow renderer based on the MVC model.
+     * Update the specified view's shadow intensity based on the MVC model.
+     *
+     * @param sceneView which view (not null)
+     */
+    private static void updateShadowIntensity(SceneView sceneView) {
+        SceneOptions options = Maud.getModel().getScene();
+        assert !options.getRender().isSkyRendered();
+
+        LightsOptions lights = options.getLights();
+        float ambientLevel = lights.getAmbientLevel();
+        float mainLevel = lights.getMainLevel();
+        float totalLevel = mainLevel + ambientLevel;
+        float shadowIntensity;
+        if (totalLevel == 0f) {
+            shadowIntensity = 0f;
+        } else {
+            shadowIntensity = FastMath.saturate(mainLevel / totalLevel);
+        }
+
+        DirectionalLightShadowRenderer dlsr = sceneView.getShadowRenderer();
+        dlsr.setShadowIntensity(shadowIntensity);
+    }
+
+    /**
+     * Update specified C-G model's shadow renderer based on the MVC model. The
+     * shadow intensity is updated elsewhere.
      *
      * @param cgm which C-G model (not null)
      */
     private static void updateShadows(Cgm cgm) {
-        SceneView view = cgm.getSceneView();
-        ViewPort vp = view.getViewPort();
-        if (vp != null && vp.isEnabled()) {
-            DirectionalLightShadowRenderer dlsr = null;
-            List<SceneProcessor> list = vp.getProcessors();
-            for (SceneProcessor processor : list) {
-                if (processor instanceof DirectionalLightShadowRenderer) {
-                    dlsr = (DirectionalLightShadowRenderer) processor;
-                    break;
-                }
-            }
+        SceneView sceneView = cgm.getSceneView();
+        ViewPort viewPort = sceneView.getViewPort();
+        if (viewPort != null && viewPort.isEnabled()) {
+            DirectionalLightShadowRenderer dlsr = sceneView.getShadowRenderer();
+            Updater skyUpdater = sceneView.getSkyControl().getUpdater();
 
-            Updater skyUpdater = view.getSkyControl().getUpdater();
-            RenderOptions options = Maud.getModel().getScene().getRender();
-            if (options.areShadowsRendered()) {
+            SceneOptions sceneOptions = Maud.getModel().getScene();
+            RenderOptions renderOptions = sceneOptions.getRender();
+            if (renderOptions.areShadowsRendered()) {
                 if (dlsr == null) {
-                    dlsr = EditorViewPorts.addShadows(vp);
+                    dlsr = EditorViewPorts.addShadows(viewPort);
                     skyUpdater.addShadowRenderer(dlsr);
                 } else {
-                    int newMaps = options.getNumSplits();
+                    int newMaps = renderOptions.getNumSplits();
                     int oldMaps = dlsr.getNumShadowMaps();
-                    int newSize = options.getShadowMapSize();
+                    int newSize = renderOptions.getShadowMapSize();
                     int oldSize = dlsr.getShadowMapSize();
                     if (newMaps != oldMaps || newSize != oldSize) {
-                        vp.removeProcessor(dlsr);
+                        viewPort.removeProcessor(dlsr);
                         skyUpdater.removeShadowRenderer(dlsr);
 
-                        dlsr = EditorViewPorts.addShadows(vp);
+                        dlsr = EditorViewPorts.addShadows(viewPort);
                         skyUpdater.addShadowRenderer(dlsr);
                     }
                 }
 
-                DirectionalLight mainLight = view.getMainLight();
+                DirectionalLight mainLight = sceneView.getMainLight();
                 dlsr.setLight(mainLight);
-                EdgeFilteringMode edgeFilter = options.getEdgeFilter();
+                EdgeFilteringMode edgeFilter = renderOptions.getEdgeFilter();
                 dlsr.setEdgeFilteringMode(edgeFilter);
 
             } else if (dlsr != null) {
-                vp.removeProcessor(dlsr);
+                viewPort.removeProcessor(dlsr);
                 skyUpdater.removeShadowRenderer(dlsr);
             }
         }
@@ -404,8 +485,8 @@ class SceneUpdater {
      * @param cgm which C-G model (not null)
      */
     private static void updateSkeleton(Cgm cgm) {
-        SkeletonVisualizer visualizer;
-        visualizer = cgm.getSceneView().getSkeletonVisualizer();
+        SkeletonVisualizer visualizer
+                = cgm.getSceneView().getSkeletonVisualizer();
         if (visualizer == null) {
             return;
         }
@@ -445,37 +526,35 @@ class SceneUpdater {
     }
 
     /**
-     * Update the sky based on the MVC model.
+     * Update the specified C-G model's sky, background, lights, and shadow
+     * intensity based on the MVC model.
      *
      * @param cgm which C-G model (not null)
      */
     private static void updateSky(Cgm cgm) {
-        EditorModel model = Maud.getModel();
-        RenderOptions options = model.getScene().getRender();
-        SkyControl sky = cgm.getSceneView().getSkyControl();
+        RenderOptions renderOptions = Maud.getModel().getScene().getRender();
+        boolean skySimulated = renderOptions.isSkyRendered();
 
-        boolean enable = options.isSkyRendered();
-        sky.setEnabled(enable);
-        float cloudiness = options.getCloudiness();
-        sky.setCloudiness(cloudiness);
-        float hour = options.getHour();
-        sky.getSunAndStars().setHour(hour);
+        SceneView sceneView = cgm.getSceneView();
+        SkyControl sky = sceneView.getSkyControl();
+        sky.setEnabled(skySimulated);
 
-        Updater updater = sky.getUpdater();
-        updater.setAmbientMultiplier(ambientMultiplier);
-        updater.setMainMultiplier(mainMultiplier);
+        if (skySimulated) {
+            float cloudiness = renderOptions.getCloudiness();
+            sky.setCloudiness(cloudiness);
 
-        if (!enable) {
-            ColorRGBA backgroundColor;
-            if (cgm == model.getSource()) {
-                backgroundColor = options.sourceBackgroundColor(null);
-            } else {
-                assert cgm == model.getTarget();
-                backgroundColor = options.targetBackgroundColor(null);
-            }
+            float hour = renderOptions.getHour();
+            sky.getSunAndStars().setHour(hour);
 
-            ViewPort viewPort = cgm.getSceneView().getViewPort();
-            viewPort.setBackgroundColor(backgroundColor);
+            Updater updater = sky.getUpdater();
+            updater.setAmbientMultiplier(ambientMultiplier);
+            updater.setMainMultiplier(mainMultiplier);
+
+        } else {
+            updateAmbientLight(sceneView);
+            updateBackground(cgm);
+            updateMainLight(sceneView);
+            updateShadowIntensity(sceneView);
         }
     }
 
