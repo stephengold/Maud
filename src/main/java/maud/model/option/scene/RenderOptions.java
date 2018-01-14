@@ -186,11 +186,12 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
-     * Test whether the sky background is rendered.
+     * Test whether skies are simulated.
      *
-     * @return true if rendered, otherwise false
+     * @return true if simulated, otherwise false (meaning that lighting and
+     * backgrounds can be controlled directly)
      */
-    public boolean isSkyRendered() {
+    public boolean isSkySimulated() {
         return skySimulated;
     }
 
@@ -263,11 +264,11 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
-     * Alter the rendering of the sky background.
+     * Alter whether skies are simulated.
      *
-     * @param newState true &rarr; rendered, false &rarr; not rendered
+     * @param newState true &rarr; simulated, false &rarr; not simulated
      */
-    public void setSkyRendered(boolean newState) {
+    public void setSkySimulated(boolean newState) {
         skySimulated = newState;
     }
 
@@ -364,7 +365,7 @@ public class RenderOptions implements Cloneable {
         action = ActionPrefix.setMapSize + Integer.toString(shadowMapSize);
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setSkyRendered + Boolean.toString(skySimulated);
+        action = ActionPrefix.setSkySimulated + Boolean.toString(skySimulated);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectTriangleMode + triangleMode.toString();

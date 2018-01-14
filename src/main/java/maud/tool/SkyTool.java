@@ -99,8 +99,8 @@ class SkyTool extends GuiWindowController {
         Maud.gui.setIgnoreGuiChanges(true);
         RenderOptions options = Maud.getModel().getScene().getRender();
 
-        boolean renderFlag = options.isSkyRendered();
-        setChecked("sky", renderFlag);
+        boolean isSkySimulated = options.isSkySimulated();
+        setChecked("sky", isSkySimulated);
 
         float cloudiness = options.getCloudiness();
         setSlider("cloudiness", cloudinessSt, cloudiness);

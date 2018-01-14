@@ -385,7 +385,7 @@ public class EditorScreen extends GuiScreenController {
                 scene.getRender().setShadowsRendered(isChecked);
                 break;
             case "sky":
-                scene.getRender().setSkyRendered(isChecked);
+                scene.getRender().setSkySimulated(isChecked);
                 break;
             case "spatialIgnoreTransform":
                 target.setIgnoreTransform(isChecked);
@@ -419,7 +419,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Read a bank of 3 sliders that control a color.
+     * Read a bank of 3 sliders that control a color. TODO storeResult
      *
      * @param name unique id prefix of the bank to read (not null)
      * @param transform how to transform the raw readings (not null)

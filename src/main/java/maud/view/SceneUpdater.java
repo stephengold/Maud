@@ -233,7 +233,7 @@ class SceneUpdater {
      */
     private static void updateAmbientLight(SceneView sceneView) {
         SceneOptions options = Maud.getModel().getScene();
-        assert !options.getRender().isSkyRendered();
+        assert !options.getRender().isSkySimulated();
 
         float ambientLevel = options.getLights().getAmbientLevel();
         ColorRGBA ambientColor = new ColorRGBA(ambientLevel, ambientLevel,
@@ -294,7 +294,7 @@ class SceneUpdater {
     private static void updateBackground(Cgm cgm) {
         EditorModel model = Maud.getModel();
         RenderOptions renderOptions = model.getScene().getRender();
-        assert !renderOptions.isSkyRendered();
+        assert !renderOptions.isSkySimulated();
 
         ColorRGBA backgroundColor;
         if (cgm == model.getSource()) {
@@ -384,7 +384,7 @@ class SceneUpdater {
      */
     private static void updateMainLight(SceneView sceneView) {
         SceneOptions options = Maud.getModel().getScene();
-        assert !options.getRender().isSkyRendered();
+        assert !options.getRender().isSkySimulated();
 
         LightsOptions lightsOptions = options.getLights();
         float mainLevel = lightsOptions.getMainLevel();
@@ -417,7 +417,7 @@ class SceneUpdater {
      */
     private static void updateShadowIntensity(SceneView sceneView) {
         SceneOptions options = Maud.getModel().getScene();
-        assert !options.getRender().isSkyRendered();
+        assert !options.getRender().isSkySimulated();
 
         LightsOptions lights = options.getLights();
         float ambientLevel = lights.getAmbientLevel();
@@ -533,7 +533,7 @@ class SceneUpdater {
      */
     private static void updateSky(Cgm cgm) {
         RenderOptions renderOptions = Maud.getModel().getScene().getRender();
-        boolean skySimulated = renderOptions.isSkyRendered();
+        boolean skySimulated = renderOptions.isSkySimulated();
 
         SceneView sceneView = cgm.getSceneView();
         SkyControl sky = sceneView.getSkyControl();

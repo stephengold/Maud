@@ -363,10 +363,11 @@ class SetAction {
                 handled = false;
             }
 
-        } else if (actionString.startsWith(ActionPrefix.setSkyRendered)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setSkyRendered);
+        } else if (actionString.startsWith(ActionPrefix.setSkySimulated)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setSkySimulated);
             boolean rendered = Boolean.parseBoolean(arg);
-            model.getScene().getRender().setSkyRendered(rendered);
+            model.getScene().getRender().setSkySimulated(rendered);
 
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);

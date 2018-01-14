@@ -458,7 +458,7 @@ public class ActionPrefix {
     /**
      * argument is a boolean value
      */
-    final public static String setSkyRendered = "set skyRendered ";
+    final public static String setSkySimulated = "set skySimulated ";
     /**
      * argument is the new value
      */
