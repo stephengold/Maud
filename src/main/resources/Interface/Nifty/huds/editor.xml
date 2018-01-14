@@ -275,70 +275,45 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="backgroundTool" title="Background Tool"
                      hideOnClose="true"
-                     height="320px" width="190px" x="210" y="60">
+                     height="232px" width="175px" x="210" y="60">
                 <panel childLayout="vertical">
-                    <panel/>
-                    <panel childLayout="horizontal" height="25px">
-                        <control name="label" text="For the target model:"
+                    <panel childLayout="horizontal" height="22px">
+                        <control name="label" text="Background color for:"
                                  textHAlign="left"/>
                     </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="bgSelectButton"
+                                 width="*">
+                            <interact onRelease="perform(select background)"/>
+                        </control>
+                    </panel>
+                    <panel height="5px"/>
                     <panel childLayout="horizontal">
-                        <control name="verticalSlider" id="tbgRSlider"
+                        <control name="verticalSlider" id="bgRSlider"
                                  buttonStepSize="1"
-                                 height="110px"
+                                 height="150px"
                                  max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="tbgGSlider"
+                        <control name="verticalSlider" id="bgGSlider"
                                  buttonStepSize="1"
-                                 height="110px"
+                                 height="150px"
                                  max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="tbgBSlider"
+                        <control name="verticalSlider" id="bgBSlider"
                                  buttonStepSize="1"
-                                 height="110px"
+                                 height="150px"
                                  max="1" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
-                               height="110px" width="90px">
-                            <control name="label" id="tbgRSliderStatus"
+                               height="150px" width="90px">
+                            <control name="label" id="bgRSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <control name="label" id="tbgGSliderStatus"
+                            <control name="label" id="bgGSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <control name="label" id="tbgBSliderStatus"
+                            <control name="label" id="bgBSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
                         </panel>
                     </panel>
-                    <panel childLayout="horizontal" height="25px">
-                        <control name="label" text="For the source model:"
-                                 textHAlign="left"/>
-                    </panel>
-                    <panel childLayout="horizontal">
-                        <control name="verticalSlider" id="sbgRSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="sbgGSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="sbgBSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <panel childLayout="vertical"
-                               height="110px" width="90px">
-                            <control name="label" id="sbgRSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="sbgGSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="sbgBSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                        </panel>
-                    </panel>
-                    <panel/>
                 </panel>
             </control>
 
@@ -1951,35 +1926,8 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="skyTool" title="Sky Tool"
                      hideOnClose="true"
-                     height="290px" width="170px" x="70" y="200">
+                     height="180px" width="170px" x="70" y="200">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal">
-                        <control name="verticalSlider" id="noSkyRSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="noSkyGSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="noSkyBSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <panel childLayout="vertical"
-                               height="110px" width="90px">
-                            <control name="label" id="noSkyRSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="noSkyGSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="noSkyBSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                        </panel>
-                    </panel>
-                    <panel height="7px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="skyCheckBox"/>
                         <control name="label" text="  simulate sky"/>

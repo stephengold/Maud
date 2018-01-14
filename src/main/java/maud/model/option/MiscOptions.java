@@ -62,6 +62,10 @@ public class MiscOptions implements Cloneable {
     // fields
 
     /**
+     * background to view/edit in BackgroundTool (not null)
+     */
+    private Background background = Background.TargetScenesWithNoSky;
+    /**
      * angle display units (true &rarr; degrees, false &rarr; radians)
      */
     private boolean anglesInDegrees = true;
@@ -107,6 +111,16 @@ public class MiscOptions implements Cloneable {
     // new methods exposed
 
     /**
+     * Read which background to view/edit in BackgroundTool.
+     *
+     * @return an enum value (not null)
+     */
+    public Background getBackground() {
+        assert background != null;
+        return background;
+    }
+
+    /**
      * Test whether to display angles in degrees.
      *
      * @return true for degrees, otherwise false
@@ -143,7 +157,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read which rigid-body parameter to display in ObjectTool.
+     * Read which rigid-body parameter to view/edit in ObjectTool.
      *
      * @return an enum value (not null)
      */
@@ -153,7 +167,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read which shape parameter to display in ShapeTool.
+     * Read which shape parameter to view/edit in ShapeTool.
      *
      * @return an enum value (not null)
      */
@@ -229,6 +243,16 @@ public class MiscOptions implements Cloneable {
      */
     public void setAnglesInDegrees(boolean newSetting) {
         anglesInDegrees = newSetting;
+    }
+
+    /**
+     * Alter which background to view/edit in BackgroundTool.
+     *
+     * @param newBackground an enum value (not null)
+     */
+    public void setBackground(Background newBackground) {
+        Validate.nonNull(newBackground, "new background");
+        background = newBackground;
     }
 
     /**

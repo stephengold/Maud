@@ -228,6 +228,10 @@ public class ActionPrefix {
      */
     final public static String selectAxesSubject = "select axesSubject ";
     /**
+     * argument is the name of a background
+     */
+    final public static String selectBackground = "select background ";
+    /**
      * argument is the name of a bone or a prefix thereof
      */
     final public static String selectBone = "select bone ";

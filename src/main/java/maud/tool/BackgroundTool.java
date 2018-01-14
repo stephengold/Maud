@@ -32,7 +32,10 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
+import maud.model.EditorModel;
+import maud.model.option.Background;
 import maud.model.option.ScoreOptions;
+import maud.model.option.scene.RenderOptions;
 
 /**
  * The controller for the "Background Tool" window in Maud's editor screen.
@@ -70,13 +73,32 @@ class BackgroundTool extends GuiWindowController {
      * Update the MVC model based on the sliders.
      */
     void onSliderChanged() {
-        ScoreOptions options = Maud.getModel().getScore();
+        EditorModel editorModel = Maud.getModel();
+        RenderOptions forScenes = editorModel.getScene().getRender();
+        ScoreOptions forScores = editorModel.getScore();
 
-        ColorRGBA color = Maud.gui.readColorBank("sbg", colorSt);
-        options.setSourceBackgroundColor(color);
+        ColorRGBA color = Maud.gui.readColorBank("bg", colorSt);
+        Background background = Maud.getModel().getMisc().getBackground();
+        switch (background) {
+            case SourceScenesWithNoSky:
+                forScenes.setSourceBackgroundColor(color);
+                break;
 
-        color = Maud.gui.readColorBank("tbg", colorSt);
-        options.setTargetBackgroundColor(color);
+            case SourceScores:
+                forScores.setSourceBackgroundColor(color);
+                break;
+
+            case TargetScenesWithNoSky:
+                forScenes.setTargetBackgroundColor(color);
+                break;
+
+            case TargetScores:
+                forScores.setTargetBackgroundColor(color);
+                break;
+
+            default:
+                throw new IllegalStateException();
+        }
     }
     // *************************************************************************
     // GuiWindowController methods
@@ -92,13 +114,37 @@ class BackgroundTool extends GuiWindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
-        ScoreOptions options = Maud.getModel().getScore();
 
-        ColorRGBA color = options.sourceBackgroundColor(null);
-        Maud.gui.setColorBank("sbg", colorSt, color);
+        EditorModel editorModel = Maud.getModel();
+        RenderOptions forScenes = editorModel.getScene().getRender();
+        ScoreOptions forScores = editorModel.getScore();
 
-        options.targetBackgroundColor(color);
-        Maud.gui.setColorBank("tbg", colorSt, color);
+        ColorRGBA color;
+        Background background = Maud.getModel().getMisc().getBackground();
+        switch (background) {
+            case SourceScenesWithNoSky:
+                color = forScenes.sourceBackgroundColor(null);
+                break;
+
+            case SourceScores:
+                color = forScores.sourceBackgroundColor(null);
+                break;
+
+            case TargetScenesWithNoSky:
+                color = forScenes.targetBackgroundColor(null);
+                break;
+
+            case TargetScores:
+                color = forScores.targetBackgroundColor(null);
+                break;
+
+            default:
+                throw new IllegalStateException();
+        }
+        Maud.gui.setColorBank("bg", colorSt, color);
+
+        String buttonText = background.toString();
+        setButtonText("bgSelect", buttonText);
 
         Maud.gui.setIgnoreGuiChanges(false);
     }

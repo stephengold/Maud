@@ -454,12 +454,9 @@ public class EditorTools {
                 axes.onSliderChanged();
                 break;
 
-            case "sbgR":
-            case "sbgG":
-            case "sbgB":
-            case "tbgR":
-            case "tbgG":
-            case "tbgB":
+            case "bgR":
+            case "bgG":
+            case "bgB":
                 background.onSliderChanged();
                 break;
 
@@ -525,9 +522,6 @@ public class EditorTools {
 
             case "cloudiness":
             case "hour":
-            case "noSkyR":
-            case "noSkyG":
-            case "noSkyB":
                 sky.onSliderChanged();
                 break;
 

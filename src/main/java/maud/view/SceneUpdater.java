@@ -53,6 +53,7 @@ import jme3utilities.sky.Updater;
 import jme3utilities.ui.Locators;
 import maud.EditorViewPorts;
 import maud.Maud;
+import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedVertex;
@@ -449,8 +450,10 @@ class SceneUpdater {
      * @param cgm which C-G model (not null)
      */
     private static void updateSky(Cgm cgm) {
+        EditorModel model = Maud.getModel();
+        RenderOptions options = model.getScene().getRender();
         SkyControl sky = cgm.getSceneView().getSkyControl();
-        RenderOptions options = Maud.getModel().getScene().getRender();
+
         boolean enable = options.isSkyRendered();
         sky.setEnabled(enable);
         float cloudiness = options.getCloudiness();
@@ -463,7 +466,14 @@ class SceneUpdater {
         updater.setMainMultiplier(mainMultiplier);
 
         if (!enable) {
-            ColorRGBA backgroundColor = options.backgroundColor(null);
+            ColorRGBA backgroundColor;
+            if (cgm == model.getSource()) {
+                backgroundColor = options.sourceBackgroundColor(null);
+            } else {
+                assert cgm == model.getTarget();
+                backgroundColor = options.targetBackgroundColor(null);
+            }
+
             ViewPort viewPort = cgm.getSceneView().getViewPort();
             viewPort.setBackgroundColor(backgroundColor);
         }

@@ -147,6 +147,7 @@ public class Action {
     final static String selectAnimControl = "select animControl";
     final static String selectAxesDragEffect = "select axesDragEffect";
     final static String selectAxesSubject = "select axesSubject";
+    final static String selectBackground = "select background";
     final static String selectBone = "select bone";
     final static String selectBoneChild = "select boneChild";
     final static String selectBoneParent = "select boneParent";

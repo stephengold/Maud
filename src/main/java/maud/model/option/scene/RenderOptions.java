@@ -67,9 +67,13 @@ public class RenderOptions implements Cloneable {
      */
     private boolean skySimulated = true;
     /**
-     * background color when no sky is simulated
+     * background color for the source C-G model with no sky simulation
      */
-    private ColorRGBA background = new ColorRGBA(0.33f, 0.33f, 0.33f, 1f);
+    private ColorRGBA sourceBackground = new ColorRGBA(0.22f, 0.22f, 0.22f, 1f);
+    /**
+     * background color for the target C-G model with no sky simulation
+     */
+    private ColorRGBA targetBackground = new ColorRGBA(0.33f, 0.33f, 0.33f, 1f);
     /**
      * edge filtering mode for shadows
      */
@@ -104,21 +108,6 @@ public class RenderOptions implements Cloneable {
      */
     public boolean areShadowsRendered() {
         return shadowsRendered;
-    }
-
-    /**
-     * Copy the background color when no sky is simulated.
-     *
-     * @param storeResult (modified if not null)
-     * @return color (either storeResult or a new instance)
-     */
-    public ColorRGBA backgroundColor(ColorRGBA storeResult) {
-        if (storeResult == null) {
-            storeResult = new ColorRGBA();
-        }
-        storeResult.set(background);
-
-        return storeResult;
     }
 
     /**
@@ -206,15 +195,6 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
-     * Alter the background color when no sky is simulated.
-     *
-     * @param newColor (not null, unaffected)
-     */
-    public void setBackgroundColor(ColorRGBA newColor) {
-        background.set(newColor);
-    }
-
-    /**
      * Alter the cloudiness of the sky.
      *
      * @param newOpacity (&ge;0, &le;1)
@@ -292,6 +272,24 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
+     * Alter the background color for a source C-G model with no sky simulation.
+     *
+     * @param newColor (not null, unaffected)
+     */
+    public void setSourceBackgroundColor(ColorRGBA newColor) {
+        sourceBackground.set(newColor);
+    }
+
+    /**
+     * Alter the background color for a target C-G model with no sky simulation.
+     *
+     * @param newColor (not null, unaffected)
+     */
+    public void setTargetBackgroundColor(ColorRGBA newColor) {
+        targetBackground.set(newColor);
+    }
+
+    /**
      * Alter how CG-model triangles are rendered.
      *
      * @param newSetting an enum value (not null)
@@ -308,6 +306,36 @@ public class RenderOptions implements Cloneable {
         if (source.isLoaded()) {
             source.updateSceneWireframe();
         }
+    }
+
+    /**
+     * Copy the background color for a source C-G model with no sky simulation.
+     *
+     * @param storeResult (modified if not null)
+     * @return color (either storeResult or a new instance)
+     */
+    public ColorRGBA sourceBackgroundColor(ColorRGBA storeResult) {
+        if (storeResult == null) {
+            storeResult = new ColorRGBA();
+        }
+        storeResult.set(sourceBackground);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the background color for a target C-G model with no sky simulation.
+     *
+     * @param storeResult (modified if not null)
+     * @return color (either storeResult or a new instance)
+     */
+    public ColorRGBA targetBackgroundColor(ColorRGBA storeResult) {
+        if (storeResult == null) {
+            storeResult = new ColorRGBA();
+        }
+        storeResult.set(targetBackground);
+
+        return storeResult;
     }
 
     /**
@@ -354,7 +382,9 @@ public class RenderOptions implements Cloneable {
     @Override
     public RenderOptions clone() throws CloneNotSupportedException {
         RenderOptions clone = (RenderOptions) super.clone();
-        background = background.clone();
+        clone.sourceBackground = sourceBackground.clone();
+        clone.targetBackground = targetBackground.clone();
+
         return clone;
     }
 }

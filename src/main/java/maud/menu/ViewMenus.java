@@ -113,6 +113,9 @@ public class ViewMenus {
             case "Axes":
                 Maud.gui.tools.select("axes");
                 break;
+            case "Background":
+                Maud.gui.tools.select("background");
+                break;
             case "Bounds":
                 Maud.gui.tools.select("bounds");
                 break;

@@ -44,6 +44,8 @@ import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.UserDataType;
+import maud.model.option.Background;
+import maud.model.option.MiscOptions;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.AxesDragEffect;
@@ -130,6 +132,25 @@ public class EnumMenus {
         }
 
         builder.show(ActionPrefix.selectAxesSubject);
+    }
+
+    /**
+     * Display a menu to select an editor background using the "select
+     * background " action prefix.
+     */
+    public static void selectBackground() {
+        MenuBuilder builder = new MenuBuilder();
+
+        MiscOptions options = Maud.getModel().getMisc();
+        Background selectedBackground = options.getBackground();
+        for (Background background : Background.values()) {
+            if (!background.equals(selectedBackground)) {
+                String name = background.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectBackground);
     }
 
     /**

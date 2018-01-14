@@ -135,6 +135,7 @@ public class ShowMenus {
         MenuBuilder builder = new MenuBuilder();
 
         builder.addTool("Axes");
+        builder.addTool("Background");
         builder.addTool("Bounds");
         builder.addTool("Camera");
         builder.addTool("Cursor");

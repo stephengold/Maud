@@ -39,6 +39,7 @@ import maud.menu.ShowMenus;
 import maud.menu.SpatialMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
+import maud.model.option.Background;
 import maud.model.option.ShowBones;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesSubject;
@@ -100,6 +101,10 @@ class SelectANAction {
 
             case Action.selectAxesSubject:
                 EnumMenus.selectAxesSubject();
+                break;
+
+            case Action.selectBackground:
+                EnumMenus.selectBackground();
                 break;
 
             case Action.selectBone:
@@ -200,6 +205,12 @@ class SelectANAction {
                     ActionPrefix.selectAxesSubject);
             AxesSubject value = AxesSubject.valueOf(arg);
             model.getScene().getAxes().setSubject(value);
+
+        } else if (actionString.startsWith(ActionPrefix.selectBackground)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectBackground);
+            Background value = Background.valueOf(arg);
+            model.getMisc().setBackground(value);
 
         } else if (actionString.startsWith(ActionPrefix.selectBone)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectBone);
