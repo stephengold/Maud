@@ -92,13 +92,13 @@ public class Maud extends GuiApplication {
      */
     final private static Dumper dumper = new Dumper();
     /**
-     * controller for the editor screen
-     */
-    final public static EditorScreen gui = new EditorScreen();
-    /**
      * MVC model for the editor screen (live copy)
      */
     private static EditorModel editorModel = new EditorModel();
+    /**
+     * controller for the editor screen
+     */
+    final public static EditorScreen gui = new EditorScreen();
     /**
      * application instance, set by {@link #main(java.lang.String[])}
      */
