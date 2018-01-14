@@ -365,10 +365,12 @@ class SceneUpdater {
                 }
             }
 
+            Updater skyUpdater = view.getSkyControl().getUpdater();
             RenderOptions options = Maud.getModel().getScene().getRender();
             if (options.areShadowsRendered()) {
                 if (dlsr == null) {
                     dlsr = EditorViewPorts.addShadows(vp);
+                    skyUpdater.addShadowRenderer(dlsr);
                 } else {
                     int newMaps = options.getNumSplits();
                     int oldMaps = dlsr.getNumShadowMaps();
@@ -376,7 +378,10 @@ class SceneUpdater {
                     int oldSize = dlsr.getShadowMapSize();
                     if (newMaps != oldMaps || newSize != oldSize) {
                         vp.removeProcessor(dlsr);
+                        skyUpdater.removeShadowRenderer(dlsr);
+
                         dlsr = EditorViewPorts.addShadows(vp);
+                        skyUpdater.addShadowRenderer(dlsr);
                     }
                 }
 
@@ -387,6 +392,7 @@ class SceneUpdater {
 
             } else if (dlsr != null) {
                 vp.removeProcessor(dlsr);
+                skyUpdater.removeShadowRenderer(dlsr);
             }
         }
     }
@@ -456,9 +462,11 @@ class SceneUpdater {
         updater.setAmbientMultiplier(ambientMultiplier);
         updater.setMainMultiplier(mainMultiplier);
 
-        ColorRGBA backgroundColor = options.backgroundColor(null);
-        ViewPort viewPort = cgm.getSceneView().getViewPort();
-        viewPort.setBackgroundColor(backgroundColor);
+        if (!enable) {
+            ColorRGBA backgroundColor = options.backgroundColor(null);
+            ViewPort viewPort = cgm.getSceneView().getViewPort();
+            viewPort.setBackgroundColor(backgroundColor);
+        }
     }
 
     /**
