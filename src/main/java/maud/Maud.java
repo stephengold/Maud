@@ -175,7 +175,7 @@ public class Maud extends GuiApplication {
              * Don't pause on lost focus.  This simplifies debugging by
              * permitting the application to run while minimized.
              */
-            application.setPauseOnLostFocus(false);
+            //application.setPauseOnLostFocus(false);
             /*
              * If the settings dialog should be shown, it was already shown
              * by DisplaySettings.initialize().
