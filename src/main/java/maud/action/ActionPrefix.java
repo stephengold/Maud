@@ -412,7 +412,7 @@ public class ActionPrefix {
     final public static String setMapSize = "set mapSize ";
     /**
      * argument is the number of samples per pixel, formatted using
-     * {@link maud.MaudUtil#describeMsaa(int)}
+     * {@link maud.MaudUtil#describeMsaaFactor(int)}
      */
     final public static String setMsaaFactor = "set msaaFactor ";
     /**

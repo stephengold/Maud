@@ -176,7 +176,7 @@ public class ScoreOptions implements Cloneable {
     }
 
     /**
-     * Alter which bones to show when a bone is selected
+     * Alter which bones to show when a bone is selected.
      *
      * @param newSetting an enum value (not null)
      */
@@ -186,7 +186,7 @@ public class ScoreOptions implements Cloneable {
     }
 
     /**
-     * Alter the background color for the source C-G model..
+     * Alter the background color for the source C-G model.
      *
      * @param newColor (not null, unaffected)
      */
@@ -195,7 +195,7 @@ public class ScoreOptions implements Cloneable {
     }
 
     /**
-     * Alter the background color for the target C-G model..
+     * Alter the background color for the target C-G model.
      *
      * @param newColor (not null, unaffected)
      */

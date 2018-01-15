@@ -365,7 +365,7 @@ public class Selection {
     }
 
     /**
-     * Select a transform axis of the selected bone in the the current pose.
+     * Select a transform axis of the selected bone in the current pose.
      */
     private void selectPoseTransformAxis() {
         // TODO drag transform axis
