@@ -114,6 +114,10 @@ public class ScoreView implements EditorView {
      */
     final private static Logger logger
             = Logger.getLogger(ScoreView.class.getName());
+    /**
+     * message to explain why there are no tracks
+     */
+    final private static String clueMessage = "No animation loaded!";
     // *************************************************************************
     // fields
 
@@ -599,6 +603,22 @@ public class ScoreView implements EditorView {
             attachGnomon();
 
             cgm.getScorePov().updateCamera();
+
+            boolean isBindPose = cgm.getAnimation().isBindPose();
+            if (isBindPose) {
+                /*
+                 * Explain why there are no tracks.
+                 */
+                float compression = cgm.getScorePov().compression();
+                float xWidth = 1f / compression;
+                float lineWidth = 4f + r.labelFont.getLineWidth(clueMessage);
+                float sizeFactor = xWidth / lineWidth;
+                float yHeight = 2.4f * xWidth / r.labelFont.getPreferredSize();
+                float centerY = cgm.getScorePov().getCameraY();
+                float rightX = 1f;
+                attachLabelHorizontal(clueMessage, sizeFactor, r.bgSelected,
+                        rightX, centerY, xWidth, yHeight);
+            }
         }
     }
 
