@@ -93,7 +93,7 @@ If you already have the IDE installed, skip to step 6.
 The hardware and software requirements of the IDE are documented at
 https://jmonkeyengine.github.io/wiki/jme3/requirements.html
 
- 1. Download a jMonkeyEngine 3.1.0 Stable installer from https://github.com/jMonkeyEngine/sdk/releases
+ 1. Download a jMonkeyEngine 3.2.0 Stable installer from https://github.com/jMonkeyEngine/sdk/releases
  2. Install the Software Development Kit (SDK), which includes:
    + the engine,
    + the IDE, which is based on [NetBeans][],
@@ -106,14 +106,14 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
  4. Open the IDE.
  5. The first time you open the IDE, you should update
     all the pre-installed plugins:
-   + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog
+   + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog.
    + Click on the "Update" button to open the "Plugin Installer" wizard.
    + Click on the "Next >" button.
    + After the plugins have downloaded, click "Finish".
    + The IDE will restart.
  6. In order to open the Maud project in the IDE (or in NetBeans),
     you will need to install the "Gradle Support" plugin:
-   + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog
+   + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog.
    + Click on the "Available Plugins" tab.
    + Check the box next to "Gradle Support" in the "Gradle" category.
    + Click on the "Install" button to open the the "Plugin Installer" wizard.
