@@ -54,12 +54,12 @@ import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
 import jme3utilities.MyControl;
+import jme3utilities.MyLight;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.math.MyVector3f;
-import maud.LightUtil;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
@@ -381,9 +381,9 @@ public class SceneView extends SceneViewCore {
         Validate.nonNull(name, "name");
 
         Spatial cgmRoot = getCgmRoot();
-        Light oldLight = LightUtil.findLight(name, cgmRoot);
+        Light oldLight = MyLight.findLight(name, cgmRoot);
         assert oldLight != null;
-        Spatial owner = LightUtil.findOwner(oldLight, cgmRoot);
+        Spatial owner = MyLight.findOwner(oldLight, cgmRoot);
         owner.removeLight(oldLight);
         if (light != null) {
             Light cloneLight = light.clone();

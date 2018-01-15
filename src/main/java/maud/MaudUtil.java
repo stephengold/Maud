@@ -599,25 +599,6 @@ public class MaudUtil {
     }
 
     /**
-     * Test whether b is between a and c. TODO use library
-     *
-     * @param a 1st input value
-     * @param b 2nd input value
-     * @param c 3rd input value
-     * @return true if b is between a and c (inclusive), otherwise false
-     */
-    public static boolean isBetween(int a, int b, int c) {
-        if (a > c) {
-            return a >= b && b >= c;
-        } else if (a < c) {
-            return a <= b && b <= c;
-        } else {
-            assert a == c;
-            return a == b;
-        }
-    }
-
-    /**
      * Test whether the specified spatial is an "extra" spatial.
      *
      * A spatial is "extra" iff neither it nor any of its descendents:

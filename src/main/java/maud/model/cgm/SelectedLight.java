@@ -40,10 +40,10 @@ import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MyLight;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
-import maud.LightUtil;
 
 /**
  * The MVC model of the selected light in a C-G model.
@@ -213,7 +213,7 @@ public class SelectedLight implements JmeCloneable {
      * @return abbreviated name for its class
      */
     public String getType() {
-        String description = LightUtil.describeType(selected);
+        String description = MyLight.describeType(selected);
         return description;
     }
 
@@ -347,7 +347,7 @@ public class SelectedLight implements JmeCloneable {
     void select(Light light, Spatial spatial) {
         assert light != null;
         assert spatial != null;
-        assert LightUtil.findIndex(light, spatial) != noLightIndex;
+        assert MyLight.findIndex(light, spatial) != noLightIndex;
 
         selected = light;
         owner = spatial;

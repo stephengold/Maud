@@ -35,8 +35,8 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import maud.Maud;
-import maud.MaudUtil;
 
 /**
  * Display settings for Maud. Note: not checkpointed!
@@ -159,12 +159,12 @@ public class DisplaySettings {
      */
     public static boolean areValid() {
         int height = cachedSettings.getHeight();
-        if (!MaudUtil.isBetween(minHeight, height, maxHeight)) {
+        if (!MyMath.isBetween(minHeight, height, maxHeight)) {
             return false;
         }
 
         int width = cachedSettings.getWidth();
-        if (!MaudUtil.isBetween(minWidth, width, maxWidth)) {
+        if (!MyMath.isBetween(minWidth, width, maxWidth)) {
             return false;
         }
 

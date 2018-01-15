@@ -51,12 +51,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
+import jme3utilities.MyLight;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.wes.TweenTransforms;
-import maud.LightUtil;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.MyShape;
@@ -255,7 +255,7 @@ public class Cgm implements Cloneable {
     public <T extends Light> int countLights(Class<T> lightType) {
         int count = 0;
         if (isLoaded()) {
-            count = LightUtil.countLights(rootSpatial, lightType);
+            count = MyLight.countLights(rootSpatial, lightType);
         }
 
         assert count >= 0 : count;
@@ -307,7 +307,7 @@ public class Cgm implements Cloneable {
 
         Spatial result = null;
         if (rootSpatial != null) {
-            result = LightUtil.findOwner(light, rootSpatial);
+            result = MyLight.findOwner(light, rootSpatial);
         }
 
         return result;
@@ -633,7 +633,7 @@ public class Cgm implements Cloneable {
      * @return true if found, otherwise false
      */
     public boolean hasLight(String lightName) {
-        Light light = LightUtil.findLight(lightName, rootSpatial);
+        Light light = MyLight.findLight(lightName, rootSpatial);
         if (light == null) {
             return false;
         } else {
@@ -770,7 +770,7 @@ public class Cgm implements Cloneable {
      * @return a new list of pre-existing lights
      */
     <T extends Light> List<T> listLights(Class<T> lightType) {
-        List<T> result = LightUtil.listLights(rootSpatial, lightType, null);
+        List<T> result = MyLight.listLights(rootSpatial, lightType, null);
         return result;
     }
 
