@@ -674,6 +674,8 @@ Maud provides a "History Tool" ("History -> Tool").
 
 YouTube videos about Maud:
 
+  + January 2018 demo (pick-and-drag editing):
+    https://www.youtube.com/watch?v=OLLl7xiuCw0 (8:43)
   + December 2017 demo (importing animated models via glTF):
     https://www.youtube.com/watch?v=tv7QgAtwDCA (7:47)
   + September 2017 spatial animation clip:
