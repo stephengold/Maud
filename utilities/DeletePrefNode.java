@@ -43,7 +43,7 @@ public class DeletePrefNode {
     /**
      * preferences key used to load/save Maud's display settings
      */
-    final private static String maudsKey = "maud.Maud";
+    final private static String maudsKey = "Maud";
 
     /**
      * @param args the command-line arguments

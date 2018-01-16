@@ -74,13 +74,10 @@ public class DisplaySettings {
     final private static String logoAssetPath
             = "Textures/icons/Maud-settings.png";
     /**
-     * key for loading/saving app settings
+     * application name for the window's title bar, which is also the key for
+     * loading/saving app settings from Java's user preferences
      */
-    final private static String preferencesKey = Maud.class.getName();
-    /**
-     * application name for the window's title bar
-     */
-    final private static String windowTitle = "Maud";
+    final private static String title = "Maud";
     // *************************************************************************
     // fields
 
@@ -291,12 +288,12 @@ public class DisplaySettings {
      */
     public static AppSettings initialize() {
         /*
-         * Attempt to load settings from Preferences (persistent storage).
+         * Attempt to load settings from user preferences (persistent storage).
          */
         boolean loadedFromStore = false;
         try {
-            if (Preferences.userRoot().nodeExists(preferencesKey)) {
-                cachedSettings.load(preferencesKey);
+            if (Preferences.userRoot().nodeExists(title)) {
+                cachedSettings.load(title);
                 loadedFromStore = true;
             }
         } catch (BackingStoreException e) {
@@ -308,7 +305,7 @@ public class DisplaySettings {
         cachedSettings.setMinWidth(minWidth);
         cachedSettings.setResizable(false);
         cachedSettings.setSettingsDialogImage(logoAssetPath);
-        cachedSettings.setTitle(windowTitle);
+        cachedSettings.setTitle(title);
 
         if (!loadedFromStore || forceDialog) {
             /*
@@ -371,7 +368,7 @@ public class DisplaySettings {
      */
     public static void save() {
         try {
-            cachedSettings.save(preferencesKey);
+            cachedSettings.save(title);
             areSaved = true;
         } catch (BackingStoreException e) {
             String message = "Display settings were not saved.";
