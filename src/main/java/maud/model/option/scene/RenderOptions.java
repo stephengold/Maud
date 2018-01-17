@@ -249,7 +249,7 @@ public class RenderOptions implements Cloneable {
      *
      * @param newSize new size (in pixels, &gt;0)
      */
-    public void setShadowsMapSize(int newSize) {
+    public void setShadowMapSize(int newSize) {
         Validate.inRange(newSize, "new size", 1, Integer.MAX_VALUE);
         shadowMapSize = newSize;
     }

@@ -295,7 +295,7 @@ class SetAction {
         } else if (actionString.startsWith(ActionPrefix.setMapSize)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMapSize);
             int mapSize = Integer.parseInt(arg);
-            model.getScene().getRender().setShadowsMapSize(mapSize);
+            model.getScene().getRender().setShadowMapSize(mapSize);
 
         } else if (actionString.startsWith(ActionPrefix.setMatParamValue)) {
             arg = MyString.remainder(actionString,
