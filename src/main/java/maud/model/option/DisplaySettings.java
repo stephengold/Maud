@@ -191,7 +191,12 @@ public class DisplaySettings {
             return foundMatch;
 
         } else { // The cached settings specify a windowed display.
-            return true;
+            int bpp = cachedSettings.getBitsPerPixel();
+            if (bpp == 24 || bpp == 32) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -202,7 +207,6 @@ public class DisplaySettings {
      */
     public static boolean canApply() {
         AppSettings current = Maud.getSettings();
-        boolean inFullscreen = current.isFullscreen();
 
         int currentBpp = current.getBitsPerPixel();
         boolean bppChange = currentBpp != getColorDepth();
@@ -214,9 +218,7 @@ public class DisplaySettings {
         boolean msaaChange = currentMsaa != getMsaaFactor();
 
         boolean result;
-        if (inFullscreen != cachedSettings.isFullscreen()) {
-            result = false; // work around JME issue #798 and related issues
-        } else if (bppChange || gammaChange || msaaChange) {
+        if (bppChange || gammaChange || msaaChange) {
             result = false; // work around JME issue #801 and related issues
         } else {
             result = areValid();
