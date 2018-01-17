@@ -179,7 +179,7 @@ and edited.  There's a menu bar across the top and a message bar across the bott
 The rest of the user interface
 is split into overlapping sub-windows called "tools".
 
-![screenshot](figures/fig02.png "Editor Screen with 3 tools visible and a menu active")
+![screenshot](https://i.imgur.com/FA5EX1s.png "Editor Screen with 3 tools visible and a menu active")
 
 #### Tools
 
@@ -210,11 +210,6 @@ what they do:
  + a bone icon to select a bone
  + a pencil icon to immediately edit the loaded map or target model
  + and so forth.
-
-![wrench icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/tool.png)
-![dialog icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/dialog.png)
-![bone icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/bone.png)
-![pencil icon](https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/edit.png)
 
 Menus are context-sensitive, so for instance you'll see many more options
 in the Animation menu when a real animation is loaded than when the model is
@@ -248,7 +243,7 @@ in which case shortcuts described in this document might not work.
 At startup, the Editor Screen displays a "scene" view of a single 3-D model:
 Jaime, from the jme3-testdata library, with no tools selected.
 
-![screenshot](figures/fig01.png "Editor Screen at startup")
+![screenshot](https://i.imgur.com/qRa2dIx.png "Editor Screen at startup")
 
 Startup actions can be customized using the "Settings -> Update startup script"
 menu item (or by editing the "Scripts/startup.js" asset prior to startup)
@@ -454,7 +449,7 @@ up to 10 stacked "sparklines" bracketed by a pair of "finials".
 The sparklines, rendered in 4 colors, represent animation data,
 and the finials help identify which sparkline is which.
 
-![screenshot](figures/fig03.png "a detailed staff in a score view")
+![screenshot](https://i.imgur.com/nnXqZAI.png "a detailed staff in a score view")
 
 Before editing a bone in Maud, you must "select" it.
 In a scene view, the selected bone (if any) is typically indicated by
