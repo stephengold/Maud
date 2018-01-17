@@ -454,11 +454,11 @@ public class ShowMenus {
             }
 
         } else {
-            if (depth != 16) {
-                builder.add("16");
-            }
             if (depth != 24) {
                 builder.add("24");
+            }
+            if (depth != 32) {
+                builder.add("32");
             }
         }
 
