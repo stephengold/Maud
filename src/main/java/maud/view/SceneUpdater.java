@@ -419,19 +419,20 @@ class SceneUpdater {
         SceneOptions options = Maud.getModel().getScene();
         assert !options.getRender().isSkySimulated();
 
-        LightsOptions lights = options.getLights();
-        float ambientLevel = lights.getAmbientLevel();
-        float mainLevel = lights.getMainLevel();
-        float totalLevel = mainLevel + ambientLevel;
-        float shadowIntensity;
-        if (totalLevel == 0f) {
-            shadowIntensity = 0f;
-        } else {
-            shadowIntensity = FastMath.saturate(mainLevel / totalLevel);
-        }
-
         DirectionalLightShadowRenderer dlsr = sceneView.getShadowRenderer();
-        dlsr.setShadowIntensity(shadowIntensity);
+        if (dlsr != null) {
+            LightsOptions lights = options.getLights();
+            float ambientLevel = lights.getAmbientLevel();
+            float mainLevel = lights.getMainLevel();
+            float totalLevel = mainLevel + ambientLevel;
+            float shadowIntensity;
+            if (totalLevel == 0f) {
+                shadowIntensity = 0f;
+            } else {
+                shadowIntensity = FastMath.saturate(mainLevel / totalLevel);
+            }
+            dlsr.setShadowIntensity(shadowIntensity);
+        }
     }
 
     /**
