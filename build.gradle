@@ -11,10 +11,11 @@ gradle.projectsEvaluated {
         options.encoding = 'UTF-8'
     }
     tasks.withType(JavaExec) {
-        //args = ['--forceDialog']
+        //args '--forceDialog'
         classpath sourceSets.main.runtimeClasspath
         //debug true
         enableAssertions true
+        jvmArgs '-XX:+UseConcMarkSweepGC'
     }
 }
 
@@ -58,9 +59,6 @@ dependencies {
     compile 'jme3utilities:SkyControl:0.9.8'
     compile 'jme3utilities:Wes:0.3.0for32'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
-
-    // from jmonkeyengine's bintray repositories:
-    //runtime 'org.jmonkeyengine:jaime:1.0.0'
 
     // from jitpack repositories:
     compile 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
