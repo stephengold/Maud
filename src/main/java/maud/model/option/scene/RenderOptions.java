@@ -65,7 +65,7 @@ public class RenderOptions implements Cloneable {
     /**
      * sky simulation (true &rarr; simulated, false &rarr; not simulated)
      */
-    private boolean skySimulated = true;
+    private boolean skySimulated = false;
     /**
      * background color for the source C-G model with no sky simulation
      */
