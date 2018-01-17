@@ -338,7 +338,7 @@ In orbit mode, the camera orbits a central point.
 In orbit mode, turning the camera also changes its location, making it easy to
 view models from many directions.
 By the default, the central point is the "3-D cursor" -- a user-selected
-location, typically visible as a small, white, 6-pointed star
+location, typically visible as a small, yellow, 6-pointed star
 at the center of the view.
 
 Move the 3-D cursor to a new location by clicking LMB on an object in the view:
