@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
-// select one source-code option
+// select a source-code option
 //sourceCompatibility = '1.7'
 sourceCompatibility = '1.8'
 
@@ -19,7 +19,7 @@ gradle.projectsEvaluated {
     }
 }
 
-// select one version of the Engine
+// select a version of the Engine
 ext.jmonkeyengineVersion = '3.2.0-stable' // from jcenter
 //ext.jmonkeyengineVersion = '3.2.0-SNAPSHOT' // from mavenLocal
 
@@ -41,13 +41,9 @@ repositories {
 
 dependencies {
     // from jcenter (or mavenLocal) repositories:
-    compile "org.jmonkeyengine:jme3-core:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-blender:${jmonkeyengineVersion}"
-    compile "org.jmonkeyengine:jme3-bullet:${jmonkeyengineVersion}"
-    compile "org.jmonkeyengine:jme3-bullet-native:${jmonkeyengineVersion}"
-    compile "org.jmonkeyengine:jme3-desktop:${jmonkeyengineVersion}"
+    runtime "org.jmonkeyengine:jme3-bullet-native:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-lwjgl:${jmonkeyengineVersion}"
-    compile "org.jmonkeyengine:jme3-niftygui:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-plugins:${jmonkeyengineVersion}"
     compile 'ch.qos.logback:logback-classic:1.2.3'
 
