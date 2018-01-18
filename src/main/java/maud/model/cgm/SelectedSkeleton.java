@@ -235,11 +235,9 @@ public class SelectedSkeleton implements JmeCloneable {
     public List<Integer> findAnimatedGeometry() {
         List<Integer> result = null;
         Spatial spatial = findSpatial();
-        if (spatial != null) {
-            Geometry geometry = MySpatial.findAnimatedGeometry(spatial);
-            if (geometry != null) {
-                result = cgm.findSpatial(geometry);
-            }
+        Geometry geometry = MySpatial.findAnimatedGeometry(spatial);
+        if (geometry != null) {
+            result = cgm.findSpatial(geometry);
         }
 
         return result;
@@ -248,7 +246,7 @@ public class SelectedSkeleton implements JmeCloneable {
     /**
      * Find the spatial associated with the selected skeleton.
      *
-     * @return the pre-existing instance, or null if none
+     * @return the pre-existing instance (not null)
      */
     Spatial findSpatial() {
         Boolean selectedSpatialFlag = false;
