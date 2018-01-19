@@ -800,9 +800,10 @@ public class SceneViewCore
      * each instance.)
      *
      * @param ignored not used
+     * @param tpf time interval between render passes (in seconds, &ge;0)
      */
     @Override
-    public void update(Cgm ignored) {
+    public void update(Cgm ignored, float tpf) {
         if (skyControl == null) {  // TODO add an init method
             /*
              * Initialize the scene graph on first update.
@@ -822,7 +823,7 @@ public class SceneViewCore
             updateParentShadowMode();
             updateParentTransform();
             updatePose();
-            SceneUpdater.update(cgm);
+            SceneUpdater.update(cgm, tpf);
             skyControl.setCamera(camera);
         }
     }
@@ -1221,7 +1222,7 @@ public class SceneViewCore
          */
         ScenePov pov = getPov();
         pov.setCursorLocation(cursorStartLocation);
-        pov.setCameraLocation(cameraStartLocation);
+        pov.setLocation(cameraStartLocation);
 
         projectile.delete();
     }

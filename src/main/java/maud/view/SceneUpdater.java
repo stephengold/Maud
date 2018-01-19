@@ -188,11 +188,12 @@ class SceneUpdater {
      * each scene view.
      *
      * @param viewCgm which C-G model occupies the view (not null)
+     * @param tpf time interval between render passes (in seconds, &ge;0)
      */
-    static void update(Cgm viewCgm) {
+    static void update(Cgm viewCgm, float tpf) {
         assert viewCgm.getSceneView().getCamera() != null;
 
-        viewCgm.getScenePov().updateCamera();
+        viewCgm.getScenePov().update(tpf);
         updateAxes(viewCgm);
         updateBounds(viewCgm);
         updateCursor(viewCgm);
@@ -259,7 +260,7 @@ class SceneUpdater {
             visualizer.setEnabled(true);
 
             Vector3f axesOrigin = transform.getTranslation();
-            Vector3f cameraLocation = cgm.getScenePov().cameraLocation(null);
+            Vector3f cameraLocation = cgm.getScenePov().location(null);
             float distance = axesOrigin.distance(cameraLocation);
             float length = 0.2f * distance;
             visualizer.setAxisLength(length);

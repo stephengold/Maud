@@ -279,7 +279,7 @@ public class SceneView extends SceneViewCore {
         assert !MySpatial.isIgnoringTransforms(axesSpatial);
         Vector3f tailLocation = axesSpatial.getWorldTranslation();
         Vector3f tipLocation = axesVisualizer.tipLocation(axisIndex);
-        Vector3f cameraLocation = getPov().cameraLocation(null);
+        Vector3f cameraLocation = getPov().location(null);
         float tailDS = cameraLocation.distanceSquared(tailLocation);
         float tipDS = cameraLocation.distanceSquared(tipLocation);
         if (tipDS > tailDS) {

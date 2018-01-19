@@ -33,6 +33,7 @@ import com.jme3.renderer.Camera;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
 import maud.model.option.scene.CameraOptions;
@@ -41,85 +42,354 @@ import maud.model.option.scene.OrbitCenter;
 import maud.view.SceneView;
 
 /**
- * The positions of the camera and 3-D cursor in a scene view.
+ * The positions of the POV and 3-D cursor in a scene view.
  *
  * @author Stephen Gold sgold@sonic.net
  */
 public class ScenePov implements Cloneable, Pov {
     // *************************************************************************
-    // constants and loggers
+    // constants and loggers TODO move some of these to CameraOptions
 
     /**
      * rate to dolly in/out (orbit mode only, percentage points per wheel notch)
      */
     final private static float dollyInOutRate = 15f;
     /**
+     * maximum rotation speed of a scene POV when not directly controlled by the
+     * user (in radians per second)
+     */
+    final private static float maxRotationRate = 1f;
+    /**
      * message logger for this class
      */
     final private static Logger logger
             = Logger.getLogger(ScenePov.class.getName());
     /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_Y}
+     * initial look direction for scene POVs (unit vector in world coordinates)
      */
-    final private static Vector3f yAxis = new Vector3f(0f, 1f, 0f);
+    final private static Vector3f initialLookDirection
+            = new Vector3f(0.78614616f, -0.3275609f, -0.52409756f);
+    /**
+     * "up" direction for scene POVs (unit vector in world coordinates)
+     */
+    final private static Vector3f upDirection = new Vector3f(0f, 1f, 0f);
     // *************************************************************************
     // fields
 
+    /**
+     * if true, the POV is temporarily pivoting (despite being in orbit mode)
+     * because either (1) the center recently moved or (2) the POV recently
+     * transitioned from fly mode
+     */
+    private boolean isPivoting = false;
     /**
      * C-G model using this POV (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
-     * movement rate (fly mode only, world units per scroll wheel notch)
+     * POV movement rate for fly mode (world units per scroll wheel notch)
      */
     private float flyRate = 0.1f;
     /**
-     * direction the scene camera points (unit vector in world coordinates)
-     */
-    private Vector3f cameraDirection
-            = new Vector3f(0.78614616f, -0.3275609f, -0.52409756f);
-    /**
-     * location of the scene camera (in world coordinates)
-     */
-    private Vector3f cameraLocation = new Vector3f();
-    /**
-     * the location of the 3-D cursor (in world coordinates)
+     * location of the 3-D cursor (in world coordinates) TODO move to new class
      */
     private Vector3f cursorLocation = new Vector3f();
+    /**
+     * direction the POV will eventually look (unit vector in world coordinates)
+     */
+    private Vector3f directionalGoal = initialLookDirection.clone();
+    /**
+     * location of the center on the previous update (in world coordinates)
+     */
+    private Vector3f lastCenterLocation = new Vector3f();
+    /**
+     * direction the POV is looking (unit vector in world coordinates)
+     */
+    private Vector3f lookDirection = initialLookDirection.clone();
+    /**
+     * location of the POV (in world coordinates)
+     */
+    private Vector3f povLocation = new Vector3f();
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Aim the camera at the center without changing the location of either.
-     * (Orbit mode only)
-     */
-    public void aim() {
-        assert Maud.getModel().getScene().getCamera().isOrbitMode();
-        setCameraLocation(cameraLocation.clone());
-    }
-
-    /**
-     * Copy the location of the camera.
+     * Copy the location of the 3-D cursor.
      *
      * @param storeResult (modified if not null)
      * @return world coordinates (either storeResult or a new vector)
      */
-    public Vector3f cameraLocation(Vector3f storeResult) {
+    public Vector3f cursorLocation(Vector3f storeResult) {
         if (storeResult == null) {
             storeResult = new Vector3f();
         }
-        storeResult.set(cameraLocation);
+
+        storeResult.set(cursorLocation);
+        return storeResult;
+    }
+
+    /**
+     * Move (or turn) the POV to a horizontal orientation.
+     */
+    public void goHorizontal() {
+        if (Maud.getModel().getScene().getCamera().isOrbitMode()) {
+            float azimuth = azimuth();
+            ScenePov.this.setOrbitGoal(0f, azimuth);
+        } else {
+            if (lookDirection.x != 0f || lookDirection.z != 0f) {
+                directionalGoal.set(lookDirection.x, 0f, lookDirection.z);
+                MyVector3f.normalizeLocal(directionalGoal);
+            }
+        }
+    }
+
+    /**
+     * Copy the location of the POV.
+     *
+     * @param storeResult (modified if not null)
+     * @return world coordinates (either storeResult or a new vector)
+     */
+    public Vector3f location(Vector3f storeResult) {
+        if (storeResult == null) {
+            storeResult = new Vector3f();
+        }
+        storeResult.set(povLocation);
 
         return storeResult;
     }
 
     /**
-     * Copy the location of the center for orbit mode.
+     * Calculate the distance between the POV and the center.
+     *
+     * @return distance (in world units, &ge;0)
+     */
+    public float range() {
+        Vector3f centerLocation = centerLocation(null);
+        float range = povLocation.distance(centerLocation);
+
+        assert range >= 0f : range;
+        return range;
+    }
+
+    /**
+     * Relocate the 3-D cursor.
+     *
+     * @param newLocation (in world coordinates, not null, unaffected)
+     */
+    public void setCursorLocation(Vector3f newLocation) {
+        Validate.nonNull(newLocation, "new location");
+
+        cursorLocation.set(newLocation);
+    }
+
+    /**
+     * Reposition the POV after loading a C-G model.
+     *
+     * @param newLocation (not null, unaffected)
+     */
+    public void setLocation(Vector3f newLocation) {
+        Validate.nonNull(newLocation, "new location");
+
+        povLocation.set(newLocation);
+        if (Maud.getModel().getScene().getCamera().isOrbitMode()) {
+            setOrbitGoal();
+        }
+    }
+
+    /**
+     * For orbit mode, update the directional goal after transitioning from fly
+     * mode and/or relocating of the center and/or POV. This typically causes
+     * the POV start pivoting.
+     */
+    public void setOrbitGoal() {
+        assert Maud.getModel().getScene().getCamera().isOrbitMode();
+
+        Vector3f centerLocation = centerLocation(null);
+        Vector3f offset = centerLocation.subtract(povLocation);
+        if (!MyVector3f.isZero(offset)) {
+            float elevationAngle = MyVector3f.altitude(offset);
+            float azimuthAngle = MyVector3f.azimuth(offset);
+            ScenePov.this.setOrbitGoal(elevationAngle, azimuthAngle);
+            isPivoting = true;
+        }
+    }
+
+    /**
+     * Calculate a uniform scale factor for the 3-D cursor.
+     *
+     * @return world scale factor (&ge;0)
+     */
+    public float worldScaleForCursor() {
+        float range = povLocation.distance(cursorLocation);
+        DddCursorOptions cursor = Maud.getModel().getScene().getCursor();
+        float worldScale = cursor.getSize() * range;
+
+        assert worldScale >= 0f : worldScale;
+        return worldScale;
+    }
+    // *************************************************************************
+    // Cloneable methods
+
+    /**
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
+     */
+    @Override
+    public ScenePov clone() throws CloneNotSupportedException {
+        ScenePov clone = (ScenePov) super.clone();
+        clone.cursorLocation = cursorLocation.clone();
+        clone.directionalGoal = directionalGoal.clone();
+        clone.lastCenterLocation = lastCenterLocation.clone();
+        clone.lookDirection = lookDirection.clone();
+        clone.povLocation = povLocation.clone();
+
+        return clone;
+    }
+    // *************************************************************************
+    // Pov methods
+
+    /**
+     * Move this POV forward/backward when the scroll wheel is turned.
+     *
+     * @param amount scroll-wheel notches (non-zero)
+     */
+    @Override
+    public void moveBackward(float amount) {
+        Validate.nonZero(amount, "amount");
+
+        CameraOptions options = Maud.getModel().getScene().getCamera();
+        if (options.isOrbitMode()) {
+            if (!isPivoting) {
+                float rate = 1f - dollyInOutRate / 100f;
+                float factor = FastMath.pow(rate, amount);
+                float range = range() * factor;
+                float elevationAngle = elevationAngle();
+                float azimuthAngle = azimuth();
+                setOrbitLocation(elevationAngle, azimuthAngle, range);
+            }
+        } else {
+            Vector3f offset = lookDirection.mult(amount * flyRate);
+            povLocation.addLocal(offset);
+        }
+    }
+
+    /**
+     * Move this POV left/right when the mouse is dragged left/right.
+     *
+     * @param amount drag component (non-zero)
+     */
+    @Override
+    public void moveLeft(float amount) {
+        Validate.nonZero(amount, "amount");
+
+        if (Maud.getModel().getScene().getCamera().isOrbitMode()) {
+            float azimuthAngle = azimuth() + 2f * amount;
+            float elevationAngle = elevationAngle();
+            ScenePov.this.setOrbitGoal(elevationAngle, azimuthAngle);
+        } else {
+            Quaternion rotate = new Quaternion();
+            rotate.fromAngleAxis(amount, upDirection);
+            rotate.mult(lookDirection, directionalGoal);
+        }
+        lookDirection.set(directionalGoal);
+    }
+
+    /**
+     * Move this POV up/down when the mouse is dragged up/down.
+     *
+     * @param amount drag component (non-zero)
+     */
+    @Override
+    public void moveUp(float amount) {
+        Validate.nonZero(amount, "amount");
+
+        CameraOptions options = Maud.getModel().getScene().getCamera();
+        if (options.isOrbitMode()) {
+            float azimuthAngle = azimuth();
+            float elevationAngle = elevationAngle() - amount;
+            ScenePov.this.setOrbitGoal(elevationAngle, azimuthAngle);
+        } else {
+            Vector3f pitchAxis = pitchAxis();
+            Quaternion rotate = new Quaternion();
+            rotate.fromAngleAxis(amount, pitchAxis);
+            rotate.mult(lookDirection, directionalGoal);
+        }
+        lookDirection.set(directionalGoal);
+    }
+
+    /**
+     * Alter which C-G model uses this POV. (Invoked only during initialization
+     * and cloning.)
+     *
+     * @param newCgm (not null, alias created)
+     */
+    @Override
+    public void setCgm(Cgm newCgm) {
+        assert newCgm != null;
+        cgm = newCgm;
+    }
+
+    /**
+     * Update this POV and its camera.
+     *
+     * @param tpf time interval between render passes (in seconds, &ge;0)
+     */
+    @Override
+    public void update(float tpf) {
+        CameraOptions options = Maud.getModel().getScene().getCamera();
+
+        if (options.isOrbitMode()) {
+            Vector3f centerLocation = centerLocation(null);
+            if (!centerLocation.equals(lastCenterLocation)) {
+                /*
+                 * Pivot toward the new center.
+                 */
+                setOrbitGoal();
+                lastCenterLocation.set(centerLocation);
+            }
+        }
+
+        updateLookDirection(tpf);
+
+        if (options.isOrbitMode() && !isPivoting) {
+            /*
+             * Update the POV's location so it looks toward the center.
+             */
+            float range = range();
+            Vector3f offset = lookDirection.mult(range);
+            centerLocation(povLocation);
+            povLocation.subtractLocal(offset);
+        }
+
+        SceneView view = cgm.getSceneView();
+        Camera camera = view.getCamera();
+        if (camera != null) {
+            updateCamera(camera);
+        }
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Calculate the POV's azimuth.
+     *
+     * @return the azimuth of its look direction, measured clockwise from +X
+     * around the +Y axis (in radians)
+     */
+    private float azimuth() {
+        float azimuth = MyVector3f.azimuth(lookDirection);
+        return azimuth;
+    }
+
+    /**
+     * Calculate the location of the center.
      *
      * @param storeResult (modified if not null)
      * @return world coordinates (either storeResult or a new vector)
      */
-    public Vector3f centerLocation(Vector3f storeResult) {
+    private Vector3f centerLocation(Vector3f storeResult) {
         if (storeResult == null) {
             storeResult = new Vector3f();
         }
@@ -162,310 +432,24 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
-     * Copy the location of the 3-D cursor.
+     * Calculate the POV's elevation angle.
      *
-     * @param storeResult (modified if not null)
-     * @return world coordinates (either storeResult or a new vector)
-     */
-    public Vector3f cursorLocation(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-        storeResult.set(cursorLocation);
-
-        return storeResult;
-    }
-
-    /**
-     * Move/turn the camera to a horizontal orientation.
-     */
-    public void goHorizontal() {
-        if (Maud.getModel().getScene().getCamera().isOrbitMode()) {
-            float azimuthAngle = azimuthAngle();
-            float range = range();
-            setOrbitMode(0f, azimuthAngle, range);
-
-        } else {
-            if (cameraDirection.x != 0f || cameraDirection.z != 0f) {
-                cameraDirection.y = 0f;
-                MyVector3f.normalizeLocal(cameraDirection);
-            }
-        }
-    }
-
-    /**
-     * Calculate the camera's distance from the center.
-     *
-     * @return distance (in world units, &ge;0)
-     */
-    public float range() {
-        Vector3f centerLocation = centerLocation(null);
-        float range = cameraLocation.distance(centerLocation);
-        assert range >= 0f : range;
-        return range;
-    }
-
-    /**
-     * Alter the camera location.
-     *
-     * @param newLocation (not null, unaffected)
-     */
-    public void setCameraLocation(Vector3f newLocation) {
-        Validate.nonNull(newLocation, "location");
-
-        if (Maud.getModel().getScene().getCamera().isOrbitMode()) {
-            /*
-             * Calculate the new offset relative to the center.
-             */
-            Vector3f centerLocation = centerLocation(null);
-            Vector3f offset = newLocation.subtract(centerLocation);
-            if (!MyVector3f.isZero(offset)) {
-                /*
-                 * Convert to spherical coordinates.
-                 */
-                float elevationAngle = MyVector3f.altitude(offset);
-                float azimuthAngle = MyVector3f.azimuth(offset);
-                float range = offset.length();
-                setOrbitMode(elevationAngle, azimuthAngle, range);
-            }
-
-        } else {
-            cameraLocation.set(newLocation);
-        }
-    }
-
-    /**
-     * Alter the location of the 3-D cursor.
-     *
-     * @param newLocation (in world coordinates, not null, unaffected)
-     */
-    public void setCursorLocation(Vector3f newLocation) {
-        Validate.nonNull(newLocation, "new location");
-        cursorLocation.set(newLocation);
-    }
-
-    /**
-     * Calculate a scale factor for the 3-D cursor.
-     *
-     * @return world scale factor (&ge;0)
-     */
-    public float worldScaleForCursor() {
-        float range = range();
-        DddCursorOptions cursor = Maud.getModel().getScene().getCursor();
-        float worldScale = cursor.getSize() * range;
-
-        assert worldScale >= 0f : worldScale;
-        return worldScale;
-    }
-    // *************************************************************************
-    // Object methods
-
-    /**
-     * Create a deep copy of this object.
-     *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if the superclass isn't cloneable
-     */
-    @Override
-    public ScenePov clone() throws CloneNotSupportedException {
-        ScenePov clone = (ScenePov) super.clone();
-        clone.cursorLocation = cursorLocation.clone();
-        clone.cameraDirection = cameraDirection.clone();
-        clone.cameraLocation = cameraLocation.clone();
-
-        return clone;
-    }
-    // *************************************************************************
-    // Pov methods
-
-    /**
-     * Zoom the camera and/or move it forward/backward when the scroll wheel is
-     * turned.
-     *
-     * @param amount scroll wheel notches
-     */
-    @Override
-    public void moveBackward(float amount) {
-        CameraOptions options = Maud.getModel().getScene().getCamera();
-        if (options.isOrbitMode()) {
-            float rate = 1f + dollyInOutRate / 100f;
-            float factor = FastMath.pow(rate, amount);
-            float range = range();
-            range = options.clampRange(range * factor);
-
-            float elevationAngle = elevationAngle();
-            float azimuthAngle = azimuthAngle();
-            setOrbitMode(elevationAngle, azimuthAngle, range);
-
-        } else {
-            Vector3f offset = cameraDirection.mult(amount * flyRate);
-            cameraLocation.addLocal(offset);
-        }
-    }
-
-    /**
-     * Move the camera left/right when the mouse is dragged left/right.
-     *
-     * @param amount drag component
-     */
-    @Override
-    public void moveLeft(float amount) {
-        if (Maud.getModel().getScene().getCamera().isOrbitMode()) {
-            float azimuthAngle = azimuthAngle();
-            azimuthAngle += 2f * amount;
-
-            float elevationAngle = elevationAngle();
-            float range = range();
-            setOrbitMode(elevationAngle, azimuthAngle, range);
-
-        } else {
-            Quaternion rotate = new Quaternion();
-            rotate.fromAngleAxis(amount, yAxis);
-            rotate.multLocal(cameraDirection);
-        }
-    }
-
-    /**
-     * Move the camera up/down when the mouse is dragged up/down.
-     *
-     * @param amount drag component
-     */
-    @Override
-    public void moveUp(float amount) {
-        CameraOptions options = Maud.getModel().getScene().getCamera();
-        if (options.isOrbitMode()) {
-            float elevationAngle = elevationAngle();
-            elevationAngle += amount;
-            elevationAngle = options.clampElevation(elevationAngle);
-
-            float azimuthAngle = azimuthAngle();
-            float range = range();
-            setOrbitMode(elevationAngle, azimuthAngle, range);
-
-        } else {
-            Vector3f pitchAxis = pitchAxis();
-            Quaternion rotate = new Quaternion();
-            rotate.fromAngleAxis(amount, pitchAxis);
-            rotate.multLocal(cameraDirection);
-        }
-    }
-
-    /**
-     * Alter which C-G model uses this POV. (Invoked only during initialization
-     * and cloning.)
-     *
-     * @param newCgm (not null, alias created)
-     */
-    @Override
-    public void setCgm(Cgm newCgm) {
-        assert newCgm != null;
-        cgm = newCgm;
-    }
-
-    /**
-     * Update the camera for this POV.
-     */
-    @Override
-    public void updateCamera() {
-        CameraOptions options = Maud.getModel().getScene().getCamera();
-        if (options.isOrbitMode()) {
-            aim(); // in case the center has moved
-        }
-
-        SceneView view = cgm.getSceneView();
-        Camera camera = view.getCamera();
-        if (camera != null) {
-            camera.setLocation(cameraLocation);
-            Quaternion orientation = cameraOrientation(null);
-            camera.setRotation(orientation);
-            /*
-             * Use the view ratio in case the boundary is being dragged.
-             */
-            float aspectRatio = MyCamera.viewAspectRatio(camera);
-            float range = range();
-            float far = 10f * range;
-            float near = 0.01f * range;
-            boolean parallel = options.isParallelProjection();
-            if (parallel) {
-                float halfHeight = 0.4f * range;
-                float halfWidth = aspectRatio * halfHeight;
-                camera.setFrustumBottom(-halfHeight);
-                camera.setFrustumFar(far);
-                camera.setFrustumLeft(-halfWidth);
-                camera.setFrustumNear(near);
-                camera.setFrustumRight(halfWidth);
-                camera.setFrustumTop(halfHeight);
-                camera.setParallelProjection(true);
-            } else {
-                float yDegrees = options.getFrustumYDegrees();
-                camera.setFrustumPerspective(yDegrees, aspectRatio, near, far);
-            }
-        }
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Calculate the camera's azimuth angle from the center.
-     *
-     * @return azimuth angle of the camera, measured clockwise from +X around
-     * the center's +Y axis (in radians)
-     */
-    private float azimuthAngle() {
-        Vector3f centerLocation = centerLocation(null);
-        Vector3f offset = cameraLocation.subtract(centerLocation);
-        float azimuthAngle;
-        if (MyVector3f.isZero(offset)) {
-            azimuthAngle = 0f;
-        } else {
-            azimuthAngle = MyVector3f.azimuth(offset);
-        }
-
-        return azimuthAngle;
-    }
-
-    /**
-     * Calculate the orientation of the camera.
-     *
-     * @param storeResult (modified if not null)
-     * @return rotation relative to world coordinates (either storeResult or a
-     * new instance)
-     */
-    private Quaternion cameraOrientation(Quaternion storeResult) {
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
-        storeResult.lookAt(cameraDirection, yAxis);
-
-        return storeResult;
-    }
-
-    /**
-     * Calculate the camera's elevation angle from the center.
-     *
-     * @return elevation angle of camera, measured upward from the center's X-Z
-     * plane (in radians)
+     * @return the elevation angle of its look direction, measured upward from
+     * the X-Z plane (in radians)
      */
     private float elevationAngle() {
-        Vector3f centerLocation = centerLocation(null);
-        Vector3f offset = cameraLocation.subtract(centerLocation);
-        float elevationAngle;
-        if (MyVector3f.isZero(offset)) {
-            elevationAngle = 0f;
-        } else {
-            elevationAngle = MyVector3f.altitude(offset);
-        }
-
+        float elevationAngle = MyVector3f.altitude(lookDirection);
         return elevationAngle;
     }
 
     /**
-     * Calculate the camera's pitch axis.
+     * Calculate the POV's pitch axis.
      *
-     * @return a new unit vector
+     * @return a new unit vector, orthogonal to both its look direction and "up"
+     * direction
      */
     private Vector3f pitchAxis() {
-        Vector3f result = cameraDirection.cross(yAxis);
+        Vector3f result = lookDirection.cross(upDirection);
         assert !MyVector3f.isZero(result);
         MyVector3f.normalizeLocal(result);
 
@@ -473,33 +457,108 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
-     * Alter the location and direction in orbit mode, based on the elevation
-     * angle, azimuth, and range.
+     * In orbit mode, set the directional goal using the specified elevation
+     * angle and azimuth, provided the POV is not pivoting.
      *
-     * @param elevationAngle elevation angle of camera, measured upward from the
-     * center's X-Z plane (in radians)
-     * @param azimuthAngle azimuth angle of the camera, measured clockwise
-     * around the center's +Y axis (in radians)
-     * @param range (in world units, &ge;0)
+     * @param elevationAngle elevation angle of the goal, measured upward from
+     * the X-Z plane (in radians)
+     * @param aziumth azimuth of the goal, measured clockwise from +X around the
+     * axis (in radians)
      */
-    private void setOrbitMode(float elevationAngle, float azimuthAngle,
-            float range) {
-        Validate.nonNegative(range, "range");
+    private void setOrbitGoal(float elevationAngle, float aziumth) {
         CameraOptions options = Maud.getModel().getScene().getCamera();
         assert options.isOrbitMode();
-        /*
-         * Limit the range and elevation angle.
-         */
-        float clampedRange = options.clampRange(range);
+
+        if (!isPivoting) {
+            float clampedElevation = options.clampElevation(elevationAngle);
+            Vector3f direction
+                    = MyVector3f.fromAltAz(clampedElevation, aziumth);
+            directionalGoal.set(direction);
+        }
+    }
+
+    /**
+     * In orbit mode and not pivoting, set the POV's location using the
+     * specified elevation angle, azimuth, and range.
+     *
+     * @param elevationAngle elevation angle of the center, measured upward from
+     * the POV's X-Z plane (in radians)
+     * @param azimuth azimuth of the center, measured clockwise from +X around
+     * the POV's +Y axis (in radians)
+     * @param range distance to the center (in world units, &ge;0)
+     */
+    private void setOrbitLocation(float elevationAngle, float azimuth,
+            float range) {
+        assert range >= 0f : range;
+        CameraOptions options = Maud.getModel().getScene().getCamera();
+        assert options.isOrbitMode();
+        assert !isPivoting;
+
         float clampedElevation = options.clampElevation(elevationAngle);
+        Vector3f direction = MyVector3f.fromAltAz(clampedElevation, azimuth);
+        centerLocation(povLocation);
+        float clampedRange = options.clampRange(range);
+        MyVector3f.accumulateScaled(povLocation, direction, clampedRange);
+    }
 
-        Vector3f direction
-                = MyVector3f.fromAltAz(clampedElevation, azimuthAngle);
-        Vector3f offset = direction.mult(clampedRange);
-        centerLocation(cameraLocation);
-        cameraLocation.addLocal(offset);
+    /**
+     * Update the camera of this POV.
+     *
+     * @param camera the camera (not null)
+     */
+    private void updateCamera(Camera camera) {
+        camera.setLocation(povLocation);
+        camera.lookAtDirection(lookDirection, upDirection);
+        // Use the view's aspect ratio in case the boundary is being dragged.
+        float aspectRatio = MyCamera.viewAspectRatio(camera);
 
-        direction.negateLocal();
-        cameraDirection.set(direction);
+        float range;
+        CameraOptions options = Maud.getModel().getScene().getCamera();
+        if (options.isOrbitMode()) {
+            range = range();
+        } else {
+            range = povLocation.length();
+            range = options.clampRange(range);
+        }
+        float far = 10f * range;
+        float near = 0.01f * range;
+
+        boolean parallel = options.isParallelProjection();
+        if (parallel) {
+            float halfHeight = options.getFrustumYHalfTangent() * range;
+            float halfWidth = aspectRatio * halfHeight;
+            camera.setFrustumBottom(-halfHeight);
+            camera.setFrustumFar(far);
+            camera.setFrustumLeft(-halfWidth);
+            camera.setFrustumNear(near);
+            camera.setFrustumRight(halfWidth);
+            camera.setFrustumTop(halfHeight);
+            camera.setParallelProjection(true);
+        } else {
+            float yDegrees = options.getFrustumYDegrees();
+            camera.setFrustumPerspective(yDegrees, aspectRatio, near, far);
+        }
+    }
+
+    /**
+     * Update the look direction, turning the POV toward its goal at a limited
+     * rate.
+     *
+     * @param tpf time interval between render passes (in seconds, &ge;0)
+     */
+    private void updateLookDirection(float tpf) {
+        double dot = MyVector3f.dot(lookDirection, directionalGoal);
+        dot = MyMath.clamp(dot, 1.0);
+        float angle = (float) Math.acos(dot);
+        float maxAngle = maxRotationRate * tpf;
+        if (angle <= maxAngle) {
+            lookDirection.set(directionalGoal);
+            isPivoting = false;
+        } else {
+            float fraction = maxAngle / angle;
+            MyVector3f.lerp(fraction, lookDirection, directionalGoal,
+                    lookDirection);
+        }
+        lookDirection.normalizeLocal();
     }
 }

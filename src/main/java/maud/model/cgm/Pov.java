@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -33,29 +33,29 @@ package maud.model.cgm;
  */
 public interface Pov {
     /**
-     * Zoom the camera and/or move it forward/backward when the scroll wheel is
+     * Zoom the POV and/or move it forward/backward when the scroll wheel is
      * turned.
      *
-     * @param amount scroll wheel notches
+     * @param amount scroll-wheel notches (non-zero)
      */
     void moveBackward(float amount);
 
     /**
-     * Move the camera left/right when the mouse is dragged from left/right.
+     * Move the POV left/right when the mouse is dragged from left/right.
      *
-     * @param amount drag component
+     * @param amount drag component (non-zero)
      */
     void moveLeft(float amount);
 
     /**
-     * Move the camera up/down when the mouse is dragged up/down.
+     * Move the POV up/down when the mouse is dragged up/down.
      *
-     * @param amount drag component
+     * @param amount drag component (non-zero)
      */
     void moveUp(float amount);
 
     /**
-     * Alter which C-G model uses this POV. (Invoked only during initialization
+     * Alter which C-G model uses the POV. (Invoked only during initialization
      * and cloning.)
      *
      * @param newCgm (not null, alias created)
@@ -63,7 +63,9 @@ public interface Pov {
     void setCgm(Cgm newCgm);
 
     /**
-     * Update the camera used to render this POV.
+     * Update the POV and its camera.
+     *
+     * @param tpf time interval between render passes (in seconds, &ge;0)
      */
-    void updateCamera();
+    void update(float tpf);
 }

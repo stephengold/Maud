@@ -663,10 +663,10 @@ public class EditorScreen extends GuiScreenController {
         /*
          * Update the views.
          */
-        source.getSceneView().update(null);
-        target.getSceneView().update(null);
-        source.getScoreView().update(source);
-        target.getScoreView().update(target);
+        source.getSceneView().update(null, tpf);
+        target.getSceneView().update(null, tpf);
+        source.getScoreView().update(source, tpf);
+        target.getScoreView().update(target, tpf);
     }
     // *************************************************************************
     // private methods
@@ -724,9 +724,13 @@ public class EditorScreen extends GuiScreenController {
                 dragPov = mousePov();
             } else {
                 float dx = Mouse.getDX();
+                if (dx != 0f) {
+                    dragPov.moveLeft(dx / 1024f);
+                }
                 float dy = Mouse.getDY();
-                dragPov.moveUp(-dy / 1024f);
-                dragPov.moveLeft(dx / 1024f);
+                if (dy != 0f) {
+                    dragPov.moveUp(-dy / 1024f);
+                }
             }
         } else {
             dragPov = null;

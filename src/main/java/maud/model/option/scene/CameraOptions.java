@@ -31,12 +31,13 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
 
 /**
- * Options for cameras in scene views.
+ * Options for cameras and POVs in scene views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -45,18 +46,19 @@ public class CameraOptions implements Cloneable {
     // constants and loggers
 
     /**
-     * vertical angle of the frustum (in degrees of arc, &gt;0)
+     * vertical angle for camera frusta (in degrees of arc, &gt;0)
      */
     final private static float frustumYDegrees = 45f;
     /**
-     * Disorientation occurs when the camera looks straight up, so we limit its
-     * elevation angle to just under 90 degrees. (orbit mode only, in radians)
+     * Disorientation occurs when POVs look straight up, so we limit their
+     * elevation angles. (orbit mode only, in radians)
      */
-    final private static float maxElevationAngle = 1.5f;
+    final private static float maxElevationAngle = 0.5f;
     /**
-     * minimum elevation angle (orbit mode only, in radians)
+     * Disorientation occurs when POVs look straight down, so we limit their
+     * elevation angles. (orbit mode only, in radians)
      */
-    final private static float minElevationAngle = -0.5f;
+    final private static float minElevationAngle = -1.5f;
     /**
      * message logger for this class
      */
@@ -66,32 +68,32 @@ public class CameraOptions implements Cloneable {
     // fields
 
     /**
-     * maximum distance of camera from the center (orbit mode only, in world
-     * units, &gt;0)
+     * maximum distance of a POV from its center in orbit mode (in world units,
+     * &gt;0)
      */
     private float maxRange = 10f;
     /**
-     * minimum distance of camera from the center (orbit mode only, in world
-     * units, &gt;0)
+     * minimum distance of a POV from its center in orbit mode (in world units,
+     * &gt;0)
      */
     private float minRange = 0.2f;
     /**
-     * movement mode (not null)
+     * movement mode for all scene POVs (not null)
      */
     private MovementMode movementMode = MovementMode.Orbit;
     /**
-     * centering option (orbit mode only, not null)
+     * centering option for all scene POVs (orbit mode only, not null)
      */
     private OrbitCenter orbitCenter = OrbitCenter.DddCursor;
     /**
-     * projection mode (not null)
+     * projection mode for all scene POVs (not null)
      */
     private ProjectionMode projectionMode = ProjectionMode.Perspective;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Clamp the elevation angle of the camera in orbit mode.
+     * Clamp the elevation angle of a POV in orbit mode.
      *
      * @param angle desired elevation angle (in radians)
      * @return clamped angle (in radians)
@@ -103,7 +105,7 @@ public class CameraOptions implements Cloneable {
     }
 
     /**
-     * Clamp the distance of the camera from the 3-D cursor in orbit mode.
+     * Clamp the distance of the POV from its center.
      *
      * @param range desired distance (in world units)
      * @return clamped distance (in world units)
@@ -133,7 +135,7 @@ public class CameraOptions implements Cloneable {
     }
 
     /**
-     * Read the vertical angle of the camera's frustum.
+     * Read the vertical angle for camera frusta.
      *
      * @return angle (in degrees of arc, &gt;0, &lt;180)
      */
@@ -144,7 +146,20 @@ public class CameraOptions implements Cloneable {
     }
 
     /**
-     * Read the scene camera's movement mode.
+     * Read the vertical half-tangent for camera frusta.
+     *
+     * @return tangent of 1/2 the vertical angle (&gt;0)
+     */
+    public float getFrustumYHalfTangent() {
+        float yRadians = MyMath.toRadians(frustumYDegrees);
+        float tangent = FastMath.tan(yRadians / 2f);
+
+        assert tangent > 0f : tangent;
+        return tangent;
+    }
+
+    /**
+     * Read the movement mode for scene POVs.
      *
      * @return an enum value (not null)
      */
@@ -164,7 +179,7 @@ public class CameraOptions implements Cloneable {
     }
 
     /**
-     * Read the scene camera's projection mode.
+     * Read the projection mode for scene POVs.
      *
      * @return an enum value (not null)
      */
@@ -174,7 +189,7 @@ public class CameraOptions implements Cloneable {
     }
 
     /**
-     * Test whether the camera is in orbit mode.
+     * Test whether scene POVs are in orbit mode.
      *
      * @return true if in orbit mode, otherwise false
      */
@@ -184,7 +199,7 @@ public class CameraOptions implements Cloneable {
     }
 
     /**
-     * Test whether the camera is in ortho/parallel-projection mode.
+     * Test whether scene POVs are in ortho/parallel-projection mode.
      *
      * @return true if in parallel-projection mode, otherwise false
      */
@@ -194,16 +209,19 @@ public class CameraOptions implements Cloneable {
     }
 
     /**
-     * Alter the camera's movement mode.
+     * Alter the movement mode for scene POVs.
      *
      * @param newMode (not null)
      */
     public void setMode(MovementMode newMode) {
-        movementMode = newMode;
+        Validate.nonNull(newMode, "new mode");
 
-        if (newMode == MovementMode.Orbit) {
-            Maud.getModel().getSource().getScenePov().aim();
-            Maud.getModel().getTarget().getScenePov().aim();
+        if (movementMode != newMode) {
+            movementMode = newMode;
+            if (newMode == MovementMode.Orbit) {
+                Maud.getModel().getSource().getScenePov().setOrbitGoal();
+                Maud.getModel().getTarget().getScenePov().setOrbitGoal();
+            }
         }
     }
 
@@ -216,24 +234,20 @@ public class CameraOptions implements Cloneable {
         Validate.nonNull(newCenter, "new center");
 
         orbitCenter = newCenter;
-        if (movementMode == MovementMode.Orbit) {
-            Maud.getModel().getSource().getScenePov().aim();
-            Maud.getModel().getTarget().getScenePov().aim();
-        }
     }
 
     /**
-     * Alter the camera's projection mode.
+     * Alter the projection mode for scene POVs.
      *
-     * @param mode (not null)
+     * @param newMode (not null)
      */
-    public void setMode(ProjectionMode mode) {
-        Validate.nonNull(mode, "mode");
-        projectionMode = mode;
+    public void setMode(ProjectionMode newMode) {
+        Validate.nonNull(newMode, "new mode");
+        projectionMode = newMode;
     }
 
     /**
-     * Toggle the movement mode.
+     * Toggle the movement mode for scene POVs.
      */
     public void toggleMovement() {
         if (movementMode.equals(MovementMode.Orbit)) {
@@ -244,7 +258,7 @@ public class CameraOptions implements Cloneable {
     }
 
     /**
-     * Toggle the projection mode.
+     * Toggle the projection mode for scene POVs.
      */
     public void toggleProjection() {
         if (projectionMode.equals(ProjectionMode.Parallel)) {
@@ -273,7 +287,7 @@ public class CameraOptions implements Cloneable {
         MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
-    // Object methods
+    // Cloneable methods
 
     /**
      * Create a copy of this object.

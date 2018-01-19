@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -193,7 +193,7 @@ public class ScorePov implements Cloneable, Pov {
         camera.setFrustumTop(halfHeight);
     }
     // *************************************************************************
-    // Object methods
+    // Cloneable methods
 
     /**
      * Create a deep copy of this object.
@@ -213,34 +213,39 @@ public class ScorePov implements Cloneable, Pov {
     // Pov methods
 
     /**
-     * Zoom the camera when the scroll wheel is turned.
+     * Zoom this POV when the scroll wheel is turned.
      *
-     * @param amount scroll wheel notches
+     * @param amount scroll-wheel notches (non-zero)
      */
     @Override
     public void moveBackward(float amount) {
+        Validate.nonZero(amount, "amount");
+
         float rate = 1f + dollyInOutRate / 100f;
         float factor = FastMath.pow(rate, amount);
         setHalfHeight(halfHeight * factor);
     }
 
     /**
-     * Move the camera left/right when the mouse is dragged left/right.
+     * Move this POV left/right when the mouse is dragged left/right.
      *
-     * @param amount drag component
+     * @param amount drag component (non-zero)
      */
     @Override
     public void moveLeft(float amount) {
+        Validate.nonZero(amount, "amount");
         // Left/right movement is disabled in score mode.
     }
 
     /**
-     * Move the camera up/down when the mouse is dragged up/down.
+     * Move this POV up/down when the mouse is dragged up/down.
      *
-     * @param amount drag component
+     * @param amount drag component (non-zero)
      */
     @Override
     public void moveUp(float amount) {
+        Validate.nonZero(amount, "amount");
+
         Maud app = Maud.getApplication();
         Camera camera = app.getCamera();
         float displayHeight = camera.getHeight();
@@ -265,10 +270,12 @@ public class ScorePov implements Cloneable, Pov {
     }
 
     /**
-     * Update the camera for this POV.
+     * Update this POV and its camera.
+     *
+     * @param ignored not used
      */
     @Override
-    public void updateCamera() {
+    public void update(float ignored) {
         ScoreView view = cgm.getScoreView();
         Camera camera = view.getCamera();
         if (camera != null) {

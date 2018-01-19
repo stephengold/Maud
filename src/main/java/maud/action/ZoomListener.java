@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -114,7 +114,7 @@ class ZoomListener implements AnalogListener {
                 new Object[]{MyString.quote(eventString), amount});
 
         Pov pov = Maud.gui.mousePov();
-        if (pov == null) {
+        if (pov == null || amount == 0f) {
             return;
         }
 
