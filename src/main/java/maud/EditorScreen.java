@@ -306,6 +306,7 @@ public class EditorScreen extends GuiScreenController {
         String prefix = MyString.removeSuffix(checkBoxId, "CheckBox");
         switch (prefix) {
             case "3DCursor":
+            case "3DCursor2":
                 scene.getCursor().setVisible(isChecked);
                 break;
             case "autoCheckpoint":
@@ -385,6 +386,7 @@ public class EditorScreen extends GuiScreenController {
                 scene.getRender().setShadowsRendered(isChecked);
                 break;
             case "sky":
+            case "sky2":
                 scene.getRender().setSkySimulated(isChecked);
                 break;
             case "spatialIgnoreTransform":

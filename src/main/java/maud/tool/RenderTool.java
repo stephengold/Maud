@@ -32,6 +32,7 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.option.scene.RenderOptions;
+import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.TriangleMode;
 
 /**
@@ -81,7 +82,14 @@ class RenderTool extends GuiWindowController {
     public void update(float elapsedTime) {
         super.update(elapsedTime);
         Maud.gui.setIgnoreGuiChanges(true);
-        RenderOptions options = Maud.getModel().getScene().getRender();
+        SceneOptions sceneOptions = Maud.getModel().getScene();
+        RenderOptions options = sceneOptions.getRender();
+
+        boolean isCursorVisible = sceneOptions.getCursor().isVisible();
+        setChecked("3DCursor2", isCursorVisible);
+
+        boolean isSkySimulated = options.isSkySimulated();
+        setChecked("sky2", isSkySimulated);
 
         boolean shadowsFlag = options.areShadowsRendered();
         setChecked("shadows", shadowsFlag);
