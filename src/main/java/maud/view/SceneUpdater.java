@@ -501,13 +501,13 @@ class SceneUpdater {
         visualizer.setLineWidth(lineWidth);
 
         float pointSize = options.getPointSize();
-        visualizer.setPointSize(pointSize);
+        visualizer.setHeadSize(pointSize);
 
         ColorRGBA color = options.copyLinkColor(null);
         visualizer.setLineColor(color);
 
-        color = options.copyTracklessColor(null); // TODO avoid extra garbage
-        visualizer.setPointColor(color);
+        options.copyTracklessColor(color);
+        visualizer.setHeadColor(color);
 
         BitSet showSet = cgm.getSkeleton().listShown(showBones, null);
 
@@ -515,14 +515,14 @@ class SceneUpdater {
         int numBones = cgm.getSkeleton().countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             if (showSet.get(boneIndex) == false) {
-                visualizer.setPointColor(boneIndex, invisibleColor);
+                visualizer.setHeadColor(boneIndex, invisibleColor);
             } else if (cgm.getAnimation().isRetargetedPose()) {
                 String name = cgm.getSkeleton().getBoneName(boneIndex);
                 if (Maud.getModel().getMap().isBoneMapped(name)) {
-                    visualizer.setPointColor(boneIndex, color);
+                    visualizer.setHeadColor(boneIndex, color);
                 }
             } else if (cgm.getAnimation().hasTrackForBone(boneIndex)) {
-                visualizer.setPointColor(boneIndex, color);
+                visualizer.setHeadColor(boneIndex, color);
             } // else default to trackless/unmapped color
         }
     }
