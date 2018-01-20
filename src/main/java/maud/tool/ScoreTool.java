@@ -28,17 +28,16 @@ package maud.tool;
 
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.option.ScoreOptions;
 import maud.model.option.ShowBones;
 
 /**
- * The controller for the "Score Tool" window in Maud's editor screen.
+ * The controller for the "Score" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ScoreTool extends GuiWindowController {
+class ScoreTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -51,28 +50,24 @@ class ScoreTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController (not null)
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     ScoreTool(GuiScreenController screenController) {
-        super(screenController, "scoreTool", false);
+        super(screenController, "score");
     }
     // *************************************************************************
-    // GuiWindowController methods
+    // Tool methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
+    void toolUpdate() {
         ScoreOptions scoreOptions = Maud.getModel().getScore();
-        Maud.gui.setIgnoreGuiChanges(true);
 
         boolean translations = scoreOptions.showsTranslations();
         setChecked("scoreTranslations", translations);
@@ -90,7 +85,5 @@ class ScoreTool extends GuiWindowController {
         ShowBones showWhenSelected = scoreOptions.getShowWhenSelected();
         String whenButton = showWhenSelected.toString();
         setButtonText("scoreShowWhenSelected", whenButton);
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

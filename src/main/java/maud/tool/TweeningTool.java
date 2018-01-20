@@ -28,18 +28,17 @@ package maud.tool;
 
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenTransforms;
 import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 
 /**
- * The controller for the "Tweening Tool" window in Maud's editor screen.
+ * The controller for the "Tweening" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class TweeningTool extends GuiWindowController {
+class TweeningTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -52,28 +51,23 @@ class TweeningTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController (not null)
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     TweeningTool(GuiScreenController screenController) {
-        super(screenController, "tweeningTool", false);
+        super(screenController, "tweening");
     }
     // *************************************************************************
-    // GuiWindowController methods
+    // Tool methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
         TweenVectors tweenTranslations = techniques.getTweenTranslations();
         String desc = tweenTranslations.toString();
@@ -86,7 +80,5 @@ class TweeningTool extends GuiWindowController {
         TweenVectors tweenScales = techniques.getTweenScales();
         desc = tweenScales.toString();
         setStatusText("tweenScales", " " + desc);
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

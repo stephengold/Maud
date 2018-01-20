@@ -27,22 +27,21 @@
 package maud.tool;
 
 import com.jme3.math.Quaternion;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.cgm.SelectedSpatial;
 
 /**
- * The controller for the "Spatial-Rotation Tool" window in Maud's editor
- * screen.
+ * The controller for the "Spatial-Rotation" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SpatialRotationTool extends GuiWindowController {
+class SpatialRotationTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -67,21 +66,38 @@ class SpatialRotationTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
      * @param screenController the controller of the screen that contains the
-     * window (not null)
+     * tool (not null)
      */
     SpatialRotationTool(GuiScreenController screenController) {
-        super(screenController, "spatialRotationTool", false);
+        super(screenController, "spatialRotation");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
 
     /**
-     * If active, update the MVC model based on the sliders.
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
      */
-    void onSliderChanged() {
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "Sa";
+            result.add(sliderName);
+        }
+
+        return result;
+    }
+
+    /**
+     * Update the MVC model based on the sliders.
+     */
+    @Override
+    public void onSliderChanged() {
         float[] angles = new float[numAxes];
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Sa";
@@ -92,20 +108,13 @@ class SpatialRotationTool extends GuiWindowController {
         rot.fromAngles(angles);
         Maud.getModel().getTarget().setSpatialRotation(rot);
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this state prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float tpf) {
-        super.update(tpf);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         setSlidersToTransform();
         String dButton; // TODO remove
         if (Maud.getModel().getMisc().getAnglesInDegrees()) {
@@ -114,8 +123,6 @@ class SpatialRotationTool extends GuiWindowController {
             dButton = "degrees";
         }
         setButtonText("degrees2", dButton);
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods

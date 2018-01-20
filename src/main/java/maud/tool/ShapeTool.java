@@ -34,7 +34,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.MyShape;
@@ -45,11 +44,11 @@ import maud.model.cgm.SelectedShape;
 import maud.model.option.ShapeParameter;
 
 /**
- * The controller for the "Shape Tool" window in Maud's editor screen.
+ * The controller for the "Shape" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ShapeTool extends GuiWindowController {
+class ShapeTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -66,27 +65,23 @@ class ShapeTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     ShapeTool(GuiScreenController screenController) {
-        super(screenController, "shapeTool", false);
+        super(screenController, "shape");
     }
     // *************************************************************************
-    // GuiWindowController methods
+    // Tool methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-
+    void toolUpdate() {
         updateChildren();
         updateIndex();
         updateName();

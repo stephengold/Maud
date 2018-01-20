@@ -27,10 +27,10 @@
 package maud.tool;
 
 import com.jme3.animation.AnimControl;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.MaudUtil;
@@ -41,11 +41,11 @@ import maud.model.cgm.SelectedAnimControl;
 import maud.model.cgm.SelectedBone;
 
 /**
- * The controller for the "Animation Tool" window in Maud's editor screen.
+ * The controller for the "Animation" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class AnimationTool extends GuiWindowController {
+class AnimationTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -66,20 +66,36 @@ class AnimationTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     AnimationTool(GuiScreenController screenController) {
-        super(screenController, "animationTool", false);
+        super(screenController, "animation");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("speed");
+        result.add("time");
+
+        return result;
+    }
 
     /**
      * Update the MVC model based on the sliders.
      */
-    void onSliderChanged() {
+    @Override
+    public void onSliderChanged() {
         Cgm target = Maud.getModel().getTarget();
         LoadedAnimation animation = target.getAnimation();
         if (animation.isRetargetedPose()) {
@@ -99,21 +115,13 @@ class AnimationTool extends GuiWindowController {
             animation.setTime(time);
         }
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         updateControlIndex();
         updateHasTrack();
         updateIndex();
@@ -122,8 +130,6 @@ class AnimationTool extends GuiWindowController {
         updateSpeed();
         updateTrackTime();
         updateTrackCounts();
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods

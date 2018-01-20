@@ -26,21 +26,21 @@
  */
 package maud.tool;
 
+import java.util.List;
 import java.util.logging.Logger;
 import static jme3utilities.TimeOfDay.minutesPerHour;
 import static jme3utilities.TimeOfDay.secondsPerMinute;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.scene.RenderOptions;
 
 /**
- * The controller for the "Sky Tool" window in Maud's editor screen.
+ * The controller for the "Sky" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SkyTool extends GuiWindowController {
+class SkyTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -61,20 +61,36 @@ class SkyTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     SkyTool(GuiScreenController screenController) {
-        super(screenController, "skyTool", false);
+        super(screenController, "sky");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("cloudiness");
+        result.add("hour");
+
+        return result;
+    }
 
     /**
      * Update the MVC model based on the sliders.
      */
-    void onSliderChanged() {
+    @Override
+    public void onSliderChanged() {
         RenderOptions options = Maud.getModel().getScene().getRender();
 
         float cloudiness = readSlider("cloudiness", cloudinessSt);
@@ -83,20 +99,13 @@ class SkyTool extends GuiWindowController {
         float hour = readSlider("hour", hourSt);
         options.setHour(hour);
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
+    void toolUpdate() {
         RenderOptions options = Maud.getModel().getScene().getRender();
 
         boolean isSkySimulated = options.isSkySimulated();
@@ -114,7 +123,5 @@ class SkyTool extends GuiWindowController {
         int hh = minute / minutesPerHour;
         String tod = String.format("solar time = %d:%02d", hh, mm);
         setStatusText("hourSliderStatus", tod);
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

@@ -27,19 +27,19 @@
 package maud.tool;
 
 import com.jme3.math.ColorRGBA;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.scene.VertexOptions;
 
 /**
- * The controller for the "Scene Vertex Tool" window in Maud's editor screen.
+ * The controller for the "Scene Vertex" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SceneVertexTool extends GuiWindowController {
+class SceneVertexTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -60,20 +60,38 @@ class SceneVertexTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     SceneVertexTool(GuiScreenController screenController) {
-        super(screenController, "sceneVertexTool", false);
+        super(screenController, "sceneVertex");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("svR");
+        result.add("svG");
+        result.add("svB");
+        result.add("svPointSize");
+
+        return result;
+    }
 
     /**
      * Update the MVC model based on the sliders.
      */
-    void onSliderChanged() {
+    @Override
+    public void onSliderChanged() {
         VertexOptions options = Maud.getModel().getScene().getVertex();
 
         ColorRGBA color = Maud.gui.readColorBank("sv", colorSt);
@@ -82,20 +100,13 @@ class SceneVertexTool extends GuiWindowController {
         float pointSize = readSlider("svPointSize", sizeSt);
         options.setPointSize(pointSize);
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
+    void toolUpdate() {
         VertexOptions options = Maud.getModel().getScene().getVertex();
 
         ColorRGBA color = options.copyColor(null);
@@ -105,7 +116,5 @@ class SceneVertexTool extends GuiWindowController {
         setSlider("svPointSize", sizeSt, pointSize);
         pointSize = Math.round(pointSize);
         updateSliderStatus("svPointSize", pointSize, " pixels");
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

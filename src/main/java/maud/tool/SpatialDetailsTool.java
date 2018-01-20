@@ -34,16 +34,15 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.SelectedSpatial;
 
 /**
- * The controller for the "Spatial-Details Tool" window in Maud's editor screen.
+ * The controller for the "Spatial-Details" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SpatialDetailsTool extends GuiWindowController {
+class SpatialDetailsTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -56,28 +55,23 @@ class SpatialDetailsTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController (not null)
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     SpatialDetailsTool(GuiScreenController screenController) {
-        super(screenController, "spatialDetailsTool", false);
+        super(screenController, "spatialDetails");
     }
     // *************************************************************************
-    // GuiWindowController methods
+    // Tool methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         updateBatchHint();
         updateBound();
         updateBucket();
@@ -90,8 +84,6 @@ class SpatialDetailsTool extends GuiWindowController {
         updateSgcs();
         updateShadows();
         updateUserData();
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods

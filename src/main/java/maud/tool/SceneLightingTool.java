@@ -27,20 +27,20 @@
 package maud.tool;
 
 import com.jme3.math.Vector3f;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.scene.LightsOptions;
 
 /**
- * The controller for the "Scene Lighting Tool" window in Maud's editor screen.
+ * The controller for the "Scene Lighting" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SceneLightingTool extends GuiWindowController {
+class SceneLightingTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -69,20 +69,40 @@ class SceneLightingTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     SceneLightingTool(GuiScreenController screenController) {
-        super(screenController, "sceneLightingTool", false);
+        super(screenController, "sceneLighting");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "Dir";
+            result.add(sliderName);
+        }
+        result.add("ambientLevel");
+        result.add("mainLevel");
+
+        return result;
+    }
 
     /**
      * Update the MVC model based on the sliders.
      */
-    void onSliderChanged() {
+    @Override
+    public void onSliderChanged() {
         LightsOptions options = Maud.getModel().getScene().getLights();
 
         Vector3f direction = Maud.gui.readVectorBank("Dir", directionSt);
@@ -97,20 +117,13 @@ class SceneLightingTool extends GuiWindowController {
         float mainLevel = readSlider("mainLevel", levelSt);
         options.setMainLevel(mainLevel);
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
+    void toolUpdate() {
         LightsOptions options = Maud.getModel().getScene().getLights();
 
         Vector3f direction = options.direction(null);
@@ -129,7 +142,5 @@ class SceneLightingTool extends GuiWindowController {
         float mainLevel = options.getMainLevel();
         setSlider("mainLevel", levelSt, mainLevel);
         updateSliderStatus("mainLevel", mainLevel, "");
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

@@ -28,21 +28,20 @@ package maud.tool;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
 
 /**
- * The controller for the "Bone-Translation Tool" window in Maud's editor
- * screen.
+ * The controller for the "Bone-Translation" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneTranslationTool extends GuiWindowController {
+class BoneTranslationTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -79,21 +78,39 @@ class BoneTranslationTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
      * @param screenController the controller of the screen that contains the
-     * window (not null)
+     * tool (not null)
      */
     BoneTranslationTool(GuiScreenController screenController) {
-        super(screenController, "boneTranslationTool", false);
+        super(screenController, "boneTranslation");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
 
     /**
-     * If active, update the MVC model based on the sliders.
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
      */
-    void onSliderChanged() {
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "Off";
+            result.add(sliderName);
+        }
+        result.add("offMaster");
+
+        return result;
+    }
+
+    /**
+     * Update the MVC model based on the sliders.
+     */
+    @Override
+    public void onSliderChanged() {
         EditableCgm target = Maud.getModel().getTarget();
         if (target.getBone().shouldEnableControls()) {
             Vector3f offsets = Maud.gui.readVectorBank("Off", axisSt);
@@ -104,20 +121,13 @@ class BoneTranslationTool extends GuiWindowController {
             target.getPose().get().setTranslation(boneIndex, offsets);
         }
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this state prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float tpf) {
-        super.update(tpf);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         boolean enableSliders = false;
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
@@ -136,8 +146,6 @@ class BoneTranslationTool extends GuiWindowController {
             setButtonText("resetOffBind", "");
         }
         setSlidersEnabled(enableSliders);
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods

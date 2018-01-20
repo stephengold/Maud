@@ -26,20 +26,20 @@
  */
 package maud.tool;
 
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.SceneOptions;
 
 /**
- * The controller for the "Platform Tool" window in Maud's editor screen.
+ * The controller for the "Platform" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class PlatformTool extends GuiWindowController {
+class PlatformTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -56,36 +56,45 @@ class PlatformTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     PlatformTool(GuiScreenController screenController) {
-        super(screenController, "platformTool", false);
+        super(screenController, "platform");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("platformDiameter");
+
+        return result;
+    }
 
     /**
      * Update the MVC model based on the sliders.
      */
-    void onSliderChanged() {
+    @Override
+    public void onSliderChanged() {
         float diameter = readSlider("platformDiameter", diameterSt);
         Maud.getModel().getScene().setPlatformDiameter(diameter);
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this state prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float tpf) {
-        super.update(tpf);
-        Maud.gui.setIgnoreGuiChanges(true);
+    void toolUpdate() {
         SceneOptions options = Maud.getModel().getScene();
 
         PlatformType type = options.getPlatformType();
@@ -95,7 +104,5 @@ class PlatformTool extends GuiWindowController {
         float diameter = options.getPlatformDiameter();
         setSlider("platformDiameter", diameterSt, diameter);
         updateSliderStatus("platformDiameter", diameter, " wu");
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

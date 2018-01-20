@@ -27,16 +27,13 @@
 package maud.tool;
 
 import com.jme3.app.state.AppStateManager;
-import de.lessvoid.nifty.controls.SliderChangedEvent;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.nifty.WindowController;
 import maud.EditorScreen;
 
 /**
- * Tool windows in Maud's editor screen.
+ * Tools in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -53,171 +50,171 @@ public class EditorTools {
     // fields
 
     /**
-     * controller for the "Animation Tool" window
+     * controller for the AnimationTool
      */
     final private AnimationTool animation;
     /**
-     * controller for the "Axes Tool" window
+     * controller for the AxesTool
      */
     final private AxesTool axes;
     /**
-     * controller for the "Background" window
+     * controller for the BackgroundTool
      */
     final private BackgroundTool background;
     /**
-     * controller for the "Bone-Rotation Tool" window
+     * controller for the BoneRotationTool
      */
     final private BoneRotationTool boneRotation;
     /**
-     * controller for the "Bone-Scale Tool" window
+     * controller for the BoneScaleTool
      */
     final private BoneScaleTool boneScale;
     /**
-     * controller for the "Bone Tool" window
+     * controller for the BoneTool
      */
     final private BoneTool bone;
     /**
-     * controller for the "Bone-Translation Tool" window
+     * controller for the BoneTranslationTool
      */
     final private BoneTranslationTool boneTranslation;
     /**
-     * controller for the "Bounds Tool" window
+     * controller for the BoundsTool
      */
     final private BoundsTool bounds;
     /**
-     * controller for the "Camera Tool" window
+     * controller for the CameraTool
      */
     final private CameraTool camera;
     /**
-     * controller for the "Model Tool" window
+     * controller for the CgmTool
      */
     final private CgmTool cgm;
     /**
-     * controller for the "Cursor Tool" window
+     * controller for the CursorTool
      */
     final private CursorTool cursor;
     /**
-     * controller for the "Display-Settings Tool" window
+     * controller for the DisplaySettingsTool
      */
     final private DisplaySettingsTool displaySettings;
     /**
-     * controller for the "History Tool" window
+     * controller for the HistoryTool
      */
     final private HistoryTool history;
     /**
-     * controller for the "Joint Tool" window
+     * controller for the JointTool
      */
     final private JointTool joint;
     /**
-     * controller for the "Keyframe Tool" window
+     * controller for the KeyframeTool
      */
     final private KeyframeTool keyframe;
     /**
-     * controller for the "Lights Tool" window
+     * controller for the LightsTool
      */
     final private LightsTool lights;
     /**
-     * controller for the "Mapping Tool" window
+     * controller for the MappingTool
      */
     final private MappingTool mapping;
     /**
-     * controller for the "Material Tool" window
+     * controller for the MaterialTool
      */
     final private MaterialTool material;
     /**
-     * controller for the "Object Tool" window
+     * controller for the ObjectTool
      */
     final private ObjectTool object;
     /**
-     * controller for the "Overrides Tool" window
+     * controller for the OverridesTool
      */
     final private OverridesTool overrides;
     /**
-     * controller for the "Platform Tool" window
+     * controller for the PlatformTool
      */
     final private PlatformTool platform;
     /**
-     * controller for the "Render Tool" window
+     * controller for the RenderTool
      */
     final private RenderTool render;
     /**
-     * controller for the "Retarget Tool" window
+     * controller for the RetargetTool
      */
     final private RetargetTool retarget;
     /**
-     * controller for the "Scene Lighting Tool" window
+     * controller for the SceneLightingTool
      */
     final private SceneLightingTool sceneLighting;
     /**
-     * controller for the "Scene Vertex Tool" window
+     * controller for the SceneVertexTool
      */
     final private SceneVertexTool sceneVertex;
     /**
-     * controller for the "Score Tool" window
+     * controller for ScoreTool
      */
     final private ScoreTool score;
     /**
-     * controller for the "Settings Tool" window
+     * controller for the SettingsTool
      */
     final private SettingsTool settings;
     /**
-     * controller for the "Control Tool" window
+     * controller for the SgcTool
      */
     final private SgcTool sgc;
     /**
-     * controller for the "Shape Tool" window
+     * controller for the ShapeTool
      */
     final private ShapeTool shape;
     /**
-     * controller for the "Skeleton Color Tool" window
+     * controller for the SkeletonColorTool
      */
     final private SkeletonColorTool skeletonColor;
     /**
-     * controller for the "Skeleton Tool" window
+     * controller for SkeletonTool
      */
     final private SkeletonTool skeleton;
     /**
-     * controller for the "Sky Tool" window
+     * controller for the SkyTool
      */
     final private SkyTool sky;
     /**
-     * controller for the "Source Animation Tool" window
+     * controller for the SourceAnimationTool
      */
     final private SourceAnimationTool sourceAnimation;
     /**
-     * controller for the "Spatial Details Tool" window
+     * controller for the SpatialDetailsTool
      */
     final private SpatialDetailsTool spatialDetails;
     /**
-     * controller for the "Spatial-Rotation Tool" window
+     * controller for the SpatialRotationTool
      */
     final private SpatialRotationTool spatialRotation;
     /**
-     * controller for the "Spatial-Scale Tool" window
+     * controller for the SpatialScaleTool
      */
     final private SpatialScaleTool spatialScale;
     /**
-     * controller for the "Spatial Tool" window
+     * controller for the SpatialTool
      */
     final private SpatialTool spatial;
     /**
-     * controller for the "Spatial-Translation Tool" window
+     * controller for the SpatialTranslationTool
      */
     final private SpatialTranslationTool spatialTranslation;
     /**
-     * controller for the "Tweening Tool" window
+     * controller for the TweeningTool
      */
     final private TweeningTool tweening;
     /**
-     * controller for the "Twist Tool" window
+     * controller for the TwistTool
      */
     final private TwistTool twist;
     /**
-     * controller for the "User-Data Tool" window
+     * controller for the UserDataTool
      */
     final private UserDataTool userData;
     /**
-     * controller for the "Vertex Tool" window
+     * controller for the VertexTool
      */
     final private VertexTool vertex;
     // *************************************************************************
@@ -278,7 +275,7 @@ public class EditorTools {
     // new methods exposed
 
     /**
-     * Attach all window controllers to the specified state manager.
+     * Attach all tool controllers to the specified state manager.
      *
      * @param stateManager (not null)
      */
@@ -294,141 +291,141 @@ public class EditorTools {
     }
 
     /**
-     * Access the window controller for a named tool.
+     * Access the controller of a named tool.
      *
      * @param toolName which tool to access (not null, not empty)
      * @return the pre-existing instance, or null of none
      */
-    public WindowController getTool(String toolName) {
+    public Tool getTool(String toolName) {
         Validate.nonEmpty(toolName, "tool name");
 
-        WindowController controller;
+        Tool tool;
         switch (toolName) {
             case "animation":
-                controller = animation;
+                tool = animation;
                 break;
             case "axes":
-                controller = axes;
+                tool = axes;
                 break;
             case "background":
-                controller = background;
+                tool = background;
                 break;
             case "bone":
-                controller = bone;
+                tool = bone;
                 break;
             case "boneRotation":
-                controller = boneRotation;
+                tool = boneRotation;
                 break;
             case "boneScale":
-                controller = boneScale;
+                tool = boneScale;
                 break;
             case "boneTranslation":
-                controller = boneTranslation;
+                tool = boneTranslation;
                 break;
             case "bounds":
-                controller = bounds;
+                tool = bounds;
                 break;
             case "camera":
-                controller = camera;
+                tool = camera;
                 break;
             case "cgm":
-                controller = cgm;
+                tool = cgm;
                 break;
             case "cursor":
-                controller = cursor;
+                tool = cursor;
                 break;
             case "displaySettings":
-                controller = displaySettings;
+                tool = displaySettings;
                 break;
             case "history":
-                controller = history;
+                tool = history;
                 break;
             case "joint":
-                controller = joint;
+                tool = joint;
                 break;
             case "keyframe":
-                controller = keyframe;
+                tool = keyframe;
                 break;
             case "lights":
-                controller = lights;
+                tool = lights;
                 break;
             case "map":
-                controller = mapping;
+                tool = mapping;
                 break;
             case "material":
-                controller = material;
+                tool = material;
                 break;
             case "object":
-                controller = object;
+                tool = object;
                 break;
             case "overrides":
-                controller = overrides;
+                tool = overrides;
                 break;
             case "platform":
-                controller = platform;
+                tool = platform;
                 break;
             case "render":
-                controller = render;
+                tool = render;
                 break;
             case "retarget":
-                controller = retarget;
+                tool = retarget;
                 break;
             case "sceneLighting":
-                controller = sceneLighting;
+                tool = sceneLighting;
                 break;
             case "sceneVertex":
-                controller = sceneVertex;
+                tool = sceneVertex;
                 break;
             case "score":
-                controller = score;
+                tool = score;
                 break;
             case "settings":
-                controller = settings;
+                tool = settings;
                 break;
             case "sgc":
-                controller = sgc;
+                tool = sgc;
                 break;
             case "shape":
-                controller = shape;
+                tool = shape;
                 break;
             case "skeleton":
-                controller = skeleton;
+                tool = skeleton;
                 break;
             case "skeletonColor":
-                controller = skeletonColor;
+                tool = skeletonColor;
                 break;
             case "sourceAnimation":
-                controller = sourceAnimation;
+                tool = sourceAnimation;
                 break;
             case "spatial":
-                controller = spatial;
+                tool = spatial;
                 break;
             case "spatialDetails":
-                controller = spatialDetails;
+                tool = spatialDetails;
                 break;
             case "spatialRotation":
-                controller = spatialRotation;
+                tool = spatialRotation;
                 break;
             case "spatialScale":
-                controller = spatialScale;
+                tool = spatialScale;
                 break;
             case "spatialTranslation":
-                controller = spatialTranslation;
+                tool = spatialTranslation;
                 break;
             case "sky":
-                controller = sky;
+                tool = sky;
                 break;
             case "tweening":
-                controller = tweening;
+                tool = tweening;
                 break;
             case "twist":
-                controller = twist;
+                tool = twist;
                 break;
             case "userData":
-                controller = userData;
+                tool = userData;
                 break;
             case "vertex":
-                controller = vertex;
+                tool = vertex;
                 break;
             default:
                 String message = String.format("tool name = %s",
@@ -436,150 +433,7 @@ public class EditorTools {
                 throw new IllegalArgumentException(message);
         }
 
-        return controller;
-    }
-
-    /**
-     * Callback invoked after a slider changes.
-     *
-     * @param sliderId Nifty element id of the slider (not null)
-     * @param event details of the event (not null, ignored)
-     */
-    public void onSliderChanged(final String sliderId,
-            final SliderChangedEvent event) {
-        Validate.nonNull(sliderId, "slider id");
-        Validate.nonNull(event, "event");
-        assert sliderId.endsWith("Slider");
-
-        String prefix = MyString.removeSuffix(sliderId, "Slider");
-        switch (prefix) {
-            case "speed":
-            case "time":
-                animation.onSliderChanged();
-                break;
-
-            case "axesLineWidth":
-                axes.onSliderChanged();
-                break;
-
-            case "bgR":
-            case "bgG":
-            case "bgB":
-                background.onSliderChanged();
-                break;
-
-            case "xAng":
-            case "yAng":
-            case "zAng":
-                boneRotation.onSliderChanged();
-                break;
-
-            case "scaMaster":
-            case "xSca":
-            case "ySca":
-            case "zSca":
-                boneScale.onSliderChanged();
-                break;
-
-            case "xOff":
-            case "yOff":
-            case "zOff":
-                boneTranslation.onSliderChanged();
-                break;
-
-            case "boundsR":
-            case "boundsG":
-            case "boundsB":
-            case "boundsLineWidth":
-                bounds.onSliderChanged();
-                break;
-
-            case "cursorR":
-            case "cursorG":
-            case "cursorB":
-                cursor.onSliderChanged();
-                break;
-
-            case "platformDiameter":
-                platform.onSliderChanged();
-                break;
-
-            case "ambientLevel":
-            case "mainLevel":
-            case "xDir":
-            case "yDir":
-            case "zDir":
-                sceneLighting.onSliderChanged();
-                break;
-
-            case "svR":
-            case "svG":
-            case "svB":
-            case "svPointSize":
-                sceneVertex.onSliderChanged();
-                break;
-
-            case "skeletonLineWidth":
-            case "skeletonPointSize":
-                skeleton.onSliderChanged();
-                break;
-
-            case "skeR":
-            case "skeG":
-            case "skeB":
-            case "btR":
-            case "btG":
-            case "btB":
-            case "bntR":
-            case "bntG":
-            case "bntB":
-                skeletonColor.onSliderChanged();
-                break;
-
-            case "cloudiness":
-            case "hour":
-                sky.onSliderChanged();
-                break;
-
-            case "sSpeed":
-            case "sourceTime":
-                sourceAnimation.onSliderChanged();
-                break;
-
-            case "xSa":
-            case "ySa":
-            case "zSa":
-                spatialRotation.onSliderChanged();
-                break;
-
-            case "ssMaster":
-            case "xSs":
-            case "ySs":
-            case "zSs":
-                spatialScale.onSliderChanged();
-                break;
-
-            case "offMaster":
-            case "soMaster":
-                // do nothing
-                break;
-
-            case "xSo":
-            case "ySo":
-            case "zSo":
-                spatialTranslation.onSliderChanged();
-                break;
-
-            case "xTwist":
-            case "yTwist":
-            case "zTwist":
-                twist.onSliderChanged();
-                break;
-
-            default:
-                logger.log(Level.WARNING, "unknown slider with id={0}",
-                        MyString.quote(sliderId));
-        }
+        return tool;
     }
 
     /**
@@ -590,7 +444,7 @@ public class EditorTools {
     public void select(String toolName) {
         Validate.nonEmpty(toolName, "tool name");
 
-        WindowController controller = getTool(toolName);
-        controller.select();
+        Tool tool = getTool(toolName);
+        tool.select();
     }
 }

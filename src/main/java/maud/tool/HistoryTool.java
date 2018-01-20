@@ -36,18 +36,17 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.model.Checkpoint;
 import maud.model.History;
 
 /**
- * The controller for the "History Tool" window in Maud's editor screen.
+ * The controller for the "History" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class HistoryTool extends GuiWindowController {
+public class HistoryTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -76,12 +75,13 @@ public class HistoryTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     HistoryTool(GuiScreenController screenController) {
-        super(screenController, "historyTool", false);
+        super(screenController, "history");
     }
     // *************************************************************************
     // new methods exposed
@@ -93,19 +93,14 @@ public class HistoryTool extends GuiWindowController {
         autoScrollFlag = true;
     }
     // *************************************************************************
-    // GuiWindowController methods
+    // Tool methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-
+    void toolUpdate() {
         String aButton = "";
         String rButton = "";
         int nextIndex = History.getNextIndex();

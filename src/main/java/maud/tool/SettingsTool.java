@@ -28,16 +28,15 @@ package maud.tool;
 
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.option.MiscOptions;
 
 /**
- * The controller for the "Settings Tool" window in Maud's editor screen.
+ * The controller for the "Settings" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SettingsTool extends GuiWindowController {
+class SettingsTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -50,28 +49,23 @@ class SettingsTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     SettingsTool(GuiScreenController screenController) {
-        super(screenController, "settingsTool", false);
+        super(screenController, "settings");
     }
     // *************************************************************************
-    // GuiWindowController methods
+    // Tool methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         MiscOptions options = Maud.getModel().getMisc();
 
         boolean degreesFlag = options.getAnglesInDegrees();
@@ -88,7 +82,5 @@ class SettingsTool extends GuiWindowController {
 
         boolean diagnoseFlag = options.getDiagnoseLoads();
         setChecked("settingsDiagnose", diagnoseFlag);
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

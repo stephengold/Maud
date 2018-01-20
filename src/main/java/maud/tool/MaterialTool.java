@@ -32,7 +32,6 @@ import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.model.cgm.Cgm;
@@ -40,11 +39,11 @@ import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedSpatial;
 
 /**
- * The controller for the "Material Tool" window in Maud's editor screen.
+ * The controller for the "Material" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class MaterialTool extends GuiWindowController {
+class MaterialTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -57,35 +56,28 @@ class MaterialTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     MaterialTool(GuiScreenController screenController) {
-        super(screenController, "materialTool", false);
+        super(screenController, "material");
     }
     // *************************************************************************
-    // GuiWindowController methods
+    // Tool methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         updateNames();
         updateRenderState();
         updateParameterIndex();
         updateParameterName();
         updateParameterValue();
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods

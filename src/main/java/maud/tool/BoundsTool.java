@@ -27,19 +27,19 @@
 package maud.tool;
 
 import com.jme3.math.ColorRGBA;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.scene.BoundsOptions;
 
 /**
- * The controller for the "Bounds Tool" window in Maud's editor screen.
+ * The controller for the "Bounds" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoundsTool extends GuiWindowController {
+class BoundsTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -60,20 +60,38 @@ class BoundsTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     BoundsTool(GuiScreenController screenController) {
-        super(screenController, "boundsTool", false);
+        super(screenController, "bounds");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("boundsR");
+        result.add("boundsG");
+        result.add("boundsB");
+        result.add("boundsLineWidth");
+
+        return result;
+    }
 
     /**
      * Update the MVC model based on the sliders.
      */
-    void onSliderChanged() {
+    @Override
+    public void onSliderChanged() {
         BoundsOptions options = Maud.getModel().getScene().getBounds();
 
         float lineWidth = readSlider("boundsLineWidth", widthSt);
@@ -82,21 +100,14 @@ class BoundsTool extends GuiWindowController {
         ColorRGBA color = Maud.gui.readColorBank("bounds", colorSt);
         options.setColor(color);
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
+    void toolUpdate() {
         BoundsOptions options = Maud.getModel().getScene().getBounds();
-        Maud.gui.setIgnoreGuiChanges(true);
 
         ColorRGBA color = options.copyColor(null);
         Maud.gui.setColorBank("bounds", colorSt, color);
@@ -108,7 +119,5 @@ class BoundsTool extends GuiWindowController {
         setSlider("boundsLineWidth", widthSt, lineWidth);
         lineWidth = Math.round(lineWidth);
         updateSliderStatus("boundsLineWidth", lineWidth, " pixels");
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

@@ -28,7 +28,6 @@ package maud.tool;
 
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.MovementMode;
@@ -36,8 +35,8 @@ import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.ProjectionMode;
 
 /**
- * The controller for the "Camera Tool" window in Maud's editor screen. The
- * camera tool controls camera modes used in "scene" views.
+ * The controller for the "Camera" tool in Maud's editor screen. The camera tool
+ * controls camera modes used in "scene" views.
  * <p>
  * In scene views, there are 2 movement modes: "orbit" mode, in which the camera
  * always faces the 3-D cursor (or other central point) and "fly" mode, in which
@@ -45,7 +44,7 @@ import maud.model.option.scene.ProjectionMode;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CameraTool extends GuiWindowController {
+class CameraTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -58,28 +57,23 @@ class CameraTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController (not null)
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     CameraTool(GuiScreenController screenController) {
-        super(screenController, "cameraTool", false);
+        super(screenController, "camera");
     }
     // *************************************************************************
-    // GuiWindowController methods
+    // Tool methods
 
     /**
-     * Callback to update the tool prior to rendering. (Invoked once per render
-     * pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         CameraOptions options = Maud.getModel().getScene().getCamera();
 
         MovementMode movement = options.getMovementMode();
@@ -96,7 +90,5 @@ class CameraTool extends GuiWindowController {
             ocButton = orbitCenter.toString();
         }
         setButtonText("orbitCenter", ocButton);
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

@@ -27,19 +27,19 @@
 package maud.tool;
 
 import com.jme3.math.ColorRGBA;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
- * The controller for the "Skeleton-Color Tool" window in Maud's editor screen.
+ * The controller for the "Skeleton-Color" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SkeletonColorTool extends GuiWindowController {
+class SkeletonColorTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -56,20 +56,43 @@ class SkeletonColorTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     SkeletonColorTool(GuiScreenController screenController) {
-        super(screenController, "skeletonColorTool", false);
+        super(screenController, "skeletonColor");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("skeR");
+        result.add("skeG");
+        result.add("skeB");
+        result.add("btR");
+        result.add("btG");
+        result.add("btB");
+        result.add("bntR");
+        result.add("bntG");
+        result.add("bntB");
+
+        return result;
+    }
 
     /**
      * Update the MVC model based on the sliders.
      */
-    void onSliderChanged() {
+    @Override
+    public void onSliderChanged() {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ColorRGBA color = Maud.gui.readColorBank("ske", colorSt);
         options.setLinkColor(color);
@@ -80,21 +103,13 @@ class SkeletonColorTool extends GuiWindowController {
         color = Maud.gui.readColorBank("bnt", colorSt);
         options.setTracklessColor(color);
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ColorRGBA color = options.copyLinkColor(null);
         Maud.gui.setColorBank("ske", colorSt, color);
@@ -104,7 +119,5 @@ class SkeletonColorTool extends GuiWindowController {
 
         options.copyTracklessColor(color);
         Maud.gui.setColorBank("bnt", colorSt, color);
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

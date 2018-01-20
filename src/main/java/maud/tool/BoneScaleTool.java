@@ -27,21 +27,21 @@
 package maud.tool;
 
 import com.jme3.math.Vector3f;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
 
 /**
- * The controller for the "Bone-Scale Tool" window in Maud's editor screen.
+ * The controller for the "Bone-Scale" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneScaleTool extends GuiWindowController {
+class BoneScaleTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -70,21 +70,39 @@ class BoneScaleTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
      * @param screenController the controller of the screen that contains the
-     * window (not null)
+     * tool (not null)
      */
     BoneScaleTool(GuiScreenController screenController) {
-        super(screenController, "boneScaleTool", false);
+        super(screenController, "boneScale");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
 
     /**
-     * If active, update the MVC model based on the sliders.
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
      */
-    void onSliderChanged() {
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "Sca";
+            result.add(sliderName);
+        }
+        result.add("scaMaster");
+
+        return result;
+    }
+
+    /**
+     * Update the MVC model based on the sliders.
+     */
+    @Override
+    public void onSliderChanged() {
         EditableCgm target = Maud.getModel().getTarget();
         if (target.getBone().shouldEnableControls()) {
             Vector3f scales = Maud.gui.readVectorBank("Sca", axisSt);
@@ -102,19 +120,13 @@ class BoneScaleTool extends GuiWindowController {
             target.getPose().get().setScale(boneIndex, scales);
         }
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this state prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float tpf) {
-        super.update(tpf);
-
+    void toolUpdate() {
         boolean enableSliders = false;
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {

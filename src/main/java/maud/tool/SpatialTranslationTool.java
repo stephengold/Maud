@@ -28,20 +28,19 @@ package maud.tool;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.cgm.SelectedSpatial;
 
 /**
- * The controller for the "Spatial-Translation Tool" window in Maud's editor
- * screen.
+ * The controller for the "Spatial-Translation" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SpatialTranslationTool extends GuiWindowController {
+class SpatialTranslationTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -78,41 +77,52 @@ class SpatialTranslationTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
      * @param screenController the controller of the screen that contains the
-     * window (not null)
+     * tool (not null)
      */
     SpatialTranslationTool(GuiScreenController screenController) {
-        super(screenController, "spatialTranslationTool", false);
+        super(screenController, "spatialTranslation");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "So";
+            result.add(sliderName);
+        }
+        result.add("soMaster");
+
+        return result;
+    }
 
     /**
      * Update the MVC model based on the sliders.
      */
-    void onSliderChanged() {
+    @Override
+    public void onSliderChanged() {
         Vector3f offsets = Maud.gui.readVectorBank("So", axisSt);
         float masterScale = readSlider("soMaster", masterSt);
         offsets.multLocal(masterScale);
         Maud.getModel().getTarget().setSpatialTranslation(offsets);
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this state prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float tpf) {
-        super.update(tpf);
-        Maud.gui.setIgnoreGuiChanges(true);
+    void toolUpdate() {
         setSlidersToTransform();
-        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods

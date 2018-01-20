@@ -40,11 +40,11 @@ import maud.Maud;
 import maud.model.cgm.SelectedSpatial;
 
 /**
- * The controller for the "Spatial Tool" window in Maud's editor screen.
+ * The controller for the "Spatial" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SpatialTool extends GuiWindowController {
+class SpatialTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -57,28 +57,23 @@ class SpatialTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController (not null)
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     SpatialTool(GuiScreenController screenController) {
-        super(screenController, "spatialTool", false);
+        super(screenController, "spatial");
     }
     // *************************************************************************
-    // GuiWindowController methods
+    // Tool methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         updateChildren();
         updateMaterial();
         updateMesh();
@@ -88,8 +83,6 @@ class SpatialTool extends GuiWindowController {
         updateTransform();
         updateTreePosition();
         updateType();
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods

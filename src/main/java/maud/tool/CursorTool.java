@@ -27,20 +27,20 @@
 package maud.tool;
 
 import com.jme3.math.ColorRGBA;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.scene.DddCursorOptions;
 
 /**
- * The controller for the "Cursor Tool" window in Maud's editor screen. The tool
+ * The controller for the "Cursor" tool in Maud's editor screen. The tool
  * controls the appearance of 3-D cursors displayed in "scene" views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CursorTool extends GuiWindowController {
+class CursorTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -57,36 +57,47 @@ class CursorTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController (not null)
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     CursorTool(GuiScreenController screenController) {
-        super(screenController, "cursorTool", false);
+        super(screenController, "cursor");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("cursorR");
+        result.add("cursorG");
+        result.add("cursorB");
+
+        return result;
+    }
 
     /**
      * Update the MVC model based on the sliders.
      */
-    void onSliderChanged() {
+    @Override
+    public void onSliderChanged() {
         ColorRGBA color = Maud.gui.readColorBank("cursor", colorSt);
         Maud.getModel().getScene().getCursor().setColor(color);
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float tpf) {
-        super.update(tpf);
-
+    void toolUpdate() {
         DddCursorOptions options = Maud.getModel().getScene().getCursor();
         boolean visible = options.isVisible();
         setChecked("3DCursor", visible);

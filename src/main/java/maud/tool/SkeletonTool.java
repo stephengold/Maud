@@ -26,20 +26,20 @@
  */
 package maud.tool;
 
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.ShowBones;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
- * The controller for the "Skeleton Tool" window in Maud's editor screen.
+ * The controller for the "Skeleton" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SkeletonTool extends GuiWindowController {
+class SkeletonTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -60,42 +60,51 @@ class SkeletonTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
-     * @param screenController
+     * @param screenController the controller of the screen that contains the
+     * tool (not null)
      */
     SkeletonTool(GuiScreenController screenController) {
-        super(screenController, "skeletonTool", false);
+        super(screenController, "skeleton");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("skeletonLineWidth");
+        result.add("skeletonPointSize");
+
+        return result;
+    }
 
     /**
      * Update the MVC model based on the sliders.
      */
-    void onSliderChanged() {
+    @Override
+    public void onSliderChanged() {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
+
         float lineWidth = readSlider("skeletonLineWidth", widthSt);
         options.setLineWidth(lineWidth);
 
         float pointSize = readSlider("skeletonPointSize", sizeSt);
         options.setPointSize(pointSize);
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this window prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float elapsedTime) {
-        super.update(elapsedTime);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
         String bLabel = showBones.toString();
@@ -110,7 +119,5 @@ class SkeletonTool extends GuiWindowController {
         setSlider("skeletonPointSize", sizeSt, pointSize);
         pointSize = Math.round(pointSize);
         updateSliderStatus("skeletonPointSize", pointSize, " pixels");
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
 }

@@ -27,21 +27,21 @@
 package maud.tool;
 
 import com.jme3.math.Quaternion;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedBone;
 
 /**
- * The controller for the "Bone-Rotation Tool" window in Maud's editor screen.
+ * The controller for the "Bone-Rotation" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneRotationTool extends GuiWindowController {
+class BoneRotationTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -66,21 +66,38 @@ class BoneRotationTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
      * @param screenController the controller of the screen that contains the
-     * window (not null)
+     * tool (not null)
      */
     BoneRotationTool(GuiScreenController screenController) {
-        super(screenController, "boneRotationTool", false);
+        super(screenController, "boneRotation");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
 
     /**
-     * If active, update the MVC model based on the sliders.
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
      */
-    void onSliderChanged() {
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "Ang";
+            result.add(sliderName);
+        }
+
+        return result;
+    }
+
+    /**
+     * Update the MVC model based on the sliders.
+     */
+    @Override
+    public void onSliderChanged() {
         Cgm target = Maud.getModel().getTarget();
         if (target.getBone().shouldEnableControls()) {
             float[] angles = new float[numAxes];
@@ -95,20 +112,13 @@ class BoneRotationTool extends GuiWindowController {
             target.getPose().get().setRotation(boneIndex, rot);
         }
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this state prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float tpf) {
-        super.update(tpf);
-        Maud.gui.setIgnoreGuiChanges(true);
-
+    void toolUpdate() {
         boolean enableSliders = false;
         String aButton = "";
         String bButton = "";
@@ -129,15 +139,13 @@ class BoneRotationTool extends GuiWindowController {
         setButtonText("resetAngBind", bButton);
         setSlidersEnabled(enableSliders);
 
-        String dButton; // TODO remove?
+        String dButton;
         if (Maud.getModel().getMisc().getAnglesInDegrees()) {
             dButton = "radians";
         } else {
             dButton = "degrees";
         }
         setButtonText("degrees", dButton);
-
-        Maud.gui.setIgnoreGuiChanges(false);
     }
     // *************************************************************************
     // private methods

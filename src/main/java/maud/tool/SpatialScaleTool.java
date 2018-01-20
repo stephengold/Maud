@@ -27,24 +27,28 @@
 package maud.tool;
 
 import com.jme3.math.Vector3f;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.cgm.SelectedSpatial;
 
 /**
- * The controller for the "Spatial-Scale Tool" window in Maud's editor screen.
+ * The controller for the "Spatial-Scale" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SpatialScaleTool extends GuiWindowController {
+class SpatialScaleTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * number of coordinate axes
+     */
+    final private static int numAxes = 3;
     /**
      * message logger for this class
      */
@@ -66,21 +70,39 @@ class SpatialScaleTool extends GuiWindowController {
     // constructors
 
     /**
-     * Instantiate an uninitialized controller.
+     * Instantiate an uninitialized tool.
      *
      * @param screenController the controller of the screen that contains the
-     * window (not null)
+     * tool (not null)
      */
     SpatialScaleTool(GuiScreenController screenController) {
-        super(screenController, "spatialScaleTool", false);
+        super(screenController, "spatialScale");
     }
     // *************************************************************************
-    // new methods exposed
+    // Tool methods
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "Ss";
+            result.add(sliderName);
+        }
+        result.add("ssMaster");
+
+        return result;
+    }
 
     /**
      * Update the MVC model based on the sliders.
      */
-    void onSliderChanged() {
+    @Override
+    public void onSliderChanged() {
         Vector3f scales = Maud.gui.readVectorBank("Ss", axisSt);
         /*
          * Avoid scale factors near zero.
@@ -93,22 +115,14 @@ class SpatialScaleTool extends GuiWindowController {
         scales.multLocal(masterScale);
         Maud.getModel().getTarget().setSpatialScale(scales);
     }
-    // *************************************************************************
-    // GuiWindowController methods
 
     /**
-     * Callback to update this state prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
      */
     @Override
-    public void update(float tpf) {
-        super.update(tpf);
-        Maud.gui.setIgnoreGuiChanges(true);
+    void toolUpdate() {
         setSlidersToTransform();
-        Maud.gui.setIgnoreGuiChanges(false);
-
     }
     // *************************************************************************
     // private methods

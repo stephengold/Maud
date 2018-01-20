@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,21 @@
  */
 package maud.tool;
 
+import com.jme3.app.Application;
+import com.jme3.app.state.AppStateManager;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.SliderTransform;
-import maud.Maud;
-import maud.model.option.scene.AxesDragEffect;
-import maud.model.option.scene.AxesOptions;
-import maud.model.option.scene.AxesSubject;
+import jme3utilities.nifty.GuiWindowController;
+import maud.EditorScreen;
 
 /**
- * The controller for the "Axes" tool in Maud's editor screen.
+ * A controller for a tool window in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class AxesTool extends Tool {
+abstract public class Tool extends GuiWindowController {
     // *************************************************************************
     // constants and loggers
 
@@ -48,82 +48,79 @@ class AxesTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(AxesTool.class.getName());
-    /**
-     * transform for the width slider
-     */
-    final private static SliderTransform widthSt = SliderTransform.None;
+            = Logger.getLogger(Tool.class.getName());
     // *************************************************************************
     // constructors
 
     /**
-     * Instantiate an uninitialized tool.
+     * Instantiate an uninitialized controller.
      *
      * @param screenController the controller of the screen that contains the
      * tool (not null)
+     * @param name the name (unique id prefix) of the tool (not null)
      */
-    AxesTool(GuiScreenController screenController) {
-        super(screenController, "axes");
+    Tool(GuiScreenController screenController, String name) {
+        super(screenController, name + "Tool", false);
     }
     // *************************************************************************
-    // Tool methods
+    // new methods exposed
 
     /**
      * Enumerate the tool's sliders.
      *
      * @return a new list of names (unique id prefixes)
      */
-    @Override
     List<String> listSliders() {
-        List<String> result = super.listSliders();
-        result.add("axesLineWidth");
-
+        List<String> result = new ArrayList<>(5);
         return result;
     }
 
     /**
-     * Update the MVC model based on the slider.
+     * Update the MVC model based on the tool's sliders, if any.
+     */
+    public void onSliderChanged() {
+        // meant to be overridden
+    }
+
+    /**
+     * Callback to update the tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
+     */
+    abstract void toolUpdate();
+    // *************************************************************************
+    // GuiWindowController methods
+
+    /**
+     * Initialize this controller prior to its 1st update.
+     *
+     * @param stateManager (not null)
+     * @param application application which owns the window (not null)
      */
     @Override
-    public void onSliderChanged() {
-        float lineWidth = readSlider("axesLineWidth", widthSt);
-        Maud.getModel().getScene().getAxes().setLineWidth(lineWidth);
+    public void initialize(AppStateManager stateManager,
+            Application application) {
+        super.initialize(stateManager, application);
+
+        EditorScreen screen = (EditorScreen) getScreenController();
+        List<String> sliderNames = listSliders();
+        for (String name : sliderNames) {
+            screen.mapSlider(name, this);
+        }
     }
 
     /**
      * Callback to update this tool prior to rendering. (Invoked once per render
      * pass while the tool is displayed.)
+     *
+     * @param elapsedTime time interval between render passes (in seconds,
+     * &ge;0)
      */
     @Override
-    void toolUpdate() {
-        AxesOptions options = Maud.getModel().getScene().getAxes();
-        boolean depthTestFlag = options.getDepthTestFlag();
-        setChecked("axesDepthTest", depthTestFlag);
-
-        float lineWidth = options.getLineWidth();
-        setSlider("axesLineWidth", widthSt, lineWidth);
-
-        updateLabels();
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Update buttons and status labels based on the MVC model.
-     */
-    private void updateLabels() {
-        AxesOptions options = Maud.getModel().getScene().getAxes();
-
-        float lineWidth = options.getLineWidth();
-        lineWidth = Math.round(lineWidth);
-        updateSliderStatus("axesLineWidth", lineWidth, " pixels");
-
-        AxesSubject subject = options.getSubject();
-        String buttonLabel = subject.toString();
-        setButtonText("axesSubject", buttonLabel);
-
-        AxesDragEffect effect = options.getDragEffect();
-        buttonLabel = effect.toString();
-        setButtonText("axesDrag", buttonLabel);
+    final public void update(float elapsedTime) {
+        super.update(elapsedTime);
+        EditorScreen screen = (EditorScreen) getScreenController();
+        screen.setIgnoreGuiChanges(true);
+        toolUpdate();
+        screen.setIgnoreGuiChanges(false);
     }
 }

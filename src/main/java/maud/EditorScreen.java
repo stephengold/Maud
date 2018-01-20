@@ -39,6 +39,8 @@ import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
@@ -65,6 +67,7 @@ import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.SceneOptions;
 import maud.tool.EditorTools;
+import maud.tool.Tool;
 import maud.view.CgmTransform;
 import maud.view.Drag;
 import maud.view.EditorView;
@@ -126,6 +129,10 @@ public class EditorScreen extends GuiScreenController {
      */
     final public EditorTools tools = new EditorTools(this);
     /**
+     * map a slider name to the tool that manages the slider
+     */
+    final private Map<String, Tool> sliderMap = new TreeMap<>();
+    /**
      * POV that's being dragged, or null for none
      */
     private Pov dragPov = null;
@@ -148,6 +155,17 @@ public class EditorScreen extends GuiScreenController {
     public void goBindScreen() {
         closeAllPopups();
         Maud.bindScreen.activate(inputMode);
+    }
+
+    /**
+     * Associate a slider with the tool that manages it.
+     *
+     * @param sliderName the name (unique id prefix) of the slider (not null)
+     * @param manager (not null, alias created)
+     */
+    public void mapSlider(String sliderName, Tool manager) {
+        Tool oldMapping = sliderMap.put(sliderName, manager);
+        assert oldMapping == null;
     }
 
     /**
@@ -411,13 +429,14 @@ public class EditorScreen extends GuiScreenController {
     public void onSliderChanged(final String sliderId,
             final SliderChangedEvent event) {
         Validate.nonNull(sliderId, "slider id");
+        assert sliderId.endsWith("Slider");
         Validate.nonNull(event, "event");
 
-        if (ignoreGuiChanges || !hasStarted()) {
-            return;
+        if (!ignoreGuiChanges && hasStarted()) {
+            String sliderName = MyString.removeSuffix(sliderId, "Slider");
+            Tool manager = sliderMap.get(sliderName);
+            manager.onSliderChanged();
         }
-
-        tools.onSliderChanged(sliderId, event);
     }
 
     /**
