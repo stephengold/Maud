@@ -29,6 +29,7 @@ package maud.tool;
 import com.jme3.light.Light;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
@@ -67,8 +68,41 @@ class LightsTool extends Tool {
     // Tool methods
 
     /**
+     * Enumerate this tool's check boxes.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listCheckBoxes() {
+        List<String> result = super.listCheckBoxes();
+        result.add("lightEnable");
+
+        return result;
+    }
+
+    /**
+     * Update the MVC model based on a check-box event.
+     *
+     * @param name the name (unique id prefix) of the check box
+     * @param isChecked the new state of the check box (true&rarr;checked,
+     * false&rarr;unchecked)
+     */
+    @Override
+    public void onCheckBoxChanged(String name, boolean isChecked) {
+        SelectedLight light = Maud.getModel().getTarget().getLight();
+        switch (name) {
+            case "lightEnable":
+                light.setEnabled(isChecked);
+                break;
+
+            default:
+                super.onCheckBoxChanged(name, isChecked);
+        }
+    }
+
+    /**
      * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while the tool is displayed.)
+     * pass while this tool is displayed.)
      */
     @Override
     void toolUpdate() {

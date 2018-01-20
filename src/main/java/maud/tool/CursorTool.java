@@ -69,7 +69,20 @@ class CursorTool extends Tool {
     // Tool methods
 
     /**
-     * Enumerate the tool's sliders.
+     * Enumerate this tool's check boxes.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listCheckBoxes() {
+        List<String> result = super.listCheckBoxes();
+        result.add("3DCursor");
+
+        return result;
+    }
+
+    /**
+     * Enumerate this tool's sliders.
      *
      * @return a new list of names (unique id prefixes)
      */
@@ -84,6 +97,26 @@ class CursorTool extends Tool {
     }
 
     /**
+     * Update the MVC model based on a check-box event.
+     *
+     * @param name the name (unique id prefix) of the check box
+     * @param isChecked the new state of the check box (true&rarr;checked,
+     * false&rarr;unchecked)
+     */
+    @Override
+    public void onCheckBoxChanged(String name, boolean isChecked) {
+        DddCursorOptions options = Maud.getModel().getScene().getCursor();
+        switch (name) {
+            case "3DCursor":
+                options.setVisible(isChecked);
+                break;
+
+            default:
+                super.onCheckBoxChanged(name, isChecked);
+        }
+    }
+
+    /**
      * Update the MVC model based on the sliders.
      */
     @Override
@@ -94,11 +127,12 @@ class CursorTool extends Tool {
 
     /**
      * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while the tool is displayed.)
+     * pass while this tool is displayed.)
      */
     @Override
     void toolUpdate() {
         DddCursorOptions options = Maud.getModel().getScene().getCursor();
+
         boolean visible = options.isVisible();
         setChecked("3DCursor", visible);
 

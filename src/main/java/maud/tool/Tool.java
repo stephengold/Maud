@@ -30,7 +30,9 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.GuiWindowController;
 import maud.EditorScreen;
@@ -66,6 +68,16 @@ abstract public class Tool extends GuiWindowController {
     // new methods exposed
 
     /**
+     * Enumerate the tool's check boxes.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    List<String> listCheckBoxes() {
+        List<String> result = new ArrayList<>(5);
+        return result;
+    }
+
+    /**
      * Enumerate the tool's sliders.
      *
      * @return a new list of names (unique id prefixes)
@@ -76,10 +88,23 @@ abstract public class Tool extends GuiWindowController {
     }
 
     /**
+     * Update the MVC model based on a check-box event.
+     *
+     * @param name the name (unique id prefix) of the check box
+     * @param isChecked the new state of the check box (true&rarr;checked,
+     * false&rarr;unchecked)
+     */
+    public void onCheckBoxChanged(String name, boolean isChecked) {
+        logger.log(Level.WARNING,
+                "unexpected check-box change ignored, name={0}",
+                MyString.quote(name));
+    }
+
+    /**
      * Update the MVC model based on the tool's sliders, if any.
      */
     public void onSliderChanged() {
-        // meant to be overridden
+        logger.log(Level.WARNING, "unexpected slider change ignored");
     }
 
     /**
@@ -100,8 +125,13 @@ abstract public class Tool extends GuiWindowController {
     public void initialize(AppStateManager stateManager,
             Application application) {
         super.initialize(stateManager, application);
-
         EditorScreen screen = (EditorScreen) getScreenController();
+
+        List<String> checkBoxNames = listCheckBoxes();
+        for (String name : checkBoxNames) {
+            screen.mapCheckBox(name, this);
+        }
+
         List<String> sliderNames = listSliders();
         for (String name : sliderNames) {
             screen.mapSlider(name, this);

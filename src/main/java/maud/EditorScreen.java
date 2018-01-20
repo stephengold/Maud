@@ -41,7 +41,6 @@ import de.lessvoid.nifty.screen.Screen;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
 import jme3utilities.MyString;
@@ -54,18 +53,14 @@ import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
-import maud.model.History;
 import maud.model.cgm.Cgm;
-import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.Pov;
 import maud.model.cgm.SelectedSpatial;
-import maud.model.option.DisplaySettings;
 import maud.model.option.MiscOptions;
 import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.CameraOptions;
-import maud.model.option.scene.SceneOptions;
 import maud.tool.EditorTools;
 import maud.tool.Tool;
 import maud.view.CgmTransform;
@@ -129,6 +124,10 @@ public class EditorScreen extends GuiScreenController {
      */
     final public EditorTools tools = new EditorTools(this);
     /**
+     * map a check-box name to the tool that manages the check box
+     */
+    final private Map<String, Tool> checkBoxMap = new TreeMap<>();
+    /**
      * map a slider name to the tool that manages the slider
      */
     final private Map<String, Tool> sliderMap = new TreeMap<>();
@@ -155,6 +154,18 @@ public class EditorScreen extends GuiScreenController {
     public void goBindScreen() {
         closeAllPopups();
         Maud.bindScreen.activate(inputMode);
+    }
+
+    /**
+     * Associate a check box with the tool that manages it.
+     *
+     * @param checkBoxName the name (unique id prefix) of the check box (not
+     * null)
+     * @param manager (not null, alias created)
+     */
+    public void mapCheckBox(String checkBoxName, Tool manager) {
+        Tool oldMapping = checkBoxMap.put(checkBoxName, manager);
+        assert oldMapping == null;
     }
 
     /**
@@ -305,117 +316,11 @@ public class EditorScreen extends GuiScreenController {
         Validate.nonNull(event, "event");
         assert checkBoxId.endsWith("CheckBox");
 
-        if (ignoreGuiChanges || !hasStarted()) {
-            return;
-        }
-
-        EditorModel model = Maud.getModel();
-        SceneOptions scene = model.getScene();
-        Cgm source = model.getSource();
-        EditableCgm target = model.getTarget();
-        Cgm animationCgm;
-        if (target.getAnimation().isRetargetedPose()) {
-            animationCgm = source;
-        } else {
-            animationCgm = target;
-        }
-        boolean isChecked = event.isChecked();
-
-        String prefix = MyString.removeSuffix(checkBoxId, "CheckBox");
-        switch (prefix) {
-            case "3DCursor":
-            case "3DCursor2":
-                scene.getCursor().setVisible(isChecked);
-                break;
-            case "autoCheckpoint":
-                History.setAutoAdd(isChecked);
-                break;
-            case "axesDepthTest":
-                scene.getAxes().setDepthTestFlag(isChecked);
-                break;
-            case "boundsDepthTest":
-                scene.getBounds().setDepthTestFlag(isChecked);
-                break;
-            case "freeze":
-                animationCgm.getPose().setFrozen(isChecked);
-                break;
-            case "fullscreen":
-                DisplaySettings.setFullscreen(isChecked);
-                break;
-            case "gammaCorrection":
-                DisplaySettings.setGammaCorrection(isChecked);
-                break;
-            case "invertRma":
-            case "invertRma2":
-                model.getMap().setInvertMap(isChecked);
-                break;
-            case "lightEnable":
-                target.getLight().setEnabled(isChecked);
-                break;
-            case "loop":
-                animationCgm.getPlay().setContinue(isChecked);
-                break;
-            case "loopSource":
-                source.getPlay().setContinue(isChecked);
-                break;
-            case "matDepthTest":
-                target.setDepthTest(isChecked);
-                break;
-            case "matWireframe":
-                target.setWireframe(isChecked);
-                break;
-            case "mpoEnable":
-                target.setOverrideEnabled(isChecked);
-                break;
-            case "physics":
-                scene.getRender().setPhysicsRendered(isChecked);
-                break;
-            case "pin":
-                target.getAnimation().setPinned(isChecked);
-                break;
-            case "pinSource":
-                source.getAnimation().setPinned(isChecked);
-                break;
-            case "pong":
-                animationCgm.getPlay().setReverse(isChecked);
-                break;
-            case "pongSource":
-                source.getPlay().setReverse(isChecked);
-                break;
-            case "scoreRotations":
-                model.getScore().setShowRotations(isChecked);
-                break;
-            case "scoreScales":
-                model.getScore().setShowScales(isChecked);
-                break;
-            case "scoreTranslations":
-                model.getScore().setShowTranslations(isChecked);
-                break;
-            case "settingsDiagnose":
-                model.getMisc().setDiagnoseLoads(isChecked);
-                break;
-            case "sgcEnable":
-                target.setSgcEnabled(isChecked);
-                break;
-            case "sgcLocalPhysics":
-                target.setApplyPhysicsLocal(isChecked);
-                break;
-            case "shadows":
-                scene.getRender().setShadowsRendered(isChecked);
-                break;
-            case "sky":
-            case "sky2":
-                scene.getRender().setSkySimulated(isChecked);
-                break;
-            case "spatialIgnoreTransform":
-                target.setIgnoreTransform(isChecked);
-                break;
-            case "vSync":
-                DisplaySettings.setVSync(isChecked);
-                break;
-            default:
-                logger.log(Level.WARNING, "check box with unknown id={0}",
-                        MyString.quote(checkBoxId));
+        if (!ignoreGuiChanges && hasStarted()) {
+            String checkBoxName = MyString.removeSuffix(checkBoxId, "CheckBox");
+            Tool manager = checkBoxMap.get(checkBoxName);
+            boolean isChecked = event.isChecked();
+            manager.onCheckBoxChanged(checkBoxName, isChecked);
         }
     }
 

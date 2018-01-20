@@ -29,12 +29,14 @@ package maud.tool;
 import com.jme3.animation.Bone;
 import com.jme3.material.RenderState;
 import com.jme3.shader.VarType;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedSpatial;
 
@@ -68,8 +70,46 @@ class MaterialTool extends Tool {
     // Tool methods
 
     /**
+     * Enumerate this tool's check boxes.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listCheckBoxes() {
+        List<String> result = super.listCheckBoxes();
+        result.add("matDepthTest");
+        result.add("matWireframe");
+
+        return result;
+    }
+
+    /**
+     * Update the MVC model based on a check-box event.
+     *
+     * @param name the name (unique id prefix) of the check box
+     * @param isChecked the new state of the check box (true&rarr;checked,
+     * false&rarr;unchecked)
+     */
+    @Override
+    public void onCheckBoxChanged(String name, boolean isChecked) {
+        EditableCgm target = Maud.getModel().getTarget();
+        switch (name) {
+            case "matDepthTest":
+                target.setDepthTest(isChecked);
+                break;
+
+            case "matWireframe":
+                target.setWireframe(isChecked);
+                break;
+
+            default:
+                super.onCheckBoxChanged(name, isChecked);
+        }
+    }
+
+    /**
      * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while the tool is displayed.)
+     * pass while this tool is displayed.)
      */
     @Override
     void toolUpdate() {

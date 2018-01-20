@@ -87,6 +87,38 @@ public class HistoryTool extends Tool {
     // new methods exposed
 
     /**
+     * Enumerate this tool's check boxes.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listCheckBoxes() {
+        List<String> result = super.listCheckBoxes();
+        result.add("autoCheckpoint");
+
+        return result;
+    }
+
+    /**
+     * Update the MVC model based on a check-box event.
+     *
+     * @param name the name (unique id prefix) of the check box
+     * @param isChecked the new state of the check box (true&rarr;checked,
+     * false&rarr;unchecked)
+     */
+    @Override
+    public void onCheckBoxChanged(String name, boolean isChecked) {
+        switch (name) {
+            case "autoCheckpoint":
+                History.setAutoAdd(isChecked);
+                break;
+
+            default:
+                super.onCheckBoxChanged(name, isChecked);
+        }
+    }
+
+    /**
      * scroll to "you are here" on next update
      */
     public void setAutoScroll() {
@@ -97,7 +129,7 @@ public class HistoryTool extends Tool {
 
     /**
      * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while the tool is displayed.)
+     * pass while this tool is displayed.)
      */
     @Override
     void toolUpdate() {
