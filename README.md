@@ -1,4 +1,4 @@
-<img height="150" src="https://github.com/stephengold/Maud/blob/master/src/main/resources/Textures/icons/Maud.png" alt="Maud logo"/>
+<img height="150" src="https://i.imgur.com/beTKjwO.png">
 
 Maud is an editor for the animated 3-D models used with the
 [jMonkeyEngine (jME)][jme] game engine.
@@ -699,6 +699,7 @@ BVH resources:
 
 [blender]: https://docs.blender.org "Blender Project"
 [bsd3]: https://opensource.org/licenses/BSD-3-Clause "3-Clause BSD License"
+[bvhretarget]: https://github.com/Nehon/bvhretarget "BVH Retarget Project"
 [chrome]: https://www.google.com/chrome "Chrome"
 [elements]: http://www.adobe.com/products/photoshop-elements.html "Photoshop Elements"
 [findbugs]: http://findbugs.sourceforge.net "FindBugs Project"
@@ -708,6 +709,7 @@ BVH resources:
 [gradle]: https://gradle.org "Gradle Project"
 [jfrog]: https://www.jfrog.com "JFrog"
 [jme]: http://jmonkeyengine.org  "jMonkeyEngine Project"
+[jprefctl]: https://github.com/canbican/jprefctl "Jprefctl Project"
 [markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
 [netbeans]: https://netbeans.org "NetBeans Project"
 [nifty]: http://nifty-gui.github.io/nifty-gui "Nifty GUI Project"
@@ -730,26 +732,25 @@ The following features are on my "to do" list, in no particular order:
 
  + advance/delay keyframe(s)
  + better support for physics controls/joints/objects/shapes
- + smoother camera motion
+ + smoother camera motion in score views
  + tools for Keyframes/Meshes
  + select bone mappings that don't correspond to the loaded models
  + export a model to [OBJ][] format
  + export an animation to [BVH](#bvh) format
  + localization
- + more scene-view options for platform/shadows/sky
+ + more scene-view options for platform
  + concatenate animations
  + tool tips
  + mirror an animation/pose
  + joint-angle limits for models
  + save more options to the startup script
  + insert a node into the scene graph
- + changes to display settings should take effect immediately
 
 <a name="conventions">
 
 ## Conventions
 
-Maud's source code is compatible with both JDK 7 and JDK 8.
+Maud's source code is compatible with JDK 7.
 
 World coordinate system: the Y axis points upward (toward the zenith).
 
@@ -766,8 +767,7 @@ Maud began as a demo application for the jme3-utilities-debug library,
 part of the jme3-utilities project at
 https://github.com/stephengold/jme3-utilities
 
-Maud incorporates code from the the BVH Retarget Project at
-https://github.com/Nehon/bvhretarget
+Maud incorporates code from [jMonkeyEngine][jme] and the [BVH Retarget Project][bvhretarget].
 
 <a name="acks">
 
@@ -781,6 +781,7 @@ I therefore acknowledge the following artists and software developers:
 + Paul Speed (aka "pspeed") for many helpful insights
 + David Bernard (aka "david_bernard_31") for creating [Xbuf][]
 + [Nathan Vegdahl][vegdahl], for creating the Puppet model
++ Can Bican, for creating the [Jprefctl][] preferences editor
 + Zi Ye, for creating the Sinbad model
 + the brave souls who volunteered to be alpha testers for Maud, including:
   + "Jesterrrrrr"
