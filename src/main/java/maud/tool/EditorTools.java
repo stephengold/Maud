@@ -28,9 +28,9 @@ package maud.tool;
 
 import com.jme3.app.state.AppStateManager;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.EditorScreen;
+import maud.Maud;
 
 /**
  * Tools in Maud's editor screen.
@@ -291,152 +291,6 @@ public class EditorTools {
     }
 
     /**
-     * Access the controller of a named tool.
-     *
-     * @param toolName which tool to access (not null, not empty)
-     * @return the pre-existing instance, or null of none
-     */
-    public Tool getTool(String toolName) {
-        Validate.nonEmpty(toolName, "tool name");
-
-        Tool tool;
-        switch (toolName) {
-            case "animation":
-                tool = animation;
-                break;
-            case "axes":
-                tool = axes;
-                break;
-            case "background":
-                tool = background;
-                break;
-            case "bone":
-                tool = bone;
-                break;
-            case "boneRotation":
-                tool = boneRotation;
-                break;
-            case "boneScale":
-                tool = boneScale;
-                break;
-            case "boneTranslation":
-                tool = boneTranslation;
-                break;
-            case "bounds":
-                tool = bounds;
-                break;
-            case "camera":
-                tool = camera;
-                break;
-            case "cgm":
-                tool = cgm;
-                break;
-            case "cursor":
-                tool = cursor;
-                break;
-            case "displaySettings":
-                tool = displaySettings;
-                break;
-            case "history":
-                tool = history;
-                break;
-            case "joint":
-                tool = joint;
-                break;
-            case "keyframe":
-                tool = keyframe;
-                break;
-            case "lights":
-                tool = lights;
-                break;
-            case "map":
-                tool = mapping;
-                break;
-            case "material":
-                tool = material;
-                break;
-            case "object":
-                tool = object;
-                break;
-            case "overrides":
-                tool = overrides;
-                break;
-            case "platform":
-                tool = platform;
-                break;
-            case "render":
-                tool = render;
-                break;
-            case "retarget":
-                tool = retarget;
-                break;
-            case "sceneLighting":
-                tool = sceneLighting;
-                break;
-            case "sceneVertex":
-                tool = sceneVertex;
-                break;
-            case "score":
-                tool = score;
-                break;
-            case "settings":
-                tool = settings;
-                break;
-            case "sgc":
-                tool = sgc;
-                break;
-            case "shape":
-                tool = shape;
-                break;
-            case "skeleton":
-                tool = skeleton;
-                break;
-            case "skeletonColor":
-                tool = skeletonColor;
-                break;
-            case "sourceAnimation":
-                tool = sourceAnimation;
-                break;
-            case "spatial":
-                tool = spatial;
-                break;
-            case "spatialDetails":
-                tool = spatialDetails;
-                break;
-            case "spatialRotation":
-                tool = spatialRotation;
-                break;
-            case "spatialScale":
-                tool = spatialScale;
-                break;
-            case "spatialTranslation":
-                tool = spatialTranslation;
-                break;
-            case "sky":
-                tool = sky;
-                break;
-            case "tweening":
-                tool = tweening;
-                break;
-            case "twist":
-                tool = twist;
-                break;
-            case "userData":
-                tool = userData;
-                break;
-            case "vertex":
-                tool = vertex;
-                break;
-            default:
-                String message = String.format("tool name = %s",
-                        MyString.quote(toolName));
-                throw new IllegalArgumentException(message);
-        }
-
-        return tool;
-    }
-
-    /**
      * Select the named tool.
      *
      * @param toolName which tool to select (not null, not empty)
@@ -444,7 +298,7 @@ public class EditorTools {
     public void select(String toolName) {
         Validate.nonEmpty(toolName, "tool name");
 
-        Tool tool = getTool(toolName);
+        Tool tool = Maud.gui.getTool(toolName);
         tool.select();
     }
 }

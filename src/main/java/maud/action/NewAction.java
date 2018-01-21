@@ -85,7 +85,7 @@ class NewAction {
             case Action.newCheckpoint:
                 History.addCheckpoint();
                 HistoryTool historyTool
-                        = (HistoryTool) Maud.gui.tools.getTool("history");
+                        = (HistoryTool) Maud.gui.getTool("history");
                 historyTool.setAutoScroll();
                 break;
 

@@ -132,6 +132,10 @@ public class EditorScreen extends GuiScreenController {
      */
     final private Map<String, Tool> sliderMap = new TreeMap<>();
     /**
+     * map a tool name to the controller for that tool
+     */
+    final private Map<String, Tool> toolMap = new TreeMap<>();
+    /**
      * POV that's being dragged, or null for none
      */
     private Pov dragPov = null;
@@ -149,6 +153,18 @@ public class EditorScreen extends GuiScreenController {
     // new methods exposed
 
     /**
+     * Access the controller of a named tool.
+     *
+     * @param toolName which tool to access (not null, not empty)
+     * @return the pre-existing instance, or null if none
+     */
+    public Tool getTool(String toolName) {
+        Validate.nonEmpty(toolName, "tool name");
+        Tool controller = toolMap.get(toolName);
+        return controller;
+    }
+
+    /**
      * Activate the "Bind" screen.
      */
     public void goBindScreen() {
@@ -157,25 +173,45 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Associate a check box with the tool that manages it.
+     * Associate the named check box with the tool that manages it.
      *
      * @param checkBoxName the name (unique id prefix) of the check box (not
      * null)
      * @param manager (not null, alias created)
      */
     public void mapCheckBox(String checkBoxName, Tool manager) {
+        Validate.nonNull(checkBoxName, "check-box name");
+        Validate.nonNull(manager, "manager");
+
         Tool oldMapping = checkBoxMap.put(checkBoxName, manager);
         assert oldMapping == null;
     }
 
     /**
-     * Associate a slider with the tool that manages it.
+     * Associate the named slider with the tool that manages it.
      *
      * @param sliderName the name (unique id prefix) of the slider (not null)
      * @param manager (not null, alias created)
      */
     public void mapSlider(String sliderName, Tool manager) {
+        Validate.nonNull(sliderName, "slider name");
+        Validate.nonNull(manager, "manager");
+
         Tool oldMapping = sliderMap.put(sliderName, manager);
+        assert oldMapping == null;
+    }
+
+    /**
+     * Associate the name tool with its controller.
+     *
+     * @param toolName the name (unique id prefix) of the tool (not null)
+     * @param tool the controller (not null, alias created)
+     */
+    public void mapTool(String toolName, Tool tool) {
+        Validate.nonNull(toolName, "tool name");
+        Validate.nonNull(tool, "tool");
+
+        Tool oldMapping = toolMap.put(toolName, tool);
         assert oldMapping == null;
     }
 
@@ -536,7 +572,7 @@ public class EditorScreen extends GuiScreenController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (!tools.getTool("camera").isInitialized()) {
+        if (toolMap.isEmpty()) {
             return;
         }
 

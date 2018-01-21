@@ -52,6 +52,13 @@ abstract public class Tool extends GuiWindowController {
     final private static Logger logger
             = Logger.getLogger(Tool.class.getName());
     // *************************************************************************
+    // fields
+
+    /**
+     * the name (unique id prefix) of this tool
+     */
+    final private String toolName;
+    // *************************************************************************
     // constructors
 
     /**
@@ -63,12 +70,13 @@ abstract public class Tool extends GuiWindowController {
      */
     Tool(GuiScreenController screenController, String name) {
         super(screenController, name + "Tool", false);
+        toolName = name;
     }
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Enumerate the tool's check boxes.
+     * Enumerate this tool's check boxes.
      *
      * @return a new list of names (unique id prefixes)
      */
@@ -78,7 +86,7 @@ abstract public class Tool extends GuiWindowController {
     }
 
     /**
-     * Enumerate the tool's sliders.
+     * Enumerate this tool's sliders.
      *
      * @return a new list of names (unique id prefixes)
      */
@@ -101,14 +109,14 @@ abstract public class Tool extends GuiWindowController {
     }
 
     /**
-     * Update the MVC model based on the tool's sliders, if any.
+     * Update the MVC model based on this tool's sliders, if any.
      */
     public void onSliderChanged() {
         logger.log(Level.WARNING, "unexpected slider change ignored");
     }
 
     /**
-     * Callback to update the tool prior to rendering. (Invoked once per render
+     * Callback to update this tool prior to rendering. (Invoked once per render
      * pass while the tool is displayed.)
      */
     abstract void toolUpdate();
@@ -119,13 +127,15 @@ abstract public class Tool extends GuiWindowController {
      * Initialize this controller prior to its 1st update.
      *
      * @param stateManager (not null)
-     * @param application application which owns the window (not null)
+     * @param application application which owns this tool (not null)
      */
     @Override
     public void initialize(AppStateManager stateManager,
             Application application) {
         super.initialize(stateManager, application);
+
         EditorScreen screen = (EditorScreen) getScreenController();
+        screen.mapTool(toolName, this);
 
         List<String> checkBoxNames = listCheckBoxes();
         for (String name : checkBoxNames) {

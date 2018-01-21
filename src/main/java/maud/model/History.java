@@ -265,7 +265,7 @@ public class History {
      * update.
      */
     public static void setAutoScroll() {
-        HistoryTool tool = (HistoryTool) Maud.gui.tools.getTool("history");
+        HistoryTool tool = (HistoryTool) Maud.gui.getTool("history");
         tool.setAutoScroll();
     }
 
