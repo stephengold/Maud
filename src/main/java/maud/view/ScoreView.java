@@ -58,7 +58,6 @@ import jme3utilities.math.MyMath;
 import jme3utilities.mesh.RectangleMesh;
 import jme3utilities.wes.Pose;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.mesh.Finial;
 import maud.mesh.Sparkline;
 import maud.mesh.YSwarm;
@@ -406,7 +405,7 @@ public class ScoreView implements EditorView {
         Validate.nonNull(selection, "selection");
 
         Camera camera = getCamera();
-        if (!MaudUtil.isFullWidth(camera)) {
+        if (!MyCamera.isFullWidth(camera)) {
             MiscOptions misc = Maud.getModel().getMisc();
             int width = camera.getWidth(); // in pixels
             float boundaryX = misc.getXBoundary() * width;

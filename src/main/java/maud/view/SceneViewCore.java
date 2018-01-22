@@ -590,8 +590,9 @@ public class SceneViewCore
             skeletonVisualizer.setTransformSpatial(ts);
             skeletonVisualizer.setEnabled(true);
             /*
-             * Make the visualizer add its geometries to the scene graph.
-             * This is vital when loading BVH files.
+             * Cause the visualizer to add its geometries to the scene graph.
+             * This is vital when loading BVH files, which don't provide any
+             * geometries.
              */
             skeletonVisualizer.update(0f);
         }
@@ -683,7 +684,7 @@ public class SceneViewCore
         Validate.nonNull(selection, "selection");
 
         Camera camera = getCamera();
-        if (!MaudUtil.isFullWidth(camera)) {
+        if (!MyCamera.isFullWidth(camera)) {
             MiscOptions misc = Maud.getModel().getMisc();
             int width = camera.getWidth();
             float boundaryX = misc.getXBoundary() * width;

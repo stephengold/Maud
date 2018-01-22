@@ -48,7 +48,6 @@ import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
-import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -632,20 +631,6 @@ public class MaudUtil {
         } else {
             result = false;
         }
-
-        return result;
-    }
-
-    /**
-     * Test whether the specified camera has a full-width view port.
-     *
-     * @param camera which camera to test (not null, unaffected)
-     * @return true if full width, otherwise false
-     */
-    public static boolean isFullWidth(Camera camera) {
-        float leftEdge = camera.getViewPortLeft();
-        float rightEdge = camera.getViewPortRight();
-        boolean result = (leftEdge <= 0f && rightEdge >= 1f);
 
         return result;
     }
