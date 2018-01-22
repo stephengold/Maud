@@ -40,8 +40,8 @@ import maud.model.EditorModel;
 import maud.model.option.MiscOptions;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.RenderOptions;
-import maud.view.SceneView;
 import maud.view.ScoreView;
+import maud.view.scene.SceneView;
 
 /**
  * Viewports used by Maud's "editor" screen.

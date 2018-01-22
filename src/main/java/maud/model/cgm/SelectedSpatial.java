@@ -73,7 +73,7 @@ import jme3utilities.math.MyVector3f;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.PhysicsUtil;
-import maud.view.SceneView;
+import maud.view.scene.SceneView;
 
 /**
  * The MVC model of the selected spatial in a loaded C-G model.

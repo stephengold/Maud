@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.view;
+package maud.view.scene;
 
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.PhysicsSpace;
@@ -153,6 +153,27 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Calculate the length of the specified axis.
+     *
+     * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
+     * @return length (in local units, &ge;0)
+     */
+    public float axisLength(int axisIndex) {
+        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
+                MyVector3f.lastAxis);
+
+        AxesVisualizer visualizer = getAxesVisualizer();
+        Spatial spatial = visualizer.getSpatial();
+        Vector3f tipWorld = visualizer.tipLocation(axisIndex);
+        assert !MySpatial.isIgnoringTransforms(spatial);
+        Vector3f tipLocal = spatial.worldToLocal(tipWorld, null);
+        float length = tipLocal.length();
+
+        assert length >= 0f : length;
+        return length;
+    }
+
+    /**
      * Attach a clone of the specified child spatial to the specified node in
      * the C-G model.
      *
@@ -266,7 +287,7 @@ public class SceneView extends SceneViewCore {
      * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      * @return true if pointing away, otherwise false
      */
-    boolean isAxisReceding(int axisIndex) {
+    public boolean isAxisReceding(int axisIndex) {
         Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
                 MyVector3f.lastAxis);
 

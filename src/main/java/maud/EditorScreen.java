@@ -63,13 +63,13 @@ import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.CameraOptions;
 import maud.tool.EditorTools;
 import maud.tool.Tool;
-import maud.view.CgmTransform;
 import maud.view.Drag;
 import maud.view.EditorView;
-import maud.view.SceneDrag;
-import maud.view.SceneView;
 import maud.view.Selection;
 import maud.view.ViewType;
+import maud.view.scene.CgmTransform;
+import maud.view.scene.SceneDrag;
+import maud.view.scene.SceneView;
 import org.lwjgl.input.Mouse;
 
 /**

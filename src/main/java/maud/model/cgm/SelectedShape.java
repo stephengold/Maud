@@ -51,7 +51,7 @@ import jme3utilities.math.MyVector3f;
 import maud.MyShape;
 import maud.PhysicsUtil;
 import maud.model.option.ShapeParameter;
-import maud.view.SceneView;
+import maud.view.scene.SceneView;
 
 /**
  * The selected physics shape in the Maud application.

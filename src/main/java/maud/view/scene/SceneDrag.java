@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.view;
+package maud.view.scene;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Line;
@@ -36,6 +36,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
+import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
@@ -151,12 +152,12 @@ public class SceneDrag {
      * @param farSideFlag true &rarr; drag on the far side of the axis origin,
      * false to drag on near side
      */
-    static void start(int axisIndex, float initialLength, Cgm cgm,
+    static public void start(int axisIndex, float initialLength, Cgm cgm,
             boolean farSideFlag) {
-        assert axisIndex >= MyVector3f.firstAxis : axisIndex;
-        assert axisIndex < MyVector3f.numAxes : axisIndex;
-        assert initialLength > 0f : initialLength;
-        assert cgm != null;
+        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
+                MyVector3f.lastAxis);
+        Validate.positive(initialLength, "initial length");
+        Validate.nonNull(cgm, "model");
 
         dragAxisIndex = axisIndex;
         previousLength = initialLength;

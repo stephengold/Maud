@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.view;
+package maud.view.scene;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
@@ -95,6 +95,9 @@ import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.SkeletonOptions;
+import maud.view.EditorView;
+import maud.view.Selection;
+import maud.view.ViewType;
 
 /**
  * The essential fields and methods of the SceneView class.
@@ -271,14 +274,14 @@ public class SceneViewCore
      * Find the tree position of the specified spatial in this view's copy of
      * the C-G model.
      *
-     * @param input spatial to search for (not null, unaffected)
+     * @param spatial spatial to search for (not null, unaffected)
      * @return a new tree-position instance, or null if not found
      */
-    List<Integer> findPosition(Spatial input) {
-        assert input != null;
+    public List<Integer> findPosition(Spatial spatial) {
+        Validate.nonNull(spatial, "input");
 
         List<Integer> treePosition = new ArrayList<>(4);
-        boolean success = MaudUtil.findPosition(input, cgmRoot, treePosition);
+        boolean success = MaudUtil.findPosition(spatial, cgmRoot, treePosition);
         if (!success) {
             treePosition = null;
         }

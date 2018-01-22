@@ -54,7 +54,7 @@ import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.ProjectionMode;
 import maud.model.option.scene.TriangleMode;
 import maud.view.Drag;
-import maud.view.SceneDrag;
+import maud.view.scene.SceneDrag;
 
 /**
  * Process actions that start with the word "select" and a letter in the o-z

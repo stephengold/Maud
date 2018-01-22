@@ -44,8 +44,8 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedTrack;
 import maud.model.option.DisplaySettings;
 import maud.view.EditorView;
-import maud.view.SceneDrag;
-import maud.view.SceneView;
+import maud.view.scene.SceneDrag;
+import maud.view.scene.SceneView;
 import maud.view.ViewType;
 
 /**

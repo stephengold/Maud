@@ -27,20 +27,18 @@
 package maud.view;
 
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Spatial;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.MySpatial;
 import jme3utilities.Validate;
-import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSkeleton;
+import maud.view.scene.SceneDrag;
+import maud.view.scene.SceneView;
 
 /**
  * Encapsulate an axis/bone/boundary/gnomon/keyframe/vertex selection by the
@@ -380,13 +378,7 @@ public class Selection {
         assert bestAxisIndex < MyVector3f.numAxes : bestAxisIndex;
 
         SceneView sceneView = bestCgm.getSceneView();
-        AxesVisualizer visualizer = sceneView.getAxesVisualizer();
-        Spatial spatial = visualizer.getSpatial();
-        Vector3f tipWorld = visualizer.tipLocation(bestAxisIndex);
-        assert !MySpatial.isIgnoringTransforms(spatial);
-        Vector3f tipLocal = spatial.worldToLocal(tipWorld, null);
-        float length = tipLocal.length();
-
+        float length = sceneView.axisLength(bestAxisIndex);
         boolean farSide = sceneView.isAxisReceding(bestAxisIndex);
         SceneDrag.start(bestAxisIndex, length, bestCgm, farSide);
     }

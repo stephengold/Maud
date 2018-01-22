@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyControl;
 import jme3utilities.Validate;
 import maud.PhysicsUtil;
-import maud.view.SceneView;
+import maud.view.scene.SceneView;
 
 /**
  * The MVC model of the selected scene-graph (S-G) control in a C-G model.

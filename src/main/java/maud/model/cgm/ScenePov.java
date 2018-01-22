@@ -39,7 +39,7 @@ import maud.Maud;
 import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.DddCursorOptions;
 import maud.model.option.scene.OrbitCenter;
-import maud.view.SceneView;
+import maud.view.scene.SceneView;
 
 /**
  * The positions of the POV and 3-D cursor in a scene view.

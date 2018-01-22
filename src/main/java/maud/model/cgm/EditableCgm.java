@@ -80,7 +80,7 @@ import maud.PhysicsUtil;
 import maud.model.History;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
-import maud.view.SceneView;
+import maud.view.scene.SceneView;
 
 /**
  * MVC model for an editable computer-graphics (C-G) model in the Maud

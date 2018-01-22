@@ -62,8 +62,8 @@ import maud.MaudUtil;
 import maud.MyShape;
 import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.TriangleMode;
-import maud.view.SceneView;
 import maud.view.ScoreView;
+import maud.view.scene.SceneView;
 
 /**
  * MVC model for a computer-graphics (C-G) model in the Maud application:

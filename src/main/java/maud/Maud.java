@@ -51,7 +51,7 @@ import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.option.DisplaySettings;
-import maud.view.SceneView;
+import maud.view.scene.SceneView;
 
 /**
  * GUI application to edit jMonkeyEngine animated C-G models. The application's
