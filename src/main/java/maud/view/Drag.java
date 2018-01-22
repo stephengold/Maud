@@ -33,6 +33,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import java.util.logging.Logger;
 import maud.Maud;
+import maud.model.WhichCgm;
 import maud.model.cgm.Cgm;
 
 /**
@@ -41,12 +42,6 @@ import maud.model.cgm.Cgm;
  * @author Stephen Gold sgold@sonic.net
  */
 public class Drag {
-    // *************************************************************************
-    // enums
-
-    private enum WhichCgm {
-        None, Source, Target;
-    }
     // *************************************************************************
     // constants and loggers
 
@@ -63,9 +58,9 @@ public class Drag {
      */
     private static boolean isDraggingBoundary;
     /**
-     * which CGM's gnomon is being dragged (not null)
+     * the C-G model whose gnomon is being dragged, or null for none
      */
-    private static WhichCgm dragGnomonCgm = WhichCgm.None;
+    private static WhichCgm dragGnomonCgm = null;
     // *************************************************************************
     // constructors
 
@@ -90,13 +85,8 @@ public class Drag {
      * @param cgm a C-G model (not null)
      */
     static void startDraggingGnomon(Cgm cgm) {
-        if (cgm == Maud.getModel().getTarget()) {
-            dragGnomonCgm = WhichCgm.Target;
-        } else if (cgm == Maud.getModel().getSource()) {
-            dragGnomonCgm = WhichCgm.Source;
-        } else {
-            throw new IllegalArgumentException();
-        }
+        assert cgm != null;
+        dragGnomonCgm = Maud.getModel().whichCgm(cgm);
     }
 
     /**
@@ -110,7 +100,7 @@ public class Drag {
      * Stop dragging the gnomon.
      */
     public static void stopDraggingGnomon() {
-        dragGnomonCgm = WhichCgm.None;
+        dragGnomonCgm = null;
     }
 
     /**
@@ -131,7 +121,7 @@ public class Drag {
      * Update any active gnomon drag.
      */
     public static void updateGnomon() {
-        Cgm cgm = getDraggedGnomonCgm();
+        Cgm cgm = Maud.getModel().getCgm(dragGnomonCgm);
         if (cgm != null) {
             Maud application = Maud.getApplication();
             InputManager inputManager = application.getInputManager();
@@ -143,31 +133,5 @@ public class Drag {
             float newTime = worldX * duration;
             cgm.getAnimation().setTime(newTime);
         }
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Access the C-G model associated with the gnomon being dragged.
-     *
-     * @return a C-G model, or null
-     */
-    private static Cgm getDraggedGnomonCgm() {
-        Cgm result;
-        switch (dragGnomonCgm) {
-            case None:
-                result = null;
-                break;
-            case Source:
-                result = Maud.getModel().getSource();
-                break;
-            case Target:
-                result = Maud.getModel().getTarget();
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-
-        return result;
     }
 }

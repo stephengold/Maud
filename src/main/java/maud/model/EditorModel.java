@@ -44,6 +44,7 @@ import maud.Maud;
 import maud.MaudUtil;
 import maud.ScriptLoader;
 import maud.action.ActionPrefix;
+import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedCgm;
 import maud.model.option.AssetLocations;
@@ -140,6 +141,32 @@ public class EditorModel {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Access the identified C-G model.
+     *
+     * @param whichCgm an enum value, or null
+     * @return the pre-existing instance, or null
+     */
+    public Cgm getCgm(WhichCgm whichCgm) {
+        Cgm result;
+        if (whichCgm == null) {
+            result = null;
+        } else {
+            switch (whichCgm) {
+                case Source:
+                    result = sourceCgmLoadSlot;
+                    break;
+                case Target:
+                    result = targetCgmLoadSlot;
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        return result;
+    }
 
     /**
      * Access the known asset locations.
@@ -257,6 +284,25 @@ public class EditorModel {
                     MyString.quote(Maud.startupScriptAssetPath));
             throw new RuntimeException(exception);
         }
+    }
+
+    /**
+     * Identify the specified C-G model.
+     *
+     * @param cgm a C-G model or null
+     * @return an enum value or null
+     */
+    public WhichCgm whichCgm(Cgm cgm) {
+        WhichCgm result = null;
+        if (cgm == sourceCgmLoadSlot) {
+            result = WhichCgm.Source;
+        } else if (cgm == targetCgmLoadSlot) {
+            result = WhichCgm.Target;
+        } else {
+            assert cgm == null : cgm;
+        }
+
+        return result;
     }
     // *************************************************************************
     // private methods
