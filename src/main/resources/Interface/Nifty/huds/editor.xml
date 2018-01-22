@@ -1527,7 +1527,7 @@ the menu bar, status bar, and tool windows.
                         <control name="button" label="Mapping Tool"
                                  id="id19ToAvoidNiftyWarning"
                                  width="90px">
-                            <interact onRelease="perform(select tool map)"/>
+                            <interact onRelease="perform(select tool mapping)"/>
                         </control>
                         <panel/>
                         <control name="button" id="retargetButton"
