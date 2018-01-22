@@ -33,6 +33,8 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
+import maud.model.EditorModel;
+import maud.model.WhichCgm;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
@@ -215,10 +217,17 @@ public class AnimationMenus {
     private static void addNewAnimation() {
         MenuBuilder builder = new MenuBuilder();
 
+        EditorModel model = Maud.getModel();
+        LoadedAnimation sourceAnimation = model.getSource().getAnimation();
+        LoadedAnimation targetAnimation = model.getTarget().getAnimation();
+        if (sourceAnimation.isReal() && targetAnimation.isReal()) {
+            builder.addDialog("Prepend source animation");
+            builder.addDialog("Append source animation");
+        }
         builder.addDialog("Copy");
-        builder.addDialog("Mix");
+        builder.addDialog("Mix tracks");
         builder.addDialog("Pose");
-        builder.addTool("Retarget");
+        builder.addTool("Retarget source animation");
 
         builder.show("select menuItem Animation -> Add new -> ");
     }
@@ -232,16 +241,24 @@ public class AnimationMenus {
     private static boolean menuAnimationAddNew(String remainder) {
         boolean handled = true;
         switch (remainder) {
+            case "Append source animation":
+                EditorDialogs.newAnimationFromChain(WhichCgm.Target,
+                        WhichCgm.Source);
+                break;
             case "Copy":
                 EditorDialogs.copyAnimation();
                 break;
-            case "Mix":
+            case "Mix tracks":
                 EditorDialogs.newAnimationFromMix();
                 break;
             case "Pose":
                 EditorDialogs.newAnimationFromPose();
                 break;
-            case "Retarget":
+            case "Prepend source animation":
+                EditorDialogs.newAnimationFromChain(WhichCgm.Source,
+                        WhichCgm.Target);
+                break;
+            case "Retarget source animation":
                 Maud.gui.tools.select("retarget");
                 break;
             default:

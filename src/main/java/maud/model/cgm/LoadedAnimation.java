@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -408,7 +408,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Access the loaded, real animation.
+     * Access the loaded, real animation. TODO rename get()
      *
      * @return the pre-existing instance, or null if none or in bind/retargeted
      * pose
@@ -446,7 +446,7 @@ public class LoadedAnimation implements Cloneable {
      * Read the name of the loaded animation.
      *
      * @return the name, or bindPoseName if in bind pose, or retargetedPoseName
-     * if in retarget pose (not null)
+     * if in retargeted pose (not null)
      */
     public String getName() {
         assert loadedName != null;
@@ -631,6 +631,30 @@ public class LoadedAnimation implements Cloneable {
             result = true;
         } else {
             result = false;
+        }
+
+        return result;
+    }
+
+    /**
+     * Enumerate all tracks in the loaded (real) animation.
+     *
+     * @return a list of new track items
+     */
+    List<TrackItem> listTracks() {
+        assert isReal();
+
+        SelectedAnimControl sac = cgm.getAnimControl();
+        AnimControl animControl = sac.find();
+        String controlName = sac.name();
+
+        Animation animation = getAnimation();
+        Track[] tracks = animation.getTracks();
+        List<TrackItem> result = new ArrayList<>(tracks.length);
+        for (Track track : tracks) {
+            TrackItem item = new TrackItem(loadedName, controlName, animControl,
+                    track);
+            result.add(item);
         }
 
         return result;

@@ -108,6 +108,11 @@ public class ActionPrefix {
      */
     final public static String loadSourceCgmNamed = "load sourceCgm named ";
     /**
+     * arguments are 2 whichCgms and a name for the new animation
+     */
+    final public static String newAnimationFromChain
+            = "new animation fromChain ";
+    /**
      * arguments are a comma-separated list of decimal track indices and an
      * optional name for the new animation
      */

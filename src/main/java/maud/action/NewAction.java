@@ -37,7 +37,9 @@ import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.History;
+import maud.model.WhichCgm;
 import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedAnimControl;
 import maud.model.cgm.SelectedTrack;
 import maud.model.cgm.UserDataType;
 import maud.tool.HistoryTool;
@@ -150,6 +152,22 @@ class NewAction {
             String spec = MyString.remainder(actionString,
                     ActionPrefix.newAssetLocationSpec);
             Maud.getModel().getLocations().addSpec(spec);
+
+        } else if (actionString.startsWith(ActionPrefix.newAnimationFromChain)) {
+            String argList = MyString.remainder(actionString,
+                    ActionPrefix.newAnimationFromChain);
+            String[] args = argList.split(" ");
+            if (args.length > 2) {
+                SelectedAnimControl sac = target.getAnimControl();
+                WhichCgm which1 = WhichCgm.valueOf(args[0]);
+                WhichCgm which2 = WhichCgm.valueOf(args[1]);
+                String prefix = args[0] + " " + args[1] + " ";
+                String animationName = MyString.remainder(argList, prefix);
+                sac.chain(which1, which2, animationName);
+                target.getAnimation().load(animationName);
+            } else {
+                handled = false;
+            }
 
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromMix)) {
             String args = MyString.remainder(actionString,

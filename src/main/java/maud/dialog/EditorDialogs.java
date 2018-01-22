@@ -61,6 +61,7 @@ import maud.MaudUtil;
 import maud.action.Action;
 import maud.action.ActionPrefix;
 import maud.model.EditorModel;
+import maud.model.WhichCgm;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
@@ -175,7 +176,7 @@ public class EditorDialogs {
         DialogController controller = new AnimationNameDialog("Copy");
 
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter name for copied animation:",
+        Maud.gui.showTextEntryDialog("Enter a name for the copied animation:",
                 fromName, ActionPrefix.copyAnimation, controller);
     }
 
@@ -310,6 +311,29 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter map asset path:", "SkeletonMaps/",
                 "Load", dialogPrefix, controller);
+    }
+
+    /**
+     * Display a "new animation fromChain" dialog.
+     *
+     * @param which1 which C-G model loaded the animation to go 1st (not null)
+     * @param which2 which C-G model loaded the animation to go 2nd (not null)
+     */
+    public static void newAnimationFromChain(WhichCgm which1, WhichCgm which2) {
+        Validate.nonNull(which1, "1st animation's model");
+        Validate.nonNull(which2, "2nd animation's model");
+
+        EditorModel model = Maud.getModel();
+        String animationName1 = model.getCgm(which1).getAnimation().getName();
+        String animationName2 = model.getCgm(which2).getAnimation().getName();
+        String defaultName = animationName1 + "," + animationName2;
+        String actionPrefix = ActionPrefix.newAnimationFromChain + which1 + " "
+                + which2 + " ";
+        DialogController controller = new AnimationNameDialog("Chain");
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter a name for the chained animation:",
+                defaultName, actionPrefix, controller);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@ import com.jme3.scene.control.Control;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +44,10 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.wes.TrackEdit;
 import maud.Maud;
+import maud.model.EditorModel;
+import maud.model.WhichCgm;
 
 /**
  * The MVC model of a selected anim control in the Maud application.
@@ -72,6 +76,76 @@ public class SelectedAnimControl implements JmeCloneable {
     private Cgm cgm = null;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Chain the specified animations into a new animation and add it the anim
+     * control.
+     *
+     * @param which1 which C-G model loaded the animation to go 1st (not null)
+     * @param which2 which C-G model loaded the animation to go 2nd (not null)
+     * @param animationName name for the new animation (not null, not reserved,
+     * not in use)
+     */
+    public void chain(WhichCgm which1, WhichCgm which2, String animationName) {
+        Validate.nonNull(which1, "1st animation's model");
+        Validate.nonNull(which2, "2nd animation's model");
+        Validate.nonEmpty(animationName, "animation name");
+        assert !LoadedAnimation.isReserved(animationName) : animationName;
+        assert !hasRealAnimation(animationName) : animationName;
+
+        EditorModel model = Maud.getModel();
+
+        Cgm cgm1 = model.getCgm(which1);
+        LoadedAnimation loadedAnimation1 = cgm1.getAnimation();
+        float duration1 = loadedAnimation1.getDuration();
+        List<TrackItem> list1 = loadedAnimation1.listTracks();
+
+        Cgm cgm2 = model.getCgm(which2);
+        LoadedAnimation loadedAnimation2 = cgm2.getAnimation();
+        float duration2 = loadedAnimation2.getDuration();
+        List<TrackItem> list2 = loadedAnimation2.listTracks();
+
+        float newDuration = duration1 + duration2;
+        Animation chain = new Animation(animationName, newDuration);
+        /*
+         * Add tracks to the new animation.
+         */
+        int numTracks2 = list2.size();
+        BitSet done = new BitSet(numTracks2);
+        for (TrackItem item1 : list1) {
+            Track track1 = item1.getTrack();
+            Track track2 = null;
+            for (int trackIndex2 = 0; trackIndex2 < numTracks2; trackIndex2++) {
+                if (!done.get(trackIndex2)) {
+                    TrackItem item2 = list2.get(trackIndex2);
+                    if (item1.hasSameTargetAs(item2)) {
+                        track2 = item2.getTrack();
+                        done.set(trackIndex2);
+                        break;
+                    }
+                }
+            }
+            Track newTrack;
+            if (track2 == null) {
+                newTrack = TrackEdit.truncate(track1, newDuration);
+            } else {
+                newTrack = TrackEdit.chain(track1, track2, duration1,
+                        newDuration);
+            }
+            chain.addTrack(newTrack);
+        }
+        for (int trackIndex2 = 0; trackIndex2 < numTracks2; trackIndex2++) {
+            if (!done.get(trackIndex2)) {
+                Track track2 = list2.get(trackIndex2).getTrack();
+                Track newTrack
+                        = TrackEdit.delayAll(track2, duration1, newDuration);
+                chain.addTrack(newTrack);
+            }
+        }
+
+        EditableCgm targetCgm = Maud.getModel().getTarget();
+        targetCgm.addAnimation(chain);
+    }
 
     /**
      * Count how many real animations are in the selected anim control.
@@ -336,6 +410,22 @@ public class SelectedAnimControl implements JmeCloneable {
 
         EditableCgm targetCgm = Maud.getModel().getTarget();
         targetCgm.addAnimation(mix);
+    }
+
+    /**
+     * Determine the name of the selected anim control.
+     *
+     * @return the name, or null if no anim control is selected
+     */
+    String name() {
+        int index = findIndex();
+        String name = null;
+        if (index != -1) {
+            List<String> names = cgm.listAnimControlNames();
+            name = names.get(index);
+        }
+
+        return name;
     }
 
     /**
