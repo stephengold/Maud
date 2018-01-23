@@ -26,6 +26,7 @@
  */
 package maud;
 
+import com.atr.jme.font.asset.TrueTypeLoader;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.asset.AssetConfig;
@@ -427,11 +428,12 @@ public class Maud extends GuiApplication {
     private void startup1() {
         logger.info("");
         /*
-         * Register loaders for BVH, JavaScript, txt, and Xbuf assets.
+         * Register loaders for BVH, JavaScript, txt, font, and Xbuf assets.
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
         assetManager.registerLoader(ScriptLoader.class, "js");
         assetManager.registerLoader(StringLoader.class, "txt");
+        assetManager.registerLoader(TrueTypeLoader.class, "ttf");
         assetManager.registerLoader(XbufLoader.class, "xbuf");
 
         EditorViewPorts.startup1();

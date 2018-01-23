@@ -146,7 +146,11 @@ public class EditorDialogs {
 
         text += String.format("%n   nifty-default-controls (BSD license)");
         text += String.format("%n   nifty-style-black (BSD license)");
-        
+
+        text += String.format("%n   jme-ttf (%s)",
+                "part FPL license, part BSD license");
+        text += String.format("%n   sfntly (Apache license)");
+
         text += String.format("%n   jme3_xbuf_loader (public domain)");
         text += String.format("%n   jme3_xbuf_rt (public domain)");
 
@@ -154,7 +158,7 @@ public class EditorDialogs {
                 "Eclipse Public License v1.0");
         text += String.format("%n   logback-classic (%s)",
                 "Eclipse Public License v1.0");
-                
+
         text += String.format("%n%n");
 
         Maud.gui.closeAllPopups();
@@ -266,10 +270,11 @@ public class EditorDialogs {
 
         String bodyText;
         if (licenseText == null) {
-            bodyText = String.format("Your %s license is missing!",
+            bodyText = String.format("Your copy of the %s license is missing!",
                     licenseName);
         } else {
-            bodyText = String.format("Here's your %s license:%n%n%s%n",
+            bodyText = String.format(
+                    "Here's your copy of the %s license:%n%n%s%n",
                     licenseName, licenseText);
         }
 

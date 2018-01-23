@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,10 @@ public enum LicenseType {
     // values
 
     /**
+     * Apache 2.0 (for the sfntly library)
+     */
+    Apache,
+    /**
      * BSD 3-Clause (for code)
      */
     BSD,
@@ -53,7 +57,11 @@ public enum LicenseType {
      */
     CC_BY_SA,
     /**
-     * MIT License
+     * Free Public License 1.0.0 (for portions of the jME-TTF library)
+     */
+    FPL,
+    /**
+     * MIT (for ProFont)
      */
     MIT;
 }

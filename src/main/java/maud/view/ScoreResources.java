@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,8 +26,12 @@
  */
 package maud.view;
 
+import com.atr.jme.font.TrueTypeFont;
+import com.atr.jme.font.TrueTypeMesh;
+import com.atr.jme.font.asset.TrueTypeKeyMesh;
+import com.atr.jme.font.util.Style;
+import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
-import com.jme3.font.BitmapFont;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -53,10 +57,6 @@ public class ScoreResources {
     // *************************************************************************
     // constants and loggers
 
-    /**
-     * font for labels
-     */
-    final BitmapFont labelFont;
     /**
      * color for the w-axis (white)
      */
@@ -156,16 +156,23 @@ public class ScoreResources {
      */
     final static Quaternion quarterZ = new Quaternion().fromAngles(0f, 0f,
             FastMath.HALF_PI);
+    /**
+     * font for labels
+     */
+    final TrueTypeFont labelFont;
     // *************************************************************************
     // constructors
 
     /**
      * Instantiate a new set of resources.
      */
+    @SuppressWarnings("unchecked")
     ScoreResources() {
         AssetManager assetManager = Locators.getAssetManager();
 
-        labelFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        AssetKey<TrueTypeMesh> assetKey = new TrueTypeKeyMesh(
+                "Interface/Fonts/ProFontWindows.ttf", Style.Plain, 18);
+        labelFont = assetManager.loadAsset(assetKey);
 
         ColorRGBA black = new ColorRGBA(0f, 0f, 0f, 1f);
         ColorRGBA grey = new ColorRGBA(0.5f, 0.5f, 0.5f, 1f);

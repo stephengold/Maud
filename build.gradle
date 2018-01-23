@@ -46,6 +46,7 @@ dependencies {
     compile "org.jmonkeyengine:jme3-lwjgl:${jmonkeyengineVersion}"
     compile "org.jmonkeyengine:jme3-plugins:${jmonkeyengineVersion}"
     compile 'ch.qos.logback:logback-classic:1.2.3'
+    compile 'com.atr:jme-ttf:2.1.1'
 
     // from stephengold's bintray repositories:
     compile 'jme3utilities:jme3-utilities-heart:1.1.1'

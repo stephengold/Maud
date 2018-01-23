@@ -26,9 +26,7 @@
  */
 package maud.view;
 
-import com.jme3.font.BitmapText;
-import com.jme3.font.LineWrapMode;
-import com.jme3.font.Rectangle;
+import com.atr.jme.font.shape.TrueTypeNode;
 import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -611,9 +609,10 @@ public class ScoreView implements EditorView {
                  */
                 float compression = cgm.getScorePov().compression();
                 float xWidth = 1f / compression;
-                float lineWidth = 4f + r.labelFont.getLineWidth(clueMessage);
+                float lineWidth = 4f + r.labelFont.getLineWidth(clueMessage, 0);
                 float sizeFactor = xWidth / lineWidth;
-                float yHeight = 2.4f * xWidth / r.labelFont.getPreferredSize();
+                float preferredSize = (float) r.labelFont.getActualLineHeight();
+                float yHeight = 2.4f * xWidth / preferredSize;
                 float centerY = cgm.getScorePov().getCameraY();
                 float rightX = 1f;
                 attachLabelHorizontal(clueMessage, sizeFactor, r.bgSelected,
@@ -933,13 +932,14 @@ public class ScoreView implements EditorView {
         }
 
         String labelText = StaffTrack.labelText();
-        float textSize = 4f + r.labelFont.getLineWidth(labelText);
+        float textSize = 4f + r.labelFont.getLineWidth(labelText, 0);
+        float preferredSize = (float) r.labelFont.getActualLineHeight();
         /*
          * Calculate the effective width and height for the label and the size
          * for the text assuming horizontal (normal) text.
          */
         float h1 = maxHeight;
-        float sizeFactor1 = 0.042f * h1; // relative to preferred size
+        float sizeFactor1 = h1 / preferredSize; // relative to preferred size
         float w1 = sizeFactor1 * textSize;
         if (w1 > maxWidth) {
             /*
@@ -955,7 +955,7 @@ public class ScoreView implements EditorView {
          * for the text assuming vertical (rotated) text.
          */
         float w2 = maxWidth;
-        float sizeFactor2 = 0.042f * w2; // relative to preferred size
+        float sizeFactor2 = w2 / preferredSize; // relative to preferred size
         float h2 = sizeFactor2 * textSize;
         if (h2 > maxHeight) {
             /*
@@ -1336,12 +1336,12 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Create the bitmap text and background for a label, but don't parent or
-     * transform it.
+     * Create a node with the text and background for a label, but don't parent
+     * it.
      *
      * @param labelText text of the label (not null)
      * @param sizeFactor text size relative to preferred size (&gt;0)
-     * @param bgMaterial (not null)
+     * @param bgMaterial material for the background (not null)
      * @param width size in the local X direction (in local units, &gt;0)
      * @param height size in the local Y direction (in local units, &gt;0)
      * @return a new orphan spatial with its local origin at its upper left
@@ -1355,29 +1355,30 @@ public class ScoreView implements EditorView {
         assert width > 0f : width;
         assert height > 0f : height;
         /*
-         * Create a bitmap text node.
+         * Create a rectangular background geometry.
          */
-        BitmapText spatial = new BitmapText(r.labelFont);
-        spatial.setBox(new Rectangle(0f, 0f, width, height));
-        spatial.setLineWrapMode(LineWrapMode.Clip);
-        String labelName = "label" + nameSuffix;
-        spatial.setName(labelName);
-        spatial.setQueueBucket(RenderQueue.Bucket.Transparent);
-        float size = sizeFactor * r.labelFont.getPreferredSize();
-        spatial.setSize(size);
-        spatial.setText(labelText);
-        /*
-         * Attach a rectangular background geometry to the node.
-         */
-        String bgName = "bg" + nameSuffix;
+        //String bgName = "bg" + nameSuffix;
         Mesh bgMesh = new RectangleMesh(0f, width, -height, 0f, 1f);
-        Geometry bg = new Geometry(bgName, bgMesh);
-        spatial.attachChild(bg);
-        bg.setLocalTranslation(0f, 0f, -0.01f); // slightly behind the text
-        bg.setMaterial(bgMaterial);
-        bg.setQueueBucket(RenderQueue.Bucket.Opaque);
+        Geometry bgGeometry = new Geometry("bg", bgMesh);
+        bgGeometry.setMaterial(bgMaterial);
+        /*
+         * Create a text node, centered on, and slightly in front of, the
+         * background.
+         */
+        TrueTypeNode ttNode
+                = r.labelFont.getText(labelText, 0, ColorRGBA.White);
+        ttNode.setLocalScale(sizeFactor);
+        float dx = width - ttNode.getWidth() * sizeFactor;
+        float dy = height - ttNode.getHeight() * sizeFactor;
+        ttNode.setLocalTranslation(dx / 2f, -dy / 2f, 0.01f);
+        //String labelName = "label" + nameSuffix;
+        //spatial.setName(labelName);
 
-        return spatial;
+        Node node = new Node();
+        node.attachChild(bgGeometry);
+        node.attachChild(ttNode);
+
+        return node;
     }
 
     /**
