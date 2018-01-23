@@ -709,6 +709,7 @@ BVH resources:
 [gradle]: https://gradle.org "Gradle Project"
 [jfrog]: https://www.jfrog.com "JFrog"
 [jme]: http://jmonkeyengine.org  "jMonkeyEngine Project"
+[jme-ttf]: http://1337atr.weebly.com/jttf.html "jME-TTF Rendering System"
 [jprefctl]: https://github.com/canbican/jprefctl "Jprefctl Project"
 [markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
 [netbeans]: https://netbeans.org "NetBeans Project"
@@ -716,6 +717,7 @@ BVH resources:
 [obj]: http://www.fileformat.info/format/wavefrontobj/egff.htm "Wavefront OBJ File Format"
 [obs]: https://obsproject.com "Open Broadcaster Software Project"
 [ogre]: http://www.ogre3d.org "Ogre Project"
+[profont]: http://tobiasjung.name/profont "ProFont Project"
 [retarget]: https://github.com/Nehon/bvhretarget "BVH Retarget Project"
 [rwce]: http://www.rw-designer.com/cursor-maker "RealWorld Cursor Editor"
 [utilities]: https://github.com/stephengold/jme3-utilities "jME3 Utilities Project"
@@ -739,7 +741,6 @@ The following features are on my "to do" list, in no particular order:
  + export an animation to [BVH](#bvh) format
  + localization
  + more scene-view options for platform
- + concatenate animations
  + tool tips
  + mirror an animation/pose
  + joint-angle limits for models
@@ -780,6 +781,8 @@ I therefore acknowledge the following artists and software developers:
   Project][retarget] and also for many helpful insights
 + Paul Speed (aka "pspeed") for many helpful insights
 + David Bernard (aka "david_bernard_31") for creating [Xbuf][]
++ Adam T. Ryder (aka "tryder") for creating [jME-TTF][]
++ Tobias Jung for creating [ProFont][]
 + [Nathan Vegdahl][vegdahl], for creating the Puppet model
 + Can Bican, for creating the [Jprefctl][] preferences editor
 + Zi Ye, for creating the Sinbad model
