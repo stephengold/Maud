@@ -1,15 +1,15 @@
 The com.jme3 software packages are Copyright (c) 2009-2017 jMonkeyEngine
-The maud software packages are Copyright (c) 2017 Stephen Gold
+The maud software packages are Copyright (c) 2017-2018 Stephen Gold
 
 All rights reserved.
 
 Note: the following license does not apply to certain assets/resources
-("3d cursor.blend", "3d cursor.j3o", "rock_11474.jpg",
+("3d cursor.blend", "3d cursor.j3o", "rock_11474.jpg", "ProFontWindows.ttf",
 3 files in src/main/resources/Models/MhGame,
 the 10 files in src/main/resources/Model/MhGame/textures,
 2 files in src/main/resources/Models/Puppet,
 8 files in src/main/resources/Models/Sinbad, and
-the 19 images in src/main/resources/textures/icons)
+the 20 images in src/main/resources/Textures/icons)
 which are separately licensed.
 
 BSD 3-Clause License

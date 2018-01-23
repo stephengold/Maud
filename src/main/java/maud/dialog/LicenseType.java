@@ -51,5 +51,9 @@ public enum LicenseType {
     /**
      * Creative Commons Attribution-Share Alike 3.0 Unported
      */
-    CC_BY_SA;
+    CC_BY_SA,
+    /**
+     * MIT License
+     */
+    MIT;
 }
