@@ -114,32 +114,48 @@ public class EditorDialogs {
                 + "ing animated models.\n\nThe version you are using "
                 //+ "is designated 1.0.0-alpha.5 .\n\nIt "
                 + "includes the following libraries:";
-        text += String.format("%n   jme3-core version %s",
+        text += String.format("%n   jme3-core version %s (BSD license)",
                 MyString.quote(JmeVersion.FULL_NAME));
-        text += String.format("%n   nifty version %s",
+        text += String.format("%n   nifty version %s (BSD license)",
                 MyString.quote(niftyVersion));
-        text += String.format("%n   jme3-utilities-heart version %s",
+        text += String.format(
+                "%n   jme3-utilities-heart version %s (BSD license)",
                 MyString.quote(Misc.getVersionShort()));
-        text += String.format("%n   SkyControl version %s",
+        text += String.format("%n   SkyControl version %s (BSD license)",
                 MyString.quote(Constants.getVersionShort()));
-        text += String.format("%n   Wes version %s",
+        text += String.format("%n   Wes version %s (BSD license)",
                 MyString.quote(WesVersion.getVersionShort()));
-        text += String.format("%n   jme3-utilities-debug version %s",
+        text += String.format(
+                "%n   jme3-utilities-debug version %s (BSD license)",
                 MyString.quote(DebugVersion.getVersionShort()));
-        text += String.format("%n   jme3-utilities-ui version %s",
+        text += String.format("%n   jme3-utilities-ui version %s (BSD license)",
                 MyString.quote(UiVersion.getVersionShort()));
-        text += String.format("%n   jme3-utilities-nifty version %s",
+        text += String.format(
+                "%n   jme3-utilities-nifty version %s (BSD license)",
                 MyString.quote(LibraryVersion.getVersionShort()));
-        text += String.format("%n   jme3-blender");
-        text += String.format("%n   jme3-bullet");
-        text += String.format("%n   jme3-bullet-native");
-        text += String.format("%n   jme3-desktop");
-        text += String.format("%n   jme3-lwjgl");
-        text += String.format("%n   jme3-niftygui");
-        text += String.format("%n   jme3-plugins");
 
-        text += String.format("%n   jme3_xbuf_loader");
-        text += String.format("%n   logback-classic%n%n");
+        text += String.format("%n   jme3-blender (BSD license)");
+        text += String.format("%n   jme3-bullet (BSD license)");
+        text += String.format("%n   jme3-bullet-native (BSD license)");
+        text += String.format("%n   jme3-desktop (BSD license)");
+        text += String.format("%n   jme3-effects (BSD license)");
+        text += String.format("%n   jme3-lwjgl (BSD license)");
+        text += String.format("%n   jme3-niftygui (BSD license)");
+        text += String.format("%n   jme3-plugins (BSD license)");
+        text += String.format("%n   jme3-terrain (BSD license)");
+
+        text += String.format("%n   nifty-default-controls (BSD license)");
+        text += String.format("%n   nifty-style-black (BSD license)");
+        
+        text += String.format("%n   jme3_xbuf_loader (public domain)");
+        text += String.format("%n   jme3_xbuf_rt (public domain)");
+
+        text += String.format("%n   logback-core (%s)",
+                "Eclipse Public License v1.0");
+        text += String.format("%n   logback-classic (%s)",
+                "Eclipse Public License v1.0");
+                
+        text += String.format("%n%n");
 
         Maud.gui.closeAllPopups();
         Maud.gui.showInfoDialog("About Maud", text);
