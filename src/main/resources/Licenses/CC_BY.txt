@@ -1,6 +1,6 @@
 The file "Puppet.blend" is
 Copyright (c) Copyright Blender Foundation durian.blender.org
-and the Blender Foundation released this file under a Creative Commons
+The Blender Foundation released this file under a Creative Commons
 Attribution 3.0 license.
 
 The file "Puppet.xbuf" is an adaptation of "Puppet.blend" by Stephen Gold,
