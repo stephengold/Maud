@@ -95,36 +95,36 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
 
  1. Download a jMonkeyEngine 3.2.0 Stable installer from https://github.com/jMonkeyEngine/sdk/releases
  2. Install the Software Development Kit (SDK), which includes:
-   + the engine,
-   + the IDE, which is based on [NetBeans][],
-   + various IDE plugins, and
-   + the [Blender 3D][blender] application.
+    + the engine,
+    + the IDE, which is based on [NetBeans][],
+    + various IDE plugins, and
+    + the [Blender 3D][blender] application.
  3. When you execute the installer, it prompts you to
     specify a folder for storing projects:
-   + Fill in the "Folder name" text box.
-   + Click on the "Set Project Folder" button.
+    + Fill in the "Folder name" text box.
+    + Click on the "Set Project Folder" button.
  4. Open the IDE.
  5. The first time you open the IDE, you should update
     all the pre-installed plugins:
-   + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog.
-   + Click on the "Update" button to open the "Plugin Installer" wizard.
-   + Click on the "Next >" button.
-   + After the plugins have downloaded, click "Finish".
-   + The IDE will restart.
+    + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog.
+    + Click on the "Update" button to open the "Plugin Installer" wizard.
+    + Click on the "Next >" button.
+    + After the plugins have downloaded, click "Finish".
+    + The IDE will restart.
  6. In order to open the Maud project in the IDE (or in NetBeans),
     you will need to install the "Gradle Support" plugin:
-   + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog.
-   + Click on the "Available Plugins" tab.
-   + Check the box next to "Gradle Support" in the "Gradle" category.
-   + Click on the "Install" button to open the the "Plugin Installer" wizard.
-   + Click on the "Next >" button.
-   + Check the box next to
+    + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog.
+    + Click on the "Available Plugins" tab.
+    + Check the box next to "Gradle Support" in the "Gradle" category.
+    + Click on the "Install" button to open the the "Plugin Installer" wizard.
+    + Click on the "Next >" button.
+    + Check the box next to
      "I accept the terms in all the license agreements."
-   + Click on the "Install" button.
-   + When the "Verify Certificate" dialog appears,
+    + Click on the "Install" button.
+    + When the "Verify Certificate" dialog appears,
      click on the "Continue" button.
-   + Click on the "Finish" button.
-   + The IDE will restart.
+    + Click on the "Finish" button.
+    + The IDE will restart.
 
 #### Source files
 
@@ -356,6 +356,7 @@ In Parallel Mode, the mouse wheel
 alters the scale of the projection without actually moving the camera.
 
 Standard keyboard shortcuts affecting the scene-view cameras:
+
  + "Numpad-0" to toggle between movement modes
  + "Numpad-1" to move (or rotate) a camera to a horizontal view
  + "Numpad-5" to toggle between projection modes
@@ -787,26 +788,26 @@ I therefore acknowledge the following artists and software developers:
 + Can Bican, for creating the [Jprefctl][] preferences editor
 + Zi Ye, for creating the Sinbad model
 + the brave souls who volunteered to be alpha testers for Maud, including:
-  + "Jesterrrrrr"
-  + Moff Kalast
-  + Adam (aka "safari")
+    + "Jesterrrrrr"
+    + Moff Kalast
+    + Adam (aka "safari")
 + plus the creators of (and contributors to) the following software:
-  + [Adobe Photoshop Elements][elements]
-  + the [Blender][] 3-D animation suite
-  + the [FindBugs][] source-code analyzer
-  + the [Git][] revision-control system and GitK commit viewer
-  + the [Google Chrome web browser][chrome]
-  + the [Gradle][] build tool
-  + the Java compiler, standard doclet, and runtime environment
-  + [jMonkeyEngine][jme] and the jME3 Software Development Kit
-  + LWJGL, the Lightweight Java Game Library
-  + the [Markdown][] document conversion tool
-  + Microsoft Windows
-  + the [NetBeans][] integrated development environment
-  + the [Nifty][] graphical user interface library
-  + [Open Broadcaster Software Studio][obs]
-  + the [RealWorld Cursor Editor](rwce)
-  + the [WinMerge][] differencing and merging tool
+    + [Adobe Photoshop Elements][elements]
+    + the [Blender][] 3-D animation suite
+    + the [FindBugs][] source-code analyzer
+    + the [Git][] revision-control system and GitK commit viewer
+    + the [Google Chrome web browser][chrome]
+    + the [Gradle][] build tool
+    + the Java compiler, standard doclet, and runtime environment
+    + [jMonkeyEngine][jme] and the jME3 Software Development Kit
+    + LWJGL, the Lightweight Java Game Library
+    + the [Markdown][] document conversion tool
+    + Microsoft Windows
+    + the [NetBeans][] integrated development environment
+    + the [Nifty][] graphical user interface library
+    + [Open Broadcaster Software Studio][obs]
+    + the [RealWorld Cursor Editor](rwce)
+    + the [WinMerge][] differencing and merging tool
 
 I am grateful to [JFrog][] and [Github][], for providing free hosting for the
 Maud Project and many other open-source projects.
