@@ -79,6 +79,7 @@ import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
+import jme3utilities.minni.MyControlP;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 import jme3utilities.ui.Locators;
@@ -477,7 +478,7 @@ public class SceneViewCore
         Validate.nonNull(loadedCgmRoot, "loaded model root");
 
         if (cgmRoot != null) {
-            MySpatial.disablePhysicsControls(cgmRoot);
+            MyControlP.disablePhysicsControls(cgmRoot);
         }
         parent.detachAllChildren();
         setCgmRoot(loadedCgmRoot);
@@ -500,7 +501,7 @@ public class SceneViewCore
         if (cgmRoot != null) {
             parent.attachChild(cgmRoot);
             PhysicsSpace space = getPhysicsSpace();
-            MySpatial.enablePhysicsControls(cgmRoot, space);
+            MyControlP.enablePhysicsControls(cgmRoot, space);
         }
     }
 
@@ -510,7 +511,7 @@ public class SceneViewCore
      */
     public void preMakeLive() {
         if (cgmRoot != null) {
-            MySpatial.disablePhysicsControls(cgmRoot);
+            MyControlP.disablePhysicsControls(cgmRoot);
         }
     }
 
@@ -609,7 +610,7 @@ public class SceneViewCore
          * Detach the old spatial (if any) from the scene graph.
          */
         if (cgmRoot != null) {
-            MySpatial.disablePhysicsControls(cgmRoot);
+            MyControlP.disablePhysicsControls(cgmRoot);
             parent.detachChild(cgmRoot);
         }
         setCgmRoot(null);
@@ -1202,9 +1203,9 @@ public class SceneViewCore
          * Enable those S-G controls and configure their physics spaces so that
          * the BulletDebugAppState will render their collision shapes.
          */
-        MySpatial.removeNonPhysicsControls(cgmRoot);
+        MyControlP.removeNonPhysicsControls(cgmRoot);
         PhysicsSpace space = getPhysicsSpace();
-        MySpatial.enablePhysicsControls(cgmRoot, space);
+        MyControlP.enablePhysicsControls(cgmRoot, space);
         /*
          * Create and add scene-graph controls for the skeleton.
          */

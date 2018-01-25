@@ -32,8 +32,8 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import jme3utilities.MyControl;
 import jme3utilities.MyString;
+import jme3utilities.minni.MyObject;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.action.ActionPrefix;
@@ -300,7 +300,7 @@ public class PhysicsMenus {
             } else {
                 PhysicsCollisionObject userObject
                         = PhysicsUtil.findObject(userId, space);
-                String name = MyControl.objectName(userObject);
+                String name = MyObject.objectName(userObject);
                 target.getObject().select(name);
                 Maud.gui.tools.select("object");
             }

@@ -53,13 +53,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
-import jme3utilities.MyControl;
 import jme3utilities.MyLight;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.math.MyVector3f;
+import jme3utilities.minni.MyControlP;
+import jme3utilities.minni.MyObject;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
@@ -189,9 +190,9 @@ public class SceneView extends SceneViewCore {
          * Enable those S-G controls and configure their physics spaces so that
          * the BulletDebugAppState will render their collision shapes.
          */
-        MySpatial.removeNonPhysicsControls(clone);
+        MyControlP.removeNonPhysicsControls(clone);
         PhysicsSpace space = getPhysicsSpace();
-        MySpatial.enablePhysicsControls(clone, space);
+        MyControlP.enablePhysicsControls(clone, space);
 
         SkeletonVisualizer skeletonVisualizer = getSkeletonVisualizer();
         Spatial controlled = null;
@@ -243,7 +244,7 @@ public class SceneView extends SceneViewCore {
      */
     public void deleteSubtree() {
         Spatial spatial = selectedSpatial();
-        MySpatial.disablePhysicsControls(spatial);
+        MyControlP.disablePhysicsControls(spatial);
         boolean success = spatial.removeFromParent();
         assert success;
     }
@@ -262,7 +263,7 @@ public class SceneView extends SceneViewCore {
             spatial = node.getChild(childPosition);
         }
 
-        MySpatial.disablePhysicsControls(spatial);
+        MyControlP.disablePhysicsControls(spatial);
         boolean success = spatial.removeFromParent();
         assert success;
     }
@@ -344,7 +345,7 @@ public class SceneView extends SceneViewCore {
 
         PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
         PhysicsCollisionObject pco = (PhysicsCollisionObject) pc;
-        String result = MyControl.objectName(pco);
+        String result = MyObject.objectName(pco);
 
         return result;
     }
@@ -428,8 +429,8 @@ public class SceneView extends SceneViewCore {
         Validate.nonNegative(pcPosition, "control position");
 
         PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
-        assert MyControl.canApplyPhysicsLocal(pc);
-        MyControl.setApplyPhysicsLocal(pc, newSetting);
+        assert MyControlP.canApplyPhysicsLocal(pc);
+        MyControlP.setApplyPhysicsLocal(pc, newSetting);
     }
 
     /**

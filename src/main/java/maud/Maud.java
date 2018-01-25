@@ -43,7 +43,7 @@ import jme3utilities.StringLoader;
 import jme3utilities.UncachedKey;
 import jme3utilities.Validate;
 import jme3utilities.ViewPortAppState;
-import jme3utilities.debug.Dumper;
+import jme3utilities.minni.PhysicsDumper;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.InputMode;
@@ -91,7 +91,7 @@ public class Maud extends GuiApplication {
     /**
      * dumper for scene dumps
      */
-    final private static Dumper dumper = new Dumper();
+    final private static PhysicsDumper dumper = new PhysicsDumper();
     /**
      * MVC model for the editor screen (live copy)
      */

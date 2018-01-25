@@ -64,12 +64,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyControl;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
+import jme3utilities.minni.MyControlP;
 import jme3utilities.nifty.dialog.VectorDialog;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TrackEdit;
@@ -849,11 +849,11 @@ public class EditableCgm extends LoadedCgm {
      */
     public void setApplyPhysicsLocal(boolean newSetting) {
         Control modelSgc = getSgc().get();
-        if (MyControl.canApplyPhysicsLocal(modelSgc)) {
-            boolean oldSetting = MyControl.isApplyPhysicsLocal(modelSgc);
+        if (MyControlP.canApplyPhysicsLocal(modelSgc)) {
+            boolean oldSetting = MyControlP.isApplyPhysicsLocal(modelSgc);
             if (oldSetting != newSetting) {
                 History.autoAdd();
-                MyControl.setApplyPhysicsLocal(modelSgc, newSetting);
+                MyControlP.setApplyPhysicsLocal(modelSgc, newSetting);
 
                 Spatial controlled = getSgc().getControlled();
                 List<Integer> treePosition = findSpatial(controlled);
@@ -1127,11 +1127,11 @@ public class EditableCgm extends LoadedCgm {
      */
     public void setSgcEnabled(boolean newSetting) {
         Control modelSgc = getSgc().get();
-        if (MyControl.canDisable(modelSgc)) {
-            boolean oldSetting = MyControl.isEnabled(modelSgc);
+        if (MyControlP.canDisable(modelSgc)) {
+            boolean oldSetting = MyControlP.isEnabled(modelSgc);
             if (oldSetting != newSetting) {
                 History.autoAdd();
-                MyControl.setEnabled(modelSgc, newSetting);
+                MyControlP.setEnabled(modelSgc, newSetting);
                 if (modelSgc instanceof PhysicsControl) {
                     Spatial controlled = getSgc().getControlled();
                     List<Integer> treePosition = findSpatial(controlled);

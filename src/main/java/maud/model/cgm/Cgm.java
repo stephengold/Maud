@@ -56,6 +56,7 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.minni.MyObject;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
@@ -789,7 +790,7 @@ public class Cgm implements Cloneable {
         List<String> result = new ArrayList<>(numObjects);
 
         for (PhysicsCollisionObject object : collection) {
-            String name = MyControl.objectName(object);
+            String name = MyObject.objectName(object);
             if (name.startsWith(namePrefix)) {
                 result.add(name);
             }

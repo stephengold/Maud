@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
 import jme3utilities.Validate;
+import jme3utilities.minni.MyControlP;
 import maud.PhysicsUtil;
 import maud.view.scene.SceneView;
 
@@ -163,8 +164,8 @@ public class SelectedSgc implements JmeCloneable {
     public boolean isApplyPhysicsLocal() {
         boolean result = false;
         if (isSelected()) {
-            if (MyControl.canApplyPhysicsLocal(selected)) {
-                result = MyControl.isApplyPhysicsLocal(selected);
+            if (MyControlP.canApplyPhysicsLocal(selected)) {
+                result = MyControlP.isApplyPhysicsLocal(selected);
             }
         }
 
@@ -179,8 +180,8 @@ public class SelectedSgc implements JmeCloneable {
     public boolean isEnabled() {
         boolean result = false;
         if (isSelected()) {
-            if (MyControl.canDisable(selected)) {
-                result = MyControl.isEnabled(selected);
+            if (MyControlP.canDisable(selected)) {
+                result = MyControlP.isEnabled(selected);
             } else {
                 result = true;
             }

@@ -47,14 +47,16 @@ dependencies {
     compile "org.jmonkeyengine:jme3-plugins:${jmonkeyengineVersion}"
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'com.atr:jme-ttf:2.1.1'
+    runtime 'com.github.nifty-gui:nifty-style-black:1.4.2'
 
     // from stephengold's bintray repositories:
-    compile 'jme3utilities:jme3-utilities-heart:1.1.1'
-    compile 'jme3utilities:jme3-utilities-debug:0.8.4'
-    compile 'jme3utilities:jme3-utilities-ui:0.6.0for32'
-    compile 'jme3utilities:jme3-utilities-nifty:0.7.7'
-    compile 'jme3utilities:SkyControl:0.9.10'
-    compile 'jme3utilities:Wes:0.3.1'
+    compile 'jme3utilities:jme3-utilities-heart:2.0.0'
+    compile 'jme3utilities:jme3-utilities-debug:0.8.5'
+    compile 'jme3utilities:jme3-utilities-ui:0.6.1'
+    compile 'jme3utilities:jme3-utilities-nifty:0.7.8'
+    compile 'jme3utilities:Minni:0.1.0'
+    compile 'jme3utilities:SkyControl:0.9.11'
+    compile 'jme3utilities:Wes:0.3.2'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jitpack repositories:
