@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -78,7 +78,7 @@ class AssetDialog implements DialogController {
     /**
      * cache information about which paths exist (avoid HTTP response code 429)
      */
-    final Map<String, Boolean> pathCache = new TreeMap<>();
+    final private Map<String, Boolean> pathCache = new TreeMap<>();
     // *************************************************************************
     // constructors
 
