@@ -319,7 +319,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="boneTool" title="Bone Tool"
                      hideOnClose="true"
-                     height="192px" width="280px" x="205" y="65">
+                     height="192px" width="290px" x="205" y="65">
                 <panel childLayout="vertical">
                     <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -335,15 +335,15 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next bone)"/>
                         </control>
-                        <panel width="*"/>
+                        <panel/>
                         <control name="label" id="boneHasTrack"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="65px"/>
-                        <panel width="*"/>
+                        <panel/>
                         <control name="button" label="Select"
-                                 id="id2ToAvoidNiftyWarning"
-                                 width="60px">
+                                 id="id1ToAvoidNiftyWarning"
+                                 width="46px">
                             <interact onRelease="perform(select bone)"/>
                         </control>
                     </panel>
@@ -364,45 +364,42 @@ the menu bar, status bar, and tool windows.
                                  width="*"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Transform:  "
-                                 textHAlign="right"
-                                 width="68px"/>
-                        <control name="button" id="boneScaleButton"
-                                 width="50px">
+                        <control name="label" text="Transform tools:  "/>
+                        <control name="button" label="Scale"
+                                 id="id2ToAvoidNiftyWarning"
+                                 width="48px">
                             <interact onRelease="perform(select tool boneScale)"/>
                         </control>
                         <panel/>
-                        <control name="button" id="boneRotateButton"
-                                 width="55px">
+                        <control name="button" label="Rotate"
+                                 id="id3ToAvoidNiftyWarning"
+                                 width="53px">
                             <interact onRelease="perform(select tool boneRotation)"/>
                         </control>
                         <panel/>
-                        <control name="button" id="boneTranslateButton"
-                                 width="70px">
+                        <control name="button" label="Translate"
+                                 id="id4ToAvoidNiftyWarning"
+                                 width="68px">
                             <interact onRelease="perform(select tool boneTranslation)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Parent:  "
-                                 textHAlign="right"
-                                 width="68px"/>
+                        <control name="label" text="Parent:  "/>
                         <control name="label" id="boneParent"
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" id="boneSelectParentButton"
-                                 width="60px">
+                                 width="88px">
                             <interact onRelease="perform(select boneParent)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Children:  "
-                                 textHAlign="right"
-                                 width="68px"/>
+                        <control name="label" text="Children:  "/>
                         <control name="label" id="boneChildren"
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" id="boneSelectChildButton"
-                                 width="60px">
+                                 width="75px">
                             <interact onRelease="perform(select boneChild)"/>
                         </control>
                     </panel>
@@ -674,7 +671,7 @@ the menu bar, status bar, and tool windows.
                                  width="*"/>
                         <panel width="20px"/>
                         <control name="button" label="Load"
-                                 id="id3ToAvoidNiftyWarning"
+                                 id="id5ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(load cgm)"/>
                         </control>
@@ -715,7 +712,7 @@ the menu bar, status bar, and tool windows.
                                  width="70px"/>
                         <panel width="20px"/>
                         <control name="button" label="History"
-                                 id="id4ToAvoidNiftyWarning"
+                                 id="id6ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(select tool history)"/>
                         </control>
@@ -841,7 +838,7 @@ the menu bar, status bar, and tool windows.
                         </control>
                         <panel/>
                         <control name="button" label="New checkpoint"
-                                 id="id5ToAvoidNiftyWarning"
+                                 id="id7ToAvoidNiftyWarning"
                                  width="100px">
                             <interact onRelease="perform(new checkpoint)"/>
                         </control>
@@ -1039,13 +1036,13 @@ the menu bar, status bar, and tool windows.
                         </control>
                         <panel/>
                         <control name="button" label="Add new"
-                                 id="id7ToAvoidNiftyWarning"
+                                 id="id8ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(new light)"/>
                         </control>
                         <panel/>
                         <control name="button" label="Select"
-                                 id="id8ToAvoidNiftyWarning"
+                                 id="id9ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(select light)"/>
                         </control>

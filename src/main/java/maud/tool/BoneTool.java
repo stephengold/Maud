@@ -76,7 +76,6 @@ class BoneTool extends Tool {
         updateInfluence();
         updateName();
         updateParent();
-        updateTransformButtons();
     }
     // *************************************************************************
     // private methods
@@ -85,95 +84,95 @@ class BoneTool extends Tool {
      * Update the children status and button.
      */
     private void updateChildren() {
-        String childText, scButton;
+        String childText, childStatus;
 
         SelectedBone selectedBone = Maud.getModel().getTarget().getBone();
         if (selectedBone.isSelected()) {
             int numChildren = selectedBone.countChildren();
             if (numChildren > 1) {
                 childText = String.format("%d children", numChildren);
-                scButton = "Select";
+                childStatus = "Select child";
             } else if (numChildren == 1) {
                 String childName = selectedBone.getChildName(0);
                 childText = MyString.quote(childName);
-                scButton = "Select";
+                childStatus = "Select child";
             } else {
                 childText = "none";
-                scButton = "";
+                childStatus = "";
             }
 
         } else {
             childText = "n/a";
-            scButton = "";
+            childStatus = "";
         }
 
         setStatusText("boneChildren", " " + childText);
-        setButtonText("boneSelectChild", scButton);
+        setButtonText("boneSelectChild", childStatus);
     }
 
     /**
      * Update the "has track" status.
      */
     private void updateHasTrack() {
-        String hasTrackText = "";
+        String status = "";
 
         SelectedBone selectedBone = Maud.getModel().getTarget().getBone();
         if (selectedBone.isSelected()) {
             if (Maud.getModel().getTarget().getAnimation().isRetargetedPose()) {
                 String name = selectedBone.getName();
                 if (Maud.getModel().getMap().isBoneMapped(name)) {
-                    hasTrackText = "mapped";
+                    status = "mapped";
                 } else {
-                    hasTrackText = "unmapped";
+                    status = "unmapped";
                 }
             } else if (selectedBone.hasTrack()) {
-                hasTrackText = "has track";
+                status = "has track";
             } else {
-                hasTrackText = "no track";
+                status = "no track";
             }
         }
 
-        setStatusText("boneHasTrack", " " + hasTrackText);
+        setStatusText("boneHasTrack", " " + status);
     }
 
     /**
      * Update the index status and previous/next buttons.
      */
     private void updateIndex() {
-        String indexText;
-        String nButton, pButton;
+        String indexStatus;
+        String nextButton, previousButton;
 
         Cgm target = Maud.getModel().getTarget();
         int numBones = target.getSkeleton().countBones();
         if (target.getBone().isSelected()) {
             int selectedIndex = target.getBone().getIndex();
-            indexText = MaudUtil.formatIndex(selectedIndex);
-            indexText = String.format("%s of %d", indexText, numBones);
-            nButton = "+";
-            pButton = "-";
+            indexStatus = MaudUtil.formatIndex(selectedIndex);
+            indexStatus = String.format("%s of %d", indexStatus, numBones);
+            nextButton = "+";
+            previousButton = "-";
 
         } else {
             if (numBones == 0) {
-                indexText = "no bones";
+                indexStatus = "no bones";
             } else if (numBones == 1) {
-                indexText = "one bone";
+                indexStatus = "one bone";
             } else {
-                indexText = String.format("%d bones", numBones);
+                indexStatus = String.format("%d bones", numBones);
             }
-            nButton = "";
-            pButton = "";
+            nextButton = "";
+            previousButton = "";
         }
 
-        setStatusText("boneIndex", indexText);
-        setButtonText("boneNext", nButton);
-        setButtonText("bonePrevious", pButton);
+        setStatusText("boneIndex", indexStatus);
+        setButtonText("boneNext", nextButton);
+        setButtonText("bonePrevious", previousButton);
     }
 
     /**
      * Update the influence status.
      */
     private void updateInfluence() {
-        String desc = "";
+        String status = "";
 
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
@@ -181,48 +180,48 @@ class BoneTool extends Tool {
             boolean meshVertices = bone.influencesVertices();
             if (attachmentsNode) {
                 if (meshVertices) {
-                    desc = "attachments nodes and mesh vertices";
+                    status = "attachments nodes and mesh vertices";
                 } else {
-                    desc = "attachments nodes only";
+                    status = "attachments nodes only";
                 }
             } else {
                 if (meshVertices) {
-                    desc = "mesh vertices only";
+                    status = "mesh vertices only";
                 } else {
-                    desc = "no influence";
+                    status = "none";
                 }
             }
         }
 
-        setStatusText("boneInfluence", " " + desc);
+        setStatusText("boneInfluence", " " + status);
     }
 
     /**
      * Update the name status and rename button.
      */
     private void updateName() {
-        String nameText, rButton;
+        String nameStatus, renameButton;
 
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
             String name = bone.getName();
-            nameText = MyString.quote(name);
-            rButton = "Rename";
+            nameStatus = MyString.quote(name);
+            renameButton = "Rename";
 
         } else {
-            nameText = "(none selected)";
-            rButton = "";
+            nameStatus = "(none selected)";
+            renameButton = "";
         }
 
-        setStatusText("boneName", " " + nameText);
-        setButtonText("boneRename", rButton);
+        setStatusText("boneName", " " + nameStatus);
+        setButtonText("boneRename", renameButton);
     }
 
     /**
      * Update the parent status and button.
      */
     private void updateParent() {
-        String parentText, spButton;
+        String parentStatus, selectButton;
 
         EditableCgm target = Maud.getModel().getTarget();
         SelectedBone selectedBone = target.getBone();
@@ -230,45 +229,24 @@ class BoneTool extends Tool {
             if (selectedBone.isRootBone()) {
                 int numRoots = target.getSkeleton().countRootBones();
                 if (numRoots == 1) {
-                    parentText = "none (the root)";
+                    parentStatus = "none (the root)";
                 } else {
-                    parentText = String.format("none (one of %d roots)",
+                    parentStatus = String.format("none (one of %d roots)",
                             numRoots);
                 }
-                spButton = "";
+                selectButton = "";
             } else {
                 String parentName = selectedBone.getParentName();
-                parentText = MyString.quote(parentName);
-                spButton = "Select";
+                parentStatus = MyString.quote(parentName);
+                selectButton = "Select parent";
             }
 
         } else {
-            parentText = "n/a";
-            spButton = "";
+            parentStatus = "n/a";
+            selectButton = "";
         }
 
-        setStatusText("boneParent", " " + parentText);
-        setButtonText("boneSelectParent", spButton);
-    }
-
-    /**
-     * Update the transform buttons.
-     */
-    private void updateTransformButtons() {
-        String rButton, sButton, tButton;
-
-        if (Maud.getModel().getTarget().getBone().isSelected()) {
-            rButton = "Rotate";
-            sButton = "Scale";
-            tButton = "Translate";
-        } else {
-            rButton = "";
-            sButton = "";
-            tButton = "";
-        }
-
-        setButtonText("boneRotate", rButton);
-        setButtonText("boneScale", sButton);
-        setButtonText("boneTranslate", tButton);
+        setStatusText("boneParent", " " + parentStatus);
+        setButtonText("boneSelectParent", selectButton);
     }
 }
