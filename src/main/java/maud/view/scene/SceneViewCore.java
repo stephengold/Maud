@@ -79,7 +79,7 @@ import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
-import jme3utilities.minni.MyControlP;
+import jme3utilities.minie.MyControlP;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 import jme3utilities.ui.Locators;

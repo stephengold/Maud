@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.minni.MyObject;
+import jme3utilities.minie.MyObject;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.action.ActionPrefix;

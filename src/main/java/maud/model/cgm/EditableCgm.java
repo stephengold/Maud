@@ -69,7 +69,7 @@ import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
-import jme3utilities.minni.MyControlP;
+import jme3utilities.minie.MyControlP;
 import jme3utilities.nifty.dialog.VectorDialog;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TrackEdit;

@@ -32,7 +32,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import jme3utilities.minni.MyObject;
+import jme3utilities.minie.MyObject;
 import jme3utilities.nifty.GuiScreenController;
 import maud.Maud;
 import maud.MaudUtil;

@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
 import jme3utilities.Validate;
-import jme3utilities.minni.MyControlP;
+import jme3utilities.minie.MyControlP;
 import maud.PhysicsUtil;
 import maud.view.scene.SceneView;
 

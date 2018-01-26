@@ -56,7 +56,7 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.minni.MyObject;
+import jme3utilities.minie.MyObject;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
