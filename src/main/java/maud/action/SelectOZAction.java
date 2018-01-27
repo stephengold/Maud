@@ -45,6 +45,7 @@ import maud.menu.SpatialMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSgc;
+import maud.model.cgm.SelectedVertex;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 import maud.model.option.ShowBones;
@@ -414,6 +415,15 @@ class SelectOZAction {
             int index = Integer.parseInt(arg);
             int indexBase = Maud.getModel().getMisc().getIndexBase();
             target.getVertex().select(index - indexBase);
+
+        } else if (actionString.startsWith(ActionPrefix.selectVertexBone)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectVertexBone);
+            int weightIndex = Integer.parseInt(arg);
+            SelectedVertex vertex = target.getVertex();
+            int[] boneIndices = vertex.boneIndices(null);
+            int boneIndex = boneIndices[weightIndex];
+            target.getBone().select(boneIndex);
 
         } else if (actionString.startsWith(ActionPrefix.selectViewMode)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectViewMode);

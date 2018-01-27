@@ -370,6 +370,10 @@ public class ActionPrefix {
      */
     final public static String selectVertex = "select vertex ";
     /**
+     * argument is a weight index (&ge;0, &lt;4)
+     */
+    final static String selectVertexBone = "select vertexBone ";
+    /**
      * argument is the name of a view mode
      */
     final public static String selectViewMode = "select viewMode ";

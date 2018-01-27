@@ -72,7 +72,10 @@ class VertexTool extends Tool {
     @Override
     void toolUpdate() {
         updateBindLocation();
-        updateBones();
+        updateBone(0);
+        updateBone(1);
+        updateBone(2);
+        updateBone(3);
         updateIndex();
         updateSelect();
     }
@@ -101,94 +104,81 @@ class VertexTool extends Tool {
     }
 
     /**
-     * Update the bone animation data.
+     * Update the indexed animation weight, bone name, and bone-select button.
      */
-    private void updateBones() {
-        String bone0Name = "";
-        String bone0Weight = "";
-        String bone1Name = "";
-        String bone1Weight = "";
-        String bone2Name = "";
-        String bone2Weight = "";
-        String bone3Name = "";
-        String bone3Weight = "";
+    private void updateBone(int weightIndex) {
+        assert weightIndex >= 0 : weightIndex;
+        assert weightIndex < 4 : weightIndex;
+
+        String selectButton = "";
+        String boneStatus = "";
+        String weightStatus = "";
 
         Cgm target = Maud.getModel().getTarget();
         SelectedVertex vertex = target.getVertex();
-        SelectedSkeleton skeleton = target.getSkeleton();
         if (vertex.isSelected()) {
             float[] boneWeights = vertex.boneWeights(null);
-            bone0Weight = String.format(" %6.4f", boneWeights[0]);
-            bone1Weight = String.format(" %6.4f", boneWeights[1]);
-            bone2Weight = String.format(" %6.4f", boneWeights[2]);
-            bone3Weight = String.format(" %6.4f", boneWeights[3]);
+            float weight = boneWeights[weightIndex];
+            weightStatus = String.format("%5.1f%% ", 100f * weight);
 
-            int[] boneIndices = vertex.boneIndices(null);
-            if (boneWeights[0] != 0f) {
-                bone0Name = skeleton.getBoneName(boneIndices[0]);
-                bone0Name = MyString.quote(bone0Name);
-            }
-            if (boneWeights[1] != 0f) {
-                bone1Name = skeleton.getBoneName(boneIndices[1]);
-                bone1Name = MyString.quote(bone1Name);
-            }
-            if (boneWeights[2] != 0f) {
-                bone2Name = skeleton.getBoneName(boneIndices[2]);
-                bone2Name = MyString.quote(bone2Name);
-            }
-            if (boneWeights[3] != 0f) {
-                bone3Name = skeleton.getBoneName(boneIndices[3]);
-                bone3Name = MyString.quote(bone3Name);
+            if (weight != 0f) {
+                SelectedSkeleton skeleton = target.getSkeleton();
+                boolean nameBones = skeleton.isSelected();
+                int[] boneIndices = vertex.boneIndices(null);
+                int boneIndex = boneIndices[weightIndex];
+                if (nameBones) {
+                    selectButton = "Select bone";
+                    boneStatus = skeleton.getBoneName(boneIndex);
+                    boneStatus = MyString.quote(boneStatus);
+                } else {
+                    boneStatus = "bone" + MaudUtil.formatIndex(boneIndex);
+                }
             }
         }
 
-        setStatusText("vertexBone0Name", bone0Name);
-        setStatusText("vertexBone0Weight", bone0Weight);
-        setStatusText("vertexBone1Name", bone1Name);
-        setStatusText("vertexBone1Weight", bone1Weight);
-        setStatusText("vertexBone2Name", bone2Name);
-        setStatusText("vertexBone2Weight", bone2Weight);
-        setStatusText("vertexBone3Name", bone3Name);
-        setStatusText("vertexBone3Weight", bone3Weight);
+        String wiString = Integer.toString(weightIndex);
+        setButtonText("vertexSelectBone" + wiString, selectButton);
+        setStatusText("vertexBone" + wiString, " " + boneStatus);
+        setStatusText("vertexWeight" + wiString, weightStatus);
     }
 
     /**
      * Update the index status and previous/next buttons.
      */
     private void updateIndex() {
-        String indexText;
-        String nButton = "";
-        String pButton = "";
+        String indexStatus;
+        String nextButton = "";
+        String previousButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         int numVertices = target.getSpatial().countVertices();
         if (target.getVertex().isSelected()) {
             int selectedIndex = target.getVertex().getIndex();
-            indexText = MaudUtil.formatIndex(selectedIndex);
-            indexText = String.format("%s of %d", indexText, numVertices);
-            nButton = "+";
-            pButton = "-";
+            indexStatus = MaudUtil.formatIndex(selectedIndex);
+            indexStatus = String.format("%s of %d", indexStatus, numVertices);
+            nextButton = "+";
+            previousButton = "-";
 
         } else if (target.getSpatial().hasMesh()) {
             if (numVertices == 0) {
-                indexText = "no vertices";
+                indexStatus = "no vertices";
             } else if (numVertices == 1) {
-                indexText = "one vertex";
+                indexStatus = "one vertex";
             } else {
-                indexText = String.format("%d vertices", numVertices);
+                indexStatus = String.format("%d vertices", numVertices);
             }
 
         } else {
-            indexText = "(select a mesh)";
+            indexStatus = "(select a mesh)";
         }
 
-        setStatusText("vertexIndex", indexText);
-        setButtonText("vertexNext", nButton);
-        setButtonText("vertexPrevious", pButton);
+        setButtonText("vertexNext", nextButton);
+        setButtonText("vertexPrevious", previousButton);
+        setStatusText("vertexIndex", indexStatus);
     }
 
     /**
-     * Update the select button.
+     * Update the vertex select button.
      */
     private void updateSelect() {
         String sButton;
