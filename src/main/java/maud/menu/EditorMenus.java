@@ -273,7 +273,7 @@ public class EditorMenus {
                 EditorDialogs.saveMap();
                 break;
             case "Tool":
-                Maud.gui.tools.select("map");
+                Maud.gui.tools.select("mapping");
                 break;
             case "Twist tool":
                 Maud.gui.tools.select("twist");
