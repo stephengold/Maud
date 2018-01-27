@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.dialog.DimensionsDialog;
 import maud.dialog.EditorDialogs;
 import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
@@ -263,15 +264,11 @@ class SetAction {
 
         } else if (actionString.startsWith(ActionPrefix.setDimensions)) {
             arg = MyString.remainder(actionString, ActionPrefix.setDimensions);
-            String[] args = arg.split(" ");
-            handled = false;
-            if (args.length >= 3) {
-                int width = Integer.parseInt(args[0]);
-                int height = Integer.parseInt(args[2]);
-                if ("x".equals(args[1])) {
-                    DisplaySettings.setDimensions(width, height);
-                    handled = true;
-                }
+            int[] wh = DimensionsDialog.parseDimensions(arg);
+            if (wh == null) {
+                handled = false;
+            } else {
+                DisplaySettings.setDimensions(wh[0], wh[1]);
             }
 
         } else if (actionString.startsWith(

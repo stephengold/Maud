@@ -30,6 +30,7 @@ import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
+import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +55,7 @@ public class DimensionsDialog implements DialogController {
      * pattern for matching a display dimensions
      */
     final private static Pattern dimensionsPattern
-            = Pattern.compile("^(\\d+) x (\\d+)[ ]?");
+            = Pattern.compile("^\\s*(\\d+)\\s*[x,]\\s*(\\d+)\\s*");
     // *************************************************************************
     // fields
 
@@ -102,6 +103,32 @@ public class DimensionsDialog implements DialogController {
         this.minHeight = minHeight;
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
+    }
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Parse the specified text to obtain dimensions.
+     *
+     * @param text (not null, not empty)
+     * @return a new array containing the width and height, or null for a syntax
+     * error
+     */
+    public static int[] parseDimensions(String text) {
+        Validate.nonEmpty(text, "text");
+
+        String lcText = text.toLowerCase(Locale.ROOT);
+        Matcher matcher = dimensionsPattern.matcher(lcText);
+        int[] result = null;
+        if (matcher.find()) {
+            result = new int[2];
+            String group1 = matcher.group(1);
+            result[0] = Integer.parseInt(group1);
+            String group2 = matcher.group(2);
+            result[1] = Integer.parseInt(group2);
+        }
+
+        return result;
     }
     // *************************************************************************
     // DialogController methods
