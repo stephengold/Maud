@@ -33,65 +33,79 @@ the menu bar, status bar, and tool windows.
 <nifty xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
     <screen id="editor" controller="maud.EditorScreen">
         <layer childLayout="vertical">
-            <panel id="menu bar"
-                   childLayout="vertical">
-                <panel id="menu bar top row"
-                       childLayout="horizontal">
+            <panel id="menu bar" childLayout="vertical">
+                <panel height="2px"/>
+                <panel id="menu bar top row" childLayout="horizontal"
+                       height="25px">
+                    <panel width="2px"/>
                     <control name="button" id="ViewButton" label="1] View"
                              width="55px">
                         <interact onRelease="perform(select menuItem View)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="CGMButton" label="2] Models"
                              width="65px">
                         <interact onRelease="perform(select menuItem CGM)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="MapButton" label="3] Map"
                              width="50px">
                         <interact onRelease="perform(select menuItem Map)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="SpatialButton" label="4] Spatial"
                              width="70px">
                         <interact onRelease="perform(select menuItem Spatial)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="VertexButton" label="5] Vertex"
                              width="65px">
                         <interact onRelease="perform(select menuItem Vertex)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="ControlButton" label="6] Control"
                              width="70px">
                         <interact onRelease="perform(select menuItem SGC)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="AnimationButton" label="7] Animations"
                              width="88px">
                         <interact onRelease="perform(select menuItem Animation)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="BoneButton" label="8] Bone"
                              width="55px">
                         <interact onRelease="perform(select menuItem Bone)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="TrackButton" label="9] Track"
                              width="60px">
                         <interact onRelease="perform(select menuItem Track)"/>
                     </control>
                 </panel>
-                <panel id="menu bar bottom row"
-                       childLayout="horizontal">
+                <panel id="menu bar bottom row" childLayout="horizontal"
+                       height="25px">
+                    <panel width="2px"/>
                     <control name="button" id="KeyframeButton" label="0] Keyframe"
                              width="78px">
                         <interact onRelease="perform(select menuItem Keyframe)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="PhysicsButton" label="-] Physics"
                              width="70px">
                         <interact onRelease="perform(select menuItem Physics)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="HistoryButton" label="History"
                              width="60px">
                         <interact onRelease="perform(select menuItem History)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="SettingsButton" label="Settings"
                              width="65px">
                         <interact onRelease="perform(select menuItem Settings)"/>
                     </control>
+                    <panel width="2px"/>
                     <control name="button" id="HelpButton" label="Help"
                              width="45px">
                         <interact onRelease="perform(select menuItem Help)"/>
