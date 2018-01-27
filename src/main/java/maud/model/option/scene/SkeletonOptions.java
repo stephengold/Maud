@@ -57,11 +57,11 @@ public class SkeletonOptions implements Cloneable {
      */
     private ColorRGBA linkColor = new ColorRGBA(1f, 1f, 1f, 1f);
     /**
-     * color for heads of bones with tracks
+     * color for heads of bones with tracks or which are mapped
      */
     private ColorRGBA trackedColor = new ColorRGBA(0f, 1f, 0f, 1f);
     /**
-     * color for heads of bones without tracks
+     * color for heads of bones without tracks which are not mapped
      */
     private ColorRGBA tracklessColor = new ColorRGBA(1f, 0f, 0f, 1f);
     /**

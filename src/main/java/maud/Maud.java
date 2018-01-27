@@ -356,7 +356,6 @@ public class Maud extends GuiApplication {
     @Override
     public void simpleUpdate(float updateInterval) {
         super.simpleUpdate(updateInterval);
-        logger.severe("");
 
         if (!didStartup1) {
             startup1();

@@ -116,7 +116,7 @@ class SpatialRotationTool extends Tool {
     @Override
     void toolUpdate() {
         setSlidersToTransform();
-        String dButton; // TODO remove
+        String dButton;
         if (Maud.getModel().getMisc().getAnglesInDegrees()) {
             dButton = "radians";
         } else {

@@ -44,9 +44,9 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedTrack;
 import maud.model.option.DisplaySettings;
 import maud.view.EditorView;
+import maud.view.ViewType;
 import maud.view.scene.SceneDrag;
 import maud.view.scene.SceneView;
-import maud.view.ViewType;
 
 /**
  * Input mode for Maud's editor screen.
@@ -132,7 +132,7 @@ public class EditorInputMode extends InputMode {
      *
      * @param actionString textual description of the action (not null)
      * @param ongoing true if the action is ongoing, otherwise false
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * @param tpf time interval between updates (in seconds, &ge;0)
      */
     @Override
     public void onAction(String actionString, boolean ongoing, float tpf) {

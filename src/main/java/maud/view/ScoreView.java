@@ -527,10 +527,10 @@ public class ScoreView implements EditorView {
      * score view.
      *
      * @param viewCgm which C-G model occupies the view (not null)
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * @param updateInterval time interval between updates (in seconds, &ge;0)
      */
     @Override
-    public void update(Cgm viewCgm, float tpf) {
+    public void update(Cgm viewCgm, float updateInterval) {
         Validate.nonNull(viewCgm, "view model");
 
         if (r == null) {
@@ -600,7 +600,7 @@ public class ScoreView implements EditorView {
             attachSpatialTracks();
             attachGnomon();
 
-            cgm.getScorePov().update(tpf);
+            cgm.getScorePov().update(updateInterval);
 
             boolean isBindPose = cgm.getAnimation().isBindPose();
             if (isBindPose) {

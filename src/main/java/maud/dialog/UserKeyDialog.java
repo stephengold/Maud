@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -95,11 +95,10 @@ class UserKeyDialog implements DialogController {
      * render pass.)
      *
      * @param dialogElement (not null)
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * @param ignored time interval between updates (in seconds, &ge;0)
      */
     @Override
-    public void update(Element dialogElement, float elapsedTime) {
+    public void update(Element dialogElement, float ignored) {
         String commitLabel, feedbackMessage;
         String proposedKey = getKey(dialogElement);
         if (isReserved(proposedKey)) {

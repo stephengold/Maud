@@ -805,10 +805,10 @@ public class SceneViewCore
      * each instance.)
      *
      * @param ignored not used
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * @param updateInterval time interval between updates (in seconds, &ge;0)
      */
     @Override
-    public void update(Cgm ignored, float tpf) {
+    public void update(Cgm ignored, float updateInterval) {
         if (skyControl == null) {  // TODO add an init method
             /*
              * Initialize the scene graph on first update.
@@ -828,7 +828,7 @@ public class SceneViewCore
             updateParentShadowMode();
             updateParentTransform();
             updatePose();
-            SceneUpdater.update(cgm, tpf);
+            SceneUpdater.update(cgm, updateInterval);
             skyControl.setCamera(camera);
         }
     }

@@ -200,8 +200,8 @@ public class BuildMenus {
 
         } else if (arg.startsWith("file://") || arg.endsWith(".jar")
                 || arg.endsWith(".zip")) {
-            String indexString;
-            indexString = Maud.getModel().getLocations().indexForSpec(arg);
+            String indexString
+                    = Maud.getModel().getLocations().indexForSpec(arg);
             String args = indexString + " /";
             loadCgmAsset(args, slot);
 

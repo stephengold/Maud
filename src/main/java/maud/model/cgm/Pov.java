@@ -65,7 +65,7 @@ public interface Pov {
     /**
      * Update the POV and its camera.
      *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * @param updateInterval time interval between updates (in seconds, &ge;0)
      */
-    void update(float tpf);
+    void update(float updateInterval);
 }

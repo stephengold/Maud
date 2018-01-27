@@ -152,12 +152,12 @@ abstract public class Tool extends GuiWindowController {
      * Callback to update this tool prior to rendering. (Invoked once per render
      * pass while the tool is displayed.)
      *
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * @param updateInterval time interval between updates (in seconds, &ge;0)
      */
     @Override
-    final public void update(float elapsedTime) {
-        super.update(elapsedTime);
+    final public void update(float updateInterval) {
+        super.update(updateInterval);
+
         EditorScreen screen = (EditorScreen) getScreenController();
         screen.setIgnoreGuiChanges(true);
         toolUpdate();

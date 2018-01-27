@@ -138,11 +138,10 @@ public class DimensionsDialog implements DialogController {
      * render pass.)
      *
      * @param dialogElement (not null)
-     * @param elapsedTime time interval between render passes (in seconds,
-     * &ge;0)
+     * @param ignored time interval between updates (in seconds, &ge;0)
      */
     @Override
-    public void update(Element dialogElement, float elapsedTime) {
+    public void update(Element dialogElement, float ignored) {
         Validate.nonNull(dialogElement, "dialog element");
 
         String commitLabel = "";

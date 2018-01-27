@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
 package maud.view;
 
 /**
- * Enumerate the types of view found in the editor screen.
+ * Enumerate the types of views found in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
