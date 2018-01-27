@@ -1880,7 +1880,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="skeletonTool" title="Skeleton Tool"
                      hideOnClose="true"
-                     height="175px" width="250px" x="80" y="190">
+                     height="340px" width="180px" x="80" y="190">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
                         <control name="label" text="Bones shown:  "/>
@@ -1889,6 +1889,7 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(select sceneBones)"/>
                         </control>
                     </panel>
+                    <panel height="10px"/>
                     <control name="label" id="skeletonLineWidthSliderStatus"
                              textHAlign="right"
                              width="*"/>
@@ -1903,29 +1904,29 @@ the menu bar, status bar, and tool windows.
                              buttonStepSize="1"
                              height="30px"
                              max="10" min="0" stepSize="1"/>
-                </panel>
-            </control>
-
-            <control name="window" id="skeletonColorTool" title="Skeleton Color Tool"
-                     hideOnClose="true"
-                     height="430px" width="175px" x="75" y="195">
-                <panel childLayout="vertical">
-                    <control name="label" text="Link color:"/>
+                    <panel height="10px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Color for:  "/>
+                        <control name="button" id="skeletonColorSelectButton"
+                                 width="99px">
+                            <interact onRelease="perform(select skeletonColor)"/>
+                        </control>
+                    </panel>
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="skeRSlider"
                                  buttonStepSize="1"
-                                 height="110px"
+                                 height="130px"
                                  max="1" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="skeGSlider"
                                  buttonStepSize="1"
-                                 height="110px"
+                                 height="130px"
                                  max="1" min="0" stepSize="0.001"/>
                         <control name="verticalSlider" id="skeBSlider"
                                  buttonStepSize="1"
-                                 height="110px"
+                                 height="130px"
                                  max="1" min="0" stepSize="0.001"/>
                         <panel childLayout="vertical"
-                               height="110px" width="90px">
+                               height="130px" width="90px">
                             <control name="label" id="skeRSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
@@ -1933,60 +1934,6 @@ the menu bar, status bar, and tool windows.
                                      textHAlign="center"
                                      width="*"/>
                             <control name="label" id="skeBSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                        </panel>
-                    </panel>
-                    <control name="label" text="Mapped/tracked bones:"/>
-                    <panel childLayout="horizontal">
-                        <control name="verticalSlider" id="btRSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="btGSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="btBSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <panel childLayout="vertical"
-                               height="110px" width="90px">
-                            <control name="label" id="btRSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="btGSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="btBSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                        </panel>
-                    </panel>
-                    <control name="label" text="Other bones:"/>
-                    <panel childLayout="horizontal">
-                        <control name="verticalSlider" id="bntRSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="bntGSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <control name="verticalSlider" id="bntBSlider"
-                                 buttonStepSize="1"
-                                 height="110px"
-                                 max="1" min="0" stepSize="0.001"/>
-                        <panel childLayout="vertical"
-                               height="110px" width="90px">
-                            <control name="label" id="bntRSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="bntGSliderStatus"
-                                     textHAlign="center"
-                                     width="*"/>
-                            <control name="label" id="bntBSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
                         </panel>

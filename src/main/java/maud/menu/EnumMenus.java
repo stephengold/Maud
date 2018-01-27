@@ -55,6 +55,8 @@ import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.SceneOptions;
+import maud.model.option.scene.SkeletonColors;
+import maud.model.option.scene.SkeletonOptions;
 import maud.model.option.scene.TriangleMode;
 
 /**
@@ -250,6 +252,25 @@ public class EnumMenus {
         }
 
         builder.show(actionPrefix);
+    }
+
+    /**
+     * Display a menu to select the skeleton color to view/edit in SkeletonTool
+     * using "select skeletonColor " action prefix.
+     */
+    public static void selectSkeletonColor() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
+        SkeletonColors selected = options.getEditColor();
+        for (SkeletonColors editColor : SkeletonColors.values()) {
+            if (!editColor.equals(selected)) {
+                String name = editColor.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectSkeletonColor);
     }
 
     /**

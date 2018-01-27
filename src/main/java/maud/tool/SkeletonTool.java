@@ -26,12 +26,14 @@
  */
 package maud.tool;
 
+import com.jme3.math.ColorRGBA;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.ShowBones;
+import maud.model.option.scene.SkeletonColors;
 import maud.model.option.scene.SkeletonOptions;
 
 /**
@@ -48,6 +50,10 @@ class SkeletonTool extends Tool {
      */
     final private static Logger logger
             = Logger.getLogger(SkeletonTool.class.getName());
+    /**
+     * transform for the color sliders
+     */
+    final private static SliderTransform colorSt = SliderTransform.Reversed;
     /**
      * transform for the point-size sliders
      */
@@ -81,6 +87,9 @@ class SkeletonTool extends Tool {
         List<String> result = super.listSliders();
         result.add("skeletonLineWidth");
         result.add("skeletonPointSize");
+        result.add("skeR");
+        result.add("skeG");
+        result.add("skeB");
 
         return result;
     }
@@ -97,6 +106,9 @@ class SkeletonTool extends Tool {
 
         float pointSize = readSlider("skeletonPointSize", sizeSt);
         options.setPointSize(pointSize);
+
+        ColorRGBA color = Maud.gui.readColorBank("ske", colorSt);
+        options.setColor(color);
     }
 
     /**
@@ -106,18 +118,26 @@ class SkeletonTool extends Tool {
     @Override
     void toolUpdate() {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
+
         ShowBones showBones = options.getShowBones();
-        String bLabel = showBones.toString();
-        setButtonText("skeletonShowBones", bLabel);
+        String showBonesStatus = showBones.toString();
+        setButtonText("skeletonShowBones", showBonesStatus);
 
         float lineWidth = options.getLineWidth();
         setSlider("skeletonLineWidth", widthSt, lineWidth);
         lineWidth = Math.round(lineWidth);
-        updateSliderStatus("skeletonLineWidth", lineWidth, " pixels");
+        updateSliderStatus("skeletonLineWidth", lineWidth, " px");
 
         float pointSize = options.getPointSize();
         setSlider("skeletonPointSize", sizeSt, pointSize);
         pointSize = Math.round(pointSize);
-        updateSliderStatus("skeletonPointSize", pointSize, " pixels");
+        updateSliderStatus("skeletonPointSize", pointSize, " px");
+
+        SkeletonColors editColor = options.getEditColor();
+        String colorSelectButton = editColor.toString();
+        setButtonText("skeletonColorSelect", colorSelectButton);
+
+        ColorRGBA color = options.copyColor(editColor, null);
+        Maud.gui.setColorBank("ske", colorSt, color);
     }
 }

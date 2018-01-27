@@ -53,6 +53,7 @@ import maud.model.option.ViewMode;
 import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.ProjectionMode;
+import maud.model.option.scene.SkeletonColors;
 import maud.model.option.scene.TriangleMode;
 import maud.view.Drag;
 import maud.view.scene.SceneDrag;
@@ -194,6 +195,10 @@ class SelectOZAction {
 
             case Action.selectShapeUser:
                 PhysicsMenus.selectShapeUser();
+                break;
+
+            case Action.selectSkeletonColor:
+                EnumMenus.selectSkeletonColor();
                 break;
 
             case Action.selectSourceAnimControl:
@@ -360,6 +365,12 @@ class SelectOZAction {
                     ActionPrefix.selectShapeParm);
             ShapeParameter parameter = ShapeParameter.valueOf(arg);
             model.getMisc().setShapeParameter(parameter);
+
+        } else if (actionString.startsWith(ActionPrefix.selectSkeletonColor)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectSkeletonColor);
+            SkeletonColors editColor = SkeletonColors.valueOf(arg);
+            model.getScene().getSkeleton().selectEditColor(editColor);
 
         } else if (actionString.startsWith(
                 ActionPrefix.selectSourceAnimControl)) {

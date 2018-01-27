@@ -66,6 +66,7 @@ import maud.model.option.scene.DddCursorOptions;
 import maud.model.option.scene.LightsOptions;
 import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.SceneOptions;
+import maud.model.option.scene.SkeletonColors;
 import maud.model.option.scene.SkeletonOptions;
 import maud.model.option.scene.VertexOptions;
 
@@ -503,15 +504,16 @@ class SceneUpdater {
         float pointSize = options.getPointSize();
         visualizer.setHeadSize(pointSize);
 
-        ColorRGBA color = options.copyLinkColor(null);
+        ColorRGBA color = options.copyColor(SkeletonColors.Links, null);
         visualizer.setLineColor(color);
 
-        options.copyTracklessColor(color);
+        options.copyColor(SkeletonColors.IdleBones, color);
         visualizer.setHeadColor(color);
 
         BitSet showSet = cgm.getSkeleton().listShown(showBones, null);
 
-        options.copyTrackedColor(color);
+        ColorRGBA forTracked = options.copyColor(SkeletonColors.TrackedBones, null);
+        ColorRGBA forMapped = options.copyColor(SkeletonColors.MappedBones, null);
         int numBones = cgm.getSkeleton().countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             if (showSet.get(boneIndex) == false) {
@@ -519,10 +521,10 @@ class SceneUpdater {
             } else if (cgm.getAnimation().isRetargetedPose()) {
                 String name = cgm.getSkeleton().getBoneName(boneIndex);
                 if (Maud.getModel().getMap().isBoneMapped(name)) {
-                    visualizer.setHeadColor(boneIndex, color);
+                    visualizer.setHeadColor(boneIndex, forMapped);
                 }
             } else if (cgm.getAnimation().hasTrackForBone(boneIndex)) {
-                visualizer.setHeadColor(boneIndex, color);
+                visualizer.setHeadColor(boneIndex, forTracked);
             } // else default to trackless/unmapped color
         }
     }

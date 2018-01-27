@@ -166,10 +166,6 @@ public class EditorTools {
      */
     final private ShapeTool shape;
     /**
-     * controller for the SkeletonColorTool
-     */
-    final private SkeletonColorTool skeletonColor;
-    /**
      * controller for SkeletonTool
      */
     final private SkeletonTool skeleton;
@@ -257,7 +253,6 @@ public class EditorTools {
         settings = new SettingsTool(screen);
         sgc = new SgcTool(screen);
         shape = new ShapeTool(screen);
-        skeletonColor = new SkeletonColorTool(screen);
         skeleton = new SkeletonTool(screen);
         sourceAnimation = new SourceAnimationTool(screen);
         spatialDetails = new SpatialDetailsTool(screen);
@@ -284,8 +279,8 @@ public class EditorTools {
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
                 displaySettings, history, keyframe, joint, lights, mapping,
                 material, object, overrides, platform, render, retarget,
-                sceneLighting, sceneVertex, score, settings, sgc, shape, skeleton,
-                skeletonColor, sky, sourceAnimation, spatial, spatialDetails,
+                sceneLighting, sceneVertex, score, settings, sgc, shape,
+                skeleton, sky, sourceAnimation, spatial, spatialDetails,
                 spatialRotation, spatialScale, spatialTranslation, tweening,
                 twist, userData, vertex);
     }

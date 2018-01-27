@@ -140,9 +140,6 @@ public class ViewMenus {
             case "Skeleton":
                 Maud.gui.tools.select("skeleton");
                 break;
-            case "Skeleton color":
-                Maud.gui.tools.select("skeletonColor");
-                break;
             case "Sky":
                 Maud.gui.tools.select("sky");
                 break;

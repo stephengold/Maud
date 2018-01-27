@@ -143,7 +143,6 @@ public class ShowMenus {
         builder.addTool("Platform");
         builder.addTool("Render");
         builder.addTool("Skeleton");
-        builder.addTool("Skeleton color");
         builder.addTool("Sky");
         builder.addTool("Vertex");
 

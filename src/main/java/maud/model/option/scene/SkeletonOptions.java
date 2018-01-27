@@ -53,17 +53,22 @@ public class SkeletonOptions implements Cloneable {
     // fields
 
     /**
-     * color for skeleton links
+     * color for the heads of unmapped bones without tracks in the loaded
+     * animation
+     */
+    private ColorRGBA defaultColor = new ColorRGBA(1f, 0f, 0f, 1f);
+    /**
+     * color for the links between child bones and their parents
      */
     private ColorRGBA linkColor = new ColorRGBA(1f, 1f, 1f, 1f);
     /**
-     * color for heads of bones with tracks or which are mapped
+     * color for the heads of mapped bones in retargeted pose
+     */
+    private ColorRGBA mappedColor = new ColorRGBA(0f, 1f, 0f, 1f);
+    /**
+     * color for the heads of bones that have tracks in the loaded animation
      */
     private ColorRGBA trackedColor = new ColorRGBA(0f, 1f, 0f, 1f);
-    /**
-     * color for heads of bones without tracks which are not mapped
-     */
-    private ColorRGBA tracklessColor = new ColorRGBA(1f, 0f, 0f, 1f);
     /**
      * line width for skeleton links (in pixels, &ge;0, 0&rarr;hidden)
      */
@@ -76,52 +81,58 @@ public class SkeletonOptions implements Cloneable {
      * which kinds of bones to visualize (not null)
      */
     private ShowBones showBones = ShowBones.Influencers;
+    /**
+     * which color to view/edit in SkeletonTool (not null)
+     */
+    private SkeletonColors editColor = SkeletonColors.Links;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Copy the color for the skeleton links.
+     * Copy the color for the specified use.
      *
+     * @param use which color to copy (not null)
      * @param storeResult (modified if not null)
      * @return color (either storeResult or a new instance)
      */
-    public ColorRGBA copyLinkColor(ColorRGBA storeResult) {
+    public ColorRGBA copyColor(SkeletonColors use, ColorRGBA storeResult) {
+        Validate.nonNull(use, "use");
         if (storeResult == null) {
             storeResult = new ColorRGBA();
         }
-        storeResult.set(linkColor);
+
+        switch (use) {
+            case IdleBones:
+                storeResult.set(defaultColor);
+                break;
+
+            case Links:
+                storeResult.set(linkColor);
+                break;
+
+            case MappedBones:
+                storeResult.set(mappedColor);
+                break;
+
+            case TrackedBones:
+                storeResult.set(trackedColor);
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
 
         return storeResult;
     }
 
     /**
-     * Copy the color for the heads of bones with tracks.
+     * Read which color to view/edit in SkeletonTool.
      *
-     * @param storeResult (modified if not null)
-     * @return color (either storeResult or a new instance)
+     * @return an enum value (not null)
      */
-    public ColorRGBA copyTrackedColor(ColorRGBA storeResult) {
-        if (storeResult == null) {
-            storeResult = new ColorRGBA();
-        }
-        storeResult.set(trackedColor);
-
-        return storeResult;
-    }
-
-    /**
-     * Copy the color for the heads of bones without tracks.
-     *
-     * @param storeResult (modified if not null)
-     * @return color (either storeResult or a new instance)
-     */
-    public ColorRGBA copyTracklessColor(ColorRGBA storeResult) {
-        if (storeResult == null) {
-            storeResult = new ColorRGBA();
-        }
-        storeResult.set(tracklessColor);
-
-        return storeResult;
+    public SkeletonColors getEditColor() {
+        assert editColor != null;
+        return editColor;
     }
 
     /**
@@ -155,6 +166,46 @@ public class SkeletonOptions implements Cloneable {
     }
 
     /**
+     * Select which color to view/edit in SkeletonTool.
+     *
+     * @param newEditColor (not null)
+     */
+    public void selectEditColor(SkeletonColors newEditColor) {
+        Validate.nonNull(newEditColor, "new edit color");
+        editColor = newEditColor;
+    }
+
+    /**
+     * Alter the color being viewed/edited in SkeletonTool.
+     *
+     * @param newColor (not null, unaffected)
+     */
+    public void setColor(ColorRGBA newColor) {
+        Validate.nonNull(newColor, "new color");
+
+        switch (editColor) {
+            case IdleBones:
+                defaultColor.set(newColor);
+                break;
+
+            case Links:
+                linkColor.set(newColor);
+                break;
+
+            case MappedBones:
+                mappedColor.set(newColor);
+                break;
+
+            case TrackedBones:
+                trackedColor.set(newColor);
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    /**
      * Alter the line width of skeleton links.
      *
      * @param width line width (in pixels, &ge;0, 0&rarr;hidden)
@@ -162,16 +213,6 @@ public class SkeletonOptions implements Cloneable {
     public void setLineWidth(float width) {
         Validate.inRange(width, "line width", 0f, Float.MAX_VALUE);
         lineWidth = width;
-    }
-
-    /**
-     * Alter the color of the skeleton links.
-     *
-     * @param newColor (not null, unaffected)
-     */
-    public void setLinkColor(ColorRGBA newColor) {
-        Validate.nonNull(newColor, "color");
-        linkColor.set(newColor);
     }
 
     /**
@@ -192,26 +233,6 @@ public class SkeletonOptions implements Cloneable {
     public void setShowBones(ShowBones newSetting) {
         Validate.nonNull(newSetting, "new setting");
         showBones = newSetting;
-    }
-
-    /**
-     * Alter the color of the heads of bones with tracks.
-     *
-     * @param newColor (not null, unaffected)
-     */
-    public void setTrackedColor(ColorRGBA newColor) {
-        Validate.nonNull(newColor, "color");
-        trackedColor.set(newColor);
-    }
-
-    /**
-     * Alter the color of the heads of bones without tracks.
-     *
-     * @param newColor (not null, unaffected)
-     */
-    public void setTracklessColor(ColorRGBA newColor) {
-        Validate.nonNull(newColor, "color");
-        tracklessColor.set(newColor);
     }
 
     /**
@@ -238,9 +259,10 @@ public class SkeletonOptions implements Cloneable {
     @Override
     public SkeletonOptions clone() throws CloneNotSupportedException {
         SkeletonOptions clone = (SkeletonOptions) super.clone();
+        clone.defaultColor = defaultColor.clone();
         clone.linkColor = linkColor.clone();
+        clone.mappedColor = mappedColor.clone();
         clone.trackedColor = trackedColor.clone();
-        clone.tracklessColor = tracklessColor.clone();
 
         return clone;
     }

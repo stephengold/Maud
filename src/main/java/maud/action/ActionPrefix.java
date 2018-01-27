@@ -321,6 +321,10 @@ public class ActionPrefix {
      */
     final public static String selectShapeParm = "select shapeParm ";
     /**
+     * argument is the name of a SkeletonColors
+     */
+    final public static String selectSkeletonColor = "select skeletonColor ";
+    /**
      * arguments are a spatial name and a de-duplication index
      */
     final static String selectSourceAnimControl = "select sourceAnimControl ";
