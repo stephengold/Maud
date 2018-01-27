@@ -1133,7 +1133,7 @@ public class SceneViewCore
     private Node getSceneRoot() {
         List<Spatial> scenes = viewPort2.getScenes();
         int numScenes = scenes.size();
-        if (bulletAppState.isEnabled()) {
+        if (bulletAppState.isDebugEnabled()) {
             assert numScenes == 2 : numScenes;
         } else {
             assert numScenes == 1 : numScenes;
