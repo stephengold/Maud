@@ -165,6 +165,7 @@ public class Maud extends GuiApplication {
         Misc.setLoggingLevels(Level.WARNING);
         Logger.getLogger(ALAudioRenderer.class.getName())
                 .setLevel(Level.SEVERE);
+        //logger.setLevel(Level.INFO);
         Logger.getLogger(AssetConfig.class.getName())
                 .setLevel(Level.SEVERE);
 
@@ -238,6 +239,13 @@ public class Maud extends GuiApplication {
         ScreenshotAppState screenShotState = new ScreenshotAppState();
         success = stateManager.attach(screenShotState);
         assert success;
+    }
+
+    /**
+     * Initialization performed after the editor-screen tools have initialized.
+     */
+    void startup3() {
+        logger.info("");
         /*
          * Evaluate the startup script.
          */
@@ -248,7 +256,7 @@ public class Maud extends GuiApplication {
          */
         EditableCgm target = Maud.getModel().getTarget();
         if (!target.isLoaded()) {
-            success = target.loadNamed("Jaime");
+            boolean success = target.loadNamed("Jaime");
             assert success;
         }
     }
@@ -300,7 +308,7 @@ public class Maud extends GuiApplication {
      *
      * @param actionString textual description of the action (not null)
      * @param ongoing true if the action is ongoing, otherwise false
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * @param tpf time interval between updates (in seconds, &ge;0)
      */
     @Override
     public void onAction(String actionString, boolean ongoing, float tpf) {
@@ -343,11 +351,12 @@ public class Maud extends GuiApplication {
     /**
      * Callback invoked once per render pass.
      *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * @param updateInterval time interval between updates (in seconds, &ge;0)
      */
     @Override
-    public void simpleUpdate(float tpf) {
-        super.simpleUpdate(tpf);
+    public void simpleUpdate(float updateInterval) {
+        super.simpleUpdate(updateInterval);
+        logger.severe("");
 
         if (!didStartup1) {
             startup1();

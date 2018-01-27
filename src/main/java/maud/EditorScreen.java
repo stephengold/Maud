@@ -160,6 +160,8 @@ public class EditorScreen extends GuiScreenController {
      */
     public Tool getTool(String toolName) {
         Validate.nonEmpty(toolName, "tool name");
+        assert !toolMap.isEmpty();
+
         Tool controller = toolMap.get(toolName);
         return controller;
     }
@@ -566,14 +568,22 @@ public class EditorScreen extends GuiScreenController {
      * Callback to update the editor screen prior to rendering. (Invoked once
      * per render pass.)
      *
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * @param updateInterval time interval between updates (in seconds, &ge;0)
      */
     @Override
-    public void update(float tpf) {
-        super.update(tpf);
+    public void update(float updateInterval) {
+        super.update(updateInterval);
 
         if (toolMap.isEmpty()) {
             return;
+        }
+        /*
+         * Check whether further initialization remains to be done.
+         */
+        EditorModel model = Maud.getModel();
+        Cgm target = model.getTarget();
+        if (!target.isLoaded()) {
+            Maud.getApplication().startup3();
         }
 
         Drag.updateBoundary();
@@ -582,14 +592,12 @@ public class EditorScreen extends GuiScreenController {
         /*
          * Update the loaded animations.
          */
-        EditorModel model = Maud.getModel();
         Cgm source = model.getSource();
         if (source.getAnimation().isMoving()) {
-            updateTrackTime(source, tpf);
+            updateTrackTime(source, updateInterval);
         }
-        Cgm target = model.getTarget();
         if (target.getAnimation().isMoving()) {
-            updateTrackTime(target, tpf);
+            updateTrackTime(target, updateInterval);
         } else if (target.getAnimation().isRetargetedPose()) {
             target.getPose().setToAnimation();
         }
@@ -605,10 +613,10 @@ public class EditorScreen extends GuiScreenController {
                 CgmTransform cgmTransform
                         = cgmToRotate.getSceneView().getTransform();
                 if (signals.test(modelCCWSignalName)) {
-                    cgmTransform.rotateY(tpf);
+                    cgmTransform.rotateY(updateInterval);
                 }
                 if (signals.test(modelCWSignalName)) {
-                    cgmTransform.rotateY(-tpf);
+                    cgmTransform.rotateY(-updateInterval);
                 }
             }
 
@@ -625,10 +633,10 @@ public class EditorScreen extends GuiScreenController {
         /*
          * Update the views.
          */
-        source.getSceneView().update(null, tpf);
-        target.getSceneView().update(null, tpf);
-        source.getScoreView().update(source, tpf);
-        target.getScoreView().update(target, tpf);
+        source.getSceneView().update(null, updateInterval);
+        target.getSceneView().update(null, updateInterval);
+        source.getScoreView().update(source, updateInterval);
+        target.getScoreView().update(target, updateInterval);
     }
     // *************************************************************************
     // private methods
@@ -680,7 +688,7 @@ public class EditorScreen extends GuiScreenController {
     /**
      * If a POV is being dragged, update it.
      */
-    void updateDragPov() {
+    private void updateDragPov() {
         if (signals.test(povSignalName)) { // dragging a POV
             if (dragPov == null) { // a brand-new drag
                 dragPov = mousePov();
@@ -703,16 +711,16 @@ public class EditorScreen extends GuiScreenController {
      * Update the track time.
      *
      * @param cgm (not null)
-     * @param tpf time interval between render passes (in seconds, &ge;0)
+     * @param updateInterval time interval between updates (in seconds, &ge;0)
      */
-    private void updateTrackTime(Cgm cgm, float tpf) {
+    private void updateTrackTime(Cgm cgm, float updateInterval) {
         LoadedAnimation animation = cgm.getAnimation();
         PlayOptions play = cgm.getPlay();
         assert animation.isMoving();
 
         float speed = play.getSpeed();
         float time = animation.getTime();
-        time += speed * tpf;
+        time += speed * updateInterval;
 
         boolean cont = play.willContinue();
         boolean reverse = play.willReverse();
