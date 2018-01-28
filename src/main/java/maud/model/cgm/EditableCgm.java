@@ -243,7 +243,7 @@ public class EditableCgm extends LoadedCgm {
         assert newTrack != null;
         assert eventDescription != null;
 
-        Animation animation = getAnimation().getAnimation();
+        Animation animation = getAnimation().getReal();
 
         History.autoAdd();
         animation.addTrack(newTrack);
@@ -356,7 +356,7 @@ public class EditableCgm extends LoadedCgm {
      * different animation.
      */
     void deleteAnimation() {
-        Animation anim = getAnimation().getAnimation();
+        Animation anim = getAnimation().getReal();
         AnimControl animControl = getAnimControl().find();
 
         History.autoAdd();
@@ -827,7 +827,7 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(newAnimationName, "new animation name");
 
         Cgm source = Maud.getModel().getSource();
-        Animation sourceAnimation = source.getAnimation().getAnimation();
+        Animation sourceAnimation = source.getAnimation().getReal();
         Skeleton sourceSkeleton = source.getSkeleton().find();
         Skeleton targetSkeleton = getSkeleton().find();
         SkeletonMapping effectiveMap = Maud.getModel().getMap().effectiveMap();
