@@ -344,7 +344,7 @@ public class Cgm implements Cloneable {
         assert !name.isEmpty();
 
         List<Integer> treePosition = new ArrayList<>(4);
-        Spatial sp = findSpatialNamed(name, rootSpatial, treePosition);
+        Spatial sp = MaudUtil.findSpatialNamed(name, rootSpatial, treePosition);
         if (sp == null) {
             treePosition = null;
         }
@@ -621,7 +621,7 @@ public class Cgm implements Cloneable {
      * @return true if found, otherwise false
      */
     public boolean hasGeometry(String name) {
-        Spatial sp = findSpatialNamed(name, rootSpatial, null);
+        Spatial sp = MaudUtil.findSpatialNamed(name, rootSpatial, null);
         boolean result = sp instanceof Geometry;
 
         return result;
@@ -649,7 +649,7 @@ public class Cgm implements Cloneable {
      * @return true if found, otherwise false
      */
     public boolean hasNode(String name) {
-        Spatial sp = findSpatialNamed(name, rootSpatial, null);
+        Spatial sp = MaudUtil.findSpatialNamed(name, rootSpatial, null);
         boolean result = sp instanceof Node;
 
         return result;
@@ -662,7 +662,7 @@ public class Cgm implements Cloneable {
      * @return true if found, otherwise false
      */
     public boolean hasSpatial(String name) {
-        Spatial sp = findSpatialNamed(name, rootSpatial, null);
+        Spatial sp = MaudUtil.findSpatialNamed(name, rootSpatial, null);
         if (sp == null) {
             return false;
         } else {
@@ -1024,47 +1024,6 @@ public class Cgm implements Cloneable {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Find a spatial with the specified name in the specified subtree. Note:
-     * recursive! TODO move to MaudUtils
-     *
-     * @param name what name to search for (not null, not empty)
-     * @param subtree which subtree to search (may be null, unaffected)
-     * @param storePosition tree position of the spatial (modified if found and
-     * not null)
-     * @return the pre-existing spatial, or null if not found
-     */
-    private Spatial findSpatialNamed(String name, Spatial subtree,
-            List<Integer> storePosition) {
-        Spatial result = null;
-        if (subtree != null) {
-            String spatialName = subtree.getName();
-            if (spatialName != null && spatialName.equals(name)) {
-                result = subtree;
-                if (storePosition != null) {
-                    storePosition.clear();
-                }
-
-            } else if (subtree instanceof Node) {
-                Node node = (Node) subtree;
-                List<Spatial> children = node.getChildren();
-                int numChildren = children.size();
-                for (int childI = 0; childI < numChildren; childI++) {
-                    Spatial child = children.get(childI);
-                    result = findSpatialNamed(name, child, storePosition);
-                    if (result != null) {
-                        if (storePosition != null) {
-                            storePosition.add(0, childI);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
 
     /**
      * Enumerate named spatials in the specified subtree whose names begin with

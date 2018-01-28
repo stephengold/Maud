@@ -362,6 +362,47 @@ public class MaudUtil {
     }
 
     /**
+     * Find a spatial with the specified name in the specified subtree. Note:
+     * recursive!
+     *
+     * @param name what name to search for (not null, not empty)
+     * @param subtree which subtree to search (may be null, unaffected)
+     * @param storePosition tree position of the spatial (modified if found and
+     * not null)
+     * @return the pre-existing spatial, or null if not found
+     */
+    public static Spatial findSpatialNamed(String name, Spatial subtree,
+            List<Integer> storePosition) {
+        Spatial result = null;
+        if (subtree != null) {
+            String spatialName = subtree.getName();
+            if (spatialName != null && spatialName.equals(name)) {
+                result = subtree;
+                if (storePosition != null) {
+                    storePosition.clear();
+                }
+
+            } else if (subtree instanceof Node) {
+                Node node = (Node) subtree;
+                List<Spatial> children = node.getChildren();
+                int numChildren = children.size();
+                for (int childI = 0; childI < numChildren; childI++) {
+                    Spatial child = children.get(childI);
+                    result = findSpatialNamed(name, child, storePosition);
+                    if (result != null) {
+                        if (storePosition != null) {
+                            storePosition.add(0, childI);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Access the indexed SpatialTrack in the specified animation.
      *
      * @param animation which animation to search (not null, unaffected)
