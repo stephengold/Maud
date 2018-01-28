@@ -93,7 +93,7 @@ public class RenderOptions implements Cloneable {
     /**
      * width (and height) of shadow maps (pixels per side, &gt;0)
      */
-    private int shadowMapSize = 4_096;
+    private int shadowMapSize = 8_192;
     /**
      * CG-model triangle rendering option
      */
