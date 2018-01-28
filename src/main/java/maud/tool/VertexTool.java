@@ -101,8 +101,9 @@ class VertexTool extends Tool {
         String weightStatus = "";
 
         Cgm target = Maud.getModel().getTarget();
+        SelectedSpatial spatial = target.getSpatial();
         SelectedVertex vertex = target.getVertex();
-        if (vertex.isSelected()) {
+        if (vertex.isSelected() && spatial.hasAnimatedMesh()) {
             float[] boneWeights = vertex.boneWeights(null);
             float weight = boneWeights[weightIndex];
             weightStatus = String.format("%5.1f%% ", 100f * weight);
