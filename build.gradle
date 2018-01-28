@@ -50,7 +50,7 @@ dependencies {
     runtime 'com.github.nifty-gui:nifty-style-black:1.4.2'
 
     // from stephengold's bintray repositories:
-    compile 'jme3utilities:jme3-utilities-heart:2.0.0'
+    compile 'jme3utilities:jme3-utilities-heart:2.1.0'
     compile 'jme3utilities:jme3-utilities-debug:0.8.5'
     compile 'jme3utilities:jme3-utilities-ui:0.6.1'
     compile 'jme3utilities:jme3-utilities-nifty:0.7.8'
