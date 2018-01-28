@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,13 +26,15 @@
  */
 package maud.model.cgm;
 
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix4f;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
@@ -50,7 +52,7 @@ public class SelectedVertex implements Cloneable {
     /**
      * maximum number of bones that can influence any one vertex
      */
-    final private static int maxBones = 4;
+    final private static int maxWeights = 4;
     /**
      * message logger for this class
      */
@@ -72,72 +74,102 @@ public class SelectedVertex implements Cloneable {
     // new methods exposed
 
     /**
-     * Calculate the bind location of the selected vertex.
-     *
-     * @param storeResult (modified if not null)
-     * @return location in model space (either storeResult or a new instance)
-     */
-    public Vector3f bindLocation(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-        assert selectedIndex >= 0 : selectedIndex;
-
-        Mesh mesh = cgm.getSpatial().getMesh();
-        storeResult = MyMesh.vertexVector3f(mesh,
-                VertexBuffer.Type.BindPosePosition, selectedIndex, storeResult);
-
-        return storeResult;
-    }
-
-    /**
-     * Read the bone indices of the vertex.
+     * Copy the bone indices of the vertex.
      *
      * @param storeResult (modified if not null)
      * @return array of indices (either storeResult or a new instance)
      */
     public int[] boneIndices(int[] storeResult) {
-        if (storeResult == null) {
-            storeResult = new int[maxBones];
-        } else {
-            assert storeResult.length >= maxBones : storeResult.length;
-        }
+        assert selectedIndex >= 0 : selectedIndex;
 
-        Buffer boneIndexBuffer = boneIndexBuffer();
-        int maxNumWeights = cgm.getSpatial().getMaxNumWeights();
-        for (int i = 0; i < maxNumWeights; i++) {
-            int boneIndex = MyMesh.readIndex(boneIndexBuffer);
-            storeResult[i] = boneIndex;
-        }
-        for (int i = maxNumWeights; i < maxBones; i++) {
-            storeResult[i] = -1;
-        }
+        Mesh mesh = cgm.getSpatial().getMesh();
+        storeResult = MyMesh.vertexBoneIndices(mesh, selectedIndex,
+                storeResult);
 
         return storeResult;
     }
 
     /**
-     * Calculate the bone weights of the vertex.
+     * Copy the bone weights of the vertex.
      *
      * @param storeResult (modified if not null)
      * @return array of weights (either storeResult or a new instance)
      */
     public float[] boneWeights(float[] storeResult) {
-        if (storeResult == null) {
-            storeResult = new float[maxBones];
-        } else {
-            assert storeResult.length >= maxBones : storeResult.length;
-        }
+        assert selectedIndex >= 0 : selectedIndex;
 
-        FloatBuffer wBuffer = weightBuffer();
-        int maxNumWeights = cgm.getSpatial().getMaxNumWeights();
-        for (int i = 0; i < maxNumWeights; i++) {
-            float weight = wBuffer.get();
-            storeResult[i] = weight;
-        }
-        for (int i = maxNumWeights; i < maxBones; i++) {
-            storeResult[i] = 0f;
-        }
+        Mesh mesh = cgm.getSpatial().getMesh();
+        storeResult = MyMesh.vertexBoneWeights(mesh, selectedIndex,
+                storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy the color of the selected vertex.
+     *
+     * @param storeResult (modified if not null)
+     * @return the color (either storeResult or a new instance)
+     */
+    public ColorRGBA color(ColorRGBA storeResult) {
+        assert selectedIndex >= 0 : selectedIndex;
+
+        Mesh mesh = cgm.getSpatial().getMesh();
+        storeResult = MyMesh.vertexColor(mesh, selectedIndex, storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy Vector2f data from the specified buffer for the selected vertex.
+     *
+     * @param bufferType which vertex buffer to read (8 legal values)
+     * @param storeResult (modified if not null)
+     * @return the data vector (either storeResult or a new instance)
+     */
+    public Vector2f copyVector2f(VertexBuffer.Type bufferType,
+            Vector2f storeResult) {
+        assert selectedIndex >= 0 : selectedIndex;
+
+        Mesh mesh = cgm.getSpatial().getMesh();
+        storeResult = MyMesh.vertexVector2f(mesh, bufferType, selectedIndex,
+                storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy Vector3f data for the selected vertex from the specified buffer.
+     *
+     * @param bufferType which vertex buffer to read (5 legal values)
+     * @param storeResult (modified if not null)
+     * @return the data vector (either storeResult or a new instance)
+     */
+    public Vector3f copyVector3f(VertexBuffer.Type bufferType,
+            Vector3f storeResult) {
+        assert selectedIndex >= 0 : selectedIndex;
+
+        Mesh mesh = cgm.getSpatial().getMesh();
+        storeResult = MyMesh.vertexVector3f(mesh, bufferType, selectedIndex,
+                storeResult);
+
+        return storeResult;
+    }
+
+    /**
+     * Copy Vector4f data for the selected vertex from the specified buffer.
+     *
+     * @param bufferType which vertex buffer to read (5 legal values)
+     * @param storeResult (modified if not null)
+     * @return the data vector (either storeResult or a new instance)
+     */
+    public Vector4f copyVector4f(VertexBuffer.Type bufferType,
+            Vector4f storeResult) {
+        assert selectedIndex >= 0 : selectedIndex;
+
+        Mesh mesh = cgm.getSpatial().getMesh();
+        storeResult = MyMesh.vertexVector4f(mesh, bufferType, selectedIndex,
+                storeResult);
 
         return storeResult;
     }
@@ -161,7 +193,7 @@ public class SelectedVertex implements Cloneable {
     /**
      * Count how many bones directly influence the selected vertex.
      *
-     * @return count (&ge;0, &le;maxBones)
+     * @return count (&ge;0, &le;maxWeights)
      */
     public int influence() {
         int result = 0;
@@ -177,7 +209,7 @@ public class SelectedVertex implements Cloneable {
         }
 
         assert result >= 0 : result;
-        assert result <= maxBones : result;
+        assert result <= maxWeights : result;
         return result;
     }
 
@@ -242,6 +274,20 @@ public class SelectedVertex implements Cloneable {
     }
 
     /**
+     * Read the size of the selected vertex.
+     *
+     * @return the size (in pixels)
+     */
+    public float vertexSize() {
+        assert selectedIndex >= 0 : selectedIndex;
+
+        Mesh mesh = cgm.getSpatial().getMesh();
+        float result = MyMesh.vertexSize(mesh, selectedIndex);
+
+        return result;
+    }
+
+    /**
      * Calculate the world location of the selected vertex.
      *
      * @param storeResult (modified if not null)
@@ -275,22 +321,6 @@ public class SelectedVertex implements Cloneable {
     // private methods
 
     /**
-     * Access the bone-index data for the selected vertex.
-     *
-     * @return a read-only buffer instance
-     */
-    private Buffer boneIndexBuffer() {
-        assert selectedIndex >= 0 : selectedIndex;
-
-        Mesh mesh = cgm.getSpatial().getMesh();
-        VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
-        Buffer boneIndexBuffer = biBuf.getDataReadOnly();
-        boneIndexBuffer.position(maxBones * selectedIndex);
-
-        return boneIndexBuffer;
-    }
-
-    /**
      * Access the weight data for the selected vertex.
      *
      * @return a read-only buffer instance
@@ -301,7 +331,7 @@ public class SelectedVertex implements Cloneable {
         Mesh mesh = cgm.getSpatial().getMesh();
         VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
         FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
-        weightBuffer.position(maxBones * selectedIndex);
+        weightBuffer.position(maxWeights * selectedIndex);
 
         return weightBuffer;
     }

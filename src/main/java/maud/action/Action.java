@@ -195,6 +195,7 @@ public class Action {
     final static String selectTweenTranslations = "select tweenTranslations";
     final static String selectUserKey = "select userKey";
     final static String selectVertex = "select vertex";
+    final static String selectVertexBuffer = "select vertexBuffer";
 
     final static String setBatchHint = "set batchHint";
     final static String setColorDepth = "set colorDepth";

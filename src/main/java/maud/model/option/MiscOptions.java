@@ -27,6 +27,7 @@
 package maud.model.option;
 
 import com.jme3.math.FastMath;
+import com.jme3.scene.VertexBuffer;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Level;
@@ -103,6 +104,10 @@ public class MiscOptions implements Cloneable {
      * message to display in the status bar (not null)
      */
     private String statusMessage = "Welcome to Maud!";
+    /**
+     * buffer to view/edit in VertexTool (not null)
+     */
+    private VertexBuffer.Type vertexBuffer = VertexBuffer.Type.BindPosePosition;
     /**
      * view mode (not null)
      */
@@ -187,6 +192,16 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Read which vertex buffer to view/edit in VertexTool.
+     *
+     * @return an enum value (not null)
+     */
+    public VertexBuffer.Type getVertexBuffer() {
+        assert vertexBuffer != null;
+        return vertexBuffer;
+    }
+
+    /**
      * Read the view mode.
      *
      * @return an enum value (not null)
@@ -237,6 +252,16 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter which buffer to view/edit in VertexTool.
+     *
+     * @param newBuffer an enum value (not null)
+     */
+    public void selectVertexBuffer(VertexBuffer.Type newBuffer) {
+        Validate.nonNull(newBuffer, "new buffer");
+        vertexBuffer = newBuffer;
+    }
+
+    /**
      * Alter the angle display units.
      *
      * @param newSetting true &rarr; degrees, false &rarr; radians
@@ -246,7 +271,8 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter which background to view/edit in BackgroundTool.
+     * Alter which background to view/edit in BackgroundTool. TODO rename
+     * selectBackground
      *
      * @param newBackground an enum value (not null)
      */
@@ -284,7 +310,8 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter which rigid-body parameter to display in ObjectTool.
+     * Alter which rigid-body parameter to display in ObjectTool. TODO rename
+     * selectRbp
      *
      * @param newParameter an enum value (not null)
      */
@@ -294,7 +321,8 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter which shape parameter to display in ShapeTool.
+     * Alter which shape parameter to display in ShapeTool. TODO rename
+     * selectShapeParameter
      *
      * @param newParameter an enum value (not null)
      */

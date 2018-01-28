@@ -378,6 +378,10 @@ public class ActionPrefix {
      */
     final static String selectVertexBone = "select vertexBone ";
     /**
+     * argument is the name of a VertexBuffer.Type
+     */
+    final public static String selectVertexBuffer = "select vertexBuffer ";
+    /**
      * argument is the name of a view mode
      */
     final public static String selectViewMode = "select viewMode ";

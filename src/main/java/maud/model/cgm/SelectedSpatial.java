@@ -55,6 +55,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.Control;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
@@ -778,6 +779,27 @@ public class SelectedSpatial implements JmeCloneable {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Test whether the spatial has a vertex buffer of the specified type.
+     *
+     * @param bufferType which type of vertex buffer to test for (not null)
+     * @return true if the buffer is set, otherwise false
+     */
+    public boolean hasVertexBuffer(VertexBuffer.Type bufferType) {
+        Validate.nonNull(bufferType, "buffer type");
+
+        boolean result = false;
+        Mesh mesh = getMesh();
+        if (mesh != null) {
+            VertexBuffer buffer = mesh.getBuffer(bufferType);
+            if (buffer != null) {
+                result = true;
+            }
+        }
+
+        return result;
     }
 
     /**

@@ -26,15 +26,22 @@
  */
 package maud.tool;
 
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
+import com.jme3.scene.VertexBuffer;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSkeleton;
+import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedVertex;
+import maud.model.option.MiscOptions;
 
 /**
  * The controller for the "Vertex" tool in Maud's editor screen.
@@ -71,7 +78,7 @@ class VertexTool extends Tool {
      */
     @Override
     void toolUpdate() {
-        updateBindLocation();
+        updateBuffer();
         updateBone(0);
         updateBone(1);
         updateBone(2);
@@ -81,27 +88,6 @@ class VertexTool extends Tool {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Update the bind location.
-     */
-    private void updateBindLocation() {
-        String locX = "";
-        String locY = "";
-        String locZ = "";
-
-        SelectedVertex vertex = Maud.getModel().getTarget().getVertex();
-        if (vertex.isSelected()) {
-            Vector3f location = vertex.bindLocation(null);
-            locX = String.format(" %f", location.x);
-            locY = String.format(" %f", location.y);
-            locZ = String.format(" %f", location.z);
-        }
-
-        setStatusText("vertexBindLocX", locX);
-        setStatusText("vertexBindLocY", locY);
-        setStatusText("vertexBindLocZ", locZ);
-    }
 
     /**
      * Update the indexed animation weight, bone name, and bone-select button.
@@ -140,6 +126,126 @@ class VertexTool extends Tool {
         setButtonText("vertexSelectBone" + wiString, selectButton);
         setStatusText("vertexBone" + wiString, " " + boneStatus);
         setStatusText("vertexWeight" + wiString, weightStatus);
+    }
+
+    /**
+     * Update the selected vertex buffer and the data read from the buffer.
+     */
+    private void updateBuffer() {
+        EditorModel model = Maud.getModel();
+        MiscOptions options = model.getMisc();
+        VertexBuffer.Type bufferType = options.getVertexBuffer();
+        String bufferButton = bufferType.toString();
+        setButtonText("vertexBufferSelect", bufferButton);
+
+        String data0 = "";
+        String data1 = "";
+        String data2 = "";
+        String data3 = "";
+        String label0 = "";
+        String label1 = "";
+        String label2 = "";
+        String label3 = "";
+
+        Cgm target = Maud.getModel().getTarget();
+        SelectedSpatial spatial = target.getSpatial();
+        SelectedVertex vertex = target.getVertex();
+        if (vertex.isSelected() && spatial.hasVertexBuffer(bufferType)) {
+            switch (bufferType) {
+                case BoneIndex:
+                    int boneIndex[] = vertex.boneIndices(null);
+                    data0 = String.format(" %d", boneIndex[0]);
+                    data1 = String.format(" %d", boneIndex[1]);
+                    data2 = String.format(" %d", boneIndex[2]);
+                    data3 = String.format(" %d", boneIndex[3]);
+                    label0 = "0";
+                    label1 = "1";
+                    label2 = "2";
+                    label3 = "3";
+                    break;
+
+                case BoneWeight:
+                    float boneWeight[] = vertex.boneWeights(null);
+                    data0 = String.format(" %f", boneWeight[0]);
+                    data1 = String.format(" %f", boneWeight[1]);
+                    data2 = String.format(" %f", boneWeight[2]);
+                    data3 = String.format(" %f", boneWeight[3]);
+                    label0 = "0";
+                    label1 = "1";
+                    label2 = "2";
+                    label3 = "3";
+                    break;
+
+                case Color:
+                    ColorRGBA color = vertex.color(null);
+                    data0 = String.format(" %f", color.r);
+                    data1 = String.format(" %f", color.g);
+                    data2 = String.format(" %f", color.b);
+                    data3 = String.format(" %f", color.a);
+                    label0 = "r";
+                    label1 = "g";
+                    label2 = "b";
+                    label3 = "a";
+                    break;
+
+                case TexCoord:
+                case TexCoord2:
+                case TexCoord3:
+                case TexCoord4:
+                case TexCoord5:
+                case TexCoord6:
+                case TexCoord7:
+                case TexCoord8:
+                    Vector2f vec2 = vertex.copyVector2f(bufferType, null);
+                    data0 = String.format(" %f", vec2.x);
+                    data1 = String.format(" %f", vec2.y);
+                    label0 = "u";
+                    label1 = "v";
+                    break;
+
+                case BindPosePosition:
+                case BindPoseNormal:
+                case Binormal:
+                case Normal:
+                case Position:
+                    Vector3f vec3 = vertex.copyVector3f(bufferType, null);
+                    data0 = String.format(" %f", vec3.x);
+                    data1 = String.format(" %f", vec3.y);
+                    data2 = String.format(" %f", vec3.z);
+                    label0 = "x";
+                    label1 = "y";
+                    label2 = "z";
+                    break;
+
+                case BindPoseTangent:
+                case Tangent:
+                    Vector4f vec4 = vertex.copyVector4f(bufferType, null);
+                    data0 = String.format(" %f", vec4.x);
+                    data1 = String.format(" %f", vec4.y);
+                    data2 = String.format(" %f", vec4.z);
+                    data3 = String.format(" %f", vec4.w);
+                    label0 = "x";
+                    label1 = "y";
+                    label2 = "z";
+                    label3 = "w";
+                    break;
+
+                case Size:
+                    float size = vertex.vertexSize();
+                    data0 = String.format(" %f", size);
+                    label0 = "s";
+                    break;
+            }
+        }
+
+        setStatusText("vertexData0", data0);
+        setStatusText("vertexData1", data1);
+        setStatusText("vertexData2", data2);
+        setStatusText("vertexData3", data3);
+        setStatusText("vertexLabel0", label0);
+        setStatusText("vertexLabel1", label1);
+        setStatusText("vertexLabel2", label2);
+        setStatusText("vertexLabel3", label3);
     }
 
     /**

@@ -2631,7 +2631,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="vertexTool" title="Vertex Tool"
                      hideOnClose="true"
-                     height="255px" width="250px" x="20" y="250">
+                     height="280px" width="250px" x="20" y="250">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="vertexPreviousButton"
@@ -2652,23 +2652,48 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(select vertex)"/>
                         </control>
                     </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Bind x =  "/>
-                        <control name="label" id="vertexBindLocX"
-                                 backgroundColor="#ffff"
-                                 width="80px"/>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Bind y =  "/>
-                        <control name="label" id="vertexBindLocY"
-                                 backgroundColor="#ffff"
-                                 width="80px"/>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Bind z =  "/>
-                        <control name="label" id="vertexBindLocZ"
-                                 backgroundColor="#ffff"
-                                 width="80px"/>
+                    <panel childLayout="horizontal" height="105px">
+                        <panel childLayout="center" height="*" width="120px">
+                            <control name="button" id="vertexBufferSelectButton"
+                                     width="*">
+                                <interact onRelease="perform(select vertexBuffer)"/>
+                            </control>
+                        </panel>
+                        <panel width="10px"/>
+                        <panel childLayout="vertical">
+                            <panel childLayout="horizontal">
+                                <control name="label" id="vertexLabel0"
+                                         width="10px"/>
+                                <control name="label" text="=  "/>
+                                <control name="label" id="vertexData0"
+                                         backgroundColor="#ffff"
+                                         width="*"/>
+                            </panel>
+                            <panel childLayout="horizontal">
+                                <control name="label" id="vertexLabel1"
+                                         width="10px"/>
+                                <control name="label" text="=  "/>
+                                <control name="label" id="vertexData1"
+                                         backgroundColor="#ffff"
+                                         width="*"/>
+                            </panel>
+                            <panel childLayout="horizontal">
+                                <control name="label" id="vertexLabel2"
+                                         width="10px"/>
+                                <control name="label" text="=  "/>
+                                <control name="label" id="vertexData2"
+                                         backgroundColor="#ffff"
+                                         width="*"/>
+                            </panel>
+                            <panel childLayout="horizontal">
+                                <control name="label" id="vertexLabel3"
+                                         width="10px"/>
+                                <control name="label" text="=  "/>
+                                <control name="label" id="vertexData3"
+                                         backgroundColor="#ffff"
+                                         width="*"/>
+                            </panel>
+                        </panel>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" id="vertexWeight0"
