@@ -33,6 +33,7 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.dialog.EditorDialogs;
+import maud.menu.AnimationMenus;
 import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
@@ -80,6 +81,10 @@ class NewAction {
 
         EditorModel model = Maud.getModel();
         switch (actionString) {
+            case Action.newAnimation:
+                AnimationMenus.addNewAnimation();
+                break;
+
             case Action.newAnimationFromPose:
                 EditorDialogs.newAnimationFromPose();
                 break;

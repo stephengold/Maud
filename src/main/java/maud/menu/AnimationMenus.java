@@ -66,6 +66,27 @@ public class AnimationMenus {
     // new methods exposed
 
     /**
+     * Display an "Animation -> Add new" menu.
+     */
+    public static void addNewAnimation() {
+        MenuBuilder builder = new MenuBuilder();
+
+        EditorModel model = Maud.getModel();
+        LoadedAnimation sourceAnimation = model.getSource().getAnimation();
+        LoadedAnimation targetAnimation = model.getTarget().getAnimation();
+        if (sourceAnimation.isReal() && targetAnimation.isReal()) {
+            builder.addDialog("Prepend source animation");
+            builder.addDialog("Append source animation");
+        }
+        builder.addDialog("Copy");
+        builder.addDialog("Mix tracks");
+        builder.addDialog("Pose");
+        builder.addTool("Retarget source animation");
+
+        builder.show("select menuItem Animation -> Add new -> ");
+    }
+
+    /**
      * Display an "Animation -&gt; Edit" menu (only for a real animation).
      */
     public static void editAnimation() {
@@ -210,27 +231,6 @@ public class AnimationMenus {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Display an "Animation -> Add new" menu.
-     */
-    private static void addNewAnimation() {
-        MenuBuilder builder = new MenuBuilder();
-
-        EditorModel model = Maud.getModel();
-        LoadedAnimation sourceAnimation = model.getSource().getAnimation();
-        LoadedAnimation targetAnimation = model.getTarget().getAnimation();
-        if (sourceAnimation.isReal() && targetAnimation.isReal()) {
-            builder.addDialog("Prepend source animation");
-            builder.addDialog("Append source animation");
-        }
-        builder.addDialog("Copy");
-        builder.addDialog("Mix tracks");
-        builder.addDialog("Pose");
-        builder.addTool("Retarget source animation");
-
-        builder.show("select menuItem Animation -> Add new -> ");
-    }
 
     /**
      * Handle a "select menuItem" action from the "Animation -> Add new" menu.

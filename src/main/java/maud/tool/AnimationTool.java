@@ -38,7 +38,6 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.SelectedAnimControl;
-import maud.model.cgm.SelectedBone;
 
 /**
  * The controller for the "Animation" tool in Maud's editor screen.
@@ -179,7 +178,6 @@ class AnimationTool extends Tool {
     @Override
     void toolUpdate() {
         updateControlIndex();
-        updateHasTrack();
         updateIndex();
         updateLooping();
         updateName();
@@ -194,108 +192,84 @@ class AnimationTool extends Tool {
      * Update the anim control index status and previous/next/select buttons.
      */
     private void updateControlIndex() {
-        String indexText;
-        String sButton = "";
-        String nButton = "";
-        String pButton = "";
+        String indexStatus;
+        String selectButton = "";
+        String nextButton = "";
+        String previousButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         int numAnimControls = target.countSgcs(AnimControl.class);
         if (numAnimControls > 0) {
-            sButton = "Select AnimControl";
+            selectButton = "Select animControl";
             SelectedAnimControl sac = target.getAnimControl();
             if (sac.isSelected()) {
                 int selectedIndex = sac.findIndex();
-                indexText = MaudUtil.formatIndex(selectedIndex);
-                indexText
-                        = String.format("%s of %d", indexText, numAnimControls);
-                nButton = "+";
-                pButton = "-";
+                indexStatus = MaudUtil.formatIndex(selectedIndex);
+                indexStatus
+                        = String.format("%s of %d", indexStatus, numAnimControls);
+                nextButton = "+";
+                previousButton = "-";
             } else {
                 if (numAnimControls == 1) {
-                    indexText = "one AnimControl";
+                    indexStatus = "one AnimControl";
                 } else {
-                    indexText
+                    indexStatus
                             = String.format("%d AnimControls", numAnimControls);
                 }
             }
 
         } else {
-            indexText = "not animated";
+            indexStatus = "not animated";
         }
 
-        setButtonText("animControlPrevious", pButton);
-        setStatusText("animControlIndex", indexText);
-        setButtonText("animControlNext", nButton);
-        setButtonText("animControlSelect", sButton);
+        setButtonText("animControlPrevious", previousButton);
+        setStatusText("animControlIndex", indexStatus);
+        setButtonText("animControlNext", nextButton);
+        setButtonText("animControlSelect", selectButton);
     }
 
     /**
-     * Update the "has track" status of the selected bone.
-     */
-    private void updateHasTrack() {
-        Cgm target = Maud.getModel().getTarget();
-        SelectedBone bone = target.getBone();
-        String hasTrackText;
-        if (!bone.isSelected()) {
-            hasTrackText = "no bone";
-        } else if (target.getAnimation().isReal()) {
-            if (bone.hasTrack()) {
-                hasTrackText = "has track";
-            } else {
-                hasTrackText = "no track";
-            }
-        } else if (target.getAnimation().isRetargetedPose()) {
-            String boneName = bone.getName();
-            if (Maud.getModel().getMap().isBoneMapped(boneName)) {
-                hasTrackText = "is mapped";
-            } else {
-                hasTrackText = "not mapped";
-            }
-        } else {
-            hasTrackText = "";
-        }
-        setStatusText("animationHasTrack", " " + hasTrackText);
-    }
-
-    /**
-     * Update the index status and previous/next/load buttons.
+     * Update the index status and previous/next/add/load buttons.
      */
     private void updateIndex() {
-        String indexText;
-        String lButton = "";
-        String nButton = "";
-        String pButton = "";
+        String indexStatus;
+        String addButton = "";
+        String loadButton = "";
+        String nextButton = "";
+        String previousButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        SelectedAnimControl sac = target.getAnimControl();
-        if (sac.isSelected()) {
-            lButton = "Load";
-            int numAnimations = sac.countAnimations();
+        SelectedAnimControl animControl = target.getAnimControl();
+        if (animControl.isSelected()) {
+            addButton = "Add new";
+            loadButton = "Load animation";
+            int numAnimations = animControl.countAnimations();
             if (target.getAnimation().isReal()) {
                 int selectedIndex = target.getAnimation().findIndex();
-                indexText = MaudUtil.formatIndex(selectedIndex);
-                indexText = String.format("%s of %d", indexText, numAnimations);
-                nButton = "+";
-                pButton = "-";
+                indexStatus = MaudUtil.formatIndex(selectedIndex);
+                indexStatus
+                        = String.format("%s of %d", indexStatus, numAnimations);
+                nextButton = "+";
+                previousButton = "-";
 
             } else {
                 if (numAnimations == 0) {
-                    indexText = "no animations";
+                    indexStatus = "no animations";
                 } else if (numAnimations == 1) {
-                    indexText = "one animation";
+                    indexStatus = "one animation";
                 } else {
-                    indexText = String.format("%d animations", numAnimations);
+                    indexStatus = String.format("%d animations", numAnimations);
                 }
             }
         } else {
-            indexText = "not selected";
+            indexStatus = "not selected";
         }
 
-        setStatusText("animationIndex", indexText);
-        setButtonText("animationNext", nButton);
-        setButtonText("animationPrevious", pButton);
-        setButtonText("animationLoad", lButton);
+        setButtonText("animationAdd", addButton);
+        setButtonText("animationLoad", loadButton);
+        setButtonText("animationNext", nextButton);
+        setButtonText("animationPrevious", previousButton);
+        setStatusText("animationIndex", indexStatus);
     }
 
     /**

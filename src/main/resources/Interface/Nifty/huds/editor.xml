@@ -34,7 +34,7 @@ the menu bar, status bar, and tool windows.
     <screen id="editor" controller="maud.EditorScreen">
         <layer childLayout="vertical">
             <panel id="menu bar" childLayout="vertical">
-                <panel height="2px"/>
+                <panel height="3px"/>
                 <panel id="menu bar top row" childLayout="horizontal"
                        height="25px">
                     <panel width="2px"/>
@@ -135,9 +135,10 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="animationTool" title="Animation Tool"
                      hideOnClose="true"
-                     height="245px" width="310px" x="220" y="50">
+                     height="252px" width="320px" x="220" y="50">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal" height="27px">
+                    <panel height="3px"/>
+                    <panel childLayout="horizontal" height="28px">
                         <control name="button" id="animControlPreviousButton"
                                  width="20px">
                             <interact onRelease="perform(previous animControl)"/>
@@ -150,13 +151,13 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next animControl)"/>
                         </control>
-                        <panel width="*"/>
+                        <panel/>
                         <control name="button" id="animControlSelectButton"
                                  width="120px">
                             <interact onRelease="perform(select animControl)"/>
                         </control>
                     </panel>
-                    <panel childLayout="horizontal" height="27px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="button" id="animationPreviousButton"
                                  width="20px">
                             <interact onRelease="perform(previous animation)"/>
@@ -169,18 +170,18 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next animation)"/>
                         </control>
-                        <panel width="*"/>
-                        <control name="label" id="animationHasTrack"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="65px"/>
-                        <panel width="*"/>
+                        <panel/>
+                        <control name="button" id="animationAddButton"
+                                 width="60px">
+                            <interact onRelease="perform(new animation)"/>
+                        </control>
+                        <panel/>
                         <control name="button" id="animationLoadButton"
-                                 width="50px">
+                                 width="100px">
                             <interact onRelease="perform(load animation)"/>
                         </control>
                     </panel>
-                    <panel childLayout="horizontal" height="27px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Loaded:  "
                                  textHAlign="left"/>
                         <control name="label" id="animationName"
@@ -195,7 +196,7 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(rename animation)"/>
                         </control>
                     </panel>
-                    <panel childLayout="horizontal" height="27px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="freezeCheckBox"/>
                         <control name="label" text="  freeze    "/>
                         <control name="checkbox" id="pinCheckBox"/>
@@ -209,12 +210,12 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="right"
                                  width="*"/>
                     </panel>
-                    <panel childLayout="horizontal" height="27px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="horizontalSlider" id="speedSlider"
                                  buttonStepSize="1"
                                  max="2" min="-2" stepSize="0.001"/>
                     </panel>
-                    <panel childLayout="horizontal" height="27px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="loopCheckBox"/>
                         <control name="label" text="  loop    "/>
                         <control name="checkbox" id="pongCheckBox"/>
@@ -223,12 +224,12 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="right"
                                  width="*"/>
                     </panel>
-                    <panel childLayout="horizontal" height="27px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="horizontalSlider" id="timeSlider"
                                  buttonStepSize="1"
                                  max="1" min="0" stepSize="0.001"/>
                     </panel>
-                    <panel childLayout="horizontal">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Tracks:  "/>
                         <control name="label" id="boneTracks"
                                  backgroundColor="#ffff"

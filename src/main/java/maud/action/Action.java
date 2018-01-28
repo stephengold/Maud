@@ -71,6 +71,7 @@ public class Action {
     final static String loadSourceAnimation = "load sourceAnimation";
     final static String loadSourceCgm = "load sourceCgm";
 
+    final static String newAnimation = "new animation";
     final static String newAnimationFromPose = "new animation fromPose";
     final static String newCheckpoint = "new checkpoint";
     final static String newLight = "new light";
