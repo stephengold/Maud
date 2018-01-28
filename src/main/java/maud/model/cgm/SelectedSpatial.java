@@ -120,7 +120,7 @@ public class SelectedSpatial implements JmeCloneable {
         Skeleton skeleton = cgm.getSkeleton().find();
         AnimControl newSgc = new AnimControl(skeleton);
 
-        editableCgm.addSgc(newSgc);
+        editableCgm.addSgc(newSgc, "add an AnimControl");
         editableCgm.getSgc().select(newSgc);
     }
 
@@ -140,7 +140,7 @@ public class SelectedSpatial implements JmeCloneable {
                 = PhysicsUtil.makeShape(shapeType, halfExtents, margin);
         GhostControl ghostControl = new GhostControl(shape);
 
-        editableCgm.addSgc(ghostControl);
+        editableCgm.addSgc(ghostControl, "add a GhostControl");
         Spatial modelSpatial = find();
         editableCgm.getSgc().select(ghostControl, modelSpatial);
     }
@@ -207,7 +207,7 @@ public class SelectedSpatial implements JmeCloneable {
         rbc.setKinematic(true);
         // why is the default kinematic=false but kinematicSpatial=true?
 
-        editableCgm.addSgc(rbc);
+        editableCgm.addSgc(rbc, "add a RigidBodyControl");
         Spatial modelSpatial = find();
         editableCgm.getSgc().select(rbc, modelSpatial);
     }
@@ -229,7 +229,7 @@ public class SelectedSpatial implements JmeCloneable {
         }
         SkeletonControl newSgc = new SkeletonControl(skeleton);
 
-        editableCgm.addSgc(newSgc);
+        editableCgm.addSgc(newSgc, "add a SkeletonControl");
         editableCgm.getSgc().select(newSgc);
     }
 

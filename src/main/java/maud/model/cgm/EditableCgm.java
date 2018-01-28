@@ -213,12 +213,13 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Add a newly-created S-G control to the selected spatial. TODO caller
-     * should provide a description
+     * Add a newly-created S-G control to the selected spatial.
      *
      * @param newSgc (not null)
+     * @param eventDescription a textual description of the event for the edit
+     * history (not null, not empty)
      */
-    void addSgc(Control newSgc) {
+    void addSgc(Control newSgc, String eventDescription) {
         assert newSgc != null;
 
         History.autoAdd();
@@ -229,7 +230,7 @@ public class EditableCgm extends LoadedCgm {
             sceneView.addPhysicsControl(physicsControl);
         }
         selectedSpatial.addControl(newSgc);
-        setEdited("add control");
+        setEdited(eventDescription);
     }
 
     /**
