@@ -93,6 +93,10 @@ public class MiscOptions implements Cloneable {
      */
     private int indexBase = 1;
     /**
+     * performance-monitoring mode (not null)
+     */
+    private PerformanceMode performanceMode = PerformanceMode.Off;
+    /**
      * rigid-body parameter to view/edit in ObjectTool (not null)
      */
     private RigidBodyParameter rbp = RigidBodyParameter.Mass;
@@ -159,6 +163,16 @@ public class MiscOptions implements Cloneable {
      */
     public boolean getLoadZup() {
         return loadZup;
+    }
+
+    /**
+     * Read the performance-monitoring mode.
+     *
+     * @return an enum value (not null)
+     */
+    public PerformanceMode getPerformanceMode() {
+        assert performanceMode != null;
+        return performanceMode;
     }
 
     /**
@@ -242,6 +256,26 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Cycle through performance-monitoring modes.
+     */
+    public void selectNextPerformanceMode() {
+        switch (performanceMode) {
+            case Off:
+                performanceMode = PerformanceMode.JmeStats;
+                break;
+            case JmeStats:
+                performanceMode = PerformanceMode.DebugPas;
+                break;
+            case DebugPas:
+                performanceMode = PerformanceMode.Off;
+                break;
+            default:
+                logger.log(Level.SEVERE, "mode={0}", performanceMode);
+                throw new IllegalStateException("invalid performance mode");
+        }
+    }
+
+    /**
      * Cycle through view modes.
      */
     public void selectNextViewMode() {
@@ -262,7 +296,17 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter which rigid-body parameter to display in ObjectTool.
+     * Select a performance-monitoring mode.
+     *
+     * @param newMode an enum value (not null)
+     */
+    public void selectPerformanceMode(PerformanceMode newMode) {
+        Validate.nonNull(newMode, "new mode");
+        performanceMode = newMode;
+    }
+
+    /**
+     * Select a rigid-body parameter to display in ObjectTool.
      *
      * @param newParameter an enum value (not null)
      */
@@ -402,6 +446,10 @@ public class MiscOptions implements Cloneable {
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.setIndexBase + Integer.toString(indexBase);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectPerformanceMode
+                + performanceMode.toString();
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectViewMode + viewMode.toString();

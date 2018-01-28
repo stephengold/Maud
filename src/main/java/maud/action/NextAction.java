@@ -105,6 +105,10 @@ class NextAction {
                 target.getOverride().selectNextName();
                 break;
 
+            case Action.nextPerformanceMode:
+                model.getMisc().selectNextPerformanceMode();
+                break;
+
             case Action.nextPhysics:
                 target.getObject().selectNext();
                 break;

@@ -27,6 +27,7 @@
 package maud;
 
 import com.jme3.app.Application;
+import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -41,10 +42,12 @@ import de.lessvoid.nifty.screen.Screen;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.debug.PerformanceAppState;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
@@ -59,6 +62,7 @@ import maud.model.cgm.PlayOptions;
 import maud.model.cgm.Pov;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.option.MiscOptions;
+import maud.model.option.PerformanceMode;
 import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.CameraOptions;
 import maud.tool.EditorTools;
@@ -595,6 +599,7 @@ public class EditorScreen extends GuiScreenController {
             Maud.getApplication().startup3();
         }
 
+        updatePerformanceMode();
         Drag.updateBoundary();
         EditorViewPorts.update();
         updateBars();
@@ -713,6 +718,40 @@ public class EditorScreen extends GuiScreenController {
             }
         } else {
             dragPov = null;
+        }
+    }
+
+    /**
+     * Enable/disable the performance-monitoring app states.
+     */
+    private void updatePerformanceMode() {
+        PerformanceAppState pas
+                = stateManager.getState(PerformanceAppState.class);
+        StatsAppState sas = stateManager.getState(StatsAppState.class);
+
+        PerformanceMode mode = Maud.getModel().getMisc().getPerformanceMode();
+        switch (mode) {
+            case DebugPas:
+                pas.setEnabled(true);
+                sas.setDisplayFps(false);
+                sas.setDisplayStatView(false);
+                break;
+
+            case JmeStats:
+                pas.setEnabled(false);
+                sas.setDisplayFps(true);
+                sas.setDisplayStatView(true);
+                break;
+
+            case Off:
+                pas.setEnabled(false);
+                sas.setDisplayFps(false);
+                sas.setDisplayStatView(false);
+                break;
+
+            default:
+                logger.log(Level.SEVERE, "mode={0}", mode);
+                throw new IllegalStateException("invalid performance mode");
         }
     }
 

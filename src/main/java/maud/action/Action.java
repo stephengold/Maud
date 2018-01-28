@@ -89,6 +89,7 @@ public class Action {
     final static String nextMapping = "next mapping";
     final static String nextMatParam = "next matParam";
     final static String nextOverride = "next override";
+    final static String nextPerformanceMode = "next performanceMode";
     final static String nextPhysics = "next physics";
     final static String nextSgc = "next sgc";
     final static String nextShape = "next shape";

@@ -43,6 +43,7 @@ import jme3utilities.StringLoader;
 import jme3utilities.UncachedKey;
 import jme3utilities.Validate;
 import jme3utilities.ViewPortAppState;
+import jme3utilities.debug.PerformanceAppState;
 import jme3utilities.minie.PhysicsDumper;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
@@ -89,10 +90,6 @@ public class Maud extends GuiApplication {
      */
     private boolean didStartup1 = false;
     /**
-     * dumper for scene dumps
-     */
-    final private static PhysicsDumper dumper = new PhysicsDumper();
-    /**
      * MVC model for the editor screen (live copy)
      */
     private static EditorModel editorModel = new EditorModel();
@@ -104,6 +101,10 @@ public class Maud extends GuiApplication {
      * application instance, set by {@link #main(java.lang.String[])}
      */
     private static Maud application;
+    /**
+     * dumper for scene dumps
+     */
+    final private static PhysicsDumper dumper = new PhysicsDumper();
     // *************************************************************************
     // new methods exposed
 
@@ -227,17 +228,23 @@ public class Maud extends GuiApplication {
          * Disable flyCam.
          */
         flyCam.setEnabled(false);
-        /**
-         * Manage view port updating.
-         */
-        ViewPortAppState viewPortState = new ViewPortAppState();
-        boolean success = stateManager.attach(viewPortState);
-        assert success;
         /*
          * Capture a screenshot each time the SYSRQ hotkey is pressed.
          */
         ScreenshotAppState screenShotState = new ScreenshotAppState();
-        success = stateManager.attach(screenShotState);
+        boolean success = stateManager.attach(screenShotState);
+        assert success;
+        /**
+         * Manage latency statistics.
+         */
+        PerformanceAppState pas = new PerformanceAppState();
+        success = stateManager.attach(pas);
+        assert success;
+        /**
+         * Manage view-port updating.
+         */
+        ViewPortAppState viewPortState = new ViewPortAppState();
+        success = stateManager.attach(viewPortState);
         assert success;
     }
 

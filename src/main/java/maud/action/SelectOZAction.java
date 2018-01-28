@@ -47,6 +47,7 @@ import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSgc;
 import maud.model.cgm.SelectedVertex;
+import maud.model.option.PerformanceMode;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 import maud.model.option.ShowBones;
@@ -309,6 +310,13 @@ class SelectOZAction {
         } else if (actionString.startsWith(ActionPrefix.selectOverride)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectOverride);
             target.getOverride().selectParameter(arg);
+
+        } else if (actionString.startsWith(
+                ActionPrefix.selectPerformanceMode)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectPerformanceMode);
+            PerformanceMode mode = PerformanceMode.valueOf(arg);
+            model.getMisc().selectPerformanceMode(mode);
 
         } else if (actionString.startsWith(ActionPrefix.selectPhysics)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectPhysics);
