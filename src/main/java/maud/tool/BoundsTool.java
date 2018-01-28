@@ -130,7 +130,7 @@ class BoundsTool extends Tool {
         float lineWidth = readSlider("boundsLineWidth", widthSt);
         options.setLineWidth(lineWidth);
 
-        ColorRGBA color = Maud.gui.readColorBank("bounds", colorSt);
+        ColorRGBA color = Maud.gui.readColorBank("bounds", colorSt, null);
         options.setColor(color);
     }
 
