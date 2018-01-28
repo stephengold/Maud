@@ -318,7 +318,7 @@ class SelectOZAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectPhysicsRbp);
             RigidBodyParameter rbp = RigidBodyParameter.valueOf(arg);
-            model.getMisc().setRbp(rbp);
+            model.getMisc().selectRbp(rbp);
 
         } else if (actionString.startsWith(ActionPrefix.selectPlatformType)) {
             arg = MyString.remainder(actionString,
@@ -369,7 +369,7 @@ class SelectOZAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectShapeParm);
             ShapeParameter parameter = ShapeParameter.valueOf(arg);
-            model.getMisc().setShapeParameter(parameter);
+            model.getMisc().selectShapeParameter(parameter);
 
         } else if (actionString.startsWith(ActionPrefix.selectSkeletonColor)) {
             arg = MyString.remainder(actionString,
@@ -450,7 +450,7 @@ class SelectOZAction {
         } else if (actionString.startsWith(ActionPrefix.selectViewMode)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectViewMode);
             ViewMode newSetting = ViewMode.valueOf(arg);
-            model.getMisc().setViewMode(newSetting);
+            model.getMisc().selectViewMode(newSetting);
 
         } else {
             handled = false;

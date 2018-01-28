@@ -185,6 +185,6 @@ public class ViewMenus {
         assert remainder != null;
 
         ViewMode viewMode = ViewMode.valueOf(remainder);
-        Maud.getModel().getMisc().setViewMode(viewMode);
+        Maud.getModel().getMisc().selectViewMode(viewMode);
     }
 }

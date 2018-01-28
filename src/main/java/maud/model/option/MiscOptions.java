@@ -232,6 +232,16 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter which background to view/edit in BackgroundTool.
+     *
+     * @param newBackground an enum value (not null)
+     */
+    public void selectBackground(Background newBackground) {
+        Validate.nonNull(newBackground, "new background");
+        background = newBackground;
+    }
+
+    /**
      * Cycle through view modes.
      */
     public void selectNextViewMode() {
@@ -252,6 +262,26 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter which rigid-body parameter to display in ObjectTool.
+     *
+     * @param newParameter an enum value (not null)
+     */
+    public void selectRbp(RigidBodyParameter newParameter) {
+        Validate.nonNull(newParameter, "new parameter");
+        rbp = newParameter;
+    }
+
+    /**
+     * Alter which shape parameter to display in ShapeTool.
+     *
+     * @param newParameter an enum value (not null)
+     */
+    public void selectShapeParameter(ShapeParameter newParameter) {
+        Validate.nonNull(newParameter, "new parameter");
+        shapeParameter = newParameter;
+    }
+
+    /**
      * Alter which buffer to view/edit in VertexTool.
      *
      * @param newBuffer an enum value (not null)
@@ -262,23 +292,22 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter the angle display units.
+     * Alter the view mode.
+     *
+     * @param newMode an enum value (not null)
+     */
+    public void selectViewMode(ViewMode newMode) {
+        Validate.nonNull(newMode, "new mode");
+        viewMode = newMode;
+    }
+
+    /**
+     * Alter the display units for angles.
      *
      * @param newSetting true &rarr; degrees, false &rarr; radians
      */
     public void setAnglesInDegrees(boolean newSetting) {
         anglesInDegrees = newSetting;
-    }
-
-    /**
-     * Alter which background to view/edit in BackgroundTool. TODO rename
-     * selectBackground
-     *
-     * @param newBackground an enum value (not null)
-     */
-    public void setBackground(Background newBackground) {
-        Validate.nonNull(newBackground, "new background");
-        background = newBackground;
     }
 
     /**
@@ -310,28 +339,6 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter which rigid-body parameter to display in ObjectTool. TODO rename
-     * selectRbp
-     *
-     * @param newParameter an enum value (not null)
-     */
-    public void setRbp(RigidBodyParameter newParameter) {
-        Validate.nonNull(newParameter, "new parameter");
-        rbp = newParameter;
-    }
-
-    /**
-     * Alter which shape parameter to display in ShapeTool. TODO rename
-     * selectShapeParameter
-     *
-     * @param newParameter an enum value (not null)
-     */
-    public void setShapeParameter(ShapeParameter newParameter) {
-        Validate.nonNull(newParameter, "new parameter");
-        shapeParameter = newParameter;
-    }
-
-    /**
      * Alter the message to display in the status bar.
      *
      * @param newMessage what to display (not null)
@@ -339,16 +346,6 @@ public class MiscOptions implements Cloneable {
     public void setStatusMessage(String newMessage) {
         Validate.nonNull(newMessage, "new message");
         statusMessage = newMessage;
-    }
-
-    /**
-     * Alter the view mode.
-     *
-     * @param newMode an enum value (not null)
-     */
-    public void setViewMode(ViewMode newMode) {
-        Validate.nonNull(newMode, "new mode");
-        viewMode = newMode;
     }
 
     /**

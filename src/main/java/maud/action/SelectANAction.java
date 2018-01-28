@@ -210,7 +210,7 @@ class SelectANAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectBackground);
             Background value = Background.valueOf(arg);
-            model.getMisc().setBackground(value);
+            model.getMisc().selectBackground(value);
 
         } else if (actionString.startsWith(ActionPrefix.selectBone)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectBone);
