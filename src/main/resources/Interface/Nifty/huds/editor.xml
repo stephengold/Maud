@@ -133,7 +133,7 @@ the menu bar, status bar, and tool windows.
         </layer>
         <layer id="windowsLayer" childLayout="absolute-inside">
 
-            <control name="window" id="animationTool" title="Animation Tool"
+            <control name="window" id="animationTool" title="(Target) Animation Tool"
                      hideOnClose="true"
                      height="252px" width="320px" x="220" y="50">
                 <panel childLayout="vertical">
