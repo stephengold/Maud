@@ -39,6 +39,7 @@ import java.nio.FloatBuffer;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
 import jme3utilities.wes.Pose;
+import maud.MaudUtil;
 
 /**
  * The MVC model of the selected vertex in a loaded C-G model.
@@ -150,8 +151,20 @@ public class SelectedVertex implements Cloneable {
         assert selectedIndex >= 0 : selectedIndex;
 
         Mesh mesh = cgm.getSpatial().getMesh();
-        storeResult = MyMesh.vertexVector3f(mesh, bufferType, selectedIndex,
-                storeResult);
+        if (bufferType == VertexBuffer.Type.Position) {
+            Pose pose = cgm.getPose().get();
+            Matrix4f[] skinningMatrices = pose.skin(null);
+            storeResult = MyMesh.vertexLocation(mesh, selectedIndex,
+                    skinningMatrices, storeResult);
+        } else if (bufferType == VertexBuffer.Type.Normal) {
+            Pose pose = cgm.getPose().get();
+            Matrix4f[] skinningMatrices = pose.skin(null);
+            storeResult = MaudUtil.vertexNormal(mesh, selectedIndex,
+                    skinningMatrices, storeResult);
+        } else {
+            storeResult = MyMesh.vertexVector3f(mesh, bufferType, selectedIndex,
+                    storeResult);
+        }
 
         return storeResult;
     }
@@ -168,8 +181,15 @@ public class SelectedVertex implements Cloneable {
         assert selectedIndex >= 0 : selectedIndex;
 
         Mesh mesh = cgm.getSpatial().getMesh();
-        storeResult = MyMesh.vertexVector4f(mesh, bufferType, selectedIndex,
-                storeResult);
+        if (bufferType == VertexBuffer.Type.Tangent) {
+            Pose pose = cgm.getPose().get();
+            Matrix4f[] skinningMatrices = pose.skin(null);
+            storeResult = MaudUtil.vertexTangent(mesh, selectedIndex,
+                    skinningMatrices, storeResult);
+        } else {
+            storeResult = MyMesh.vertexVector4f(mesh, bufferType, selectedIndex,
+                    storeResult);
+        }
 
         return storeResult;
     }
@@ -304,7 +324,7 @@ public class SelectedVertex implements Cloneable {
         return storeResult;
     }
     // *************************************************************************
-    // Object methods
+    // Cloneable methods
 
     /**
      * Create a deep copy of this object.

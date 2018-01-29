@@ -74,6 +74,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import jme3utilities.MyMesh;
+import static jme3utilities.MyMesh.readIndex;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
@@ -90,6 +91,10 @@ public class MaudUtil {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * maximum number of bones that can influence any one vertex
+     */
+    final private static int maxWeights = 4;
     /**
      * message logger for this class
      */
@@ -115,6 +120,10 @@ public class MaudUtil {
      * local copy of {@link com.jme3.math.Vector3f#UNIT_Z}
      */
     final private static Vector3f zAxis = new Vector3f(0f, 0f, 1f);
+    /**
+     * local copy of {@link com.jme3.math.Matrix4f#IDENTITY}
+     */
+    final private static Matrix4f matrixIdentity = new Matrix4f();
     // *************************************************************************
     // constructors
 
@@ -929,6 +938,126 @@ public class MaudUtil {
         storeResult.setColumn(2, testWorld);
 
         return storeResult;
+    }
+
+    /**
+     * Calculate the normal of the indexed vertex in mesh space using the
+     * skinning matrices provided. TODO use library method
+     *
+     * @param mesh subject mesh (not null)
+     * @param vertexIndex index into the mesh's vertices (&ge;0)
+     * @param skinningMatrices (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return a unit vector in mesh space (either storeResult or a new
+     * instance)
+     */
+    public static Vector3f vertexNormal(Mesh mesh, int vertexIndex,
+            Matrix4f[] skinningMatrices, Vector3f storeResult) {
+        Validate.nonNull(mesh, "mesh");
+        Validate.nonNegative(vertexIndex, "vertex index");
+        Validate.nonNull(skinningMatrices, "skinning matrices");
+        Vector3f result = (storeResult == null) ? new Vector3f() : storeResult;
+
+        if (mesh.isAnimated()) {
+            Vector3f b = MyMesh.vertexVector3f(mesh,
+                    VertexBuffer.Type.BindPoseNormal, vertexIndex, null);
+
+            VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
+            FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
+            weightBuffer.position(maxWeights * vertexIndex);
+
+            VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
+            Buffer boneIndexBuffer = biBuf.getDataReadOnly();
+            boneIndexBuffer.position(maxWeights * vertexIndex);
+
+            result.zero();
+            int maxWeightsPerVertex = mesh.getMaxNumWeights();
+            for (int wIndex = 0; wIndex < maxWeightsPerVertex; wIndex++) {
+                float weight = weightBuffer.get();
+                int boneIndex = readIndex(boneIndexBuffer);
+                if (weight != 0f) {
+                    Matrix4f s;
+                    if (boneIndex < skinningMatrices.length) {
+                        s = skinningMatrices[boneIndex];
+                    } else {
+                        s = matrixIdentity;
+                    }
+                    float xOf = s.m00 * b.x + s.m01 * b.y + s.m02 * b.z;
+                    float yOf = s.m10 * b.x + s.m11 * b.y + s.m12 * b.z;
+                    float zOf = s.m20 * b.x + s.m21 * b.y + s.m22 * b.z;
+                    result.x += weight * xOf;
+                    result.y += weight * yOf;
+                    result.z += weight * zOf;
+                }
+            }
+            result.normalizeLocal();
+
+        } else { // not an animated mesh
+            MyMesh.vertexVector3f(mesh, VertexBuffer.Type.Normal, vertexIndex,
+                    result);
+        }
+
+        return result;
+    }
+
+    /**
+     * Calculate the tangent of the indexed vertex in mesh space using the
+     * skinning matrices provided. TODO use library method
+     *
+     * @param mesh subject mesh (not null)
+     * @param vertexIndex index into the mesh's vertices (&ge;0)
+     * @param skinningMatrices (not null, unaffected)
+     * @param storeResult (modified if not null)
+     * @return the tangent vector (either storeResult or a new instance)
+     */
+    public static Vector4f vertexTangent(Mesh mesh, int vertexIndex,
+            Matrix4f[] skinningMatrices, Vector4f storeResult) {
+        Validate.nonNull(mesh, "mesh");
+        Validate.nonNegative(vertexIndex, "vertex index");
+        Validate.nonNull(skinningMatrices, "skinning matrices");
+        Vector4f result = (storeResult == null) ? new Vector4f() : storeResult;
+
+        if (mesh.isAnimated()) {
+            Vector4f b = MyMesh.vertexVector4f(mesh,
+                    VertexBuffer.Type.BindPoseTangent, vertexIndex, null);
+
+            VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
+            FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
+            weightBuffer.position(maxWeights * vertexIndex);
+
+            VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
+            Buffer boneIndexBuffer = biBuf.getDataReadOnly();
+            boneIndexBuffer.position(maxWeights * vertexIndex);
+
+            result.zero();
+            int maxWeightsPerVertex = mesh.getMaxNumWeights();
+            for (int wIndex = 0; wIndex < maxWeightsPerVertex; wIndex++) {
+                float weight = weightBuffer.get();
+                int boneIndex = readIndex(boneIndexBuffer);
+                if (weight != 0f) {
+                    Matrix4f s;
+                    if (boneIndex < skinningMatrices.length) {
+                        s = skinningMatrices[boneIndex];
+                    } else {
+                        s = matrixIdentity;
+                    }
+                    float xOf = s.m00 * b.x + s.m01 * b.y + s.m02 * b.z;
+                    float yOf = s.m10 * b.x + s.m11 * b.y + s.m12 * b.z;
+                    float zOf = s.m20 * b.x + s.m21 * b.y + s.m22 * b.z;
+                    result.x += weight * xOf;
+                    result.y += weight * yOf;
+                    result.z += weight * zOf;
+                }
+            }
+            result.normalizeLocal();
+            result.w = b.w; // copy the the binormal parity
+
+        } else { // not an animated mesh
+            MyMesh.vertexVector4f(mesh, VertexBuffer.Type.Tangent, vertexIndex,
+                    result);
+        }
+
+        return result;
     }
 
     /**
