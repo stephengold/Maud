@@ -192,14 +192,15 @@ class SceneUpdater {
      * @param updateInterval time interval between updates (in seconds, &ge;0)
      */
     static void update(Cgm viewCgm, float updateInterval) {
-        assert viewCgm.getSceneView().getCamera() != null;
+        SceneView sceneView = viewCgm.getSceneView();
+        assert sceneView.getCamera() != null;
 
         viewCgm.getScenePov().update(updateInterval);
         updateAxes(viewCgm);
-        updateBounds(viewCgm);
+        updateBounds(sceneView);
         updateCursor(viewCgm);
         updatePhysics(viewCgm);
-        viewCgm.getSceneView().getPlatform().update();
+        sceneView.getPlatform().update();
         updateShadows(viewCgm);
         updateSkeleton(viewCgm);
         updateSky(viewCgm);
@@ -313,10 +314,9 @@ class SceneUpdater {
     /**
      * Update the bounds visualizer based on the MVC model.
      *
-     * @param cgm which C-G model (not null) TODO pass sceneView instead
+     * @param sceneView which view (not null)
      */
-    private static void updateBounds(Cgm cgm) {
-        SceneView sceneView = cgm.getSceneView();
+    private static void updateBounds(SceneView sceneView) {
         BoundsVisualizer visualizer = sceneView.getBoundsVisualizer();
         visualizer.setEnabled(true);
 
