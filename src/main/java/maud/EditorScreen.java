@@ -467,7 +467,7 @@ public class EditorScreen extends GuiScreenController {
      * @param name unique id prefix of the bank to read (not null)
      * @param transform how to transform the raw readings (not null)
      * @param storeResult (modified if not null)
-     * @return color indicated by the sliders (either storeResult or a new
+     * @return the color indicated by the sliders (either storeResult or a new
      * instance)
      */
     public ColorRGBA readColorBank(String name, SliderTransform transform,
@@ -486,7 +486,7 @@ public class EditorScreen extends GuiScreenController {
         float b = readSlider(name + "B", transform);
         color.set(r, g, b, 1f);
 
-        return storeResult;
+        return color;
     }
 
     /**
