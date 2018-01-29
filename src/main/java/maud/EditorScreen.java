@@ -387,6 +387,81 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
+     * Select an axis, bone, boundary, gnomon, or keyframe based on the screen
+     * coordinates of the mouse pointer.
+     */
+    public void pickAny() {
+        Cgm mouseCgm = mouseCgm();
+        EditorView mouseView = mouseView();
+        if (mouseCgm != null && mouseView != null) {
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            Selection selection = new Selection(mouseXY, maxDSquared);
+            mouseView.considerAxes(selection);
+            mouseView.considerBones(selection);
+            mouseView.considerBoundaries(selection);
+            mouseView.considerGnomons(selection);
+            mouseView.considerKeyframes(selection);
+            selection.select();
+        }
+    }
+
+    /**
+     * Select a bone based on the screen coordinates of the mouse pointer.
+     */
+    public void pickBone() {
+        Cgm mouseCgm = mouseCgm();
+        EditorView mouseView = mouseView();
+        if (mouseCgm != null && mouseView != null) {
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            Selection selection = new Selection(mouseXY, maxDSquared);
+            mouseView.considerBones(selection);
+            selection.select();
+        }
+    }
+
+    /**
+     * Select a gnomon based on the screen coordinates of the mouse pointer.
+     */
+    public void pickGnomon() {
+        Cgm mouseCgm = mouseCgm();
+        EditorView mouseView = mouseView();
+        if (mouseCgm != null && mouseView != null) {
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            Selection selection = new Selection(mouseXY, Float.MAX_VALUE);
+            mouseView.considerGnomons(selection);
+            selection.select();
+        }
+    }
+
+    /**
+     * Select a keyframe based on the screen coordinates of the mouse pointer.
+     */
+    public void pickKeyframe() {
+        Cgm mouseCgm = mouseCgm();
+        EditorView mouseView = mouseView();
+        if (mouseCgm != null && mouseView != null) {
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            Selection selection = new Selection(mouseXY, maxDSquared);
+            mouseView.considerKeyframes(selection);
+            selection.select();
+        }
+    }
+
+    /**
+     * Select a vertex based on the screen coordinates of the mouse pointer.
+     */
+    public void pickVertex() {
+        Cgm mouseCgm = mouseCgm();
+        EditorView mouseView = mouseView();
+        if (mouseCgm != null && mouseView != null) {
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            Selection selection = new Selection(mouseXY, maxDSquared);
+            mouseView.considerVertices(selection);
+            selection.select();
+        }
+    }
+
+    /**
      * Read a bank of 3 sliders that control a color.
      *
      * @param name unique id prefix of the bank to read (not null)
@@ -415,48 +490,6 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Select a bone based on the screen coordinates of the mouse pointer.
-     */
-    public void selectBone() {
-        Cgm mouseCgm = mouseCgm();
-        EditorView mouseView = mouseView();
-        if (mouseCgm != null && mouseView != null) {
-            Vector2f mouseXY = inputManager.getCursorPosition();
-            Selection selection = new Selection(mouseXY, maxDSquared);
-            mouseView.considerBones(selection);
-            selection.select();
-        }
-    }
-
-    /**
-     * Select a gnomon based on the screen coordinates of the mouse pointer.
-     */
-    public void selectGnomon() {
-        Cgm mouseCgm = mouseCgm();
-        EditorView mouseView = mouseView();
-        if (mouseCgm != null && mouseView != null) {
-            Vector2f mouseXY = inputManager.getCursorPosition();
-            Selection selection = new Selection(mouseXY, Float.MAX_VALUE);
-            mouseView.considerGnomons(selection);
-            selection.select();
-        }
-    }
-
-    /**
-     * Select a keyframe based on the screen coordinates of the mouse pointer.
-     */
-    public void selectKeyframe() {
-        Cgm mouseCgm = mouseCgm();
-        EditorView mouseView = mouseView();
-        if (mouseCgm != null && mouseView != null) {
-            Vector2f mouseXY = inputManager.getCursorPosition();
-            Selection selection = new Selection(mouseXY, maxDSquared);
-            mouseView.considerKeyframes(selection);
-            selection.select();
-        }
-    }
-
-    /**
      * Handle a "select spatialChild" action with an argument.
      *
      * @param argument action argument (not null)
@@ -469,39 +502,6 @@ public class EditorScreen extends GuiScreenController {
             spatial.selectChild(childIndex);
         } else {
             ShowMenus.selectSpatialChild(argument);
-        }
-    }
-
-    /**
-     * Select a vertex based on the screen coordinates of the mouse pointer.
-     */
-    public void selectVertex() {
-        Cgm mouseCgm = mouseCgm();
-        EditorView mouseView = mouseView();
-        if (mouseCgm != null && mouseView != null) {
-            Vector2f mouseXY = inputManager.getCursorPosition();
-            Selection selection = new Selection(mouseXY, maxDSquared);
-            mouseView.considerVertices(selection);
-            selection.select();
-        }
-    }
-
-    /**
-     * Select an axis, bone, boundary, gnomon, or keyframe based on the screen
-     * coordinates of the mouse pointer.
-     */
-    public void selectXY() {
-        Cgm mouseCgm = mouseCgm();
-        EditorView mouseView = mouseView();
-        if (mouseCgm != null && mouseView != null) {
-            Vector2f mouseXY = inputManager.getCursorPosition();
-            Selection selection = new Selection(mouseXY, maxDSquared);
-            mouseView.considerAxes(selection);
-            mouseView.considerBones(selection);
-            mouseView.considerBoundaries(selection);
-            mouseView.considerGnomons(selection);
-            mouseView.considerKeyframes(selection);
-            selection.select();
         }
     }
 

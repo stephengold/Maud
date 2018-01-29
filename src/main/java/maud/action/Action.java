@@ -100,6 +100,11 @@ public class Action {
     final static String nextVertex = "next vertex";
     final static String nextViewMode = "next viewMode";
 
+    final static String pickAny = "pick any";
+    final static String pickBone = "pick bone";
+    final static String pickGnomon = "pick gnomon";
+    final static String pickKeyframe = "pick keyframe";
+    final static String pickVertex = "pick vertex";
     final static String pickViewMenu = "pick viewMenu";
 
     final static String previousAnimation = "previous animation";
@@ -176,11 +181,6 @@ public class Action {
     final static String selectSceneBones = "select sceneBones";
     final static String selectScoreBonesNone = "select scoreBonesNone";
     final static String selectScoreBonesWhen = "select scoreBonesWhen";
-    final static String selectScreenBone = "select screenBone";
-    final static String selectScreenGnomon = "select screenGnomon";
-    final static String selectScreenKeyframe = "select screenKeyframe";
-    final static String selectScreenVertex = "select screenVertex";
-    final static String selectScreenXY = "select screenXY";
     final static String selectSgc = "select sgc";
     final static String selectSgcObject = "select sgcObject";
     final static String selectSgcSpatial = "select sgcSpatial";

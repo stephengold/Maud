@@ -29,7 +29,9 @@ package maud.action;
 import java.util.logging.Logger;
 import maud.Maud;
 import maud.menu.ShowMenus;
+import maud.view.Drag;
 import maud.view.ViewType;
+import maud.view.scene.SceneDrag;
 
 /**
  * Process actions that start with the word "pick".
@@ -66,6 +68,26 @@ class PickAction {
         boolean handled = true;
 
         switch (actionString) {
+            case Action.pickAny:
+                Maud.gui.pickAny();
+                break;
+
+            case Action.pickBone:
+                Maud.gui.pickBone();
+                break;
+
+            case Action.pickGnomon:
+                Maud.gui.pickGnomon();
+                break;
+
+            case Action.pickKeyframe:
+                Maud.gui.pickKeyframe();
+                break;
+
+            case Action.pickVertex:
+                Maud.gui.pickVertex();
+                break;
+
             case Action.pickViewMenu:
                 ViewType type = Maud.gui.mouseViewType();
                 if (type == ViewType.Scene) {
@@ -73,6 +95,37 @@ class PickAction {
                 } else if (type == ViewType.Score) {
                     ShowMenus.scoreViewOptions();
                 }
+                break;
+
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process a non-ongoing action that starts with the word "pick".
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    static boolean processNotOngoing(String actionString) {
+        boolean handled = true;
+        switch (actionString) {
+            case Action.pickAny:
+                Drag.stopDraggingBoundary();
+                Drag.stopDraggingGnomon();
+                SceneDrag.clear();
+                break;
+
+            case Action.pickBone:
+            case Action.pickKeyframe:
+            case Action.pickVertex:
+                break;
+
+            case Action.pickGnomon:
+                Drag.stopDraggingGnomon();
                 break;
 
             default:

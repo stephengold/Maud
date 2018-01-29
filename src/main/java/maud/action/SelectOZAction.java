@@ -57,8 +57,6 @@ import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.ProjectionMode;
 import maud.model.option.scene.SkeletonColors;
 import maud.model.option.scene.TriangleMode;
-import maud.view.Drag;
-import maud.view.scene.SceneDrag;
 
 /**
  * Process actions that start with the word "select" and a letter in the o-z
@@ -145,27 +143,6 @@ class SelectOZAction {
                 EnumMenus.selectShowBones(ActionPrefix.selectScoreBonesWhen,
                         currentOption);
                 break;
-
-            case Action.selectScreenBone:
-                Maud.gui.selectBone();
-                break;
-
-            case Action.selectScreenGnomon:
-                Maud.gui.selectGnomon();
-                break;
-
-            case Action.selectScreenKeyframe:
-                Maud.gui.selectKeyframe();
-                break;
-
-            case Action.selectScreenVertex:
-                Maud.gui.selectVertex();
-                break;
-
-            case Action.selectScreenXY:
-                Maud.gui.selectXY();
-                break;
-
             case Action.selectSgc:
                 ShowMenus.selectSgc();
                 break;
@@ -249,38 +226,6 @@ class SelectOZAction {
 
             default:
                 handled = testForPrefixes(actionString);
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process a non-ongoing action that starts with the word "select" and a
-     * letter in the o-z range.
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    static boolean processNotOngoing(String actionString) {
-        boolean handled = true;
-        switch (actionString) {
-            case Action.selectScreenBone:
-            case Action.selectScreenKeyframe:
-            case Action.selectScreenVertex:
-                break;
-
-            case Action.selectScreenGnomon:
-                Drag.stopDraggingGnomon();
-                break;
-
-            case Action.selectScreenXY:
-                Drag.stopDraggingBoundary();
-                Drag.stopDraggingGnomon();
-                SceneDrag.clear();
-                break;
-
-            default:
-                handled = false;
         }
 
         return handled;

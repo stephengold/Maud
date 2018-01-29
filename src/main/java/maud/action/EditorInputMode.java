@@ -216,8 +216,8 @@ public class EditorInputMode extends InputMode {
             }
 
         } else { // action not ongoing
-            if ("select".equals(firstWord)) {
-                handled = SelectOZAction.processNotOngoing(actionString);
+            if ("pick".equals(firstWord)) {
+                handled = PickAction.processNotOngoing(actionString);
             }
         }
 
