@@ -1306,7 +1306,7 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
-            <control name="window" id="objectTool" title="Object Tool"
+            <control name="window" id="objectTool" title="Collision-Object Tool"
                      hideOnClose="true"
                      height="140px" width="242px" x="130" y="140">
                 <panel childLayout="vertical">
