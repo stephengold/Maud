@@ -192,13 +192,20 @@ public class EditorInputMode extends InputMode {
                 case "save":
                     handled = saveAction(actionString);
                     break;
+
                 case "select":
-                    if (words.length > 1 && words[1].charAt(0) < 'o') {
-                        handled = SelectANAction.process(actionString);
-                    } else {
-                        handled = SelectOZAction.process(actionString);
+                    if (words.length > 1) {
+                        char w1c0 = words[1].charAt(0);
+                        if (w1c0 < 'o') {
+                            handled = SelectANAction.process(actionString);
+                        } else if (w1c0 < 't') {
+                            handled = SelectOSAction.process(actionString);
+                        } else {
+                            handled = SelectTZAction.process(actionString);
+                        }
                     }
                     break;
+
                 case "set":
                     handled = SetAction.process(actionString);
                     break;
