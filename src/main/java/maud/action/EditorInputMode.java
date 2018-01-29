@@ -168,6 +168,9 @@ public class EditorInputMode extends InputMode {
                 case "next":
                     handled = NextAction.process(actionString);
                     break;
+                case "pick":
+                    handled = PickAction.process(actionString);
+                    break;
                 case "previous":
                     handled = PreviousAction.process(actionString);
                     break;

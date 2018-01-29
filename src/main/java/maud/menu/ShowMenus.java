@@ -131,7 +131,7 @@ public class ShowMenus {
     /**
      * Display a "View -> Scene options" menu.
      */
-    static void sceneViewOptions() {
+    public static void sceneViewOptions() {
         MenuBuilder builder = new MenuBuilder();
 
         builder.addTool("Axes");
@@ -152,7 +152,7 @@ public class ShowMenus {
     /**
      * Display a "View -> Score options" menu.
      */
-    static void scoreViewOptions() {
+    public static void scoreViewOptions() {
         MenuBuilder builder = new MenuBuilder();
 
         builder.addTool("Tool");

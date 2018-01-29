@@ -100,6 +100,8 @@ public class Action {
     final static String nextVertex = "next vertex";
     final static String nextViewMode = "next viewMode";
 
+    final static String pickViewMenu = "pick viewMenu";
+
     final static String previousAnimation = "previous animation";
     final static String previousAnimControl = "previous animControl";
     final static String previousBone = "previous bone";
