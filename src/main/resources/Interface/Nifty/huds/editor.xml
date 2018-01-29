@@ -2442,45 +2442,55 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="tweeningTool" title="Tweening Tool"
                      hideOnClose="true"
-                     height="110px" width="300px" x="35" y="235">
+                     height="162px" width="254px" x="35" y="235">
                 <panel childLayout="vertical">
+                    <panel height="2px"/>
                     <panel childLayout="horizontal" height="27px">
                         <control name="label" text="For translations:  "
                                  textHAlign="right"
-                                 width="98px"/>
-                        <control name="label" id="tweenTranslations"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" label="Edit"
-                                 id="id54ToAvoidNiftyWarning"
-                                 width="50px">
+                                 width="97px"/>
+                        <control name="button" id="tweenTranslationsButton"
+                                 width="*">
                             <interact onRelease="perform(select tweenTranslations)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="27px">
                         <control name="label" text="For rotations:  "
                                  textHAlign="right"
-                                 width="98px"/>
-                        <control name="label" id="tweenRotations"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" label="Edit"
-                                 id="id55ToAvoidNiftyWarning"
-                                 width="50px">
+                                 width="97px"/>
+                        <control name="button" id="tweenRotationsButton"
+                                 width="*">
                             <interact onRelease="perform(select tweenRotations)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="27px">
                         <control name="label" text="For scales:  "
                                  textHAlign="right"
-                                 width="98px"/>
-                        <control name="label" id="tweenScales"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" label="Edit"
-                                 id="id56ToAvoidNiftyWarning"
-                                 width="50px">
+                                 width="97px"/>
+                        <control name="button" id="tweenScalesButton"
+                                 width="*">
                             <interact onRelease="perform(select tweenScales)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="label" text="Presets:     "/>
+                        <control name="button" label="Emulate AnimControl"
+                                 id="id55ToAvoidNiftyWarning"
+                                 width="130px">
+                            <interact onRelease="perform(select tweenPreset AnimControl)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="27px">
+                        <control name="button" label="Best for cycle"
+                                 id="id56ToAvoidNiftyWarning"
+                                 width="85px">
+                            <interact onRelease="perform(select tweenPreset BestCycle)"/>
+                        </control>
+                        <panel width="10px"/>
+                        <control name="button" label="Best for non-cycle"
+                                 id="id57ToAvoidNiftyWarning"
+                                 width="110px">
+                            <interact onRelease="perform(select tweenPreset BestNonCycle)"/>
                         </control>
                     </panel>
                 </panel>

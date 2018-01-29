@@ -273,6 +273,34 @@ public class EditorModel {
     }
 
     /**
+     * Apply a preset to the global tweening techniques.
+     *
+     * @param preset (not null)
+     */
+    public void presetTweening(TweenPreset preset) {
+        switch (preset) {
+            case AnimControl:
+                techniques.setTweenTranslations(TweenVectors.Lerp);
+                techniques.setTweenRotations(TweenRotations.Nlerp);
+                techniques.setTweenScales(TweenVectors.Lerp);
+                break;
+            case BestCycle:
+                techniques.setTweenTranslations(
+                        TweenVectors.LoopCentripetalSpline);
+                techniques.setTweenRotations(TweenRotations.LoopSpline);
+                techniques.setTweenScales(TweenVectors.LoopCentripetalSpline);
+                break;
+            case BestNonCycle:
+                techniques.setTweenTranslations(TweenVectors.CentripetalSpline);
+                techniques.setTweenRotations(TweenRotations.Spline);
+                techniques.setTweenScales(TweenVectors.CentripetalSpline);
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    /**
      * Update the startup script based on this MVC model.
      */
     public void updateStartupScript() {

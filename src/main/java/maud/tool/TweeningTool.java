@@ -71,14 +71,14 @@ class TweeningTool extends Tool {
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
         TweenVectors tweenTranslations = techniques.getTweenTranslations();
         String desc = tweenTranslations.toString();
-        setStatusText("tweenTranslations", " " + desc);
+        setButtonText("tweenTranslations", desc);
 
         TweenRotations tweenRotations = techniques.getTweenRotations();
         desc = tweenRotations.toString();
-        setStatusText("tweenRotations", " " + desc);
+        setButtonText("tweenRotations", desc);
 
         TweenVectors tweenScales = techniques.getTweenScales();
         desc = tweenScales.toString();
-        setStatusText("tweenScales", " " + desc);
+        setButtonText("tweenScales", desc);
     }
 }

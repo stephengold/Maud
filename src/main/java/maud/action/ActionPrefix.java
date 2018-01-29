@@ -358,6 +358,10 @@ public class ActionPrefix {
      */
     final public static String selectTriangleMode = "select triangleMode ";
     /**
+     * argument is the name of a tween preset
+     */
+    final public static String selectTweenPreset = "select tweenPreset ";
+    /**
      * argument is the name of a quaternion interpolation technique
      */
     final public static String selectTweenRotations = "select tweenRotations ";

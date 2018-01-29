@@ -40,6 +40,7 @@ import maud.Maud;
 import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
+import maud.model.TweenPreset;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedVertex;
 import maud.model.option.ViewMode;
@@ -138,6 +139,12 @@ class SelectTZAction {
                     ActionPrefix.selectTriangleMode);
             TriangleMode mode = TriangleMode.valueOf(arg);
             model.getScene().getRender().setTriangleMode(mode);
+
+        } else if (actionString.startsWith(ActionPrefix.selectTweenPreset)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectTweenPreset);
+            TweenPreset value = TweenPreset.valueOf(arg);
+            model.presetTweening(value);
 
         } else if (actionString.startsWith(ActionPrefix.selectTweenRotations)) {
             arg = MyString.remainder(actionString,
