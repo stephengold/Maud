@@ -205,10 +205,12 @@ class AnimationTool extends Tool {
             if (sac.isSelected()) {
                 int selectedIndex = sac.findIndex();
                 indexStatus = MaudUtil.formatIndex(selectedIndex);
-                indexStatus
-                        = String.format("%s of %d", indexStatus, numAnimControls);
-                nextButton = "+";
-                previousButton = "-";
+                indexStatus = String.format("%s of %d", indexStatus,
+                        numAnimControls);
+                if (numAnimControls > 1) {
+                    nextButton = "+";
+                    previousButton = "-";
+                }
             } else {
                 if (numAnimControls == 1) {
                     indexStatus = "one AnimControl";
@@ -249,9 +251,10 @@ class AnimationTool extends Tool {
                 indexStatus = MaudUtil.formatIndex(selectedIndex);
                 indexStatus
                         = String.format("%s of %d", indexStatus, numAnimations);
-                nextButton = "+";
-                previousButton = "-";
-
+                if (numAnimations > 1) {
+                    nextButton = "+";
+                    previousButton = "-";
+                }
             } else {
                 if (numAnimations == 0) {
                     indexStatus = "no animations";
