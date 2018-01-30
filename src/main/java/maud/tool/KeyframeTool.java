@@ -92,7 +92,7 @@ class KeyframeTool extends Tool {
                     indexText = String.format("%d keyframes", numKeyframes);
                 }
             } else {
-                indexText = MaudUtil.formatIndex(numKeyframes);
+                indexText = MaudUtil.formatIndex(index);
                 indexText = String.format("%s of %d", indexText, numKeyframes);
             }
 
