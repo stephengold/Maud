@@ -98,7 +98,8 @@ public class AnimationMenus {
         if (duration > 0f) {
             builder.addEdit("Behead");
         }
-        builder.add("Change duration");
+        builder.addDialog("Change duration: proportional");
+        builder.addDialog("Change duration: same times");
         if (duration > 0f) {
             builder.addEdit("Delete keyframes");
             builder.addEdit("Insert keyframes");
@@ -269,29 +270,6 @@ public class AnimationMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the "Animation -> Edit -> Change
-     * duration" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuAnimationChangeDuration(String remainder) {
-        boolean handled = true;
-        switch (remainder) {
-            case "Proportional times":
-                EditorDialogs.setDurationProportional();
-                break;
-            case "Same times":
-                EditorDialogs.setDurationSame();
-                break;
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
      * Handle a "select menuItem" action from the "Animation -> Edit" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -299,60 +277,55 @@ public class AnimationMenus {
      */
     private static boolean menuAnimationEdit(String remainder) {
         boolean handled = true;
-        String changeDurationPrefix
-                = "Change duration" + EditorMenus.menuPathSeparator;
+        EditableCgm target = Maud.getModel().getTarget();
+        LoadedAnimation animation = target.getAnimation();
+        switch (remainder) {
+            case "Behead":
+                animation.behead();
+                break;
 
-        if (remainder.startsWith(changeDurationPrefix)) {
-            String arg = MyString.remainder(remainder, changeDurationPrefix);
-            handled = menuAnimationChangeDuration(arg);
+            case "Change duration: proportional":
+                EditorDialogs.setDurationProportional();
+                break;
 
-        } else {
-            EditableCgm target = Maud.getModel().getTarget();
-            LoadedAnimation animation = target.getAnimation();
-            switch (remainder) {
-                case "Behead":
-                    animation.behead();
-                    break;
+            case "Change duration: same times":
+                EditorDialogs.setDurationSame();
+                break;
 
-                case "Change duration":
-                    ShowMenus.changeDuration();
-                    break;
+            case "Delete keyframes":
+                animation.deleteKeyframes();
+                break;
 
-                case "Delete keyframes":
-                    animation.deleteKeyframes();
-                    break;
+            case "Insert keyframes":
+                animation.insertKeyframes();
+                break;
 
-                case "Insert keyframes":
-                    animation.insertKeyframes();
-                    break;
+            case "Reduce all tracks":
+                EditorDialogs.reduceAnimation();
+                break;
 
-                case "Reduce all tracks":
-                    EditorDialogs.reduceAnimation();
-                    break;
+            case "Resample all tracks to number":
+                EditorDialogs.resampleAnimation(false);
+                break;
 
-                case "Resample all tracks to number":
-                    EditorDialogs.resampleAnimation(false);
-                    break;
+            case "Resample all tracks at rate":
+                EditorDialogs.resampleAnimation(true);
+                break;
 
-                case "Resample all tracks at rate":
-                    EditorDialogs.resampleAnimation(true);
-                    break;
+            case "Truncate":
+                animation.truncate();
+                break;
 
-                case "Truncate":
-                    animation.truncate();
-                    break;
+            case "Wrap all tracks":
+                if (animation.anyTrackEndsWithKeyframe()) {
+                    EditorDialogs.wrapAnimation();
+                } else {
+                    animation.wrapAllTracks(0f);
+                }
+                break;
 
-                case "Wrap all tracks":
-                    if (animation.anyTrackEndsWithKeyframe()) {
-                        EditorDialogs.wrapAnimation();
-                    } else {
-                        animation.wrapAllTracks(0f);
-                    }
-                    break;
-
-                default:
-                    handled = false;
-            }
+            default:
+                handled = false;
         }
 
         return handled;
