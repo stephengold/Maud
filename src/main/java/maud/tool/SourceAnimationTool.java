@@ -38,7 +38,6 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.SelectedAnimControl;
-import maud.model.cgm.SelectedBone;
 
 /**
  * The controller for the "Source-Animation" tool in Maud's editor screen.
@@ -110,7 +109,7 @@ class SourceAnimationTool extends Tool {
      * Update the MVC model based on a check-box event.
      *
      * @param name the name (unique id prefix) of the check box
-     * @param checked the new state of the check box (true&rarr;checked,
+     * @param isChecked the new state of the check box (true&rarr;checked,
      * false&rarr;unchecked)
      */
     @Override
@@ -163,7 +162,6 @@ class SourceAnimationTool extends Tool {
     @Override
     void toolUpdate() {
         updateControlIndex();
-        updateHasTrack();
         updateIndex();
         updateLooping();
         updateName();
@@ -178,107 +176,86 @@ class SourceAnimationTool extends Tool {
      * Update the anim control index status and previous/next/select buttons.
      */
     private void updateControlIndex() {
-        String indexText;
-        String sButton = "";
-        String nButton = "";
-        String pButton = "";
+        String indexStatus;
+        String selectButton = "";
+        String nextButton = "";
+        String previousButton = "";
 
         Cgm source = Maud.getModel().getSource();
         int numAnimControls = source.countSgcs(AnimControl.class);
         if (numAnimControls > 0) {
-            sButton = "Select AnimControl";
-
+            selectButton = "Select animControl";
             SelectedAnimControl sac = source.getAnimControl();
             if (sac.isSelected()) {
                 int selectedIndex = sac.findIndex();
-                indexText = MaudUtil.formatIndex(selectedIndex);
-                indexText
-                        = String.format("%s of %d", indexText, numAnimControls);
-                nButton = "+";
-                pButton = "-";
+                indexStatus = MaudUtil.formatIndex(selectedIndex);
+                indexStatus = String.format("%s of %d", indexStatus,
+                        numAnimControls);
+                nextButton = "+";
+                previousButton = "-";
             } else {
                 if (numAnimControls == 1) {
-                    indexText = "one AnimControl";
+                    indexStatus = "one AnimControl";
                 } else {
-                    indexText
+                    indexStatus
                             = String.format("%d AnimControls", numAnimControls);
                 }
             }
 
         } else if (source.isLoaded()) {
-            indexText = "not animated";
+            indexStatus = "not animated";
 
         } else {
-            indexText = "no model loaded";
+            indexStatus = "no model loaded";
         }
 
-        setButtonText("sourceAnimControlPrevious", pButton);
-        setStatusText("sourceAnimControlIndex", indexText);
-        setButtonText("sourceAnimControlNext", nButton);
-        setButtonText("sourceAnimControlSelect", sButton);
-    }
-
-    /**
-     * Update the "has track" status of the selected bone.
-     */
-    private void updateHasTrack() {
-        Cgm source = Maud.getModel().getSource();
-        SelectedBone bone = source.getBone();
-        String hasTrackText;
-        if (!source.isLoaded()) {
-            hasTrackText = "no model";
-        } else if (!bone.isSelected()) {
-            hasTrackText = "no bone";
-        } else if (!source.getAnimation().isReal()) {
-            hasTrackText = "";
-        } else if (bone.hasTrack()) {
-            hasTrackText = "has track";
-        } else {
-            hasTrackText = "no track";
-        }
-        setStatusText("sourceAnimationHasTrack", " " + hasTrackText);
+        setButtonText("sourceAnimControlPrevious", previousButton);
+        setStatusText("sourceAnimControlIndex", indexStatus);
+        setButtonText("sourceAnimControlNext", nextButton);
+        setButtonText("sourceAnimControlSelect", selectButton);
     }
 
     /**
      * Update the index status and previous/next/load buttons.
      */
     private void updateIndex() {
-        String indexText;
-        String lButton = "";
-        String nButton = "";
-        String pButton = "";
+        String indexStatus;
+        String loadButton = "";
+        String nextButton = "";
+        String previousButton = "";
 
         Cgm source = Maud.getModel().getSource();
         SelectedAnimControl sac = source.getAnimControl();
         if (sac.isSelected()) {
-            lButton = "Load";
+            loadButton = "Load animation";
             int numAnimations = sac.countAnimations();
             if (source.getAnimation().isReal()) {
                 int selectedIndex = source.getAnimation().findIndex();
-                indexText = MaudUtil.formatIndex(selectedIndex);
-                indexText = String.format("%s of %d", indexText, numAnimations);
-                nButton = "+";
-                pButton = "-";
+                indexStatus = MaudUtil.formatIndex(selectedIndex);
+                indexStatus
+                        = String.format("%s of %d", indexStatus, numAnimations);
+                nextButton = "+";
+                previousButton = "-";
 
             } else {
                 if (numAnimations == 0) {
-                    indexText = "no animations";
+                    indexStatus = "no animations";
                 } else if (numAnimations == 1) {
-                    indexText = "one animation";
+                    indexStatus = "one animation";
                 } else {
-                    indexText = String.format("%d animations", numAnimations);
+                    indexStatus = String.format("%d animations", numAnimations);
                 }
             }
         } else if (source.isLoaded()) {
-            indexText = "not selected";
+            indexStatus = "not selected";
         } else {
-            indexText = "no model";
+            indexStatus = "no model";
         }
 
-        setButtonText("sourceAnimationPrevious", pButton);
-        setStatusText("sourceAnimationIndex", indexText);
-        setButtonText("sourceAnimationNext", nButton);
-        setButtonText("sourceAnimationLoad", lButton);
+        setButtonText("sourceAnimationLoad", loadButton);
+        setButtonText("sourceAnimationNext", nextButton);
+        setButtonText("sourceAnimationPrevious", previousButton);
+        setStatusText("sourceAnimationIndex", indexStatus);
     }
 
     /**
@@ -349,21 +326,19 @@ class SourceAnimationTool extends Tool {
      * Update the track counts.
      */
     private void updateTrackCounts() {
-        Cgm source = Maud.getModel().getSource();
-        String boneTracksText, otherTracksText;
-        if (source.isLoaded()) {
-            int numBoneTracks = source.getAnimation().countBoneTracks();
-            boneTracksText = String.format("%d", numBoneTracks);
-            int numTracks = source.getAnimation().countTracks();
-            int numOtherTracks = numTracks - numBoneTracks;
-            otherTracksText = String.format("%d", numOtherTracks);
-        } else {
-            boneTracksText = "";
-            otherTracksText = "";
-        }
+        LoadedAnimation animation = Maud.getModel().getSource().getAnimation();
+        int numBoneTracks = animation.countBoneTracks();
+        String boneTracksText = Integer.toString(numBoneTracks);
+        setStatusText("sourceBoneTracks", boneTracksText);
 
-        setStatusText("sourceBoneTracks", " " + boneTracksText);
-        setStatusText("sourceOtherTracks", " " + otherTracksText);
+        int numSpatialTracks = animation.countSpatialTracks();
+        String spatialTracksText = Integer.toString(numSpatialTracks);
+        setStatusText("sourceSpatialTracks", spatialTracksText);
+
+        int numTracks = animation.countTracks();
+        int numOtherTracks = numTracks - numBoneTracks - numSpatialTracks;
+        String otherTracksText = String.format("%d", numOtherTracks);
+        setStatusText("sourceOtherTracks", otherTracksText);
     }
 
     /**

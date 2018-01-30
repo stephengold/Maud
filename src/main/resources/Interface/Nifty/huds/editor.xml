@@ -1977,9 +1977,10 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="sourceAnimationTool" title="Source Animation Tool"
                      hideOnClose="true"
-                     height="280px" width="290px" x="65" y="205">
+                     height="252px" width="290px" x="65" y="205">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal" height="30px">
+                    <panel height="3px"/>
+                    <panel childLayout="horizontal" height="28px">
                         <control name="button" id="sourceAnimControlPreviousButton"
                                  width="20px">
                             <interact onRelease="perform(previous sourceAnimControl)"/>
@@ -1992,13 +1993,13 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next sourceAnimControl)"/>
                         </control>
-                        <panel width="*"/>
+                        <panel/>
                         <control name="button" id="sourceAnimControlSelectButton"
                                  width="120px">
                             <interact onRelease="perform(select sourceAnimControl)"/>
                         </control>
                     </panel>
-                    <panel childLayout="horizontal" height="30px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="button" id="sourceAnimationPreviousButton"
                                  width="20px">
                             <interact onRelease="perform(previous sourceAnimation)"/>
@@ -2011,25 +2012,20 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next sourceAnimation)"/>
                         </control>
-                        <panel width="*"/>
-                        <control name="label" id="sourceAnimationHasTrack"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="65px"/>
-                        <panel width="*"/>
+                        <panel/>
                         <control name="button" id="sourceAnimationLoadButton"
-                                 width="50px">
+                                 width="100px">
                             <interact onRelease="perform(load sourceAnimation)"/>
                         </control>
                     </panel>
-                    <panel childLayout="horizontal" height="30px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Loaded:  "
                                  textHAlign="left"/>
                         <control name="label" id="sourceAnimationName"
                                  backgroundColor="#ffff"
                                  width="*"/>
                     </panel>
-                    <panel childLayout="horizontal" height="30px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="pinSourceCheckBox"/>
                         <control name="label" text="  pin    "/>
                         <control name="button" id="togglePauseSourceButton"
@@ -2041,12 +2037,12 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="right"
                                  width="*"/>
                     </panel>
-                    <panel childLayout="horizontal" height="30px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="horizontalSlider" id="sSpeedSlider"
                                  buttonStepSize="1"
                                  max="2" min="-2" stepSize="0.001"/>
                     </panel>
-                    <panel childLayout="horizontal" height="30px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="loopSourceCheckBox"/>
                         <control name="label" text="  loop    "/>
                         <control name="checkbox" id="pongSourceCheckBox"/>
@@ -2055,22 +2051,28 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="right"
                                  width="*"/>
                     </panel>
-                    <panel childLayout="horizontal" height="30px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="horizontalSlider" id="sourceTimeSlider"
                                  buttonStepSize="1"
                                  max="1" min="0" stepSize="0.001"/>
                     </panel>
-                    <panel childLayout="horizontal">
-                        <control name="label" text="Bone tracks:  "/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Tracks:  "/>
                         <control name="label" id="sourceBoneTracks"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="*"/>
-                        <control name="label" text="  Other tracks:  "/>
+                        <control name="label" text=" bone,  "/>
+                        <control name="label" id="sourceSpatialTracks"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="*"/>
+                        <control name="label" text=" spatial, and  "/>
                         <control name="label" id="sourceOtherTracks"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="*"/>
+                        <control name="label" text=" other"/>
                     </panel>
                 </panel>
             </control>
