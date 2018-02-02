@@ -196,7 +196,8 @@ public class Projectile {
         assert spatial == null;
 
         RigidBodyControl rbc = new RigidBodyControl(shape, mass);
-        rbc.setCcdMotionThreshold(radius);
+        rbc.setCcdSweptSphereRadius(0.2f * radius);
+        rbc.setCcdMotionThreshold(1e-10f);
         view.getPhysicsSpace().add(rbc);
         rbc.setGravity(gravity);
 
