@@ -106,6 +106,9 @@ public class AnimationMenus {
             builder.addDialog("Reduce all tracks");
             builder.addDialog("Resample all tracks at rate");
             builder.addDialog("Resample all tracks to number");
+        }
+        builder.addEdit("Simplify");
+        if (duration > 0f) {
             builder.addEdit("Truncate");
             if (animation.anyTrackEndsWithKeyframe()) {
                 builder.addDialog("Wrap all tracks");
@@ -310,6 +313,10 @@ public class AnimationMenus {
 
             case "Resample all tracks at rate":
                 EditorDialogs.resampleAnimation(true);
+                break;
+
+            case "Simplify":
+                animation.simplify();
                 break;
 
             case "Truncate":
