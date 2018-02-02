@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
-import maud.MyShape;
+import jme3utilities.minie.MyShape;
 import maud.PhysicsUtil;
 import maud.model.option.ShapeParameter;
 import maud.view.scene.SceneView;

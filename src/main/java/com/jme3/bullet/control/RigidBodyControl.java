@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2018 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
 import jme3utilities.MySpatial;
-import maud.MyShape;
+import maud.PhysicsUtil;
 
 /**
  *
@@ -274,7 +274,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
                 super.setPhysicsLocation(getSpatialTranslation());
                 super.setPhysicsRotation(getSpatialRotation());
                 Vector3f newScale = getSpatialScale();
-                if (MyShape.canScale(collisionShape, newScale)) {
+                if (PhysicsUtil.canScale(collisionShape, newScale)) {
                     Vector3f oldScale = collisionShape.getScale();
                     if (!newScale.equals(oldScale)) {
                         // assuming single-use shape

@@ -572,7 +572,7 @@ public class EditorScreen extends GuiScreenController {
         inputMode.influence(this);
         setListener(inputMode);
 
-        setSubmenuWarp(true, true);
+        setSubmenuWarp(1f, 1f);
 
         super.initialize(stateManager, application);
     }

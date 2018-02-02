@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -128,6 +128,25 @@ public class PhysicsUtil {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Test whether the specified scale can be applied to the specified shape.
+     *
+     * @param shape which collision shape (not null, unaffected)
+     * @param scale scale factor for each local axis (not null, unaffected)
+     * @return true if can be applied, otherwise false
+     */
+    public static boolean canScale(CollisionShape shape, Vector3f scale) {
+        boolean result = true;
+        if (shape instanceof CompoundCollisionShape
+                || shape instanceof CapsuleCollisionShape
+                || shape instanceof CylinderCollisionShape
+                || shape instanceof SphereCollisionShape) {
+            result = (scale.x == scale.y && scale.y == scale.z);
+        }
+
+        return result;
+    }
 
     /**
      * Count the joints in the specified physics space.
@@ -685,6 +704,34 @@ public class PhysicsUtil {
                         long parentId = shape.getObjectId();
                         result.add(parentId);
                     }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether the specified shape uses (or identifies as) the identified
+     * shape.
+     *
+     * @param user (not null, unaffected)
+     * @param shapeId id of the shape to find
+     * @return true if used/identical, otherwise false
+     */
+    public static boolean usesShape(CollisionShape user, long shapeId) {
+        long id = user.getObjectId();
+        boolean result = false;
+        if (id == shapeId) {
+            result = true;
+        } else if (user instanceof CompoundCollisionShape) {
+            CompoundCollisionShape compound = (CompoundCollisionShape) user;
+            List<ChildCollisionShape> children = compound.getChildren();
+            for (ChildCollisionShape child : children) {
+                id = child.shape.getObjectId();
+                if (id == shapeId) {
+                    result = true;
+                    break;
                 }
             }
         }

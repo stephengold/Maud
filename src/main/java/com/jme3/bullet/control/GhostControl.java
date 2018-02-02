@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2018 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
 import jme3utilities.MySpatial;
-import maud.MyShape;
+import maud.PhysicsUtil;
 
 /**
  * A GhostControl moves with the spatial it is attached to and can be used to check
@@ -180,7 +180,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
         setPhysicsLocation(getSpatialTranslation());
         setPhysicsRotation(getSpatialRotation());
         Vector3f newScale = getSpatialScale();
-        if (MyShape.canScale(collisionShape, newScale)) {
+        if (PhysicsUtil.canScale(collisionShape, newScale)) {
             collisionShape.setScale(newScale);
             // note: assuming single-use shape
         }

@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import maud.MyShape;
+import jme3utilities.minie.MyShape;
 import maud.PhysicsUtil;
 import maud.model.option.RigidBodyParameter;
 
@@ -450,7 +450,7 @@ public class SelectedObject implements Cloneable {
         boolean result = false;
         if (object != null) {
             CollisionShape shape = object.getCollisionShape();
-            result = MyShape.usesShape(shape, shapeId);
+            result = PhysicsUtil.usesShape(shape, shapeId);
         }
 
         return result;
