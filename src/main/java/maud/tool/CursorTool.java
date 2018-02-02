@@ -121,7 +121,7 @@ class CursorTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        ColorRGBA color = Maud.gui.readColorBank("cursor", colorSt, null);
+        ColorRGBA color = readColorBank("cursor", colorSt, null);
         Maud.getModel().getScene().getCursor().setColor(color);
     }
 

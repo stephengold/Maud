@@ -107,7 +107,7 @@ class SkeletonTool extends Tool {
         float pointSize = readSlider("skeletonPointSize", sizeSt);
         options.setPointSize(pointSize);
 
-        ColorRGBA color = Maud.gui.readColorBank("ske", colorSt, null);
+        ColorRGBA color = readColorBank("ske", colorSt, null);
         options.setColor(color);
     }
 
