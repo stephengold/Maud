@@ -26,13 +26,17 @@
  */
 package maud.tool;
 
+import com.jme3.animation.AnimControl;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import maud.Maud;
+import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
+import maud.model.cgm.SelectedAnimControl;
 
 /**
  * The controller for the "Retarget" tool in Maud's editor screen.
@@ -69,53 +73,65 @@ class RetargetTool extends Tool {
      */
     @Override
     void toolUpdate() {
-        String targetName = Maud.getModel().getTarget().getName();
-        String targetDesc = MyString.quote(targetName);
-        setStatusText("targetName", " " + targetDesc);
+        EditorModel model = Maud.getModel();
+        LoadedCgm target = model.getTarget();
+        String targetCgmName = target.getName();
+        String targetCgmText = MyString.quote(targetCgmName);
+        setButtonText("retargetTargetCgm", targetCgmText);
 
-        LoadedCgm source = Maud.getModel().getSource();
-        String sButton, sourceDesc;
-        if (!source.isLoaded()) {
-            sourceDesc = "( none loaded )";
-            sButton = "";
-
+        String targetAnimControlText = "";
+        SelectedAnimControl targetAnimControl = target.getAnimControl();
+        String targetAnimControlName = targetAnimControl.name();
+        if (targetAnimControlName != null) {
+            targetAnimControlText = targetAnimControlName;
         } else {
-            String sourceName = source.getName();
-            sourceDesc = MyString.quote(sourceName);
-            if (source.getAnimControl().countAnimations() > 0) {
-                sButton = "Load";
-            } else {
-                sButton = "";
+            int numAnimControls = target.countSgcs(AnimControl.class);
+            if (numAnimControls > 0) {
+                targetAnimControlText = "( none selected )";
             }
         }
-        setStatusText("sourceName", " " + sourceDesc);
-        setButtonText("selectSourceAnimation", sButton);
+        setButtonText("retargetTargetAnimControl", targetAnimControlText);
+
+        String sourceCgmText;
+        LoadedCgm source = model.getSource();
+        if (source.isLoaded()) {
+            String name = source.getName();
+            sourceCgmText = MyString.quote(name);
+        } else {
+            sourceCgmText = "( none loaded )";
+        }
+        setButtonText("retargetSourceCgm", sourceCgmText);
+
+        String sourceAnimControlText = "";
+        SelectedAnimControl sourceAnimControl = source.getAnimControl();
+        if (source.isLoaded()) {
+            String name = sourceAnimControl.name();
+            if (name != null) {
+                sourceAnimControlText = name;
+            } else {
+                int numSourceAnimControls = source.countSgcs(AnimControl.class);
+                if (numSourceAnimControls > 0) {
+                    sourceAnimControlText = "( none selected )";
+                }
+            }
+        }
+        setButtonText("retargetSourceAnimControl", sourceAnimControlText);
+
+        String animationText = "";
+        if (source.isLoaded() && sourceAnimControl.isSelected()) {
+            LoadedAnimation animation = source.getAnimation();
+            animationText = animation.getName();
+        }
+        setButtonText("retargetAnimation", animationText);
 
         int numBoneMappings = Maud.getModel().getMap().countMappings();
         String mappingDesc = Integer.toString(numBoneMappings);
         setStatusText("mappingCount", mappingDesc);
 
-        updateBottom();
         updateFeedback();
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Update the source animation.
-     */
-    private void updateBottom() {
-        String sourceAnimDesc = "";
-
-        Cgm source = Maud.getModel().getSource();
-        boolean real = source.getAnimation().isReal();
-        if (real) {
-            String name = source.getAnimation().getName();
-            sourceAnimDesc = MyString.quote(name);
-        }
-
-        setStatusText("sourceAnimation", " " + sourceAnimDesc);
-    }
 
     /**
      * Update the feedback line and retarget button.

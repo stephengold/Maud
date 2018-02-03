@@ -1498,62 +1498,76 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="retargetTool" title="Retarget Tool"
                      hideOnClose="true"
-                     height="170px" width="320px" x="110" y="160">
+                     height="222px" width="320px" x="110" y="160">
                 <panel childLayout="vertical">
+                    <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Target model:  "/>
-                        <control name="label" id="targetName"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" label="Load"
-                                 id="id16ToAvoidNiftyWarning"
-                                 width="35px">
+                        <control name="label" text="Target model:  "
+                                 textHAlign="right"
+                                 width="90px"/>
+                        <control name="button" id="retargetTargetCgmButton"
+                                 width="*">
                             <interact onRelease="perform(load cgm)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Source model:  "/>
-                        <control name="label" id="sourceName"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" label="Load"
-                                 id="id17ToAvoidNiftyWarning"
-                                 width="35px">
+                        <control name="label" text="   anim control:  "
+                                 textHAlign="right"
+                                 width="90px"/>
+                        <control name="button" id="retargetTargetAnimControlButton"
+                                 width="*">
+                            <interact onRelease="perform(select animControl)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Source model:  "
+                                 textHAlign="right"
+                                 width="90px"/>
+                        <control name="button" id="retargetSourceCgmButton"
+                                 width="*">
                             <interact onRelease="perform(load sourceCgm)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Source animation:  "/>
-                        <control name="label" id="sourceAnimation"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" id="selectSourceAnimationButton"
-                                 width="35px">
+                        <control name="label" text="   anim control:  "
+                                 textHAlign="right"
+                                 width="90px"/>
+                        <control name="button" id="retargetSourceAnimControlButton"
+                                 width="*">
+                            <interact onRelease="perform(select sourceAnimControl)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="   animation:  "
+                                 textHAlign="right"
+                                 width="90px"/>
+                        <control name="button" id="retargetAnimationButton"
+                                 width="*">
                             <interact onRelease="perform(load sourceAnimation)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="The map has  "/>
                         <control name="label" id="mappingCount"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="30px"/>
-                        <control name="label" text="  bone mapping(s)  "/>
+                        <control name="label" text="  bone mapping(s).  "/>
                         <control name="button" label="Mapping Tool"
                                  id="id19ToAvoidNiftyWarning"
                                  width="90px">
                             <interact onRelease="perform(select tool mapping)"/>
                         </control>
-                        <panel/>
-                        <control name="button" id="retargetButton"
-                                 width="60px">
-                            <interact onRelease="perform(retarget animation)"/>
-                        </control>
                     </panel>
-                    <panel childLayout="horizontal" height="28px">
+                    <panel childLayout="center" height="28px">
                         <control name="label" id="retargetFeedback"
                                  color="#800f"
                                  textHAlign="center"
                                  width="*"/>
+                        <control name="button" id="retargetButton"
+                                 width="60px">
+                            <interact onRelease="perform(retarget animation)"/>
+                        </control>
                     </panel>
                 </panel>
             </control>

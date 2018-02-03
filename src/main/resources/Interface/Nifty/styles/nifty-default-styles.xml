@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-styles xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
+    <useStyles filename="fonts.xml"/>
+    <useStyles filename="tabs/nifty-tabs.xml"/>
+    <!-- nifty-panel.xml is already imported by nifty-tabs.xml -->
+    <!-- <useStyles filename="panel/nifty-panel.xml"/> -->
+    <useStyles filename="Interface/Nifty/styles/button/nifty-button.xml"/>
+    <useStyles filename="label/nifty-label.xml"/>
+    <useStyles filename="Interface/Nifty/styles/textfield/nifty-textfield.xml"/>
+    <useStyles filename="dropdown/nifty-drop-down.xml"/>
+    <useStyles filename="imageselect/nifty-image-select.xml"/>
+    <useStyles filename="Interface/Nifty/styles/checkbox/nifty-checkbox.xml"/>
+    <useStyles filename="radiobutton/nifty-radiobutton.xml"/>
+    <useStyles filename="Interface/Nifty/styles/scrollbar/nifty-scrollbar-style.xml"/>
+    <useStyles filename="Interface/Nifty/styles/slider/nifty-slider-style.xml"/>
+    <useStyles filename="scrollpanel/nifty-scrollpanel-style.xml"/>
+    <useStyles filename="console/nifty-console-style.xml"/>
+    <useStyles filename="chat-control/nifty-chat-control.xml"/>
+    <useStyles filename="menu/nifty-menu-style.xml"/>
+    <useStyles filename="listbox/nifty-listbox-style.xml"/>
+    <useStyles filename="Interface/Nifty/styles/window/nifty-window.xml"/>
+    <useStyles filename="hint/nifty-hint.xml"/>
+    <useStyles filename="treebox/nifty-treebox.xml"/>
+    <useStyles filename="messagebox/nifty-messagebox.xml"/>
+</nifty-styles>

@@ -417,7 +417,7 @@ public class SelectedAnimControl implements JmeCloneable {
      *
      * @return the name, or null if no anim control is selected
      */
-    String name() {
+    public String name() {
         int index = findIndex();
         String name = null;
         if (index != -1) {
