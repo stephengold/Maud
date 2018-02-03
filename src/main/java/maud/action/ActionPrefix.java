@@ -486,6 +486,10 @@ public class ActionPrefix {
      */
     final public static String setSkySimulated = "set skySimulated ";
     /**
+     * arguments are 2 decimal fractions
+     */
+    final public static String setSubmenuWarp = "set submenuWarp ";
+    /**
      * argument is the new value
      */
     final public static String setUserData = "set userData ";

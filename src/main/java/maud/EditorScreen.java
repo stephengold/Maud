@@ -382,7 +382,12 @@ public class EditorScreen extends GuiScreenController {
         if (!ignoreGuiChanges && hasStarted()) {
             String sliderName = MyString.removeSuffix(sliderId, "Slider");
             Tool manager = sliderMap.get(sliderName);
-            manager.onSliderChanged();
+            if (manager == null) {
+                logger.log(Level.WARNING, "Unknown slider, id={0}",
+                        MyString.quote(sliderId));
+            } else {
+                manager.onSliderChanged();
+            }
         }
     }
 
@@ -544,8 +549,6 @@ public class EditorScreen extends GuiScreenController {
         inputMode.influence(this);
         setListener(inputMode);
 
-        setSubmenuWarp(1f, 1f);
-
         super.initialize(stateManager, application);
     }
 
@@ -570,6 +573,11 @@ public class EditorScreen extends GuiScreenController {
         if (!target.isLoaded()) {
             Maud.getApplication().startup3();
         }
+
+        MiscOptions options = model.getMisc();
+        float x = options.getSubmenuWarpX();
+        float y = options.getSubmenuWarpY();
+        setSubmenuWarp(x, y);
 
         updatePerformanceMode();
         Drag.updateBoundary();

@@ -1697,8 +1697,9 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="settingsTool" title="Settings Tool"
                      hideOnClose="true"
-                     height="143px" width="200px" x="95" y="175">
+                     height="245px" width="200px" x="95" y="175">
                 <panel childLayout="vertical">
+                    <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Display angles in  "/>
                         <control name="button" id="settingsDegreesButton"
@@ -1725,6 +1726,21 @@ the menu bar, status bar, and tool windows.
                                  width="20px"/>
                         <control name="label" text="  diagnose loads"/>
                     </panel>
+                    <panel height="3px"/>
+                    <control name="label" id="submenuWarpXSliderStatus"
+                             textHAlign="right"
+                             width="*"/>
+                    <control name="horizontalSlider" id="submenuWarpXSlider"
+                             buttonStepSize="0.25"
+                             height="30px"
+                             max="1" min="0" stepSize="0.01"/>
+                    <control name="label" id="submenuWarpYSliderStatus"
+                             textHAlign="right"
+                             width="*"/>
+                    <control name="horizontalSlider" id="submenuWarpYSlider"
+                             buttonStepSize="0.25"
+                             height="30px"
+                             max="1" min="0" stepSize="0.01"/>
                 </panel>
             </control>
 

@@ -29,6 +29,7 @@ package maud.tool;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.MiscOptions;
 
@@ -46,6 +47,10 @@ class SettingsTool extends Tool {
      */
     final private static Logger logger
             = Logger.getLogger(SettingsTool.class.getName());
+    /**
+     * transform for the submenu-warp sliders
+     */
+    final private static SliderTransform submenuSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -75,6 +80,20 @@ class SettingsTool extends Tool {
     }
 
     /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("submenuWarpX");
+        result.add("submenuWarpY");
+
+        return result;
+    }
+
+    /**
      * Update the MVC model based on a check-box event.
      *
      * @param name the name (unique id prefix) of the check box
@@ -91,6 +110,18 @@ class SettingsTool extends Tool {
             default:
                 super.onCheckBoxChanged(name, isChecked);
         }
+    }
+
+    /**
+     * Update the MVC model based on the sliders.
+     */
+    @Override
+    public void onSliderChanged() {
+        MiscOptions options = Maud.getModel().getMisc();
+
+        float x = readSlider("submenuWarpX", submenuSt);
+        float y = readSlider("submenuWarpY", submenuSt);
+        options.setSubmenuWarp(x, y);
     }
 
     /**
@@ -115,5 +146,13 @@ class SettingsTool extends Tool {
 
         boolean diagnoseFlag = options.getDiagnoseLoads();
         setChecked("settingsDiagnose", diagnoseFlag);
+
+        float x = options.getSubmenuWarpX();
+        setSlider("submenuWarpX", submenuSt, x);
+        updateSliderStatus("submenuWarpX", x, "");
+
+        float y = options.getSubmenuWarpY();
+        setSlider("submenuWarpY", submenuSt, y);
+        updateSliderStatus("submenuWarpY", y, "");
     }
 }

@@ -84,6 +84,14 @@ public class MiscOptions implements Cloneable {
      */
     private boolean menuBarVisibility = true;
     /**
+     * submenu warp fraction for the X coordinates (&ge;0, &le;1)
+     */
+    private float warpX = 1f;
+    /**
+     * submenu warp fraction for the Y coordinates (&ge;0, &le;1)
+     */
+    private float warpY = 1f;
+    /**
      * display X-coordinate of the left-right boundary (&ge;minXBoundary,
      * &le;maxXBoundary)
      */
@@ -206,6 +214,28 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Read the submenu warp fraction for the X coordinate.
+     *
+     * @return the fraction (&ge;0, &le;1)
+     */
+    public float getSubmenuWarpX() {
+        assert warpX >= 0f : warpX;
+        assert warpX <= 1f : warpX;
+        return warpX;
+    }
+
+    /**
+     * Read the submenu warp fraction for the Y coordinate.
+     *
+     * @return the fraction (&ge;0, &le;1)
+     */
+    public float getSubmenuWarpY() {
+        assert warpY >= 0f : warpY;
+        assert warpY <= 1f : warpY;
+        return warpY;
+    }
+
+    /**
      * Read which vertex buffer to view/edit in VertexTool.
      *
      * @return an enum value (not null)
@@ -256,7 +286,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Cycle through performance-monitoring modes.
+     * Cycle through the performance-monitoring modes.
      */
     public void selectNextPerformanceMode() {
         switch (performanceMode) {
@@ -402,6 +432,20 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter the submenu warp fractions.
+     *
+     * @param newWarpX (&ge;0, &le;1)
+     * @param newWarpY (&ge;0, &le;1)
+     */
+    public void setSubmenuWarp(float newWarpX, float newWarpY) {
+        Validate.fraction(newWarpX, "new warp X");
+        Validate.fraction(newWarpY, "new warp Y");
+
+        warpX = newWarpX;
+        warpY = newWarpY;
+    }
+
+    /**
      * Toggle the angle display units.
      */
     public void toggleAnglesInDegrees() {
@@ -446,6 +490,10 @@ public class MiscOptions implements Cloneable {
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.setIndexBase + Integer.toString(indexBase);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = String.format("%s%f %f", ActionPrefix.setSubmenuWarp,
+                warpX, warpY);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectPerformanceMode

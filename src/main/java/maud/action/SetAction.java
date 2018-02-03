@@ -224,7 +224,7 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         String arg;
-        if (actionString.startsWith(ActionPrefix.setMsaaFactor)) {
+        if (actionString.startsWith(ActionPrefix.setMsaaFactor)) { // TODO sort
             arg = MyString.remainder(actionString,
                     ActionPrefix.setMsaaFactor);
             int factor;
@@ -365,6 +365,17 @@ class SetAction {
                     ActionPrefix.setSkySimulated);
             boolean rendered = Boolean.parseBoolean(arg);
             model.getScene().getRender().setSkySimulated(rendered);
+
+        } else if (actionString.startsWith(ActionPrefix.setSubmenuWarp)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setSubmenuWarp);
+            String[] args = arg.split(" ");
+            if (args.length == 2) {
+                float x = Float.parseFloat(args[0]);
+                float y = Float.parseFloat(args[1]);
+                model.getMisc().setSubmenuWarp(x, y);
+            } else {
+                handled = false;
+            }
 
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);
