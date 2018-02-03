@@ -417,7 +417,8 @@ public class Maud extends GuiApplication {
         } else {
             message = "You've made ";
             if (cgmEdits > 0) {
-                message += String.format("%d unsaved edit%s to the model",
+                message += String.format(
+                        "%d unsaved edit%s to the target model",
                         cgmEdits, cgmEdits == 1 ? "" : "s");
             }
             if (cgmEdits > 0 && mapEdits > 0) {
