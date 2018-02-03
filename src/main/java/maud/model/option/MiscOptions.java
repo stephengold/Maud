@@ -86,11 +86,11 @@ public class MiscOptions implements Cloneable {
     /**
      * submenu warp fraction for the X coordinates (&ge;0, &le;1)
      */
-    private float warpX = 1f;
+    private float warpX = 0.3f;
     /**
      * submenu warp fraction for the Y coordinates (&ge;0, &le;1)
      */
-    private float warpY = 1f;
+    private float warpY = 0.7f;
     /**
      * display X-coordinate of the left-right boundary (&ge;minXBoundary,
      * &le;maxXBoundary)
