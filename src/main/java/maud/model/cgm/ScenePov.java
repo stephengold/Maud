@@ -37,7 +37,6 @@ import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
 import maud.model.option.scene.CameraOptions;
-import maud.model.option.scene.DddCursorOptions;
 import maud.model.option.scene.OrbitCenter;
 import maud.view.scene.SceneView;
 
@@ -91,10 +90,6 @@ public class ScenePov implements Cloneable, Pov {
      */
     private float flyRate = 0.1f;
     /**
-     * location of the 3-D cursor (in world coordinates) TODO move to new class
-     */
-    private Vector3f cursorLocation = new Vector3f();
-    /**
      * direction the POV will eventually look (unit vector in world coordinates)
      */
     private Vector3f directionalGoal = initialLookDirection.clone();
@@ -114,27 +109,12 @@ public class ScenePov implements Cloneable, Pov {
     // new methods exposed
 
     /**
-     * Copy the location of the 3-D cursor.
-     *
-     * @param storeResult (modified if not null)
-     * @return world coordinates (either storeResult or a new vector)
-     */
-    public Vector3f cursorLocation(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-
-        storeResult.set(cursorLocation);
-        return storeResult;
-    }
-
-    /**
      * Move (or turn) the POV to a horizontal orientation.
      */
     public void goHorizontal() {
         if (Maud.getModel().getScene().getCamera().isOrbitMode()) {
             float azimuth = azimuth();
-            ScenePov.this.setOrbitGoal(0f, azimuth);
+            setOrbitGoal(0f, azimuth);
         } else {
             if (lookDirection.x != 0f || lookDirection.z != 0f) {
                 directionalGoal.set(lookDirection.x, 0f, lookDirection.z);
@@ -172,17 +152,6 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
-     * Relocate the 3-D cursor.
-     *
-     * @param newLocation (in world coordinates, not null, unaffected)
-     */
-    public void setCursorLocation(Vector3f newLocation) {
-        Validate.nonNull(newLocation, "new location");
-
-        cursorLocation.set(newLocation);
-    }
-
-    /**
      * Reposition the POV after loading a C-G model.
      *
      * @param newLocation (not null, unaffected)
@@ -209,23 +178,9 @@ public class ScenePov implements Cloneable, Pov {
         if (!MyVector3f.isZero(offset)) {
             float elevationAngle = MyVector3f.altitude(offset);
             float azimuthAngle = MyVector3f.azimuth(offset);
-            ScenePov.this.setOrbitGoal(elevationAngle, azimuthAngle);
+            setOrbitGoal(elevationAngle, azimuthAngle);
             isPivoting = true;
         }
-    }
-
-    /**
-     * Calculate a uniform scale factor for the 3-D cursor.
-     *
-     * @return world scale factor (&ge;0)
-     */
-    public float worldScaleForCursor() {
-        float range = povLocation.distance(cursorLocation);
-        DddCursorOptions cursor = Maud.getModel().getScene().getCursor();
-        float worldScale = cursor.getSize() * range;
-
-        assert worldScale >= 0f : worldScale;
-        return worldScale;
     }
     // *************************************************************************
     // Cloneable methods
@@ -239,7 +194,6 @@ public class ScenePov implements Cloneable, Pov {
     @Override
     public ScenePov clone() throws CloneNotSupportedException {
         ScenePov clone = (ScenePov) super.clone();
-        clone.cursorLocation = cursorLocation.clone();
         clone.directionalGoal = directionalGoal.clone();
         clone.lastCenterLocation = lastCenterLocation.clone();
         clone.lookDirection = lookDirection.clone();
@@ -287,7 +241,7 @@ public class ScenePov implements Cloneable, Pov {
         if (Maud.getModel().getScene().getCamera().isOrbitMode()) {
             float azimuthAngle = azimuth() + 2f * amount;
             float elevationAngle = elevationAngle();
-            ScenePov.this.setOrbitGoal(elevationAngle, azimuthAngle);
+            setOrbitGoal(elevationAngle, azimuthAngle);
         } else {
             Quaternion rotate = new Quaternion();
             rotate.fromAngleAxis(amount, upDirection);
@@ -309,7 +263,7 @@ public class ScenePov implements Cloneable, Pov {
         if (options.isOrbitMode()) {
             float azimuthAngle = azimuth();
             float elevationAngle = elevationAngle() - amount;
-            ScenePov.this.setOrbitGoal(elevationAngle, azimuthAngle);
+            setOrbitGoal(elevationAngle, azimuthAngle);
         } else {
             Vector3f pitchAxis = pitchAxis();
             Quaternion rotate = new Quaternion();
@@ -390,45 +344,42 @@ public class ScenePov implements Cloneable, Pov {
      * @return world coordinates (either storeResult or a new vector)
      */
     private Vector3f centerLocation(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
+        Vector3f result = (storeResult == null) ? new Vector3f() : storeResult;
 
         CameraOptions options = Maud.getModel().getScene().getCamera();
         OrbitCenter orbitCenter = options.getOrbitCenter();
         switch (orbitCenter) {
             case DddCursor:
-                storeResult.set(cursorLocation);
+                cgm.getSceneView().getCursor().location(result);
                 break;
 
             case Origin:
-                storeResult.zero();
+                result.zero();
                 break;
 
             case SelectedBone:
                 SelectedBone bone = cgm.getBone();
                 if (bone.isSelected()) {
-                    bone.worldLocation(storeResult);
+                    bone.worldLocation(result);
                 } else {
-                    storeResult.set(cursorLocation);
+                    cgm.getSceneView().getCursor().location(result);
                 }
                 break;
 
             case SelectedVertex:
                 SelectedVertex vertex = cgm.getVertex();
                 if (vertex.isSelected()) {
-                    vertex.worldLocation(storeResult);
+                    vertex.worldLocation(result);
                 } else {
-                    storeResult.set(cursorLocation);
+                    cgm.getSceneView().getCursor().location(result);
                 }
                 break;
 
             default:
-                throw new RuntimeException();
-
+                throw new IllegalStateException();
         }
 
-        return storeResult;
+        return result;
     }
 
     /**

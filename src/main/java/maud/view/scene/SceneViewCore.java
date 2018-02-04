@@ -177,14 +177,14 @@ public class SceneViewCore
      * world transform for the C-G model rendered in this view
      */
     private CgmTransform cgmTransform = new CgmTransform();
+    /**
+     * 3-D cursor (not null)
+     */
+    private DddCursor cursor = new DddCursor(this);
     /*
      * directional added to the scene (not null)
      */
     final private DirectionalLight mainLight = new DirectionalLight();
-    /**
-     * indicator for the 3-D cursor, or null if none
-     */
-    private Geometry cursor;
     /**
      * attachment point for this view's copy of the C-G model (applies
      * shadowMode and transforms)
@@ -349,11 +349,12 @@ public class SceneViewCore
     }
 
     /**
-     * Access the indicator for the 3-D cursor.
+     * Access the 3-D cursor for the scene.
      *
-     * @return the pre-existing instance, or null if none
+     * @return the pre-existing instance (not null)
      */
-    Geometry getCursor() {
+    public DddCursor getCursor() {
+        assert cursor != null;
         return cursor;
     }
 
@@ -537,21 +538,6 @@ public class SceneViewCore
         assert this == newCgm.getSceneView();
 
         cgm = newCgm;
-    }
-
-    /**
-     * Alter which cursor indicator is attached to the scene graph.
-     *
-     * @param cursorSpatial (may be null)
-     */
-    void setCursor(Geometry cursorSpatial) {
-        if (cursor != null) {
-            cursor.removeFromParent();
-        }
-        if (cursorSpatial != null) {
-            attachToSceneRoot(cursorSpatial);
-        }
-        cursor = cursorSpatial;
     }
 
     /**
@@ -834,26 +820,12 @@ public class SceneViewCore
     }
 
     /**
-     * Attempt to warp a cursor to the screen coordinates of the mouse pointer.
+     * Attempt to warp the cursor to the screen coordinates of the mouse
+     * pointer.
      */
     @Override
     public void warpCursor() {
-        Camera camera = getCamera();
-        InputManager inputManager = Maud.getApplication().getInputManager();
-        Ray ray = MyCamera.mouseRay(camera, inputManager);
-        /*
-         * Trace the ray to the C-G model.
-         */
-        CollisionResult collision = MaudUtil.findCollision(cgmRoot, ray);
-        if (collision != null) {
-            Vector3f contactPoint = collision.getContactPoint();
-            getPov().setCursorLocation(contactPoint);
-        } else {
-            /*
-             * The ray missed the C-G model; try to trace it to the platform.
-             */
-            platform.warpCursor(ray);
-        }
+        cursor.warp();
     }
     // *************************************************************************
     // JmeCloneable methods
@@ -888,10 +860,10 @@ public class SceneViewCore
         // cgm not cloned: set later
         cgmRoot = cloner.clone(cgmRoot);
         cgmTransform = cloner.clone(cgmTransform);
-        // cursor not cloned: shared
+        cursor = cloner.clone(cursor);
         // mainLight not cloned: shared
         // parent not cloned: shared
-        // platform not cloned: shared
+        // platform not cloned: shared ??
         // projectile not cloned: shared
         skeleton = cloner.clone(skeleton);
         skeletonControl = cloner.clone(skeletonControl);
@@ -1226,8 +1198,8 @@ public class SceneViewCore
          * Reset the camera position and 3-D cursor location.
          */
         ScenePov pov = getPov();
-        pov.setCursorLocation(cursorStartLocation);
         pov.setLocation(cameraStartLocation);
+        cursor.setLocation(cursorStartLocation);
 
         projectile.delete();
     }

@@ -51,7 +51,7 @@ import maud.MaudUtil;
 import maud.model.option.scene.PlatformType;
 
 /**
- * A supporting platform in a scene view.
+ * The supporting platform in a scene view.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -114,7 +114,19 @@ class Platform {
     // new methods exposed
 
     /**
-     * Add all physics ids used by the platform to the specified set.
+     * Find the nearest contact point of the specified ray.
+     */
+    CollisionResult findCollision(Ray ray) {
+        CollisionResult result = null;
+        if (spatial != null) {
+            result = MaudUtil.findCollision(spatial, ray);
+        }
+
+        return result;
+    }
+
+    /**
+     * Add all physics ids related to the platform to the specified set.
      *
      * @param addResult (added to if not null)
      * @return an expanded set (either addResult or a new instance)
@@ -174,19 +186,6 @@ class Platform {
 
             spatial.setLocalTranslation(center);
             spatial.setLocalScale(diameter);
-        }
-    }
-
-    /**
-     * Attempt to warp a cursor to the contact point of the specified ray.
-     */
-    void warpCursor(Ray ray) {
-        if (spatial != null) {
-            CollisionResult collision = MaudUtil.findCollision(spatial, ray);
-            if (collision != null) {
-                Vector3f contactPoint = collision.getContactPoint();
-                view.getPov().setCursorLocation(contactPoint);
-            }
         }
     }
     // *************************************************************************

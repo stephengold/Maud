@@ -26,7 +26,6 @@
  */
 package maud.view.scene;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -43,14 +42,12 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import java.util.BitSet;
 import java.util.logging.Logger;
-import jme3utilities.MyAsset;
 import jme3utilities.MySpatial;
 import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
-import jme3utilities.ui.Locators;
 import maud.EditorViewPorts;
 import maud.Maud;
 import maud.model.EditorModel;
@@ -62,7 +59,6 @@ import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.BoundsOptions;
-import maud.model.option.scene.DddCursorOptions;
 import maud.model.option.scene.LightsOptions;
 import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.SceneOptions;
@@ -97,11 +93,6 @@ class SceneUpdater {
      */
     final private static Logger logger
             = Logger.getLogger(SceneUpdater.class.getName());
-    /**
-     * asset path to the C-G model for the 3-D cursor
-     */
-    final private static String cursorAssetPath
-            = "Models/indicators/3d cursor/3d cursor.j3o";
     // *************************************************************************
     // constructors
 
@@ -198,7 +189,7 @@ class SceneUpdater {
         viewCgm.getScenePov().update(updateInterval);
         updateAxes(viewCgm);
         updateBounds(sceneView);
-        updateCursor(viewCgm);
+        sceneView.getCursor().update(viewCgm);
         updatePhysics(viewCgm);
         sceneView.getPlatform().update();
         updateShadows(viewCgm);
@@ -208,26 +199,6 @@ class SceneUpdater {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Create a star-shaped 3-D cursor.
-     *
-     * @return a new, orphaned spatial
-     */
-    private static Geometry createCursor() {
-        AssetManager assetManager = Locators.getAssetManager();
-        Node node = (Node) assetManager.loadModel(cursorAssetPath);
-        Node node2 = (Node) node.getChild(0);
-        Node node3 = (Node) node2.getChild(0);
-        Geometry result = (Geometry) node3.getChild(0);
-
-        result.removeFromParent();
-
-        Material material = MyAsset.createUnshadedMaterial(assetManager);
-        result.setMaterial(material);
-
-        return result;
-    }
 
     /**
      * Update the specified view's ambient light based on the MVC model.
@@ -332,50 +303,6 @@ class SceneUpdater {
 
         Spatial selectedSpatial = sceneView.selectedSpatial();
         visualizer.setSubject(selectedSpatial);
-    }
-
-    /**
-     * Update the 3-D cursor based on the MVC model.
-     *
-     * @param cgm which C-G model (not null)
-     */
-    private static void updateCursor(Cgm cgm) {
-        SceneView sceneView = cgm.getSceneView();
-        Geometry cursor = sceneView.getCursor();
-        /*
-         * visibility
-         */
-        boolean wasVisible = (cursor != null);
-        DddCursorOptions options = Maud.getModel().getScene().getCursor();
-        boolean visible = options.isVisible();
-        if (wasVisible && !visible) {
-            sceneView.setCursor(null);
-            cursor = null;
-        } else if (!wasVisible && visible) {
-            cursor = createCursor();
-            sceneView.setCursor(cursor);
-        }
-
-        if (cursor != null) {
-            /*
-             * color
-             */
-            ColorRGBA newColor = options.copyColor(null);
-            Material material = cursor.getMaterial();
-            material.setColor("Color", newColor); // note: creates alias
-            /*
-             * location
-             */
-            Vector3f newLocation = cgm.getScenePov().cursorLocation(null);
-            MySpatial.setWorldLocation(cursor, newLocation);
-            /*
-             * scale
-             */
-            float newScale = cgm.getScenePov().worldScaleForCursor();
-            if (newScale > 0f) {
-                MySpatial.setWorldScale(cursor, newScale);
-            }
-        }
     }
 
     /**
