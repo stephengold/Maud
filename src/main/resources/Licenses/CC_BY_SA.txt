@@ -12,8 +12,8 @@ The files
 "3d cursor.blend",
 "Maud.png",
 "Maud-settings.png",
-"bvh.png",
 "bone.png",
+"bvh.png",
 "dialog.png",
 "edit.png",
 "ellipsis.png",
@@ -25,9 +25,11 @@ The files
 "ogre.png",
 "rock_11474.jpg",
 "rotate.png",
-"scale.png,
+"scale.png",
+"submenu.png",
 "tool.png",
-"translate.png", and
+"translate.png",
+"xbuf.png", and
 "zip.png"
 are the work of Stephen Gold, who licensed them under the Creative Commons
 Attribution-Share Alike 3.0 Unported License.

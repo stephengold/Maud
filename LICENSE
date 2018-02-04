@@ -1,4 +1,4 @@
-The com.jme3 software packages are Copyright (c) 2009-2017 jMonkeyEngine
+The com.jme3 software packages are Copyright (c) 2009-2018 jMonkeyEngine
 The maud software packages are Copyright (c) 2017-2018 Stephen Gold
 
 All rights reserved.
@@ -9,7 +9,7 @@ Note: the following license does not apply to certain assets/resources
 the 10 files in src/main/resources/Model/MhGame/textures,
 2 files in src/main/resources/Models/Puppet,
 8 files in src/main/resources/Models/Sinbad, and
-the 20 images in src/main/resources/Textures/icons)
+the 21 images in src/main/resources/Textures/icons)
 which are separately licensed.
 
 BSD 3-Clause License
