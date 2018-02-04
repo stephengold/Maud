@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -411,8 +411,8 @@ public class StaffTrack {
             TweenVectors technique = tt.getTweenTranslations();
             float times[] = track.getKeyFrameTimes();
             float duration = cgm.getAnimation().getDuration();
-            VectorCurve parms;
-            parms = technique.precompute(times, duration, translations);
+            VectorCurve parms
+                    = technique.precompute(times, duration, translations);
             Vector3f tempV = new Vector3f();
 
             for (int iSample = 0; iSample < numSamples; iSample++) {

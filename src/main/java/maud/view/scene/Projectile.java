@@ -52,7 +52,7 @@ import maud.Maud;
 import maud.model.cgm.ScenePov;
 
 /**
- * A test projectile in a scene view.
+ * The test projectile in a scene view.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -74,7 +74,7 @@ public class Projectile {
      */
     final private static ColorRGBA color = new ColorRGBA(0.5f, 0.5f, 0.5f, 1f);
     /**
-     * travel time to the 3-D cursor (in seconds)
+     * travel time to the POV's center (in seconds)
      */
     final private static float latency = 0.3f;
     /**
