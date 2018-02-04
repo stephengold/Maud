@@ -95,7 +95,7 @@ public class EnumMenus {
 
         for (Light.Type type : Light.Type.values()) {
             String name = type.toString();
-            builder.add(name);
+            builder.addDialog(name);
         }
 
         builder.show(ActionPrefix.newLight);
@@ -390,11 +390,8 @@ public class EnumMenus {
                 bufferNames.add(buffer.toString());
             }
         }
-
         Collections.sort(bufferNames);
-        for (String name : bufferNames) {
-            builder.add(name);
-        }
+        builder.addAll(bufferNames);
 
         builder.show(ActionPrefix.selectVertexBuffer);
     }
@@ -500,7 +497,7 @@ public class EnumMenus {
 
         for (LicenseType type : LicenseType.values()) {
             String name = type.name();
-            builder.add(name);
+            builder.addDialog(name);
         }
 
         builder.show(ActionPrefix.viewLicense);
