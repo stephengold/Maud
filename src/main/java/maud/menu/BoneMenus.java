@@ -68,7 +68,7 @@ public class BoneMenus {
      */
     static void buildBoneMenu(MenuBuilder builder) {
         builder.addTool("Tool");
-        builder.add("Select");
+        builder.addSubmenu("Select");
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
@@ -85,8 +85,8 @@ public class BoneMenus {
             builder.add("Deselect");
             builder.addDialog("Rename");
         }
-        if (model.getSource().isLoaded()) {
-            builder.add("Select source"); // TODO submenu
+        if (model.getSource().getSkeleton().isSelected()) {
+            builder.addSubmenu("Select source");
         }
     }
 
@@ -168,29 +168,29 @@ public class BoneMenus {
         MenuBuilder builder = new MenuBuilder();
 
         Cgm target = Maud.getModel().getTarget();
-        builder.add("By name");
+        builder.addSubmenu("By name");
         int numBones = target.getSkeleton().countBones();
         if (numBones > 0) {
-            builder.add("By parent");
+            builder.addSubmenu("By parent");
         }
 
         int numRoots = target.getSkeleton().countRootBones();
         if (numRoots == 1) {
             builder.addBone("Root");
         } else if (numRoots > 1) {
-            builder.add("Root");
+            builder.addSubmenu("Root");
         }
 
         int numTracks = target.getAnimation().countBoneTracks();
         if (numTracks > 0) {
-            builder.add("With track");
+            builder.addSubmenu("With track");
         }
 
         int numAttachments = target.getSkeleton().listAttachedBones().size();
         if (numAttachments == 1) {
             builder.addBone("Attached");
         } else if (numAttachments > 1) {
-            builder.add("Attached");
+            builder.addSubmenu("Attached");
         }
 
         String sourceBoneName = Maud.getModel().getSource().getBone().getName();
@@ -204,7 +204,7 @@ public class BoneMenus {
         if (numChildren == 1) {
             builder.addBone("Child");
         } else if (numChildren > 1) {
-            builder.add("Child");
+            builder.addSubmenu("Child");
         }
 
         boolean isSelected = target.getBone().isSelected();
@@ -270,7 +270,7 @@ public class BoneMenus {
             if (numRoots == 1) {
                 builder.addBone("Root");
             } else if (numRoots > 1) {
-                builder.add("Root");
+                builder.addSubmenu("Root");
             }
 
             String targetBoneName = model.getTarget().getBone().getName();

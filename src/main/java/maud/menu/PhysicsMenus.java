@@ -80,7 +80,7 @@ public class PhysicsMenus {
         SceneView sceneView = target.getSceneView();
         int numShapes = sceneView.shapeMap().size();
         if (numShapes > 0) {
-            builder.add("Select shape");
+            builder.addSubmenu("Select shape");
         }
 
         SelectedShape shape = target.getShape();
@@ -94,10 +94,10 @@ public class PhysicsMenus {
 
         int numObjects = sceneView.objectMap().size();
         if (numObjects > 0) {
-            builder.add("Select object");
+            builder.addSubmenu("Select object");
         }
 
-        builder.add("Add control");
+        builder.addSubmenu("Add control");
 
         if (target.getObject().hasMass()) {
             builder.addDialog("Mass");
@@ -108,7 +108,7 @@ public class PhysicsMenus {
         PhysicsSpace space = sceneView.getPhysicsSpace();
         int numJoints = PhysicsUtil.countJoints(space);
         if (numJoints > 0) {
-            builder.add("Select joint");
+            builder.addSubmenu("Select joint");
         }
     }
 

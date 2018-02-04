@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -283,6 +283,16 @@ class MenuBuilder {
     void addOgre(String item) {
         Validate.nonEmpty(item, "item");
         add(item, "Textures/icons/ogre.png");
+    }
+
+    /**
+     * Add an item with the submenu icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addSubmenu(String item) {
+        Validate.nonEmpty(item, "item");
+        add(item, "Textures/icons/submenu.png");
     }
 
     /**

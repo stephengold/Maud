@@ -96,9 +96,9 @@ public class ShowMenus {
      */
     static void assetLocations() {
         MenuBuilder builder = new MenuBuilder();
-        builder.add("Add");
+        builder.addSubmenu("Add");
         if (Maud.getModel().getLocations().hasRemovable()) {
-            builder.add("Remove");
+            builder.addSubmenu("Remove");
         }
         builder.show("select menuItem Settings -> Asset locations -> ");
     }
@@ -123,7 +123,7 @@ public class ShowMenus {
         MenuBuilder builder = new MenuBuilder();
         List<String> specs = Maud.getModel().getLocations().listAll();
         for (String spec : specs) {
-            builder.add(spec);
+            builder.addFile(spec);
         }
         builder.show(ActionPrefix.deleteAssetLocationSpec);
     }
@@ -305,7 +305,7 @@ public class ShowMenus {
         Cgm target = Maud.getModel().getTarget();
         List<String> names = target.listSpatialNames("", true);
         if (!names.isEmpty()) {
-            builder.add("By name");
+            builder.addSubmenu("By name");
         }
 
         boolean isRootANode = target.isRootANode();
@@ -321,7 +321,7 @@ public class ShowMenus {
 
         names = target.listSpatialNames("", false);
         if (!names.isEmpty()) {
-            builder.add("Geometry");
+            builder.addSubmenu("Geometry");
         }
 
         int numChildren = target.getSpatial().countChildren();
@@ -333,7 +333,7 @@ public class ShowMenus {
                 builder.addGeometry("Child");
             }
         } else if (numChildren > 1) {
-            builder.add("Child");
+            builder.addSubmenu("Child");
         }
 
         boolean isRoot = target.getSpatial().isCgmRoot();
@@ -358,8 +358,8 @@ public class ShowMenus {
         } else if (numChildren > 1) {
             List<String> children = spatial.listNumberedChildren();
 
-            List<String> choices;
-            choices = MyString.addMatchPrefix(children, itemPrefix, null);
+            List<String> choices
+                    = MyString.addMatchPrefix(children, itemPrefix, null);
             MyString.reduce(choices, maxItems);
             Collections.sort(choices);
 
@@ -626,7 +626,7 @@ public class ShowMenus {
     static void sourceCgm() {
         MenuBuilder builder = new MenuBuilder();
 
-        builder.add("Load");
+        builder.addSubmenu("Load");
         if (Maud.getModel().getSource().isLoaded()) {
             SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
             if (ss.isNode()) {

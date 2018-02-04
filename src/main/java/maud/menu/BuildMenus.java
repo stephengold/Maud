@@ -467,23 +467,23 @@ public class BuildMenus {
         builder.addTool("Tool");
         Cgm target = Maud.getModel().getTarget();
         if (target.getAnimControl().isSelected()) {
-            builder.add("Load");
-            builder.add("Add new");
-            //builder.add("Unload");
+            builder.addSubmenu("Load");
+            builder.addSubmenu("Add new");
+            //builder.add("Unload"); TODO
         }
 
         if (target.getAnimation().isReal()) {
-            builder.add("Edit");
-            builder.addDialog("Rename");
             builder.addDialog("Delete");
+            builder.addSubmenu("Edit");
+            builder.addDialog("Rename");
         }
 
-        builder.add("Select AnimControl");
+        builder.addSubmenu("Select AnimControl");
 
-        builder.addTool("Source tool"); // TODO submenu
+        builder.addTool("Source tool");
         Cgm source = Maud.getModel().getSource();
         if (source.isLoaded() && source.getSkeleton().countBones() > 0) {
-            builder.add("Load source");
+            builder.addSubmenu("Load source");
         }
         builder.addTool("Tweening");
     }
@@ -493,10 +493,10 @@ public class BuildMenus {
      */
     private void buildCgmMenu() {
         builder.addTool("Tool");
-        builder.add("Load");
+        builder.addSubmenu("Load");
         builder.addDialog("Save");
         //builder.add("Export"); TODO
-        builder.add("Source model");
+        builder.addSubmenu("Source model"); // TODO inline the submenu
     }
 
     /**
@@ -613,7 +613,7 @@ public class BuildMenus {
         builder.addTool("Tool");
         Cgm target = Maud.getModel().getTarget();
         if (target.getBone().hasTrack() && !target.getAnimation().isMoving()) {
-            builder.add("Select");
+            builder.addSubmenu("Select");
             int frameIndex = target.getTrack().findKeyframeIndex();
             if (frameIndex == -1) {
                 builder.addEdit("Insert from pose");
@@ -650,7 +650,7 @@ public class BuildMenus {
                 builder.addFolder(path);
             }
         }
-        builder.add(defaultLocation);
+        builder.addSubmenu(defaultLocation);
     }
 
     /**
@@ -677,7 +677,7 @@ public class BuildMenus {
      */
     private void buildSettingsMenu() {
         builder.addTool("Tool");
-        builder.add("Asset locations");
+        builder.addSubmenu("Asset locations"); // TODO inline the submenu
         builder.addTool("Display-settings tool");
         builder.add("Hotkeys");
         //builder.add("Locale"); TODO
@@ -690,8 +690,8 @@ public class BuildMenus {
      */
     private void buildSgcMenu() {
         builder.addTool("Tool");
-        builder.add("Select");
-        builder.add("Add new");
+        builder.addSubmenu("Select");
+        builder.addSubmenu("Add new");
         if (Maud.getModel().getTarget().getSgc().isSelected()) {
             builder.addEdit("Delete");
             builder.add("Deselect");
@@ -703,7 +703,7 @@ public class BuildMenus {
      */
     private void buildSpatialMenu() {
         builder.addTool("Tool");
-        builder.add("Select");
+        builder.addSubmenu("Select");
 
         builder.addTool("Details");
         builder.addTool("Lights");
@@ -772,8 +772,8 @@ public class BuildMenus {
      */
     private void buildTrackMenu() {
         builder.addTool("Tool");
-        builder.add("Load animation");
-        builder.add("Select bone");
+        builder.addSubmenu("Load animation");
+        builder.addSubmenu("Select bone");
         Cgm target = Maud.getModel().getTarget();
         SelectedBone bone = target.getBone();
         if (bone.hasTrack()) {
@@ -800,24 +800,24 @@ public class BuildMenus {
     private void buildVertexMenu() {
         builder.addTool("Tool");
         if (Maud.getModel().getTarget().getSpatial().countVertices() > 0) {
-            builder.add("Select");
+            builder.addSubmenu("Select");
         }
-        builder.add("Select geometry");
+        builder.addSubmenu("Select geometry");
     }
 
     /**
      * Build a View menu.
      */
     private void buildViewMenu() {
-        builder.add("Mode");
+        builder.addSubmenu("Mode"); // TODO Select mode
         ViewMode viewMode = Maud.getModel().getMisc().getViewMode();
         if (viewMode.equals(ViewMode.Scene)
                 || viewMode.equals(ViewMode.Hybrid)) {
-            builder.add("Scene options");
+            builder.addSubmenu("Scene options");
         }
         if (viewMode.equals(ViewMode.Score)
                 || viewMode.equals(ViewMode.Hybrid)) {
-            builder.add("Score options");
+            builder.addSubmenu("Score options");
         }
     }
 }
