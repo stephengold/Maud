@@ -449,7 +449,7 @@ public class ScenePov implements Cloneable, Pov {
         Vector3f direction = MyVector3f.fromAltAz(clampedElevation, azimuth);
         centerLocation(povLocation);
         float clampedRange = options.clampRange(range);
-        MyVector3f.accumulateScaled(povLocation, direction, clampedRange);
+        MyVector3f.accumulateScaled(povLocation, direction, -clampedRange);
     }
 
     /**
