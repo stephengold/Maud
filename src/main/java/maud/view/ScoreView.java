@@ -611,7 +611,7 @@ public class ScoreView implements EditorView {
                 float xWidth = 1f / compression;
                 float lineWidth = 4f + r.labelFont.getLineWidth(clueMessage, 0);
                 float sizeFactor = xWidth / lineWidth;
-                float preferredSize = (float) r.labelFont.getActualLineHeight();
+                float preferredSize = r.labelFont.getActualLineHeight();
                 float yHeight = 2.4f * xWidth / preferredSize;
                 float centerY = cgm.getScorePov().getCameraY();
                 float rightX = 1f;
@@ -933,7 +933,7 @@ public class ScoreView implements EditorView {
 
         String labelText = StaffTrack.labelText();
         float textSize = 4f + r.labelFont.getLineWidth(labelText, 0);
-        float preferredSize = (float) r.labelFont.getActualLineHeight();
+        float preferredSize = r.labelFont.getActualLineHeight();
         /*
          * Calculate the effective width and height for the label and the size
          * for the text assuming horizontal (normal) text.
