@@ -44,6 +44,7 @@ import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
+import jme3utilities.math.MyColor;
 import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.MaudUtil;
@@ -72,6 +73,10 @@ public class DddCursor implements JmeCloneable {
     // *************************************************************************
     // fields
 
+    /**
+     * elapsed time in the current color cycle (&ge;0)
+     */
+    private double colorTime = 0.0;
     /**
      * indicator geometry, or null if none
      */
@@ -128,8 +133,9 @@ public class DddCursor implements JmeCloneable {
      * Update the cursor based on the MVC model.
      *
      * @param cgm which C-G model (not null)
+     * @param updateInterval time interval between updates (in seconds, &ge;0)
      */
-    void update(Cgm cgm) {
+    void update(Cgm cgm, float updateInterval) {
         /*
          * visibility
          */
@@ -148,7 +154,15 @@ public class DddCursor implements JmeCloneable {
             /*
              * color
              */
-            ColorRGBA newColor = options.copyColor(null);
+            float cycleTime = options.getCycleTime();
+            colorTime = (colorTime + updateInterval) % cycleTime;
+            double t = Math.sin(Math.PI * colorTime / cycleTime);
+            double t2 = t * t;
+            float fraction = (float) (t2 * t2); // 4th power of sine
+            ColorRGBA color0 = options.copyColor(0, null);
+            ColorRGBA color1 = options.copyColor(1, null);
+            ColorRGBA newColor
+                    = MyColor.interpolateLinear(fraction, color0, color1);
             Material material = geometry.getMaterial();
             material.setColor("Color", newColor); // note: creates alias
             /*
@@ -281,6 +295,7 @@ public class DddCursor implements JmeCloneable {
         Cgm cgm = view.getCgm();
         Vector3f povLocation = cgm.getScenePov().location(null);
         float range = povLocation.distance(location);
+
         DddCursorOptions cursor = Maud.getModel().getScene().getCursor();
         float worldScale = cursor.getSize() * range;
 

@@ -452,6 +452,10 @@ public class EditorInputMode extends InputMode {
                 model.getTarget().toggleBoundType();
                 break;
 
+            case Action.toggleCursorColorIndex:
+                model.getMisc().toggleColorIndex();
+                break;
+
             case Action.toggleDegrees:
                 model.getMisc().toggleAnglesInDegrees();
                 break;

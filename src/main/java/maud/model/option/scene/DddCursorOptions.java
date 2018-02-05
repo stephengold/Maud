@@ -52,9 +52,16 @@ public class DddCursorOptions implements Cloneable {
      */
     private boolean visible = true;
     /**
-     * color of the cursor
+     * colors of the cursor
      */
-    private ColorRGBA color = new ColorRGBA(1f, 1f, 0f, 1f);
+    private ColorRGBA colors[] = {
+        new ColorRGBA(1f, 1f, 0f, 1f),
+        new ColorRGBA(0f, 0f, 0f, 1f)
+    };
+    /**
+     * cycle time of the cursor (in seconds, &gt;0)
+     */
+    private float cycleTime = 2f;
     /**
      * angular size of the cursor (in arbitrary units, &gt;0)
      */
@@ -63,18 +70,30 @@ public class DddCursorOptions implements Cloneable {
     // new methods exposed
 
     /**
-     * Copy the color of the cursor.
+     * Copy one of the colors of the cursor.
      *
+     * @param index which color to copy (0 or 1)
      * @param storeResult (modified if not null)
      * @return color (either storeResult or a new instance)
      */
-    public ColorRGBA copyColor(ColorRGBA storeResult) {
-        if (storeResult == null) {
-            storeResult = new ColorRGBA();
-        }
-        storeResult.set(color);
+    public ColorRGBA copyColor(int index, ColorRGBA storeResult) {
+        Validate.inRange(index, "index", 0, 1);
 
-        return storeResult;
+        ColorRGBA result
+                = (storeResult == null) ? new ColorRGBA() : storeResult;
+        result.set(colors[index]);
+
+        return result;
+    }
+
+    /**
+     * Read the cycle time of the cursor.
+     *
+     * @return cycle time (in seconds, &gt;0)
+     */
+    public float getCycleTime() {
+        assert cycleTime > 0f : cycleTime;
+        return cycleTime;
     }
 
     /**
@@ -97,22 +116,35 @@ public class DddCursorOptions implements Cloneable {
     }
 
     /**
-     * Alter the color of the 3-D cursor(s).
+     * Alter one of the colors.
      *
+     * @param index which color to alter (0 or 1)
      * @param newColor (not null, unaffected)
      */
-    public void setColor(ColorRGBA newColor) {
+    public void setColor(int index, ColorRGBA newColor) {
+        Validate.inRange(index, "index", 0, 1);
         Validate.nonNull(newColor, "color");
-        color.set(newColor);
+
+        colors[index].set(newColor);
+    }
+
+    /**
+     * Alter the cycle time of the cursor.
+     *
+     * @param newCycleTime (in seconds, &gt;0)
+     */
+    public void setCycleTime(float newCycleTime) {
+        Validate.positive(newCycleTime, "new cycle time");
+        cycleTime = newCycleTime;
     }
 
     /**
      * Alter the size of the cursor.
      *
-     * @param newSize (in arbitrary units, &ge;0)
+     * @param newSize (in arbitrary units, &gt;0)
      */
     public void setSize(float newSize) {
-        Validate.nonNegative(newSize, "size");
+        Validate.positive(newSize, "new size");
         size = newSize;
     }
 
@@ -136,7 +168,10 @@ public class DddCursorOptions implements Cloneable {
     @Override
     public DddCursorOptions clone() throws CloneNotSupportedException {
         DddCursorOptions clone = (DddCursorOptions) super.clone();
-        clone.color = color.clone();
+        clone.colors = new ColorRGBA[2];
+        for (int i = 0; i < colors.length; i++) {
+            clone.colors[i] = colors[i].clone();
+        }
 
         return clone;
     }

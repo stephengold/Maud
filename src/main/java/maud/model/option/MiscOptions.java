@@ -67,7 +67,7 @@ public class MiscOptions implements Cloneable {
      */
     private Background background = Background.TargetScenesWithNoSky;
     /**
-     * angle display units (true &rarr; degrees, false &rarr; radians)
+     * angle-display units (true &rarr; degrees, false &rarr; radians)
      */
     private boolean anglesInDegrees = true;
     /**
@@ -96,6 +96,10 @@ public class MiscOptions implements Cloneable {
      * &le;maxXBoundary)
      */
     private float xBoundary = 0.5f;
+    /**
+     * which color to view/edit in CursorTool (0 or 1)
+     */
+    private int colorIndex = 0;
     /**
      * starting point for displayed indices (0 or 1)
      */
@@ -128,7 +132,7 @@ public class MiscOptions implements Cloneable {
     // new methods exposed
 
     /**
-     * Read which background to view/edit in BackgroundTool.
+     * Read which background to view/edit in BackgroundTool. TODO sort methods
      *
      * @return an enum value (not null)
      */
@@ -147,6 +151,16 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Read which color to view/edit in CursorTool.
+     *
+     * @return a color index (0 or 1)
+     */
+    public int getColorIndex() {
+        assert colorIndex == 0 || colorIndex == 1 : colorIndex;
+        return colorIndex;
+    }
+
+    /**
      * Test whether to print diagnostic messages to the console during loads.
      *
      * @return true to print diagnostics, otherwise false
@@ -161,6 +175,7 @@ public class MiscOptions implements Cloneable {
      * @return base index (0 or 1)
      */
     public int getIndexBase() {
+        assert indexBase == 0 || indexBase == 1 : indexBase;
         return indexBase;
     }
 
@@ -385,6 +400,16 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter which color to view/edit in CursorTool.
+     *
+     * @param newIndex new index (0 or 1)
+     */
+    public void setColorIndex(int newIndex) {
+        Validate.inRange(newIndex, "new index", 0, 1);
+        colorIndex = newIndex;
+    }
+
+    /**
      * Alter whether to print diagnostic messages to the console during loads.
      *
      * @param newSetting (true &rarr; print, false &rarr; suppress)
@@ -446,10 +471,17 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Toggle the angle display units.
+     * Toggle the angle-display units.
      */
     public void toggleAnglesInDegrees() {
         setAnglesInDegrees(!anglesInDegrees);
+    }
+
+    /**
+     * Toggle which color to view/edit in CursorTool.
+     */
+    public void toggleColorIndex() {
+        setColorIndex(1 - colorIndex);
     }
 
     /**

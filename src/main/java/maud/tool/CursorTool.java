@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.option.scene.DddCursorOptions;
 
 /**
@@ -53,6 +54,14 @@ class CursorTool extends Tool {
      * transform for the color sliders
      */
     final private static SliderTransform colorSt = SliderTransform.Reversed;
+    /**
+     * transform for the cycle slider
+     */
+    final private static SliderTransform cycleSt = SliderTransform.Log10;
+    /**
+     * transform for the size slider
+     */
+    final private static SliderTransform sizeSt = SliderTransform.Log10;
     // *************************************************************************
     // constructors
 
@@ -92,6 +101,8 @@ class CursorTool extends Tool {
         result.add("cursorR");
         result.add("cursorG");
         result.add("cursorB");
+        result.add("cursorCycle");
+        result.add("cursorSize");
 
         return result;
     }
@@ -121,8 +132,17 @@ class CursorTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
+        DddCursorOptions options = Maud.getModel().getScene().getCursor();
+
+        int colorIndex = Maud.getModel().getMisc().getColorIndex();
         ColorRGBA color = readColorBank("cursor", colorSt, null);
-        Maud.getModel().getScene().getCursor().setColor(color);
+        options.setColor(colorIndex, color);
+
+        float cycleTime = readSlider("cursorCycle", cycleSt);
+        options.setCycleTime(cycleTime);
+
+        float size = readSlider("cursorSize", sizeSt);
+        options.setSize(size);
     }
 
     /**
@@ -136,7 +156,19 @@ class CursorTool extends Tool {
         boolean visible = options.isVisible();
         setChecked("3DCursor", visible);
 
-        ColorRGBA color = options.copyColor(null);
+        int colorIndex = Maud.getModel().getMisc().getColorIndex();
+        String indexText = MaudUtil.formatIndex(colorIndex);
+        setButtonText("cursorColorIndex", indexText);
+
+        ColorRGBA color = options.copyColor(colorIndex, null);
         Maud.gui.setColorBank("cursor", colorSt, color);
+
+        float cycleTime = options.getCycleTime();
+        setSlider("cursorCycle", cycleSt, cycleTime);
+        updateSliderStatus("cursorCycle", cycleTime, " seconds");
+
+        float size = options.getSize();
+        setSlider("cursorSize", sizeSt, size);
+        updateSliderStatus("cursorSize", size, "");
     }
 }

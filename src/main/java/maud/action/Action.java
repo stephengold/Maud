@@ -227,6 +227,7 @@ public class Action {
     final static String setUserData = "set userData";
 
     final static String toggleBoundType = "toggle boundType";
+    final static String toggleCursorColorIndex = "toggle cursorColorIndex";
     final static String toggleDegrees = "toggle degrees";
     final static String toggleDragSide = "toggle dragSide";
     final static String toggleFreezeTarget = "toggle freeze target";

@@ -189,7 +189,7 @@ class SceneUpdater {
         viewCgm.getScenePov().update(updateInterval);
         updateAxes(viewCgm);
         updateBounds(sceneView);
-        sceneView.getCursor().update(viewCgm);
+        sceneView.getCursor().update(viewCgm, updateInterval);
         updatePhysics(viewCgm);
         sceneView.getPlatform().update();
         updateShadows(viewCgm);
