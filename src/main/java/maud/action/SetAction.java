@@ -83,10 +83,6 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         switch (actionString) {
-            case Action.setMsaaFactor:
-                ShowMenus.setMsaaFactor();
-                break;
-
             case Action.setBatchHint:
                 EnumMenus.setBatchHint();
                 break;
@@ -117,6 +113,10 @@ class SetAction {
                     EditorDialogs.setMatParamValue(parameterName, varType,
                             oldValue, allowNull, ActionPrefix.setMatParamValue);
                 }
+                break;
+
+            case Action.setMsaaFactor:
+                ShowMenus.setMsaaFactor();
                 break;
 
             case Action.setOverrideValue:
@@ -224,19 +224,7 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         String arg;
-        if (actionString.startsWith(ActionPrefix.setMsaaFactor)) { // TODO sort
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setMsaaFactor);
-            int factor;
-            for (factor = 1; factor < 16; factor *= 2) {
-                String aaDescription = MaudUtil.describeMsaaFactor(factor);
-                if (arg.equals(aaDescription)) {
-                    break;
-                }
-            }
-            DisplaySettings.setMsaaFactor(factor);
-
-        } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
+        if (actionString.startsWith(ActionPrefix.setBatchHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
             Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
             target.setBatchHint(value);
@@ -304,16 +292,21 @@ class SetAction {
                     ActionPrefix.setMatParamValue);
             target.setMatParamValue(arg);
 
+        } else if (actionString.startsWith(ActionPrefix.setMsaaFactor)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setMsaaFactor);
+            int factor;
+            for (factor = 1; factor < 16; factor *= 2) {
+                String aaDescription = MaudUtil.describeMsaaFactor(factor);
+                if (arg.equals(aaDescription)) {
+                    break;
+                }
+            }
+            DisplaySettings.setMsaaFactor(factor);
+
         } else if (actionString.startsWith(ActionPrefix.setNumSplits)) {
             arg = MyString.remainder(actionString, ActionPrefix.setNumSplits);
             int numSplits = Integer.parseInt(arg);
             model.getScene().getRender().setNumSplits(numSplits);
-
-        } else if (actionString.startsWith(ActionPrefix.setPhysicsRendered)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setPhysicsRendered);
-            boolean rendered = Boolean.parseBoolean(arg);
-            model.getScene().getRender().setPhysicsRendered(rendered);
 
         } else if (actionString.startsWith(ActionPrefix.setOverrideValue)) {
             arg = MyString.remainder(actionString,
@@ -331,6 +324,12 @@ class SetAction {
             } else {
                 handled = false;
             }
+
+        } else if (actionString.startsWith(ActionPrefix.setPhysicsRendered)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setPhysicsRendered);
+            boolean rendered = Boolean.parseBoolean(arg);
+            model.getScene().getRender().setPhysicsRendered(rendered);
 
         } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
             arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
