@@ -213,17 +213,6 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "delete sgc" dialog. TODO sort methods
-     */
-    public static void deleteSgc() {
-        String name = Maud.getModel().getTarget().getSgc().name();
-        String message
-                = String.format("Delete the %s control?", MyString.quote(name));
-        Maud.gui.closeAllPopups();
-        Maud.gui.showConfirmDialog(message, "Delete", Action.deleteSgc, null);
-    }
-
-    /**
      * Display a "delete nextKeyframes" dialog.
      */
     public static void deleteNextKeyframes() {
@@ -248,6 +237,17 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter the number of frames to delete:",
                 "1", ActionPrefix.deletePreviousKeyframes, controller);
+    }
+
+    /**
+     * Display a "delete sgc" dialog.
+     */
+    public static void deleteSgc() {
+        String name = Maud.getModel().getTarget().getSgc().name();
+        String message
+                = String.format("Delete the %s control?", MyString.quote(name));
+        Maud.gui.closeAllPopups();
+        Maud.gui.showConfirmDialog(message, "Delete", Action.deleteSgc, null);
     }
 
     /**
@@ -672,6 +672,26 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "set dimensions" dialog to enter the dimensions.
+     */
+    public static void setDimensions() {
+        int height = DisplaySettings.getHeight();
+        int maxHeight = DisplaySettings.maxHeight;
+        int maxWidth = DisplaySettings.maxWidth;
+        int minHeight = DisplaySettings.minHeight;
+        int minWidth = DisplaySettings.minWidth;
+        int width = DisplaySettings.getWidth();
+
+        String defaultText = MaudUtil.describeDimensions(width, height);
+        DialogController controller = new DimensionsDialog("Set", minWidth,
+                minHeight, maxWidth, maxHeight);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter display dimensions:",
+                defaultText, ActionPrefix.setDimensions, controller);
+    }
+
+    /**
      * Display a "set duration proportional" dialog.
      */
     public static void setDurationProportional() {
@@ -892,26 +912,6 @@ public class EditorDialogs {
             Maud.gui.showTextEntryDialog(prompt, defaultText, prefix,
                     controller);
         }
-    }
-
-    /**
-     * Display a "set dimensions" dialog to enter the dimensions.
-     */
-    public static void setDimensions() {
-        int height = DisplaySettings.getHeight();
-        int maxHeight = DisplaySettings.maxHeight;
-        int maxWidth = DisplaySettings.maxWidth;
-        int minHeight = DisplaySettings.minHeight;
-        int minWidth = DisplaySettings.minWidth;
-        int width = DisplaySettings.getWidth();
-
-        String defaultText = MaudUtil.describeDimensions(width, height);
-        DialogController controller = new DimensionsDialog("Set", minWidth,
-                minHeight, maxWidth, maxHeight);
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter display dimensions:",
-                defaultText, ActionPrefix.setDimensions, controller);
     }
 
     /**
