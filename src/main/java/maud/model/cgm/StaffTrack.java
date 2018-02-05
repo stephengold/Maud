@@ -512,6 +512,7 @@ public class StaffTrack {
          * Copy keyframe times to nts[].
          */
         float[] times = track.getKeyFrameTimes();
+        assert times[0] == 0f : times[0];
         int numFrames = times.length;
         nts = new float[numFrames];
         System.arraycopy(times, 0, nts, 0, numFrames);
@@ -523,6 +524,7 @@ public class StaffTrack {
              */
             MyArray.normalize(nts, 0f, duration);
         }
+        assert nts[0] == 0f : nts[0];
 
         if (track instanceof BoneTrack) {
             ++numFrames; // make sure there's room for displayed-pose data
