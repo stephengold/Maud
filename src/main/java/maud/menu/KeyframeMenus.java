@@ -59,6 +59,37 @@ class KeyframeMenus {
     // new methods exposed
 
     /**
+     * Build a Keyframe menu.
+     *
+     * @param builder the menu builder to use (not null, modified)
+     */
+    static void buildKeyframeMenu(MenuBuilder builder) {
+        builder.addTool("Tool");
+
+        Cgm target = Maud.getModel().getTarget();
+        if (target.getBone().hasTrack() && !target.getAnimation().isMoving()) {
+            builder.addSubmenu("Select");
+            int frameIndex = target.getTrack().findKeyframeIndex();
+            if (frameIndex == -1) {
+                builder.addEdit("Insert from pose");
+            } else {
+                builder.addEdit("Replace with pose");
+            }
+            if (frameIndex > 0) {
+                builder.addDialog("Adjust timing");
+                builder.addEdit("Delete selected");
+            }
+            if (frameIndex > 1) {
+                builder.addDialog("Delete previous");
+            }
+            int lastFrame = target.getTrack().countKeyframes() - 1;
+            if (frameIndex != -1 && frameIndex < lastFrame) {
+                builder.addDialog("Delete next");
+            }
+        }
+    }
+
+    /**
      * Handle a "select menuItem" action from the Keyframe menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)

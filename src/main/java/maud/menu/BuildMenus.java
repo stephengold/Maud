@@ -360,45 +360,59 @@ public class BuildMenus {
             case "Animation":
                 buildAnimationMenu();
                 break;
+
             case "Bone":
                 BoneMenus.buildBoneMenu(builder);
                 break;
+
             case "CGM":
                 buildCgmMenu();
                 break;
+
             case "Help":
                 buildHelpMenu();
                 break;
+
             case "History":
                 buildHistoryMenu();
                 break;
+
             case "Keyframe":
-                buildKeyframeMenu();
+                KeyframeMenus.buildKeyframeMenu(builder);
                 break;
+
             case "Map":
                 buildMapMenu();
                 break;
+
             case "Physics":
                 PhysicsMenus.buildPhysicsMenu(builder);
                 break;
+
             case "Settings":
                 buildSettingsMenu();
                 break;
+
             case "SGC":
                 buildSgcMenu();
                 break;
+
             case "Spatial":
                 buildSpatialMenu();
                 break;
+
             case "Track":
                 buildTrackMenu();
                 break;
+
             case "Vertex":
                 buildVertexMenu();
                 break;
+
             case "View":
                 buildViewMenu();
                 break;
+
             default:
                 return false;
         }
@@ -604,35 +618,6 @@ public class BuildMenus {
     private void buildHistoryMenu() {
         builder.addTool("Tool");
         builder.add("Clear");
-    }
-
-    /**
-     * Build a Keyframe menu. TODO move to KeyframeMenus class
-     */
-    private void buildKeyframeMenu() {
-        builder.addTool("Tool");
-        Cgm target = Maud.getModel().getTarget();
-        if (target.getBone().hasTrack() && !target.getAnimation().isMoving()) {
-            builder.addSubmenu("Select");
-            int frameIndex = target.getTrack().findKeyframeIndex();
-            if (frameIndex == -1) {
-                builder.addEdit("Insert from pose");
-            } else {
-                builder.addEdit("Replace with pose");
-            }
-            if (frameIndex > 0) {
-                builder.addDialog("Adjust timing");
-                builder.addEdit("Delete selected");
-                //builder.add("Move"); TODO
-            }
-            if (frameIndex > 1) {
-                builder.addDialog("Delete previous");
-            }
-            int lastFrame = target.getTrack().countKeyframes() - 1;
-            if (frameIndex != -1 && frameIndex < lastFrame) {
-                builder.addDialog("Delete next");
-            }
-        }
     }
 
     /**
