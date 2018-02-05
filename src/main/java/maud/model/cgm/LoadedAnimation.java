@@ -879,6 +879,31 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Reverse all bone/spatial tracks.
+     */
+    public void reverse() {
+        float duration = getDuration();
+        Animation newAnimation = new Animation(loadedName, duration);
+
+        Animation oldAnimation = getReal();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
+            Track newTrack;
+            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
+                newTrack = TrackEdit.reverse(track);
+            } else {
+                newTrack = track.clone(); // TODO other track types
+            }
+            newAnimation.addTrack(newTrack);
+        }
+
+        String name = oldAnimation.getName();
+        String description = String.format("reverse the %s animation",
+                MyString.quote(name));
+        editableCgm.replace(oldAnimation, newAnimation, description);
+    }
+
+    /**
      * Resample all bone/spatial tracks in the loaded animation at the specified
      * rate.
      *

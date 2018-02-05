@@ -107,6 +107,7 @@ public class AnimationMenus {
             builder.addDialog("Resample all tracks at rate");
             builder.addDialog("Resample all tracks to number");
         }
+        builder.addEdit("Reverse");
         builder.addEdit("Simplify");
         if (duration > 0f) {
             builder.addEdit("Truncate");
@@ -224,6 +225,7 @@ public class AnimationMenus {
             for (String name : names) {
                 builder.add(name);
             }
+
             if (cgm == Maud.getModel().getTarget()) {
                 builder.show("select animControl ");
             } else if (cgm == Maud.getModel().getSource()) {
@@ -313,6 +315,10 @@ public class AnimationMenus {
 
             case "Resample all tracks at rate":
                 EditorDialogs.resampleAnimation(true);
+                break;
+
+            case "Reverse":
+                animation.reverse();
                 break;
 
             case "Simplify":
