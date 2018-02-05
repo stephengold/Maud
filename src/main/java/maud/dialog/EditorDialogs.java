@@ -213,7 +213,7 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "delete sgc" dialog.
+     * Display a "delete sgc" dialog. TODO sort methods
      */
     public static void deleteSgc() {
         String name = Maud.getModel().getTarget().getSgc().name();
@@ -233,8 +233,8 @@ public class EditorDialogs {
         int max = numFrames - frameIndex - 2;
         IntegerDialog controller = new IntegerDialog("Delete", 1, max, false);
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter number of keyframes:", "1",
-                ActionPrefix.deleteNextKeyframes, controller);
+        Maud.gui.showTextEntryDialog("Enter the number of frames to delete:",
+                "1", ActionPrefix.deleteNextKeyframes, controller);
     }
 
     /**
@@ -246,8 +246,8 @@ public class EditorDialogs {
         int max = frameIndex - 1;
         IntegerDialog controller = new IntegerDialog("Delete", 1, max, false);
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter number of keyframes:", "1",
-                ActionPrefix.deletePreviousKeyframes, controller);
+        Maud.gui.showTextEntryDialog("Enter the number of frames to delete:",
+                "1", ActionPrefix.deletePreviousKeyframes, controller);
     }
 
     /**
@@ -709,6 +709,39 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
                 defaultText, ActionPrefix.setDurationSame, controller);
+    }
+
+    /**
+     * Display a "set frameTime" dialog.
+     */
+    public static void setFrameTime() {
+        Cgm target = Maud.getModel().getTarget();
+        SelectedTrack track = target.getTrack();
+        int frameIndex = track.findKeyframeIndex();
+        assert frameIndex > 0 : frameIndex;
+        float minTime = track.keyframeTime(frameIndex - 1);
+
+        int numFrames = track.countKeyframes();
+        float maxTime;
+        if (frameIndex < numFrames - 1) {
+            maxTime = track.keyframeTime(frameIndex + 1);
+        } else {
+            maxTime = target.getAnimation().getDuration();
+        }
+
+        float delta = maxTime - minTime;
+        assert delta > 0f : delta;
+        maxTime -= delta / 100f;
+        minTime += delta / 100f;
+
+        float oldTime = target.getAnimation().getTime();
+        String defaultValue = Float.toString(oldTime);
+
+        FloatDialog controller
+                = new FloatDialog("Adjust", minTime, maxTime, false);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter new time for the frame:",
+                defaultValue, ActionPrefix.setFrameTime, controller);
     }
 
     /**

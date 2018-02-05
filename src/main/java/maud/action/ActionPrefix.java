@@ -425,15 +425,19 @@ public class ActionPrefix {
     final public static String setDurationProportional
             = "set duration proportional ";
     /**
-     * argument is a new duration in seconds
+     * argument is a decimal value (duration in seconds)
      */
     final public static String setDurationSame = "set duration same ";
+    /**
+     * argument is a decimal value (time in seconds)
+     */
+    final public static String setFrameTime = "set frameTime ";
     /**
      * argument is 0 or 1
      */
     final public static String setIndexBase = "set indexBase ";
     /**
-     * argument is a decimal value
+     * argument is a decimal value (size in bits)
      */
     final public static String setMapSize = "set mapSize ";
     /**

@@ -957,6 +957,41 @@ public class TrackEdit {
     }
 
     /**
+     * Copy the specified track, adjusting the time of the indexed frame.
+     *
+     * @param oldTrack the track to copy (not null, unaffected)
+     * @param frameIndex the index of the frame to adjust (&gt;0)
+     * @param newTime new time for the frame (in seconds, &gt;0)
+     * @return a new track of the same type as oldTrack, or null if unsuccessful
+     */
+    public static Track setFrameTime(Track oldTrack, int frameIndex,
+            float newTime) {
+        float[] oldTimes = oldTrack.getKeyFrameTimes();
+        int numFrames = oldTimes.length;
+        Validate.inRange(frameIndex, "frame index", 1, numFrames - 1);
+        Validate.positive(newTime, "new time");
+
+        if (newTime <= oldTimes[frameIndex - 1]) {
+            return null;
+        }
+        if (frameIndex < numFrames - 1) {
+            if (newTime >= oldTimes[frameIndex + 1]) {
+                return null;
+            }
+        } else {
+            if (newTime > oldTrack.getLength()) {
+                return null;
+            }
+        }
+
+        Track result = oldTrack.clone();
+        float[] newTimes = result.getKeyFrameTimes(); // an alias
+        newTimes[frameIndex] = newTime;
+
+        return result;
+    }
+
+    /**
      * Alter the keyframes in a bone/spatial track.
      *
      * @param track (not null, modified)

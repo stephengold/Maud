@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -74,6 +74,10 @@ class KeyframeMenus {
         } else {
             EditableCgm target = Maud.getModel().getTarget();
             switch (remainder) {
+                case "Adjust timing":
+                    EditorDialogs.setFrameTime();
+                    break;
+
                 case "Delete next":
                     EditorDialogs.deleteNextKeyframes();
                     break;

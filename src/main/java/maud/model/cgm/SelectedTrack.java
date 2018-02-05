@@ -598,6 +598,40 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
+     * Adjust the timing of the selected frame.
+     *
+     * @param newTime new time for the frame (in seconds, &gt;0)
+     */
+    public void setFrameTime(float newTime) {
+        Validate.positive(newTime, "new time");
+        assert cgm.getBone().hasTrack();
+
+        Animation newAnimation = newAnimation();
+
+        int frameIndex = findKeyframeIndex();
+        BoneTrack selectedTrack = find();
+
+        Animation oldAnimation = cgm.getAnimation().getReal();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
+            Track clone;
+            if (track == selectedTrack) {
+                clone = TrackEdit.setFrameTime(selectedTrack, frameIndex,
+                        newTime);
+                assert clone != null;
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+        cgm.getAnimation().setTime(newTime);
+
+        String eventDescription = String.format("adjust the timing of frame%s",
+                MaudUtil.formatIndex(frameIndex));
+        editableCgm.replace(oldAnimation, newAnimation, eventDescription);
+    }
+
+    /**
      * Alter all rotations to match the displayed pose.
      */
     public void setRotationAll() {

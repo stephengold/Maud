@@ -607,7 +607,7 @@ public class BuildMenus {
     }
 
     /**
-     * Build a Keyframe menu.
+     * Build a Keyframe menu. TODO move to KeyframeMenus class
      */
     private void buildKeyframeMenu() {
         builder.addTool("Tool");
@@ -621,6 +621,7 @@ public class BuildMenus {
                 builder.addEdit("Replace with pose");
             }
             if (frameIndex > 0) {
+                builder.addDialog("Adjust timing");
                 builder.addEdit("Delete selected");
                 //builder.add("Move"); TODO
             }

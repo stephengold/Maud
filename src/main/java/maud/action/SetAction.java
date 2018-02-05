@@ -284,6 +284,11 @@ class SetAction {
             float value = Float.parseFloat(arg);
             target.getAnimation().setDurationSame(value);
 
+        } else if (actionString.startsWith(ActionPrefix.setFrameTime)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setFrameTime);
+            float value = Float.parseFloat(arg);
+            target.getTrack().setFrameTime(value);
+
         } else if (actionString.startsWith(ActionPrefix.setIndexBase)) {
             arg = MyString.remainder(actionString, ActionPrefix.setIndexBase);
             int newSetting = Integer.parseInt(arg);
