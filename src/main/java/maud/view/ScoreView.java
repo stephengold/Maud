@@ -62,6 +62,7 @@ import maud.mesh.YSwarm;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedAnimation;
+import maud.model.cgm.PlayOptions;
 import maud.model.cgm.StaffTrack;
 import maud.model.option.MiscOptions;
 import maud.model.option.ScoreOptions;
@@ -599,6 +600,7 @@ public class ScoreView implements EditorView {
             attachBones();
             attachSpatialTracks();
             attachGnomon();
+            attachLimits();
 
             cgm.getScorePov().update(updateInterval);
 
@@ -853,6 +855,11 @@ public class ScoreView implements EditorView {
      */
     private void attachGnomon() {
         float gnomonX = gnomonX();
+        /*
+         * The gnomon is taller than the main score, by 10% of the
+         * viewport height.  The excess height at the top and bottom of
+         * a gnomon is referred to as its "handles".
+         */
         float handleSize = 0.1f * cgm.getScorePov().getHalfHeight(); // world units
         Vector3f start = new Vector3f(gnomonX, handleSize, zLines);
         Vector3f end = new Vector3f(gnomonX, -height - handleSize, zLines);
@@ -1039,6 +1046,30 @@ public class ScoreView implements EditorView {
         float x = bottomX - xHeight * compression;
         float y = centerY - yWidth / 2;
         label.setLocalTranslation(x, y, zLabels);
+    }
+
+    /**
+     * Attach time limits to the visuals.
+     */
+    private void attachLimits() {
+        float lowerX, upperX;
+        float duration = cgm.getAnimation().getDuration();
+        if (duration > 0f) {
+            PlayOptions options = cgm.getPlay();
+            lowerX = options.getLowerLimit() / duration;
+            float upperLimit = Math.min(options.getUpperLimit(), duration);
+            upperX = upperLimit / duration;
+        } else {
+            lowerX = xLeftMargin;
+            upperX = xLeftMargin;
+        }
+
+        RectangleMesh limitsMesh
+                = new RectangleMesh(lowerX, upperX, -height, 0f, 1f);
+        Geometry limitsGeometry = new Geometry("limits", limitsMesh);
+        limitsGeometry.setLocalTranslation(0f, 0f, zLines);
+        visuals.attachChild(limitsGeometry);
+        limitsGeometry.setMaterial(r.limitsMaterial);
     }
 
     /**

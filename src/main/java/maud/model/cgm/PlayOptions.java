@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@
 package maud.model.cgm;
 
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 
 /**
  * The MVC model of animation playback options for a particular C-G model. For
@@ -61,12 +62,31 @@ public class PlayOptions implements Cloneable {
      */
     private boolean reverseFlag = false;
     /**
+     * lower time limit (in seconds, &ge;0, &le;upperLimit)
+     */
+    private float lowerLimit = 0f;
+    /**
      * relative playback speed and direction, when not paused (1 &rarr; forward
      * at normal speed)
      */
     private float speed = 1f;
+    /**
+     * upper time limit (in seconds, &ge;lowerLimit)
+     */
+    private float upperLimit = Float.MAX_VALUE;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Read the lower time limit.
+     *
+     * @return limit (in seconds, &ge;0, &le;upperLimit)
+     */
+    public float getLowerLimit() {
+        assert lowerLimit >= 0f : lowerLimit;
+        assert lowerLimit <= upperLimit : lowerLimit;
+        return lowerLimit;
+    }
 
     /**
      * Read the playback speed and direction.
@@ -75,6 +95,16 @@ public class PlayOptions implements Cloneable {
      */
     public float getSpeed() {
         return speed;
+    }
+
+    /**
+     * Read the upper time limit.
+     *
+     * @return limit (in seconds, &ge;lowerLimit)
+     */
+    public float getUpperLimit() {
+        assert upperLimit >= lowerLimit : upperLimit;
+        return upperLimit;
     }
 
     /**
@@ -87,6 +117,14 @@ public class PlayOptions implements Cloneable {
     }
 
     /**
+     * Reset the time limits.
+     */
+    public void resetLimits() {
+        lowerLimit = 0f;
+        upperLimit = Float.MAX_VALUE;
+    }
+
+    /**
      * Alter whether the animation plays continuously.
      *
      * @param newSetting true &rarr; play continuously, false &rarr; play
@@ -94,6 +132,16 @@ public class PlayOptions implements Cloneable {
      */
     public void setContinue(boolean newSetting) {
         continueFlag = newSetting;
+    }
+
+    /**
+     * Alter the lower time limit.
+     *
+     * @param newLimit (in seconds, &ge;0)
+     */
+    public void setLowerLimit(float newLimit) {
+        Validate.inRange(newLimit, "new limit", 0f, upperLimit);
+        lowerLimit = newLimit;
     }
 
     /**
@@ -124,6 +172,16 @@ public class PlayOptions implements Cloneable {
     }
 
     /**
+     * Alter the upper time limit.
+     *
+     * @param newLimit (in seconds)
+     */
+    public void setUpperLimit(float newLimit) {
+        Validate.inRange(newLimit, "new limit", lowerLimit, Float.MAX_VALUE);
+        upperLimit = newLimit;
+    }
+
+    /**
      * Toggle between explicitly paused and playing.
      */
     public void togglePaused() {
@@ -148,7 +206,7 @@ public class PlayOptions implements Cloneable {
         return reverseFlag;
     }
     // *************************************************************************
-    // Object methods
+    // Cloneable methods
 
     /**
      * Create a deep copy of this object.

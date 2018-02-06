@@ -484,7 +484,7 @@ public class EditorScreen extends GuiScreenController {
 
     /**
      * Set a bank of 3 sliders that control a color and update the status
-     * labels.
+     * labels. TODO use library
      *
      * @param name unique id prefix of the bank (not null)
      * @param transform how each component has been transformed (not null)
@@ -747,26 +747,34 @@ public class EditorScreen extends GuiScreenController {
         assert animation.isMoving();
 
         float speed = play.getSpeed();
+        assert speed != 0f;
         float time = animation.getTime();
         time += speed * updateInterval;
 
         boolean cont = play.willContinue();
         boolean reverse = play.willReverse();
         float duration = animation.getDuration();
-        if (duration == 0f) {
-            time = 0f;
-        } else if (cont && !reverse) {
-            time = MyMath.modulo(time, duration); // wrap
-        } else {
-            float freeTime = time;
-            time = FastMath.clamp(time, 0f, duration);
-            if (time != freeTime) { // reached a limit
-                if (reverse) {
-                    play.setSpeed(-speed); // pong
-                } else {
-                    time = duration - time; // wrap
+        float upperLimit = Math.min(play.getUpperLimit(), duration);
+        float lowerLimit = play.getLowerLimit();
+        float range = upperLimit - lowerLimit;
+        assert range >= 0f : range;
+        if (range == 0f) { // nowhere to go
+            time = lowerLimit;
+        } else if (time <= lowerLimit && speed < 0f
+                || time >= upperLimit && speed > 0f) {
+            if (cont && !reverse) { // wrap around
+                time = lowerLimit + MyMath.modulo(time - lowerLimit, range);
+            } else {
+                time = FastMath.clamp(time, lowerLimit, upperLimit);
+                if (reverse) { // reverse direction
+                    play.setSpeed(-speed);
                 }
-                play.setPaused(!cont);
+                if (!cont) { // pause
+                    play.setPaused(true);
+                    if (!reverse) { // wrap to the other limit
+                        time = upperLimit + lowerLimit - time;
+                    }
+                }
             }
         }
         animation.setTime(time);

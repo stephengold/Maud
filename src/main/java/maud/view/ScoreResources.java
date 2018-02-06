@@ -102,6 +102,10 @@ public class ScoreResources {
      */
     final Material gnomonFrozen;
     /**
+     * translucent material to highlight all times between the limits
+     */
+    final Material limitsMaterial;
+    /**
      * material for pose markers
      */
     final Material poseMaterial;
@@ -184,6 +188,13 @@ public class ScoreResources {
         wireNotSelected = MyAsset.createWireframeMaterial(assetManager, grey);
         wireSelected = MyAsset.createWireframeMaterial(assetManager, black);
 
+        ColorRGBA frosted = new ColorRGBA(1f, 1f, 1f, 0.25f);
+        limitsMaterial = MyAsset.createUnshadedMaterial(assetManager, frosted);
+        RenderState rsLimits = limitsMaterial.getAdditionalRenderState();
+        rsLimits.setBlendMode(RenderState.BlendMode.Alpha);
+        /*
+         * wireframe materials for axes
+         */
         float pointSize = 3f;
         wMaterial = MyAsset.createWireframeMaterial(assetManager, wColor,
                 pointSize);
@@ -193,7 +204,9 @@ public class ScoreResources {
                 pointSize);
         zMaterial = MyAsset.createWireframeMaterial(assetManager, zColor,
                 pointSize);
-
+        /*
+         * textured materials for track-component icons
+         */
         traMaterial = MyAsset.createUnshadedMaterial(assetManager,
                 "Textures/icons/translate.png");
         rotMaterial = MyAsset.createUnshadedMaterial(assetManager,
@@ -204,7 +217,7 @@ public class ScoreResources {
         poseMaterial = new Material(assetManager,
                 "MatDefs/wireframe/multicolor2.j3md");
         poseMaterial.setBoolean("UseVertexColor", true);
-        poseMaterial.setFloat("PointSize", 2f * pointSize);
+        poseMaterial.setFloat("PointSize", 2f * pointSize); // twice as big
         Texture poseShape = MyAsset.loadTexture(assetManager,
                 "Textures/shapes/saltire.png");
         poseMaterial.setTexture("PointShape", poseShape);
