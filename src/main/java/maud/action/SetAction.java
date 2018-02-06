@@ -39,6 +39,7 @@ import maud.dialog.EditorDialogs;
 import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
+import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedOverride;
@@ -168,6 +169,26 @@ class SetAction {
 
             case Action.setSpatialAngleSnapZ:
                 target.getSpatial().snapRotation(PhysicsSpace.AXIS_Z);
+                break;
+
+            case Action.setTimeLimitLower:
+                Cgm cgm = Maud.gui.mouseCgm();
+                if (cgm != null) {
+                    float currentTime = cgm.getAnimation().getTime();
+                    if (currentTime <= cgm.getPlay().getUpperLimit()) {
+                        cgm.getPlay().setLowerLimit(currentTime);
+                    }
+                }
+                break;
+
+            case Action.setTimeLimitUpper:
+                cgm = Maud.gui.mouseCgm();
+                if (cgm != null) {
+                    float currentTime = cgm.getAnimation().getTime();
+                    if (currentTime >= cgm.getPlay().getLowerLimit()) {
+                        cgm.getPlay().setUpperLimit(currentTime);
+                    }
+                }
                 break;
 
             case Action.setTrackRotationAll:

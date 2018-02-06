@@ -217,6 +217,8 @@ public class Action {
     final static String setSpatialAngleSnapX = "set spatialAngle snapX";
     final static String setSpatialAngleSnapY = "set spatialAngle snapY";
     final static String setSpatialAngleSnapZ = "set spatialAngle snapZ";
+    final static String setTimeLimitLower = "set timeLimit lower";
+    final static String setTimeLimitUpper = "set timeLimit upper";
     final static String setTrackRotationAll = "set track rotation all";
     final static String setTrackScaleAll = "set track scale all";
     final static String setTrackTranslationAll = "set track translation all";
