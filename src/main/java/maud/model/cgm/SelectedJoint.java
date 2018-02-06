@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -221,7 +221,8 @@ public class SelectedJoint implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the selected joint.
+     * Alter which C-G model contains the selected joint. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null)
      */

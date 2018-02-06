@@ -72,6 +72,8 @@ public class PhysicsMenus {
 
     /**
      * Build a Physics menu.
+     *
+     * @param builder the menu builder to use (not null, modified)
      */
     static void buildPhysicsMenu(MenuBuilder builder) {
         builder.addTool("Shape tool");

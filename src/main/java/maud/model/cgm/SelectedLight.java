@@ -414,7 +414,8 @@ public class SelectedLight implements JmeCloneable {
     }
 
     /**
-     * Alter which C-G model contains the light.
+     * Alter which C-G model contains the light. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null, aliases created)
      */

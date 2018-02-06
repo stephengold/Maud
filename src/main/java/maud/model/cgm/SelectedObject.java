@@ -390,7 +390,8 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the selected object.
+     * Alter which C-G model contains the selected object. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null, alias created)
      */

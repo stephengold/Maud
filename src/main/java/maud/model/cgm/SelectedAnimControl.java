@@ -488,7 +488,8 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Alter which C-G model contains the selected anim control.
+     * Alter which C-G model contains the selected anim control. (Invoked only
+     * during initialization and cloning.)
      *
      * @param newCgm (not null, alias created)
      */

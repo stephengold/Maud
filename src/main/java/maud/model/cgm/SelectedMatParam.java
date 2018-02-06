@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -256,7 +256,8 @@ public class SelectedMatParam implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the data.
+     * Alter which C-G model contains the data. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null, alias created)
      */
