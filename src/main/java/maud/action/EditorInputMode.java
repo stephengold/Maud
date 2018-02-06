@@ -384,7 +384,7 @@ public class EditorInputMode extends InputMode {
             String newName = MyString.remainder(actionString,
                     ActionPrefix.retargetAnimation);
             EditableCgm target = Maud.getModel().getTarget();
-            target.retargetAndAdd(newName);
+            target.getAnimControl().retarget(newName);
             target.getAnimation().load(newName);
             handled = true;
 

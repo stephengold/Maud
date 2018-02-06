@@ -28,10 +28,12 @@ package maud.model.cgm;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
+import com.jme3.animation.Skeleton;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.wes.TrackEdit;
+import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.WhichCgm;
@@ -70,6 +73,11 @@ public class SelectedAnimControl implements JmeCloneable {
      * most recent selection
      */
     private AnimControl last = null;
+    /**
+     * editable C-G model, if any, containing the anim control (set by
+     * {@link #setCgm(Cgm)})
+     */
+    private EditableCgm editableCgm;
     /**
      * C-G model containing the anim control (set by {@link #setCgm(Cgm)})
      */
@@ -143,8 +151,7 @@ public class SelectedAnimControl implements JmeCloneable {
             }
         }
 
-        EditableCgm targetCgm = Maud.getModel().getTarget();
-        targetCgm.addAnimation(chain);
+        editableCgm.addAnimation(chain);
     }
 
     /**
@@ -408,8 +415,7 @@ public class SelectedAnimControl implements JmeCloneable {
             mix.addTrack(clone);
         }
 
-        EditableCgm targetCgm = Maud.getModel().getTarget();
-        targetCgm.addAnimation(mix);
+        editableCgm.addAnimation(mix);
     }
 
     /**
@@ -437,6 +443,31 @@ public class SelectedAnimControl implements JmeCloneable {
             cgm.getAnimation().loadBindPose();
             last = found;
         }
+    }
+
+    /**
+     * Retarget the selected source animation into a new animation and add it to
+     * the anim control.
+     *
+     * @param newAnimationName name for the resulting animation (not null)
+     */
+    public void retarget(String newAnimationName) {
+        Validate.nonNull(newAnimationName, "new animation name");
+
+        Cgm source = Maud.getModel().getSource();
+        Animation sourceAnimation = source.getAnimation().getReal();
+        Skeleton sourceSkeleton = source.getSkeleton().find();
+        Skeleton targetSkeleton = editableCgm.getSkeleton().find();
+        SkeletonMapping effectiveMap = Maud.getModel().getMap().effectiveMap();
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        Animation retargeted = TrackEdit.retargetAnimation(sourceAnimation,
+                sourceSkeleton, targetSkeleton, effectiveMap, techniques,
+                newAnimationName);
+
+        float duration = retargeted.getLength();
+        assert duration >= 0f : duration;
+
+        editableCgm.addAnimation(retargeted);
     }
 
     /**
@@ -488,15 +519,21 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Alter which C-G model contains the selected anim control. (Invoked only
-     * during initialization and cloning.)
+     * Alter which C-G model contains the anim control. (Invoked only during
+     * initialization and cloning.)
      *
-     * @param newCgm (not null, alias created)
+     * @param newCgm (not null, aliases created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
         assert newCgm.getAnimControl() == this;
+
         cgm = newCgm;
+        if (newCgm instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newCgm;
+        } else {
+            editableCgm = null;
+        }
     }
     // *************************************************************************
     // JmeCloneable methods

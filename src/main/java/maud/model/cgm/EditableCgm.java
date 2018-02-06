@@ -54,7 +54,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.UserData;
 import com.jme3.scene.control.Control;
-import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.shader.VarType;
 import java.io.File;
 import java.io.IOException;
@@ -73,7 +72,6 @@ import jme3utilities.minie.MyControlP;
 import jme3utilities.nifty.dialog.VectorDialog;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TrackEdit;
-import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.PhysicsUtil;
@@ -118,7 +116,8 @@ public class EditableCgm extends LoadedCgm {
     // new methods exposed
 
     /**
-     * Add a new animation to the selected anim control.
+     * Add a new animation to the selected anim control. TODO add
+     * eventDescription argument
      *
      * @param newAnimation (not null, name not in use)
      */
@@ -816,30 +815,6 @@ public class EditableCgm extends LoadedCgm {
             shape.setHalfExtents(he);
             setEditedShapeSize();
         }
-    }
-
-    /**
-     * Add a re-targeted animation to the C-G model.
-     *
-     * @param newAnimationName name for the resulting animation (not null)
-     */
-    public void retargetAndAdd(String newAnimationName) {
-        Validate.nonNull(newAnimationName, "new animation name");
-
-        Cgm source = Maud.getModel().getSource();
-        Animation sourceAnimation = source.getAnimation().getReal();
-        Skeleton sourceSkeleton = source.getSkeleton().find();
-        Skeleton targetSkeleton = getSkeleton().find();
-        SkeletonMapping effectiveMap = Maud.getModel().getMap().effectiveMap();
-        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Animation retargeted = TrackEdit.retargetAnimation(sourceAnimation,
-                sourceSkeleton, targetSkeleton, effectiveMap, techniques,
-                newAnimationName);
-
-        float duration = retargeted.getLength();
-        assert duration >= 0f : duration;
-
-        addAnimation(retargeted);
     }
 
     /**
