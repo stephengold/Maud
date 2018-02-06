@@ -196,18 +196,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Duplicate the loaded animation and then load the new copy.
-     *
-     * @param newName name for the copy (not null)
-     */
-    public void copyAndLoad(String newName) {
-        Validate.nonNull(newName, "new name");
-
-        newCopy(newName);
-        load(newName);
-    }
-
-    /**
      * Count the number of bone tracks in the loaded animation.
      *
      * @return count (&ge;0)
@@ -780,49 +768,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Add a copy of the loaded animation to the C-G model. TODO move to
-     * SelectedAnimControl
-     *
-     * @param animationName name for the new animation (not null, not reserved,
-     * not in use)
-     */
-    public void newCopy(String animationName) {
-        Validate.nonEmpty(animationName, "animation name");
-        assert !isReserved(animationName) : animationName;
-        SelectedAnimControl sac = cgm.getAnimControl();
-        assert !sac.hasRealAnimation(animationName) : animationName;
-
-        Animation oldAnimation = getReal();
-        float duration = getDuration();
-        Animation copyAnim = new Animation(animationName, duration);
-        if (oldAnimation != null) {
-            Track[] oldTracks = oldAnimation.getTracks();
-            for (Track track : oldTracks) {
-                Track clone = track.clone();
-                copyAnim.addTrack(clone);
-            }
-        }
-        editableCgm.addAnimation(copyAnim);
-    }
-
-    /**
-     * Add a pose animation and then load it. TODO move to SelectedAnimControl
-     *
-     * @param newName name for the new animation (not null)
-     */
-    public void poseAndLoad(String newName) {
-        Validate.nonNull(newName, "new name");
-        assert !isReserved(newName) : newName;
-        SelectedAnimControl sac = cgm.getAnimControl();
-        assert !sac.hasRealAnimation(newName) : newName;
-
-        Pose pose = cgm.getPose().get();
-        Animation poseAnim = pose.capture(newName);
-        editableCgm.addAnimation(poseAnim);
-        load(newName);
-    }
-
-    /**
      * Reduce all bone/spatial tracks in the loaded animation by the specified
      * factor.
      *
@@ -1219,7 +1164,7 @@ public class LoadedAnimation implements Cloneable {
      * @param newSpeed playback speed
      */
     private void loadReal(String name, float newSpeed) {
-        Validate.nonNull(name, "animation name");
+        assert name != null;
         assert !isReserved(name);
 
         loadedName = name;

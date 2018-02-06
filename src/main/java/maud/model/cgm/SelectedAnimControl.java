@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.wes.Pose;
 import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
@@ -91,8 +92,8 @@ public class SelectedAnimControl implements JmeCloneable {
      *
      * @param which1 which C-G model loaded the animation to go 1st (not null)
      * @param which2 which C-G model loaded the animation to go 2nd (not null)
-     * @param animationName name for the new animation (not null, not reserved,
-     * not in use)
+     * @param animationName a name for the new animation (not null, not
+     * reserved, not in use)
      */
     public void chain(WhichCgm which1, WhichCgm which2, String animationName) {
         Validate.nonNull(which1, "1st animation's model");
@@ -435,6 +436,47 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
+     * Add a copy of the loaded animation.
+     *
+     * @param newAnimationName a name for the new animation (not null, not
+     * reserved, not in use)
+     */
+    public void newFromCopy(String newAnimationName) {
+        Validate.nonEmpty(newAnimationName, "new animation name");
+        assert !LoadedAnimation.isReserved(newAnimationName) : newAnimationName;
+        assert !hasRealAnimation(newAnimationName) : newAnimationName;
+
+        LoadedAnimation loaded = cgm.getAnimation();
+        Animation oldAnimation = loaded.getReal();
+        float duration = loaded.getDuration();
+        Animation copyAnim = new Animation(newAnimationName, duration);
+        if (oldAnimation != null) {
+            Track[] oldTracks = oldAnimation.getTracks();
+            for (Track track : oldTracks) {
+                Track clone = track.clone();
+                copyAnim.addTrack(clone);
+            }
+        }
+        editableCgm.addAnimation(copyAnim);
+    }
+
+    /**
+     * Add a pose animation.
+     *
+     * @param newAnimationName a name for the new animation (not null, not
+     * reserved, not in use)
+     */
+    public void newFromPose(String newAnimationName) {
+        Validate.nonNull(newAnimationName, "new animation name");
+        assert !LoadedAnimation.isReserved(newAnimationName) : newAnimationName;
+        assert !hasRealAnimation(newAnimationName) : newAnimationName;
+
+        Pose pose = cgm.getPose().get();
+        Animation poseAnim = pose.capture(newAnimationName);
+        editableCgm.addAnimation(poseAnim);
+    }
+
+    /**
      * Update after (for instance) selecting a different spatial or S-G control.
      */
     void postSelect() {
@@ -449,7 +491,8 @@ public class SelectedAnimControl implements JmeCloneable {
      * Retarget the selected source animation into a new animation and add it to
      * the anim control.
      *
-     * @param newAnimationName name for the resulting animation (not null)
+     * @param newAnimationName a name for the new animation (not null, not
+     * reserved, not in use)
      */
     public void retarget(String newAnimationName) {
         Validate.nonNull(newAnimationName, "new animation name");

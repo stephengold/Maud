@@ -265,7 +265,9 @@ public class EditorInputMode extends InputMode {
         if (actionString.startsWith(ActionPrefix.copyAnimation)) {
             String destName = MyString.remainder(actionString,
                     ActionPrefix.copyAnimation);
-            Maud.getModel().getTarget().getAnimation().copyAndLoad(destName);
+            Cgm target = Maud.getModel().getTarget();
+            target.getAnimControl().newFromCopy(destName);
+            target.getAnimation().load(destName);
             handled = true;
         }
 
