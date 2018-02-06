@@ -717,29 +717,7 @@ public class LoadedAnimation implements Cloneable {
                  */
                 playSpeed = 1f;
             }
-            loadAnimation(name, playSpeed);
-        }
-    }
-
-    /**
-     * Load the named real animation (not bind/retargeted pose) at t=0 with the
-     * specified playback speed. TODO rename loadReal
-     *
-     * @param name which animation (not null)
-     * @param newSpeed playback speed
-     */
-    public void loadAnimation(String name, float newSpeed) {
-        Validate.nonNull(name, "animation name");
-        assert !isReserved(name);
-
-        loadedName = name;
-        cgm.getPlay().resetLimits();
-        cgm.getPlay().setSpeed(newSpeed);
-        currentTime = 0f;
-
-        boolean frozen = cgm.getPose().isFrozen();
-        if (!frozen) {
-            cgm.getPose().setToAnimation();
+            loadReal(name, playSpeed);
         }
     }
 
@@ -1229,5 +1207,29 @@ public class LoadedAnimation implements Cloneable {
     public LoadedAnimation clone() throws CloneNotSupportedException {
         LoadedAnimation clone = (LoadedAnimation) super.clone();
         return clone;
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Load the named real animation (not bind/retargeted pose) at t=0 with the
+     * specified playback speed.
+     *
+     * @param name which animation (not null)
+     * @param newSpeed playback speed
+     */
+    private void loadReal(String name, float newSpeed) {
+        Validate.nonNull(name, "animation name");
+        assert !isReserved(name);
+
+        loadedName = name;
+        cgm.getPlay().resetLimits();
+        cgm.getPlay().setSpeed(newSpeed);
+        currentTime = 0f;
+
+        boolean frozen = cgm.getPose().isFrozen();
+        if (!frozen) {
+            cgm.getPose().setToAnimation();
+        }
     }
 }
