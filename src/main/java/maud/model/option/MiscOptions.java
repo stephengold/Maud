@@ -132,22 +132,22 @@ public class MiscOptions implements Cloneable {
     // new methods exposed
 
     /**
-     * Read which background to view/edit in BackgroundTool. TODO sort methods
-     *
-     * @return an enum value (not null)
-     */
-    public Background getBackground() {
-        assert background != null;
-        return background;
-    }
-
-    /**
      * Test whether to display angles in degrees.
      *
      * @return true for degrees, otherwise false
      */
     public boolean getAnglesInDegrees() {
         return anglesInDegrees;
+    }
+
+    /**
+     * Read which background to view/edit in BackgroundTool.
+     *
+     * @return an enum value (not null)
+     */
+    public Background getBackground() {
+        assert background != null;
+        return background;
     }
 
     /**
@@ -448,15 +448,6 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter the location of the display's left-right boundary.
-     *
-     * @param newX display X-coordinate
-     */
-    public void setXBoundary(float newX) {
-        xBoundary = FastMath.clamp(newX, minXBoundary, maxXBoundary);
-    }
-
-    /**
      * Alter the submenu warp fractions.
      *
      * @param newWarpX (&ge;0, &le;1)
@@ -468,6 +459,15 @@ public class MiscOptions implements Cloneable {
 
         warpX = newWarpX;
         warpY = newWarpY;
+    }
+
+    /**
+     * Alter the location of the display's left-right boundary.
+     *
+     * @param newX display X-coordinate
+     */
+    public void setXBoundary(float newX) {
+        xBoundary = FastMath.clamp(newX, minXBoundary, maxXBoundary);
     }
 
     /**
