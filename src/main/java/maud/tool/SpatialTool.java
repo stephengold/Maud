@@ -35,7 +35,6 @@ import jme3utilities.MyString;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.GuiWindowController;
 import maud.Maud;
 import maud.model.cgm.SelectedSpatial;
 
