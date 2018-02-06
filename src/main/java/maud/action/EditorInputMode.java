@@ -150,45 +150,51 @@ public class EditorInputMode extends InputMode {
                 case "apply":
                     handled = applyAction(actionString);
                     break;
-                case "copy":
-                    handled = copyAction(actionString);
-                    break;
+
                 case "delete":
                     handled = DeleteAction.process(actionString);
                     break;
+
                 case "launch":
                     handled = launchAction(actionString);
                     break;
+
                 case "load":
                     handled = LoadAction.process(actionString);
                     break;
+
                 case "new":
                     handled = NewAction.process(actionString);
                     break;
+
                 case "next":
                     handled = NextAction.process(actionString);
                     break;
+
                 case "pick":
                     handled = PickAction.process(actionString);
                     break;
+
                 case "previous":
                     handled = PreviousAction.process(actionString);
                     break;
+
                 case "reduce":
                     handled = reduceAction(actionString);
                     break;
+
                 case "rename":
                     handled = RenameAction.process(actionString);
                     break;
+
                 case "resample":
                     handled = resampleAction(actionString);
                     break;
+
                 case "reset":
                     handled = ResetAction.process(actionString);
                     break;
-                case "retarget":
-                    handled = retargetAction(actionString);
-                    break;
+
                 case "save":
                     handled = saveAction(actionString);
                     break;
@@ -209,15 +215,19 @@ public class EditorInputMode extends InputMode {
                 case "set":
                     handled = SetAction.process(actionString);
                     break;
+
                 case "toggle":
                     handled = toggleAction(actionString);
                     break;
+
                 case "view":
                     handled = viewAction(actionString);
                     break;
+
                 case "warp":
                     handled = warpAction(actionString);
                     break;
+
                 case "wrap":
                     handled = wrapAction(actionString);
             }
@@ -248,26 +258,6 @@ public class EditorInputMode extends InputMode {
         boolean handled = false;
         if (actionString.equals(Action.applyDisplaySettings)) {
             DisplaySettings.applyToDisplay();
-            handled = true;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an ongoing action that starts with the word "copy".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean copyAction(String actionString) {
-        boolean handled = false;
-        if (actionString.startsWith(ActionPrefix.copyAnimation)) {
-            String destName = MyString.remainder(actionString,
-                    ActionPrefix.copyAnimation);
-            Cgm target = Maud.getModel().getTarget();
-            target.getAnimControl().newFromCopy(destName);
-            target.getAnimation().load(destName);
             handled = true;
         }
 
@@ -368,31 +358,6 @@ public class EditorInputMode extends InputMode {
 
         } else {
             handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an ongoing action that starts with the word "retarget".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean retargetAction(String actionString) {
-        boolean handled = false;
-
-        if (actionString.startsWith(ActionPrefix.retargetAnimation)) {
-            String newName = MyString.remainder(actionString,
-                    ActionPrefix.retargetAnimation);
-            EditableCgm target = Maud.getModel().getTarget();
-            target.getAnimControl().retarget(newName);
-            target.getAnimation().load(newName);
-            handled = true;
-
-        } else if (actionString.equals(Action.retargetAnimation)) {
-            EditorDialogs.retargetAnimation();
-            handled = true;
         }
 
         return handled;

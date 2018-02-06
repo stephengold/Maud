@@ -252,7 +252,7 @@ public class AnimationMenus {
                         WhichCgm.Source);
                 break;
             case "Copy":
-                EditorDialogs.copyAnimation();
+                EditorDialogs.newAnimationFromCopy();
                 break;
             case "Mix tracks":
                 EditorDialogs.newAnimationFromMix();

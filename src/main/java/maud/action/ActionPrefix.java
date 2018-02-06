@@ -45,10 +45,6 @@ public class ActionPrefix {
     final private static Logger logger
             = Logger.getLogger(ActionPrefix.class.getName());
     /**
-     * argument is a name for the new animation
-     */
-    final public static String copyAnimation = "copy animation ";
-    /**
      * argument is a URL specification
      */
     final public static String deleteAssetLocationSpec
@@ -113,6 +109,10 @@ public class ActionPrefix {
     final public static String newAnimationFromChain
             = "new animation fromChain ";
     /**
+     * argument is a name for the new animation
+     */
+    final public static String newAnimationFromCopy = "new animation fromCopy ";
+    /**
      * arguments are a comma-separated list of decimal track indices and an
      * optional name for the new animation
      */
@@ -121,6 +121,11 @@ public class ActionPrefix {
      * argument is a name for the new animation
      */
     final public static String newAnimationFromPose = "new animation fromPose ";
+    /**
+     * argument is a name for the new animation
+     */
+    final public static String newAnimationFromRetarget
+            = "new animation fromRetarget ";
     /**
      * argument is a filesystem path to a directory/folder/JAR/ZIP
      */
@@ -200,10 +205,6 @@ public class ActionPrefix {
      */
     final public static String resampleTrackToNumber
             = "resample track toNumber ";
-    /**
-     * argument is the name for the new animation
-     */
-    final public static String retargetAnimation = "retarget animation ";
     /**
      * argument is a base file path
      */

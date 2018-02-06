@@ -1585,7 +1585,7 @@ the menu bar, status bar, and tool windows.
                                  width="*"/>
                         <control name="button" id="retargetButton"
                                  width="60px">
-                            <interact onRelease="perform(retarget animation)"/>
+                            <interact onRelease="perform(new animation fromRetarget)"/>
                         </control>
                     </panel>
                 </panel>

@@ -189,18 +189,6 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "copy animation" dialog.
-     */
-    public static void copyAnimation() {
-        String fromName = Maud.getModel().getTarget().getAnimation().getName();
-        DialogController controller = new AnimationNameDialog("Copy");
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter a name for the copied animation:",
-                fromName, ActionPrefix.copyAnimation, controller);
-    }
-
-    /**
      * Display a "delete animation" dialog.
      */
     public static void deleteAnimation() {
@@ -335,7 +323,8 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "new animation fromChain" dialog.
+     * Display a "new animation fromChain" dialog to enter the new animation
+     * name.
      *
      * @param which1 which C-G model loaded the animation to go 1st (not null)
      * @param which2 which C-G model loaded the animation to go 2nd (not null)
@@ -353,8 +342,21 @@ public class EditorDialogs {
         DialogController controller = new AnimationNameDialog("Chain");
 
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter a name for the chained animation:",
+        Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
                 defaultName, actionPrefix, controller);
+    }
+
+    /**
+     * Display a "new animation fromCopy" dialog to enter the new animation
+     * name.
+     */
+    public static void newAnimationFromCopy() {
+        String fromName = Maud.getModel().getTarget().getAnimation().getName();
+        DialogController controller = new AnimationNameDialog("Copy");
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
+                fromName, ActionPrefix.newAnimationFromCopy, controller);
     }
 
     /**
@@ -381,7 +383,7 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "new animation fromMix" dialog to enter the animation name.
+     * Display a "new animation fromMix" dialog to enter the new animation name.
      *
      * @param actionPrefix (not null, not empty)
      */
@@ -398,7 +400,8 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "new animation fromPose" dialog to enter the animation name.
+     * Display a "new animation fromPose" dialog to enter the new animation
+     * name.
      */
     public static void newAnimationFromPose() {
         DialogController controller = new AnimationNameDialog("Create");
@@ -407,6 +410,19 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
                 defaultName, ActionPrefix.newAnimationFromPose, controller);
+    }
+
+    /**
+     * Display a "new animation fromRetarget" dialog to enter the new animation
+     * name.
+     */
+    public static void newAnimationFromRetarget() {
+        String oldName = Maud.getModel().getSource().getAnimation().getName();
+        DialogController controller = new AnimationNameDialog("Retarget");
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
+                oldName, ActionPrefix.newAnimationFromRetarget, controller);
     }
 
     /**
@@ -617,18 +633,6 @@ public class EditorDialogs {
                 resampleCount(ActionPrefix.resampleTrackToNumber);
             }
         }
-    }
-
-    /**
-     * Display a "retarget animation" dialog to enter the new name.
-     */
-    public static void retargetAnimation() {
-        String oldName = Maud.getModel().getSource().getAnimation().getName();
-        DialogController controller = new AnimationNameDialog("Retarget");
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                oldName, ActionPrefix.retargetAnimation, controller);
     }
 
     /**

@@ -73,6 +73,8 @@ public class Action {
 
     final static String newAnimation = "new animation";
     final static String newAnimationFromPose = "new animation fromPose";
+    final static String newAnimationFromRetarget
+            = "new animation fromRetarget";
     final static String newCheckpoint = "new checkpoint";
     final static String newLight = "new light";
     final static String newMapping = "new mapping";
@@ -149,7 +151,6 @@ public class Action {
     final static String resetTwist = "reset twist";
     final static String resetVertexSelection = "reset vertex selection";
 
-    final static String retargetAnimation = "retarget animation";
     final static String saveDisplaySettings = "save displaySettings";
 
     final static String selectAnimationEditMenu = "select editAnimationMenu";
