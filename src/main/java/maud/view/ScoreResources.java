@@ -44,8 +44,8 @@ import com.jme3.texture.Texture;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.mesh.RectangleOutlineMesh;
+import jme3utilities.mesh.RoundedRectangle;
 import jme3utilities.ui.Locators;
-import maud.mesh.RoundedRectangle;
 
 /**
  * Constants, fonts, materials, and meshes used for 2-D visualization of
