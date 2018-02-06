@@ -912,7 +912,7 @@ public class LoadedAnimation implements Cloneable {
         }
 
         String eventDescription = String.format(
-                "resample the %s animation using %d frames",
+                "resample the %s animation to %d keyframes",
                 MyString.quote(loadedName), numSamples);
         editableCgm.replace(oldAnimation, newAnimation, eventDescription);
     }
