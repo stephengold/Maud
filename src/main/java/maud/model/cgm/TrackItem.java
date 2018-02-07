@@ -91,6 +91,16 @@ public class TrackItem {
     // new methods exposed
 
     /**
+     * Describe the track within the context of its animation.
+     *
+     * @return a descriptive string of text (not null, not empty)
+     */
+    public String describe() {
+        String description = MyAnimation.describe(track, animControl);
+        return description;
+    }
+
+    /**
      * Access the animation.
      *
      * @return the pre-existing instance (not null)
@@ -197,15 +207,14 @@ public class TrackItem {
     /**
      * Represent the track as a text string.
      *
-     * @return descriptive string of text (not null)
+     * @return a descriptive string of text (not null, not empty)
      */
     @Override
     public String toString() {
-        String desc = MyAnimation.describe(track, animControl);
+        String description = describe();
         String result = String.format("%s/%s/%s", animControlName,
-                animationName, desc);
+                animationName, description);
 
         return result;
     }
-
 }
