@@ -26,6 +26,7 @@
  */
 package maud.model.cgm;
 
+import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
@@ -320,6 +321,22 @@ public class SelectedTrack implements Cloneable {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Generate an item for the selected track.
+     *
+     * @return a new item
+     */
+    public TrackItem item() {
+        String animationName = cgm.getAnimation().getName();
+        String animControlName = cgm.getAnimControl().name();
+        AnimControl animControl = cgm.getAnimControl().find();
+        Track track = find();
+        TrackItem item = new TrackItem(animationName, animControlName,
+                animControl, track);
+
+        return item;
     }
 
     /**
