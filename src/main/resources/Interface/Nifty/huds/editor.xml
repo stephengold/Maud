@@ -947,69 +947,27 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="keyframeTool" title="Keyframe Tool"
                      hideOnClose="true"
-                     height="218px" width="270px" x="150" y="120">
+                     height="142px" width="310px" x="150" y="120">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal" height="27px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Track:  "/>
-                        <control name="label" id="trackDescription"
+                        <control name="label" id="trackDescription2"
                                  backgroundColor="#ffff"
                                  width="*"/>
                     </panel>
-                    <panel childLayout="horizontal" height="27px">
-                        <control name="label" text="Translations:  "
-                                 textHAlign="right"
-                                 width="80px"/>
-                        <control name="label" id="trackTranslationCount"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="40px"/>
-                        <panel width="10px"/>
-                        <control name="button" id="translationsToPoseKeyframeButton"
-                                 width="95px">
-                            <interact onRelease="perform(set track translation all)"/>
-                        </control>
-                    </panel>
-                    <panel childLayout="horizontal" height="27px">
-                        <control name="label" text="Rotations:  "
-                                 textHAlign="right"
-                                 width="80px"/>
-                        <control name="label" id="trackRotationCount"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="40px"/>
-                        <panel width="10px"/>
-                        <control name="button" id="rotationsToPoseKeyframeButton"
-                                 width="95px">
-                            <interact onRelease="perform(set track rotation all)"/>
-                        </control>
-                    </panel>
-                    <panel childLayout="horizontal" height="27px">
-                        <control name="label" text="Scales:  "
-                                 textHAlign="right"
-                                 width="80px"/>
-                        <control name="label" id="trackScaleCount"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="40px"/>
-                        <panel width="10px"/>
-                        <control name="button" id="scalesToPoseKeyframeButton"
-                                 width="95px">
-                            <interact onRelease="perform(set track scale all)"/>
-                        </control>
-                    </panel>
-                    <panel childLayout="horizontal" height="27px">
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" id="keyframeIndex"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="90px"/>
-                        <control name="label" text="  time = "/>
+                        <control name="label" text="  time =  "/>
                         <control name="label" id="keyframeTime"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="40px"/>
                         <control name="label" text=" sec"/>
                     </panel>
-                    <panel childLayout="horizontal" height="27px">
+                    <panel childLayout="horizontal" height="28px">
                         <panel/>
                         <control name="button" id="firstKeyframeButton"
                                  width="55px">
@@ -1032,7 +990,7 @@ the menu bar, status bar, and tool windows.
                         </control>
                         <panel/>
                     </panel>
-                    <panel childLayout="horizontal" height="27px">
+                    <panel childLayout="horizontal" height="28px">
                         <panel/>
                         <control name="button" id="insertSingleKeyframeButton"
                                  width="55px">
@@ -2489,6 +2447,69 @@ the menu bar, status bar, and tool windows.
                                 <interact onRelease="perform(reset spatial translation)"/>
                             </control>
                         </panel>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="trackTool" title="Track Tool"
+                     hideOnClose="true"
+                     height="168px" width="300px" x="150" y="120">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Selected:  "/>
+                        <control name="label" id="trackDescription"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Type:  "/>
+                        <control name="label" id="trackType"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="45px"/>
+                        <control name="label" text=" with "/>
+                        <control name="label" id="trackFrames"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Translations:  "
+                                 textHAlign="right"
+                                 width="80px"/>
+                        <control name="label" id="trackTranslationCount"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="40px"/>
+                        <control name="button" id="translationsToPoseButton"
+                                 width="95px">
+                            <interact onRelease="perform(set track translation all)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Rotations:  "
+                                 textHAlign="right"
+                                 width="80px"/>
+                        <control name="label" id="trackRotationCount"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="40px"/>
+                        <control name="button" id="rotationsToPoseButton"
+                                 width="95px">
+                            <interact onRelease="perform(set track rotation all)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Scales:  "
+                                 textHAlign="right"
+                                 width="80px"/>
+                        <control name="label" id="trackScaleCount"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="40px"/>
+                        <control name="button" id="scalesToPoseButton"
+                                 width="95px">
+                            <interact onRelease="perform(set track scale all)"/>
+                        </control>
                     </panel>
                 </panel>
             </control>

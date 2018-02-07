@@ -380,7 +380,7 @@ public class EditorMenus {
                 break;
 
             case "Tool":
-                Maud.gui.tools.select("keyframe"); // shared with Keyframe menu
+                Maud.gui.tools.select("track");
                 break;
 
             case "Translate for support":

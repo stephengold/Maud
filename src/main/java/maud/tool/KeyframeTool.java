@@ -34,6 +34,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedTrack;
+import maud.model.cgm.TrackItem;
 
 /**
  * The controller for the "Keyframe" tool in Maud's editor screen.
@@ -82,7 +83,6 @@ class KeyframeTool extends Tool {
                 indexText = "no track";
                 timeText = "n/a";
             }
-
         } else {
             int index = target.getTrack().findKeyframeIndex();
             if (index == -1) {
@@ -106,7 +106,6 @@ class KeyframeTool extends Tool {
         updateEditButtons();
         updateNavigationButtons();
         updateTrackDescription();
-        updateTransforms();
     }
     // *************************************************************************
     // private methods
@@ -115,29 +114,24 @@ class KeyframeTool extends Tool {
      * Update the delete/insert/set-to-pose/wrap buttons.
      */
     private void updateEditButtons() {
-        String dButton = "";
-        String iButton = "";
-        String sButton = "";
+        String deleteButton = "";
+        String insertButton = "";
 
         SelectedTrack track = Maud.getModel().getTarget().getTrack();
         if (track.isTrackSelected()) {
             int index = track.findKeyframeIndex();
             if (index == -1) {
-                iButton = "Insert";
+                insertButton = "Insert";
             } else {
-                iButton = "Replace";
+                insertButton = "Replace";
             }
             if (index > 0) {
-                dButton = "Delete";
+                deleteButton = "Delete";
             }
-            sButton = "Set all to pose";
         }
 
-        setButtonText("deleteSingleKeyframe", dButton);
-        setButtonText("insertSingleKeyframe", iButton);
-        setButtonText("rotationsToPoseKeyframe", sButton);
-        setButtonText("scalesToPoseKeyframe", sButton);
-        setButtonText("translationsToPoseKeyframe", sButton);
+        setButtonText("deleteSingleKeyframe", deleteButton);
+        setButtonText("insertSingleKeyframe", insertButton);
     }
 
     /**
@@ -184,49 +178,23 @@ class KeyframeTool extends Tool {
      * Update the track description.
      */
     private void updateTrackDescription() {
-        String trackDescription;
+        String status;
 
         Cgm target = Maud.getModel().getTarget();
         SelectedBone bone = target.getBone();
         if (!target.getAnimation().isReal()) {
-            trackDescription = "(load an animation)";
+            status = "(load an animation)";
         } else if (bone.hasTrack()) {
-            String boneName = bone.getName();
-            String animName = target.getAnimation().getName();
-            trackDescription = String.format("%s in %s", boneName, animName);
+            SelectedTrack track = target.getTrack();
+            TrackItem item = track.item();
+            status = item.toString();
         } else if (bone.isSelected()) {
             String boneName = bone.getName();
-            trackDescription = String.format("none for %s", boneName);
+            status = String.format("none for %s", boneName);
         } else {
-            trackDescription = "(select a bone)";
+            status = "(select a bone)";
         }
 
-        setStatusText("trackDescription", " " + trackDescription);
-    }
-
-    /**
-     * Update transform information.
-     */
-    private void updateTransforms() {
-        String translationCount = "";
-        String rotationCount = "";
-        String scaleCount = "";
-
-        Cgm target = Maud.getModel().getTarget();
-        if (target.getBone().hasTrack()) {
-            SelectedTrack track = target.getTrack();
-            int numOffsets = track.countTranslations();
-            translationCount = String.format("%d", numOffsets);
-
-            int numRotations = track.countRotations();
-            rotationCount = String.format("%d", numRotations);
-
-            int numScales = track.countScales();
-            scaleCount = String.format("%d", numScales);
-        }
-
-        setStatusText("trackTranslationCount", translationCount);
-        setStatusText("trackRotationCount", rotationCount);
-        setStatusText("trackScaleCount", scaleCount);
+        setStatusText("trackDescription2", " " + status);
     }
 }

@@ -76,7 +76,7 @@ Status as of January 2018: seeking more alpha testers.
 4. Open/run the Maud executable/application in the extracted folder/directory.
    (In Windows, open "Maud.exe" in the "Maud" folder.)
 
-<a name="build">
+    <a name="build">
 
 ## How to build Maud from source
 
@@ -163,7 +163,7 @@ Clone the Maud repository using Git:
  5. Ensure that the "gradlew" script is executable: chmod +x gradlew
  6. ./gradlew build
 
-<a name="use">
+        <a name="use">
 
 ## Using Maud
 
@@ -183,7 +183,7 @@ is split into overlapping sub-windows called "tools".
 
 #### Tools
 
-At last count, Maud had 41 tools.
+At last count, Maud had 42 tools.
 Each tool can be independently hidden or made visible.
 
 Selecting a tool makes it visible and moves it to the top layer for convenient
@@ -288,30 +288,30 @@ The Editor Screen operates in 3 "view modes", namely:
 You can change the view mode using the "View -> Mode" submenu or
 use the backtick ("`") keyboard shortcut to cycle through these modes.
 
-<table>
-    <tr>
-        <th></th>
-        <th>With no source model loaded:</th>
-        <th>With a source model loaded:</th>
-    </tr>
-    <tr>
-        <td>In Scene Mode...</td>
-        <td>A full-width scene view of the target model</td>
-        <td>A split screen with a scene view of the source model on the left
-            and a scene view of the target model on the right</td>
-    </tr>
-    <tr>
-        <td>In Score Mode...</td>
-        <td>A full-width score view of the target model</td>
-        <td>A split screen with a score view of the source model on the left
-            and a score view of the target model on the right</td>
-    </tr>
-    <tr>
-        <td>In Hybrid Mode...</td>
-        <td colspan="2">A split screen with a score view of the target model on the left
-            and a scene view of the target model on the right</td>
-    </tr>
-</table>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>With no source model loaded:</th>
+                    <th>With a source model loaded:</th>
+                </tr>
+                <tr>
+                    <td>In Scene Mode...</td>
+                    <td>A full-width scene view of the target model</td>
+                    <td>A split screen with a scene view of the source model on the left
+                        and a scene view of the target model on the right</td>
+                </tr>
+                <tr>
+                    <td>In Score Mode...</td>
+                    <td>A full-width score view of the target model</td>
+                    <td>A split screen with a score view of the source model on the left
+                        and a score view of the target model on the right</td>
+                </tr>
+                <tr>
+                    <td>In Hybrid Mode...</td>
+                    <td colspan="2">A split screen with a score view of the target model on the left
+                        and a scene view of the target model on the right</td>
+                </tr>
+            </table>
 
 ### Maud's cameras
 
@@ -366,7 +366,7 @@ Standard keyboard shortcuts affecting the scene-view cameras:
 Score views don't have anything analogous to the 3-D cursor, but you can
 move the score-view camera up/down by clicking LMB where you want it to look.
 
-<a name="cgms">
+            <a name="cgms">
 
 ## 3-D models
 
@@ -422,7 +422,7 @@ By default, models loaded from the classpath or from an archive will be written 
 "Written assets" folder under Maud's working folder.
 When loading assets, Maud treats this folder as if it were at the head of the classpath.
 
-<a name="bones">
+                <a name="bones">
 
 ## Bones
 
@@ -488,7 +488,7 @@ However, since bones can appear close together in scene views,
 and since the RMB is also used to select objects other than bones,
 use this technique with caution.
 
-<a name="animations">
+                    <a name="animations">
 
 ## Animations
 
@@ -539,7 +539,7 @@ Using the animation tools, you can also "pin" a loaded animation.
 Pinning an animation keeps all its root bones at the model origin
 for display (scene-view) purposes.
 
-<a name="pose">
+                        <a name="pose">
 
 ## The displayed pose
 
@@ -589,7 +589,7 @@ Then go to the animation time when you want to paste and select
 or "Animations -> Edit -> Insert keyframes" (to paste to all bone tracks in the loaded animation).
 Remember to unfreeze the pose afterward!
 
-<a name="map">
+                            <a name="map">
 
 ## The skeleton map
 
@@ -641,7 +641,7 @@ To save the loaded skeleton map, use "Map -> Save".
 When you're ready to retarget animations between models,
 use the "Retarget Tool" ("Animations -> Add new -> Retarget").
 
-<a name="history">
+                                <a name="history">
 
 ## The edit history
 
@@ -664,7 +664,7 @@ Maud places no limit on the number of checkpoints you can create/undo/redo.
 To help you visualize and navigate your edit history,
 Maud provides a "History Tool" ("History -> Tool").
 
-<a name="links">
+                                    <a name="links">
 
 ## Web links
 
@@ -685,7 +685,7 @@ YouTube videos about Maud:
   + May 2017 demo (out-of-date!):
     https://www.youtube.com/watch?v=fSjsbyBWlPk (9:13)
 
-<a name="bvh">
+                                        <a name="bvh">
 
 BVH resources:
 
@@ -726,7 +726,7 @@ BVH resources:
 [winmerge]: http://winmerge.org "WinMerge Project"
 [xbuf]: http://www.xbuf.org "Xbuf Project"
 
-<a name="wishlist">
+                                            <a name="wishlist">
 
 ## Wish list
 
@@ -748,7 +748,7 @@ The following features are on my "to do" list, in no particular order:
  + save more options to the startup script
  + insert a node into the scene graph
 
-<a name="conventions">
+                                                <a name="conventions">
 
 ## Conventions
 
@@ -758,7 +758,7 @@ World coordinate system: the Y axis points upward (toward the zenith).
 
 The first keyframe in each track must be at time=0.
 
-<a name="history">
+                                                    <a name="history">
 
 ## History
 
@@ -771,7 +771,7 @@ https://github.com/stephengold/jme3-utilities
 
 Maud incorporates code from [jMonkeyEngine][jme] and the [BVH Retarget Project][bvhretarget].
 
-<a name="acks">
+                                                        <a name="acks">
 
 ## Acknowledgments
 
