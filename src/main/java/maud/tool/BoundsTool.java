@@ -143,7 +143,7 @@ class BoundsTool extends Tool {
         BoundsOptions options = Maud.getModel().getScene().getBounds();
 
         ColorRGBA color = options.copyColor(null);
-        Maud.gui.setColorBank("bounds", colorSt, color);
+        setColorBank("bounds", colorSt, color);
 
         boolean depthTestFlag = options.getDepthTestFlag();
         setChecked("boundsDepthTest", depthTestFlag);

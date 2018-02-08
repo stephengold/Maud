@@ -105,7 +105,7 @@ class BoneScaleTool extends Tool {
     public void onSliderChanged() {
         EditableCgm target = Maud.getModel().getTarget();
         if (target.getBone().shouldEnableControls()) {
-            Vector3f scales = Maud.gui.readVectorBank("Sca", axisSt);
+            Vector3f scales = readVectorBank("Sca", axisSt, null);
             /*
              * Avoid scale factors near zero.
              */

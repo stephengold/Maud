@@ -150,7 +150,7 @@ class BackgroundTool extends Tool {
             default:
                 throw new IllegalStateException();
         }
-        Maud.gui.setColorBank("bg", colorSt, color);
+        setColorBank("bg", colorSt, color);
 
         String buttonText = background.toString();
         setButtonText("bgSelect", buttonText);

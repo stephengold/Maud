@@ -161,7 +161,7 @@ class CursorTool extends Tool {
         setButtonText("cursorColorIndex", indexText);
 
         ColorRGBA color = options.copyColor(colorIndex, null);
-        Maud.gui.setColorBank("cursor", colorSt, color);
+        setColorBank("cursor", colorSt, color);
 
         float cycleTime = options.getCycleTime();
         setSlider("cursorCycle", cycleSt, cycleTime);

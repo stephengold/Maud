@@ -110,7 +110,7 @@ class SpatialTranslationTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        Vector3f offsets = Maud.gui.readVectorBank("So", axisSt);
+        Vector3f offsets = readVectorBank("So", axisSt, null);
         float masterScale = readSlider("soMaster", masterSt);
         offsets.multLocal(masterScale);
         Maud.getModel().getTarget().setSpatialTranslation(offsets);

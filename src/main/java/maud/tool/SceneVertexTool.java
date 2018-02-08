@@ -110,7 +110,7 @@ class SceneVertexTool extends Tool {
         VertexOptions options = Maud.getModel().getScene().getVertex();
 
         ColorRGBA color = options.copyColor(null);
-        Maud.gui.setColorBank("sv", colorSt, color);
+        setColorBank("sv", colorSt, color);
 
         float pointSize = options.getPointSize();
         setSlider("svPointSize", sizeSt, pointSize);

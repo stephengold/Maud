@@ -113,7 +113,7 @@ class BoneTranslationTool extends Tool {
     public void onSliderChanged() {
         EditableCgm target = Maud.getModel().getTarget();
         if (target.getBone().shouldEnableControls()) {
-            Vector3f offsets = Maud.gui.readVectorBank("Off", axisSt);
+            Vector3f offsets = readVectorBank("Off", axisSt, null);
             float masterScale = readSlider("offMaster", masterSt);
             offsets.multLocal(masterScale);
 

@@ -29,7 +29,6 @@ package maud;
 import com.jme3.app.Application;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.renderer.ViewPort;
@@ -50,7 +49,6 @@ import jme3utilities.Validate;
 import jme3utilities.debug.PerformanceAppState;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.SliderTransform;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
@@ -480,29 +478,6 @@ public class EditorScreen extends GuiScreenController {
         } else {
             ShowMenus.selectSpatialChild(argument);
         }
-    }
-
-    /**
-     * Set a bank of 3 sliders that control a color and update the status
-     * labels. TODO use library
-     *
-     * @param name unique id prefix of the bank (not null)
-     * @param transform how each component has been transformed (not null)
-     * @param color (not null, unaffected)
-     */
-    public void setColorBank(String name, SliderTransform transform,
-            ColorRGBA color) {
-        Validate.nonNull(name, "name");
-        Validate.nonNull(transform, "transform");
-
-        setSlider(name + "R", transform, color.r);
-        updateSliderStatus(name + "R", color.r, "");
-
-        setSlider(name + "G", transform, color.g);
-        updateSliderStatus(name + "G", color.g, "");
-
-        setSlider(name + "B", transform, color.b);
-        updateSliderStatus(name + "B", color.b, "");
     }
 
     /**

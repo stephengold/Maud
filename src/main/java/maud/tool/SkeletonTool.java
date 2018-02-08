@@ -138,6 +138,6 @@ class SkeletonTool extends Tool {
         setButtonText("skeletonColorSelect", colorSelectButton);
 
         ColorRGBA color = options.copyColor(editColor, null);
-        Maud.gui.setColorBank("ske", colorSt, color);
+        setColorBank("ske", colorSt, color);
     }
 }

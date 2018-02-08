@@ -105,7 +105,7 @@ class SceneLightingTool extends Tool {
     public void onSliderChanged() {
         LightsOptions options = Maud.getModel().getScene().getLights();
 
-        Vector3f direction = Maud.gui.readVectorBank("Dir", directionSt);
+        Vector3f direction = readVectorBank("Dir", directionSt, null);
         if (MyVector3f.isZero(direction)) {
             direction.set(0f, -1f, 0f);
         }

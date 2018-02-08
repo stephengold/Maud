@@ -103,7 +103,7 @@ class SpatialScaleTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        Vector3f scales = Maud.gui.readVectorBank("Ss", axisSt);
+        Vector3f scales = readVectorBank("Ss", axisSt, null);
         /*
          * Avoid scale factors near zero.
          */
