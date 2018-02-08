@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2018 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ import java.util.BitSet;
 
 /**
  * Contains a list of transforms and times for each keyframe.
- *
+ * 
  * @author Kirill Vainer
  */
 public final class BoneTrack implements Track {
@@ -49,7 +49,7 @@ public final class BoneTrack implements Track {
      * Bone index in the skeleton which this track effects.
      */
     private int targetBoneIndex;
-
+    
     /**
      * Transforms and times for track.
      */
@@ -57,7 +57,7 @@ public final class BoneTrack implements Track {
     private CompactQuaternionArray rotations;
     private CompactVector3Array scales;
     private float[] times;
-
+    
     /**
      * Serialization-only. Do not use.
      */
@@ -106,7 +106,7 @@ public final class BoneTrack implements Track {
 
     /**
      * return the array of rotations of this track
-     * @return
+     * @return 
      */
     public Quaternion[] getRotations() {
         return rotations.toObjectArray();
@@ -114,7 +114,7 @@ public final class BoneTrack implements Track {
 
     /**
      * returns the array of scales for this track
-     * @return
+     * @return 
      */
     public Vector3f[] getScales() {
         return scales == null ? null : scales.toObjectArray();
@@ -122,7 +122,7 @@ public final class BoneTrack implements Track {
 
     /**
      * returns the arrays of time for this track
-     * @return
+     * @return 
      */
     public float[] getTimes() {
         return times;
@@ -130,7 +130,7 @@ public final class BoneTrack implements Track {
 
     /**
      * returns the array of translations of this track
-     * @return
+     * @return 
      */
     public Vector3f[] getTranslations() {
         return translations.toObjectArray();
@@ -138,9 +138,13 @@ public final class BoneTrack implements Track {
 
     /**
      * Set the translations and rotations for this bone track
-     * @param times a float array with the time of each frame
-     * @param translations the translation of the bone for each frame
-     * @param rotations the rotation of the bone for each frame
+     *
+     * @param times the time of each frame, measured from the start of the track
+     * (not null, length&gt;0)
+     * @param translations the translation of the bone for each frame (not null,
+     * same length as times)
+     * @param rotations the rotation of the bone for each frame (not null, same
+     * length as times)
      */
     public void setKeyframes(float[] times, Vector3f[] translations, Quaternion[] rotations) {
         if (times.length == 0) {
@@ -163,10 +167,14 @@ public final class BoneTrack implements Track {
 
     /**
      * Set the translations, rotations and scales for this bone track
-     * @param times a float array with the time of each frame
-     * @param translations the translation of the bone for each frame
-     * @param rotations the rotation of the bone for each frame
-     * @param scales the scale of the bone for each frame
+     *
+     * @param times the time of each frame, measured from the start of the track
+     * (not null, length&gt;0)
+     * @param translations the translation of the bone for each frame (not null,
+     * same length as times)
+     * @param rotations the rotation of the bone for each frame (not null, same
+     * length as times)
+     * @param scales the scale of the bone for each frame (ignored if null)
      */
     public void setKeyframes(float[] times, Vector3f[] translations, Quaternion[] rotations, Vector3f[] scales) {
         this.setKeyframes(times, translations, rotations);
@@ -179,7 +187,7 @@ public final class BoneTrack implements Track {
     }
 
     /**
-     *
+     * 
      * Modify the bone which this track modifies in the skeleton to contain
      * the correct animation transforms for a given time.
      * The transforms can be interpolated in some method from the keyframes.
@@ -195,7 +203,7 @@ public final class BoneTrack implements Track {
         if (affectedBones != null && !affectedBones.get(targetBoneIndex)) {
             return;
         }
-
+        
         Bone target = control.getSkeleton().getBone(targetBoneIndex);
 
         Vector3f tempV = vars.vect1;
@@ -204,7 +212,7 @@ public final class BoneTrack implements Track {
         Vector3f tempV2 = vars.vect3;
         Vector3f tempS2 = vars.vect4;
         Quaternion tempQ2 = vars.quat2;
-
+        
         int lastFrame = times.length - 1;
         if (time < 0 || lastFrame == 0) {
             rotations.get(0, tempQ);
@@ -252,7 +260,7 @@ public final class BoneTrack implements Track {
 //            target.setAnimTransforms(tempV, tempQ, scales != null ? tempS : null);
 //        }
     }
-
+    
     /**
      * @return the length of the track
      */
@@ -264,7 +272,7 @@ public final class BoneTrack implements Track {
     public float[] getKeyFrameTimes() {
         return times;
     }
-
+    
     /**
      * This method creates a clone of the current object.
      * @return a clone of the current object
@@ -286,11 +294,11 @@ public final class BoneTrack implements Track {
             rotations[i] = sourceRotations[i].clone();
             scales[i] = sourceScales != null ? sourceScales[i].clone() : new Vector3f(1.0f, 1.0f, 1.0f);
         }
-
+        
         // Need to use the constructor here because of the final fields used in this class
         return new BoneTrack(targetBoneIndex, times, translations, rotations, scales);
     }
-
+    
     @Override
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule oc = ex.getCapsule(this);
