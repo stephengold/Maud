@@ -129,7 +129,7 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "View -> Scene options" menu.
+     * Display a "View -&gt; Scene options" menu.
      */
     public static void sceneViewOptions() {
         MenuBuilder builder = new MenuBuilder();
@@ -150,7 +150,7 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "View -> Score options" menu.
+     * Display a "View -&gt; Score options" menu.
      */
     public static void scoreViewOptions() {
         MenuBuilder builder = new MenuBuilder();
