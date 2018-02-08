@@ -28,6 +28,8 @@ package maud.menu;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
@@ -39,6 +41,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.SelectedAnimControl;
+import maud.model.cgm.TrackItem;
 
 /**
  * Animation menus in Maud's editor screen.
@@ -66,7 +69,7 @@ public class AnimationMenus {
     // new methods exposed
 
     /**
-     * Display an "Animation -> Add new" menu.
+     * Display an "Animation -&gt; Add new" menu.
      */
     public static void addNewAnimation() {
         MenuBuilder builder = new MenuBuilder();
@@ -79,6 +82,7 @@ public class AnimationMenus {
             builder.addDialog("Append source animation");
         }
         builder.addDialog("Copy");
+        builder.addTool("Extract sub-animation");
         builder.addDialog("Mix tracks");
         builder.addDialog("Pose");
         builder.addTool("Retarget source animation");
@@ -227,12 +231,56 @@ public class AnimationMenus {
             }
 
             if (cgm == Maud.getModel().getTarget()) {
-                builder.show("select animControl ");
+                builder.show(ActionPrefix.selectAnimControl);
             } else if (cgm == Maud.getModel().getSource()) {
-                builder.show("select sourceAnimControl ");
+                builder.show(ActionPrefix.selectSourceAnimControl);
             } else {
                 throw new IllegalArgumentException();
             }
+        }
+    }
+
+    /**
+     * Handle a "select track" action without an argument.
+     */
+    public static void selectTrack() {
+        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
+        assert animation.isReal();
+
+        List<TrackItem> items = animation.listTracks();
+        Set<String> descriptions = new TreeSet<String>();
+        for (TrackItem item : items) {
+            String description = item.describe();
+            boolean success = descriptions.add(description);
+            assert success;
+        }
+        showTrackSubmenu(descriptions);
+    }
+
+    /**
+     * Handle a "select track" action with an argument.
+     *
+     * @param argument action argument (not null)
+     */
+    public static void selectTrack(String argument) {
+        Cgm target = Maud.getModel().getTarget();
+        LoadedAnimation animation = target.getAnimation();
+        if (animation.hasTrack(argument)) {
+            target.getTrack().selectWithDescription(argument);
+        } else {
+            /*
+             * Treat the argument as a track-description prefix.
+             */
+            List<TrackItem> items = animation.listTracks();
+            Set<String> descriptions = new TreeSet<String>();
+            for (TrackItem item : items) {
+                String description = item.describe();
+                if (description.startsWith(argument)) {
+                    boolean success = descriptions.add(description);
+                    assert success;
+                }
+            }
+            showTrackSubmenu(descriptions);
         }
     }
     // *************************************************************************
@@ -251,22 +299,36 @@ public class AnimationMenus {
                 EditorDialogs.newAnimationFromChain(WhichCgm.Target,
                         WhichCgm.Source);
                 break;
+
             case "Copy":
-                EditorDialogs.newAnimationFromCopy();
+                Cgm target = Maud.getModel().getTarget();
+                String originalName = target.getAnimation().getName();
+                EditorDialogs.newAnimation(ActionPrefix.newAnimationFromCopy,
+                        "Copy", originalName);
                 break;
+
+            case "Extract sub-animation":
+                Maud.gui.tools.select("extract");
+                break;
+
             case "Mix tracks":
                 EditorDialogs.newAnimationFromMix();
                 break;
+
             case "Pose":
-                EditorDialogs.newAnimationFromPose();
+                EditorDialogs.newAnimation(ActionPrefix.newAnimationFromPose,
+                        "Create", "pose");
                 break;
+
             case "Prepend source animation":
                 EditorDialogs.newAnimationFromChain(WhichCgm.Source,
                         WhichCgm.Target);
                 break;
+
             case "Retarget source animation":
                 Maud.gui.tools.select("retarget");
                 break;
+
             default:
                 handled = false;
         }
@@ -382,5 +444,27 @@ public class AnimationMenus {
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    /**
+     * Display a submenu for selecting a target track by name using the "select
+     * track" action prefix.
+     *
+     * @param descriptions descriptions from which to select (not null)
+     */
+    private static void showTrackSubmenu(Set<String> descriptions) {
+        assert descriptions != null;
+
+        MyString.reduce(descriptions, ShowMenus.maxItems);
+
+        MenuBuilder builder = new MenuBuilder();
+        for (String desc : descriptions) {
+            if (Maud.getModel().getTarget().getAnimation().hasTrack(desc)) {
+                builder.add(desc);
+            } else {
+                builder.addEllipsis(desc);
+            }
+        }
+        builder.show(ActionPrefix.selectTrack);
     }
 }

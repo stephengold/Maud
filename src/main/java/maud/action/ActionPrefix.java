@@ -113,6 +113,11 @@ public class ActionPrefix {
      */
     final public static String newAnimationFromCopy = "new animation fromCopy ";
     /**
+     * argument is a name for the new animation
+     */
+    final public static String newAnimationFromExtract
+            = "new animation fromExtract ";
+    /**
      * arguments are a comma-separated list of decimal track indices and an
      * optional name for the new animation
      */
@@ -224,7 +229,7 @@ public class ActionPrefix {
     /**
      * arguments are a spatial name and a deduplication index
      */
-    final static String selectAnimControl = "select animControl ";
+    final public static String selectAnimControl = "select animControl ";
     /**
      * argument is the name of a scene-view axis drag effect
      */
@@ -333,7 +338,8 @@ public class ActionPrefix {
     /**
      * arguments are a spatial name and a de-duplication index
      */
-    final static String selectSourceAnimControl = "select sourceAnimControl ";
+    final public static String selectSourceAnimControl
+            = "select sourceAnimControl ";
     /**
      * argument is the name of a source bone or a prefix thereof
      */
@@ -354,6 +360,10 @@ public class ActionPrefix {
      * arguments are the name of a tool window and decimal x,y coordinates
      */
     final public static String selectToolAt = "select toolAt ";
+    /**
+     * argument is the description of a track item or a prefix thereof
+     */
+    final public static String selectTrack = "select track ";
     /**
      * argument is the name of a triangle mode
      */
@@ -380,7 +390,7 @@ public class ActionPrefix {
      */
     final public static String selectUserKey = "select userKey ";
     /**
-     * argument is indexBase plus a vertex index
+     * argument is a decimal value (indexBase plus a vertex index)
      */
     final public static String selectVertex = "select vertex ";
     /**
@@ -483,7 +493,7 @@ public class ActionPrefix {
      */
     final public static String setShadowsRendered = "set shadowsRendered ";
     /**
-     * arguments are the parameter name and a decimal value
+     * arguments are the parameter name and a decimal float
      */
     final public static String setShapeParmValue = "set shapeParmValue ";
     /**
@@ -495,6 +505,16 @@ public class ActionPrefix {
      */
     final public static String setSubmenuWarp = "set submenuWarp ";
     /**
+     * arguments are whichCgm, a playTime, and an optional decimal float (time
+     * in seconds)
+     */
+    final public static String setTime = "set time ";
+    /**
+     * arguments are whichCgm, a playTime, and an optional decimal integer
+     * (indexBase plus a frame index)
+     */
+    final public static String setTimeToFrame = "set timeToFrame ";
+    /**
      * argument is the new value
      */
     final public static String setUserData = "set userData ";
@@ -503,11 +523,13 @@ public class ActionPrefix {
      */
     final public static String viewLicense = "view license ";
     /**
-     * argument is the weight to apply to end-time keyframes
+     * argument is a decimal fraction (the weight to apply to any end-time
+     * keyframes)
      */
     final public static String wrapAnimation = "wrap animation ";
     /**
-     * argument is the weight to apply to the end-time keyframe
+     * argument is a decimal fraction (the weight to apply to any end-time
+     * keyframe)
      */
     final public static String wrapTrack = "wrap track ";
     // *************************************************************************

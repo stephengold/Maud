@@ -88,7 +88,7 @@ public class SelectedAnimControl implements JmeCloneable {
 
     /**
      * Chain the specified animations into a new animation and add it the anim
-     * control.
+     * control. TODO rename addChain
      *
      * @param which1 which C-G model loaded the animation to go 1st (not null)
      * @param which2 which C-G model loaded the animation to go 2nd (not null)
@@ -156,7 +156,28 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Count how many real animations are in the selected anim control.
+     * Extract a range of the selected animation into a new animation and add it
+     * to the anim control.
+     *
+     * @param newAnimationName a name for the new animation (not null, not
+     * reserved, not in use)
+     */
+    public void addExtract(String newAnimationName) {
+        Validate.nonNull(newAnimationName, "new animation name");
+
+        Animation animation = cgm.getAnimation().getReal();
+        float startTime = cgm.getPlay().getLowerLimit();
+        float endTime = cgm.getPlay().getUpperLimit();
+        float duration = animation.getLength();
+        endTime = Math.min(endTime, duration);
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        Animation extracted = TrackEdit.extractAnimation(animation, startTime,
+                endTime, techniques, newAnimationName);
+        editableCgm.addAnimation(extracted);
+    }
+
+    /**
+     * Count how many real animations are in the anim control.
      *
      * @return count (&ge;0)
      */
@@ -364,7 +385,7 @@ public class SelectedAnimControl implements JmeCloneable {
 
     /**
      * Mix the specified tracks into a new animation and add it the anim
-     * control.
+     * control. TODO rename addMix
      *
      * @param indices comma-separated list of decimal track indices (not null,
      * not empty)
@@ -436,7 +457,7 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Add a copy of the loaded animation.
+     * Add a copy of the loaded animation. TODO rename addCopy
      *
      * @param newAnimationName a name for the new animation (not null, not
      * reserved, not in use)
@@ -461,7 +482,7 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Add a pose animation.
+     * Add a pose animation. TODO rename addPose
      *
      * @param newAnimationName a name for the new animation (not null, not
      * reserved, not in use)
@@ -489,7 +510,7 @@ public class SelectedAnimControl implements JmeCloneable {
 
     /**
      * Retarget the selected source animation into a new animation and add it to
-     * the anim control.
+     * the anim control. TODO rename addRetarget
      *
      * @param newAnimationName a name for the new animation (not null, not
      * reserved, not in use)

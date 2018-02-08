@@ -456,6 +456,27 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Test whether the animation includes a track that exactly matches the
+     * specified description.
+     *
+     * @param description from TrackItem.describe() (not null, not empty)
+     */
+    public boolean hasTrack(String description) {
+        Validate.nonEmpty(description, "description");
+
+        boolean result = false;
+        List<TrackItem> items = listTracks();
+        for (TrackItem item : items) {
+            if (item.describe().equals(description)) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Test whether the loaded animation includes a bone track for the indexed
      * bone.
      *
@@ -475,7 +496,8 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Access the spatial track (if any) for the specified spatial.
+     * Access the spatial track (if any) for the specified spatial. TODO sort
+     * methods
      *
      * @param spatial which spatial to find (unaffected)
      * @return the pre-existing instance, or null if none found
@@ -631,24 +653,28 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Enumerate all tracks in the loaded (real) animation.
+     * Enumerate all tracks in the animation.
      *
-     * @return a list of new track items
+     * @return a new list of new track items
      */
-    List<TrackItem> listTracks() {
-        assert isReal();
-
-        SelectedAnimControl sac = cgm.getAnimControl();
-        AnimControl animControl = sac.find();
-        String controlName = sac.name();
-
+    public List<TrackItem> listTracks() {
+        List<TrackItem> result;
         Animation realAnimation = getReal();
-        Track[] tracks = realAnimation.getTracks();
-        List<TrackItem> result = new ArrayList<>(tracks.length);
-        for (Track track : tracks) {
-            TrackItem item = new TrackItem(loadedName, controlName, animControl,
-                    track);
-            result.add(item);
+        if (realAnimation != null) {
+            SelectedAnimControl sac = cgm.getAnimControl();
+            AnimControl animControl = sac.find();
+            String controlName = sac.name();
+
+            Track[] tracks = realAnimation.getTracks();
+            result = new ArrayList<>(tracks.length);
+            for (Track track : tracks) {
+                TrackItem item = new TrackItem(loadedName, controlName,
+                        animControl, track);
+                result.add(item);
+            }
+
+        } else {
+            result = new ArrayList<>(0);
         }
 
         return result;

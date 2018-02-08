@@ -66,6 +66,8 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
+import maud.model.cgm.PlayOptions;
+import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedObject;
@@ -323,6 +325,26 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "new animation" dialog to enter a new animation name.
+     *
+     * @param actionPrefix action prefix (not null, not empty)
+     * @param commitDescription commit description (not null, not empty)
+     * @param defaultName default animation name (not null)
+     */
+    public static void newAnimation(String actionPrefix,
+            String commitDescription, String defaultName) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+        Validate.nonEmpty(commitDescription, "commit description");
+        Validate.nonNull(defaultName, "default name");
+
+        DialogController controller
+                = new AnimationNameDialog(commitDescription);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
+                defaultName, actionPrefix, controller);
+    }
+
+    /**
      * Display a "new animation fromChain" dialog to enter the new animation
      * name.
      *
@@ -339,24 +361,8 @@ public class EditorDialogs {
         String defaultName = animationName1 + "," + animationName2;
         String actionPrefix = ActionPrefix.newAnimationFromChain + which1 + " "
                 + which2 + " ";
-        DialogController controller = new AnimationNameDialog("Chain");
 
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                defaultName, actionPrefix, controller);
-    }
-
-    /**
-     * Display a "new animation fromCopy" dialog to enter the new animation
-     * name.
-     */
-    public static void newAnimationFromCopy() {
-        String fromName = Maud.getModel().getTarget().getAnimation().getName();
-        DialogController controller = new AnimationNameDialog("Copy");
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                fromName, ActionPrefix.newAnimationFromCopy, controller);
+        newAnimation(actionPrefix, "Chain", defaultName);
     }
 
     /**
@@ -389,40 +395,7 @@ public class EditorDialogs {
      */
     public static void newAnimationFromMix(String actionPrefix) {
         Validate.nonEmpty(actionPrefix, "action prefix");
-
-        String prompt = "Enter a name for the new animation:";
-        String defaultName = "mix";
-        DialogController controller = new AnimationNameDialog("Create");
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog(prompt, defaultName, actionPrefix,
-                controller);
-    }
-
-    /**
-     * Display a "new animation fromPose" dialog to enter the new animation
-     * name.
-     */
-    public static void newAnimationFromPose() {
-        DialogController controller = new AnimationNameDialog("Create");
-        String defaultName = "pose";
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                defaultName, ActionPrefix.newAnimationFromPose, controller);
-    }
-
-    /**
-     * Display a "new animation fromRetarget" dialog to enter the new animation
-     * name.
-     */
-    public static void newAnimationFromRetarget() {
-        String oldName = Maud.getModel().getSource().getAnimation().getName();
-        DialogController controller = new AnimationNameDialog("Retarget");
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter a name for the new animation:",
-                oldName, ActionPrefix.newAnimationFromRetarget, controller);
+        newAnimation(actionPrefix, "Create", "mix");
     }
 
     /**
@@ -943,6 +916,102 @@ public class EditorDialogs {
             Maud.gui.showTextEntryDialog(prompt, defaultText, prefix,
                     controller);
         }
+    }
+
+    /**
+     * Display a "set time" dialog to enter a time in seconds.
+     *
+     * @param whichCgm which CGM's options to modify (not null)
+     * @param whichTime which time to modify in the options (not null)
+     */
+    public static void setTime(WhichCgm whichCgm, PlayTimes whichTime) {
+        Cgm cgm = Maud.getModel().getCgm(whichCgm);
+        PlayOptions options = cgm.getPlay();
+        float lowerLimit = options.getLowerLimit();
+        float upperLimit = options.getUpperLimit();
+        if (cgm.getAnimation().isReal()) {
+            float duration = cgm.getAnimation().getDuration();
+            upperLimit = Math.min(upperLimit, duration);
+        }
+
+        float defaultValue, minValue, maxValue;
+        switch (whichTime) {
+            case LowerLimit:
+                minValue = 0f;
+                defaultValue = lowerLimit;
+                maxValue = upperLimit;
+                break;
+
+            case UpperLimit:
+                minValue = lowerLimit;
+                defaultValue = upperLimit;
+                maxValue = Float.MAX_VALUE;
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        String defaultText = Float.toString(defaultValue);
+        String actionPrefix = String.format("%s%s %s ", ActionPrefix.setTime,
+                whichCgm, whichTime);
+        FloatDialog controller
+                = new FloatDialog("Set", minValue, maxValue, false);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter new time in seconds:", defaultText,
+                actionPrefix, controller);
+    }
+
+    /**
+     * Display a "set timeToFrame" dialog to enter a keyframe index.
+     *
+     * @param whichCgm which CGM's options to modify (not null)
+     * @param whichTime which time to modify in the options (not null)
+     */
+    public static void setTimeToKeyframe(WhichCgm whichCgm,
+            PlayTimes whichTime) {
+        Cgm cgm = Maud.getModel().getCgm(whichCgm);
+        SelectedTrack track = cgm.getTrack();
+        assert track.isTrackSelected();
+
+        PlayOptions options = cgm.getPlay();
+        float lowerLimit = options.getLowerLimit();
+        float upperLimit = options.getUpperLimit();
+        float duration = cgm.getAnimation().getDuration();
+        upperLimit = Math.min(upperLimit, duration);
+        int numFrames = track.countKeyframes();
+
+        int defaultIndex = cgm.getTrack().findKeyframeIndex();
+        int minIndex, maxIndex;
+        switch (whichTime) {
+            case LowerLimit:
+                minIndex = 0;
+                maxIndex = track.findPreviousKeyframeIndex(upperLimit);
+                break;
+
+            case UpperLimit:
+                minIndex = track.findNextKeyframeIndex(lowerLimit);
+                maxIndex = numFrames - 1;
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        int indexBase = Maud.getModel().getMisc().getIndexBase();
+        String defaultText = "";
+        if (defaultIndex != -1) {
+            defaultText = Float.toString(indexBase + defaultIndex);
+        }
+        String actionPrefix = String.format("%s%s %s ",
+                ActionPrefix.setTimeToFrame, whichCgm, whichTime);
+        IntegerDialog controller = new IntegerDialog("Set",
+                indexBase + minIndex, indexBase + maxIndex, false);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter a keyframe index:", defaultText,
+                actionPrefix, controller);
     }
 
     /**

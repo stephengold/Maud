@@ -855,6 +855,77 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="extractTool" title="Extract Tool"
+                     hideOnClose="true"
+                     height="200px" width="280px" x="110" y="160">
+                <panel childLayout="vertical">
+                    <panel height="3px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Anim control:  "
+                                 textHAlign="right"
+                                 width="80px"/>
+                        <control name="button" id="extractAnimControlButton"
+                                 width="*">
+                            <interact onRelease="perform(select animControl)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Animation:  "
+                                 textHAlign="right"
+                                 width="80px"/>
+                        <control name="button" id="extractAnimationButton"
+                                 width="*">
+                            <interact onRelease="perform(load animation)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Track:  "
+                                 textHAlign="right"
+                                 width="80px"/>
+                        <control name="button" id="extractTrackButton"
+                                 width="*">
+                            <interact onRelease="perform(select track)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Starting at:  "
+                                 textHAlign="right"
+                                 width="80px"/>
+                        <control name="button" id="extractStartTimeButton"
+                                 width="*">
+                            <interact onRelease="perform(set time Target LowerLimit)"/>
+                        </control>
+                        <control name="button" id="extractStartFrameButton"
+                                 width="*">
+                            <interact onRelease="perform(set timeToFrame Target LowerLimit)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Ending at:  "
+                                 textHAlign="right"
+                                 width="80px"/>
+                        <control name="button" id="extractEndTimeButton"
+                                 width="*">
+                            <interact onRelease="perform(set time Target UpperLimit)"/>
+                        </control>
+                        <control name="button" id="extractEndFrameButton"
+                                 width="*">
+                            <interact onRelease="perform(set timeToFrame Target UpperLimit)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="center" height="28px">
+                        <control name="label" id="extractFeedback"
+                                 color="#800f"
+                                 textHAlign="center"
+                                 width="*"/>
+                        <control name="button" id="extractButton"
+                                 width="60px">
+                            <interact onRelease="perform(new animation fromExtract)"/>
+                        </control>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="historyTool" title="History Tool"
                      hideOnClose="true"
                      height="240px" width="370px" x="160" y="110">

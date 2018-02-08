@@ -30,6 +30,7 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
+import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
@@ -252,14 +253,67 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Find the index of the keyframe (if any) at the current track time.
+     * Find the index of the keyframe (if any) at the current animation time.
      *
-     * @return keyframe index, or -1 if no keyframe
+     * @return the keyframe's index, or -1 if no keyframe at that time
      */
     public int findKeyframeIndex() {
-        BoneTrack track = find();
         float time = cgm.getAnimation().getTime();
+        int frameIndex = findKeyframeIndex(time);
+
+        return frameIndex;
+    }
+
+    /**
+     * Find the index of the keyframe (if any) at the specified time.
+     *
+     * @param time the track time (in seconds, &ge;0)
+     * @return the keyframe's index (&ge;0) or -1 if no keyframe at that time
+     */
+    public int findKeyframeIndex(float time) {
+        Validate.nonNegative(time, "time");
+
+        BoneTrack track = find();
         int frameIndex = MyAnimation.findKeyframeIndex(track, time);
+
+        return frameIndex;
+    }
+
+    /**
+     * Find the index of the 1st keyframe at or after the specified time.
+     *
+     * @param time the track time (in seconds, &ge;0)
+     * @return the keyframe's index (&ge;0) or -1 if no such keyframe
+     */
+    public int findNextKeyframeIndex(float time) {
+        Validate.nonNegative(time, "time");
+
+        int nextIndex = findKeyframeIndex(time);
+        if (nextIndex == -1) {
+            BoneTrack track = find();
+            int previous = MyAnimation.findPreviousKeyframeIndex(track, time);
+            int lastIndex = countKeyframes() - 1;
+            if (previous == lastIndex) {
+                nextIndex = -1;
+            } else {
+                nextIndex = previous + 1;
+            }
+        }
+
+        return nextIndex;
+    }
+
+    /**
+     * Find the index of the last keyframe at or before the specified time.
+     *
+     * @param time the track time (in seconds, &ge;0)
+     * @return the keyframe's index (&ge;0)
+     */
+    public int findPreviousKeyframeIndex(float time) {
+        Validate.nonNegative(time, "time");
+
+        BoneTrack track = find();
+        int frameIndex = MyAnimation.findPreviousKeyframeIndex(track, time);
 
         return frameIndex;
     }
@@ -303,7 +357,7 @@ public class SelectedTrack implements Cloneable {
     }
 
     /**
-     * Test whether a bone track is selected.
+     * Test whether a bone track is selected. TODO rename isBoneTrack
      *
      * @return true if one is selected, false if none is selected
      */
@@ -326,15 +380,18 @@ public class SelectedTrack implements Cloneable {
     /**
      * Generate an item for the selected track.
      *
-     * @return a new item
+     * @return a new item, or null if none selected
      */
     public TrackItem item() {
-        String animationName = cgm.getAnimation().getName();
-        String animControlName = cgm.getAnimControl().name();
-        AnimControl animControl = cgm.getAnimControl().find();
+        TrackItem item = null;
         Track track = find();
-        TrackItem item = new TrackItem(animationName, animControlName,
-                animControl, track);
+        if (track != null) {
+            String animationName = cgm.getAnimation().getName();
+            String animControlName = cgm.getAnimControl().name();
+            AnimControl animControl = cgm.getAnimControl().find();
+            item = new TrackItem(animationName, animControlName, animControl,
+                    track);
+        }
 
         return item;
     }
@@ -595,6 +652,35 @@ public class SelectedTrack implements Cloneable {
                 cgm.getAnimation().setTime(time);
             }
         }
+    }
+
+    /**
+     * Select the track with the specified description.
+     *
+     * @param description from TrackItem.describe() (not null, not empty)
+     */
+    public void selectWithDescription(String description) {
+        Validate.nonEmpty(description, "description");
+
+        Track track = null;
+        List<TrackItem> items = cgm.getAnimation().listTracks();
+        for (TrackItem item : items) {
+            if (item.describe().equals(description)) {
+                track = item.getTrack();
+                break;
+            }
+        }
+
+        if (track instanceof BoneTrack) {
+            BoneTrack boneTrack = (BoneTrack) track;
+            int boneIndex = boneTrack.getTargetBoneIndex();
+            cgm.getBone().select(boneIndex);
+        } else if (track instanceof SpatialTrack) {
+            cgm.getBone().deselect();
+            SpatialTrack spatialTrack = (SpatialTrack) track;
+            Spatial trackSpatial = spatialTrack.getTrackSpatial();
+            cgm.getSpatial().select(trackSpatial);
+        } // TODO other track types
     }
 
     /**

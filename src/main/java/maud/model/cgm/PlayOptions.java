@@ -172,6 +172,29 @@ public class PlayOptions implements Cloneable {
     }
 
     /**
+     * Alter the specified time.
+     *
+     * @param whichTime which time to alter (not null)
+     * @param newValue (in seconds, &ge;0)
+     */
+    public void setTime(PlayTimes whichTime, float newValue) {
+        Validate.nonNegative(newValue, "new value");
+
+        switch (whichTime) {
+            case LowerLimit:
+                setLowerLimit(newValue);
+                break;
+
+            case UpperLimit:
+                setUpperLimit(newValue);
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    /**
      * Alter the upper time limit.
      *
      * @param newLimit (in seconds)

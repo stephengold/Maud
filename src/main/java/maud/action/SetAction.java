@@ -39,8 +39,10 @@ import maud.dialog.EditorDialogs;
 import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
+import maud.model.WhichCgm;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
+import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedOverride;
 import maud.model.option.DisplaySettings;
@@ -400,6 +402,46 @@ class SetAction {
                 model.getMisc().setSubmenuWarp(x, y);
             } else {
                 handled = false;
+            }
+
+        } else if (actionString.startsWith(ActionPrefix.setTime)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setTime);
+            String[] args = arg.split(" ");
+            if (args.length < 2) {
+                handled = false;
+            } else {
+                WhichCgm whichCgm = WhichCgm.valueOf(args[0]);
+                PlayTimes whichTime = PlayTimes.valueOf(args[1]);
+                if (args.length == 2) {
+                    EditorDialogs.setTime(whichCgm, whichTime);
+                } else if (args.length == 3) {
+                    float newValue = Float.parseFloat(args[2]);
+                    Cgm cgm = model.getCgm(whichCgm);
+                    cgm.getPlay().setTime(whichTime, newValue);
+                } else {
+                    handled = false;
+                }
+            }
+
+        } else if (actionString.startsWith(ActionPrefix.setTimeToFrame)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setTimeToFrame);
+            String[] args = arg.split(" ");
+            if (args.length < 2) {
+                handled = false;
+            } else {
+                WhichCgm whichCgm = WhichCgm.valueOf(args[0]);
+                PlayTimes whichTime = PlayTimes.valueOf(args[1]);
+                if (args.length == 2) {
+                    EditorDialogs.setTimeToKeyframe(whichCgm, whichTime);
+                } else if (args.length == 3) {
+                    int indexBase = Maud.getModel().getMisc().getIndexBase();
+                    int index = Integer.parseInt(args[2]) - indexBase;
+                    Cgm cgm = model.getCgm(whichCgm);
+                    float newValue = cgm.getTrack().keyframeTime(index);
+                    cgm.getPlay().setTime(whichTime, newValue);
+                } else {
+                    handled = false;
+                }
             }
 
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {

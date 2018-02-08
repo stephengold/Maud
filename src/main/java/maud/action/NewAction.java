@@ -85,12 +85,21 @@ class NewAction {
                 AnimationMenus.addNewAnimation();
                 break;
 
+            case Action.newAnimationFromExtract:
+                EditorDialogs.newAnimation(ActionPrefix.newAnimationFromExtract,
+                        "Extract", "extract");
+                break;
+
             case Action.newAnimationFromPose:
-                EditorDialogs.newAnimationFromPose();
+                EditorDialogs.newAnimation(ActionPrefix.newAnimationFromPose,
+                        "Create", "pose");
                 break;
 
             case Action.newAnimationFromRetarget:
-                EditorDialogs.newAnimationFromRetarget();
+                String sourceName = model.getSource().getAnimation().getName();
+                EditorDialogs.newAnimation(
+                        ActionPrefix.newAnimationFromRetarget, "Retarget",
+                        sourceName);
                 break;
 
             case Action.newCheckpoint:
@@ -183,6 +192,13 @@ class NewAction {
             String newName = MyString.remainder(actionString,
                     ActionPrefix.newAnimationFromCopy);
             target.getAnimControl().newFromCopy(newName);
+            target.getAnimation().load(newName);
+
+        } else if (actionString.startsWith(
+                ActionPrefix.newAnimationFromExtract)) {
+            String newName = MyString.remainder(actionString,
+                    ActionPrefix.newAnimationFromExtract);
+            target.getAnimControl().addExtract(newName);
             target.getAnimation().load(newName);
 
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromMix)) {

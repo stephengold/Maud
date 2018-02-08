@@ -45,7 +45,7 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
-Status as of January 2018: seeking more alpha testers.
+Status as of February 2018: seeking more alpha testers.
 
 ## Contents of this document
 
@@ -183,12 +183,12 @@ is split into overlapping sub-windows called "tools".
 
 #### Tools
 
-At last count, Maud had 42 tools.
+At last count, Maud had 43 tools.
 Each tool can be independently hidden or made visible.
 
 Selecting a tool makes it visible and moves it to the top layer for convenient
 use, but you can use a tool without it being on top.
-The controls in a tool work even when partly obscured.
+The controls in a tool work even when partly obscured by other tools.
 You can move a tool by dragging its title bar with the left mouse button (LMB).
 
 If a tool gets in your way, you can hide it by clicking on

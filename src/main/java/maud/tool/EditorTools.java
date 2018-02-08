@@ -98,6 +98,10 @@ public class EditorTools {
      */
     final private DisplaySettingsTool displaySettings;
     /**
+     * controller for the ExtractTool
+     */
+    final private ExtractTool extract;
+    /**
      * controller for the HistoryTool
      */
     final private HistoryTool history;
@@ -238,8 +242,10 @@ public class EditorTools {
         bounds = new BoundsTool(screen);
         camera = new CameraTool(screen);
         cgm = new CgmTool(screen);
+
         cursor = new CursorTool(screen);
         displaySettings = new DisplaySettingsTool(screen);
+        extract = new ExtractTool(screen);
         history = new HistoryTool(screen);
         joint = new JointTool(screen);
         keyframe = new KeyframeTool(screen);
@@ -247,6 +253,7 @@ public class EditorTools {
         mapping = new MappingTool(screen);
         material = new MaterialTool(screen);
         object = new ObjectTool(screen);
+
         overrides = new OverridesTool(screen);
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
@@ -257,16 +264,18 @@ public class EditorTools {
         settings = new SettingsTool(screen);
         sgc = new SgcTool(screen);
         shape = new ShapeTool(screen);
+
         skeleton = new SkeletonTool(screen);
+        sky = new SkyTool(screen);
         sourceAnimation = new SourceAnimationTool(screen);
         spatialDetails = new SpatialDetailsTool(screen);
         spatialRotation = new SpatialRotationTool(screen);
         spatialScale = new SpatialScaleTool(screen);
         spatial = new SpatialTool(screen);
         spatialTranslation = new SpatialTranslationTool(screen);
-        sky = new SkyTool(screen);
         track = new TrackTool(screen);
         tweening = new TweeningTool(screen);
+
         twist = new TwistTool(screen);
         userData = new UserDataTool(screen);
         vertex = new VertexTool(screen);
@@ -282,10 +291,10 @@ public class EditorTools {
     public void attachAll(AppStateManager stateManager) {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
-                displaySettings, history, keyframe, joint, lights, mapping,
-                material, object, overrides, platform, render, retarget,
-                sceneLighting, sceneVertex, score, settings, sgc, shape,
-                skeleton, sky, sourceAnimation, spatial, spatialDetails,
+                displaySettings, extract, history, keyframe, joint, lights,
+                mapping, material, object, overrides, platform, render,
+                retarget, sceneLighting, sceneVertex, score, settings, sgc,
+                shape, skeleton, sky, sourceAnimation, spatial, spatialDetails,
                 spatialRotation, spatialScale, spatialTranslation, track,
                 tweening, twist, userData, vertex);
     }

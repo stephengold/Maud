@@ -37,6 +37,7 @@ import jme3utilities.nifty.WindowController;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenVectors;
 import maud.Maud;
+import maud.menu.AnimationMenus;
 import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
@@ -83,6 +84,10 @@ class SelectTZAction {
         boolean handled = true;
 
         switch (actionString) {
+            case Action.selectTrack:
+                AnimationMenus.selectTrack();
+                break;
+
             case Action.selectTriangleMode:
                 EnumMenus.selectTriangleMode();
                 break;
@@ -134,7 +139,11 @@ class SelectTZAction {
         Cgm target = model.getTarget();
         String arg;
 
-        if (actionString.startsWith(ActionPrefix.selectTriangleMode)) {
+        if (actionString.startsWith(ActionPrefix.selectTrack)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectTrack);
+            AnimationMenus.selectTrack(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectTriangleMode)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectTriangleMode);
             TriangleMode mode = TriangleMode.valueOf(arg);

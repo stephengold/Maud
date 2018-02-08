@@ -72,6 +72,7 @@ public class Action {
     final static String loadSourceCgm = "load sourceCgm";
 
     final static String newAnimation = "new animation";
+    final static String newAnimationFromExtract = "new animation fromExtract";
     final static String newAnimationFromPose = "new animation fromPose";
     final static String newAnimationFromRetarget
             = "new animation fromRetarget";
@@ -194,6 +195,7 @@ public class Action {
     final static String selectSourceBone = "select sourceBone";
     final static String selectSpatialChild = "select spatialChild";
     final static String selectSpatialParent = "select spatialParent";
+    final static String selectTrack = "select track";
     final static String selectTriangleMode = "select triangleMode";
     final static String selectTweenRotations = "select tweenRotations";
     final static String selectTweenScales = "select tweenScales";
