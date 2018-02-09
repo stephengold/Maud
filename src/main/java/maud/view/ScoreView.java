@@ -54,6 +54,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyArray;
 import jme3utilities.math.MyMath;
 import jme3utilities.mesh.RectangleMesh;
+import jme3utilities.mesh.RoundedRectangle;
 import jme3utilities.wes.Pose;
 import maud.Maud;
 import maud.mesh.Finial;
@@ -120,10 +121,6 @@ public class ScoreView implements EditorView {
     // fields
 
     /**
-     * CG model being rendered
-     */
-    private Cgm cgm;
-    /**
      * end-cap mesh for a bone track that includes scales
      */
     private static Finial finialComplete;
@@ -131,6 +128,10 @@ public class ScoreView implements EditorView {
      * end-cap mesh for a bone track without scales
      */
     private static Finial finialNoScales;
+    /**
+     * CG model being rendered
+     */
+    private Cgm cgm;
     /**
      * height of this score (in world units, &ge;0)
      */
@@ -617,8 +618,8 @@ public class ScoreView implements EditorView {
                 float yHeight = 2.4f * xWidth / preferredSize;
                 float centerY = cgm.getScorePov().getCameraY();
                 float rightX = 1f;
-                attachLabelHorizontal(clueMessage, sizeFactor, r.bgSelected,
-                        rightX, centerY, xWidth, yHeight);
+                attachLabelHorizontal(clueMessage, sizeFactor, ColorRGBA.White,
+                        r.bgSelected, rightX, centerY, xWidth, yHeight);
             }
         }
     }
@@ -886,7 +887,7 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attach a pair of hash marks to indicate a spatial track or bone.
+     * Attach a pair of hash marks to indicate a track or bone.
      *
      * @param staffHeight (&ge;0)
      */
@@ -929,14 +930,10 @@ public class ScoreView implements EditorView {
         assert maxWidth >= minWidth : maxWidth;
         assert maxHeight > 0f : maxHeight;
 
-        Material bgMaterial;
         int selectedBoneIndex = cgm.getBone().getIndex();
         boolean isSelected = (currentBone == selectedBoneIndex);
-        if (isSelected) {
-            bgMaterial = r.bgSelected;
-        } else {
-            bgMaterial = r.bgNotSelected;
-        }
+        Material bgMaterial = isSelected ? r.bgSelected : null;
+        ColorRGBA textColor = isSelected ? ColorRGBA.White : ColorRGBA.Black;
 
         String labelText = StaffTrack.labelText();
         float textSize = 4f + r.labelFont.getLineWidth(labelText, 0);
@@ -977,11 +974,11 @@ public class ScoreView implements EditorView {
          * Decide whether to rotate the label.
          */
         if (h2 * w2 > h1 * w1) {
-            attachLabelVertical(labelText, sizeFactor2, bgMaterial, rightX,
-                    centerY, w2, h2);
+            attachLabelVertical(labelText, sizeFactor2, textColor, bgMaterial,
+                    rightX, centerY, w2, h2);
         } else {
-            attachLabelHorizontal(labelText, sizeFactor1, bgMaterial, rightX,
-                    centerY, w1, h1);
+            attachLabelHorizontal(labelText, sizeFactor1, textColor, bgMaterial,
+                    rightX, centerY, w1, h1);
         }
     }
 
@@ -990,24 +987,25 @@ public class ScoreView implements EditorView {
      *
      * @param labelText text of the label (not null)
      * @param sizeFactor text size relative to preferred size (&gt;0)
-     * @param bgMaterial (not null)
+     * @param textColor color for the text (not null, unaffected)
+     * @param bgMaterial material for the background, or null for no background
      * @param rightX world X coordinate for the right edge of the label
      * @param centerY world Y coordinate for the center of the label
      * @param xWidth width of label (in compressed units, &gt;0)
      * @param yHeight height of label (in world units, &gt;0)
      */
     private void attachLabelHorizontal(String labelText, float sizeFactor,
-            Material bgMaterial, float rightX, float centerY, float xWidth,
-            float yHeight) {
+            ColorRGBA textColor, Material bgMaterial, float rightX,
+            float centerY, float xWidth, float yHeight) {
         assert labelText != null;
         assert sizeFactor > 0f : sizeFactor;
-        assert bgMaterial != null;
+        assert textColor != null;
         assert xWidth > 0f : xWidth;
         assert yHeight > 0f : yHeight;
 
         String nameSuffix = String.format("%d", staffIndex);
-        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
-                xWidth, yHeight);
+        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, textColor,
+                bgMaterial, xWidth, yHeight);
         visuals.attachChild(label);
         float compression = cgm.getScorePov().compression();
         label.setLocalScale(compression, 1f, 1f);
@@ -1021,24 +1019,25 @@ public class ScoreView implements EditorView {
      *
      * @param labelText text of the label (not null)
      * @param sizeFactor text size relative to preferred size (&gt;0)
-     * @param bgMaterial (not null)
+     * @param textColor color for the text (not null, unaffected)
+     * @param bgMaterial material for the background, or null for no background
      * @param bottomX world X coordinate for the bottom edge of the label
      * @param centerY world Y coordinate for the center of the label
      * @param xHeight height of label (in compressed units, &gt;0)
      * @param yWidth width of label (in world units, &gt;0)
      */
     private void attachLabelVertical(String labelText, float sizeFactor,
-            Material bgMaterial, float bottomX, float centerY, float xHeight,
-            float yWidth) {
+            ColorRGBA textColor, Material bgMaterial, float bottomX,
+            float centerY, float xHeight, float yWidth) {
         assert labelText != null;
         assert sizeFactor > 0f : sizeFactor;
-        assert bgMaterial != null;
+        assert textColor != null;
         assert xHeight > 0f : xHeight;
         assert yWidth > 0f : yWidth;
 
         String nameSuffix = String.format("%d", staffIndex);
-        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, bgMaterial,
-                yWidth, xHeight); // swap X and Y
+        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, textColor,
+                bgMaterial, yWidth, xHeight); // swap X and Y
         visuals.attachChild(label);
         label.setLocalRotation(ScoreResources.quarterZ);
         float compression = cgm.getScorePov().compression();
@@ -1283,11 +1282,10 @@ public class ScoreView implements EditorView {
      * Attach a staff with neither finials nor tracks.
      */
     private void attachTracklessStaff() {
-        attachHashes(0f);
         float zoom = cgm.getScorePov().getHalfHeight();
         if (zoom < 4f) {
             /*
-             * Attach a track label overlapping the left-hand hash mark.
+             * Attach a track label on the left side.
              */
             float leftX = cgm.getScorePov().leftX() + xGap;
             float rightX = -0.2f * ScoreResources.hashSize;
@@ -1296,6 +1294,8 @@ public class ScoreView implements EditorView {
             float maxWidth = (rightX - leftX) / compression;
             float minWidth = ScoreResources.hashSize / compression;
             attachLabel(rightX, middleY, minWidth, maxWidth, 0.09f);
+        } else {
+            attachHashes(0f);
         }
     }
 
@@ -1368,46 +1368,52 @@ public class ScoreView implements EditorView {
 
     /**
      * Create a node with the text and background for a label, but don't parent
-     * it.
+     * it. TODO move to ScoreResources class
      *
      * @param labelText text of the label (not null)
      * @param sizeFactor text size relative to preferred size (&gt;0)
-     * @param bgMaterial material for the background (not null)
+     * @param textColor color for the text (not null, unaffected)
+     * @param bgMaterial material for the background, or null for no background
      * @param width size in the local X direction (in local units, &gt;0)
      * @param height size in the local Y direction (in local units, &gt;0)
      * @return a new orphan spatial with its local origin at its upper left
      * corner
      */
     private Spatial makeLabel(String labelText, String nameSuffix,
-            float sizeFactor, Material bgMaterial, float width, float height) {
+            float sizeFactor, ColorRGBA textColor, Material bgMaterial,
+            float width, float height) {
         assert labelText != null;
         assert sizeFactor > 0f : sizeFactor;
-        assert bgMaterial != null;
+        assert textColor != null;
         assert width > 0f : width;
         assert height > 0f : height;
-        /*
-         * Create a rectangular background geometry.
-         */
-        //String bgName = "bg" + nameSuffix;
-        Mesh bgMesh = new RectangleMesh(0f, width, -height, 0f, 1f);
-        Geometry bgGeometry = new Geometry("bg", bgMesh);
-        bgGeometry.setMaterial(bgMaterial);
+
+        Node node = new Node();
+        if (bgMaterial != null) {
+            /*
+             * Create a rounded rectangle for the background geometry.
+             */
+            float cornerRadius = 0.2f * Math.min(width, height);
+            Mesh bgMesh = new RoundedRectangle(0f, width, -height, 0f,
+                    cornerRadius, 1f);
+            String bgName = "bg"; // + nameSuffix;
+            Geometry bgGeometry = new Geometry(bgName, bgMesh);
+            bgGeometry.setMaterial(bgMaterial);
+            node.attachChild(bgGeometry);
+        }
         /*
          * Create a text node, centered on, and slightly in front of, the
          * background.
          */
-        TrueTypeNode ttNode
-                = r.labelFont.getText(labelText, 0, ColorRGBA.White);
-        ttNode.setLocalScale(sizeFactor);
-        float dx = width - ttNode.getWidth() * sizeFactor;
-        float dy = height - ttNode.getHeight() * sizeFactor;
-        ttNode.setLocalTranslation(dx / 2f, -dy / 2f, 0.01f);
-        //String labelName = "label" + nameSuffix;
-        //spatial.setName(labelName);
-
-        Node node = new Node();
-        node.attachChild(bgGeometry);
-        node.attachChild(ttNode);
+        TrueTypeNode textNode = r.labelFont.getText(labelText, 0,
+                textColor.clone());
+        textNode.setLocalScale(sizeFactor);
+        float dx = width - textNode.getWidth() * sizeFactor;
+        float dy = height - textNode.getHeight() * sizeFactor;
+        textNode.setLocalTranslation(dx / 2f, -dy / 2f, 0.01f);
+        //String textName = "text" + nameSuffix;
+        //spatial.setName(textName);
+        node.attachChild(textNode);
 
         return node;
     }

@@ -78,7 +78,7 @@ public class ScoreResources {
      */
     final static float hashSize = 0.05f;
     /**
-     * hash-mark mesh to represent a bone without a track, or any bone when the
+     * hash-mark mesh to represent a bone without a track, or any track when the
      * POV is zoomed all the way out
      */
     final static Line hashMark = new Line(
@@ -90,11 +90,7 @@ public class ScoreResources {
     final private static Logger logger
             = Logger.getLogger(ScoreResources.class.getName());
     /**
-     * material for label backgrounds of non-selected bones
-     */
-    final Material bgNotSelected;
-    /**
-     * material for label backgrounds of selected bones
+     * material for label backgrounds of selected tracks
      */
     final Material bgSelected;
     /**
@@ -122,11 +118,11 @@ public class ScoreResources {
      */
     final Material traMaterial;
     /**
-     * material for finials of non-selected bones
+     * material for finials of non-selected tracks
      */
     final Material wireNotSelected;
     /**
-     * material for finials of selected bones
+     * material for finials of selected tracks
      */
     final Material wireSelected;
     /**
@@ -182,7 +178,6 @@ public class ScoreResources {
         ColorRGBA grey = new ColorRGBA(0.5f, 0.5f, 0.5f, 1f);
         ColorRGBA yellow = new ColorRGBA(1f, 1f, 0f, 1f);
 
-        bgNotSelected = MyAsset.createUnshadedMaterial(assetManager, grey);
         bgSelected = MyAsset.createUnshadedMaterial(assetManager, black);
         gnomonFrozen = MyAsset.createUnshadedMaterial(assetManager, yellow);
         wireNotSelected = MyAsset.createWireframeMaterial(assetManager, grey);
