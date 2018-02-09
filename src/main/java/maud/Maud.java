@@ -90,6 +90,10 @@ public class Maud extends GuiApplication {
      */
     private boolean didStartup1 = false;
     /**
+     * true to load startup script, false to skip it
+     */
+    private static boolean loadStartupScript = true;
+    /**
      * MVC model for the editor screen (live copy)
      */
     private static EditorModel editorModel = new EditorModel();
@@ -152,6 +156,11 @@ public class Maud extends GuiApplication {
                 case "-f":
                 case "--forceDialog":
                     DisplaySettings.setForceDialog(true);
+                    break;
+
+                case "-s":
+                case "--skipStartup":
+                    loadStartupScript = false;
                     break;
 
                 default:
@@ -253,11 +262,13 @@ public class Maud extends GuiApplication {
      */
     void startup3() {
         logger.info("");
-        /*
-         * Evaluate the startup script.
-         */
-        UncachedKey key = new UncachedKey(startupScriptAssetPath);
-        assetManager.loadAsset(key);
+        if (loadStartupScript) {
+            /*
+             * Evaluate the startup script.
+             */
+            UncachedKey key = new UncachedKey(startupScriptAssetPath);
+            assetManager.loadAsset(key);
+        }
         /*
          * If no target model is loaded, load Jaime as a fallback.
          */
