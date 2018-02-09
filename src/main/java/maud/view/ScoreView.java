@@ -26,7 +26,6 @@
  */
 package maud.view;
 
-import com.atr.jme.font.shape.TrueTypeNode;
 import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -54,7 +53,6 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyArray;
 import jme3utilities.math.MyMath;
 import jme3utilities.mesh.RectangleMesh;
-import jme3utilities.mesh.RoundedRectangle;
 import jme3utilities.wes.Pose;
 import maud.Maud;
 import maud.mesh.Finial;
@@ -1004,8 +1002,8 @@ public class ScoreView implements EditorView {
         assert yHeight > 0f : yHeight;
 
         String nameSuffix = String.format("%d", staffIndex);
-        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, textColor,
-                bgMaterial, xWidth, yHeight);
+        Spatial label = r.makeLabel(labelText, nameSuffix, sizeFactor,
+                textColor, bgMaterial, xWidth, yHeight);
         visuals.attachChild(label);
         float compression = cgm.getScorePov().compression();
         label.setLocalScale(compression, 1f, 1f);
@@ -1036,8 +1034,8 @@ public class ScoreView implements EditorView {
         assert yWidth > 0f : yWidth;
 
         String nameSuffix = String.format("%d", staffIndex);
-        Spatial label = makeLabel(labelText, nameSuffix, sizeFactor, textColor,
-                bgMaterial, yWidth, xHeight); // swap X and Y
+        Spatial label = r.makeLabel(labelText, nameSuffix, sizeFactor,
+                textColor, bgMaterial, yWidth, xHeight); // swap X and Y
         visuals.attachChild(label);
         label.setLocalRotation(ScoreResources.quarterZ);
         float compression = cgm.getScorePov().compression();
@@ -1364,58 +1362,6 @@ public class ScoreView implements EditorView {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Create a node with the text and background for a label, but don't parent
-     * it. TODO move to ScoreResources class
-     *
-     * @param labelText text of the label (not null)
-     * @param sizeFactor text size relative to preferred size (&gt;0)
-     * @param textColor color for the text (not null, unaffected)
-     * @param bgMaterial material for the background, or null for no background
-     * @param width size in the local X direction (in local units, &gt;0)
-     * @param height size in the local Y direction (in local units, &gt;0)
-     * @return a new orphan spatial with its local origin at its upper left
-     * corner
-     */
-    private Spatial makeLabel(String labelText, String nameSuffix,
-            float sizeFactor, ColorRGBA textColor, Material bgMaterial,
-            float width, float height) {
-        assert labelText != null;
-        assert sizeFactor > 0f : sizeFactor;
-        assert textColor != null;
-        assert width > 0f : width;
-        assert height > 0f : height;
-
-        Node node = new Node();
-        if (bgMaterial != null) {
-            /*
-             * Create a rounded rectangle for the background geometry.
-             */
-            float cornerRadius = 0.2f * Math.min(width, height);
-            Mesh bgMesh = new RoundedRectangle(0f, width, -height, 0f,
-                    cornerRadius, 1f);
-            String bgName = "bg"; // + nameSuffix;
-            Geometry bgGeometry = new Geometry(bgName, bgMesh);
-            bgGeometry.setMaterial(bgMaterial);
-            node.attachChild(bgGeometry);
-        }
-        /*
-         * Create a text node, centered on, and slightly in front of, the
-         * background.
-         */
-        TrueTypeNode textNode = r.labelFont.getText(labelText, 0,
-                textColor.clone());
-        textNode.setLocalScale(sizeFactor);
-        float dx = width - textNode.getWidth() * sizeFactor;
-        float dy = height - textNode.getHeight() * sizeFactor;
-        textNode.setLocalTranslation(dx / 2f, -dy / 2f, 0.01f);
-        //String textName = "text" + nameSuffix;
-        //spatial.setName(textName);
-        node.attachChild(textNode);
-
-        return node;
     }
 
     /**
