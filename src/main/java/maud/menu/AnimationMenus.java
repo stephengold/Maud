@@ -35,6 +35,7 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
+import maud.dialog.ResampleType;
 import maud.model.EditorModel;
 import maud.model.WhichCgm;
 import maud.model.cgm.Cgm;
@@ -371,12 +372,14 @@ public class AnimationMenus {
                 EditorDialogs.reduceAnimation();
                 break;
 
-            case "Resample all tracks to number":
-                EditorDialogs.resampleAnimation(false);
+            case "Resample all tracks at rate":
+                EditorDialogs.resample(ActionPrefix.resampleAnimation,
+                        ResampleType.AtRate);
                 break;
 
-            case "Resample all tracks at rate":
-                EditorDialogs.resampleAnimation(true);
+            case "Resample all tracks to number":
+                EditorDialogs.resample(ActionPrefix.resampleAnimation,
+                        ResampleType.ToNumber);
                 break;
 
             case "Reverse":

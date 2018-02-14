@@ -33,7 +33,9 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
+import maud.dialog.ResampleType;
 import maud.model.EditableMap;
 import maud.model.History;
 import maud.model.cgm.EditableCgm;
@@ -365,11 +367,13 @@ public class EditorMenus {
                 break;
 
             case "Resample at rate":
-                EditorDialogs.resampleTrack(true);
+                EditorDialogs.resample(ActionPrefix.resampleTrack,
+                        ResampleType.AtRate);
                 break;
 
             case "Resample to number":
-                EditorDialogs.resampleTrack(false);
+                EditorDialogs.resample(ActionPrefix.resampleTrack,
+                        ResampleType.ToNumber);
                 break;
 
             case "Select track":

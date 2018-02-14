@@ -192,24 +192,13 @@ public class ActionPrefix {
      */
     final public static String renameUserKey = "rename userKey ";
     /**
-     * argument is the new sample rate
+     * arguments are a resample type and a decimal count/rate
      */
-    final public static String resampleAnimationAtRate
-            = "resample animation atRate ";
+    final public static String resampleAnimation = "resample animation ";
     /**
-     * argument is the new sample count
+     * arguments are a resample type and a decimal count/rate
      */
-    final public static String resampleAnimationToNumber
-            = "resample animation toNumber ";
-    /**
-     * argument is the new sample rate
-     */
-    final public static String resampleTrackAtRate = "resample track atRate ";
-    /**
-     * argument is the new sample count
-     */
-    final public static String resampleTrackToNumber
-            = "resample track toNumber ";
+    final public static String resampleTrack = "resample track ";
     /**
      * argument is a base file path
      */

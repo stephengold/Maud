@@ -37,6 +37,7 @@ import jme3utilities.ui.InputMode;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
 import maud.dialog.LicenseType;
+import maud.dialog.ResampleType;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.cgm.Cgm;
@@ -292,7 +293,7 @@ public class EditorInputMode extends InputMode {
      */
     private boolean reduceAction(String actionString) {
         EditableCgm target = Maud.getModel().getTarget();
-
+        String arg;
         boolean handled = false;
         if (actionString.equals(Action.reduceAnimation)) {
             EditorDialogs.reduceAnimation();
@@ -303,16 +304,15 @@ public class EditorInputMode extends InputMode {
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.reduceAnimation)) {
-            String f;
-            f = MyString.remainder(actionString, ActionPrefix.reduceAnimation);
-            int factor = Integer.parseInt(f);
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.reduceAnimation);
+            int factor = Integer.parseInt(arg);
             target.getAnimation().reduce(factor);
             handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.reduceTrack)) {
-            String f;
-            f = MyString.remainder(actionString, ActionPrefix.reduceTrack);
-            int factor = Integer.parseInt(f);
+            arg = MyString.remainder(actionString, ActionPrefix.reduceTrack);
+            int factor = Integer.parseInt(arg);
             target.getTrack().reduce(factor);
             handled = true;
         }
@@ -329,35 +329,45 @@ public class EditorInputMode extends InputMode {
     private boolean resampleAction(String actionString) {
         EditableCgm target = Maud.getModel().getTarget();
         String arg;
-        boolean handled = true;
-        if (actionString.startsWith(ActionPrefix.resampleAnimationToNumber)) {
+        boolean handled = false;
+        if (actionString.startsWith(ActionPrefix.resampleAnimation)) {
             arg = MyString.remainder(actionString,
-                    ActionPrefix.resampleAnimationToNumber);
-            int numSamples = Integer.parseInt(arg);
-            target.getAnimation().resampleToNumber(numSamples);
+                    ActionPrefix.resampleAnimation);
+            String[] args = arg.split(" ");
+            if (args.length == 2) {
+                ResampleType resample = ResampleType.valueOf(args[0]);
+                switch (resample) {
+                    case AtRate:
+                        float sampleRate = Float.parseFloat(args[1]);
+                        target.getAnimation().resampleAtRate(sampleRate);
+                        handled = true;
+                        break;
+                    case ToNumber:
+                        int numSamples = Integer.parseInt(args[1]);
+                        target.getAnimation().resampleToNumber(numSamples);
+                        handled = true;
+                        break;
+                }
+            }
 
-        } else if (actionString.startsWith(
-                ActionPrefix.resampleAnimationAtRate)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.resampleAnimationAtRate);
-            float sampleRate = Float.parseFloat(arg);
-            target.getAnimation().resampleAtRate(sampleRate);
-
-        } else if (actionString.startsWith(
-                ActionPrefix.resampleTrackToNumber)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.resampleTrackToNumber);
-            int numSamples = Integer.parseInt(arg);
-            target.getTrack().resampleToNumber(numSamples);
-
-        } else if (actionString.startsWith(ActionPrefix.resampleTrackAtRate)) {
-            String rateString = MyString.remainder(actionString,
-                    ActionPrefix.resampleTrackAtRate);
-            float sampleRate = Float.parseFloat(rateString);
-            target.getTrack().resampleAtRate(sampleRate);
-
-        } else {
-            handled = false;
+        } else if (actionString.startsWith(ActionPrefix.resampleTrack)) {
+            arg = MyString.remainder(actionString, ActionPrefix.resampleTrack);
+            String[] args = arg.split(" ");
+            if (args.length == 2) {
+                ResampleType resample = ResampleType.valueOf(args[0]);
+                switch (resample) {
+                    case AtRate:
+                        float sampleRate = Float.parseFloat(args[1]);
+                        target.getTrack().resampleAtRate(sampleRate);
+                        handled = true;
+                        break;
+                    case ToNumber:
+                        int numSamples = Integer.parseInt(args[1]);
+                        target.getTrack().resampleToNumber(numSamples);
+                        handled = true;
+                        break;
+                }
+            }
         }
 
         return handled;

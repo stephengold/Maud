@@ -577,34 +577,25 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "resample animation" dialog.
+     * Display a "resample animation/track" dialog.
      *
-     * @param rateFlag true&rarr;per second, false&rarr;number of samples
+     * @param actionPrefix an action prefix (not null)
+     * @param type how to generate frame times (not null)
      */
-    public static void resampleAnimation(boolean rateFlag) {
-        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
-        if (animation.isReal()) {
-            if (rateFlag) {
-                resampleRate(ActionPrefix.resampleAnimationAtRate);
-            } else {
-                resampleCount(ActionPrefix.resampleAnimationToNumber);
-            }
-        }
-    }
+    public static void resample(String actionPrefix, ResampleType type) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
 
-    /**
-     * Display a "resample track" dialog. TODO replace rateFlag with enum
-     *
-     * @param rateFlag true&rarr;per second, false&rarr;number of samples
-     */
-    public static void resampleTrack(boolean rateFlag) {
-        SelectedTrack track = Maud.getModel().getTarget().getTrack();
-        if (track.isSelected()) {
-            if (rateFlag) {
-                resampleRate(ActionPrefix.resampleTrackAtRate);
-            } else {
-                resampleCount(ActionPrefix.resampleTrackToNumber);
-            }
+        switch (type) {
+            case AtRate:
+                resampleAtRate(actionPrefix);
+                break;
+
+            case ToNumber:
+                resampleToNumber(actionPrefix);
+                break;
+
+            default:
+                throw new IllegalArgumentException();
         }
     }
 
@@ -1085,32 +1076,34 @@ public class EditorDialogs {
     // private methods
 
     /**
-     * Display a "resample animation/track count" dialog.
+     * Display a "resample animation/track AtRate" dialog.
      *
-     * @param actionPrefix action prefix (not null)
+     * @param actionPrefix an action prefix (not null)
      */
-    private static void resampleCount(String actionPrefix) {
-        LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
-        if (animation.getDuration() > 0f) {
-            IntegerDialog controller
-                    = new IntegerDialog("Resample", 2, 999, false);
-            Maud.gui.closeAllPopups();
-            Maud.gui.showTextEntryDialog("Enter number of samples:", "17",
-                    actionPrefix, controller);
-        }
+    private static void resampleAtRate(String actionPrefix) {
+        assert actionPrefix != null;
+
+        FloatDialog controller
+                = new FloatDialog("Resample", 0.1f, 1000f, false);
+        String prefix = actionPrefix + ResampleType.AtRate + " ";
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter samples per second:", "10", prefix,
+                controller);
     }
 
     /**
-     * Display a "resample animation/track rate" dialog.
+     * Display a "resample animation/track ToNumber" dialog.
      *
-     * @param actionPrefix action prefix (not null)
+     * @param actionPrefix an action prefix (not null)
      */
-    private static void resampleRate(String actionPrefix) {
-        FloatDialog controller
-                = new FloatDialog("Resample", 0.1f, 1000f, false);
+    private static void resampleToNumber(String actionPrefix) {
+        assert actionPrefix != null;
+
+        IntegerDialog controller = new IntegerDialog("Resample", 2, 999, false);
+        String prefix = actionPrefix + ResampleType.ToNumber + " ";
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter samples per second:", "10",
-                actionPrefix, controller);
+        Maud.gui.showTextEntryDialog("Enter number of samples:", "17", prefix,
+                controller);
     }
 
     /**
