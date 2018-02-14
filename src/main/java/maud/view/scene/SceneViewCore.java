@@ -641,11 +641,11 @@ public class SceneViewCore
         /*
          * Determine which bones to consider.
          */
-        DisplayedPose displayedPose = cgm.getPose();
-        int numBones = displayedPose.get().countBones();
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
-        BitSet boneIndexSet = cgm.getSkeleton().listShown(showBones, null);
+        int selectedBoneIndex = cgm.getBone().getIndex();
+        BitSet boneIndexSet = cgm.getSkeleton().listShown(showBones,
+                selectedBoneIndex, null);
         int selectedBone = cgm.getBone().getIndex();
         if (selectedBone != -1) {
             boneIndexSet.clear(selectedBone);
@@ -653,6 +653,8 @@ public class SceneViewCore
 
         Camera camera = getCamera();
         Vector2f inputXY = selection.copyInputXY();
+        DisplayedPose displayedPose = cgm.getPose();
+        int numBones = displayedPose.get().countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             if (boneIndexSet.get(boneIndex)) {
                 Vector3f world = displayedPose.worldLocation(boneIndex, null);
@@ -702,6 +704,16 @@ public class SceneViewCore
     @Override
     public void considerKeyframes(Selection selection) {
         // no keyframes in scene views
+    }
+
+    /**
+     * Consider selecting each visualized track in this view.
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    @Override
+    public void considerTracks(Selection selection) {
+        // no tracks in scene views
     }
 
     /**

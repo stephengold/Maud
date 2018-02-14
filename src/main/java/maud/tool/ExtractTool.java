@@ -94,7 +94,7 @@ class ExtractTool extends Tool {
 
         String trackButton = "";
         SelectedTrack track = target.getTrack();
-        if (track.isTrackSelected()) {
+        if (track.isSelected()) {
             trackButton = track.item().describe();
         } else if (animation.countTracks() > 0) {
             trackButton = "( none selected )";
@@ -151,7 +151,7 @@ class ExtractTool extends Tool {
             float endTime = Math.min(upperLimit, duration);
             endTimeButton = String.format("%.3f sec", endTime);
 
-            if (track.isTrackSelected()) {
+            if (track.isSelected()) {
                 int startIndex = track.findKeyframeIndex(startTime);
                 if (startIndex >= 0) {
                     startFrameButton

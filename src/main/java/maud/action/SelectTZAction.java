@@ -88,6 +88,10 @@ class SelectTZAction {
                 AnimationMenus.selectTrack();
                 break;
 
+            case Action.selectTrackTarget:
+                Maud.getModel().getTarget().getTrack().selectTarget();
+                break;
+
             case Action.selectTriangleMode:
                 EnumMenus.selectTriangleMode();
                 break;

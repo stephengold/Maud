@@ -93,7 +93,7 @@ public class ScoreOptions implements Cloneable {
         Validate.nonNull(cgm, "model");
 
         ShowBones result;
-        if (cgm.getBone().isSelected()) {
+        if (cgm.getTrack().isBoneTrack()) {
             result = showWhenSelected;
         } else {
             result = showNoneSelected;

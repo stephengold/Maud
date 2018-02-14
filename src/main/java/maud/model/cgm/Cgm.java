@@ -994,7 +994,7 @@ public class Cgm implements Cloneable {
         clone.selectedShape = selectedShape.clone();
         clone.selectedSkeleton = cloner.clone(selectedSkeleton);
         clone.selectedSpatial = cloner.clone(selectedSpatial);
-        clone.selectedTrack = selectedTrack.clone();
+        clone.selectedTrack = cloner.clone(selectedTrack);
         clone.selectedUserData = selectedUserData.clone();
         clone.selectedVertex = selectedVertex.clone();
         /*

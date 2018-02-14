@@ -2524,13 +2524,27 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="trackTool" title="Track Tool"
                      hideOnClose="true"
-                     height="168px" width="300px" x="150" y="120">
+                     height="193px" width="300px" x="150" y="120">
                 <panel childLayout="vertical">
+                    <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Selected:  "/>
-                        <control name="label" id="trackDescription"
+                        <control name="button" id="trackPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous track)"/>
+                        </control>
+                        <control name="label" id="trackIndex"
                                  backgroundColor="#ffff"
-                                 width="*"/>
+                                 textHAlign="center"
+                                 width="90px"/>
+                        <control name="button" id="trackNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next track)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="selectTrackButton"
+                                 width="80px">
+                            <interact onRelease="perform(select track)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Type:  "/>
@@ -2538,10 +2552,21 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="45px"/>
-                        <control name="label" text=" with "/>
+                        <control name="label" text="    Keyframes:  "/>
                         <control name="label" id="trackFrames"
                                  backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="40px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="  Target:  "/>
+                        <control name="label" id="trackTarget"
+                                 backgroundColor="#ffff"
                                  width="*"/>
+                        <control name="button" id="selectTrackTargetButton"
+                                 width="80px">
+                            <interact onRelease="perform(select trackTarget)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Translations:  "

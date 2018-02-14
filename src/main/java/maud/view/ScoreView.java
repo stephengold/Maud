@@ -69,7 +69,8 @@ import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 
 /**
- * An editor view containing a 2-D visualization of a loaded animation.
+ * An editor view containing a 2-D visualization of a loaded animation. TODO
+ * split off ScoreViewCore
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -119,6 +120,14 @@ public class ScoreView implements EditorView {
     // fields
 
     /**
+     * true when the selected track is being visualized, otherwise false
+     */
+    private boolean isSelectedTrack;
+    /**
+     * CG model being visualized
+     */
+    private Cgm cgm;
+    /**
      * end-cap mesh for a bone track that includes scales
      */
     private static Finial finialComplete;
@@ -126,10 +135,6 @@ public class ScoreView implements EditorView {
      * end-cap mesh for a bone track without scales
      */
     private static Finial finialNoScales;
-    /**
-     * CG model being rendered
-     */
-    private Cgm cgm;
     /**
      * height of this score (in world units, &ge;0)
      */
@@ -144,11 +149,6 @@ public class ScoreView implements EditorView {
      * {@link #attachSparkline(float[], float[], com.jme3.scene.Mesh.Mode, java.lang.String, int, com.jme3.material.Material)}
      */
     final private float[] tempY = new float[1];
-    /**
-     * index (in the selected skeleton) of the bone currently being visualized
-     * (&ge;0) or -2 when a spatial track is being visualized
-     */
-    private int currentBone;
     /**
      * count plots added to the current staff (&ge;0)
      */
@@ -166,9 +166,9 @@ public class ScoreView implements EditorView {
      */
     final private Map<Integer, Float> frameXs = new HashMap<>(40);
     /**
-     * min/max world Y-coordinates of each bone in the CG model
+     * min/max world Y-coordinates of each track in the CG model
      */
-    final private Map<Integer, Vector2f> boneYs = new HashMap<>(120);
+    final private Map<String, Vector2f> trackYs = new HashMap<>(120);
     /**
      * visualization subtree: attach geometries here
      */
@@ -197,7 +197,7 @@ public class ScoreView implements EditorView {
     // constructors
 
     /**
-     * Instantiate a new visualization.
+     * Instantiate a new view.
      *
      * @param port1 initial view port, or null for none (alias created)
      * @param port2 view port to use after the screen is split (not null, alias
@@ -326,17 +326,14 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Calculate the range of Y coordinates occupied by the selected bone.
+     * Calculate the range of Y coordinates occupied by the selected track.
      *
-     * @return min/max Y coordinates (in world units), or null if no bone
+     * @return min/max Y coordinates (in world units), or null if no track is
      * selected
      */
     public Vector2f selectedMinMaxY() {
-        Vector2f result = null;
-        if (cgm.getBone().isSelected()) {
-            int selectedBoneIndex = cgm.getBone().getIndex();
-            result = boneYs.get(selectedBoneIndex);
-        }
+        String description = cgm.getTrack().describe();
+        Vector2f result = trackYs.get(description);
 
         return result;
     }
@@ -355,21 +352,29 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Consider selecting each visualized bone in this view. The selected bone
-     * is excluded from consideration.
+     * Consider selecting each hone in this view.
      *
      * @param selection best selection found so far (not null, modified)
      */
     @Override
     public void considerBones(Selection selection) {
-        Validate.nonNull(selection, "selection");
+        // no bones in scene view, only tracks
+    }
 
+    /**
+     * Consider selecting each visualized track in this view. The currently
+     * selected track is excluded from consideration. TODO sort methods
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    @Override
+    public void considerTracks(Selection selection) {
         Camera camera = getCamera();
-        int selectedBone = cgm.getBone().getIndex();
+        String selectedDesc = cgm.getTrack().describe();
         Vector2f inputXY = selection.copyInputXY();
-        for (Entry<Integer, Vector2f> entry : boneYs.entrySet()) {
-            int boneIndex = entry.getKey();
-            if (boneIndex != selectedBone) {
+        for (Entry<String, Vector2f> entry : trackYs.entrySet()) {
+            String trackDesc = entry.getKey();
+            if (!selectedDesc.equals(trackDesc)) {
                 Vector2f minMax = entry.getValue();
 
                 Vector3f world1 = new Vector3f(-0.15f, minMax.x, zLines);
@@ -388,7 +393,7 @@ public class ScoreView implements EditorView {
                     float dSquared2 = FastMath.sqr(inputXY.x - screen2.x);
                     dSquared += Math.min(dSquared1, dSquared2);
                 }
-                selection.considerBone(cgm, boneIndex, dSquared);
+                selection.considerTrack(cgm, trackDesc, dSquared);
             }
         }
     }
@@ -432,7 +437,7 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Consider selecting each keyframe in this view.
+     * Consider selecting each keyframe in the selected track.
      *
      * @param selection best selection found so far
      */
@@ -440,13 +445,12 @@ public class ScoreView implements EditorView {
     public void considerKeyframes(Selection selection) {
         Validate.nonNull(selection, "selection");
 
-        Camera camera = getCamera();
-        int selectedBone = cgm.getBone().getIndex();
-        Vector2f inputXY = selection.copyInputXY();
-
-        boolean isSelected = cgm.getBone().isSelected();
+        boolean isSelected = cgm.getTrack().isSelected();
         if (isSelected) {
-            Vector2f minMax = boneYs.get(selectedBone);
+            Camera camera = getCamera();
+            Vector2f inputXY = selection.copyInputXY();
+            String selectedDesc = cgm.getTrack().describe();
+            Vector2f minMax = trackYs.get(selectedDesc);
             Vector3f world1 = new Vector3f(xRightMargin, minMax.x, zLines);
             Vector3f world2 = new Vector3f(xRightMargin, minMax.y, zLines);
             Vector3f screen1 = camera.getScreenCoordinates(world1);
@@ -536,7 +540,7 @@ public class ScoreView implements EditorView {
         if (r == null) {
             r = new ScoreResources();
         }
-        boneYs.clear();
+        trackYs.clear();
         frameXs.clear();
         poseMesh.clear();
 
@@ -641,9 +645,11 @@ public class ScoreView implements EditorView {
      * Attach staves for bones.
      */
     private void attachBones() {
+        int targetBoneIndex = cgm.getTrack().targetBoneIndex();
+        BitSet selectSet;
+
         ScoreOptions options = Maud.getModel().getScore();
         ShowBones showBones = options.bonesShown(cgm);
-        BitSet selectSet;
         switch (showBones) {
             case All:
             case Influencers:
@@ -653,14 +659,16 @@ public class ScoreView implements EditorView {
             case Selected:
             case Tracked:
             case Unmapped:
-                selectSet = cgm.getSkeleton().listShown(showBones, null);
+                selectSet = cgm.getSkeleton().listShown(showBones,
+                        targetBoneIndex, null);
                 attachBonesIndexOrder(selectSet);
                 break;
 
             case Ancestry:
             case Family:
             case Subtree:
-                selectSet = cgm.getSkeleton().listShown(showBones, null);
+                selectSet = cgm.getSkeleton().listShown(showBones,
+                        targetBoneIndex, null);
                 attachBonesPreOrder(selectSet);
                 break;
 
@@ -738,11 +746,19 @@ public class ScoreView implements EditorView {
         float newHeight = height + staffHeight;
         float minY = -newHeight;
         float maxY = -height;
-        boneYs.put(boneIndex, new Vector2f(minY, maxY));
+        assert minY <= maxY;
+        if (trackedBone) {
+            String trackDesc = cgm.getAnimation().describeBoneTrack(boneIndex);
+            trackYs.put(trackDesc, new Vector2f(minY, maxY));
+        }
 
+        isSelectedTrack = false;
         boolean isVisible = isStaffVisible(minY, maxY);
         if (isVisible) {
-            currentBone = boneIndex;
+            int targetBoneIndex = cgm.getTrack().targetBoneIndex();
+            if (boneIndex == targetBoneIndex) {
+                isSelectedTrack = true;
+            }
             if (finial != null) {
                 attachTrackedStaff(finial);
             } else {
@@ -777,11 +793,8 @@ public class ScoreView implements EditorView {
     private void attachFinials(Finial finial) {
         assert finial != null;
 
-        Material wireMaterial = r.wireNotSelected;
-        int selectedBoneIndex = cgm.getBone().getIndex();
-        if (currentBone == selectedBoneIndex) {
-            wireMaterial = r.wireSelected;
-        }
+        Material wireMaterial
+                = isSelectedTrack ? r.wireSelected : r.wireNotSelected;
         /*
          * Attach the left-hand finial.
          */
@@ -891,12 +904,8 @@ public class ScoreView implements EditorView {
      */
     private void attachHashes(float staffHeight) {
         float y = -height - staffHeight / 2;
-
-        Material material = r.wireNotSelected;
-        int selectedBoneIndex = cgm.getBone().getIndex();
-        if (currentBone == selectedBoneIndex) {
-            material = r.wireSelected;
-        }
+        Material material
+                = isSelectedTrack ? r.wireSelected : r.wireNotSelected;
 
         String name = String.format("left hash%d", staffIndex);
         Geometry geometry = new Geometry(name, ScoreResources.hashMark);
@@ -928,10 +937,9 @@ public class ScoreView implements EditorView {
         assert maxWidth >= minWidth : maxWidth;
         assert maxHeight > 0f : maxHeight;
 
-        int selectedBoneIndex = cgm.getBone().getIndex();
-        boolean isSelected = (currentBone == selectedBoneIndex);
-        Material bgMaterial = isSelected ? r.bgSelected : null;
-        ColorRGBA textColor = isSelected ? ColorRGBA.White : ColorRGBA.Black;
+        Material bgMaterial = isSelectedTrack ? r.bgSelected : null;
+        ColorRGBA textColor
+                = isSelectedTrack ? ColorRGBA.White : ColorRGBA.Black;
 
         String labelText = StaffTrack.labelText();
         float textSize = 4f + r.labelFont.getLineWidth(labelText, 0);
@@ -1078,13 +1086,8 @@ public class ScoreView implements EditorView {
     private void attachRectangles(float staffHeight) {
         assert staffHeight >= 0f : staffHeight;
 
-        Material wireMaterial;
-        int selectedBoneIndex = cgm.getBone().getIndex();
-        if (currentBone == selectedBoneIndex) {
-            wireMaterial = r.wireSelected;
-        } else {
-            wireMaterial = r.wireNotSelected;
-        }
+        Material wireMaterial
+                = isSelectedTrack ? r.wireSelected : r.wireNotSelected;
         /*
          * Attach the left-hand rectangle: a narrow outline.
          */
@@ -1152,8 +1155,7 @@ public class ScoreView implements EditorView {
      * Attach the sparklines for the current bone/spatial track.
      */
     private void attachSparklines() {
-        int selectedBone = cgm.getBone().getIndex();
-        if (currentBone == selectedBone) {
+        if (isSelectedTrack) {
             /*
              * Record the X-coordinates of all keyframes in the selected track.
              */
@@ -1224,10 +1226,18 @@ public class ScoreView implements EditorView {
         float newHeight = height + staffHeight;
         float minY = -newHeight;
         float maxY = -height;
+        assert minY <= maxY;
 
+        String trackDesc = StaffTrack.labelText();
+        trackYs.put(trackDesc, new Vector2f(minY, maxY));
+
+        isSelectedTrack = false;
         boolean isVisible = isStaffVisible(minY, maxY);
         if (isVisible) {
-            currentBone = -2;
+            String desc = cgm.getTrack().describe();
+            if (trackDesc.equals(desc)) {
+                isSelectedTrack = true;
+            }
             if (finial != null) {
                 attachTrackedStaff(finial);
             } else {

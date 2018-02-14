@@ -466,8 +466,8 @@ public class EditorDialogs {
      * Display a "reduce track" dialog to enter the reduction factor.
      */
     public static void reduceTrack() {
-        SelectedBone bone = Maud.getModel().getTarget().getBone();
-        if (bone.hasTrack()) {
+        SelectedTrack track = Maud.getModel().getTarget().getTrack();
+        if (track.isSelected()) {
             IntegerDialog controller
                     = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE, false);
 
@@ -593,13 +593,13 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "resample track" dialog.
+     * Display a "resample track" dialog. TODO replace rateFlag with enum
      *
      * @param rateFlag true&rarr;per second, false&rarr;number of samples
      */
     public static void resampleTrack(boolean rateFlag) {
-        SelectedBone bone = Maud.getModel().getTarget().getBone();
-        if (bone.hasTrack()) {
+        SelectedTrack track = Maud.getModel().getTarget().getTrack();
+        if (track.isSelected()) {
             if (rateFlag) {
                 resampleRate(ActionPrefix.resampleTrackAtRate);
             } else {
@@ -973,7 +973,7 @@ public class EditorDialogs {
             PlayTimes whichTime) {
         Cgm cgm = Maud.getModel().getCgm(whichCgm);
         SelectedTrack track = cgm.getTrack();
-        assert track.isTrackSelected();
+        assert track.isSelected();
 
         PlayOptions options = cgm.getPlay();
         float lowerLimit = options.getLowerLimit();

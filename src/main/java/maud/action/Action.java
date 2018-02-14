@@ -99,6 +99,7 @@ public class Action {
     final static String nextShape = "next shape";
     final static String nextSourceAnimation = "next sourceAnimation";
     final static String nextSourceAnimControl = "next sourceAnimControl";
+    final static String nextTrack = "next track";
     final static String nextUserData = "next userData";
     final static String nextVertex = "next vertex";
     final static String nextViewMode = "next viewMode";
@@ -125,6 +126,7 @@ public class Action {
     final static String previousSourceAnimation = "previous sourceAnimation";
     final static String previousSourceAnimControl
             = "previous sourceAnimControl";
+    final static String previousTrack = "previous track";
     final static String previousUserData = "previous userData";
     final static String previousVertex = "previous vertex";
     final static String previousViewMode = "previous viewMode";
@@ -196,6 +198,7 @@ public class Action {
     final static String selectSpatialChild = "select spatialChild";
     final static String selectSpatialParent = "select spatialParent";
     final static String selectTrack = "select track";
+    final static String selectTrackTarget = "select trackTarget";
     final static String selectTriangleMode = "select triangleMode";
     final static String selectTweenRotations = "select tweenRotations";
     final static String selectTweenScales = "select tweenScales";

@@ -44,7 +44,8 @@ import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedCgm;
-import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedSkeleton;
+import maud.model.cgm.SelectedTrack;
 import maud.model.option.ViewMode;
 
 /**
@@ -754,30 +755,40 @@ public class BuildMenus {
     }
 
     /**
-     * Build a Track menu.
+     * Build a Track menu. TODO move to AnimationMenus
      */
     private void buildTrackMenu() {
         builder.addTool("Tool");
-        builder.addSubmenu("Load animation");
-        builder.addSubmenu("Select bone");
         Cgm target = Maud.getModel().getTarget();
-        SelectedBone bone = target.getBone();
-        if (bone.hasTrack()) {
+        if (target.getAnimation().isReal()) {
+            builder.addSubmenu("Select track");
+        } else {
+            builder.addSubmenu("Load animation");
+        }
+        SelectedTrack track = target.getTrack();
+        if (track.isSelected()) {
             builder.addEdit("Delete");
             builder.addDialog("Reduce");
             builder.addDialog("Resample at rate");
             builder.addDialog("Resample to number");
             builder.addEdit("Smooth");
-            builder.addEdit("Translate for support");
-            builder.addEdit("Translate for traction");
+            if (track.isBoneTrack()) {
+                builder.addEdit("Translate for support");
+                builder.addEdit("Translate for traction");
+            }
             if (target.getTrack().endsWithKeyframe()) {
                 builder.addDialog("Wrap");
             } else {
                 builder.addEdit("Wrap");
             }
-        } else if (bone.isSelected() && target.getAnimation().isReal()) {
-            builder.addEdit("Create");
         }
+        int boneIndex = target.getBone().getIndex();
+        if (boneIndex != SelectedSkeleton.noBoneIndex
+                && target.getAnimation().isReal()
+                && !target.getAnimation().hasTrackForBone(boneIndex)) {
+            builder.addEdit("Create bone track");
+        }
+        // TODO create spatial track
     }
 
     /**

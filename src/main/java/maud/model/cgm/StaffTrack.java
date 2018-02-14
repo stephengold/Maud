@@ -26,6 +26,7 @@
  */
 package maud.model.cgm;
 
+import com.jme3.animation.AnimControl;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
@@ -33,7 +34,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
-import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyArray;
 import jme3utilities.wes.Pose;
@@ -192,8 +192,8 @@ public class StaffTrack {
 
         SpatialTrack spatialTrack
                 = cgm.getAnimation().findSpatialTrack(spatialTrackIndex);
-        String spatialName = spatialTrack.getTrackSpatial().getName();
-        labelText = "s" + MyString.quote(spatialName);
+        AnimControl animControl = cgm.getAnimControl().find();
+        labelText = MyAnimation.describe(spatialTrack, animControl);
         track = spatialTrack;
         loadTrack();
     }

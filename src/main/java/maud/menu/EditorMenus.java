@@ -336,7 +336,8 @@ public class EditorMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the Track menu.
+     * Handle a "select menuItem" action from the Track menu. TODO move to
+     * AnimationMenus
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
@@ -347,7 +348,7 @@ public class EditorMenus {
         EditableCgm target = Maud.getModel().getTarget();
         SelectedTrack track = target.getTrack();
         switch (remainder) {
-            case "Create":
+            case "Create bone track":
                 target.getAnimation().createBoneTrack();
                 break;
 
@@ -371,8 +372,8 @@ public class EditorMenus {
                 EditorDialogs.resampleTrack(false);
                 break;
 
-            case "Select bone":
-                BoneMenus.selectBone();
+            case "Select track":
+                AnimationMenus.selectTrack();
                 break;
 
             case "Smooth":

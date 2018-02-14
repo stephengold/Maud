@@ -424,6 +424,9 @@ class SceneUpdater {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
         visualizer.setEnabled(showBones != ShowBones.None);
+        int selectedBoneIndex = cgm.getBone().getIndex();
+        BitSet showSet = cgm.getSkeleton().listShown(showBones,
+                selectedBoneIndex, null);
 
         float lineWidth = options.getLineWidth();
         visualizer.setLineWidth(lineWidth);
@@ -437,10 +440,10 @@ class SceneUpdater {
         options.copyColor(SkeletonColors.IdleBones, color);
         visualizer.setHeadColor(color);
 
-        BitSet showSet = cgm.getSkeleton().listShown(showBones, null);
-
-        ColorRGBA forTracked = options.copyColor(SkeletonColors.TrackedBones, null);
-        ColorRGBA forMapped = options.copyColor(SkeletonColors.MappedBones, null);
+        ColorRGBA forTracked
+                = options.copyColor(SkeletonColors.TrackedBones, null);
+        ColorRGBA forMapped
+                = options.copyColor(SkeletonColors.MappedBones, null);
         int numBones = cgm.getSkeleton().countBones();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             if (showSet.get(boneIndex) == false) {

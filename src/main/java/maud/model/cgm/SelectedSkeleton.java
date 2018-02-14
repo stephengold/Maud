@@ -280,7 +280,7 @@ public class SelectedSkeleton implements JmeCloneable {
      * Read the name of the indexed bone in the selected skeleton.
      *
      * @param boneIndex which bone (&ge;0)
-     * @return the bone's name
+     * @return the bone's name (may be null)
      */
     public String getBoneName(int boneIndex) {
         Validate.nonNegative(boneIndex, "bone index");
@@ -489,13 +489,15 @@ public class SelectedSkeleton implements JmeCloneable {
     }
 
     /**
-     * Enumerate which bones are included the specified selection option.
+     * Enumerate which bones are referenced by the specified selection option.
      *
      * @param showBones selection option (not null)
+     * @param boneIndex the index of the selected bone, or noBoneIndex if none
      * @param storeResult (modified if not null)
      * @return set of bone indices (either storeResult or a new instance)
      */
-    public BitSet listShown(ShowBones showBones, BitSet storeResult) {
+    public BitSet listShown(ShowBones showBones, int boneIndex,
+            BitSet storeResult) {
         int numBones = countBones();
         if (storeResult == null) {
             storeResult = new BitSet(numBones);
@@ -505,7 +507,6 @@ public class SelectedSkeleton implements JmeCloneable {
 
         if (numBones > 0) {
             Skeleton skeleton = find();
-            int boneIndex = cgm.getBone().getIndex();
             EditorModel model = Maud.getModel();
             LoadedMap map = model.getMap();
 

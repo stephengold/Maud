@@ -36,6 +36,7 @@ import maud.model.cgm.Cgm;
  * @author Stephen Gold sgold@sonic.net
  */
 public interface EditorView {
+
     /**
      * Consider selecting each axis in this view.
      *
@@ -70,6 +71,13 @@ public interface EditorView {
      * @param bestSelection best selection found so far (not null, modified)
      */
     void considerKeyframes(Selection bestSelection);
+
+    /**
+     * Consider selecting each visualized track in this view.
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    void considerTracks(Selection selection);
 
     /**
      * Consider selecting each vertex in this view.

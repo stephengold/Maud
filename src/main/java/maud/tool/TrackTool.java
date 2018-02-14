@@ -29,9 +29,8 @@ package maud.tool;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
-import maud.model.cgm.EditableCgm;
-import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedTrack;
 
 /**
@@ -69,61 +68,84 @@ class TrackTool extends Tool {
      */
     @Override
     void toolUpdate() {
+        boolean isReal = Maud.getModel().getTarget().getAnimation().isReal();
+        String selectButton = isReal ? "Select track" : "";
+        setButtonText("selectTrack", selectButton);
+
         updateDescription();
         updateFrames();
+        updateIndex();
         updateTransforms();
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Update the track description.
+     * Update the track's description.
      */
     private void updateDescription() {
-        String descriptionStatus;
-        String typeStatus = "";
+        SelectedTrack track = Maud.getModel().getTarget().getTrack();
 
-        Cgm target = Maud.getModel().getTarget();
-        SelectedBone bone = target.getBone();
-        if (!target.getAnimation().isReal()) {
-            descriptionStatus = "(load a real animation)";
-        } else if (bone.hasTrack()) {
-            String boneName = bone.getName();
-            String animName = target.getAnimation().getName();
-            descriptionStatus = String.format("%s in %s", boneName, animName);
-            typeStatus = "bone";
-        } else if (bone.isSelected()) {
-            String boneName = bone.getName();
-            descriptionStatus = String.format("none for %s", boneName);
-        } else {
-            descriptionStatus = "(select a bone)";
-        }
+        String targetStatus = track.describeTarget();
+        setStatusText("trackTarget", " " + targetStatus);
 
-        setStatusText("trackDescription", " " + descriptionStatus);
+        String typeStatus = track.describeType();
         setStatusText("trackType", typeStatus);
+
+        String selectButton = "";
+        if (typeStatus.equals("Bone")) {
+            selectButton = "Select bone";
+        } else if (typeStatus.equals("Spatial")) {
+            selectButton = "Select spatial";
+        }
+        setButtonText("selectTrackTarget", selectButton);
     }
 
     /**
      * Update the frame count.
      */
     private void updateFrames() {
-        String framesStatus;
+        String framesStatus = "";
 
-        EditableCgm target = Maud.getModel().getTarget();
-        int numKeyframes = target.getTrack().countKeyframes();
-        if (numKeyframes == 0) {
-            if (target.getBone().hasTrack()) {
-                framesStatus = "no keyframes";
-            } else {
-                framesStatus = "no track";
-            }
-        } else if (numKeyframes == 1) {
-            framesStatus = "one keyframe";
-        } else {
-            framesStatus = String.format("%d keyframes", numKeyframes);
+        SelectedTrack track = Maud.getModel().getTarget().getTrack();
+        if (track.isSelected()) {
+            int numKeyframes = track.countKeyframes();
+            framesStatus = Integer.toString(numKeyframes);
         }
 
         setStatusText("trackFrames", " " + framesStatus);
+    }
+
+    /**
+     * Update the index status and previous/next buttons.
+     */
+    private void updateIndex() {
+        String indexStatus;
+        String nextButton, previousButton;
+
+        Cgm target = Maud.getModel().getTarget();
+        int numTracks = target.getAnimation().countTracks();
+        if (target.getTrack().isSelected()) {
+            int selectedIndex = target.getTrack().index();
+            indexStatus = MaudUtil.formatIndex(selectedIndex);
+            indexStatus = String.format("%s of %d", indexStatus, numTracks);
+            nextButton = "+";
+            previousButton = "-";
+        } else {
+            if (numTracks == 0) {
+                indexStatus = "no tracks";
+            } else if (numTracks == 1) {
+                indexStatus = "one track";
+            } else {
+                indexStatus = String.format("%d tracks", numTracks);
+            }
+            nextButton = "";
+            previousButton = "";
+        }
+
+        setStatusText("trackIndex", indexStatus);
+        setButtonText("trackNext", nextButton);
+        setButtonText("trackPrevious", previousButton);
     }
 
     /**
@@ -138,25 +160,27 @@ class TrackTool extends Tool {
         String rotationButton = "";
         String scaleButton = "";
 
-        Cgm target = Maud.getModel().getTarget();
-        if (target.getBone().hasTrack()) {
-            SelectedTrack track = target.getTrack();
+        SelectedTrack track = Maud.getModel().getTarget().getTrack();
+        if (track.isSelected()) {
             int numTranslations = track.countTranslations();
             translationStatus = Integer.toString(numTranslations);
-            if (numTranslations > 0) {
-                translationButton = "Set all to pose";
-            }
 
             int numRotations = track.countRotations();
             rotationStatus = Integer.toString(numRotations);
-            if (numRotations > 0) {
-                rotationButton = "Set all to pose";
-            }
 
             int numScales = track.countScales();
             scaleStatus = Integer.toString(numScales);
-            if (numScales > 0) {
-                scaleButton = "Set all to pose";
+
+            if (track.isBoneTrack()) {
+                if (numTranslations > 0) {
+                    translationButton = "Set all to pose";
+                }
+                if (numRotations > 0) {
+                    rotationButton = "Set all to pose";
+                }
+                if (numScales > 0) {
+                    scaleButton = "Set all to pose";
+                }
             }
         }
 

@@ -404,6 +404,7 @@ public class EditorScreen extends GuiScreenController {
             mouseView.considerBoundaries(selection);
             mouseView.considerGnomons(selection);
             mouseView.considerKeyframes(selection);
+            mouseView.considerTracks(selection);
             selection.select();
         }
     }

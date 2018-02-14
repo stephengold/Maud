@@ -41,8 +41,8 @@ import maud.view.scene.SceneDrag;
 import maud.view.scene.SceneView;
 
 /**
- * Encapsulate an axis/bone/boundary/gnomon/keyframe/vertex selection by the
- * user. Never checkpointed.
+ * Encapsulate an axis/bone/boundary/gnomon/keyframe/track/vertex selection by
+ * the user. Never checkpointed because temporary.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -52,7 +52,7 @@ public class Selection {
 
     private enum Type {
         None, Bone, Boundary, Gnomon, Keyframe,
-        PoseTransformAxis, SceneAxis, Vertex;
+        PoseTransformAxis, SceneAxis, Track, Vertex;
     }
     // *************************************************************************
     // constants and loggers
@@ -94,6 +94,10 @@ public class Selection {
      * the C-G model to be selected, or null for none
      */
     private Cgm bestCgm = null;
+    /**
+     * the description of the track to be selected, or null for none
+     */
+    private String bestTrackDesc = null;
     /**
      * type of object selected (not null)
      */
@@ -143,12 +147,13 @@ public class Selection {
         }
 
         float dSquared = screenXY.distanceSquared(inputXY);
-        if (dSquared < bestDSquared) {
+        if (dSquared < bestDSquared) { // TODO add private clear() method
             bestDSquared = dSquared;
             bestGeometry = null;
             bestAxisIndex = axisIndex;
             bestBoneIndex = SelectedSkeleton.noBoneIndex;
             bestFrameIndex = -1;
+            bestTrackDesc = null;
             bestVertexIndex = -1;
             bestCgm = cgm;
             if (scoreView) {
@@ -178,6 +183,7 @@ public class Selection {
             bestAxisIndex = -1;
             bestBoneIndex = boneIndex;
             bestFrameIndex = -1;
+            bestTrackDesc = null;
             bestVertexIndex = -1;
             bestCgm = cgm;
             bestType = Type.Bone;
@@ -199,6 +205,7 @@ public class Selection {
             bestAxisIndex = -1;
             bestBoneIndex = SelectedSkeleton.noBoneIndex;
             bestFrameIndex = -1;
+            bestTrackDesc = null;
             bestVertexIndex = -1;
             bestCgm = null;
             bestType = Type.Boundary;
@@ -222,6 +229,7 @@ public class Selection {
             bestAxisIndex = -1;
             bestBoneIndex = SelectedSkeleton.noBoneIndex;
             bestFrameIndex = -1;
+            bestTrackDesc = null;
             bestVertexIndex = -1;
             bestCgm = cgm;
             bestType = Type.Gnomon;
@@ -229,16 +237,14 @@ public class Selection {
     }
 
     /**
-     * Consider selecting the indexed keyframe of the currently selected bone
-     * track.
+     * Consider selecting the indexed keyframe of the currently selected track.
      *
-     * @param cgm C-G model that contains the bone track (not null)
+     * @param cgm C-G model that contains the track (not null)
      * @param frameIndex which keyframe to select (&ge;0)
      * @param dSquared squared distance between the keyframe's screen location
      * and {@link #inputXY} (in pixels squared, &ge;0)
      */
-    public void considerKeyframe(Cgm cgm, int frameIndex,
-            float dSquared) {
+    public void considerKeyframe(Cgm cgm, int frameIndex, float dSquared) {
         Validate.nonNull(cgm, "model");
         Validate.nonNegative(frameIndex, "frame index");
 
@@ -246,11 +252,38 @@ public class Selection {
             bestDSquared = dSquared;
             bestGeometry = null;
             bestAxisIndex = -1;
-            bestBoneIndex = cgm.getBone().getIndex();
+            bestBoneIndex = SelectedSkeleton.noBoneIndex;
             bestFrameIndex = frameIndex;
+            bestTrackDesc = null;
             bestVertexIndex = -1;
             bestCgm = cgm;
             bestType = Type.Keyframe;
+        }
+    }
+
+    /**
+     * Consider selecting the specified track.
+     *
+     * @param cgm C-G model that contains the track (not null)
+     * @param description description of the track to select (not null, not
+     * empty)
+     * @param dSquared squared distance between the track's screen location and
+     * {@link #inputXY} (in pixels squared, &ge;0)
+     */
+    public void considerTrack(Cgm cgm, String description, float dSquared) {
+        Validate.nonNull(cgm, "model");
+        Validate.nonEmpty(description, "description");
+
+        if (dSquared < bestDSquared) {
+            bestDSquared = dSquared;
+            bestGeometry = null;
+            bestAxisIndex = -1;
+            bestBoneIndex = SelectedSkeleton.noBoneIndex;
+            bestFrameIndex = -1;
+            bestTrackDesc = description;
+            bestVertexIndex = -1;
+            bestCgm = cgm;
+            bestType = Type.Track;
         }
     }
 
@@ -277,6 +310,7 @@ public class Selection {
             bestAxisIndex = -1;
             bestBoneIndex = SelectedSkeleton.noBoneIndex;
             bestFrameIndex = -1;
+            bestTrackDesc = null;
             bestVertexIndex = vertexIndex;
             bestCgm = cgm;
             bestType = Type.Vertex;
@@ -317,6 +351,10 @@ public class Selection {
                 break;
             case SceneAxis:
                 selectSceneAxis();
+                break;
+            case Track:
+                assert bestTrackDesc != null;
+                bestCgm.getTrack().selectWithDescription(bestTrackDesc);
                 break;
             case Vertex:
                 selectVertex();
@@ -359,7 +397,9 @@ public class Selection {
 
         float keyframeTime = bestCgm.getTrack().keyframeTime(bestFrameIndex);
         bestCgm.getAnimation().setTime(keyframeTime);
-        // TODO drag
+        if (bestFrameIndex > 0) {
+            // TODO Drag.startDraggingFrame(bestFrameIndex, bestCgm);
+        }
     }
 
     /**

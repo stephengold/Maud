@@ -127,7 +127,7 @@ class NewAction {
 
             case Action.newSingleKeyframe: // insert OR replace
                 SelectedTrack track = model.getTarget().getTrack();
-                if (track.isTrackSelected()) {
+                if (track.isSelected()) {
                     int frameIndex = track.findKeyframeIndex();
                     if (frameIndex == -1) {
                         track.insertKeyframe();

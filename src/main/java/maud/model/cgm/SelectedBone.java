@@ -165,7 +165,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Read the index of the selected bone.
+     * Read the index of the selected bone in the selected skeleton.
      *
      * @return the bone index, or noBoneIndex if none selected
      */
@@ -237,12 +237,16 @@ public class SelectedBone implements Cloneable {
      * @return true if a bone is selected and it has a track, otherwise false
      */
     public boolean hasTrack() {
-        BoneTrack track = cgm.getTrack().find();
-        if (track == null) {
-            return false;
-        } else {
-            return true;
+        boolean result = false;
+        int boneIndex = getIndex();
+        if (boneIndex >= 0) {
+            BoneTrack track = cgm.getAnimation().findTrackForBone(boneIndex);
+            if (track != null) {
+                result = true;
+            }
         }
+
+        return result;
     }
 
     /**

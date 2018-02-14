@@ -118,7 +118,7 @@ class KeyframeTool extends Tool {
         String insertButton = "";
 
         SelectedTrack track = Maud.getModel().getTarget().getTrack();
-        if (track.isTrackSelected()) {
+        if (track.isSelected()) {
             int index = track.findKeyframeIndex();
             if (index == -1) {
                 insertButton = "Insert";
@@ -187,12 +187,12 @@ class KeyframeTool extends Tool {
         } else if (bone.hasTrack()) {
             SelectedTrack track = target.getTrack();
             TrackItem item = track.item();
-            status = item.toString();
+            status = item.describe();
         } else if (bone.isSelected()) {
             String boneName = bone.getName();
             status = String.format("none for %s", boneName);
         } else {
-            status = "(select a bone)";
+            status = "(select a track)";
         }
 
         setStatusText("trackDescription2", " " + status);

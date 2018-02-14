@@ -125,6 +125,10 @@ class PreviousAction {
                 model.getSource().getAnimControl().selectPrevious();
                 break;
 
+            case Action.previousTrack:
+                target.getTrack().selectPrevious();
+                break;
+
             case Action.previousUserData:
                 target.getUserData().selectPreviousKey();
                 break;

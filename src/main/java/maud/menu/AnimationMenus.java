@@ -44,7 +44,7 @@ import maud.model.cgm.SelectedAnimControl;
 import maud.model.cgm.TrackItem;
 
 /**
- * Animation menus in Maud's editor screen.
+ * Animation/track menus in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -248,7 +248,7 @@ public class AnimationMenus {
         assert animation.isReal();
 
         List<TrackItem> items = animation.listTracks();
-        Set<String> descriptions = new TreeSet<String>();
+        Set<String> descriptions = new TreeSet<>();
         for (TrackItem item : items) {
             String description = item.describe();
             boolean success = descriptions.add(description);
@@ -272,7 +272,7 @@ public class AnimationMenus {
              * Treat the argument as a track-description prefix.
              */
             List<TrackItem> items = animation.listTracks();
-            Set<String> descriptions = new TreeSet<String>();
+            Set<String> descriptions = new TreeSet<>();
             for (TrackItem item : items) {
                 String description = item.describe();
                 if (description.startsWith(argument)) {
