@@ -33,13 +33,9 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import maud.Maud;
-import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
-import maud.dialog.ResampleType;
 import maud.model.EditableMap;
 import maud.model.History;
-import maud.model.cgm.EditableCgm;
-import maud.model.cgm.SelectedTrack;
 
 /**
  * Menus in Maud's editor screen.
@@ -187,7 +183,7 @@ public class EditorMenus {
                 handled = SpatialMenus.menuSpatial(remainder);
                 break;
             case "Track":
-                handled = menuTrack(remainder);
+                handled = AnimationMenus.menuTrack(remainder);
                 break;
             case "Vertex":
                 handled = menuVertex(remainder);
@@ -332,80 +328,6 @@ public class EditorMenus {
                 default:
                     handled = false;
             }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the Track menu. TODO move to
-     * AnimationMenus
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuTrack(String remainder) {
-        boolean handled = true;
-
-        EditableCgm target = Maud.getModel().getTarget();
-        SelectedTrack track = target.getTrack();
-        switch (remainder) {
-            case "Create bone track":
-                target.getAnimation().createBoneTrack();
-                break;
-
-            case "Delete":
-                target.getAnimation().deleteTrack();
-                break;
-
-            case "Load animation":
-                AnimationMenus.loadAnimation(target);
-                break;
-
-            case "Reduce":
-                EditorDialogs.reduceTrack();
-                break;
-
-            case "Resample at rate":
-                EditorDialogs.resample(ActionPrefix.resampleTrack,
-                        ResampleType.AtRate);
-                break;
-
-            case "Resample to number":
-                EditorDialogs.resample(ActionPrefix.resampleTrack,
-                        ResampleType.ToNumber);
-                break;
-
-            case "Select track":
-                AnimationMenus.selectTrack();
-                break;
-
-            case "Smooth":
-                track.smooth();
-                break;
-
-            case "Tool":
-                Maud.gui.tools.select("track");
-                break;
-
-            case "Translate for support":
-                track.translateForSupport();
-                break;
-
-            case "Translate for traction":
-                track.translateForTraction();
-                break;
-
-            case "Wrap":
-                if (track.endsWithKeyframe()) {
-                    EditorDialogs.wrapTrack();
-                } else {
-                    track.wrap(0f);
-                }
-                break;
-
-            default:
-                handled = false;
         }
 
         return handled;

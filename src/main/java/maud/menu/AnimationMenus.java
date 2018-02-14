@@ -42,6 +42,8 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.SelectedAnimControl;
+import maud.model.cgm.SelectedSkeleton;
+import maud.model.cgm.SelectedTrack;
 import maud.model.cgm.TrackItem;
 
 /**
@@ -89,6 +91,71 @@ public class AnimationMenus {
         builder.addTool("Retarget source animation");
 
         builder.show("select menuItem Animation -> Add new -> ");
+    }
+
+    /**
+     * Build an Animation menu.
+     */
+    static void buildAnimationMenu(MenuBuilder builder) {
+        builder.addTool("Tool");
+        Cgm target = Maud.getModel().getTarget();
+        if (target.getAnimControl().isSelected()) {
+            builder.addSubmenu("Load");
+            builder.addSubmenu("Add new");
+            //builder.add("Unload"); TODO
+        }
+
+        if (target.getAnimation().isReal()) {
+            builder.addDialog("Delete");
+            builder.addSubmenu("Edit");
+            builder.addDialog("Rename");
+        }
+
+        builder.addSubmenu("Select AnimControl");
+
+        builder.addTool("Source tool");
+        Cgm source = Maud.getModel().getSource();
+        if (source.isLoaded() && source.getSkeleton().countBones() > 0) {
+            builder.addSubmenu("Load source");
+        }
+        builder.addTool("Tweening");
+    }
+
+    /**
+     * Build a Track menu.
+     */
+    static void buildTrackMenu(MenuBuilder builder) {
+        builder.addTool("Tool");
+        Cgm target = Maud.getModel().getTarget();
+        if (target.getAnimation().isReal()) {
+            builder.addSubmenu("Select track");
+        } else {
+            builder.addSubmenu("Load animation");
+        }
+        SelectedTrack track = target.getTrack();
+        if (track.isSelected()) {
+            builder.addEdit("Delete");
+            builder.addDialog("Reduce");
+            builder.addDialog("Resample at rate");
+            builder.addDialog("Resample to number");
+            builder.addEdit("Smooth");
+            if (track.isBoneTrack()) {
+                builder.addEdit("Translate for support");
+                builder.addEdit("Translate for traction");
+            }
+            if (target.getTrack().endsWithKeyframe()) {
+                builder.addDialog("Wrap");
+            } else {
+                builder.addEdit("Wrap");
+            }
+        }
+        int boneIndex = target.getBone().getIndex();
+        if (boneIndex != SelectedSkeleton.noBoneIndex
+                && target.getAnimation().isReal()
+                && !target.getAnimation().hasTrackForBone(boneIndex)) {
+            builder.addEdit("Create bone track");
+        }
+        // TODO create spatial track
     }
 
     /**
@@ -213,6 +280,79 @@ public class AnimationMenus {
                 default:
                     handled = false;
             }
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the Track menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    static boolean menuTrack(String remainder) {
+        boolean handled = true;
+
+        EditableCgm target = Maud.getModel().getTarget();
+        SelectedTrack track = target.getTrack();
+        switch (remainder) {
+            case "Create bone track":
+                target.getAnimation().createBoneTrack();
+                break;
+
+            case "Delete":
+                target.getAnimation().deleteTrack();
+                break;
+
+            case "Load animation":
+                AnimationMenus.loadAnimation(target);
+                break;
+
+            case "Reduce":
+                EditorDialogs.reduceTrack();
+                break;
+
+            case "Resample at rate":
+                EditorDialogs.resample(ActionPrefix.resampleTrack,
+                        ResampleType.AtRate);
+                break;
+
+            case "Resample to number":
+                EditorDialogs.resample(ActionPrefix.resampleTrack,
+                        ResampleType.ToNumber);
+                break;
+
+            case "Select track":
+                AnimationMenus.selectTrack();
+                break;
+
+            case "Smooth":
+                track.smooth();
+                break;
+
+            case "Tool":
+                Maud.gui.tools.select("track");
+                break;
+
+            case "Translate for support":
+                track.translateForSupport();
+                break;
+
+            case "Translate for traction":
+                track.translateForTraction();
+                break;
+
+            case "Wrap":
+                if (track.endsWithKeyframe()) {
+                    EditorDialogs.wrapTrack();
+                } else {
+                    track.wrap(0f);
+                }
+                break;
+
+            default:
+                handled = false;
         }
 
         return handled;

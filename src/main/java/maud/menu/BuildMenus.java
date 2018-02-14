@@ -44,13 +44,10 @@ import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedCgm;
-import maud.model.cgm.SelectedSkeleton;
-import maud.model.cgm.SelectedTrack;
 import maud.model.option.ViewMode;
 
 /**
- * Build menus in Maud's editor screen. TODO split off methods that don't need
- * the reusable builder
+ * Build menus in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -85,7 +82,7 @@ public class BuildMenus {
      */
     final private static String identityForTarget = "Identity for target";
     /**
-     * magic name for an asset whose path is specified in a dialog box
+     * magic name for classpath assets whose paths are entered via a dialog box
      */
     final public static String otherName = "other";
     // *************************************************************************
@@ -359,7 +356,7 @@ public class BuildMenus {
         builder.reset();
         switch (menuName) {
             case "Animation":
-                buildAnimationMenu();
+                AnimationMenus.buildAnimationMenu(builder);
                 break;
 
             case "Bone":
@@ -403,7 +400,7 @@ public class BuildMenus {
                 break;
 
             case "Track":
-                buildTrackMenu();
+                AnimationMenus.buildTrackMenu(builder);
                 break;
 
             case "Vertex":
@@ -473,34 +470,6 @@ public class BuildMenus {
         }
         buildFolderMenu(fileMap);
         builder.show(ActionPrefix.newAssetLocation);
-    }
-
-    /**
-     * Build an Animation menu.
-     */
-    private void buildAnimationMenu() {
-        builder.addTool("Tool");
-        Cgm target = Maud.getModel().getTarget();
-        if (target.getAnimControl().isSelected()) {
-            builder.addSubmenu("Load");
-            builder.addSubmenu("Add new");
-            //builder.add("Unload"); TODO
-        }
-
-        if (target.getAnimation().isReal()) {
-            builder.addDialog("Delete");
-            builder.addSubmenu("Edit");
-            builder.addDialog("Rename");
-        }
-
-        builder.addSubmenu("Select AnimControl");
-
-        builder.addTool("Source tool");
-        Cgm source = Maud.getModel().getSource();
-        if (source.isLoaded() && source.getSkeleton().countBones() > 0) {
-            builder.addSubmenu("Load source");
-        }
-        builder.addTool("Tweening");
     }
 
     /**
@@ -752,43 +721,6 @@ public class BuildMenus {
         }
 
         builder.addDialog(otherName);
-    }
-
-    /**
-     * Build a Track menu. TODO move to AnimationMenus
-     */
-    private void buildTrackMenu() {
-        builder.addTool("Tool");
-        Cgm target = Maud.getModel().getTarget();
-        if (target.getAnimation().isReal()) {
-            builder.addSubmenu("Select track");
-        } else {
-            builder.addSubmenu("Load animation");
-        }
-        SelectedTrack track = target.getTrack();
-        if (track.isSelected()) {
-            builder.addEdit("Delete");
-            builder.addDialog("Reduce");
-            builder.addDialog("Resample at rate");
-            builder.addDialog("Resample to number");
-            builder.addEdit("Smooth");
-            if (track.isBoneTrack()) {
-                builder.addEdit("Translate for support");
-                builder.addEdit("Translate for traction");
-            }
-            if (target.getTrack().endsWithKeyframe()) {
-                builder.addDialog("Wrap");
-            } else {
-                builder.addEdit("Wrap");
-            }
-        }
-        int boneIndex = target.getBone().getIndex();
-        if (boneIndex != SelectedSkeleton.noBoneIndex
-                && target.getAnimation().isReal()
-                && !target.getAnimation().hasTrackForBone(boneIndex)) {
-            builder.addEdit("Create bone track");
-        }
-        // TODO create spatial track
     }
 
     /**
