@@ -87,7 +87,7 @@ public class SelectedAnimControl implements JmeCloneable {
     // new methods exposed
 
     /**
-     * Chain the specified animations into a new animation and add it the anim
+     * Chain the loaded animations into a new animation and add it the anim
      * control.
      *
      * @param which1 which C-G model loaded the animation to go 1st (not null)
@@ -157,7 +157,32 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Extract a range of the selected animation into a new animation and add it
+     * Add a copy of the loaded animation.
+     *
+     * @param newAnimationName a name for the new animation (not null, not
+     * reserved, not in use)
+     */
+    public void addCopy(String newAnimationName) {
+        Validate.nonEmpty(newAnimationName, "new animation name");
+        assert !LoadedAnimation.isReserved(newAnimationName) : newAnimationName;
+        assert !hasRealAnimation(newAnimationName) : newAnimationName;
+
+        LoadedAnimation loaded = cgm.getAnimation();
+        Animation oldAnimation = loaded.getReal();
+        float duration = loaded.getDuration();
+        Animation copyAnim = new Animation(newAnimationName, duration);
+        if (oldAnimation != null) {
+            Track[] oldTracks = oldAnimation.getTracks();
+            for (Track track : oldTracks) {
+                Track clone = track.clone();
+                copyAnim.addTrack(clone);
+            }
+        }
+        editableCgm.addAnimation(copyAnim);
+    }
+
+    /**
+     * Extract a range of the loaded animation into a new animation and add it
      * to the anim control.
      *
      * @param newAnimationName a name for the new animation (not null, not
@@ -175,6 +200,105 @@ public class SelectedAnimControl implements JmeCloneable {
         Animation extracted = TrackEdit.extractAnimation(animation, startTime,
                 endTime, techniques, newAnimationName);
         editableCgm.addAnimation(extracted);
+    }
+
+    /**
+     * Mix the specified tracks into a new animation and add it the anim
+     * control.
+     *
+     * @param indices comma-separated list of decimal track indices (not null,
+     * not empty)
+     * @param animationName name for the new animation (not null, not reserved,
+     * not in use)
+     */
+    public void addMix(String indices, String animationName) {
+        Validate.nonEmpty(indices, "indices");
+        Validate.nonNull(animationName, "animation name");
+        assert !LoadedAnimation.isReserved(animationName) : animationName;
+        assert !hasRealAnimation(animationName) : animationName;
+
+        List<TrackItem> allTracks = cgm.listTrackItems();
+        String[] argArray = indices.split(",");
+        int numTracks = argArray.length;
+        /*
+         * Enumerate selected tracks and calculate max duration.
+         */
+        float maxDuration = 0f;
+        List<TrackItem> selectedTracks = new ArrayList<>(numTracks);
+        for (String arg : argArray) {
+            int index = Integer.parseInt(arg);
+            TrackItem item = allTracks.get(index);
+            selectedTracks.add(item);
+
+            Animation animation = item.getAnimation();
+            float duration = animation.getLength();
+            if (duration > maxDuration) {
+                maxDuration = duration;
+            }
+        }
+        /*
+         * Mix the selected tracks together into a new animation.
+         */
+        Animation mix = new Animation(animationName, maxDuration);
+        for (TrackItem item : selectedTracks) {
+            Track track = item.getTrack();
+            Track clone = track.clone();
+            if (track instanceof SpatialTrack) {
+                SpatialTrack spatialTrack = (SpatialTrack) track;
+                Spatial spatial = spatialTrack.getTrackSpatial();
+                if (spatial == null) {
+                    AnimControl animControl = item.getAnimControl();
+                    spatial = animControl.getSpatial();
+                }
+                SpatialTrack cloneSt = (SpatialTrack) clone;
+                cloneSt.setTrackSpatial(spatial);
+            }
+            mix.addTrack(clone);
+        }
+
+        editableCgm.addAnimation(mix);
+    }
+
+    /**
+     * Add a single-frame bone animation based on the current pose.
+     *
+     * @param newAnimationName a name for the new animation (not null, not
+     * reserved, not in use)
+     */
+    public void addPose(String newAnimationName) {
+        Validate.nonNull(newAnimationName, "new animation name");
+        assert !LoadedAnimation.isReserved(newAnimationName) : newAnimationName;
+        assert !hasRealAnimation(newAnimationName) : newAnimationName;
+
+        Pose pose = cgm.getPose().get();
+        Animation poseAnim = pose.capture(newAnimationName);
+        editableCgm.addAnimation(poseAnim);
+    }
+
+    /**
+     * Retarget the selected source animation into a new animation and add it to
+     * the anim control.
+     *
+     * @param newAnimationName a name for the new animation (not null, not
+     * reserved, not in use)
+     */
+    public void addRetarget(String newAnimationName) {
+        Validate.nonNull(newAnimationName, "new animation name");
+
+        Cgm source = Maud.getModel().getSource();
+        Animation sourceAnimation = source.getAnimation().getReal();
+        Skeleton sourceSkeleton = source.getSkeleton().find();
+        Skeleton targetSkeleton = editableCgm.getSkeleton().find();
+        SkeletonMapping effectiveMap = Maud.getModel().getMap().effectiveMap();
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        Animation retargeted = TrackEdit.retargetAnimation(sourceAnimation,
+                sourceSkeleton, targetSkeleton, effectiveMap, techniques,
+                newAnimationName);
+
+        float duration = retargeted.getLength();
+        assert duration >= 0f : duration;
+
+        editableCgm.addAnimation(retargeted);
     }
 
     /**
@@ -385,63 +509,6 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Mix the specified tracks into a new animation and add it the anim
-     * control. TODO sort methods
-     *
-     * @param indices comma-separated list of decimal track indices (not null,
-     * not empty)
-     * @param animationName name for the new animation (not null, not reserved,
-     * not in use)
-     */
-    public void addMix(String indices, String animationName) {
-        Validate.nonEmpty(indices, "indices");
-        Validate.nonNull(animationName, "animation name");
-        assert !LoadedAnimation.isReserved(animationName) : animationName;
-        assert !hasRealAnimation(animationName) : animationName;
-
-        List<TrackItem> allTracks = cgm.listTrackItems();
-        String[] argArray = indices.split(",");
-        int numTracks = argArray.length;
-        /*
-         * Enumerate selected tracks and calculate max duration.
-         */
-        float maxDuration = 0f;
-        List<TrackItem> selectedTracks = new ArrayList<>(numTracks);
-        for (String arg : argArray) {
-            int index = Integer.parseInt(arg);
-            TrackItem item = allTracks.get(index);
-            selectedTracks.add(item);
-
-            Animation animation = item.getAnimation();
-            float duration = animation.getLength();
-            if (duration > maxDuration) {
-                maxDuration = duration;
-            }
-        }
-        /*
-         * Mix the selected tracks together into a new animation.
-         */
-        Animation mix = new Animation(animationName, maxDuration);
-        for (TrackItem item : selectedTracks) {
-            Track track = item.getTrack();
-            Track clone = track.clone();
-            if (track instanceof SpatialTrack) {
-                SpatialTrack spatialTrack = (SpatialTrack) track;
-                Spatial spatial = spatialTrack.getTrackSpatial();
-                if (spatial == null) {
-                    AnimControl animControl = item.getAnimControl();
-                    spatial = animControl.getSpatial();
-                }
-                SpatialTrack cloneSt = (SpatialTrack) clone;
-                cloneSt.setTrackSpatial(spatial);
-            }
-            mix.addTrack(clone);
-        }
-
-        editableCgm.addAnimation(mix);
-    }
-
-    /**
      * Determine the name of the selected anim control.
      *
      * @return the name, or null if no anim control is selected
@@ -458,47 +525,6 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Add a copy of the loaded animation.
-     *
-     * @param newAnimationName a name for the new animation (not null, not
-     * reserved, not in use)
-     */
-    public void addCopy(String newAnimationName) {
-        Validate.nonEmpty(newAnimationName, "new animation name");
-        assert !LoadedAnimation.isReserved(newAnimationName) : newAnimationName;
-        assert !hasRealAnimation(newAnimationName) : newAnimationName;
-
-        LoadedAnimation loaded = cgm.getAnimation();
-        Animation oldAnimation = loaded.getReal();
-        float duration = loaded.getDuration();
-        Animation copyAnim = new Animation(newAnimationName, duration);
-        if (oldAnimation != null) {
-            Track[] oldTracks = oldAnimation.getTracks();
-            for (Track track : oldTracks) {
-                Track clone = track.clone();
-                copyAnim.addTrack(clone);
-            }
-        }
-        editableCgm.addAnimation(copyAnim);
-    }
-
-    /**
-     * Add a pose animation.
-     *
-     * @param newAnimationName a name for the new animation (not null, not
-     * reserved, not in use)
-     */
-    public void addPose(String newAnimationName) {
-        Validate.nonNull(newAnimationName, "new animation name");
-        assert !LoadedAnimation.isReserved(newAnimationName) : newAnimationName;
-        assert !hasRealAnimation(newAnimationName) : newAnimationName;
-
-        Pose pose = cgm.getPose().get();
-        Animation poseAnim = pose.capture(newAnimationName);
-        editableCgm.addAnimation(poseAnim);
-    }
-
-    /**
      * Update after (for instance) selecting a different spatial or S-G control.
      */
     void postSelect() {
@@ -507,32 +533,6 @@ public class SelectedAnimControl implements JmeCloneable {
             cgm.getAnimation().loadBindPose();
             last = found;
         }
-    }
-
-    /**
-     * Retarget the selected source animation into a new animation and add it to
-     * the anim control.
-     *
-     * @param newAnimationName a name for the new animation (not null, not
-     * reserved, not in use)
-     */
-    public void addRetarget(String newAnimationName) {
-        Validate.nonNull(newAnimationName, "new animation name");
-
-        Cgm source = Maud.getModel().getSource();
-        Animation sourceAnimation = source.getAnimation().getReal();
-        Skeleton sourceSkeleton = source.getSkeleton().find();
-        Skeleton targetSkeleton = editableCgm.getSkeleton().find();
-        SkeletonMapping effectiveMap = Maud.getModel().getMap().effectiveMap();
-        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Animation retargeted = TrackEdit.retargetAnimation(sourceAnimation,
-                sourceSkeleton, targetSkeleton, effectiveMap, techniques,
-                newAnimationName);
-
-        float duration = retargeted.getLength();
-        assert duration >= 0f : duration;
-
-        editableCgm.addAnimation(retargeted);
     }
 
     /**
