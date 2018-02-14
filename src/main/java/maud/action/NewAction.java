@@ -161,6 +161,7 @@ class NewAction {
         boolean handled = true;
 
         EditableCgm target = Maud.getModel().getTarget();
+        SelectedAnimControl animControl = target.getAnimControl();
         if (actionString.startsWith(ActionPrefix.newAssetLocation)) {
             String path = MyString.remainder(actionString,
                     ActionPrefix.newAssetLocation);
@@ -177,12 +178,11 @@ class NewAction {
                     ActionPrefix.newAnimationFromChain);
             String[] args = argList.split(" ");
             if (args.length > 2) {
-                SelectedAnimControl sac = target.getAnimControl();
                 WhichCgm which1 = WhichCgm.valueOf(args[0]);
                 WhichCgm which2 = WhichCgm.valueOf(args[1]);
                 String prefix = args[0] + " " + args[1] + " ";
                 String newAnimationName = MyString.remainder(argList, prefix);
-                sac.chain(which1, which2, newAnimationName);
+                animControl.addChain(which1, which2, newAnimationName);
                 target.getAnimation().load(newAnimationName);
             } else {
                 handled = false;
@@ -191,14 +191,14 @@ class NewAction {
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromCopy)) {
             String newName = MyString.remainder(actionString,
                     ActionPrefix.newAnimationFromCopy);
-            target.getAnimControl().newFromCopy(newName);
+            animControl.addCopy(newName);
             target.getAnimation().load(newName);
 
         } else if (actionString.startsWith(
                 ActionPrefix.newAnimationFromExtract)) {
             String newName = MyString.remainder(actionString,
                     ActionPrefix.newAnimationFromExtract);
-            target.getAnimControl().addExtract(newName);
+            animControl.addExtract(newName);
             target.getAnimation().load(newName);
 
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromMix)) {
@@ -208,7 +208,7 @@ class NewAction {
                 String indices = args.split(" ")[0];
                 String newAnimationName
                         = MyString.remainder(args, indices + " ");
-                target.getAnimControl().mix(indices, newAnimationName);
+                animControl.addMix(indices, newAnimationName);
                 target.getAnimation().load(newAnimationName);
             } else {
                 EditorDialogs.newAnimationFromMix(actionString + " ");
@@ -217,14 +217,14 @@ class NewAction {
         } else if (actionString.startsWith(ActionPrefix.newAnimationFromPose)) {
             String newAnimationName = MyString.remainder(actionString,
                     ActionPrefix.newAnimationFromPose);
-            target.getAnimControl().newFromPose(newAnimationName);
+            animControl.addPose(newAnimationName);
             target.getAnimation().load(newAnimationName);
 
         } else if (actionString.startsWith(
                 ActionPrefix.newAnimationFromRetarget)) {
             String newAnimationName = MyString.remainder(actionString,
                     ActionPrefix.newAnimationFromRetarget);
-            target.getAnimControl().retarget(newAnimationName);
+            animControl.addRetarget(newAnimationName);
             target.getAnimation().load(newAnimationName);
 
         } else if (actionString.startsWith(ActionPrefix.newGhostControl)) {

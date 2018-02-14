@@ -88,14 +88,15 @@ public class SelectedAnimControl implements JmeCloneable {
 
     /**
      * Chain the specified animations into a new animation and add it the anim
-     * control. TODO rename addChain
+     * control.
      *
      * @param which1 which C-G model loaded the animation to go 1st (not null)
      * @param which2 which C-G model loaded the animation to go 2nd (not null)
      * @param animationName a name for the new animation (not null, not
      * reserved, not in use)
      */
-    public void chain(WhichCgm which1, WhichCgm which2, String animationName) {
+    public void addChain(WhichCgm which1, WhichCgm which2,
+            String animationName) {
         Validate.nonNull(which1, "1st animation's model");
         Validate.nonNull(which2, "2nd animation's model");
         Validate.nonEmpty(animationName, "animation name");
@@ -385,14 +386,14 @@ public class SelectedAnimControl implements JmeCloneable {
 
     /**
      * Mix the specified tracks into a new animation and add it the anim
-     * control. TODO rename addMix
+     * control. TODO sort methods
      *
      * @param indices comma-separated list of decimal track indices (not null,
      * not empty)
      * @param animationName name for the new animation (not null, not reserved,
      * not in use)
      */
-    public void mix(String indices, String animationName) {
+    public void addMix(String indices, String animationName) {
         Validate.nonEmpty(indices, "indices");
         Validate.nonNull(animationName, "animation name");
         assert !LoadedAnimation.isReserved(animationName) : animationName;
@@ -457,12 +458,12 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Add a copy of the loaded animation. TODO rename addCopy
+     * Add a copy of the loaded animation.
      *
      * @param newAnimationName a name for the new animation (not null, not
      * reserved, not in use)
      */
-    public void newFromCopy(String newAnimationName) {
+    public void addCopy(String newAnimationName) {
         Validate.nonEmpty(newAnimationName, "new animation name");
         assert !LoadedAnimation.isReserved(newAnimationName) : newAnimationName;
         assert !hasRealAnimation(newAnimationName) : newAnimationName;
@@ -482,12 +483,12 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Add a pose animation. TODO rename addPose
+     * Add a pose animation.
      *
      * @param newAnimationName a name for the new animation (not null, not
      * reserved, not in use)
      */
-    public void newFromPose(String newAnimationName) {
+    public void addPose(String newAnimationName) {
         Validate.nonNull(newAnimationName, "new animation name");
         assert !LoadedAnimation.isReserved(newAnimationName) : newAnimationName;
         assert !hasRealAnimation(newAnimationName) : newAnimationName;
@@ -510,12 +511,12 @@ public class SelectedAnimControl implements JmeCloneable {
 
     /**
      * Retarget the selected source animation into a new animation and add it to
-     * the anim control. TODO rename addRetarget
+     * the anim control.
      *
      * @param newAnimationName a name for the new animation (not null, not
      * reserved, not in use)
      */
-    public void retarget(String newAnimationName) {
+    public void addRetarget(String newAnimationName) {
         Validate.nonNull(newAnimationName, "new animation name");
 
         Cgm source = Maud.getModel().getSource();
