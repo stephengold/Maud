@@ -362,43 +362,6 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Consider selecting each visualized track in this view. The currently
-     * selected track is excluded from consideration. TODO sort methods
-     *
-     * @param selection best selection found so far (not null, modified)
-     */
-    @Override
-    public void considerTracks(Selection selection) {
-        Camera camera = getCamera();
-        String selectedDesc = cgm.getTrack().describe();
-        Vector2f inputXY = selection.copyInputXY();
-        for (Entry<String, Vector2f> entry : trackYs.entrySet()) {
-            String trackDesc = entry.getKey();
-            if (!selectedDesc.equals(trackDesc)) {
-                Vector2f minMax = entry.getValue();
-
-                Vector3f world1 = new Vector3f(-0.15f, minMax.x, zLines);
-                Vector3f world2 = new Vector3f(xRightMargin, minMax.y, zLines);
-                Vector3f screen1 = camera.getScreenCoordinates(world1);
-                Vector3f screen2 = camera.getScreenCoordinates(world2);
-
-                float dSquared = 0f;
-                if (!MyMath.isBetween(screen1.y, inputXY.y, screen2.y)) {
-                    float dSquared1 = FastMath.sqr(inputXY.y - screen1.y);
-                    float dSquared2 = FastMath.sqr(inputXY.y - screen2.y);
-                    dSquared += Math.min(dSquared1, dSquared2);
-                }
-                if (!MyMath.isBetween(screen1.x, inputXY.x, screen2.x)) {
-                    float dSquared1 = FastMath.sqr(inputXY.x - screen1.x);
-                    float dSquared2 = FastMath.sqr(inputXY.x - screen2.x);
-                    dSquared += Math.min(dSquared1, dSquared2);
-                }
-                selection.considerTrack(cgm, trackDesc, dSquared);
-            }
-        }
-    }
-
-    /**
      * Consider selecting the boundary of this view.
      *
      * @param selection best selection found so far (not null, modified)
@@ -464,6 +427,43 @@ public class ScoreView implements EditorView {
                     int frameIndex = entry.getKey();
                     selection.considerKeyframe(cgm, frameIndex, dSquared);
                 }
+            }
+        }
+    }
+
+    /**
+     * Consider selecting each visualized track in this view. The currently
+     * selected track is excluded from consideration.
+     *
+     * @param selection best selection found so far (not null, modified)
+     */
+    @Override
+    public void considerTracks(Selection selection) {
+        Camera camera = getCamera();
+        String selectedDesc = cgm.getTrack().describe();
+        Vector2f inputXY = selection.copyInputXY();
+        for (Entry<String, Vector2f> entry : trackYs.entrySet()) {
+            String trackDesc = entry.getKey();
+            if (!selectedDesc.equals(trackDesc)) {
+                Vector2f minMax = entry.getValue();
+
+                Vector3f world1 = new Vector3f(-0.15f, minMax.x, zLines);
+                Vector3f world2 = new Vector3f(xRightMargin, minMax.y, zLines);
+                Vector3f screen1 = camera.getScreenCoordinates(world1);
+                Vector3f screen2 = camera.getScreenCoordinates(world2);
+
+                float dSquared = 0f;
+                if (!MyMath.isBetween(screen1.y, inputXY.y, screen2.y)) {
+                    float dSquared1 = FastMath.sqr(inputXY.y - screen1.y);
+                    float dSquared2 = FastMath.sqr(inputXY.y - screen2.y);
+                    dSquared += Math.min(dSquared1, dSquared2);
+                }
+                if (!MyMath.isBetween(screen1.x, inputXY.x, screen2.x)) {
+                    float dSquared1 = FastMath.sqr(inputXY.x - screen1.x);
+                    float dSquared2 = FastMath.sqr(inputXY.x - screen2.x);
+                    dSquared += Math.min(dSquared1, dSquared2);
+                }
+                selection.considerTrack(cgm, trackDesc, dSquared);
             }
         }
     }
