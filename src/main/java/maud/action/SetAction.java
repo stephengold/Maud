@@ -301,7 +301,7 @@ class SetAction {
         } else if (actionString.startsWith(ActionPrefix.setFrameTime)) {
             arg = MyString.remainder(actionString, ActionPrefix.setFrameTime);
             float value = Float.parseFloat(arg);
-            target.getTrack().setFrameTime(value);
+            target.getFrame().setTime(value);
 
         } else if (actionString.startsWith(ActionPrefix.setIndexBase)) {
             arg = MyString.remainder(actionString, ActionPrefix.setIndexBase);

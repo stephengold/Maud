@@ -32,7 +32,6 @@ import maud.Maud;
 import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
-import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedTrack;
 import maud.model.cgm.TrackItem;
 
@@ -77,7 +76,7 @@ class KeyframeTool extends Tool {
         float time = target.getPlay().getTime();
         int numKeyframes = target.getTrack().countKeyframes();
         if (numKeyframes == 0) {
-            if (target.getBone().hasTrack()) {
+            if (target.getTrack().isSelected()) {
                 indexText = "no keyframes";
                 timeText = String.format("%.3f", time);
             } else {
@@ -85,7 +84,7 @@ class KeyframeTool extends Tool {
                 timeText = "n/a";
             }
         } else {
-            int index = target.getTrack().findKeyframeIndex();
+            int index = target.getFrame().findIndex();
             if (index == -1) {
                 if (numKeyframes == 1) {
                     indexText = "one keyframe";
@@ -116,9 +115,9 @@ class KeyframeTool extends Tool {
         String deleteButton = "";
         String insertButton = "";
 
-        SelectedTrack track = Maud.getModel().getTarget().getTrack();
-        if (track.isSelected()) {
-            int index = track.findKeyframeIndex();
+        Cgm target = Maud.getModel().getTarget();
+        if (target.getTrack().isSelected()) {
+            int index = target.getFrame().findIndex();
             if (index == -1) {
                 insertButton = "Insert";
             } else {
@@ -153,8 +152,7 @@ class KeyframeTool extends Tool {
             if (time > 0f) {
                 previousButton = "Previous";
             }
-            int frameIndex = target.getTrack().findKeyframeIndex();
-            if (frameIndex == -1) {
+            if (!target.getFrame().isSelected()) {
                 nearestButton = "Nearest";
             }
             float lastKeyframeTime = target.getTrack().lastKeyframeTime();
@@ -180,16 +178,12 @@ class KeyframeTool extends Tool {
         String status;
 
         Cgm target = Maud.getModel().getTarget();
-        SelectedBone bone = target.getBone();
+        SelectedTrack track = target.getTrack();
         if (!target.getAnimation().isReal()) {
             status = "(load an animation)";
-        } else if (bone.hasTrack()) {
-            SelectedTrack track = target.getTrack();
+        } else if (track.isSelected()) {
             TrackItem item = track.item();
             status = item.describe();
-        } else if (bone.isSelected()) {
-            String boneName = bone.getName();
-            status = String.format("none for %s", boneName);
         } else {
             status = "(select a track)";
         }

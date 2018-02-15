@@ -63,8 +63,7 @@ import maud.Maud;
 import maud.MaudUtil;
 
 /**
- * The MVC model of the selected track and the selected keyframe in a loaded
- * animation. TODO split off selected keyframe
+ * The MVC model of the selected track in a loaded animation.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -177,7 +176,7 @@ public class SelectedTrack implements JmeCloneable {
     public void deleteNextKeyframes(int number) {
         Validate.positive(number, "number");
         assert selected != null;
-        int frameIndex = findKeyframeIndex();
+        int frameIndex = cgm.getFrame().findIndex();
         assert frameIndex != -1;
 
         deleteRange(frameIndex + 1, number);
@@ -191,7 +190,7 @@ public class SelectedTrack implements JmeCloneable {
     public void deletePreviousKeyframes(int number) {
         Validate.positive(number, "number");
         assert selected != null;
-        int frameIndex = findKeyframeIndex();
+        int frameIndex = cgm.getFrame().findIndex();
         assert frameIndex != -1;
 
         deleteRange(frameIndex - number, number);
@@ -203,7 +202,7 @@ public class SelectedTrack implements JmeCloneable {
      */
     public void deleteSelectedKeyframe() {
         assert selected != null;
-        int frameIndex = findKeyframeIndex();
+        int frameIndex = cgm.getFrame().findIndex();
         assert frameIndex > 0 : frameIndex;
 
         deleteRange(frameIndex, 1);
@@ -285,26 +284,12 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Access the selected track in the loaded animation.
+     * Access the selected track in the loaded animation. TODO rename get
      *
      * @return the pre-existing instance, or null if none
      */
     Track find() {
         return selected;
-    }
-
-    /**
-     * Find the index of the keyframe (if any) at the current animation time.
-     *
-     * @return the keyframe's index, or -1 if no keyframe at that time
-     */
-    public int findKeyframeIndex() {
-        assert selected != null;
-
-        float time = cgm.getPlay().getTime();
-        int frameIndex = findKeyframeIndex(time);
-
-        return frameIndex;
     }
 
     /**
@@ -384,8 +369,7 @@ public class SelectedTrack implements JmeCloneable {
         assert time > 0f : time;
         float duration = cgm.getAnimation().getDuration();
         assert time <= duration : time;
-        int frameIndex = findKeyframeIndex();
-        assert frameIndex == -1 : frameIndex;
+        assert !cgm.getFrame().isSelected();
 
         Animation newAnimation = newAnimation();
         Track newSelected = null;
@@ -533,41 +517,6 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Replace the keyframe at the current animation time.
-     */
-    public void replaceKeyframe() {
-        assert selected instanceof BoneTrack;
-        int frameIndex = findKeyframeIndex();
-        assert frameIndex >= 0 : frameIndex;
-
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                Pose pose = cgm.getPose().get();
-                int boneIndex = boneTrack.getTargetBoneIndex();
-                Transform user = pose.userTransform(boneIndex, null);
-                clone = TrackEdit.replaceKeyframe(boneTrack, frameIndex, user);
-                newSelected = clone;
-            } else {
-                clone = track.clone();
-            }
-            newAnimation.addTrack(clone);
-        }
-
-        float time = cgm.getPlay().getTime();
-        String trackName = describe();
-        String description = String.format(
-                "replace keyframe at t=%f in track %s", time, trackName);
-        editableCgm.replace(oldAnimation, newAnimation, description,
-                newSelected);
-    }
-
-    /**
      * Resample the track at the specified rate.
      *
      * @param sampleRate sample rate (in frames per second, &gt;0)
@@ -653,47 +602,6 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Select the 1st keyframe in the track.
-     */
-    public void selectFirstKeyframe() {
-        cgm.getPlay().setTime(0f);
-    }
-
-    /**
-     * Select the last keyframe in the track.
-     */
-    public void selectLastKeyframe() {
-        assert selected != null;
-
-        float time = lastKeyframeTime();
-        cgm.getPlay().setTime(time);
-    }
-
-    /**
-     * Select the nearest keyframe in the track.
-     */
-    public void selectNearestKeyframe() {
-        assert selected != null;
-
-        PlayOptions play = cgm.getPlay();
-        float time = play.getTime();
-        int frameIndex = MyAnimation.findKeyframeIndex(selected, time);
-        if (frameIndex == -1) {
-            float next = nextKeyframeTime();
-            float toNext = next - time;
-            assert toNext >= 0f : toNext;
-            float previous = previousKeyframeTime();
-            float toPrevious = time - previous;
-            assert toPrevious >= 0f : toPrevious;
-            if (toPrevious < toNext) {
-                play.setTime(previous);
-            } else {
-                play.setTime(next);
-            }
-        }
-    }
-
-    /**
      * Select the next track in the animation.
      */
     public void selectNext() {
@@ -704,18 +612,6 @@ public class SelectedTrack implements JmeCloneable {
         index = (index + 1) % numTracks;
         desc = descriptions.get(index);
         selectWithDescription(desc);
-    }
-
-    /**
-     * Select the next keyframe in the track.
-     */
-    public void selectNextKeyframe() {
-        assert selected != null;
-
-        float time = nextKeyframeTime();
-        if (time < Float.POSITIVE_INFINITY) {
-            cgm.getPlay().setTime(time);
-        }
     }
 
     /**
@@ -731,18 +627,6 @@ public class SelectedTrack implements JmeCloneable {
         }
         desc = descriptions.get(index);
         selectWithDescription(desc);
-    }
-
-    /**
-     * Select the previous keyframe in the track.
-     */
-    public void selectPreviousKeyframe() {
-        assert selected != null;
-
-        float time = previousKeyframeTime();
-        if (time >= 0f) {
-            cgm.getPlay().setTime(time);
-        }
     }
 
     /**
@@ -796,43 +680,6 @@ public class SelectedTrack implements JmeCloneable {
         } else {
             editableCgm = null;
         }
-    }
-
-    /**
-     * Adjust the timing of the selected frame. TODO use
-     * EditableCgm.setKeyframes()
-     *
-     * @param newTime new time for the frame (in seconds, &gt;0)
-     */
-    public void setFrameTime(float newTime) {
-        Validate.positive(newTime, "new time");
-        assert selected != null;
-
-        Animation newAnimation = newAnimation();
-
-        int frameIndex = findKeyframeIndex();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
-                clone = TrackEdit.setFrameTime(selected, frameIndex, newTime);
-                assert clone != null;
-                newSelected = clone;
-            } else {
-                clone = track.clone();
-            }
-            newAnimation.addTrack(clone);
-        }
-        cgm.getPlay().setTime(newTime);
-
-        String trackName = describe();
-        String eventDescription = String.format(
-                "adjust the timing of frame%s in track %s",
-                MaudUtil.formatIndex(frameIndex), trackName);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
-                newSelected);
     }
 
     /**
@@ -1215,52 +1062,14 @@ public class SelectedTrack implements JmeCloneable {
 
     /**
      * Create an empty animation with the same name and duration as the selected
-     * animation.
+     * animation. TODO sort methods
      *
      * @return a new instance with no tracks
      */
-    private Animation newAnimation() {
+    Animation newAnimation() {
         float duration = cgm.getAnimation().getDuration();
         String name = cgm.getAnimation().getName();
         Animation result = new Animation(name, duration);
-
-        return result;
-    }
-
-    /**
-     * Find the time of the next keyframe in the selected track.
-     *
-     * @return animation time (&ge;0) or +Infinity if none found
-     */
-    private float nextKeyframeTime() {
-        float result = Float.POSITIVE_INFINITY;
-        float time = cgm.getPlay().getTime();
-        float[] times = selected.getKeyFrameTimes();
-        for (int iFrame = 0; iFrame < times.length; iFrame++) {
-            if (times[iFrame] > time) {
-                result = times[iFrame];
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Find the time of the previous keyframe in the selected track.
-     *
-     * @return animation time (&ge;0) or -Infinity if none found
-     */
-    private float previousKeyframeTime() {
-        float result = Float.NEGATIVE_INFINITY;
-        float time = cgm.getPlay().getTime();
-        float[] times = selected.getKeyFrameTimes();
-        for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
-            if (times[iFrame] < time) {
-                result = times[iFrame];
-                break;
-            }
-        }
 
         return result;
     }

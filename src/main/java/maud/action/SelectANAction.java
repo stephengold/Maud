@@ -128,23 +128,23 @@ class SelectANAction {
                 break;
 
             case Action.selectKeyframeFirst:
-                target.getTrack().selectFirstKeyframe();
+                target.getFrame().selectFirst();
                 break;
 
             case Action.selectKeyframeLast:
-                target.getTrack().selectLastKeyframe();
+                target.getFrame().selectLast();
                 break;
 
             case Action.selectKeyframeNearest:
-                target.getTrack().selectNearestKeyframe();
+                target.getFrame().selectNearest();
                 break;
 
             case Action.selectKeyframeNext:
-                target.getTrack().selectNextKeyframe();
+                target.getFrame().selectNext();
                 break;
 
             case Action.selectKeyframePrevious:
-                target.getTrack().selectPreviousKeyframe();
+                target.getFrame().selectPrevious();
                 break;
 
             case Action.selectLight:

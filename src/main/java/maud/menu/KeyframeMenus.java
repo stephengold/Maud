@@ -67,9 +67,10 @@ class KeyframeMenus {
         builder.addTool("Tool");
 
         Cgm target = Maud.getModel().getTarget();
-        if (target.getBone().hasTrack() && !target.getAnimation().isMoving()) {
+        if (target.getTrack().isSelected()
+                && !target.getAnimation().isMoving()) {
             builder.addSubmenu("Select");
-            int frameIndex = target.getTrack().findKeyframeIndex();
+            int frameIndex = target.getFrame().findIndex();
             if (frameIndex == -1) {
                 builder.addEdit("Insert from pose");
             } else {
@@ -126,7 +127,7 @@ class KeyframeMenus {
                     break;
 
                 case "Replace with pose":
-                    target.getTrack().replaceKeyframe();
+                    target.getFrame().replace();
                     break;
 
                 case "Select":
@@ -158,23 +159,23 @@ class KeyframeMenus {
         Cgm target = Maud.getModel().getTarget();
         switch (remainder) {
             case "First":
-                target.getTrack().selectFirstKeyframe();
+                target.getFrame().selectFirst();
                 break;
 
             case "Last":
-                target.getTrack().selectLastKeyframe();
+                target.getFrame().selectLast();
                 break;
 
             case "Nearest":
-                target.getTrack().selectNearestKeyframe();
+                target.getFrame().selectNearest();
                 break;
 
             case "Next":
-                target.getTrack().selectNextKeyframe();
+                target.getFrame().selectNext();
                 break;
 
             case "Previous":
-                target.getTrack().selectPreviousKeyframe();
+                target.getFrame().selectPrevious();
                 break;
 
             default:

@@ -124,6 +124,10 @@ public class Cgm implements Cloneable {
      */
     private SelectedBone selectedBone = new SelectedBone();
     /**
+     * which frame is selected in the selected track
+     */
+    private SelectedFrame selectedFrame = new SelectedFrame();
+    /**
      * which physics joint is selected
      */
     private SelectedJoint selectedJoint = new SelectedJoint();
@@ -160,7 +164,7 @@ public class Cgm implements Cloneable {
      */
     private SelectedSpatial selectedSpatial = new SelectedSpatial();
     /**
-     * which track is selected in the selected anim control
+     * which track is selected in the selected animation
      */
     private SelectedTrack selectedTrack = new SelectedTrack();
     /**
@@ -193,6 +197,7 @@ public class Cgm implements Cloneable {
         assert scoreView == null;
         selectedAnimControl.setCgm(cgm);
         selectedBone.setCgm(cgm);
+        selectedFrame.setCgm(cgm);
         selectedJoint.setCgm(cgm);
         selectedLight.setCgm(cgm);
         selectedMatParam.setCgm(cgm);
@@ -380,6 +385,16 @@ public class Cgm implements Cloneable {
     public SelectedBone getBone() {
         assert selectedBone != null;
         return selectedBone;
+    }
+
+    /**
+     * Access the selected keyframe.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedFrame getFrame() {
+        assert selectedFrame != null;
+        return selectedFrame;
     }
 
     /**
@@ -985,6 +1000,7 @@ public class Cgm implements Cloneable {
         //scoreView not cloned
         clone.selectedAnimControl = cloner.clone(selectedAnimControl);
         clone.selectedBone = selectedBone.clone();
+        clone.selectedFrame = selectedFrame.clone();
         clone.selectedJoint = selectedJoint.clone();
         clone.selectedLight = cloner.clone(selectedLight);
         clone.selectedMatParam = selectedMatParam.clone();
@@ -1003,6 +1019,7 @@ public class Cgm implements Cloneable {
         clone.getAnimation().setCgm(clone);
         clone.getAnimControl().setCgm(clone);
         clone.getBone().setCgm(clone);
+        clone.getFrame().setCgm(clone);
         clone.getJoint().setCgm(clone);
         clone.getLight().setCgm(clone);
         clone.getObject().setCgm(clone);

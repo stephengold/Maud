@@ -39,9 +39,9 @@ import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.WhichCgm;
+import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedAnimControl;
-import maud.model.cgm.SelectedTrack;
 import maud.model.cgm.UserDataType;
 import maud.tool.HistoryTool;
 
@@ -126,13 +126,12 @@ class NewAction {
                 break;
 
             case Action.newSingleKeyframe: // insert OR replace
-                SelectedTrack track = model.getTarget().getTrack();
-                if (track.isSelected()) {
-                    int frameIndex = track.findKeyframeIndex();
-                    if (frameIndex == -1) {
-                        track.insertKeyframe();
+                Cgm target = model.getTarget();
+                if (target.getTrack().isSelected()) {
+                    if (target.getFrame().isSelected()) {
+                        target.getFrame().replace();
                     } else {
-                        track.replaceKeyframe();
+                        target.getTrack().insertKeyframe();
                     }
                 }
                 break;

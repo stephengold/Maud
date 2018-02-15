@@ -69,6 +69,7 @@ import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedFrame;
 import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedObject;
 import maud.model.cgm.SelectedOverride;
@@ -206,9 +207,9 @@ public class EditorDialogs {
      * Display a "delete nextKeyframes" dialog.
      */
     public static void deleteNextKeyframes() {
-        SelectedTrack track = Maud.getModel().getTarget().getTrack();
-        int numFrames = track.countKeyframes();
-        int frameIndex = track.findKeyframeIndex();
+        Cgm target = Maud.getModel().getTarget();
+        int numFrames = target.getTrack().countKeyframes();
+        int frameIndex = target.getFrame().findIndex();
         int max = numFrames - frameIndex - 2;
         IntegerDialog controller = new IntegerDialog("Delete", 1, max, false);
         Maud.gui.closeAllPopups();
@@ -220,8 +221,8 @@ public class EditorDialogs {
      * Display a "delete previousKeyframes" dialog.
      */
     public static void deletePreviousKeyframes() {
-        SelectedTrack track = Maud.getModel().getTarget().getTrack();
-        int frameIndex = track.findKeyframeIndex();
+        SelectedFrame frame = Maud.getModel().getTarget().getFrame();
+        int frameIndex = frame.findIndex();
         int max = frameIndex - 1;
         IntegerDialog controller = new IntegerDialog("Delete", 1, max, false);
         Maud.gui.closeAllPopups();
@@ -704,9 +705,11 @@ public class EditorDialogs {
      */
     public static void setFrameTime() {
         Cgm target = Maud.getModel().getTarget();
-        SelectedTrack track = target.getTrack();
-        int frameIndex = track.findKeyframeIndex();
+        SelectedFrame frame = target.getFrame();
+        int frameIndex = frame.findIndex();
         assert frameIndex > 0 : frameIndex;
+        SelectedTrack track = target.getTrack();
+        assert track.isSelected();
         float minTime = track.keyframeTime(frameIndex - 1);
 
         int numFrames = track.countKeyframes();
@@ -973,7 +976,6 @@ public class EditorDialogs {
         upperLimit = Math.min(upperLimit, duration);
         int numFrames = track.countKeyframes();
 
-        int defaultIndex = cgm.getTrack().findKeyframeIndex();
         int minIndex, maxIndex;
         switch (whichTime) {
             case LowerLimit:
@@ -992,6 +994,7 @@ public class EditorDialogs {
 
         int indexBase = Maud.getModel().getMisc().getIndexBase();
         String defaultText = "";
+        int defaultIndex = cgm.getFrame().findIndex();
         if (defaultIndex != -1) {
             defaultText = Float.toString(indexBase + defaultIndex);
         }
