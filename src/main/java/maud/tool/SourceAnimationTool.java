@@ -115,17 +115,19 @@ class SourceAnimationTool extends Tool {
     @Override
     public void onCheckBoxChanged(String name, boolean isChecked) {
         Cgm cgm = Maud.getModel().getSource();
+        PlayOptions play = cgm.getPlay();
+
         switch (name) {
             case "loopSource":
-                cgm.getPlay().setContinue(isChecked);
+                play.setContinue(isChecked);
                 break;
 
             case "pinSource":
-                cgm.getAnimation().setPinned(isChecked);
+                play.setPinned(isChecked);
                 break;
 
             case "pongSource":
-                cgm.getPlay().setReverse(isChecked);
+                play.setReverse(isChecked);
                 break;
 
             default:
@@ -265,18 +267,17 @@ class SourceAnimationTool extends Tool {
      */
     private void updateLooping() {
         Cgm cgm = Maud.getModel().getSource();
-        LoadedAnimation animation = cgm.getAnimation();
-        boolean pinned = animation.isPinned();
+        PlayOptions play = cgm.getPlay();
+        boolean pinned = play.isPinned();
         setChecked("pinSource", pinned);
 
-        PlayOptions play = cgm.getPlay();
         boolean looping = play.willContinue();
         setChecked("loopSource", looping);
         boolean ponging = play.willReverse();
         setChecked("pongSource", ponging);
 
         String pButton = "";
-        float duration = animation.getDuration();
+        float duration = cgm.getAnimation().getDuration();
         if (duration > 0f) {
             boolean paused = play.isPaused();
             if (paused) {

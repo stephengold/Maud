@@ -122,22 +122,23 @@ class AnimationTool extends Tool {
         } else {
             cgm = target;
         }
+        PlayOptions play = cgm.getPlay();
 
         switch (name) {
             case "freeze":
-                cgm.getPose().setFrozen(isChecked);
+                target.getPose().setFrozen(isChecked);
                 break;
 
             case "loop":
-                cgm.getPlay().setContinue(isChecked);
+                play.setContinue(isChecked);
                 break;
 
             case "pin":
-                target.getAnimation().setPinned(isChecked);
+                target.getPlay().setPinned(isChecked);
                 break;
 
             case "pong":
-                cgm.getPlay().setReverse(isChecked);
+                play.setReverse(isChecked);
                 break;
 
             default:
@@ -281,7 +282,7 @@ class AnimationTool extends Tool {
      */
     private void updateLooping() {
         Cgm target = Maud.getModel().getTarget();
-        boolean pinned = target.getAnimation().isPinned();
+        boolean pinned = target.getPlay().isPinned();
         setChecked("pin", pinned);
 
         Cgm cgm;
@@ -290,8 +291,7 @@ class AnimationTool extends Tool {
         } else {
             cgm = target;
         }
-        LoadedAnimation animation = cgm.getAnimation();
-        boolean frozen = cgm.getPose().isFrozen();
+        boolean frozen = target.getPose().isFrozen();
         setChecked("freeze", frozen);
 
         PlayOptions play = cgm.getPlay();
@@ -301,7 +301,7 @@ class AnimationTool extends Tool {
         setChecked("pong", ponging);
 
         String pButton = "";
-        float duration = animation.getDuration();
+        float duration = cgm.getAnimation().getDuration();
         if (duration > 0f) {
             boolean paused = play.isPaused();
             if (paused) {

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -161,7 +161,7 @@ public class DisplayedPose implements JmeCloneable {
             pose.set(boneIndex, transform);
         }
 
-        if (cgm.getAnimation().isPinned()) {
+        if (cgm.getPlay().isPinned()) {
             int[] rootBones = pose.rootBoneIndices();
             for (int boneIndex : rootBones) {
                 pose.resetTranslation(boneIndex);

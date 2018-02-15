@@ -78,11 +78,6 @@ public class LoadedAnimation implements Cloneable {
     // fields
 
     /**
-     * true &rarr; root bones pinned to bind transform, false &rarr; free to
-     * transform TODO move to PlayOptions class
-     */
-    private boolean pinnedFlag = false;
-    /**
      * C-G model containing the animation (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
@@ -650,15 +645,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Test whether the root bones are pinned to bind transform.
-     *
-     * @return true if pinned, false otherwise
-     */
-    public boolean isPinned() {
-        return pinnedFlag;
-    }
-
-    /**
      * Test whether a real animation is loaded. TODO simplify
      *
      * @return true if one is loaded, false if bind/retargeted pose is loaded
@@ -1137,15 +1123,6 @@ public class LoadedAnimation implements Cloneable {
                     newSelectedTrack);
             load(loadedName);
         }
-    }
-
-    /**
-     * Alter whether the root bones are pinned to bind transform.
-     *
-     * @param newSetting true &rarr; pinned, false &rarr; free to translate
-     */
-    public void setPinned(boolean newSetting) {
-        pinnedFlag = newSetting;
     }
 
     /**

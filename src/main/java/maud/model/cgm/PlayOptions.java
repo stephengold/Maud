@@ -57,6 +57,11 @@ public class PlayOptions implements Cloneable {
      */
     private boolean pausedFlag = false;
     /**
+     * true &rarr; root bones pinned to bind transform, false &rarr; free to
+     * transform
+     */
+    private boolean pinnedFlag = false;
+    /**
      * true &rarr; reverse playback direction ("pong") at limits, false &rarr;
      * wrap time at limits
      */
@@ -135,6 +140,15 @@ public class PlayOptions implements Cloneable {
     }
 
     /**
+     * Test whether the root bones are pinned to bind transform.
+     *
+     * @return true if pinned, false otherwise
+     */
+    public boolean isPinned() {
+        return pinnedFlag;
+    }
+
+    /**
      * Reset the time limits.
      */
     public void resetLimits() {
@@ -182,6 +196,15 @@ public class PlayOptions implements Cloneable {
      */
     public void setPaused(boolean newSetting) {
         pausedFlag = newSetting;
+    }
+
+    /**
+     * Alter whether the root bones are pinned to bind transform.
+     *
+     * @param newSetting true &rarr; pinned, false &rarr; free to translate
+     */
+    public void setPinned(boolean newSetting) {
+        pinnedFlag = newSetting;
     }
 
     /**
