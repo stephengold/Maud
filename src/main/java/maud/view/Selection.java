@@ -147,14 +147,10 @@ public class Selection {
         }
 
         float dSquared = screenXY.distanceSquared(inputXY);
-        if (dSquared < bestDSquared) { // TODO add private clear() method
+        if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
-            bestGeometry = null;
+            clear();
             bestAxisIndex = axisIndex;
-            bestBoneIndex = SelectedSkeleton.noBoneIndex;
-            bestFrameIndex = -1;
-            bestTrackDesc = null;
-            bestVertexIndex = -1;
             bestCgm = cgm;
             if (scoreView) {
                 bestType = Type.PoseTransformAxis;
@@ -179,12 +175,8 @@ public class Selection {
 
         if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
-            bestGeometry = null;
-            bestAxisIndex = -1;
+            clear();
             bestBoneIndex = boneIndex;
-            bestFrameIndex = -1;
-            bestTrackDesc = null;
-            bestVertexIndex = -1;
             bestCgm = cgm;
             bestType = Type.Bone;
         }
@@ -201,13 +193,7 @@ public class Selection {
 
         if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
-            bestGeometry = null;
-            bestAxisIndex = -1;
-            bestBoneIndex = SelectedSkeleton.noBoneIndex;
-            bestFrameIndex = -1;
-            bestTrackDesc = null;
-            bestVertexIndex = -1;
-            bestCgm = null;
+            clear();
             bestType = Type.Boundary;
         }
     }
@@ -225,12 +211,7 @@ public class Selection {
 
         if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
-            bestGeometry = null;
-            bestAxisIndex = -1;
-            bestBoneIndex = SelectedSkeleton.noBoneIndex;
-            bestFrameIndex = -1;
-            bestTrackDesc = null;
-            bestVertexIndex = -1;
+            clear();
             bestCgm = cgm;
             bestType = Type.Gnomon;
         }
@@ -250,12 +231,8 @@ public class Selection {
 
         if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
-            bestGeometry = null;
-            bestAxisIndex = -1;
-            bestBoneIndex = SelectedSkeleton.noBoneIndex;
+            clear();
             bestFrameIndex = frameIndex;
-            bestTrackDesc = null;
-            bestVertexIndex = -1;
             bestCgm = cgm;
             bestType = Type.Keyframe;
         }
@@ -276,12 +253,8 @@ public class Selection {
 
         if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
-            bestGeometry = null;
-            bestAxisIndex = -1;
-            bestBoneIndex = SelectedSkeleton.noBoneIndex;
-            bestFrameIndex = -1;
+            clear();
             bestTrackDesc = description;
-            bestVertexIndex = -1;
             bestCgm = cgm;
             bestType = Type.Track;
         }
@@ -297,8 +270,8 @@ public class Selection {
      * @param screenXY screen coordinates of the axis (in pixels, not null,
      * unaffected)
      */
-    public void considerVertex(Cgm cgm, Geometry geometry,
-            int vertexIndex, Vector2f screenXY) {
+    public void considerVertex(Cgm cgm, Geometry geometry, int vertexIndex,
+            Vector2f screenXY) {
         Validate.nonNull(cgm, "model");
         Validate.nonNull(geometry, "geometry");
         Validate.nonNegative(vertexIndex, "vertex index");
@@ -306,11 +279,7 @@ public class Selection {
         float dSquared = screenXY.distanceSquared(inputXY);
         if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
-            bestGeometry = geometry;
-            bestAxisIndex = -1;
-            bestBoneIndex = SelectedSkeleton.noBoneIndex;
-            bestFrameIndex = -1;
-            bestTrackDesc = null;
+            clear();
             bestVertexIndex = vertexIndex;
             bestCgm = cgm;
             bestType = Type.Vertex;
@@ -334,37 +303,59 @@ public class Selection {
         switch (bestType) {
             case None:
                 break;
+
             case Bone:
                 selectBone();
                 break;
+
             case Boundary:
                 Drag.startDraggingBoundary();
                 break;
+
             case Gnomon:
                 Drag.startDraggingGnomon(bestCgm);
                 break;
+
             case Keyframe:
                 selectKeyframe();
                 break;
+
             case PoseTransformAxis:
                 selectPoseTransformAxis();
                 break;
+
             case SceneAxis:
                 selectSceneAxis();
                 break;
+
             case Track:
                 assert bestTrackDesc != null;
                 bestCgm.getTrack().selectWithDescription(bestTrackDesc);
                 break;
+
             case Vertex:
                 selectVertex();
                 break;
+
             default:
                 throw new IllegalStateException();
         }
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Reset fields to "none" before making a new selection.
+     */
+    private void clear() {
+        bestGeometry = null;
+        bestAxisIndex = -1;
+        bestBoneIndex = SelectedSkeleton.noBoneIndex;
+        bestFrameIndex = -1;
+        bestVertexIndex = -1;
+        bestCgm = null;
+        bestTrackDesc = null;
+    }
 
     /**
      * Select a bone.
