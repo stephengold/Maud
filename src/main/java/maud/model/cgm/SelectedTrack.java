@@ -301,7 +301,7 @@ public class SelectedTrack implements JmeCloneable {
     public int findKeyframeIndex() {
         assert selected != null;
 
-        float time = cgm.getAnimation().getTime();
+        float time = cgm.getPlay().getTime();
         int frameIndex = findKeyframeIndex(time);
 
         return frameIndex;
@@ -380,7 +380,7 @@ public class SelectedTrack implements JmeCloneable {
      */
     public void insertKeyframe() {
         assert selected instanceof BoneTrack;
-        float time = cgm.getAnimation().getTime();
+        float time = cgm.getPlay().getTime();
         assert time > 0f : time;
         float duration = cgm.getAnimation().getDuration();
         assert time <= duration : time;
@@ -559,7 +559,7 @@ public class SelectedTrack implements JmeCloneable {
             newAnimation.addTrack(clone);
         }
 
-        float time = cgm.getAnimation().getTime();
+        float time = cgm.getPlay().getTime();
         String trackName = describe();
         String description = String.format(
                 "replace keyframe at t=%f in track %s", time, trackName);
@@ -656,41 +656,39 @@ public class SelectedTrack implements JmeCloneable {
      * Select the 1st keyframe in the track.
      */
     public void selectFirstKeyframe() {
-        float[] times = selected.getKeyFrameTimes();
-        float t = times[0];
-        cgm.getAnimation().setTime(t);
+        cgm.getPlay().setTime(0f);
     }
 
     /**
      * Select the last keyframe in the track.
      */
     public void selectLastKeyframe() {
-        if (selected != null) {
-            float t = lastKeyframeTime();
-            cgm.getAnimation().setTime(t);
-        }
+        assert selected != null;
+
+        float time = lastKeyframeTime();
+        cgm.getPlay().setTime(time);
     }
 
     /**
      * Select the nearest keyframe in the track.
      */
     public void selectNearestKeyframe() {
-        if (selected != null) {
-            LoadedAnimation animation = cgm.getAnimation();
-            float time = animation.getTime();
-            int frameIndex = MyAnimation.findKeyframeIndex(selected, time);
-            if (frameIndex == -1) {
-                float next = nextKeyframeTime();
-                float toNext = next - time;
-                assert toNext >= 0f : toNext;
-                float previous = previousKeyframeTime();
-                float toPrevious = time - previous;
-                assert toPrevious >= 0f : toPrevious;
-                if (toPrevious < toNext) {
-                    animation.setTime(previous);
-                } else {
-                    animation.setTime(next);
-                }
+        assert selected != null;
+
+        PlayOptions play = cgm.getPlay();
+        float time = play.getTime();
+        int frameIndex = MyAnimation.findKeyframeIndex(selected, time);
+        if (frameIndex == -1) {
+            float next = nextKeyframeTime();
+            float toNext = next - time;
+            assert toNext >= 0f : toNext;
+            float previous = previousKeyframeTime();
+            float toPrevious = time - previous;
+            assert toPrevious >= 0f : toPrevious;
+            if (toPrevious < toNext) {
+                play.setTime(previous);
+            } else {
+                play.setTime(next);
             }
         }
     }
@@ -712,11 +710,11 @@ public class SelectedTrack implements JmeCloneable {
      * Select the next keyframe in the track.
      */
     public void selectNextKeyframe() {
-        if (selected != null) {
-            float time = nextKeyframeTime();
-            if (time < Float.POSITIVE_INFINITY) {
-                cgm.getAnimation().setTime(time);
-            }
+        assert selected != null;
+
+        float time = nextKeyframeTime();
+        if (time < Float.POSITIVE_INFINITY) {
+            cgm.getPlay().setTime(time);
         }
     }
 
@@ -739,11 +737,11 @@ public class SelectedTrack implements JmeCloneable {
      * Select the previous keyframe in the track.
      */
     public void selectPreviousKeyframe() {
-        if (selected != null) {
-            float time = previousKeyframeTime();
-            if (time >= 0f) {
-                cgm.getAnimation().setTime(time);
-            }
+        assert selected != null;
+
+        float time = previousKeyframeTime();
+        if (time >= 0f) {
+            cgm.getPlay().setTime(time);
         }
     }
 
@@ -827,7 +825,7 @@ public class SelectedTrack implements JmeCloneable {
             }
             newAnimation.addTrack(clone);
         }
-        cgm.getAnimation().setTime(newTime);
+        cgm.getPlay().setTime(newTime);
 
         String trackName = describe();
         String eventDescription = String.format(
@@ -1236,7 +1234,7 @@ public class SelectedTrack implements JmeCloneable {
      */
     private float nextKeyframeTime() {
         float result = Float.POSITIVE_INFINITY;
-        float time = cgm.getAnimation().getTime();
+        float time = cgm.getPlay().getTime();
         float[] times = selected.getKeyFrameTimes();
         for (int iFrame = 0; iFrame < times.length; iFrame++) {
             if (times[iFrame] > time) {
@@ -1255,7 +1253,7 @@ public class SelectedTrack implements JmeCloneable {
      */
     private float previousKeyframeTime() {
         float result = Float.NEGATIVE_INFINITY;
-        float time = cgm.getAnimation().getTime();
+        float time = cgm.getPlay().getTime();
         float[] times = selected.getKeyFrameTimes();
         for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
             if (times[iFrame] < time) {

@@ -166,14 +166,17 @@ public class AnimationMenus {
 
         Cgm target = Maud.getModel().getTarget();
         LoadedAnimation animation = target.getAnimation();
-        float duration = animation.getDuration();
-        if (duration > 0f) {
+        float time = target.getPlay().getTime();
+        if (time > 0f) {
             builder.addEdit("Behead");
         }
         builder.addDialog("Change duration: proportional");
         builder.addDialog("Change duration: same times");
-        if (duration > 0f) {
+        if (time > 0f) {
             builder.addEdit("Delete keyframes");
+        }
+        float duration = animation.getDuration();
+        if (duration > 0f) {
             builder.addEdit("Insert keyframes");
             builder.addDialog("Reduce all tracks");
             builder.addDialog("Resample all tracks at rate");

@@ -138,20 +138,19 @@ class SourceAnimationTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        Cgm source = Maud.getModel().getSource();
-        LoadedAnimation animation = source.getAnimation();
+        Cgm cgm = Maud.getModel().getSource();
 
-        float duration = animation.getDuration();
+        float duration = cgm.getAnimation().getDuration();
         if (duration > 0f) {
             float speed = readSlider("sSpeed", speedSt);
-            source.getPlay().setSpeed(speed);
+            cgm.getPlay().setSpeed(speed);
         }
 
-        boolean moving = animation.isMoving();
+        boolean moving = cgm.getAnimation().isMoving();
         if (!moving) {
             float fraction = readSlider("sourceTime", timeSt);
             float time = fraction * duration;
-            animation.setTime(time);
+            cgm.getPlay().setTime(time);
         }
     }
 
@@ -181,13 +180,13 @@ class SourceAnimationTool extends Tool {
         String nextButton = "";
         String previousButton = "";
 
-        Cgm source = Maud.getModel().getSource();
-        int numAnimControls = source.countSgcs(AnimControl.class);
+        Cgm cgm = Maud.getModel().getSource();
+        int numAnimControls = cgm.countSgcs(AnimControl.class);
         if (numAnimControls > 0) {
             selectButton = "Select animControl";
-            SelectedAnimControl sac = source.getAnimControl();
-            if (sac.isSelected()) {
-                int selectedIndex = sac.findIndex();
+            SelectedAnimControl animControl = cgm.getAnimControl();
+            if (animControl.isSelected()) {
+                int selectedIndex = animControl.findIndex();
                 indexStatus = MaudUtil.formatIndex(selectedIndex);
                 indexStatus = String.format("%s of %d", indexStatus,
                         numAnimControls);
@@ -204,7 +203,7 @@ class SourceAnimationTool extends Tool {
                 }
             }
 
-        } else if (source.isLoaded()) {
+        } else if (cgm.isLoaded()) {
             indexStatus = "not animated";
 
         } else {
@@ -226,13 +225,13 @@ class SourceAnimationTool extends Tool {
         String nextButton = "";
         String previousButton = "";
 
-        Cgm source = Maud.getModel().getSource();
-        SelectedAnimControl sac = source.getAnimControl();
-        if (sac.isSelected()) {
+        Cgm cgm = Maud.getModel().getSource();
+        SelectedAnimControl animControl = cgm.getAnimControl();
+        if (animControl.isSelected()) {
             loadButton = "Load animation";
-            int numAnimations = sac.countAnimations();
-            if (source.getAnimation().isReal()) {
-                int selectedIndex = source.getAnimation().findIndex();
+            int numAnimations = animControl.countAnimations();
+            if (cgm.getAnimation().isReal()) {
+                int selectedIndex = cgm.getAnimation().findIndex();
                 indexStatus = MaudUtil.formatIndex(selectedIndex);
                 indexStatus
                         = String.format("%s of %d", indexStatus, numAnimations);
@@ -249,7 +248,7 @@ class SourceAnimationTool extends Tool {
                     indexStatus = String.format("%d animations", numAnimations);
                 }
             }
-        } else if (source.isLoaded()) {
+        } else if (cgm.isLoaded()) {
             indexStatus = "not selected";
         } else {
             indexStatus = "no model";
@@ -265,21 +264,21 @@ class SourceAnimationTool extends Tool {
      * Update the loop/pin/pong check boxes and the pause button label.
      */
     private void updateLooping() {
-        Cgm source = Maud.getModel().getSource();
-        LoadedAnimation animation = source.getAnimation();
+        Cgm cgm = Maud.getModel().getSource();
+        LoadedAnimation animation = cgm.getAnimation();
         boolean pinned = animation.isPinned();
         setChecked("pinSource", pinned);
 
-        PlayOptions options = source.getPlay();
-        boolean looping = options.willContinue();
+        PlayOptions play = cgm.getPlay();
+        boolean looping = play.willContinue();
         setChecked("loopSource", looping);
-        boolean ponging = options.willReverse();
+        boolean ponging = play.willReverse();
         setChecked("pongSource", ponging);
 
         String pButton = "";
         float duration = animation.getDuration();
         if (duration > 0f) {
-            boolean paused = options.isPaused();
+            boolean paused = play.isPaused();
             if (paused) {
                 pButton = "Resume";
             } else {
@@ -290,15 +289,15 @@ class SourceAnimationTool extends Tool {
     }
 
     /**
-     * Update the name label.
+     * Update the name status.
      */
     private void updateName() {
         String nameText;
 
-        Cgm source = Maud.getModel().getSource();
-        if (source.isLoaded()) {
-            String name = source.getAnimation().getName();
-            if (source.getAnimation().isReal()) {
+        Cgm cgm = Maud.getModel().getSource();
+        if (cgm.isLoaded()) {
+            String name = cgm.getAnimation().getName();
+            if (cgm.getAnimation().isReal()) {
                 nameText = MyString.quote(name);
             } else {
                 nameText = name;
@@ -314,13 +313,12 @@ class SourceAnimationTool extends Tool {
      * Update the speed slider and its status label.
      */
     private void updateSpeed() {
-        Cgm source = Maud.getModel().getSource();
-        LoadedAnimation animation = source.getAnimation();
+        Cgm cgm = Maud.getModel().getSource();
 
-        float duration = animation.getDuration();
+        float duration = cgm.getAnimation().getDuration();
         setSliderEnabled("sSpeed", duration > 0f);
 
-        float speed = source.getPlay().getSpeed();
+        float speed = cgm.getPlay().getSpeed();
         setSlider("sSpeed", speedSt, speed);
         updateSliderStatus("sSpeed", speed, "x");
     }
@@ -348,8 +346,8 @@ class SourceAnimationTool extends Tool {
      * Update the track-time slider and its status label.
      */
     private void updateTrackTime() {
-        Cgm source = Maud.getModel().getSource();
-        LoadedAnimation animation = source.getAnimation();
+        Cgm cgm = Maud.getModel().getSource();
+        LoadedAnimation animation = cgm.getAnimation();
         float duration = animation.getDuration();
         /*
          * slider
@@ -362,7 +360,7 @@ class SourceAnimationTool extends Tool {
             trackTime = 0f;
             fraction = 0f;
         } else {
-            trackTime = animation.getTime();
+            trackTime = cgm.getPlay().getTime();
             fraction = trackTime / duration;
         }
         setSlider("sourceTime", timeSt, fraction);
@@ -370,9 +368,9 @@ class SourceAnimationTool extends Tool {
          * status label
          */
         String statusText;
-        if (source.isLoaded() && animation.isReal()) {
-            statusText = String.format("time = %.3f / %.3f sec",
-                    trackTime, duration);
+        if (cgm.isLoaded() && animation.isReal()) {
+            statusText = String.format("time = %.3f / %.3f sec", trackTime,
+                    duration);
         } else {
             statusText = "time = n/a";
         }

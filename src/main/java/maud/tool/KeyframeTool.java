@@ -71,13 +71,14 @@ class KeyframeTool extends Tool {
      */
     @Override
     void toolUpdate() {
-        EditableCgm target = Maud.getModel().getTarget();
         String indexText, timeText;
+
+        EditableCgm target = Maud.getModel().getTarget();
+        float time = target.getPlay().getTime();
         int numKeyframes = target.getTrack().countKeyframes();
         if (numKeyframes == 0) {
             if (target.getBone().hasTrack()) {
                 indexText = "no keyframes";
-                float time = target.getAnimation().getTime();
                 timeText = String.format("%.3f", time);
             } else {
                 indexText = "no track";
@@ -95,8 +96,6 @@ class KeyframeTool extends Tool {
                 indexText = MaudUtil.formatIndex(index);
                 indexText = String.format("%s of %d", indexText, numKeyframes);
             }
-
-            float time = target.getAnimation().getTime();
             timeText = String.format("%.3f", time);
         }
 
@@ -147,7 +146,7 @@ class KeyframeTool extends Tool {
         Cgm target = Maud.getModel().getTarget();
         int numKeyframes = target.getTrack().countKeyframes();
         if (numKeyframes > 0) {
-            float time = target.getAnimation().getTime();
+            float time = target.getPlay().getTime();
             if (time != 0f) {
                 firstButton = "First";
             }

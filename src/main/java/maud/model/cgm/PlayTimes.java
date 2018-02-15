@@ -27,7 +27,7 @@
 package maud.model.cgm;
 
 /**
- * Enumerate the time-values stored in the play options.
+ * Enumerate the animation-time values stored in the play options.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -35,6 +35,10 @@ public enum PlayTimes {
     // *************************************************************************
     // values
 
+    /**
+     * the current time for playback
+     */
+    Current,
     /**
      * the lower limit
      */

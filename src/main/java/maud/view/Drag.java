@@ -80,6 +80,16 @@ public class Drag {
     }
 
     /**
+     * Start dragging the indexed frame in the selected track of the specified
+     * C-G model.
+     *
+     * @param cgm a C-G model (not null)
+     */
+    static void startDraggingFrame(int frameIndex, Cgm cgm) {
+        // TODO
+    }
+
+    /**
      * Start dragging the gnomon associated with the specified C-G model.
      *
      * @param cgm a C-G model (not null)
@@ -131,7 +141,7 @@ public class Drag {
             float worldX = FastMath.clamp(world.x, 0f, 1f);
             float duration = cgm.getAnimation().getDuration();
             float newTime = worldX * duration;
-            cgm.getAnimation().setTime(newTime);
+            cgm.getPlay().setTime(newTime);
         }
     }
 }

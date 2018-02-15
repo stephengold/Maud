@@ -186,7 +186,7 @@ public class Cgm implements Cloneable {
 
         displayedPose.setCgm(cgm);
         loadedAnimation.setCgm(cgm);
-        // playOptions lacks a back pointer
+        playOptions.setCgm(cgm);
         scenePov.setCgm(cgm);
         assert sceneView == null;
         scorePov.setCgm(cgm);
@@ -421,7 +421,7 @@ public class Cgm implements Cloneable {
         SpatialTrack track = loadedAnimation.findTrackForSpatial(spatial);
         if (track != null) {
             TweenTransforms technique = Maud.getModel().getTweenTransforms();
-            float time = loadedAnimation.getTime();
+            float time = playOptions.getTime();
             float duration = loadedAnimation.getDuration();
             result = technique.interpolate(time, track, duration, result, null);
         }
@@ -1006,7 +1006,7 @@ public class Cgm implements Cloneable {
         clone.getJoint().setCgm(clone);
         clone.getLight().setCgm(clone);
         clone.getObject().setCgm(clone);
-        //playOptions lacks a back pointer
+        clone.getPlay().setCgm(clone);
         clone.getPose().setCgm(clone);
         clone.getScenePov().setCgm(clone);
         clone.getSceneView().setCgm(clone);

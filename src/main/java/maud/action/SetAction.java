@@ -42,6 +42,7 @@ import maud.model.EditorModel;
 import maud.model.WhichCgm;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
+import maud.model.cgm.PlayOptions;
 import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedOverride;
@@ -176,9 +177,10 @@ class SetAction {
             case Action.setTimeLimitLower:
                 Cgm cgm = Maud.gui.mouseCgm();
                 if (cgm != null) {
-                    float currentTime = cgm.getAnimation().getTime();
-                    if (currentTime <= cgm.getPlay().getUpperLimit()) {
-                        cgm.getPlay().setLowerLimit(currentTime);
+                    PlayOptions play = cgm.getPlay();
+                    float currentTime = play.getTime();
+                    if (currentTime <= play.getUpperLimit()) {
+                        play.setLowerLimit(currentTime);
                     }
                 }
                 break;
@@ -186,9 +188,10 @@ class SetAction {
             case Action.setTimeLimitUpper:
                 cgm = Maud.gui.mouseCgm();
                 if (cgm != null) {
-                    float currentTime = cgm.getAnimation().getTime();
-                    if (currentTime >= cgm.getPlay().getLowerLimit()) {
-                        cgm.getPlay().setUpperLimit(currentTime);
+                    PlayOptions play = cgm.getPlay();
+                    float currentTime = play.getTime();
+                    if (currentTime >= play.getLowerLimit()) {
+                        play.setUpperLimit(currentTime);
                     }
                 }
                 break;

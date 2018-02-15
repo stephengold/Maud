@@ -712,19 +712,19 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Update the track time.
+     * Update the animation time.
      *
      * @param cgm (not null)
      * @param updateInterval time interval between updates (in seconds, &ge;0)
      */
     private void updateTrackTime(Cgm cgm, float updateInterval) {
         LoadedAnimation animation = cgm.getAnimation();
-        PlayOptions play = cgm.getPlay();
         assert animation.isMoving();
-
+        PlayOptions play = cgm.getPlay();
         float speed = play.getSpeed();
         assert speed != 0f;
-        float time = animation.getTime();
+
+        float time = play.getTime();
         time += speed * updateInterval;
 
         boolean cont = play.willContinue();
@@ -753,6 +753,7 @@ public class EditorScreen extends GuiScreenController {
                 }
             }
         }
-        animation.setTime(time);
+
+        play.setTime(time);
     }
 }

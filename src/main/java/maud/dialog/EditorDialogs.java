@@ -722,7 +722,7 @@ public class EditorDialogs {
         maxTime -= delta / 100f;
         minTime += delta / 100f;
 
-        float oldTime = target.getAnimation().getTime();
+        float oldTime = target.getPlay().getTime();
         String defaultValue = Float.toString(oldTime);
 
         FloatDialog controller

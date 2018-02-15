@@ -62,7 +62,15 @@ public class PlayOptions implements Cloneable {
      */
     private boolean reverseFlag = false;
     /**
-     * lower time limit (in seconds, &ge;0, &le;upperLimit)
+     * C-G model being played (set by {@link #setCgm(Cgm)})
+     */
+    private Cgm cgm = null;
+    /**
+     * current animation time for playback (in seconds, &ge;0)
+     */
+    private float currentTime = 0f;
+    /**
+     * lower animation-time limit (in seconds, &ge;0, &le;upperLimit)
      */
     private float lowerLimit = 0f;
     /**
@@ -71,7 +79,7 @@ public class PlayOptions implements Cloneable {
      */
     private float speed = 1f;
     /**
-     * upper time limit (in seconds, &ge;lowerLimit)
+     * upper animation-time limit (in seconds, &ge;lowerLimit)
      */
     private float upperLimit = Float.MAX_VALUE;
     // *************************************************************************
@@ -95,6 +103,16 @@ public class PlayOptions implements Cloneable {
      */
     public float getSpeed() {
         return speed;
+    }
+
+    /**
+     * Read the animation time for playback.
+     *
+     * @return seconds since start (&ge;0)
+     */
+    public float getTime() {
+        assert currentTime >= 0f : currentTime;
+        return currentTime;
     }
 
     /**
@@ -122,6 +140,19 @@ public class PlayOptions implements Cloneable {
     public void resetLimits() {
         lowerLimit = 0f;
         upperLimit = Float.MAX_VALUE;
+    }
+
+    /**
+     * Alter which C-G model displays the pose. (Invoked only during
+     * initialization and cloning.)
+     *
+     * @param newCgm (not null, alias created)
+     */
+    void setCgm(Cgm newCgm) {
+        assert newCgm != null;
+        assert newCgm.getPlay() == this;
+
+        cgm = newCgm;
     }
 
     /**
@@ -172,6 +203,26 @@ public class PlayOptions implements Cloneable {
     }
 
     /**
+     * Alter the animation time and update the displayed pose unless it's
+     * frozen. Has no effect in bind pose or if the loaded animation has zero
+     * duration.
+     *
+     * @param newTime seconds since start (&ge;0, &le;duration)
+     */
+    public void setTime(float newTime) {
+        float duration = cgm.getAnimation().getDuration();
+        Validate.inRange(newTime, "new time", 0f, duration);
+
+        if (duration > 0f) {
+            currentTime = newTime;
+            boolean frozen = cgm.getPose().isFrozen();
+            if (!frozen) {
+                cgm.getPose().setToAnimation();
+            }
+        }
+    }
+
+    /**
      * Alter the specified time.
      *
      * @param whichTime which time to alter (not null)
@@ -181,6 +232,10 @@ public class PlayOptions implements Cloneable {
         Validate.nonNegative(newValue, "new value");
 
         switch (whichTime) {
+            case Current:
+                setTime(newValue);
+                break;
+
             case LowerLimit:
                 setLowerLimit(newValue);
                 break;

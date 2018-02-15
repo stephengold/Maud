@@ -396,9 +396,9 @@ public class Selection {
         assert bestFrameIndex >= 0 : bestFrameIndex;
 
         float keyframeTime = bestCgm.getTrack().keyframeTime(bestFrameIndex);
-        bestCgm.getAnimation().setTime(keyframeTime);
+        bestCgm.getPlay().setTime(keyframeTime);
         if (bestFrameIndex > 0) {
-            // TODO Drag.startDraggingFrame(bestFrameIndex, bestCgm);
+            Drag.startDraggingFrame(bestFrameIndex, bestCgm);
         }
     }
 

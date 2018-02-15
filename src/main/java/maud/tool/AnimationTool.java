@@ -116,9 +116,8 @@ class AnimationTool extends Tool {
     @Override
     public void onCheckBoxChanged(String name, boolean isChecked) {
         Cgm target = Maud.getModel().getTarget();
-        LoadedAnimation animation = target.getAnimation();
         Cgm cgm;
-        if (animation.isRetargetedPose()) {
+        if (target.getAnimation().isRetargetedPose()) {
             cgm = Maud.getModel().getSource();
         } else {
             cgm = target;
@@ -134,7 +133,7 @@ class AnimationTool extends Tool {
                 break;
 
             case "pin":
-                animation.setPinned(isChecked);
+                target.getAnimation().setPinned(isChecked);
                 break;
 
             case "pong":
@@ -152,22 +151,24 @@ class AnimationTool extends Tool {
     @Override
     public void onSliderChanged() {
         Cgm target = Maud.getModel().getTarget();
-        LoadedAnimation animation = target.getAnimation();
-        if (animation.isRetargetedPose()) {
-            animation = Maud.getModel().getSource().getAnimation();
+        Cgm cgm;
+        if (target.getAnimation().isRetargetedPose()) {
+            cgm = Maud.getModel().getSource();
+        } else {
+            cgm = target;
         }
 
-        float duration = animation.getDuration();
+        float duration = cgm.getAnimation().getDuration();
         if (duration > 0f) {
             float speed = readSlider("speed", speedSt);
-            target.getPlay().setSpeed(speed);
+            cgm.getPlay().setSpeed(speed);
         }
 
-        boolean moving = animation.isMoving();
+        boolean moving = cgm.getAnimation().isMoving();
         if (!moving) {
             float fraction = readSlider("time", timeSt);
             float time = fraction * duration;
-            animation.setTime(time);
+            cgm.getPlay().setTime(time);
         }
     }
 
@@ -197,13 +198,13 @@ class AnimationTool extends Tool {
         String nextButton = "";
         String previousButton = "";
 
-        Cgm target = Maud.getModel().getTarget();
-        int numAnimControls = target.countSgcs(AnimControl.class);
+        Cgm cgm = Maud.getModel().getTarget();
+        int numAnimControls = cgm.countSgcs(AnimControl.class);
         if (numAnimControls > 0) {
             selectButton = "Select animControl";
-            SelectedAnimControl sac = target.getAnimControl();
-            if (sac.isSelected()) {
-                int selectedIndex = sac.findIndex();
+            SelectedAnimControl animControl = cgm.getAnimControl();
+            if (animControl.isSelected()) {
+                int selectedIndex = animControl.findIndex();
                 indexStatus = MaudUtil.formatIndex(selectedIndex);
                 indexStatus = String.format("%s of %d", indexStatus,
                         numAnimControls);
@@ -240,14 +241,14 @@ class AnimationTool extends Tool {
         String nextButton = "";
         String previousButton = "";
 
-        Cgm target = Maud.getModel().getTarget();
-        SelectedAnimControl animControl = target.getAnimControl();
+        Cgm cgm = Maud.getModel().getTarget();
+        SelectedAnimControl animControl = cgm.getAnimControl();
         if (animControl.isSelected()) {
             addButton = "Add new";
             loadButton = "Load animation";
             int numAnimations = animControl.countAnimations();
-            if (target.getAnimation().isReal()) {
-                int selectedIndex = target.getAnimation().findIndex();
+            if (cgm.getAnimation().isReal()) {
+                int selectedIndex = cgm.getAnimation().findIndex();
                 indexStatus = MaudUtil.formatIndex(selectedIndex);
                 indexStatus
                         = String.format("%s of %d", indexStatus, numAnimations);
@@ -293,16 +294,16 @@ class AnimationTool extends Tool {
         boolean frozen = cgm.getPose().isFrozen();
         setChecked("freeze", frozen);
 
-        PlayOptions options = cgm.getPlay();
-        boolean looping = options.willContinue();
+        PlayOptions play = cgm.getPlay();
+        boolean looping = play.willContinue();
         setChecked("loop", looping);
-        boolean ponging = options.willReverse();
+        boolean ponging = play.willReverse();
         setChecked("pong", ponging);
 
         String pButton = "";
         float duration = animation.getDuration();
         if (duration > 0f) {
-            boolean paused = options.isPaused();
+            boolean paused = play.isPaused();
             if (paused) {
                 pButton = "Resume";
             } else {
@@ -340,15 +341,17 @@ class AnimationTool extends Tool {
      */
     private void updateSpeed() {
         Cgm target = Maud.getModel().getTarget();
-        LoadedAnimation animation = target.getAnimation();
-        if (animation.isRetargetedPose()) {
-            animation = Maud.getModel().getSource().getAnimation();
+        Cgm cgm;
+        if (target.getAnimation().isRetargetedPose()) {
+            cgm = Maud.getModel().getSource();
+        } else {
+            cgm = target;
         }
 
-        float duration = animation.getDuration();
+        float duration = cgm.getAnimation().getDuration();
         setSliderEnabled("speed", duration > 0f);
 
-        float speed = target.getPlay().getSpeed();
+        float speed = cgm.getPlay().getSpeed();
         setSlider("speed", speedSt, speed);
         updateSliderStatus("speed", speed, "x");
     }
@@ -376,15 +379,19 @@ class AnimationTool extends Tool {
      * Update the track-time slider and its status label.
      */
     private void updateTrackTime() {
-        LoadedAnimation master = Maud.getModel().getTarget().getAnimation();
-        if (master.isRetargetedPose()) {
-            master = Maud.getModel().getSource().getAnimation();
+        Cgm target = Maud.getModel().getTarget();
+        Cgm cgm;
+        if (target.getAnimation().isRetargetedPose()) {
+            cgm = Maud.getModel().getSource();
+        } else {
+            cgm = target;
         }
-        float duration = master.getDuration();
+        LoadedAnimation animation = cgm.getAnimation();
+        float duration = animation.getDuration();
         /*
          * slider
          */
-        boolean moving = master.isMoving();
+        boolean moving = animation.isMoving();
         setSliderEnabled("time", duration != 0f && !moving);
 
         float fraction, trackTime;
@@ -392,7 +399,7 @@ class AnimationTool extends Tool {
             trackTime = 0f;
             fraction = 0f;
         } else {
-            trackTime = master.getTime();
+            trackTime = cgm.getPlay().getTime();
             fraction = trackTime / duration;
         }
         setSlider("time", timeSt, fraction);
@@ -400,9 +407,9 @@ class AnimationTool extends Tool {
          * status label
          */
         String statusText;
-        if (master.isReal()) {
-            statusText = String.format("time = %.3f / %.3f sec",
-                    trackTime, duration);
+        if (animation.isReal()) {
+            statusText = String.format("time = %.3f / %.3f sec", trackTime,
+                    duration);
         } else {
             statusText = "time = n/a";
         }

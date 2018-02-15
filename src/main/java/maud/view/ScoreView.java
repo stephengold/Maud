@@ -1343,7 +1343,7 @@ public class ScoreView implements EditorView {
         float result;
         float duration = cgm.getAnimation().getDuration();
         if (duration > 0f) {
-            float time = cgm.getAnimation().getTime();
+            float time = cgm.getPlay().getTime();
             result = time / duration;
         } else {
             result = 0f;
