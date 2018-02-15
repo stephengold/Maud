@@ -945,7 +945,7 @@ public class EditableCgm extends LoadedCgm {
         assert times != null;
         assert times.length > 0 : times.length;
 
-        Track track = getTrack().find();
+        Track track = getTrack().get();
 
         History.autoAdd();
         if (track instanceof BoneTrack) {

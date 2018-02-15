@@ -129,7 +129,7 @@ public class LoadedAnimation implements Cloneable {
         Animation newAnimation = new Animation(loadedName, newDuration);
         Track newSelectedTrack = null;
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Track oldSelectedTrack = cgm.getTrack().find();
+        Track oldSelectedTrack = cgm.getTrack().get();
         Track[] oldTracks = oldAnimation.getTracks();
         for (Track track : oldTracks) {
             Track newTrack;
@@ -279,7 +279,7 @@ public class LoadedAnimation implements Cloneable {
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().find();
+        Track oldSelectedTrack = cgm.getTrack().get();
         int numDeletions = 0;
 
         Animation realAnimation = getReal();
@@ -324,7 +324,7 @@ public class LoadedAnimation implements Cloneable {
         Animation oldAnimation = getReal();
         Track[] oldTracks = oldAnimation.getTracks();
         for (Track track : oldTracks) {
-            if (track != selectedTrack.find()) {
+            if (track != selectedTrack.get()) {
                 Track newTrack = track.clone();
                 newAnimation.addTrack(newTrack);
             }
@@ -560,7 +560,7 @@ public class LoadedAnimation implements Cloneable {
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().find();
+        Track oldSelectedTrack = cgm.getTrack().get();
 
         Animation oldAnimation = getReal();
         Track[] oldTracks = oldAnimation.getTracks();
@@ -843,7 +843,7 @@ public class LoadedAnimation implements Cloneable {
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().find();
+        Track oldSelectedTrack = cgm.getTrack().get();
 
         Animation oldAnimation = getReal();
         Track[] oldTracks = oldAnimation.getTracks();
@@ -882,7 +882,7 @@ public class LoadedAnimation implements Cloneable {
         float duration = getDuration();
         Animation newAnimation = new Animation(newName, duration);
         Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().find();
+        Track oldSelectedTrack = cgm.getTrack().get();
 
         Animation oldAnimation = getReal();
         Track[] oldTracks = oldAnimation.getTracks();
@@ -908,7 +908,7 @@ public class LoadedAnimation implements Cloneable {
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().find();
+        Track oldSelectedTrack = cgm.getTrack().get();
 
         Animation oldAnimation = getReal();
         Track[] oldTracks = oldAnimation.getTracks();
@@ -946,7 +946,7 @@ public class LoadedAnimation implements Cloneable {
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Track oldSelectedTrack = cgm.getTrack().find();
+        Track oldSelectedTrack = cgm.getTrack().get();
 
         Animation oldAnimation = getReal();
         Track[] oldTracks = oldAnimation.getTracks();
@@ -986,7 +986,7 @@ public class LoadedAnimation implements Cloneable {
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Track oldSelectedTrack = cgm.getTrack().find();
+        Track oldSelectedTrack = cgm.getTrack().get();
 
         Animation oldAnimation = getReal();
         Track[] oldTracks = oldAnimation.getTracks();
@@ -1057,7 +1057,7 @@ public class LoadedAnimation implements Cloneable {
         if (oldDuration != newDuration) {
             Animation newAnimation = new Animation(loadedName, newDuration);
             Track newSelectedTrack = null;
-            Track oldSelectedTrack = cgm.getTrack().find();
+            Track oldSelectedTrack = cgm.getTrack().get();
             Track[] oldTracks = oldAnimation.getTracks();
             for (Track track : oldTracks) {
                 Track newTrack = TrackEdit.setDuration(track, newDuration);
@@ -1098,7 +1098,7 @@ public class LoadedAnimation implements Cloneable {
         if (oldDuration != newDuration) {
             Animation newAnimation = new Animation(loadedName, newDuration);
             Track newSelectedTrack = null;
-            Track oldSelectedTrack = cgm.getTrack().find();
+            Track oldSelectedTrack = cgm.getTrack().get();
             Track[] oldTracks = oldAnimation.getTracks();
             for (Track track : oldTracks) {
                 Track newTrack;
@@ -1141,7 +1141,7 @@ public class LoadedAnimation implements Cloneable {
         float duration = getDuration();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().find();
+        Track oldSelectedTrack = cgm.getTrack().get();
 
         Animation oldAnimation = getReal();
         Track[] oldTracks = oldAnimation.getTracks();
@@ -1180,7 +1180,7 @@ public class LoadedAnimation implements Cloneable {
         float endTime = cgm.getPlay().getTime();
         Animation newAnimation = new Animation(loadedName, endTime);
         Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().find();
+        Track oldSelectedTrack = cgm.getTrack().get();
 
         Animation oldAnimation = getReal();
         Track[] oldTracks = oldAnimation.getTracks();
@@ -1217,7 +1217,7 @@ public class LoadedAnimation implements Cloneable {
         float duration = oldAnimation.getLength();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().find();
+        Track oldSelectedTrack = cgm.getTrack().get();
 
         Track[] oldTracks = oldAnimation.getTracks();
         for (Track track : oldTracks) {

@@ -112,7 +112,7 @@ public class SelectedFrame implements Cloneable {
         Track[] oldTracks = oldAnimation.getTracks();
         for (Track track : oldTracks) {
             Track clone;
-            if (track == sTrack.find()) {
+            if (track == sTrack.get()) {
                 BoneTrack boneTrack = (BoneTrack) track;
                 Pose pose = cgm.getPose().get();
                 int boneIndex = boneTrack.getTargetBoneIndex();
@@ -232,7 +232,7 @@ public class SelectedFrame implements Cloneable {
         Track[] oldTracks = oldAnimation.getTracks();
         for (Track track : oldTracks) {
             Track clone;
-            if (track == sTrack.find()) {
+            if (track == sTrack.get()) {
                 clone = TrackEdit.setFrameTime(track, frameIndex, newTime);
                 assert clone != null;
                 newSelected = clone;
@@ -275,7 +275,7 @@ public class SelectedFrame implements Cloneable {
     private float nextKeyframeTime() {
         float result = Float.POSITIVE_INFINITY;
         float time = cgm.getPlay().getTime();
-        float[] times = cgm.getTrack().find().getKeyFrameTimes();
+        float[] times = cgm.getTrack().get().getKeyFrameTimes();
         for (int iFrame = 0; iFrame < times.length; iFrame++) {
             if (times[iFrame] > time) {
                 result = times[iFrame];
@@ -294,7 +294,7 @@ public class SelectedFrame implements Cloneable {
     private float previousKeyframeTime() {
         float result = Float.NEGATIVE_INFINITY;
         float time = cgm.getPlay().getTime();
-        float[] times = cgm.getTrack().find().getKeyFrameTimes();
+        float[] times = cgm.getTrack().get().getKeyFrameTimes();
         for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
             if (times[iFrame] < time) {
                 result = times[iFrame];

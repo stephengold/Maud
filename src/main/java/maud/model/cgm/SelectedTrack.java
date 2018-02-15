@@ -284,15 +284,6 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Access the selected track in the loaded animation. TODO rename get
-     *
-     * @return the pre-existing instance, or null if none
-     */
-    Track find() {
-        return selected;
-    }
-
-    /**
      * Find the index of the keyframe (if any) at the specified time.
      *
      * @param time the animation time (in seconds, &ge;0)
@@ -341,6 +332,15 @@ public class SelectedTrack implements JmeCloneable {
         Validate.nonNegative(time, "time");
         int frameIndex = MyAnimation.findPreviousKeyframeIndex(selected, time);
         return frameIndex;
+    }
+
+    /**
+     * Access the selected track in the loaded animation.
+     *
+     * @return the pre-existing instance, or null if none
+     */
+    Track get() {
+        return selected;
     }
 
     /**
