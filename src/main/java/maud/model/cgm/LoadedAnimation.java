@@ -428,6 +428,24 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Access the spatial track (if any) for the specified target.
+     *
+     * @param target which spatial to find (unaffected)
+     * @return the pre-existing instance, or null if none found
+     */
+    SpatialTrack findTrackForSpatial(Spatial target) {
+        SpatialTrack result = null;
+        AnimControl animControl = cgm.getAnimControl().find();
+        Animation realAnimation = getReal();
+        if (animControl != null && realAnimation != null) {
+            result = MyAnimation.findSpatialTrack(animControl, realAnimation,
+                    target);
+        }
+
+        return result;
+    }
+
+    /**
      * Read the duration of the loaded animation.
      *
      * @return time (in seconds, &ge;0)
@@ -533,25 +551,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Access the spatial track (if any) for the specified spatial. TODO sort
-     * methods
-     *
-     * @param spatial which spatial to find (unaffected)
-     * @return the pre-existing instance, or null if none found
-     */
-    SpatialTrack findTrackForSpatial(Spatial spatial) {
-        SpatialTrack result = null;
-        AnimControl animControl = cgm.getAnimControl().find();
-        Animation realAnimation = getReal();
-        if (animControl != null && realAnimation != null) {
-            result = MyAnimation.findSpatialTrack(animControl, realAnimation,
-                    spatial);
-        }
-
-        return result;
-    }
-
-    /**
      * Insert a keyframe (or replace the existing keyframe) in each bone track
      * at the current animation time, to match the displayed pose.
      */
@@ -604,20 +603,6 @@ public class LoadedAnimation implements Cloneable {
      */
     public boolean isBindPose() {
         if (loadedName.equals(bindPoseName)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Test whether retargeted pose is loaded.
-     *
-     * @return true if it's loaded, false if a real animation or bind pose is
-     * loaded
-     */
-    public boolean isRetargetedPose() {
-        if (loadedName.equals(retargetedPoseName)) {
             return true;
         } else {
             return false;
@@ -688,31 +673,17 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Enumerate all tracks in the animation.
+     * Test whether retargeted pose is loaded.
      *
-     * @return a new list of new track items
+     * @return true if it's loaded, false if a real animation or bind pose is
+     * loaded
      */
-    public List<TrackItem> listTracks() {
-        List<TrackItem> result;
-        Animation realAnimation = getReal();
-        if (realAnimation != null) {
-            SelectedAnimControl sac = cgm.getAnimControl();
-            AnimControl animControl = sac.find();
-            String controlName = sac.name();
-
-            Track[] tracks = realAnimation.getTracks();
-            result = new ArrayList<>(tracks.length);
-            for (Track track : tracks) {
-                TrackItem item = new TrackItem(loadedName, controlName,
-                        animControl, track);
-                result.add(item);
-            }
-
+    public boolean isRetargetedPose() {
+        if (loadedName.equals(retargetedPoseName)) {
+            return true;
         } else {
-            result = new ArrayList<>(0);
+            return false;
         }
-
-        return result;
     }
 
     /**
@@ -735,6 +706,34 @@ public class LoadedAnimation implements Cloneable {
                     result.add(name);
                 }
             }
+        }
+
+        return result;
+    }
+
+    /**
+     * Enumerate all tracks in the animation.
+     *
+     * @return a new list of new track items
+     */
+    public List<TrackItem> listTracks() {
+        List<TrackItem> result;
+        Animation realAnimation = getReal();
+        if (realAnimation != null) {
+            SelectedAnimControl sac = cgm.getAnimControl();
+            AnimControl animControl = sac.find();
+            String controlName = sac.name();
+
+            Track[] tracks = realAnimation.getTracks();
+            result = new ArrayList<>(tracks.length);
+            for (Track track : tracks) {
+                TrackItem item = new TrackItem(loadedName, controlName,
+                        animControl, track);
+                result.add(item);
+            }
+
+        } else {
+            result = new ArrayList<>(0);
         }
 
         return result;
