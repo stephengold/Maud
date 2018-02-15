@@ -11,7 +11,7 @@ gradle.projectsEvaluated {
         options.encoding = 'UTF-8'
     }
     tasks.withType(JavaExec) {
-        args '--forceDialog'
+        //args '--forceDialog'
         //args '--skipStartup'
         classpath sourceSets.main.runtimeClasspath
         //debug true
