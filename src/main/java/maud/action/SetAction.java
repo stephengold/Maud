@@ -320,10 +320,11 @@ class SetAction {
 
         } else if (actionString.startsWith(ActionPrefix.setMsaaFactor)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMsaaFactor);
-            int factor;
-            for (factor = 1; factor < 16; factor *= 2) {
-                String aaDescription = MaudUtil.describeMsaaFactor(factor);
+            int factor = 16;
+            for (int f : new int[]{1, 2, 4, 6, 8}) {
+                String aaDescription = MaudUtil.describeMsaaFactor(f);
                 if (arg.equals(aaDescription)) {
+                    factor = f;
                     break;
                 }
             }

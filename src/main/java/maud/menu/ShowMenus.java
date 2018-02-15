@@ -503,7 +503,7 @@ public class ShowMenus {
         MenuBuilder builder = new MenuBuilder();
 
         int selectedFactor = DisplaySettings.getMsaaFactor();
-        for (int factor = 1; factor <= 16; factor *= 2) {
+        for (int factor : new int[]{1, 2, 4, 6, 8, 16}) {
             if (factor != selectedFactor) {
                 String description = MaudUtil.describeMsaaFactor(factor);
                 builder.add(description);
