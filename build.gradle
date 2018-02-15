@@ -14,7 +14,6 @@ gradle.projectsEvaluated {
         //args '--forceDialog'
         //args '--skipStartup'
         classpath sourceSets.main.runtimeClasspath
-        //debug true
         enableAssertions true
         jvmArgs '-XX:+UseConcMarkSweepGC'
     }
@@ -54,7 +53,7 @@ dependencies {
     compile 'jme3utilities:jme3-utilities-nifty:0.7.11'
     compile 'jme3utilities:Minie:0.2.0'
     compile 'jme3utilities:SkyControl:0.9.11'
-    compile 'jme3utilities:Wes:0.3.4'
+    compile 'jme3utilities:Wes:0.3.5'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jitpack repositories:
