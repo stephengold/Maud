@@ -164,6 +164,7 @@ public class Action {
     final static String selectBone = "select bone";
     final static String selectBoneChild = "select boneChild";
     final static String selectBoneParent = "select boneParent";
+    final static String selectBoneTrack = "select boneTrack";
     final static String selectEdgeFilter = "select edgeFilter";
     final static String selectJoint = "select joint";
     final static String selectKeyframeFirst = "select keyframeFirst";

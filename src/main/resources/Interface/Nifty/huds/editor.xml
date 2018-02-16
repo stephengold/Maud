@@ -336,7 +336,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="boneTool" title="Bone Tool"
                      hideOnClose="true"
-                     height="192px" width="290px" x="205" y="65">
+                     height="220px" width="270px" x="205" y="65">
                 <panel childLayout="vertical">
                     <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -352,11 +352,6 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next bone)"/>
                         </control>
-                        <panel/>
-                        <control name="label" id="boneHasTrack"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="65px"/>
                         <panel/>
                         <control name="button" label="Select bone"
                                  id="id1ToAvoidNiftyWarning"
@@ -395,6 +390,16 @@ the menu bar, status bar, and tool windows.
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Track:  "/>
+                        <control name="label" id="boneHasTrack"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="boneSelectTrackButton"
+                                 width="75px">
+                            <interact onRelease="perform(select boneTrack)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Influence:  "/>
                         <control name="label" id="boneInfluence"
                                  backgroundColor="#ffff"
@@ -404,19 +409,17 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Transform tools:  "/>
                         <control name="button" label="Rotate"
                                  id="id3ToAvoidNiftyWarning"
-                                 width="53px">
+                                 width="49px">
                             <interact onRelease="perform(select tool boneRotation)"/>
                         </control>
-                        <panel/>
                         <control name="button" label="Scale"
                                  id="id2ToAvoidNiftyWarning"
-                                 width="48px">
+                                 width="43px">
                             <interact onRelease="perform(select tool boneScale)"/>
                         </control>
-                        <panel/>
                         <control name="button" label="Translate"
                                  id="id4ToAvoidNiftyWarning"
-                                 width="68px">
+                                 width="65px">
                             <interact onRelease="perform(select tool boneTranslation)"/>
                         </control>
                     </panel>

@@ -44,6 +44,7 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.wes.Pose;
+import maud.Maud;
 import maud.MaudUtil;
 
 /**
@@ -575,6 +576,20 @@ public class SelectedBone implements Cloneable {
             if (selectedIndex < 0) {
                 int numBones = cgm.getSkeleton().countBones();
                 selectedIndex = numBones - 1;
+            }
+        }
+    }
+
+    /**
+     * Select a track that has the selected bone as its target.
+     */
+    public void selectTrack() {
+        int boneIndex = getIndex();
+        if (boneIndex >= 0) {
+            BoneTrack track = cgm.getAnimation().findTrackForBone(boneIndex);
+            if (track != null) {
+                cgm.getTrack().select(track);
+                Maud.gui.tools.select("track");
             }
         }
     }

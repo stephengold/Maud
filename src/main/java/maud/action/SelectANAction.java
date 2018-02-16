@@ -119,6 +119,10 @@ class SelectANAction {
                 target.getBone().selectParent();
                 break;
 
+            case Action.selectBoneTrack:
+                target.getBone().selectTrack();
+                break;
+
             case Action.selectEdgeFilter:
                 EnumMenus.selectEdgeFilter();
                 break;

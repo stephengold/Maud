@@ -33,6 +33,7 @@ import maud.Maud;
 import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
+import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.SelectedBone;
 
 /**
@@ -84,54 +85,57 @@ class BoneTool extends Tool {
      * Update the children status and button.
      */
     private void updateChildren() {
-        String childText, childStatus;
+        String button = "";
+        String status = "";
 
         SelectedBone selectedBone = Maud.getModel().getTarget().getBone();
         if (selectedBone.isSelected()) {
             int numChildren = selectedBone.countChildren();
             if (numChildren > 1) {
-                childText = String.format("%d children", numChildren);
-                childStatus = "Select child";
+                status = String.format("%d children", numChildren);
+                button = "Select child";
             } else if (numChildren == 1) {
                 String childName = selectedBone.getChildName(0);
-                childText = MyString.quote(childName);
-                childStatus = "Select child";
+                status = MyString.quote(childName);
+                button = "Select child";
             } else {
-                childText = "none";
-                childStatus = "";
+                status = "none";
             }
-
-        } else {
-            childText = "n/a";
-            childStatus = "";
         }
 
-        setStatusText("boneChildren", " " + childText);
-        setButtonText("boneSelectChild", childStatus);
+        setButtonText("boneSelectChild", button);
+        setStatusText("boneChildren", " " + status);
     }
 
     /**
-     * Update the "has track" status.
+     * Update the "has track" status and "select track" button.
      */
     private void updateHasTrack() {
+        String button = "";
         String status = "";
 
-        SelectedBone selectedBone = Maud.getModel().getTarget().getBone();
+        Cgm target = Maud.getModel().getTarget();
+        SelectedBone selectedBone = target.getBone();
         if (selectedBone.isSelected()) {
-            if (Maud.getModel().getTarget().getAnimation().isRetargetedPose()) {
+            LoadedAnimation animation = target.getAnimation();
+            if (animation.isRetargetedPose()) {
                 String name = selectedBone.getName();
                 if (Maud.getModel().getMap().isBoneMapped(name)) {
                     status = "mapped";
                 } else {
                     status = "unmapped";
                 }
+            } else if (animation.isBindPose()) {
+                status = "(bind pose is loaded)";
             } else if (selectedBone.hasTrack()) {
-                status = "has track";
+                status = "has track in animation";
+                button = "Select track";
             } else {
-                status = "no track";
+                status = "no track in animation";
             }
         }
 
+        setButtonText("boneSelectTrack", button);
         setStatusText("boneHasTrack", " " + status);
     }
 
@@ -150,7 +154,6 @@ class BoneTool extends Tool {
             indexStatus = String.format("%s of %d", indexStatus, numBones);
             nextButton = "+";
             previousButton = "-";
-
         } else {
             if (numBones == 0) {
                 indexStatus = "no bones";
@@ -180,9 +183,9 @@ class BoneTool extends Tool {
             boolean meshVertices = bone.influencesVertices();
             if (attachmentsNode) {
                 if (meshVertices) {
-                    status = "attachments nodes and mesh vertices";
+                    status = "attachments and mesh vertices";
                 } else {
-                    status = "attachments nodes only";
+                    status = "attachments only";
                 }
             } else {
                 if (meshVertices) {
@@ -221,7 +224,8 @@ class BoneTool extends Tool {
      * Update the parent status and button.
      */
     private void updateParent() {
-        String parentStatus, selectButton;
+        String button = "";
+        String status = "";
 
         EditableCgm target = Maud.getModel().getTarget();
         SelectedBone selectedBone = target.getBone();
@@ -229,24 +233,18 @@ class BoneTool extends Tool {
             if (selectedBone.isRootBone()) {
                 int numRoots = target.getSkeleton().countRootBones();
                 if (numRoots == 1) {
-                    parentStatus = "none (the root)";
+                    status = "none (the root)";
                 } else {
-                    parentStatus = String.format("none (one of %d roots)",
-                            numRoots);
+                    status = String.format("none (one of %d roots)", numRoots);
                 }
-                selectButton = "";
             } else {
                 String parentName = selectedBone.getParentName();
-                parentStatus = MyString.quote(parentName);
-                selectButton = "Select parent";
+                status = MyString.quote(parentName);
+                button = "Select parent";
             }
-
-        } else {
-            parentStatus = "n/a";
-            selectButton = "";
         }
 
-        setStatusText("boneParent", " " + parentStatus);
-        setButtonText("boneSelectParent", selectButton);
+        setButtonText("boneSelectParent", button);
+        setStatusText("boneParent", " " + status);
     }
 }
