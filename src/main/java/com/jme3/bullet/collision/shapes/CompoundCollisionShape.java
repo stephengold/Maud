@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2012 jMonkeyEngine
+ * Copyright (c) 2009-2018 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,13 +46,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A CompoundCollisionShape allows combining multiple base shapes
- * to generate a more sophisticated shape.
+ * A CompoundCollisionShape allows combining multiple base shapes to generate a
+ * more sophisticated shape.
+ *
  * @author normenhansen
  */
 public class CompoundCollisionShape extends CollisionShape {
 
-    protected ArrayList<ChildCollisionShape> children = new ArrayList<ChildCollisionShape>();
+    protected ArrayList<ChildCollisionShape> children = new ArrayList<>();
 
     public CompoundCollisionShape() {
         objectId = createShape();//new CompoundShape();
@@ -61,6 +62,7 @@ public class CompoundCollisionShape extends CollisionShape {
 
     /**
      * adds a child shape at the given local translation
+     *
      * @param shape the child shape to add
      * @param location the local location of the child shape
      */
@@ -74,11 +76,13 @@ public class CompoundCollisionShape extends CollisionShape {
 
     /**
      * adds a child shape at the given local translation
+     *
      * @param shape the child shape to add
      * @param location the local location of the child shape
+     * @param rotation the local orientation of the child shape
      */
     public void addChildShape(CollisionShape shape, Vector3f location, Matrix3f rotation) {
-        if(shape instanceof CompoundCollisionShape){
+        if (shape instanceof CompoundCollisionShape) {
             throw new IllegalStateException("CompoundCollisionShapes cannot have CompoundCollisionShapes as children!");
         }
 //        Transform transA = new Transform(Converter.convert(rotation));
@@ -90,7 +94,7 @@ public class CompoundCollisionShape extends CollisionShape {
     }
 
     private void addChildShapeDirect(CollisionShape shape, Vector3f location, Matrix3f rotation) {
-        if(shape instanceof CompoundCollisionShape){
+        if (shape instanceof CompoundCollisionShape) {
             throw new IllegalStateException("CompoundCollisionShapes cannot have CompoundCollisionShapes as children!");
         }
 //        Transform transA = new Transform(Converter.convert(rotation));
@@ -102,6 +106,7 @@ public class CompoundCollisionShape extends CollisionShape {
 
     /**
      * removes a child shape
+     *
      * @param shape the child shape to remove
      */
     public void removeChildShape(CollisionShape shape) {
@@ -145,17 +150,19 @@ public class CompoundCollisionShape extends CollisionShape {
     }
 
     private native long createShape();
-    
+
     private native long addChildShape(long objectId, long childId, Vector3f location, Matrix3f rotation);
-    
+
     private native long removeChildShape(long objectId, long childId);
-    
+
+    @Override
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
         OutputCapsule capsule = ex.getCapsule(this);
         capsule.writeSavableArrayList(children, "children", new ArrayList<ChildCollisionShape>());
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void read(JmeImporter im) throws IOException {
         super.read(im);
