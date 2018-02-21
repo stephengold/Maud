@@ -205,21 +205,6 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "Keyframe -> Select" menu.
-     */
-    static void selectKeyframe() {
-        MenuBuilder builder = new MenuBuilder();
-
-        builder.addTool("First");
-        builder.addTool("Previous");
-        builder.addTool("Nearest");
-        builder.addTool("Next");
-        builder.addTool("Last");
-
-        builder.show("select menuItem Keyframe -> Select -> ");
-    }
-
-    /**
      * Display a "select light" menu.
      */
     public static void selectLight() {

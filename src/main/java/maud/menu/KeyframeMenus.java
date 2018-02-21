@@ -131,7 +131,7 @@ class KeyframeMenus {
                     break;
 
                 case "Select":
-                    ShowMenus.selectKeyframe();
+                    selectKeyframe();
                     break;
 
                 case "Tool":
@@ -183,5 +183,20 @@ class KeyframeMenus {
         }
 
         return handled;
+    }
+
+    /**
+     * Display a "Keyframe -> Select" menu.
+     */
+    private static void selectKeyframe() {
+        MenuBuilder builder = new MenuBuilder();
+
+        builder.addTool("First");
+        builder.addTool("Previous");
+        builder.addTool("Nearest");
+        builder.addTool("Next");
+        builder.addTool("Last");
+
+        builder.show("select menuItem Keyframe -> Select -> ");
     }
 }
