@@ -102,9 +102,10 @@ public class AnimationMenus {
         if (target.getAnimControl().isSelected()) {
             builder.addSubmenu("Load");
             builder.addSubmenu("Add new");
-            //builder.add("Unload"); TODO
         }
-
+        if (!target.getAnimation().isBindPose()) {
+            builder.add("Unload");
+        }
         if (target.getAnimation().isReal()) {
             builder.addDialog("Delete");
             builder.addSubmenu("Edit");
@@ -253,33 +254,47 @@ public class AnimationMenus {
                 case "Add new":
                     addNewAnimation();
                     break;
+
                 case "Delete":
                     EditorDialogs.deleteAnimation();
                     break;
+
                 case "Edit":
                     editAnimation();
                     break;
+
                 case "Load":
                     loadAnimation(target);
                     break;
+
                 case "Load source":
                     loadAnimation(Maud.getModel().getSource());
                     break;
+
                 case "Rename":
                     EditorDialogs.renameAnimation();
                     break;
+
                 case "Select AnimControl":
                     selectAnimControl(target);
                     break;
+
                 case "Source tool":
                     Maud.gui.tools.select("sourceAnimation");
                     break;
+
                 case "Tool":
                     Maud.gui.tools.select("animation");
                     break;
+
                 case "Tweening":
                     Maud.gui.tools.select("tweening");
                     break;
+
+                case "Unload":
+                    target.getAnimation().loadBindPose();
+                    break;
+
                 default:
                     handled = false;
             }
