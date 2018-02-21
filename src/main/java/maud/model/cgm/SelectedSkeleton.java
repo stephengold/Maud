@@ -197,17 +197,19 @@ public class SelectedSkeleton implements JmeCloneable {
          * If not, use the skeleton from the first AnimControl or
          * SkeletonControl in the C-G model's root spatial.
          */
-        Spatial cgmRoot = cgm.getRootSpatial();
-        if (skeleton == null) {
-            animControl = cgmRoot.getControl(AnimControl.class);
-            if (animControl != null) {
-                skeleton = animControl.getSkeleton();
+        if (cgm.isLoaded()) {
+            Spatial cgmRoot = cgm.getRootSpatial();
+            if (skeleton == null) {
+                animControl = cgmRoot.getControl(AnimControl.class);
+                if (animControl != null) {
+                    skeleton = animControl.getSkeleton();
+                }
             }
-        }
-        if (skeleton == null) {
-            skeletonControl = cgmRoot.getControl(SkeletonControl.class);
-            if (skeletonControl != null) {
-                skeleton = skeletonControl.getSkeleton();
+            if (skeleton == null) {
+                skeletonControl = cgmRoot.getControl(SkeletonControl.class);
+                if (skeletonControl != null) {
+                    skeleton = skeletonControl.getSkeleton();
+                }
             }
         }
 
