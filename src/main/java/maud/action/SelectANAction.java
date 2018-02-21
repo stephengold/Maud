@@ -247,6 +247,12 @@ class SelectANAction {
             long id = Long.parseLong(arg, 16);
             target.getJoint().select(id);
 
+        } else if (actionString.startsWith(ActionPrefix.selectKeyframe)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectKeyframe);
+            int index = Integer.valueOf(arg);
+            int indexBase = Maud.getModel().getMisc().getIndexBase();
+            target.getFrame().select(index - indexBase);
+
         } else if (actionString.startsWith(ActionPrefix.selectLight)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectLight);
             target.getLight().select(arg);

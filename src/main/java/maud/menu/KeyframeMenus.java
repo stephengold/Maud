@@ -158,6 +158,10 @@ class KeyframeMenus {
         boolean handled = true;
         Cgm target = Maud.getModel().getTarget();
         switch (remainder) {
+            case "By index":
+                EditorDialogs.selectKeyframe();
+                break;
+
             case "First":
                 target.getFrame().selectFirst();
                 break;
@@ -191,6 +195,7 @@ class KeyframeMenus {
     private static void selectKeyframe() {
         MenuBuilder builder = new MenuBuilder();
 
+        builder.addDialog("By index");
         builder.addTool("First");
         builder.addTool("Previous");
         builder.addTool("Nearest");

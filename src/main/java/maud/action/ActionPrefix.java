@@ -260,6 +260,10 @@ public class ActionPrefix {
      */
     final public static String selectJoint = "select joint ";
     /**
+     * argument is a decimal value (indexBase plus a keyframe index)
+     */
+    final public static String selectKeyframe = "select keyframe ";
+    /**
      * argument is a pre-existing material-parameter name
      */
     final public static String selectMatParam = "select matParam ";

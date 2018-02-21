@@ -134,6 +134,18 @@ public class SelectedFrame implements Cloneable {
     }
 
     /**
+     * Select the indexed keyframe in the selected track.
+     *
+     * @param keyFrameIndex which keyframe (&ge;0)
+     */
+    public void select(int keyFrameIndex) {
+        assert cgm.getTrack().isSelected();
+
+        float time = cgm.getTrack().keyframeTime(keyFrameIndex);
+        cgm.getPlay().setTime(time);
+    }
+
+    /**
      * Select the 1st keyframe in the selected track.
      */
     public void selectFirst() {

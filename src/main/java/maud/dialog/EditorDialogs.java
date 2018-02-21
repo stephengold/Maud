@@ -641,6 +641,25 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "select keyframe " dialog to enter the keyframe index.
+     */
+    public static void selectKeyframe() {
+        Cgm target = Maud.getModel().getTarget();
+        int numKeyframes = target.getTrack().countKeyframes();
+        int indexBase = Maud.getModel().getMisc().getIndexBase();
+        DialogController controller = new IntegerDialog("Select", indexBase,
+                numKeyframes + indexBase - 1, false);
+
+        int oldIndex = target.getVertex().getIndex();
+        int defaultIndex = (oldIndex == -1) ? indexBase : oldIndex;
+        String defaultText = Integer.toString(defaultIndex);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter the index of the keyframe:",
+                defaultText, ActionPrefix.selectKeyframe, controller);
+    }
+
+    /**
      * Display a "select vertex " dialog to enter the vertex index.
      */
     public static void selectVertex() {
