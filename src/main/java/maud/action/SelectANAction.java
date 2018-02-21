@@ -225,6 +225,13 @@ class SelectANAction {
                     ActionPrefix.selectBoneChild);
             ShowMenus.selectBoneChild(arg);
 
+        } else if (actionString.startsWith(ActionPrefix.selectBoneIndex)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectBoneIndex);
+            int index = Integer.valueOf(arg);
+            int indexBase = Maud.getModel().getMisc().getIndexBase();
+            target.getBone().select(index - indexBase);
+
         } else if (actionString.startsWith(ActionPrefix.selectEdgeFilter)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectEdgeFilter);

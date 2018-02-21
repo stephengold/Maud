@@ -68,13 +68,19 @@ public class BoneMenus {
      */
     static void buildBoneMenu(MenuBuilder builder) {
         builder.addTool("Tool");
-        builder.addSubmenu("Select");
+
+        EditorModel model = Maud.getModel();
+        Cgm target = model.getTarget();
+        SelectedSkeleton skeleton = target.getSkeleton();
+        if (skeleton.countBones() > 0) {
+            builder.addSubmenu("Select");
+        }
+
         builder.addTool("Rotate");
         builder.addTool("Scale");
         builder.addTool("Translate");
 
-        EditorModel model = Maud.getModel();
-        SelectedBone selectedBone = model.getTarget().getBone();
+        SelectedBone selectedBone = target.getBone();
         if (selectedBone.isSelected()) {
             boolean hasAttachments = selectedBone.hasAttachmentsNode();
             if (hasAttachments) {
@@ -85,7 +91,7 @@ public class BoneMenus {
             builder.add("Deselect");
             builder.addDialog("Rename");
         }
-        if (model.getSource().getSkeleton().isSelected()) {
+        if (model.getSource().getSkeleton().countBones() > 0) {
             builder.addSubmenu("Select source");
         }
     }
@@ -167,13 +173,10 @@ public class BoneMenus {
     public static void selectBone() {
         MenuBuilder builder = new MenuBuilder();
 
-        Cgm target = Maud.getModel().getTarget();
         builder.addSubmenu("By name");
-        int numBones = target.getSkeleton().countBones();
-        if (numBones > 0) {
-            builder.addSubmenu("By parent");
-        }
+        builder.addSubmenu("By parent");
 
+        Cgm target = Maud.getModel().getTarget();
         int numRoots = target.getSkeleton().countRootBones();
         if (numRoots == 1) {
             builder.addBone("Root");
@@ -217,6 +220,7 @@ public class BoneMenus {
             builder.addBone("None");
             builder.addBone("Previous");
         }
+        builder.addDialog("By index");
 
         builder.show("select menuItem Bone -> Select -> ");
     }
@@ -231,7 +235,6 @@ public class BoneMenus {
         SelectedSkeleton skeleton = target.getSkeleton();
         if (skeleton.hasBone(argument)) {
             target.getBone().select(argument);
-
         } else {
             /*
              * Treat the argument as a bone-name prefix.
@@ -319,36 +322,51 @@ public class BoneMenus {
             case "Attached":
                 selectAttachedBone();
                 break;
+
+            case "By index":
+                EditorDialogs.selectBoneIndex();
+                break;
+
             case "By name":
                 selectBoneByName();
                 break;
+
             case "By parent":
                 selectBoneByParent();
                 break;
+
             case "Child":
                 selectBoneChild();
                 break;
+
             case "Mapped":
                 model.getMap().selectFromSource();
                 break;
+
             case "Next":
                 selection.selectNext();
                 break;
+
             case "None":
                 selection.deselect();
                 break;
+
             case "Parent":
                 selection.selectParent();
                 break;
+
             case "Previous":
                 selection.selectPrevious();
                 break;
+
             case "Root":
                 selectRootBone();
                 break;
+
             case "With track":
                 selectTrackedBone();
                 break;
+
             default:
                 handled = false;
         }

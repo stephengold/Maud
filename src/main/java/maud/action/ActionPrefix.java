@@ -232,13 +232,17 @@ public class ActionPrefix {
      */
     final public static String selectBackground = "select background ";
     /**
-     * argument is the name of a bone or a prefix thereof
+     * argument is the name of a target bone or a prefix thereof
      */
     final public static String selectBone = "select bone ";
     /**
      * argument is the name of a target bone, possibly preceded by "!"
      */
     final public static String selectBoneChild = "select boneChild ";
+    /**
+     * argument is a decimal value (indexBase plus the bone index)
+     */
+    final public static String selectBoneIndex = "select boneIndex ";
     /**
      * argument is the name of an EdgeFilteringMode value
      */

@@ -622,6 +622,25 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "select boneIndex " dialog to enter the bone index.
+     */
+    public static void selectBoneIndex() {
+        Cgm target = Maud.getModel().getTarget();
+        int numBones = target.getSkeleton().countBones();
+        int indexBase = Maud.getModel().getMisc().getIndexBase();
+        DialogController controller = new IntegerDialog("Select", indexBase,
+                numBones + indexBase - 1, false);
+
+        int oldIndex = target.getBone().getIndex();
+        int defaultIndex = (oldIndex == -1) ? indexBase : oldIndex;
+        String defaultText = Integer.toString(defaultIndex);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter the index of the bone:",
+                defaultText, ActionPrefix.selectBoneIndex, controller);
+    }
+
+    /**
      * Display a "select vertex " dialog to enter the vertex index.
      */
     public static void selectVertex() {
