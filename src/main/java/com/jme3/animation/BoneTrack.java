@@ -288,11 +288,13 @@ public final class BoneTrack implements Track {
 
         Vector3f[] translations = new Vector3f[tablesLength];
         Quaternion[] rotations = new Quaternion[tablesLength];
-        Vector3f[] scales = new Vector3f[tablesLength];
+        Vector3f[] scales = sourceScales == null ? null : new Vector3f[tablesLength];
         for (int i = 0; i < tablesLength; ++i) {
             translations[i] = sourceTranslations[i].clone();
             rotations[i] = sourceRotations[i].clone();
-            scales[i] = sourceScales != null ? sourceScales[i].clone() : new Vector3f(1.0f, 1.0f, 1.0f);
+            if (sourceScales != null) {
+                scales[i] = sourceScales[i].clone();
+            }
         }
         
         // Need to use the constructor here because of the final fields used in this class
