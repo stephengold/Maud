@@ -95,6 +95,18 @@ class DeleteAction {
                 target.getTrack().deleteSelectedKeyframe();
                 break;
 
+            case Action.deleteTrackRotations:
+                target.getTrack().deleteRotations();
+                break;
+
+            case Action.deleteTrackScales:
+                target.getTrack().deleteScales();
+                break;
+
+            case Action.deleteTrackTranslations:
+                target.getTrack().deleteTranslations();
+                break;
+
             case Action.deleteUserKey:
                 target.getUserData().delete();
                 break;

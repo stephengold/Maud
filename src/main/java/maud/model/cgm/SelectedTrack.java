@@ -197,6 +197,72 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
+     * Delete the rotations from the selected track, which must be a spatial
+     * track.
+     */
+    public void deleteRotations() {
+        assert selected instanceof SpatialTrack;
+
+        Animation newAnimation = newAnimation();
+        Track newSelected = null;
+        Animation oldAnimation = cgm.getAnimation().getReal();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
+            Track clone;
+            if (track == selected) {
+                float[] times = track.getKeyFrameTimes();
+                SpatialTrack spatialTrack = (SpatialTrack) track;
+                Vector3f[] translations = spatialTrack.getTranslations();
+                Vector3f[] scales = spatialTrack.getScales();
+                clone = TrackEdit.newTrack(track, times, translations, null,
+                        scales);
+                newSelected = clone;
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        String trackName = describe();
+        String eventDescription
+                = String.format("delete rotations from track %s", trackName);
+        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+                newSelected);
+    }
+
+    /**
+     * Delete the scales from the selected track.
+     */
+    public void deleteScales() {
+        assert selected != null;
+
+        Animation newAnimation = newAnimation();
+        Track newSelected = null;
+        Animation oldAnimation = cgm.getAnimation().getReal();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
+            Track clone;
+            if (track == selected) {
+                float[] times = track.getKeyFrameTimes();
+                Vector3f[] translations = MyAnimation.getTranslations(track);
+                Quaternion[] rotations = MyAnimation.getRotations(track);
+                clone = TrackEdit.newTrack(track, times, translations,
+                        rotations, null);
+                newSelected = clone;
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        String trackName = describe();
+        String eventDescription
+                = String.format("delete scales from track %s", trackName);
+        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+                newSelected);
+    }
+
+    /**
      * Delete the selected keyframe, which mustn't be the 1st keyframe in the
      * track.
      */
@@ -206,6 +272,40 @@ public class SelectedTrack implements JmeCloneable {
         assert frameIndex > 0 : frameIndex;
 
         deleteRange(frameIndex, 1);
+    }
+
+    /**
+     * Delete the translations from the selected track, which must be a spatial
+     * track.
+     */
+    public void deleteTranslations() {
+        assert selected instanceof SpatialTrack;
+
+        Animation newAnimation = newAnimation();
+        Track newSelected = null;
+        Animation oldAnimation = cgm.getAnimation().getReal();
+        Track[] oldTracks = oldAnimation.getTracks();
+        for (Track track : oldTracks) {
+            Track clone;
+            if (track == selected) {
+                float[] times = track.getKeyFrameTimes();
+                SpatialTrack spatialTrack = (SpatialTrack) track;
+                Quaternion[] rotations = spatialTrack.getRotations();
+                Vector3f[] scales = spatialTrack.getScales();
+                clone = TrackEdit.newTrack(track, times, null, rotations,
+                        scales);
+                newSelected = clone;
+            } else {
+                clone = track.clone();
+            }
+            newAnimation.addTrack(clone);
+        }
+
+        String trackName = describe();
+        String eventDescription
+                = String.format("delete translations from track %s", trackName);
+        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+                newSelected);
     }
 
     /**

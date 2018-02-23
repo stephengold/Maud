@@ -153,12 +153,16 @@ class TrackTool extends Tool {
      */
     private void updateTransforms() {
         String translationStatus = "";
-        String rotationStatus = "";
-        String scaleStatus = "";
+        String setTranslationsButton = "";
+        String deleteTranslationsButton = "";
 
-        String translationButton = "";
-        String rotationButton = "";
-        String scaleButton = "";
+        String rotationStatus = "";
+        String setRotationsButton = "";
+        String deleteRotationsButton = "";
+
+        String scaleStatus = "";
+        String setScalesButton = "";
+        String deleteScalesButton = "";
 
         SelectedTrack track = Maud.getModel().getTarget().getTrack();
         if (track.isSelected()) {
@@ -173,23 +177,37 @@ class TrackTool extends Tool {
 
             if (track.isBoneTrack()) {
                 if (numTranslations > 0) {
-                    translationButton = "Set all to pose";
+                    setTranslationsButton = "Set all to pose";
                 }
                 if (numRotations > 0) {
-                    rotationButton = "Set all to pose";
+                    setRotationsButton = "Set all to pose";
                 }
                 if (numScales > 0) {
-                    scaleButton = "Set all to pose";
+                    setScalesButton = "Set all to pose";
                 }
+            } else {
+                if (numTranslations > 0) {
+                    deleteTranslationsButton = "Delete";
+                }
+                if (numRotations > 0) {
+                    deleteRotationsButton = "Delete";
+                }
+            }
+            if (numScales > 0) {
+                deleteScalesButton = "Delete";
             }
         }
 
-        setButtonText("translationsToPose", translationButton);
-        setButtonText("rotationsToPose", rotationButton);
-        setButtonText("scalesToPose", scaleButton);
-
         setStatusText("trackTranslationCount", translationStatus);
+        setButtonText("translationsToPose", setTranslationsButton);
+        setButtonText("deleteTrackTranslations", deleteTranslationsButton);
+
         setStatusText("trackRotationCount", rotationStatus);
+        setButtonText("rotationsToPose", setRotationsButton);
+        setButtonText("deleteTrackRotations", deleteRotationsButton);
+
         setStatusText("trackScaleCount", scaleStatus);
+        setButtonText("scalesToPose", setScalesButton);
+        setButtonText("deleteTrackScales", deleteScalesButton);
     }
 }

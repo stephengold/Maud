@@ -133,7 +133,7 @@ the menu bar, status bar, and tool windows.
                          width="100%"/>
             </panel>
         </layer>
-        <layer id="windowsLayer" childLayout="absolute-inside">
+        <layer id="toolsLayer" childLayout="absolute-inside">
 
             <control name="window" id="animationTool" title="(Target) Animation Tool"
                      hideOnClose="true"
@@ -2583,6 +2583,10 @@ the menu bar, status bar, and tool windows.
                                  width="95px">
                             <interact onRelease="perform(set track translation all)"/>
                         </control>
+                        <control name="button" id="deleteTrackTranslationsButton"
+                                 width="50px">
+                            <interact onRelease="perform(delete trackTranslations)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Rotations:  "
@@ -2596,6 +2600,10 @@ the menu bar, status bar, and tool windows.
                                  width="95px">
                             <interact onRelease="perform(set track rotation all)"/>
                         </control>
+                        <control name="button" id="deleteTrackRotationsButton"
+                                 width="50px">
+                            <interact onRelease="perform(delete trackRotations)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Scales:  "
@@ -2608,6 +2616,10 @@ the menu bar, status bar, and tool windows.
                         <control name="button" id="scalesToPoseButton"
                                  width="95px">
                             <interact onRelease="perform(set track scale all)"/>
+                        </control>
+                        <control name="button" id="deleteTrackScalesButton"
+                                 width="50px">
+                            <interact onRelease="perform(delete trackScales)"/>
                         </control>
                     </panel>
                 </panel>

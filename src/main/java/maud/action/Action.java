@@ -60,6 +60,9 @@ public class Action {
      */
     final public static String deleteSgc = "delete sgc";
     final static String deleteSingleKeyframe = "delete singleKeyframe";
+    final static String deleteTrackRotations = "delete trackRotations";
+    final static String deleteTrackScales = "delete trackScales";
+    final static String deleteTrackTranslations = "delete trackTranslations";
     final static String deleteUserKey = "delete userKey";
 
     final static String launchProjectile = "launch projectile";
