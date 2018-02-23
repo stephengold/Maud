@@ -28,7 +28,6 @@ package maud.model.cgm;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.BoneTrack;
-import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -123,6 +122,9 @@ public class StaffTrack {
      * @return true if present, otherwise false
      */
     public static boolean hasRotations() {
+        if (track == null) {
+            return false;
+        }
         Quaternion[] rotations = MyAnimation.getRotations(track);
         if (rotations == null) {
             return false;
@@ -137,6 +139,9 @@ public class StaffTrack {
      * @return true if present, otherwise false
      */
     public static boolean hasScales() {
+        if (track == null) {
+            return false;
+        }
         Vector3f[] scales = MyAnimation.getScales(track);
         if (scales == null) {
             return false;
@@ -151,6 +156,9 @@ public class StaffTrack {
      * @return true if present, otherwise false
      */
     public static boolean hasTranslations() {
+        if (track == null) {
+            return false;
+        }
         Vector3f[] translations = MyAnimation.getTranslations(track);
         if (translations == null) {
             return false;
@@ -177,8 +185,8 @@ public class StaffTrack {
     public static void loadBoneTrack(int boneIndex) {
         Validate.nonNegative(boneIndex, "bone index");
 
-        labelText = cgm.getSkeleton().getBoneName(boneIndex);
         track = cgm.getAnimation().findTrackForBone(boneIndex);
+        labelText = cgm.getSkeleton().getBoneName(boneIndex);
         loadTrack();
     }
 
@@ -190,11 +198,9 @@ public class StaffTrack {
     public static void loadSpatialTrack(int spatialTrackIndex) {
         Validate.nonNegative(spatialTrackIndex, "spatial track index");
 
-        SpatialTrack spatialTrack
-                = cgm.getAnimation().findSpatialTrack(spatialTrackIndex);
+        track = cgm.getAnimation().findSpatialTrack(spatialTrackIndex);
         AnimControl animControl = cgm.getAnimControl().find();
-        labelText = MyAnimation.describe(spatialTrack, animControl);
-        track = spatialTrack;
+        labelText = MyAnimation.describe(track, animControl);
         loadTrack();
     }
 
@@ -479,6 +485,13 @@ public class StaffTrack {
     }
 
     /**
+     * Unload the loaded track.
+     */
+    public static void setNoData() {
+        track = null;
+    }
+
+    /**
      * Alter how many samples to interpolate for each plot.
      *
      * @param newNumSamples how many samples (&ge;0)
@@ -489,17 +502,15 @@ public class StaffTrack {
     }
 
     /**
-     * Unload the loaded track and update the label text for the indexed bone,
-     * which must not have a track in the loaded animation.
+     * Unload the loaded track and update the label text for the indexed bone.
      *
      * @param boneIndex which bone (&ge;0)
      */
     public static void setTracklessBone(int boneIndex) {
         Validate.nonNegative(boneIndex, "bone index");
-        assert !cgm.getAnimation().hasTrackForBone(boneIndex);
 
         labelText = cgm.getSkeleton().getBoneName(boneIndex);
-        track = null;
+        setNoData();
     }
     // *************************************************************************
     // private methods

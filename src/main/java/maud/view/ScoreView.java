@@ -727,18 +727,18 @@ public class ScoreView implements EditorView {
         Finial finial;
         boolean trackedBone = cgm.getAnimation().hasTrackForBone(boneIndex);
         if (trackedBone) {
-            finial = finialNoScales;
             StaffTrack.loadBoneTrack(boneIndex);
             boolean hasScales = StaffTrack.hasScales();
-            if (hasScales) {
-                finial = finialComplete;
-            }
+            finial = hasScales ? finialComplete : finialNoScales;
             staffHeight = finial.getHeight();
-            assert staffHeight > 0f : staffHeight;
+            if (staffHeight == 0f) {
+                finial = null;
+                StaffTrack.setNoData();
+            }
         } else {
             finial = null;
-            StaffTrack.setTracklessBone(boneIndex);
             staffHeight = 0f;
+            StaffTrack.setTracklessBone(boneIndex);
         }
         /*
          * Calculate the range of (world) Ys that the staff occupies.
@@ -759,10 +759,10 @@ public class ScoreView implements EditorView {
             if (boneIndex == targetBoneIndex) {
                 isSelectedTrack = true;
             }
-            if (finial != null) {
-                attachTrackedStaff(finial);
-            } else {
+            if (finial == null) {
                 attachTracklessStaff();
+            } else {
+                attachTrackedStaff(finial);
             }
             ++staffIndex;
         }
@@ -777,7 +777,7 @@ public class ScoreView implements EditorView {
     private void attachBoneStaves(List<Integer> indices) {
         int numShown = indices.size();
         for (int listIndex = 0; listIndex < numShown; listIndex++) {
-            if (listIndex > 0) {
+            if (staffIndex > 0) {
                 height += yGap;
             }
             int boneIndex = indices.get(listIndex);
@@ -1193,7 +1193,7 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Attach a staff to visualize a spatial track.
+     * Attach a staff to visualize the indexed spatial track.
      *
      * @param spatialTrackIndex which spatial track (&ge;0)
      */
@@ -1211,14 +1211,12 @@ public class ScoreView implements EditorView {
         boolean scales = hasScales && options.showsScales();
 
         float staffHeight;
-        Finial finial;
-        if (translations || rotations || scales) {
-            finial = new Finial(translations, rotations, scales,
-                    sparklineHeight);
-            staffHeight = finial.getHeight();
-        } else {
+        Finial finial = new Finial(translations, rotations, scales,
+                sparklineHeight);
+        staffHeight = finial.getHeight();
+        if (staffHeight == 0f) {
             finial = null;
-            staffHeight = 0f;
+            StaffTrack.setNoData();
         }
         /*
          * Calculate the range of (world) Ys that the staff occupies.
@@ -1238,10 +1236,10 @@ public class ScoreView implements EditorView {
             if (trackDesc.equals(desc)) {
                 isSelectedTrack = true;
             }
-            if (finial != null) {
-                attachTrackedStaff(finial);
-            } else {
+            if (finial == null) {
                 attachTracklessStaff();
+            } else {
+                attachTrackedStaff(finial);
             }
             ++staffIndex;
         }
@@ -1255,7 +1253,7 @@ public class ScoreView implements EditorView {
         LoadedAnimation animation = cgm.getAnimation();
         int numSpatialTracks = animation.countSpatialTracks();
         for (int trackIndex = 0; trackIndex < numSpatialTracks; trackIndex++) {
-            if (height > 0f) {
+            if (staffIndex > 0) {
                 height += yGap;
             }
             attachSpatialStaff(trackIndex);
