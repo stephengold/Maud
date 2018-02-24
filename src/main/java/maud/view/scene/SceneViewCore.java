@@ -87,6 +87,8 @@ import jme3utilities.ui.Locators;
 import jme3utilities.wes.Pose;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.model.EditorModel;
+import maud.model.WhichCgm;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.DisplayedPose;
 import maud.model.cgm.ScenePov;
@@ -942,7 +944,8 @@ public class SceneViewCore
     }
 
     /**
-     * Access the root spatial in this view's copy of the C-G model.
+     * Access the root spatial in this view's copy of the C-G model. TODO sort
+     * methods
      *
      * @return the pre-existing instance (not null)
      */
@@ -1195,23 +1198,33 @@ public class SceneViewCore
          */
         setSkeleton(selectedSkeleton, false);
         /*
-         * Configure the CG-model transform based on the ranges of vertex
-         * coordinates in the C-G model.
+         * Configure the transform based on the ranges of vertex coordinates
+         * in the C-G model.
          */
         parent.setLocalTransform(transformIdentity);
         Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot);
-        Vector3f extent = minMax[1].subtract(minMax[0]);
         Vector3f center = MyVector3f.midpoint(minMax[0], minMax[1]);
-        boolean zUp = Maud.getModel().getMisc().getLoadZup();
+        EditorModel model = Maud.getModel();
+        boolean zUp = model.getMisc().getLoadZup();
         float baseElevation = zUp ? minMax[0].z : minMax[0].y;
-        float maxExtent = MyMath.max(extent.x, extent.y, extent.z);
-        cgmTransform.loadCgm(center, baseElevation, maxExtent, zUp);
+        cgmTransform.loadCgm(center, baseElevation, zUp);
         /*
-         * Reset the camera position and 3-D cursor location.
+         * Reset the camera limits/rate/position.
          */
+        Vector3f extent = minMax[1].subtract(minMax[0]);
+        float maxExtent = MyMath.max(extent.x, extent.y, extent.z);
         ScenePov pov = getPov();
-        pov.setLocation(cameraStartLocation);
-        cursor.setLocation(cursorStartLocation);
+        pov.setCgmSize(maxExtent);
+        pov.setLocation(cameraStartLocation.mult(maxExtent));
+        /*
+         * Reset the 3-D cursor location.
+         */
+        cursor.setLocation(cursorStartLocation.mult(maxExtent));
+        /*
+         * Reset the platform size.
+         */
+        WhichCgm whichCgm = model.whichCgm(cgm);
+        model.getScene().setPlatformDiameter(whichCgm, maxExtent);
 
         projectile.delete();
     }

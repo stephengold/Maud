@@ -88,18 +88,14 @@ public class CgmTransform implements Cloneable {
      * @param center the coordinates (in CG-model space) of the geometric center
      * (not null, unaffected)
      * @param baseElevation the elevation (in CG-model space) of the base
-     * @param maxExtent the greatest extent of the C-G model over its 3
-     * principal axes (in CG-model units, &gt;0)
      * @param zUp true&rarr; model Z-axis points up
      */
-    void loadCgm(Vector3f center, float baseElevation, float maxExtent,
-            boolean zUp) {
+    void loadCgm(Vector3f center, float baseElevation, boolean zUp) {
         assert center != null;
         assert Float.isFinite(baseElevation) : baseElevation;
-        assert maxExtent > 0f : maxExtent;
 
         bindCenter.set(center);
-        scale = 1f / maxExtent;
+        scale = 1f;
         yOffset = -baseElevation * scale;
         zUpFlag = zUp;
     }
@@ -157,7 +153,7 @@ public class CgmTransform implements Cloneable {
         return result;
     }
     // *************************************************************************
-    // Object methods
+    // Cloneable methods
 
     /**
      * Create a deep copy of this object.

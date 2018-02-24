@@ -68,16 +68,6 @@ public class CameraOptions implements Cloneable {
     // fields
 
     /**
-     * maximum distance of a POV from its center in orbit mode (in world units,
-     * &gt;0)
-     */
-    private float maxRange = 10f;
-    /**
-     * minimum distance of a POV from its center in orbit mode (in world units,
-     * &gt;0)
-     */
-    private float minRange = 0.2f;
-    /**
      * movement mode for all scene POVs (not null)
      */
     private MovementMode movementMode = MovementMode.Orbit;
@@ -101,17 +91,6 @@ public class CameraOptions implements Cloneable {
     public float clampElevation(float angle) {
         float result;
         result = FastMath.clamp(angle, minElevationAngle, maxElevationAngle);
-        return result;
-    }
-
-    /**
-     * Clamp the distance of the POV from its center.
-     *
-     * @param range desired distance (in world units)
-     * @return clamped distance (in world units)
-     */
-    public float clampRange(float range) {
-        float result = FastMath.clamp(range, minRange, maxRange);
         return result;
     }
 

@@ -41,7 +41,7 @@ import maud.model.option.scene.OrbitCenter;
 import maud.view.scene.SceneView;
 
 /**
- * The positions of the POV and 3-D cursor in a scene view.
+ * The positions of the POV and orbit center in a scene view.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -86,9 +86,20 @@ public class ScenePov implements Cloneable, Pov {
      */
     private Cgm cgm = null;
     /**
-     * POV movement rate for fly mode (world units per scroll wheel notch)
+     * POV movement rate for fly mode (in world units per scroll wheel notch,
+     * &gt;0)
      */
     private float flyRate = 0.1f;
+    /**
+     * maximum distance of this POV from its center in orbit mode (in world
+     * units, &gt;0)
+     */
+    private float maxRange = 10f;
+    /**
+     * minimum distance of this POV from its center in orbit mode (in world
+     * units, &gt;0)
+     */
+    private float minRange = 0.2f;
     /**
      * direction the POV will eventually look (unit vector in world coordinates)
      */
@@ -281,8 +292,21 @@ public class ScenePov implements Cloneable, Pov {
      */
     @Override
     public void setCgm(Cgm newCgm) {
-        assert newCgm != null;
+        Validate.nonNull(newCgm, "new model");
         cgm = newCgm;
+    }
+
+    /**
+     * Alter the rates and limits based on the size of the C-G model.
+     *
+     * @param cgmSize the C-G model's maximum extent (in world units, &gt;0)
+     */
+    public void setCgmSize(float cgmSize) {
+        Validate.positive(cgmSize, "model size");
+
+        flyRate = 0.1f * cgmSize;
+        maxRange = 10f * cgmSize;
+        minRange = 0.2f * cgmSize;
     }
 
     /**
@@ -383,6 +407,17 @@ public class ScenePov implements Cloneable, Pov {
     }
 
     /**
+     * Clamp the distance of the POV from its center.
+     *
+     * @param range desired distance (in world units)
+     * @return clamped distance (in world units)
+     */
+    private float clampRange(float range) {
+        float result = FastMath.clamp(range, minRange, maxRange);
+        return result;
+    }
+
+    /**
      * Calculate the POV's elevation angle.
      *
      * @return the elevation angle of its look direction, measured upward from
@@ -448,7 +483,7 @@ public class ScenePov implements Cloneable, Pov {
         float clampedElevation = options.clampElevation(elevationAngle);
         Vector3f direction = MyVector3f.fromAltAz(clampedElevation, azimuth);
         centerLocation(povLocation);
-        float clampedRange = options.clampRange(range);
+        float clampedRange = clampRange(range);
         MyVector3f.accumulateScaled(povLocation, direction, -clampedRange);
     }
 
@@ -469,7 +504,7 @@ public class ScenePov implements Cloneable, Pov {
             range = range();
         } else {
             range = povLocation.length();
-            range = options.clampRange(range);
+            range = clampRange(range);
         }
         float far = 10f * range;
         float near = 0.01f * range;
