@@ -944,17 +944,6 @@ public class SceneViewCore
     }
 
     /**
-     * Access the root spatial in this view's copy of the C-G model. TODO sort
-     * methods
-     *
-     * @return the pre-existing instance (not null)
-     */
-    protected Spatial getCgmRoot() {
-        assert cgmRoot != null;
-        return cgmRoot;
-    }
-
-    /**
      * Access the C-G model that appears in this view.
      *
      * @return the pre-existing instance (not null)
@@ -962,6 +951,16 @@ public class SceneViewCore
     protected Cgm getCgm() {
         assert cgm != null;
         return cgm;
+    }
+
+    /**
+     * Access the root spatial in this view's copy of the C-G model.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    protected Spatial getCgmRoot() {
+        assert cgmRoot != null;
+        return cgmRoot;
     }
 
     /**

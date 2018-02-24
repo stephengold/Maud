@@ -586,6 +586,20 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
+     * Create an empty animation with the same name and duration as the selected
+     * animation.
+     *
+     * @return a new instance with no tracks
+     */
+    Animation newAnimation() {
+        float duration = cgm.getAnimation().getDuration();
+        String name = cgm.getAnimation().getName();
+        Animation result = new Animation(name, duration);
+
+        return result;
+    }
+
+    /**
      * Reduce the track's keyframes by the specified factor.
      *
      * @param factor reduction factor (&ge;2)
@@ -1156,20 +1170,6 @@ public class SelectedTrack implements JmeCloneable {
             result.add(description);
         }
         Collections.sort(result);
-
-        return result;
-    }
-
-    /**
-     * Create an empty animation with the same name and duration as the selected
-     * animation. TODO sort methods
-     *
-     * @return a new instance with no tracks
-     */
-    Animation newAnimation() {
-        float duration = cgm.getAnimation().getDuration();
-        String name = cgm.getAnimation().getName();
-        Animation result = new Animation(name, duration);
 
         return result;
     }
