@@ -182,16 +182,6 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Access the options for the skeleton visualization(s).
-     *
-     * @return the pre-existing instance (not null)
-     */
-    public SkeletonOptions getSkeleton() {
-        assert skeletonOptions != null;
-        return skeletonOptions;
-    }
-
-    /**
      * Access the options for rendering the scene(s).
      *
      * @return the pre-existing instance (not null)
@@ -199,6 +189,16 @@ public class SceneOptions implements Cloneable {
     public RenderOptions getRender() {
         assert renderOptions != null;
         return renderOptions;
+    }
+
+    /**
+     * Access the options for the skeleton visualization(s).
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SkeletonOptions getSkeleton() {
+        assert skeletonOptions != null;
+        return skeletonOptions;
     }
 
     /**
