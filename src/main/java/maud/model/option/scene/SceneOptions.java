@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.model.WhichCgm;
 
 /**
  * Display options applicable to scene views in Maud's editor screen.
@@ -65,13 +66,17 @@ public class SceneOptions implements Cloneable {
      */
     private DddCursorOptions cursorOptions = new DddCursorOptions();
     /**
+     * diameter of source-CGM platform (in world units, &gt;0)
+     */
+    private float sourcePlatformDiameter = 2f;
+    /**
+     * diameter of target-CGM platform (in world units, &gt;0)
+     */
+    private float targetPlatformDiameter = 2f;
+    /**
      * options for lights with no sky simulation
      */
     private LightsOptions lightsOptions = new LightsOptions();
-    /**
-     * diameter of platform(s) (in world units, &gt;0)
-     */
-    private float platformDiameter = 2f;
     /**
      * type of platform(s) (not null)
      */
@@ -142,13 +147,28 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Read the diameter of the platform(s).
+     * Read the diameter of a platform.
      *
+     * @param whichCgm (not null)
      * @return diameter (in world units, &gt;0)
      */
-    public float getPlatformDiameter() {
-        assert platformDiameter > 0f : platformDiameter;
-        return platformDiameter;
+    public float getPlatformDiameter(WhichCgm whichCgm) {
+        float diameter;
+        switch (whichCgm) {
+            case Source:
+                diameter = sourcePlatformDiameter;
+                break;
+
+            case Target:
+                diameter = targetPlatformDiameter;
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        assert diameter > 0f : diameter;
+        return diameter;
     }
 
     /**
@@ -192,13 +212,25 @@ public class SceneOptions implements Cloneable {
     }
 
     /**
-     * Alter the diameter of the platform(s).
+     * Alter the diameter of a platform.
      *
-     * @param diameter (in world units, &gt;0)
+     * @param whichCgm (not null)
+     * @param newDiameter (in world units, &gt;0)
      */
-    public void setPlatformDiameter(float diameter) {
-        Validate.positive(diameter, "diameter");
-        platformDiameter = diameter;
+    public void setPlatformDiameter(WhichCgm whichCgm, float newDiameter) {
+        Validate.positive(newDiameter, "new diameter");
+        switch (whichCgm) {
+            case Source:
+                sourcePlatformDiameter = newDiameter;
+                break;
+
+            case Target:
+                targetPlatformDiameter = newDiameter;
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
     /**

@@ -1486,9 +1486,9 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="platformTool" title="Platform Tool"
                      hideOnClose="true"
-                     height="130px" width="180px" x="120" y="150">
+                     height="168px" width="230px" x="120" y="150">
                 <panel childLayout="vertical">
-                    <panel/>
+                    <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Platform type:  "/>
                         <control name="button" id="platformTypeButton"
@@ -1497,16 +1497,25 @@ the menu bar, status bar, and tool windows.
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" id="platformDiameterSliderStatus"
+                        <control name="label" id="sourcePlatformDiameterSliderStatus"
                                  width="*"
                                  textHAlign="right"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="horizontalSlider" id="platformDiameterSlider"
+                        <control name="horizontalSlider" id="sourcePlatformDiameterSlider"
                                  buttonStepSize="1"
-                                 max="2" min="-1" stepSize="0.001"/>
+                                 max="3" min="-1" stepSize="0.001"/>
                     </panel>
-                    <panel/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" id="targetPlatformDiameterSliderStatus"
+                                 width="*"
+                                 textHAlign="right"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="horizontalSlider" id="targetPlatformDiameterSlider"
+                                 buttonStepSize="1"
+                                 max="3" min="-1" stepSize="0.001"/>
+                    </panel>
                 </panel>
             </control>
 

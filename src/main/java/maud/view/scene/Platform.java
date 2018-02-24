@@ -48,7 +48,11 @@ import jme3utilities.MyAsset;
 import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.model.EditorModel;
+import maud.model.WhichCgm;
+import maud.model.cgm.Cgm;
 import maud.model.option.scene.PlatformType;
+import maud.model.option.scene.SceneOptions;
 
 /**
  * The supporting platform in a scene view.
@@ -153,7 +157,9 @@ class Platform {
      * Update the platform based on the MVC model.
      */
     void update() {
-        PlatformType type = Maud.getModel().getScene().getPlatformType();
+        EditorModel model = Maud.getModel();
+        SceneOptions options = model.getScene();
+        PlatformType type = options.getPlatformType();
         switch (type) {
             case None:
                 if (spatial != null) {
@@ -173,7 +179,9 @@ class Platform {
         }
 
         if (spatial != null) {
-            float diameter = Maud.getModel().getScene().getPlatformDiameter();
+            Cgm cgm = view.getCgm();
+            WhichCgm whichCgm = model.whichCgm(cgm);
+            float diameter = options.getPlatformDiameter(whichCgm);
             Vector3f center = new Vector3f(0f, -diameter * squareThickness, 0f);
 
             RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);

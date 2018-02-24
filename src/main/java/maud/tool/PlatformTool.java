@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
+import maud.model.WhichCgm;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.SceneOptions;
 
@@ -75,7 +76,8 @@ class PlatformTool extends Tool {
     @Override
     List<String> listSliders() {
         List<String> result = super.listSliders();
-        result.add("platformDiameter");
+        result.add("sourcePlatformDiameter");
+        result.add("targetPlatformDiameter");
 
         return result;
     }
@@ -85,8 +87,13 @@ class PlatformTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        float diameter = readSlider("platformDiameter", diameterSt);
-        Maud.getModel().getScene().setPlatformDiameter(diameter);
+        SceneOptions options = Maud.getModel().getScene();
+
+        float sourceDiameter = readSlider("sourcePlatformDiameter", diameterSt);
+        options.setPlatformDiameter(WhichCgm.Source, sourceDiameter);
+
+        float targetDiameter = readSlider("targetPlatformDiameter", diameterSt);
+        options.setPlatformDiameter(WhichCgm.Target, targetDiameter);
     }
 
     /**
@@ -101,8 +108,12 @@ class PlatformTool extends Tool {
         String tButton = type.toString();
         setButtonText("platformType", tButton);
 
-        float diameter = options.getPlatformDiameter();
-        setSlider("platformDiameter", diameterSt, diameter);
-        updateSliderStatus("platformDiameter", diameter, " wu");
+        float sourceDiameter = options.getPlatformDiameter(WhichCgm.Source);
+        setSlider("sourcePlatformDiameter", diameterSt, sourceDiameter);
+        updateSliderStatus("sourcePlatformDiameter", sourceDiameter, " wu");
+
+        float targetDiameter = options.getPlatformDiameter(WhichCgm.Target);
+        setSlider("targetPlatformDiameter", diameterSt, targetDiameter);
+        updateSliderStatus("targetPlatformDiameter", targetDiameter, " wu");
     }
 }
