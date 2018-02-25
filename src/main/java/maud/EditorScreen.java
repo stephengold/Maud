@@ -29,9 +29,15 @@ package maud;
 import com.jme3.app.Application;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
@@ -43,7 +49,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
+import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.debug.PerformanceAppState;
@@ -53,6 +61,7 @@ import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
 import maud.menu.ShowMenus;
+import maud.mesh.Lozenge;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedAnimation;
@@ -76,7 +85,7 @@ import org.lwjgl.input.Mouse;
 
 /**
  * The screen controller for Maud's editor screen. The GUI includes a menu bar,
- * numerous tool windows, and a status bar.
+ * numerous tool windows, a drag handle, and a status bar.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -84,6 +93,11 @@ public class EditorScreen extends GuiScreenController {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * color of the boundary's drag handle
+     */
+    final private static ColorRGBA dragHandleColor
+            = new ColorRGBA(0f, 0.6f, 0f, 1f);
     /**
      * squared distance limit for most selections (in pixels squared)
      */
@@ -93,6 +107,14 @@ public class EditorScreen extends GuiScreenController {
      */
     final private static Logger logger
             = Logger.getLogger(EditorScreen.class.getName());
+    /**
+     * mesh to render the boundary's drag handle
+     */
+    final private static Mesh dragHandleMesh = new Lozenge(15f, 150f, 1f);
+    /**
+     * name of the spatial to render the boundary's drag handle
+     */
+    final private static String dragHandleName = "handle";
     /**
      * name of the signal that rotates the model counter-clockwise around +Y
      */
@@ -557,6 +579,7 @@ public class EditorScreen extends GuiScreenController {
 
         updatePerformanceMode();
         Drag.updateBoundary();
+        updateBoundaryHandle();
         EditorViewPorts.update();
         updateBars();
         /*
@@ -652,6 +675,40 @@ public class EditorScreen extends GuiScreenController {
                 description = options.describe();
             }
             setStatusText("statusRight", description + " ");
+        }
+    }
+
+    /**
+     * Update the drag handle for the boundary.
+     */
+    private void updateBoundaryHandle() {
+        int height = cam.getHeight(); // in pixels
+        int width = cam.getWidth(); // in pixels
+        float boundaryX = width * Maud.getModel().getMisc().getXBoundary();
+
+        ViewPort boundaryViewPort = renderManager.getMainView("Boundary");
+        List<Spatial> boundaryScenes = boundaryViewPort.getScenes();
+        Node scene = (Node) boundaryScenes.get(0);
+        Spatial handleSpatial = MySpatial.findNamed(scene, dragHandleName);
+        if (handleSpatial == null) {
+            handleSpatial = new Geometry(dragHandleName, dragHandleMesh);
+            Material handleMaterial = MyAsset.createUnshadedMaterial(
+                    assetManager, dragHandleColor);
+            handleSpatial.setMaterial(handleMaterial);
+            scene.attachChild(handleSpatial);
+            boundaryViewPort.setEnabled(true);
+        }
+
+        handleSpatial.setCullHint(Spatial.CullHint.Always);
+        boolean isSplit = EditorViewPorts.isSplitScreen();
+        if (isSplit) {
+            Vector2f mouseXY = inputManager.getCursorPosition();
+            float mouseX = mouseXY.x;
+            float dSquared = FastMath.sqr(mouseX - boundaryX);
+            if (dSquared < maxDSquared) {
+                handleSpatial.setCullHint(Spatial.CullHint.Never);
+                handleSpatial.setLocalTranslation(boundaryX, height / 2f, 0f);
+            }
         }
     }
 

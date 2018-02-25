@@ -30,6 +30,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import java.util.logging.Level;
@@ -109,11 +110,25 @@ public class EditorViewPorts {
         RenderOptions options = Maud.getModel().getScene().getRender();
         int mapSize = options.getShadowMapSize();
         int numSplits = options.getNumSplits();
-        DirectionalLightShadowRenderer dlsr;
-        dlsr = new DirectionalLightShadowRenderer(manager, mapSize, numSplits);
+        DirectionalLightShadowRenderer dlsr
+                = new DirectionalLightShadowRenderer(manager, mapSize, numSplits);
         vp.addProcessor(dlsr);
 
         return dlsr;
+    }
+
+    /**
+     * Test whether the screen is split.
+     *
+     * @return true if split, otherwise false
+     */
+    static boolean isSplitScreen() {
+        EditorModel editorModel = Maud.getModel();
+        boolean twoModelsLoaded = editorModel.getSource().isLoaded();
+        ViewMode viewMode = editorModel.getMisc().getViewMode();
+        boolean split = twoModelsLoaded || viewMode == ViewMode.Hybrid;
+
+        return split;
     }
 
     /**
@@ -151,8 +166,8 @@ public class EditorViewPorts {
         /*
          * Create 2 score views.
          */
-        ScoreView sourceScoreView;
-        sourceScoreView = new ScoreView(null, sourceScoreViewPort, null);
+        ScoreView sourceScoreView
+                = new ScoreView(null, sourceScoreViewPort, null);
         ScoreView targetScoreView = new ScoreView(targetScoreWideViewPort,
                 targetScoreRightViewPort, targetScoreLeftViewPort);
         /*
@@ -160,6 +175,10 @@ public class EditorViewPorts {
          */
         editorModel.getSource().setViews(sourceSceneView, sourceScoreView);
         editorModel.getTarget().setViews(targetSceneView, targetScoreView);
+        /*
+         * Create the view port for the boundary's drag handle.
+         */
+        createBoundaryViewPort();
     }
 
     /**
@@ -208,7 +227,7 @@ public class EditorViewPorts {
                 throw new IllegalStateException("unknown view mode");
         }
 
-        boolean split = twoModelsLoaded || viewMode == ViewMode.Hybrid;
+        boolean split = isSplitScreen();
         if (split) {
             float xBoundary = misc.getXBoundary();
             updateSideViewPort(sourceSceneViewPort, false, xBoundary);
@@ -220,6 +239,27 @@ public class EditorViewPorts {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Create a full-width view port for the boundary's drag handle.
+     */
+    private static void createBoundaryViewPort() {
+        String name = "Boundary";
+        Maud application = Maud.getApplication();
+        Camera cam = application.getGuiViewPort().getCamera();
+        Camera camera = cam.clone();
+        camera.setName(name);
+        RenderManager renderManager = application.getRenderManager();
+        ViewPort viewPort = renderManager.createMainView(name, camera);
+        viewPort.setClearFlags(false, false, false);
+        viewPort.setEnabled(false);
+        /*
+         * Attach a scene to the new view port.
+         */
+        Node boundaryRoot = new Node("Root for " + name);
+        boundaryRoot.setQueueBucket(RenderQueue.Bucket.Gui);
+        viewPort.attachScene(boundaryRoot);
+    }
 
     /**
      * Instantiate a new camera with a half-width view port.
