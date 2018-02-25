@@ -155,6 +155,8 @@ class MaterialTool extends Tool {
      * Update the additional render state information.
      */
     private void updateRenderState() {
+        String faceCullButton = "";
+
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.hasMaterial()) {
             RenderState state = spatial.copyAdditionalRenderState();
@@ -162,10 +164,14 @@ class MaterialTool extends Tool {
             setChecked("matDepthTest", depthTest);
             boolean wireframe = state.isWireframe();
             setChecked("matWireframe", wireframe);
+            RenderState.FaceCullMode faceCullMode = state.getFaceCullMode();
+            faceCullButton = faceCullMode.toString();
         } else {
             disableCheckBox("matDepthTest");
             disableCheckBox("matWireframe");
         }
+
+        setButtonText("matFaceCull", faceCullButton);
     }
 
     /**

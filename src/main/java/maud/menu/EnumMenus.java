@@ -27,6 +27,7 @@
 package maud.menu;
 
 import com.jme3.light.Light;
+import com.jme3.material.RenderState;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
@@ -175,6 +176,27 @@ public class EnumMenus {
         }
 
         builder.show(ActionPrefix.selectEdgeFilter);
+    }
+
+    /**
+     * Display a menu to set the selected material's face-cull mode using the
+     * "select faceCull " action prefix.
+     */
+    public static void selectFaceCull() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        RenderState state = spatial.copyAdditionalRenderState();
+        RenderState.FaceCullMode selectedMode = state.getFaceCullMode();
+        for (RenderState.FaceCullMode mode
+                : RenderState.FaceCullMode.values()) {
+            if (mode != selectedMode) {
+                String name = mode.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectFaceCull);
     }
 
     /**

@@ -457,6 +457,19 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Alter the face-cull mode of the selected material.
+     *
+     * @param newMode desired mode (not null)
+     */
+    public void setFaceCullMode(RenderState.FaceCullMode newMode) {
+        Validate.nonNull(newMode, "new mode");
+
+        Material material = selectedMaterial();
+        RenderState modelState = material.getAdditionalRenderState();
+        modelState.setFaceCullMode(newMode);
+    }
+
+    /**
      * Alter whether the selected geometry ignores its transform.
      *
      * @param newSetting true&rarr;ignore transform, false&rarr;apply transform

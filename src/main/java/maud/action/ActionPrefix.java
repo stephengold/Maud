@@ -248,9 +248,9 @@ public class ActionPrefix {
      */
     final public static String selectEdgeFilter = "select edgeFilter ";
     /**
-     * argument is a light name or noLight
+     * argument is the name of a RenderState.FaceCullMode value
      */
-    final public static String selectLight = "select light ";
+    final public static String selectFaceCull = "select faceCull ";
     /**
      * argument is the name of a geometry or a prefix thereof
      */
@@ -263,6 +263,10 @@ public class ActionPrefix {
      * argument is a decimal value (indexBase plus a keyframe index)
      */
     final public static String selectKeyframe = "select keyframe ";
+    /**
+     * argument is a light name or noLight
+     */
+    final public static String selectLight = "select light ";
     /**
      * argument is a pre-existing material-parameter name
      */

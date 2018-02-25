@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.material.RenderState;
 import com.jme3.shadow.EdgeFilteringMode;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -39,8 +40,8 @@ import maud.menu.ShowMenus;
 import maud.menu.SpatialMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.EditableCgm;
 import maud.model.option.Background;
-import maud.model.option.ShowBones;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.MovementMode;
@@ -83,7 +84,6 @@ class SelectANAction {
 
         EditorModel model = Maud.getModel();
         Cgm target = model.getTarget();
-        ShowBones currentOption;
         switch (actionString) {
             case Action.selectAnimationEditMenu:
                 if (target.getAnimation().isReal()) {
@@ -125,6 +125,10 @@ class SelectANAction {
 
             case Action.selectEdgeFilter:
                 EnumMenus.selectEdgeFilter();
+                break;
+
+            case Action.selectFaceCull:
+                EnumMenus.selectFaceCull();
                 break;
 
             case Action.selectJoint:
@@ -191,7 +195,7 @@ class SelectANAction {
         boolean handled = true;
 
         EditorModel model = Maud.getModel();
-        Cgm target = model.getTarget();
+        EditableCgm target = model.getTarget();
         String arg;
         if (actionString.startsWith(ActionPrefix.selectAnimControl)) {
             arg = MyString.remainder(actionString,
@@ -237,6 +241,12 @@ class SelectANAction {
                     ActionPrefix.selectEdgeFilter);
             EdgeFilteringMode newMode = EdgeFilteringMode.valueOf(arg);
             model.getScene().getRender().setEdgeFilter(newMode);
+
+        } else if (actionString.startsWith(ActionPrefix.selectFaceCull)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectFaceCull);
+            RenderState.FaceCullMode newMode
+                    = RenderState.FaceCullMode.valueOf(arg);
+            target.setFaceCullMode(newMode);
 
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);

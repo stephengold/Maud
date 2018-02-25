@@ -910,6 +910,31 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter the face-cull mode of the selected material.
+     *
+     * @param newMode desired mode (not null)
+     */
+    public void setFaceCullMode(RenderState.FaceCullMode newMode) {
+        Validate.nonNull(newMode, "new mode");
+
+        Material material = getSpatial().getMaterial();
+        if (material != null) {
+            RenderState modelState = material.getAdditionalRenderState();
+            if (modelState.getFaceCullMode() != newMode) {
+                History.autoAdd();
+                modelState.setFaceCullMode(newMode);
+                SceneView sceneView = getSceneView();
+                sceneView.setFaceCullMode(newMode);
+
+                String description = String.format(
+                        "set face-cull mode to %s in the selected material",
+                        newMode);
+                setEdited(description);
+            }
+        }
+    }
+
+    /**
      * Alter whether the selected geometry ignores its transform.
      *
      * @param newSetting true&rarr;ignore transform, false&rarr;apply transform
