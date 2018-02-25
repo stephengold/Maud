@@ -30,10 +30,13 @@ import com.jme3.shadow.EdgeFilteringMode;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
+import maud.model.EditorModel;
 import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.TriangleMode;
+import maud.view.scene.SceneView;
 
 /**
  * The controller for the "Render" tool in Maud's editor screen.
@@ -49,6 +52,10 @@ class RenderTool extends Tool {
      */
     final private static Logger logger
             = Logger.getLogger(RenderTool.class.getName());
+    /**
+     * transform for the scale sliders
+     */
+    final private static SliderTransform scaleSt = SliderTransform.Log10;
     // *************************************************************************
     // constructors
 
@@ -76,6 +83,20 @@ class RenderTool extends Tool {
         result.add("shadows");
         result.add("sky2");
         result.add("physics");
+
+        return result;
+    }
+
+    /**
+     * Enumerate the tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("sourceScale");
+        result.add("targetScale");
 
         return result;
     }
@@ -113,12 +134,27 @@ class RenderTool extends Tool {
     }
 
     /**
+     * Update the MVC model based on the sliders.
+     */
+    @Override
+    public void onSliderChanged() {
+        EditorModel model = Maud.getModel();
+
+        float sourceScale = readSlider("sourceScale", scaleSt);
+        model.getSource().getSceneView().getTransform().setScale(sourceScale);
+
+        float targetScale = readSlider("targetScale", scaleSt);
+        model.getTarget().getSceneView().getTransform().setScale(targetScale);
+    }
+
+    /**
      * Callback to update this tool prior to rendering. (Invoked once per render
      * pass while this tool is displayed.)
      */
     @Override
     void toolUpdate() {
-        SceneOptions sceneOptions = Maud.getModel().getScene();
+        EditorModel model = Maud.getModel();
+        SceneOptions sceneOptions = model.getScene();
         RenderOptions options = sceneOptions.getRender();
 
         boolean isCursorVisible = sceneOptions.getCursor().isVisible();
@@ -140,5 +176,15 @@ class RenderTool extends Tool {
         EdgeFilteringMode edgeFilter = options.getEdgeFilter();
         modeName = edgeFilter.toString();
         setButtonText("edgeFilter", modeName);
+
+        SceneView sourceView = model.getSource().getSceneView();
+        float sourceScale = sourceView.getTransform().getScale();
+        setSlider("sourceScale", scaleSt, sourceScale);
+        updateSliderStatus("sourceScale", sourceScale, "x");
+
+        SceneView targetView = model.getTarget().getSceneView();
+        float targetScale = targetView.getTransform().getScale();
+        setSlider("targetScale", scaleSt, targetScale);
+        updateSliderStatus("targetScale", targetScale, "x");
     }
 }

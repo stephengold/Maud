@@ -1521,7 +1521,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="renderTool" title="Render Tool"
                      hideOnClose="true"
-                     height="210px" width="195px" x="115" y="155">
+                     height="333px" width="195px" x="115" y="155">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="3DCursor2CheckBox"/>
@@ -1546,12 +1546,32 @@ the menu bar, status bar, and tool windows.
                         <control name="checkbox" id="shadowsCheckBox"/>
                         <control name="label" text="  shadows"/>
                     </panel>
-                    <panel childLayout="horizontal" height="28px">
+                    <panel childLayout="horizontal" height="38px">
                         <control name="label" text="Edge filter:  "/>
                         <control name="button" id="edgeFilterButton"
                                  width="100px">
                             <interact onRelease="perform(select edgeFilter)"/>
                         </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" id="sourceScaleSliderStatus"
+                                 width="*"
+                                 textHAlign="right"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="horizontalSlider" id="sourceScaleSlider"
+                                 buttonStepSize="1"
+                                 max="1" min="-1" stepSize="0.001"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" id="targetScaleSliderStatus"
+                                 width="*"
+                                 textHAlign="right"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="horizontalSlider" id="targetScaleSlider"
+                                 buttonStepSize="1"
+                                 max="1" min="-1" stepSize="0.001"/>
                     </panel>
                 </panel>
             </control>

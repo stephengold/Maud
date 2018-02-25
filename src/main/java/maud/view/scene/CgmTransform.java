@@ -31,6 +31,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 
 /**
@@ -83,6 +84,16 @@ public class CgmTransform implements Cloneable {
     // new methods exposed
 
     /**
+     * Read the uniform scale applied to the C-G model.
+     *
+     * @return the scale factor (&gt;0, 1 &rarr; unscaled)
+     */
+    public float getScale() {
+        assert scale > 0f : scale;
+        return scale;
+    }
+
+    /**
      * Automatically configure the transform for a newly loaded C-G model.
      *
      * @param center the coordinates (in CG-model space) of the geometric center
@@ -110,13 +121,23 @@ public class CgmTransform implements Cloneable {
     }
 
     /**
-     * Enlarge the C-G model.
+     * Enlarge the C-G model by the specified factor.
      *
      * @param scaleFactor scale factor (&gt;0, 1&rarr;no effect)
      */
     void scale(float scaleFactor) {
         assert scaleFactor > 0f : scaleFactor;
         scale *= scaleFactor;
+    }
+
+    /**
+     * Alter the scale of the C-G model.
+     *
+     * @param newScale the new scale factor (&gt;0, 1 &rarr; unscaled)
+     */
+    public void setScale(float newScale) {
+        Validate.positive(newScale, "new scale");
+        scale = newScale;
     }
 
     /**
