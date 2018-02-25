@@ -32,6 +32,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
+import com.jme3.light.Light;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -42,6 +43,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyLight;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -280,14 +282,40 @@ public class CheckLoaded {
     }
 
     /**
-     * Check for anomalies in a loaded C-G model. TODO check for duplicate
-     * spatial names and duplicate light names
+     * Check for anomalies in a C-G model.
      *
      * @param cgmRoot (not null, unaffected)
      * @return false if issues found, otherwise true
      */
     public static boolean cgm(Spatial cgmRoot) {
         Validate.nonNull(cgmRoot, "model root");
+
+        Set<String> spatialNames = new TreeSet<>();
+        List<Spatial> spatials
+                = MaudUtil.listSpatials(cgmRoot, Spatial.class, null);
+        for (Spatial spatial : spatials) {
+            String name = spatial.getName();
+            if (spatialNames.contains(name)) {
+                logger.log(Level.WARNING,
+                        "model contains multiple spatials named {0}",
+                        MyString.quote(name));
+                return false;
+            }
+            spatialNames.add(name);
+        }
+
+        Set<String> lightNames = new TreeSet<>();
+        List<Light> lights = MyLight.listLights(cgmRoot, Light.class, null);
+        for (Light light : lights) {
+            String name = light.getName();
+            if (lightNames.contains(name)) {
+                logger.log(Level.WARNING,
+                        "model contains multiple lights named {0}",
+                        MyString.quote(name));
+                return false;
+            }
+            lightNames.add(name);
+        }
 
         List<Skeleton> skeletons = MySkeleton.listSkeletons(cgmRoot, null);
         for (Skeleton skeleton : skeletons) {
@@ -296,8 +324,8 @@ public class CheckLoaded {
             }
         }
 
-        List<AnimControl> animControls;
-        animControls = MySpatial.listControls(cgmRoot, AnimControl.class, null);
+        List<AnimControl> animControls
+                = MySpatial.listControls(cgmRoot, AnimControl.class, null);
         for (AnimControl animControl : animControls) {
             if (!animControl(animControl)) {
                 return false;
