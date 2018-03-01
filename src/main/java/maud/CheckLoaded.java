@@ -37,6 +37,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -290,7 +291,7 @@ public class CheckLoaded {
     public static boolean cgm(Spatial cgmRoot) {
         Validate.nonNull(cgmRoot, "model root");
 
-        Set<String> spatialNames = new TreeSet<>();
+        List<String> spatialNames = new ArrayList<>();
         List<Spatial> spatials
                 = MaudUtil.listSpatials(cgmRoot, Spatial.class, null);
         for (Spatial spatial : spatials) {
@@ -304,7 +305,7 @@ public class CheckLoaded {
             spatialNames.add(name);
         }
 
-        Set<String> lightNames = new TreeSet<>();
+        List<String> lightNames = new ArrayList<>();
         List<Light> lights = MyLight.listLights(cgmRoot, Light.class, null);
         for (Light light : lights) {
             String name = light.getName();
