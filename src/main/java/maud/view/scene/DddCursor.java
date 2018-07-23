@@ -82,9 +82,10 @@ public class DddCursor implements JmeCloneable {
      */
     private Geometry geometry;
     /**
-     * view that owns this cursor (not null)
+     * view that owns this cursor (not null, set by constructor or
+     * {@link #setView(SceneViewCore)})
      */
-    final private SceneViewCore view;
+    private SceneViewCore view;
     /**
      * location (in world coordinates, not null)
      */
@@ -246,6 +247,20 @@ public class DddCursor implements JmeCloneable {
         } catch (CloneNotSupportedException exception) {
             throw new RuntimeException(exception);
         }
+    }
+
+    /**
+     * Alter which view owns this cursor. (Invoked only when restoring a
+     * checkpoint.)
+     *
+     * @param newView (not null, alias created)
+     */
+    void setView(SceneViewCore newView) {
+        assert newView != null;
+        assert newView != view;
+        assert newView.getCursor() == this;
+
+        view = newView;
     }
     // *************************************************************************
     // private methods

@@ -102,9 +102,10 @@ public class Projectile {
     // fields
 
     /**
-     * view that owns this projectile (not null)
+     * view that owns this projectile (not null, set by constructor or
+     * {@link #setView(SceneViewCore)})
      */
-    final private SceneViewCore view;
+    private SceneViewCore view;
     /**
      * spatial attached to the scene graph for visualization, or null if none
      */
@@ -185,6 +186,20 @@ public class Projectile {
         }
 
         return addResult;
+    }
+
+    /**
+     * Alter which view owns this projectile. (Invoked only when restoring a
+     * checkpoint.)
+     *
+     * @param newView (not null, alias created)
+     */
+    void setView(SceneViewCore newView) {
+        assert newView != null;
+        assert newView != view;
+        assert newView.getProjectile() == this;
+
+        view = newView;
     }
     // *************************************************************************
     // private methods

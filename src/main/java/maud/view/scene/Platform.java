@@ -94,9 +94,10 @@ class Platform {
     // fields
 
     /**
-     * view that owns this platform (not null)
+     * view that owns this platform (not null, set by constructor or
+     * {@link #setView(SceneViewCore)})
      */
-    final private SceneViewCore view;
+    private SceneViewCore view;
     /**
      * spatial attached to the scene graph for visualization, or null if none
      */
@@ -151,6 +152,20 @@ class Platform {
         }
 
         return addResult;
+    }
+
+    /**
+     * Alter which view owns this platform. (Invoked only when restoring a
+     * checkpoint.)
+     *
+     * @param newView (not null, alias created)
+     */
+    void setView(SceneViewCore newView) {
+        assert newView != null;
+        assert newView != view;
+        assert newView.getPlatform() == this;
+
+        view = newView;
     }
 
     /**

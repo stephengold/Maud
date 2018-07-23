@@ -506,6 +506,12 @@ public class SceneViewCore
             PhysicsSpace space = getPhysicsSpace();
             MyControlP.enablePhysicsControls(cgmRoot, space);
         }
+        /*
+         * Update backpointers to this view.
+         */
+        cursor.setView(this);
+        platform.setView(this);
+        projectile.setView(this);
     }
 
     /**
