@@ -880,10 +880,10 @@ public class SceneViewCore
         // cgm not cloned: set later
         cgmRoot = cloner.clone(cgmRoot);
         cgmTransform = cloner.clone(cgmTransform);
-        cursor = cloner.clone(cursor);
+        // cursor not cloned: shared
         // mainLight not cloned: shared
         // parent not cloned: shared
-        // platform not cloned: shared ??
+        // platform not cloned: shared
         // projectile not cloned: shared
         skeleton = cloner.clone(skeleton);
         skeletonControl = cloner.clone(skeletonControl);

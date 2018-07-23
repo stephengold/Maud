@@ -37,8 +37,6 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.util.clone.Cloner;
-import com.jme3.util.clone.JmeCloneable;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
@@ -56,7 +54,7 @@ import maud.model.option.scene.DddCursorOptions;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class DddCursor implements JmeCloneable {
+public class DddCursor {
     // *************************************************************************
     // constants and loggers
 
@@ -89,7 +87,7 @@ public class DddCursor implements JmeCloneable {
     /**
      * location (in world coordinates, not null)
      */
-    private Vector3f location = new Vector3f();
+    final private Vector3f location = new Vector3f();
     // *************************************************************************
     // constructors
 
@@ -128,6 +126,20 @@ public class DddCursor implements JmeCloneable {
     void setLocation(Vector3f newLocation) {
         Validate.nonNull(newLocation, "new location");
         location.set(newLocation);
+    }
+
+    /**
+     * Alter which view owns this cursor. (Invoked only when restoring a
+     * checkpoint.)
+     *
+     * @param newView (not null, alias created)
+     */
+    void setView(SceneViewCore newView) {
+        assert newView != null;
+        assert newView != view;
+        assert newView.getCursor() == this;
+
+        view = newView;
     }
 
     /**
@@ -204,63 +216,6 @@ public class DddCursor implements JmeCloneable {
             Vector3f contactPoint = collision.getContactPoint();
             location.set(contactPoint);
         }
-    }
-    // *************************************************************************
-    // JmeCloneable methods
-
-    /**
-     * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
-     *
-     * @return never
-     * @throws CloneNotSupportedException always
-     */
-    @Override
-    public DddCursor clone() throws CloneNotSupportedException {
-        super.clone();
-        throw new CloneNotSupportedException("use a cloner");
-    }
-
-    /**
-     * Callback from {@link com.jme3.util.clone.Cloner} to convert this
-     * shallow-cloned instance into a deep-cloned one, using the specified
-     * cloner and original to resolve copied fields.
-     *
-     * @param cloner the cloner currently cloning this control (not null)
-     * @param original the view from which this view was shallow-cloned (unused)
-     */
-    @Override
-    public void cloneFields(Cloner cloner, Object original) {
-        geometry = cloner.clone(geometry);
-        location = cloner.clone(location);
-    }
-
-    /**
-     * Create a shallow clone for the JME cloner.
-     *
-     * @return a new instance
-     */
-    @Override
-    public DddCursor jmeClone() {
-        try {
-            DddCursor clone = (DddCursor) super.clone();
-            return clone;
-        } catch (CloneNotSupportedException exception) {
-            throw new RuntimeException(exception);
-        }
-    }
-
-    /**
-     * Alter which view owns this cursor. (Invoked only when restoring a
-     * checkpoint.)
-     *
-     * @param newView (not null, alias created)
-     */
-    void setView(SceneViewCore newView) {
-        assert newView != null;
-        assert newView != view;
-        assert newView.getCursor() == this;
-
-        view = newView;
     }
     // *************************************************************************
     // private methods
