@@ -280,6 +280,7 @@ public class Selection {
         if (dSquared < bestDSquared) {
             bestDSquared = dSquared;
             clear();
+            bestGeometry = geometry;
             bestVertexIndex = vertexIndex;
             bestCgm = cgm;
             bestType = Type.Vertex;
