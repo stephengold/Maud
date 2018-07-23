@@ -512,8 +512,8 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Test whether the animation includes the specified track. TODO add to
-     * library
+     * Test whether the animation includes the specified track. TODO use
+     * MyAnimation.findTrackIndex()
      *
      * @param track (may be null)
      * @return true if found, otherwise false

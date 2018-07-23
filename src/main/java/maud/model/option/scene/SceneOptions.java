@@ -149,7 +149,7 @@ public class SceneOptions implements Cloneable {
     /**
      * Read the diameter of a platform.
      *
-     * @param whichCgm (not null)
+     * @param whichCgm (not null, unaffected)
      * @return diameter (in world units, &gt;0)
      */
     public float getPlatformDiameter(WhichCgm whichCgm) {

@@ -50,7 +50,7 @@ class PlatformTool extends Tool {
     final private static Logger logger
             = Logger.getLogger(PlatformTool.class.getName());
     /**
-     * transform for the diameter slider
+     * transform for the diameter sliders
      */
     final private static SliderTransform diameterSt = SliderTransform.Log10;
     // *************************************************************************
