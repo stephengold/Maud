@@ -197,6 +197,10 @@ public class SceneViewCore
      */
     final private Platform platform = new Platform(this);
     /**
+     * test projectile
+     */
+    final private Projectile projectile = new Projectile(this);
+    /**
      * selected skeleton in this view's copy of the C-G model
      */
     private Skeleton skeleton;
@@ -216,10 +220,6 @@ public class SceneViewCore
      * root spatial in this view's copy of the C-G model
      */
     private Spatial cgmRoot;
-    /**
-     * test projectile
-     */
-    final private Projectile projectile = new Projectile(this);
     /**
      * spatial to visualize the selected vertex
      */
