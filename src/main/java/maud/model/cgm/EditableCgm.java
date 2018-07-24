@@ -374,6 +374,14 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         Bone bone = selectedBone.get();
         Node node = MySkeleton.getAttachments(bone);
+
+        // check for deletion of the selected spatial
+        SelectedSpatial selectedSpatial = getSpatial();
+        Spatial spatial = selectedSpatial.find();
+        if (spatial == node || spatial.hasAncestor(node)) {
+            selectedSpatial.selectCgmRoot();
+        }
+
         List<Integer> nodePosition = findSpatial(node);
 
         MySkeleton.cancelAttachments(bone);
