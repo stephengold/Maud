@@ -41,6 +41,13 @@ repositories {
 }
 
 dependencies {
+    // from stephengold's bintray repositories:
+    compile 'jme3utilities:jme3-utilities-nifty:0.7.11'
+    compile 'jme3utilities:Minie:0.2.1'
+    compile 'jme3utilities:SkyControl:0.9.12'
+    compile 'jme3utilities:Wes:0.3.5'
+    //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
+
     // from jcenter (or mavenLocal) repositories:
     compile "org.jmonkeyengine:jme3-blender:${jmonkeyengineVersion}"
     runtime "org.jmonkeyengine:jme3-bullet-native:${jmonkeyengineVersion}"
@@ -49,13 +56,6 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'com.atr:jme-ttf:2.1.2'
     runtime 'com.github.nifty-gui:nifty-style-black:1.4.2'
-
-    // from stephengold's bintray repositories:
-    compile 'jme3utilities:jme3-utilities-nifty:0.7.11'
-    compile 'jme3utilities:Minie:0.2.1'
-    compile 'jme3utilities:SkyControl:0.9.12'
-    compile 'jme3utilities:Wes:0.3.5'
-    //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jitpack repositories:
     compile 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
