@@ -82,6 +82,7 @@ import jme3utilities.math.MyVector3f;
 import jme3utilities.mesh.PointMesh;
 import jme3utilities.minie.MyControlP;
 import jme3utilities.sky.SkyControl;
+import jme3utilities.sky.StarsOption;
 import jme3utilities.sky.Updater;
 import jme3utilities.ui.Locators;
 import jme3utilities.wes.Pose;
@@ -1075,7 +1076,8 @@ public class SceneViewCore
 
         AssetManager assetManager = Locators.getAssetManager();
         Camera camera = viewPort2.getCamera();
-        skyControl = new SkyControl(assetManager, camera, 0.9f, false, false);
+        skyControl = new SkyControl(assetManager, camera, 0.9f,
+                StarsOption.Cube, false);
         skyControl.setCloudsRate(4f);
         skyControl.setSunStyle("Textures/skies/suns/hazy-disc.png");
         skyControl.setTopVerticalAngle(1.784f);
