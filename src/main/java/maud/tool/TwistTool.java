@@ -29,11 +29,13 @@ package maud.tool;
 import com.jme3.math.Quaternion;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.EditableMap;
+import maud.model.EditorModel;
+import maud.model.option.RotationDisplayMode;
 
 /**
  * The controller for the "Twist" tool in Maud's editor screen.
@@ -99,14 +101,21 @@ class TwistTool extends Tool {
     public void onSliderChanged() {
         EditableMap map = Maud.getModel().getMap();
         if (map.isBoneMappingSelected()) {
-            float[] angles = new float[numAxes];
+            float[] sliderPositions = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 String sliderName = axisNames[iAxis] + "Twist";
-                float value = readSlider(sliderName, axisSt);
-                angles[iAxis] = value;
+                float position = readSlider(sliderName, axisSt);
+                sliderPositions[iAxis] = position;
             }
+
             Quaternion twist = new Quaternion();
-            twist.fromAngles(angles);
+            RotationDisplayMode mode
+                    = Maud.getModel().getMisc().getRotationDisplay();
+            if (mode == RotationDisplayMode.QuatCoeff) {
+                MaudUtil.setFromSliders(sliderPositions, twist);
+            } else {
+                twist.fromAngles(sliderPositions);
+            }
             map.setTwist(twist);
         }
     }
@@ -118,16 +127,11 @@ class TwistTool extends Tool {
     @Override
     void toolUpdate() {
         updateSelected();
-        /*
-         * the degrees/radians button
-         */
-        String dButton;
-        if (Maud.getModel().getMisc().getAnglesInDegrees()) {
-            dButton = "radians";
-        } else {
-            dButton = "degrees";
-        }
-        setButtonText("degrees3", dButton);
+
+        RotationDisplayMode mode
+                = Maud.getModel().getMisc().getRotationDisplay();
+        String dButton = mode.toString();
+        setButtonText("rotationMode3", dButton);
     }
     // *************************************************************************
     // private methods
@@ -160,34 +164,37 @@ class TwistTool extends Tool {
      */
     private void setSlidersToTwist() {
         Quaternion effTwist = Maud.getModel().getMap().copyTwist(null);
-        float[] angles = effTwist.toAngles(null);
-        boolean degrees = Maud.getModel().getMisc().getAnglesInDegrees();
-
+        RotationDisplayMode mode
+                = Maud.getModel().getMisc().getRotationDisplay();
+        float[] statusValues = new float[numAxes];
+        float[] sliderPositions = new float[numAxes];
+        String unitSuffix = MaudUtil.displayRotation(effTwist, mode,
+                statusValues, sliderPositions);
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Twist";
-            float angle = angles[iAxis];
-            setSlider(sliderName, axisSt, angle);
-
-            if (degrees) {
-                angle = MyMath.toDegrees(angle);
-                updateSliderStatus(sliderName, angle, " deg");
-            } else {
-                updateSliderStatus(sliderName, angle, " rad");
-            }
+            float position = sliderPositions[iAxis];
+            setSlider(sliderName, axisSt, position);
+            float value = statusValues[iAxis];
+            updateSliderStatus(sliderName, value, unitSuffix);
         }
     }
 
     /**
-     * Update the twist sliders and reset button.
+     * Update the twist sliders and reset/snap buttons.
      */
     private void updateSelected() {
         boolean enableSliders = false;
-        String rButton = "", sButton = "";
+        String rButton = "", sButton = "", xyzButton = "";
 
-        if (Maud.getModel().getMap().isBoneMappingSelected()) {
+        EditorModel model = Maud.getModel();
+        if (model.getMap().isBoneMappingSelected()) {
             setSlidersToTwist();
             rButton = "Reset";
             sButton = "Snap";
+            RotationDisplayMode mode = model.getMisc().getRotationDisplay();
+            if (mode != RotationDisplayMode.QuatCoeff) {
+                xyzButton = "Snap";
+            }
             enableSliders = true;
         } else {
             clear();
@@ -195,9 +202,9 @@ class TwistTool extends Tool {
 
         setButtonText("resetTwist", rButton);
         setButtonText("snapTwist", sButton);
-        setButtonText("snapXTwist", sButton);
-        setButtonText("snapYTwist", sButton);
-        setButtonText("snapZTwist", sButton);
+        setButtonText("snapXTwist", xyzButton);
+        setButtonText("snapYTwist", xyzButton);
+        setButtonText("snapZTwist", xyzButton);
         setSlidersEnabled(enableSliders);
     }
 }

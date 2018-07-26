@@ -32,6 +32,7 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
 import maud.model.option.MiscOptions;
+import maud.model.option.RotationDisplayMode;
 
 /**
  * The controller for the "Settings" tool in Maud's editor screen.
@@ -132,9 +133,9 @@ class SettingsTool extends Tool {
     void toolUpdate() {
         MiscOptions options = Maud.getModel().getMisc();
 
-        boolean degreesFlag = options.getAnglesInDegrees();
-        String description = degreesFlag ? "degrees" : "radians";
-        setButtonText("settingsDegrees", description);
+        RotationDisplayMode mode = options.getRotationDisplay();
+        String description = mode.toString();
+        setButtonText("settingsRotationDisplay", description);
 
         int indexBase = options.getIndexBase();
         description = Integer.toString(indexBase);

@@ -29,12 +29,13 @@ package maud.tool;
 import com.jme3.math.Quaternion;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.EditorModel;
 import maud.model.cgm.SelectedSpatial;
+import maud.model.option.RotationDisplayMode;
 
 /**
  * The controller for the "Spatial-Rotation" tool in Maud's editor screen.
@@ -98,15 +99,22 @@ class SpatialRotationTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        float[] angles = new float[numAxes];
+        float[] sliderPositions = new float[numAxes];
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Sa";
-            float value = readSlider(sliderName, axisSt);
-            angles[iAxis] = value;
+            float position = readSlider(sliderName, axisSt);
+            sliderPositions[iAxis] = position;
         }
-        Quaternion rot = new Quaternion();
-        rot.fromAngles(angles);
-        Maud.getModel().getTarget().setSpatialRotation(rot);
+
+        Quaternion rotation = new Quaternion();
+        RotationDisplayMode mode
+                = Maud.getModel().getMisc().getRotationDisplay();
+        if (mode == RotationDisplayMode.QuatCoeff) {
+            MaudUtil.setFromSliders(sliderPositions, rotation);
+        } else {
+            rotation.fromAngles(sliderPositions);
+        }
+        Maud.getModel().getTarget().setSpatialRotation(rotation);
     }
 
     /**
@@ -116,13 +124,12 @@ class SpatialRotationTool extends Tool {
     @Override
     void toolUpdate() {
         setSlidersToTransform();
-        String dButton;
-        if (Maud.getModel().getMisc().getAnglesInDegrees()) {
-            dButton = "radians";
-        } else {
-            dButton = "degrees";
-        }
-        setButtonText("degrees2", dButton);
+        updateSnapButtons();
+
+        RotationDisplayMode mode
+                = Maud.getModel().getMisc().getRotationDisplay();
+        String dButton = mode.toString();
+        setButtonText("rotationMode2", dButton);
     }
     // *************************************************************************
     // private methods
@@ -135,22 +142,36 @@ class SpatialRotationTool extends Tool {
         EditorModel model = Maud.getModel();
         SelectedSpatial spatial = model.getTarget().getSpatial();
         Quaternion rotation = spatial.localRotation(null);
-        float[] angles = rotation.toAngles(null);
-        boolean degrees = model.getMisc().getAnglesInDegrees();
 
+        RotationDisplayMode mode
+                = Maud.getModel().getMisc().getRotationDisplay();
+        float[] statusValues = new float[numAxes];
+        float[] sliderPositions = new float[numAxes];
+        String unitSuffix = MaudUtil.displayRotation(rotation, mode,
+                statusValues, sliderPositions);
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Sa";
-            float angle = angles[iAxis];
-            setSlider(sliderName, axisSt, angle);
-
-            String unitSuffix;
-            if (degrees) {
-                angle = MyMath.toDegrees(angle);
-                unitSuffix = " deg";
-            } else {
-                unitSuffix = " rad";
-            }
-            updateSliderStatus(sliderName, angle, unitSuffix);
+            float position = sliderPositions[iAxis];
+            setSlider(sliderName, axisSt, position);
+            float value = statusValues[iAxis];
+            updateSliderStatus(sliderName, value, unitSuffix);
         }
+    }
+
+    /**
+     * Update the snap buttons.
+     */
+    private void updateSnapButtons() {
+        String xyzButton = "";
+
+        EditorModel model = Maud.getModel();
+        RotationDisplayMode mode = model.getMisc().getRotationDisplay();
+        if (mode != RotationDisplayMode.QuatCoeff) {
+            xyzButton = "Snap";
+        }
+
+        setButtonText("snapXSa", xyzButton);
+        setButtonText("snapYSa", xyzButton);
+        setButtonText("snapZSa", xyzButton);
     }
 }

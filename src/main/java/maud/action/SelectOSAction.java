@@ -40,6 +40,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSgc;
 import maud.model.option.PerformanceMode;
 import maud.model.option.RigidBodyParameter;
+import maud.model.option.RotationDisplayMode;
 import maud.model.option.ShapeParameter;
 import maud.model.option.ShowBones;
 import maud.model.option.scene.OrbitCenter;
@@ -245,6 +246,13 @@ class SelectOSAction {
                     ActionPrefix.selectProjection);
             ProjectionMode mode = ProjectionMode.valueOf(arg);
             model.getScene().getCamera().setMode(mode);
+
+        } else if (actionString.startsWith(
+                ActionPrefix.selectRotationDisplay)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectRotationDisplay);
+            RotationDisplayMode mode = RotationDisplayMode.valueOf(arg);
+            model.getMisc().setRotationDisplay(mode);
 
         } else if (actionString.startsWith(ActionPrefix.selectSgc)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectSgc);

@@ -29,12 +29,13 @@ package maud.tool;
 import com.jme3.math.Quaternion;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedBone;
+import maud.model.option.RotationDisplayMode;
 
 /**
  * The controller for the "Bone-Rotation" tool in Maud's editor screen.
@@ -100,16 +101,23 @@ class BoneRotationTool extends Tool {
     public void onSliderChanged() {
         Cgm target = Maud.getModel().getTarget();
         if (target.getBone().shouldEnableControls()) {
-            float[] angles = new float[numAxes];
+            float[] sliderPositions = new float[numAxes];
             for (int iAxis = 0; iAxis < numAxes; iAxis++) {
                 String sliderName = axisNames[iAxis] + "Ang";
                 float value = readSlider(sliderName, axisSt);
-                angles[iAxis] = value;
+                sliderPositions[iAxis] = value;
             }
-            Quaternion rot = new Quaternion();
-            rot.fromAngles(angles);
+
+            Quaternion rotation = new Quaternion();
+            RotationDisplayMode mode
+                    = Maud.getModel().getMisc().getRotationDisplay();
+            if (mode == RotationDisplayMode.QuatCoeff) {
+                MaudUtil.setFromSliders(sliderPositions, rotation);
+            } else {
+                rotation.fromAngles(sliderPositions);
+            }
             int boneIndex = target.getBone().getIndex();
-            target.getPose().get().setRotation(boneIndex, rot);
+            target.getPose().get().setRotation(boneIndex, rotation);
         }
     }
 
@@ -119,33 +127,12 @@ class BoneRotationTool extends Tool {
      */
     @Override
     void toolUpdate() {
-        boolean enableSliders = false;
-        String aButton = "";
-        String bButton = "";
+        updateSelected();
 
-        SelectedBone bone = Maud.getModel().getTarget().getBone();
-        if (bone.isSelected()) {
-            setSlidersToPose();
-            if (bone.shouldEnableControls()) {
-                aButton = "Animation";
-                bButton = "Bind pose";
-                enableSliders = true;
-            }
-        } else {
-            clear();
-        }
-
-        setButtonText("resetAngAnim", aButton);
-        setButtonText("resetAngBind", bButton);
-        setSlidersEnabled(enableSliders);
-
-        String dButton;
-        if (Maud.getModel().getMisc().getAnglesInDegrees()) {
-            dButton = "radians";
-        } else {
-            dButton = "degrees";
-        }
-        setButtonText("degrees", dButton);
+        RotationDisplayMode mode
+                = Maud.getModel().getMisc().getRotationDisplay();
+        String dButton = mode.toString();
+        setButtonText("rotationMode", dButton);
     }
     // *************************************************************************
     // private methods
@@ -179,22 +166,44 @@ class BoneRotationTool extends Tool {
     private void setSlidersToPose() {
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         Quaternion rotation = bone.userRotation(null);
-        float[] angles = rotation.toAngles(null);
-        boolean degrees = Maud.getModel().getMisc().getAnglesInDegrees();
 
+        RotationDisplayMode mode
+                = Maud.getModel().getMisc().getRotationDisplay();
+        float[] statusValues = new float[numAxes];
+        float[] sliderPositions = new float[numAxes];
+        String unitSuffix = MaudUtil.displayRotation(rotation, mode,
+                statusValues, sliderPositions);
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Ang";
-            float angle = angles[iAxis];
-            setSlider(sliderName, axisSt, angle);
-
-            String unitSuffix;
-            if (degrees) {
-                angle = MyMath.toDegrees(angle);
-                unitSuffix = " deg";
-            } else {
-                unitSuffix = " rad";
-            }
-            updateSliderStatus(sliderName, angle, unitSuffix);
+            float position = sliderPositions[iAxis];
+            setSlider(sliderName, axisSt, position);
+            float value = statusValues[iAxis];
+            updateSliderStatus(sliderName, value, unitSuffix);
         }
+    }
+
+    /**
+     * Update the pose sliders and reset buttons.
+     */
+    private void updateSelected() {
+        boolean enableSliders = false;
+        String aButton = "";
+        String bButton = "";
+
+        SelectedBone bone = Maud.getModel().getTarget().getBone();
+        if (bone.isSelected()) {
+            setSlidersToPose();
+            if (bone.shouldEnableControls()) {
+                aButton = "Animation";
+                bButton = "Bind pose";
+                enableSliders = true;
+            }
+        } else {
+            clear();
+        }
+
+        setButtonText("resetAngAnim", aButton);
+        setButtonText("resetAngBind", bButton);
+        setSlidersEnabled(enableSliders);
     }
 }

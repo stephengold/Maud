@@ -309,6 +309,11 @@ public class ActionPrefix {
      */
     final public static String selectProjection = "select projection ";
     /**
+     * argument is the name of a RotationDisplayMode value
+     */
+    final public static String selectRotationDisplay
+            = "select rotationDisplay ";
+    /**
      * argument is the name of a ShowBones value
      */
     final public static String selectSceneBones = "select sceneBones ";
@@ -421,10 +426,6 @@ public class ActionPrefix {
     /**
      * argument is "true" or "false"
      */
-    final public static String setDegrees = "set degrees ";
-    /**
-     * argument is "true" or "false"
-     */
     final public static String setDiagnose = "set diagnose ";
     /**
      * arguments are the decimal width in pixels, an "x", and the decimal height
@@ -453,7 +454,7 @@ public class ActionPrefix {
      */
     final public static String setMapSize = "set mapSize ";
     /**
-     * argument is the number of samples per pixel, formatted using
+     * argument is a number of samples per pixel, formatted using
      * {@link maud.MaudUtil#describeMsaaFactor(int)}
      */
     final public static String setMsaaFactor = "set msaaFactor ";
@@ -478,7 +479,7 @@ public class ActionPrefix {
      */
     final public static String setPhysicsRendered = "set physicsRendered ";
     /**
-     * argument is the decimal refresh rate in Hertz
+     * argument is a decimal refresh rate in Hertz
      */
     final public static String setRefreshRate = "set refreshRate ";
     /**

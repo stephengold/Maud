@@ -113,6 +113,10 @@ class NextAction {
                 target.getObject().selectNext();
                 break;
 
+            case Action.nextRotationDisplay:
+                model.getMisc().selectNextRotationDisplay();
+                break;
+
             case Action.nextSgc:
                 target.getSgc().selectNext();
                 break;

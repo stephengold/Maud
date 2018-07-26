@@ -433,10 +433,6 @@ public class EditorInputMode extends InputMode {
                 model.getMisc().toggleColorIndex();
                 break;
 
-            case Action.toggleDegrees:
-                model.getMisc().toggleAnglesInDegrees();
-                break;
-
             case Action.toggleDragSide:
                 SceneDrag.toggleSide();
                 break;

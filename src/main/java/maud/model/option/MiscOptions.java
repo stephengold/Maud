@@ -67,10 +67,6 @@ public class MiscOptions implements Cloneable {
      */
     private Background background = Background.TargetScenesWithNoSky;
     /**
-     * angle-display units (true &rarr; degrees, false &rarr; radians)
-     */
-    private boolean anglesInDegrees = true;
-    /**
      * console messages during loads (true &rarr; print, false &rarr; suppress)
      */
     private boolean diagnoseLoads = false;
@@ -113,6 +109,11 @@ public class MiscOptions implements Cloneable {
      */
     private RigidBodyParameter rbp = RigidBodyParameter.Mass;
     /**
+     * display mode for rotations (not null)
+     */
+    private RotationDisplayMode rotationDisplayMode
+            = RotationDisplayMode.Degrees;
+    /**
      * shape parameter to view/edit in ShapeTool (not null)
      */
     private ShapeParameter shapeParameter = ShapeParameter.Radius;
@@ -130,15 +131,6 @@ public class MiscOptions implements Cloneable {
     private ViewMode viewMode = ViewMode.Scene;
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Test whether to display angles in degrees.
-     *
-     * @return true for degrees, otherwise false
-     */
-    public boolean getAnglesInDegrees() {
-        return anglesInDegrees;
-    }
 
     /**
      * Read which background to view/edit in BackgroundTool.
@@ -206,6 +198,16 @@ public class MiscOptions implements Cloneable {
     public RigidBodyParameter getRbp() {
         assert rbp != null;
         return rbp;
+    }
+
+    /**
+     * Read the display mode for rotations.
+     *
+     * @return an enum value (not null)
+     */
+    public RotationDisplayMode getRotationDisplay() {
+        assert rotationDisplayMode != null;
+        return rotationDisplayMode;
     }
 
     /**
@@ -321,6 +323,27 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Cycle through display modes for rotations.
+     */
+    public void selectNextRotationDisplay() {
+        switch (rotationDisplayMode) {
+            case Degrees:
+                setRotationDisplay(RotationDisplayMode.QuatCoeff);
+                break;
+            case QuatCoeff:
+                setRotationDisplay(RotationDisplayMode.Radians);
+                break;
+            case Radians:
+                setRotationDisplay(RotationDisplayMode.Degrees);
+                break;
+            default:
+                logger.log(Level.SEVERE, "mode={0}", rotationDisplayMode);
+                throw new IllegalStateException(
+                        "invalid rotation display mode");
+        }
+    }
+
+    /**
      * Cycle through view modes.
      */
     public void selectNextViewMode() {
@@ -391,15 +414,6 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter the display units for angles.
-     *
-     * @param newSetting true &rarr; degrees, false &rarr; radians
-     */
-    public void setAnglesInDegrees(boolean newSetting) {
-        anglesInDegrees = newSetting;
-    }
-
-    /**
      * Alter which color to view/edit in CursorTool.
      *
      * @param newIndex new index (0 or 1)
@@ -438,6 +452,16 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter the display mode for rotations.
+     *
+     * @param newMode an enum value (not null)
+     */
+    public void setRotationDisplay(RotationDisplayMode newMode) {
+        Validate.nonNull(newMode, "new mode");
+        rotationDisplayMode = newMode;
+    }
+
+    /**
      * Alter the message to display in the status bar.
      *
      * @param newMessage what to display (not null)
@@ -468,13 +492,6 @@ public class MiscOptions implements Cloneable {
      */
     public void setXBoundary(float newX) {
         xBoundary = FastMath.clamp(newX, minXBoundary, maxXBoundary);
-    }
-
-    /**
-     * Toggle the angle-display units.
-     */
-    public void toggleAnglesInDegrees() {
-        setAnglesInDegrees(!anglesInDegrees);
     }
 
     /**
@@ -514,14 +531,15 @@ public class MiscOptions implements Cloneable {
     public void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
-        String action
-                = ActionPrefix.setDegrees + Boolean.toString(anglesInDegrees);
-        MaudUtil.writePerformAction(writer, action);
-
-        action = ActionPrefix.setDiagnose + Boolean.toString(diagnoseLoads);
+        String action = ActionPrefix.setDiagnose
+                + Boolean.toString(diagnoseLoads);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.setIndexBase + Integer.toString(indexBase);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectRotationDisplay
+                + rotationDisplayMode.toString();
         MaudUtil.writePerformAction(writer, action);
 
         action = String.format("%s%f %f", ActionPrefix.setSubmenuWarp,

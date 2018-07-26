@@ -432,17 +432,17 @@ the menu bar, status bar, and tool windows.
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
                         <control name="verticalSlider" id="xAngSlider"
-                                 buttonStepSize="1.57"
+                                 buttonStepSize="1.571"
                                  height="180px"
-                                 max="3.14" min="-3.14" stepSize="0.001"/>
+                                 max="3.142" min="-3.142" stepSize="0.001"/>
                         <control name="verticalSlider" id="yAngSlider"
-                                 buttonStepSize="1.57"
+                                 buttonStepSize="1.571"
                                  height="180px"
-                                 max="3.14" min="-3.14" stepSize="0.001"/>
+                                 max="3.142" min="-3.142" stepSize="0.001"/>
                         <control name="verticalSlider" id="zAngSlider"
-                                 buttonStepSize="1.57"
+                                 buttonStepSize="1.571"
                                  height="180px"
-                                 max="1.57" min="-1.57" stepSize="0.001"/>
+                                 max="1.571" min="-1.571" stepSize="0.001"/>
                         <panel childLayout="vertical"
                                height="160px" width="110px">
                             <control name="label" id="xAngSliderStatus"
@@ -456,9 +456,9 @@ the menu bar, status bar, and tool windows.
                                      width="*"/>
                             <panel childLayout="horizontal" height="30px">
                                 <panel/>
-                                <control name="button" id="degreesButton"
-                                         width="50px">
-                                    <interact onRelease="perform(toggle degrees)"/>
+                                <control name="button" id="rotationModeButton"
+                                         width="70px">
+                                    <interact onRelease="perform(next rotationDisplay)"/>
                                 </control>
                                 <panel/>
                             </panel>
@@ -1799,10 +1799,10 @@ the menu bar, status bar, and tool windows.
                 <panel childLayout="vertical">
                     <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Display angles in  "/>
-                        <control name="button" id="settingsDegreesButton"
-                                 width="60px">
-                            <interact onRelease="perform(toggle degrees)"/>
+                        <control name="label" text="Display rotations as  "/>
+                        <control name="button" id="settingsRotationDisplayButton"
+                                 width="70px">
+                            <interact onRelease="perform(next rotationDisplay)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
@@ -2405,8 +2405,7 @@ the menu bar, status bar, and tool windows.
                                      buttonStepSize="1.571"
                                      height="190px"
                                      max="3.142" min="-3.142" stepSize="0.001"/>
-                            <control name="button" label="Snap"
-                                     id="id36ToAvoidNiftyWarning"
+                            <control name="button" id="snapXSaButton"
                                      width="30px">
                                 <interact onRelease="perform(set spatialAngle snapX)"/>
                             </control>
@@ -2416,8 +2415,7 @@ the menu bar, status bar, and tool windows.
                                      buttonStepSize="1.571"
                                      height="190px"
                                      max="3.142" min="-3.142" stepSize="0.001"/>
-                            <control name="button" label="Snap"
-                                     id="id37ToAvoidNiftyWarning"
+                            <control name="button" id="snapYSaButton"
                                      width="30px">
                                 <interact onRelease="perform(set spatialAngle snapY)"/>
                             </control>
@@ -2427,8 +2425,7 @@ the menu bar, status bar, and tool windows.
                                      buttonStepSize="1.571"
                                      height="190px"
                                      max="1.571" min="-1.571" stepSize="0.001"/>
-                            <control name="button" label="Snap"
-                                     id="id38ToAvoidNiftyWarning"
+                            <control name="button" id="snapZSaButton"
                                      width="30px">
                                 <interact onRelease="perform(set spatialAngle snapZ)"/>
                             </control>
@@ -2445,9 +2442,9 @@ the menu bar, status bar, and tool windows.
                                      width="*"/>
                             <panel childLayout="horizontal" height="30px">
                                 <panel/>
-                                <control name="button" id="degrees2Button"
-                                         width="50px">
-                                    <interact onRelease="perform(toggle degrees)"/>
+                                <control name="button" id="rotationMode2Button"
+                                         width="85px">
+                                    <interact onRelease="perform(next rotationDisplay)"/>
                                 </control>
                                 <panel/>
                             </panel>
@@ -2761,9 +2758,9 @@ the menu bar, status bar, and tool windows.
                                      width="*"/>
                             <panel childLayout="horizontal" height="30px">
                                 <panel/>
-                                <control name="button" id="degrees3Button"
-                                         width="50px">
-                                    <interact onRelease="perform(toggle degrees)"/>
+                                <control name="button" id="rotationMode3Button"
+                                         width="70px">
+                                    <interact onRelease="perform(next rotationDisplay)"/>
                                 </control>
                                 <panel/>
                             </panel>

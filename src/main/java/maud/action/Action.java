@@ -98,6 +98,7 @@ public class Action {
     final static String nextOverride = "next override";
     final static String nextPerformanceMode = "next performanceMode";
     final static String nextPhysics = "next physics";
+    final static String nextRotationDisplay = "next rotationDisplay";
     final static String nextSgc = "next sgc";
     final static String nextShape = "next shape";
     final static String nextSourceAnimation = "next sourceAnimation";
@@ -241,7 +242,6 @@ public class Action {
 
     final static String toggleBoundType = "toggle boundType";
     final static String toggleCursorColorIndex = "toggle cursorColorIndex";
-    final static String toggleDegrees = "toggle degrees";
     final static String toggleDragSide = "toggle dragSide";
     final static String toggleFreezeTarget = "toggle freeze target";
     final static String toggleIndexBase = "toggle indexBase";

@@ -77,9 +77,11 @@ import java.util.regex.Pattern;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.dialog.VectorDialog;
 import jme3utilities.wes.Pose;
+import maud.model.option.RotationDisplayMode;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -91,6 +93,10 @@ public class MaudUtil {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * number of coordinate axes
+     */
+    final private static int numAxes = 3;
     /**
      * message logger for this class
      */
@@ -272,6 +278,64 @@ public class MaudUtil {
         }
 
         return description;
+    }
+
+    /**
+     * Calculate the slider positions and status values to display the specified
+     * rotation in the specified display mode.
+     *
+     * @param rotation (not null, possibly modified)
+     * @param mode (not null)
+     * @param storeValues (not null, length=3, modified)
+     * @param storePositions (not null, length=3, modified)
+     * @return unit suffix (not null)
+     */
+    public static String displayRotation(Quaternion rotation,
+            RotationDisplayMode mode, float[] storeValues,
+            float[] storePositions) {
+        Validate.nonNull(mode, "mode");
+        Validate.nonNull(rotation, "rotation");
+        Validate.nonNull(storePositions, "slider positions");
+        int numSliders = storePositions.length;
+        Validate.inRange(numSliders, "number of sliders", numAxes, numAxes);
+        Validate.nonNull(storeValues, "status values");
+        int numStatuses = storeValues.length;
+        Validate.inRange(numStatuses, "number of statuses", numAxes, numAxes);
+
+        String unitSuffix;
+        switch (mode) {
+            case Degrees:
+                rotation.toAngles(storePositions);
+                for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+                    storeValues[iAxis]
+                            = MyMath.toDegrees(storePositions[iAxis]);
+                }
+                unitSuffix = " deg";
+                break;
+            case QuatCoeff:
+                if (rotation.getW() < 0f) {
+                    rotation.negate();
+                }
+                storeValues[0] = rotation.getX();
+                storeValues[1] = rotation.getY();
+                storeValues[2] = rotation.getZ();
+                storePositions[0] = 3.142f * storeValues[0];
+                storePositions[1] = 3.142f * storeValues[1];
+                storePositions[2] = 1.571f * storeValues[2];
+                unitSuffix = "";
+                break;
+            case Radians:
+                rotation.toAngles(storePositions);
+                System.arraycopy(storePositions, 0, storeValues, 0, numAxes);
+                unitSuffix = " rad";
+                break;
+            default:
+                logger.log(Level.SEVERE, "mode={0}", mode);
+                throw new IllegalStateException(
+                        "invalid rotation display mode");
+        }
+
+        return unitSuffix;
     }
 
     /**
@@ -964,6 +1028,41 @@ public class MaudUtil {
         storeResult.setColumn(2, testWorld);
 
         return storeResult;
+    }
+
+    /**
+     * Calculate the rotation specified by a bank of sliders when the rotation
+     * display mode is QuatCoeff.
+     *
+     * @param sliderPositions (not null, length = 3)
+     * @param storeResult (modified if not null)
+     * @return rotation (either storeResult or a new quaternion)
+     */
+    public static Quaternion setFromSliders(float[] sliderPositions,
+            Quaternion storeResult) {
+        Validate.nonNull(sliderPositions, "slider positions");
+        int numSliders = sliderPositions.length;
+        Validate.inRange(numSliders, "numSliders", 3, 3);
+        Quaternion result;
+        if (storeResult == null) {
+            result = new Quaternion();
+        } else {
+            result = storeResult;
+        }
+
+        double x = sliderPositions[0] / 3.142;
+        double y = sliderPositions[1] / 3.142;
+        double z = sliderPositions[2] / 1.571;
+        double ssq = x * x + y * y + z * z;
+        if (ssq > 1.0) {
+            result.set((float) x, (float) y, (float) z, 0f);
+            result.normalizeLocal();
+        } else {
+            double w = Math.sqrt(1.0 - ssq);
+            result.set((float) x, (float) y, (float) z, (float) w);
+        }
+
+        return result;
     }
 
     /**
