@@ -181,7 +181,7 @@ public class LoadedMap implements Cloneable {
     /**
      * Find the index of the selected bone mapping.
      *
-     * @return index, or -1 if none selected
+     * @return index&ge;0, or -1 if none selected
      */
     public int findIndex() {
         int index;
@@ -190,9 +190,16 @@ public class LoadedMap implements Cloneable {
             index = -1;
         } else {
             List<String> nameList = listSorted();
-            Cgm target = Maud.getModel().getTarget();
-            String targetBoneName = target.getBone().getName();
+            EditorModel model = Maud.getModel();
+            Cgm effTarget;
+            if (model.getMap().isInvertingMap()) {
+                effTarget = model.getSource();
+            } else {
+                effTarget = model.getTarget();
+            }
+            String targetBoneName = effTarget.getBone().getName();
             index = nameList.indexOf(targetBoneName);
+            assert index >= 0 : index;
         }
 
         return index;
