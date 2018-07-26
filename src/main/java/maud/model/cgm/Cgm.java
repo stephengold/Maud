@@ -61,6 +61,7 @@ import jme3utilities.minie.MyShape;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.menu.WhichSpatials;
 import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.TriangleMode;
 import maud.view.ScoreView;
@@ -615,6 +616,45 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Test whether there are any attachments nodes in the C-G model.
+     *
+     * @return true if any were found, otherwise false
+     */
+    public boolean hasAttachmentsNode() {
+        boolean result = false;
+        if (isLoaded()) {
+            Map<Bone, Spatial> map = mapAttachments();
+            result = !map.isEmpty();
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether there's an attachments node with the specified name.
+     *
+     * @param name (not null)
+     * @return true if found, otherwise false
+     */
+    public boolean hasAttachmentsNode(String name) {
+        Validate.nonNull(name, "name");
+
+        boolean result = false;
+        if (isLoaded()) {
+            Map<Bone, Spatial> map = mapAttachments();
+            for (Spatial spatial : map.values()) {
+                String spatialName = spatial.getName();
+                if (name.equals(spatialName)) {
+                    result = true;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Test whether there are any "extra" spatials in the C-G model.
      *
      * @return true if any were found, otherwise false
@@ -882,12 +922,11 @@ public class Cgm implements Cloneable {
      * Enumerate named spatials whose names begin with the specified prefix.
      *
      * @param prefix which name prefix (not null, may be empty)
-     * @param includeNodes true &rarr; both nodes and geometries, false &rarr;
-     * geometries only
+     * @param subset which kinds of spatials to include (not null)
      * @return a new list of names
      */
-    public List<String> listSpatialNames(String prefix, boolean includeNodes) {
-        List<String> list = listSpatialNames(rootSpatial, prefix, includeNodes);
+    public List<String> listSpatialNames(String prefix, WhichSpatials subset) {
+        List<String> list = listSpatialNames(rootSpatial, prefix, subset);
         return list;
     }
 
@@ -1048,19 +1087,37 @@ public class Cgm implements Cloneable {
      *
      * @param subtree which subtree to traverse (may be null, unaffected)
      * @param prefix which name prefix (not null, may be empty)
-     * @param includeNodes true &rarr; both nodes and geometries, false &rarr;
-     * geometries only
+     * @param subset which kinds of spatials to include (not null)
      * @return a new list of names
      */
     private List<String> listSpatialNames(Spatial subtree, String prefix,
-            boolean includeNodes) {
+            WhichSpatials subset) {
         List<String> names = new ArrayList<>(5);
         if (subtree != null) {
             String spatialName = subtree.getName();
             if (spatialName != null && !spatialName.isEmpty()
                     && spatialName.startsWith(prefix)) {
-                if (includeNodes || subtree instanceof Geometry) {
-                    names.add(spatialName);
+                switch (subset) {
+                    case All:
+                        names.add(spatialName);
+                        break;
+
+                    case AttachmentsNodes:
+                        if (subtree instanceof Node) {
+                            if (hasAttachmentsNode(spatialName)) {
+                                names.add(spatialName);
+                            }
+                        }
+                        break;
+
+                    case Geometries:
+                        if (subtree instanceof Geometry) {
+                            names.add(spatialName);
+                        }
+                        break;
+
+                    default:
+                        throw new IllegalArgumentException();
                 }
             }
 
@@ -1069,7 +1126,7 @@ public class Cgm implements Cloneable {
                 List<Spatial> children = node.getChildren();
                 for (Spatial child : children) {
                     List<String> childNames
-                            = listSpatialNames(child, prefix, includeNodes);
+                            = listSpatialNames(child, prefix, subset);
                     names.addAll(childNames);
                 }
             }

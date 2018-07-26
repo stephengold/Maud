@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedSpatial;
 
 /**
@@ -133,21 +134,18 @@ public class SpatialMenus {
      * Handle a "select spatial" action with an argument.
      *
      * @param argument action argument (not null)
-     * @param includeNodes true &rarr; include both nodes and geometries, false
-     * &rarr; include geometries only
+     * @param subset which kinds of spatials to include (not null)
      */
-    public static void selectSpatial(String argument, boolean includeNodes) {
+    public static void selectSpatial(String argument, WhichSpatials subset) {
         Cgm target = Maud.getModel().getTarget();
         if (target.hasSpatial(argument)) {
             target.getSpatial().select(argument);
-
         } else {
             /*
              * Treat the argument as a spatial-name prefix.
              */
-            List<String> names
-                    = target.listSpatialNames(argument, includeNodes);
-            ShowMenus.showSpatialSubmenu(names, includeNodes);
+            List<String> names = target.listSpatialNames(argument, subset);
+            ShowMenus.showSpatialSubmenu(names, subset);
         }
     }
     // *************************************************************************
@@ -164,11 +162,11 @@ public class SpatialMenus {
         boolean handled = true;
         switch (remainder) {
             case "Attachments node":
-                spatial.selectAttachmentsNode();
+                selectAttachmentsNode();
                 break;
 
             case "By name":
-                selectSpatial("", true);
+                selectSpatial("", WhichSpatials.All);
                 break;
 
             case "Child":
@@ -176,7 +174,7 @@ public class SpatialMenus {
                 break;
 
             case "Geometry":
-                selectSpatial("", false);
+                selectSpatial("", WhichSpatials.Geometries);
                 break;
 
             case "Parent":
@@ -192,5 +190,19 @@ public class SpatialMenus {
         }
 
         return handled;
+    }
+
+    /**
+     * Handle the "Spatial -> Select -> Attachments node" menu item.
+     */
+    private static void selectAttachmentsNode() {
+        Cgm target = Maud.getModel().getTarget();
+        SelectedBone bone = target.getBone();
+        if (bone.hasAttachmentsNode()) {
+            SelectedSpatial spatial = target.getSpatial();
+            spatial.selectAttachmentsNode();
+        } else {
+            selectSpatial("", WhichSpatials.AttachmentsNodes);
+        }
     }
 }

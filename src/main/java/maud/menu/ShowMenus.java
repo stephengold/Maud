@@ -288,7 +288,7 @@ public class ShowMenus {
         MenuBuilder builder = new MenuBuilder();
 
         Cgm target = Maud.getModel().getTarget();
-        List<String> names = target.listSpatialNames("", true);
+        List<String> names = target.listSpatialNames("", WhichSpatials.All);
         if (!names.isEmpty()) {
             builder.addSubmenu("By name");
         }
@@ -300,11 +300,11 @@ public class ShowMenus {
             builder.addGeometry("Root");
         }
 
-        if (target.getBone().hasAttachmentsNode()) {
+        if (target.hasAttachmentsNode()) {
             builder.addNode("Attachments node");
         }
 
-        names = target.listSpatialNames("", false);
+        names = target.listSpatialNames("", WhichSpatials.Geometries);
         if (!names.isEmpty()) {
             builder.addSubmenu("Geometry");
         }
@@ -342,7 +342,6 @@ public class ShowMenus {
 
         } else if (numChildren > 1) {
             List<String> children = spatial.listNumberedChildren();
-
             List<String> choices
                     = MyString.addMatchPrefix(children, itemPrefix, null);
             MyString.reduce(choices, maxItems);
@@ -579,12 +578,12 @@ public class ShowMenus {
      * spatial" action prefix.
      *
      * @param nameList list of names from which to select (not null)
-     * @param includeNodes true &rarr; both nodes and geometries, false &rarr;
-     * geometries only
+     * @param subset which kinds of spatials to include (not null)
      */
     static void showSpatialSubmenu(List<String> nameList,
-            boolean includeNodes) {
+            WhichSpatials subset) {
         assert nameList != null;
+        assert subset != null;
 
         MyString.reduce(nameList, maxItems);
         Collections.sort(nameList);
@@ -592,17 +591,33 @@ public class ShowMenus {
         MenuBuilder builder = new MenuBuilder();
         Cgm target = Maud.getModel().getTarget();
         for (String name : nameList) {
+            switch (subset) {
+                case All:
+                    break;
+
+                case AttachmentsNodes:
+                    if (!target.hasAttachmentsNode(name)) {
+                        continue;
+                    }
+                    break;
+
+                case Geometries:
+                    if (!target.hasGeometry(name)) {
+                        continue;
+                    }
+                    break;
+
+                default:
+                    throw new IllegalArgumentException();
+            }
+
             if (target.hasGeometry(name)) {
                 builder.addGeometry(name);
-            } else if (includeNodes && target.hasNode(name)) {
+            } else if (target.hasNode(name)) {
                 builder.addNode(name);
             }
         }
-        if (includeNodes) {
-            builder.show(ActionPrefix.selectSpatial);
-        } else {
-            builder.show(ActionPrefix.selectGeometry);
-        }
+        builder.show(ActionPrefix.selectSpatial);
     }
 
     /**

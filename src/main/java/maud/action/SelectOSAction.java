@@ -35,6 +35,7 @@ import maud.menu.EnumMenus;
 import maud.menu.PhysicsMenus;
 import maud.menu.ShowMenus;
 import maud.menu.SpatialMenus;
+import maud.menu.WhichSpatials;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSgc;
@@ -317,7 +318,7 @@ class SelectOSAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectSpatial)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectSpatial);
-            SpatialMenus.selectSpatial(arg, true);
+            SpatialMenus.selectSpatial(arg, WhichSpatials.All);
 
         } else {
             handled = false;

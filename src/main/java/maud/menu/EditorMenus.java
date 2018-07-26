@@ -351,12 +351,15 @@ public class EditorMenus {
                 case "Select":
                     ShowMenus.selectVertex();
                     break;
+
                 case "Select geometry":
-                    SpatialMenus.selectSpatial("", false);
+                    SpatialMenus.selectSpatial("", WhichSpatials.Geometries);
                     break;
+
                 case "Tool":
                     Maud.gui.tools.select("vertex");
                     break;
+
                 default:
                     handled = false;
             }

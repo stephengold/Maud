@@ -38,6 +38,7 @@ import maud.menu.EnumMenus;
 import maud.menu.PhysicsMenus;
 import maud.menu.ShowMenus;
 import maud.menu.SpatialMenus;
+import maud.menu.WhichSpatials;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
@@ -232,7 +233,7 @@ class SelectANAction {
         } else if (actionString.startsWith(ActionPrefix.selectBoneIndex)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectBoneIndex);
-            int index = Integer.valueOf(arg);
+            int index = Integer.parseInt(arg);
             int indexBase = Maud.getModel().getMisc().getIndexBase();
             target.getBone().select(index - indexBase);
 
@@ -250,7 +251,7 @@ class SelectANAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
-            SpatialMenus.selectSpatial(arg, false);
+            SpatialMenus.selectSpatial(arg, WhichSpatials.Geometries);
 
         } else if (actionString.startsWith(ActionPrefix.selectJoint)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectJoint);
