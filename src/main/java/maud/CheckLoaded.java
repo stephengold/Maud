@@ -293,7 +293,7 @@ public class CheckLoaded {
 
         List<String> spatialNames = new ArrayList<>(16);
         List<Spatial> spatials
-                = MaudUtil.listSpatials(cgmRoot, Spatial.class, null);
+                = MySpatial.listSpatials(cgmRoot, Spatial.class, null);
         for (Spatial spatial : spatials) {
             String name = spatial.getName();
             if (spatialNames.contains(name)) {

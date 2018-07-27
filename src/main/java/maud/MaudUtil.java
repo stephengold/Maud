@@ -64,7 +64,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -736,40 +735,6 @@ public class MaudUtil {
             result = true;
         } else {
             result = false;
-        }
-
-        return result;
-    }
-
-    /**
-     * Enumerate all spatials of the specified type in the specified subtree of
-     * a scene graph. Note: recursive! TODO use library version
-     *
-     * @param <T> superclass of Spatial
-     * @param subtree (not null, aliases created)
-     * @param spatialType superclass of Spatial to search for
-     * @param addResult (added to if not null)
-     * @return an expanded list (either storeResult or a new instance)
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends Spatial> List<T> listSpatials(Spatial subtree,
-            Class<T> spatialType, List<T> addResult) {
-        Validate.nonNull(subtree, "subtree");
-        List<T> result = (addResult == null) ? new ArrayList<>(50) : addResult;
-
-        if (spatialType.isAssignableFrom(subtree.getClass())) {
-            T spatial = (T) subtree;
-            if (!result.contains(spatial)) {
-                result.add(spatial);
-            }
-        }
-
-        if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                listSpatials(child, spatialType, result);
-            }
         }
 
         return result;
