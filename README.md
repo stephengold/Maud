@@ -16,14 +16,16 @@ Summary of features:
  + merge models
  + import models from [Blender][]/[glTF][]/[Ogre][]/[Wavefront][obj]/[Xbuf][] and save to native J3O format
  + import animations from [Biovision Hierarchy (BVH)](#bvh) files
- + visualize animations, axes, bones, bounding boxes, lights, mesh vertices, physics objects, and skeletons
+ + visualize animations, axes, bones, bounding boxes, lights,
+   mesh vertices, physics objects, and skeletons
  + browse animations, bones, keyframes, lights, material parameters,
    material-parameter overrides, mesh vertices, physics objects,
    physics shapes, scene-graph controls, spatials, tracks, and user data
  + play animations forward/backward at various speeds and pause them
  + create new animations from poses or by altering/mixing existing animations
  + retarget bone animations from one model to another using skeleton maps
- + create new attachments nodes, lights, physics controls, scene-graph controls, and user data
+ + create new attachments nodes, lights, physics controls, scene-graph controls,
+   scene-graph nodes, and user data
  + insert keyframes into animations and bone tracks
  + rename animations, bones, lights, spatials, and user data
  + change animation speeds/durations
@@ -45,7 +47,7 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
-Status as of February 2018: seeking more alpha testers.
+Status as of July 2018: seeking more alpha testers.
 
 ## Contents of this document
 
@@ -80,7 +82,7 @@ Status as of February 2018: seeking more alpha testers.
 
 ## How to build Maud from source
 
-Maud currently targets Version 3.2 of jME.  You are welcome to
+Maud currently targets Version 3.2.1 of jME.  You are welcome to
 use jME without installing its Integrated Development Environment (IDE),
 but I use the IDE, so I tend to assume you will too.
 
@@ -93,7 +95,8 @@ If you already have the IDE installed, skip to step 6.
 The hardware and software requirements of the IDE are documented at
 https://jmonkeyengine.github.io/wiki/jme3/requirements.html
 
- 1. Download a jMonkeyEngine 3.2.0 Stable installer from https://github.com/jMonkeyEngine/sdk/releases
+ 1. Download a jMonkeyEngine v3.2.1-stable-sdk3 installer
+    from https://github.com/jMonkeyEngine/sdk/releases
  2. Install the Software Development Kit (SDK), which includes:
     + the engine,
     + the IDE, which is based on [NetBeans][],
@@ -251,7 +254,7 @@ in which case Maud's initial state might differ from that described here.
 
 A scene view consists of a 3-D render of a loaded model, possibly with a
 background, a 3-D cursor, a supporting platform, and/or overlaid visualizations.
-Visualization can include axes, a bounding box, a mesh vertex, physics objects, and/or a
+Visualizations can include axes, a bounding box, a mesh vertex, physics objects, and/or a
 skeleton.  If you load and play an animation in a scene view, you'll see the
 model move, rather like it would in a game.
 
@@ -271,15 +274,20 @@ When the mouse cursor is in a score view, the following keyboard
 shortcuts may prove helpful:
 
  + "B" to select the bone track closest to the mouse pointer
- + "G" to grab the gnomon and (if key is held down) drag it with the mouse pointer
+ + "G" to grab the gnomon and (while key is held down) drag it with the mouse pointer
  + "K" to select the keyframe closest to the mouse pointer
 
-While Maud can only *edit* one model at a time, the Editor Screen can split
-in half to *display* 2 different models.
+While Maud can only *edit* one model at a time, the Editor Screen can be split
+to *display* 2 different models.
 (This is useful when merging models or
 retargeting animations from one model to another.)
 The model being edited is called the "target" model.
 The other model is called the "source" model.
+
+The Editor Screen can also be split to display 2 views of the same model.
+
+When the editor screen is split, you can adjust the horizontal position of the
+boundary by dragging it with the RMB.
 
 ### Views modes of the Editor Screen
 
@@ -298,18 +306,18 @@ use the backtick ("`") keyboard shortcut to cycle through these modes.
         <td>In Scene Mode...</td>
         <td style="border: 1px solid black;">A full-width scene view of the target model</td>
         <td style="border: 1px solid black;">A split screen with a scene view of the source model on the left
-                        and a scene view of the target model on the right</td>
+            and a scene view of the target model on the right</td>
     </tr>
     <tr>
         <td>In Score Mode...</td>
         <td style="border: 1px solid black;">A full-width score view of the target model</td>
         <td style="border: 1px solid black;">A split screen with a score view of the source model on the left
-                        and a score view of the target model on the right</td>
+            and a score view of the target model on the right</td>
     </tr>
     <tr>
         <td>In Hybrid Mode...</td>
         <td colspan="2" style="border: 1px solid black;">A split screen with a score view of the target model on the left
-                        and a scene view of the target model on the right</td>
+            and a scene view of the target model on the right</td>
     </tr>
 </table>
 
@@ -662,7 +670,10 @@ To redo each change you've undone, use the "Y" keyboard shortcut.
 
 Maud places no limit on the number of checkpoints you can create/undo/redo.
 To help you visualize and navigate your edit history,
-Maud provides a "History Tool" ("History -> Tool").
+Maud provides a "History Tool" (selected using "History -> Tool").
+
+The edit history consumes virtual memory.  To delete the history, select
+"History -> Clear".
 
 <a name="links"/>
 
@@ -746,7 +757,6 @@ The following features are on my "to do" list, in no particular order:
  + mirror an animation/pose
  + joint-angle limits for models
  + save more options to the startup script
- + insert a node into the scene graph
 
 <a name="conventions"/>
 
@@ -755,6 +765,8 @@ The following features are on my "to do" list, in no particular order:
 Maud's source code is compatible with JDK 7.
 
 World coordinate system: the Y axis points upward (toward the zenith).
+Prior to loading a model that uses the Z-up convention, select the "+Z up"
+load orientation in the Settings Tools (" Settings" -> "Tool").
 
 The first keyframe in each track must be at time=0.
 
