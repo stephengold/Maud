@@ -446,6 +446,19 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Find the index of the specified track.
+     *
+     * @param track (may be null)
+     * @return the track index (&ge;0) or -1 if not found
+     */
+    int findTrackIndex(Track track) {
+        Animation real = getReal();
+        int index = MyAnimation.findTrackIndex(real, track);
+
+        return index;
+    }
+
+    /**
      * Read the duration of the loaded animation.
      *
      * @return time (in seconds, &ge;0)
@@ -503,27 +516,6 @@ public class LoadedAnimation implements Cloneable {
         List<TrackItem> items = listTracks();
         for (TrackItem item : items) { // TODO less brute force
             if (item.describe().equals(description)) {
-                result = true;
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Test whether the animation includes the specified track. TODO use
-     * MyAnimation.findTrackIndex()
-     *
-     * @param track (may be null)
-     * @return true if found, otherwise false
-     */
-    boolean hasTrack(Track track) {
-        boolean result = false;
-        Animation real = getReal();
-        Track[] tracks = real.getTracks();
-        for (Track t : tracks) {
-            if (t == track) {
                 result = true;
                 break;
             }

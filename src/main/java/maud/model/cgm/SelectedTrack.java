@@ -710,7 +710,7 @@ public class SelectedTrack implements JmeCloneable {
      */
     void select(Track track) {
         if (track != null) {
-            assert cgm.getAnimation().hasTrack(track);
+            assert cgm.getAnimation().findTrackIndex(track) != -1;
         }
         selected = track;
     }
