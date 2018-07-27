@@ -386,6 +386,18 @@ class SetAction {
                 handled = false;
             }
 
+        } else if (actionString.startsWith(ActionPrefix.setSkeletonLineWidth)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setSkeletonLineWidth);
+            float width = Float.valueOf(arg);
+            model.getScene().getSkeleton().setLineWidth(width);
+
+        } else if (actionString.startsWith(ActionPrefix.setSkeletonPointSize)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setSkeletonPointSize);
+            float pointSize = Float.valueOf(arg);
+            model.getScene().getSkeleton().setPointSize(pointSize);
+
         } else if (actionString.startsWith(ActionPrefix.setSkySimulated)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setSkySimulated);

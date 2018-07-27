@@ -507,6 +507,14 @@ public class ActionPrefix {
      */
     final public static String setShapeParmValue = "set shapeParmValue ";
     /**
+     * argument is a decimal float
+     */
+    final public static String setSkeletonLineWidth = "set skeletonLineWidth ";
+    /**
+     * argument is a decimal float
+     */
+    final public static String setSkeletonPointSize = "set skeletonPointSize ";
+    /**
      * argument is a boolean value
      */
     final public static String setSkySimulated = "set skySimulated ";

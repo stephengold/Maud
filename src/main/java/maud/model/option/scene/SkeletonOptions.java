@@ -244,8 +244,14 @@ public class SkeletonOptions implements Cloneable {
     public void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
-        String action = ActionPrefix.selectSceneBones + showBones.toString();
+        String action = ActionPrefix.setSkeletonLineWidth
+                + Float.toString(lineWidth);
         MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setSkeletonPointSize + Float.toString(pointSize);
+        MaudUtil.writePerformAction(writer, action);
+
+        // CGM load overrides showBones, so no point in writing it here
     }
     // *************************************************************************
     // Object methods
