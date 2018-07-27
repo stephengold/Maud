@@ -252,6 +252,22 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Attach a leaf (empty) node to the selected scene-graph node.
+     *
+     * @param leafNodeName a name for the new node (not null, not empty)
+     */
+    public void attachLeafNode(String leafNodeName) {
+        Validate.nonEmpty(leafNodeName, "leaf-node name");
+        assert cgm == Maud.getModel().getTarget();
+
+        Node parentNode = (Node) find();
+        Node leafNode = new Node(leafNodeName);
+        String description = String.format("attach leaf node %s",
+                MyString.quote(leafNodeName));
+        editableCgm.attachSpatial(parentNode, leafNode, description);
+    }
+
+    /**
      * Cardinalize the local rotation.
      */
     public void cardinalizeRotation() {
@@ -283,8 +299,7 @@ public class SelectedSpatial implements JmeCloneable {
         int result;
         if (parent instanceof Node) {
             Node node = (Node) parent;
-            List<Spatial> children = node.getChildren();
-            result = children.size();
+            result = node.getQuantity();
         } else {
             result = 0;
         }

@@ -144,6 +144,10 @@ public class ActionPrefix {
      */
     final public static String newGhostControl = "new ghostControl ";
     /**
+     * argument is a name for the new S-G node
+     */
+    final public static String newLeafNode = "new leafNode ";
+    /**
      * arguments are the name of a Light.Type and an optional light name
      */
     final public static String newLight = "new light ";
@@ -151,6 +155,10 @@ public class ActionPrefix {
      * arguments are the name of the VarType and an optional parameter name
      */
     final public static String newOverride = "new override ";
+    /**
+     * argument is a name for the new S-G node
+     */
+    final public static String newParent = "new parent ";
     /**
      * argument is the name of a ShapeType
      */

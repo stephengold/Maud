@@ -183,7 +183,7 @@ public class SceneViewCore
     /**
      * 3-D cursor (not null)
      */
-    private DddCursor cursor = new DddCursor(this);
+    final private DddCursor cursor = new DddCursor(this);
     /*
      * directional added to the scene (not null)
      */
@@ -474,6 +474,29 @@ public class SceneViewCore
     }
 
     /**
+     * Insert a new node into the scene graph as the parent of the selected
+     * spatial.
+     *
+     * @param newNodeName a name for the new node (not null, not empty)
+     */
+    public void insertParent(String newNodeName) {
+        Validate.nonEmpty(newNodeName, "new node name");
+
+        Spatial spatial = selectedSpatial();
+        Node oldParent = spatial.getParent();
+        int position = oldParent.detachChild(spatial);
+        assert position != -1;
+
+        Node newNode = new Node(newNodeName);
+        oldParent.attachChild(newNode);
+        newNode.attachChild(spatial);
+
+        if (spatial == cgmRoot) {
+            cgmRoot = newNode;
+        }
+    }
+
+    /**
      * Replace the C-G model with a newly loaded one.
      *
      * @param loadedCgmRoot root spatial (not null)
@@ -580,13 +603,10 @@ public class SceneViewCore
 
             AssetManager assetManager = Locators.getAssetManager();
             skeletonVisualizer = new SkeletonVisualizer(assetManager);
-            controlled.addControl(skeletonVisualizer);
+            skeletonVisualizer.setSubject(skeletonControl);
             skeletonVisualizer.setSkeleton(skeleton);
-            Spatial ts = MySpatial.findAnimatedGeometry(controlled);
-            if (ts == null) {
-                ts = controlled;
-            }
-            skeletonVisualizer.setTransformSpatial(ts);
+            Node scene = getSceneRoot();
+            scene.addControl(skeletonVisualizer);
             skeletonVisualizer.setEnabled(true);
             /*
              * Cause the visualizer to add its geometries to the scene graph.
@@ -1180,7 +1200,8 @@ public class SceneViewCore
     }
 
     /**
-     * Alter a newly loaded C-G model to prepare it for visualization.
+     * Alter a newly loaded C-G model to prepare it for visualization. TODO
+     * refactor into simpler methods
      */
     private void prepareForViewing() {
         /*
@@ -1206,10 +1227,16 @@ public class SceneViewCore
         setSkeleton(selectedSkeleton, false);
         /*
          * Configure the transform based on the ranges of vertex coordinates
-         * in the C-G model.
+         * in the C-G model and (if any) the skeleton visualization subtree.
          */
         parent.setLocalTransform(transformIdentity);
         Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot);
+        if (skeletonVisualizer != null) {
+            Node subtree = skeletonVisualizer.getSubtree();
+            Vector3f[] subtreeMinMax = MySpatial.findMinMaxCoords(subtree);
+            MyVector3f.accumulateMinima(minMax[0], subtreeMinMax[0]);
+            MyVector3f.accumulateMaxima(minMax[1], subtreeMinMax[1]);
+        }
         Vector3f center = MyVector3f.midpoint(minMax[0], minMax[1]);
         EditorModel model = Maud.getModel();
         boolean zUp = model.getMisc().getLoadZup();

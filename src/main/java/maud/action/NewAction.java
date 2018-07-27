@@ -233,6 +233,11 @@ class NewAction {
                     = PhysicsUtil.ShapeType.valueOf(shapeName);
             target.getSpatial().addGhostControl(shapeType);
 
+        } else if (actionString.startsWith(ActionPrefix.newLeafNode)) {
+            String nodeName = MyString.remainder(actionString,
+                    ActionPrefix.newLeafNode);
+            target.getSpatial().attachLeafNode(nodeName);
+
         } else if (actionString.startsWith(ActionPrefix.newLight)) {
             String args = MyString.remainder(actionString,
                     ActionPrefix.newLight);
@@ -256,6 +261,11 @@ class NewAction {
             } else {
                 EditorDialogs.newOverride(actionString + " ");
             }
+
+        } else if (actionString.startsWith(ActionPrefix.newParent)) {
+            String nodeName = MyString.remainder(actionString,
+                    ActionPrefix.newParent);
+            target.insertParent(nodeName);
 
         } else if (actionString.startsWith(ActionPrefix.newRbc)) {
             String shapeName

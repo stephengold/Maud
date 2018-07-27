@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.action.ActionPrefix;
+import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedSpatial;
@@ -67,13 +69,22 @@ public class SpatialMenus {
      */
     static boolean menuSpatial(String remainder) {
         boolean handled = true;
+        String addPrefix = "Add new" + EditorMenus.menuPathSeparator;
         String selectPrefix = "Select" + EditorMenus.menuPathSeparator;
-        if (remainder.startsWith(selectPrefix)) {
+        if (remainder.startsWith(addPrefix)) {
+            String arg = MyString.remainder(remainder, addPrefix);
+            handled = menuSpatialAdd(arg);
+
+        } else if (remainder.startsWith(selectPrefix)) {
             String arg = MyString.remainder(remainder, selectPrefix);
             handled = menuSpatialSelect(arg);
 
         } else {
             switch (remainder) {
+                case "Add new":
+                    addNew();
+                    break;
+
                 case "Delete":
                     Maud.getModel().getTarget().getSpatial().delete();
                     break;
@@ -150,6 +161,45 @@ public class SpatialMenus {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Display a "Spatial -> Add new" menu.
+     */
+    private static void addNew() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        if (spatial.isNode()) {
+            builder.addDialog("Leaf node");
+        }
+        builder.addDialog("Parent");
+
+        builder.show("select menuItem Spatial -> Add new -> ");
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "Spatial -> Add new" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private static boolean menuSpatialAdd(String remainder) {
+        boolean handled = true;
+        switch (remainder) {
+            case "Leaf node":
+                EditorDialogs.newNode(ActionPrefix.newLeafNode);
+                break;
+
+            case "Parent":
+                EditorDialogs.newNode(ActionPrefix.newParent);
+                break;
+
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
 
     /**
      * Handle a "select menuItem" action from the "Spatial -> Select" menu.

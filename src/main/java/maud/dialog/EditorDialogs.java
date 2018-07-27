@@ -407,11 +407,27 @@ public class EditorDialogs {
     public static void newLight(String actionPrefix) {
         Validate.nonEmpty(actionPrefix, "action prefix");
 
-        DialogController controller = new LightNameDialog("Add");
-        String defaultName = "light";
+        DialogController controller = new LightNameDialog("Add light");
+        String defaultName = "new light";
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new light:",
+                defaultName, actionPrefix, controller);
+    }
+
+    /**
+     * Display a "new node" dialog to name a new scene-graph node.
+     *
+     * @param actionPrefix (not null, not empty)
+     */
+    public static void newNode(String actionPrefix) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
+        DialogController controller = new SpatialNameDialog("Add node");
+        String defaultName = "new node";
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter a name for the new node:",
                 defaultName, actionPrefix, controller);
     }
 

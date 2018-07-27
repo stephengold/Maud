@@ -260,7 +260,7 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(dataType, "data type");
         Validate.nonNull(key, "key");
 
-        Object object = null;
+        Object object = null; // TODO refactor object creation to MaudUtil
         switch (dataType) {
             case Boolean:
                 object = false;
@@ -550,6 +550,51 @@ public class EditableCgm extends LoadedCgm {
         String description
                 = String.format("delete user data %s", MyString.quote(key));
         setEdited(description);
+    }
+
+    /**
+     * Insert a new node into the scene graph to parent the selected spatial.
+     *
+     * @param newNodeName a name for the new node (not null, not empty)
+     */
+    public void insertParent(String newNodeName) {
+        Validate.nonEmpty(newNodeName, "new node name");
+
+        SceneView sceneView = getSceneView();
+        Spatial selectedSpatial = getSpatial().find();
+        Node oldParent = selectedSpatial.getParent();
+        Node newNode = new Node(newNodeName);
+
+        History.autoAdd();
+        sceneView.insertParent(newNodeName);
+
+        Skeleton oldSkeleton = getSkeleton().find();
+        if (oldParent != null) {
+            int position = oldParent.detachChild(selectedSpatial);
+            assert position != -1;
+            oldParent.attachChild(newNode);
+        } else {
+            rootSpatial = newNode;
+        }
+        newNode.attachChild(selectedSpatial);
+        /*
+         * Make sure the selected spatial doesn't change.
+         */
+        getSpatial().select(selectedSpatial);
+        /*
+         * Check whether the selected skeleton has changed.
+         */
+        Boolean selectedSpatialFlag = false;
+        Skeleton newSkeleton = getSkeleton().find(selectedSpatialFlag);
+        if (newSkeleton != oldSkeleton) {
+            getBone().deselect();
+            getPose().resetToBind(newSkeleton);
+            getSceneView().setSkeleton(newSkeleton, selectedSpatialFlag);
+        }
+
+        String eventDescription = String.format("insert parent %s",
+                MyString.quote(newNodeName));
+        setEdited(eventDescription);
     }
 
     /**

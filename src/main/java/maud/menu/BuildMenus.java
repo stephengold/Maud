@@ -660,6 +660,7 @@ public class BuildMenus {
     private void buildSpatialMenu() {
         builder.addTool("Tool");
         builder.addSubmenu("Select");
+        builder.addSubmenu("Add new");
 
         builder.addTool("Details");
         builder.addTool("Lights");
