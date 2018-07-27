@@ -118,7 +118,7 @@ public class SpatialMenus {
                     break;
 
                 case "Select":
-                    ShowMenus.selectSpatial();
+                    select();
                     break;
 
                 case "Tool":
@@ -240,6 +240,54 @@ public class SpatialMenus {
         }
 
         return handled;
+    }
+
+    /**
+     * Display a "Spatial -> Select" menu.
+     */
+    private static void select() {
+        MenuBuilder builder = new MenuBuilder();
+
+        Cgm target = Maud.getModel().getTarget();
+        List<String> names = target.listSpatialNames("", WhichSpatials.All);
+        if (!names.isEmpty()) {
+            builder.addSubmenu("By name");
+        }
+
+        boolean isRootANode = target.isRootANode();
+        if (isRootANode) {
+            builder.addNode("Root");
+        } else {
+            builder.addGeometry("Root");
+        }
+
+        if (target.hasAttachmentsNode()) {
+            builder.addNode("Attachments node");
+        }
+
+        names = target.listSpatialNames("", WhichSpatials.Geometries);
+        if (!names.isEmpty()) {
+            builder.addSubmenu("Geometry");
+        }
+
+        int numChildren = target.getSpatial().countChildren();
+        if (numChildren == 1) {
+            boolean isChildANode = target.getSpatial().isChildANode(0);
+            if (isChildANode) {
+                builder.addNode("Child");
+            } else {
+                builder.addGeometry("Child");
+            }
+        } else if (numChildren > 1) {
+            builder.addSubmenu("Child");
+        }
+
+        boolean isRoot = target.getSpatial().isCgmRoot();
+        if (!isRoot) {
+            builder.addNode("Parent");
+        }
+
+        builder.show("select menuItem Spatial -> Select -> ");
     }
 
     /**
