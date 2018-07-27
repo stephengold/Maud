@@ -260,35 +260,7 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(dataType, "data type");
         Validate.nonNull(key, "key");
 
-        Object object = null; // TODO refactor object creation to MaudUtil
-        switch (dataType) {
-            case Boolean:
-                object = false;
-                break;
-            case Float:
-                object = 0f;
-                break;
-            case Integer:
-                object = 0;
-                break;
-            case Long:
-                object = 0L;
-                break;
-            case String:
-                object = "";
-                break;
-            case Vector2f:
-                object = new Vector2f();
-                break;
-            case Vector3f:
-                object = new Vector3f();
-                break;
-            case Vector4f:
-                object = new Vector4f();
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
+        Object object = dataType.create();
         byte objectType = UserData.getObjectType(object);
         UserData data = new UserData(objectType, object);
         Spatial selectedSpatial = getSpatial().find();

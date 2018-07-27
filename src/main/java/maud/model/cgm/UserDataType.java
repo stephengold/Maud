@@ -26,6 +26,10 @@
  */
 package maud.model.cgm;
 
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
+
 /**
  * Enumerate some types of user data.
  *
@@ -37,4 +41,45 @@ public enum UserDataType {
 
     Boolean, Float, Integer, Long, String, Vector2f, Vector3f, Vector4f;
     // TODO array, bone, list, map, other savables
+
+    // *************************************************************************
+    // new methods exposed
+    /**
+     * Instantiate an object with this data type.
+     *
+     * @return a new instance (not null)
+     */
+    public Object create() {
+        Object object;
+        switch (this) {
+            case Boolean:
+                object = false;
+                break;
+            case Float:
+                object = 0f;
+                break;
+            case Integer:
+                object = 0;
+                break;
+            case Long:
+                object = 0L;
+                break;
+            case String:
+                object = "";
+                break;
+            case Vector2f:
+                object = new Vector2f();
+                break;
+            case Vector3f:
+                object = new Vector3f();
+                break;
+            case Vector4f:
+                object = new Vector4f();
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        return object;
+    }
 }
