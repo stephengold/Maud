@@ -705,10 +705,9 @@ BVH resources:
   + motion-capture data from CMU's Graphics Lab, converted to BVH by Bruce Hahn:
     https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture
   + free motion-capture data from Ohio State University's ACCAD:
-    http://accad.osu.edu/research/mocap/mocap_data.htm
-  + motion capture data from Motcap.com (registration required):
-    http://motcap.com/
+    https://accad.osu.edu/research/motion-lab/system-data
 
+[bican]: https://github.com/canbican "Can Bican"
 [blender]: https://docs.blender.org "Blender Project"
 [bsd3]: https://opensource.org/licenses/BSD-3-Clause "3-Clause BSD License"
 [bvhretarget]: https://github.com/Nehon/bvhretarget "BVH Retarget Project"
@@ -722,7 +721,6 @@ BVH resources:
 [jfrog]: https://www.jfrog.com "JFrog"
 [jme]: http://jmonkeyengine.org  "jMonkeyEngine Project"
 [jme-ttf]: http://1337atr.weebly.com/jttf.html "jME-TTF Rendering System"
-[jprefctl]: https://github.com/canbican/jprefctl "Jprefctl Project"
 [markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
 [netbeans]: https://netbeans.org "NetBeans Project"
 [nifty]: http://nifty-gui.github.io/nifty-gui "Nifty GUI Project"
@@ -797,7 +795,7 @@ I therefore acknowledge the following artists and software developers:
 + Adam T. Ryder (aka "tryder") for creating [jME-TTF][]
 + Tobias Jung for creating [ProFont][]
 + [Nathan Vegdahl][vegdahl], for creating the Puppet model
-+ Can Bican, for creating the [Jprefctl][] preferences editor
++ [Can Bican][bican], for creating the Jprefctl preferences editor
 + Zi Ye, for creating the Sinbad model
 + the brave souls who volunteered to be alpha testers for Maud, including:
     + "Jesterrrrrr"
@@ -818,7 +816,7 @@ I therefore acknowledge the following artists and software developers:
     + the [NetBeans][] integrated development environment
     + the [Nifty][] graphical user interface library
     + [Open Broadcaster Software Studio][obs]
-    + the [RealWorld Cursor Editor](rwce)
+    + the [RealWorld Cursor Editor][rwce]
     + the [WinMerge][] differencing and merging tool
 
 I am grateful to [JFrog][] and [Github][], for providing free hosting for the
