@@ -260,7 +260,7 @@ class SelectANAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectKeyframe)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectKeyframe);
-            int index = Integer.valueOf(arg);
+            int index = Integer.parseInt(arg);
             int indexBase = Maud.getModel().getMisc().getIndexBase();
             target.getFrame().select(index - indexBase);
 

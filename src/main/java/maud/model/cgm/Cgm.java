@@ -231,8 +231,7 @@ public class Cgm implements Cloneable {
         int result = 0;
         if (spatial instanceof Node) {
             Node node = (Node) spatial;
-            List<Spatial> children = node.getChildren();
-            result = children.size();
+            result = node.getQuantity();
         }
 
         return result;

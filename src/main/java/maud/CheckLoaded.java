@@ -291,7 +291,7 @@ public class CheckLoaded {
     public static boolean cgm(Spatial cgmRoot) {
         Validate.nonNull(cgmRoot, "model root");
 
-        List<String> spatialNames = new ArrayList<>();
+        List<String> spatialNames = new ArrayList<>(16);
         List<Spatial> spatials
                 = MaudUtil.listSpatials(cgmRoot, Spatial.class, null);
         for (Spatial spatial : spatials) {
@@ -305,7 +305,7 @@ public class CheckLoaded {
             spatialNames.add(name);
         }
 
-        List<String> lightNames = new ArrayList<>();
+        List<String> lightNames = new ArrayList<>(2);
         List<Light> lights = MyLight.listLights(cgmRoot, Light.class, null);
         for (Light light : lights) {
             String name = light.getName();
