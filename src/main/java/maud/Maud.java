@@ -145,6 +145,20 @@ public class Maud extends GuiApplication {
     }
 
     /**
+     * Test whether the startup script has been customized.
+     *
+     * @return true if customized, otherwise false
+     */
+    public static boolean isStartupScriptCustomized() {
+        String assetPath = Maud.startupScriptAssetPath;
+        String filePath = ActionApplication.filePath(assetPath);
+        File file = new File(filePath);
+        boolean result = file.exists();
+
+        return result;
+    }
+
+    /**
      * Main entry point for Maud.
      *
      * @param arguments array of command-line arguments (not null)
@@ -213,8 +227,8 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Revert the startup script to the default by removing the startup script
-     * (if any) in the "Written Assets" folder.
+     * Revert the startup script to the default by removing the custom startup
+     * script (if any) in the "Written Assets" folder.
      */
     public static void revertStartupScript() {
         String assetPath = Maud.startupScriptAssetPath;
