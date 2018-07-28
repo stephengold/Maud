@@ -34,6 +34,7 @@ import com.jme3.audio.openal.ALAudioRenderer;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.system.AppSettings;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3_ext_xbuf.XbufLoader;
@@ -47,6 +48,7 @@ import jme3utilities.debug.PerformanceAppState;
 import jme3utilities.minie.PhysicsDumper;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
+import jme3utilities.ui.ActionApplication;
 import jme3utilities.ui.InputMode;
 import maud.dialog.QuitDialog;
 import maud.model.EditorModel;
@@ -208,6 +210,17 @@ public class Maud extends GuiApplication {
      */
     public static void perform(String actionString) {
         gui.perform(actionString);
+    }
+
+    /**
+     * Revert the startup script to the default by removing the startup script
+     * (if any) in the "Written Assets" folder.
+     */
+    public static void revertStartupScript() {
+        String assetPath = Maud.startupScriptAssetPath;
+        String filePath = ActionApplication.filePath(assetPath);
+        File file = new File(filePath);
+        file.delete();
     }
 
     /**

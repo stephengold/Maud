@@ -639,6 +639,7 @@ public class BuildMenus {
         //builder.add("Locale"); TODO
         builder.addTool("Tweening");
         builder.add("Update startup script");
+        builder.add("Revert startup script to default");
     }
 
     /**

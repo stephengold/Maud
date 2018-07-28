@@ -313,6 +313,10 @@ public class EditorMenus {
                     Maud.gui.goBindScreen();
                     break;
 
+                case "Revert startup script to default":
+                    Maud.revertStartupScript();
+                    break;
+
                 case "Tool":
                     Maud.gui.tools.select("settings");
                     break;
