@@ -530,6 +530,9 @@ public class SceneViewCore
             PhysicsSpace space = getPhysicsSpace();
             MyControlP.enablePhysicsControls(cgmRoot, space);
         }
+        if (skeletonVisualizer != null) {
+            parent.addControl(skeletonVisualizer);
+        }
         /*
          * Update backpointers to this view.
          */
@@ -605,8 +608,7 @@ public class SceneViewCore
             skeletonVisualizer = new SkeletonVisualizer(assetManager);
             skeletonVisualizer.setSubject(skeletonControl);
             skeletonVisualizer.setSkeleton(skeleton);
-            Node scene = getSceneRoot();
-            scene.addControl(skeletonVisualizer);
+            parent.addControl(skeletonVisualizer);
             skeletonVisualizer.setEnabled(true);
             /*
              * Cause the visualizer to add its geometries to the scene graph.
