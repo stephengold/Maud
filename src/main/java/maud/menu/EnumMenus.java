@@ -77,6 +77,10 @@ public class EnumMenus {
      */
     final private static Logger logger
             = Logger.getLogger(EnumMenus.class.getName());
+    /**
+     * magic word used in "add light" actions and menus
+     */
+    public final static String copySelected = "CopySelected";
     // *************************************************************************
     // constructors
 
@@ -89,7 +93,7 @@ public class EnumMenus {
     // new methods exposed
 
     /**
-     * Display a "Spatial -&gt; Light -&gt; Add new" menu.
+     * Display a menu to add a light using the "new light" action prefix.
      */
     public static void addNewLight() {
         MenuBuilder builder = new MenuBuilder();
@@ -97,6 +101,9 @@ public class EnumMenus {
         for (Light.Type type : Light.Type.values()) {
             String name = type.toString();
             builder.addDialog(name);
+        }
+        if (Maud.getModel().getTarget().getLight().isSelected()) {
+            builder.addDialog(copySelected);
         }
 
         builder.show(ActionPrefix.newLight);

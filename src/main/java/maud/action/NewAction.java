@@ -243,9 +243,13 @@ class NewAction {
                     ActionPrefix.newLight);
             if (args.contains(" ")) {
                 String typeName = args.split(" ")[0];
-                Light.Type type = Light.Type.valueOf(typeName);
                 String lightName = MyString.remainder(args, typeName + " ");
-                target.getSpatial().addLight(type, lightName);
+                if (typeName.equals(EnumMenus.copySelected)) {
+                    target.getLight().copySelected(lightName);
+                } else {
+                    Light.Type type = Light.Type.valueOf(typeName);
+                    target.getSpatial().addLight(type, lightName);
+                }
             } else {
                 EditorDialogs.newLight(actionString + " ");
             }

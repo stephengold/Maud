@@ -148,7 +148,8 @@ public class ActionPrefix {
      */
     final public static String newLeafNode = "new leafNode ";
     /**
-     * arguments are the name of a Light.Type and an optional light name
+     * arguments are ("CopySelected" or the name of a Light.Type) and an
+     * optional light name
      */
     final public static String newLight = "new light ";
     /**

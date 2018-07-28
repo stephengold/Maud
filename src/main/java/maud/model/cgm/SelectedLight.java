@@ -141,6 +141,26 @@ public class SelectedLight implements JmeCloneable {
     }
 
     /**
+     * Add a copy of the selected light to the selected spatial.
+     *
+     * @param name a name for the new light (not null, not empty)
+     */
+    public void copySelected(String name) {
+        Validate.nonEmpty(name, "name");
+        assert !cgm.hasLight(name);
+
+        Light newLight = selected.clone();
+        newLight.setName(name);
+
+        String description = String.format("copy selected light, set name=%s",
+                MyString.quote(name));
+        editableCgm.addLight(newLight, description);
+
+        Spatial spatial = cgm.getSpatial().find();
+        cgm.getLight().select(newLight, spatial);
+    }
+
+    /**
      * Delete the light.
      */
     public void delete() {
