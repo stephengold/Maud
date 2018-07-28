@@ -75,6 +75,9 @@ public class AssetLocations implements Cloneable {
         absolutePath = absolutePath.replaceAll("\\\\", "/");
 
         String spec = "file:///" + absolutePath;
+        if (file.isDirectory()) {
+            spec += "/";
+        }
         addSpec(spec);
     }
 
