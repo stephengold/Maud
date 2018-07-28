@@ -294,44 +294,42 @@ public class EditorMenus {
      */
     private static boolean menuSettings(String remainder) {
         boolean handled = true;
-        String folderPrefix = "Asset locations" + menuPathSeparator;
-        if (remainder.startsWith(folderPrefix)) {
-            String selectArg = MyString.remainder(remainder, folderPrefix);
-            handled = Maud.gui.buildMenus.menuAssetLocations(selectArg);
+        switch (remainder) {
+            case "Add asset location":
+                BuildMenus bm = new BuildMenus();
+                bm.addAssetLocation();
+                break;
 
-        } else {
-            switch (remainder) {
-                case "Asset locations":
-                    ShowMenus.assetLocations();
-                    break;
+            case "Remove asset location":
+                ShowMenus.removeAssetLocation();
+                break;
 
-                case "Display-settings tool":
-                    Maud.gui.tools.select("displaySettings");
-                    break;
+            case "Display-settings tool":
+                Maud.gui.tools.select("displaySettings");
+                break;
 
-                case "Hotkeys":
-                    Maud.gui.goBindScreen();
-                    break;
+            case "Hotkeys":
+                Maud.gui.goBindScreen();
+                break;
 
-                case "Revert startup script to default":
-                    Maud.revertStartupScript();
-                    break;
+            case "Revert startup script to default":
+                Maud.revertStartupScript();
+                break;
 
-                case "Tool":
-                    Maud.gui.tools.select("settings");
-                    break;
+            case "Tool":
+                Maud.gui.tools.select("settings");
+                break;
 
-                case "Tweening":
-                    Maud.gui.tools.select("tweening");
-                    break;
+            case "Tweening":
+                Maud.gui.tools.select("tweening");
+                break;
 
-                case "Update startup script":
-                    Maud.getModel().updateStartupScript();
-                    break;
+            case "Update startup script":
+                Maud.getModel().updateStartupScript();
+                break;
 
-                default:
-                    handled = false;
-            }
+            default:
+                handled = false;
         }
 
         return handled;

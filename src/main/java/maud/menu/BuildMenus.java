@@ -96,6 +96,23 @@ public class BuildMenus {
     // new methods exposed
 
     /**
+     * Display a "Settings -> Add asset location" menu.
+     */
+    void addAssetLocation() {
+        Map<String, File> fileMap = Misc.driveMap();
+        String workPath = System.getProperty("user.dir");
+        File work = new File(workPath);
+        if (work.isDirectory()) {
+            String absoluteDirPath = work.getAbsolutePath();
+            absoluteDirPath = absoluteDirPath.replaceAll("\\\\", "/");
+            File oldFile = fileMap.put(absoluteDirPath, work);
+            assert oldFile == null : oldFile;
+        }
+        buildFolderMenu(fileMap);
+        builder.show(ActionPrefix.newAssetLocation);
+    }
+
+    /**
      * Handle a "load cgm asset" action without arguments.
      */
     public void loadCgm() {
@@ -317,31 +334,6 @@ public class BuildMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the "Settings -> Asset locations"
-     * menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    boolean menuAssetLocations(String remainder) {
-        assert remainder != null;
-
-        boolean handled = false;
-        switch (remainder) {
-            case "Add":
-                addAssetLocation();
-                handled = true;
-                break;
-
-            case "Remove":
-                ShowMenus.removeAssetLocation();
-                handled = true;
-        }
-
-        return handled;
-    }
-
-    /**
      * Handle a "select menuItem" action for a top-level menu, typically from
      * the menu bar.
      *
@@ -454,23 +446,6 @@ public class BuildMenus {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Display a "Settings -> Asset locations -> Add" menu.
-     */
-    private void addAssetLocation() {
-        Map<String, File> fileMap = Misc.driveMap();
-        String workPath = System.getProperty("user.dir");
-        File work = new File(workPath);
-        if (work.isDirectory()) {
-            String absoluteDirPath = work.getAbsolutePath();
-            absoluteDirPath = absoluteDirPath.replaceAll("\\\\", "/");
-            File oldFile = fileMap.put(absoluteDirPath, work);
-            assert oldFile == null : oldFile;
-        }
-        buildFolderMenu(fileMap);
-        builder.show(ActionPrefix.newAssetLocation);
-    }
 
     /**
      * Build a CGM menu.
@@ -633,7 +608,10 @@ public class BuildMenus {
      */
     private void buildSettingsMenu() {
         builder.addTool("Tool");
-        builder.addSubmenu("Asset locations"); // TODO inline the submenu
+        builder.addSubmenu("Add asset location");
+        if (Maud.getModel().getLocations().hasRemovable()) {
+            builder.addSubmenu("Remove asset location");
+        }
         builder.addTool("Display-settings tool");
         builder.add("Hotkeys");
         //builder.add("Locale"); TODO

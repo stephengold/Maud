@@ -92,18 +92,6 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "Settings -> Asset locations" menu.
-     */
-    static void assetLocations() {
-        MenuBuilder builder = new MenuBuilder();
-        builder.addSubmenu("Add");
-        if (Maud.getModel().getLocations().hasRemovable()) {
-            builder.addSubmenu("Remove");
-        }
-        builder.show("select menuItem Settings -> Asset locations -> ");
-    }
-
-    /**
      * Display an "Animation -> Edit -> Change duration" menu.
      */
     static void changeDuration() {
@@ -117,7 +105,7 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "Settings -> Asset locations -> Remove" menu.
+     * Display a "Settings -> Remove asset location" menu.
      */
     static void removeAssetLocation() {
         MenuBuilder builder = new MenuBuilder();
