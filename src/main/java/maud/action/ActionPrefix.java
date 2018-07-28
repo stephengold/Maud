@@ -507,6 +507,10 @@ public class ActionPrefix {
      */
     final public static String setShapeParmValue = "set shapeParmValue ";
     /**
+     * arguments are the name of a SkeletonColors and a color
+     */
+    final public static String setSkeletonColor = "set skeletonColor ";
+    /**
      * argument is a decimal float
      */
     final public static String setSkeletonLineWidth = "set skeletonLineWidth ";

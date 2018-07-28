@@ -102,6 +102,11 @@ public class MaudUtil {
     final private static Logger logger
             = Logger.getLogger(MaudUtil.class.getName());
     /**
+     * pattern for matching a color
+     */
+    final private static Pattern colorPattern = Pattern.compile(
+            "Color\\[\\s*([^,]+),\\s*([^,]+),\\s*([^,]+),\\s*(\\S+)\\s*]");
+    /**
      * pattern for matching the word "null"
      */
     final private static Pattern nullPattern = Pattern.compile("\\s*null\\s*");
@@ -879,6 +884,33 @@ public class MaudUtil {
         }
 
         return loaded;
+    }
+
+    /**
+     * Parse a color from the specified text string. TODO use heart library
+     *
+     * @param textString input text (not null, not empty)
+     * @return a new color instance, or null if text is invalid
+     */
+    public static ColorRGBA parseColor(String textString) {
+        Validate.nonEmpty(textString, "text string");
+
+        ColorRGBA result = null;
+        Matcher matcher = colorPattern.matcher(textString);
+        boolean valid = matcher.matches();
+        if (valid) {
+            String rText = matcher.group(1);
+            float r = Float.parseFloat(rText);
+            String gText = matcher.group(2);
+            float g = Float.parseFloat(gText);
+            String bText = matcher.group(3);
+            float b = Float.parseFloat(bText);
+            String aText = matcher.group(4);
+            float a = Float.parseFloat(aText);
+            result = new ColorRGBA(r, g, b, a);
+        }
+
+        return result;
     }
 
     /**

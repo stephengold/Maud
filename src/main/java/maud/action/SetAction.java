@@ -27,6 +27,7 @@
 package maud.action;
 
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import com.jme3.shader.VarType;
@@ -49,6 +50,7 @@ import maud.model.cgm.SelectedOverride;
 import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
+import maud.model.option.scene.SkeletonColors;
 
 /**
  * Process actions that start with the word "set".
@@ -382,6 +384,19 @@ class SetAction {
             if (args.length == 2) {
                 float value = Float.parseFloat(args[1]);
                 target.setShapeParameter(parm, value);
+            } else {
+                handled = false;
+            }
+
+        } else if (actionString.startsWith(ActionPrefix.setSkeletonColor)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setSkeletonColor);
+            String[] args = arg.split(" ");
+            if (args.length >= 2) {
+                SkeletonColors use = SkeletonColors.valueOf(args[0]);
+                String colorText = MyString.remainder(arg, args[0] + " ");
+                ColorRGBA color = MaudUtil.parseColor(colorText);
+                model.getScene().getSkeleton().setColor(use, color);
             } else {
                 handled = false;
             }

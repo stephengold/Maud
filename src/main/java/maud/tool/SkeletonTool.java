@@ -108,7 +108,8 @@ class SkeletonTool extends Tool {
         options.setPointSize(pointSize);
 
         ColorRGBA color = readColorBank("ske", colorSt, null);
-        options.setColor(color);
+        SkeletonColors use = options.getEditColor();
+        options.setColor(use, color);
     }
 
     /**

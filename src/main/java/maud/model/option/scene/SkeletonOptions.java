@@ -176,14 +176,15 @@ public class SkeletonOptions implements Cloneable {
     }
 
     /**
-     * Alter the color being viewed/edited in SkeletonTool.
+     * Alter the color for the specified use.
      *
+     * @param use which color to copy (not null)
      * @param newColor (not null, unaffected)
      */
-    public void setColor(ColorRGBA newColor) {
+    public void setColor(SkeletonColors use, ColorRGBA newColor) {
         Validate.nonNull(newColor, "new color");
 
-        switch (editColor) {
+        switch (use) {
             case IdleBones:
                 defaultColor.set(newColor);
                 break;
@@ -244,8 +245,16 @@ public class SkeletonOptions implements Cloneable {
     public void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
-        String action = ActionPrefix.setSkeletonLineWidth
-                + Float.toString(lineWidth);
+        ColorRGBA color = new ColorRGBA();
+        String action;
+        for (SkeletonColors use : SkeletonColors.values()) {
+            copyColor(use, color);
+            action = String.format("%s%s %s", ActionPrefix.setSkeletonColor,
+                    use, color);
+            MaudUtil.writePerformAction(writer, action);
+        }
+
+        action = ActionPrefix.setSkeletonLineWidth + Float.toString(lineWidth);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.setSkeletonPointSize + Float.toString(pointSize);
