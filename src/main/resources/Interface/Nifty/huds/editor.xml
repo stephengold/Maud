@@ -2020,7 +2020,7 @@ the menu bar, status bar, and tool windows.
                     <control name="horizontalSlider" id="skeletonPointSizeSlider"
                              buttonStepSize="1"
                              height="30px"
-                             max="10" min="0" stepSize="1"/>
+                             max="20" min="0" stepSize="1"/>
                     <panel height="10px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Color for:  "/>

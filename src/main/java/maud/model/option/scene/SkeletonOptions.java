@@ -76,7 +76,7 @@ public class SkeletonOptions implements Cloneable {
     /**
      * point size for bone heads (in pixels, &ge;0, 0&rarr;hidden)
      */
-    private float pointSize = 5f;
+    private float pointSize = 10f;
     /**
      * which kinds of bones to visualize (not null)
      */
