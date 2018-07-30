@@ -26,6 +26,7 @@
  */
 package maud.model;
 
+import com.jme3.math.ColorRGBA;
 import de.lessvoid.nifty.elements.Element;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +36,7 @@ import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TweenRotations;
@@ -48,8 +50,10 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedCgm;
 import maud.model.option.AssetLocations;
+import maud.model.option.Background;
 import maud.model.option.MiscOptions;
 import maud.model.option.ScoreOptions;
+import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.SceneOptions;
 
 /**
@@ -295,6 +299,38 @@ public class EditorModel {
                 techniques.setTweenRotations(TweenRotations.Spline);
                 techniques.setTweenScales(TweenVectors.CentripetalSpline);
                 break;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * Alter the color for the specified background.
+     *
+     * @param which which color to alter (not null)
+     * @param newColor (not null, unaffected)
+     */
+    public void setBackgroundColor(Background which, ColorRGBA newColor) {
+        Validate.nonNull(newColor, "new color");
+
+        RenderOptions scene = getScene().getRender();
+        switch (which) {
+            case SourceScenesWithNoSky:
+                scene.setSourceBackgroundColor(newColor);
+                break;
+
+            case SourceScores:
+                getScore().setSourceBackgroundColor(newColor);
+                break;
+
+            case TargetScenesWithNoSky:
+                scene.setTargetBackgroundColor(newColor);
+                break;
+
+            case TargetScores:
+                getScore().setTargetBackgroundColor(newColor);
+                break;
+
             default:
                 throw new IllegalArgumentException();
         }

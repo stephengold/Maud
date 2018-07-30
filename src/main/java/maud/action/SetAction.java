@@ -47,6 +47,7 @@ import maud.model.cgm.PlayOptions;
 import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedOverride;
+import maud.model.option.Background;
 import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
@@ -252,7 +253,20 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         String arg;
-        if (actionString.startsWith(ActionPrefix.setBatchHint)) {
+        if (actionString.startsWith(ActionPrefix.setBackgroundColor)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setBackgroundColor);
+            String[] args = arg.split(" ");
+            if (args.length >= 2) {
+                Background which = Background.valueOf(args[0]);
+                String colorText = MyString.remainder(arg, args[0] + " ");
+                ColorRGBA color = MaudUtil.parseColor(colorText);
+                model.setBackgroundColor(which, color);
+            } else {
+                handled = false;
+            }
+
+        } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
             Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
             target.setBatchHint(value);
@@ -386,6 +400,24 @@ class SetAction {
                     ActionPrefix.setShadowsRendered);
             boolean rendered = Boolean.parseBoolean(arg);
             model.getScene().getRender().setShadowsRendered(rendered);
+
+        } else if (actionString.startsWith(ActionPrefix.setShowRotations)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setShowRotations);
+            boolean shown = Boolean.parseBoolean(arg);
+            model.getScore().setShowRotations(shown);
+
+        } else if (actionString.startsWith(ActionPrefix.setShowScales)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setShowScales);
+            boolean shown = Boolean.parseBoolean(arg);
+            model.getScore().setShowScales(shown);
+
+        } else if (actionString.startsWith(ActionPrefix.setShowTranslations)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setShowTranslations);
+            boolean shown = Boolean.parseBoolean(arg);
+            model.getScore().setShowTranslations(shown);
 
         } else if (actionString.startsWith(ActionPrefix.setShapeParmValue)) {
             arg = MyString.remainder(actionString,

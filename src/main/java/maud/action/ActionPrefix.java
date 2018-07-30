@@ -425,6 +425,10 @@ public class ActionPrefix {
      */
     final public static String selectViewMode = "select viewMode ";
     /**
+     * arguments are the name of a Background and a color
+     */
+    final public static String setBackgroundColor = "set backgroundColor ";
+    /**
      * argument is the name of a batch hint
      */
     final public static String setBatchHint = "set batchHint ";
@@ -519,6 +523,18 @@ public class ActionPrefix {
      * arguments are the parameter name and a decimal float
      */
     final public static String setShapeParmValue = "set shapeParmValue ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String setShowRotations = "set showRotations ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String setShowScales = "set showScales ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String setShowTranslations = "set showTranslations ";
     /**
      * arguments are the name of a SkeletonColors and a color
      */

@@ -269,7 +269,26 @@ public class ScoreOptions implements Cloneable {
     public void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
-        String action = ActionPrefix.selectScoreBonesNone
+        String action = ActionPrefix.setShowRotations
+                + Boolean.toString(showRotationsFlag);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setShowScales + Boolean.toString(showScalesFlag);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setShowTranslations
+                + Boolean.toString(showTranslationsFlag);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = String.format("%s%s %s", ActionPrefix.setBackgroundColor,
+                Background.SourceScores, sourceBackground);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = String.format("%s%s %s", ActionPrefix.setBackgroundColor,
+                Background.TargetScores, targetBackground);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectScoreBonesNone
                 + showNoneSelected.toString();
         MaudUtil.writePerformAction(writer, action);
 
