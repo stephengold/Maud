@@ -283,6 +283,23 @@ class SetAction {
             Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
             target.setBatchHint(value);
 
+        } else if (actionString.startsWith(ActionPrefix.setBoundsDepthTest)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setBoundsDepthTest);
+            boolean newSetting = Boolean.parseBoolean(arg);
+            model.getScene().getBounds().setDepthTestFlag(newSetting);
+
+        } else if (actionString.startsWith(ActionPrefix.setBoundsColor)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setBoundsColor);
+            ColorRGBA color = MaudUtil.parseColor(arg);
+            model.getScene().getBounds().setColor(color);
+
+        } else if (actionString.startsWith(ActionPrefix.setBoundsLineWidth)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setBoundsLineWidth);
+            float width = Float.valueOf(arg);
+            model.getScene().getBounds().setLineWidth(width);
+
         } else if (actionString.startsWith(ActionPrefix.setColorDepth)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setColorDepth);

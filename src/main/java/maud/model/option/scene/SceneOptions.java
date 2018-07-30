@@ -253,6 +253,7 @@ public class SceneOptions implements Cloneable {
         Validate.nonNull(writer, "writer");
 
         axesOptions.writeToScript(writer);
+        boundsOptions.writeToScript(writer);
         cameraOptions.writeToScript(writer);
         renderOptions.writeToScript(writer);
         skeletonOptions.writeToScript(writer);

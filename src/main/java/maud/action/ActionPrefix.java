@@ -441,6 +441,18 @@ public class ActionPrefix {
      */
     final public static String setBatchHint = "set batchHint ";
     /**
+     * argument is a color
+     */
+    final public static String setBoundsColor = "set boundsColor ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String setBoundsDepthTest = "set boundsDepthTest ";
+    /**
+     * argument is a decimal width in pixels
+     */
+    final public static String setBoundsLineWidth = "set boundsLineWidth ";
+    /**
      * argument is a decimal number of bits
      */
     final public static String setColorDepth = "set colorDepth ";
