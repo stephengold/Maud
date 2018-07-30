@@ -237,6 +237,12 @@ class SelectANAction {
             int indexBase = Maud.getModel().getMisc().getIndexBase();
             target.getBone().select(index - indexBase);
 
+        } else if (actionString.startsWith(ActionPrefix.selectCursorColor)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectCursorColor);
+            int index = Integer.parseInt(arg);
+            model.getMisc().setColorIndex(index);
+
         } else if (actionString.startsWith(ActionPrefix.selectEdgeFilter)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectEdgeFilter);

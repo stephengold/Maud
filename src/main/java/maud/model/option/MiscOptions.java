@@ -452,6 +452,15 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter the visibility of the menu bar.
+     *
+     * @param newSetting (true &rarr; visible, false &rarr; hidden)
+     */
+    public void setMenuBarVisible(boolean newSetting) {
+        menuBarVisibility = newSetting;
+    }
+
+    /**
      * Alter the display mode for rotations.
      *
      * @param newMode an enum value (not null)
@@ -519,7 +528,7 @@ public class MiscOptions implements Cloneable {
      * Toggle the visibility of the menu bar.
      */
     public void toggleMenuBarVisibility() {
-        menuBarVisibility = !menuBarVisibility;
+        setMenuBarVisible(!menuBarVisibility);
     }
 
     /**
@@ -531,23 +540,48 @@ public class MiscOptions implements Cloneable {
     public void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
-        String action = ActionPrefix.setDiagnose
-                + Boolean.toString(diagnoseLoads);
+        String action = ActionPrefix.selectBackground + background.toString();
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setIndexBase + Integer.toString(indexBase);
+        action = ActionPrefix.setDiagnose + Boolean.toString(diagnoseLoads);
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.selectRotationDisplay
-                + rotationDisplayMode.toString();
+        action = ActionPrefix.setLoadZUp + Boolean.toString(loadZup);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setMenuBarVisible
+                + Boolean.toString(menuBarVisibility);
         MaudUtil.writePerformAction(writer, action);
 
         action = String.format("%s%f %f", ActionPrefix.setSubmenuWarp,
                 warpX, warpY);
         MaudUtil.writePerformAction(writer, action);
 
+        action = ActionPrefix.setXBoundary + Float.toString(xBoundary);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectCursorColor + Integer.toString(colorIndex);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setIndexBase + Integer.toString(indexBase);
+        MaudUtil.writePerformAction(writer, action);
+
         action = ActionPrefix.selectPerformanceMode
                 + performanceMode.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectPhysicsRbp + rbp.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectRotationDisplay
+                + rotationDisplayMode.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectShapeParm + shapeParameter.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        // Don't write the status message.
+        action = ActionPrefix.selectVertexBuffer + vertexBuffer.toString();
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectViewMode + viewMode.toString();

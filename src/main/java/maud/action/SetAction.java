@@ -305,6 +305,11 @@ class SetAction {
             int newSetting = Integer.parseInt(arg);
             model.getMisc().setIndexBase(newSetting);
 
+        } else if (actionString.startsWith(ActionPrefix.setLoadZUp)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setLoadZUp);
+            boolean zUp = Boolean.parseBoolean(arg);
+            model.getMisc().setLoadZup(zUp);
+
         } else if (actionString.startsWith(ActionPrefix.setMapSize)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMapSize);
             int mapSize = Integer.parseInt(arg);
@@ -314,6 +319,12 @@ class SetAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setMatParamValue);
             target.setMatParamValue(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.setMenuBarVisible)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setMenuBarVisible);
+            boolean visible = Boolean.parseBoolean(arg);
+            model.getMisc().setMenuBarVisible(visible);
 
         } else if (actionString.startsWith(ActionPrefix.setMsaaFactor)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMsaaFactor);
@@ -473,6 +484,11 @@ class SetAction {
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);
             target.setUserData(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.setXBoundary)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setXBoundary);
+            float position = Float.valueOf(arg);
+            model.getMisc().setXBoundary(position);
 
         } else {
             handled = false;

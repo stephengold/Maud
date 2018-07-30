@@ -253,6 +253,10 @@ public class ActionPrefix {
      */
     final public static String selectBoneIndex = "select boneIndex ";
     /**
+     * argument is 0 or 1 (index into the 2 cursor colors)
+     */
+    final public static String selectCursorColor = "select cursorColor ";
+    /**
      * argument is the name of an EdgeFilteringMode value
      */
     final public static String selectEdgeFilter = "select edgeFilter ";
@@ -459,9 +463,17 @@ public class ActionPrefix {
      */
     final public static String setIndexBase = "set indexBase ";
     /**
+     * argument is a boolean value
+     */
+    final public static String setLoadZUp = "set loadZUp ";
+    /**
      * argument is a decimal value (size in bits)
      */
     final public static String setMapSize = "set mapSize ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String setMenuBarVisible = "set menuBarVisible ";
     /**
      * argument is a number of samples per pixel, formatted using
      * {@link maud.MaudUtil#describeMsaaFactor(int)}
@@ -541,6 +553,10 @@ public class ActionPrefix {
      * argument is the new value
      */
     final public static String setUserData = "set userData ";
+    /**
+     * argument is a decimal fraction
+     */
+    final public static String setXBoundary = "set xBoundary ";
     /**
      * argument is the name of a license type
      */
