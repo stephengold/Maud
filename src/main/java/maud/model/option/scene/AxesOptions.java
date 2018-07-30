@@ -26,8 +26,12 @@
  */
 package maud.model.option.scene;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.MaudUtil;
+import maud.action.ActionPrefix;
 
 /**
  * Options for visible coordinate axes in scene views.
@@ -160,6 +164,30 @@ public class AxesOptions implements Cloneable {
     public void setSubject(AxesSubject newSubject) {
         Validate.nonNull(newSubject, "new subject");
         subject = newSubject;
+    }
+
+    /**
+     * Write the options to a script using the specified writer.
+     *
+     * @param writer (not null)
+     * @throws java.io.IOException if an I/O error occurs while writing
+     */
+    public void writeToScript(Writer writer) throws IOException {
+        Validate.nonNull(writer, "writer");
+
+        String action = ActionPrefix.selectAxesDragEffect
+                + dragEffect.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectAxesSubject + subject.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setAxesDepthTest
+                + Boolean.toString(depthTestFlag);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setAxesLineWidth + Float.toString(lineWidth);
+        MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
     // Object methods

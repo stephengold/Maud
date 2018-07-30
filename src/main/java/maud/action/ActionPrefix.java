@@ -249,7 +249,7 @@ public class ActionPrefix {
      */
     final public static String selectBoneChild = "select boneChild ";
     /**
-     * argument is a decimal value (indexBase plus the bone index)
+     * argument is a decimal index (indexBase plus the bone index)
      */
     final public static String selectBoneIndex = "select boneIndex ";
     /**
@@ -273,7 +273,7 @@ public class ActionPrefix {
      */
     final public static String selectJoint = "select joint ";
     /**
-     * argument is a decimal value (indexBase plus a keyframe index)
+     * argument is a decimal index (indexBase plus a keyframe index)
      */
     final public static String selectKeyframe = "select keyframe ";
     /**
@@ -409,7 +409,7 @@ public class ActionPrefix {
      */
     final public static String selectUserKey = "select userKey ";
     /**
-     * argument is a decimal value (indexBase plus a vertex index)
+     * argument is a decimal index (indexBase plus a vertex index)
      */
     final public static String selectVertex = "select vertex ";
     /**
@@ -425,6 +425,14 @@ public class ActionPrefix {
      */
     final public static String selectViewMode = "select viewMode ";
     /**
+     * argument is a boolean value
+     */
+    final public static String setAxesDepthTest = "set axesDepthTest ";
+    /**
+     * argument is a decimal width in pixels
+     */
+    final public static String setAxesLineWidth = "set axesLineWidth ";
+    /**
      * arguments are the name of a Background and a color
      */
     final public static String setBackgroundColor = "set backgroundColor ";
@@ -433,7 +441,7 @@ public class ActionPrefix {
      */
     final public static String setBatchHint = "set batchHint ";
     /**
-     * argument is the decimal number of bits
+     * argument is a decimal number of bits
      */
     final public static String setColorDepth = "set colorDepth ";
     /**
@@ -441,7 +449,7 @@ public class ActionPrefix {
      */
     final public static String setCullHint = "set cullHint ";
     /**
-     * argument is "true" or "false"
+     * argument is a boolean value
      */
     final public static String setDiagnose = "set diagnose ";
     /**
@@ -455,11 +463,11 @@ public class ActionPrefix {
     final public static String setDurationProportional
             = "set duration proportional ";
     /**
-     * argument is a decimal value (duration in seconds)
+     * argument is a decimal duration in seconds
      */
     final public static String setDurationSame = "set duration same ";
     /**
-     * argument is a decimal value (time in seconds)
+     * argument is a decimal time in seconds
      */
     final public static String setFrameTime = "set frameTime ";
     /**
@@ -471,7 +479,7 @@ public class ActionPrefix {
      */
     final public static String setLoadZUp = "set loadZUp ";
     /**
-     * argument is a decimal value (size in bits)
+     * argument is a decimal size in bits
      */
     final public static String setMapSize = "set mapSize ";
     /**
@@ -488,7 +496,7 @@ public class ActionPrefix {
      */
     final static String setMatParamValue = "set matParamValue ";
     /**
-     * argument is a decimal value
+     * argument is a decimal number of splits
      */
     final public static String setNumSplits = "set numSplits ";
     /**
@@ -540,11 +548,11 @@ public class ActionPrefix {
      */
     final public static String setSkeletonColor = "set skeletonColor ";
     /**
-     * argument is a decimal float
+     * argument is a decimal width in pixels
      */
     final public static String setSkeletonLineWidth = "set skeletonLineWidth ";
     /**
-     * argument is a decimal float
+     * argument is a decimal size in pixels
      */
     final public static String setSkeletonPointSize = "set skeletonPointSize ";
     /**

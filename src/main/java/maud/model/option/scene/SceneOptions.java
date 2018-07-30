@@ -252,6 +252,7 @@ public class SceneOptions implements Cloneable {
     public void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
+        axesOptions.writeToScript(writer);
         cameraOptions.writeToScript(writer);
         renderOptions.writeToScript(writer);
         skeletonOptions.writeToScript(writer);

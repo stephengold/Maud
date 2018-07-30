@@ -253,7 +253,19 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         String arg;
-        if (actionString.startsWith(ActionPrefix.setBackgroundColor)) {
+        if (actionString.startsWith(ActionPrefix.setAxesDepthTest)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setAxesDepthTest);
+            boolean newSetting = Boolean.parseBoolean(arg);
+            model.getScene().getAxes().setDepthTestFlag(newSetting);
+
+        } else if (actionString.startsWith(ActionPrefix.setAxesLineWidth)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setAxesLineWidth);
+            float width = Float.valueOf(arg);
+            model.getScene().getAxes().setLineWidth(width);
+
+        } else if (actionString.startsWith(ActionPrefix.setBackgroundColor)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setBackgroundColor);
             String[] args = arg.split(" ");
