@@ -27,8 +27,12 @@
 package maud.model.option.scene;
 
 import com.jme3.math.ColorRGBA;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.MaudUtil;
+import maud.action.ActionPrefix;
 
 /**
  * Options for 3-D cursors in scene views.
@@ -155,6 +159,32 @@ public class DddCursorOptions implements Cloneable {
      */
     public void setVisible(boolean newState) {
         visible = newState;
+    }
+
+    /**
+     * Write the options to a script using the specified writer.
+     *
+     * @param writer (not null)
+     * @throws java.io.IOException if an I/O error occurs while writing
+     */
+    void writeToScript(Writer writer) throws IOException {
+        Validate.nonNull(writer, "writer");
+
+        String action = ActionPrefix.set3DCursorVisible
+                + Boolean.toString(visible);
+        MaudUtil.writePerformAction(writer, action);
+
+        for (int colorIndex = 0; colorIndex < 2; colorIndex++) {
+            action = String.format("%s%d %s", ActionPrefix.set3DCursorColor,
+                    colorIndex, colors[colorIndex]);
+            MaudUtil.writePerformAction(writer, action);
+        }
+
+        action = ActionPrefix.set3DCursorCycleTime + Float.toString(cycleTime);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.set3DCursorSize + Float.toString(size);
+        MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
     // Cloneable methods

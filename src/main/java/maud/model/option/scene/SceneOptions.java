@@ -255,6 +255,7 @@ public class SceneOptions implements Cloneable {
         axesOptions.writeToScript(writer);
         boundsOptions.writeToScript(writer);
         cameraOptions.writeToScript(writer);
+        cursorOptions.writeToScript(writer);
         renderOptions.writeToScript(writer);
         skeletonOptions.writeToScript(writer);
     }

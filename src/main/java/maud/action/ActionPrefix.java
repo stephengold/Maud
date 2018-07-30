@@ -425,6 +425,22 @@ public class ActionPrefix {
      */
     final public static String selectViewMode = "select viewMode ";
     /**
+     * arguments are a decimal index and a color
+     */
+    final public static String set3DCursorColor = "set 3DCursorColor ";
+    /**
+     * argument is a decimal interval in seconds
+     */
+    final public static String set3DCursorCycleTime = "set 3DCursorCycleTime ";
+    /**
+     * argument is a decimal float
+     */
+    final public static String set3DCursorSize = "set 3DCursorSize ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String set3DCursorVisible = "set 3DCursorVisible ";
+    /**
      * argument is a boolean value
      */
     final public static String setAxesDepthTest = "set axesDepthTest ";

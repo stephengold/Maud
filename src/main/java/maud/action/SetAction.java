@@ -54,7 +54,7 @@ import maud.model.option.ShapeParameter;
 import maud.model.option.scene.SkeletonColors;
 
 /**
- * Process actions that start with the word "set".
+ * Process actions that start with the word "set". TODO split off "setFlag"
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -253,7 +253,38 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         String arg;
-        if (actionString.startsWith(ActionPrefix.setAxesDepthTest)) {
+        if (actionString.startsWith(ActionPrefix.set3DCursorColor)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.set3DCursorColor);
+            String[] args = arg.split(" ");
+            if (args.length >= 2) {
+                int index = Integer.valueOf(args[0]);
+                String colorText = MyString.remainder(arg, args[0] + " ");
+                ColorRGBA color = MaudUtil.parseColor(colorText);
+                model.getScene().getCursor().setColor(index, color);
+            } else {
+                handled = false;
+            }
+
+        } else if (actionString.startsWith(ActionPrefix.set3DCursorCycleTime)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.set3DCursorCycleTime);
+            float cycleTime = Float.valueOf(arg);
+            model.getScene().getCursor().setCycleTime(cycleTime);
+
+        } else if (actionString.startsWith(ActionPrefix.set3DCursorSize)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.set3DCursorSize);
+            float size = Float.valueOf(arg);
+            model.getScene().getCursor().setSize(size);
+
+        } else if (actionString.startsWith(ActionPrefix.set3DCursorVisible)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.set3DCursorVisible);
+            boolean newSetting = Boolean.parseBoolean(arg);
+            model.getScene().getCursor().setVisible(newSetting);
+
+        } else if (actionString.startsWith(ActionPrefix.setAxesDepthTest)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setAxesDepthTest);
             boolean newSetting = Boolean.parseBoolean(arg);
@@ -345,8 +376,8 @@ class SetAction {
 
         } else if (actionString.startsWith(ActionPrefix.setIndexBase)) {
             arg = MyString.remainder(actionString, ActionPrefix.setIndexBase);
-            int newSetting = Integer.parseInt(arg);
-            model.getMisc().setIndexBase(newSetting);
+            int base = Integer.parseInt(arg);
+            model.getMisc().setIndexBase(base);
 
         } else if (actionString.startsWith(ActionPrefix.setLoadZUp)) {
             arg = MyString.remainder(actionString, ActionPrefix.setLoadZUp);
