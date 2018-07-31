@@ -27,8 +27,12 @@
 package maud.model.option.scene;
 
 import com.jme3.math.ColorRGBA;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.MaudUtil;
+import maud.action.ActionPrefix;
 
 /**
  * Options for vertex visualizations in scene views.
@@ -101,6 +105,22 @@ public class VertexOptions implements Cloneable {
     public void setPointSize(float size) {
         Validate.nonNegative(size, "size");
         pointSize = size;
+    }
+
+    /**
+     * Write the options to a script using the specified writer.
+     *
+     * @param writer (not null)
+     * @throws java.io.IOException if an I/O error occurs while writing
+     */
+    void writeToScript(Writer writer) throws IOException {
+        Validate.nonNull(writer, "writer");
+
+        String action = ActionPrefix.setVertexColor + color.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setVertexPointSize + Float.toString(pointSize);
+        MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
     // Object methods

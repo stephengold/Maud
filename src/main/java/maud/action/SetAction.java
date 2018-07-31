@@ -521,6 +521,17 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);
             target.setUserData(arg);
 
+        } else if (actionString.startsWith(ActionPrefix.setVertexColor)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setVertexColor);
+            ColorRGBA color = MaudUtil.parseColor(arg);
+            model.getScene().getVertex().setColor(color);
+
+        } else if (actionString.startsWith(ActionPrefix.setVertexPointSize)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setVertexPointSize);
+            float size = Float.parseFloat(arg);
+            model.getScene().getVertex().setPointSize(size);
+
         } else if (actionString.startsWith(ActionPrefix.setXBoundary)) {
             arg = MyString.remainder(actionString, ActionPrefix.setXBoundary);
             float position = Float.valueOf(arg);

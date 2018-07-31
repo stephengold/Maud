@@ -582,6 +582,14 @@ public class ActionPrefix {
      */
     final public static String setUserData = "set userData ";
     /**
+     * argument is a color
+     */
+    final public static String setVertexColor = "set vertexColor ";
+    /**
+     * argument is a decimal size in pixels
+     */
+    final public static String setVertexPointSize = "set vertexPointSize ";
+    /**
      * argument is a decimal fraction
      */
     final public static String setXBoundary = "set xBoundary ";
