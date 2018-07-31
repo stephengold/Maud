@@ -178,7 +178,7 @@ public class SkeletonOptions implements Cloneable {
     /**
      * Alter the color for the specified use.
      *
-     * @param use which color to copy (not null)
+     * @param use which color to alter (not null)
      * @param newColor (not null, unaffected)
      */
     public void setColor(SkeletonColors use, ColorRGBA newColor) {
@@ -242,7 +242,7 @@ public class SkeletonOptions implements Cloneable {
      * @param writer (not null)
      * @throws java.io.IOException if an I/O error occurs while writing
      */
-    public void writeToScript(Writer writer) throws IOException {
+    void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
         ColorRGBA color = new ColorRGBA();

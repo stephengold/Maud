@@ -345,7 +345,7 @@ public class RenderOptions implements Cloneable {
      * @param writer (not null)
      * @throws java.io.IOException if an I/O error occurs while writing
      */
-    public void writeToScript(Writer writer) throws IOException {
+    void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
         String action = ActionPrefix.setPhysicsRendered
