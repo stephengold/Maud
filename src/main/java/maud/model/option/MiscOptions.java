@@ -563,7 +563,7 @@ public class MiscOptions implements Cloneable {
         action = ActionPrefix.selectCursorColor + Integer.toString(colorIndex);
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setIndexBase + Integer.toString(indexBase);
+        action = ActionPrefix.selectIndexBase + Integer.toString(indexBase);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectPerformanceMode

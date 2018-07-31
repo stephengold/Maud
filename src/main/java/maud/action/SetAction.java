@@ -28,8 +28,6 @@ package maud.action;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.ColorRGBA;
-import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Spatial;
 import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -297,11 +295,6 @@ class SetAction {
                 handled = false;
             }
 
-        } else if (actionString.startsWith(ActionPrefix.setBatchHint)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setBatchHint);
-            Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
-            target.setBatchHint(value);
-
         } else if (actionString.startsWith(ActionPrefix.setBoundsColor)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBoundsColor);
             ColorRGBA color = MaudUtil.parseColor(arg);
@@ -318,11 +311,6 @@ class SetAction {
                     ActionPrefix.setColorDepth);
             int bitsPerPixel = Integer.parseInt(arg);
             DisplaySettings.setColorDepth(bitsPerPixel);
-
-        } else if (actionString.startsWith(ActionPrefix.setCullHint)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setCullHint);
-            Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
-            target.setCullHint(value);
 
         } else if (actionString.startsWith(ActionPrefix.setDimensions)) {
             arg = MyString.remainder(actionString, ActionPrefix.setDimensions);
@@ -350,11 +338,6 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setFrameTime);
             float value = Float.parseFloat(arg);
             target.getFrame().setTime(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setIndexBase)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setIndexBase);
-            int base = Integer.parseInt(arg);
-            model.getMisc().setIndexBase(base);
 
         } else if (actionString.startsWith(ActionPrefix.setMapSize)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMapSize);
@@ -400,20 +383,10 @@ class SetAction {
                 handled = false;
             }
 
-        } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
-            RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
-            target.setQueueBucket(value);
-
         } else if (actionString.startsWith(ActionPrefix.setRefreshRate)) {
             arg = MyString.remainder(actionString, ActionPrefix.setRefreshRate);
             int hertz = Integer.parseInt(arg);
             DisplaySettings.setRefreshRate(hertz);
-
-        } else if (actionString.startsWith(ActionPrefix.setShadowMode)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);
-            RenderQueue.ShadowMode value = RenderQueue.ShadowMode.valueOf(arg);
-            target.setShadowMode(value);
 
         } else if (actionString.startsWith(ActionPrefix.setShapeParmValue)) {
             arg = MyString.remainder(actionString,

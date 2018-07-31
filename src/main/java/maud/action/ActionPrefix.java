@@ -241,6 +241,10 @@ public class ActionPrefix {
      */
     final public static String selectBackground = "select background ";
     /**
+     * argument is the name of a batch hint
+     */
+    final public static String selectBatchHint = "select batchHint ";
+    /**
      * argument is the name of a target bone or a prefix thereof
      */
     final public static String selectBone = "select bone ";
@@ -252,6 +256,10 @@ public class ActionPrefix {
      * argument is a decimal index (indexBase plus the bone index)
      */
     final public static String selectBoneIndex = "select boneIndex ";
+    /**
+     * argument is the name of a cull hint
+     */
+    final public static String selectCullHint = "select cullHint ";
     /**
      * argument is 0 or 1 (index into the 2 cursor colors)
      */
@@ -268,6 +276,10 @@ public class ActionPrefix {
      * argument is the name of a geometry or a prefix thereof
      */
     final public static String selectGeometry = "select geometry ";
+    /**
+     * argument is 0 or 1
+     */
+    final public static String selectIndexBase = "select indexBase ";
     /**
      * argument is the id of a physics joint or a prefix thereof
      */
@@ -322,6 +334,10 @@ public class ActionPrefix {
      */
     final public static String selectProjection = "select projection ";
     /**
+     * argument is the name of a queue bucket
+     */
+    final public static String selectQueueBucket = "select queueBucket ";
+    /**
      * argument is the name of a RotationDisplayMode value
      */
     final public static String selectRotationDisplay
@@ -342,6 +358,10 @@ public class ActionPrefix {
      * argument is an SGC name or noControl
      */
     final public static String selectSgc = "select sgc ";
+    /**
+     * argument is the name of a shadow mode
+     */
+    final public static String selectShadowMode = "select shadowMode ";
     /**
      * argument is the id of a physics shape or a prefix thereof
      */
@@ -445,10 +465,6 @@ public class ActionPrefix {
      */
     final public static String setBackgroundColor = "set backgroundColor ";
     /**
-     * argument is the name of a batch hint
-     */
-    final public static String setBatchHint = "set batchHint ";
-    /**
      * argument is a color
      */
     final public static String setBoundsColor = "set boundsColor ";
@@ -461,16 +477,12 @@ public class ActionPrefix {
      */
     final public static String setColorDepth = "set colorDepth ";
     /**
-     * argument is the name of a cull hint
-     */
-    final public static String setCullHint = "set cullHint ";
-    /**
      * arguments are the decimal width in pixels, an "x", and the decimal height
      * in pixels
      */
     final public static String setDimensions = "set dimensions ";
     /**
-     * argument is a new duration in seconds
+     * argument is a decimal duration in seconds
      */
     final public static String setDurationProportional
             = "set duration proportional ";
@@ -482,10 +494,6 @@ public class ActionPrefix {
      * argument is a decimal time in seconds
      */
     final public static String setFrameTime = "set frameTime ";
-    /**
-     * argument is 0 or 1
-     */
-    final public static String setIndexBase = "set indexBase ";
     /**
      * argument is a decimal size in bits
      */
@@ -515,14 +523,6 @@ public class ActionPrefix {
      * argument is a decimal refresh rate in Hertz
      */
     final public static String setRefreshRate = "set refreshRate ";
-    /**
-     * argument is the name of a queue bucket
-     */
-    final public static String setQueueBucket = "set queueBucket ";
-    /**
-     * argument is the name of a shadow mode
-     */
-    final public static String setShadowMode = "set shadowMode ";
     /**
      * arguments are the parameter name and a decimal float
      */

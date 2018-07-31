@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.renderer.queue.RenderQueue;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
@@ -38,6 +39,7 @@ import maud.menu.SpatialMenus;
 import maud.menu.WhichSpatials;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedSgc;
 import maud.model.option.PerformanceMode;
 import maud.model.option.RigidBodyParameter;
@@ -207,7 +209,7 @@ class SelectOSAction {
         boolean handled = true;
 
         EditorModel model = Maud.getModel();
-        Cgm target = model.getTarget();
+        EditableCgm target = model.getTarget();
         String arg;
         if (actionString.startsWith(ActionPrefix.selectOrbitCenter)) {
             arg = MyString.remainder(actionString,
@@ -248,6 +250,12 @@ class SelectOSAction {
             ProjectionMode mode = ProjectionMode.valueOf(arg);
             model.getScene().getCamera().setMode(mode);
 
+        } else if (actionString.startsWith(ActionPrefix.selectQueueBucket)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectQueueBucket);
+            RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
+            target.setQueueBucket(value);
+
         } else if (actionString.startsWith(
                 ActionPrefix.selectRotationDisplay)) {
             arg = MyString.remainder(actionString,
@@ -276,6 +284,12 @@ class SelectOSAction {
                     ActionPrefix.selectScoreBonesWhen);
             ShowBones value = ShowBones.valueOf(arg);
             model.getScore().setShowWhenSelected(value);
+
+        } else if (actionString.startsWith(ActionPrefix.selectShadowMode)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectShadowMode);
+            RenderQueue.ShadowMode value = RenderQueue.ShadowMode.valueOf(arg);
+            target.setShadowMode(value);
 
         } else if (actionString.startsWith(ActionPrefix.selectShape)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectShape);

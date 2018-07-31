@@ -27,6 +27,7 @@
 package maud.action;
 
 import com.jme3.material.RenderState;
+import com.jme3.scene.Spatial;
 import com.jme3.shadow.EdgeFilteringMode;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -221,6 +222,12 @@ class SelectANAction {
             Background value = Background.valueOf(arg);
             model.getMisc().selectBackground(value);
 
+        } else if (actionString.startsWith(ActionPrefix.selectBatchHint)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectBatchHint);
+            Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
+            target.setBatchHint(value);
+
         } else if (actionString.startsWith(ActionPrefix.selectBone)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectBone);
             BoneMenus.selectBone(arg);
@@ -236,6 +243,11 @@ class SelectANAction {
             int index = Integer.parseInt(arg);
             int indexBase = Maud.getModel().getMisc().getIndexBase();
             target.getBone().select(index - indexBase);
+
+        } else if (actionString.startsWith(ActionPrefix.selectCullHint)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectCullHint);
+            Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
+            target.setCullHint(value);
 
         } else if (actionString.startsWith(ActionPrefix.selectCursorColor)) {
             arg = MyString.remainder(actionString,
@@ -258,6 +270,11 @@ class SelectANAction {
         } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
             SpatialMenus.selectSpatial(arg, WhichSpatials.Geometries);
+
+        } else if (actionString.startsWith(ActionPrefix.selectIndexBase)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectIndexBase);
+            int base = Integer.parseInt(arg);
+            model.getMisc().setIndexBase(base);
 
         } else if (actionString.startsWith(ActionPrefix.selectJoint)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectJoint);

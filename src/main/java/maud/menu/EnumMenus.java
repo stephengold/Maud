@@ -457,7 +457,7 @@ public class EnumMenus {
             }
         }
 
-        builder.show(ActionPrefix.setBatchHint);
+        builder.show(ActionPrefix.selectBatchHint);
     }
 
     /**
@@ -476,7 +476,7 @@ public class EnumMenus {
             }
         }
 
-        builder.show(ActionPrefix.setCullHint);
+        builder.show(ActionPrefix.selectCullHint);
     }
 
     /**
@@ -495,7 +495,7 @@ public class EnumMenus {
             }
         }
 
-        builder.show(ActionPrefix.setQueueBucket);
+        builder.show(ActionPrefix.selectQueueBucket);
     }
 
     /**
@@ -514,7 +514,7 @@ public class EnumMenus {
             }
         }
 
-        builder.show(ActionPrefix.setShadowMode);
+        builder.show(ActionPrefix.selectShadowMode);
     }
 
     /**
