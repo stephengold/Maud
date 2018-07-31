@@ -261,6 +261,8 @@ public class SkeletonOptions implements Cloneable {
         MaudUtil.writePerformAction(writer, action);
 
         // CGM load overrides showBones, so no point in writing it here
+        action = ActionPrefix.selectSkeletonColor + editColor.toString();
+        MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
     // Object methods
